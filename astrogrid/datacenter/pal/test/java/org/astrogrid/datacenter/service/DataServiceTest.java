@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.7 2004/11/03 00:17:56 mch Exp $
+/*$Id: DataServiceTest.java,v 1.8 2004/11/09 17:42:22 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.status.SelfMonitorBody;
 import org.astrogrid.status.TaskStatus;
 import org.astrogrid.util.DomHelper;
@@ -142,6 +142,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.8  2004/11/09 17:42:22  mch
+Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
 Revision 1.7  2004/11/03 00:17:56  mch
 PAL_MCH Candidate 2 merge
 

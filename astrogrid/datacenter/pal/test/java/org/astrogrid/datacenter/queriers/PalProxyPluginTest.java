@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPluginTest.java,v 1.1 2004/11/08 12:04:47 mch Exp $
+ * $Id: PalProxyPluginTest.java,v 1.2 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,7 +18,7 @@ import org.astrogrid.datacenter.queriers.pal.PalProxyPlugin;
 import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.TargetMaker;
 import org.xml.sax.SAXException;
 
 /**

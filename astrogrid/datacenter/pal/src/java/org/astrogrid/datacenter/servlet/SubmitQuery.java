@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitQuery.java,v 1.2 2004/11/03 00:17:56 mch Exp $
+ * $Id: SubmitQuery.java,v 1.3 2004/11/09 17:42:22 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -51,7 +51,7 @@ public class SubmitQuery extends DefaultServlet {
          
          if (query.getTarget() == null) {
             //get upset
-            throw new QueryException("Must specify a Target argument for the results to be sent to when submitting Queries", null);
+            throw new QueryException("Must specify a Target argument for the results to be sent to when submitting Queries (otherwise use AskQuery)", null);
          }
          
          //submit query - and return just the query ID

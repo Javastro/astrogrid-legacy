@@ -1,5 +1,5 @@
 /*
- * $Id: StoresView.java,v 1.1 2004/11/08 23:15:38 mch Exp $
+ * $Id: StoresView.java,v 1.2 2004/11/09 17:42:22 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -19,8 +19,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import org.astrogrid.community.Account;
-import org.astrogrid.registry.client.RegistryDelegateFactory;
-import org.astrogrid.registry.client.query.RegistryService;
+//import org.astrogrid.registry.client.RegistryDelegateFactory;
+//import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.delegate.StoreClient;
 
 /**
@@ -105,7 +105,7 @@ public class StoresView extends JPanel {
    public void loadRegistryStores() {
 
       //connect up to default
-      RegistryService client = RegistryDelegateFactory.createQuery();
+  //    RegistryService client = RegistryDelegateFactory.createQuery();
    
       //client.dosomesortofquery
       
@@ -116,6 +116,9 @@ public class StoresView extends JPanel {
 
 /*
  $Log: StoresView.java,v $
+ Revision 1.2  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.1  2004/11/08 23:15:38  mch
  Various fixes for SC demo, more store browser, more Vizier stuff
 

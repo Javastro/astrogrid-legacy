@@ -1,5 +1,5 @@
 /*
- * $Id: FitsResults.java,v 1.3 2004/11/03 00:17:56 mch Exp $
+ * $Id: FitsResults.java,v 1.4 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -87,8 +87,8 @@ public class FitsResults extends QueryResults {
          printOut.println("</FITS></DATA>");
          printOut.println("</TABLE>");
       }
-      
-      
+
+      if (statusToUpdate != null)   { statusToUpdate.clearProgress(); }
       
       printOut.println("</RESOURCE>");
       
@@ -122,6 +122,8 @@ public class FitsResults extends QueryResults {
          printOut.println("   <P>"+filenames[i]+"</P>");
       }
       
+      if (statusToUpdate != null)   { statusToUpdate.clearProgress(); }
+
       printOut.println("</BODY>");
       
       printOut.println("</HTML>");
@@ -148,6 +150,9 @@ public class FitsResults extends QueryResults {
          }
          printOut.println(filenames);
       }
+      
+      if (statusToUpdate != null)   { statusToUpdate.clearProgress(); }
+
       printOut.flush();
    }
    
@@ -155,6 +160,9 @@ public class FitsResults extends QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.4  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.3  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

@@ -1,5 +1,5 @@
 /*
- * $Id: UrlResourcePlugin.java,v 1.6 2004/11/08 23:15:38 mch Exp $
+ * $Id: UrlResourcePlugin.java,v 1.7 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -179,7 +179,10 @@ public class UrlResourcePlugin implements VoResourcePlugin
       String docAuthId = DomHelper.getValue(authIdTag);
 
       if (!docAuthId.equals(dsaAuthId)) {
-         log.warn("Authority is "+docAuthId+", but datacenter is configured for "+dsaAuthId+", changing resource to config value in Resource type "+resource.getAttribute("xsi:type"));
+         //don't bother with warning if authority is empty
+         if (docAuthId.trim().length()>0) {
+            log.warn("Authority is '"+docAuthId+"', but datacenter is configured for "+dsaAuthId+", changing resource to config value in Resource type "+resource.getAttribute("xsi:type"));
+         }
          DsaDomHelper.setElementValue(authIdTag, dsaAuthId);
       }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Adql074Writer.java,v 1.7 2004/11/05 12:26:06 mch Exp $
+ * $Id: Adql074Writer.java,v 1.8 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -86,8 +86,14 @@ public class Adql074Writer  {
                                                      "Name='"+colRef.getColName()+"'" },
                                      "");
             }
+//            else if ( (colDefs[i] instanceof RawSearchField) && ( query.getScope().length==1) ) {
+//             //if there's no table specified, but there's only one table in scope, then use that
+//          }
+            else if (colDefs[i] instanceof SearchFieldReference) {
+               throw new IllegalArgumentException("Return Column "+i+" is '"+colDefs[i].getClass().getName()+"', but ADQL can only handle ColumnReferences.  Make sure your original result table column specification (eg SELECT) specifies table and column names");
+            }
             else {
-               throw new UnsupportedOperationException("Thicky Writer: Can't handle '"+colDefs[i]+"' for returned table column. Specify only column references for now");
+               throw new UnsupportedOperationException("Thicky Writer: Can't handle '"+colDefs[i].getClass().getName()+"' for result table column (eg SELECT). Specify only column references for now");
             }
          }
       }
@@ -306,6 +312,9 @@ public class Adql074Writer  {
 
 /*
  $Log: Adql074Writer.java,v $
+ Revision 1.8  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.7  2004/11/05 12:26:06  mch
  Added botch for handling table-less fields
 

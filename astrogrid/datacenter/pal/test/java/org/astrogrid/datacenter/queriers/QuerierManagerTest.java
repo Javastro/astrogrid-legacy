@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.3 2004/10/07 10:34:44 mch Exp $
+/*$Id: QuerierManagerTest.java,v 1.4 2004/11/09 17:42:22 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.slinger.NullTarget;
+import org.astrogrid.slinger.targets.NullTarget;
 
 /**
  * test behaviours the querier manager.
@@ -66,6 +66,9 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /*
  $Log: QuerierManagerTest.java,v $
+ Revision 1.4  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.3  2004/10/07 10:34:44  mch
  Fixes to Cone maker functions and reading/writing String comparisons from Query
 

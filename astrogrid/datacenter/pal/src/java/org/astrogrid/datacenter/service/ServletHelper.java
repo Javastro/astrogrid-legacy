@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.10 2004/11/05 12:27:25 mch Exp $
+ * $Id: ServletHelper.java,v 1.11 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,8 +17,8 @@ import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.slinger.TargetIndicator;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.TargetIndicator;
+import org.astrogrid.slinger.targets.TargetMaker;
 
 /**
  * A set of dataserver methods for helping serving data in HTML form, eg for servlets
@@ -95,32 +95,30 @@ public class ServletHelper
     * those assigned in resultsForm.xml */
    public static void fillReturnSpec(ReturnTable tableSpec, HttpServletRequest request)  {
 
-      TargetIndicator target = null;
-
-      if ( (request.getParameter("TargetResponse") != null) && (!request.getParameter("TargetResponse").trim().toLowerCase().equals("false"))) {
-         //return the results to the response (eg browser, servlet caller)
-         target = null;
-      }
-      else if (request.getParameter("TargetURI") != null) {
-         String targetUri = request.getParameter("TargetURI");   //direction - eg URI
-            
-         try {
-            target = TargetMaker.makeIndicator(targetUri);
-            if (target == null) {
-               throw new IllegalArgumentException(targetUri+" returns null TargetIndicator");
-            }
-         }
-         catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Invalid target: "+targetUri+" ("+e+")");
-         }
-         catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Invalid target: "+targetUri+" ("+e+")");
-         }
+      String targetResponse = request.getParameter("TargetResponse");
+      if ((targetResponse != null) && targetResponse.trim().toLowerCase().equals("true")) {
+         //target is the http response
+         tableSpec.setTarget(null);
       }
       else {
-        throw new IllegalArgumentException("No TargetURI or TargetResponse given");
+         String targetUri = request.getParameter("TargetURI");   //direction - eg URI
+         if ((targetUri != null) && (targetUri.trim().length()>0)) {
+               
+            try {
+               tableSpec.setTarget(TargetMaker.makeIndicator(targetUri));
+            }
+            catch (URISyntaxException e) {
+               throw new IllegalArgumentException("Invalid target: "+targetUri+" ("+e+")");
+            }
+            catch (MalformedURLException e) {
+               throw new IllegalArgumentException("Invalid target: "+targetUri+" ("+e+")");
+            }
+         }
+         else {
+            throw new IllegalArgumentException("Bad Target; TargetResponse not 'true' and TargetURI not set");
+         }
       }
-         
+      
       String format = request.getParameter("Format");
       if ( (format != null) && (format.trim().length()>0)) {
          tableSpec.setFormat(format);

@@ -15,7 +15,7 @@
   <div class='xleft'>Publisher's AstroGrid Library (PAL)</div>
   <div class='xright'>
     <a href='http://www.astrogrid.org'>AstroGrid</a>
-    | <a href='index.html'> <%= DataServer.getDatacenterName() %></a>
+    <!-- doesn't work from subdirectories | <a href='index.jsp'> <%= DataServer.getDatacenterName() %></a> -->
     | <a href='http://www.astrogrid.org/maven/docs/SNAPSHOT/datacenter/'>Latest PAL</a>
   </div>
   <div class='clear'></div> <!-- switch off left right stuff -->

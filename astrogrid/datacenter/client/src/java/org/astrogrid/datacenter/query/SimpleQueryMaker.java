@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleQueryMaker.java,v 1.9 2004/11/03 05:14:33 mch Exp $
+ * $Id: SimpleQueryMaker.java,v 1.10 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,7 +20,7 @@ import java.util.Hashtable;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.targets.TargetIndicator;
 
 public class SimpleQueryMaker  {
    
@@ -100,6 +100,9 @@ public class SimpleQueryMaker  {
 }
 /*
  $Log: SimpleQueryMaker.java,v $
+ Revision 1.10  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.9  2004/11/03 05:14:33  mch
  Bringing Vizier back online
 

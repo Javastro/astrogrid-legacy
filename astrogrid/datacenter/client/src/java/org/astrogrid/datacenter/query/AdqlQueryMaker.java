@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQueryMaker.java,v 1.7 2004/11/03 05:14:33 mch Exp $
+ * $Id: AdqlQueryMaker.java,v 1.8 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.encoding.Serializer;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.targets.TargetIndicator;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -82,6 +82,9 @@ public class AdqlQueryMaker  {
 }
 /*
  $Log: AdqlQueryMaker.java,v $
+ Revision 1.8  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.7  2004/11/03 05:14:33  mch
  Bringing Vizier back online
 

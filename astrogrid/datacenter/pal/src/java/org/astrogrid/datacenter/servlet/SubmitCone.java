@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.7 2004/11/03 00:17:56 mch Exp $
+ * $Id: SubmitCone.java,v 1.8 2004/11/09 17:42:22 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -16,7 +16,7 @@ import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.returns.ReturnSpec;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
 
@@ -58,7 +58,7 @@ public class SubmitCone extends DefaultServlet {
          //if a target is not given, we do an asynchronous (ask) Query to the response
          //stream.
          if (tableDef.getTarget() == null) {
-            tableDef.setTarget(TargetMaker.makeIndicator(response.getWriter()));
+            tableDef.setTarget(TargetMaker.makeIndicator(response.getWriter(), false));
             server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra, dec, sr, tableDef));
          }
          else {

@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.6 2004/11/03 00:17:56 mch Exp $
+ * $Id: QueryResults.java,v 1.7 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,8 +25,8 @@ import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.slinger.Slinger;
-import org.astrogrid.slinger.EmailTarget;
-import org.astrogrid.slinger.IvornTarget;
+import org.astrogrid.slinger.targets.EmailTarget;
+import org.astrogrid.slinger.targets.IvornTarget;
 
 /** A container interface that holds the results of a query until needed.
  * <p>
@@ -141,10 +141,13 @@ public abstract class QueryResults
 
          write(writer, status, returns);
          
-         //we shouldn't actually close the writer, as for JSPs for example the
-         //page may still have writing to do
-         //@todo close targets when necessary
-         writer.flush();
+         if (returns.getTarget().closeIt()) {
+            writer.close();
+         }
+         else {
+            //just flush things we can't close
+            writer.flush();
+         }
       }
 
       String s = "Results sent to "+returns.getTarget();

@@ -1,58 +1,52 @@
 /*
- * $Id: StreamTarget.java,v 1.3 2004/11/03 00:17:56 mch Exp $
+ * $Id: EmailTarget.java,v 1.1 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.slinger;
+package org.astrogrid.slinger.targets;
 
 
+import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.astrogrid.community.Account;
 
 /**
- * Used to indicate the target where the results are to be sent when that target
- * is a given stream.
+ * Used to indicate the target where the results are to be sent.  May be an AGSL, or an email address, or
+ * some IVO based thingamy that is still to be resolved
  *
  */
 
-public class StreamTarget implements TargetIndicator  {
+public class EmailTarget extends UriTarget  {
 
-   protected OutputStream out = null;
-   
-   public StreamTarget(OutputStream targetOut) {
-      this.out = targetOut;
-   }
-   
-   /** Returns an OutputStreamWrapper around the resolved stream */
-   public Writer resolveWriter(Account user)  {
-      return new OutputStreamWriter(resolveStream(user));
+   /** Email constructor - see also makeIndicator */
+   public EmailTarget(String mailto) throws URISyntaxException {
+      super(new URI(mailto));
+      assert mailto.startsWith("mailto") : "email target indicator should start with 'mailto'";
    }
 
-   public OutputStream resolveStream(Account user) {
-      return out;
+   public String getEmailAddress() {
+      return uri.toString().substring(7);
    }
    
+   public OutputStream resolveStream(Account user) throws IOException {
+      throw new UnsupportedOperationException("Not done yet");
+   }
+
    public String toString() {
-       return out.getClass()+" TargetIndicator ";
+      return "Email TargetIndicator "+uri;
    }
    
-   /** Cannot be forwarded to remote services */
-   public boolean isForwardable() { return false; }
+   /** Can be forwarded to remote services */
+   public boolean isForwardable() { return true; }
    
 }
 /*
- $Log: StreamTarget.java,v $
- Revision 1.3  2004/11/03 00:17:56  mch
- PAL_MCH Candidate 2 merge
-
- Revision 1.2.8.2  2004/11/02 19:41:26  mch
- Split TargetIndicator to indicator and maker
-
- Revision 1.2.8.1  2004/11/01 20:47:23  mch
- Added a little bit of doc and introduced MsrlTarget/UrlTargets
+ $Log: EmailTarget.java,v $
+ Revision 1.1  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 
  Revision 1.2  2004/10/12 17:41:41  mch
  added isForwardable

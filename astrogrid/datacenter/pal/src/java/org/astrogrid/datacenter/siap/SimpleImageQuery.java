@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleImageQuery.java,v 1.2 2004/11/03 00:17:56 mch Exp $
+ * $Id: SimpleImageQuery.java,v 1.3 2004/11/09 17:42:22 mch Exp $
  */
 
 package org.astrogrid.datacenter.siap;
@@ -12,7 +12,7 @@ import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.webapp.DefaultServlet;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.TargetMaker;
 
 /**
     * Simple image access protocol - similar to cone search but different

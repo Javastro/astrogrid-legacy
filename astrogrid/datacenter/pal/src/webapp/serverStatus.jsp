@@ -15,7 +15,7 @@
     DataServer server = new DataServer();
 %>
 <html>
-<head><title>Status of <%= DataServer.getDatacenterName() %></title>
+<head><title><%= DataServer.getDatacenterName() %> Status</title>
 <style type="text/css" media="all">
           @import url("./style/astrogrid.css");
 </style>
@@ -25,7 +25,7 @@
 <%@ include file="navigation.xml" %>
 <div id='bodyColumn'>
 
-<h1>Datacenter Service Status at <%= new Date() %></h1>
+<h1><%= DataServer.getDatacenterName() %> Status at <%= new Date() %></h1>
 
 <% SelfMonitorBody.writeHtmlStatus(out, server.getStatus().getServiceStatus()); %>
 

@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate_v05.java,v 1.10 2004/11/03 12:13:26 mch Exp $
+ * $Id: WebDelegate_v05.java,v 1.11 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -25,7 +25,7 @@ import org.astrogrid.datacenter.query.Adql074Writer;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.slinger.UriTarget;
+import org.astrogrid.slinger.targets.UriTarget;
 
 /**
  * A standard AstroGrid datacenter delegate implementation, based on
@@ -194,6 +194,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
 
 /*
  $Log: WebDelegate_v05.java,v $
+ Revision 1.11  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.10  2004/11/03 12:13:26  mch
  Fixes to branch cockup, plus katatjuta Register and get cone (for examples)
 
@@ -269,6 +272,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate_v05.java,v $
+Revision 1.11  2004/11/09 17:42:22  mch
+Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
 Revision 1.10  2004/11/03 12:13:26  mch
 Fixes to branch cockup, plus katatjuta Register and get cone (for examples)
 

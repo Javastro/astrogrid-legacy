@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.10 2004/11/08 23:15:38 mch Exp $
+ * $Id: PalProxyPlugin.java,v 1.11 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,7 +27,7 @@ import org.astrogrid.datacenter.queriers.VotableInResults;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 import org.astrogrid.datacenter.query.Adql074Writer;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.slinger.UriTarget;
+import org.astrogrid.slinger.targets.UriTarget;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

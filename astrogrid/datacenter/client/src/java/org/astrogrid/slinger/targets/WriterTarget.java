@@ -1,15 +1,16 @@
 /*
- * $Id: WriterTarget.java,v 1.3 2004/11/03 00:17:56 mch Exp $
+ * $Id: WriterTarget.java,v 1.1 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.slinger;
+package org.astrogrid.slinger.targets;
+
 
 import java.io.IOException;
 import java.io.Writer;
 import org.astrogrid.community.Account;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.TargetMaker;
 import java.io.OutputStream;
 
 /**
@@ -21,10 +22,22 @@ public class WriterTarget implements TargetIndicator {
    
    protected Writer out = null;
    
+   /** @see closeIt() */
+   boolean doClose = true;
+   
+
    public WriterTarget(Writer targetOut) {
       this.out = targetOut;
    }
 
+   /** Creates targetIndicator to wrap given writer.  Set closeIt to true to
+    * tell users of the stream to close it when they've finished with it, false
+    * if not
+    */
+   public WriterTarget(Writer targetOut, boolean closeIt) {
+      this.out = targetOut;
+      this.doClose = closeIt;
+   }
    
    public Writer getWriter() {
       return out;
@@ -48,9 +61,19 @@ public class WriterTarget implements TargetIndicator {
    /** Cannot be forwarded to remote services */
    public boolean isForwardable() { return false; }
    
+   /** Returns true if the resolved stream/writer should be closed when the
+    * indicator's user has finished with it. Some (ie browser output and CEA)
+    * direct output to streams that might need more written afterwards   */
+   public boolean closeIt() {
+      return doClose;
+   }
+   
 }
 /*
  $Log: WriterTarget.java,v $
+ Revision 1.1  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.3  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

@@ -13,8 +13,10 @@ import org.xml.sax.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import org.xml.sax.helpers.ParserAdapter;
 
-public class Validator implements DocumentHandler, ErrorHandler {
+public class Validator implements ContentHandler, ErrorHandler {
+   
    
    PrintWriter out = null;
    
@@ -22,13 +24,30 @@ public class Validator implements DocumentHandler, ErrorHandler {
       this.out = new PrintWriter(givenOut);
    }
    
+   public void skippedEntity(String name) throws SAXException {
+   }
+   
+   /**
+    * Begin the scope of a prefix-URI Namespace mapping.
+    */
+   public void startPrefixMapping(String prefix, String uri) throws SAXException {
+      // TODO
+   }
+   
+   /**
+    * End the scope of a prefix-URI mapping.
+    */
+   public void endPrefixMapping(String prefix) throws SAXException {
+      // TODO
+   }
+   
    /**
     * Receive notification of the beginning of an element.
     */
-   public void startElement(String name, AttributeList atts) throws SAXException {
-      out.print("Element: <"+name);
+   public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
+      out.print("Element: <"+qName);
       for (int i = 0; i < atts.getLength(); i++) {
-         out.print(" "+atts.getName(i)+"='"+atts.getValue(i)+"' ");
+         out.print(" "+atts.getQName(i)+"='"+atts.getValue(i)+"' ");
       }
       out.println(">");
    }
@@ -71,7 +90,7 @@ public class Validator implements DocumentHandler, ErrorHandler {
    /**
     * Receive notification of the end of an element.
     */
-   public void endElement(String name) throws SAXException {
+   public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
       // TODO
    }
    
@@ -105,13 +124,13 @@ public class Validator implements DocumentHandler, ErrorHandler {
    public static void validate(InputStream source, Writer out) throws ParserConfigurationException, SAXException, IOException {
       Validator v = new Validator(out);
 
-      Parser parser;
+      XMLReader parser;
       SAXParserFactory spf = SAXParserFactory.newInstance();
       spf.setValidating(true);
       SAXParser sp = spf.newSAXParser();
-      parser = sp.getParser();
+      parser = new ParserAdapter(sp.getParser());
 
-      parser.setDocumentHandler (v);
+      parser.setContentHandler(v);
       parser.setErrorHandler(v);
       parser.parse(new InputSource(source));
 

@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsResourceGenerator.java,v 1.1 2004/11/05 12:28:31 mch Exp $
+ * $Id: RdbmsResourceGenerator.java,v 1.2 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,18 +8,17 @@ package org.astrogrid.datacenter.queriers.sql;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.metadata.VoDescriptionServer;
-import org.astrogrid.datacenter.metadata.VoResourcePlugin;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.io.xml.XmlTagPrinter;
@@ -87,52 +86,58 @@ public class RdbmsResourceGenerator {
          case Types.REAL:     return "float";
          case Types.SMALLINT: return "short";
          case Types.TINYINT:  return "short";
+//       case Types.DATE:     return "string"; //naughty but will do
+//       case Types.TIMESTAMP:return "string"; //naughty but will do
          default: {
-            log.error("Don't know what SQL type "+sqlType+" should be in VOTable, storing as string");
+            log.error("Don't know what SQL type "+sqlType+" should be in VOTable, storing as string", new RuntimeException()); //add runtime exception so we get a stack trace
             return "char";
          }
       }
    }
    
    
-   /** Generates a voResource element about the database.
+   /** Returns the voResource elements about the database, wrapped in the usual
+    * VoDescriptor.
     */
-   public String[] getVoResources() throws IOException {
+   public String getVoResources() throws IOException {
 
+      StringWriter sw = new StringWriter();
+      writeVoResources(sw);
+      return sw.toString();
+   }
+
+   /**
+    * Writes the metadata to the given stream */
+   public void writeVoResources(Writer out) throws IOException {
+      
+      out.write(VoDescriptionServer.VODESCRIPTION_ELEMENT+"\n");
+      
       Connection connection = null;
       try {
          connection = JdbcPlugin.getJdbcConnection();
          
          DatabaseMetaData metadata = connection.getMetaData();
 
-         Vector resources = new Vector();
-         resources.add(makeRdbmsMetadataResource(metadata));
-
-         //this has been moved to a new plugin
-//         if (SimpleConfig.getSingleton().getBoolean("datacenter.tabularskyservice")) {
-//            resources.add(makeTabularSkySurveyResource(metadata));
-//         }
-         
-         resources.add(makeQueryableResource(metadata));
+         XmlPrinter xw = new XmlPrinter(out, false);
+         writeRdbmsMetadataResource(out, metadata);
+         writeQueryableResource(out, metadata);
          
          connection.close();
-         
-         return (String[]) resources.toArray(new String[] {} );
       }
       catch (SQLException e) {
          throw new DatabaseAccessException("Could not get metadata: "+e,e);
       }
-
+      out.write(VoDescriptionServer.VODESCRIPTION_ELEMENT_END+"\n");
+      out.flush();
    }
-
+   
    /** Generates the RdbmsMetadata Resource
     *  */
-   public String makeRdbmsMetadataResource(DatabaseMetaData metadata ) throws IOException {
+   public void writeRdbmsMetadataResource(Writer out, DatabaseMetaData metadata ) throws IOException {
 
-      StringWriter sw = new StringWriter();
       try {
          /** Alternative XmlWriter form */
-         XmlPrinter xw = new XmlPrinter(sw, false);
+         XmlPrinter xw = new XmlPrinter(out, false);
 
          XmlTagPrinter metaTag = xw.newTag("Resource", new String[] { "xsi:type='RdbmsMetadata'" });
 
@@ -189,7 +194,6 @@ public class RdbmsResourceGenerator {
          metaTag.close();
          xw.close();
          
-         return sw.toString();
       }
       catch (SQLException e) {
          throw new DatabaseAccessException("Could not get metadata: "+e,e);
@@ -199,12 +203,11 @@ public class RdbmsResourceGenerator {
    
    /** Generates the Queryable Resource which describes what can be queried
     *  */
-   public String makeQueryableResource(DatabaseMetaData metadata ) throws IOException {
+   public void writeQueryableResource(Writer out, DatabaseMetaData metadata ) throws IOException {
 
-      StringWriter sw = new StringWriter();
       try {
          /** Alternative XmlWriter form */
-         XmlPrinter xw = new XmlPrinter(sw, false);
+         XmlPrinter xw = new XmlPrinter(out, false);
 
          XmlTagPrinter metaTag = xw.newTag("Resource", new String[] { "xsi:type='Queryable'" });
 
@@ -246,8 +249,6 @@ public class RdbmsResourceGenerator {
          }
          metaTag.close();
          xw.close();
-         
-         return sw.toString();
       }
       catch (SQLException e) {
          throw new DatabaseAccessException("Could not get metadata: "+e,e);

@@ -1,10 +1,12 @@
 /*
- * $Id: TargetMaker.java,v 1.2 2004/11/03 00:17:56 mch Exp $
+ * $Id: TargetMaker.java,v 1.1 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.slinger;
+package org.astrogrid.slinger.targets;
+
+
 
 
 
@@ -29,7 +31,7 @@ public abstract class TargetMaker  {
     * Tests the string & creates the right kind of TargetIndicator
     */
    public static TargetIndicator makeIndicator(String id) throws MalformedURLException, URISyntaxException {
-      if ((id == null) || (id.length() == 0) || (id.toLowerCase().equals("null")) || (id.toLowerCase().equals(NullTarget.NULL_TARGET_URI.toString().toLowerCase()))) {
+      if ((id == null) || (id.trim().length() == 0) || (id.toLowerCase().equals("null")) || (id.toLowerCase().equals(NullTarget.NULL_TARGET_URI.toString().toLowerCase()))) {
          return new NullTarget();
       }
       else if (id.startsWith("mailto:")) {
@@ -76,6 +78,15 @@ public abstract class TargetMaker  {
    public static TargetIndicator makeIndicator(Writer target)  {
       return new WriterTarget(target);
    }
+
+   /**
+    * Makes a target that will write to the given writer.  Set closeIt to false
+    * to inform the targetindicator user not to close the writer when it is
+    * finished
+    */
+   public static TargetIndicator makeIndicator(Writer target, boolean closeIt)  {
+      return new WriterTarget(target, closeIt);
+   }
    
    /**
     * Makes a target that will write to the given URL
@@ -120,6 +131,9 @@ public abstract class TargetMaker  {
 }
 /*
  $Log: TargetMaker.java,v $
+ Revision 1.1  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.2  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

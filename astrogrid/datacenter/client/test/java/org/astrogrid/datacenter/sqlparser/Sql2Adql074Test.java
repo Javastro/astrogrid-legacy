@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql074Test.java,v 1.11 2004/11/03 00:17:56 mch Exp $
+ * $Id: Sql2Adql074Test.java,v 1.12 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -130,13 +130,13 @@ public class Sql2Adql074Test extends TestCase   {
 
    public void testSsa() throws IOException, ParserConfigurationException {
       assertValidXml(translate(
-         "SELECT ra,dec, sCorMagB, sCorMagR1, sCorMagR2, sCorMagI\n"+
-         "FROM Source\n"+
+         "SELECT s.ra,s.dec, s.sCorMagB, s.sCorMagR1, s.sCorMagR2, s.sCorMagI\n"+
+         "FROM Source as s\n"+
          "WHERE\n"+
-         "ellipR1 < 0.33 AND qualR1 < 2048 AND (prfstatR1 > -5 AND prfstatR1 < +5) AND\n"+
-         "ellipR2 < 0.33 AND qualR2 < 2048 AND (prfstatR2 > -5 AND prfstatR2 < +5) AND\n"+
-         "ABS(0 + sCorMagR1 - sCorMagR2) > 3 AND scorMagR1 > 0.0 AND sCorMagR2 > 0.0\n"+
-         "ORDER BY ra,dec"));
+         "s.ellipR1 < 0.33 AND s.qualR1 < 2048 AND (s.prfstatR1 > -5 AND s.prfstatR1 < +5) AND\n"+
+         "s.ellipR2 < 0.33 AND s.qualR2 < 2048 AND (s.prfstatR2 > -5 AND s.prfstatR2 < +5) AND\n"+
+         "ABS(0 + s.sCorMagR1 - s.sCorMagR2) > 3 AND s.scorMagR1 > 0.0 AND s.sCorMagR2 > 0.0\n"+
+         "ORDER BY s.ra,s.dec"));
    }
    
    public void testPat1() throws IOException, ParserConfigurationException {
@@ -176,6 +176,9 @@ public class Sql2Adql074Test extends TestCase   {
 
 /*
  $Log: Sql2Adql074Test.java,v $
+ Revision 1.12  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.11  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

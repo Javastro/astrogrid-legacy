@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.16 2004/11/03 00:17:56 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.17 2004/11/09 17:42:22 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,8 +35,7 @@ import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.v05.AxisDataService_v05;
-import org.astrogrid.slinger.NullWriter;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.TargetMaker;
 
 /** Unit test for checking an installation - checks location of config files, etc.
  * <p>
@@ -92,7 +91,7 @@ public class InstallationSelfCheck extends TestCase {
                      "  <From> <Table xsi:type='tableType' Name='"+SimpleConfig.getSingleton().getString(SqlMaker.CONE_SEARCH_TABLE_KEY)+"' Alias='s' />  </From>"+
                      "</Select>";
 
-      server.askQuery(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(adql, TargetMaker.makeIndicator(new NullWriter()), ReturnTable.CSV));
+      server.askQuery(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(adql, TargetMaker.makeIndicator("null"), ReturnTable.CSV));
    }
 
    /** Checks the querier/plugin operates - runs a cone query that will exercise it - so
@@ -101,7 +100,7 @@ public class InstallationSelfCheck extends TestCase {
       StringWriter sw = new StringWriter(); //although we throw away the results
       DataServer server = new DataServer();
       server.askQuery(Account.ANONYMOUS,
-                      SimpleQueryMaker.makeConeQuery(30,30,2, TargetMaker.makeIndicator(sw), ReturnTable.VOTABLE));
+                      SimpleQueryMaker.makeConeQuery(30,-80,2, TargetMaker.makeIndicator(sw), ReturnTable.VOTABLE));
    }
 
    /** Checks that the delegates can connect correctly */
@@ -113,7 +112,7 @@ public class InstallationSelfCheck extends TestCase {
       ConeSearcher searcher = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS,
                                                                          endpoint,
                                                                          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
-      InputStream is = searcher.coneSearch(30, 30, 6);
+      InputStream is = searcher.coneSearch(30, -80, 2);
 
       assertNotNull(is);
    }
@@ -186,6 +185,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.17  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.16  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

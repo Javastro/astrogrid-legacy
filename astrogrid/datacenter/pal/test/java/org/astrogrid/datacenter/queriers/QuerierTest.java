@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.4 2004/10/07 10:34:44 mch Exp $
+ * $Id: QuerierTest.java,v 1.5 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,7 +21,7 @@ import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.slinger.WriterTarget;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 

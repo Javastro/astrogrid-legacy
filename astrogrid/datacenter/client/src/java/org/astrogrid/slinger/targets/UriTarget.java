@@ -1,10 +1,12 @@
 /*
- * $Id: IvornTarget.java,v 1.2 2004/10/12 17:41:41 mch Exp $
+ * $Id: UriTarget.java,v 1.1 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.slinger;
+package org.astrogrid.slinger.targets;
+
+
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -13,57 +15,61 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.astrogrid.community.Account;
-import org.astrogrid.slinger.UriTarget;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.VoSpaceResolver;
-import java.io.OutputStream;
 
 /**
- * Used to indicate the target where the results are to be sent.
+ * Used to indicate the target where the results are to be sent, when that target
+ * is given by some identifier (eg URL, AGSL, IVORN, emial address etc).  Subclasses
+ * should handle each specific type; this should not be directly constructed.
  *
  */
 
-public class IvornTarget extends UriTarget  {
-   
+public abstract class UriTarget implements TargetIndicator {
 
-   public IvornTarget(Ivorn targetIvorn)  {
-      super(targetIvorn.toUri());
+   protected URI uri = null;
+   
+   protected UriTarget(URI givenUri) {
+      this.uri = givenUri;
+   }
+
+   protected UriTarget(String givenUri) throws URISyntaxException {
+      this.uri = new URI(givenUri);
    }
    
-   public Ivorn getIvorn() {
-      try {
-         return new Ivorn(uri.toString());
-      }
-      catch (URISyntaxException e) {
-         //since this class only allows IVORNs to be set, this shouldn't happen...
-         throw new RuntimeException("Application error: "+toString()+" is not an IVORN");
-      }
+   /** Returns a URI representing the target */
+   public URI toURI() { return uri; }
+
+   /** Returns an OutputStreamWrapper around the resolved stream */
+   public Writer resolveWriter(Account user) throws IOException {
+      return new OutputStreamWriter(resolveStream(user));
    }
-   
-   public Agsl resolveAgsl() throws IOException {
-      return new VoSpaceResolver().resolveAgsl(getIvorn());
-   }
-   
-   /** All targets must be able to resolve to a stream.  The user is required
-    * for permissioning. */
-   public OutputStream resolveStream(Account user) throws IOException {
-      Agsl target = resolveAgsl();
-      return target.openOutputStream(user.toUser());
-   }
+
    
    public String toString() {
-      return "Ivorn TargetIndicator "+uri;
+      return "UriTarget ["+uri+"]";
    }
    
-   /** Can be forwarded to remote services */
-   public boolean isForwardable() { return true; }
+   /** All URI targets are forwardable, by passing the URI */
+   public boolean isForwardable()   { return true; }
    
+   /** Users of the resolved stream/writer should close it when finished */
+   public boolean closeIt()         { return true; }
 }
 /*
- $Log: IvornTarget.java,v $
- Revision 1.2  2004/10/12 17:41:41  mch
- added isForwardable
+ $Log: UriTarget.java,v $
+ Revision 1.1  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
+ Revision 1.2  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.1.8.2  2004/11/02 19:41:26  mch
+ Split TargetIndicator to indicator and maker
+
+ Revision 1.1.8.1  2004/11/01 20:47:23  mch
+ Added a little bit of doc and introduced MsrlTarget/UrlTargets
 
  Revision 1.1  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger

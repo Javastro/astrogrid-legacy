@@ -269,7 +269,7 @@ public class IndexGenerator
       
       for (int i=0;i<urls.length;i++)
       {
-         assert urls[i] != null;  //or could report it and continue?
+         assert urls[i] != null : "No URLs Given";  //or could report it and continue?
          dout.println(makeIndexSnippet(urls[i]));
          dout.flush();
       }
@@ -402,6 +402,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.3  2004/11/09 17:42:22  mch
+Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
 Revision 1.2  2004/10/18 13:11:30  mch
 Lumpy Merge
 

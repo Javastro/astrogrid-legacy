@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.8 2004/11/05 12:28:31 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.9 2004/11/09 17:42:22 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.slinger.WriterTarget;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -165,17 +165,12 @@ public class SqlPluginTest extends ServerTestCase {
    public void testResourceMaker() throws Exception {
       setUp();
       
-      RdbmsResourceGenerator plugin = new RdbmsResourceGenerator();
+      RdbmsResourceGenerator generator = new RdbmsResourceGenerator();
       
       //generate metadata
-      String[] resources = plugin.getVoResources();
+      String resources = generator.getVoResources();
       
-      StringBuffer desc = new StringBuffer("<VODescription xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>\n");
-      for (int i = 0; i < resources.length; i++) {
-         desc.append(resources[i]);
-      }
-      desc.append("\n</VODescription>");
-      Document metaDoc = DomHelper.newDocument(desc.toString());
+      Document metaDoc = DomHelper.newDocument(resources.toString());
       
       //debug
       DomHelper.DocumentToStream(metaDoc, System.out);
@@ -221,6 +216,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.9  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.8  2004/11/05 12:28:31  mch
  Fixes following datacenter installations with Keith, John & Catherine
 

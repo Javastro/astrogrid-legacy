@@ -9,13 +9,8 @@
    contentType="text/xml"
 %><%
    try {
-      RdbmsResourceGenerator  plugin = new RdbmsResourceGenerator();
-      String resources[] = plugin.getVoResources();
-      out.write(VoDescriptionServer.VODESCRIPTION_ELEMENT);
-      for (int i = 0; i < resources.length; i++) {
-         out.write(resources[i]);
-      }
-      out.write(VoDescriptionServer.VODESCRIPTION_ELEMENT_END);
+      RdbmsResourceGenerator  generator = new RdbmsResourceGenerator();
+      generator.writeVoResources(out);
    }
    catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);

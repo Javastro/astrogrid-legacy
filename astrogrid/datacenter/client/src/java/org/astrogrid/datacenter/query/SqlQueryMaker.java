@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQueryMaker.java,v 1.6 2004/11/03 00:17:56 mch Exp $
+ * $Id: SqlQueryMaker.java,v 1.7 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,7 @@ package org.astrogrid.datacenter.query;
 
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.targets.TargetIndicator;
 import org.xml.sax.SAXException;
 
 
@@ -36,6 +36,9 @@ public class SqlQueryMaker  {
 
 /*
  $Log: SqlQueryMaker.java,v $
+ Revision 1.7  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.6  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

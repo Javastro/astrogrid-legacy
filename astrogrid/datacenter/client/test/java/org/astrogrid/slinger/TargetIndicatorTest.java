@@ -1,10 +1,11 @@
 /*
- * $Id: TargetIndicatorTest.java,v 1.1 2004/11/03 00:17:56 mch Exp $
+ * $Id: TargetIndicatorTest.java,v 1.2 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.slinger;
+import org.astrogrid.slinger.targets.*;
 
 
 import org.astrogrid.slinger.*;
@@ -49,7 +50,7 @@ public class TargetIndicatorTest extends TestCase {
    }
 
    public void testMsrlMaker() throws Exception {
-      TargetIndicator target = TargetMaker.makeIndicator("myspace://somecommunity/some/place#with/a/file");
+      TargetIndicator target = TargetMaker.makeIndicator("myspace:http://someserver/services/Manager#with/a/file");
       assertNotNull(target);
       assertTrue(target instanceof MySpaceTarget);
    }

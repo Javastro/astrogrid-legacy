@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.7 2004/11/03 00:17:56 mch Exp $
+ * $Id: SampleStarsPlugin.java,v 1.8 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -59,6 +59,10 @@ public class SampleStarsPlugin extends JdbcPlugin
       SimpleConfig.setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:dummydb"); //db on disk
       SimpleConfig.setProperty(JdbcConnections.JDBC_USER_KEY, "sa");
       SimpleConfig.setProperty(JdbcConnections.JDBC_PASSWORD_KEY, "");
+      
+      //it's a bit naughty setting this, but it sorts out most tests
+      SimpleConfig.setProperty("datacenter.url", SimpleConfig.getProperty("datacenter.url", "http://localhost:8080/pal-Sample/"));
+      
       
       SampleStarsMetaServer.initConfig();
     }
@@ -201,6 +205,9 @@ public class SampleStarsPlugin extends JdbcPlugin
 }
    /*
    $Log: SampleStarsPlugin.java,v $
+   Revision 1.8  2004/11/09 17:42:22  mch
+   Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
    Revision 1.7  2004/11/03 00:17:56  mch
    PAL_MCH Candidate 2 merge
 

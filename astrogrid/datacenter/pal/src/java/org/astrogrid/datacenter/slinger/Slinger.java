@@ -1,5 +1,5 @@
 /*
- * $Id: Slinger.java,v 1.4 2004/11/03 00:17:56 mch Exp $
+ * $Id: Slinger.java,v 1.5 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,11 +15,11 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.slinger.EmailTarget;
-import org.astrogrid.slinger.IvornTarget;
-import org.astrogrid.slinger.MySpaceTarget;
-import org.astrogrid.slinger.TargetIndicator;
-import org.astrogrid.slinger.UrlTarget;
+import org.astrogrid.slinger.targets.EmailTarget;
+import org.astrogrid.slinger.targets.IvornTarget;
+import org.astrogrid.slinger.targets.MySpaceTarget;
+import org.astrogrid.slinger.targets.TargetIndicator;
+import org.astrogrid.slinger.targets.UrlTarget;
 
 /**
  * Something to do with sending things. Not really properly thought out yet
@@ -93,6 +93,9 @@ public class Slinger  {
 }
 /*
  $Log: Slinger.java,v $
+ Revision 1.5  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.4  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParser.java,v 1.2 2004/11/03 03:49:41 mch Exp $
+ * $Id: SqlParser.java,v 1.3 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -603,13 +603,13 @@ public class SqlParser  {
          throw new IllegalArgumentException("No FROM in SQL statement");
       }
       else {
-         int end = whereIdx+1;
-         if (end == -1) end = orderByIdx+1;
+         int end = whereIdx;
+         if (end == -1) end = orderByIdx;
          if (end == -1) {
             parseFrom(sql.substring(fromIdx+5));
          }
          else {
-            parseFrom(sql.substring(fromIdx+5, end-1));
+            parseFrom(sql.substring(fromIdx+5, end));
          }
       }
       
@@ -721,6 +721,9 @@ public class SqlParser  {
 
 /*
  $Log: SqlParser.java,v $
+ Revision 1.3  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.2  2004/11/03 03:49:41  mch
  Added raw search field parsing
 

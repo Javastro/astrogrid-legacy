@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.10 2004/11/03 00:17:56 mch Exp $
+ * $Id: AxisDataService_v06.java,v 1.11 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,7 +21,7 @@ import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.service.AxisDataServer;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.status.ServiceStatus;
 
 /**
@@ -235,6 +235,9 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
 /*
 $Log: AxisDataService_v06.java,v $
+Revision 1.11  2004/11/09 17:42:22  mch
+Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
 Revision 1.10  2004/11/03 00:17:56  mch
 PAL_MCH Candidate 2 merge
 

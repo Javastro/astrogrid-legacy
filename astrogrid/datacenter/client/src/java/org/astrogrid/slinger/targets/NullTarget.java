@@ -1,51 +1,64 @@
 /*
- * $Id: EmailTarget.java,v 1.2 2004/10/12 17:41:41 mch Exp $
+ * $Id: NullTarget.java,v 1.1 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.slinger;
+package org.astrogrid.slinger.targets;
+
+
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import org.astrogrid.community.Account;
+import java.net.URISyntaxException;
 
 /**
- * Used to indicate the target where the results are to be sent.  May be an AGSL, or an email address, or
- * some IVO based thingamy that is still to be resolved
+ * Convenience null target for testing - output is written out to NullWriter and
+ * so lost forever....
  *
  */
 
-public class EmailTarget extends UriTarget  {
+public class NullTarget extends UriTarget {
 
-   /** Email constructor - see also makeIndicator */
-   public EmailTarget(String mailto) throws URISyntaxException {
-      super(new URI(mailto));
-      assert mailto.startsWith("mailto") : "email target indicator should start with 'mailto'";
+   public static final String NULL_TARGET_URI = "target:null";
+   
+   public NullTarget() throws URISyntaxException {
+      super(NULL_TARGET_URI);
    }
 
-   public String getEmailAddress() {
-      return uri.toString().substring(7);
+   public class NullOutputStream extends OutputStream {
+   
+      /** throws away the given byte */
+      public void write(int b) { }
    }
    
+   /** All targets must be able to resolve to a stream.  The user is required
+    * for permissioning. */
    public OutputStream resolveStream(Account user) throws IOException {
-      throw new UnsupportedOperationException("Not done yet");
-   }
-
-   public String toString() {
-      return "Email TargetIndicator "+uri;
+      return new NullOutputStream();
    }
    
-   /** Can be forwarded to remote services */
-   public boolean isForwardable() { return true; }
+   /** Returns true if the target indicator is forwardable.  That is to say, if
+    * it is a reference to a target that can be passed on to a remote service.
+    * WriterTargets for example are not forwardable, as they hold a reference to
+    * a java object, which does not survive remote requests */
+   public boolean isForwardable() {
+      return true;
+   }
    
 }
 /*
- $Log: EmailTarget.java,v $
- Revision 1.2  2004/10/12 17:41:41  mch
- added isForwardable
+ $Log: NullTarget.java,v $
+ Revision 1.1  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
+ Revision 1.2  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.1.2.1  2004/10/16 14:36:30  mch
+ Forwardable null targets
 
  Revision 1.1  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger

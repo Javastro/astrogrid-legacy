@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitAdqlSql.java,v 1.5 2004/11/03 00:17:56 mch Exp $
+ * $Id: SubmitAdqlSql.java,v 1.6 2004/11/09 17:42:22 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -17,7 +17,7 @@ import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.TargetMaker;
 
 /**
  * A servlet for processing Cone Queries.
@@ -48,7 +48,7 @@ public class SubmitAdqlSql extends DefaultServlet {
          //stream.
          if (tableDef.getTarget() == null) {
             Query query = SqlQueryMaker.makeQuery(adqlSql);
-            query.getResultsDef().setTarget(TargetMaker.makeIndicator(response.getWriter()));
+            query.getResultsDef().setTarget(TargetMaker.makeIndicator(response.getWriter(), false));
             query.getResultsDef().setFormat(tableDef.getFormat());
             server.askQuery(Account.ANONYMOUS, query);
          }

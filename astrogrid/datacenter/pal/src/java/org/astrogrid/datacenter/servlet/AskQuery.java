@@ -1,5 +1,5 @@
 /*
- * $Id: AskQuery.java,v 1.2 2004/11/03 00:17:56 mch Exp $
+ * $Id: AskQuery.java,v 1.3 2004/11/09 17:42:22 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -15,7 +15,7 @@ import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.TargetMaker;
 
 /**
  * A servlet for asking a query ynchronously.
@@ -50,7 +50,7 @@ public class AskQuery extends DefaultServlet {
             else {
                response.setContentType("text/plain");
             }
-            query.getResultsDef().setTarget(TargetMaker.makeIndicator(response.getWriter()));
+            query.getResultsDef().setTarget(TargetMaker.makeIndicator(response.getWriter(), false));
             server.askQuery(user, query);
          }
          else {

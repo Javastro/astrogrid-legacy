@@ -1,5 +1,5 @@
 /*
- * $Id: StoreBrowser.java,v 1.2 2004/11/08 23:15:38 mch Exp $
+ * $Id: StoreBrowser.java,v 1.3 2004/11/09 17:42:22 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -386,17 +386,13 @@ public class StoreBrowser extends JDialog
          if (response == chooser.APPROVE_OPTION)
          {
          try {
-            InputStream in = new BufferedInputStream(new FileInputStream(source));
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-            Piper.pipe(in, out);
-            out.close();
-               
-            String contents = out.toString();
+            InputStream in = new FileInputStream(source);
+            OutputStream out = fileView.getDelegate().putStream(target, true);
 
             log.info("Uploading '"+source+"' to '"+target+"'");
-
-            fileView.getDelegate().putString(contents, target, true);
+            Piper.bufferedPipe(in, out);
+            out.close();
+            in.close();
             
             fileView.refreshList();
             repaint();
@@ -435,7 +431,6 @@ public class StoreBrowser extends JDialog
                }
             }
 
-            Account user = fileView.getOperator();
             URL sourceUrl = new URL(urlEntry);
             
             log.info("Copying from '"+urlEntry+"' to '"+target+"'");
@@ -669,6 +664,9 @@ public class StoreBrowser extends JDialog
 
 /*
 $Log: StoreBrowser.java,v $
+Revision 1.3  2004/11/09 17:42:22  mch
+Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
 Revision 1.2  2004/11/08 23:15:38  mch
 Various fixes for SC demo, more store browser, more Vizier stuff
 

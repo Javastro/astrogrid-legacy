@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnTable.java,v 1.6 2004/10/08 09:41:51 mch Exp $
+ * $Id: ReturnTable.java,v 1.7 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,7 @@ package org.astrogrid.datacenter.returns;
 
 import org.astrogrid.datacenter.query.condition.Expression;
 import org.astrogrid.datacenter.query.condition.NumericExpression;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.targets.TargetIndicator;
 
 
 /**
@@ -89,6 +89,9 @@ public class ReturnTable  extends ReturnSpec {
 }
 /*
  $Log: ReturnTable.java,v $
+ Revision 1.7  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.6  2004/10/08 09:41:51  mch
  Returns cols are expressions not nec numeric
 

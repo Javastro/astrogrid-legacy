@@ -1,10 +1,10 @@
 /*
- * $Id: TargetIndicator.java,v 1.4 2004/11/03 00:17:56 mch Exp $
+ * $Id: TargetIndicator.java,v 1.1 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.slinger;
+package org.astrogrid.slinger.targets;
 
 
 
@@ -37,21 +37,29 @@ public interface TargetIndicator  {
 
    /** All targets must be able to resolve to a writer. The user is required
     * for permissions */
-   public abstract Writer resolveWriter(Account user) throws IOException;
+   public Writer resolveWriter(Account user) throws IOException;
    
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
-   public abstract OutputStream resolveStream(Account user) throws IOException;
+   public OutputStream resolveStream(Account user) throws IOException;
    
    /** Returns true if the target indicator is forwardable.  That is to say, if
     * it is a reference to a target that can be passed on to a remote service.
     * WriterTargets for example are not forwardable, as they hold a reference to
     * a java object, which does not survive remote requests */
-   public abstract boolean isForwardable();
+   public boolean isForwardable();
    
+   /** Returns true if the resolved stream/writer should be closed when the
+    * indicator's user has finished with it. Some (ie browser output and CEA)
+    * direct output to streams that might need more written afterwards
+    */
+   public boolean closeIt();
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.1  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.4  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

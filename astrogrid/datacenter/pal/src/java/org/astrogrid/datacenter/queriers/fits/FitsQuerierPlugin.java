@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.4 2004/11/03 00:17:56 mch Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.5 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -70,6 +70,7 @@ public class FitsQuerierPlugin extends DefaultPlugin
       filenames = useeXist(xql);
       
       if ((!aborted) && (filenames != null)) {
+         querier.getStatus().addDetail(filenames+" files matched");
          FitsResults results = new FitsResults(querier, filenames);
          results.send(query.getResultsDef(), querier.getUser());
       }
@@ -245,6 +246,9 @@ public class FitsQuerierPlugin extends DefaultPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.5  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.4  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

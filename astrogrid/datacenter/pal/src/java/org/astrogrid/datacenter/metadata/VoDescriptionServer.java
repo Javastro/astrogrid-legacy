@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.10 2004/11/08 23:15:38 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.11 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -65,7 +65,6 @@ public class VoDescriptionServer {
     * the date must be GMT */
    public final static SimpleDateFormat REGISTRY_DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-   
    /**
     * Returns the whole metadata file as a DOM document
     */
@@ -95,7 +94,7 @@ public class VoDescriptionServer {
       NodeList children = root.getChildNodes();
       
       for (int i = 0; i < children.getLength(); i++) {
-         if (children instanceof Element) {
+         if (children.item(i) instanceof Element) {
             Element resource = (Element) children.item(i);
             
             if (!resource.getNodeName().equals("Resource")) {
@@ -109,7 +108,7 @@ public class VoDescriptionServer {
             }
             
             DsaDomHelper.setElementValue(DsaDomHelper.ensuredGetSingleChild(id, "AuthorityID"), SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY));
-            Element resKey = DsaDomHelper.getSingleChildByTagName(resource, "ResourceKey");
+            Element resKey = DsaDomHelper.getSingleChildByTagName(id, "ResourceKey");
             if ((resKey == null) || (DomHelper.getValue(resKey).trim().length()==0)) {
                //no resource key
                throw new MetadataException("Identifier in Resource "+i+" (xsi:type="+resource.getAttribute("xsi:type")+") has no ResourceKey");

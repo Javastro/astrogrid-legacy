@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.9 2004/11/05 12:25:23 mch Exp $
+/*$Id: MetadataTest.java,v 1.10 2004/11/09 17:42:22 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ public class MetadataTest extends TestCase {
   
    public void setUp() {
       SampleStarsPlugin.initConfig();
+      SimpleConfig.setProperty("datacenter.url", "http://localhost:8080/wossname");
    }
    
    /** Checks that the identifiers are there and valid */
@@ -75,18 +76,22 @@ public class MetadataTest extends TestCase {
       assertHasRdbmsResource(metadata);
    }
    
-   public void testJdbc() throws Exception {
+   /** Tests the resource generator */
+   public void testGenerator() throws Exception {
      
-      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, RdbmsResourceGenerator.class.getName());
+      RdbmsResourceGenerator generator = new RdbmsResourceGenerator();
       
       //generate metadata
-      Document metaDoc = VoDescriptionServer.getVoDescription();
+      String resources = generator.getVoResources();
+
+      //check it's valid
+      Document metaDoc = DomHelper.newDocument(resources);
       
       //debug
       DomHelper.DocumentToStream(metaDoc, System.out);
       
       assertHasRdbmsResource(metaDoc);
-      assertIdentifiersOK(metaDoc);
+      //assertIdentifiersOK(metaDoc); not for generated stuff
     }
 
     //checks we can get individual resources from the metadata
@@ -100,20 +105,6 @@ public class MetadataTest extends TestCase {
       assertNotNull("No RdbmsMetadata in VODescription", rdbms);
    }
 
-   /** Tests that the SampleStars generate metadata correctly */
-   public void testSampleGenerator() throws Throwable{
-      SampleStarsPlugin.initConfig();
-      
-      RdbmsResourceGenerator plugin = new RdbmsResourceGenerator();
-      String[] resources = plugin.getVoResources();
-      StringBuffer resource = new StringBuffer(VoDescriptionServer.VODESCRIPTION_ELEMENT+"\n");
-      for (int i = 0; i < resources.length; i++) {
-         resource.append(resources[i]);
-      }
-      resource.append("\n</VODescription>");
-      Document resourceDoc = DomHelper.newDocument(resource.toString());
-      assertHasRdbmsResource(resourceDoc);
-   }
 
    //checks that the document being returned by the CEA Library is OK
    public void testCeaLibrary() throws Throwable {
@@ -174,6 +165,9 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
+ Revision 1.10  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.9  2004/11/05 12:25:23  mch
  renamed RdbmsResourcePlugin
 

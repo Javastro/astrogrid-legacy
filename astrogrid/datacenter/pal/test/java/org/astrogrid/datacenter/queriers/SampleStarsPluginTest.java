@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.8 2004/11/05 12:28:31 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.9 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,7 +25,7 @@ import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.service.DataServer;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -85,21 +85,17 @@ public class SampleStarsPluginTest extends TestCase {
    /** Tests the generated metadata */
    public void testAutoMetadata() throws Exception {
       
-      RdbmsResourceGenerator plugin = new RdbmsResourceGenerator();
+      RdbmsResourceGenerator generator = new RdbmsResourceGenerator();
       
       //generate metadata
-      String[] metadata = plugin.getVoResources();
+      String metadata = generator.getVoResources();
       
       //debug
       System.out.println("AutoMetadata:");
-      for (int i = 0; i < metadata.length; i++) {
-         System.out.print(metadata[i]);
+      System.out.print(metadata);
 
-         //check valid xml
-         //ocument resultsDom = DomHelper.newDocument(metadata[i]);
-      }
-
-      
+      //check valid xml
+      Document resultsDom = DomHelper.newDocument(metadata);
    }
    
    /** Tests the served data plugin */

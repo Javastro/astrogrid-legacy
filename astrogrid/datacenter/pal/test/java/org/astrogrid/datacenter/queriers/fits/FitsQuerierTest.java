@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.6 2004/11/03 00:17:56 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.7 2004/11/09 17:42:22 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -24,8 +24,8 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.slinger.NullTarget;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.NullTarget;
+import org.astrogrid.slinger.targets.TargetMaker;
 import java.net.URISyntaxException;
 
 /** Test the Fits processing classes
@@ -91,6 +91,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.7  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.6  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

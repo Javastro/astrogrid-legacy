@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.6 2004/11/03 00:17:56 mch Exp $
+ * $Id: Query.java,v 1.7 2004/11/09 17:42:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,7 @@ import java.util.Hashtable;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.query.condition.Condition;
 import org.astrogrid.datacenter.returns.ReturnSpec;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.targets.TargetIndicator;
 
 
 /**
@@ -123,6 +123,9 @@ public class Query  {
 
 /*
  $Log: Query.java,v $
+ Revision 1.7  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.6  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

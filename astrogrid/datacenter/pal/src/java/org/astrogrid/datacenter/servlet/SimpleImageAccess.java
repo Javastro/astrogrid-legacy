@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleImageAccess.java,v 1.4 2004/11/03 00:17:56 mch Exp $
+ * $Id: SimpleImageAccess.java,v 1.5 2004/11/09 17:42:22 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
 
@@ -40,7 +40,7 @@ public class SimpleImageAccess extends DefaultServlet {
          double dec = Double.parseDouble(pos.substring(comma+1));
          
          try {
-            server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra, dec, size, new ReturnTable(TargetMaker.makeIndicator(response.getWriter()), formatList)));
+            server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra, dec, size, new ReturnTable(TargetMaker.makeIndicator(response.getWriter(), false), formatList)));
          } catch (Throwable e) {
             doError(response, "SIAP error (RA="+ra+", DEC="+dec+", SIZE="+size+", FORMAT="+formatList+")", e);
          }

@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.9 2004/11/08 02:58:44 mch Exp $
+/*$Id: DatacenterApplication.java,v 1.10 2004/11/09 17:42:22 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,9 +30,9 @@ import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.service.DataServer;
-import org.astrogrid.slinger.StreamTarget;
-import org.astrogrid.slinger.TargetIndicator;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.StreamTarget;
+import org.astrogrid.slinger.targets.TargetIndicator;
+import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.xml.sax.SAXException;
 
@@ -122,7 +122,11 @@ public class DatacenterApplication extends AbstractApplication implements Querie
       try {
          ParameterValue resultTarget = findOutputParameter(DatacenterApplicationDescription.RESULT);
          //TargetIndicator ti = CEATargetMaker.makeIndicator((DatacenterParameterAdapter) findOutputParameterAdapter(DatacenterApplicationDescription.RESULT));
+         if ((resultTarget.getValue() == null) || (resultTarget.getValue().trim().length() == 0)) {
+            throw new CeaException("ResultTarget value is empty");
+         }
          TargetIndicator ti = TargetMaker.makeIndicator(resultTarget.getValue());
+
          String resultsFormat = (String)findInputParameterAdapter(DatacenterApplicationDescription.FORMAT).process();
          Query query = buildQuery(getApplicationInterface());
          query.getResultsDef().setTarget(ti);
@@ -136,7 +140,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          return true;
       }
       catch (Throwable e) {
-         reportError("Datacenter.execute() could not execute application",e);
+         reportError(e+" executing "+this.getTool().getName(),e);
          if (e instanceof CeaException) {
             throw (CeaException) e;
          }
@@ -268,6 +272,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.10  2004/11/09 17:42:22  mch
+ Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
  Revision 1.9  2004/11/08 02:58:44  mch
  Various fixes and better error messages
 

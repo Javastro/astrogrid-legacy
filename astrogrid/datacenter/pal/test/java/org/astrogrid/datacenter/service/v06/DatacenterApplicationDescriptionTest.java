@@ -1,11 +1,11 @@
-/*$Id: DatacenterApplicationDescriptionTest.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: DatacenterApplicationDescriptionTest.java,v 1.2 2004/11/09 17:42:22 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.service.v06;
@@ -53,7 +53,7 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
     
     public void testMetadata() throws ParameterNotInInterfaceException {
         ApplicationInterface[] ifaces = appDesc.getInterfaces();
-        assertEquals(2,ifaces.length);
+        assertEquals("Unexpected number of interfaces",2,ifaces.length);
         for (int i = 0; i < ifaces.length; i++) {
             ApplicationInterface iface = ifaces[i];
             // minimum for all interfaces.
@@ -65,8 +65,11 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
 }
 
 
-/* 
+/*
 $Log: DatacenterApplicationDescriptionTest.java,v $
+Revision 1.2  2004/11/09 17:42:22  mch
+Fixes to tests after fixes for demos, incl adding closable to targetIndicators
+
 Revision 1.1  2004/09/28 15:11:33  mch
 Moved server test directory to pal
 
