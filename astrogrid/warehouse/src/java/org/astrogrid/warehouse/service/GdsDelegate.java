@@ -3,19 +3,13 @@ package org.astrogrid.warehouse.service;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.Properties;
-import org.apache.axis.client.Stub;
-import org.globus.axis.gsi.GSIConstants;
-import org.globus.ogsa.impl.security.Constants;
 import org.globus.ogsa.impl.security.authorization.NoAuthorization;
 import org.globus.ogsa.utils.AnyHelper;
-import org.globus.ogsa.utils.GridServiceFactory;
 import org.gridforum.ogsi.ExtensibilityType;
 import org.w3c.dom.Document;
+import uk.org.ogsadai.common.XMLUtilities;
 import uk.org.ogsadai.wsdl.gds.GDSPortType;
 import uk.org.ogsadai.wsdl.gds.GDSServiceGridLocator;
-import uk.org.ogsadai.common.XMLUtilities;
-import org.ietf.jgss.GSSCredential;
-import org.gridforum.jgss.ExtendedGSSManager;
 
 
 /**
