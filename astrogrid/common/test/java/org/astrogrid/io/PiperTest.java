@@ -1,5 +1,5 @@
 /*
- * $Id: PiperTest.java,v 1.2 2004/03/01 13:48:20 mch Exp $
+ * $Id: PiperTest.java,v 1.3 2004/03/02 11:55:28 mch Exp $
  */
 
 package org.astrogrid.io;
@@ -28,7 +28,7 @@ public class PiperTest extends TestCase
    {
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       
-      Piper.pipe(new ByteArrayInputStream(testContents.getBytes()), out);
+      Piper.bufferedPipe(new ByteArrayInputStream(testContents.getBytes()), out);
 
       assertEquals("Pipe has changed contents", testContents, out.toString());
    }
@@ -40,7 +40,7 @@ public class PiperTest extends TestCase
    {
       StringWriter writer = new StringWriter();
       
-      Piper.pipe(new StringReader(testContents), writer);
+      Piper.bufferedPipe(new StringReader(testContents), writer);
 
       assertEquals("Pipe has changed contents", testContents, writer.toString());
    }
@@ -66,6 +66,9 @@ public class PiperTest extends TestCase
 
 /*
  $Log: PiperTest.java,v $
+ Revision 1.3  2004/03/02 11:55:28  mch
+ Changed to more thorough buffered pipe tests
+
  Revision 1.2  2004/03/01 13:48:20  mch
  Fixed odd StringInputStream dependency changed to ByteArrayInputStream
 
