@@ -1,0 +1,50 @@
+package id13je0diymtjmydiyn7c27;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#AuthorizationDelegate:oiref><oihard>
+@__reversed 
+*/
+class link {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#AuthenticationDelegate:oiref><oihard>
+@__reversed 
+*/
+class link18 {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#RegistrationDelegate:oiref><oihard>
+@__reversed 
+*/
+class link19 {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#AdministrationDelegate:oiref><oihard>
+@__reversed 
+*/
+class link20 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

@@ -1,0 +1,68 @@
+package id2hji4diymtjmydiyn132s;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#AuthorizationDelegate:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#CommunityDbHelper:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference2 {
+}/**
+@__ref <oiref:java#Class#AuthenticationDelegate:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference3 {
+}/**
+@__ref <oiref:java#Class#RegistrationDelegate:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference6 {
+}/**
+@__ref <oiref:java#Class#AdministrationDelegate:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference11 {
+}/**
+@__ref <oiref:design#Class#id13je0diymtjmydiyn7c27.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#wsdl2javastubbs:oiref>
+@__imported 
+*/
+class reference15 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram:oiref>=680,310,115,57,1:oigroup>
+<oigroup:<oiref:java#Class#AuthenticationDelegate:oiref>=270,40,170,110,1:oigroup>
+<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link20:oiref>=788,230,788,310:oigroup>
+<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link19:oiref>=533,134,780,310:oigroup>
+<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link:oiref>=130,150,737,310:oigroup>
+<oigroup:<oiref:java#Class#RegistrationDelegate:oiref>=460,40,146,94,1:oigroup>
+<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link18:oiref>=355,150,766,310:oigroup>
+<oigroup:<oiref:java#Class#CommunityDbHelper:oiref>=30,220,167,85,1:oigroup>
+<oigroup:<oiref:java#Class#AuthorizationDelegate:oiref>=30,40,200,110,1:oigroup>
+<oigroup:<oiref:java#Class#AdministrationDelegate:oiref>=650,40,200,190,1:oigroup>
+*/
+class __positions {
+}

@@ -17,34 +17,5 @@ public class AuthorizationDelegate {
     }
 
 
-    public boolean insertMember(String me, String who, String group) {
-
-    }
-
-    public boolean removeMember(String me, String who, String group) {
-
-    }
-
-	public boolean createAccount(String me, String who) {
-
-    }
-
-	public boolean changeOwner(String me, String group, String resource) {
-
-    }
-
-    public ArrayList getMembersFromGroup(GroupDataObject gdo) {
-		MembersDataObject mdo = new MembersDataObject();
-        mdo.setGroup(gdo);
-        return mdo.getDataObjects(conn);
-    }
-
-    public ArrayList getGroups() {
-
-    }
-
-    public ArrayList getPermissionsByResource() {
-
-    }
 
 }

@@ -75,16 +75,16 @@ Developer=Community
 [compiler]
 cross-bootclasspath=C:/Development/TogetherSoft/Together6.0.1/jdk/jre/lib/rt.jar
 [editor]
-recent.file.0=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\IDbObject.java
-recent.file.1=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AuthorizationDelegate.java
+recent.file.0=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\GroupDataObject.java
+recent.file.1=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AccountDataObject.java
 recent.file.2=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\CommunityDbHelper.java
-recent.file.3=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AccountDetailDataObject.java
-recent.file.4=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\Account.java
-recent.file.5=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\MembersDataObject.java
-recent.file.6=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\ResourceDataObject.java
-recent.file.7=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\PermissionDataObject.java
-recent.file.8=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\GroupDataObject.java
-recent.file.9=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\Class1.java
+recent.file.3=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\ResourceDataObject.java
+recent.file.4=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\MembersDataObject.java
+recent.file.5=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\PermissionDataObject.java
+recent.file.6=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\IDbObject.java
+recent.file.7=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AccountDetailDataObject.java
+recent.file.8=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AuthorizationDelegate.java
+recent.file.9=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\RegistrationDelegate.java
 [search]
 file.replaceWith=
 file.textToFind=location:String	Resource	Group	Account

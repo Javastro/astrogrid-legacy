@@ -1,0 +1,195 @@
+<html>
+<head>
+<title>Db Design of Community</title>
+</head>
+<body>
+
+<strong>Resources</strong>
+<table width="100%" border="0">
+<tr>
+<td>
+<table width="100%" border="0">
+<tr>
+<td><strong>Column Name</strong></td>
+<td><strong>Type & size</strong></td>
+<td><strong>Allow Nulls</strong></td>
+<td><strong>Keyed</strong></td>
+</tr>
+<tr>
+<td>identity</td>
+<td>int</td>
+<td>No</td>
+<td>Primary</td>
+</tr>
+<tr>
+<td>name</td>
+<td>varchar(50)</td>
+<td>No</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>resourcedetailid</td>
+<td>int</td>
+<td>No</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>groupowner</td>
+<td>int</td>
+<td>No</td>
+<td>&nbsp;</td>
+</tr>
+</table>
+
+<strong>Permission</strong>
+<table width="100%" border="0">
+<tr>
+<td><strong>Column Name</strong></td>
+<td><strong>Type & size</strong></td>
+<td><strong>Allow Nulls</strong></td>
+<td><strong>Keyed</strong></td>
+</tr>
+<tr>
+<td>identity</td>
+<td>int  (increment/random)</td>
+<td>No</td>
+<td>Primary</td>
+</tr>
+<tr>
+<td>resourcename</td>
+<td>varchar(50)</td>
+<td>No</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>groupid</td>
+<td>int</td>
+<td>No</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>action</td>
+<td>varchar(50)</td>
+<td>No</td>
+<td>&nbsp;</td>
+</tr>
+</table>
+
+<strong>Groups</strong>
+<table width="100%"  border="0">
+<tr>
+<td><strong>Column Name</strong></td>
+<td><strong>Type & size</strong></td>
+<td><strong>Allow Nulls</strong></td>
+<td><strong>Keyed</strong></td>
+</tr>
+<tr>
+<td>identity</td>
+<td>int  (increment/random)</td>
+<td>No</td>
+<td>Primary</td>
+</tr>
+<tr>
+<td>name</td>
+<td>varchar(50)</td>
+<td>No</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>community</td>
+<td>varchar(50)</td>
+<td>No</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>description</td>
+<td>varchar(100)</td>
+<td>Yes</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>type</td>
+<td>varchar(10)</td>
+<td>No-Default="single"</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>groupowner</td>
+<td>int</td>
+<td>No</td>
+<td>&nbsp;</td>
+</tr>
+</table>
+
+<strong>Members</strong>
+<table width="100%" border="0">
+<tr>
+<td><strong>Column Name</strong></td>
+<td><strong>Type & size</strong></td>
+<td><strong>Allow Nulls</strong></td>
+<td><strong>Keyed</strong></td>
+</tr>
+<tr>
+<td>identity</td>
+<td>int  (increment/random)</td>
+<td>No</td>
+<td>Primary</td>
+</tr>
+<tr>
+<td>groupid</td>
+<td>int</td>
+<td>No</td>
+<td>Primary2</td>
+</tr>
+<tr>
+<td>accountid</td>
+<td>int</td>
+<td>No</td>
+<td>Primary2</td>
+</tr>
+</table>
+
+<strong>Accounts</strong>
+<table width="100%" border="0">
+<tr>
+<td><strong>Column Name</strong></td>
+<td><strong>Type & size</strong></td>
+<td><strong>Allow Nulls</strong></td>
+<td><strong>Keyed</strong></td>
+</tr>
+<tr>
+<td>identity</td>
+<td>int  (increment/random)</td>
+<td>No</td>
+<td>Primary</td>
+</tr>
+<tr>
+<td>name</td>
+<td>varchar(100)</td>
+<td>No</td>
+<td>Primary2</td>
+</tr>
+<tr>
+<td>community</td>
+<td>varchar(100)</td>
+<td>No</td>
+<td>Primary2</td>
+</tr>
+<tr>
+<td>password</td>
+<td>varchar(30)</td>
+<td>Yes</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>accountdetailid</td>
+<td>int</td>
+<td>Yes</td>
+<td>&nbsp;</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</body>
+</html>
