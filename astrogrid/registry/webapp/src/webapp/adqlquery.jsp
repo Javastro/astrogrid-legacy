@@ -1,5 +1,6 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
 				 org.astrogrid.registry.server.*,
+				 org.astrogrid.registry.common.RegistryDOMHelper,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
@@ -97,9 +98,9 @@ See <a href="reg_xml_samples/queries">For example queries</a>
       else {
       String version = null;
       if(entry.getDocumentElement().hasChildNodes()) {
-          version = RegistryServerHelper.getRegistryVersionFromNode(entry.getDocumentElement().getFirstChild());
+          version = RegistryDOMHelper.getRegistryVersionFromNode(entry.getDocumentElement().getFirstChild());
       }else {
-          version = RegistryServerHelper.getRegistryVersionFromNode(entry.getDocumentElement());
+          version = RegistryDOMHelper.getRegistryVersionFromNode(entry.getDocumentElement());
       }
       
       
@@ -112,8 +113,8 @@ See <a href="reg_xml_samples/queries">For example queries</a>
          
 //         Element resource = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","ResourceKey").item(0);
 //         Element authority = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","AuthorityID").item(0);
-		String authority = RegistryServerHelper.getAuthorityID((Element)resources.item(n));
-		String resource = RegistryServerHelper.getResourceKey((Element)resources.item(n));
+		String authority = RegistryDOMHelper.getAuthorityID((Element)resources.item(n));
+		String resource = RegistryDOMHelper.getResourceKey((Element)resources.item(n));
 
          String ivoStr = null;
          if (authority == null || authority.trim().length() <= 0) {

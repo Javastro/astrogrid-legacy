@@ -1,6 +1,7 @@
 <%@ page import="org.astrogrid.registry.server.admin.*,
                  org.astrogrid.store.Ivorn,
                  org.astrogrid.registry.server.RegistryServerHelper,
+                 org.astrogrid.registry.common.RegistryDOMHelper,
                  org.astrogrid.registry.common.RegistryValidator,
                  junit.framework.AssertionFailedError,
                  org.w3c.dom.Document,
@@ -107,7 +108,7 @@
    if(update) {
       Document result = null;
       RegistryAdminService server = new RegistryAdminService();      
-      server.updateNoCheck(doc,RegistryServerHelper.getRegistryVersionFromNode(doc.getDocumentElement().getFirstChild()));
+      server.updateNoCheck(doc,RegistryDOMHelper.getRegistryVersionFromNode(doc.getDocumentElement().getFirstChild()));
       out.write("<p>Attempt at updating Registry, if any errors occurred it will be printed below<br /></p>");
       if (result != null) {
         DomHelper.DocumentToWriter(result, out);

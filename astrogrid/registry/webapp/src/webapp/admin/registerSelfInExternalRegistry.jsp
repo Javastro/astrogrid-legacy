@@ -2,6 +2,7 @@
 				     org.astrogrid.registry.server.query.*,
 				     org.astrogrid.registry.server.*,
                  org.astrogrid.store.Ivorn,
+                 org.astrogrid.registry.common.RegistryDOMHelper,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
                  org.astrogrid.util.DomHelper,
@@ -15,7 +16,7 @@
       ArrayList al = server.getAstrogridVersions();
       String version = request.getParameter("version");
 	   if(version == null || version.trim().length() <= 0) {
-   		version = RegistryServerHelper.getDefaultVersionNumber();
+   		version = RegistryDOMHelper.getDefaultVersionNumber();
    	}            
 %>
 

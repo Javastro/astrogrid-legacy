@@ -2,6 +2,7 @@
 					  org.astrogrid.registry.server.query.*,
 					  org.astrogrid.registry.server.harvest.*,
 					  org.astrogrid.registry.server.*,
+					  org.astrogrid.registry.common.RegistryDOMHelper,
 					  java.text.*,					  
                  org.w3c.dom.*,
                  org.astrogrid.registry.server.JspHelper,
@@ -18,7 +19,7 @@
    ArrayList al = server.getAstrogridVersions();
       String version = request.getParameter("version");
 	   if(version == null || version.trim().length() <= 0) {
-   		version = RegistryServerHelper.getDefaultVersionNumber();
+   		version = RegistryDOMHelper.getDefaultVersionNumber();
    	}
 %>
 
@@ -108,8 +109,8 @@ Look for another version
       for (int n=0;n<resources.getLength();n++) {
       
          Element resourceElement = (Element) resources.item(n);
-  			String authority = RegistryServerHelper.getAuthorityID(resourceElement);
-			String resource = RegistryServerHelper.getResourceKey(resourceElement);
+  			String authority = RegistryDOMHelper.getAuthorityID(resourceElement);
+			String resource = RegistryDOMHelper.getResourceKey(resourceElement);
          String ivoStr = "ivo://" + authority;
          if (resource != null || resource.trim().length() > 0) {
 	     	   ivoStr = ivoStr+"/"+resource;

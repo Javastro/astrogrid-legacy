@@ -1,5 +1,6 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
 				 org.astrogrid.registry.server.*,
+				 org.astrogrid.registry.common.RegistryDOMHelper,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.w3c.dom.Element,
@@ -31,7 +32,7 @@
 
    String version = request.getParameter("version");
    if(version == null || version.trim().length() <= 0) {
-   	version = RegistryServerHelper.getDefaultVersionNumber();
+   	version = RegistryDOMHelper.getDefaultVersionNumber();
    }
 
 
@@ -152,8 +153,8 @@ Browse for another version
          //type
          out.write("<td>"+setFG+resourceElement.getAttribute("xsi:type")+endFG+"</td>");
             //authr
-				String authority = RegistryServerHelper.getAuthorityID(resourceElement);
-				String resource = RegistryServerHelper.getResourceKey(resourceElement);
+				String authority = RegistryDOMHelper.getAuthorityID(resourceElement);
+				String resource = RegistryDOMHelper.getResourceKey(resourceElement);
    
             String ivoStr = null;
             if (authority == null || authority.trim().length() <= 0) {

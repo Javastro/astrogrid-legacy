@@ -1,6 +1,7 @@
 <%@ page import="org.astrogrid.config.SimpleConfig,
                  org.astrogrid.registry.server.query.*,
       				 org.astrogrid.registry.server.*,
+      				 org.astrogrid.registry.common.RegistryDOMHelper,
                  java.util.ArrayList"
    isThreadSafe="false"
    session="false"
@@ -11,7 +12,7 @@
       ArrayList al = server.getAstrogridVersions();
       String version = request.getParameter("version");
 	   if(version == null || version.trim().length() <= 0) {
-   		version = RegistryServerHelper.getDefaultVersionNumber();
+   		version = RegistryDOMHelper.getDefaultVersionNumber();
    	}      
 %>
 
