@@ -1,10 +1,27 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- tomcat-5 specific deployment descriptor - can be used to configure environment, loggers, etc -->
 <Context path="/astrogrid-jes-SNAPSHOT">
-   <Environment name="org.astrogrid.config.url" override="false" type="java.lang.String"
-           value="@CONFIGPATH@/AstroGridConfig.properties"/>
-    <!-- uncomment this to enable the scripting-language workflow interpreter - not ready for the bigtime yet.. 
-   <Environment name="jes.component.manager.class" override="false" type="java.lang.String"
-           value="org.astrogrid.jes.component.production.ScriptDrivenComponentManager"/>
+  <!-- path to config ile -->
+  <!-- trying to live without this now..
+  <Environment name="org.astrogrid.config.url" value="@CONFIGPATH@/AstroGridConfig.properties"
+        override="false" type="java.lang.String" />
    -->
+<!-- registry endpoints - think only query is required at the moment -->
+<Environment name="org.astrogrid.registry.admin.endpoint" description="registry update service endpoint URL" type="java.lang.String" value="@CENTRALREGISTRY@Update" override="false" />
+<Environment name="org.astrogrid.registry.query.endpoint" description="registry query service endpoint URL" type="java.lang.String" value="@CENTRALREGISTRY@Query" override="false" />
+
+
+  <Environment name="jes.store" value="file" description="select persistance implementation to use"
+        override="false" type="java.lang.String"  />
+  <Environment name="jes.jobfactory.file.basedir" value="@WORKDIR@/jes"  description="working directory for file-based persistance"
+        override="false" type="java.lang.String" />
+  <Environment name="jes.locator" value="registry"  description="select application-resolving implementation to use"
+        type="java.lang.String" override="false" />
+  <!-- could do with computing defaults for these within webapp / web.xml -->
+  <Environment name="jes.monitor.endpoint.url" value="@TOMCATROOT@/astrogrid-jes-@VERSION@/services/JobMonitorService"
+        description="endpoint for associated jobmonitor web service"
+        type="java.lang.String" override="false" />
+  <Environment name="jes.results.endpoint.url" value="@TOMCATROOT@/astrogrid-jes-@VERSION@/services/ResultListener"
+        description="endpoint for associated resultslistener web service"
+        type="java.lang.String" override="false" />
 </Context>
