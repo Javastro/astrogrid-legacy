@@ -29,6 +29,10 @@
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
     </goal>
+    
+	<property name="generated.src" location="${basedir}/src/java" />
+	<property name="generated.dir" location="${basedir}/src" />
+    
 
     <!--+
         | Import our plugin goals from our parent project.
@@ -115,5 +119,143 @@
         <ant:echo message="Generating clover report ...."/>
         <attainGoal name="maven-clover-plugin:report"/>
     </goal>
+    
+	<preGoal name="java:compile">
+	<!-- generate classes from schema  -->
+		<attainGoal name="run-castor" />
+
+	</preGoal>    
+    
+	<goal name="run-castor" description="generate classes from schema using castor" prereqs="castor-cleanout,castor-generate"/>
+	
+	<goal name="castor-cleanout">
+	    <delete>
+	    	<fileset dir="${generated.src}">
+	        	<include name="org/astrogrid/registry/beans/**/*.java" />
+	        </fileset>
+		</delete>
+	</goal>
+    
+    
+    
+	<goal name="castor-generate">
+    	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+        	<classpath>
+            	<pathelement location="${basedir}/build" />
+                <path refid="maven.dependency.classpath" />
+            </classpath>
+            <arg value="-i"/>
+            <arg file="${basedir}/../schema/VOResource-v0.9.xsd" />
+            <arg value="-binding-file" />
+            <arg file="${basedir}/build/castor-binding.xml" />
+            <arg value="-dest" />
+            <arg file="${generated.src}" />
+            <arg value="-verbose" />
+            <arg value="-types"/>
+            <arg value="arraylist"/>
+        </java>
+
+
+    	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+        	<classpath>
+            	<pathelement location="${basedir}/build" />
+                <path refid="maven.dependency.classpath" />
+            </classpath>
+            <arg value="-i"/>
+            <arg file="${basedir}/../schema/VOCommunity-v0.2.xsd" />
+            <arg value="-binding-file" />
+            <arg file="${basedir}/build/castor-binding.xml" />
+            <arg value="-dest" />
+            <arg file="${generated.src}" />
+            <arg value="-verbose" />
+            <arg value="-types"/>
+            <arg value="arraylist"/>
+        </java>
+
+    	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+        	<classpath>
+            	<pathelement location="${basedir}/build" />
+                <path refid="maven.dependency.classpath" />
+            </classpath>
+            <arg value="-i"/>
+            <arg file="${basedir}/../schema/VORegistry-v0.2.xsd" />
+            <arg value="-binding-file" />
+            <arg file="${basedir}/build/castor-binding.xml" />
+            <arg value="-dest" />
+            <arg file="${generated.src}" />
+            <arg value="-verbose" />
+            <arg value="-types"/>
+            <arg value="arraylist"/>
+        </java>
+
+    	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+        	<classpath>
+            	<pathelement location="${basedir}/build" />
+                <path refid="maven.dependency.classpath" />
+            </classpath>
+            <arg value="-i"/>
+            <arg file="${basedir}/../schema/VODataService-v0.4.xsd" />
+            <arg value="-binding-file" />
+            <arg file="${basedir}/build/castor-binding.xml" />
+            <arg value="-dest" />
+            <arg file="${generated.src}" />
+            <arg value="-verbose" />
+            <arg value="-types"/>
+            <arg value="arraylist"/>
+        </java>
+
+    	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+        	<classpath>
+            	<pathelement location="${basedir}/build" />
+                <path refid="maven.dependency.classpath" />
+            </classpath>
+            <arg value="-i"/>
+            <arg file="${basedir}/../schema/ConeSearch-v0.2.xsd" />
+            <arg value="-binding-file" />
+            <arg file="${basedir}/build/castor-binding.xml" />
+            <arg value="-dest" />
+            <arg file="${generated.src}" />
+            <arg value="-verbose" />
+            <arg value="-types"/>
+            <arg value="arraylist"/>
+        </java>
+
+    	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+        	<classpath>
+            	<pathelement location="${basedir}/build" />
+                <path refid="maven.dependency.classpath" />
+            </classpath>
+            <arg value="-i"/>
+            <arg file="${basedir}/../schema/SIA-v0.6.xsd" />
+            <arg value="-binding-file" />
+            <arg file="${basedir}/build/castor-binding.xml" />
+            <arg value="-dest" />
+            <arg file="${generated.src}" />
+            <arg value="-verbose" />
+            <arg value="-types"/>
+            <arg value="arraylist"/>
+        </java>
+
+
+    	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+        	<classpath>
+            	<pathelement location="${basedir}/build" />
+                <path refid="maven.dependency.classpath" />
+            </classpath>
+            <arg value="-i"/>
+            <arg file="${basedir}/../schema/VOTable.xsd" />
+            <arg value="-binding-file" />
+            <arg file="${basedir}/build/castor-binding.xml" />
+            <arg value="-dest" />
+            <arg file="${generated.src}" />
+            <arg value="-verbose" />
+            <arg value="-types"/>
+            <arg value="arraylist"/>
+        </java>
+
+  </goal>
+    
+    
+    
 
 </project>

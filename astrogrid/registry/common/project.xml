@@ -66,12 +66,50 @@ and server sides</description>
     <dependencies>
         
         <dependency>
-            <groupId>astrogrid-common</groupId>
             <artifactId>astrogrid-common</artifactId>
+            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
+
+        
+        <!-- helper for object models -->
+        <dependency>
+        	<artifactId>commons-jxpath</artifactId>
+            <groupId>commons-jxpath</groupId>
+            <version>1.1</version>
+        </dependency>
+        
+        <!-- required by castor -->
+        <dependency>
+            <artifactId>castor</artifactId>
+            <groupId>castor</groupId>
+            <version>0.9.5</version>
+            <jar>castor-0.9.5-xml.jar</jar>
+            <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+            
+        <dependency>
+        	<id>xerces</id>
+            <version>2.4.0</version>
+            <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        <dependency>
+       		<id>xml-apis</id>
+          	<version>1.0.b2</version>
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>
+        </dependency>
+        
+
     </dependencies>
 
     <!--+
