@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.1 2003/09/15 12:17:46 mch Exp $
+ * $Id: WebDelegate.java,v 1.2 2003/09/15 15:23:16 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -17,7 +17,8 @@ import org.astrogrid.datacenter.common.ServiceStatus;
 import org.w3c.dom.Element;
 
 /**
- * A standard AstroGrid datacenter delegate implementation.
+ * A standard AstroGrid datacenter delegate implementation, based on
+ * http messaging with an Apache/Tomcat/Axis server.
  *
  * @see DatacenterDelegate
  *
@@ -122,6 +123,9 @@ public class WebDelegate extends DatacenterDelegate
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.2  2003/09/15 15:23:16  mch
+Added doc
+
 Revision 1.1  2003/09/15 12:17:46  mch
 Renamed HtmlDelegate to WebDelegate
 
