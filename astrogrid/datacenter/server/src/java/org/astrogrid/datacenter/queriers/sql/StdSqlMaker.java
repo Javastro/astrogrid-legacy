@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.9 2004/07/07 19:33:59 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.10 2004/07/12 14:12:04 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -159,11 +159,11 @@ public class StdSqlMaker  extends SqlMaker {
          xsltDoc = "adql073-2-sql.xsl";
       }
       else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
-         xsltDoc = "adql073-2-sql.xsl";
+         xsltDoc = "adql074-2-sql.xsl";
       }
-      else if (namespaceURI.equals("http://adql.ivoa.net/v0.8")) {
-         xsltDoc = "adql08-2-sql.xsl";
-      }
+//      else if (namespaceURI.equals("http://adql.ivoa.net/v0.8")) {
+//         xsltDoc = "adql08-2-sql.xsl";
+//      }
       else if (namespaceURI.equals("http://astrogrid.org/sadql/v1.1")) {
          xsltDoc = "sadql1.1-2-sql.xsl";
       }
@@ -278,6 +278,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.10  2004/07/12 14:12:04  mch
+Fixed ADQL 0.7.4 xslt
+
 Revision 1.9  2004/07/07 19:33:59  mch
 Fixes to get Dummy db working and xslt sheets working both for unit tests and deployed
 
