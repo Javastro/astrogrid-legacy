@@ -377,7 +377,7 @@ public class Workflow extends Activity {
         try {
             jesLocation = WKF.getProperty( WKF.JES_URL, WKF.JES_CATEGORY ) ;
             request = workflow.toJESXMLString() ;
-            jobController = new JobControllerDelegate( jesLocation ) ;
+            jobController = JobControllerDelegate.buildDelegate( jesLocation ) ;
             jobController.submitJob( request ) ;            
         }
         catch( Exception ex ) {
