@@ -47,8 +47,7 @@ public class StatusHelperTest extends TestCase {
    public void testGetServiceStatus() throws Exception {
 
       String src = StatusHelper.makeStatusTag("foo",QueryStatus.RUNNING_QUERY);
-        System.out.println(src);
-        Document doc = DocHelper.wrap("<bar>"+src+"</bar>");
+        Document doc = DocHelper.wrap("<bar>"+src+"</bar>"); //also tests that src is valid XML
         assertNotNull(doc);
       QueryStatus result = StatusHelper.getServiceStatus("foo", doc.getDocumentElement());
         assertNotNull(result);
