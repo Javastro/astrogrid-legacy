@@ -7,6 +7,17 @@
 
 <body>
 <section name="CEA Implementation in Astrogrid">
+       <p>The <a href="http://www.astrogrid.org">Astrogrid</a> projects that implement parts of this architecture are</p>
+        <ul>
+            <li><a href="http://www.astrogrid.org/maven/docs/snapshot/applications/">Applications Integration</a> This implements the core CEA functionality</li>
+            <li><a href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/">Workflow objects</a> which contains the schema and wsdl definitions</li>
+            <li><a href="http://www.astrogrid.org/maven/docs/snapshot/jes/">Job Management System</a> This does not strictly implement part of the CEA, but does act as the component that invokes the CEA within AstroGrid</li>
+        </ul>
+        <p>Currently there is implemented a specialization of the CommonExectutionController for unix command line applications that is called the CommandLineApplicationController. </p>
+        <p>The <a href="">javadoc</a></p>
+        <p>How to <a href="../Configuration.html">configure a CommandLineApplicationcontroller</a></p>
+        <p>How to <a href="../ApplicationConfiguration.html">configure an Application</a></p>
+
 </section>
 </body>
 </document>
