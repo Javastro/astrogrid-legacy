@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGParameterDefinition.xsd,v 1.4 2004/03/02 14:09:49 pah Exp $ -->
+<!-- $Id: AGParameterDefinition.xsd,v 1.5 2004/03/03 18:24:52 pah Exp $ -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
@@ -11,23 +11,33 @@
 	<xs:annotation>
 		<xs:documentation>important types are defined here that would have special significance....</xs:documentation>
 	</xs:annotation>
+	<!---->
 	<xs:simpleType name="parameterTypes">
 		<xs:annotation>
 			<xs:documentation>The list of possible parameter types</xs:documentation>
+			<xs:documentation>The enumeration values should have the namespace appended? I have removed them to make castor generate nicer objects</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:QName">
-			<xs:enumeration value="xs:integer"/>
-			<xs:enumeration value="xs:real"/>
-			<xs:enumeration value="agpd:MySpace_FileReference"/>
-			<xs:enumeration value="agpd:FileReference"/>
-			<xs:enumeration value="agpd:MySpace_VOTableReference"/>
-			<xs:enumeration value="xs:double"/>
-			<xs:enumeration value="xs:string"/>
-			<xs:enumeration value="agpd:RA"/>
-			<xs:enumeration value="agpd:Dec"/>
-			<xs:enumeration value="agpd:ADQL"/>
-			<xs:enumeration value="xs:boolean"/>
-			<xs:enumeration value="xs:anyURI"/>
+			<xs:enumeration value="integer">
+				<xs:annotation>
+					<xs:documentation>Integer</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="real">
+				<xs:annotation>
+					<xs:documentation>Real</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="double"/>
+			<xs:enumeration value="string"/>
+			<xs:enumeration value="boolean"/>
+			<xs:enumeration value="anyURI"/>
+			<xs:enumeration value="FileReference"/>
+			<xs:enumeration value="MySpace_FileReference"/>
+			<xs:enumeration value="MySpace_VOTableReference"/>
+			<xs:enumeration value="RA"/>
+			<xs:enumeration value="Dec"/>
+			<xs:enumeration value="ADQL"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:complexType name="xhtmlDocumentation" mixed="true">
@@ -130,9 +140,6 @@
 		<xs:annotation>
 			<xs:documentation>Defines what a parameterValue can contain - for the instance document</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax"/>
-		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="type" type="agpd:parameterTypes" use="optional"/>
 	</xs:complexType>
