@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityHelper.java,v 1.1 2003/09/22 17:57:38 mch Exp $
+ * $Id: CommunityHelper.java,v 1.2 2003/10/24 08:50:56 clq2 Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,7 +9,7 @@ package org.astrogrid.datacenter.common;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.astrogrid.log.Log;
-
+import org.apache.log4j.Logger;
 /**
  * Class to help extract community information from a dom
  *
@@ -18,20 +18,57 @@ import org.astrogrid.log.Log;
 
 public class CommunityHelper
 {
+   private static Logger logger = Logger.getLogger(CommunityHelper.class);
    public final static String USERID_TAG = "UserId";
    public final static String COMMUNITYID_TAG = "CommunityId";
-   public final static String COMMUNITY_TAG = "Community";
+   public final static String COMMUNITY_TAG = "community";
+   public final static String ACCOUNT = "account";
+   public static String account = "";
 
+   public static String getAccount(Element dom)
+       {
+   	     account = DocHelper.getTagValue(getCommunitySnippet(dom), ACCOUNT);
+   	     return account;
+       }
+       
    public static String getUserId(Element dom)
-   {
-      return DocHelper.getTagValue(getCommunitySnippet(dom), USERID_TAG);
-   }
-
+	  {
+	  	 account = DocHelper.getTagValue(getCommunitySnippet(dom), ACCOUNT);
+		 logger.debug("account LOG$Juserid:"+account);
+	  	 String userid ="";
+	  	 try{
+	  	 	userid = account.substring(0,account.indexOf("@"));
+			logger.debug("userid LOG$J:"+userid);
+	  	 }catch(Exception e){
+	  	 	e.printStackTrace();
+	  	 }
+		 return userid;
+	  } 
+ 
    public static String getCommunityId(Element dom)
    {
-      return DocHelper.getTagValue(getCommunitySnippet(dom), COMMUNITYID_TAG);
+	   account = DocHelper.getTagValue(getCommunitySnippet(dom), ACCOUNT);
+	   logger.debug("account LOG$J:"+account);
+	   String communityid =""; 
+	   try{
+	   	  communityid = account.substring(account.indexOf("@")+1,account.length());
+	   	  logger.debug("communityid LOG$J:"+communityid);
+	   }catch(Exception e){
+	   	  e.printStackTrace();
+	   }
+	   return communityid;
    }
+   /*
+	public static String getUserId(Element dom)
+	{
+	   return DocHelper.getTagValue(getCommunitySnippet(dom), USERID_TAG);
+	}
 
+	public static String getCommunityId(Element dom)
+	{
+	   return DocHelper.getTagValue(getCommunitySnippet(dom), COMMUNITYID_TAG);
+	}
+ */
    public static Element getCommunitySnippet(Element dom)
    {
       //allow for nulls in case this snippet is extracted from another snippet
@@ -57,6 +94,9 @@ public class CommunityHelper
 
 /*
 $Log: CommunityHelper.java,v $
+Revision 1.2  2003/10/24 08:50:56  clq2
+added to decouple userid and communityid from tag account.changed "Community" to lowercase "community" to match community snippet.
+
 Revision 1.1  2003/09/22 17:57:38  mch
 Methods to help with community xml snippets
 
