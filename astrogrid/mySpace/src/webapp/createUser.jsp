@@ -5,7 +5,7 @@
    session="false" %>
 
 
-<html><head><title/></head>
+<html><head><title>CreateUser</title></head>
 <body>
 <%
 String[] paramNames={"userId","communityId","credential","servers"};
