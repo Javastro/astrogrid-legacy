@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.3 2003/09/08 19:18:55 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.4 2003/09/09 17:58:38 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DummyQuerier;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
-import org.astrogrid.datacenter.servicestatus.ServiceStatus;
+import org.astrogrid.datacenter.common.ServiceStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -146,6 +146,9 @@ public class DataQueryServiceTest extends HsqlTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.4  2003/09/09 17:58:38  mch
+Moved ServiceStatus
+
 Revision 1.3  2003/09/08 19:18:55  mch
 Workspace constructor now throws IOException
 
