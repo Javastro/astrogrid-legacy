@@ -1,13 +1,38 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by John Taylor (ROE) -->
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
-
-
-<!-- hooks into existing goals -->
-  <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->
-     <mkdir dir="${basedir}/target/classes" />     <!-- JDepend fails if this dir is not present.  Hack to fix it. -->
-  </preGoal>
-
-
-
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+	<!-- hooks into existing goals -->
+	<preGoal name="java:compile">
+		<!-- generate classes from schema and wsdl first -->
+		<mkdir dir="${basedir}/target/classes"/>
+		<!-- JDepend fails if this dir is not present.  Hack to fix it. -->
+	</preGoal>
+	<!--<property name="maven.war.src" value="${axis.webapp.srcdir}"/> deleted by JDT for quick and dirty war-->
+	<postGoal name="war:webapp">
+		<echo message="${maven.war.src}"/>
+		<echo message="Copying xml templates and properties across to src directory"/>
+		<copy todir="${maven.build.dest}" overwrite="yes">
+			<fileset dir="${maven.conf.dir}">
+				<!--<exclude name = "ASTROGRID_*config.xml"/>-->
+				<!--temporary, don't exclude this , needs to sit on classpath, so file will get wiped following any redeployment anyway-->
+				<!-- exclude this because we don't want to overwrite an edited one-->
+			</fileset>
+		</copy>
+		<echo message="Copying generated site ${maven.docs.dest} across to webapp ${maven.war.webapp.dir}/maven"/>
+		<copy todir="${maven.war.webapp.dir}/maven" overwrite="yes">
+			<fileset dir="${maven.docs.dest}"/>
+		</copy>
+		<echo message="copying across a readme and sample config file"/>
+		<copy todir="${maven.war.webapp.dir}" overwrite="yes">
+			<fileset dir="${basedir}">
+				<include name="INSTALL"/>
+			</fileset>
+		</copy>
+		<copy todir="${maven.war.webapp.dir}" overwrite="yes">
+			<fileset dir="${maven.conf.dir}">
+				<include name="ASTROGRID_myspace*config.xml"/>
+			</fileset>
+		</copy>
+	</postGoal>
 </project>

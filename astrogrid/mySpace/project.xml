@@ -4,27 +4,28 @@
 	<pomVersion>3</pomVersion>
 	<id>astrogrid-mySpace</id>
 	<name>AstroGrid MySpace</name>
-	<currentVersion>Itn03_end</currentVersion>
+	<currentVersion>SNAPSHOT</currentVersion>
 	<organization>
 		<name>AstroGrid</name>
 		<url>http://www.astrogrid.org</url>
 		<logo>http://www.astrogrid.org/images/AGlogo</logo>
 	</organization>
 	<inceptionYear>2002</inceptionYear>
+	<description> MySpace provides astronomers with data storage that is not necessarily at their home institution and which they can use to store things (e.g. result sets from queries, workflows, private datasets, etc) related to their work within the AstroGrid system. Users will be able to interact with their holdings in MySpace as easily as if they were directly on a local machine - i.e. transparent access/listings, ease of moving files between MySpace and a local machine, with no need for special logins (beyond generic log into AstroGrid).</description>
+	<shortDescription>AstroGrid MySpace Components</shortDescription>
+	<siteDirectory>/var/www/www/maven/build/mySpace</siteDirectory>
+	<issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
 	<package>org.astrogrid</package>
 	<logo>http://www.astrogrid.org/images/AGlogo</logo>
-	<shortDescription>AstroGrid MySpace Components</shortDescription>
-	<issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
-	<siteDirectory>/var/www/www/maven/build/mySpace</siteDirectory>
-	<repository>
-		<connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/myspace
-    </connection>
-		<developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/mySpace
-    </developerConnection>
-		<url>http://www.astrogrid.org/viewcvs/astrogrid/mySpace/</url>
-	</repository>
+	<build>
+		<sourceDirectory>src/java</sourceDirectory>
+		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+		<unitTest>
+			<includes>
+				<include>**/*Test.java</include>
+			</includes>
+		</unitTest>
+	</build>
 	<developers>
 		<developer>
 			<name>Keith Noddle</name>
@@ -77,78 +78,125 @@
 			</roles>
 		</developer>
 	</developers>
+	<repository>
+		<connection>
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/myspace
+    </connection>
+		<developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/mySpace
+    </developerConnection>
+		<url>http://www.astrogrid.org/viewcvs/astrogrid/mySpace/</url>
+	</repository>
 	<dependencies>
 		<dependency>
 			<artifactId>astrogrid-common</artifactId>
 			<groupId>astrogrid-common</groupId>
 			<version>SNAPSHOT</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
 		</dependency>
 		<dependency>
 			<artifactId>astrogrid-datacenter-client</artifactId>
 			<groupId>astrogrid-datacenter</groupId>
 			<version>SNAPSHOT</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
 		</dependency>
 		<dependency>
 			<artifactId>cog-jglobus</artifactId>
 			<groupId>cog-jglobus</groupId>
 			<version>OGSA3.0</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
 		</dependency>
 		<dependency>
 			<artifactId>axis</artifactId>
 			<groupId>axis</groupId>
 			<version>1.1</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
 		</dependency>
 		<dependency>
 			<artifactId>jax-qname</artifactId>
 			<groupId>jax-qname</groupId>
 			<version>UNKNOWN</version>
 			<jar>jax-qname.jar</jar>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
 		</dependency>
 		<dependency>
 			<artifactId>jaxrpc-api</artifactId>
 			<groupId>jaxrpc-api</groupId>
 			<version>1.0.3</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
 		</dependency>
 		<dependency>
 			<artifactId>jconfig</artifactId>
 			<groupId>jconfig</groupId>
 			<version>2.1</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
 		</dependency>
 		<dependency>
 			<artifactId>junit</artifactId>
 			<groupId>junit</groupId>
 			<version>3.8</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
 		</dependency>
 		<dependency>
 			<artifactId>log4j</artifactId>
 			<groupId>log4j</groupId>
 			<version>1.2.4</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
 		</dependency>
 		<dependency>
 			<artifactId>saaj-api</artifactId>
 			<groupId>saaj-api</groupId>
 			<version>1.1.1</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
 		</dependency>
 		<dependency>
 			<artifactId>wsdl4j</artifactId>
 			<groupId>wsdl4j</groupId>
 			<jar>wsdl4j.jar</jar>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
 		</dependency>
 		<dependency>
 			<artifactId>hsqldb</artifactId>
 			<groupId>hsqldb</groupId>
 			<version>1.7.1</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
 		</dependency>
 	</dependencies>
-	<build>
-		<sourceDirectory>src/java</sourceDirectory>
-		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-		<unitTest>
+	<resources>
+		<resource>
+			<directory>${basedir}</directory>
 			<includes>
-				<include>**/*Test.java</include>
+				<include>src/webapp/WEB-INF/server-config.wsdd</include>
+				<include>${maven.build.dest}/*.xmltemplate</include>
+				<include>${maven.build.dest}/*.xml</include>
+				<include>${maven.build.dest}/*.properties</include>
 			</includes>
-		</unitTest>
-	</build>
+		</resource>
+	</resources>
 	<reports>
 		<report>
       maven-changelog-plugin
