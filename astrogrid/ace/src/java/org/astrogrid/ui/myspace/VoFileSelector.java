@@ -1,5 +1,5 @@
 /*
- * $Id: VoFileSelector.java,v 1.1 2004/02/15 23:25:30 mch Exp $
+ * $Id: VoFileSelector.java,v 1.2 2004/02/17 03:47:04 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -21,7 +21,6 @@ package org.astrogrid.ui.myspace;
 import javax.swing.*;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -29,15 +28,16 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.astrogrid.community.User;
-import org.astrogrid.ui.myspace.MySpaceBrowser;
-import org.astrogrid.vospace.delegate.MySpaceReference;
-import org.astrogrid.ui.IconFactory;
+import org.apache.commons.logging.Log;
+import org.astrogrid.community.Account;
+import org.astrogrid.ui.IconButtonHelper;
 import org.astrogrid.ui.JHistoryComboBox;
 import org.astrogrid.ui.JPasteButton;
+import org.astrogrid.ui.myspace.MySpaceBrowser;
+import org.astrogrid.vospace.VospaceRL;
 
 public class VoFileSelector extends JPanel implements KeyListener {
-   
+
    JHistoryComboBox fileEntryField = new JHistoryComboBox();
    JPasteButton pasteBtn = null;
    JButton myspaceBrowserBtn = null;
@@ -53,12 +53,12 @@ public class VoFileSelector extends JPanel implements KeyListener {
    
    //the person operating the browser is not nec the same as the owner of
    //the files we are using
-   private User operator = User.ANONYMOUS;
+   private Account operator = Account.ANONYMOUS;
    
    JFileChooser fileChooser = new JFileChooser();
    
    /** action is SAVE_ACTION or OPEN_ACTION from MySpaceBrowser */
-   public VoFileSelector(String label, String action, User aUser ) {
+   public VoFileSelector(String label, String action, Account aUser ) {
 
       this.browserAction = action;
       this.operator = aUser;
@@ -69,12 +69,9 @@ public class VoFileSelector extends JPanel implements KeyListener {
 
       pasteBtn = new JPasteButton(fileEntryField);
       
-      myspaceBrowserBtn = makeIconButton("MySpace");
-      myspaceBrowserBtn.setToolTipText("Browse MySpace");
-      fileBrowserBtn = makeIconButton("Open");
-      myspaceBrowserBtn.setToolTipText("Browse local files");
-      validateBtn = makeIconButton("Check");
-      myspaceBrowserBtn.setToolTipText("Validate reference");
+      myspaceBrowserBtn = IconButtonHelper.makeIconButton("MySpace", "World", "Browse MySpace");
+      fileBrowserBtn = IconButtonHelper.makeIconButton("Files", "Open", "Browse Local Files");
+      validateBtn = IconButtonHelper.makeIconButton("Check", "Question", "Validate reference");
       
       btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
       btnPanel.add(pasteBtn);
@@ -86,7 +83,7 @@ public class VoFileSelector extends JPanel implements KeyListener {
       myspaceBrowserBtn.addActionListener(
          new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               browseServer();
+               browseMySpace();
             }
          }
       );
@@ -128,25 +125,9 @@ public class VoFileSelector extends JPanel implements KeyListener {
    /** Returns control buttons so that owning components can lay out differently */
    public JComponent getControls() {   return btnPanel;  }
 
-   /** Helper conveience method for making the little icon buttons on the right */
-   public  JButton makeIconButton(String title)
-   {
-      Icon i = IconFactory.getIcon(title);
-      if (i == null)
-      {
-         return new JButton(title);
-      }
-      else
-      {
-         JButton iconBtn = new JButton(i);
-         iconBtn.setBorder(null);
-         iconBtn.setPreferredSize(new Dimension(i.getIconWidth()+4, i.getIconHeight()+4));
-         return iconBtn;
-      }
-   }
 
    /** Set who the operator is who is using this view */
-   public void setOperator(User aUser)
+   public void setOperator(Account aUser)
    {
       this.operator = aUser;
    }
@@ -157,14 +138,34 @@ public class VoFileSelector extends JPanel implements KeyListener {
       return fileEntryField.getText();
    }
 
-   /** Start MySpace Browser */
-   public void browseServer()
+   /** For setting the text */
+   public void setFileLoc(String newEntry)
    {
+      fileEntryField.setItem(newEntry);
+   }
+
+   /** Returns the full vospace reference for the entry */
+   public VospaceRL toVospaceRL() throws MalformedURLException {
+        VospaceRL vorl = null;
+        if ((getFileLoc() != null) && (getFileLoc().trim().length()>0)) {
+           vorl = new VospaceRL(getFileLoc());
+        }
+        return vorl;
+   }
+   
+   /** Start MySpace Browser */
+   public void browseMySpace()
+   {
+      VospaceRL vorl;
+      try {
+         vorl = toVospaceRL();
+      }
+      catch (MalformedURLException mue) {} //ignore - it might be some other reference
+         
       try
       {
-         String loc = getFileLoc();
          
-         MySpaceBrowser browser = MySpaceBrowser.showDialog(myspaceBrowserBtn, loc, operator, browserAction);
+         MySpaceBrowser browser = MySpaceBrowser.showDialog(myspaceBrowserBtn, toVospaceRL(), operator, browserAction);
          if (!browser.isCancelled())
          {
             fileEntryField.setItem(browser.getMySpaceRef());
@@ -172,7 +173,7 @@ public class VoFileSelector extends JPanel implements KeyListener {
          }
       } catch (IOException ioe)
       {
-         ioe.printStackTrace();
+         JOptionPane.showMessageDialog(this, ioe, "Error starting myspace browser", JOptionPane.ERROR_MESSAGE);
       }
    }
 
@@ -197,14 +198,14 @@ public class VoFileSelector extends JPanel implements KeyListener {
       }
       
       //is it valid?
-      if (MySpaceReference.isMySpaceRef(loc))
+      if (VospaceRL.isVoRL(loc))
       {
          try {
-            MySpaceReference.assertValid(loc);
+            new VospaceRL(loc);
             setValid(true);
-         } catch (AssertionError ae) {
+         } catch (MalformedURLException me) {
             setValid(false);
-            JOptionPane.showMessageDialog(this, "Entry is not a valid Myspace URI ("+ae+")", "Invalid Entry", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Entry is not a valid Myspace URI ("+me+")", "Invalid Entry", JOptionPane.WARNING_MESSAGE);
          }
       } else {
          try {
@@ -269,6 +270,9 @@ public class VoFileSelector extends JPanel implements KeyListener {
 
 /*
 $Log: VoFileSelector.java,v $
+Revision 1.2  2004/02/17 03:47:04  mch
+Naughtily large lump of various fixes for demo
+
 Revision 1.1  2004/02/15 23:25:30  mch
 Datacenter and MySpace desktop client GUIs
 

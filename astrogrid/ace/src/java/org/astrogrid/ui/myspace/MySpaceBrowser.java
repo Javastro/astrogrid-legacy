@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceBrowser.java,v 1.1 2004/02/15 23:25:30 mch Exp $
+ * $Id: MySpaceBrowser.java,v 1.2 2004/02/17 03:47:04 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -19,15 +19,19 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import org.astrogrid.community.User;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.community.Account;
 import org.astrogrid.io.Piper;
-import org.astrogrid.log.Log;
-import org.astrogrid.vospace.delegate.MySpaceEntry;
-import org.astrogrid.vospace.delegate.MySpaceFolder;
-import org.astrogrid.vospace.delegate.MySpaceReference;
 import org.astrogrid.ui.EscEnterListener;
 import org.astrogrid.ui.GridBagHelper;
 import org.astrogrid.ui.IconButtonHelper;
+import org.astrogrid.ui.JHistoryComboBox;
+import org.astrogrid.ui.myspace.MySpaceBrowser;
+import org.astrogrid.vospace.IvoRN;
+import org.astrogrid.vospace.VospaceRL;
+import org.astrogrid.vospace.delegate.MySpaceEntry;
+import org.astrogrid.vospace.delegate.MySpaceFolder;
 
 /**
  * A Dialog Box that provides a client view onto a myspace.  Uses myspace
@@ -43,7 +47,7 @@ import org.astrogrid.ui.IconButtonHelper;
 
 public class MySpaceBrowser extends JDialog
 {
-   JComboBox serverPicker = new JComboBox();
+   JHistoryComboBox serverPicker = new JHistoryComboBox();
    MySpaceFileView fileView = null;
    JButton actBtn = null;
    JButton cancelBtn = new JButton("Cancel");
@@ -56,7 +60,9 @@ public class MySpaceBrowser extends JDialog
    JButton uploadBtn = null;
    JButton uploadUrlBtn = null;
    JButton downloadBtn = null;
-   JButton delBtn = null;
+   JButton deleteBtn = null;
+   JButton copyBtn = null;
+   JButton newFolderBtn = null;
    
    public static final int DEF_SIZE_X = 500;
    public static final int DEF_SIZE_Y = 350;
@@ -71,31 +77,33 @@ public class MySpaceBrowser extends JDialog
    //used to lookup files on disk
    JFileChooser chooser = new JFileChooser();
 
+   Log log = LogFactory.getLog(MySpaceBrowser.class);
+   
    /** Constructor - private, use showDialog() */
-   private MySpaceBrowser(Dialog owner, String ref, User user, String action) throws IOException
+   private MySpaceBrowser(Dialog owner, VospaceRL vorl, Account user, String action) throws IOException
    {
       super( owner);
-      init(ref, user, action);
+      init(vorl, user, action);
    }
    
    /** Constructor - private, use showDialog */
-   private MySpaceBrowser(Frame owner, String ref, User user, String action) throws IOException
+   private MySpaceBrowser(Frame owner, VospaceRL vorl, Account user, String action) throws IOException
    {
       super( owner);
-      init(ref, user, action);
+      init(vorl, user, action);
    }
    
    /** Constructor - private, use showDialog */
-   private MySpaceBrowser(String ref, User user, String action) throws IOException
+   private MySpaceBrowser(VospaceRL vorl, Account user, String action) throws IOException
    {
       super();
-      init(ref, user, action);
+      init(vorl, user, action);
    }
 
    /** Constructor - returns an instance of this tied correctly to the parent frame/dialog owner
     * of the calling Component
     */
-   public static MySpaceBrowser showDialog(Component owner, String myspaceRef, User user, String action) throws IOException
+   public static MySpaceBrowser showDialog(Component owner, VospaceRL vorl, Account user, String action) throws IOException
    {
       MySpaceBrowser browser = null;
 
@@ -106,12 +114,12 @@ public class MySpaceBrowser extends JDialog
 //         Window w = SwingUtilities.windowForComponent(owner);
       
       if (c == null) {
-         browser = new MySpaceBrowser( myspaceRef, user, action);
+         browser = new MySpaceBrowser( vorl, user, action);
       } else {
          if (c instanceof Frame) {
-            browser = new MySpaceBrowser( (Frame) c, myspaceRef, user, action);
+            browser = new MySpaceBrowser( (Frame) c, vorl, user, action);
          } else {
-            browser = new MySpaceBrowser( (Dialog) c, myspaceRef, user, action);
+            browser = new MySpaceBrowser( (Dialog) c, vorl, user, action);
          }
       }
       browser.setModal(true);
@@ -137,7 +145,7 @@ public class MySpaceBrowser extends JDialog
    /**
     * Builds GUI and initialises components
     */
-   private void init(String ref, User user, String action) throws IOException
+   private void init(VospaceRL vorl, Account user, String action) throws IOException
    {
       setTitle("Browsing MySpace as "+user);
       setModal(true);
@@ -152,15 +160,13 @@ public class MySpaceBrowser extends JDialog
 
       filetypePicker.addItem("All Files");
 
-      refreshBtn = IconButtonHelper.makeIconButton("Refresh");
-      uploadBtn = IconButtonHelper.makeIconButton("Put");
-      uploadBtn.setToolTipText("Upload file from local disk to MySpace");
-      uploadUrlBtn = IconButtonHelper.makeIconButton("PutUrl");
-      uploadUrlBtn.setToolTipText("Upload file from URL to MySpace");
-      downloadBtn = IconButtonHelper.makeIconButton("SaveAs");
-      downloadBtn.setToolTipText("Download file to local disk");
-      delBtn = IconButtonHelper.makeIconButton("Del");
-      delBtn.setToolTipText("Deletes selected item");
+      refreshBtn = IconButtonHelper.makeIconButton("Refresh", "Refresh", "Reloads file list from server");
+      newFolderBtn = IconButtonHelper.makeIconButton("New", "NewFolder", "Creates a new folder");
+      uploadBtn = IconButtonHelper.makeIconButton("Put", "Up", "Upload file from local disk to MySpace");
+      uploadUrlBtn = IconButtonHelper.makeIconButton("PutUrl","Putty", "Copy file from public URL to MySpace");
+      downloadBtn = IconButtonHelper.makeIconButton("Get","Down", "Download file from MySpace to local disk");
+      deleteBtn = IconButtonHelper.makeIconButton("Del","Delete", "Deletes selected item");
+      copyBtn = IconButtonHelper.makeIconButton("Copy", "Copy", "Copies selected item");
 
       actBtn = new JButton(action);
       
@@ -168,10 +174,12 @@ public class MySpaceBrowser extends JDialog
       BoxLayout btnLayout = new BoxLayout(iconBtnPanel, BoxLayout.X_AXIS);
       iconBtnPanel.setLayout(btnLayout);
       iconBtnPanel.add(refreshBtn);
+      iconBtnPanel.add(newFolderBtn);
       iconBtnPanel.add(uploadBtn);
       iconBtnPanel.add(uploadUrlBtn);
       iconBtnPanel.add(downloadBtn);
-      iconBtnPanel.add(delBtn);
+      iconBtnPanel.add(deleteBtn);
+      iconBtnPanel.add(copyBtn);
       
       JPanel topPanel = new JPanel(new BorderLayout());
       topPanel.add(new JLabel("Look In: "), BorderLayout.WEST);
@@ -236,11 +244,10 @@ public class MySpaceBrowser extends JDialog
       downloadBtn.addActionListener(
          new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               downloadToDisk();
+               downloadSelectedToDisk();
             }
          }
       );
-      
       
       serverPicker.addActionListener(
          new ActionListener() {
@@ -254,6 +261,30 @@ public class MySpaceBrowser extends JDialog
          new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                isCancelled = true;
+            }
+         }
+      );
+      
+      deleteBtn.addActionListener(
+         new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               deleteSelected();
+            }
+         }
+      );
+      
+      copyBtn.addActionListener(
+         new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               copySelected();
+            }
+         }
+      );
+      
+      newFolderBtn.addActionListener(
+         new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               newFolder();
             }
          }
       );
@@ -277,12 +308,10 @@ public class MySpaceBrowser extends JDialog
          }
       );
       
-      if (ref != null) {
-         if (MySpaceReference.isMySpaceRef(ref)) {
+      if (vorl != null) {
             //pick server & should also go to file
-            serverPicker.addItem(MySpaceReference.getDelegateRef(ref));
-            serverPicker.setSelectedItem(MySpaceReference.getDelegateRef(ref));
-         }
+            serverPicker.addItem(vorl.getDelegateEndpoint());
+            serverPicker.setSelectedItem(vorl.getDelegateEndpoint());
       }
       
       new EscEnterListener(this, actBtn, cancelBtn, true);
@@ -291,8 +320,8 @@ public class MySpaceBrowser extends JDialog
    }
 
 
-   /** Download button pressed - copy file from MySpace to disk */
-   public void downloadToDisk()
+   /** Download button pressed - copy selected file from MySpace to disk */
+   public void downloadSelectedToDisk()
    {
       //get selected myspace path
       String path = getFullPath();
@@ -314,12 +343,13 @@ public class MySpaceBrowser extends JDialog
             InputStream in = fileView.getDelegate().getStream(path);
             OutputStream out = new BufferedOutputStream(new FileOutputStream(target));
             
-            Log.logInfo("Copying from '"+path+"' to '"+target+"'");
+            log.info("Copying from '"+path+"' to '"+target+"'");
             
             Piper.pipe(in, out);
             out.close();
          } catch (Exception e) {
-            Log.logError("Failed to copy/download file from '"+path+"' to '"+target+"'",e);
+            log.error("Failed to copy/download file from '"+path+"' to '"+target+"'",e);
+            JOptionPane.showMessageDialog(this, "Failed to upload '"+target+"': "+e, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
          }
       }
    }
@@ -358,15 +388,15 @@ public class MySpaceBrowser extends JDialog
                
             String contents = out.toString();
 
-            Log.logInfo("Uploading '"+source+"' to '"+target+"'");
+            log.info("Uploading '"+source+"' to '"+target+"'");
 
             fileView.getDelegate().putString(contents, target, true);
             
             fileView.refreshList();
             repaint();
          } catch (Exception e) {
-            Log.logError("Upload of '"+target+" failed",e);
-            JOptionPane.showMessageDialog(this, "Failed to upload '"+target+"': "+e);
+            log.error("Upload of '"+target+" failed",e);
+            JOptionPane.showMessageDialog(this, "Failed to upload '"+target+"': "+e, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
          }
       }
       }
@@ -399,25 +429,110 @@ public class MySpaceBrowser extends JDialog
                }
             }
 
-            User user = fileView.getOperator();
+            Account user = fileView.getOperator();
             URL sourceUrl = new URL(urlEntry);
             
-            Log.logInfo("Copying from '"+urlEntry+"' to '"+target+"'");
+            log.info("Copying from '"+urlEntry+"' to '"+target+"'");
             
             fileView.getDelegate().putUrl(sourceUrl, target, false);
             
          } catch (MalformedURLException mue) {
-             JOptionPane.showMessageDialog(this, "Invalid URL '"+urlEntry+"': "+mue);
+            log.error("Invalid URL '"+urlEntry+"' ", mue);
+            JOptionPane.showMessageDialog(this, "Invalid URL '"+urlEntry+"': "+mue, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
          } catch (IOException e) {
-             JOptionPane.showMessageDialog(this, "Upload of '"+urlEntry+" failed: "+e);
+            log.error("Upload of '"+urlEntry+"' failed", e);
+            JOptionPane.showMessageDialog(this, "Upload of '"+urlEntry+"' failed: "+e, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
          }
       }
+   }
+
+   /**
+    * Delete selected item
+    */
+   public void deleteSelected()
+   {
+      //get selected myspace path
+      String path = getFullPath();
+      
+      //check a path (not just a folder) selected
+      if ((path == null) || (path.trim().length() == 0) || (path.endsWith("/"))) {
+         JOptionPane.showMessageDialog(this, "Select file to delete");
+         return;
+      }
+
+      int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete '"+path+"'?","Confirm Delete", JOptionPane.OK_CANCEL_OPTION);
+            
+      if (response == chooser.APPROVE_OPTION)
+      {
+      
+      
+      try {
+         fileView.getDelegate().delete(path);
+         fileView.refreshList();
+      } catch (IOException ioe) {
+         log.error("Delete of '"+path+"' failed", ioe);
+         JOptionPane.showMessageDialog(this, "Delete of '"+path+"' failed: "+ioe, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
+      }
+      }
+   }
+
+   /**
+    * Create new folder
+    */
+   public void newFolder()
+   {
+      String path = getFullPath();
+   
+      //check a path (not just a folder) selected
+      if ((path == null) || (path.trim().length() == 0) || (path.endsWith("/"))) {
+         JOptionPane.showMessageDialog(this, "Select file to delete");
+         return;
+      }
+      
+      //check a file doesn't exist with the same name
+      //@todo
+      
+      //create folder
+      try {
+         fileView.getDelegate().newFolder(path);
+         fileView.refreshList();
+      } catch (IOException ioe) {
+         log.error("New folder '"+path+"' failed", ioe);
+         JOptionPane.showMessageDialog(this, "New folder '"+path+"' failed: "+ioe, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
+      }
+   }
+
+      /**
+    * Copy selected item
+    */
+   public void copySelected()
+   {
+      //get selected myspace path
+      String path = getFullPath();
+      
+      //check a path (not just a folder) selected
+      if ((path == null) || (path.trim().length() == 0) || (path.endsWith("/"))) {
+         JOptionPane.showMessageDialog(this, "Select file to copy from");
+         return;
+      }
+
+      //get new name
+      String newFilename = JOptionPane.showInputDialog(this, "New filename");
+      
+      try {
+         fileView.getDelegate().copy(path, newFilename);
+         fileView.refreshList();
+      } catch (IOException ioe) {
+         log.error("Delete of '"+path+"' failed", ioe);
+         JOptionPane.showMessageDialog(this, "Delete of '"+path+"' failed: "+ioe, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
+      }
+      
    }
    
    /** Act button pressed - ie Open or Save */
    public void actBtnPressed()   {
       if (browserAction == OPEN_ACTION) {
-         if (getIvoRef() != null) {
+         if (getPath() != null) {
             hide();
          }
          else {
@@ -425,7 +540,7 @@ public class MySpaceBrowser extends JDialog
          }
       }
       if (browserAction == SAVE_ACTION) {
-         if (getIvoRef() != null) {
+         if (getPath() != null) {
             hide();
          }
          else {
@@ -439,7 +554,7 @@ public class MySpaceBrowser extends JDialog
    public void updateFromPicker()
    {
       try {
-          fileView.setServerEndpoint((String) serverPicker.getSelectedItem());
+          fileView.setServerEndpoint(serverPicker.getSelectedItem().toString());
       }
       catch (IOException ioe)
       {
@@ -459,20 +574,29 @@ public class MySpaceBrowser extends JDialog
    /** Returns myspace path to the selected file in IVO form, ie
     * individual@community/path/path/path/filename.xml
     * or individual@community/path/path/path/
-    */
-   public String getIvoRef()
+    *
+   public IvoRN getIvoRef()
    {
       String path = getFullPath();
       if (path != null) {
          path = "ivo://"+path;
+         return new IvoRN(path);
       }
-      return path;
    }
+    */
    
    /** Returns myspace reference to selected file */
-   public String getMySpaceRef()
+   public VospaceRL getMySpaceRef() throws MalformedURLException
    {
-      return MySpaceReference.makeMySpaceRef(getServer(), getIvoRef());
+      //need to change the myspace individual@community to /community/individual for the ivo ref
+      String account = getFullPath().substring(0,getFullPath().indexOf("/",2));
+      int at = account.indexOf("@");
+      String individual = account.substring(1,at);
+      String community = account.substring(at+1);
+
+      IvoRN ivorn = new IvoRN(community, individual, getPath());
+      
+      return new VospaceRL(new URL(getServer()), ivorn);
    }
    
    /**
@@ -533,8 +657,7 @@ public class MySpaceBrowser extends JDialog
 
       try
       {
-         Log.traceOn();
-         MySpaceBrowser browser = MySpaceBrowser.showDialog(null, null, User.ANONYMOUS, OPEN_ACTION);
+         MySpaceBrowser browser = MySpaceBrowser.showDialog(null, null, Account.ANONYMOUS, OPEN_ACTION);
       } catch (IOException ioe)
       {
          ioe.printStackTrace();
@@ -544,6 +667,9 @@ public class MySpaceBrowser extends JDialog
 
 /*
 $Log: MySpaceBrowser.java,v $
+Revision 1.2  2004/02/17 03:47:04  mch
+Naughtily large lump of various fixes for demo
+
 Revision 1.1  2004/02/15 23:25:30  mch
 Datacenter and MySpace desktop client GUIs
 

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFileView.java,v 1.1 2004/02/15 23:25:30 mch Exp $
+ * $Id: MySpaceFileView.java,v 1.2 2004/02/17 03:47:04 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -23,7 +23,7 @@ import javax.swing.ProgressMonitor;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.community.User;
+import org.astrogrid.community.Account;
 import org.astrogrid.vospace.delegate.MySpaceEntry;
 import org.astrogrid.vospace.delegate.MySpaceFileType;
 import org.astrogrid.vospace.delegate.MySpaceFolder;
@@ -42,10 +42,10 @@ public class MySpaceFileView extends JPanel {
    VoSpaceClient delegate = null;
    
    //the operator of this view, not (necessarily) the owner of the files
-   User operator = null;
+   Account operator = null;
    JTree listView = new JTree();
    
-   public MySpaceFileView(User aUser) throws IOException {
+   public MySpaceFileView(Account aUser) throws IOException {
       JScrollPane scrollPane = new JScrollPane();
 
       setLayout(new BorderLayout());
@@ -134,7 +134,7 @@ public class MySpaceFileView extends JPanel {
    }
 
    /** Returns the user who is operating this view */
-   public User getOperator()
+   public Account getOperator()
    {
       return operator;
    }
@@ -287,6 +287,9 @@ public class MySpaceFileView extends JPanel {
 
 /*
  $Log: MySpaceFileView.java,v $
+ Revision 1.2  2004/02/17 03:47:04  mch
+ Naughtily large lump of various fixes for demo
+
  Revision 1.1  2004/02/15 23:25:30  mch
  Datacenter and MySpace desktop client GUIs
 
