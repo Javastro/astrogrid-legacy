@@ -1,12 +1,12 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.11 2004/03/04 18:23:09 kea Exp $
+ * $Id: GdsQueryDelegate.java,v 1.12 2004/03/15 12:31:32 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.warehouse.ogsadai;
 
-import org.astrogrid.warehouse.ogsadai.GdsDelegate;
+import org.astrogrid.warehouse.ogsadai.XSLTransform;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,18 +34,35 @@ import uk.org.ogsadai.client.toolkit.ActivityRequest;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
 import uk.org.ogsadai.client.toolkit.GridDataService;
 import uk.org.ogsadai.client.toolkit.GridDataServiceFactory;
+import uk.org.ogsadai.client.toolkit.MessageLevelSecurityProperty;
 import uk.org.ogsadai.client.toolkit.Response;
 import uk.org.ogsadai.client.toolkit.ServiceFetcher;
 import uk.org.ogsadai.client.toolkit.ServiceGroupRegistry;
 import uk.org.ogsadai.client.toolkit.GridServiceMetaData;
 import uk.org.ogsadai.client.toolkit.activity.sql.SQLQuery;
+import uk.org.ogsadai.client.toolkit.activity.delivery.DeliverToGFTP;
+import uk.org.ogsadai.client.toolkit.activity.delivery.DeliverToURL;
+import uk.org.ogsadai.client.toolkit.activity.delivery.DeliverFromURL;
 import uk.org.ogsadai.service.OGSADAIConstants;
+
+import org.ietf.jgss.GSSCredential;
+import org.globus.ogsa.utils.QueryHelper;
+import org.globus.util.GlobusURL;
+
 
 /**
  *
  * @author K Andrews
  */
 
+/**
+ * A high-level delegate for invoking a query on an OGSA-DAI Grid Data Service.
+ * 
+ * This class uses the OGDA-DAI client toolkit, introduced in OGSA-DAI 3.1,
+ * to interact with the OGSA-DAI GDS.  The toolkit abstracts away most of
+ * the detail of the underlying service, which is good as the whole grid 
+ * infrastructure is about to change out from under us.
+ */
 public class GdsQueryDelegate 
 {
   /**
@@ -70,14 +87,15 @@ public class GdsQueryDelegate
    * @throws Exception
 
    */
-  public Document doRealQuery(String sql, String registryUrlString, 
-        OutputStream output) throws Exception {
+  public void doRealQuery(String sql, String registryUrlString, 
+        String outputUrl) throws Exception {
 
     int timeout = 300;  // TOFIX configurable?
 
     ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
     String xmlString ="";
 
+    // TOFIX CHECK FOR NULL PARAMETERS HERE 
 
     // Do a synchronous query using the GDS.
     try {
@@ -100,13 +118,113 @@ public class GdsQueryDelegate
       GridDataService gds = factory.createGridDataService();
       logger.info("Created GDS");
                                                                                 
-      // Construct a simple Activity request
+      // Construct an Activity request
+      // Set the query
       SQLQuery query = new SQLQuery(sql);
       ActivityRequest request = new ActivityRequest();
       request.addActivity(query);
       logger.info("Sending SQL Query \"" + sql + "\" to GDS");                                                                                
+      // Set up the XSLT transform at the server end
+      // First, delivery of the stylesheet
+      DeliverFromURL xsltDelivery = new DeliverFromURL(
+            "http://astrogrid.ast.cam.ac.uk/xslt/ag-warehouse-first.xsl");
+      request.addActivity(xsltDelivery);
+
+      // Second, the actual transformation activity
+      ActivityOutput queryOutput = query.getOutput();
+      ActivityOutput xslDelOutput = xsltDelivery.getOutput();
+      XSLTransform xslTransform = new XSLTransform(queryOutput,xslDelOutput);
+      request.addActivity(xslTransform);
+      
+      // Now set the delivery URL
+      // This could be a file:// or a gsiftp:// url.
+      // Parse the source URL.  GlobusURL is used insted of java.net.URL
+      // in order to include gsiftp URLs.
+      GlobusURL url = new GlobusURL(outputUrl);
+  
+      ActivityOutput transformOutput = xslTransform.getOutput();
+
+      if (url.getProtocol().equalsIgnoreCase("gsiftp") ||
+          url.getProtocol().equalsIgnoreCase("gridftp")) {
+         // Got a GridFTP URL
+        DeliverToGFTP delivery = new DeliverToGFTP(
+              url.getHost(), url.getPort(), url.getPath());
+        delivery.setInput(transformOutput);
+        request.addActivity(delivery);
+        logger.info("Adding delivery address 'gsiftp://"
+            +  url.getHost() + ":" 
+            + Integer.toString(url.getPort()) + url.getPath());   
+
+      }
+      else if (url.getProtocol().equalsIgnoreCase("file")) {
+        // Got a local file URL
+        DeliverToURL delivery = new DeliverToURL(outputUrl);
+        delivery.setInput(transformOutput);
+        request.addActivity(delivery);
+      }
+      else {
+        String errMess =
+           "Unknown or unsupported protocol for results delivery: " +
+                           url.getProtocol();
+        logger.error(errMess);
+        throw new Exception(errMess);
+      }
+
+      // Set up the authorization 
+      MessageLevelSecurityProperty security = 
+            new MessageLevelSecurityProperty();
+      CredentialHolder credentialHolder = null;
+      // KLUDGE- hardwired locations
+      try {
+        credentialHolder = new CredentialHolder(
+            "/etc/grid-security/hostcert.pem",
+            "/etc/grid-security/hostkey.pem");
+      }
+      catch (Exception e) {
+        throw new Exception("No identity credentials could be obtained "
+              + e.getMessage()
+              +").");
+      }
+      security.setCredential(credentialHolder.getCredential());
+      gds.configure(security);
+
       // Perform the request
-      Response response = gds.perform(request);
+      logger.info("Performing request.");
+      Response response = null;
+      try {
+        response = gds.perform(request);
+      }
+      catch (Exception e) {
+        logger.error("Perform crashed: " + e.getMessage());
+      }
+      logger.info("Got here\n");
+      //logger.info("Response is " + response.getAsString());
+
+      int i;
+      //for (i = 0;  i< 1000; i++) {
+      ExtensibilityType result2 = gds.findServiceData(
+          QueryHelper.getNamesQuery(OGSADAIConstants.GDS_SDE_REQUEST_STATUS));
+      logger.info("Status is " + AnyHelper.getAsString(result2));
+      //}
+
+      //Response response = gds.perform(request);
+
+    }
+    catch (AxisFault e) {
+      String errorMessage = "Problem with Axis: " + e.getMessage();
+      logger.error(errorMessage);
+      throw new Exception(errorMessage);
+    }
+    catch (Exception e) {
+      String errorMessage = "Unspecified exception: " + e.getMessage();
+      logger.error(errorMessage);
+      throw new Exception(errorMessage);
+    }
+
+
+
+
+/*
       ActivityOutput activityOutput = query.getOutput();
       if (activityOutput.hasData() == false) 
       {
@@ -156,6 +274,7 @@ public class GdsQueryDelegate
       throw new Exception(errorMessage);
     }  
     return parser.getDocument();
+*/
   }
 
   /**
@@ -166,7 +285,7 @@ public class GdsQueryDelegate
 
     String sql;
     String registryUrlString;
-    String outputFileName = null;
+    String outputFileUrl = null;
 
     try {
       int len = args.length;
@@ -174,25 +293,31 @@ public class GdsQueryDelegate
       // Get SQL query (first parameter)
       if ((len == 0) || (args[0] == null)) {
 		    String errorMessage = 
-          "No SQL (parameter 1) supplied to GdsQueryDelegate";
+          "No SQL (first parameter) supplied to GdsQueryDelegate";
         logger.error(errorMessage);
         throw new Exception(errorMessage);
       }
       sql = args[0];
 
-      // Get URL for ogsa-dai registry (third parameter)
+      // Get URL for ogsa-dai registry (second parameter)
       if (len < 2) {
 		    String errorMessage = 
-          "No Registry URL (parameter 2) supplied to GdsQueryDelegate";
+          "No Registry URL (second parameter) supplied to GdsQueryDelegate";
         logger.error(errorMessage);
         throw new Exception(errorMessage);
       }
       registryUrlString = args[1];
 
       // Get results filename if supplied (third parameter)
-      if (len == 3) {
-        outputFileName = args[2];
+      if (len < 3) {
+		    String errorMessage = 
+          "No results destination URL (third parameter) supplied "
+          + "to GdsQueryDelegate";
+        logger.error(errorMessage);
+        throw new Exception(errorMessage);
       }
+      outputFileUrl = args[2];
+
       if (len > 3) {
 		    String errorMessage = 
            "Too many parameters (" + Integer.toString(len) + 
@@ -207,17 +332,8 @@ public class GdsQueryDelegate
         logger.error(errorMessage + ": " + e.getMessage());
         throw new Exception(errorMessage);
     }
-
-    OutputStream output;
-    if (outputFileName == null) {
-      output = System.out;
-    }
-    else {
-      output = new FileOutputStream(outputFileName);
-    }
     //Do actual query 
-    Document result = gdsQueryDelegate.doRealQuery(
-      sql, registryUrlString, output);
+    gdsQueryDelegate.doRealQuery(sql, registryUrlString, outputFileUrl);
   }
 
   // ----------------------------------------------------------
@@ -238,6 +354,11 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
+Revision 1.12  2004/03/15 12:31:32  kea
+Changed QueryDelegate to use the new OGSA-DAI toolkit, rather than our
+own Grid delegates.
+Added support for delivering to either GridFTP url or File url.
+
 Revision 1.11  2004/03/04 18:23:09  kea
 Made member public to help test datacenter direct access.
 
