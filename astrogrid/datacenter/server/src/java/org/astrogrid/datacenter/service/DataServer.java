@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.14 2004/03/12 20:04:57 mch Exp $
+ * $Id: DataServer.java,v 1.15 2004/03/13 19:23:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -186,8 +186,12 @@ public class DataServer
          "<h1>ERROR REPORT</h1>\n"+
          "<b>"+title+"</b>\n"+
          "<p><b>"+th.getMessage()+"</b></p>\n"+
-         "<p><pre>"+sw.toString()+"</pre></p>"+
-         "<p><pre>"+details+"</pre></p>\n"+
+         "<p>\n"+
+         "<plaintext>"+sw.toString()+"</plaintext>\n"+
+         "</p>\n"+
+         "<p>\n"+
+         "<plaintext>"+details+"</plaintext>\n"+
+         "</p>\n"+
          "</body>\n"+
          "</html>\n";
    }
