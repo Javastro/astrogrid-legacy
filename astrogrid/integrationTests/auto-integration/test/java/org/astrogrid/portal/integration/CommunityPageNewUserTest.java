@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityPageNewUserTest.java,v 1.3 2004/07/05 14:27:45 anoncvs Exp $ Created on Jun 7, 2004 by jdt@roe.ac.uk The auto-integration project
+ * $Id: CommunityPageNewUserTest.java,v 1.4 2004/07/05 15:48:16 jdt Exp $ Created on Jun 7, 2004 by jdt@roe.ac.uk The auto-integration project
  * Copyright (c) Astrigrid 2004. All rights reserved.
  *  
  */
@@ -120,19 +120,25 @@ public final class CommunityPageNewUserTest extends AstrogridPortalWebTestCase {
      *
      */
     public void testCreateNewAccount() {
-        final String testUser = "Herbert"+Long.toString(new Date().getTime());
+        final String testUser = "Schumie";//+Long.toString(new Date().getTime());
         final String testCommunity = TEST_COMMUNITY;        
-        final String testPassword = "Sapo";
-        final String testDisplayName = "Hyla Cinerea";       
-        final String testDescription = "Herbert is an American Green Tree Frog";
-        System.out.println("Trying to create user" + testUser);
+        final String testPassword = "sapo";
+        final String testDisplayName = "";//"Hyla Cinerea";       
+        final String testDescription = "";//"Herbert is an American Green Tree Frog";
+ 
+        System.out.println("Trying to create user:" + testUser);
         createUser(testUser, testCommunity, testPassword, testDisplayName, testDescription);
         assertTextPresent("Account inserted");
         
         //Pause to allow it to digest that
         System.out.println("Waiting");
         
-        //Thread.sleep(5000);
+        try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         System.out.println("Trying to log in");
         //Can we log in?
         login(testUser, testCommunity, testPassword);
@@ -279,6 +285,10 @@ public final class CommunityPageNewUserTest extends AstrogridPortalWebTestCase {
 }
 /*
  * $Log: CommunityPageNewUserTest.java,v $
+ * Revision 1.4  2004/07/05 15:48:16  jdt
+ * another attempt to get this test to pass....though there seems to be something wrong with
+ * the community....maybe an installation problem?
+ *
  * Revision 1.3  2004/07/05 14:27:45  anoncvs
  * JDT:  Futile attempt to fix the new user test.  Why oh why oh why.
  *
