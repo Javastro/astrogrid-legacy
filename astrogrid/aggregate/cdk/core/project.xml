@@ -246,7 +246,7 @@
         <dependency>
             <artifactId>commons-discovery</artifactId>
             <groupId>commons-discovery</groupId>
-            <version>20030211.213356fixed</version>
+            <version>20030211.213356fixed1</version>
             <url>http://jakarta.apache.org/commons/</url>
             <properties>
                 <jnlp.jar>${shall.bundle.core}</jnlp.jar>
