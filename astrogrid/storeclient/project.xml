@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: project.xml,v 1.1 2005/02/16 19:57:05 mch Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../maven-base/xsd/maven-project.xsd">
+    <extend>../maven-base/project.xml</extend>
+    <id>astrogrid-storeclient-master</id>
+    <name>Astrogrid StoreClient</name>
+    <description> StoreClient includes an API and 'standard' implementations
+    to access files on stores on FTP servers, SRB servers, MySpace, etc. There
+    are also swing and webapp (html pages) browsers
+    </description>
+    <shortDescription>AstroGrid StoreClient</shortDescription>
+    <build>
+        <sourceDirectory/>
+        <unitTestSourceDirectory/>
+    </build>
+</project>
