@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.5 2004/03/03 16:21:59 mch Exp $
+ * $Id: FailbackConfig.java,v 1.6 2004/03/03 16:51:10 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -12,8 +12,10 @@ package org.astrogrid.config;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 import javax.naming.InitialContext;
@@ -330,7 +332,7 @@ public class FailbackConfig extends Config {
       }
       else {
          String value = properties.getProperty(key);
-         lookedIn = lookedIn +", configfile";
+         lookedIn = lookedIn +", config file(s) ("+loadedFrom()+")";
       
          if (value != null) {
             return value;
@@ -358,9 +360,86 @@ public class FailbackConfig extends Config {
       cache.put(key, value);
    }
 
+   /**
+    * Dumps config contents
+    */
+   public void dumpConfig(PrintWriter out)  {
+      out.println("Configuration loaded from: "+loadedFrom());
+      out.println();
+
+      //-- cache --
+      out.println("Cache:");
+      Enumeration c = cache.keys();
+      while (c.hasMoreElements()) {
+         Object key = c.nextElement();
+         out.println("  "+key+" = "+cache.get(key));
+      }
+      
+      //-- JNDI --
+      out.println();
+      if (jndiContext != null) {
+         out.println("JNDI:");
+         try {
+            out.println("JNDI Environment:");
+            Hashtable env = jndiContext.getEnvironment();
+            Enumeration j = env.keys();
+            while (c.hasMoreElements()) {
+               Object key = c.nextElement();
+               out.println("  "+key+" = "+env.get(key));
+            }
+            out.println("JNDI Names:");
+            Enumeration n = jndiContext.list(jndiPrefix);
+
+            while (n.hasMoreElements()) {
+               Object key = n.nextElement();
+               out.print("  "+key+" = ");
+               //not sure how all this works, so for now will ignore naming exceptions
+               try {
+                  out.println(jndiContext.lookup(key.toString()));
+               } catch (NamingException ne) { out.println("??Failed Lookup"); }
+            }
+            
+         }
+         catch (NamingException ne) {
+            ne.printStackTrace(out);
+         }
+
+      }
+      else {
+         out.println("(No JNDI)");
+      }
+      out.println();
+      
+      //--- Property Files ---
+      if (properties != null) {
+         out.println("Properties from file(s):");
+         Enumeration p = properties.keys();
+         while (p.hasMoreElements()) {
+            Object key = p.nextElement();
+            out.println("  "+key+" = "+properties.get(key));
+         }
+      }
+      else {
+         out.println("(No Config File)");
+      }
+      out.println();
+
+      //-- System environment variables ----
+      out.println("System Environment Variables:");
+      Enumeration s = System.getProperties().keys();
+      while (s.hasMoreElements()) {
+         Object key = s.nextElement();
+         out.println("  "+key+" = "+System.getProperty(key.toString()));
+      }
+      
+   }
+   
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.6  2004/03/03 16:51:10  mch
+Added dumpConfig
+
 Revision 1.5  2004/03/03 16:21:59  mch
 Added better reporting if no config file found
 
