@@ -176,7 +176,7 @@ public class Query {
     	    .append( getCriteria().toSQLString() );
 		     logger.debug("SQL Query: "+ buffer.toString()); 
     	     	   
-    	return buffer.toString().toUpperCase() ;
+    	return buffer.toString() ;
     	
     } // end of toSQLString() 
 
