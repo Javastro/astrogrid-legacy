@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <extend>../maven-base/project.xml</extend>
   
-  <artifactId>astrogrid-portal-base</artifactId>
+  <artifactId>astrogrid-portal-resources</artifactId>
   <name>AstroGrid Portal Base Project</name>
 
   <dependencies>
