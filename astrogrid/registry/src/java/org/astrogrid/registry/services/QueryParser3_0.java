@@ -84,8 +84,8 @@ public class QueryParser3_0
 				else if (searchElements.equals("content")){
 					query = "//service[" + query + "]/identity | //service[" + query + "]/content";	
 				}
-				else if (searchElements.equals("serviceMetadataConcepts")){
-					query = "//service[" + query + "]/identity | //service[" + query + "]/serviceMetadataConcepts";	
+				else if (searchElements.equals("serviceMetadataConcept")){
+					query = "//service[" + query + "]/identity | //service[" + query + "]/serviceMetadataConcept";	
 				}
 				
 				xqlResponse = reg.xmlQuery(query);				
@@ -205,10 +205,10 @@ public class QueryParser3_0
 			xqlResponse = null;
 			xqlResponse = response.replaceAll("</content>", "</content></service>");		
 		}
-		else if (searchElements.equals("serviceMetadataConcepts")){
+		else if (searchElements.equals("serviceMetadataConcept")){
 			response = xqlResponse.replaceAll("<identity", "<service><identity");
 			xqlResponse = null;
-			xqlResponse = response.replaceAll("</serviceMetadataConcepts>", "</serviceMetadataConcepts></service>");
+			xqlResponse = response.replaceAll("</serviceMetadataConcept>", "</serviceMetadataConcept></service>");
 		}
 
 		String xmlResponse = "";
@@ -299,8 +299,8 @@ public class QueryParser3_0
 		if ((type == Node.ELEMENT_NODE)&&(node.getNodeName().equals("content"))) {
 		  nodeDetails = nodeDetails + "<recordKeyPair item='metadataType' value='content'/>";
 		}
-		if ((type == Node.ELEMENT_NODE)&&(node.getNodeName().equals("serviceMetadataConcepts"))) {
-		  nodeDetails = nodeDetails + "<recordKeyPair item='metadataType' value='serviceMetadataConcepts'/>";
+		if ((type == Node.ELEMENT_NODE)&&(node.getNodeName().equals("serviceMetadataConcept"))) {
+		  nodeDetails = nodeDetails + "<recordKeyPair item='metadataType' value='serviceMetadataConcept'/>";
 		}
 
 		
