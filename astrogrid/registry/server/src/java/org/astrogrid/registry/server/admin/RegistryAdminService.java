@@ -407,16 +407,22 @@ public class RegistryAdminService {
                            // Put in the text node the new ident.
                            newManage.appendChild(loadedRegistry.
                                                  createTextNode(ident));
+                           
+                           //System.out.println("the loadedREgistry in admin service = " + DomHelper.DocumentToString(loadedRegistry));
                            // For some reason the DOM model threw exceptions 
                            // when I tried to insert it as a sibling after 
                            // another existing ManagedAuthority tag, so just 
                            // add it to the end for now.
-                           loadedRegistry.getDocumentElement().
-                                        getFirstChild().appendChild(newManage);
+                           NodeList resListForAuth = loadedRegistry.getElementsByTagNameNS("*","Resource");
+                           resListForAuth.item(0).appendChild(newManage);
+                           ((HashMap)manageAuths.get(versionNumber)).put(ident,null);
+                           //System.out.println("the loadedREgistry in admin service2 = " + DomHelper.DocumentToString(loadedRegistry));
+                           //loadedRegistry.getDocumentElement().
+                           //             getFirstChild().appendChild(newManage);
 
                            // TODO: Need to check this next line I believe is 
                            // useless.
-                           df = xsDoc.createDocumentFragment();
+                           //df = xsDoc.createDocumentFragment();
                            
                            // Update our currentResource into the database
                            root = xsDoc.createElement("AstrogridResource");
