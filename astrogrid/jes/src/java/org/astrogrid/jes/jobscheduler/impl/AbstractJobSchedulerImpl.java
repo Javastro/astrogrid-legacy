@@ -1,4 +1,4 @@
-/*$Id: AbstractJobSchedulerImpl.java,v 1.2 2004/07/09 09:30:28 nw Exp $
+/*$Id: AbstractJobSchedulerImpl.java,v 1.3 2004/07/09 15:49:08 nw Exp $
  * Created on 10-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -253,7 +253,6 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
     public final void reportResults(JobIdentifierType id, ResultListType results) throws Exception {
         logger.debug("reporting results of " + id.toString());
         Workflow job = null;
-        JobFactory factory = null;
         try {
             org.astrogrid.workflow.beans.v1.execution.JobURN urn = null;          
             try {
@@ -324,6 +323,10 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
 
 /* 
 $Log: AbstractJobSchedulerImpl.java,v $
+Revision 1.3  2004/07/09 15:49:08  nw
+fixed NPE in processing results.
+should fix regression on SimpleJavaWorkflowEndToEndTest
+
 Revision 1.2  2004/07/09 09:30:28  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions
