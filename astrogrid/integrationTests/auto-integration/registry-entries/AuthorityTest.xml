@@ -19,14 +19,13 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
-<vr:Resource  xsi:type="AuthorityType"  updated="2002-11-04T15:34:22" status="active" >
+<vr:Resource  xsi:type="vg:AuthorityType" >
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey xsi:nil="true"/>
     </Identifier>
     <Title>Astrogrid Naming Authority</Title>
     <ShortName>AG-NA</ShortName>
-    <Subject>test</Subject>
     <Summary>
       <Description>
         This authority ID will be used to identify generic resources 
@@ -44,5 +43,7 @@
       </Contact>
      <Date>2003-08-30</Date>
     </Curation>
+	<Subject>test</Subject>
+	
   </vr:Resource>
   </VODescription>
