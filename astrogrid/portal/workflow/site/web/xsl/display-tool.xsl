@@ -25,7 +25,7 @@
                                     <div style="color: blue; background-color: lightblue; text-align: center;">Step</div>
                                         <td width="30%">Name:</td>
                                         <td width="70%">
-                                            <input type="text" name="step_name"></input>
+                                            <input type="text" width="40" name="step_name"></input>
                                             <a id="step_name_button">
                                                 <input type="submit" name="action" value="add-step-name"/>
                                                 <input type="hidden" name="activity_key"/>                                            
@@ -57,7 +57,7 @@
                                         <div style="color: blue; background-color: lightblue; text-align: center;">Tool</div>
                                         <td width="30%">Name:</td>
                                         <td width="70%">
-                                            <input type="text" name="tool_name"></input>
+                                            <input type="text" width="40" name="tool_name"></input>
                                             <a>
                                                 <input type="submit" name="action" value="insert-tool-into-step"/>
                                             </a>
@@ -94,16 +94,19 @@
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_sequence_form">
                    <input type="hidden" name="activity_key"/>
                    <input type="hidden" name="activity_index_key"/>
+                   <input type="hidden" name="activity_index_order"  id="activity_index_order_sequence"/>
                    <input type="hidden"  name="action" value="insert-sequence"/>                           
                 </form>            
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_flow_form">
                    <input type="hidden" name="activity_key"/>
                    <input type="hidden" name="activity_index_key"/>
+                   <input type="hidden" name="activity_index_order"  id="activity_index_order_flow"/>
                    <input type="hidden"  name="action" value="insert-flow"/>                       
                 </form>                
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_step_form">
                    <input type="hidden" name="activity_key"/>
                    <input type="hidden" name="activity_index_key"/>
+                   <input type="hidden" name="activity_index_order"  id="activity_index_order_step"/>
                    <input type="hidden"  name="action" value="insert-step"/>            
                 </form>
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="remove_activity_form">
