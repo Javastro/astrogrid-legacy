@@ -19,7 +19,7 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <vr:Service xsi:type="ServiceType">
+ <vr:Resource xsi:type="java:org.astrogrid.registry.beans.resource.ServiceType">
     <Identifier>
       <AuthorityID>vm05.astrogrid.org</AuthorityID>
       <ResourceKey>MyspaceManager</ResourceKey>
@@ -34,7 +34,7 @@
     </Summary>
     <Type>Archive</Type>
     <RelatedResource>
-       <Relationship>one of the myspace servers</Relationship>
+       <Relationship>related-to</Relationship>
        <RelatedTo>
           <Identifier>
             <AuthorityID>vm08.astrogrid.org</AuthorityID>
@@ -44,9 +44,12 @@
        </RelatedTo>
     </RelatedResource>
     <Curation>
+      <Publisher>
+         <Title>Service test publisher</Title>
+      </Publisher>    
       <Contact>
         <Name>Clive Davenhall</Name>
-      <Email>acd@roe.ac.uk</Email>
+      	<Email>acd@roe.ac.uk</Email>
       </Contact>
       <Date>2004-02-02</Date>
       <Creator>
@@ -67,5 +70,5 @@
       <Invocation>WebService</Invocation>
       <AccessURL use="base">http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager</AccessURL>
     </Interface>
-  </vr:Service>
+  </vr:Resource>
 </VODescription>

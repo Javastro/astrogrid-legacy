@@ -143,6 +143,11 @@
 			siteCommand="cd @deployDirectory@; chmod g+w ${maven.war.to.deploy}; chgrp ${maven.remote.group} ${maven.war.to.deploy}; ln -sf ${maven.war.to.deploy} ${pom.groupId}-SNAPSHOT.war; echo ${snapshotVersion} > ${pom.groupId}-snapshot-version"
 		/>
     </goal>
+    
+    <goal name="astrogrid-deploy-snapshot">
+    	<attainGoal name="deploy-snapshot" />
+    </goal>
+    
 
     <!--+
         | Build our project website.

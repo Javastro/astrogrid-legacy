@@ -51,8 +51,16 @@ public class RegistryQueryJunit extends TestCase{
        if (DEBUG_FLAG) System.out.println("----\"----") ;
        if (DEBUG_FLAG) System.out.println("RegistryQueryJunit:setup()") ;
        System.out.println("Property for config = " + System.getProperty("org.astrogrid.config.url"));
-       printProperties();
+       System.out.println("Property for cachedir = " + System.getProperty("org.astrogrid.registry.cache.url"));      
+       String cacheDir = System.getProperty("org.astrogrid.registry.cache.url");
+       if(cacheDir == null) {
+          rs = null;
+          return;
+       }
+
        rs = RegistryDelegateFactory.createQuery();
+       rs.conf.setProperty("vm05.astrogrid.org/MyspaceManager",cacheDir+"/Myspace.xml");
+       
        //System.out.println("Property for config = " + System.getProperty("org.astrogrid.config.url"));
        //printProperties();
        assertNotNull(rs);
@@ -72,22 +80,22 @@ public class RegistryQueryJunit extends TestCase{
    
    public void testMyspaceGetResourceIdent() throws Exception {      
       assertNotNull(rs);
-      if(rs.conf == null) return;
-      System.out.println("entered testGetResourceIdent");
+      if (DEBUG_FLAG) System.out.println("entered testGetResourceIdent");
+      if(rs.conf == null) return;      
       if(rs.conf.getString("vm05.astrogrid.org/MyspaceManager",null) == null) return;            
       Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/MyspaceManager");
       assertNotNull(doc);
-      System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
+      if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
    }
    
    public void testMyspaceGetResourceEndPoint() throws Exception {
       assertNotNull(rs);
+      if(DEBUG_FLAG) System.out.println("entered testMyspaceGetResourceEndPoint");      
       if(rs.conf == null) return;
-      if(DEBUG_FLAG) System.out.println("entered testGetResourceIdent");
       if(rs.conf.getString("vm05.astrogrid.org/MyspaceManager",null) == null) return;
-      //String endPoint = rs.getEndPointByIdentifier("vm05.astrogrid.org/MyspaceManager");
-      //assertNotNull(endPoint);
-      //if(DEBUG_FLAG) System.out.println("endPoint = " + endPoint);
+      String endPoint = rs.getEndPointByIdentifier("vm05.astrogrid.org/MyspaceManager");
+      assertNotNull(endPoint);
+      if(DEBUG_FLAG) System.out.println("endPoint = " + endPoint);
    }
 } 
 

@@ -87,56 +87,55 @@ public class RegistryQueryCastorJunit extends TestCase{
                   
    }
    
-   public void testServiceXML() throws Exception {      
+   public void testServiceXML() throws Exception {
+      if(DEBUG_FLAG) System.out.println("entered testServiceXML");      
       assertNotNull(rs);
-      if(rs.conf == null) return;
-      System.out.println("entered testServiceXML");
+      if(rs.conf == null) return;      
       if(rs.conf.getString("vm05.astrogrid.org/ServiceTest",null) == null) return;            
       Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/ServiceTest");
       assertNotNull(doc);
-      System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
+      if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
    }
    
-   public void testOrganisationXML() throws Exception {      
+   public void testOrganisationXML() throws Exception {
+      if(DEBUG_FLAG) System.out.println("entered testOrganisationXML");      
       assertNotNull(rs);
-      if(rs.conf == null) return;
-      System.out.println("entered testOrganisationXML");
+      if(rs.conf == null) return;      
       if(rs.conf.getString("vm05.astrogrid.org/OrganisationTest",null) == null) return;            
       Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/OrganisationTest");
       assertNotNull(doc);
-      System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
+      if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
    }
    
    public void testDataCollection() throws Exception {
+      if(DEBUG_FLAG) System.out.println("entered datacollecitontest");
       assertNotNull(rs);
-      if(rs.conf == null) return;
-      System.out.println("entered datacollecitontest");
+      if(rs.conf == null) return;      
       if(rs.conf.getString("vm05.astrogrid.org/DataCollectionTest",null) == null) return;            
       Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/DataCollectionTest");
       assertNotNull(doc);
-      System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
-      
+      if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));      
    }   
 
 
-   public void testAuthorityXML() throws Exception {      
+   public void testAuthorityXML() throws Exception {
+      if(DEBUG_FLAG) System.out.println("entered testAuthorityXML");      
       assertNotNull(rs);
-      if(rs.conf == null) return;
-      System.out.println("entered testAuthorityXML");
+      if(rs.conf == null) return;      
       if(rs.conf.getString("vm05.astrogrid.org/AuthorityTest",null) == null) return;            
       Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/AuthorityTest");
       assertNotNull(doc);
-      System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
+      if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
    }
    
    public void testRegistryXML() throws Exception {
+      if(DEBUG_FLAG) System.out.println("entered testRegistryXML");
       assertNotNull(rs);
       if(rs.conf == null) return;
-      System.out.println("entered testRegistryXML");
       if(rs.conf.getString("vm05.astrogrid.org/RegistryTest",null) == null) return;            
       Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/RegistryTest");
       assertNotNull(doc);
-      System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
+      if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
       
    }   
 
@@ -190,24 +189,24 @@ public class RegistryQueryCastorJunit extends TestCase{
    }
 
    public void testTabularSkyService() throws Exception {
+      if(DEBUG_FLAG) System.out.println("entered tabularskyservicewithconesearch");      
       assertNotNull(rs);
       if(rs.conf == null) return;
-      System.out.println("entered tabularskyservicewithconesearch");
       if(rs.conf.getString("vm05.astrogrid.org/TabularSkyServiceTest",null) == null) return;            
       Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/TabularSkyServiceTest");
       assertNotNull(doc);
-      System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
+      if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
       
    }   
    
    public void testResourcesCombo1() throws Exception {
+      if(DEBUG_FLAG) System.out.println("entered testcombo1");
       assertNotNull(rs);
       if(rs.conf == null) return;
-      System.out.println("entered testcombo1");
       if(rs.conf.getString("vm05.astrogrid.org/Combo1Test",null) == null) return;            
       Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/Combo1Test");
       assertNotNull(doc);
-      System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
+      if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
       
    }   
 } 

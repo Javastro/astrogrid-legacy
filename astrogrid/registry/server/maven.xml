@@ -90,6 +90,11 @@
         <ant:echo message="Deploying snapshot artifact ...."/>
         <attainGoal name="jar:deploy-snapshot"/>
     </goal>
+    
+    <goal name="astrogrid-deploy-snapshot">
+    	<attainGoal name="deploy-snapshot" />
+    </goal>
+    
 
     <!--+
         | Build our project website.
