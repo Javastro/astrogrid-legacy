@@ -1,4 +1,4 @@
-/*$Id: FileJobFactoryImpl.java,v 1.5 2004/03/07 21:04:38 nw Exp $
+/*$Id: FileJobFactoryImpl.java,v 1.6 2004/03/12 15:31:55 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,17 +20,21 @@ import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import org.exolab.castor.xml.CastorException;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /** Implementation of JobFactory that stores xml documents on a filesystem.
  * @author Noel Winstanley nw@jb.man.ac.uk 11-Feb-2004
@@ -193,17 +197,52 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
         + "store directory: " + baseDir.getAbsolutePath();
     }
 
+
     /**
      * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
      */
-    public Test getInstallationTest() {
-        return null;
+    public Test getInstallationTest() {        
+        TestSuite suite  = new TestSuite("Tests for File Job Factory Imp");
+        suite.addTest(new InstallationTest("testBaseDirExists"));
+        suite.addTest(new InstallationTest("testWriteFile"));
+        suite.addTest(new InstallationTest("testReadFile"));
+        return suite;    
     }
+
+
+    protected class InstallationTest extends TestCase {
+        public InstallationTest(String s) {
+            super(s);
+        }
+        
+        public void testBaseDirExists() {
+            assertTrue("base dir does not exist",baseDir.exists());
+            assertTrue("base dir is not a directory",baseDir.isDirectory());
+            assertTrue("base dir is not readable and writable",baseDir.canRead() && baseDir.canWrite());
+        }
+        final File testFile = new File(baseDir,"test-file");
+        private final static String CONTENTS = "test file contents";
+        public void testWriteFile() throws IOException {
+            PrintWriter pw = new PrintWriter( new FileWriter(testFile));
+            pw.println(CONTENTS);
+            pw.close();
+            assertTrue(testFile.exists());
+        }
+        public void testReadFile() throws IOException {
+            BufferedReader reader = new BufferedReader( new FileReader(testFile));
+            String line = reader.readLine();
+            assertEquals("does not match expected",CONTENTS,line);
+        }
+    }
+
 }
 
 
 /* 
 $Log: FileJobFactoryImpl.java,v $
+Revision 1.6  2004/03/12 15:31:55  nw
+added unit tests
+
 Revision 1.5  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 
