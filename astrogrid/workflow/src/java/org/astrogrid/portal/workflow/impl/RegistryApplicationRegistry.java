@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistry.java,v 1.4 2004/08/03 13:34:54 KevinBenson Exp $
+/*$Id: RegistryApplicationRegistry.java,v 1.5 2004/09/02 13:03:53 jdt Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -73,10 +73,8 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
     "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
     "<selectionOp op='$and$'/>" +
     "<selection item='@*:type' itemOp='EQ' value='CeaApplicationType'/>"  +
-    /* don't think that we need these....
     "<selectionOp op='OR'/>" +
-    "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
-    */
+    "<selection item='@*:type' itemOp='EQ' value='CeaHttpApplicationType'/>"  +
     "</selectionSequence></query>";
 
     
@@ -141,22 +139,7 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
 
 /* 
 $Log: RegistryApplicationRegistry.java,v $
-Revision 1.4  2004/08/03 13:34:54  KevinBenson
-result of merge with case3 to change to registry-client-lite dependency
+Revision 1.5  2004/09/02 13:03:53  jdt
+merge from SIAP case3
 
-Revision 1.3.46.1  2004/07/30 12:44:01  KevinBenson
-changed to registry-client-lite
-
-Revision 1.3  2004/04/05 15:14:59  nw
-implemented
-
-Revision 1.2  2004/03/11 13:53:36  nw
-merged in branch bz#236 - implementation of interfaces
-
-Revision 1.1.2.2  2004/03/11 13:36:10  nw
-added implementations for the workflow interfaces
-
-Revision 1.1.2.1  2004/03/09 17:41:59  nw
-created a bunch of implementations,
- 
 */
