@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.64 2004/07/23 11:54:30 KevinBenson Exp $ -->
+<!-- $Id: maven.xml,v 1.65 2004/07/26 14:06:51 KevinBenson Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -80,6 +80,10 @@
         <sleep seconds="2" />
         <attainGoal name="pal-deploy" />
         <sleep seconds="2" />
+        <attainGoal name="pal-fits-deploy" />
+        <sleep seconds="2" />
+        <attainGoal name="pal-sec-deploy" />
+        <sleep seconds="2" />        
         <attainGoal name="community-deploy"/>
         <sleep seconds="2" />
         <attainGoal name="portal-deploy" />
@@ -99,6 +103,8 @@
         <attainGoal name="myspace-undeploy" />
         <attainGoal name="filestore-undeploy" />
         <attainGoal name="pal-undeploy" />
+        <attainGoal name="pal-fits-undeploy" />
+        <attainGoal name="pal-sec-undeploy" />        
         <attainGoal name="community-undeploy" />
         <attainGoal name="portal-undeploy" />
 </goal>
@@ -567,6 +573,26 @@
   </j:catch>
 </goal>
 
+<goal name="pal-fits-deploy" >
+        <copy todir="${temporary.dir}/pal" filtering="true">
+                <fileset dir="contexts/pal_fits" />
+        </copy>
+  <j:catch>
+  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-pal-fits-SNAPSHOT" war="file:///${temporary.dir}/pal-SNAPSHOT.war"/>
+  </j:catch>
+</goal>
+
+<goal name="pal-sec-deploy" >
+        <copy todir="${temporary.dir}/pal" filtering="true">
+                <fileset dir="contexts/pal_sec" />
+        </copy>
+  <j:catch>
+  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-pal-sec-SNAPSHOT" war="file:///${temporary.dir}/pal-SNAPSHOT.war"/>
+  </j:catch>
+</goal>
+
 <goal name="portal-deploy">
         <copy todir="${temporary.dir}/portal" filtering="true">
                 <fileset dir="contexts/portal" />
@@ -657,6 +683,20 @@
   <j:catch>
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-pal-SNAPSHOT" />
+  </j:catch>
+</goal>
+
+<goal name="pal-fits-undeploy" >
+  <j:catch>
+  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-pal-fits-SNAPSHOT" />
+  </j:catch>
+</goal>
+
+<goal name="pal-sec-undeploy" >
+  <j:catch>
+  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-pal-sec-SNAPSHOT" />
   </j:catch>
 </goal>
 
@@ -789,8 +829,6 @@
          <jsl:style stylesheet="${summarize}" select="$allSuites" />
         </j:file>
 </goal>
-
-
 
 <goal name="annotate-report" description="add details from saved baseines into current test results">
         <echo>annotating test report with previous baselines</echo>
