@@ -234,7 +234,17 @@ public abstract class Configurator {
   public final void save() throws AstroGridException {
     assert getSubsystemAcronym() !=null;
     assert getConfigFileName() !=null;
-    Configurator.save(getSubsystemAcronym(), getConfigFileName());
+    this.save(getConfigFileName());
+  }
+  
+  /**
+   * Save the configuration to a given file
+   * @param fileName Name of file
+   * @throws AstroGridException probably an IOException
+   */
+  public final void save(String fileName) throws AstroGridException {
+    assert getSubsystemAcronym() !=null;
+    Configurator.save(getSubsystemAcronym(), fileName);
   }
 
   protected abstract  String getConfigFileName();

@@ -87,12 +87,6 @@ try {
       </head>
 
       <body class="composite">
-			<%
-Enumeration enum = request.getParameterNames();
-while(enum.hasMoreElements()) {
-			out.print(enum.nextElement()+"<BR>");
-			}%>
-			<BR>Change pressed:<%=changePressed%>
         <div id="banner" >
           <table border="0" width="100%" cellpadding="8" cellspacing="0" >
             <tr>
@@ -242,29 +236,39 @@ while(enum.hasMoreElements()) {
 %>     
 <%--If export pressed let's save 'em--%>
 <%
+  final String filenameTxt="fileName"; //name of textbox in form
 	if (exportPressed) {
-		 MMC.getInstance().save();
+
+		 String fileName=request.getParameter(filenameTxt);
+		 MMC.getInstance().save(fileName);
 	}
-	%>
+%>
+<%--If change pressed let's change 'em--%>
+<%
+	if (changePressed) {
+		 defaultsBean.update();
+	}
+%>
 <%=message%>
 
 
 <input:form  bean="defaultsBean">
-Version: 
-<input:text name="version"  attributesText='size="15"' /><br>
-Location of Registry DB file: 
-<input:text name="registryconf" attributesText='size="100"'/> <br> 
-MySpaceManagerURL: 
-<input:text name="msmUrl"  attributesText='size="100"'/><br>
-MySpaceServerURL: 
-<input:text name="mssUrl"  attributesText='size="100"'/><br>
-MySpaceMangerURLs: 
-<input:text name="msmsUrl" attributesText='size="100"'/><br>
-<button type="submit" name="<%=changeBtn%>">Change</button>
-
-<button type="submit" name="<%=guessBtn%>" >Guess URLs</button>
-
-<button type="submit" name="<%=exportBtn%>">Export</button>
+  Version: 
+  <input:text name="version"  attributesText='size="15"' /><br>
+  Location of Registry DB file: 
+  <input:text name="registryconf" attributesText='size="100"'/> <br> 
+  MySpaceManagerURL: 
+  <input:text name="msmUrl"  attributesText='size="100"'/><br>
+  MySpaceServerURL: 
+  <input:text name="mssUrl"  attributesText='size="100"'/><br>
+  MySpaceMangerURLs: 
+  <input:text name="msmsUrl" attributesText='size="100"'/><br>
+  <button type="submit" name="<%=changeBtn%>">Change</button>
+  
+  <button type="submit" name="<%=guessBtn%>" >Guess URLs</button>
+  <BR>
+  <button type="submit" name="<%=exportBtn%>">Export</button> to 
+<input:text name="<%=filenameTxt%>" attributesText='size="50"' default="/ASTROGRID_myspacemanagerconfig.export"/>
 </input:form>
 
 <p>Back to <a href="index.html">index page</a>.</p>

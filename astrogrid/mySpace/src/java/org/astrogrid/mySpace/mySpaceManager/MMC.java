@@ -97,6 +97,17 @@ public class MMC extends Configurator {
 	public static String getProperty( String key, String category ) {
 		return Configurator.getProperty( SUBSYSTEM_ACRONYM, key, category ) ;
 	}
+  
+  /**
+   * Set a property
+   * @TODO should really tidy up all the static vs nonstatic methods
+    * @param key - the property key within category
+    * @param category - the category within the configuration
+    * @param value - the value to be set
+   */
+  public static void setProperty( String key, String category, String value ) {
+    Configurator.setProperty( SUBSYSTEM_ACRONYM, key, category, value ) ;
+  }
         
 	public String getConfigFileName() { return CONFIG_FILENAME ;	}
 	protected String getSubsystemAcronym() { return SUBSYSTEM_ACRONYM ; }

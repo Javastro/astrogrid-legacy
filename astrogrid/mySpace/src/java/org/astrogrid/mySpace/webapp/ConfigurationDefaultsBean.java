@@ -1,4 +1,4 @@
-/* $Id: ConfigurationDefaultsBean.java,v 1.1 2004/01/15 17:39:54 jdt Exp $
+/* $Id: ConfigurationDefaultsBean.java,v 1.2 2004/01/16 17:09:07 jdt Exp $
  * Created on 15-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -120,11 +120,22 @@ public final class ConfigurationDefaultsBean {
     mssUrl = MMC.getProperty(MMC.serverManagerLoc,MMC.CATLOG); 
     msmsUrl = MMC.getProperty(MMC.MYSPACEMANAGERURLs,MMC.CATLOG); 
   }
+  
+  public void update() {
+    MMC.setProperty(MMC.GENERAL_VERSION_NUMBER, MMC.GENERAL_CATEGORY, version);
+    MMC.setProperty(MMC.REGISTRYCONF, MMC.CATLOG, registryconf);
+    MMC.setProperty(MMC.mySpaceManagerLoc,MMC.CATLOG, msmUrl); 
+    MMC.setProperty(MMC.serverManagerLoc,MMC.CATLOG, mssUrl); 
+    MMC.setProperty(MMC.MYSPACEMANAGERURLs,MMC.CATLOG, msmsUrl); 
+  }
 
 }
 
 /*
 *$Log: ConfigurationDefaultsBean.java,v $
+*Revision 1.2  2004/01/16 17:09:07  jdt
+*Changes to allow the changing and saving of properties
+*
 *Revision 1.1  2004/01/15 17:39:54  jdt
 *Added a tag lib and a few mods to allow the config file to be set up from a JSP page.
 *
