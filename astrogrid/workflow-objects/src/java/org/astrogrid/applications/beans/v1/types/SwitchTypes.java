@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: SwitchTypes.java,v 1.15 2004/03/11 11:54:13 pah Exp $
+ * $Id: SwitchTypes.java,v 1.16 2004/03/15 16:53:03 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.types;
@@ -20,7 +20,7 @@ import org.exolab.castor.xml.Unmarshaller;
 /**
  * normal is the -x value style and keyword is the x=value style
  * 
- * @version $Revision: 1.15 $ $Date: 2004/03/11 11:54:13 $
+ * @version $Revision: 1.16 $ $Date: 2004/03/15 16:53:03 $
  */
 public class SwitchTypes implements java.io.Serializable {
 

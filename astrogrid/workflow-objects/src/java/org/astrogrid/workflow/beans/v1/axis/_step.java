@@ -10,7 +10,7 @@ package org.astrogrid.workflow.beans.v1.axis;
 public class _step  extends org.astrogrid.workflow.beans.v1.axis.AbstractActivity  implements java.io.Serializable {
     private java.lang.String description;
     private org.astrogrid.workflow.beans.v1.axis._tool tool;
-    private org.astrogrid.jes.beans.vi.axis.executionrecord._stepExecutionRecord[] stepExecutionRecord;
+    private org.astrogrid.jes.beans.v1.axis.executionrecord._stepExecutionRecord[] stepExecutionRecord;
     private java.lang.String name;  // attribute
     private org.astrogrid.workflow.beans.v1.axis.JoinType joinCondition;  // attribute
     private int stepNumber;  // attribute
@@ -35,19 +35,19 @@ public class _step  extends org.astrogrid.workflow.beans.v1.axis.AbstractActivit
         this.tool = tool;
     }
 
-    public org.astrogrid.jes.beans.vi.axis.executionrecord._stepExecutionRecord[] getStepExecutionRecord() {
+    public org.astrogrid.jes.beans.v1.axis.executionrecord._stepExecutionRecord[] getStepExecutionRecord() {
         return stepExecutionRecord;
     }
 
-    public void setStepExecutionRecord(org.astrogrid.jes.beans.vi.axis.executionrecord._stepExecutionRecord[] stepExecutionRecord) {
+    public void setStepExecutionRecord(org.astrogrid.jes.beans.v1.axis.executionrecord._stepExecutionRecord[] stepExecutionRecord) {
         this.stepExecutionRecord = stepExecutionRecord;
     }
 
-    public org.astrogrid.jes.beans.vi.axis.executionrecord._stepExecutionRecord getStepExecutionRecord(int i) {
+    public org.astrogrid.jes.beans.v1.axis.executionrecord._stepExecutionRecord getStepExecutionRecord(int i) {
         return stepExecutionRecord[i];
     }
 
-    public void setStepExecutionRecord(int i, org.astrogrid.jes.beans.vi.axis.executionrecord._stepExecutionRecord value) {
+    public void setStepExecutionRecord(int i, org.astrogrid.jes.beans.v1.axis.executionrecord._stepExecutionRecord value) {
         this.stepExecutionRecord[i] = value;
     }
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: OutputDescriptor.java,v 1.15 2004/03/11 11:54:13 pah Exp $
+ * $Id: OutputDescriptor.java,v 1.16 2004/03/15 16:53:03 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class OutputDescriptor.
  * 
- * @version $Revision: 1.15 $ $Date: 2004/03/11 11:54:13 $
+ * @version $Revision: 1.16 $ $Date: 2004/03/15 16:53:03 $
  */
 public class OutputDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -93,13 +93,12 @@ public class OutputDescriptor extends org.exolab.castor.xml.util.XMLClassDescrip
         } );
         desc.setHandler(handler);
         desc.setNameSpaceURI("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1");
-        desc.setRequired(true);
         desc.setMultivalued(true);
         addFieldDescriptor(desc);
         
         //-- validation code for: _prefList
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        fieldValidator.setMinOccurs(1);
+        fieldValidator.setMinOccurs(0);
         { //-- local scope
         }
         desc.setValidator(fieldValidator);

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterValue.java,v 1.15 2004/03/11 11:54:13 pah Exp $
+ * $Id: ParameterValue.java,v 1.16 2004/03/15 16:53:03 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
  * Defines what a parameterValue can contain - for the instance
  * document
  * 
- * @version $Revision: 1.15 $ $Date: 2004/03/11 11:54:13 $
+ * @version $Revision: 1.16 $ $Date: 2004/03/15 16:53:03 $
  */
 public class ParameterValue extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -48,9 +48,9 @@ implements java.io.Serializable
     private org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes _type;
 
     /**
-     * internal content storage
+     * Field _value
      */
-    private java.lang.String _content = "";
+    private java.lang.String _value;
 
 
       //----------------/
@@ -59,7 +59,6 @@ implements java.io.Serializable
 
     public ParameterValue() {
         super();
-        setContent("");
     } //-- org.astrogrid.applications.beans.v1.parameters.ParameterValue()
 
 
@@ -97,28 +96,17 @@ implements java.io.Serializable
             }
             else if (temp._type != null)
                 return false;
-            if (this._content != null) {
-                if (temp._content == null) return false;
-                else if (!(this._content.equals(temp._content))) 
+            if (this._value != null) {
+                if (temp._value == null) return false;
+                else if (!(this._value.equals(temp._value))) 
                     return false;
             }
-            else if (temp._content != null)
+            else if (temp._value != null)
                 return false;
             return true;
         }
         return false;
     } //-- boolean equals(java.lang.Object) 
-
-    /**
-     * Returns the value of field 'content'. The field 'content'
-     * has the following description: internal content storage
-     * 
-     * @return the value of field 'content'.
-     */
-    public java.lang.String getContent()
-    {
-        return this._content;
-    } //-- java.lang.String getContent() 
 
     /**
      * Returns the value of field 'name'.
@@ -139,6 +127,16 @@ implements java.io.Serializable
     {
         return this._type;
     } //-- org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes getType() 
+
+    /**
+     * Returns the value of field 'value'.
+     * 
+     * @return the value of field 'value'.
+     */
+    public java.lang.String getValue()
+    {
+        return this._value;
+    } //-- java.lang.String getValue() 
 
     /**
      * Method isValid
@@ -179,17 +177,6 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'content'. The field 'content' has
-     * the following description: internal content storage
-     * 
-     * @param content the value of field 'content'.
-     */
-    public void setContent(java.lang.String content)
-    {
-        this._content = content;
-    } //-- void setContent(java.lang.String) 
-
-    /**
      * Sets the value of field 'name'.
      * 
      * @param name the value of field 'name'.
@@ -208,6 +195,16 @@ implements java.io.Serializable
     {
         this._type = type;
     } //-- void setType(org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes) 
+
+    /**
+     * Sets the value of field 'value'.
+     * 
+     * @param value the value of field 'value'.
+     */
+    public void setValue(java.lang.String value)
+    {
+        this._value = value;
+    } //-- void setValue(java.lang.String) 
 
     /**
      * Method unmarshalParameterValue

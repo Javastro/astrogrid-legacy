@@ -8,10 +8,19 @@
 package org.astrogrid.applications.beans.v1.axis.ceaparameters;
 
 public class ParameterValue  implements java.io.Serializable {
+    private java.lang.String value;
     private java.lang.String name;  // attribute
     private org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterTypes type;  // attribute
 
     public ParameterValue() {
+    }
+
+    public java.lang.String getValue() {
+        return value;
+    }
+
+    public void setValue(java.lang.String value) {
+        this.value = value;
     }
 
     public java.lang.String getName() {
@@ -42,6 +51,9 @@ public class ParameterValue  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
+            ((this.value==null && other.getValue()==null) || 
+             (this.value!=null &&
+              this.value.equals(other.getValue()))) &&
             ((this.name==null && other.getName()==null) || 
              (this.name!=null &&
               this.name.equals(other.getName()))) &&
@@ -59,6 +71,9 @@ public class ParameterValue  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
+        if (getValue() != null) {
+            _hashCode += getValue().hashCode();
+        }
         if (getName() != null) {
             _hashCode += getName().hashCode();
         }
@@ -85,6 +100,11 @@ public class ParameterValue  implements java.io.Serializable {
         attrField.setXmlName(new javax.xml.namespace.QName("", "type"));
         attrField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterTypes"));
         typeDesc.addFieldDesc(attrField);
+        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("value");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "value"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        typeDesc.addFieldDesc(elemField);
     }
 
     /**

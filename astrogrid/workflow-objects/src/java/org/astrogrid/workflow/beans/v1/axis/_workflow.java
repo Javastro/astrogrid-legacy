@@ -11,7 +11,7 @@ public class _workflow  implements java.io.Serializable {
     private org.astrogrid.workflow.beans.v1.axis._sequence sequence;
     private java.lang.String description;
     private org.astrogrid.community.beans.v1.axis.Credentials credentials;
-    private org.astrogrid.jes.beans.vi.axis.executionrecord._jobExecutionRecord jobExecutionRecord;
+    private org.astrogrid.jes.beans.v1.axis.executionrecord._jobExecutionRecord jobExecutionRecord;
     private java.lang.String name;  // attribute
 
     public _workflow() {
@@ -41,11 +41,11 @@ public class _workflow  implements java.io.Serializable {
         this.credentials = credentials;
     }
 
-    public org.astrogrid.jes.beans.vi.axis.executionrecord._jobExecutionRecord getJobExecutionRecord() {
+    public org.astrogrid.jes.beans.v1.axis.executionrecord._jobExecutionRecord getJobExecutionRecord() {
         return jobExecutionRecord;
     }
 
-    public void setJobExecutionRecord(org.astrogrid.jes.beans.vi.axis.executionrecord._jobExecutionRecord jobExecutionRecord) {
+    public void setJobExecutionRecord(org.astrogrid.jes.beans.v1.axis.executionrecord._jobExecutionRecord jobExecutionRecord) {
         this.jobExecutionRecord = jobExecutionRecord;
     }
 

@@ -80,6 +80,7 @@ public class Interface_output  implements java.io.Serializable {
         elemField.setFieldName("pref");
         elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "pref"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "parameterRef"));
+        elemField.setMinOccurs(0);
         typeDesc.addFieldDesc(elemField);
     }
 

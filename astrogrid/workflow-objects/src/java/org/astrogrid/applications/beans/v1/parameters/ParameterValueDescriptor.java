@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterValueDescriptor.java,v 1.15 2004/03/11 11:54:13 pah Exp $
+ * $Id: ParameterValueDescriptor.java,v 1.16 2004/03/15 16:53:03 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ParameterValueDescriptor.
  * 
- * @version $Revision: 1.15 $ $Date: 2004/03/11 11:54:13 $
+ * @version $Revision: 1.16 $ $Date: 2004/03/15 16:53:03 $
  */
 public class ParameterValueDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -57,45 +57,12 @@ public class ParameterValueDescriptor extends org.exolab.castor.xml.util.XMLClas
         super();
         nsURI = "http://www.astrogrid.org/schema/AGParameterDefinition/v1";
         xmlName = "parameterValue";
+        
+        //-- set grouping compositor
+        setCompositorAsSequence();
         org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
         org.exolab.castor.xml.XMLFieldHandler              handler        = null;
         org.exolab.castor.xml.FieldValidator               fieldValidator = null;
-        //-- _content
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_content", "PCDATA", org.exolab.castor.xml.NodeType.Text);
-        desc.setImmutable(true);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                ParameterValue target = (ParameterValue) object;
-                return target.getContent();
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    ParameterValue target = (ParameterValue) object;
-                    target.setContent( (java.lang.String) value);
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
-            }
-        } );
-        desc.setHandler(handler);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _content
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        { //-- local scope
-            StringValidator typeValidator = new StringValidator();
-            typeValidator.setWhiteSpace("preserve");
-            fieldValidator.setValidator(typeValidator);
-        }
-        desc.setValidator(fieldValidator);
         //-- initialize attribute descriptors
         
         //-- _name
@@ -171,6 +138,46 @@ public class ParameterValueDescriptor extends org.exolab.castor.xml.util.XMLClas
         desc.setValidator(fieldValidator);
         //-- initialize element descriptors
         
+        //-- _value
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_value", "value", org.exolab.castor.xml.NodeType.Element);
+        desc.setImmutable(true);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                ParameterValue target = (ParameterValue) object;
+                return target.getValue();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    ParameterValue target = (ParameterValue) object;
+                    target.setValue( (java.lang.String) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return null;
+            }
+        } );
+        desc.setHandler(handler);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGParameterDefinition/v1");
+        desc.setRequired(true);
+        desc.setMultivalued(false);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _value
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        fieldValidator.setMinOccurs(1);
+        { //-- local scope
+            StringValidator typeValidator = new StringValidator();
+            typeValidator.setWhiteSpace("preserve");
+            fieldValidator.setValidator(typeValidator);
+        }
+        desc.setValidator(fieldValidator);
     } //-- org.astrogrid.applications.beans.v1.parameters.ParameterValueDescriptor()
 
 
