@@ -1,5 +1,5 @@
 /*
-   $Id: XmlPrinter.java,v 1.2 2004/07/06 14:43:19 mch Exp $
+   $Id: XmlPrinter.java,v 1.3 2004/09/01 11:19:06 mch Exp $
 
   Date        Author      Changes
    8 Oct 2002  M Hill      Created
@@ -33,26 +33,29 @@ public class XmlPrinter extends XmlTagPrinter
    
    /**
     * Constructor - pass in output stream to pipe to, and
-    * the initial header will be written
+    * the initial header will be written if the flag is true.
     */
-   public XmlPrinter(Writer aWriter) throws IOException
+   public XmlPrinter(Writer aWriter, boolean writeProcInstHdr) throws IOException
    {
       super(null, null, null);
       out = new PrintWriter(aWriter);
-      open();
+      open(writeProcInstHdr);
    }
    
-   protected void open() throws IOException{
-      writeLine(0,"<?xml version=\"1.0\"?>");
-   }
-
    /**
     * Constructor - pass in output stream to pipe to, and
     * the initial header will be written
     */
-   public XmlPrinter(OutputStream out) throws IOException
+   public XmlPrinter(OutputStream out, boolean writeProcInstHdr) throws IOException
    {
-      this(new OutputStreamWriter(out));
+      this(new OutputStreamWriter(out), writeProcInstHdr);
+   }
+
+
+   protected void open(boolean writeProcInstHdr) throws IOException{
+      if (writeProcInstHdr) {
+         writeLine(0,"<?xml version=\"1.0\"?>");
+      }
    }
 
    /**
@@ -130,7 +133,7 @@ public class XmlPrinter extends XmlTagPrinter
       
       try
       {
-         XmlPrinter xOut = new XmlPrinter(new OutputStreamWriter(System.out));
+         XmlPrinter xOut = new XmlPrinter(new OutputStreamWriter(System.out), true);
          
          XmlTagPrinter ftag = xOut.newTag("FRUIT","");
 
