@@ -24,8 +24,10 @@ import org.astrogrid.ui.IconFactory;
 
 public class JVotBox extends JFrame
 {
-   JVot votTable = null;
-
+   JVot votView = null;
+   JVotController votController = null;
+   
+   
    /**
     * Initializes the dialog.
     */
@@ -35,9 +37,12 @@ public class JVotBox extends JFrame
       getContentPane().setLayout(new BorderLayout());
 
       // add vot table panel
-      votTable = new JVot();
-      getContentPane().add(votTable.newVotScrollPanel(), BorderLayout.CENTER);
+      votView = new JVot();
+      getContentPane().add(votView.newVotScrollPanel(), BorderLayout.CENTER);
+      votController = new JVotController(votView);
 
+      
+      
       // Add window listener.
       this.addWindowListener
       (
@@ -59,14 +64,14 @@ public class JVotBox extends JFrame
 
       JButton saveButton = new JButton(IconFactory.getIcon("SaveAs"));
       saveButton.setToolTipText("Save VOTable to file");
-      saveButton.setActionCommand(JVot.SAVEAS_CMD);
-      saveButton.addActionListener(votTable);
+      saveButton.setActionCommand(JVotController.SAVEAS_CMD);
+      saveButton.addActionListener(votController);
       toolbar.add(saveButton);
 
       JButton loadButton = new JButton(IconFactory.getIcon("Open"));
       loadButton.setToolTipText("Load new VOTable from file");
-      loadButton.setActionCommand(JVot.LOAD_CMD);
-      loadButton.addActionListener(votTable);
+      loadButton.setActionCommand(JVotController.LOAD_CMD);
+      loadButton.addActionListener(votController);
       toolbar.add(loadButton);
 
       new EscEnterListener(this, null, null);
@@ -79,9 +84,16 @@ public class JVotBox extends JFrame
     */
    public JVot getVotTable()
    {
-      return votTable;
+      return votView;
    }
 
+   /**
+    * Expose the JVotController component
+    */
+   public JVotController getVotController()
+   {
+      return votController;
+   }
    /**
     * Shows the frame.
     */
