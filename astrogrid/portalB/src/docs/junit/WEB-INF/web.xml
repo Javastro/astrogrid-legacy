@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/docs/junit/WEB-INF/Attic/web.xml,v $</cvs:source>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/06/12 18:19:38 $</cvs:author>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    | $Log: web.xml,v $
+    | Revision 1.1  2003/06/12 18:19:38  dave
+    | Initial import into cvs ...
+    |
+    | </cvs:log>
+    |
+    +-->
+<!DOCTYPE web-app
+	PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+	"http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
+
+	<!-- Empty web.xml just to deploy the docs as a WebApp-->
+	<web-app>
+	</web-app>

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/mock/myspace/service/Attic/deploy.wsdd,v $</cvs:source>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/06/12 18:19:38 $</cvs:author>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    | $Log: deploy.wsdd,v $
+    | Revision 1.1  2003/06/12 18:19:38  dave
+    | Initial import into cvs ...
+    |
+    | </cvs:log>
+    |
+    |
+    +-->
+<deployment name="test"
+	xmlns="http://xml.apache.org/axis/wsdd/" 
+	xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"
+	>
+	<service name="myspace" style="java:RPC">
+		<parameter name="className"      value="org.astrogrid.portal.mock.myspace.service.MySpaceService"/>
+		<parameter name="allowedMethods" value="ping, getItem, findItems"/>
+		<!--+
+		    | This needs to use the same namespace as the targetNamespace in the MySpaceItem schema in the generated WSDL file.
+		    | Easiest way is to deploy the WebService without this, generate the WSDL, and then update the BeanMapping.
+		    +-->
+		<beanMapping qname="myspace:MySpaceItem" xmlns:myspace="http://service.myspace.mock.portal.astrogrid.org" languageSpecificType="java:org.astrogrid.portal.mock.myspace.service.MySpaceItem"/>
+	</service>
+</deployment>

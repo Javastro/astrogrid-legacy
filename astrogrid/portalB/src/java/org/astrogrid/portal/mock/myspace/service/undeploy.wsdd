@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/mock/myspace/service/Attic/undeploy.wsdd,v $</cvs:source>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/06/12 18:19:38 $</cvs:author>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    | $Log: undeploy.wsdd,v $
+    | Revision 1.1  2003/06/12 18:19:38  dave
+    | Initial import into cvs ...
+    |
+    | </cvs:log>
+    |
+    +-->
+<undeployment name="test"
+	xmlns="http://xml.apache.org/axis/wsdd/"
+	>
+	<service name="myspace"/>
+</undeployment>
