@@ -1,5 +1,5 @@
 /*
- * $Id: CeaDataService.java,v 1.7 2004/04/23 16:06:48 mch Exp $
+ * $Id: CeaDataService.java,v 1.8 2004/04/26 11:10:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.rmi.RemoteException;
+import org.apache.axis.types.Id;
 import org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase;
 import org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList;
 import org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue;
@@ -158,7 +159,9 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
     *
     */
    public ApplicationBase getApplicationDescription(String p1) throws RemoteException {
-      return null;
+      ApplicationBase desc = new ApplicationBase();
+      desc.setName(new Id("Datacenter Service Application"));
+      return desc;
    }
    
    /**
@@ -181,6 +184,9 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
 
 /*
 $Log: CeaDataService.java,v $
+Revision 1.8  2004/04/26 11:10:15  mch
+Added description method implementation
+
 Revision 1.7  2004/04/23 16:06:48  mch
 Fixed so target can be IVORN
 
