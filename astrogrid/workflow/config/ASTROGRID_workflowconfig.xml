@@ -73,7 +73,7 @@
     <property name="TOTAL" value="3" />
     <property name="NAME.0" value="QueryTool" />  
     <property name="NAME.1" value="VOTableMerge" /> 
-    <property name="NAME.2" value="sextractor" /> 
+    <property name="NAME.2" value="Sextractor" /> 
   </category>
   
   <!-- QueryTool CATEGORY ========================================================== -->
@@ -82,12 +82,13 @@
     <property name="INPUT_PARAMS.TOTAL" value="1" />
     <property name="INPUT_PARAM.NAME.0" value="query" />  
     <property name="INPUT_PARAM.DOCUMENTATION.query" value="Paremeter query documentation goes here" />  
-    <property name="INPUT_PARAM.TYPE.query" value="adql" />
+    <property name="INPUT_PARAM.TYPE.query" value="MySpaceADQLReference" />
     <property name="INPUT_PARAM.CARDINALITY.MIN.query" value="1" />  
     <property name="INPUT_PARAM.CARDINALITY.MAX.query" value="1" />     
     <property name="OUTPUT_PARAMS.TOTAL" value="1" />
     <property name="OUTPUT_PARAM.NAME.0" value="result" />  
-    <property name="OUTPUT_PARAM.DOCUMENTATION.result" value="Paremeter result documentation goes here" />      
+    <property name="OUTPUT_PARAM.DOCUMENTATION.result" value="Paremeter result documentation goes here" />    
+    <property name="OUTPUT_PARAM.TYPE.result" value="MySpaceVOTableReference" />       
     <property name="OUTPUT_PARAM.CARDINALITY.MIN.result" value="1" />  
     <property name="OUTPUT_PARAM.CARDINALITY.MAX.result" value="1" />     
   </category>
@@ -98,19 +99,21 @@
     <property name="INPUT_PARAMS.TOTAL" value="1" />
     <property name="INPUT_PARAM.NAME.0" value="in" />  
     <property name="INPUT_PARAM.DOCUMENTATION.in" value="Paremeter in documentation goes here" />  
+    <property name="INPUT_PARAM.TYPE.in" value="MySpaceVOTableReference" />   
     <property name="INPUT_PARAM.CARDINALITY.MIN.in" value="2" />  
     <property name="INPUT_PARAM.CARDINALITY.MAX.in" value="-1" />     
     <property name="OUTPUT_PARAMS.TOTAL" value="1" />
     <property name="OUTPUT_PARAM.NAME.0" value="out" /> 
     <property name="OUTPUT_PARAM.DOCUMENTATION.out" value="Paremeter out documentation goes here" />  
+    <property name="OUTPUT_PARAM.TYPE.out" value="MySpaceVOTableReference" /> 
     <property name="OUTPUT_PARAM.CARDINALITY.MIN.out" value="1" />  
     <property name="OUTPUT_PARAM.CARDINALITY.MAX.out" value="1" />     
   </category>
   
   
   <!-- sextractor CATEGORY ========================================================== -->
-  <category name="sextractor">
-    <property name="DOCUMENTATION" value="sextractor tools documentation goes here." /> 
+  <category name="Sextractor">
+    <property name="DOCUMENTATION" value="Sextractor tools documentation goes here." /> 
      
     <property name="INPUT_PARAMS.TOTAL" value="3" />
     

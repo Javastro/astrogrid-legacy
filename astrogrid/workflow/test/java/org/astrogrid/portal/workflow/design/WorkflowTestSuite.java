@@ -467,7 +467,7 @@ public class WorkflowTestSuite extends TestCase {
                 
             Tool
                 tool = Workflow.createTool( communitySnippet()
-                                          , "sextractor" ) ;
+                                          , "Sextractor" ) ;
                                           
             Iterator
                 it = tool.getInputParameters() ;
@@ -477,13 +477,19 @@ public class WorkflowTestSuite extends TestCase {
             while( it.hasNext() ) {
                 p = (Parameter)it.next() ;
                 if( p.getName().equals("image1") ) {
-                    p.setLocation( "myspace://imagefiles/image1_12345") ;
+                    p.setLocation( Workflow.formatMySpaceURL( communitySnippet()
+                                                            , "imagefiles"
+                                                            , "image1_12345" ) ) ;
                 }
-                else if( p.getName().equals("config_file") ) {
-                    p.setLocation( "myspace://tools/sextractor_config") ;
+                else if( p.getName().equals( "config_file" ) ) {
+                    p.setLocation( Workflow.formatMySpaceURL( communitySnippet()
+                                                            , "tools/sextractor"
+                                                            , "extractor_config") ) ;
                 }
                 else if( p.getName().equals("config_parameters") ) {
-                    p.setLocation( "myspace://tools/sextractor_parameters") ;
+                    p.setLocation( Workflow.formatMySpaceURL( communitySnippet()
+                                                            , "tools/sextractor"
+                                                            , "sextractor_parameters" ) ) ;
                 }
             }
             
@@ -492,7 +498,9 @@ public class WorkflowTestSuite extends TestCase {
             while( it.hasNext() ) {
                 p = (Parameter)it.next() ;
                 if( p.getName().equals("output") ) {
-                    p.setLocation( "myspace://votables/catalog_12345") ;
+                    p.setLocation( Workflow.formatMySpaceURL( communitySnippet()
+                                                            , "votable/files"
+                                                            , "catalog_12345" ) ) ;
                 }
             }
             
@@ -578,7 +586,7 @@ public class WorkflowTestSuite extends TestCase {
                                                       , queryName ) ;
                                                       
               votableLocation = Workflow.formatMySpaceURL( communitySnippet()
-                                                         , "votable"
+                                                         , "votables"
                                                          , "votable_0123.xml" ) ;
              
              listIt = tool.getInputParameters() ;
@@ -614,8 +622,7 @@ public class WorkflowTestSuite extends TestCase {
                  }
              }
              
-             logger.info( "Workflow: " + workflow.constructJESXML( communitySnippet() ) ) ;
-            
+             prettyPrint( "JES string:", workflow.constructJESXML( communitySnippet() ) ) ;            
              logger.info( "About to submit" ) ; 
              rc = Workflow.submitWorkflow( communitySnippet(), workflow ) ;
              logger.info( "JobController says: " + rc ) ;
