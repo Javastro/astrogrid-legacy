@@ -1,5 +1,5 @@
 /*
- * $Id: DocMessageHelper.java,v 1.1 2003/09/09 17:46:27 mch Exp $
+ * $Id: DocMessageHelper.java,v 1.2 2003/09/09 18:31:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -45,5 +45,39 @@ public class DocMessageHelper
 
    public static final String COMMUNITY_TAG = "Community";
 
+
+   /**
+    * Status doc
+    */
+   public static Element makeStatusDoc(String serviceId, String status) throws SAXException
+   {
+      try
+      {
+         /*
+         String doc =
+          "<DatacenterStatus>\n"
+         +"   "+makeServiceIdTag(serviceId)+"\n"
+         +"   <STATUS>"+status+"</STATUS>\n"
+         +"</StatusResponse>\n";
+          */
+
+         //It02 workflow-specific version
+         String doc =
+            "<?xml version='1.0' encoding='UTF8'?> "+
+            "<job name='"+serviceId+"'  >"+
+               "<jobstep name='"+serviceId+"' status='"+status+"'/>"+
+            "</job>";
+
+         return XMLUtils.newDocument(doc).getDocumentElement();
+      }
+      catch (java.io.IOException e)
+      {
+         throw new SAXException(e);
+      }
+      catch (javax.xml.parsers.ParserConfigurationException e)
+      {
+         throw new SAXException(e);
+      }
+   }
 }
 
