@@ -1,4 +1,4 @@
-/*$Id: SqlMaker.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
+/*$Id: SqlMaker.java,v 1.4 2004/10/25 10:43:12 jdt Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ public abstract class SqlMaker  {
 
 /*
 $Log: SqlMaker.java,v $
-Revision 1.3  2004/10/25 00:49:17  jdt
+Revision 1.4  2004/10/25 10:43:12  jdt
 Merges from branch PAL_MCH
 
 Revision 1.2.2.1  2004/10/22 09:05:15  mch

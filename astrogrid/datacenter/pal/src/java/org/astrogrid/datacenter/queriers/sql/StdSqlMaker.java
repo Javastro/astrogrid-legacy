@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
+/*$Id: StdSqlMaker.java,v 1.4 2004/10/25 10:43:12 jdt Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -384,7 +384,7 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
  $Log: StdSqlMaker.java,v $
- Revision 1.3  2004/10/25 00:49:17  jdt
+ Revision 1.4  2004/10/25 10:43:12  jdt
  Merges from branch PAL_MCH
 
  Revision 1.2.2.2  2004/10/22 14:34:56  mch

@@ -1,4 +1,4 @@
-/*$Id: AxisDataService05QueryTest.java,v 1.5 2004/10/25 00:49:17 jdt Exp $
+/*$Id: AxisDataService05QueryTest.java,v 1.6 2004/10/25 10:43:12 jdt Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -98,7 +98,7 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataService05QueryTest.java,v $
-Revision 1.5  2004/10/25 00:49:17  jdt
+Revision 1.6  2004/10/25 10:43:12  jdt
 Merges from branch PAL_MCH
 
 Revision 1.4.6.1  2004/10/21 19:10:24  mch

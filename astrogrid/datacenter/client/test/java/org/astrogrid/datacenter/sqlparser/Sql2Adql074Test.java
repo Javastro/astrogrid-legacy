@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql074Test.java,v 1.8 2004/10/25 00:49:17 jdt Exp $
+ * $Id: Sql2Adql074Test.java,v 1.9 2004/10/25 10:43:12 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -176,7 +176,7 @@ public class Sql2Adql074Test extends TestCase   {
 
 /*
  $Log: Sql2Adql074Test.java,v $
- Revision 1.8  2004/10/25 00:49:17  jdt
+ Revision 1.9  2004/10/25 10:43:12  jdt
  Merges from branch PAL_MCH
 
  Revision 1.7.6.1  2004/10/21 19:10:24  mch

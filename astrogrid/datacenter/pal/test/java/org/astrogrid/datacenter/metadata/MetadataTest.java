@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.5 2004/10/25 00:49:17 jdt Exp $
+/*$Id: MetadataTest.java,v 1.6 2004/10/25 10:43:12 jdt Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -174,7 +174,7 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
- Revision 1.5  2004/10/25 00:49:17  jdt
+ Revision 1.6  2004/10/25 10:43:12  jdt
  Merges from branch PAL_MCH
 
  Revision 1.4.6.5  2004/10/22 09:13:37  mch

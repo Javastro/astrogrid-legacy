@@ -1,4 +1,4 @@
-/*$Id: FitsMaker.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
+/*$Id: FitsMaker.java,v 1.4 2004/10/25 10:43:12 jdt Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -167,7 +167,7 @@ public class FitsMaker {
 
 /*
 $Log: FitsMaker.java,v $
-Revision 1.3  2004/10/25 00:49:17  jdt
+Revision 1.4  2004/10/25 10:43:12  jdt
 Merges from branch PAL_MCH
 
 Revision 1.2.8.1  2004/10/21 19:10:24  mch

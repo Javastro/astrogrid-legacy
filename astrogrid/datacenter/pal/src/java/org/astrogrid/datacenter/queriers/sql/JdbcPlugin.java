@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.8 2004/10/25 00:49:17 jdt Exp $
+ * $Id: JdbcPlugin.java,v 1.9 2004/10/25 10:43:12 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */

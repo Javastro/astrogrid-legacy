@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlTestHelper.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
+ * $Id: AdqlTestHelper.java,v 1.4 2004/10/25 10:43:12 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -110,7 +110,7 @@ public class AdqlTestHelper    {
 
 /*
  $Log: AdqlTestHelper.java,v $
- Revision 1.3  2004/10/25 00:49:17  jdt
+ Revision 1.4  2004/10/25 10:43:12  jdt
  Merges from branch PAL_MCH
 
  Revision 1.2.6.1  2004/10/19 17:21:10  mch

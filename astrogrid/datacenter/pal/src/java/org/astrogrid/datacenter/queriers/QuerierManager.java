@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.7 2004/10/25 00:49:17 jdt Exp $
+/*$Id: QuerierManager.java,v 1.8 2004/10/25 10:43:12 jdt Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -305,7 +305,7 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
- Revision 1.7  2004/10/25 00:49:17  jdt
+ Revision 1.8  2004/10/25 10:43:12  jdt
  Merges from branch PAL_MCH
 
  Revision 1.6.10.1  2004/10/20 19:42:03  mch

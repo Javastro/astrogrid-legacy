@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.7 2004/10/25 00:49:17 jdt Exp $
+ * $Id: Querier.java,v 1.8 2004/10/25 10:43:12 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -322,7 +322,7 @@ public class Querier implements Runnable, PluginListener {
 }
 /*
  $Log: Querier.java,v $
- Revision 1.7  2004/10/25 00:49:17  jdt
+ Revision 1.8  2004/10/25 10:43:12  jdt
  Merges from branch PAL_MCH
 
  Revision 1.6.6.1  2004/10/20 18:12:45  mch

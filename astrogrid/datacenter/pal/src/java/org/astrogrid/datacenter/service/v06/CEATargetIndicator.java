@@ -1,4 +1,4 @@
-/*$Id: CEATargetIndicator.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
+/*$Id: CEATargetIndicator.java,v 1.4 2004/10/25 10:43:12 jdt Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,7 +48,7 @@ public abstract class CEATargetIndicator extends TargetIndicator  {
 
 /*
 $Log: CEATargetIndicator.java,v $
-Revision 1.3  2004/10/25 00:49:17  jdt
+Revision 1.4  2004/10/25 10:43:12  jdt
 Merges from branch PAL_MCH
 
 Revision 1.2.8.1  2004/10/20 18:12:45  mch

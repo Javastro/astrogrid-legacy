@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicatorTest.java,v 1.5 2004/10/25 00:49:17 jdt Exp $
+ * $Id: TargetIndicatorTest.java,v 1.6 2004/10/25 10:43:12 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */

@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.13 2004/10/25 00:49:17 jdt Exp $
+/*$Id: InstallationSelfCheck.java,v 1.14 2004/10/25 10:43:12 jdt Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -184,7 +184,7 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
- Revision 1.13  2004/10/25 00:49:17  jdt
+ Revision 1.14  2004/10/25 10:43:12  jdt
  Merges from branch PAL_MCH
 
  Revision 1.12.6.1  2004/10/21 16:14:21  mch

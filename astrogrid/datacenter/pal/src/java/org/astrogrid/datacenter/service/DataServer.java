@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.6 2004/10/25 00:49:17 jdt Exp $
+ * $Id: DataServer.java,v 1.7 2004/10/25 10:43:12 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */

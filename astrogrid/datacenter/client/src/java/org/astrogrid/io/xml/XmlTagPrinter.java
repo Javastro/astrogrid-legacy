@@ -1,5 +1,5 @@
 /*
-   $Id: XmlTagPrinter.java,v 1.6 2004/10/25 00:49:17 jdt Exp $
+   $Id: XmlTagPrinter.java,v 1.7 2004/10/25 10:43:12 jdt Exp $
 
    (c) Copyright...
 */
@@ -256,7 +256,7 @@ public class XmlTagPrinter
 
 /*
  $Log: XmlTagPrinter.java,v $
- Revision 1.6  2004/10/25 00:49:17  jdt
+ Revision 1.7  2004/10/25 10:43:12  jdt
  Merges from branch PAL_MCH
 
  Revision 1.5.32.1  2004/10/20 20:31:11  mch
