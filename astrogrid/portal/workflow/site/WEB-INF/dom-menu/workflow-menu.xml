@@ -12,7 +12,7 @@
     <agp:item
         contents="Open"
         contents-hover="Open"
-        icon="Open.gif"
+        icon=""
         uri=""
         target="_self"
         status-text="Open a workflow"/>
@@ -26,7 +26,7 @@
     <agp:item
         contents="Save As"
         contents-hover="Save As"
-        icon="Save.gif"
+        icon=""
         uri=""
         target="_self"
         status-text="Save a workflow as..."/>        
@@ -34,7 +34,7 @@
   <agp:menu
       contents="Edit"
       contents-hover="Edit"
-      icon="Edit.gif"
+      icon=""
       uri=""
       target="_self"
       status-text="Edit workflow...">
