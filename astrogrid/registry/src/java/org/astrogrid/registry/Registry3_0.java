@@ -5,7 +5,7 @@
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
  
-package org.astrogrid.registry;
+package astrogrid.registry.src.java.org.astrogrid.registry;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import de.gmd.ipsi.xql.*;

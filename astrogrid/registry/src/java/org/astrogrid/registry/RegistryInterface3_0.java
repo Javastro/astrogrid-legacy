@@ -4,7 +4,7 @@
  * To change this generated comment go to 
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-package org.astrogrid.registry;
+package astrogrid.registry.src.java.org.astrogrid.registry;
 
 /**
  * @author Elizabeth Auden
