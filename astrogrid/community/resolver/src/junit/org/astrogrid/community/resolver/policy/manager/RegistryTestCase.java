@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/policy/manager/Attic/RegistryTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2004/08/05 12:05:56 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: RegistryTestCase.java,v $
+ *   Revision 1.6  2004/08/05 12:05:56  KevinBenson
+ *   commented out one line because the class it was referencing is now an interface and that variable is no longer there
+ *
+ *   Revision 1.5.38.1  2004/08/03 20:40:40  KevinBenson
+ *   small comment out a reference to REgistryService constructor
+ *
  *   Revision 1.5  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -51,7 +57,7 @@ public class RegistryTestCase
         // Create our registry delegate.
         RegistryService registry = RegistryDelegateFactory.createQuery() ;
         System.out.println("Got registry") ;
-        System.out.println("Get property : " + registry.conf.getProperty("org.astrogrid.local/org.astrogrid.community.common.policy.manager.PolicyManager")) ;
+        //System.out.println("Get property : " + registry.conf.getProperty("org.astrogrid.local/org.astrogrid.community.common.policy.manager.PolicyManager")) ;
         //
         // Try resolving our service.
         String endPoint = registry.getEndPointByIdentifier("org.astrogrid.local/org.astrogrid.community.common.policy.manager.PolicyManager");
