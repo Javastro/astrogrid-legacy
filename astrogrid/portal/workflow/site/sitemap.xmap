@@ -226,7 +226,7 @@
       <map:match pattern="agjobmanager.html">            
         <map:act type="astrogrid-workflow" />
         <map:generate src="web/xsp/workflow-main.xsp" type="serverpages" />
-        <map:transform src="web/xsl/workflow-main.xsl">       
+        <map:transform src="web/xsl/display-workflow.xsl">       
         <map:parameter name="use-request-parameters" value="true"/>
           <!-- Add the action params -->
           <map:parameter name="action"  value="{action}"/>
