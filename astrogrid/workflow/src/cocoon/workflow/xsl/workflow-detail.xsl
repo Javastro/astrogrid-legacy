@@ -5,7 +5,6 @@
 	<xsl:param name="view=source" />
 	<xsl:param name="errormessage" />	
 	
-
 	<!--+
 	    | Match the explorer element.
 		+-->
@@ -33,12 +32,18 @@
 		    </xsl:if>
 	        <tr>
 	            <td>
-	                Workflow name:<xsl:value-of select="@workflow-name"/>
+	                Workflow name:   
+	             </td>
+	             <td>
+	                 <xsl:value-of select="@workflow-name"/>
 	             </td>
 	        </tr>
 	        <tr>
 	            <td>
-           	        Workflow description:<xsl:value-of select="@workflow-description"/>
+           	        Workflow description:   
+           	    </td>
+           	    <td>
+           	        <xsl:value-of select="@workflow-description"/>
            	    </td>
            	</tr>
 	    </table> 
@@ -49,9 +54,7 @@
       <xsl:choose>	    
 
 	    <xsl:when test="@template-name = ''">
-		    <a href="http://www.astrogrid.org">
-			    <img src="OneStepJob.gif" title="OneStepJob" alt="" style="border: 0px solid ; width: 200px; height: 250px;"/>
-		    </a>
+	       <img src="OneStepJob.gif" title="OneStepJob" alt="" style="border: 0px solid ; width: 200px; height: 250px;"/>
 		</xsl:when>
 
 
@@ -62,9 +65,7 @@
            <table border="0">
               <tr>
                  <td>
-		            <a href="http://www.astrogrid.org">
-		               <img src="OneStepJob.gif" title="OneStepJob" alt="" style="border: 0px solid ;"/>
-		            </a>
+		            <img src="OneStepJob.gif" title="OneStepJob" alt="missing image" height="201" width="111" style="border: 0px solid ;"/>
 		         </td>
 		         <td>
 		            <xsl:for-each select="//step">
@@ -88,24 +89,38 @@
            <table border="0">
               <tr>                 
                  <td rowspan="6">
-		            <a href="http://www.astrogrid.org">
-			           <img src="TwoStepFlow.gif" title="TwoStepFlow" alt="" style="border: 0px solid ;"/>
-		            </a>
+			        <img src="TwoStepFlow.gif" title="TwoStepFlow" alt="missing image" height="260" width="200" style="border: 0px solid ;"/>
 		         </td>
-		      </tr>
-		      <xsl:for-each select="//step">
-		      <xsl:choose>
-		         <xsl:when test="@step-name = 'StepOne'">
-                    <xsl:call-template name="SelectTemplate"/>
-		         </xsl:when>
-		         <xsl:when test="@step-name = 'StepTwo'">
-                    <tr><xsl:call-template name="SelectTemplate"/></tr>
-		         </xsl:when>		         
-		         <xsl:otherwise>Query: <xsl:value-of select="@step-name"/></xsl:otherwise>		            
-		      </xsl:choose>
-	       </xsl:for-each>
-		</table>		 
-       </xsl:when>
+		         <td>
+		            <xsl:for-each select="//step">
+		               <xsl:choose>
+		                  <xsl:when test="@step-name = 'StepOne'">
+		                     <tr>
+		                        <td> 
+                                   <xsl:call-template name="SelectTemplate"/>
+                                </td>
+                             </tr>
+		                  </xsl:when>
+		                  <xsl:when test="@step-name = 'StepTwo'">
+                             <tr>
+                                <td>
+                                   <xsl:call-template name="SelectTemplate"/>
+                                </td>
+                             </tr>
+		                  </xsl:when>		         
+		                  <xsl:otherwise>
+		                     <tr>
+		                        <td> 
+		                           Query: <xsl:value-of select="@step-name"/>	            
+		                        </td>
+		                     </tr>
+		                  </xsl:otherwise>	
+		               </xsl:choose>
+	                </xsl:for-each>
+	             </td>
+	          </tr>
+		   </table>		 
+        </xsl:when>
 
 
 	<!--+
@@ -115,25 +130,33 @@
            <table border="0">
               <tr>
                  <td rowspan="6">
-		            <a href="http://www.astrogrid.org">
-			           <img src="TwoStepSequence.gif" title="TwoStepSequence" alt="" style="border: 0px solid ;"/>
-		            </a>
+			        <img src="TwoStepSequence.gif" title="TwoStepSequence" alt="missing image" height="260" width="111" style="border: 0px solid ;"/>
 		         </td>
-		         <td>
-		            <xsl:for-each select="//step">
-		               <xsl:choose>
-		                  <xsl:when test="@step-name = 'StepOne'">
-                             <tr><xsl:call-template name="SelectTemplate"/></tr>
-		                  </xsl:when>
-		                  <xsl:when test="@step-name = 'StepTwo'">
-                             <tr><xsl:call-template name="SelectTemplate"/></tr>
-		                  </xsl:when>		            
-		                  <xsl:otherwise>
-		                     Query: <xsl:value-of select="@step-name"/>
-		                  </xsl:otherwise>
-		               </xsl:choose>    
-		           </xsl:for-each>
-		         </td>
+		         <xsl:for-each select="//step">
+		            <xsl:choose>
+		               <xsl:when test="@step-name = 'StepOne'">         
+		                  <tr>
+                             <td>
+                                <xsl:call-template name="SelectTemplate"/>
+                             </td>
+                          </tr>           
+		               </xsl:when>
+		               <xsl:when test="@step-name = 'StepTwo'">
+		                  <tr>
+                             <td>
+                                <xsl:call-template name="SelectTemplate"/>
+                             </td>      
+                          </tr>   
+		               </xsl:when>		            
+		               <xsl:otherwise>
+		                  <tr> 
+		                     <td> 
+		                        Query: <xsl:value-of select="@step-name"/>
+                             </td>
+                          </tr>   
+		               </xsl:otherwise>
+		            </xsl:choose>    
+		         </xsl:for-each>
 		      </tr>
 		   </table>
 	   </xsl:when>
@@ -157,12 +180,12 @@
           </tr>          
           <tr width="80%" align="center" valign="middle" style="color: rgb(51,51,255); background-color: rgb(204,204,204);">
             <td width="0" height="0" colspan="1" rowspan="1" style=" font-family: arial,helvetica,sans-serif; font-size-adjust: 2; font-weight: bold; height: 30px; width: 200px;">
-              <a href="agworkflow-administer.html?action=save-workflow">
+              <a href="agjobmonitor.html?action=save-workflow">
                 Save
               </a>
             </td>
             <td width="0" height="0" colspan="1" rowspan="1" style=" font-family: arial,helvetica,sans-serif; font-size-adjust: 2; font-weight: bold; height: 30px; width: 200px;">
-              <a href="agworkflow-admin.html">
+              <a href="agjobmonitor.html">
                 Clear
               </a>
             </td>

@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
 <xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	
-	<xsl:param name="user-param" />
-	<xsl:param name="name" />
-	<xsl:param name="community" />	
+		
 	<xsl:param name="action" />
     <xsl:param name="errormessage" />			
 
@@ -48,7 +45,16 @@
 			    <xsl:if test="$action = 'send'">
 			      <xsl:call-template name="list_workflow"/>
 		          <xsl:call-template name="send_worklow" />			    
-		        </xsl:if>		        		        		        	        
+		        </xsl:if>
+			    <xsl:if test="$action = 'delete-workflow'">
+			      <xsl:call-template name="list_workflow"/>			    
+		        </xsl:if>
+			    <xsl:if test="$action = 'submit-workflow'">
+			      <xsl:call-template name="list_workflow"/>			    
+		        </xsl:if>
+			    <xsl:if test="$action = 'save-workflow'">
+			      <xsl:call-template name="list_workflow"/>			    
+		        </xsl:if>		        		        		        		        		        		        	        
 			</content>
 		</page>
 	</xsl:template>
@@ -169,23 +175,7 @@
                 </td>
                 <p/>
               </tr>
-<!--              <tr>
-                <td>
-                  UserId:
-                </td>
-                <td>
-                  <xsl:value-of select="$user-param"/>
-                </td>
-              </tr>
               <tr>
-                <td>
-                  Community:
-                </td>
-                <td>
-                  <xsl:value-of select="$community"/>
-                </td>
-              </tr>
--->              <tr>
                 <td>
                   Workflow Name:
                 </td>
@@ -206,9 +196,8 @@
                  Template:
                </td>
                <td>
-<!--                 <br><input type="radio" name="template" value="none_selected" checked="true">None</input></br>  -->
                  <table>
-                   <tr><td><input type="radio" name="template" value="OneStepJob">one step sequence</input></td></tr>
+                   <tr><td><input type="radio" name="template" value="OneStepJob" checked="true">one step sequence</input></td></tr>
                    <tr><td><input type="radio" name="template" value="TwoParallelJobsteps">two step flow</input></td></tr>
                    <tr><td><input type="radio" name="template" value="TwoSequentialJobsteps">two step sequence</input></td></tr>
                  </table>
@@ -228,7 +217,7 @@
 	    | Edit workflow
 	    +-->	
 	<xsl:template name="edit_worklow">
-	    <form name="editWorkflow" method="get" action="agworkflow-administer.html">
+	    <form name="editWorkflow" method="get" action="agjobmonitor.html">
           <table cellpadding="2" cellspacing="2" border="0">
             <tbody>
               <tr width="80%" align="center" valign="middle" style="color: rgb(51,51,255); background-color: rgb(204,204,204);">
@@ -236,23 +225,7 @@
                   Edit workflow
                 </td>
               </tr>
-<!--              <tr>
-                <td>
-                  UserId:
-                </td>
-                <td>
-                  <xsl:value-of select="$user-param"/>
-                </td>
-              </tr>
               <tr>
-                <td>
-                  Community:
-                </td>
-                <td>
-                  <xsl:value-of select="$community"/>
-                </td>
-              </tr>
--->              <tr>
                 <td>
                   Job Name:
                 </td>
@@ -274,7 +247,7 @@
 	    | Delete workflow
 	    +-->	
 	<xsl:template name="delete_worklow">
-	    <form name="deleteWorkflow" method="get" action="agworkflow-administer.html">
+	    <form name="deleteWorkflow" method="get" action="agjobmonitor.html">
           <table cellpadding="2" cellspacing="2" border="0">
             <tbody>
               <tr width="80%" align="center" valign="middle" style="color: rgb(51,51,255); background-color: rgb(204,204,204);">
@@ -282,23 +255,7 @@
                   Delete workflow
                 </td>
               </tr>
-<!--              <tr>
-                <td>
-                  UserId:
-                </td>
-                <td>
-                  <xsl:value-of select="$user-param"/>
-                </td>
-              </tr>
               <tr>
-                <td>
-                  Community:
-                </td>
-                <td>
-                  <xsl:value-of select="$community"/>
-                </td>
-              </tr>
--->              <tr>
                 <td>
                   Job Name:
                 </td>
@@ -320,7 +277,7 @@
 	    | Submit workflow
 	    +-->	
 	<xsl:template name="submit_worklow">
-	    <form name="submitWorkflow" method="get" action="agworkflow-administer.html">
+	    <form name="submitWorkflow" method="get" action="agjobmonitor.html">
           <table cellpadding="2" cellspacing="2" border="0">
             <tbody>
               <tr width="80%" align="center" valign="middle" style="color: rgb(51,51,255); background-color: rgb(204,204,204);">

@@ -44,7 +44,7 @@
 
 
 		public void queryList ( Iterator iterator ) throws SAXException {
-        	if( TRACE_ENABLED ) trace("workflow-administer.queryList() entry");
+        	if( TRACE_ENABLED ) trace("workflow-administer-xsp.queryList() entry");
         	
         	xspAttrQuery = new AttributesImpl();
 
@@ -86,7 +86,7 @@
 		} // end of outputWorkflow()
 
 
-		private void outputQuery( Query query, AttributesImpl xspAttr )
+		private void outputQuery( String query, AttributesImpl xspAttr )
                                                         throws SAXException {	
 			if( TRACE_ENABLED )
                trace( "workflow-administer-xsp.outputQuery() entry");
@@ -95,7 +95,7 @@
 
 			<content>
 				<xsp:element name="query">
-					<xsp:attribute name="query-name"><xsp:expr>query</xsp:expr></xsp:attribute>													
+					<xsp:attribute name="query-name">query</xsp:attribute>													
 <!--					<xsp:attribute name="query-name"><xsp:expr>query.getName()</xsp:expr></xsp:attribute>  -->
 <!--					<xsp:attribute name="description"><xsp:expr>query.getDescription()</xsp:expr></xsp:attribute> -->
 				</xsp:element>
