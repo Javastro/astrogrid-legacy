@@ -1,5 +1,5 @@
 /*
- * $Id: TestMySqlQuerier.java,v 1.2 2003/08/27 18:12:07 mch Exp $
+ * $Id: TestMySqlQuerier.java,v 1.3 2003/08/28 00:00:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -35,15 +35,15 @@ public class TestMySqlQuerier extends TestCase
       //load test query file
       URL url = getClass().getResource("testQuery.xml");
       Document fileDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
-      
+
       //extract <query> node
       NodeList queryNodes = fileDoc.getDocumentElement().getElementsByTagName(AdqlTags.QUERY_ELEMENT);
       Element queryElement = (Element) queryNodes.item(0); //should only be 1
-      
+
       assertNotNull(queryElement);
 
       //convert to query
-      Query query = new Query(queryElement, null);
+      Query query = new Query(queryElement);
 
       //make connection to database
       MySqlQuerier querier = new MySqlQuerier();

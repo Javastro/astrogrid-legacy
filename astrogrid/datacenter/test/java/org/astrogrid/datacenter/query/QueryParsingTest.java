@@ -36,7 +36,7 @@ public class QueryParsingTest extends TestCase {
 
     /** package name of test resource files */
     //public final static String RESOURCE_PREFIX="org/astrogrid/datacenter/query/inputs/";
-   
+
    /** Given a filename, locates that filename as a subdirectory ./input/ from
     * this class, loads it as a DOM document and extracts the QUERY element to
     * return
@@ -46,9 +46,9 @@ public class QueryParsingTest extends TestCase {
       //locate test query file
       fileName = "."+File.separator+"inputs"+File.separator+fileName;
       URL url = getClass().getResource(fileName);
-      
+
       assertTrue("Cannot find file '"+fileName+"'", url != null);
-      
+
       //load it as a DOM
       Document fileDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
 
@@ -76,7 +76,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString();
             // logger.info( "testQueryToString_CONE: " + resultString ) ;
             assertEquals(resultString,sqlString);
@@ -97,7 +97,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString();
             assertEquals(resultString,sqlString);
     } // end of testQueryToString_AND_with_EQUALS_and_NOT_EQUALS()
@@ -117,7 +117,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString();
             //       logger.info( "testQueryToString_CONE_with_AND: " + resultString ) ;
             assertEquals(resultString,sqlString);
@@ -139,7 +139,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString();
             //       logger.info( "testQueryToString_BETWEEN_BETWEEN_GT: " + resultString ) ;
             assertEquals(resultString.replaceAll(" ", ""),sqlString.replaceAll(" ", ""));
@@ -161,7 +161,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString();
             //       logger.info( "testQueryToString_AND_GTE_LTE_OR_NE_GT_LT_NE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -180,7 +180,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString();
             //       logger.info( "testQueryToString_AND_GT_NOT_NULL: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -201,7 +201,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString();
             //       logger.info( "testQueryToString_AND_LTE_GT_LT_NE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -223,7 +223,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString();
             //       logger.info( "testQueryToString_AND_OR_GT_LTE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -241,7 +241,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             //       logger.info( "testQueryToString_COUNT_with_no_criteria: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -263,7 +263,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             //       logger.info( "testQueryToString_IN_with_list: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -281,7 +281,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             //       logger.info( "testQueryToString_MIN_MAX_with_no_criteria: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -300,7 +300,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             //       logger.info( "testQueryToString_NOT_AND_GT_LTE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -318,7 +318,7 @@ public class QueryParsingTest extends TestCase {
             this.setUpQueryElement( fileName);
         Query query = null;
          String resultString = null;
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             //       logger.info( "testQueryToString_OR_GTE_LTE_GT_LT: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -338,7 +338,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             //       logger.info( "testQueryToString_OR_GT_AND_GT_LTE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -357,7 +357,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_LIKE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -377,7 +377,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_LIKE_AND_LIKE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -396,7 +396,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_NOT_LIKE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -415,7 +415,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_PLUS: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -435,7 +435,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_MINUS: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -455,7 +455,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
 
             assertTrue(resultString.equals(sqlString));
@@ -473,7 +473,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_ORDER_BY: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -492,7 +492,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_GROUP_BY: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -514,7 +514,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_IN_WITH_SUBQUERY: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -535,7 +535,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_EXISTS_WITH_SUBQUERY: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -555,7 +555,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_COLUMN_ARITMETIC_PLUS_GT_MINUS: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -575,7 +575,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_COLUMN_ARITMETIC_MULTIPLY: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -596,7 +596,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_COLUMN_ARITMETIC_DIVIDE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -615,7 +615,7 @@ public class QueryParsingTest extends TestCase {
         Query query = null;
         String resultString = null;
 
-            query = new Query(queryElement, factory);
+            query = new Query(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_COLUMN_ARITMETIC_DIVIDE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
