@@ -73,7 +73,8 @@ public class MySpaceManagerDelegate {
 	 * @return
 	 * @throws Exception
 	 */
-	public String copyDataHolder(String jobDetails) throws Exception {
+	//public String copyDataHolder(String jobDetails) throws Exception {
+	public String copyDataHolding(String jobDetails) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -97,7 +98,8 @@ public class MySpaceManagerDelegate {
 	 * @return
 	 * @throws Exception
 	 */
-	public String createContainer(String jobDetails) throws Exception {
+	//public String createContainer(String jobDetails) throws Exception {
+	public String createFolder(String jobDetails) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -146,7 +148,7 @@ public class MySpaceManagerDelegate {
 	 * @return
 	 * @throws Exception
 	 */
-	public String deleteDataHolder(String jobDetails) throws Exception {
+	public String deleteDataHolding(String jobDetails) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -198,7 +200,8 @@ public class MySpaceManagerDelegate {
 	 * @return
 	 * @throws Exception
 	 */
-	public String exportDataHolder(String jobDetails) throws Exception {
+	//public String exportDataHolder(String jobDetails) throws Exception {
+	public String getDataHolding(String jobDetails) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -248,6 +251,7 @@ public class MySpaceManagerDelegate {
 	 * @param jobDetails: use mySpace/configFiles/MSManagerRequestTemplate.xml to create an xml String by filling in userID/communityID/jobID/serverFileName
 	 * @return
 	 * @throws Exception
+	 * @deprecated
 	 */
 	public String importDataHolder(String jobDetails) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
@@ -274,7 +278,8 @@ public class MySpaceManagerDelegate {
 	 * @return
 	 * @throws Exception
 	 */
-	public String lookupDataHolderDetailse(String jobDetails) throws Exception {
+	//public String lookupDataHolderDetailse(String jobDetails) throws Exception {
+	public String listDataHolding(String jobDetails) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -300,7 +305,8 @@ public class MySpaceManagerDelegate {
 	 * @throws Exception
 	 */	
 	
-	public String lookupDataHoldersDetailse(String jobDetails) throws Exception {
+	//public String lookupDataHoldersDetailse(String jobDetails) throws Exception {
+	public String listDataHoldings(String jobDetails) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -325,7 +331,8 @@ public class MySpaceManagerDelegate {
 	 * @return
 	 * @throws Exception
 	 */
-	public String moveDataHolder(String jobDetails) throws Exception {
+	//public String moveDataHolder(String jobDetails) throws Exception {
+	public String renameDataHolding(String jobDetails) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -370,6 +377,13 @@ public class MySpaceManagerDelegate {
 		return (String)value;
 	}	
 		
+    /**
+     * 
+     * @param jobDetails
+     * @return
+     * @throws Exception
+     * @deprecated
+     */
 	public String structureMySpace(String jobDetails) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
@@ -395,7 +409,8 @@ public class MySpaceManagerDelegate {
 	 * @return
 	 * @throws Exception
 	 */
-	public String upLoad(String jobDetails) throws Exception {
+	//public String upLoad(String jobDetails) throws Exception {
+	public String saveDataHolding(String jobDetails) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
