@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterLoader.java,v 1.3 2003/12/11 13:23:02 pah Exp $
+ * $Id: ParameterLoader.java,v 1.4 2003/12/12 21:30:46 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -34,7 +34,9 @@ import org.astrogrid.applications.AbstractApplication;
  */
 public class ParameterLoader {
    
-   private static final String INPUTPARAMETER_ELEMENT = "tool/input/parameter";
+   //treat input and output parameters just the same for now - the information as to what they are is in the interface definition
+   //TODO should treat them separately to do better error check of the submitted parameter specifications
+   private static final String INPUTPARAMETER_ELEMENT = "*/parameter";
    private Digester digester;
    private AbstractApplication application;
    

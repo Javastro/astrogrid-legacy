@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoaderTest.java,v 1.8 2003/12/09 23:01:15 pah Exp $
+ * $Id: DescriptionLoaderTest.java,v 1.9 2003/12/12 21:30:46 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -112,6 +112,7 @@ public class DescriptionLoaderTest extends DescriptionBaseTestCase {
          }
 
          // lets look at a some of the properties
+         assertEquals("commandposition", 1, p1.getCommandPosition());
          System.out.println("name:" + p1.getName());
          System.out.println("desc:" + p1.getDisplayDescription());
          ApplicationInterface intf = null;
@@ -124,8 +125,8 @@ public class DescriptionLoaderTest extends DescriptionBaseTestCase {
          assertNotNull("the inferface object is null", intf);
 
          String[] pds = intf.getArrayofInputs();
-         assertEquals("interfaace -wrong number of input parametes", 5,pds.length);
-         assertEquals("input parameter name", "P2", pds[0]);
+         assertEquals("interfaace -wrong number of input parametes", 4, pds.length);
+         assertEquals("input parameter name", "P1", pds[0]);
          try {
             ParameterDescription inp1 = intf.getInputParameter("P2");
          }

@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerDelegateTest.java,v 1.2 2003/12/09 23:01:15 pah Exp $
+ * $Id: ApplicationControllerDelegateTest.java,v 1.3 2003/12/12 21:30:46 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,7 +15,9 @@ package org.astrogrid.applications.delegate;
 
 import java.rmi.RemoteException;
 
+import org.astrogrid.applications.delegate.beans.ParameterValues;
 import org.astrogrid.applications.delegate.beans.SimpleApplicationDescription;
+import org.astrogrid.applications.delegate.beans.User;
 import org.astrogrid.applications.description.TestAppConst;
 
 import junit.framework.TestCase;
@@ -32,12 +34,20 @@ public class ApplicationControllerDelegateTest extends TestCase {
     * @param arg0
     */
    
+   private int executionid;
+   private User user;
+   private ParameterValues parameters;
+   private String applicationid;
+   private String monitorURL;
    ApplicationControllerDelegate delegate;
+   private static String endpoint = "http://localhost:8080/astrogrid-applications/services/ApplicationControllerService";
    public ApplicationControllerDelegateTest(String arg0) {
       super(arg0);
+      
    }
 
    public static void main(String[] args) {
+      //TODO set the endpoint from here?
       junit.textui.TestRunner.run(ApplicationControllerDelegateTest.class);
    }
 
@@ -46,9 +56,17 @@ public class ApplicationControllerDelegateTest extends TestCase {
     */
    protected void setUp() throws Exception {
       super.setUp();
-      delegate = new ApplicationControllerDelegate("http://localhost:8080/astrogrid-applications/services/ApplicationControllerService");
+      delegate = new ApplicationControllerDelegate(endpoint);
       assertNotNull(delegate);
-   }
+      user = new User(); 
+      user.setAccount("noone");
+      user.setGroup("nogroup");
+      user.setToken("notoken");
+
+     monitorURL="JESMonitorDummy";
+     applicationid = TestAppConst.TESTAPP_NAME;
+     parameters = new ParameterValues();
+  }
 
 
    final public void testListApplications() {
@@ -77,11 +95,29 @@ public class ApplicationControllerDelegateTest extends TestCase {
    }
 
    final public void testInitializeApplication() {
-      //TODO Implement initializeApplication().
+      parameters.setMethodName(TestAppConst.MAIN_INTERFACE);
+      parameters.setParameterSpec(TestAppConst.PARAMETERSPEC1);
+      try {
+         executionid = delegate.initializeApplication(endpoint, applicationid, monitorURL, user, parameters);
+         assertTrue("executionid valid", executionid != -1);
+      }
+      catch (RemoteException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      
    }
 
    final public void testExecuteApplication() {
-      //TODO Implement executeApplication().
+      System.out.println("testing execution");
+      testInitializeApplication();
+      try {
+         delegate.executeApplication(executionid);
+      }
+      catch (RemoteException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
    }
 
    final public void testQueryApplicationExecutionStatus() {

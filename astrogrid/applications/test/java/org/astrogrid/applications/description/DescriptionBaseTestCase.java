@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionBaseTestCase.java,v 1.1 2003/12/05 22:52:16 pah Exp $
+ * $Id: DescriptionBaseTestCase.java,v 1.2 2003/12/12 21:30:46 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -17,6 +17,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
+import org.astrogrid.applications.common.config.ApplicationControllerConfig;
 import org.astrogrid.applications.common.config.ConfigLoader;
 import org.astrogrid.applications.manager.CommandLineApplicationController;
 
@@ -42,21 +43,18 @@ public class DescriptionBaseTestCase extends TestCase {
     */
    public DescriptionBaseTestCase(String arg0) {
       super(arg0);
-      // TODO Auto-generated constructor stub
+      ConfigLoader.setConfigType(ConfigLoader.TEST_CONFIG);
    }
 
    protected CommandLineApplicationController ac;
 
-   protected final String testFile = "TestApplicationConfig.xml";
 
    protected void setUp() throws Exception {
       super.setUp();
       ConfigLoader.setConfigType(ConfigLoader.TEST_CONFIG);
-      urlconfig = (this.getClass()).getResource(testFile);
-      assertNotNull("cannot find the input test file " + testFile, urlconfig);
-   
-      URI uri = new URI(urlconfig.toString());
-      inputFile = new File(uri);
+      config = ApplicationControllerConfig.getInstance();
+      inputFile = config.getApplicationConfigFile();
+      assertNotNull("application config file", inputFile);
       ac = new CommandLineApplicationController();
       assertNotNull("Cannot create application controller", ac);
    }
@@ -66,5 +64,7 @@ public class DescriptionBaseTestCase extends TestCase {
    protected File inputFile;
 
    protected String TESTAPPNAME = TestAppConst.TESTAPP_NAME;
+
+   protected ApplicationControllerConfig config;
    
 }

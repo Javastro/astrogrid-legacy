@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.3 2003/12/11 13:23:02 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.4 2003/12/12 21:30:46 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -26,9 +26,7 @@ import org.astrogrid.applications.common.io.StreamPiper;
  * A generic model for a command line application. This generally assumes that the application can be run from a command line obtaining all of its parameters from commandline arguments and possibly standard in. 
  * The application can interact with the filesystem.
  * 
- * This is achieved with the {@link java.lang.Runtime#exec(java.lang.String[], java.lang.String[], java.io.File) call, and note should be taken of the warnings given in the {@link java.lang.Process} documentation 
- * where it indicates that this method will not work well for shell scripts in certain circumstances. It appears that if the command
- *  line parameters are such that the invoking shell wants to output errors to standard error before this class has time to set up the readers then it will hang (under red hat linux 9 it displays this behaviour).
+ * This is achieved with the {@link java.lang.Runtime#exec(java.lang.String[], java.lang.String[], java.io.File) call,
  * 
  * It was programmed/tested under unix, but I think that the code would work with windows based systems with very little alteration.
  * @author Paul Harrison (pah@jb.man.ac.uk)

@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterDescription.java,v 1.3 2003/12/11 13:23:02 pah Exp $
+ * $Id: ParameterDescription.java,v 1.4 2003/12/12 21:30:46 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -86,7 +86,7 @@ public abstract class ParameterDescription {
    {
       List cmdarg = new ArrayList(); 
       
-      if (commandPosition != -1) {
+      if (commandPosition == -1) {
          // if not a command position type parameter then we need to add a switch
          String sw = name;
          if(commandSwitch != null)
@@ -94,7 +94,7 @@ public abstract class ParameterDescription {
             sw = commandSwitch;
          }
          if (switchType.equalsIgnoreCase("normal")) {
-            cmdarg.add( "-"+sw+" ");
+            cmdarg.add( "-"+sw);
             cmdarg.add(val);
             
          }
@@ -103,6 +103,10 @@ public abstract class ParameterDescription {
 
          }
        
+      }
+      else
+      {
+         cmdarg.add(val);
       }
       
       return cmdarg;

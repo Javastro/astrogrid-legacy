@@ -32,32 +32,57 @@
     </path>
     
 <property name="maven.war.src" value="${axis.webapp.srcdir}"/> 
+<property name="maven.war.webapp.dir" location="${maven.build.dir}/${pom.artifactId}" /> <!-- set this early to default - does not seem to be set n the war:webapp post goal -->
 
 
 	<postGoal name="war:webapp">
-		<echo message="${maven.war.src}"/>
+	    <attainGoal name="delegatejar" />
+		<echo message="copying cvs webap to axis src -${maven.war.src}"/>
   <!-- make sure that the cvs maven stuff is put into the webapp - because the axis dir is regarded as source for the war goal-->
-        <copy todir="${axis.webapp.srcdir}">
+        <copy todir="${axis.webapp.srcdir}" overwrite="true">
         <fileset dir="${basedir}/src/webapp"></fileset>
         </copy>
 		<echo message="Copying generated site ${maven.docs.dest} across to webapp ${maven.war.webapp.dir}/maven"/>
 		<copy todir="${maven.war.webapp.dir}/maven" overwrite="yes">
 			<fileset dir="${maven.docs.dest}"/>
 		</copy>
-		<echo message="copying across a readme and sample config file"/>
+		<echo message="copying across a readme and Install"/>
 		<copy todir="${maven.war.webapp.dir}" overwrite="yes">
 			<fileset dir="${basedir}">
 				<include name="INSTALL"/>
 				<include name="README"/>
 			</fileset>
+			<fileset dir="${maven.build.dir}" include="ApplicationControllerDelegate-${pom.currentVersion}.jar" />
 			<!-- need to do the sample config too -->
 		</copy>
-		<echo message="copying across a schema"/>
+		<echo message="copying across xml schema"/>
 		
 		<copy todir="${maven.war.webapp.dir}/schema" overwrite="yes">
 			<fileset dir="${basedir}/schema">
 				
 			</fileset>
+		</copy>
+		
+		<echo message="copying across configuration utils and  database schema"/>
+		
+		<copy todir="${maven.war.webapp.dir}/config" overwrite="yes">
+			<fileset dir="${basedir}/src/sql">
+				
+			</fileset>
+			<fileset dir="$basedir/" include="antutils.xml"/>
+		</copy>
+		
+		<echo message="copying across a test application - ${maven.test.dest}"/>
+		
+		<copy todir="${maven.war.webapp.dir}/test" overwrite="yes">
+		    <fileset dir="${basedir}/test">
+		       <include name="app/**"/>
+		       <include name="config/**"/>
+		    </fileset>
+		    <!-- also get the test.properties from the test area-->
+		    <fileset dir="${maven.test.dest}/${testproppathfrag}">
+		       <include name="Test.properties" />
+		    </fileset>
 		</copy>
 		<!-- TODO - need to add links to the actual applications -->
 	</postGoal>
@@ -287,11 +312,15 @@ ApplicationConfigFile=${basedir}/test/config/TestApplicationConfig.xml
     </goal>
 
 
-    <goal name="delegatejar" prereqs="java:compile">
+    <goal name="delegatejar" prereqs="java:compile,test:compile">
          <jar destfile="${maven.build.dir}/ApplicationControllerDelegate-${pom.currentVersion}.jar">
             <fileset dir="${maven.build.dest}">
                <include name="**/delegate/**" />
             </fileset>
+            <fileset dir="${maven.test.dest}">
+               <include name="**/delegate/**" />
+            </fileset>
+            
          </jar>
     </goal>
 <!-- boilerplate below here -->
@@ -318,8 +347,7 @@ ApplicationConfigFile=${basedir}/test/config/TestApplicationConfig.xml
            <classpath>
                 <path refid="maven.dependency.classpath"/> 
                 <path refid="axis.classpath" />
-            </classpath>
-     
+            </classpath>    
      </taskdef>
   </goal>
 

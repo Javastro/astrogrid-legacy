@@ -1,5 +1,5 @@
 /*
- * $Id: Pref.java,v 1.1 2003/12/05 22:52:16 pah Exp $
+ * $Id: Pref.java,v 1.2 2003/12/12 21:30:46 pah Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,11 +18,12 @@ package org.astrogrid.applications.description;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
+ * @TODO need to actually use this object in the interface descriptions - at the moment the interface is simply storing parameter names, which means that the extra metainformation that is represented by this class is lost from the parameter description
  */
 public class Pref {
    private ParameterDescription parameter;
    private boolean optional;
-   private boolean repeatable;
+   private boolean repeatable; //REFACTORME would be better to have a min/max occurances
 
    /**
     * @return

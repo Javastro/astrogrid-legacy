@@ -13,6 +13,7 @@
     <property name="hsqldb.user"     value="sa"/>
     <property name="hsqldb.pass"     value="veritas"/>
     <property name="hsqldb.timeout"  value="60"/>
+    <property name="tomcat.home" location="/usr/local/tomcat"></property>
 
     <property name="hsqldb.url"      value="jdbc:hsqldb:hsql://${hsqldb.host}:${hsqldb.port}"/>
 
@@ -21,7 +22,7 @@
         +-->
     <path id="hsqldb.classpath">
        <!-- <pathelement location="${jar.cache.local}/hsqldb/jars/hsqldb-${hsqldb.version}.jar"/> -->
-       <pathelement location="${hsqldb.jar.path}"/>
+       <pathelement location="${hsqldb.home}/hsqldb.jar"/>
     </path>
 
     <!--+
@@ -192,6 +193,18 @@
     </target>
     
     <target name="testsetup">
+    </target>
+    
+    <path id="testpath">
+    <fileset dir="${tomcat.home}/common/lib" includes="*.jar"/>
+    <fileset dir="${tomcat.home}/common/endorsed" includes="*.jar"/>
+    <fileset dir="${basedir}" includes="*.jar"></fileset>
+    </path>
+    <target name="quicktest">
+    <java classname="org.astrogrid.applications.delegate.ApplicationControllerDelegateTest" >
+
+       <classpath refid="testpath"></classpath>
+    </java>
     </target>
 
  

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<!--$Id: applicationDefinitions.xml,v 1.2 2003/12/08 23:00:37 pah Exp $-->
+<!--$Id: applicationDefinitions.xml,v 1.3 2003/12/12 21:30:46 pah Exp $-->
 <!--This is the configuration file for the Iteration4 application controller-->
 <ApplicationController xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGParameterDefinition
 http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd">
@@ -131,7 +131,7 @@ http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd"
 		</Parameters>
 		<!--this would be nicer as a list type - need to implement that...-->
 		<Interfaces>
-			<Interface name="Smain">
+			<Interface name="main">
 				<input>
 					<pref ref="VOTfiles" repeatable="true"/>
 					<pref ref="mergeCols"/>

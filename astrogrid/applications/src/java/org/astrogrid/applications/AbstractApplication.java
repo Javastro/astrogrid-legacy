@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.5 2003/12/08 17:06:35 pah Exp $
+ * $Id: AbstractApplication.java,v 1.6 2003/12/12 21:30:46 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ public class AbstractApplication implements Application {
     *@link aggregation
     *@associates org.astrogrid.applications.Parameter
     */
-   protected List parameters;   
+   protected List parameters; 
    protected ApplicationDescription applicationDescription;
    
    public AbstractApplication()

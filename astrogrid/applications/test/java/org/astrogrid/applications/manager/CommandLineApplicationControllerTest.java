@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.9 2003/12/11 13:23:02 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.10 2003/12/12 21:30:46 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -32,7 +32,6 @@ import junit.framework.TestCase;
  */
 public class CommandLineApplicationControllerTest extends BaseDBTestCase {
 
-   private static final String PARAMETERSPEC1 = "<tool><input><parameter name='P1'>1</parameter><parameter name='P1'>2</parameter><parameter name='P2'>p2</parameter><parameter name='P3'>p3</parameter><parameter name='P4'>p4</parameter></input><output><parameter name='P3'>3</parameter></output></tool>";
    private CommandLineApplicationController controller;
 
    private String jobstepid = null;
@@ -105,7 +104,7 @@ public class CommandLineApplicationControllerTest extends BaseDBTestCase {
    final public void testInitializeApplication() {
       
       parameters.setMethodName(TestAppConst.MAIN_INTERFACE);
-      parameters.setParameterSpec(PARAMETERSPEC1);
+      parameters.setParameterSpec(TestAppConst.PARAMETERSPEC1);
       executionId = controller.initializeApplication(applicationid, jobstepid, monitorURL, user, parameters);
       CmdLineApplication app = controller.getRunningApplication(executionId);
       assertNotNull("applicaton object not returned after initialization", app);
