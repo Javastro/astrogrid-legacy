@@ -88,9 +88,9 @@ public class ServerManager {
 
     public String copyDataHolder(String dataHolderPath, String destinationDataHolderPath) {
 		try{
-			File oldFile = new File(dataHolderPath);
-			String content = MySpaceUtils.readFromFile(oldFile);
-			response = SUCCESS +saveDataHolder(content, destinationDataHolderPath)+MySpaceStatusCode.DATA_HOLDER_COPIED;
+			//File oldFile = new File(dataHolderPath);
+			//String content = MySpaceUtils.readFromFile(oldFile);
+			response = SUCCESS +saveDataHolder(dataHolderPath, destinationDataHolderPath)+MySpaceStatusCode.DATA_HOLDER_COPIED;
 			return response;
 		}catch(Exception e){
 			MySpaceMessage message = new MySpaceMessage("ERR_COPY_DATA_HOLDER");
@@ -102,10 +102,13 @@ public class ServerManager {
 
     public String moveDataHolder(String dataHolderPath, String destinationDataHolderPath) {
     	try{
-	    	File oldFile = new File(dataHolderPath);
-	    	String content = MySpaceUtils.readFromFile(oldFile);
-			deleteDataHolder(dataHolderPath);
-	    	response = SUCCESS +saveDataHolder(content, destinationDataHolderPath)+MySpaceStatusCode.DATA_HOLDER_MOVED;
+	    	//File oldFile = new File(dataHolderPath);
+	    	//String content = MySpaceUtils.readFromFile(oldFile);
+			String sResponse = saveDataHolder(dataHolderPath, destinationDataHolderPath);
+			if (sResponse.startsWith("SUCCESS")){
+				deleteDataHolder(dataHolderPath);
+			}
+	    	response = SUCCESS +sResponse;
 	    	return response;
     	}catch(Exception e){
 			MySpaceMessage message = new MySpaceMessage("ERR_MOVE_DATA_HOLDER");
