@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplication.java,v 1.6 2004/08/11 16:53:32 nw Exp $
+/*$Id: JavaClassApplication.java,v 1.7 2004/09/17 01:21:20 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,37 +56,37 @@ public class JavaClassApplication extends AbstractApplication {
      * @todo bug here - we assume our parameters are in the correct order to pass to the java method. should sort them into correct order first.
      * @see org.astrogrid.applications.Application#execute(org.astrogrid.applications.ApplicationExitMonitor)
      */
-    public boolean execute() throws CeaException {
+    public Runnable createExecutionTask() throws CeaException {
         createAdapters();
-        List args = new ArrayList();
-        for (Iterator i = inputParameterAdapters(); i.hasNext(); ) {
-            ParameterAdapter a = (ParameterAdapter)i.next();
-            args.add( a.process());
-        }
+
        JavaClassApplicationDescription jappDesc = (JavaClassApplicationDescription)getApplicationDescription();            
-       Thread task = new Exec(args.toArray(),jappDesc.method);
+       Runnable task = new Worker(jappDesc.method);
        setStatus(Status.INITIALIZED);
-       task.start();
-       return true;       
+       return task;
+   
     }
      /** A Worker thread, that performs the computation after {@link JavaClassApplication#execute() } returns */
-     protected class Exec extends Thread {
-         /** Construct a new Exec
+     protected class Worker implements Runnable {
+         /** Construct a new Worker
          * @param args the arguments to the call 
          * @param m the method to call
          */
-        public Exec(Object[] args, Method m) {
-             this.args = args;
+        public Worker(Method m) {
              this.method =m;
          }
-         protected final Object[] args;
          protected final Method method;
          /** 'executes' the application by calling {@link Method#invoke(java.lang.Object, java.lang.Object[])}*/
          public void run() {   
-            setStatus(Status.RUNNING);
-            Object resultVal = null;
-            try {
-                resultVal = method.invoke(null,args);
+             try {
+                 List args = new ArrayList();
+                 for (Iterator i = inputParameterAdapters(); i.hasNext(); ) {
+                     ParameterAdapter a = (ParameterAdapter)i.next();
+                     args.add( a.process());
+                 }             
+                 setStatus(Status.RUNNING);
+                 Object resultVal = null;
+
+                resultVal = method.invoke(null,args.toArray());
                 
                 // we can do this, as we know there's only ever going to be one interface, and one output parameter.
                 setStatus(Status.WRITINGBACK);
@@ -114,11 +114,18 @@ public class JavaClassApplication extends AbstractApplication {
             ParameterDescription descr, ExternalValue indirectVal) {
         return new JavaClassParameterAdapter(pval, descr, indirectVal);
     }
+
 }
 
 
 /* 
 $Log: JavaClassApplication.java,v $
+Revision 1.7  2004/09/17 01:21:20  nw
+altered to work with new threadpool
+
+Revision 1.6.40.1  2004/09/14 13:46:04  nw
+upgraded to new threading practice.
+
 Revision 1.6  2004/08/11 16:53:32  nw
 added @todo for bug
 

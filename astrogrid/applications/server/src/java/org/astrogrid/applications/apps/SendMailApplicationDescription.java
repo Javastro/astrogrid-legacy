@@ -1,4 +1,4 @@
-/*$Id: SendMailApplicationDescription.java,v 1.4 2004/09/03 13:19:14 nw Exp $
+/*$Id: SendMailApplicationDescription.java,v 1.5 2004/09/17 01:21:12 nw Exp $
  * Created on 11-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -198,22 +198,21 @@ public class SendMailApplicationDescription extends AbstractApplicationDescripti
             super(ids, tool, applicationInterface, lib);
         }
 
-        /**
-         * @see org.astrogrid.applications.AbstractApplication#execute()
-         */
-        public boolean execute() throws CeaException {
+        public Runnable createExecutionTask() throws CeaException {
+
             createAdapters();
-            final Map args = new HashMap();
-            for (Iterator i = inputParameterAdapters(); i.hasNext();) {
-                ParameterAdapter a = (ParameterAdapter)i.next();
-                args.put(a.getWrappedParameter().getName(),a.process());
-            }
             setStatus(Status.INITIALIZED);
-            Thread task = new Thread() {
+            return new Runnable() {
                     public void run() {
+                        final Map args = new HashMap();
+                        try {
+                        for (Iterator i = inputParameterAdapters(); i.hasNext();) {
+                            ParameterAdapter a = (ParameterAdapter)i.next();
+                            args.put(a.getWrappedParameter().getName(),a.process());
+                        }                        
                         setStatus(Status.RUNNING);
                         // send the message here.
-                        try {
+
                         Session session = getSessionFromContext();
                         Message message = new MimeMessage(session);
                         message.setFrom(new InternetAddress("sendmail@builtin.astrogrid.org"));
@@ -232,8 +231,7 @@ public class SendMailApplicationDescription extends AbstractApplicationDescripti
                         }
                     }
             };
-            task.start();
-            return true;
+
             
         }
 
@@ -255,6 +253,12 @@ public class SendMailApplicationDescription extends AbstractApplicationDescripti
 
 /* 
 $Log: SendMailApplicationDescription.java,v $
+Revision 1.5  2004/09/17 01:21:12  nw
+altered to work with new threadpool
+
+Revision 1.4.12.1  2004/09/14 13:46:04  nw
+upgraded to new threading practice.
+
 Revision 1.4  2004/09/03 13:19:14  nw
 added some progress messages
 

@@ -1,4 +1,4 @@
-/*$Id: CatApplicationDescription.java,v 1.4 2004/09/07 12:54:55 nw Exp $
+/*$Id: CatApplicationDescription.java,v 1.5 2004/09/17 01:21:12 nw Exp $
  * Created on 16-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -136,11 +136,7 @@ public class CatApplicationDescription extends AbstractApplicationDescription
         public CatApplication(IDs ids, Tool tool, ApplicationInterface applicationInterface, ProtocolLibrary lib) {
             super(ids, tool, applicationInterface, lib);
         }
-
-        /**
-         * @see org.astrogrid.applications.AbstractApplication#execute()
-         */
-        public boolean execute() throws CeaException {
+        public Runnable createExecutionTask() throws CeaException {
             createAdapters();
             setStatus(Status.INITIALIZED);
             Runnable r = new Runnable() {
@@ -162,14 +158,13 @@ public class CatApplicationDescription extends AbstractApplicationDescription
                     }
                 }
             };
-            (new Thread(r)).start();
-            return true;
-                        
+            return r;            
         }
         protected ParameterAdapter instantiateAdapter(ParameterValue pval,
                 ParameterDescription descr, ExternalValue indirectVal) {
             return new StreamParameterAdapter(pval, descr, indirectVal);
         }
+
     }
 
     /** parameter adapter that produces and consumes streams, rather than string values - for efficiency when handling large amounts of data.
@@ -220,6 +215,12 @@ public class CatApplicationDescription extends AbstractApplicationDescription
 
 /* 
 $Log: CatApplicationDescription.java,v $
+Revision 1.5  2004/09/17 01:21:12  nw
+altered to work with new threadpool
+
+Revision 1.4.10.1  2004/09/14 13:46:04  nw
+upgraded to new threading practice.
+
 Revision 1.4  2004/09/07 12:54:55  nw
 put body in new thread - needs to be really.
 
