@@ -175,4 +175,12 @@ Now once you have your page working then in your xsl page put a surrounding page
             <!-- Serialize as HTML -->
             <map:serialize type="html"/>
          </map:match>
+ ---------------------------------------------------
+ Configuration.
+ In the portalB/src/config their is a Config.xml file that can be added to if necessary.  This config file is loaded with jConfig during the login
+ stages.  If you need to read things out of the config file use the statements below in your xsp or Custom Cocoon action objects.
+ import org.astrogrid.community.common.CommunityConfig
  
+String val CommunityConfig.getProperty("configpropertyname")  Their is also 2 other getProperty methods if you wish to use them
+they are getProperty(propname,defaultValue) and getProperty(propname,defaultValue,jconfigCategory)
+--------------------------------------------
