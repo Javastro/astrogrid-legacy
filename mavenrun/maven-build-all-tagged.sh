@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 TAG_TO_BUILD=$1
 
 echo "Building tag $TAG_TO_BUILD"

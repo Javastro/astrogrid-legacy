@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 OLDDIR=$PWD
 
 #PROJECT_NAME=$1

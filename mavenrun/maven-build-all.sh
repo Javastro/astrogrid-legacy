@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 BUILD_DIR=/home/maven/build
 SCRIPTHOME=/home/maven/mavenrun
 

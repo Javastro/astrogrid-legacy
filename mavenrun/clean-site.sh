@@ -1,3 +1,4 @@
+#!/bin/bash
 OLDDIR=$PWD
 
 PROJECT_NAME_2GO=$1
