@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryBaseTest.java,v 1.3 2004/08/13 21:00:26 KevinBenson Exp $
+ * $Id: RegistryBaseTest.java,v 1.4 2004/08/15 12:43:14 KevinBenson Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -74,8 +74,4 @@ public abstract class RegistryBaseTest extends TestCase {
       assertNotNull(adminDelegate);
    }
    
-   public void testBase() {
-      
-   }
-
 }
