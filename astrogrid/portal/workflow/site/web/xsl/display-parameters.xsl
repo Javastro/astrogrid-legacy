@@ -35,7 +35,7 @@
       </script>                    
         
       <table border="2" cellpadding="0" cellspacing="0">
-        <form name="parameter_form" id="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" target="workflowOuterFrame">
+        <form name="parameter_form" id="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" target="workflowOuterFrame" method="post" >
         <tr>
           <td align="center" colspan="6">
             <div style="color: blue; background-color: lightblue; text-align: center;">

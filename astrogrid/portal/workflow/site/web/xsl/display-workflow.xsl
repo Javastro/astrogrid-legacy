@@ -22,7 +22,7 @@
        </xsl:if>
                 
         <table border="1">
-            <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="workflow_form" id="workflow_form">
+            <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="workflow_form" id="workflow_form" method="post">
                 <tr>
                     <td colspan="5">
                         <ag-menu name="workflow-menu"/>

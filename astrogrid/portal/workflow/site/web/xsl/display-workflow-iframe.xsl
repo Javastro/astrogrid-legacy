@@ -36,7 +36,7 @@
        </xsl:if>
 -->                
         <table border="1">
-          <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="workflow_form" id="workflow_form">
+          <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="workflow_form" id="workflow_form" method="post">
             <tr>
               <td colspan="5">
                 <ag-menu name="workflow-menu"/>
@@ -85,7 +85,7 @@
             </tr>
           </form>
 
-      <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_activity_form" id="insert_activity_form">
+      <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_activity_form" id="insert_activity_form" method="post">
         <input type="hidden" name="activity_key" id="activity_key"/>
         <input type="hidden" name="activity_index_key"/>
         <input type="hidden" name="activity_index_order"  id="activity_index_order"/>
@@ -95,7 +95,7 @@
         <input type="hidden" name="action" value="insert_activity"/> 
         <input type="hidden" name="copy_activity_key" id="copy_activity_key"/>           
       </form>                                            
-      <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="remove_activity_form" id="remove_activity_form">
+      <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="remove_activity_form" id="remove_activity_form" method="post">
         <input type="hidden" name="activity_key"/>
         <input type="hidden" name="parent_activity_key"/>
         <input type="hidden" name="activity_index_key"/>                   

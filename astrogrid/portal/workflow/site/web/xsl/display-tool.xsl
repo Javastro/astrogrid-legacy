@@ -17,7 +17,7 @@
        +-->
     <xsl:template match="step" mode="activity-details">
       <div style="display: none"><xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>          
-        <form name="properties_form" id="properties_form">
+        <form name="properties_form" id="properties_form" method="post">
           <table border="2" cellspacing="0" cellpadding="0">
             <tr>
               <td style="cursor: help; text-align: center; background-color: lightblue">                                     

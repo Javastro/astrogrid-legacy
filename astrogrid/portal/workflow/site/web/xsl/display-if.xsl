@@ -14,7 +14,7 @@
        +-->
     <xsl:template match="ifObj" mode="activity-details">
       <div style="display: none"><xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
-        <form name="if_form" id="if_form">
+        <form name="if_form" id="if_form" method="post">
           <table width="10%"  border="2" cellspacing="0" cellpadding="0">
             <tr>
               <td style="cursor: help; text-align: center; background-color: lightblue">                                     

@@ -53,7 +53,7 @@
               <xsl:call-template name="workflow-map"/>
             </td>            
             <td rowspan="3" valign="bottom">
-              <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-printer-friendly.html" name="printer_form" id="printer_form">
+              <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-printer-friendly.html" name="printer_form" id="printer_form" method="post">
                 <input class="agActionButton" type="submit" name="action" value="Workflow transcript"/>
                 <input type="hidden" name="jobURN" id="jobURN"/>
               </form>

@@ -104,7 +104,7 @@
                      <td align="center">
                        <xsl:choose>                                      
                           <xsl:when test="@status = 'ERROR'">  <!--  ERROR -->
-                              <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form">
+                              <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form" method="post">
                                   <xsl:element name="input">                              
                                       <xsl:attribute name="type">hidden</xsl:attribute>
                                       <xsl:attribute name="name">jobURN</xsl:attribute>
@@ -114,7 +114,7 @@
                               </form>
                           </xsl:when>
                           <xsl:when test="@status = 'COMPLETED'">  <!--  COMPLETED -->
-                              <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form">
+                              <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form" method="post">
                                   <xsl:element name="input">                              
                                       <xsl:attribute name="type">hidden</xsl:attribute>
                                       <xsl:attribute name="name">jobURN</xsl:attribute>
@@ -127,7 +127,7 @@
                               ----
                           </xsl:when>                                                                                                       
                           <xsl:otherwise>
-                              <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form">
+                              <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form" method="post">
                                   <xsl:element name="input">                              
                                       <xsl:attribute name="type">hidden</xsl:attribute>
                                       <xsl:attribute name="name">jobURN</xsl:attribute>
