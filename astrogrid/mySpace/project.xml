@@ -30,7 +30,7 @@
     <developerConnection>
       scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/mySpace
     </developerConnection>
-    <url>http://www.astrogrid.org/viewcvs/</url>
+    <url>http://www.astrogrid.org/viewcvs/astrogrid/mySpace/</url>
   </repository>
   
   <developers>
