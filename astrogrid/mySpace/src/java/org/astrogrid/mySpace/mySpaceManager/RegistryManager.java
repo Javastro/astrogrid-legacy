@@ -60,9 +60,11 @@ public class RegistryManager
                            // Expiry period for the registry (days).
 
    private Vector serverNames = new Vector();
-                     // Names of the servers known to this MySpace registry.
+          // Names of the servers known to this MySpace registry.
    private Vector serverURIs = new Vector();
-                     // URIs of the servers known to this MySpace registry.
+          // URIs of the servers known to this MySpace registry.
+   private Vector serverDirectories = new Vector();
+          // Base directories of the servers known to this MySpace registry.
 
 //
 // Constructors.
@@ -201,7 +203,7 @@ public class RegistryManager
          int count = 0;
          dataItemIDSeqNo = 0;
 
-         System.out.println(" ");
+//         System.out.println(" ");
 
          while (more == true)
          {  try
@@ -215,8 +217,8 @@ public class RegistryManager
                String key = "" + itemRec.getDataItemID();
                dataItemRecordHashMap.put(key, itemRec);
 
-               System.out.println("dataItemID, dataItemIDSeqNo: "
-                 + itemRec.getDataItemID() + " " + dataItemIDSeqNo);
+//               System.out.println("dataItemID, dataItemIDSeqNo: "
+//                 + itemRec.getDataItemID() + " " + dataItemIDSeqNo);
 
                if (itemRec.getDataItemID() > dataItemIDSeqNo)
                {  dataItemIDSeqNo = itemRec.getDataItemID();
@@ -357,14 +359,17 @@ public class RegistryManager
 //            Check if the first element corresponds to a server.
 
                if (((String)currentElements.get(0)).equals("server"))
-               {  if (numElements > 2)
+               {  if (numElements > 3)
                   {  String currentServer = (String)currentElements.get(1);
                      String currentURI = (String)currentElements.get(2);
+                     String currentDirectory =
+                       (String)currentElements.get(3);
 
                      numServers = numServers + 1;
 
                      serverNames.add(currentServer);
                      serverURIs.add(currentURI);
+                     serverDirectories.add(currentDirectory);
                   }
                   else
                   {  MySpaceStatus status  =
@@ -464,6 +469,25 @@ public class RegistryManager
    }
 
 /**
+ * Return the base directory for a given server.
+ */
+
+   public String getServerDirectory(String serverName)
+   {  String serverDirectory;
+
+      int serverIndex = serverNames.indexOf(serverName);
+
+      if (serverIndex > -1)
+      {  serverDirectory = (String)serverDirectories.get(serverIndex);
+      }
+      else
+      {  serverDirectory = null;
+      }
+
+      return serverDirectory;
+   }
+
+/**
   * Return the sequence number to be used for a new DataItemRecord.
   */
 
@@ -500,8 +524,8 @@ public class RegistryManager
          status = true;
       }
 
-      System.out.println("Status from addDataItemRecord: "
-        + status + "  key = " + key);
+//      System.out.println("Status from addDataItemRecord: "
+//        + status + "  key = " + key);
 
       return status;
    }
@@ -526,11 +550,11 @@ public class RegistryManager
 
       boolean status;
 
-      System.out.println("key to be removed: " + key);
+//      System.out.println("key to be removed: " + key);
 
       if (dataItemRecordHashMap.containsKey(key))
       {  dataItemRecordHashMap.remove(key);
-         System.out.println(" ... key removed.");
+//         System.out.println(" ... key removed.");
          status = true;
       }
       else
@@ -656,7 +680,7 @@ public class RegistryManager
       }
 
 //
-//   Copy the enties in the alphabetically sorted TreeSet into the
+//   Copy the entries in the alphabetically sorted TreeSet into the
 //   the return Vector.  Consequently, the elements in the Vector are
 //   also alphabetically sorted.
 
