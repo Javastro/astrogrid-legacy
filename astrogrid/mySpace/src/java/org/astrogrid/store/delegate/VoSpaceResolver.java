@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.7 2004/03/22 10:25:42 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.8 2004/03/25 13:13:43 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,6 +18,8 @@ import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 
+import org.astrogrid.registry.client.query.RegistryService;
+//import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
 /**
  * A VoSpaceResolver is used to resolve actual locations from IVORNs to any
  * storepoints anywhere on the Virtual Observatory.
@@ -28,15 +30,15 @@ import org.astrogrid.store.delegate.StoreDelegateFactory;
  *
  * It makes use of the registry and commnunity to look up IVORNs
  * --------------------------------------------------------------------
- * DEPRECATED @deprecated - use the ivor source representation
+ * 
  * -------------------------------------------------------------------
  *
  */
 
 public class VoSpaceResolver {
    
-//   private static RegistryService registry = null;
-   //private static CommunityDelegate community = null;
+   private static RegistryService registry = null;
+//   private static CommunityAccountSpaceResolver community = null;
 
    private static Log log = LogFactory.getLog(VoSpaceResolver.class);
    
@@ -104,6 +106,7 @@ public class VoSpaceResolver {
    public static Agsl registryResolve(Ivorn ivorn) throws IOException {
       /** This is the deprecated nyspace one; use the one in ivor if you want
        * real registry resolving *
+       */
       //lazy load registry delegate - also more robust in case it doesn't instantiate
       if (registry == null) {
          try {
@@ -123,7 +126,6 @@ public class VoSpaceResolver {
             throw new ResolverException("Registry failed resolving "+ivorn,e);
          }
       }
-       */
       return null;
       
    }
@@ -131,7 +133,8 @@ public class VoSpaceResolver {
    /**
     * Lazy registry delegate load
     *
-   public synchronized void makeRegistryDelegate() throws IOException {
+    */
+   public static synchronized void makeRegistryDelegate() throws IOException {
       if (registry == null) {
          registry = new RegistryService();
       }
@@ -141,8 +144,9 @@ public class VoSpaceResolver {
     */
    public static Agsl communityResolve(Ivorn ivorn) throws IOException {
       /**
-
        //lazy load delegate - also more robust in case it doesn't instantiate
+        * 
+  
       if (community == null) {
          try {
             makeCommunityDelegate();
@@ -152,26 +156,40 @@ public class VoSpaceResolver {
          }
       }
       
+      Ivorn commIvo = null;
       if (community != null) {
-         return new Agsl(community.getEndPointByIdentifier(ivorn.toRegistryString()));
+         try {
+            commIvo = community.resolve(ivorn);
+            return registryResolve(commIvo);
+         }catch(ResolverException re) {
+            //okay the community found an ivo, but it was not in the registry
+            throw new ResolverException("Community seems to resolve, but not registry " + ivorn + " commIvo = " + commIvo,re);
+         } catch(Exception e) {
+            throw new ResolverException("Registry failed resolving "+ivorn,e);
+         }
       }
-       */
+            */
       return null;
    }
    
    /**
     * Lazy community delegate load
     *
-   public synchronized void makeCommunityDelegate() throws IOException {
+    */
+   public static synchronized void makeCommunityDelegate() throws IOException {
+      /*
       if (community == null) {
-         community = new CommunityService();
+         community = new CommunityAccountSpaceResolver();
       }
+      */
    }
-    /**/
 }
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.8  2004/03/25 13:13:43  KevinBenson
+new vospaceresolver
+
 Revision 1.7  2004/03/22 10:25:42  mch
 Added VoSpaceClient, StoreDelegate, some minor changes to StoreClient interface
 
