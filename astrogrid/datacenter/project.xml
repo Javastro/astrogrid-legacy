@@ -159,13 +159,11 @@
 		<version>1.1</version>
 	</dependency>
 
-  <!-- not yet available - downloaded by hand for now
 	<dependency>
 		<id>catalina-ant</id>
 		<version>4.1.24</version>
-		<url>http://www.codeczar.com/products/tomcat/distributions/catalina-ant-4.1.24.jar</url>
 	</dependency>
--->
+
     <!-- database drivers -->
     <dependency>
     	<id>mm-mysql</id>

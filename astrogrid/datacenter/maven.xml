@@ -200,7 +200,7 @@ ADQL
 			include="*.jar" />
 	</delete>
 	<deploy:copy-deps todir="packaging/datacenter-server/WEB-INF/lib"
-		excludes="axis,wsdl4j,saaj,commons-logging,commons-discovery,jaxrpc-api,junit,log4j" />
+		excludes="axis,axis-ant,wsdl4j,saaj,commons-logging,commons-discovery,jaxrpc-api,junit,log4j" />
 	<copy file="${maven.build.dir}/astrogrid-datacenter-HEAD.jar" todir="packaging/datacenter-server/WEB-INF/lib" />
 	<echo file="packaging/datacenter-server/VERSION">${DSTAMP}</echo>
 	<zip destfile="packaging/pal/lib/datacenter-server.zip" basedir="packaging/datacenter-server"/>
@@ -294,6 +294,7 @@ ADQL
 <goal name="tomcat-declare-tasks">
   <!-- work-around until these get added to ibiblio..
   although seems to store in the wrong place at present. -->
+  <!--
   <property name="local.catalina-ant.dir" location="${maven.repo.local}/catalina-ant/jars" />
   <mkdir dir="${local.catalina-ant.dir}" />
   <get src="http://www.codeczar.com/products/tomcat/distributions/catalina-ant-4.1.24.jar"
@@ -303,17 +304,18 @@ ADQL
      <path id="catalina-ant.path">
      	<fileset dir="${local.catalina-ant.dir}" includes="*.jar" />
      </path>
+     -->
    <!-- Configure the custom Ant tasks for the Manager application -->
-  <taskdef name="tomcat-deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="catalina-ant.path"/>
-  <taskdef name="tomcat-install"   classname="org.apache.catalina.ant.InstallTask" classpathref="catalina-ant.path"/>
-  <taskdef name="tomcat-list"      classname="org.apache.catalina.ant.ListTask" classpathref="catalina-ant.path"/>
-  <taskdef name="tomcat-reload"    classname="org.apache.catalina.ant.ReloadTask" classpathref="catalina-ant.path"/>
-  <taskdef name="tomcat-remove"    classname="org.apache.catalina.ant.RemoveTask" classpathref="catalina-ant.path"/>
-  <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" classpathref="catalina-ant.path"/>
-  <taskdef name="tomcat-roles"     classname="org.apache.catalina.ant.RolesTask" classpathref="catalina-ant.path"/>
-  <taskdef name="tomcat-start"     classname="org.apache.catalina.ant.StartTask" classpathref="catalina-ant.path"/>
-  <taskdef name="tomcat-stop"      classname="org.apache.catalina.ant.StopTask" classpathref="catalina-ant.path"/>
-  <taskdef name="tomcat-undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="catalina-ant.path"/>
+  <taskdef name="tomcat-deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-install"   classname="org.apache.catalina.ant.InstallTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-list"      classname="org.apache.catalina.ant.ListTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-reload"    classname="org.apache.catalina.ant.ReloadTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-remove"    classname="org.apache.catalina.ant.RemoveTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-roles"     classname="org.apache.catalina.ant.RolesTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-start"     classname="org.apache.catalina.ant.StartTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-stop"      classname="org.apache.catalina.ant.StopTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="maven.dependency.classpath"/>
 </goal>
 
 
