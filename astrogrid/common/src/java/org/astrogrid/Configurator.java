@@ -10,18 +10,20 @@
  */
 package org.astrogrid;
 
-import java.net.URL;
 import java.util.Hashtable;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.naming.spi.NamingManager;
 
 import org.apache.commons.logging.LogFactory;
-import org.jconfig.*;
-import org.jconfig.handler.*;
-//import org.astrogrid.log.Log;
+import org.jconfig.Configuration;
+import org.jconfig.ConfigurationManager;
+import org.jconfig.ConfigurationManagerException;
+import org.jconfig.handler.ConfigurationHandler;
+import org.jconfig.handler.InputStreamHandler;
+import org.jconfig.handler.URLHandler;
+
 import org.astrogrid.i18n.AstroGridMessage;
 
 /**
