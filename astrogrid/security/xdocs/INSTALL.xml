@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <properties>
+    <title>Installing the AstroGrid Security Facade</title>
+    <author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+  </properties>
+  
+  <body>
+  
+    <section>
+  
+      <p>
+      The facade is supplied as a jar of classes to be used in client
+      and server applications. The astrogrid/security component does not
+      generate a web application in a war file.
+      </p>
+  
+      <p>
+      To use the facade, download astrogrid-security-(version).jar, or
+      set Maven to download it from the repository on www.astrogrid.org.
+      You will also need the following jars from AstroGrid:
+      </p>
+  
+      <ul>
+        <li>astrogrid-common</li>
+        <li>astrogrid-community-client</li>
+        <li>astrogrid-community-common</li>
+        <li>astrogrid-community-resolver</li>
+        <li>astrogrid-registry-client</li>
+        <li>astrogrid-registry-common</li>
+      </ul>
+  
+      <p>
+      In addition, your application must include the following third-party jars:
+      </p>
+  
+      <ul>
+        <li>saaj</li>
+        <li>axis</li>
+        <li>jaxrpc-api</li>
+        <li>wsdl4j (at v1.0)</li>
+       </ul>
+  
+      <p>
+      See the dependencies list for this package for full details.
+      </p>
+
+    </section>
+
+  </body>
+  
+</document>
