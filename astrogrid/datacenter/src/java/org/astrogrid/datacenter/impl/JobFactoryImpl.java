@@ -45,7 +45,7 @@ import org.w3c.dom.Element;
  *
  * @author  Jeff Lusted
  * @version 1.0 08-Jun-2003
- * @see     org.astrogrid.JobFactory
+ * @see     org.astrogrid.datacenter.job.JobFactory
  * @see     org.astrogrid.Job
  * @since   AstroGrid 1.2
  */
@@ -61,7 +61,7 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
         
     private final static String SUBCOMPONENT_NAME = Util.getComponentName( JobFactoryImpl.class );
         	
-    /** TODO - update thiese to use prepared statements - gives a safer treatment of quote-escaping than this current technique does */
+    /** TODO - update thiese to use prepared statements - would be a safer treatment of quote-escaping than this current technique does */
 	public static final String
 	    INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, RUNTIMESTAMP, USERID, COMMUNITY, STATUS, COMMENT ) " +
 	                      "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'', ''{6}'', ''{7}'' )" ,              
@@ -97,7 +97,7 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
      * chained from Job creation, and therefore this step of
      * Job creation needs all the associated information to pass on.
      * 
-     * @see org.astrogrid.JobFactory 
+     * @see org.astrogrid.datacenter.job.JobFactory 
      * @param jobDoc - the complete request document
      * @return  - newly created job instance.
      * @exception - org.astrogrid.JobException
@@ -175,7 +175,7 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
 	   * an immediate-commit basis. For efficiency a prepared
 	   * statement is used. 
 	   * 
-	   * @see org.astrogrid.JobFactory
+	   * @see org.astrogrid.datacenter.job.JobFactory
 	   * @param job - the instance whose values are to be written
 	   *        back to the database.
 	   * @return  void
@@ -223,7 +223,7 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
 	   * find the one unique job.
 	   * <p>
 	   * 
-	   * @see org.astrogrid.JobFactory
+	   * @see org.astrogrid.datacenter.job.JobFactory
 	   * @param jobURN - the job id.
 	   * @return  the job instance.
 	   * @exception - org.astrogrid.JobException
@@ -288,7 +288,7 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
 	   * Deletes a job instance from the Job database.
 	   * <p>
 	   * 
-	   * @see org.astrogrid.JobFactory
+	   * @see org.astrogrid.datacenter.job.JobFactory
 	   * @param job - the job instance.
 	   * @return  the jobURN of the deleted job.
 	   * @exception - org.astrogrid.JobException

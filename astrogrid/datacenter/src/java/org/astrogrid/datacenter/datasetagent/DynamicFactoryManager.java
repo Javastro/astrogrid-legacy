@@ -1,4 +1,4 @@
-/*$Id: DynamicFactoryManager.java,v 1.5 2003/08/25 22:00:55 mch Exp $
+/*$Id: DynamicFactoryManager.java,v 1.6 2003/08/28 15:29:04 nw Exp $
  * Created on 19-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,8 +32,8 @@ import org.astrogrid.i18n.AstroGridMessage;
  * in other ways if needed.
  * FUTURE - replace disparate exception types with a single 'loadException' or something.
  * @author Noel Winstanley nw@jb.man.ac.uk 20-Aug-2003
- *@see org.astrogrid.config.FactoryManager
- *@see org.astrogrid.config.Configuration
+ *@see org.astrogrid.datacenter.config.FactoryManager
+ *@see org.astrogrid.datacenter.config.Configuration
  */
 public class DynamicFactoryManager extends FactoryManager {
     private static final String ASTROGRIDERROR_COULD_NOT_CREATE_JOBFACTORY_IMPL =
@@ -155,10 +155,10 @@ public class DynamicFactoryManager extends FactoryManager {
                              SUBCOMPONENT_NAME, implementationFactoryName);
             throw new VOTableException(message, ex);
         }
-    }
+    }*/
 
     /**Loads all factory classes specified in the configuration file, and then checks all is well with the manager.
-     * @see org.astrogrid.datacenter.FactoryManager#verify()
+     * @see org.astrogrid.datacenter.config.FactoryManager#verify()
      */
     public void verify() throws AstroGridException {
         loadJobFactory();
@@ -171,6 +171,9 @@ public class DynamicFactoryManager extends FactoryManager {
 }
 /*
 $Log: DynamicFactoryManager.java,v $
+Revision 1.6  2003/08/28 15:29:04  nw
+fixed javadoc
+
 Revision 1.5  2003/08/25 22:00:55  mch
 Removed DatacenterException
 

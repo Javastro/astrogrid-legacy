@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
  * one less thing to configure. splitting interfaces would also simplify implementation classes.
  * @author  Jeff Lusted
  * @version 1.0 08-Jun-2003
- * @see     org.astrogrid.JobFactoryImpl
+ * @see     org.astrogrid.datacenter.impl.JobFactoryImpl
  * @since   AstroGrid 1.2
  */
 public interface JobFactory  extends Configurable {

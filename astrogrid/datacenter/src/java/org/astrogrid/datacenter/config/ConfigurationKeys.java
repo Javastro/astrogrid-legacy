@@ -1,4 +1,4 @@
-/* $Id: ConfigurationKeys.java,v 1.1 2003/08/20 14:42:59 nw Exp $
+/* $Id: ConfigurationKeys.java,v 1.2 2003/08/28 15:28:24 nw Exp $
  * Created on 19-Aug-2003
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -17,7 +17,7 @@ package org.astrogrid.datacenter.config;
  * These constants were factored out of the {@link DTC} class, so they would still be accessible after {@link DTC} was made package-private. 
  * @author Noel Winstanley nw@jb.man.ac.uk 20-Aug-2003
  *@see Configuration
- *@sea Configurable
+ *@see Configurable
  */
 public interface ConfigurationKeys {
 	public static final String
@@ -102,6 +102,9 @@ public interface ConfigurationKeys {
 }
 /* 
  * $Log: ConfigurationKeys.java,v $
+ * Revision 1.2  2003/08/28 15:28:24  nw
+ * fixed javadoc
+ *
  * Revision 1.1  2003/08/20 14:42:59  nw
  * added a configuration package -
  * wraps the existing DTC class, and provides somewhere to

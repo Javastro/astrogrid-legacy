@@ -1,4 +1,4 @@
-/*$Id: JobStepImpl.java,v 1.2 2003/08/26 16:50:49 mch Exp $
+/*$Id: JobStepImpl.java,v 1.3 2003/08/28 15:29:57 nw Exp $
  * Created on 22-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,10 +65,6 @@ public class JobStepImpl extends AbstractJobStep implements JobStep {
            }
 
            String  keyToFactory = catalogChild.getAttribute( RunJobRequestDD.CATALOG_NAME_ATTR );
-                    // TODO : Error - this key has '.QUERYFACTORY' appended to it twice.
-                    // i've wasted a days weork finding this stupid bug which should have been eliminated during
-                    // unit testing.
-                        //    + DTC.CATALOG_DEFAULT_QUERYFACTORY ;
 
            query = facManager.getQueryFactory( keyToFactory ).createQuery( queryChild ) ;
 
@@ -84,6 +80,9 @@ public class JobStepImpl extends AbstractJobStep implements JobStep {
 
 /*
 $Log: JobStepImpl.java,v $
+Revision 1.3  2003/08/28 15:29:57  nw
+fixed javadoc
+
 Revision 1.2  2003/08/26 16:50:49  mch
 Separating Query from QueryFactory/DB interface - first stage
 
