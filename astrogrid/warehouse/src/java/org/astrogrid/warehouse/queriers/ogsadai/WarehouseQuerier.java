@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.17 2004/01/19 12:47:54 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.18 2004/01/21 15:59:40 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,7 +11,7 @@ import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.sql.AdqlQueryTranslator;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.axisdataserver.types._query;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.util.DomLoader;
 
 import org.w3c.dom.Document;
@@ -79,7 +79,7 @@ public class WarehouseQuerier extends Querier
    * @throws IOException
    * @throws SAXException
    */
-  public WarehouseQuerier(String queryId, _query query) 
+  public WarehouseQuerier(String queryId, Query query) 
       throws DatabaseAccessException, IOException, SAXException {
     super(queryId, query);
     log.debug("Constructing WarehouseQuerier");
@@ -489,6 +489,9 @@ public class WarehouseQuerier extends Querier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.18  2004/01/21 15:59:40  gtr
+_query class is changed to Query.
+
 Revision 1.17  2004/01/19 12:47:54  kea
 Giving proper WAREHOUSE_ prefix to toplevel warehouse config properties
 in AstroGridConfig.properties file.
