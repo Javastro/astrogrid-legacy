@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.25 2004/04/15 18:15:59 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.26 2004/04/16 16:47:23 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -267,7 +267,7 @@ public class CommandLineApplicationController extends AbstractApplicationControl
    public Test getInstallationTests()
    {
       TestSuite suite = new TestSuite("Command Line Application Controller");
-      suite.addTestSuite(InstallTest.class);
+      suite.addTest(new TestSuite(InstallTest.class));
       return suite;
    }
    

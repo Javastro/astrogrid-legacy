@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.17 2004/03/30 22:45:09 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.18 2004/04/16 16:47:23 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -30,7 +30,9 @@ import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.applications.description.TestAppConst;
 import org.astrogrid.community.User;
 
+import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
+import junit.framework.TestFailure;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
@@ -107,12 +109,13 @@ public class CommandLineApplicationControllerTest extends BaseApplicationTestCas
       assertTrue("app2 status completed", status2.getPhase() == ExecutionPhase.COMPLETED);
        
    }
-
+   
+ 
    /** 
     * @see org.astrogrid.applications.manager.BaseApplicationTestCase#setupTool()
     */
    protected void setupTool() {
-      thisTool = tool;
+      thisTool = tool2; //TODO local file test for now
     }
 
 }

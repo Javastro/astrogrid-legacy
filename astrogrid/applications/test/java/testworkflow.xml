@@ -26,6 +26,30 @@
 				</output>
 			</tool>
 		</step>
+		<!-- this step just does the same with the local file references -->
+		<step name="test step">
+			<tool name="testapp" interface="Ilocal">
+				<input>
+					<parameter name="P1" type="integer">
+						<agpd:value>30</agpd:value>
+					</parameter>
+					<parameter name="P2" type="double">
+						<agpd:value>2.5</agpd:value>
+					</parameter>
+					<parameter name="P4" type="string">
+						<agpd:value>any rubbish</agpd:value>
+					</parameter>
+					<parameter name="P9d" type="FileReference">
+						<agpd:value>/tmp/testInFile</agpd:value>
+					</parameter>
+				</input>
+				<output>
+					<parameter name="P3d" type="FileReference">
+						<agpd:value>/tmp/outputfile</agpd:value>
+					</parameter>
+				</output>
+			</tool>
+		</step>
 	</sequence>
 	<Credentials>
 		<agcred:Account>

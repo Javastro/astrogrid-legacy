@@ -1,5 +1,5 @@
 /*
- * $Id: IOUtil.java,v 1.1 2004/04/14 13:24:55 pah Exp $
+ * $Id: IOUtil.java,v 1.2 2004/04/16 16:47:23 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 
 /**
  * Some general utility methods. These are mainly static methods to do some useful IO related functionns.
@@ -67,6 +68,16 @@ public class IOUtil {
          
       }
       out.close();
+   }
+
+   /**
+    * @param string
+    * @param inf
+    */
+   public static void saveStringToFile(String string, File inf) throws FileNotFoundException {
+      PrintWriter pw = new PrintWriter(new FileOutputStream(inf));
+      pw.write(string);
+      pw.close();
    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterLoader.java,v 1.6 2004/04/01 09:53:02 pah Exp $
+ * $Id: ParameterLoader.java,v 1.7 2004/04/16 16:47:23 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -38,6 +38,7 @@ public class ParameterLoader {
    //treat input and output parameters just the same for now - the information as to what they are is in the interface definition
    //TODO should treat them separately to do better error check of the submitted parameter specifications
    private static final String INPUTPARAMETER_ELEMENT = "*/parameter";
+   private static final String INPUTPARAMETERVALUE_ELEMENT = "*/parameter/value";
    private Digester digester;
    private AbstractApplication application;
    
@@ -56,9 +57,9 @@ public class ParameterLoader {
       digester = new Digester();
       digester.setValidating(false);
       digester.addFactoryCreate(INPUTPARAMETER_ELEMENT, new ParameterFactory(application));
+      digester.addRule(INPUTPARAMETERVALUE_ELEMENT, new NodeCreateRule(Node.ELEMENT_NODE));
+      digester.addRule(INPUTPARAMETERVALUE_ELEMENT, new AllBodyIncElementsRule("rawValue", true));
       digester.addSetNext(INPUTPARAMETER_ELEMENT, "addParameter");
-      digester.addRule(INPUTPARAMETER_ELEMENT, new NodeCreateRule(Node.ELEMENT_NODE));
-      digester.addRule(INPUTPARAMETER_ELEMENT, new AllBodyIncElementsRule("rawValue", true));
       
    }
    

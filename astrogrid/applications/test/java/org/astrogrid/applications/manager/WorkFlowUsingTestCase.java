@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowUsingTestCase.java,v 1.3 2004/03/23 19:46:04 pah Exp $
+ * $Id: WorkFlowUsingTestCase.java,v 1.4 2004/04/16 16:47:23 pah Exp $
  * 
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -37,7 +37,7 @@ public class WorkFlowUsingTestCase extends BaseDBTestCase {
 
 
    protected Workflow workflow;
-   protected Tool tool;
+   protected Tool tool, tool2;
    /**
     * 
     */
@@ -57,8 +57,10 @@ public class WorkFlowUsingTestCase extends BaseDBTestCase {
          workflow = (Workflow)Unmarshaller.unmarshal(Workflow.class, source);
          assertNotNull(workflow);
          workflow.validate();
-         tool = (Tool)workflow.findXPathValue("//tool"); // there should only be one!
+         tool = (Tool)workflow.findXPathValue("//sequence/activity[1]/tool"); // there should only be one!
          assertNotNull(tool);
+         tool2 = (Tool)workflow.findXPathValue("//sequence/activity[2]/tool"); // there should be more that one one!
+         assertNotNull(tool2);
         
       }
       catch (MarshalException e) {

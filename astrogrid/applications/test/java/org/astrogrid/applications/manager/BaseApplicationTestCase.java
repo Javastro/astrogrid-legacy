@@ -1,5 +1,5 @@
 /*
- * $Id: BaseApplicationTestCase.java,v 1.3 2004/04/01 13:54:54 pah Exp $
+ * $Id: BaseApplicationTestCase.java,v 1.4 2004/04/16 16:47:23 pah Exp $
  * 
  * Created on 30-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,6 +13,7 @@
 
 package org.astrogrid.applications.manager;
 
+import java.io.File;
 import java.util.Vector;
 
 import org.astrogrid.applications.CeaException;
@@ -24,6 +25,7 @@ import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.common.config.BaseDBTestCase;
+import org.astrogrid.applications.common.io.IOUtil;
 import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.applications.description.TestAppConst;
 import org.astrogrid.applications.manager.externalservices.MySpaceFromConfig;
@@ -77,6 +79,8 @@ public abstract class BaseApplicationTestCase extends WorkFlowUsingTestCase {
       String credential = user.getToken();
       mySpaceManager.createUser(userId, communityId, credential, servers);
       mySpaceManager.saveDataHolding(userId, communityId, credential, "testInFile", "This is some test contents for myspace", "data", mySpaceManager.OVERWRITE);
+      File inf = new File("/tmp/testInFile");
+      IOUtil.saveStringToFile("test contents", inf);
       
       
    }
