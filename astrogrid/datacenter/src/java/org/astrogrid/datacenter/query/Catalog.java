@@ -44,7 +44,7 @@ public class Catalog {
 		logger = Logger.getLogger( Catalog.class ) ;
 		
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_dosomething = "AGDTCE00???" ;	
+		ASTROGRIDERROR_COULD_NOT_CREATE_CATALOG_FROM_ELEMENT = "AGDTCE00420" ;	
 		
     private String
         name ;
@@ -96,7 +96,7 @@ public class Catalog {
 		}
 		catch( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_CATALOG_FROM_ELEMENT ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}

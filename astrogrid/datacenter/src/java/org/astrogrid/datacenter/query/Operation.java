@@ -15,9 +15,11 @@ import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
-import java.util.ArrayList ;
-import java.util.List ;
-import java.util.Iterator ;
+//import java.text.MessageFormat ;
+
+//import java.util.ArrayList ;
+//import java.util.List ;
+//import java.util.Iterator ;
 
 
 /**
@@ -36,7 +38,7 @@ import java.util.Iterator ;
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2
  */
-public class Operation {
+public abstract class Operation implements Operand {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
@@ -45,65 +47,130 @@ public class Operation {
 		logger = Logger.getLogger( Operation.class ) ;
 		
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_dosomething = "AGDTCE00???" ;	
+		ASTROGRIDERROR_COULD_NOT_CREATE_OPERATION_FROM_ELEMENT = "AGDTCE00410",
+	    ASTROGRIDERROR_UNSUPPORTED_SQL_OPERATION = "AGDTCE00400" ;
 		
-    private String
-        name = null ;
-		
-	private List
-	    fields = new ArrayList() ;
-	    
-	private List
-	    subservientOperations = new ArrayList() ;
+    public static final String     	// JBL Note: I've ignored "AVERAGE", "ANY" and "ALL"
+        AND = "AND",
+        OR  = "OR",
+        NOT = "NOT",
+        LESS_THAN = "LESS_THAN",
+        GREATER_THAN = "GREATER_THAN",
+        DIFFERENCE = "DIFFERENCE",
+        CONE = "CONE",
+        EQUALS = "EQUALS",
+        NOT_EQUALS = "NOT_EQUALS",
+        GREATER_THAN_OR_EQUALS = "GREATER_THAN_OR_EQUALS",
+        LESS_THAN_OR_EQUALS = "LESS_THAN_OR_EQUALS",
+        IN = "IN" ;
+	
+	private String
+		name = null ;
 	    
 	private Catalog
-	    catalog;    
+		catalog;    
+		
+		
+	public static Operation createOperation( Element opElement , Catalog catalog ) throws QueryException {	
+		if( TRACE_ENABLED ) logger.debug( "Operation.createOperation(): entry") ; 
+		
+		Operation
+		    newOp = null ;
+		String
+		    opName = null ;
+		
+		try {
+			
+			opName = opElement.getAttribute( RunJobRequestDD.OP_NAME_ATTR ).trim().toUpperCase() ;
+			
+			if( opName.equals( Operation.AND) ) {
+				newOp = new Operation_AND( opElement, catalog ) ;				
+			}
+			else if( opName.equals( Operation.OR ) ) {
+				newOp = new Operation_OR( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.NOT ) ) {
+				newOp = new Operation_LOGICAL_NOT( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.LESS_THAN ) ) {
+				newOp = new Operation_LESS_THAN( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.GREATER_THAN ) ) {
+				newOp = new Operation_GREATER_THAN( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.DIFFERENCE ) ) {
+				newOp = new Operation_DIFFERENCE( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.CONE ) ) {
+				newOp = new Operation_CONE( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.EQUALS ) ) {
+				newOp = new Operation_EQUALS( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.GREATER_THAN_OR_EQUALS ) ) {
+				newOp = new Operation_GREATER_THAN_OR_EQUALS( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.LESS_THAN_OR_EQUALS ) ) {
+				newOp = new Operation_LESS_THAN_OR_EQUALS( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.IN ) ) {
+				newOp = new Operation_IN( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.NOT_EQUALS ) ) {
+				newOp = new Operation_NOT_EQUALS( opElement, catalog ) ;
+			}
+			else {
+				Message
+	               message = new Message( ASTROGRIDERROR_UNSUPPORTED_SQL_OPERATION, newOp ) ;
+                logger.error( message.toString() ) ;
+                throw new QueryException( message );    	
+			}
+			
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "Operation.createOperation(): exit") ;   	
+		}
+		
+		return newOp ;
+		
+	} // end of createOperation()
+	
 	    
-	public Operation( Element operationElement , Catalog catalog) throws QueryException {
+	public Operation( Element operationElement , Catalog catalog ) throws QueryException {
 		if( TRACE_ENABLED ) logger.debug( "Operation(Element): entry") ;  
 		 		
 		try {
 			
-			setName(operationElement.getAttribute( RunJobRequestDD.OP_NAME_ATTR )) ;
+			this.catalog = catalog;	
 			
 			NodeList
-			   nodeList = operationElement.getElementsByTagName( RunJobRequestDD.OP_ELEMENT ) ;
-
+			   nodeList = operationElement.getChildNodes() ;
 			   
 			Element
-				opElement,
-				fieldElement ;
+				element ;
+								
+			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
 				
-			this.catalog = catalog;				
-				
-			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
-				opElement = (Element) nodeList.item(i) ;				
-				if( opElement.getTagName().equals( RunJobRequestDD.OP_ELEMENT ) ) {
-					subservientOperations.add ( new Operation( opElement , catalog) ) ;
+				if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
+				    continue ;				
+				element = (Element) nodeList.item(i) ;
+								
+				if( element.getTagName().equals( RunJobRequestDD.OP_ELEMENT ) ) {
+					this.push( Operation.createOperation( element , catalog ) ) ;
 				}
-				else  {
+				else if( element.getTagName().equals( RunJobRequestDD.FIELD_ELEMENT ) ) {
+				    this.push( new Field( element, catalog ) ) ;						
+			    } 
+			    else {
 					; // JBL Note: What do I do here?
 				}
 				
 			} // end for		
-			
-			nodeList = operationElement.getElementsByTagName( RunJobRequestDD.FIELD_ELEMENT ) ;
-			   
-			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
-				fieldElement = (Element) nodeList.item(i) ;
-				if( fieldElement.getTagName().equals( RunJobRequestDD.FIELD_ELEMENT ) ) {
-					fields.add( new Field( fieldElement, catalog ) ) ;						
-				}
-				else  {
-					; // JBL Note: What do I do here?
-				}
-				
-			} // end for
 	
 		}
 		catch( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_OPERATION_FROM_ELEMENT ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}
@@ -111,24 +178,16 @@ public class Operation {
 			if( TRACE_ENABLED ) logger.debug( "Operation(Element): exit") ;   	
 		}
 		
-	} // end of Operation( Element )
-	
+	}
 
-	public Iterator getFields() { return this.fields.iterator() ; }
-	public boolean addField( Field field ) { return this.fields.add( field ); }
-	public Field removeField( int index ) { return (Field)this.fields.remove( index ) ; }
-	public Field getField( int index ) { return (Field)this.fields.get( index ) ; }
-	public int getNumberFields() { return this.fields.size() ; }
-
-	public Iterator getOperations() { return this.subservientOperations.iterator() ; }
-	public boolean addOperation( Operation operation ) { return this.subservientOperations.add( operation ); }
-	public Operation removeOperation( int index ) { return (Operation)this.subservientOperations.remove( index ) ; }
-	public Operation getOperation( int index ) { return (Operation)this.subservientOperations.get( index ) ; }
-	public int getNumberOperations() { return this.subservientOperations.size() ; }
 
 	public void setName(String name) { this.name = name; }
 	public String getName() { return name; }
 	
+	public void setCatalog( Catalog catalog ) { this.catalog = catalog ; }
 	public Catalog getCatalog() { return catalog; }
+	
+	public abstract void push( Operand operand ) ;
+	
 	
 } // end of class Operation

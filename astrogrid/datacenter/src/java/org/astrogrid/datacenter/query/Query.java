@@ -166,18 +166,29 @@ public class Query {
     }
     
     public String toSQLString() {
-    	
+		if( TRACE_ENABLED ) logger.debug( "Query.toSQLString(): entry") ;
+		
     	StringBuffer
     	   buffer = new StringBuffer(256) ;
-    	   
-    	buffer
-    	    .append( "SELECT " )
-    	    .append( getReturn().toSQLString() )
-    	    .append( " FROM ")
-    	    .append( getFrom().toSQLString() )
-    	    .append( " WHERE ")
-    	    .append( getCriteria().toSQLString() );
-		     logger.debug("SQL Query: "+ buffer.toString()); 
+    	   	   
+		try {
+			
+			buffer
+			    .append( "SELECT " )
+			    .append( getReturn().toSQLString() )
+			    .append( " FROM ")
+			    .append( getFrom().toSQLString() )
+			    .append( " WHERE ")
+			    .append( getCriteria().toSQLString() );
+			     logger.debug("SQL Query: "+ buffer.toString()); 
+			     
+		} catch (RuntimeException e) {
+		     ;
+		}
+		finally {
+			logger.debug( buffer.toString() ) ;
+			if( TRACE_ENABLED ) logger.debug( "Query.toSQLString(): exit") ;
+		}
     	     	   
     	return buffer.toString() ;
     	
