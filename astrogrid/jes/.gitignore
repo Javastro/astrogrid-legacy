@@ -3,3 +3,6 @@ maven.log
 build
 tests.log
 velocity.log
+.project
+jestest.log
+.classpath
