@@ -32,7 +32,7 @@
 	<build>
 		<nagEmailAddress>jdt@roe.ac.uk</nagEmailAddress>
 		<sourceDirectory>src/java</sourceDirectory>
-		<unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
 		<unitTest>
 			<includes>
 				<include>**/*Test.java</include>

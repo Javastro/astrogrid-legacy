@@ -20,9 +20,14 @@
 				collapse="true">
 				<item name="Summary of astrogrid goals" 
 					href="goalsSummary.html" />
-				<item name="The nightly build" href="http://www.astrogrid.org/" 
+				<item name="The nightly build" href="http://wiki.astrogrid.org/bin/view/Astrogrid/AstrogridAndMaven" 
 					/>
 			</item>
+		</menu>
+		<menu name="Build files for this project">
+			<item name="project.xml" href="http://www.astrogrid.org/viewcvs/mavenTemplates/SimpleMavenProject/project.xml?rev=HEAD&amp;only_with_tag=HEAD&amp;content-type=text/vnd.viewcvs-markup"/>
+			<item name="maven.xml" href="http://www.astrogrid.org/viewcvs/mavenTemplates/SimpleMavenProject/maven.xml?rev=HEAD&amp;only_with_tag=HEAD&amp;content-type=text/vnd.viewcvs-markup"/>
+			<item name="project.properties" href="http://www.astrogrid.org/viewcvs/mavenTemplates/SimpleMavenProject/project.properties?rev=HEAD&amp;only_with_tag=HEAD&amp;content-type=text/vnd.viewcvs-markup"/>
 		</menu>
 	</body>
 </project>

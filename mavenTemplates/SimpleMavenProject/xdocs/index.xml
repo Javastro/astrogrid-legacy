@@ -7,7 +7,7 @@
 	</properties>
 	<body>
 		<section name="Introduction">
-			<p> This project provides an example of how to set up a simple 
+			<p> This  is an example of how to set up a simple 
 				project that can be built by Maven during our automatic build 
 				process. Please send comments and suggestions to <a 
 				href="mailto:jdt@roe.ac.uk">John Taylor</a>. </p>
@@ -33,19 +33,21 @@
 		<section name="Using Maven - files you should know about">
 			<P> This is not a tutorial on Maven - see the <a 
 				href="http://www.maven.org">Maven site</a> if you're interested 
-				in the nitty gritty. </P>
+				in the nitty gritty. However, you may find this summary useful...</P>
 			<subsection name="project.xml">
 				<P> Project.xml, otherwise know as the Project Object Model 
 					(POM) describes the project: who wrote it, which jars and 
 					resources it depends on, where its CVS repositories are, 
 					etc. Since much of the POM is common to all projects, we 
 					have factored out the commonallity into a base POM, stored 
-					in CVS under maven-base. You are advised to inherit from 
+					in CVS under astrogrid/maven-base. You are advised to inherit from 
 					this POM using the &lt;extend&gt; tag to keep your POM 
 					simple, and make future maintenance easier. You may 
 					override any settings in the base POM that are not 
 					appropriate with your own values, that is, your POM takes 
-					precedence. </P>
+					precedence. NB - if you are already inheriting from a base POM because
+					your component requires a multiproject build then this may not work - that is,
+					more than one level of inheritance does not seem to be supported yet by Maven.</P>
 			</subsection>
 			<subsection name="project.properties">
 				<P> This file contains various Maven properties that seem to 

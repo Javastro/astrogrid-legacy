@@ -16,7 +16,7 @@
 		<section name="Build procedure">
 			<P> Execute </P>
 			<P> maven astrogrid-build-snapshot</P>
-			<P> to build a SNAPSHOT jar astrogrid-simple-SNAPSHOT.jar and war 
+			<P> to build the SNAPSHOT jar astrogrid-simple-SNAPSHOT.jar, and the war 
 				astrogrid-simple-SNAPSHOT.war. </P>
 			<P> Execute </P>
 			<P> maven astrogrid-build-artifact </P>

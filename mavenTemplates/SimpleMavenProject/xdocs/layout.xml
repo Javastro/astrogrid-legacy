@@ -7,29 +7,27 @@
 	<body>
 		<section name="Project Layout">
 			<subsection name="Source files">
-				<P> This project differs slightly from the layout in typical 
-					Astrogrid projects. Usually, we place our source code in 
-					/src/java and our JUnit code in test/java. However, the 
-					layout for this project was generated automatically using 
-					the Maven goal </P>
+				<P> This project places its source code in /src/java and its test code in /test/java, 
+					in line with the standard adopted by other Astrogrid components.  However,
+					it is worth noting that a skeleton project may be generated automatically
+					by Maven using</P>
 				<P> maven genapp </P>
-				<P> which puts the source code under src/java and the test code 
-					under src/test, with configuration files under /conf. 
-					Although this seems to be the layout favoured by Maven 
-					perhaps it would be better to stick to the uniform layout 
-					we have already? Comments? </P>
+				<P> which has a slightly different arrangement.  It is probably better to stick with
+					the Astrogrid layout to avoid confusion.</P>
 			</subsection>
 		</section>
 		<section name="Documentation">
 			<p> Any xml documents placed in the xdocs folder are automatically 
 				processed into html when the site is built. Note the &lt;P&gt; 
 				tags surrounding the text - it's easy to forget these and 
-				wonder why your text hasn't rendered!</p>
+				wonder why your text hasn't rendered!  If you want these generated documents
+				to be deployed with the webapp in the war file, you will need to add an Ant copy task
+				to Maven.xml.  Take a look at the maven.xml file for this project to see how it can be done.</p>
 		</section>
-		<section name="Navigation">
+		<subsection name="Navigation">
 			<p> A special file xdocs/navigation.xml can be added to place extra 
 				links on the left hand side and header of the page. </p>
-		</section>
+		</subsection>
 		<section name="War files">
 			<P>Coming soon....</P>
 		</section>

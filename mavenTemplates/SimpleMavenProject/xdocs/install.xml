@@ -7,7 +7,7 @@
 	<body>
 		<section name="Install Instructions">
 			<P> Drop the <a 
-				href="http://www.astrogrid.org/maven/org.astrogrid/astrogrid-simple-SNAPSHOT.war">war</a> 
+				href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-simple-SNAPSHOT.war">war</a> 
 				file into your Tomcat's root directory. </P>
 		</section>
 	</body>
