@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.1 2004/04/23 16:12:49 pah Exp $
+ * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.2 2004/04/23 22:40:54 pah Exp $
  * 
  * Created on 23-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -33,8 +33,6 @@ public class MySpaceCommandlineWorkflowEndToEndTest
    private Ivorn inputIvorn;
 
    protected Ivorn targetIvorn;
-   protected final String TESTCONTENTS = "workflow test contents";
-
    /**
     * Constructor for MySpaceCommandlineWorkflowEndToEndTest.
     * @param arg0

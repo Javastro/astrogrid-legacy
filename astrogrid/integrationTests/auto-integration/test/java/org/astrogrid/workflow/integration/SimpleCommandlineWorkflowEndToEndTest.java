@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.2 2004/04/23 16:12:49 pah Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.3 2004/04/23 22:40:54 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,10 @@
  *
 **/
 package org.astrogrid.workflow.integration;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
@@ -35,7 +39,12 @@ import junit.framework.TestSuite;
  *
  */
 public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegration {
-    /**
+    private static final String INFILENAME = "/tmp/in";
+   private static final String OUTFILENAME = "/tmp/out";
+   private File infile;
+    private File outfile;
+    protected final String TESTCONTENTS = "workflow test contents";
+  /**
      * Constructor for WorkflowManagerIntegrationTest.
      * @param arg0
      */
@@ -51,6 +60,17 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
         jes = manager.getJobExecutionService();
         reg = manager.getToolRegistry();
         targetApplication = TESTAPP2;
+        outfile = new File(OUTFILENAME);
+        assertNotNull(outfile);
+        infile = new File(INFILENAME);
+        assertNotNull(infile);
+        PrintWriter pw = new PrintWriter(new FileOutputStream(infile));
+        assertNotNull(pw);
+        pw.println(TESTCONTENTS);
+        pw.close();
+        
+        
+        
     }
     
     protected JobExecutionService jes;    
@@ -114,9 +134,9 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
       pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P4']");
       pval.setValue("test string");
       pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P9']");
-      pval.setValue("/tmp/silly");//TODO need to write something here..
+      pval.setValue(INFILENAME);
       pval = (ParameterValue)tool.findXPathValue("output/parameter[name='P3']");
-      pval.setValue("/tmp/out");
+      pval.setValue(OUTFILENAME);
 
 
      
@@ -161,7 +181,7 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
         suite.addTest(new SimpleCommandlineWorkflowEndToEndTest("tidyUp"));        
         return suite;
     }
-
+ 
 
     
 }
@@ -169,6 +189,9 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
 
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.3  2004/04/23 22:40:54  pah
+more tweaks
+
 Revision 1.2  2004/04/23 16:12:49  pah
 added the myspace testapp test
 
