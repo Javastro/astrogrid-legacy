@@ -7,7 +7,6 @@ import org.w3c.dom.Element;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.LinkedHashMap;
-import org.astrogrid.registry.server.query.RegistryQueryService;
 import java.text.DateFormat;
 import java.util.Calendar;
 
@@ -20,7 +19,20 @@ import org.xml.sax.SAXException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.xmldb.eXist.server.QueryDBService;
+
+import org.astrogrid.registry.server.query.RegistryQueryService;
+
+import org.xmldb.api.base.Resource;
+import org.astrogrid.xmldb.client.QueryService;
+import org.xmldb.api.base.ResourceSet;
+import org.xmldb.api.modules.XMLResource;
+import org.xmldb.api.base.Resource;
+import org.xmldb.api.base.Collection;
+import org.xmldb.api.base.XMLDBException;
+import org.astrogrid.xmldb.client.XMLDBFactory;
+import org.astrogrid.registry.server.admin.AuthorityList;
+
+
 
 /**
  * RegistryServerHelper Helper class is one to have it's name changed later.
@@ -31,18 +43,8 @@ import org.astrogrid.xmldb.eXist.server.QueryDBService;
  * @author Kevin Benson
  */
 public class RegistryServerHelper {
-
-
-   /**
-    * contains status information about the registry.
-    */
-   private static String statusMessage = "";
-   
-   private static LinkedList ll = null;
    
    private static HashMap manageAuthorities = null;
-   
-   private static HashMap otherManagedAuths = null;
       
    /**
     * conf - Config variable to access the configuration for the server normally
@@ -66,8 +68,8 @@ public class RegistryServerHelper {
    static {
       if(conf == null) {        
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
-         versionNumber = conf.getString("org.astrogrid.registry.version");
-         defaultRoot = conf.getString("registry.rootNode.default",null);
+         versionNumber = conf.getString("reg.amend.defaultversion");
+         defaultRoot = conf.getString("reg.custom.rootNode.default",null);
       }      
    }
    
@@ -76,7 +78,7 @@ public class RegistryServerHelper {
    }
    
    public static String getRootNodeName(String versionNumber) {
-       return conf.getString("registry.rootNode." + versionNumber,defaultRoot);
+       return conf.getString("reg.custom.rootNode." + versionNumber,defaultRoot);
    }
    
    public static String getRootNodeLocalName(String versionNumber) {
@@ -149,33 +151,44 @@ public class RegistryServerHelper {
       String ident = getAuthorityID((Element)nd);
       String resKey = getResourceKey((Element)nd);
       if(resKey != null && resKey.trim().length() > 0) ident += "/" + resKey;
-      return ident;
+      return "ivo://" + ident;
    }
    
    /**
     * @param versionNumber
     * @return
-    */
+    
    public static String getXQLDeclarations(String versionNumber) {
-       versionNumber = versionNumber.replace('.','_');
+       //versionNumber = versionNumber.replace('.','_');
+       
        String declarations = conf.getString("declare.namespace." + versionNumber,"");
+       log.info("get namespaces for versionNumber = " + versionNumber + " results = " + declarations);
        return declarations;
    }
+   */
    
    public static String getRegistryVersionFromNode(Node nd) {
        if(nd == null || Node.ELEMENT_NODE != nd.getNodeType()) {
            log.info("not a ELEMENT NODE TIME TO JUST DEFAULT IT");
-           return conf.getString("org.astrogrid.registry.version",null);
+           if(nd != null) {
+               log.info("Node Name = " + nd.getNodeName());
+           }else {
+               log.info("node was null");
+           }
+           return conf.getString("reg.amend.defaultversion",null);
        }
        
-       String version = nd.getNamespaceURI();       
+       String version = nd.getNamespaceURI();
+       log.info("Node Name = " + nd.getNodeName() + " Version = " + version);
        if(version != null && version.trim().length() > 0 &&
           version.startsWith("http://www.ivoa.net/xml/VOResource")) {
            return version.substring(version.lastIndexOf("v")+1);
        }
        //darn did not find a namespace uri that was VOResource.
        version = DomHelper.getNodeAttrValue((Element)nd,"vr","xmlns");
+       log.info("Node Name = " + nd.getNodeName() + " Version = " + version);
        if(version != null && version.trim().length() > 0) {
+           
            return version.substring(version.lastIndexOf("v")+1);
        }
        //darn no vr namespace defined either.
@@ -191,82 +204,10 @@ public class RegistryServerHelper {
        }
        //log.error("Could not find a Registry version number on the nodes BAD MEANS NO NAMESPACE DEFINED," +
        //          " defaulting to config.");
-       return conf.getString("org.astrogrid.registry.version",null);
+       return conf.getString("reg.amend.defaultversion",null);
    }
-         
-   /**
-    * 
-    * @throws IOException
-    */
-   public static void initStatusMessage() throws IOException {
-      log.debug("start initStatusMessage");      
-      statusMessage = " ";
-      
-      RegistryQueryService rs = new RegistryQueryService();
-      Document regEntry = null;
-      try {
-         regEntry = rs.loadRegistry(null);
-      }catch(Exception e) {
-         e.printStackTrace();
-         log.error(e);
-         regEntry = null;   
-      }
-      if(regEntry != null) {         
-         //NodeList nl = DomHelper.getNodeListTags(regEntry,"ManagedAuthority","vg");
-          NodeList nl = regEntry.getElementsByTagNameNS("*","ManagedAuthority");
-
-         if(nl.getLength() > 0) {
-            statusMessage += "Authorities owned by this Registry: |";
-            for(int i=0;i < nl.getLength();i++) {
-               statusMessage += nl.item(i).getFirstChild().getNodeValue() + 
-                                "|";
-            }
-         }
-         if(nl.getLength() > 0) {
-            statusMessage += "This Registries access url is " +  
-            DomHelper.getNodeTextValue(regEntry,"AccessURL","vr") + "|";
-         }
-      }//if
-      log.debug("end initStatusMessage");      
-   }
-   
-   public static void addStatusMessage(String message) {
-      log.debug("start addStatusMessage");
-      if(ll == null || ll.size() <= 0) {
-         ll = new LinkedList();
-      }
-      Calendar rightNow = Calendar.getInstance();
-      ll.add(0,"Time Entry at: " + DateFormat.getDateInstance().format(
-           rightNow.getTime()) + " " + message + "|");
-      while(ll.size() >= 51) {
-         ll.removeLast();
-      }
-      log.debug("end  addStatusMessage");
-   }
-   
-   public static String getStatusMessage() throws IOException {
-      log.debug("start getStatusMessage");
-      if(ll == null || ll.size() <= 0) {
-         ll = new LinkedList();
-      }
-      initStatusMessage();
-      for(int i = 0;i < ll.size();i++) {
-         statusMessage += ll.get(i);
-      }
-      log.debug("end getStatusMessage");
-      return statusMessage;
-   }
-   
-   public static HashMap getOtherManagedAuthorities(String collectionName,String regVersion)  throws SAXException, MalformedURLException, ParserConfigurationException, IOException {
-       log.debug("start getOtherManagedAuthorities");
-       //if(otherManagedAuths == null || otherManagedAuths.size() <= 0) {
-           processManagedAuthorities(collectionName, regVersion);   
-       //}
-       log.debug("end getOtherManagedAuthorities");
-       return otherManagedAuths;            
-   }
-   
-   public static HashMap getManagedAuthorities(String collectionName,String regVersion)  throws SAXException, MalformedURLException, ParserConfigurationException, IOException {
+               
+   public static HashMap getManagedAuthorities(String collectionName,String regVersion)  throws XMLDBException { //SAXException, MalformedURLException, ParserConfigurationException, IOException {
        log.debug("start getManagedAuthorities");
        //if(manageAuthorities == null || manageAuthorities.size() <= 0) {
            processManagedAuthorities(collectionName, regVersion);   
@@ -275,27 +216,46 @@ public class RegistryServerHelper {
        return manageAuthorities;            
     }
    
-   public static void processManagedAuthorities(String collectionName,String regVersion) throws SAXException, MalformedURLException, ParserConfigurationException, IOException {
+   public static void processManagedAuthorities(String collectionName,String regVersion) throws XMLDBException { //SAXException, MalformedURLException, ParserConfigurationException, IOException {
 
-       if(otherManagedAuths == null)
-           otherManagedAuths = new HashMap();
        if(manageAuthorities == null)
            manageAuthorities = new HashMap();
        
-       otherManagedAuths.clear();
        manageAuthorities.clear();
-       QueryDBService qdb = new QueryDBService();       
-       String xqlQuery = QueryHelper.queryForRegistries(regVersion);
-       Document registries = qdb.runQuery(collectionName,xqlQuery);
+       
+       String xqlQuery = QueryHelper.getXQLDeclarations(regVersion) + QueryHelper.queryForRegistries(regVersion);
+       XMLDBFactory xdb = new XMLDBFactory();
+       Collection coll = null;
+       Document registries = null;
+       try {
+           coll = xdb.openCollection(collectionName);
+           QueryService xqs = xdb.getQueryService(coll);      
+           ResourceSet rs = xqs.query(xqlQuery);
+           if(rs.getSize() == 0) 
+               return;
+           Resource xmlr = rs.getMembersAsResource();
+           registries = DomHelper.newDocument(xmlr.getContent().toString());           
+       }catch(ParserConfigurationException pce) {
+         log.error(pce);
+       }catch(IOException ioe){
+         log.error(ioe);
+       }catch(SAXException sax) {
+         log.error(sax);
+       }finally {
+           try {
+               xdb.closeCollection(coll);
+           }catch(XMLDBException xmldb) {
+               log.error(xmldb);
+           }
+       }
        //System.out.println("the result of processManaged registries = " + DomHelper.DocumentToString(registries));
        NodeList resources = registries.getElementsByTagNameNS("*","Resource");
        log.info("Number of Resources found loading up registries = " + resources.getLength());
-       HashMap tempHash = new HashMap();
        boolean sameRegistry = false;
-       String regAuthID = conf.getString("org.astrogrid.registry.authorityid");
+       String regAuthID = conf.getString("reg.amend.authorityid");
        String val = null;       
-       //System.out.println("in processManagedAuthorities the regAuthID = " + regAuthID);
        for(int j = 0;j < resources.getLength();j++) {
+           String mainOwner = getAuthorityID((Element)resources.item(j));
            NodeList mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","ManagedAuthority");
            if(mgList.getLength() == 0) {
                mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","managedAuthority");
@@ -303,17 +263,8 @@ public class RegistryServerHelper {
            log.info("mglist size = " + mgList.getLength());
            for(int i = 0;i < mgList.getLength();i++) {
                val = mgList.item(i).getFirstChild().getNodeValue();
-               tempHash.put(val,null);
-               if(val != null && regAuthID.equals(val.trim()))
-                   sameRegistry = true;
+               manageAuthorities.put(new AuthorityList(val,regVersion),new AuthorityList(val, regVersion, mainOwner));
            }//for
-           if(sameRegistry) {
-               manageAuthorities.putAll(tempHash);
-               sameRegistry = false;
-           }else {
-               otherManagedAuths.putAll(tempHash);
-           }
-           tempHash.clear();
        }//for
    }  
 

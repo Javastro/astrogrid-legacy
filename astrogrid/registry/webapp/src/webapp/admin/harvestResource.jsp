@@ -16,7 +16,10 @@
    RegistryQueryService server = new RegistryQueryService();
    RegistryHarvestService rhs = new RegistryHarvestService();
    ArrayList al = server.getAstrogridVersions();
-
+      String version = request.getParameter("version");
+	   if(version == null || version.trim().length() <= 0) {
+   		version = RegistryServerHelper.getDefaultVersionNumber();
+   	}
 %>
 
 <html>
@@ -44,7 +47,9 @@
 Look for another version
 <select name="version">
    <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"><%out.print(((String)al.get(k)).replaceAll("_","."));%></option>  
+      <option value="<%=al.get(k)%>"
+        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
+      ><%=al.get(k)%></option>  
    <%}%>
 </select>
 <input type="submit" name="button" value='List'/>

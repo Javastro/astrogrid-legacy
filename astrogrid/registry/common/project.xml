@@ -154,17 +154,31 @@
             | The location of our JUnit source code.
             +-->
         <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+
+    	<!--
+            <resources>
+                <resource>
+               	   <directory>${basedir}/src</directory>
+    		        <includes>
+    		           	<include>includes/*</include>		        	
+    	            	<include>includes/*</include>
+    		        </includes>            	
+                </resource>
+            </resources>
+        	-->
     	
+
         <resources>
             <resource>
            	   <directory>${basedir}/src</directory>
 		        <includes>
-		           	<include>schema/*.xsd</include>		        	
+		           	<include>xsl/*.xsl</include>
+		           	<include>schema/*.xsd</include>
 	            	<include>schema/**/*.xsd</include>
 		        </includes>            	
             </resource>
         </resources>
-    	
+
         <!--+
             | Our JUnit test classes.
             +-->

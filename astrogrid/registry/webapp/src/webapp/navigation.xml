@@ -4,6 +4,7 @@
       <h5>Server</h5>
       <ul>
          <li><a href="index.jsp" >Home</a>
+         <li><a href="configure.jsp" >Configure</a>
          <li><a href="admin/index.jsp" >Admin</a>
       </ul>
    </div>
@@ -14,6 +15,7 @@
          <li><a href="browse.jsp" >Browse</a>
          <li><a href="adqlquery.jsp" >Query</a>
          <li><a href="keywordquery.jsp" >Keyword Query</a>
+         <li><a href="backup.jsp">Backup</a>
       </ul>
    </div>
    <div id='menuRegister'>
