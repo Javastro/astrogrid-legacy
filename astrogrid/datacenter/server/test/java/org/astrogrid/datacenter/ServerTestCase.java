@@ -1,4 +1,4 @@
-/*$Id: ServerTestCase.java,v 1.5 2004/03/08 00:31:28 mch Exp $
+/*$Id: ServerTestCase.java,v 1.6 2004/03/12 04:54:06 mch Exp $
  * Created on 20-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import java.io.*;
 import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
+import org.astrogrid.io.Piper;
 import org.astrogrid.util.DomHelper;
 import org.custommonkey.xmlunit.Validator;
 import org.custommonkey.xmlunit.XMLTestCase;
@@ -94,12 +94,9 @@ public class ServerTestCase extends XMLTestCase {
 
     /**
      * load a resource file into a string.
-     * @param resource
-     * @return
-     * @throws IOException
      */
-    public static String getResourceAsString(String resource) throws IOException {
-       InputStream is = HsqlTestCase.class.getResourceAsStream(resource);
+    public static String getResourceAsString(Class c, String resource) throws IOException {
+       InputStream is = c.getResourceAsStream(resource);
        assertNotNull(is);
        String script = ServerTestCase.streamToString(is);
        assertNotNull(script);
@@ -108,22 +105,13 @@ public class ServerTestCase extends XMLTestCase {
 
     /** load stream into a string */
     public static String streamToString(InputStream is) throws IOException {
-        assertNotNull(is);
-          BufferedReader r = new BufferedReader(new InputStreamReader(is));
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            String line = null;
-            while ( (line = r.readLine()) != null) {
-                pw.println(line);
-            }
-            pw.close();
-            r.close();
-            String str = sw.toString();
-            assertNotNull(str);
-        return str;
+       assertNotNull(is);
+       StringWriter sw = new StringWriter();
+       Piper.bufferedPipe(new InputStreamReader(is), sw);
+       return sw.toString();
     }
     
-    /** parse string to Document */
+    /** parse string to Document  - use DomHelper.newDocument(String)
     public static Document stringToDocument(String xml) throws ParserConfigurationException, SAXException, IOException {
         assertNotNull(xml);
         InputStream is = new ByteArrayInputStream(xml.getBytes());
@@ -137,19 +125,19 @@ public class ServerTestCase extends XMLTestCase {
      * @param d
      */
     public void assertIsVotableResultsResponse(Document d) throws Exception {
-        assertXpathExists("/DatacenterResults",d);
+//        assertXpathExists("//VOTABLE",d);
+       /*
         assertXpathExists("/DatacenterResults/@queryid",d);
         assertXpathExists("/DatacenterResults/TIME",d);
         assertXpathEvaluatesTo("votable","/DatacenterResults/Results/@type",d );
         assertXpathExists("/DatacenterResults/Results/VOTABLE",d);
         // would be nice to validate the votable too..
+        */
          
     }
     
     public void assertIsVotableResultsResponse(String s) throws Exception{
-        //DomHelper.PrettyDocumentToStream(d,System.out);
-        Document d = XMLUnit.buildControlDocument(s);
-        assertIsVotableResultsResponse(d);
+        assertIsVotableResultsResponse(DomHelper.newDocument(s));
     }
     
     
@@ -209,6 +197,9 @@ public class ServerTestCase extends XMLTestCase {
 
 /*
 $Log: ServerTestCase.java,v $
+Revision 1.6  2004/03/12 04:54:06  mch
+It05 MCH Refactor
+
 Revision 1.5  2004/03/08 00:31:28  mch
 Split out webservice implementations for versioning
 

@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.13 2004/03/08 00:31:28 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.14 2004/03/12 04:54:06 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.store.Agsl;
@@ -58,15 +59,15 @@ public class InstallationSelfCheck extends TestCase {
    
    
    public void testLoadPlugin() throws Exception {
-      String pluginClass = SimpleConfig.getSingleton().getString(QuerierManager.DATABASE_QUERIER_KEY);
-      assertNotNull(QuerierManager.DATABASE_QUERIER_KEY + " is not defined",pluginClass);
+      String pluginClass = SimpleConfig.getSingleton().getString(QuerierPluginFactory.DATABASE_QUERIER_KEY);
+      assertNotNull(QuerierPluginFactory.DATABASE_QUERIER_KEY + " is not defined",pluginClass);
       // try to load plugin class.
       Class plugin = null;
 //      try {
          plugin = Class.forName(pluginClass);
-         assertNotNull(QuerierManager.DATABASE_QUERIER_KEY + " could not be found",plugin);
+         assertNotNull(QuerierPluginFactory.DATABASE_QUERIER_KEY + " could not be found",plugin);
          // check its type
-         assertTrue(QuerierManager.DATABASE_QUERIER_KEY + " does not extend Querier",Querier.class.isAssignableFrom(plugin));
+         assertTrue(QuerierPluginFactory.DATABASE_QUERIER_KEY + " does not extend Querier",Querier.class.isAssignableFrom(plugin));
          // we expect a contructor as follows
          Constructor constr = plugin.getConstructor(new Class[]{String.class,Query.class});
          assertNotNull("Plugin class must provide constructor(String,Query)",constr);
@@ -132,6 +133,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.14  2004/03/12 04:54:06  mch
+ It05 MCH Refactor
+
  Revision 1.13  2004/03/08 00:31:28  mch
  Split out webservice implementations for versioning
 

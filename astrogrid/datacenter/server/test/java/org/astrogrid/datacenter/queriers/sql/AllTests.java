@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2003/11/28 16:10:30 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/03/12 04:54:06 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,9 +23,7 @@ public class AllTests {
         TestSuite suite =
             new TestSuite("Test for org.astrogrid.datacenter.queriers.sql");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(SqlResultsTest.class));
-        suite.addTest(new TestSuite(SqlQuerierTest.class));
-        suite.addTest(new TestSuite(AdqlQueryTranslatorTest.class));
+        suite.addTest(new TestSuite(SqlPluginTest.class));
         suite.addTest(new TestSuite(SqlQueryTranslatorTest.class));
         //$JUnit-END$
         return suite;
@@ -44,6 +42,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.3  2004/03/12 04:54:06  mch
+It05 MCH Refactor
+
 Revision 1.2  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.5 2003/11/21 17:37:56 nw Exp $
+/*$Id: AllTests.java,v 1.6 2004/03/12 04:54:07 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,8 +12,6 @@ package org.astrogrid.datacenter.service;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.astrogrid.datacenter.snippet.ResponseHelperTest;
-
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Sep-2003
  *
@@ -24,10 +22,7 @@ public class AllTests {
         TestSuite suite =
             new TestSuite("Test for org.astrogrid.datacenter.service");
         //$JUnit-BEGIN$
-        suite.addTest(ServerTest.suite());
-        suite.addTest(DataQueryServiceTest.suite());
-        suite.addTest(ListenerTest.suite());
-        suite.addTest(ResponseHelperTest.suite());
+        suite.addTest(DataServiceTest.suite());
         //$JUnit-END$
         return suite;
     }
@@ -45,6 +40,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.6  2004/03/12 04:54:07  mch
+It05 MCH Refactor
+
 Revision 1.5  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

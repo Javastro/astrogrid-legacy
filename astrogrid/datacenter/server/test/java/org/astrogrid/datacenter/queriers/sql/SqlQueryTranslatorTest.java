@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.7 2004/02/24 16:03:48 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.8 2004/03/12 04:54:07 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,12 @@
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
-import org.astrogrid.config.SimpleConfig;
+import java.io.InputStream;
+import java.util.Properties;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.spi.Translator;
-import org.astrogrid.datacenter.sql.SQLUtils;
+import org.astrogrid.datacenter.queriers.query.AdqlQuery;
+import org.astrogrid.datacenter.queriers.query.ConeQuery;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
 /**
@@ -22,37 +24,6 @@ import org.w3c.dom.Document;
  */
 public class SqlQueryTranslatorTest extends ServerTestCase {
 
-    /**
-     * Constructor for SqlQueryTranslatorTest.
-     * @param arg0
-     */
-    public SqlQueryTranslatorTest(String arg0) {
-        super(arg0);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(SqlQueryTranslatorTest.class);
-    }
-
-    /*
-     * @see ServerTestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        trans = new SqlQueryTranslator();
-        SimpleConfig.setProperty(SqlQueryTranslator.SQL_PASSTHRU_ENABLED_KEY,"true");
-    }
-    protected Translator trans;
-    /*
-     * @see ServerTestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    public void testReturnType() {
-        assertEquals(String.class,trans.getResultType());
-    }
     public final static String QUERY = "select * from bling";
     public final static String INVALID_XML = "<?xml version='1.0'?><Sql>" + QUERY + "</Sql>";
     public final static String DUPLICATE_XML = "<?xml version='1.0'?><foo><sql></sql><sql></sql></foo>";
@@ -60,46 +31,59 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
     public final static String CDATA_XML = "<?xml version='1.0'?><sql><![CDATA[" + QUERY1 + "]]></sql>";
     public final static String NESTED_XML = "<?xml version='1.0'?><some><tags><foo /><sql>"+QUERY +"</sql></tags></some>";
 
-    
-    public void testValid() throws Exception {
-        Object o = trans.translate(SQLUtils.toQueryBody(QUERY));
-        assertNotNull(o);
-        assertEquals(trans.getResultType(),o.getClass());
-        assertEquals(QUERY,o);
-    }
-    
-    public void testInvalid() throws Exception {
-        try {
-        Document doc = stringToDocument(INVALID_XML);
-        Object o = trans.translate(doc.getDocumentElement());
-        fail("should have barfed");
-        } catch (IllegalArgumentException e) {
-            //expected
-        }
-    }
-    
-    public void testMultiple() throws Exception {
-        try {
-            Document doc = stringToDocument(DUPLICATE_XML);
-            Object o = trans.translate(doc.getDocumentElement());
-            fail("should have barfed");
-        } catch (IllegalArgumentException e) {
-            //expected
-        }
-    }
-    
-    public void testCDATA() throws Exception {
-        Document doc= stringToDocument(CDATA_XML);
-        Object o = trans.translate(doc.getDocumentElement());
-        assertNotNull(o);
-        assertEquals(QUERY1,o);
+    SqlMaker translator = new StdSqlMaker();
+    Properties correctSql = new Properties();
+   
+    public SqlQueryTranslatorTest(String arg0) {
+        super(arg0);
     }
 
-    public void testNested() throws Exception {
-        Document doc = stringToDocument(NESTED_XML);
-        Object o = trans.translate(doc.getDocumentElement());
-        assertNotNull(o);
-        assertEquals(QUERY,o);
+    protected void setUp() throws Exception {
+       //read in sample sql out checks
+       InputStream is = this.getClass().getResourceAsStream("samples-sqlout.properties");
+       assertNotNull(is);
+       correctSql.load(is);
+    }
+    
+    /** Test makes valid SQL from cone earch */
+    public void testCone() throws Exception {
+       String sql = translator.fromCone(new ConeQuery(20,20,3));
+       
+       //this would be a nasty check...
+    }
+
+    /** ADQLn - run as separate tests so all get checked even if one fails */
+    public void testAdql1() throws Exception { doFromFile(1); }
+    
+    /** ADQLn - run as separate tests so all get checked even if one fails */
+    public void testAdql2() throws Exception { doFromFile(2); }
+    
+    /** ADQLn - run as separate tests so all get checked even if one fails */
+    public void testAdql3() throws Exception { doFromFile(3); }
+    
+    /** ADQLn - run as separate tests so all get checked even if one fails */
+    public void testAdql4() throws Exception { doFromFile(4); }
+    
+    /** ADQLn - run as separate tests so all get checked even if one fails */
+    public void testAdql5() throws Exception { doFromFile(5); }
+    
+    /** ADQLn - run as separate tests so all get checked even if one fails */
+    public void testAdql6() throws Exception { doFromFile(6); }
+    
+    /** Test makes valid SQL from simple adql */
+    public void doFromFile(int testNum) throws Exception {
+       String filename = "sample"+testNum+".xml";
+       Document adqlDom = DomHelper.newDocument( this.getClass().getResourceAsStream(filename));
+       AdqlQuery adqlQuery = new AdqlQuery(adqlDom.getDocumentElement());
+       
+       String result = translator.fromAdql(adqlQuery).trim();
+       String correct = correctSql.getProperty(filename).trim();
+       assertEquals(correct, result);
+    }
+
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(SqlQueryTranslatorTest.class);
     }
 
 }
@@ -107,6 +91,9 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.8  2004/03/12 04:54:07  mch
+It05 MCH Refactor
+
 Revision 1.7  2004/02/24 16:03:48  mch
 Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 

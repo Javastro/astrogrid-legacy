@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.4 2004/02/16 23:07:04 mch Exp $
+/*$Id: AllTests.java,v 1.5 2004/03/12 04:54:06 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,8 +24,8 @@ public class AllTests {
         TestSuite suite =
             new TestSuite("Test for org.astrogrid.datacenter.queriers");
         //$JUnit-BEGIN$
-        suite.addTest(DummyQuerierTest.suite());
-        suite.addTest(QueryTranslatorTest.suite());
+        suite.addTest(DummyPluginsTest.suite());
+        suite.addTest(QuerierTest.suite());
         suite.addTest(new TestSuite(QuerierManagerTest.class));
         //$JUnit-END$
         return suite;
@@ -44,6 +44,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.5  2004/03/12 04:54:06  mch
+It05 MCH Refactor
+
 Revision 1.4  2004/02/16 23:07:04  mch
 Moved DummyQueriers to std server and switched to AttomConfig
 

@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.10 2004/03/09 12:17:11 mch Exp $
+/*$Id: FitsTest.java,v 1.11 2004/03/12 04:54:06 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -26,7 +26,7 @@ public class FitsTest extends OptionalTestCase
    /** Tests reading the header = ie loading and parsing keywords, etc */
    public void testHeader() throws IOException
    {
-      URL fits1 = getClass().getResource("iautestfits/tst0001.fits");
+      URL fits1 = getClass().getResource("examples/tst0001.fits");
       
       assertNotNull(fits1);
       
@@ -41,17 +41,26 @@ public class FitsTest extends OptionalTestCase
     * the full keyword/etc parsing */
    public void testIndexGenerator() throws IOException
    {
-
-      URL[] fits = new URL[] {
-            new URL("http://www.roe.ac.uk/~mch/r169411.fit"),
-            new URL("http://www.roe.ac.uk/~mch/r169097.fit"),
-            new URL("http://www.roe.ac.uk/~mch/r169101.fit")
-     };
-//takes ages! find some smaller files!
-//      String index = IndexGenerator.generateIndex(fits);
-//      assertNotNull(index);
+      String index = generateTestIndex();
+      assertNotNull(index);
    }
 
+   /** Used by other tests too - but for some reason it's not happy finding
+    * these files on a static method... */
+   public static String generateTestIndex() throws IOException
+   {
+      // NB These are all the same files at the moment @todo - get some (small) samples
+      URL[] fits = new URL[] {
+            FitsTest.class.getResource("examples/sample1.fits"),
+            FitsTest.class.getResource("examples/sample2.fits"),
+            FitsTest.class.getResource("examples/sample3.fits"),
+            FitsTest.class.getResource("examples/sample4.fits"),
+            FitsTest.class.getResource("examples/sample5.fits"),
+            FitsTest.class.getResource("examples/sample6.fits")
+      };
+
+      return IndexGenerator.generateIndex(fits);
+   }
    
    public static Test suite()
    {
@@ -73,6 +82,9 @@ public class FitsTest extends OptionalTestCase
 
 /*
  $Log: FitsTest.java,v $
+ Revision 1.11  2004/03/12 04:54:06  mch
+ It05 MCH Refactor
+
  Revision 1.10  2004/03/09 12:17:11  mch
  Temporarily removed tests on large fits files
 
@@ -119,3 +131,4 @@ public class FitsTest extends OptionalTestCase
 
 
  */
+

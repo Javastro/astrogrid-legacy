@@ -4,7 +4,9 @@
 SELECT DISTINCT t.b, b.* FROM Tab AS t, Bob AS b WHERE NOT (-(MAX(b.dd ) ) < 4.56 ) GROUP BY t.b HAVING b.x LIKE 'wibble%' OR b.z BETWEEN 4 AND 5 ORDER BY b.dd DESC
 -->
 <Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-> 
+  xsi:schemaLocation="http://tempuri.org/adql /home/noel/eclipse/datacenter/schema/ADQLschema.xsd"
+  xmlns="http://tempuri.org/adql"
+>
     <OptionalAllOrDistinct>
        <Option>DISTINCT</Option>
     </OptionalAllOrDistinct>
@@ -22,9 +24,9 @@ SELECT DISTINCT t.b, b.* FROM Tab AS t, Bob AS b WHERE NOT (-(MAX(b.dd ) ) < 4.5
         </ColumnExpr>
     </SelectionList>
     <TableClause>
-        <FromClause>          
-            <TableReference>            
-                <Table>                
+        <FromClause>
+            <TableReference>
+                <Table>
                     <Name>Tab</Name>
                     <AliasName>t</AliasName>
                 </Table>
@@ -42,7 +44,7 @@ SELECT DISTINCT t.b, b.* FROM Tab AS t, Bob AS b WHERE NOT (-(MAX(b.dd ) ) < 4.5
                        <Operator>-</Operator>
                        <Expr xsi:type="FunctionExpr">
                         <ExpressionFunction>
-                            <FunctionReference>MAX</FunctionReference>                            
+                            <FunctionReference>MAX</FunctionReference>
                             <Expr xsi:type="ColumnExpr">
                                 <SingleColumnReference>
                                     <TableName>b</TableName>

@@ -1,8 +1,11 @@
-<?xml version="1.0" encoding="utf-16"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- SQL equivalent
 SELECT * FROM Tab t
 -->
-<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://tempuri.org/adql /home/noel/eclipse/datacenter/schema/ADQLschema.xsd"
+  xmlns="http://tempuri.org/adql"
+>
   <SelectionAll />
   <TableClause>
     <FromClause>

@@ -1,14 +1,14 @@
 <?xml version="1.0" ?>
 <Select xmlns="http://tempuri.org/adql">
-	<SelectionAll />
-	<TableClause>
-		<FromClause>
-			<TableReference>
-				<Table>
-					<Name>People</Name>
-					<AliasName>p</AliasName>
-				</Table>
-			</TableReference>
-		</FromClause>
-	</TableClause>
+   <SelectionAll />
+   <TableClause>
+      <FromClause>
+         <TableReference>
+            <Table>
+               <Name>SampleGalaxies</Name>
+               <AliasName>g</AliasName>
+            </Table>
+         </TableReference>
+      </FromClause>
+   </TableClause>
 </Select>

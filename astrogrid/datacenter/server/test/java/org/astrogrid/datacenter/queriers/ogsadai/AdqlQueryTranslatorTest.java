@@ -1,11 +1,11 @@
-/*$Id: AdqlQueryTranslatorTest.java,v 1.2 2004/02/25 00:33:25 eca Exp $
+/*$Id: AdqlQueryTranslatorTest.java,v 1.3 2004/03/12 04:54:06 mch Exp $
  * Created on 29-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.queriers.ogsadai;
@@ -13,11 +13,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Properties;
-
 import junit.framework.TestCase;
-
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.queriers.QueryTranslator;
+import org.astrogrid.datacenter.queriers.sql.deprecated.QueryTranslator;
 /** test the query translator - maybe n the wrong package, but convenient to have it here for now.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Aug-2003
  * * @todo add wider range of tests.
@@ -70,7 +68,7 @@ public class AdqlQueryTranslatorTest extends TestCase {
           results.load(propsStream);
           assertFalse(results.isEmpty());
             try {
-            QueryTranslator visitor = new AdqlQueryTranslator();
+            QueryTranslator visitor = new PostgresAdqlQueryTranslator();
             String sql = visitor.translate(query);
             assertNotNull(sql);
              System.out.println(sql);
@@ -89,8 +87,11 @@ public class AdqlQueryTranslatorTest extends TestCase {
 }
 
 
-/* 
+/*
 $Log: AdqlQueryTranslatorTest.java,v $
+Revision 1.3  2004/03/12 04:54:06  mch
+It05 MCH Refactor
+
 Revision 1.2  2004/02/25 00:33:25  eca
 *** empty log message ***
 

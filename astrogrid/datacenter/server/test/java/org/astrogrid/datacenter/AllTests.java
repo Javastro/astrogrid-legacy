@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.11 2004/03/03 23:25:51 mch Exp $
+/*$Id: AllTests.java,v 1.12 2004/03/12 04:54:06 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.datacenter;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.astrogrid.datacenter.snippet.ResponseHelperTest;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Aug-2003
@@ -35,11 +34,8 @@ public class AllTests {
         suite.addTest(org.astrogrid.datacenter.queriers.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.service.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.sql.AllTests.suite());
-        suite.addTest(org.astrogrid.datacenter.DatacenterTest.suite());
-        suite.addTest(org.astrogrid.datacenter.queriers.spi.AllTests.suite());
          suite.addTest(org.astrogrid.datacenter.fits.FitsTest.suite());
          suite.addTest(org.astrogrid.datacenter.queriers.fits.FitsQuerierTest.suite());
-         suite.addTest(ResponseHelperTest.suite());
         return suite;
     }
 }
@@ -47,6 +43,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.12  2004/03/12 04:54:06  mch
+It05 MCH Refactor
+
 Revision 1.11  2004/03/03 23:25:51  mch
 Removed DirectDelegate
 

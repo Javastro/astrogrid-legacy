@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.20 2004/03/08 00:31:28 mch Exp $
+/*$Id: AxisDataServiceQueryTest.java,v 1.1 2004/03/12 04:54:07 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,93 +8,62 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.service;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+package org.astrogrid.datacenter.service.v041;
+
 import java.net.URL;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import javax.sql.DataSource;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.adql.ADQLUtils;
-import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.AxisDataServer;
 import org.astrogrid.datacenter.axisdataserver.types.Language;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
-import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
-import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
+import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
-/** Test the entire DataQueryService, end-to-end, over a Hsql database
- * @author Noel Winstanley nw@jb.man.ac.uk 05-Sep-2003
- *@todo reinstate dummy myspace, once we get a myspace delegate built.
+/** Exercises the It4.1 AxisDataServices interface
  */
-public class DataQueryServiceTest extends ServerTestCase {
+public class AxisDataServiceQueryTest extends ServerTestCase {
 
-    /**
-     * Constructor for DataQueryServiceTest.
-     * @param arg0
-     */
-    public DataQueryServiceTest(String arg0) {
+   protected AxisDataServer_v0_4_1 server;
+
+   protected Query query1;
+   protected Query query2;
+   protected Query query3;
+   
+   public AxisDataServiceQueryTest(String arg0) {
         super(arg0);
     }
 
-    public static Test suite() {
-        // Reflection is used here to add all the testXXX() methods to the suite.
-        return new TestSuite(DataQueryServiceTest.class);
-    }
-
     protected void setUp() throws Exception {
-        super.setUp();
-        //wsTest.setUp(); //sets up workspace
-        HsqlTestCase.initializeConfiguration();
-        SimpleConfig.setProperty(QuerierManager.DEFAULT_MYSPACE, MySpaceDummyDelegate.DUMMY);
-        SimpleConfig.setProperty(MetadataServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
-        DataSource ds = new HsqlTestCase.HsqlDataSource();
-        conn = ds.getConnection();
-          String script = getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
-        HsqlTestCase.runSQLScript(script,conn);
-        server = new AxisDataServer_v0_4_1();
-        InputStream adqlIn = this.getClass().getResourceAsStream("/org/astrogrid/datacenter/queriers/sql/sql-querier-test-3.xml");
-        assertNotNull(adqlIn);
-        Select s =Select.unmarshalSelect(new InputStreamReader(adqlIn));
-        query = new Query();
-        query.setQueryBody(ADQLUtils.marshallSelect(s).getDocumentElement());
+       super.setUp();
+
+       DummySqlPlugin.initConfig();
+       DummySqlPlugin.populateDb();
+       
+       server = new AxisDataServer_v0_4_1();
+       
+       query1 = new Query();
+       query1.setQueryBody(DomHelper.newDocument(this.getClass().getResourceAsStream("../adqlQuery1.xml")).getDocumentElement());
+
+       query2 = new Query();
+       query2.setQueryBody(DomHelper.newDocument(this.getClass().getResourceAsStream("../adqlQuery2.xml")).getDocumentElement());
+       
+       query3 = new Query();
+       query3.setQueryBody(DomHelper.newDocument(this.getClass().getResourceAsStream("../adqlQuery3.xml")).getDocumentElement());
     }
-
-    protected Connection conn;
-    protected AxisDataServer server;
-    protected Query query;
-    //protected final MyWorkspaceTest wsTest = new MyWorkspaceTest(null);
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        if (conn != null) {
-            try {
-                conn.close();
-            } catch (Exception e) {
-            }
-        }
-        super.tearDown();
-    }
-
 
     public void testDoOneShotQuery() throws Exception {
-        String results = server.doQuery("VOTABLE",query);
-        Document doc = stringToDocument(results);
+       
+        String results = server.doQuery("VOTABLE",query1);
+        Document doc = DomHelper.newDocument(results);
         assertIsVotableResultsResponse(doc);
     }
     
@@ -107,17 +76,17 @@ public class DataQueryServiceTest extends ServerTestCase {
     public void testGetMetadata() throws Exception {
         String result = server.getMetadata(new Object());
         assertNotNull(result);
-        Document doc = stringToDocument(result);
+        Document doc = DomHelper.newDocument(result);
         assertIsMetadata(doc);
     }
     
     public void testMakeQueryWithId() throws Exception {
-        String qid = server.makeQueryWithId(query,"foo");
+        String qid = server.makeQueryWithId(query1,"foo");
         assertEquals("foo",qid);
     }
     
     public void testAbort() throws Exception {
-        String qid = server.makeQuery(query);
+        String qid = server.makeQuery(query1);
         assertNotNull(qid);
         server.abortQuery(qid);
         // should have gone now.. i.e. we can't do this..
@@ -131,7 +100,7 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 
     public void testDoStagedQueryQuery() throws Exception    {
-             String qid = server.makeQuery(query);
+             String qid = server.makeQuery(query1);
              assertNotNull(qid);
              server.setResultsDestination(qid,new URI(MySpaceDummyDelegate.DUMMY));
              assertEquals(QueryState.CONSTRUCTED.toString(),server.getStatus(qid));
@@ -169,7 +138,7 @@ public class DataQueryServiceTest extends ServerTestCase {
          */
 
         public void queryStatusChanged(Querier querier) {
-            statusList.add(querier.getState());
+            statusList.add(querier.getStatus().getState());
         }
 
         public QueryState getLast()
@@ -186,11 +155,19 @@ public class DataQueryServiceTest extends ServerTestCase {
        junit.textui.TestRunner.run(suite());
     }
     
+    public static Test suite() {
+        // Reflection is used here to add all the testXXX() methods to the suite.
+        return new TestSuite(AxisDataServiceQueryTest.class);
+    }
+
 }
 
 
 /*
-$Log: DataQueryServiceTest.java,v $
+$Log: AxisDataServiceQueryTest.java,v $
+Revision 1.1  2004/03/12 04:54:07  mch
+It05 MCH Refactor
+
 Revision 1.20  2004/03/08 00:31:28  mch
 Split out webservice implementations for versioning
 

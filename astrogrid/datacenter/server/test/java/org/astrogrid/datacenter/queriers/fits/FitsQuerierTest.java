@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.11 2004/03/09 21:05:57 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.12 2004/03/12 04:54:06 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -13,82 +13,53 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URL;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.fits.FitsTest;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.store.Agsl;
-import org.astrogrid.test.OptionalTestCase;
+import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
+import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.queriers.query.ConeQuery;
 
 /** Test the Fits processing classes
  */
-public class FitsQuerierTest extends OptionalTestCase
+public class FitsQuerierTest extends TestCase
 {
    
-   /** Temporarily comment ouy until we get some smaller FITs files!
+   protected void setUp() throws Exception{
+      SimpleConfig.setProperty(QuerierPluginFactory.DATABASE_QUERIER_KEY, FitsQuerierPlugin.class.getName());
+      
+      //set up test index first
+      String index = new FitsTest().generateTestIndex();
+
+      File indexFile = new File("fitsIndex.xml");
+      FileOutputStream out = new FileOutputStream(indexFile);
+      out.write(index.getBytes());
+
+      SimpleConfig.setProperty(QuerierPluginFactory.DATABASE_QUERIER_KEY, FitsQuerierPlugin.class.getName());
+      
+      
+   }
+
    public void testCone() throws IOException
    {
-      FitsQuerier querier = new FitsQuerier("DummyId", null);
-      setIndex(querier);
+      StringWriter sw = new StringWriter();
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), sw, QueryResults.FORMAT_VOTABLE);
       
-      querier.coneSearch(300,60,12);
-
+      assertTrue(querier.getPlugin() instanceof FitsQuerierPlugin);
+      
+      querier.ask();
+      
+      //have a look in sw for results
    }
 
-   public void testLots() throws IOException
-   {
-      org.astrogrid.log.Log.logToConsole();
-      FitsQuerier querier = new FitsQuerier("test",null);
-      setIndex(querier);
-
-      org.astrogrid.log.Log.trace("Starting cone search...");
-      String[] foundUrls = querier.coneSearch(308,60,12);
-      
-      org.astrogrid.log.Log.trace("Found "+foundUrls.length+":");
-      
-      for (int i=0;i<foundUrls.length;i++)
-      {
-         org.astrogrid.log.Log.trace(foundUrls[i].toString());
-      }
-   }
-
-   
-   public void setIndex(FitsQuerier querier) throws IOException
-   {
-      File indexFile = new File("fitsIndex.xml");
-      if (!indexFile.exists())
-      {
-         org.astrogrid.log.Log.trace("Generating index...");
-         //create index file
-         String rawIndex = IndexGenerator.generateIndex(
-            new URL[] {
-               new URL("http://www.roe.ac.uk/~mch/r169411.fit"),
-                  new URL("http://www.roe.ac.uk/~mch/r169097.fit"),
-                  new URL("http://www.roe.ac.uk/~mch/r169101.fit")
-            }
-         );
-         org.astrogrid.log.Log.trace(rawIndex);
-         FileOutputStream out = new FileOutputStream(indexFile);
-         out.write(rawIndex.getBytes());
-      }
-      
-      querier.setIndex(new FileInputStream(indexFile));
-   }
-    */
-   /**
-    *  Tests that it works OK as a plugin
-    */
-   public void testPlugin() throws DatabaseAccessException
-   {
-      SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, FitsQuerier.class.getName());
-      
-      Querier querier = QuerierManager.createQuerier(null);
-      
-      assertTrue(querier instanceof FitsQuerier);
-   }
    
    public static Test suite()
    {
@@ -111,6 +82,9 @@ public class FitsQuerierTest extends OptionalTestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.12  2004/03/12 04:54:06  mch
+ It05 MCH Refactor
+
  Revision 1.11  2004/03/09 21:05:57  mch
  Removed hugely long Fits tests
 
