@@ -4,3 +4,4 @@ target
 maven.log
 mock
 velocity.log
+junit*.properties
