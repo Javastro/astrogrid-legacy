@@ -37,7 +37,7 @@
                 <item name="Job Management" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-jes-0.?-b*.war"/>
                 <item name="mySpace" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-mySpace-0.?-b*.war"/>
                 <item name="PAL" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*pal-0.?-b*.war"/>
-                <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-portal-*-0.?-b*.war"/>
+                <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-portal-0.?-b*.war"/>
                 <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-registry-0.?-b*.war"/>
             </item>
             <item name="Client/Delegate" href="/delegate.html" collapse="true">
