@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationFactory.java,v 1.4 2003/12/31 00:56:17 pah Exp $
+ * $Id: ApplicationFactory.java,v 1.5 2004/04/20 09:03:22 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.astrogrid.applications.description.exception.ApplicationDescriptionNo
 import org.astrogrid.community.User;
 
 /**
- * A factory for creating application objects
+ * A factory for creating application objects.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
@@ -24,7 +24,14 @@ import org.astrogrid.community.User;
  */
 public abstract class ApplicationFactory {
    
-   // TODO I do not think that this is a very good pattern..
+   /**
+    * Create a new application given the applicationId.
+    * @param applicationId
+    * @param user
+    * @return
+    * @throws ApplicationDescriptionNotFoundException
+    * @TODO I do not think that this is a very good pattern..
+    */
    public abstract AbstractApplication createApplication(String applicationId, User user) throws ApplicationDescriptionNotFoundException;
 
    /**

@@ -1,5 +1,5 @@
 /*
- * $Id: FileReferenceParameter.java,v 1.7 2004/01/18 12:28:00 pah Exp $
+ * $Id: FileReferenceParameter.java,v 1.8 2004/04/20 09:03:22 pah Exp $
  * 
  * Created on 15-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,6 +18,7 @@ import java.io.File;
 import org.astrogrid.applications.description.ParameterDescription;
 
 /**
+ * A file reference parameter. This is a parameter whose value is a reference to a file on a locally accessible filesystem.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4.1
@@ -35,6 +36,9 @@ public class FileReferenceParameter extends Parameter {
       // TODO Auto-generated constructor stub
    }
 
+   /**
+    * The file that the parameter value points to.
+    */
    protected File realFile;
 
    /**

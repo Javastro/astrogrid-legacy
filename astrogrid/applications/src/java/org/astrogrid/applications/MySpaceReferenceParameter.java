@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceReferenceParameter.java,v 1.8 2004/04/19 17:34:08 pah Exp $
+ * $Id: MySpaceReferenceParameter.java,v 1.9 2004/04/20 09:03:22 pah Exp $
  *
  * Created on 08 December 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -28,6 +28,12 @@ import org.astrogrid.community.User;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
+/**
+ * A MySpace reference parameter. The value of this parameter points to a file that is stored somewhere in MySpace.
+ * @author Paul Harrison (pah@jb.man.ac.uk) 20-Apr-2004
+ * @version $Name:  $
+ * @since iteration4
+ */
 public class MySpaceReferenceParameter extends FileReferenceParameter {
    /**
     * @param parameterDescription

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.27 2004/04/19 17:34:08 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.28 2004/04/20 09:03:22 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -153,7 +153,7 @@ public class CommandLineApplicationController extends AbstractApplicationControl
       if (runningApplications.containsKey(executionId)) {
          CmdLineApplication app =
             (CmdLineApplication)runningApplications.get(executionId);
-         success = app.execute(this);//FIXME
+         success = app.execute(this);
 
       }
 

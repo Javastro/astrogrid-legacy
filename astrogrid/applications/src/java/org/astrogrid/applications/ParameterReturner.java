@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterReturner.java,v 1.3 2004/04/19 17:34:08 pah Exp $
+ * $Id: ParameterReturner.java,v 1.4 2004/04/20 09:03:22 pah Exp $
  * 
  * Created on 19-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,6 +14,7 @@
 package org.astrogrid.applications;
 
 /**
+ * Defines how parameter values are returned.
  * @author Paul Harrison (pah@jb.man.ac.uk) 19-Mar-2004
  * @version $Name:  $
  * @since iteration5

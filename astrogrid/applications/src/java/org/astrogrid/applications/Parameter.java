@@ -1,5 +1,5 @@
 /*
- * $Id: Parameter.java,v 1.9 2004/04/19 17:34:08 pah Exp $
+ * $Id: Parameter.java,v 1.10 2004/04/20 09:03:22 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.description.ParameterDescription;
 
 /**
- * Represents an raw input parameter to the application. This will simply be a string in most cases. The parameter definition is stored in the associated {@link org.astrogrid.applications.description.ParameterDescription}
+ * Represents an raw  parameter to the application. This will simply be a string in most cases. The parameter definition is stored in the associated {@link org.astrogrid.applications.description.ParameterDescription}
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
@@ -31,7 +31,9 @@ abstract public class Parameter implements ParameterReturner, ParameterGetter{
    protected boolean hasReadError = false;
    protected boolean hasWriteBackError=false;
   
-
+/**
+ * The name of the parameter.
+ */
    protected String name;
    
    /**
@@ -82,7 +84,6 @@ abstract public class Parameter implements ParameterReturner, ParameterGetter{
 
 
    /**
-    * @param app the application that is being used to process the parameter - REFACTORME this should be refactored to the AbsractApplication really - but time constraints have not allowed.
     * Performs whatever actions are necessary for the processing the parameter. Most of the real work is done by looking in the {@link ParameterDescription} object.
     * @return true if the processing did not have any errors
     */

@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplicationCreator.java,v 1.1 2004/01/16 22:18:58 pah Exp $
+ * $Id: CmdLineApplicationCreator.java,v 1.2 2004/04/20 09:03:22 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -24,6 +24,12 @@ import org
 import org.astrogrid.applications.manager.CommandLineApplicationController;
 import org.astrogrid.community.User;
 
+/**
+ * The factory for creating Commmand Line Applications.
+ * @author Paul Harrison (pah@jb.man.ac.uk) 20-Apr-2004
+ * @version $Name:  $
+ * @since iteration5
+ */
 public class CmdLineApplicationCreator extends ApplicationFactory {
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(CmdLineApplicationCreator.class);
@@ -32,7 +38,6 @@ public class CmdLineApplicationCreator extends ApplicationFactory {
    private CmdLineApplicationCreator(CommandLineApplicationController controller) {
       appcon = controller;
    }
-// I think that this only works on primitives....
    public static CmdLineApplicationCreator getInstance(CommandLineApplicationController controller) {
       if (instance == null) {
          synchronized (CmdLineApplicationCreator.class) {

@@ -177,11 +177,11 @@
 
 <hr />
 
-<h2>Jes Components</h2>
+<h2>CEA Components</h2>
 
 <%= ComponentManagerFactory.getInstance().informationHTML() %>
 
-<h2>Jes Configuration</h2>
+<h2>Configuration</h2>
 
 Jes configuration loader details:
 <pre>

@@ -64,7 +64,7 @@ This functionality is provided with the ApplicationController service, of which 
                 </packageGroup>
                 <packageGroup>
                         <title>Command Line Execution Controller and Application Specializations</title>
-                        <packages>org.astrogrid.applications.commandline</packages>
+                        <packages>org.astrogrid.applications.commandline*</packages>
                 </packageGroup>
                 <packageGroup>
                         <title>Application Description</title>

@@ -50,7 +50,7 @@
   </servlet>
  <servlet-mapping>
      <servlet-name>CommonExecutionControllerInitializer</servlet-name> 
-     <url-pattern/>/servlet/initForRegistry </url-pattern>	
+     <url-pattern>/servlet/initForRegistry</url-pattern>	
  </servlet-mapping>
  <servlet-mapping>
     <servlet-name>JUnitEETestServlet</servlet-name>
