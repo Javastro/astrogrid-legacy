@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.2 2004/08/18 22:27:57 mch Exp $
+ * $Id: TargetIndicator.java,v 1.3 2004/08/19 08:35:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -41,7 +41,7 @@ public class TargetIndicator  {
    /** Email constructor - see also makeIndicator */
    public TargetIndicator(String mailto) {
       assert mailto.startsWith("mailto") : "email target indicator should start with 'mailto'";
-      this.email = mailto;
+      this.email = mailto.substring(7);  //chop off mailto:
    }
 
    public TargetIndicator(Agsl targetAgsl) {
@@ -64,7 +64,7 @@ public class TargetIndicator  {
          return null;
       }
       else if (id.startsWith("mailto:")) {
-         return new TargetIndicator(id.substring(7));
+         return new TargetIndicator(id);
       }
       else if (Agsl.isAgsl(id)) {
          return new TargetIndicator(new Agsl(id));
@@ -137,6 +137,9 @@ public class TargetIndicator  {
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.3  2004/08/19 08:35:54  mch
+ Fix to email constructor
+
  Revision 1.2  2004/08/18 22:27:57  mch
  Better error checking
 
