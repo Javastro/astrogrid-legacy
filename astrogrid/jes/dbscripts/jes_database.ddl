@@ -30,7 +30,7 @@ create table job (
 	SUBMITTIMESTAMP                 char(32)                         not null  ,
 	USERID                          char(32)                         not null  ,
 	COMMUNITY                       char(32)                         not null  ,
-	JOBXML                          varchar(128)                     not null   
+	JOBXML                          text		                     not null   
 )
 lock allpages
 with exp_row_size = 1 on 'default'
