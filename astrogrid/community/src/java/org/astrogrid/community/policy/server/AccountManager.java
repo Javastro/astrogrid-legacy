@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManager.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 17:21:43 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2003/09/15 16:05:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManager.java,v $
+ *   Revision 1.5  2003/09/15 16:05:45  KevinBenson
+ *   *** empty log message ***
+ *
  *   Revision 1.4  2003/09/10 17:21:43  dave
  *   Added remote functionality to groups.
  *
@@ -37,6 +40,12 @@ public interface AccountManager
 	 */
 	public AccountData addAccount(String name)
 		throws RemoteException ;
+      
+   /**
+    * Request a password for an account
+    * @return
+    */
+   public String getPassword(String name) throws RemoteException;
 
 	/**
 	 * Request an Account data, given the Account name.

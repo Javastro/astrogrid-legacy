@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
- * <cvs:version>$Revision: 1.18 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2003/09/15 16:05:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.19 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.19  2003/09/15 16:05:45  KevinBenson
+ *   *** empty log message ***
+ *
  *   Revision 1.18  2003/09/13 02:18:52  dave
  *   Extended the jConfig configuration code.
  *
@@ -188,6 +191,17 @@ public class PolicyManagerImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return result ;
 		}
+      
+      /**
+       * Create a new Account, given the Account name.
+       *
+       */
+      public String getPassword(String name)
+         {
+            return this.accountManager.getPassword(name);
+         }
+
+      
 
 	/**
 	 * Create a new Account, given the Account name.

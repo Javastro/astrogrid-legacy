@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2003/09/15 16:05:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.9  2003/09/15 16:05:45  KevinBenson
+ *   *** empty log message ***
+ *
  *   Revision 1.8  2003/09/13 02:18:52  dave
  *   Extended the jConfig configuration code.
  *
@@ -153,7 +156,7 @@ public class AccountManagerImpl
 					if (DEBUG_FLAG) System.out.println("") ;
 					if (DEBUG_FLAG) System.out.println("  ----") ;
 					if (DEBUG_FLAG) System.out.println("DuplicateIdentityException in addAccount()") ;
-
+               ouch.printStackTrace();
 					//
 					// Set the response to null.
 					group   = null ;
@@ -169,7 +172,7 @@ public class AccountManagerImpl
 					if (DEBUG_FLAG) System.out.println("") ;
 					if (DEBUG_FLAG) System.out.println("  ----") ;
 					if (DEBUG_FLAG) System.out.println("Exception in addAccount()") ;
-
+               ouch.printStackTrace();
 					//
 					// Set the response to null.
 					group   = null ;
@@ -196,7 +199,7 @@ public class AccountManagerImpl
 						if (DEBUG_FLAG) System.out.println("") ;
 						if (DEBUG_FLAG) System.out.println("  ----") ;
 						if (DEBUG_FLAG) System.out.println("Exception in addAccount() finally clause") ;
-
+                  ouch.printStackTrace();
 						//
 						// Set the response to null.
 						group   = null ;
@@ -231,6 +234,124 @@ public class AccountManagerImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return account ;
 		}
+
+   public String getPassword(String name) {
+      return this.getPassword(new CommunityIdent(name));
+   }
+   
+   protected String getPassword(CommunityIdent ident) {
+      if (DEBUG_FLAG) System.out.println("") ;
+      if (DEBUG_FLAG) System.out.println("----\"----") ;
+      if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getPassword()") ;
+      if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+
+      AccountData account = null ;
+      String password = null;
+      //
+      // If the ident is valid.
+      if (ident.isValid())
+         {
+         //
+         // If the ident is local.
+         if (ident.isLocal())
+            {
+            try {
+               //
+               // Begin a new database transaction.
+               database.begin();
+               //
+               // Load the Account from the database.
+               account = (AccountData) database.load(AccountData.class, ident.toString()) ;
+               password = account.getPassword();
+               }
+            //
+            // If we couldn't find the object.
+            catch (ObjectNotFoundException ouch)
+               {
+               if (DEBUG_FLAG) System.out.println("") ;
+               if (DEBUG_FLAG) System.out.println("  ----") ;
+               if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in getAccount()") ;
+
+               //
+               // Set the response to null.
+               account = null ;
+               password = null;
+
+               if (DEBUG_FLAG) System.out.println("  ----") ;
+               if (DEBUG_FLAG) System.out.println("") ;
+               }
+            //
+            // If anything else went bang.
+            catch (Exception ouch)
+               {
+               if (DEBUG_FLAG) System.out.println("") ;
+               if (DEBUG_FLAG) System.out.println("  ----") ;
+               if (DEBUG_FLAG) System.out.println("Exception in getAccount()") ;
+
+               //
+               // Set the response to null.
+               account = null ;
+               password = null;
+
+               if (DEBUG_FLAG) System.out.println("  ----") ;
+               if (DEBUG_FLAG) System.out.println("") ;
+               }
+            //
+            // Commit the transaction.
+            finally
+               {
+               try {
+                  if (null != account)
+                     {
+                     database.commit() ;
+                     }
+                  else {
+                     database.rollback() ;
+                     }
+                  }
+               catch (Exception ouch)
+                  {
+                  if (DEBUG_FLAG) System.out.println("") ;
+                  if (DEBUG_FLAG) System.out.println("  ----") ;
+                  if (DEBUG_FLAG) System.out.println("Exception in getAccount() finally clause") ;
+
+                  //
+                  // Set the response to null.
+                  account = null ;
+                  password = null;
+
+
+                  if (DEBUG_FLAG) System.out.println("  ----") ;
+                  if (DEBUG_FLAG) System.out.println("") ;
+                  }
+               }
+            }
+         //
+         // If the ident is not local.
+         else {
+            //
+            // Set the response to null.
+            account = null ;
+            password = null;
+
+            }
+         }
+         //
+         // If the ident is not valid.
+      else {
+         //
+         // Set the response to null.
+         account = null ;
+         password = null;
+
+         }
+
+      // TODO
+      // Need to return something to the client.
+      // Possibly a new DataObject ... ?
+      if (DEBUG_FLAG) System.out.println("----\"----") ;
+      return password;
+   }
 
 	/**
 	 * Request an Account data, given the Account name.
@@ -268,6 +389,7 @@ public class AccountManagerImpl
 					//
 					// Load the Account from the database.
 					account = (AccountData) database.load(AccountData.class, ident.toString()) ;
+               account.setPassword(null);
 					}
 				//
 				// If we couldn't find the object.
@@ -636,7 +758,9 @@ public class AccountManagerImpl
 			Collection collection = new Vector() ;
 			while (results.hasMore())
 				{
-				collection.add(results.next()) ;
+            AccountData ad = (AccountData)results.next();
+            ad.setPassword(null);
+				collection.add(ad) ;
 				}
 			//
 			// Convert it into an array.
