@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.13 2004/04/16 08:15:38 KevinBenson Exp $
+ * $Id: VoSpaceResolver.java,v 1.14 2004/04/20 12:45:55 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,7 +73,7 @@ public class VoSpaceResolver {
          try {         
             agsl = communityResolve(ivorn);
          }catch(ResolverException re) {
-            re.printStackTrace();
+            //re.printStackTrace();
             agsl = null;
          }
       }
@@ -303,6 +303,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.14  2004/04/20 12:45:55  KevinBenson
+commented out the printStackTrace
+
 Revision 1.13  2004/04/16 08:15:38  KevinBenson
 small change to split out the reolving of a "myspace" resourcekey.
 
