@@ -71,11 +71,9 @@ public class NvoConeTest extends TestCase
    /**
     * Tests against a real service - Messier
     * @see http://voservices.org/cone/register/showlist.asp for a list of nvo cone search implementations
-    * @todo temporarily commented out 25/11/03 - query just blocked. for ever. no time out or anything. weird.
     */
    public void testMessier() throws MalformedURLException, IOException
    {
-       fail("this test blocks for ever");
       ConeSearcher searcher = DatacenterDelegateFactory.makeConeSearcher(" http://virtualsky.org/servlet/cover?CAT=messier");
       
       InputStream results = searcher.coneSearch(20,-30,20);
@@ -135,6 +133,9 @@ public class NvoConeTest extends TestCase
 
 /*
  $Log: NvoConeTest.java,v $
+ Revision 1.4  2004/01/14 13:23:30  nw
+ re-enabled messier test - service seems to be up again
+
  Revision 1.3  2003/11/26 16:31:46  nw
  altered transport to accept any query format.
  moved back to axis from castor

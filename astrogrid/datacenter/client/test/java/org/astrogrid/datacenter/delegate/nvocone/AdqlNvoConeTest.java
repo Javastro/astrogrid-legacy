@@ -101,11 +101,11 @@ public class AdqlNvoConeTest extends TestCase
     * Tests a blocking query against a real service - Messier
     * @see http://voservices.org/cone/register/showlist.asp for a list of nvo cone search implementations
     * 
-    * @todo temporarily commented out 25/11/03 - query just blocked. for ever. no time out or anything. weird.
+    *
     */
    public void testMessier() throws ServiceException, MarshalException, ValidationException, IOException, ADQLException
    {
-       fail("This test blocks for ever");
+
       FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher("http://virtualsky.org/servlet/cover?CAT=messier");
       
       Select adql = loadAdql("coneQuery2.xml");
@@ -193,6 +193,9 @@ public class AdqlNvoConeTest extends TestCase
 
 /*
  $Log: AdqlNvoConeTest.java,v $
+ Revision 1.6  2004/01/14 13:23:30  nw
+ re-enabled messier test - service seems to be up again
+
  Revision 1.5  2004/01/13 00:32:47  nw
  Merged in branch providing
  * sql pass-through
