@@ -1,4 +1,4 @@
-/*$Id: AdqlQueryTranslator.java,v 1.5 2004/04/01 11:25:27 eca Exp $
+/*$Id: AdqlQueryTranslator.java,v 1.6 2004/04/05 10:29:42 kea Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -365,7 +365,7 @@ public class AdqlQueryTranslator extends QueryTranslator {
       String gcRadius = "DEGREES(2 * ASIN( SQRT("+
          "POW(SIN(RADIANS(("+searchDec+"-"+objDec+")/2)), 2) + "+    //Postgres will handle powers
          "COS(RADIANS("+searchDec+")) * COS(RADIANS("+objDec+")) * "+
-         "POW(SIN(RADIANS(("+searchRA+"-"+objRA+")/2),2)"+ //some sqls won't handle powers so multiply by self
+         "POW(SIN(RADIANS("+searchRA+"-"+objRA+")/2),2)"+ //some sqls won't handle powers so multiply by self
       ")))";
       
       stack.top().add(SEARCH, gcRadius + " <"+searchRadius);
@@ -404,7 +404,7 @@ public class AdqlQueryTranslator extends QueryTranslator {
 	String gcRadius = "DEGREES(7200 * ASIN( SQRT("+
 		  "POW(SIN(RADIANS(("+searchDec+"-"+objDec+")/2)), 2) + "+    //Postgres will handle powers
 		  "COS(RADIANS("+searchDec+")) * COS(RADIANS("+objDec+")) * "+
-		  "POW(SIN(RADIANS(("+searchRA+"-"+objRA+")/2),2)"+ //some sqls won't handle powers so multiply by self
+		  "POW(SIN(RADIANS("+searchRA+"-"+objRA+")/2),2)"+ //some sqls won't handle powers so multiply by self
 	   ")))";
        
       
@@ -490,6 +490,11 @@ public class AdqlQueryTranslator extends QueryTranslator {
    public void visit(GroupBy g) {
 	StringBuffer buff = new StringBuffer();
    	  for (int i=0; i < g.getGroupByChoiceCount(); i++){
+         //ADDED BY KEA
+         if (i > 0) {
+           buff.append(", "); //Separate from previous
+         }
+         //END ADDED BY KEA
    	  	 if (g.getGroupByChoice()[i].getGroupByChoiceItem().getAllColumnReference() != null){
 			buff.append(g.getGroupByChoice()[i].getGroupByChoiceItem().getAllColumnReference().getTableName().toString() + ".*");
    	  	 }
@@ -687,6 +692,9 @@ public Class getResultType() {
 
 /*
  $Log: AdqlQueryTranslator.java,v $
+ Revision 1.6  2004/04/05 10:29:42  kea
+ Fixed rogue characters - additional brackets, missing commas.
+
  Revision 1.5  2004/04/01 11:25:27  eca
  Changed row limit from 50K to 100K
  
