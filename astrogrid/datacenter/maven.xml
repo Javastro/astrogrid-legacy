@@ -211,10 +211,6 @@
 	<!-- clean out for starters -->
 	<delete>
 		<fileset dir="packaging/pal">
-			<include name="bin/*.jar" />
-			<include name="lib/*.jar" />
-			<include name="lib/*.zip" />
-			<include name="lib/*.war" />
 			<include name="doc/api/**" />
 			<include name="doc/src-doc/**" />
 		</fileset>
