@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescriptions.java,v 1.2 2003/11/27 12:40:48 pah Exp $
+ * $Id: ApplicationDescriptions.java,v 1.3 2003/11/29 00:50:14 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -46,13 +46,14 @@ public class ApplicationDescriptions {
    
    public ApplicationDescription getDescription(String name) throws ApplicationDescriptionNotFoundException
    {
+      Object o  = null;
       if (applications.containsKey(name)) {
-         Object o = applications.get(name);
-         return (ApplicationDescription)o;
+          o = applications.get(name);
       }
       else {
-            throw new ApplicationDescriptionNotFoundException(name);
+         throw new ApplicationDescriptionNotFoundException(name);
       }
+      return (ApplicationDescription)o;
       
    }
 }

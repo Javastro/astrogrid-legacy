@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescription.java,v 1.1 2003/11/26 22:07:24 pah Exp $
+ * $Id: ApplicationDescription.java,v 1.2 2003/11/29 00:50:14 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,7 +13,13 @@
 
 package org.astrogrid.applications.description;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 /**
  * This class represents the description of the application. This will be in an extension of wsdl.
  * @author Paul Harrison (pah@jb.man.ac.uk)
@@ -39,16 +45,20 @@ public class ApplicationDescription {
     *@link aggregation
     *      @associates org.astrogrid.applications.description.ParameterDescription
     */
-   private Map allParameters;
+   private Set allParameters;
+   private Map parameterMap;
    
    public ApplicationDescription()
    {
-      name="defaultname";
+      this("defaultname");
    }
    
    public ApplicationDescription(String applicationID)
    {
       name = applicationID;
+      interfaces = new HashMap();
+      allParameters = new HashSet();
+      parameterMap = new HashMap();
    }
    /**
     * @return
@@ -62,5 +72,57 @@ public class ApplicationDescription {
     */
    public void setName(String string) {
       name = string;
+   }
+   
+   /**
+    * Add a new interface definition to the application.
+    * @param iface the interface to add. should at least have its name property set as this is used as the key under which the parameter is stored.
+    */
+   public void addInterface(ApplicationInterface iface) {
+      //TODO deal with error conditions.
+      interfaces.put(iface.getName(), iface);
+   }
+   
+   /**
+    * Add a new parameter defintion to the application.
+    * @param param the parameter definition - should at least have its name property set as this is used as the key under which the parameter is stored
+    */
+   public void addParameter(ParameterDescription param)
+   {
+      //TODO deal with error conditions.
+      allParameters.add(param);
+      parameterMap.put(param.getName(), param);
+   }
+   
+   /**
+    * get the full list of possible parameters definitions for this application.
+    * @return the array of parameter definitions
+    */
+   public ParameterDescription[] getParameters()
+   {
+      if(allParameters!= null)
+      {
+         return (ParameterDescription[])allParameters.toArray(new ParameterDescription[0]);
+      }
+      else
+      {
+         return null;
+      }
+      
+
+   }
+   /**
+    * 
+    * @param name
+    * @return
+    */
+   public ParameterDescription getParameter(String name) throws ParameterDescriptionNotFoundException
+   {
+      if (!parameterMap.containsKey(name))
+      {
+         throw new ParameterDescriptionNotFoundException();
+      }
+      else
+      return (ParameterDescription)parameterMap.get(name);
    }
 }

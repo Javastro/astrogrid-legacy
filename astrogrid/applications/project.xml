@@ -63,7 +63,7 @@
     </developer>
 </developers>
  
-  <dependencies> <!-- hope to be able to remove some of these soon. -->
+  <dependencies> 
    <!-- needs this is the full distribution of axis - do not include other axis dependent jars - they are automatically unpacked and added to the dependency class path-->
      <dependency>
       <groupId>axis</groupId>
@@ -218,11 +218,12 @@
 
       <resources>
         <resource>
-          <directory>${basedir}/test/java</directory>
+          <directory>${basedir}/test/</directory>
           <includes>
             <include>**/*.xml</include>
 	    <include>**/*.properties</include>
 	    <include>**/*.sql</include>
+	    <include>**/*.sh</include> <!-- include any test applications -->
           </includes>
         </resource>
       </resources>

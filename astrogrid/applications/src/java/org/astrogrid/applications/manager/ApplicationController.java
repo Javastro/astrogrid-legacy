@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.7 2003/11/27 12:40:48 pah Exp $
+ * $Id: ApplicationController.java,v 1.8 2003/11/29 00:50:14 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.applications.manager;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.community.User;
 
 /**
  * Describes the operations that are required of an application Controller. This includes listing the applications managed by the controller, including the detailed description of each application.
@@ -40,10 +41,11 @@ public interface ApplicationController {
     * @param applicationID the application identifier as returned by a call to {@link #listApplications} .
     * @param jobstepID the jobstep that is requesting the execution.
     * @param jobMonitorURL the jobmonitor service to call to notify of execution completion.
+    * @param user The user credentials for the user that the job will be run in the name of. This bean represents what was commonly known as the "community snippet".
     * @param parameters the description of the job parameters.
     * @return an identifier for this particular execution instance.
     */
-   int initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, org.astrogrid.applications.ParameterValues parameters);
+   int initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, User user, org.astrogrid.applications.ParameterValues parameters);
 
    /**
     * Executes a particular application asynchronously that has previously been intialized by {@link #initializeApplication}

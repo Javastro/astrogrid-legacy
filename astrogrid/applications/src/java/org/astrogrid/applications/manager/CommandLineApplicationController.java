@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.5 2003/11/26 22:07:24 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.6 2003/11/29 00:50:14 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Parameter;
 import org.astrogrid.applications.ParameterValues;
 import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.community.User;
 
 public class CommandLineApplicationController extends AbstractApplicationController  {
  
@@ -35,17 +36,6 @@ public class CommandLineApplicationController extends AbstractApplicationControl
       throw new UnsupportedOperationException("CommandLineApplicationController.getApplicationDescription() not implemented");
    }
 
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.manager.ApplicationController#initializeApplication(java.lang.String, java.lang.String, java.lang.String, org.astrogrid.applications.ParameterValues)
-    */
-   public int initializeApplication(
-      String applicationID,
-      String jobstepID,
-      String jobMonitorURL,
-      ParameterValues parameters) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("CommandLineApplicationController.initializeApplication() not implemented");
-   }
 
    /* (non-Javadoc)
     * @see org.astrogrid.applications.manager.ApplicationController#listApplications()
@@ -69,6 +59,19 @@ public class CommandLineApplicationController extends AbstractApplicationControl
    public String returnRegistryEntry() {
       // TODO Auto-generated method stub
       throw new UnsupportedOperationException("CommandLineApplicationController.returnRegistryEntry() not implemented");
+   }
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.manager.ApplicationController#initializeApplication(java.lang.String, java.lang.String, java.lang.String, org.astrogrid.community.User, org.astrogrid.applications.ParameterValues)
+    */
+   public int initializeApplication(
+      String applicationID,
+      String jobstepID,
+      String jobMonitorURL,
+      User user,
+      ParameterValues parameters) {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("CommandLineApplicationController.initializeApplication() not implemented");
    }
 
 }
