@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/mapping.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/08 21:01:28 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: mapping.xml,v $
+    |   Revision 1.7  2003/09/08 21:01:28  dave
+    |   Added PATCH to build.xml to include classes in Castor mapping - still broke though
+    |
     |   Revision 1.6  2003/09/08 20:28:50  dave
     |   Added CommunityIdent, with isLocal() and isValid()
     |
@@ -100,7 +103,6 @@
 			<bind-xml node="element"/>
 		</field>
 	</class>
-	-->
 
 	<!-- JDO and XML Mapping for Groups -->
 	<class name="org.astrogrid.community.policy.data.GroupData" identity="ident">

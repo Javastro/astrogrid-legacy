@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
-    | <cvs:version>$Revision: 1.14 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/08 21:01:28 $</cvs:date>
+    | <cvs:version>$Revision: 1.15 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.15  2003/09/08 21:01:28  dave
+    |   Added PATCH to build.xml to include classes in Castor mapping - still broke though
+    |
     |   Revision 1.14  2003/09/08 20:28:50  dave
     |   Added CommunityIdent, with isLocal() and isValid()
     |
@@ -1201,9 +1204,6 @@
 	<!--+
 		| Generate the PolicyManager WSDL description from our Java class.
 		| This generates the manager WSDL based on the Java interface classes.
-
-			methods="getServiceStatus, addAccount, getAccount, setAccount, delAccount, getAccountList, addGroup, getGroup, setGroup, delGroup, getGroupList"
-
 		+-->
 	<target name="policy.manager.java2wsdl" depends="axis.tasks">
 		<echo message=""/>
@@ -1373,6 +1373,14 @@
 				<include name="org/astrogrid/community/policy/data/*.java"/>
 				<!-- Include our JUnit tests -->
 				<include name="org/astrogrid/community/policy/server/junit/**"/>
+
+				<!--+
+					| PATCH : Include the auth data objects
+					| Required because the Castor mapping referes to  org.astrogrid.community.authentication.data.SecurityToken.
+					| May cause problems if we want to deploy these in separate jars :-(
+					+-->
+				<include name="org/astrogrid/community/authentication/data/*.java"/>
+
 			</fileset>
 		</copy>
 	</target>
@@ -1424,7 +1432,7 @@
 				<include name="org/astrogrid/community/policy/data/*.java"/>
 				<!-- Include our JUnit tests -->
 				<include name="org/astrogrid/community/policy/client/junit/**"/>
-				
+
 			</fileset>
 		</copy>
 	</target>
@@ -1444,6 +1452,13 @@
 		       >
 			<include name="org/astrogrid/community/policy/data/**"/>
 			<include name="org/astrogrid/community/policy/server/**"/>
+			<!--+
+				| PATCH : Include the auth data objects
+				| Required because the Castor mapping referes to  org.astrogrid.community.authentication.data.SecurityToken.
+				| May cause problems if we want to deploy these in separate jars :-(
+				+-->
+			<include name="org/astrogrid/community/authentication/data/**"/>
+
 			<classpath>
 				<!-- Include the JUnit libraries -->
 				<path refid="junit.classpath"/>
@@ -1493,6 +1508,12 @@
 			<fileset dir="${policy.server.base}/classes">
 				<include name="org/astrogrid/community/policy/data/**"/>
 				<include name="org/astrogrid/community/policy/server/**"/>
+				<!--+
+					| PATCH : Include the auth data objects
+					| Required because the Castor mapping referes to  org.astrogrid.community.authentication.data.SecurityToken.
+					| May cause problems if we want to deploy these in separate jars :-(
+					+-->
+				<include name="org/astrogrid/community/authentication/data/**"/>
 			</fileset>
 		</jar>
 	</target>
