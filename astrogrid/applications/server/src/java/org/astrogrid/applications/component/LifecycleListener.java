@@ -1,4 +1,4 @@
-/*$Id: LifecycleListener.java,v 1.3 2004/09/22 10:52:50 pah Exp $
+/*$Id: LifecycleListener.java,v 1.4 2004/10/08 20:00:20 pah Exp $
  * Created on 16-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,12 +47,12 @@ public class LifecycleListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent arg0) {
         try {
             URL endpointURL = arg0.getServletContext().getResource("/");//try this to see if it needs to actually exist....
-            logger.info("Setting service endpoint to " + endpointURL);
+            logger.info(" service endpoint in LifecycleListener init " + endpointURL);
             // don't do this - it forces the whole config system to startup - which is a pain if the config file isn't available yet 
             //SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL,endpointURL);
             // whack it in JNDI instead,
             if (endpointURL != null) {
-                writeEndpointConfig(endpointURL);
+               // writeEndpointConfig(endpointURL); dont do this here it is a strange jndi ref
             } else {
                 logger.warn("Could not determine service endpoint");
             } 
@@ -84,7 +84,9 @@ public class LifecycleListener implements ServletContextListener {
 //                            e);
 //        }
         //just use the standard config ability to write a property.
+       
         SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL, endpointURL);
+        logger.info("service endpoint stored as "+endpointURL);
         storedEndpoint = true;
     }
     
@@ -104,6 +106,9 @@ public class LifecycleListener implements ServletContextListener {
 
 /* 
 $Log: LifecycleListener.java,v $
+Revision 1.4  2004/10/08 20:00:20  pah
+do not store the endpoint here - not good
+
 Revision 1.3  2004/09/22 10:52:50  pah
 getting rid of some unused imports
 
