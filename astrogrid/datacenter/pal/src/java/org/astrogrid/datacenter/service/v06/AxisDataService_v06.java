@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.1 2004/10/05 14:56:45 mch Exp $
+ * $Id: AxisDataService_v06.java,v 1.2 2004/10/05 19:22:11 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,6 +22,7 @@ import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.DataServiceStatus;
+import org.astrogrid.datacenter.sqlparser.Sql2Adql074;
 
 /**
  * The implementation of the Datacenter axis web service for end of Itn06
@@ -40,29 +41,42 @@ public class AxisDataService_v06  {
    /**
     * Ask adql query (blocking request).  Returns results.
     */
-   public String askAdqlQuery(String query, String requestedFormat) throws AxisFault {
+   public String askAdql(String adql, String requestedFormat) throws AxisFault {
       try {
          StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), new AdqlQuery(query), new ReturnTable(TargetIndicator.makeIndicator(sw), requestedFormat));
+         server.askQuery(getUser(), new AdqlQuery(adql), new ReturnTable(TargetIndicator.makeIndicator(sw), requestedFormat));
          return sw.toString();
       }
       catch (Throwable e) {
-         throw server.makeFault(server.SERVERFAULT, "Error asking Query("+query+", "+requestedFormat+")", e);
+         throw server.makeFault(server.SERVERFAULT, "Error asking Query("+adql+", "+requestedFormat+")", e);
       }
    }
 
    /**
     * Ask adql query (blocking request) sending results to given target
     */
-   public String askAdqlQuery(String query, String requestedFormat, String target) throws AxisFault {
+   public String askAdql(String adql, String requestedFormat, String target) throws AxisFault {
       try {
-         server.askQuery(getUser(), new AdqlQuery(query), new ReturnTable(TargetIndicator.makeIndicator(target), requestedFormat));
+         server.askQuery(getUser(), new AdqlQuery(adql), new ReturnTable(TargetIndicator.makeIndicator(target), requestedFormat));
          return target.toString();
       }
       catch (Throwable e) {
-         throw server.makeFault(server.SERVERFAULT, "Error asking Query("+query+", "+requestedFormat+")", e);
+         throw server.makeFault(server.SERVERFAULT, "Error asking Query("+adql+", "+requestedFormat+")", e);
       }
    }
+
+   /**
+    * Converts SQL-like ADQL into XML ADQL
+    */
+   public String adqlSql2xml(String sql) throws AxisFault {
+      try {
+         return Sql2Adql074.translate(sql);
+      }
+      catch (Throwable e) {
+         throw server.makeFault(server.SERVERFAULT, "Error converting SQL "+sql, e);
+      }
+   }
+
 
    /**
     * Ask raw sql for blocking operation - returns the results
@@ -85,9 +99,9 @@ public class AxisDataService_v06  {
    /**
     * Submit query for asynchronous operation - returns id of query
     */
-   public String submitAdqlQuery(String query, String requestedFormat, String resultsTarget) throws AxisFault {
+   public String submitAdql(String adql, String requestedFormat, String resultsTarget) throws AxisFault {
       try {
-         return server.submitQuery(getUser(), new AdqlQuery(query), new ReturnTable(TargetIndicator.makeIndicator(resultsTarget), requestedFormat));
+         return server.submitQuery(getUser(), new AdqlQuery(adql), new ReturnTable(TargetIndicator.makeIndicator(resultsTarget), requestedFormat));
       }
       catch (MalformedURLException mue) {
          throw server.makeFault(server.CLIENTFAULT, "malformed resultsTarget", mue);
@@ -164,6 +178,9 @@ public class AxisDataService_v06  {
 
 /*
 $Log: AxisDataService_v06.java,v $
+Revision 1.2  2004/10/05 19:22:11  mch
+Added SQL to ADQL converter method
+
 Revision 1.1  2004/10/05 14:56:45  mch
 Added new web interface and partial skynode
 
@@ -201,4 +218,5 @@ Revision 1.1  2004/03/17 00:27:21  mch
 Added v05 AxisDataServer
 
  */
+
 
