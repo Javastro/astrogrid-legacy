@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryBaseTest.java,v 1.9 2004/09/03 10:08:19 nw Exp $
+ * $Id: RegistryBaseTest.java,v 1.10 2004/09/07 19:45:33 pah Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -42,7 +42,7 @@ public abstract class RegistryBaseTest extends TestCase {
 
    protected RegistryService delegate;
    protected final static String AUTHORITY_ID = "org.astrogrid.localhost";
-   protected final static String RESOURCE_KEY="dummy/entry";
+   protected final static String RESOURCE_KEY="dummy.entry";
 
    protected Service service;
    protected RegistryAdminService adminDelegate;
