@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.1 2003/12/02 13:56:51 kea Exp $
+ * $Id: GdsQueryDelegate.java,v 1.2 2003/12/11 13:21:19 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -38,7 +38,7 @@ import java.io.FileOutputStream;
 import java.io.StringReader;
 import java.io.FileReader;
 
-import java.util.Properties;
+//import java.util.Properties;
 
 import java.net.URL;
 
@@ -65,7 +65,8 @@ public class GdsQueryDelegate
    * the location of the OGSA-DAI warehouse services, configure 
    * OGSA-DAI input etc.
    */
-  protected Properties serviceProperties = null;
+   //NO LONGER USED
+  //protected Properties serviceProperties = null;
 
   /**
    * Default constructor, which loads run-time installation-specific
@@ -80,6 +81,7 @@ public class GdsQueryDelegate
       throws Exception, IOException, SAXException {
     super();    //Can throw IOException and SAXException
 
+/*
     try {
       // Load installation-specific runtime properties
       serviceProperties = new Properties();
@@ -96,20 +98,15 @@ public class GdsQueryDelegate
           "Couldn't load properties from GdsQueryDelegate.properties: " + 
            e.getMessage());
     }
+    */
   }
 
   /*
    * Use an OGSA-DAI Grid Data Service to perform the supplied SQL query.
    */
-  protected Document doRealQuery(String sql, OutputStream output, 
-        boolean invokedFromMain) throws Exception {
+  protected Document doRealQuery(String sql, String registryUrlString, 
+        OutputStream output, boolean invokedFromMain) throws Exception {
 
-    String registryURLString = 
-        serviceProperties.getProperty(
-            "HOST_STRING", DEFAULT_HOST_STRING) + 
-        serviceProperties.getProperty(
-            "REGISTRY_STRING", DEFAULT_REGISTRY_STRING);
-  
     int timeout = 300;  // TOFIX configurable?
 
     ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -119,16 +116,16 @@ public class GdsQueryDelegate
     try {
 
       // Look at the registry to get the factory URL
-      String factoryURLString = 
-          GdsDelegate.getFactoryUrlFromRegistry(registryURLString,timeout);
-      System.out.println("GDSF is " + factoryURLString);
+      String factoryUrlString = 
+          GdsDelegate.getFactoryUrlFromRegistry(registryUrlString,timeout);
+      System.out.println("GDSF is " + factoryUrlString);
     
       // Create a grid-service delegate for the GDS.  This handles the
       // awkward semantics of the grid-service, including creating
       // the grid-service instance.
       System.out.println("Creating the GDS delegate...");
       GdsDelegate gds = new GdsDelegate();
-      gds.setFactoryHandle(factoryURLString);
+      gds.setFactoryHandle(factoryUrlString);
       System.out.println("Connecting to the GDS...");
       gds.connect();
 
@@ -284,24 +281,29 @@ public class GdsQueryDelegate
     GdsQueryDelegate gdsQueryDelegate = new GdsQueryDelegate();
 
     String sql;
+    String registryUrlString;
     String outputFileName = null;
     try {
       int len = args.length;
       if (len == 0) {
-        //TOFIX 
-        throw new Exception(
-            "No SQL supplied for shelled-out query at command-line");
+        throw new Exception("No SQL query supplied to GdsQueryDelegate");
       }
       sql = args[0];
-      if (sql.equals(null)) {
-        throw new Exception(
-            "No SQL supplied for shelled-out query at command-line");
+      if (sql == null) {
+        throw new Exception("No SQL query supplied to GdsQueryDelegate");
       }
-      if (len > 1) {
-        outputFileName = args[1];
+      if (len == 1) {
+        throw new Exception("No OGSA-DAI URL supplied to GdsQueryDelegate");
+      }
+      registryUrlString = args[1];
+      if (registryUrlString == null) {
+        throw new Exception("No OGSA-DAI URL supplied to GdsQueryDelegate");
+      }
+      if (len > 2) {
+        outputFileName = args[2];
       }
     }
-    catch (ArrayIndexOutOfBoundsException e) {
+    catch (ArrayIndexOutOfBoundsException e) {  //Shouldn't get here
       throw new Exception(
           "Unexpected number of command-line arguments (" + 
          Integer.toString(args.length) + ")");
@@ -314,18 +316,11 @@ public class GdsQueryDelegate
       output = new FileOutputStream(outputFileName);
     }
     //Do real query in shelled-out mode
-    Document result = gdsQueryDelegate.doRealQuery(sql, output, false);
+    Document result = gdsQueryDelegate.doRealQuery(
+          sql, registryUrlString, output, false);
   }
 
   // ----------------------------------------------------------
-  // Fallback defaults for values that should be configured on a
-  // per-installation basis in the WarehouseServiceImpl.properties 
-
-  private final String DEFAULT_HOST_STRING = 
-        "http://astrogrid.ast.cam.ac.uk:4040";
-  private final String DEFAULT_REGISTRY_STRING = 
-        "/gdw/services/ogsadai/DAIServiceGroupRegistry";
-
   // Other utility strings
   private final String TEMP_RESULTS_FILENAME = "ws_output.xml";
   private final String WAREHOUSE_RESULT_START = "WAREHOUSE_RESULT_START";
@@ -335,6 +330,10 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
+Revision 1.2  2003/12/11 13:21:19  kea
+OGSA-DAI registry now passed in as command-line parameter.  Will remove
+GdsQueryDelegate.properties file shortly.
+
 Revision 1.1  2003/12/02 13:56:51  kea
 Delegate for performing OGSA-DAI queries, in separate package space from
 Datacenter Querier module to isolate incompatible OGSA-DAI axis from
