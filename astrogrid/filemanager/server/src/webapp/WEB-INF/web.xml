@@ -103,6 +103,12 @@
     <role-name>manager</role-name>
   </security-role>
 
+    <!--+
+        | Uncommnet and fill in the following elements if you want to
+        | configure the service using local JNDI properies.
+        |
+        | ** These properties will hide the properties in the AGINAB configuration file **
+        |
     <env-entry>
         <description>The file manager service identifier</description>
         <env-entry-name>org.astrogrid.filemanager.service.ivorn</env-entry-name>
@@ -151,5 +157,7 @@
       <env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryQuery</env-entry-value>
       <env-entry-type>java.lang.String</env-entry-type>
    </env-entry>
+        |
+        +-->
 
 </web-app>
