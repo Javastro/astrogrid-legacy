@@ -5,26 +5,12 @@
 	<title>Publisher's Astrogrid Library</title>
 </properties>
 <body>
-<section name="PAL"><p>
-The Astrogrid datacenter server makes a collection of astronomical data available on the Astrogrid.
+<section name="PAL">
+<p>
+Welcome to PAL - if you can see this page, the first steps of installation are complete.
+Go the the <a href="self-test.html">self-test page</a> to run diagnostics on the installation.
 
-</p><subsection name="temporary links" ><p>
-
-<ul>
-    <li><a href="happyaxis.jsp">Validate</a>
-        the local installation's configuration<br />
-        <i>see below if this does not work.</i></li>
-    <li><a href="servlet/AxisServlet">View</a>
-        the list of deployed Web services</li>
-    <li><a href="http://xml.apache.org/axis">Visit</a>
-        the Apache-Axis Home Page</li>
-</ul>
-
-If the "happyaxis" validation page displays an exception instead of a
-status page, the likely cause is that you have multiple XML parsers in
-your classpath. Clean up your classpath by eliminating extraneous parsers.
 </p>
-</subsection>
 </section>
 </body>
 </document>

@@ -8,8 +8,10 @@
 <body>
 <section name="Publishers Astrogrid Library">
 <p>
-Everything you need to publish a data archive, wrapped up in one big bundle.
+
 The Astrogrid datacenter server makes a collection of astronomical data available on the Astrogrid.
+<p />
+PAL contains everything you need to publish a data archive, wrapped up in one big bundle.
 
 </p>
 </section>

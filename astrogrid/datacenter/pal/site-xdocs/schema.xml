@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+	<title>PAL: Schemas</title>
+</properties>
+<body>
+<section name="Schemas">
+<p>
+<dl>
+<dt><a href="xsd/ADQLschema.xsd">ADQLschema.xsd</a></dt>
+<dd>Schema for the ADQL query document</dd>
+<dt><a href="xsd/AxisDataServer.xsd">AxisDataServer.xsd</a></dt>
+<dd>Schema describing types passed to and from datacenter web service</dd>
+</dl>
+</p>
+</section>
+<section name="WSDL"><p>
+<dl>
+<dt><a href="wsdl/AxisDataServer.wsdl">AxisDataServer.wsdl</a></dt>
+<dd>Interface definition for the datacenter web service - depends on the ADQL and AxisDataServer schema above.</dd>
+</dl>
+</p></section>
+</body>
+</document>

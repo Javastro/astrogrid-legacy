@@ -1,0 +1,92 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+	<title>PAL for Other back ends.</title>
+</properties>
+
+<body>
+<section name="Introduction">
+<p>
+The datacenter server is designed so that different back-end implementations can be plugged into the system.
+The back end implementation to use is specified in the system configuration file. You may provide your own implementation
+and plug into the datacenter server.
+</p>
+<subsection name="Requirements">
+<p>
+A back-end implementation must extend the abstract class <tt>org.astrogrid.datacenter.queriers.DatabaseQuerier</tt>. The compiled
+class, and all other libraries it depends upon must be available on the web-application's classpath.
+<p/>
+<b>Having to extend an abstract class is a bad idea for the follwing reasons. We plan to add a SPI interface to code against instead</b>
+<ol>
+<li>Prevents implementation classes extending any other class</li>
+<li>The service interface is not clearly defined - the abstract class contains details
+that should not be manipulated by the back-emd implementation</li>
+</ol>
+
+</p>
+</subsection>
+
+<subsection name="Development">
+<p>
+The classes of interest are in the packages:
+<dl>
+<dt><tt>org.astrogrid.datacenter.queriers</tt></dt>
+<dd>DatabaseQuerier is the abstract base class for back-end implementations, currently. QueryTranslator is an
+abstract base class for translating ADQL queries into the format required by the back end</dd>
+<dt><tt>org.astrogrid.datacenter.queriers.sql</tt></dt>
+<dd>SqlQuerier is a vanilla implementation of a JDBC-driven back end. It uses SqlQueryTranslator to convert ADQL queries
+into simple SQL statements</dd>
+<dt><tt>org.astrogrid.datacdenter.queriers.[mysql|hsql|sybase|..]</tt></dt>
+<dd>Specializations of the vanilla SQLQuerier for specific database flavours. Possibly some use as examples</dd>
+</dl>
+<p />
+<a href="server-dist/astrogrid-datacenter-server-HEAD-src.zip">Source</a> and
+ <a  href="server-dist/astrogrid-datacenter-server-HEAD.zip">Binary</a>
+ distributions of the datacenter server code can be downloaded from this web application.
+ The distributions contain documentation and javadoc, which is also <a href="server/index.html">available in this web application</a>
+<p/>
+<b>Do something about dependent libraries</b>
+</p>
+</subsection>
+</section>
+
+<section name="Possibilities">
+<subsection name="Writing a querier for another JDBC database"><p>
+The standard JDBC database querier <tt>org.astrogrid.datacenter.queriers.sql.SqlQuerier</tt> should be suitable for most database flavours,
+given an appropriate JDBC driver. Situations where it is not applicable split into:
+<dl>
+<dt>The generated SQL is not compatible with my database</dt>
+<dd>Extend the <tt>org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator</tt> to provide new translation rules for the offending
+ADQL clauses. The query translator to use can be specified in the system configuration file.</dd>
+<dt>My database requires some special initialization</dt>
+<dd>Subclass the standard SqlQuerier to perform the initialization.</dd>
+</dl>
+</p></subsection>
+
+<subsection name="Adapter Servers"><p>
+Another possible form of back end is one that does not retrieve data from a local store, but instead acts as an adapter for an existing
+datacenter - possibly another web service. An adapter server can integrate a legacy web service into Astrogrid without requiring changes to
+the existing code. Its task is to translate the ADQL queries it receives into a form understood by the legacy service, perform the call to the service
+and then massage any results into the format expected by astrogrid.
+
+<p />
+See the cds-delegate example back-end for an example of an adapter server.
+
+</p></subsection>
+
+<subsection name="XMLDatabases" ><p>
+Shouldn't be too hard. Would need to transform the ADQL into whatever query language the XMLDB uses - maybe XQuery, and then transform
+results of query again into a VOTABLE for output.
+</p></subsection>
+
+<subsection name="Something else??">
+<p>
+We'd be interested to hear of your experiences integrating other back-end systems into PAL. We'd also appreciate code donations, to
+build up a larger library of back-end implementations.
+</p>
+</subsection>
+</section>
+
+</body>
+</document>

@@ -5,8 +5,6 @@
   <body>
     <menu name="PAL">
 	<item name="INSTALL" href="INSTALL.html" />
-	<item name="Configuration" href="configuration.html" />
-	<item name="Other back-ends" href="other-back-end.html" />
     </menu>
 
     <links>

@@ -46,7 +46,7 @@ Set shell variable <tt>CATALINA_HOME</tt> to the root of your tomcat installatio
 <subsection name="A JDBC Database, or other datastore"><p>
 The Datacenter Server connects to a back-end system that contains the data collection to be published.
 The commonest form of back-end system is a relational database - installation instructions for other kinds of back-end system
-are in a <a href="other-back-end.html">separate document</a>
+are included in the web-application bundle.
 <p/>
 The datacenter server can connect to any RDBMS that provides a
  <a href="http://java.sun.com/products/jdbc/">JDBC</a> driver; it has been tested with the following
@@ -107,18 +107,17 @@ The deployment descriptor (web.xml) for pal.war specifies two external dependenc
 The external dependencies are called:
 <dl>
 <dt><tt>org.astrogrid.config.url</tt></dt>
-<dd> a <tt>java.lang.String</tt> giving a URL location of the system configuration file
+<dd> a <tt>java.lang.String</tt> giving the filepath of the pal configuration file
 </dd>
 <dt><tt>jdbc/pal-datasource</tt></dt>
 <dd>a <tt>javax.sql.DataSource</tt> object used to connect to the back-end database.
 </dd>
 </dl>
 </p>
-
+<p>
 The recommended configuration method is to provide definitions of these values in the tomcat <tt>server.xml</tt> file. In this way, the
-tomcat server will take care of initializing these resources, and will pool database connections for efficiency. Other configuration methods
-are described in the <a href="configuration.html">Configuration</a> document.
-
+tomcat server will take care of initializing these resources, and will pool database connections for efficiency.
+</p>
 <subsection name="server.xml"><p>
 In <tt>${CATALINA_HOME}/conf/<b>server.xml</b></tt> add the following XML fragment within the <tt>&lt;Engine&gt;</tt> tag;
  replacing the text in the <tt>&lt;value&gt;</tt> elements with the settings for your target RDBMS and JDBC driver.
@@ -133,19 +132,19 @@ In <tt>${CATALINA_HOME}/conf/<b>server.xml</b></tt> add the following XML fragme
         <ResourceParams name="jdbc/pal-datasource">
       <parameter>
         <name>driverClassName</name>
-        <value>my.jdbc.driver.class</value><!-- fill in this -->
+        <value>my.jdbc.driver.class</value><!-- fill this in -->
       </parameter>
       <parameter>
         <name>url</name>
-        <value>jdbc:{dbtype}://{host}/{dbname}</value><!-- fill in this -->
+        <value>jdbc:{dbtype}://{host}/{dbname}</value><!-- fill this in -->
       </parameter>
       <parameter>
         <name>username</name>
-        <value>myuser</value> <!-- fill in this -->
+        <value>myuser</value> <!-- fill this in -->
       </parameter>
       <parameter>
         <name>password</name>
-        <value>secret</value> <!-- fill in this -->
+        <value>secret</value> <!-- fill this in -->
       </parameter>
       <parameter>
         <name>removeAbandoned</name>
@@ -156,20 +155,34 @@ In <tt>${CATALINA_HOME}/conf/<b>server.xml</b></tt> add the following XML fragme
     <!-- set the value attribute to point to the configuration file -->
     <Environment name="org.astrogrid.config.url" value="/file/path/to/AstroGridConfig.properties"
     	type="java.lang.String" override="false"/>
-    </DefaultContext>
+</DefaultContext>
 ]]>
 </source>
 <p>
-Edit the <tt>value</tt> attributed of the <tt>Environment</tt> element to point to the location of the configuration file. This needs to be
+Edit the <tt>value</tt> attribute of the <tt>Environment</tt> element to your chosen location for the configuration file. This needs to be
 an absolute file path - a relative one is unlikely to work.
 </p>
 
+</subsection>
+<subsection name="AstroGridConfig.properties"> <p>
+Download the sample configuration file <a href="AstroGridConfig.properties">here</a>. Save a copy of this file to
+the file location pointed to by the <tt>org.astrogrid.config.url</tt> setting.
+<p/>
+The sample configuration file is commented, and contains sensible default values for parameters. You may wish to alter the settings
+for default myspace server and database querier implementation.
+</p>
+</subsection>
+
+<subsection name="metadata.xml">
+<p>You need to write a description of the data collection provided by your installation. This document should conform to <b>(what schema?)</b>
+The location of this file can be set in the configuration file.
+</p>
 </subsection>
 </section>
 
 <section name="Install JDBC Driver">
 <p>
-The jar file containing the JDBC driver for your chosen database should be copied (along with any other jars it depends upon) into the
+Acquire the jar file containing the JDBC driver for your chosen database and copy it (along with any other jars it depends upon) into the
 <tt>${CATALINA_HOME}/common/lib</tt> directory.
 </p>
 </section>
@@ -181,43 +194,36 @@ $ ${CATALINA_HOME}/bin/shutdown.sh
 $ ${CATALINA_HOME}/bin/startup.sh
 </source>
 <p>
-Once tomcat has been restarted, the pal web application will be unpackaged into the directory <tt>webapps/pal</tt>.
+Once tomcat has been restarted, the pal web application will be unpackaged into the directory <tt>webapps/pal</tt>. If installed on your
+machine in the default location, the web application root will be <a href="http://localhost:8080/pal">http://localhost:8080/pal</a>.
 </p>
-</section>
-
-<section name="More Configuration">
-<subsection name="AstroGridConfig.properties"> <p>
- A sample configuration file is included in the web application. If you've installed PAL on your local machine, this will be available at
-<a href="http://localhost:8080/pal/AstroGridConfig.properties">http://localhost:8080/pal/AstroGridConfig.properties</a>. Save a copy of this file to
-the file location pointed to by the <tt>org.astrogrid.config.url</tt> setting.
-<p/>
-The example file is commented, and contains sensible default values for parameters. See the <a href="configuration.html">Configuration</a>
-document for details of this file
-</p>
-</subsection>
-
 </section>
 
 <section name="Verify the installation">
 <p>
-Visit the website, run the self-test scripts - happyaxis.jsp, etc.
-<i>need to make these more accessible</i>
-<p />
-In the client delegate jar there's a simple command-line tool that will fire a adql query at the server and display the response.
+Pal comes packaged with a series of self-test scripts. To run these, visit the web application root,
+and navigate to the <i>self-test</i> page. Inspect the result from each script - no
+errors should appear on the output.
+
+</p>
+<subsection name="Running test queries">
+<p>
+In the client delegate jar there's a simple command-line tool that will fire a adql query at the server and display the VOTABLE response. You need
+to write an adql query that conforms to the adql schema (downloadable from the web application) and save it to a file.
 
 <source>
 $ java org.astrogrid.datacenter.tools.SimpleQuerier <i>url-endpoint</i> <i>query-xml-file</i>
 </source>
-<i>Need to make a shell script to set up the classpath and start this.</i>
+<b>Need to make a shell script to set up the classpath and start this.</b>
 </p>
+</subsection>
 </section>
 
+
 <section name="Add the datacenter to the Astrogrid Registry"><p>
-Finally your newly-published dataset must be added to an Astrogrid Registry. Dunno what is required here.
+Finally your newly-published dataset must be added to an Astrogrid Registry.
+<b>Dunno what is required here.</b>
 </p>
-<subsection name="metadata.xml">
-<p>need to say something about this too</p>
-</subsection>
 </section>
 
 <section name="References"><ul>

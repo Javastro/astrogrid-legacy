@@ -5,17 +5,25 @@
   <body>
       <menu name="Documents">
 	<item name="INSTALL" href="INSTALL.html" />
-	<item name="Configuration" href="configuration.html" />
-	<item name="Other back-ends" href="other-back-end.html" />
+	<item name="Sample Configuration" href="AstroGridConfig.properties" />
+	<item name="Installation Test" href="self-test.html" />
     </menu>
+
    <menu name="Code">
-     <item name="Implementation Examples" href="implementations" />
-     <item name="Axis Fingerprint" href="fingerprint.jsp" />
-     <item name="Axis Install Check" href="happyaxis.jsp" />
+     <item name="Writing a new back-end" href="other-back-end.html" />
+     <item name="Example back-ends" href="implementations" />
+     <item name="XML Schema" href="schema.html" />
+     <item name="Server Development Documentation" href="server/index.html" />
    </menu>
-    <menu name="Download Client Delegate">
-    	<item name="binary .zip" href="delegate-dist/astrogrid-datacenter-client-HEAD.zip" />
-    	<item name="source .zip" href="delegate-dist/astrogrid-datacenter-client-HEAD-src.zip" />
+   <menu name="Download">
+     <item name="Delegate binary dist" href="delegate-dist/astrogrid-datacenter-client-HEAD.zip" />
+     <item name="Delegate source dist" href="delegate-dist/astrogrid-datacenter-client-HEAD-src.zip" />
+     <item name="Server binary dist" href="server-dist/astrogrid-datacenter-server-HEAD.zip" />
+     <item name="Server source dist" href="server-dist/astrogrid-datacenter-server-HEAD-src.zip" />
+	<!-- download client
+	- single jar,
+	- supporting libs -->
+
    </menu>
     <links>
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>
