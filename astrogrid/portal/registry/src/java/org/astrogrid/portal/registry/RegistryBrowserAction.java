@@ -94,6 +94,10 @@ public class RegistryBrowserAction extends AbstractAction
    
    public static final String PARAM_COLUMN = "column";
       
+   public static final String PARAM_COLUMN_NAME = "colname";
+      
+   public static final String PARAM_TABLE_NAME = "tabname";
+      
    public static final String PARAM_RESULT_LIST = "resultlist";
       
    public static final String QUERY_RESULT = "queryresult";
@@ -103,6 +107,8 @@ public class RegistryBrowserAction extends AbstractAction
    public static final String CATALOG_SEARCH = "Catalog";
 
    public static final String TOOL_SEARCH = "Tool";
+
+   public static final String TABLE_SEARCH = "Table";
 
    public static final String ERROR_MESSAGE = "errormessage";
    
@@ -137,7 +143,8 @@ public class RegistryBrowserAction extends AbstractAction
       String errorMessage = null;
       int crit_number = 0;
       Document registryDocument = null;
-      ArrayList resultlist = null;      
+      ArrayList resultlist = null;
+      NodeList resultNodes = null;     
       String result = null;
       String resultid = null;
       String method = "Action()";
@@ -146,25 +153,42 @@ public class RegistryBrowserAction extends AbstractAction
       String action = request.getParameter(PARAM_ACTION);
       String mainElem = request.getParameter(PARAM_MAIN_ELEMENT);
       String identifier = request.getParameter(PARAM_ID);
+      if ( identifier != null && (identifier.length() == 0
+               || identifier.equals("null") ) ) identifier = null;
       String authid = request.getParameter(PARAM_AUTHORITY_ID);
+      if ( authid != null && ( authid.length() == 0
+               || authid.equals("null") ) ) authid = null;
       String resourcekey = request.getParameter(PARAM_RESOURCE_KEY);
+      if ( resourcekey != null && ( resourcekey.length() == 0
+               || resourcekey.equals("null") ) ) resourcekey = null;
       String title = request.getParameter(PARAM_TITLE);
+      if ( title != null && ( title.length() == 0
+               || title.equals("null") ) ) title = null;
+      String colname = request.getParameter(PARAM_COLUMN_NAME);
+      if ( colname != null && ( colname.length() == 0
+               || colname.equals("null") ) ) colname = null;
+      String tabname = request.getParameter(PARAM_TABLE_NAME);
+      if ( tabname != null && ( tabname.length() == 0
+               || tabname.equals("null") ) ) tabname = null;
 
      
       if(DEBUG_FLAG) {
          printDebug( method, "the action is = " + action );      
          printDebug( method, "the mainElem = " + mainElem );
-         printDebug( method, "the authority = " + identifier );
          printDebug( method, "the title = " + title );
 		 printDebug( method, "the authid = " + authid );
 		 printDebug( method, "the resourcekey = " + resourcekey );
+		 printDebug( method, "the identifier = " + identifier );
+		 printDebug( method, "table name = " + tabname );
+		 printDebug( method, "column name = " + colname );
       }            
 
       // Initial Query Action.
       if( QUERY_ACTION.equals(action) ) {
 
          // Lets build up the XML for a query.
-         String query = buildQuery( mainElem, identifier, title );
+         String query = buildQuery( mainElem, authid, resourcekey,
+                                              title, tabname, colname );
          printDebug( method, "Query = \n" + query);
 
          try {
@@ -172,10 +196,13 @@ public class RegistryBrowserAction extends AbstractAction
             RegistryService rs = RegistryDelegateFactory.createQuery( );
             printDebug( method, "Service = " + rs);
             Document doc = rs.submitQuery( query );
+            request.setAttribute("resultDoc", (Node) doc);
 
             //create the results and put it in the request.
             resultlist = createList( doc );
+            resultNodes = createNodes( doc );
             request.setAttribute("resultlist", resultlist);
+            request.setAttribute("resultNodes", resultNodes);
 
             printDebug( method, "Number of Result = " + resultlist.size());
             if( resultlist.size() == 0 )
@@ -200,8 +227,7 @@ public class RegistryBrowserAction extends AbstractAction
          resultid = request.getParameter( PARAM_ID );
          printDebug( method, "Result id = " + resultid );
 	  
-	  } else if ( TABLE_ACTION.equals(action) ) 
-	  {
+	  } else if ( TABLE_ACTION.equals(action) ) {
 	      try 
 	      {	
 		      String table = "";		 
@@ -211,43 +237,29 @@ public class RegistryBrowserAction extends AbstractAction
 		      if (uniqueID != null && uniqueID.length() > 0)
 		      {
 		          printDebug( method, "uniqueID = " + uniqueID);  
-		           String authorityID = uniqueID.substring(0,uniqueID.indexOf(SEPARATOR)) ;
+		          String authorityID = uniqueID.substring( 0,
+                                         uniqueID.indexOf(SEPARATOR));
 			 	  printDebug( method, "uniqueID - auth = " + authorityID );
-		           String resourceKey = uniqueID.substring(uniqueID.indexOf(SEPARATOR)+1,uniqueID.lastIndexOf(SEPARATOR)) ;
+		          String resourceKey = uniqueID.substring(
+                                         uniqueID.indexOf(SEPARATOR)+1,
+                                         uniqueID.lastIndexOf(SEPARATOR)
+                                       );
 				  printDebug( method, "uniqueID - res = " + resourceKey);
-		           table = uniqueID.substring(uniqueID.lastIndexOf(SEPARATOR)+1).trim() ;
-				  printDebug( method, "uniqueID - table = " + table);	
+		          table = uniqueID.substring( uniqueID.lastIndexOf(SEPARATOR)+1
+                                            ).trim();
+				  printDebug( method, "uniqueID -table = " + table);	
 
-		          tableQuery = "<query>\n<selectionSequence>"
-				             + "\n<selection item='searchElements' itemOp='EQ' value='Resource'/>"
-				             + "\n<selectionOp op='$and$'/>"
-				             + "<selection item='vr:Identifier/vr:AuthorityID' itemOp='EQ' value='"+authorityID+"'/>"
-				             + "\n<selectionOp op='AND'/>"
-				             + "\n<selection item='vr:Identifier/vr:ResourceKey' itemOp='EQ' value='"+resourceKey+"'/>"	
-						     + "\n<selectionOp op='AND'/>"		
-							 + "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>"
-				             + "\n</selectionSequence></query>";
-				             
-				             
-//						tableQuery = "<query>\n<selectionSequence>"
-//									 + "\n<selection item='searchElements' itemOp='EQ' value='Resource'/>"
-//									 + "\n<selectionOp op='$and$'/>"
-//									 + "<selection item='vr:Identifier/vr:AuthorityID' itemOp='EQ' value='"+authorityID+"'/>"
-//									 + "\n<selectionOp op='AND'/>"
-//									 + "\n<selection item='vr:Identifier/vr:ResourceKey' itemOp='EQ' value='"+resourceKey+"'/>"
-//						+ "\n<selectionOp op='AND'/>"
-//						+ "\n<selection item='vs:TabularSkyServicevr/vs:Table/vr:Name' itemOp='EQ' value='"+table+"'/>"				             
-//									 + "\n</selectionSequence></query>";
+		          tableQuery = buildQuery( TABLE_SEARCH, authorityID, 
+                                           resourceKey, null, null, null);
 
-				   printDebug( method, "tableQuery = " + tableQuery);
+				  printDebug( method, "tableQuery = " + tableQuery);
 				
 		      }	
 							  
 			  RegistryService rs = RegistryDelegateFactory.createQuery();
 			  printDebug( method, "Service = " + rs);
-			  Document doc = rs.submitQuery( tableQuery );	
-			  			  		  
-			 
+			  Document doc = rs.submitQuery( tableQuery );
+			 			 
 			  //request.setAttribute("tableID", table);			  
 			  //request.setAttribute("resultSingleCatalog", doc);
 			  session.setAttribute(SESSION_TABLEID, table);
@@ -264,7 +276,7 @@ public class RegistryBrowserAction extends AbstractAction
 		  catch( RegistryException re ) 
 		  {
 		     errorMessage =
-					 "A error occurred in processing your query with the Registry.";
+		"A error occurred in processing your query with the Registry.";
 		     printDebug( method, errorMessage + " : " + re );
 		     if ( STACK_TRACE) re.printStackTrace();
 		  } 
@@ -274,13 +286,7 @@ public class RegistryBrowserAction extends AbstractAction
 			 printDebug( method, errorMessage );
 			 if ( STACK_TRACE) e.printStackTrace();
 		  }
-				 
-				
-      
-      
-      
-      
-      
+
       } else if ( action == null ) {
          printDebug( method, "First Time set action" );
          action = QUERY_ACTION;
@@ -318,6 +324,10 @@ public class RegistryBrowserAction extends AbstractAction
       NodeList nodes = doc.getDocumentElement().getChildNodes();
       return listNodes( nodes );
    }
+   private NodeList createNodes( Document doc ) {
+      NodeList nodes = doc.getDocumentElement().getChildNodes();
+      return nodes;
+   }
    private ArrayList createList( Document doc, String Elem ) {
       NodeList nodes = doc.getElementsByTagName(Elem);
       return listNodes( nodes );
@@ -346,32 +356,55 @@ public class RegistryBrowserAction extends AbstractAction
     * @param title keywords in the description.
     * @return the Query as a String.
     */
-   private String buildQuery( String main, String identifier,
-                              String title ) {
+   private String buildQuery( String main, String id, String key,
+                              String title, String tabname, String colname ) {
+     printDebug( "BuildQuery", main + " : " + id + "/" + key + " : " + title
+                                    + " : " + tabname + " : " + colname );
      // Lets build up the XML for a query.
-     String query = "<query>\n<selectionSequence>"
-      + "\n<selection item='searchElements' itemOp='EQ' value='Resource'/>";
+     String query = "<query>\n<selectionSequence>";
+     query += "\n<selection item='searchElements' itemOp='EQ' value='Resource'/>";
+     query += "\n<selectionOp op='$and$'/>";
      if ( CATALOG_SEARCH.equals( main ) ) {
-       query += "\n<selectionOp op='$and$'/>" +
-                "\n<selectionSequence>\n" +
-                //"<selection item='@xsi:Type' itemOp='EQ' value='TabularSkyService'/>" +
-                //"<selectionOp op='OR'/>" +
-                "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>" +
-                "\n</selectionSequence>";
+        query += "\n<selectionSequence>\n";
+//query += "<selection item='@xsi:Type' itemOp='EQ' value='TabularSkyService'/>";
+//query += "<selectionOp op='OR'/>";
+        query += "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>";
+        query += "\n</selectionSequence>";
      }
      else if ( TOOL_SEARCH.equals( main ) ) {
-       query += "\n<selectionOp op='$and$'/>" +
-     "\n<selection item='@xsi:type' itemOp='EQ' value='CeaApplicationType'/>";
+       query += "\n<selection item='@xsi:type' itemOp='EQ'";
+       query += " value='CeaApplicationType'/>";
+     }
+     else if ( TABLE_SEARCH.equals( main ) ) {
+       query += "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>";
      }
 
      // Now lets check for other filters.
-     if ( identifier != null && identifier.length() > 0 )
-        query += "\n<selectionOp op='AND'/>" +
-          "<selection item='vr:Identifier/vr:AuthorityID' itemOp='CONTAINS'" + 
-          " value='" + identifier + "'/>";
-     if ( title != null && title.length() > 0 )
-        query += "\n<selectionOp op='AND'/>" +
-         "<selection item='vr:Title' itemOp='CONTAINS' value='" + title + "'/>";
+     if ( id != null ) {
+       query += "\n<selectionOp op='AND'/>";
+       query += "<selection item='vr:Identifier/vr:AuthorityID' itemOp='CONTAINS'";
+       query += " value='" + id + "'/>";
+     }
+     if ( key != null ) {
+       query += "\n<selectionOp op='AND'/>";
+       query += "<selection item='vr:Identifier/vr:ResourceKey' itemOp='CONTAINS'";
+       query += " value='" + key + "'/>";
+     }
+     if ( title != null ) {
+       query += "\n<selectionOp op='AND'/>";
+       query += "<selection item='vr:Title' itemOp='CONTAINS' value='"
+                  + title + "'/>";
+     }
+     if ( tabname != null ) {
+       query += "\n<selectionOp op='AND'/>";
+       query += "<selection item='*:Table/vr:Name' "
+                + "itemOp='EQ' value='" + tabname + "'/>";
+     }
+     if ( colname != null ) {
+       query += "\n<selectionOp op='AND'/>";
+       query += "<selection item='*:Table/*:Column/vr:Name' "
+                + "itemOp='EQ' value='" + colname + "'/>";
+     }
 
      // End of Query.
      query += "\n</selectionSequence></query>";

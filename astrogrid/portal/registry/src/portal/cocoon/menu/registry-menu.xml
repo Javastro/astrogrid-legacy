@@ -72,7 +72,7 @@
           contents="Catalogue Finder"
           contents-hover="MicroBrowser"
           uri='javascript:void( window.open(
-"/astrogrid-portal/lean/mount/registry/registrybrowser.html?mainelement=Catalog&amp;authId=null&amp;resourceKey=null",
+"/astrogrid-portal/mount/registry/registrybrowser.html?mainelement=Catalog&amp;authId=null&amp;resourceKey=null",
             "Registry Micro Browser",
             "toolbar=no, directories=no, location=no, status=no, menubar=no,
              resizable=yes, scrollbars=yes, width=500, height=400"
@@ -83,7 +83,7 @@
           contents="Tool Finder"
           contents-hover="MicroBrowser"
           uri='javascript:void( window.open(
-"/astrogrid-portal/lean/mount/registry/registrybrowser.html?mainelement=Tool&amp;authId=null&amp;resourceKey=null",
+"/astrogrid-portal/mount/registry/registrybrowser.html?mainelement=Tool&amp;authId=null&amp;resourceKey=null",
             "Registry Micro Browser",
             "toolbar=no, directories=no, location=no, status=no, menubar=no,
              resizable=yes, scrollbars=yes, width=400, height=300"

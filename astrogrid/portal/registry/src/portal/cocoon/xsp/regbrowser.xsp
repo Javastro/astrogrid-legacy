@@ -22,7 +22,9 @@
     <xsp:include>org.apache.axis.utils.XMLUtils</xsp:include>
     <xsp:include>org.w3c.dom.Node</xsp:include>
     <xsp:include>org.w3c.dom.Element</xsp:include>
+    <xsp:include>org.w3c.dom.NodeList</xsp:include>
     <xsp:include>org.w3c.dom.Document</xsp:include>    
+    <xsp:include>org.astrogrid.util.DomHelper</xsp:include>
   </xsp:structure>      
   
   <BrowserQuery>
@@ -41,87 +43,74 @@
         request.setAttribute( "authId", authid );
         request.setAttribute( "resourceKey", resourcekey );
        
-         if ( "queryregistry".equals(action) ) {
-            <xsp:element name="BrowserForm">   
-       <xsp:attribute name="type"><xsp:expr>mainElem</xsp:expr></xsp:attribute>
-            </xsp:element>
-         } else {
+        if ( "queryregistry".equals(action) ) {
+          <xsp:element name="BrowserForm">   
+             <xsp:attribute
+                  name="type"><xsp:expr>mainElem</xsp:expr></xsp:attribute>
+          </xsp:element>
+        } else {
 
-         <ResultsList>
-         <xsp:logic>
-         ArrayList xmlresult = (ArrayList)request.getAttribute("resultlist");
-         String xml = null;
-         if ( xmlresult != null )
+           <ResultsList>
+           <xsp:logic>
+           Document resultDoc = null;
+           Node docnode = (Node)request.getAttribute("resultDoc");
+           NodeList resultNodes = null;
       <![CDATA[
-         if(xmlresult != null && xmlresult.size() > 0 ) {
-      ]]>
-            iter = xmlresult.iterator();           
-            boolean update = false;
-            String id = "";
-            String title = "";
-            String description = "";
-            String identifier = "";
-            String ivorn = "";
-            String table = "";
-            String tempTable = "";
-            LinkedList tables = new LinkedList();
-            
-            while (iter.hasNext()) {
-               xml = (String)iter.next();
-      <![CDATA[
-               int i1 = xml.indexOf("AuthorityID>");
-               i1 = xml.indexOf(">", i1);
-               int i2 = xml.indexOf("</", i1);
-               id = xml.substring( i1 + 1, i2 );
-               int j1 = xml.indexOf("ResourceKey>", i1);
-               j1 = xml.indexOf(">", j1);
-               int j2 = xml.indexOf("</", j1);
-               key = xml.substring( j1 + 1, j2 );
-               identifier = id + "/" + key;
-               
-               i1 = xml.indexOf("Title>");
-               i1 = xml.indexOf(">", i1);
-               i2 = xml.indexOf("</", i1);
-               title = xml.substring( i1 + 1, i2 );
-               i1 = xml.indexOf("Description>");
-               if( i1 != -1 ) {
-                 i1 = xml.indexOf(">", i1);
-                 i2 = xml.indexOf("</", i1);
-                 description = xml.substring( i1+1, i2 );
-               }
-               i1 = xml.indexOf("ReferenceURL>");
-               if( i1 != -1 ) {
-                 i1 = xml.indexOf(">", i1);
-                 i2 = xml.indexOf("</", i1);
-                 ivorn = xml.substring( i1+1, i2 );
-               }
-               i2 = xml.indexOf("<Table");
-               table = "none found";
-               if ( i2 != -1 ) {
-                  i1 = xml.indexOf("Name>", i2);
-                  if( i1 != -1 ) {
-                    i1 = xml.indexOf(">",i1);
-                    i2 = xml.indexOf("</", i1);
-                    table = xml.substring( i1+1, i2 );
-                  }
-               }
+           if( docnode != null && docnode.getNodeType() == Node.DOCUMENT_NODE) {
+              resultDoc = (Document)docnode;
+              resultNodes = resultDoc.getDocumentElement().getChildNodes();
+           }
+           if(resultNodes != null && resultNodes.getLength() > 0 ) {
+             NodeList nl = resultDoc.getDocumentElement().getChildNodes();
+             for(int i = 0; i < nl.getLength(); i++) {
+                String id = "";
+                String resKey = "";
+                String title = "";
+                String description = "";
+                String identifier = "";
+                String tablename = "";
+                String element = null;
+                Node nd = (Node) nl.item(i);
+                if ( nd != null && nd.getNodeType() == Node.ELEMENT_NODE ) {
+                   id = DomHelper.getNodeTextValue( nd,"AuthorityID","vr" );
+                   resKey = DomHelper.getNodeTextValue( nd,"ResourceKey","vr" );
+                   identifier = id;
+                   if(resKey != null && resKey.trim().length() > 0) {
          ]]>
+                     identifier += "/" + resKey;
+                   }
 
-                 <xsp:element name="result">
+                   title = DomHelper.getNodeTextValue(nd,"Title","vr");
+                   description =
+                           DomHelper.getNodeTextValue(nd,"Description","vr");
+                   Element tnode = (Element) nd;
+                   NodeList tables =
+                           DomHelper.getNodeListTags(tnode,"Table","vr");
+                   int nrtab = tables.getLength();
+                   
+                   <xsp:element name="result">
 <xsp:attribute name="title"><xsp:expr>title</xsp:expr></xsp:attribute>
 <xsp:attribute name="desc"><xsp:expr>description</xsp:expr></xsp:attribute>
 <xsp:attribute name="id"><xsp:expr>id</xsp:expr></xsp:attribute>
-<xsp:attribute name="key"><xsp:expr>key</xsp:expr></xsp:attribute>
+<xsp:attribute name="key"><xsp:expr>resKey</xsp:expr></xsp:attribute>
 <xsp:attribute name="identifier"><xsp:expr>identifier</xsp:expr></xsp:attribute>
-<xsp:attribute name="ivorn"><xsp:expr>ivorn</xsp:expr></xsp:attribute>
-<xsp:attribute name="table"><xsp:expr>table</xsp:expr></xsp:attribute>
-<xsp:attribute name="xml"><xsp:expr>xml</xsp:expr></xsp:attribute>
-                 </xsp:element>
-          }
-          }
-         </xsp:logic>
-         </ResultsList>
-        }
+           <xsp:logic>
+      <![CDATA[
+                   for ( int j=0; j < nrtab; j++ ) {
+          ]]>
+                     Node tab = (Node) tables.item(j);
+                     tablename = DomHelper.getNodeTextValue(tab,"Name","vr");
+
+<xsp:attribute name="table"><xsp:expr>tablename</xsp:expr></xsp:attribute>
+                   }  // end for loop j (table)
+           </xsp:logic>
+                   </xsp:element>
+                }  // end if ELEMENT_NODE
+             }  // for loop i
+           } // end resultNodes
+           </xsp:logic>
+           </ResultsList>
+        }  // end else
        </xsp:logic>
     </BrowserBody>
     

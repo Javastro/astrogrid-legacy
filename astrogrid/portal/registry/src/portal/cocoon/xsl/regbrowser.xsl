@@ -18,7 +18,8 @@
 	    <!-- Add our page content -->
 		<content>
 		  <agPUBMessage>
-            Query the Registry Microbrowser - <xsl:value-of select="$mainelement"/>
+            Query the Registry Microbrowser - <xsl:value-of
+                                                select="$mainelement"/>
           </agPUBMessage> 
 		  <ag-script type="text/javascript" src="/astrogrid-portal/extras.js"/>
 		  <xsl:apply-templates/>
@@ -119,17 +120,13 @@
           <td> <input type="text" name="title"/> </td>
       </tr>
       <xsl:if test="$mainelement='Catalog'" >
-        <tr><td> Number of rows in Catalogue: </td>
+        <tr><td> Table Names: </td>
             <td> equals </td>
-            <td> <input disabled="true" type="text" name="nrows"/> </td>
-        </tr>
-        <tr><td> Number of variables in Catalogue: </td>
-            <td> equals </td>
-            <td> <input disabled="true" type="text" name="nvar"/> </td>
+            <td> <input type="text" name="tabname"/> </td>
         </tr>
         <tr><td> Column Names: </td>
             <td> equals </td>
-            <td> <input disabled="true" type="text" name="colnames"/> </td>
+            <td> <input type="text" name="colname"/> </td>
         </tr>
         <tr><td> Column UCDs: </td>
             <td> equals </td>
@@ -143,15 +140,25 @@
             <td> contains </td>
             <td> <input disabled="true" type="text" name="coldescr"/> </td>
         </tr>
+        <tr><td> Number of rows in Catalogue: </td>
+            <td> equals </td>
+            <td> <input disabled="true" type="text" name="nrows"/> </td>
+        </tr>
+        <tr><td> Number of variables in Catalogue: </td>
+            <td> equals </td>
+            <td> <input disabled="true" type="text" name="nvar"/> </td>
+        </tr>
       </xsl:if>
       </table>
       </p>
       <p>    
-        <input class="agActionButton" type="submit" name="queryregistry" value="Search" />
+        <input class="agActionButton" type="submit" name="queryregistry"
+               value="Search" />
         <xsl:text>          </xsl:text>
         <input class="agActionButton" type="reset" value="Clear"/>
         <xsl:text>          </xsl:text>
-        <input class="agActionButton" type="button" value="Close" onclick="window.close()"/>
+        <input class="agActionButton" type="button" value="Close"
+               onclick="window.close()"/>
       </p>
     </form>
   </xsl:template>
@@ -160,45 +167,51 @@
     <xsl:choose>
       <xsl:when test="$mainelement = 'Catalog'">   <!-- CATALOG --> 
         <p>
-          <form method="post" action="/astrogrid-portal/bare/mount/datacenter/variablesFromMB.html"
+          <form method="post"
+        action="/astrogrid-portal/bare/mount/datacenter/variablesFromMB.html"
                 name="RegistryBrowser" id="RegistryBrowser">
             <input type="hidden" name="mainelement">
               <xsl:attribute name="value">
                 <xsl:value-of select="$mainelement"/>
               </xsl:attribute>
             </input>
-            Select a <xsl:value-of select="$mainelement"/> from the following:      
+            Select a <xsl:value-of select="$mainelement"/> from the following:
             <br/>
               <table>                    
               <xsl:for-each
                     select="//BrowserQuery/BrowserBody/ResultsList/result">
                 <tr>
                   <td>
-                <strong> <xsl:value-of select="@key"/> </strong>
-                </td>
-                <td>
-                <em> : <xsl:value-of select="@title"/></em>
-                </td>
-              </tr>
-              <xsl:for-each select="@table">                      
-                <tr>
-                  <td>
+                     <strong> <xsl:value-of select="@key"/> </strong>
                   </td>
-                  <td>                                           
-                    <input type="radio" name="selection" id="selection">
-                      <xsl:attribute name="value">
-                        <xsl:value-of select="../@identifier"/>/<xsl:value-of select="."/>
-                      </xsl:attribute>
-                    </input>
-                    <xsl:value-of select="."/>
-                    </td>
-                  </tr>
+                  <td>
+                     <em> : <xsl:value-of select="@title"/></em>
+                  </td>
+                </tr>
+                <xsl:for-each select="@table">                      
+                   <tr>
+                     <td>
+                     </td>
+                     <td>                                           
+                       <input type="radio" name="selection" id="selection">
+                         <xsl:attribute name="value">
+                         <xsl:value-of select="../@identifier"/>/<xsl:value-of
+                                                                    select="."/>
+                         </xsl:attribute>
+                       </input>
+                       <xsl:value-of select="."/>
+                     </td>
+                   </tr>
                 </xsl:for-each>
               </xsl:for-each>
-            </table>
-            <input class="agActionButton" name="queryregistry" type="button" value="Select..." onclick="findSelection()"/>
+           </table>
+            <input class="agActionButton" name="queryregistry" type="button"
+                   value="Select..." onclick="findSelection()"/>
             <xsl:text>          </xsl:text>
-            <input class="agActionButton" type="button" value="Cancel" onclick="window.close()"/>
+            <input class="agActionButton" type="reset" value="Clear"/>
+            <xsl:text>          </xsl:text>
+            <input class="agActionButton" type="button" value="Cancel"
+                   onclick="window.close()"/>
           </form>
         </p> 
         </xsl:when>
@@ -235,15 +248,18 @@
                   <em> : <xsl:value-of select="@title"/></em>
                   <br/> 
                 </xsl:for-each>
-              <input class="agActionButton" type="button" value="Select">               
+              <input class="agActionButton" type="button" value="Select">
                 <xsl:attribute name="onClick">
-                   getSelectionId('<xsl:value-of select="$authId"/>','<xsl:value-of select="$resourceKey"/>');
+                   getSelectionId('<xsl:value-of select="$authId"/>',
+                                  '<xsl:value-of select="$resourceKey"/>');
                 </xsl:attribute>                              
               </input>                                             
               <xsl:text>          </xsl:text>
-              <input class="agActionButton" type="submit" name="queryregistry" value="Restart" />
+              <input class="agActionButton" type="submit" name="queryregistry"
+                     value="Restart" />
               <xsl:text>          </xsl:text>
-              <input class="agActionButton" type="button" value="Cancel" onclick="window.close()"/>
+              <input class="agActionButton" type="button" value="Cancel"
+                     onclick="window.close()"/>
             </form>
           </p>
           </xsl:otherwise>
