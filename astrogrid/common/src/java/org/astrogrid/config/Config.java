@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.21 2004/03/09 20:59:14 mch Exp $
+ * $Id: Config.java,v 1.22 2004/03/10 02:15:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -168,6 +168,26 @@ public abstract class Config {
       }
    }
    
+   /**
+    * Typed getProperty - returns boolean.
+    */
+   public boolean getBoolean(String key, boolean defaultValue) {
+      
+      try {
+         return getBoolean(key);
+      }
+      catch (PropertyNotFoundException nfe) {
+         return defaultValue;
+      }
+   }
+   
+   /**
+    * Typed getProperty - returns boolean.
+    */
+   public boolean getBoolean(String key) {
+      return Boolean.getBoolean(getProperty(key).toString());
+   }
+
    /**
     * Indirect typed getProperty - returns a DOM loaded from a file at the url
     * speficied.  ie, looks up the given key to get a url, then attempts to
