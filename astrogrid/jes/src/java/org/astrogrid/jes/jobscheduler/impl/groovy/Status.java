@@ -1,4 +1,4 @@
-/*$Id: Status.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: Status.java,v 1.3 2004/09/06 16:47:04 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Enumeration type.
+/** Enumeration type, represents possible states an activity may be in.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
  *
  */
@@ -107,6 +107,9 @@ static {
 
 /* 
 $Log: Status.java,v $
+Revision 1.3  2004/09/06 16:47:04  nw
+javadoc
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

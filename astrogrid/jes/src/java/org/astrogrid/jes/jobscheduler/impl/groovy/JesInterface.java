@@ -1,4 +1,4 @@
-/*$Id: JesInterface.java,v 1.9 2004/08/18 21:50:15 nw Exp $
+/*$Id: JesInterface.java,v 1.10 2004/09/06 16:47:04 nw Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,7 +40,8 @@ import java.util.Iterator;
 import java.util.List;
 
 
-/** provides an interface for executing groovy scripts to call methods back into jes 
+/** provides an interface for executing groovy scripts in rulebase to call back into jes server 
+ * also provides some 'helper' methods that can be called from scripts to create usefule objects, etc. Maybe these should be split into a libraru class, and a JesServerINterface class.
  */
 public class  JesInterface extends WorkflowLogger {
     /** construct a new interpreter environment
@@ -71,6 +72,7 @@ public class  JesInterface extends WorkflowLogger {
              return l;
         }
     
+    /** create a new initialized parameter object */
     public ParameterValue newParameter() {
         ParameterValue pval = new  ParameterValue();
         pval.setIndirect(false);
@@ -103,7 +105,7 @@ public class  JesInterface extends WorkflowLogger {
         }
     }
     /** 
-     * dispatach a tool step 
+     * dispatach a tool step to a cea server for execution. 
      * @param id - the identifier of the step to execute
      * */ 
     public boolean dispatchStep(String id, JesShell shell, ActivityStatusStore states, List rules)  {
@@ -126,7 +128,7 @@ public class  JesInterface extends WorkflowLogger {
            }                             
     }
     
-
+    /** execute a set activity */
     public boolean executeSet(String id,JesShell shell,ActivityStatusStore map,List rules)  {
         Set set = (Set)getId(id);
         try {
@@ -137,6 +139,7 @@ public class  JesInterface extends WorkflowLogger {
             return false;
         }
     }    
+    /** dispatch / execute a script activity */
     public boolean dispatchScript(String id,JesShell shell,ActivityStatusStore map,List rules) {
         Script script = (Script)getId(id);        
         StepExecutionRecord er = AbstractJobSchedulerImpl.newStepExecutionRecord();
@@ -192,6 +195,9 @@ public class  JesInterface extends WorkflowLogger {
 
 /* 
 $Log: JesInterface.java,v $
+Revision 1.10  2004/09/06 16:47:04  nw
+javadoc
+
 Revision 1.9  2004/08/18 21:50:15  nw
 improved error propagation and reporting.
 messages are now logged to workflow document

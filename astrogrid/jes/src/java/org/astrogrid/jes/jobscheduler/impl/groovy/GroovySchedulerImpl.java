@@ -1,4 +1,4 @@
-/*$Id: GroovySchedulerImpl.java,v 1.3 2004/08/04 16:51:46 nw Exp $
+/*$Id: GroovySchedulerImpl.java,v 1.4 2004/09/06 16:47:04 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.Test;
 
-/**
+/** implementation of jobscheduler, based on groovy rules engine and state machine.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
  *
  */
@@ -46,7 +46,10 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
         public Transformer getWorkflowAnnotator() throws Exception;
     }
     /** Construct a new GroovySchedulerImpl
-     * @param factory
+     * @param factory produces jobs
+     * @param transformers compiles documents into rulebase.
+     * @param dispatcher dispatches individual steps to cea
+     * @param interpFactory creates interpreters for compiled rulebases.
      */
     public GroovySchedulerImpl(JobFactory factory,Transformers transformers,Dispatcher dispatcher,GroovyInterpreterFactory interpFactory) {
         super(factory);
@@ -84,7 +87,7 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
 
        return annotatedJob;
     }
-
+    /** unpickle the interpreter from the workflow, then try to run any triggerable rules */
     protected void scheduleSteps(Workflow job) {
     GroovyInterpreter interp = null;
     try {
@@ -116,7 +119,7 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
         // nowt - done internally.
     }
 
-    /**
+    /** 
      * @see org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl#getStepForFragment(org.astrogrid.workflow.beans.v1.Workflow, java.lang.String)
      */
     protected Step getStepForFragment(Workflow job, String fragment) {        
@@ -140,7 +143,7 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
             recordFatalError(wf,e);
         }
     }
-    /**
+    /** store results of a cea computation back into workfllow interpreter.
      * @see org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl#storeResults(org.astrogrid.workflow.beans.v1.Workflow, org.astrogrid.workflow.beans.v1.Step, org.astrogrid.applications.beans.v1.cea.castor.ResultListType)
      */
     protected void storeResults(Workflow wf, Step step, ResultListType results) {
@@ -187,6 +190,9 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
 
 /* 
 $Log: GroovySchedulerImpl.java,v $
+Revision 1.4  2004/09/06 16:47:04  nw
+javadoc
+
 Revision 1.3  2004/08/04 16:51:46  nw
 added parameter propagation out of cea step call.
 

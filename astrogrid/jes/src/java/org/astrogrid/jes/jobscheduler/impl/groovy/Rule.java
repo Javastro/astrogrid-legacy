@@ -1,4 +1,4 @@
-/*$Id: Rule.java,v 1.6 2004/08/18 21:50:15 nw Exp $
+/*$Id: Rule.java,v 1.7 2004/09/06 16:47:04 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-/**   represents a rule that is fired - has a trigger, location of environment, and list of actions to execute
+/**   represents a rule that is fired - has a trigger, name, and body of actions to execute
  Written as a bean, for easy serialization.
+ <p>
+ also caches compiled version of trigger and body after first use - for faster execution the next time round.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
  *
  */
@@ -40,7 +42,9 @@ public class Rule {
     protected String trigger;
     protected String name;
     protected String body;
+    /** cache variable, not persisted */
     protected transient Script compiledTrigger;
+    /** cache variable, not persisted */
     protected transient Script compiledBody;
     /** returns true if trigger of rule succeeds. 
      * @throws IOException
@@ -193,6 +197,9 @@ public class Rule {
 
 /* 
 $Log: Rule.java,v $
+Revision 1.7  2004/09/06 16:47:04  nw
+javadoc
+
 Revision 1.6  2004/08/18 21:50:15  nw
 improved error propagation and reporting.
 messages are now logged to workflow document

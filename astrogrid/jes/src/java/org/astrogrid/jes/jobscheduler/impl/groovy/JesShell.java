@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.12 2004/09/06 16:30:25 nw Exp $
+/*$Id: JesShell.java,v 1.13 2004/09/06 16:47:04 nw Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,6 +62,7 @@ public class JesShell {
     protected static final GroovyShell shell = new GroovyShell();
     protected JesInterface jes;
     
+    /** evaluate the condition (trigger) of a rule */
     public boolean evaluateTrigger(Rule r,ActivityStatusStore map) throws CompilationFailedException, IOException {
         Binding triggerBinding = createTriggerBinding(map);
         Script sc = r.getCompiledTrigger();
@@ -73,7 +74,7 @@ public class JesShell {
         Boolean result = (Boolean)sc.run();
         return result.booleanValue();
     }
-    
+    /** execute the body (concequence) of a rule */
     public void executeBody(Rule r,ActivityStatusStore map, List store) throws CompilationFailedException, IOException {
         logger.info("firing " + r.getName());
         Binding bodyBinding = createBodyBinding(map,store);
@@ -86,7 +87,7 @@ public class JesShell {
         sc.setBinding(bodyBinding);
         sc.run();
     }
-    
+    /** execute a script activity */
     public void executeScript(String script,String id, ActivityStatusStore map,List rules, PrintStream errStream, PrintStream outStream) throws CompilationFailedException, IOException {
         logger.info("Running script for id " + id);
         logger.debug(script);
@@ -109,7 +110,7 @@ public class JesShell {
         vars.readFromBinding(scriptBinding);
     }
     
-    /** used to evaluate uer-supplied expressions - if tests, etc 
+    /** used to evaluate user-supplied expressions - if tests, etc 
      * @throws IOException
      * @throws CompilationFailedException*/
 public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, List rules) throws CompilationFailedException, IOException {
@@ -130,7 +131,7 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
      return result;
     
 }
-
+    /** executes a 'set' activity */
     public void executeSet(Set set,String state,ActivityStatusStore map, List rules) throws CompilationFailedException, IOException {
         Vars vars = map.getEnv(state);
         if (set.getValue() != null) {
@@ -144,24 +145,26 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
     
     // necessary to have these, rather than pass the string directly into evaluateUserExpr - 
    // otherwise the gstirng gets substituted into before it reaches us.
+    /** evaluates the test of  an 'if' activity */
     public Object evaluateIfCondition(If ifObj,ActivityStatusStore map,List rules) throws CompilationFailedException, IOException {
         return evaluateUserExpr(ifObj.getTest(),ifObj.getId(),map,rules);
         
     }
-    
+    /** evaluates the test of a while activity */
     public Object evaluateWhileCondition(While whileObj,ActivityStatusStore map,List rules) throws CompilationFailedException, IOException {
         return evaluateUserExpr(whileObj.getTest(), whileObj.getId(),map,rules);
     }
-    
+    /** evaluates the items of a for activity */
     public Object evaluateForItems(For forObj,ActivityStatusStore map,List rules) throws CompilationFailedException, IOException {
         return  evaluateUserExpr(forObj.getItems(),forObj.getId(),map,rules);
    
     }
+    /** evaluate the items of a parfor activity */
     public Object evaluateParforItems(Parfor forObj,ActivityStatusStore map,List rules) throws CompilationFailedException, IOException {
         return  evaluateUserExpr(forObj.getItems(),forObj.getId(),map,rules);
    
     }    
-    
+    /** evaluate the parameter values of a tool */
     public Tool evaluateTool(Tool original,String id,ActivityStatusStore map, List rules) throws CompilationFailedException, IOException {
         Tool copy = new Tool();
         copy.setInterface(original.getInterface());
@@ -193,7 +196,7 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
         return copy;
     }
 
-/**
+/** 
      * @param original
      * @param scriptBinding
      * @param i
@@ -277,6 +280,9 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.13  2004/09/06 16:47:04  nw
+javadoc
+
 Revision 1.12  2004/09/06 16:30:25  nw
 javadoc
 

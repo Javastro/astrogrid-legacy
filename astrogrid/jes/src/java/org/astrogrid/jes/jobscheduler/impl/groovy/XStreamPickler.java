@@ -1,4 +1,4 @@
-/*$Id: XStreamPickler.java,v 1.4 2004/08/09 17:32:02 nw Exp $
+/*$Id: XStreamPickler.java,v 1.5 2004/09/06 16:47:04 nw Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/** pickler implementation.
+ * @see 
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Jul-2004
  *
  */
@@ -68,6 +69,9 @@ public class XStreamPickler implements Pickler {
 
 /* 
 $Log: XStreamPickler.java,v $
+Revision 1.5  2004/09/06 16:47:04  nw
+javadoc
+
 Revision 1.4  2004/08/09 17:32:02  nw
 updated due to removing RuleStore
 
