@@ -62,9 +62,10 @@ public class JobFactoryImpl implements JobFactory {
 	    COL_JOBXML = 7 ;
 	 
 	public static final String
-		JOBSTEP_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, STEPNAME, STATUS, COMMENT ) " +
-							  "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'' )" ,
-        JOBSTEP_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}''",
+        //JBL altered for iteration 3 - added SEQUENCENUMBER, JOINCONDITION and ORDER BY
+		JOBSTEP_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, STEPNAME, STATUS, COMMENT, SEQUENCENUMBER, JOINCONDITION ) " +
+							  "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'', ''{6}'', ''{7}'' )" ,
+        JOBSTEP_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' ORDER BY STEPNUMBER ASC, SEQUENCENUMBER ASC",
         JOBSTEP_UPDATE_TEMPLATE = "UPDATE {0} SET STATUS =''{1}'', COMMENT = ''{2}''  WHERE JOBURN = ''{3}'' AND STEPNUMBER = ''{4}''"  ; 
 
 	private static final int
@@ -72,7 +73,9 @@ public class JobFactoryImpl implements JobFactory {
 		COL_JOBSTEP_STEPNUMBER = 2,
 		COL_JOBSTEP_STEPNAME = 3,
 		COL_JOBSTEP_STATUS = 4,
-		COL_JOBSTEP_COMMENT = 5 ;  
+		COL_JOBSTEP_COMMENT = 5,  
+        COL_JOBSTEP_SEQUENCENUMBER = 6, //JBL added iteration 3
+        COL_JOBSTEP_JOINCONDITION = 7 ; //JBL added iteration 3
 	
 	public static final String
         QUERY_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER ) " +
@@ -667,10 +670,10 @@ public class JobFactoryImpl implements JobFactory {
 		   
 			while ( iterator.hasNext() ) {
 				jobStep = (JobStep)iterator.next() ;
-				jobStep.setStepNumber( ++count ) ;
+//				jobStep.setStepNumber( ++count ) ; // JBL I think this should be set from the Doc
 			    insertOneJobStep( jobStep ) ;			
 			} 
-
+            
 		}
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "createJobSteps(): exit") ;   	
@@ -688,7 +691,7 @@ public class JobFactoryImpl implements JobFactory {
 		try {
 
 			Object []
-			   inserts = new Object[6] ;
+			   inserts = new Object[8] ;                          //JBL altered iteration 3
 			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOBSTEP
                                         , JES.JOB_CATEGORY ) ;
 			inserts[1] = jobStep.getParent().getId() ;            // foreign key to parent
@@ -696,6 +699,8 @@ public class JobFactoryImpl implements JobFactory {
 			inserts[3] = jobStep.getName() ;
 			inserts[4] = jobStep.getStatus() ;            
 			inserts[5] = jobStep.getComment() ;
+            inserts[6] = jobStep.getSequenceNumber() ;            //JBL added iteration 3
+            inserts[7] = jobStep.getJoinCondition() ;             //JBL added iteration 3
 
 			String
 			   updateString = MessageFormat.format( JOBSTEP_INSERT_TEMPLATE, inserts ) ; 
@@ -759,6 +764,9 @@ public class JobFactoryImpl implements JobFactory {
 					jobStep.setName( rs.getString( COL_JOBSTEP_STEPNAME ).trim() ) ;
 					jobStep.setStatus( rs.getString( COL_JOBSTEP_STATUS ).trim() ) ;
 					jobStep.setComment( rs.getString( COL_JOBSTEP_COMMENT ) ) ;
+                    //JBL added iteration 3 - sequenceNumber and joinCondition ...
+                    jobStep.setSequenceNumber( new Integer( rs.getString( COL_JOBSTEP_SEQUENCENUMBER ).trim() ) ) ;
+                    jobStep.setJoinCondition( rs.getString( COL_JOBSTEP_JOINCONDITION ).trim() ) ;
 					findQuery( jobStep ) ;
 					job.addJobStep( jobStep ) ;
 					

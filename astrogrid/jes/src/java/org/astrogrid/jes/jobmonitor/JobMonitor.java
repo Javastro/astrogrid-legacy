@@ -24,6 +24,8 @@ import java.text.MessageFormat ;
 import java.sql.Timestamp ;
 import java.util.Date ;
 
+import java.util.HashMap ;
+
 import java.util.Iterator ;
 
 import javax.xml.parsers.*;
@@ -189,23 +191,69 @@ public class JobMonitor {
 		Iterator
 		   iterator = job.getJobSteps() ;
 		JobStep
-		   jobStep = null ;
+		   jobStep = null,
+           guardStep = null ;
+        String
+            joinCondition = null ;
+        HashMap
+           guardSteps = new HashMap() ;
 		
 		try {
 			
 			while( iterator.hasNext() ) {
 				
 			    jobStep = (JobStep)iterator.next() ;
+                guardSteps.put( jobStep.getSequenceNumber(), jobStep ) ;
 			    	
-			    if( 
-			        jobStep.getStatus().equals( Job.STATUS_INITIALIZED ) 
-			        ||
-				    jobStep.getStatus().equals( Job.STATUS_RUNNING )   )  {
-				    
-					bJobFinished = false ;
-				    break ;
-				    
-				}
+                // If anything is running, then job is obviously not finished...
+                if( jobStep.getStatus().equals( JobStep.STATUS_RUNNING ) ) {                  
+                    bJobFinished = false ;
+                    break ;                   
+                }
+                  
+                // If step status is initialized, the guardstep must be checked
+                // for its status against the join condition for this step...
+                if( jobStep.getStatus().equals( JobStep.STATUS_INITIALIZED ) ) {
+                    
+                    joinCondition = jobStep.getJoinCondition() ;
+                    guardStep = (JobStep)guardSteps.get( new Integer( jobStep.getSequenceNumber().intValue() - 1 ) ) ;
+                    
+                    // If there is no guard step, assume this step should execute...
+                    if( guardStep == null )  {
+                        bJobFinished = false ;
+                        break ;   
+                    }
+                        
+                    // Eliminate those that should execute in any case... 
+                    if( joinCondition.equals( JobStep.JOINCONDITION_ANY ) ) {
+                        bJobFinished = false ;
+                        break ;   
+                    }
+                       
+                    // Eliminate those that should execute provided the previous
+                    // guardstep completed successfully... 
+                    if( guardStep.getStatus().equals( JobStep.STATUS_COMPLETED ) 
+                        &&
+                        joinCondition.equals( JobStep.JOINCONDITION_TRUE )
+                      ) {
+                        bJobFinished = false ;
+                        break ;   
+                    }
+                    
+                    // Eliminate those that should execute only when the previous
+                    // guardstep completed with an error...
+                    if( guardStep.getStatus().equals( JobStep.STATUS_IN_ERROR ) 
+                        &&
+                        joinCondition.equals( JobStep.JOINCONDITION_FALSE )
+                      ) {
+                        bJobFinished = false ;
+                        break ;   
+                    }
+                    
+                } // end if
+                
+                // If we get here, this step is no longer a candidate
+                // for execution...loop to examine the next step...
 				
 			} // end while 
 			

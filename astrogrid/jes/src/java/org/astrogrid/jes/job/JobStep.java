@@ -34,6 +34,11 @@ public class JobStep {
 		STATUS_RUNNING = "RUNNING",          // Currently executing
 		STATUS_COMPLETED = "COMPLETED",      // Completed OK
 		STATUS_IN_ERROR = "ERROR" ;          // Something bad happened
+        
+    public static final String
+        JOINCONDITION_TRUE = "true",
+        JOINCONDITION_FALSE = "false",
+        JOINCONDITION_ANY = "any" ;
 		
     private Integer
         stepNumber = null ;
@@ -47,6 +52,14 @@ public class JobStep {
 	private String
 	    status = null,
 	    comment = null ;
+        
+    //JBL added Iteration 3
+    private Integer
+        sequenceNumber = null ;
+        
+    //JBL added Iteration 3    
+    private String
+        joinCondition = null ;
 		
 	private Job
 	    parent = null ;
@@ -61,13 +74,38 @@ public class JobStep {
 		if( TRACE_ENABLED ) logger.debug( "JobStep(): entry") ; 
 		
 		this.parent = parent ;
+        
+        String
+            attribute = null;
 		
 		try {
 		 
 		   setName(element.getAttribute( SubmissionRequestDD.JOBSTEP_NAME_ATTR )) ;
 		   setStatus( STATUS_INITIALIZED ) ;
 		   setComment( "" ) ;
-		
+           
+           //JBL we should set the StepNumber from the XML here as well!!!
+           attribute = element.getAttribute( SubmissionRequestDD.JOBSTEP_STEPNUMBER_ATTR ) ;
+           logger.debug( "step number: " + attribute ) ;
+           if( attribute != null ) {
+               this.setStepNumber( new Integer( attribute.trim() ) ) ;
+           }
+           
+           //JBL added iteration 3 - SequenceNumber and JoinCondition
+           attribute = element.getAttribute( SubmissionRequestDD.JOBSTEP_SEQUENCENUMBER_ATTR ) ;
+           logger.debug( "sequence number: " + attribute ) ;
+           if( attribute != null ) {
+               setSequenceNumber( new Integer( attribute.trim() ) ) ;
+           }
+           attribute = element.getAttribute( SubmissionRequestDD.JOBSTEP_JOINCONDITION_ATTR ) ;
+           logger.debug( "join condition: " + attribute ) ;
+           if( attribute != null ) {
+               setJoinCondition( attribute.trim() ) ;
+           }
+           else {
+               setJoinCondition( JOINCONDITION_ANY ) ;
+           }
+           		
 		   NodeList
 			  nodeList = element.getChildNodes() ;
 		   Element
@@ -111,6 +149,15 @@ public class JobStep {
 
 	public void setComment(String comment) { this.comment = comment; }
 	public String getComment() { return ( comment == null  ?  ""  :  comment.trim() ) ; }
+
+    //JBL added iteration 3
+	public void setSequenceNumber(int sequenceNumber) {	this.sequenceNumber = new Integer( sequenceNumber ) ; }
+    public void setSequenceNumber(Integer sequenceNumber) { this.sequenceNumber = sequenceNumber; }
+	public Integer getSequenceNumber() { return sequenceNumber;	}
+
+    //JBL added iteration 3
+	public void setJoinCondition( String joinCondition ) { this.joinCondition = joinCondition ; }
+    public String getJoinCondition() { return joinCondition ; }
 
     
 } // end of class JobStep 

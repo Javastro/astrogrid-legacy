@@ -26,8 +26,10 @@ public final class SubmissionRequestDD {
 	public static final String
 	    JOBSTEP_ELEMENT = "jobstep",
 	    JOBSTEP_NAME_ATTR = "name",
-	    JOBSTEP_STEPNUMBER_ATTR = "stepNumber";
-	    
+	    JOBSTEP_STEPNUMBER_ATTR = "stepNumber",
+        JOBSTEP_SEQUENCENUMBER_ATTR = "stepSequenceNumber",
+        JOBSTEP_JOINCONDITION_ATTR = "stepJoinCondition";
+        
 	public static final String    
 	    QUERY_ELEMENT = "query";
 	    

@@ -25,6 +25,9 @@ import java.util.Set;
 import java.util.HashSet ;
 import java.util.Iterator ;
 
+import java.util.ArrayList ;
+import java.util.ListIterator;
+
 import java.sql.Connection ;
 import java.sql.PreparedStatement ;
 import java.sql.SQLException ;
@@ -64,10 +67,14 @@ public class JobImpl extends Job {
 	   
 	private Date
 	   date = null ;
-	   
-	private Set
-	   jobSteps = new HashSet() ;
-	   
+
+//JBL iteration 3	   
+//	private Set
+//	   jobSteps = new HashSet() ;
+
+    private ArrayList
+        jobSteps = new ArrayList() ;
+   
 	private Connection
 		connection = null ;	   
 	   
@@ -100,6 +107,7 @@ public class JobImpl extends Job {
 				
 					if ( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {
 //						name = element.getAttribute( SubmissionRequestDD.JOBSTEP_NAME_ATTR ).trim() ;
+                        // We must be certain these appear in StepNumber order!
 						jobSteps.add( new JobStep( this, element ) ) ;   
 					}					
 					else if (element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT) ) {					 	

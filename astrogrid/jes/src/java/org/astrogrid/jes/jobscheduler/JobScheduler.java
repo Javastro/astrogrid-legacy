@@ -23,6 +23,8 @@ import org.apache.log4j.Logger;
 
 import java.io.StringReader ; 
 import java.text.MessageFormat ;
+import java.util.HashMap ;
+import java.util.ArrayList;
 import java.util.Iterator ;
 
 import javax.xml.parsers.*;
@@ -128,12 +130,15 @@ public class JobScheduler {
 	        factory = Job.getFactory() ;
 	        factory.begin() ;
 	        job = factory.findJob( this.extractJobURN( scheduleJobDocument ) ) ;
+            
+            // Schedule one or more job steps....
+            this.scheduleSteps( job ) ;
 	        
 	        // Locate appropriate datacenter, using the Registry if need be...
-			datacenterLocation = locateDatacenter( job ) ;
+//			datacenterLocation = locateDatacenter( job ) ;
 	        
 			// Prod the datacenter into life...
-			startJob( datacenterLocation, job ) ;
+//			startJob( datacenterLocation, job ) ;
 
 			factory.updateJob( job ) ;              // Update any changed details to the database                           		
 			bCleanCommit = factory.end ( true ) ;   // Commit and cleanup
@@ -156,18 +161,68 @@ public class JobScheduler {
         } 
          	 
     } // end of scheduleJob()
+    
+    
+    private void scheduleSteps( Job job ) {
+        if( TRACE_ENABLED ) logger.debug( "scheduleSteps(): entry") ;
+        
+        ArrayList
+            steps = this.identifyStepCandidates( job ) ;
+        Iterator
+            iterator  = steps.listIterator() ;
+        JobStep
+            step = null ;
+        
+        try {
+            
+            InputSource
+               jobSource = new InputSource( new StringReader( job.getDocumentXML() ) );
+            
+            Document
+               doc = null ; 
+            
+            while( iterator.hasNext() ) {
+                step = (JobStep)iterator.next() ;
+                doc = XMLUtils.newDocument( jobSource ) ;
+                this.dispatchOneStep( step, doc ) ;
+            }
+                  
+        }
+        catch ( Exception ex ) {
+            AstroGridMessage
+                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST ) ; 
+            logger.error( message.toString(), ex ) ;
+        } 
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "scheduleSteps(): exit") ;
+        }
+        
+    } // end of scheduleSteps()
 	
+    
+    private void dispatchOneStep( JobStep step, Document doc ) {
+        if( TRACE_ENABLED ) logger.debug( "dispatchOneStep(): entry") ; 
+        
+        try {
+            
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "dispatchOneStep(): exit") ; 
+        }
+      
+    } // end of dispatchOneStep()
+    
 	
-	private String locateDatacenter ( Job job ) {
+	private String locateDatacenter ( JobStep step ) {
 		if( TRACE_ENABLED ) logger.debug( "locateDatacenter(): entry") ;
 		
 		String
 		    serviceLocation = null ;
 		
 		try {
-            serviceLocation = findService( job ) ;
+            serviceLocation = findService( step ) ;
             if( serviceLocation == null ) 
-                serviceLocation = enquireOfRegistry( job ) ;        
+                serviceLocation = enquireOfRegistry( step ) ;        
 		}
 		catch( JesException jex ) {
 			logger.debug( jex.getAstroGridMessage() ) ;	
@@ -180,6 +235,43 @@ public class JobScheduler {
 		return serviceLocation ;
 		
 	} // end of locateDatacenter()
+
+
+    private String findService( JobStep step ) { 
+        if( TRACE_ENABLED ) logger.debug( "findService( JobStep ): entry") ;
+        
+        Catalog
+           catalog = null ;
+        String
+           candidateService = null ;
+        
+        try {
+            
+            // Now try to get first catalog with a service location attached...
+            Iterator
+               catIt = step.getQuery().getCatalogs();
+            
+            while( catIt.hasNext() ) {
+                
+                 catalog = (Catalog)catIt.next() ;
+                 candidateService = findService( catalog ) ; 
+                 if( candidateService != null  )
+                     break ;
+                     
+            } // end while
+            
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "findService( JobStep ): exit") ; 
+        }
+        
+        return candidateService ;
+        
+    } // end of findService( JobStep )
+
+
+
+/* 
 	
 	
 	private String findService( Job job ) {	
@@ -218,6 +310,9 @@ public class JobScheduler {
 		return candidateService ;
 		
 	} // end of findService( Job job )
+
+*/
+
 	
 	
 	private String findService( Catalog catalog ) {		
@@ -297,6 +392,10 @@ public class JobScheduler {
         	
         	//JBL Note: This is  adequate only for iteration two where we are expecting
         	//          one jobstep only. You have been warned!
+            //
+            // A way forward for iteration three. Retain the document editing idea.
+            // But eliminate the unnecessary steps.
+            //
         	
 			InputSource
 			   jobSource = new InputSource( new StringReader( job.getDocumentXML() ) );
@@ -323,7 +422,8 @@ public class JobScheduler {
 				if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
 					
 					element = (Element) nodeList.item(i) ;					
-                    if( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {                   	
+                    if( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {  
+                        //JBL Note. Iteration Three. At this point, eliminate the unnecessary steps.                 	
                     	String
                     	   stepNumber = ((JobStep)job.getJobSteps().next()).getStepNumber().toString() ;	
 						element.setAttribute( SubmissionRequestDD.JOBSTEP_STEPNUMBER_ATTR, stepNumber ) ;
@@ -332,6 +432,8 @@ public class JobScheduler {
 				} // end if
 				
 			} // end for
+            
+
 			
 			request = XMLUtils.DocumentToString( doc ) ;
                
@@ -348,13 +450,96 @@ public class JobScheduler {
 		return request ;
 		
 	} // end of formatRunRequest()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    private String formatRunRequest( Job job, JobStep step ) {
+        if( TRACE_ENABLED ) logger.debug( "formatRunRequest() entry") ;
+        
+        String
+            request = null ;
+        
+        try {
+            
+            InputSource
+               jobSource = new InputSource( new StringReader( job.getDocumentXML() ) );
+            
+            Document
+               doc = XMLUtils.newDocument( jobSource ) ;
+               
+            Element
+               element = doc.getDocumentElement() ;   // This should pick up the "job" element
+               
+            // set the Job id (i.e. its job URN)...
+            element.setAttribute( SubmissionRequestDD.JOB_URN_ATTR,job.getId() ) ;
+            
+            // set the URL for the JobMonitor so that it can be contacted by the datacenter... 
+            element.setAttribute( SubmissionRequestDD.JOB_MONITOR_URL_ATTR
+                                , JES.getProperty( JES.MONITOR_URL, JES.MONITOR_URL ) ) ; 
+               
+            NodeList
+               nodeList = element.getChildNodes() ;     
+               
+            // identify jobstep and add the step number attribute...
+            for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+                            
+                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
+                    
+                    element = (Element) nodeList.item(i) ;                  
+                    if( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {  
+                        //JBL Note. Iteration Three. At this point, eliminate the unnecessary steps.                    
+                        String
+                           stepNumber = ((JobStep)job.getJobSteps().next()).getStepNumber().toString() ;    
+                        element.setAttribute( SubmissionRequestDD.JOBSTEP_STEPNUMBER_ATTR, stepNumber ) ;
+                    }
+                
+                } // end if
+                
+            } // end for
+            
+
+            
+            request = XMLUtils.DocumentToString( doc ) ;
+               
+        }
+        catch ( Exception ex ) {
+            AstroGridMessage
+                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST ) ; 
+            logger.error( message.toString(), ex ) ;
+        } 
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "formatRunRequest() exit") ;  
+        }       
+        
+        return request ;
+        
+    } // end of formatRunRequest()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 	
 	
 	private String extractJobURN( Document jobDoc ) { 
 		return jobDoc.getDocumentElement().getAttribute( ScheduleRequestDD.JOB_URN_ATTR ).trim() ;	
 	} 
 	
-	private String enquireOfRegistry( Job job ) throws JesException { 
+	private String enquireOfRegistry( JobStep step ) throws JesException { 
 		if( TRACE_ENABLED ) logger.debug( "enquireOfRegistry() entry") ;
 		
 		String
@@ -365,7 +550,7 @@ public class JobScheduler {
 			// JBL Note:  BEWARE!!! Most of this is guess work.
 			
 			Catalog
-			   catalog = (Catalog)((JobStep)job.getJobSteps().next()).getQuery().getCatalogs().next() ;
+			   catalog = (Catalog)step.getQuery().getCatalogs().next() ;
 			
 			Object []
 			   parms = new Object[] { formatRegistryRequest( catalog ) } ;
@@ -420,7 +605,125 @@ public class JobScheduler {
 		return requestXML ;
 		
 	} // end of formatRegistryRequest()
+    
+    
+    private ArrayList identifyStepCandidates( Job job ) {
+        if( TRACE_ENABLED ) logger.debug( "identifyStepCandidates(): entry") ;
+        
+        Iterator
+           iterator = job.getJobSteps() ;
+        JobStep
+           jobStep = null,
+           guardStep = null ;
+        String
+           joinCondition = null ;
+        HashMap
+           guardSteps = new HashMap() ;
+        ArrayList
+           candidates = new ArrayList() ;
+        Integer
+           sequenceNumber = null ;
+        
+        try {
+            
+           while( iterator.hasNext() ) {
+                
+              jobStep = (JobStep)iterator.next() ;
+              guardSteps.put( jobStep.getSequenceNumber(), jobStep ) ;
+                  
+              // If step status is initialized, the guardstep must be checked
+              // for its status against the join condition for this step...
+              if( jobStep.getStatus().equals( JobStep.STATUS_INITIALIZED ) ) {
+                    
+                 joinCondition = jobStep.getJoinCondition() ;
+                 guardStep = (JobStep)guardSteps.get( new Integer( jobStep.getSequenceNumber().intValue() - 1 ) ) ;
+                    
+                 // If there is no guard step, assume this step should execute...
+                 if( guardStep == null ) {
+                     this.maintainCandidateList( candidates, jobStep ) ; 
+                     break ;   
+                 }  
+                      
+                 // If join condition is "any", the step should execute... 
+                 if( joinCondition.equals( JobStep.JOINCONDITION_ANY ) ) {
+                     this.maintainCandidateList( candidates, jobStep ) ;
+                     break ;   
+                 }
+                       
+                 // Those that should execute provided the previous
+                 // guardstep completed successfully are candidates... 
+                 if( guardStep.getStatus().equals( JobStep.STATUS_COMPLETED ) 
+                     &&
+                     joinCondition.equals( JobStep.JOINCONDITION_TRUE )
+                 ) {
+                     this.maintainCandidateList( candidates, jobStep ) ;
+                     break ;   
+                 }
+                    
+                 // Those that should execute only when the previous
+                 // guardstep completed with an error are candidates...
+                 if( guardStep.getStatus().equals( JobStep.STATUS_IN_ERROR ) 
+                     &&
+                     joinCondition.equals( JobStep.JOINCONDITION_FALSE )
+                 ) {
+                     this.maintainCandidateList( candidates, jobStep ) ;
+                     break ;   
+                 }
+                    
+              } // end if
+                
+                    // If we get here, this step is no longer a candidate
+                    // for execution...loop to examine the next step...
+                
+           } // end while 
+                  
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "identifyStepCandidates(): exit") ;        
+        }
+        
+        return candidates ;
+        
+    } // end of identifyStepCandidates()
+    
+    
+    private void maintainCandidateList( ArrayList list, JobStep candidate ) {
+        if( TRACE_ENABLED ) logger.debug( "maintainCandidateList(): enter") ; 
+        
+        try { 
+            
+            // If the list is empty, no problems in adding this candidate...
+            if( list.isEmpty() ) {
+                list.add( candidate ) ;
+                return ;
+            }
+            
+            // Get the sequence number of any member of the candidate collection...
+            Integer
+                sequenceNumber = ((JobStep)list.get(0)).getSequenceNumber() ;
+               
+            // If the sequence numbers match, add the candidate...               
+            if( candidate.getSequenceNumber().compareTo( sequenceNumber ) == 0 ) {
+                list.add( candidate ) ;  
+            } 
+            // If the sequence number is less than the collection, we need to clear
+            // the collection and start again. We should only schedule jobsteps that
+            // are of the same sequence number (i.e. execute those concurrently)
+            else if( candidate.getSequenceNumber().compareTo( sequenceNumber ) < 0 ) {
+                list.clear() ;
+                list.add( candidate ) ;
+            }
+            
+            // Ignore any candidates with a higher sequence number than the collection
+                
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "maintainCandidateList(): exit") ;    
+        }
+        
+    } // end of maintainCandidateList()
 	
+    
 	protected String getComponentName() { return this.getClass().getName() ; }
 
 
