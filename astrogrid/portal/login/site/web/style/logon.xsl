@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--+
-    |  $Id: logon.xsl,v 1.5 2004/04/20 12:40:32 pfo Exp $
+    |  $Id: logon.xsl,v 1.6 2004/04/21 11:22:02 pfo Exp $
     |  Transforms pages which simply display a message
     |
     +-->
@@ -46,8 +46,8 @@
   </xsl:template>
   <xsl:template match="login-form/login-input">
     <tr>
-      <td><xsl:value-of select="@caption"/></td>
-      <td>
+      <td align="right"><xsl:value-of select="@caption"/></td>
+      <td align="left">
         <xsl:element name="input">
           <xsl:attribute name = "type"><xsl:value-of select="@type"/></xsl:attribute>
           <xsl:attribute name = "size"><xsl:value-of select="@size"/></xsl:attribute>
@@ -70,6 +70,9 @@
 		
 <!--+
     | $Log: logon.xsl,v $
+    | Revision 1.6  2004/04/21 11:22:02  pfo
+    | pfo: putting the labels closer to the input areas
+    |
     | Revision 1.5  2004/04/20 12:40:32  pfo
     | PFO eliminated the border lines in the table and shrank the table width
     |
