@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineVOSpaceIndirectExecutionTest.java,v 1.7 2004/11/24 19:49:22 clq2 Exp $
+ * $Id: CommandLineVOSpaceIndirectExecutionTest.java,v 1.8 2005/03/14 22:03:53 clq2 Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,9 +16,11 @@ package org.astrogrid.applications.integration.commandline;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.AbstractRunTestForCEA;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import java.io.IOException;
@@ -41,7 +43,7 @@ public class CommandLineVOSpaceIndirectExecutionTest extends AbstractRunTestForC
 
    private Ivorn inputIvorn;
    private Ivorn targetIvorn;
-   private VoSpaceClient client;
+   private FileManagerClient client;
 private Ivorn inputIvorn1;
    /**
     * Constructor for ApplicationRunTest.
@@ -72,20 +74,34 @@ private Ivorn inputIvorn1;
       inputIvorn1 = createIVORN("/ApplicationRunWithVOSpaceTest-input-ignored");
 
       // write to myspace...
-      client = new VoSpaceClient(user);
+      client = (new FileManagerClientFactory()).login();
       assertNotNull(client);
+      
+      /*
      try {
         //TODO this should not really be here/needed - the user should have been set up properly, but sometimes it is not.....
           client.createUser(mySpaceIvorn, userIvorn);
     }
     catch (Exception e) {
         // ignore
-    }
+    }*/
     
-      PrintWriter pw = new PrintWriter(new OutputStreamWriter(client.putStream(inputIvorn)));
+
+      FileManagerNode node;
+      if (client.exists(inputIvorn) == null) {
+          node = client.createFile(inputIvorn);
+      } else {
+          node = client.node(inputIvorn);
+      }      
+      PrintWriter pw = new PrintWriter(new OutputStreamWriter(node.writeContent()));
       pw.println(CommandLineProviderServerInfo.TEST_CONTENTS);
       pw.close();
-      pw = new PrintWriter(new OutputStreamWriter(client.putStream(inputIvorn1)));
+      if (client.exists(inputIvorn1) == null) {
+          node = client.createFile(inputIvorn1);
+      } else {
+          node = client.node(inputIvorn1);
+      }            
+      pw = new PrintWriter(new OutputStreamWriter(node.writeContent()));
       pw.println("ignored contents");
       pw.close();
    }
@@ -104,8 +120,9 @@ protected void checkResults(ResultListType results) throws Exception {
     softAssertTrue(result.getIndirect());
     String filePath = result.getValue();
     softAssertEquals(filePath,targetIvorn.toString());
-    client = new VoSpaceClient(user);
-    Reader in = new InputStreamReader(client.getStream( new Ivorn(filePath)));
+    client = (new FileManagerClientFactory()).login();
+    FileManagerNode node = client.node(new Ivorn(filePath));
+    Reader in = new InputStreamReader(node.readContent());
     assertNotNull(in);
      StringWriter out = new StringWriter();
      Piper.pipe(in,out);

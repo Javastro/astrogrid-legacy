@@ -1,4 +1,4 @@
-/*$Id: SimpleMovieMakerWorkflowTest.java,v 1.6 2004/11/24 19:49:22 clq2 Exp $
+/*$Id: SimpleMovieMakerWorkflowTest.java,v 1.7 2005/03/14 22:03:53 clq2 Exp $
  * Created on 17-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,12 @@
 package org.astrogrid.workflow.externaldep.itn6.solarevent;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.io.Piper;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -44,7 +46,8 @@ public class SimpleMovieMakerWorkflowTest extends AbstractTestForWorkflow
     protected void setUp() throws Exception {
         super.setUp();
         target = createIVORN("/SimpleMovieMakerWorkflowTest.mpg");
-        client = new VoSpaceClient(user);
+        client = (new FileManagerClientFactory()).login();        
+
         // remove output file if there already.
 /*
 // COMMENTED OUT ECA 11:28 08/09/04
@@ -55,7 +58,7 @@ public class SimpleMovieMakerWorkflowTest extends AbstractTestForWorkflow
         }            
 */
     }
-    protected VoSpaceClient client;
+    protected FileManagerClient client;
     protected Ivorn target;
     /** location of first input  file */
     protected static final String fits1 ="http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0500";
@@ -122,7 +125,8 @@ public class SimpleMovieMakerWorkflowTest extends AbstractTestForWorkflow
         // check result file exists...
         try {            
             System.out.println("SMMWT: In try loop");
-            InputStream is = client.getStream(target);
+            FileManagerNode node = client.node(target);
+            InputStream is =  node.readContent();
             System.out.println("SMMWT: Just before assertNoteNull(is)");
             assertNotNull(is);
             System.out.println("SMMWT: Just after assertNoteNull(is)");
@@ -137,6 +141,12 @@ public class SimpleMovieMakerWorkflowTest extends AbstractTestForWorkflow
 
 /* 
 $Log: SimpleMovieMakerWorkflowTest.java,v $
+Revision 1.7  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.6.34.1  2005/03/11 17:17:17  nw
+changed bunch of tests to use FileManagerClient instead of VoSpaceClient
+
 Revision 1.6  2004/11/24 19:49:22  clq2
 nww-itn07-659
 

@@ -1,4 +1,4 @@
-/*$Id: FlowWorkflowTest.java,v 1.7 2004/11/24 19:49:22 clq2 Exp $
+/*$Id: FlowWorkflowTest.java,v 1.8 2005/03/14 22:03:53 clq2 Exp $
  * Created on 22-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,20 +14,14 @@ import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.ServerInfo;
 import org.astrogrid.applications.integration.commandline.CommandLineProviderServerInfo;
-import org.astrogrid.integration.AbstractTestForIntegration;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.workflow.beans.v1.AbstractActivity;
-import org.astrogrid.workflow.beans.v1.ActivityContainer;
 import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
-import java.util.Calendar;
 import java.util.Date;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /** test of a workflow containing a flow. in particular, going to check execution times of steps, to prove steps in flows are executed in parallel
  * <p>
@@ -123,6 +117,12 @@ public class FlowWorkflowTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: FlowWorkflowTest.java,v $
+Revision 1.8  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.7.34.1  2005/03/11 17:17:17  nw
+changed bunch of tests to use FileManagerClient instead of VoSpaceClient
+
 Revision 1.7  2004/11/24 19:49:22  clq2
 nww-itn07-659
 

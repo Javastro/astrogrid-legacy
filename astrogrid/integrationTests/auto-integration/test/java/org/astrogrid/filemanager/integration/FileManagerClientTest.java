@@ -1,4 +1,4 @@
-/*$Id: FileManagerClientTest.java,v 1.2 2005/03/11 13:36:22 clq2 Exp $
+/*$Id: FileManagerClientTest.java,v 1.3 2005/03/14 22:03:53 clq2 Exp $
  * Created on 02-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,10 @@
 package org.astrogrid.filemanager.integration;
 
 import org.astrogrid.filemanager.BaseTest;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.filemanager.common.NodeTypes;
 import org.astrogrid.store.Ivorn;
 
 import java.io.IOException;
@@ -46,11 +50,62 @@ public class FileManagerClientTest extends org.astrogrid.filemanager.client.File
         BaseTest.filestores = new Ivorn[]{BaseTest.FILESTORE_1,BaseTest.FILESTORE_2};        
 
     }
+    
+    /** some more quick tests */
+    public void testNotExists() throws Exception {
+            registerAccounts();
+            FileManagerClientFactory factory = new FileManagerClientFactory();
+            FileManagerClient client = factory.login(accountIvorn,"secret");
+            FileManagerNode home = client.home();
+            FileManagerNode frog = home.addFolder("frog");
+            Ivorn target = frog.getIvorn();
+            Ivorn missing = new Ivorn(target.toString() + "/wibble");
+            System.err.println(missing);
+            assertNull(client.exists(missing));
+        }    
+    public void testExistsFolder() throws Exception {
+        registerAccounts();
+        FileManagerClientFactory factory = new FileManagerClientFactory();
+        FileManagerClient client = factory.login(accountIvorn,"secret");
+        FileManagerNode home = client.home();
+        FileManagerNode frog = home.addFolder("frog");
+        Ivorn target = frog.getIvorn();
+        assertEquals(NodeTypes.FOLDER,client.exists(target));
+
+    }    
+    public void testExistsFile() throws Exception {
+        registerAccounts();
+        FileManagerClientFactory factory = new FileManagerClientFactory();
+        FileManagerClient client = factory.login(accountIvorn,"secret");
+        FileManagerNode home = client.home();
+        FileManagerNode frog = home.addFile("frog");
+        Ivorn target = frog.getIvorn();
+        assertEquals(NodeTypes.FILE,client.exists(target));
+
+    }        
+    
+    public void testDelete() throws Exception {
+        registerAccounts();
+        FileManagerClientFactory factory = new FileManagerClientFactory();
+        FileManagerClient client = factory.login(accountIvorn,"secret");
+        FileManagerNode home = client.home();
+        FileManagerNode frog = home.addFile("frog");
+        Ivorn target = frog.getIvorn();
+        assertEquals(NodeTypes.FILE,client.exists(target));
+        frog.delete();
+        assertNull(client.exists(target));
+    }
 }
 
 
 /* 
 $Log: FileManagerClientTest.java,v $
+Revision 1.3  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.2.2.1  2005/03/14 15:20:44  nw
+added some more tests.
+
 Revision 1.2  2005/03/11 13:36:22  clq2
 with merges from filemanager
 

@@ -1,4 +1,4 @@
-/*$Id: SimpleDSAWorkflowEndToEndTest.java,v 1.8 2004/11/24 19:49:22 clq2 Exp $
+/*$Id: SimpleDSAWorkflowEndToEndTest.java,v 1.9 2005/03/14 22:03:53 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,37 +11,11 @@
 package org.astrogrid.workflow.integration;
 
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.integration.ServerInfo;
 import org.astrogrid.applications.integration.datacenter.DataCenterProviderServerInfo;
-import org.astrogrid.integration.*;
-import org.astrogrid.io.Piper;
-import org.astrogrid.jes.delegate.JobSummary;
-import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
-import org.astrogrid.portal.workflow.intf.JobExecutionService;
-import org.astrogrid.portal.workflow.intf.ToolValidationException;
-import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
-import org.astrogrid.portal.workflow.intf.WorkflowManager;
-import org.astrogrid.portal.workflow.intf.WorkflowStore;
-import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
-import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.JobURN;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.util.Date;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /** workflow test that calls the TESTDSA application
  * <p>
@@ -79,6 +53,12 @@ public class SimpleDSAWorkflowEndToEndTest extends AbstractTestForSimpleWorkflow
 
 /* 
 $Log: SimpleDSAWorkflowEndToEndTest.java,v $
+Revision 1.9  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.8.34.1  2005/03/11 17:17:17  nw
+changed bunch of tests to use FileManagerClient instead of VoSpaceClient
+
 Revision 1.8  2004/11/24 19:49:22  clq2
 nww-itn07-659
 

@@ -1,4 +1,4 @@
-/*$Id: DataCenterVOSpaceIndirectExecutionTest.java,v 1.5 2004/11/24 19:49:22 clq2 Exp $
+/*$Id: DataCenterVOSpaceIndirectExecutionTest.java,v 1.6 2005/03/14 22:03:53 clq2 Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,9 +13,11 @@ package org.astrogrid.applications.integration.datacenter;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.AbstractRunTestForCEA;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -57,8 +59,9 @@ public class DataCenterVOSpaceIndirectExecutionTest extends AbstractRunTestForCE
            softAssertTrue(result.getIndirect());
            String filePath = result.getValue();
            softAssertEquals(filePath,targetIvorn.toString());
-           client = new VoSpaceClient(user);
-           InputStream is = client.getStream(new Ivorn(filePath));
+           client = (new FileManagerClientFactory()).login();
+           FileManagerNode node = client.node(new Ivorn(filePath));
+           InputStream is = node.readContent();
            assertNotNull(is);
            AstrogridAssert.assertVotable(is);                
        }
@@ -75,21 +78,33 @@ public class DataCenterVOSpaceIndirectExecutionTest extends AbstractRunTestForCE
           inputIvorn = createIVORN("/DataCenterVOSpaceIndirectExecutionTest-input");
 
           // write to myspace...
-          client = new VoSpaceClient(user);
+          client = (new FileManagerClientFactory()).login();
           assertNotNull(client);
-          OutputStream os  =  client.putStream(inputIvorn);
+          FileManagerNode node;
+          if (client.exists(inputIvorn) == null) {
+              node = client.createFile(inputIvorn);
+          } else {
+              node = client.node(inputIvorn);
+          }
+          OutputStream os  =  node.writeContent();
           Piper.pipe(this.getClass().getResourceAsStream(DataCenterProviderServerInfo.SAMPLE_QUERY_RESOURCE),os);
           os.close();
 
        }
        private Ivorn inputIvorn;
        private Ivorn targetIvorn;
-       private VoSpaceClient client;
+       private  FileManagerClient  client;
 }
 
 
 /* 
 $Log: DataCenterVOSpaceIndirectExecutionTest.java,v $
+Revision 1.6  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.5.34.1  2005/03/11 17:17:17  nw
+changed bunch of tests to use FileManagerClient instead of VoSpaceClient
+
 Revision 1.5  2004/11/24 19:49:22  clq2
 nww-itn07-659
 

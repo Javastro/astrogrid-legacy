@@ -1,4 +1,4 @@
-/*$Id: JesSelfTest.java,v 1.6 2004/11/24 19:49:22 clq2 Exp $
+/*$Id: JesSelfTest.java,v 1.7 2005/03/14 22:03:53 clq2 Exp $
  * Created on 21-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,9 @@
 **/
 package org.astrogrid.workflow.integration;
 
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
-
 import net.sourceforge.jwebunit.WebTestCase;
+
+import org.astrogrid.config.SimpleConfig;
 
 /** Calls the self-tests of the jes webapp - check that no errors occur there.
  * requires that the property {@link #JES_BASE_URL} is set to the base URL of the jes webapp
@@ -56,6 +55,12 @@ public class JesSelfTest extends WebTestCase {
 
 /* 
 $Log: JesSelfTest.java,v $
+Revision 1.7  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.6.34.1  2005/03/11 17:17:17  nw
+changed bunch of tests to use FileManagerClient instead of VoSpaceClient
+
 Revision 1.6  2004/11/24 19:49:22  clq2
 nww-itn07-659
 

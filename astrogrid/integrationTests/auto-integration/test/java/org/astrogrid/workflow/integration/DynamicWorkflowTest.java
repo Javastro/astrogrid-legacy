@@ -1,4 +1,4 @@
-/*$Id: DynamicWorkflowTest.java,v 1.6 2004/11/24 19:49:22 clq2 Exp $
+/*$Id: DynamicWorkflowTest.java,v 1.7 2005/03/14 22:03:53 clq2 Exp $
  * Created on 27-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.workflow.integration;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -102,6 +101,12 @@ public class DynamicWorkflowTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: DynamicWorkflowTest.java,v $
+Revision 1.7  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.6.34.1  2005/03/11 17:17:17  nw
+changed bunch of tests to use FileManagerClient instead of VoSpaceClient
+
 Revision 1.6  2004/11/24 19:49:22  clq2
 nww-itn07-659
 

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.16 2004/08/27 13:51:41 nw Exp $
+/*$Id: AllTests.java,v 1.17 2005/03/14 22:03:53 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,6 @@
  *
 **/
 package org.astrogrid.workflow.integration;
-import org.astrogrid.applications.integration.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 /**
@@ -45,6 +44,12 @@ public class AllTests {
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.17  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.16.104.1  2005/03/11 17:17:17  nw
+changed bunch of tests to use FileManagerClient instead of VoSpaceClient
+
 Revision 1.16  2004/08/27 13:51:41  nw
 added test that checks operation of dynamically-modified workflows.
 

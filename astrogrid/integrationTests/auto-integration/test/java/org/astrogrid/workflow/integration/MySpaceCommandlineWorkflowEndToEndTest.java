@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.16 2004/11/24 19:49:22 clq2 Exp $
+ * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.17 2005/03/14 22:03:53 clq2 Exp $
  * 
  * Created on 23-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,14 +16,15 @@ package org.astrogrid.workflow.integration;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.commandline.CommandLineProviderServerInfo;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,9 +33,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * An end to end test that exercises a commandLine application with myspace interaction.
@@ -57,7 +55,7 @@ public class MySpaceCommandlineWorkflowEndToEndTest
       super(arg0);
    }
 
-    protected VoSpaceClient voSpaceClient;
+    protected FileManagerClient voSpaceClient;
    /*
     * @see SimpleCommandlineWorkflowEndToEndTest#setUp()
     */
@@ -66,19 +64,27 @@ public class MySpaceCommandlineWorkflowEndToEndTest
       targetIvorn = createIVORN("/MySpaceCommandlineWorkflowEndToEndTest-output");        
       inputIvorn =  createIVORN("/MySpaceCommandlineWorkflowEndToEndTest-input"); 
        // write to myspace...
-       voSpaceClient = new VoSpaceClient(user);
-       OutputStream os = voSpaceClient.putStream(inputIvorn);
+       voSpaceClient = (new FileManagerClientFactory()).login();
+       FileManagerNode input;
+       if (voSpaceClient.exists(inputIvorn) == null) {
+           input = voSpaceClient.createFile(inputIvorn);
+       } else {
+           input = voSpaceClient.node(inputIvorn);
+       }
+       OutputStream os = input.writeContent();
        assertNotNull(os);
        PrintWriter pout = new PrintWriter(new OutputStreamWriter(os));
        pout.println(CommandLineProviderServerInfo.TEST_CONTENTS);
        pout.close();
 
        // remove output file if there already.
+       if (voSpaceClient.exists(targetIvorn) != null) {
        try {
-        voSpaceClient.delete(targetIvorn);
+        voSpaceClient.node(targetIvorn).delete();
        } catch (Exception e) {
            // don't care. just make sure its gone.
        }    
+       }
    }
 
 
@@ -97,7 +103,8 @@ public class MySpaceCommandlineWorkflowEndToEndTest
        String value = ((ParameterValue)res.findXPathValue("result[name='P3']")).getValue();
        softAssertEquals("results not at expected location",targetIvorn.toString(),value);  
         try {       
-        InputStream is = voSpaceClient.getStream(targetIvorn);
+            FileManagerNode node = voSpaceClient.node(targetIvorn);
+            InputStream is =  node.readContent();            
         assertNotNull(is);
        
        // now check target ivorn has same contents as the original.

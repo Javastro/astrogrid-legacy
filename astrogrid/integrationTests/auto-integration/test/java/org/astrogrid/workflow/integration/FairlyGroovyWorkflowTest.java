@@ -1,4 +1,4 @@
-/*$Id: FairlyGroovyWorkflowTest.java,v 1.7 2004/11/24 19:49:22 clq2 Exp $
+/*$Id: FairlyGroovyWorkflowTest.java,v 1.8 2005/03/14 22:03:53 clq2 Exp $
  * Created on 04-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.workflow.integration;
 
 
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
@@ -21,12 +20,9 @@ import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
-
-import java.io.StringReader;
 
 /** integration test that executes a workflow containing some of the new features of the groovy-jes server
  *  - declaration of variables, script blocks, passing variabls into cea calls, accessing results of a cea call, propagating values between cea calls.
@@ -136,6 +132,12 @@ public class FairlyGroovyWorkflowTest extends AbstractTestForWorkflow{
 
 /* 
 $Log: FairlyGroovyWorkflowTest.java,v $
+Revision 1.8  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.7.34.1  2005/03/11 17:17:17  nw
+changed bunch of tests to use FileManagerClient instead of VoSpaceClient
+
 Revision 1.7  2004/11/24 19:49:22  clq2
 nww-itn07-659
 

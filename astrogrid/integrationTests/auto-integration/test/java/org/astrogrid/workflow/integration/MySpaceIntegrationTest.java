@@ -1,4 +1,4 @@
-/*$Id: MySpaceIntegrationTest.java,v 1.9 2004/05/07 15:32:36 pah Exp $
+/*$Id: MySpaceIntegrationTest.java,v 1.10 2005/03/14 22:03:53 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,10 @@
 **/
 package org.astrogrid.workflow.integration;
 
-import org.astrogrid.community.User;
-import org.astrogrid.integration.*;
+import org.astrogrid.integration.AbstractTestForIntegration;
 import org.astrogrid.portal.workflow.intf.WorkflowStore;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.workflow.beans.v1.Workflow;
-
-import java.net.URL;
-import java.util.Arrays;
 
 /** Tests functionality that workflow requires of myspace.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
@@ -58,6 +53,12 @@ public class MySpaceIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: MySpaceIntegrationTest.java,v $
+Revision 1.10  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.9.176.1  2005/03/11 17:17:17  nw
+changed bunch of tests to use FileManagerClient instead of VoSpaceClient
+
 Revision 1.9  2004/05/07 15:32:36  pah
 more registry tests to flush out the fact that new entries are not being added
 

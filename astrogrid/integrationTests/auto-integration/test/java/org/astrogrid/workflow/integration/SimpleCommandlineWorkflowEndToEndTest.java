@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.18 2004/11/24 19:49:22 clq2 Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.19 2005/03/14 22:03:53 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,31 +9,12 @@
  *
 **/
 package org.astrogrid.workflow.integration;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.commandline.CommandLineProviderServerInfo;
-import org.astrogrid.integration.AbstractTestForIntegration;
-import org.astrogrid.jes.delegate.JesDelegateException;
-import org.astrogrid.jes.delegate.JobSummary;
-import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
-import org.astrogrid.portal.workflow.intf.JobExecutionService;
-import org.astrogrid.portal.workflow.intf.ToolValidationException;
-import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
-import org.astrogrid.portal.workflow.intf.WorkflowManager;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.JobURN;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 /**
  * Test for a workflow that has a single step that calls the TESTAPP application
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
@@ -71,6 +52,12 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForSimple
 }
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.19  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.18.34.1  2005/03/11 17:17:17  nw
+changed bunch of tests to use FileManagerClient instead of VoSpaceClient
+
 Revision 1.18  2004/11/24 19:49:22  clq2
 nww-itn07-659
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryIntegrationTest.java,v 1.14 2004/11/24 19:49:22 clq2 Exp $
+/*$Id: RegistryIntegrationTest.java,v 1.15 2005/03/14 22:03:53 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,19 +11,15 @@
 package org.astrogrid.workflow.integration;
 
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.integration.*;
+import org.astrogrid.integration.AbstractTestForIntegration;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
-import org.astrogrid.registry.client.query.RegistryService;
-import org.astrogrid.scripting.Service;
-import org.astrogrid.store.Ivorn;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /** test functionality that workflow and jes requires of  the registry
@@ -122,6 +118,12 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: RegistryIntegrationTest.java,v $
+Revision 1.15  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.14.34.1  2005/03/11 17:17:17  nw
+changed bunch of tests to use FileManagerClient instead of VoSpaceClient
+
 Revision 1.14  2004/11/24 19:49:22  clq2
 nww-itn07-659
 

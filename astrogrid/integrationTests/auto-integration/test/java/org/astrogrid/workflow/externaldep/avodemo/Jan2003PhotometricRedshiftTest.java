@@ -1,5 +1,5 @@
 /*
- * $Id: Jan2003PhotometricRedshiftTest.java,v 1.2 2004/09/23 08:59:57 pah Exp $
+ * $Id: Jan2003PhotometricRedshiftTest.java,v 1.3 2005/03/14 22:03:53 clq2 Exp $
  * 
  * Created on 08-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -19,8 +19,10 @@ import java.io.StringWriter;
 import org.astrogrid.applications.avodemo.AVODemoConstants;
 import org.astrogrid.applications.avodemo.AVODemoRunner;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.workflow.beans.v1.AbstractActivity;
 import org.astrogrid.workflow.beans.v1.Step;
@@ -81,9 +83,9 @@ public class Jan2003PhotometricRedshiftTest extends AbstractTestForWorkflow {
         assertStepCompleted(step);
         ResultListType val = getResultOfStep(step);
         softAssertEquals("only expected single result", 1, val.getResultCount());
-        //read the resulting VOTable       
-        VoSpaceClient vos = new VoSpaceClient(user);
-        InputStream is = vos.getStream(new Ivorn(val.getResult(0).getValue()));
-        AstrogridAssert.assertVotable(is);
+        //read the resulting VOTable   
+        FileManagerClient vos = (new FileManagerClientFactory()).login();
+        FileManagerNode node = vos.node(new Ivorn(val.getResult(0).getValue()));
+        AstrogridAssert.assertVotable(node.readContent());
     }
 }

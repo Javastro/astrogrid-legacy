@@ -1,4 +1,4 @@
-/*$Id: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v 1.8 2004/11/24 19:49:22 clq2 Exp $
+/*$Id: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v 1.9 2005/03/14 22:03:53 clq2 Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,12 @@
 package org.astrogrid.workflow.externaldep.itn6.solarevent;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -50,15 +52,17 @@ public class CompositeFitsVotableParsingSolarMovieWorkflowTest extends SimpleFit
     protected void setUp() throws Exception {
         super.setUp();
         target = createIVORN("/CompositeFitsVotableSolarMovieWorkflowTest.dat");
-        client = new VoSpaceClient(user);
+        client = (new FileManagerClientFactory()).login();
+        if (client.exists(target) != null) {
         // remove output file if there already.
         try {
-            client.delete(target);
+            client.node(target).delete();
         } catch (Exception e) {
             // don't care. just make sure its gone.
+        }
         }          
     }
-    protected VoSpaceClient client;
+    protected FileManagerClient client;
     protected Ivorn target;
     
     /**
@@ -102,7 +106,8 @@ public class CompositeFitsVotableParsingSolarMovieWorkflowTest extends SimpleFit
         super.checkExecutionResults(result);
         // check result file exists...
         try {            
-            InputStream is = client.getStream(target);
+            FileManagerNode node = client.node(target);
+            InputStream is =  node.readContent();
             assertNotNull(is);
             //@todo add some more checking of data here.
         } catch (IOException e) {
@@ -114,6 +119,12 @@ public class CompositeFitsVotableParsingSolarMovieWorkflowTest extends SimpleFit
 
 /* 
 $Log: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v $
+Revision 1.9  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.8.34.1  2005/03/11 17:17:17  nw
+changed bunch of tests to use FileManagerClient instead of VoSpaceClient
+
 Revision 1.8  2004/11/24 19:49:22  clq2
 nww-itn07-659
 

@@ -1,4 +1,4 @@
-/*$Id: SimpleJavaWorkflowEndToEndTest.java,v 1.5 2004/08/17 15:11:50 nw Exp $
+/*$Id: SimpleJavaWorkflowEndToEndTest.java,v 1.6 2005/03/14 22:03:53 clq2 Exp $
  * Created on 23-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,9 +12,6 @@ package org.astrogrid.workflow.integration;
 
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.integration.JavaProviderServerInfo;
-import org.astrogrid.applications.integration.ServerInfo;
-import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -61,6 +58,12 @@ public class SimpleJavaWorkflowEndToEndTest extends AbstractTestForSimpleWorkflo
 
 /* 
 $Log: SimpleJavaWorkflowEndToEndTest.java,v $
+Revision 1.6  2005/03/14 22:03:53  clq2
+auto-integration-nww-994
+
+Revision 1.5.118.1  2005/03/11 17:17:17  nw
+changed bunch of tests to use FileManagerClient instead of VoSpaceClient
+
 Revision 1.5  2004/08/17 15:11:50  nw
 updated some tests
 

@@ -1,5 +1,5 @@
 /*
- * $Id: HttpVOSpaceIndirectExecutionTest.java,v 1.3 2004/09/14 16:35:15 jdt Exp $
+ * $Id: HttpVOSpaceIndirectExecutionTest.java,v 1.4 2005/03/14 22:03:53 clq2 Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,11 +16,14 @@ package org.astrogrid.applications.integration.http.adder;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.AbstractRunTestForCEA;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -36,7 +39,7 @@ public class HttpVOSpaceIndirectExecutionTest extends AbstractRunTestForCEA {
 
    private Ivorn inputIvorn;
    private Ivorn targetIvorn;
-   private VoSpaceClient client;
+   private FileManagerClient client;
    /**
     * Constructor for ApplicationRunTest.
     * @param arg0
@@ -59,9 +62,16 @@ public class HttpVOSpaceIndirectExecutionTest extends AbstractRunTestForCEA {
       inputIvorn = createIVORN("/ApplicationRunWithVOSpaceTest-input");
 
       // write to myspace...
-      client = new VoSpaceClient(user);
+      client = (new FileManagerClientFactory()).login();
       assertNotNull(client);
-      PrintWriter pw = new PrintWriter(new OutputStreamWriter(client.putStream(inputIvorn)));
+      
+      FileManagerNode node;
+      if (client.exists(inputIvorn) == null) {
+          node = client.createFile(inputIvorn);
+      } else {
+          node = client.node(inputIvorn);
+      }
+      PrintWriter pw  = new PrintWriter(new OutputStreamWriter( node.writeContent()));
       pw.println("9112000");
       pw.close();
    }
@@ -80,8 +90,9 @@ protected void checkResults(ResultListType results) throws Exception {
     softAssertTrue(result.getIndirect());
     String filePath = result.getValue();
     softAssertEquals(filePath,targetIvorn.toString());
-    client = new VoSpaceClient(user);
-    Reader in = new InputStreamReader(client.getStream( new Ivorn(filePath)));
+    client = (new FileManagerClientFactory()).login();
+    FileManagerNode node = client.node(new Ivorn(filePath));
+    BufferedReader in = new BufferedReader(new InputStreamReader(node.readContent()));
     assertNotNull(in);
      StringWriter out = new StringWriter();
      Piper.pipe(in,out);
