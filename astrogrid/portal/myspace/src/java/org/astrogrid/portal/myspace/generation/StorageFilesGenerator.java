@@ -132,14 +132,15 @@ public class StorageFilesGenerator extends AbstractGenerator {
   	  folderElement.setAttribute("type", StorageFilesGenerator.MYSPACE_FOLDER_ATTR);
   	  
   	  // For each child, visit the file with the new element as the parent element.
-  	  for(int fileIndex = 0; fileIndex < storeFiles.length; fileIndex++) {
+  	  for(int fileIndex = 0; storeFiles != null && fileIndex < storeFiles.length; fileIndex++) {
   	    walkFile(storeFiles[fileIndex], document, folderElement);
   	  }
   	}
   	
-  	// If we get to hear, we have an invalid store file.
+  	// If we get to here, we are not dealing with a file or folder... just return.
   	else {
-  	  throw new ProcessingException("invalid store file [" + "]: not a folder or file");
+  	  return;
+  	  // throw new ProcessingException("invalid store file [" + storeFile.getName() +"]: not a folder or file");
   	}
   }
   

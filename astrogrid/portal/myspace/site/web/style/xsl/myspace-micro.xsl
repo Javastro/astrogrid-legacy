@@ -7,6 +7,9 @@
   <xsl:output
       method="xml"
       omit-xml-declaration="yes"/>
+      
+  <xsl:param name="ivorn" select="myspace-ivorn"/>
+  <xsl:param name="agsl" select="myspace-agsl"/>
 
   <xsl:template match="/">
     <html>
@@ -22,6 +25,12 @@
       </head>
       
       <body>
+<!--
+        <p>
+          ivorn: <xsl:value-of select="$ivorn"/><br/>
+          agsl: <xsl:value-of select="$agsl"/>
+        </p>
+-->
         <script type="text/javascript">
           window.document.title = "MySpace MicroBrowser";
         </script>
@@ -38,7 +47,10 @@
             </tr>
           </table>
           
-          <input type="button" value="OK" onclick="setParentIVORNAgsl();"/>
+          <input type="button" value="OK">
+            <xsl:attribute name="onclick">setParentIVORNAgsl('<xsl:value-of select="$ivorn"/>', '<xsl:value-of select="$agsl"/>');</xsl:attribute>
+          </input>
+          
           <input type="button" value="Cancel" onclick="window.close();"/>
         </form>
         

@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <?xml-logicsheet href="web/logicsheets/utils.xsl"?>
 
+<!--
+          value="myspace:http://twmbarlwm.star.le.ac.uk:8080/astrogrid-mySpace-SNAPSHOT/services/Manager"
+-->
 <xsp:page
     xmlns:xsp="http://apache.org/xsp"
     xmlns:xsp-request="http://apache.org/xsp/request/2.0"

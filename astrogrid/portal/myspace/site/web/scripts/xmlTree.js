@@ -39,11 +39,13 @@ function setIVORNAgsl(newIvorn, newAgsl){
   myspace_agsl.value = newAgsl;
 }
 
-function setParentIVORNAgsl(){
+function setParentIVORNAgsl(parent_ivorn, parent_agsl){
   parentDoc = window.opener.document;
   
-  parent_ivorn = parentDoc.getElementById('myspace-ivorn');
-  parent_agsl = parentDoc.getElementById('myspace-agsl');
+  alert(parent_ivorn + " - - " + parent_agsl);
+  
+  parent_ivorn = parentDoc.getElementById(parent_ivorn);
+  parent_agsl = parentDoc.getElementById(parent_agsl);
   
   if(parent_ivorn && parent_agsl) {
     myspace_ivorn = document.getElementById('myspace-ivorn');
