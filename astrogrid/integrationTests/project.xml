@@ -87,6 +87,46 @@
 			<groupId>commons-logging</groupId>
 			<version>1.0.3</version>
 		</dependency>
+		<dependency>
+			<artifactId>commons-discovery</artifactId>
+			<groupId>commons-discovery</groupId>
+			<version>20030211.213356</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>	
+		<!--find out which of these are actually necessary-->	
+		<dependency>
+			<artifactId>cog-jglobus</artifactId>
+			<groupId>cog-jglobus</groupId>
+			<version>OGSA3.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>axis</artifactId>
+			<groupId>axis</groupId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<artifactId>jax-qname</artifactId>
+			<groupId>jax-qname</groupId>
+			<version>UNKNOWN</version>
+			<jar>jax-qname.jar</jar>
+		</dependency>
+		<dependency>
+			<artifactId>jaxrpc-api</artifactId>
+			<groupId>jaxrpc-api</groupId>
+			<version>1.0.3</version>
+		</dependency>
+		<dependency>
+			<artifactId>saaj-api</artifactId>
+			<groupId>saaj-api</groupId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<artifactId>wsdl4j</artifactId>
+			<groupId>wsdl4j</groupId>
+			<jar>wsdl4j.jar</jar>
+		</dependency>
 	</dependencies>
 	<reports>
 		<report>
