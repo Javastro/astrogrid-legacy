@@ -110,7 +110,8 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
 //JBL Note: .append( "file://" )  // JBL Note: this is a quick fix for AstroGrid iteration 2
 		    .append( DatasetAgent.getProperty( MYSPACECACHE_DIRECTORY ) ) 
 		    .append( System.getProperty( "file.separator" ) )
-		    .append( jobID.replace( ':', '.' ) ) ;
+		    .append( jobID.replace( ':', '.' ) ) 
+			.append( ".xml" ) ;
     	
     	return buffer.toString() ;
     	
