@@ -7,6 +7,7 @@
      <menu name="Documentation">
        <item name="Install" href="INSTALL.xml"/>
        <item name="Read me" href="README.xml"/>
+       <item name="Sample Config" href="astrogrid.properties" />
     </menu>
 
     <menu name="Installation Checks">

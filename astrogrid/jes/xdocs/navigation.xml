@@ -8,6 +8,7 @@
        <item name="Install" href="INSTALL.xml"/>
        <item name="Read me" href="README.xml"/>
        <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-jes-SNAPSHOT.war"/>
+       <item name="Sample Config" href="astrogrid.properties" />
     </menu>
     <links>
        <item name="AstroGrid"       href="http://www.astrogrid.org"/>
