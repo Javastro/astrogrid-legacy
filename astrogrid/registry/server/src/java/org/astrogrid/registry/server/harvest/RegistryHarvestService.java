@@ -216,9 +216,9 @@ public class RegistryHarvestService implements
          //System.out.println("what was passed in at harvestResoruce = " + DomHelper.DocumentToString(resources));
          XSLHelper xs = new XSLHelper();
          Document resourceChange = xs.transformDatabaseProcess((Node)voList.item(0));
-         System.out.println("the resourceChange = " + DomHelper.DocumentToString(resourceChange));
+         //System.out.println("the resourceChange = " + DomHelper.DocumentToString(resourceChange));
          Document castorXS = xs.transformCastorProcess((Node)resourceChange);
-         System.out.println("castorxs = " + DomHelper.DocumentToString(castorXS));
+         //System.out.println("castorxs = " + DomHelper.DocumentToString(castorXS));
          VODescription vodesc = (VODescription)Unmarshaller.unmarshal(VODescription.class,castorXS);
          HashMap auths = RegistryFileHelper.getManagedAuthorities();
          int count = vodesc.getResourceCount();
@@ -261,20 +261,7 @@ public class RegistryHarvestService implements
             re.printStackTrace();   
          }
       }
-      
-      
-      /*
-       * 
-       * Lets throw it to Castor and get an Object model instead and get the identifier that way.
-       * Now make sure this identifier is  one that we manage.  (has an authorityID that is in our ManagedAuthority
-       * element in the Registry resource entry.) Unless it is a Registry resource entry they do not need to have
-       * a authority id we manage. 
-       * Get a modification date from the db for this resource entry if it is in our db.
-       * Call beginHarvest(date,resource entry)
-       *        
-       *       
-       */      
-       
+            
       return null;
    }
    
@@ -401,8 +388,9 @@ public class RegistryHarvestService implements
       if(InvocationType.WEBSERVICE_TYPE == st.getInterface().getInvocation().getType()) {
          //call the service
          //remeber to look at the date
-         WSDLBasicInformation wsdlBasic = WSDLInformation.getBasicInformationFromURL(accessURL);         
-         if(wsdlBasic == null) {
+         WSDLBasicInformation wsdlBasic = WSDLInformation.getBasicInformationFromURL(accessURL);
+         if(wsdlBasic != null) {
+            System.out.println("calling call obj with endpoint = " + (String)wsdlBasic.getEndPoint().values().iterator().next());
             Call callObj = getCall((String)wsdlBasic.getEndPoint().values().iterator().next());
             DocumentBuilder registryBuilder = null;
             try {
@@ -420,8 +408,12 @@ public class RegistryHarvestService implements
                   if(interfaceMethod == null || interfaceMethod.trim().length() > 0) {
                      interfaceMethod = "getMetaData";
                   }
-                  doc.createElementNS(wsdlBasic.getTargetNameSpace(),interfaceMethod);
+               }
+                  String nameSpaceURI = WSDLInformation.getNameSpaceFromBinding(accessURL,interfaceMethod);
+                  root = doc.createElementNS(nameSpaceURI,interfaceMethod);
                   doc.appendChild(root);
+                  System.out.println("Creating soap request for operation name = " + interfaceMethod + " with namespaceuri = " + nameSpaceURI);
+                  //System.out.println("the doc webservice = " + DomHelper.DocumentToString(doc));
                   SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
                   //sbeRequest.setName("harvestAll");
                   sbeRequest.setName(interfaceMethod);
@@ -431,7 +423,6 @@ public class RegistryHarvestService implements
                   ras.updateNoCheck(sbe.getAsDocument());
                   //RegistryFileHelper.updateResources(sbe.getAsDocument(),true,false);
                   //RegistryFileHelper.writeRegistryFile();
-               }
             }catch(RemoteException re) {
               //log error
               re.printStackTrace();   
