@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/cocoon/explorer/Attic/ExplorerAction.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/30 12:42:31 $</cvs:author>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Date: 2003/07/03 13:06:25 $</cvs:author>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  * $Log: ExplorerAction.java,v $
+ * Revision 1.3  2003/07/03 13:06:25  dave
+ * Fixed explorer path on deleting the current folder
+ *
  * Revision 1.2  2003/06/30 12:42:31  dave
  * Added user name session attribute
  *
@@ -636,6 +639,16 @@ public class ExplorerAction
 							// FIXME : Only do this is the action worked.
 							view.setSelectedPath(null) ;
 							view.setSelectedAction(null) ;
+							
+							//
+							// If this was the explorer path.
+							if (path.equals(view.getExplorerPath()))
+								{
+								//
+								// Move up one step.
+								File file = new File(path) ;
+								view.setExplorerPath(file.getParent()) ;
+								}
 							//
 							// Clear the action and confirm values.
 							// FIXME : Only do this is the action worked.
