@@ -1,6 +1,6 @@
 <project name="install" default="info" basedir=".">
 	<property file="default.properties"/>
-	<property name="temporary.dir" value="tmp"/>
+	<property name="jes.temporary.dir" value="tmp-jes"/>
 	<property name="jes.war" value="${maven.local.repo}/${astrogrid.groupId}/wars/${jes.war.name}"/>
 	<property name="local.jes.war" value="${basedir}/jes.war"/>
 
@@ -120,14 +120,14 @@
     	<echo>Reg update service URL: ${astrogrid.registry.update.endpoint}</echo>
     	<echo>Reg query service URL: ${astrogrid.registry.query.endpoint}</echo>    		
     	<echo>JES Working dir ${input.jes.working.dir}</echo>
-        <copy todir="${temporary.dir}/context">
+        <copy todir="${jes.temporary.dir}/context">
             <filterset refid="myfilter"/>
             <fileset dir="context" />
         </copy>
         <copy file="${jes.war}" tofile="${local.jes.war}"/>
     	<!--update the context.xml-->
         <war update="yes" destfile="${local.jes.war}">
-            <metainf dir="${temporary.dir}/context" />
+            <metainf dir="${jes.temporary.dir}/context" />
         </war>
     </target>
 
@@ -162,8 +162,8 @@
 	</target>	
 	    
     <target name="createTmpDir">
-        <delete dir="${temporary.dir}"/>
-        <mkdir dir="${temporary.dir}"/>
+        <delete dir="${jes.temporary.dir}"/>
+        <mkdir dir="${jes.temporary.dir}"/>
     </target>
  
 
