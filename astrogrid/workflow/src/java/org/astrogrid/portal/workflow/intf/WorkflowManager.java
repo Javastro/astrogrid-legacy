@@ -1,4 +1,4 @@
-/*$Id: WorkflowManager.java,v 1.5 2004/03/03 11:15:23 nw Exp $
+/*$Id: WorkflowManager.java,v 1.6 2004/03/09 15:33:00 nw Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,6 @@
 **/
 package org.astrogrid.portal.workflow.intf;
 
-import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.workflow.beans.v1.Workflow;
-
-import java.util.Iterator;
 
 /** Container object that collects the various components used to interact with workflows.
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Feb-2004
@@ -27,7 +22,7 @@ public interface WorkflowManager{
     /** get a component to access a store. never null */
     public WorkflowStore getWorkflowStore();
     /** get a component to query a registry. never null */
-    public ToolRegistry getToolRegistry();
+    public ApplicationRegistry getToolRegistry();
     /** get a component to manage jobs - executoions of workflows. never null */
     public JobExecutionService getJobExecutionService();
     
@@ -36,6 +31,9 @@ public interface WorkflowManager{
 
 /* 
 $Log: WorkflowManager.java,v $
+Revision 1.6  2004/03/09 15:33:00  nw
+renamed toolRegistry to ApplicationRegistry
+
 Revision 1.5  2004/03/03 11:15:23  nw
 tarted up javadocs, reviewed types
 

@@ -1,4 +1,4 @@
-/*$Id: ToolRegistry.java,v 1.3 2004/03/03 11:15:23 nw Exp $
+/*$Id: ApplicationRegistry.java,v 1.1 2004/03/09 15:33:00 nw Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,37 +10,40 @@
 **/
 package org.astrogrid.portal.workflow.intf;
 
-import org.astrogrid.workflow.beans.v1.Tool;
 
-import java.util.Iterator;
-
-/** A component that queries a registry for information about tools.
+/** A component that queries a registry for information about applications.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Mar-2004
  *
  */
-public interface ToolRegistry {
-    /** return list of names of known tools  
-     * @deprecated - use {@link listTools} which returns a strongly-typed result */ 
-    Iterator readToolList( ) throws WorkflowInterfaceException;
-    
+public interface ApplicationRegistry {
+
     /** list names of known tools 
      * @todo - do we want to return a little more here - a summary of info for each tool maybe*/
-    String[] listTools() throws WorkflowInterfaceException;
+    String[] listApplications() throws WorkflowInterfaceException;
 
-    /**
-     * Create a new tool object, populated from tool registry 
-     * @param name the name of the tool in the registry
-     * @return initialized tool object. never null
-     * @todo don't know what is required in here yet. 
-     **/   
-    public Tool createTool( String name) throws WorkflowInterfaceException;
+    /** query registry for description of a named application
+     * 
+     * @param applicationName name of the application.
+     * @return an description of the application
+     * @throws WorkfactInterfaceException if an error occurs - i.e. if the application is not found
+     */
+    ApplicationDescription getDescriptionFor(String applicationName);
+
+    
+    
+      
+      
+      
       
 }
 
 
 
 /* 
-$Log: ToolRegistry.java,v $
+$Log: ApplicationRegistry.java,v $
+Revision 1.1  2004/03/09 15:33:00  nw
+renamed toolRegistry to ApplicationRegistry
+
 Revision 1.3  2004/03/03 11:15:23  nw
 tarted up javadocs, reviewed types
 
