@@ -1,4 +1,4 @@
-/*$Id: ExternalValue.java,v 1.1 2004/07/26 12:07:38 nw Exp $
+/*$Id: ExternalValue.java,v 1.2 2004/08/24 11:45:00 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import java.io.OutputStream;
 /** Interface for working with a value that is 'external' - ie probably not in this JVM. May be in local storage, may be remote.
  * <p>
  * Because of this vagueness, the interface provides the bare minimum for working with the external value.
+ * @TODO rename the methods in this interface so that the imply opening a stream rather than reading and writing...
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
  *
  */
@@ -33,6 +34,9 @@ public interface ExternalValue {
 
 /* 
 $Log: ExternalValue.java,v $
+Revision 1.2  2004/08/24 11:45:00  pah
+added todo comment
+
 Revision 1.1  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package
