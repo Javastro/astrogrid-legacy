@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://mySpaceServer.mySpace.astrogrid.org" xmlns:impl="http://mySpaceServer.mySpace.astrogrid.org" xmlns:intf="http://mySpaceServer.mySpace.astrogrid.org" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+   <wsdl:message name="deleteDataHolderRequest">
+
+      <wsdl:part name="dataHolderFileName" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="copyDataHolderRequest">
+
+      <wsdl:part name="oldDataHolderFileName" type="xsd:string"/>
+
+      <wsdl:part name="newDataHolderFileName" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="importDataHolderResponse">
+
+      <wsdl:part name="importDataHolderReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="upLoadStringResponse">
+
+      <wsdl:part name="upLoadStringReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="upLoadStringRequest">
+
+      <wsdl:part name="contents" type="xsd:string"/>
+
+      <wsdl:part name="newDataHolderFileName" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="copyDataHolderResponse">
+
+      <wsdl:part name="copyDataHolderReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteDataHolderResponse">
+
+      <wsdl:part name="deleteDataHolderReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="importDataHolderRequest">
+
+      <wsdl:part name="importURI" type="xsd:string"/>
+
+      <wsdl:part name="newDataHolderFileName" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="ServerManager">
+
+      <wsdl:operation name="upLoadString" parameterOrder="contents newDataHolderFileName">
+
+         <wsdl:input name="upLoadStringRequest" message="impl:upLoadStringRequest"/>
+
+         <wsdl:output name="upLoadStringResponse" message="impl:upLoadStringResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="importDataHolder" parameterOrder="importURI newDataHolderFileName">
+
+         <wsdl:input name="importDataHolderRequest" message="impl:importDataHolderRequest"/>
+
+         <wsdl:output name="importDataHolderResponse" message="impl:importDataHolderResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="copyDataHolder" parameterOrder="oldDataHolderFileName newDataHolderFileName">
+
+         <wsdl:input name="copyDataHolderRequest" message="impl:copyDataHolderRequest"/>
+
+         <wsdl:output name="copyDataHolderResponse" message="impl:copyDataHolderResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteDataHolder" parameterOrder="dataHolderFileName">
+
+         <wsdl:input name="deleteDataHolderRequest" message="impl:deleteDataHolderRequest"/>
+
+         <wsdl:output name="deleteDataHolderResponse" message="impl:deleteDataHolderResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="ServerManagerSoapBinding" type="impl:ServerManager">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="upLoadString">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="upLoadStringRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceServer.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="upLoadStringResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceServer.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="importDataHolder">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="importDataHolderRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceServer.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="importDataHolderResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceServer.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="copyDataHolder">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="copyDataHolderRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceServer.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="copyDataHolderResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceServer.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteDataHolder">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteDataHolderRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceServer.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteDataHolderResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceServer.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="ServerManagerService">
+
+      <wsdl:port name="ServerManager" binding="impl:ServerManagerSoapBinding">
+
+         <wsdlsoap:address location="http://localhost:8080/axis/services/ServerManager"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>
