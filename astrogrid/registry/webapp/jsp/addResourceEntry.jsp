@@ -20,6 +20,8 @@
 
 <h1>Adding Entry</h1>
 
+<p>Service returns:
+
 <pre>
 <%
    //RegistryHarvestService server = new RegistryHarvestService();
