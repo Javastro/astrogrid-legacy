@@ -47,6 +47,38 @@
       <id>gps</id>
       <email>gps@roe.ac.uk</email>
     </developer>
+    <developer>
+      <name>John D Taylor</name>
+      <id>jdt</id>
+      <email>jdt@roe.ac.uk</email>
+      <roles>
+	      <role>Unit Tester</role>
+	  </roles>
+    </developer> 
+    <developer>
+    <name>Phil Nicholson</name>
+    <id>pjn3</id>
+    <email>pjn3@star.le.ac.uk</email>
+    </developer> 
+    <developer>
+    <name>Paul Harrison</name>
+    <id>pah</id>
+    <email>pah@jb.man.ac.uk</email>
+    </developer> 
+
+    <developer>
+    	<name>Martin Hill</name>
+    	<id>mch</id>
+    	<email>mch@roe.ac.uk</email>
+	<organization>ROE</organization>
+    </developer>
+
+    <developer>
+    	<name>Noel Winstanley</name>
+    	<id>nw</id>
+    	<email>nw@jb.man.ac.uk</email>
+	<organization>JBO</organization>
+    </developer>
   </developers>
   
   <dependencies>
