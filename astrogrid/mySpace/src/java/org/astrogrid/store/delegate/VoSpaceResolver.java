@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.3 2004/03/15 17:26:53 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.4 2004/03/15 18:01:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,7 +17,6 @@ import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
-import org.exolab.castor.xml.ValidationException;
 
 /**
  * A VoSpaceResolver is used to resolve actual locations from IVORNs to any
@@ -107,7 +106,7 @@ public class VoSpaceResolver {
             //look in registry
             return new Agsl(registry.getEndPointByIdentifier(ivorn.toRegistryString()));
          }
-         catch (ValidationException e) {
+         catch (Exception e) {
             throw new ResolverException("Registry failed resolving "+ivorn,e);
          }
       }
@@ -158,6 +157,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.4  2004/03/15 18:01:39  mch
+Removed build dependency on castor
+
 Revision 1.3  2004/03/15 17:26:53  mch
 Added more robust (& lazy) registry & community delegate creation
 
