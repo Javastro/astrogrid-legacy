@@ -44,9 +44,14 @@ hardwired to expect an underlying Postgres 7.3 DBMS, where all the datasets
 accessed via the GDW contain columns named <strong><tt>ra</tt></strong> 
 (right ascension) and <strong><tt>decl</tt></strong> (declination).
 </p><p>
+There is also a hardwired limit of 100,000 on the number of rows returned
+by any query.
+</p><p>
 The next release of the GDW should support user-customisable ADQL-SQL 
 translation (not just the current Postgres-flavoured translation),
-with user-configurable column names for right ascension and declination.
+with user-configurable column names for right ascension and declination,
+and user-configurable limits.
+</p><p>
 </p>
 </section>
 
