@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.6 2004/08/11 16:50:56 nw Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.7 2004/08/27 10:56:38 nw Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -128,7 +128,8 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
         pico.registerComponentImplementation(MetadataService.class, DefaultMetadataService.class);     
         pico.registerComponentImplementation(QueryService.class,DefaultQueryService.class);   
        registerCompositeApplicationDescriptionLibrary(pico);
-        registerContainerApplicationDescriptionLibrary(pico);
+       // not added by default - stiches up cea-commandline.
+        //registerContainerApplicationDescriptionLibrary(pico);
         }
     
     /** registers the default implementaiton of the indirection protocol library 
@@ -288,6 +289,9 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
+Revision 1.7  2004/08/27 10:56:38  nw
+removed container-inspecting applicationDescriptionLibrary from default setup - cea-commandline doesn't like it.
+
 Revision 1.6  2004/08/11 16:50:56  nw
 added in default application description libraries.
 

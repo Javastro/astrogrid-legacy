@@ -1,4 +1,4 @@
-/*$Id: AppsCEAComponentManager.java,v 1.3 2004/08/17 15:07:25 nw Exp $
+/*$Id: AppsCEAComponentManager.java,v 1.4 2004/08/27 10:56:38 nw Exp $
  * Created on 11-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ public class AppsCEAComponentManager extends JavaClassCEAComponentManager {
      */
     public AppsCEAComponentManager() {
         super();
+        registerContainerApplicationDescriptionLibrary(pico);        
         pico.registerComponentImplementation(SendMailApplicationDescription.class);
         pico.registerComponentImplementation(CatApplicationDescription.class);
     }
@@ -33,6 +34,9 @@ public class AppsCEAComponentManager extends JavaClassCEAComponentManager {
 
 /* 
 $Log: AppsCEAComponentManager.java,v $
+Revision 1.4  2004/08/27 10:56:38  nw
+removed container-inspecting applicationDescriptionLibrary from default setup - cea-commandline doesn't like it.
+
 Revision 1.3  2004/08/17 15:07:25  nw
 added concat application
 
