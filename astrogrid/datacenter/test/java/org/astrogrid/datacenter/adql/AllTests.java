@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2003/08/28 15:26:44 nw Exp $
+/*$Id: AllTests.java,v 1.2 2003/08/28 22:45:47 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ public class AllTests {
             new TestSuite("Test for org.astrogrid.datacenter.adql");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(MarshallingTest.class));
+        suite.addTest(new TestSuite(ExamplesTest.class));
         //$JUnit-END$
         return suite;
     }
@@ -36,6 +37,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.2  2003/08/28 22:45:47  nw
+added unit test that runs a set of sample ADQL documents through the object model
+
 Revision 1.1  2003/08/28 15:26:44  nw
 unit tests for adql
  

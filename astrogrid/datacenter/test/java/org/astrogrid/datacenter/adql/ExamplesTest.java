@@ -1,0 +1,87 @@
+/*$Id: ExamplesTest.java,v 1.1 2003/08/28 22:45:47 nw Exp $
+ * Created on 28-Aug-2003
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.datacenter.adql;
+
+import junit.framework.TestCase;
+import java.io.*;
+import org.astrogrid.datacenter.adql.generated.*;
+/** Run through a set of sample files, loading and outputting each in turn.
+ * @author Noel Winstanley nw@jb.man.ac.uk 28-Aug-2003
+ *
+ */
+public class ExamplesTest extends TestCase {
+
+    /**
+     * Constructor for ExamplesTest.
+     * @param arg0
+     */
+    public ExamplesTest(String arg0) {
+        super(arg0);
+    }
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(ExamplesTest.class);
+    }
+
+    public void test1() throws Exception {
+        processExample("sample1.xml");
+    }
+
+    public void test2() throws Exception {
+        processExample("sample2.xml");
+    }
+    
+    public void test3() throws Exception {
+        processExample("sample3.xml");
+    }
+    
+    public void test4() throws Exception {
+        processExample("sample4.xml");
+    }
+    
+    public void test5() throws Exception {
+        processExample("sample5.xml");
+    }
+
+    /** muck about with the input file a bit */
+    protected void processExample(String path) throws Exception {
+        InputStream is = this.getClass().getResourceAsStream(path);
+        assertNotNull(is);
+        Reader reader = new InputStreamReader(is);
+        Select query = Select.unmarshalSelect(reader);
+        assertNotNull(query);
+        assertTrue(query.isValid());
+        // now write it out to a temporary buffer, read back in again., write out again.
+        // verify two outputted xml buffers are equal.
+        // sadly can't easily compare with original XML document
+        String xml = ADQLUtils.queryToString(query);
+        assertNotNull(xml);
+        
+        Reader in = new StringReader(xml);
+        Select query1 = Select.unmarshalSelect(in);
+        assertNotNull(query1);
+        assertTrue(query1.isValid());
+        // can't compare s1 , s2 for equality..
+        // but can compare xml strings.
+        String xml1 = ADQLUtils.queryToString(query1);
+        assertNotNull(xml1);
+        assertEquals(xml,xml1);
+    }
+
+}
+
+
+/* 
+$Log: ExamplesTest.java,v $
+Revision 1.1  2003/08/28 22:45:47  nw
+added unit test that runs a set of sample ADQL documents through the object model
+ 
+*/

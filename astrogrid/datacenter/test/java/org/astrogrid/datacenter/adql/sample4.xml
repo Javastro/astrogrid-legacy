@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-16"?>
+<!-- SQL equivalent
+SELECT t.b, b.d FROM Tab t, Bob b HAVING  t.b <> b.b
+-->
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SelectionList>
+    <ColumnExpr>
+      <SingleColumnReference>
+        <TableName>t</TableName>
+        <Name>b</Name>
+      </SingleColumnReference>
+    </ColumnExpr>
+    <ColumnExpr>
+      <SingleColumnReference>
+        <TableName>b</TableName>
+        <Name>d</Name>
+      </SingleColumnReference>
+    </ColumnExpr>
+  </SelectionList>
+  <TableClause>
+    <FromClause>
+      <TableReference>
+        <Table>
+          <Name>Tab</Name>
+          <AliasName>t</AliasName>
+        </Table>
+        <Table>
+          <Name>Bob</Name>
+          <AliasName>b</AliasName>
+        </Table>
+      </TableReference>
+    </FromClause>
+    <HavingClause>
+      <PredicateSearch>
+        <ComparisonPred>
+          <FirstExpr xsi:type="ColumnExpr">
+            <SingleColumnReference>
+              <TableName>t</TableName>
+              <Name>b</Name>
+            </SingleColumnReference>
+          </FirstExpr>
+          <Compare>&lt;&gt;</Compare>
+          <SecondExpr xsi:type="ColumnExpr">
+            <SingleColumnReference>
+              <TableName>b</TableName>
+              <Name>b</Name>
+            </SingleColumnReference>
+          </SecondExpr>
+        </ComparisonPred>
+      </PredicateSearch>
+    </HavingClause>
+  </TableClause>
+</Select>

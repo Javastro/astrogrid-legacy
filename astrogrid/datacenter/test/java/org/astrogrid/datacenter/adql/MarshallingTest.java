@@ -1,4 +1,4 @@
-/*$Id: MarshallingTest.java,v 1.1 2003/08/28 15:26:44 nw Exp $
+/*$Id: MarshallingTest.java,v 1.2 2003/08/28 22:45:47 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ import java.io.*;
 public class MarshallingTest extends TestCase {
 
     /**
-     * Constructor for QOMTest.
+     * Constructor for MarshallingTest
      * @param arg0
      */
     public MarshallingTest(String arg0) {
@@ -92,6 +92,9 @@ public class MarshallingTest extends TestCase {
 
 /* 
 $Log: MarshallingTest.java,v $
+Revision 1.2  2003/08/28 22:45:47  nw
+added unit test that runs a set of sample ADQL documents through the object model
+
 Revision 1.1  2003/08/28 15:26:44  nw
 unit tests for adql
  
