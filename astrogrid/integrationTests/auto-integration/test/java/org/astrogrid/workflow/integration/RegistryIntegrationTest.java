@@ -1,4 +1,4 @@
-/*$Id: RegistryIntegrationTest.java,v 1.10 2004/08/27 13:25:40 nw Exp $
+/*$Id: RegistryIntegrationTest.java,v 1.11 2004/09/22 11:23:18 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,13 +50,19 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
         String[] appNames = reg.listApplications();
         assertNotNull("application names are null",appNames);
         assertTrue("no application names",appNames.length > 0);
-        for (int i = 0; i < appNames.length; i++) {           
+        for (int i = 0; i < appNames.length; i++) {
             String name = appNames[i];
             softAssertNotNull("name is null",name);
-            softAssertTrue("empty name",name.trim().length() > 0);
+            softAssertTrue("empty name",name.trim().length() > 0);    
+            try {        
             ApplicationDescription descr = reg.getDescriptionFor(name);
             softAssertNotNull("description is null",descr);
             softAssertEquals("name is not as expected",name,descr.getName());
+            } catch(Exception e) {
+                System.out.println("Duff registry entry found for " + name);
+                softFail("failed for " + name + " " + e.getMessage());
+                
+            }
         }
     }
         
@@ -95,6 +101,9 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: RegistryIntegrationTest.java,v $
+Revision 1.11  2004/09/22 11:23:18  nw
+made more tolerant of duff registyr entries
+
 Revision 1.10  2004/08/27 13:25:40  nw
 removed hardcoded endpoint.
 
