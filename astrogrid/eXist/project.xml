@@ -28,37 +28,7 @@
         +-->
     <name>AstroGrid EXist</name>
 
-    
-    <!--+
-        | The location of our deployed web site.
-        +-->
-    <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/exist</siteDirectory>
 
-    <!--+
-        | Our cvs repository location.
-        +-->
-    <repository>
-        <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/exist
-        </connection>
-        <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/exist
-        </developerConnection>
-                <url> http://www.astrogrid.org/viewcvs/astrogrid/exist/
-            </url>
-    </repository>
-
-    <!--+
-        | Various other stuff copied from the mySpace project.xml
-        | which neatens up the maven reports
-        +-->
-        <currentVersion>$Name:  $</currentVersion>
-	<organization>
-		<name>AstroGrid</name>
-		<url>http://www.astrogrid.org</url>
-		<logo>http://www.astrogrid.org/images/AGlogo</logo>
-	</organization>
-	<inceptionYear>2002</inceptionYear>
         <description>
         <![CDATA[
 	<p>

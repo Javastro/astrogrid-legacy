@@ -68,17 +68,7 @@
         +-->
     <shortDescription>eXist server side component.</shortDescription>
 
-    <!--+
-        | Our cvs repository location.
-        +-->
-    <repository>
-        <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/eXist
-        </connection>
-        <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/eXist
-        </developerConnection>
-    </repository>
+
 
     <!--+
         | The external dependencies required to build and test the project.
