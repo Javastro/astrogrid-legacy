@@ -3,6 +3,14 @@
 <!-- extension maven script -->
 <project default="jar:jar">
 
+  <!-- The multiproject:artifact goal in the parent project
+       calls javaapp:javaapp in this sub-project, but the Java-app
+       plug-in doesn't provide that goal. This declaration redirects
+       the call to a goal that the Java-app plug-in does provide. -->
+  <goal name="javaapp:javaapp">
+    <attainGoal name="javaapp"/>
+  </goal>
+
   <!-- After compiling, copy all properties files in the source tree to
        the classes tree in the build. -->
   <postGoal name="java:compile">
