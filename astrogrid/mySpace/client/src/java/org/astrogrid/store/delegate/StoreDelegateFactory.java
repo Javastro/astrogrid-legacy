@@ -1,5 +1,5 @@
 /*
- * $Id: StoreDelegateFactory.java,v 1.2 2004/06/14 23:08:52 jdt Exp $
+ * $Id: StoreDelegateFactory.java,v 1.3 2004/09/06 11:26:21 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -48,6 +48,27 @@ public class StoreDelegateFactory
    }
 
    /**
+    * Creates the correct delegate (to copy, move, etc files on a storepoint)
+    * for the given URI and operator. <br>
+    * Follows the myspace meeting aug 2004 to try and avoid AGSLs.  The 'URI' here
+    * in fact is either a URL or MSRL
+    */
+   public static StoreClient createDelegate(User operator, String storeUri) throws IOException {
+
+      if (Msrl.isMsrl(storeUri)) {
+         return new MySpaceIt05Delegate(operator, new Msrl(storeUri).getDelegateEndpoint().toString());
+      }
+      if (storeUri.toLowerCase().startsWith("ftp:")) {
+         return new org.astrogrid.store.delegate.ftp.FtpStore(operator, new URL(storeUri));
+      }
+      if (storeUri.toLowerCase().startsWith("file:")) {
+         return new org.astrogrid.store.delegate.local.LocalFileStore("Default");
+      }
+      
+      throw new IllegalArgumentException("Don't know how to create store delegate for '"+storeUri+"'");
+   }
+
+   /**
     * Creates the correct delegate for administering the store client at the
     * given Agsl.  Ignores the path of the Agsl.
     */
@@ -65,19 +86,30 @@ public class StoreDelegateFactory
 
 /*
 $Log: StoreDelegateFactory.java,v $
+Revision 1.3  2004/09/06 11:26:21  mch
+Added factory method that takes a 'URI' rather than AGSL
+
 Revision 1.2  2004/06/14 23:08:52  jdt
 Merge from branches
+
 ClientServerSplit_JDT
+
 and
+
 MySpaceClientServerSplit_JDT
 
+
+
 MySpace now split into a client/delegate jar
+
 astrogrid-myspace-<version>.jar
+
 and a server/manager war
+
 astrogrid-myspace-server-<version>.war
 
 Revision 1.1.2.1  2004/06/14 22:33:20  jdt
-Split into delegate jar and server war.  
+Split into delegate jar and server war.
 Delegate: astrogrid-myspace-SNAPSHOT.jar
 Server/Manager: astrogrid-myspace-server-SNAPSHOT.war
 
