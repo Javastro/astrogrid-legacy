@@ -22,7 +22,7 @@
 		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
 		<unitTest>
 			<includes>
-				<include>**/*Test.java</include>
+				<include>**/*.java</include>
 			</includes>
 			<resources>
 				<resource>
