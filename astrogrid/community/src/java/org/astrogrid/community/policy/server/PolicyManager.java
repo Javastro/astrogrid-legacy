@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 17:21:43 $</cvs:date>
+ * <cvs:version>$Revision: 1.12 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManager.java,v $
+ *   Revision 1.12  2003/09/10 17:21:43  dave
+ *   Added remote functionality to groups.
+ *
  *   Revision 1.11  2003/09/10 06:03:27  dave
  *   Added remote capability to Accounts
  *
@@ -76,31 +79,45 @@ public interface PolicyManager
 		throws RemoteException ;
 
 	/**
-	 * Request a list of remote Accounts.
+	 * Request a list of Accounts, given a remote Community name.
 	 *
 	 */
 	public Object[] getRemoteAccounts(String name)
 		throws RemoteException ;
 
 	/**
-	 * Add a member to a Group.
+	 * Request a list of local Groups.
+	 *
+	 */
+	public Object[] getLocalGroups()
+		throws RemoteException ;
+
+	/**
+	 * Request a list of Groups, given a remote Community name.
+	 *
+	 */
+	public Object[] getRemoteGroups(String name)
+		throws RemoteException ;
+
+	/**
+	 * Add an Account to a Group, given the Account and Group names.
 	 *
 	 */
 	public GroupMemberData addGroupMember(String account, String group)
 		throws RemoteException;
 
 	/**
-	 * Remove a member to a Group.
+	 * Remove an Account from a Group, given the Account and Group names.
 	 *
 	 */
-	public boolean delGroupMember(String account, String group)
+	public GroupMemberData delGroupMember(String account, String group)
 		throws RemoteException;
 
 	/**
-	 * Get a list of group members.
+	 * Get a list of Group members, given the Group name.
 	 *
 	 */
-	public Object[] getGroupMembers(String groupName)
+	public Object[] getGroupMembers(String name)
 		throws RemoteException;
 
 	}

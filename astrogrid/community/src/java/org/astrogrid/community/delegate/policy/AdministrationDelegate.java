@@ -42,24 +42,24 @@ public class AdministrationDelegate {
    
    
    public boolean addGroupMember(String account,String group) throws Exception {
-      return (null != service.addGroupMember(account,group)) ;  
+      return (null != service.addGroupMember(account,group)) ;
    }
    
    public boolean delGroupMember(String account,String group) throws Exception {
-      return service.delGroupMember(account,group);  
+      return (null != service.delGroupMember(account,group)) ;
    }
 
 
    public AccountData addAccount(String name) throws Exception {
-      return service.addAccount(name);      
+      return service.addAccount(name);
    }
 
    public boolean delAccount(String name) throws Exception {
-      return (null != service.delAccount(name));      
+      return (null != service.delAccount(name));
    }
    
    public AccountData getAccount(String name) throws Exception {
-      return service.getAccount(name);  
+      return service.getAccount(name);
    }
    
    
@@ -131,7 +131,7 @@ public class AdministrationDelegate {
    }
    
    public ArrayList getGroupList() throws Exception  {
-      Object []list = service.getGroupList();
+      Object []list = service.getLocalGroups();
       ArrayList al = new ArrayList(list.length);
       for(int i = 0;i < list.length;i++) {
          al.add(list[i]);
@@ -140,7 +140,7 @@ public class AdministrationDelegate {
    }
    
    public boolean delGroup(String ident) throws Exception  {
-      return service.delGroup(ident);
+      return (null != service.delGroup(ident));
    }
    
    public GroupData addGroup(String ident) throws Exception  {

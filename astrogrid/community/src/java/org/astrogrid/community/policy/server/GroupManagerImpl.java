@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 02:56:03 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 17:21:43 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.10  2003/09/10 17:21:43  dave
+ *   Added remote functionality to groups.
+ *
  *   Revision 1.9  2003/09/10 02:56:03  dave
  *   Added PermissionManager and tests
  *
@@ -106,22 +109,28 @@ public class GroupManagerImpl
 		}
 
 	/**
-	 * Create a new Group.
+	 * Create a new Group, given the Group name.
 	 *
 	 */
 	public GroupData addGroup(String name)
 		throws RemoteException
 		{
+		return this.addGroup(new CommunityIdent(name)) ;
+		}
+
+	/**
+	 * Create a new Group, given the Group ident.
+	 *
+	 */
+	protected GroupData addGroup(CommunityIdent ident)
+		throws RemoteException
+		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.addGroup()") ;
-		if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 
 		GroupData group = null ;
-		//
-		// Create a CommunityIdent for our Group.
-		CommunityIdent ident = new CommunityIdent(name) ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 		//
 		// If the ident is valid.
 		if (ident.isValid())
@@ -164,7 +173,7 @@ public class GroupManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("") ;
 					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("Generic exception in addGroup()") ;
+					if (DEBUG_FLAG) System.out.println("Exception in addGroup()") ;
 
 					//
 					// Set the response to null.
@@ -190,7 +199,7 @@ public class GroupManagerImpl
 						{
 						if (DEBUG_FLAG) System.out.println("") ;
 						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("Generic exception in addGroup() finally clause") ;
+						if (DEBUG_FLAG) System.out.println("Exception in addGroup() finally clause") ;
 
 						//
 						// Set the response to null.
@@ -219,30 +228,34 @@ public class GroupManagerImpl
 
 		// TODO
 		// Need to return something to the client.
-		// Possible a new DataObject ... GroupResult ?
-		//
-
+		// Possibly a new DataObject ... ?
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return group ;
 		}
 
 	/**
-	 * Request an Group details.
+	 * Request a Group data, given the Group name.
 	 *
 	 */
 	public GroupData getGroup(String name)
 		throws RemoteException
 		{
+		return this.getGroup(new CommunityIdent(name)) ;
+		}
+
+	/**
+	 * Request a Group data, given the Group ident.
+	 *
+	 */
+	protected GroupData getGroup(CommunityIdent ident)
+		throws RemoteException
+		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroup()") ;
-		if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 
 		GroupData group = null ;
-		//
-		// Create a CommunityIdent for our Group.
-		CommunityIdent ident = new CommunityIdent(name) ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 		//
 		// If the ident is valid.
 		if (ident.isValid())
@@ -280,7 +293,7 @@ public class GroupManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("") ;
 					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("Generic exception in getGroup()") ;
+					if (DEBUG_FLAG) System.out.println("Exception in getGroup()") ;
 
 					//
 					// Set the response to null.
@@ -306,7 +319,7 @@ public class GroupManagerImpl
 						{
 						if (DEBUG_FLAG) System.out.println("") ;
 						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("Generic exception in getGroup() finally clause") ;
+						if (DEBUG_FLAG) System.out.println("Exception in getGroup() finally clause") ;
 
 						//
 						// Set the response to null.
@@ -333,12 +346,15 @@ public class GroupManagerImpl
 			group = null ;
 			}
 
+		// TODO
+		// Need to return something to the client.
+		// Possibly a new DataObject ... ?
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return group ;
 		}
 
 	/**
-	 * Update an Group details.
+	 * Update an existing Group data.
 	 *
 	 */
 	public GroupData setGroup(GroupData group)
@@ -350,9 +366,8 @@ public class GroupManagerImpl
 		if (DEBUG_FLAG) System.out.println("  Group") ;
 		if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
 		if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
-
 		//
-		// Get the group ident.
+		// Create a CommunityIdent from the group.
 		CommunityIdent ident = new CommunityIdent(group.getIdent()) ;
 		//
 		// If the ident is valid.
@@ -376,7 +391,7 @@ public class GroupManagerImpl
 					data.setDescription(group.getDescription()) ;
 //
 // Should not be able to modify the type.
-//               data.setType(group.getType()) ;
+//					data.setType(group.getType()) ;
 					}
 				//
 				// If we couldn't find the object.
@@ -399,7 +414,7 @@ public class GroupManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("") ;
 					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("Generic exception in setGroup()") ;
+					if (DEBUG_FLAG) System.out.println("Exception in setGroup()") ;
 
 					//
 					// Set the response to null.
@@ -425,7 +440,7 @@ public class GroupManagerImpl
 						{
 						if (DEBUG_FLAG) System.out.println("") ;
 						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("Generic exception in setGroup() finally clause") ;
+						if (DEBUG_FLAG) System.out.println("Exception in setGroup() finally clause") ;
 
 						//
 						// Set the response to null.
@@ -452,103 +467,151 @@ public class GroupManagerImpl
 			group = null ;
 			}
 
+		// TODO
+		// Need to return something to the client.
+		// Possibly a new DataObject ... ?
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return group ;
 		}
-      
-
-   public Object[] getAccountGroupList(String account) throws RemoteException {
-      if (DEBUG_FLAG) System.out.println("") ;
-      if (DEBUG_FLAG) System.out.println("----\"----") ;
-      if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupList()") ;
-
-      //
-      // Try QUERY the database.
-      Object[] array = null ;
-
-      try {
-         //
-         // Begin a new database transaction.
-         database.begin();
-         //
-         // Create our OQL query.
-         OQLQuery query = database.getOQLQuery(
-            "SELECT groups FROM org.astrogrid.community.policy.data.GroupData groups where ident = $1 and type = $2"
-            );
-         query.bind(account);
-         query.bind(GroupData.MULTI_TYPE);
-         
-         //
-         // Execute our query.
-         QueryResults results = query.execute();
-         //
-         // Transfer our results to a vector.
-         Collection collection = new Vector() ;
-         while (results.hasMore())
-         {
-            collection.add(results.next()) ;
-         }
-         // 
-         // Convert it into an array.
-         array = collection.toArray() ;
-      //
-      // If anything went bang.
-      }catch (Exception ouch)
-         {
-         if (DEBUG_FLAG) System.out.println("") ;
-         if (DEBUG_FLAG) System.out.println("  ----") ;
-         if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList()") ;
-
-         //
-         // Set the response to null.
-         array = null ;
-
-         if (DEBUG_FLAG) System.out.println("  ----") ;
-         if (DEBUG_FLAG) System.out.println("") ;
-         }
-      //
-      // Commit the transaction.
-      finally
-         {
-         try {
-            if (null != array)
-               {
-               database.commit() ;
-               }
-            else {
-               database.rollback() ;
-               }
-            }
-         catch (Exception ouch)
-            {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList() finally clause") ;
-
-            //
-            // Set the response to null.
-            array = null ;
-
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
-            }
-         }
-
-      if (DEBUG_FLAG) System.out.println("----\"----") ;
-      return array;
-      
-   }
 
 	/**
-	 * Request a list of Groups.
+	 * Delete an Group, given the Group name.
 	 *
 	 */
-	public Object[] getGroupList()
+	public GroupData delGroup(String name)
+		throws RemoteException
+		{
+		return this.delGroup(new CommunityIdent(name)) ;
+		}
+
+	/**
+	 * Delete an Group, given the Group ident.
+	 *
+	 */
+	protected GroupData delGroup(CommunityIdent ident)
 		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupList()") ;
+		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.delGroup()") ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+//
+// TODO
+// Prevent the client from deleting an Account Group if the Account still exists.
+//
+		GroupData group = null ;
+		//
+		// If the ident is valid.
+		if (ident.isValid())
+			{
+			//
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				//
+				// Try update the database.
+				try {
+					//
+					// Begin a new database transaction.
+					database.begin();
+					//
+					// Load the Group from the database.
+					group = (GroupData) database.load(GroupData.class, ident.toString()) ;
+					//
+					// Delete the Group.
+					database.remove(group) ;
+					}
+				//
+				// If we couldn't find the object.
+				catch (ObjectNotFoundException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in delGroup()") ;
+
+					//
+					// Set the response to null.
+					group = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				//
+				// If anything else went bang.
+				catch (Exception ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("Exception in delGroup()") ;
+
+					//
+					// Set the response to null.
+					group = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				//
+				// Commit the transaction.
+				finally
+					{
+					try {
+						if (null != group)
+							{
+							database.commit() ;
+							}
+						else {
+							database.rollback() ;
+							}
+						}
+					catch (Exception ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("") ;
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						if (DEBUG_FLAG) System.out.println("Exception in delGroup() finally clause") ;
+
+						//
+						// Set the response to null.
+						group = null ;
+
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						if (DEBUG_FLAG) System.out.println("") ;
+						}
+					}
+				}
+			//
+			// If the ident is not local.
+			else {
+				//
+				// Set the response to null.
+				group = null ;
+				}
+			}
+			//
+			// If the ident is not valid.
+		else {
+			//
+			// Set the response to null.
+			group = null ;
+			}
+
+		// TODO
+		// Need to return something to the client.
+		// Possibly a new DataObject ... ?
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return group ;
+		}
+
+	/**
+	 * Request a list of local Groups.
+	 *
+	 */
+	public Object[] getLocalGroups()
+		throws RemoteException
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getLocalGroups()") ;
 
 		//
 		// Try to query the database.
@@ -560,8 +623,12 @@ public class GroupManagerImpl
 			//
 			// Create our OQL query.
 			OQLQuery query = database.getOQLQuery(
-				"SELECT group FROM org.astrogrid.community.policy.data.GroupData group"
+				"SELECT groups FROM org.astrogrid.community.policy.data.GroupData groups"
 				);
+//
+// TODO
+// Should only request MULTI groups.
+//
 			//
 			// Execute our query.
 			QueryResults results = query.execute();
@@ -572,7 +639,7 @@ public class GroupManagerImpl
 				{
 				collection.add(results.next()) ;
 				}
-			// 
+			//
 			// Convert it into an array.
 			array = collection.toArray() ;
 			}
@@ -582,7 +649,7 @@ public class GroupManagerImpl
 			{
 			if (DEBUG_FLAG) System.out.println("") ;
 			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList()") ;
+			if (DEBUG_FLAG) System.out.println("Exception in getLocalGroups()") ;
 
 			//
 			// Set the response to null.
@@ -608,7 +675,7 @@ public class GroupManagerImpl
 				{
 				if (DEBUG_FLAG) System.out.println("") ;
 				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList() finally clause") ;
+				if (DEBUG_FLAG) System.out.println("Exception in getLocalGroups() finally clause") ;
 
 				//
 				// Set the response to null.
@@ -619,144 +686,26 @@ public class GroupManagerImpl
 				}
 			}
 
+		// TODO
+		// Need to return something to the client.
+		// Possibly a new DataObject ... ?
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return array;
+		return array ;
 		}
 
 	/**
-	 * Delete an Group.
+	 * Add an Account to a Group, given the Account and Group idents.
+	 * Group must be local, but Account can be local or remote.
 	 *
 	 */
-	public boolean delGroup(String name)
-		throws RemoteException
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.delGroup()") ;
-		if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
-//
-// TODO
-// Prevent the client from deleting an Account Group if the Account still exists.
-//
-		//
-		// Create a CommunityIdent for our Group.
-		CommunityIdent ident = new CommunityIdent(name) ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-		//
-		// If the ident is valid.
-		if (ident.isValid())
-			{
-			//
-			// If the ident is local.
-			if (ident.isLocal())
-				{
-				//
-				// Try update the database.
-				GroupData group = null ;
-				try {
-					//
-					// Begin a new database transaction.
-					database.begin();
-					//
-					// Load the Group from the database.
-					group = (GroupData) database.load(GroupData.class, ident.toString()) ;
-					//
-					// Delete the group.
-					database.remove(group) ;
-					}
-				//
-				// If we couldn't find the object.
-				catch (ObjectNotFoundException ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("") ;
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in delGroup()") ;
-
-					//
-					// Set the response to null.
-					group = null ;
-
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("") ;
-					}
-				//
-				// If anything else went bang.
-				catch (Exception ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("") ;
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("Generic exception in delGroup()") ;
-
-					//
-					// Set the response to null.
-					group = null ;
-
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("") ;
-					}
-				//
-				// Commit the transaction.
-				finally
-					{
-					try {
-						if (null != group)
-							{
-							database.commit() ;
-							}
-						else {
-							database.rollback() ;
-							}
-						}
-					catch (Exception ouch)
-						{
-						if (DEBUG_FLAG) System.out.println("") ;
-						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("Generic exception in delGroup() finally clause") ;
-
-						//
-						// Set the response to null.
-						group = null ;
-
-						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("") ;
-						}
-					}
-				}
-			//
-			// If the ident is not local.
-			else {
-				//
-				// Set the response to null.
-				//
-				}
-			}
-			//
-			// If the ident is not valid.
-		else {
-			//
-			// Set the response to null.
-			//
-			}
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-//
-// TODO
-// Should return a DataObject with status response.
-		return true ;
-		}
-
-	/**
-	 * Add an Account to a Group.
-	 * This is not part of the GroupManager interface, and should only be called from the PolicyManager.
-	 *
-	 */
-	public GroupMemberData addGroupMember(CommunityIdent account, CommunityIdent group)
+	protected GroupMemberData addGroupMember(CommunityIdent account, CommunityIdent group)
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.addGroupMember()") ;
 		if (DEBUG_FLAG) System.out.println("  account  : " + account) ;
 		if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
+
 		//
 		// Exit if the account is not valid.
 		if (false == account.isValid())
@@ -868,11 +817,11 @@ public class GroupManagerImpl
 		}
 
 	/**
-	 * Remove an Account from a Group.
-	 * This is not part of the GroupManager interface, and should only be called from the PolicyManager.
+	 * Remove an Account from a Group, given the Account and Group idents.
+	 * Group must be local, but Account can be anything (local, remote, or deleted).
 	 *
 	 */
-	public boolean delGroupMember(CommunityIdent account, CommunityIdent group)
+	protected GroupMemberData delGroupMember(CommunityIdent account, CommunityIdent group)
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -881,13 +830,39 @@ public class GroupManagerImpl
 		if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
 
 		//
-		// No checks if the ident is valid.
+		// No checks if the account ident is valid.
 		// Still want to delete the record even if the ident is invalid.
 		//
 
+		//
+		// Exit if the group is not valid.
+		if (false == group.isValid())
+			{
+			//
+			// TODO
+			// Should return a DataObject with the reason.
+			if (DEBUG_FLAG) System.out.println("Exit - Group is not valid") ;
+			return null ;
+			}
+		//
+		// Exit if the group ident is not local.
+		if (false == group.isLocal())
+			{
+			//
+			// TODO
+			// Should return a DataObject with the reason.
+			if (DEBUG_FLAG) System.out.println("Exit - Group is not local") ;
+			return null ;
+			}
 //
-// Check the group is local
 // Check the group isn't an account group.
+// But, still proceed if the group does not exist.
+// There is a potential mix up here.
+// 1) Create a group called 'frog'
+// 2) Add members to the group.
+// 3) Delete the group.
+// 4) Create an account called 'frog'
+// 4) Now have account with members, but can't delete them.
 //
 		//
 		// Try update the database.
@@ -974,25 +949,24 @@ public class GroupManagerImpl
 		// TODO
 		// Should return a DataObject with status response.
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return (null != member) ;
+		return member ;
 		}
 
 	/**
-	 * Get a list of group members.
-	 * This is not part of the GroupManager interface, and should only be called from the PolicyManager.
+	 * Get a list of Group members, given a local Group ident.
 	 *
 	 */
-	public Object[] getGroupMembers(CommunityIdent groupIdent)
+	protected Object[] getGroupMembers(CommunityIdent group)
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupMembers()") ;
-		if (DEBUG_FLAG) System.out.println("  group    : " + groupIdent) ;
+		if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
 
 		Object[] array = null ;
 		//
 		// If the Group is local.
-		if (groupIdent.isLocal())
+		if (group.isLocal())
 			{
 			if (DEBUG_FLAG) System.out.println("PASS : Group is local") ;
 			//
@@ -1008,7 +982,7 @@ public class GroupManagerImpl
 					);
 				//
 				// Bind the query param.
-				query.bind(groupIdent.toString()) ;
+				query.bind(group.toString()) ;
 				//
 				// Execute our query.
 				QueryResults results = query.execute();
@@ -1069,8 +1043,6 @@ public class GroupManagerImpl
 		//
 		// If the Group is not local.
 		else {
-			//
-			// Fail : Unknown Group
 			if (DEBUG_FLAG) System.out.println("FAIL : Group is remote") ;
 			//
 			// Set the response to null.
@@ -1080,5 +1052,89 @@ public class GroupManagerImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return array;
 		}
+
+
+   public Object[] getAccountGroupList(String account) throws RemoteException {
+      if (DEBUG_FLAG) System.out.println("") ;
+      if (DEBUG_FLAG) System.out.println("----\"----") ;
+      if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupList()") ;
+
+      //
+      // Try QUERY the database.
+      Object[] array = null ;
+
+      try {
+         //
+         // Begin a new database transaction.
+         database.begin();
+         //
+         // Create our OQL query.
+         OQLQuery query = database.getOQLQuery(
+            "SELECT groups FROM org.astrogrid.community.policy.data.GroupData groups where ident = $1 and type = $2"
+            );
+         query.bind(account);
+         query.bind(GroupData.MULTI_TYPE);
+         
+         //
+         // Execute our query.
+         QueryResults results = query.execute();
+         //
+         // Transfer our results to a vector.
+         Collection collection = new Vector() ;
+         while (results.hasMore())
+         {
+            collection.add(results.next()) ;
+         }
+         // 
+         // Convert it into an array.
+         array = collection.toArray() ;
+      //
+      // If anything went bang.
+      }catch (Exception ouch)
+         {
+         if (DEBUG_FLAG) System.out.println("") ;
+         if (DEBUG_FLAG) System.out.println("  ----") ;
+         if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList()") ;
+
+         //
+         // Set the response to null.
+         array = null ;
+
+         if (DEBUG_FLAG) System.out.println("  ----") ;
+         if (DEBUG_FLAG) System.out.println("") ;
+         }
+      //
+      // Commit the transaction.
+      finally
+         {
+         try {
+            if (null != array)
+               {
+               database.commit() ;
+               }
+            else {
+               database.rollback() ;
+               }
+            }
+         catch (Exception ouch)
+            {
+            if (DEBUG_FLAG) System.out.println("") ;
+            if (DEBUG_FLAG) System.out.println("  ----") ;
+            if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList() finally clause") ;
+
+            //
+            // Set the response to null.
+            array = null ;
+
+            if (DEBUG_FLAG) System.out.println("  ----") ;
+            if (DEBUG_FLAG) System.out.println("") ;
+            }
+         }
+
+      if (DEBUG_FLAG) System.out.println("----\"----") ;
+      return array;
+      
+   }
+
 
 	}

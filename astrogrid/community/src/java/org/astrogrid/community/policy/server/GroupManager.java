@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 13:48:09 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 17:21:43 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManager.java,v $
+ *   Revision 1.5  2003/09/10 17:21:43  dave
+ *   Added remote functionality to groups.
+ *
  *   Revision 1.4  2003/09/09 13:48:09  dave
  *   Added addGroupMember - only local accounts and groups to start with.
  *
@@ -34,42 +37,42 @@ public interface GroupManager
 	extends java.rmi.Remote
 	{
 	/**
-	 * Create a new Group.
+	 * Create a new Group, given the Group name.
 	 *
 	 */
-	public GroupData addGroup(String ident)
+	public GroupData addGroup(String name)
 		throws RemoteException ;
 
 	/**
-	 * Request an Group details.
+	 * Request an Group data, given the Group name.
 	 *
 	 */
-	public GroupData getGroup(String ident)
+	public GroupData getGroup(String name)
 		throws RemoteException ;
 
 	/**
-	 * Update an Group details.
+	 * Update an Group data.
 	 *
 	 */
 	public GroupData setGroup(GroupData account)
 		throws RemoteException ;
 
 	/**
-	 * Delete an Group.
+	 * Delete an Group, given the Group name.
 	 *
 	 */
-	public boolean delGroup(String ident)
+	public GroupData delGroup(String name)
 		throws RemoteException ;
 
 	/**
-	 * Request a list of Groups.
+	 * Request a list of local Groups.
 	 *
 	 */
-	public Object[] getGroupList()
-		throws RemoteException;
+	public Object[] getLocalGroups()
+		throws RemoteException ;
 
 	/**
-	 * Comment ??
+	 *
 	 *
 	 */
 	public Object[] getAccountGroupList(String account)

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 17:21:43 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.6  2003/09/10 17:21:43  dave
+ *   Added remote functionality to groups.
+ *
  *   Revision 1.5  2003/09/10 06:03:27  dave
  *   Added remote capability to Accounts
  *
@@ -89,7 +92,7 @@ public class AccountManagerImpl
 		}
 
 	/**
-	 * Create a new Account.
+	 * Create a new Account, given the Account name.
 	 *
 	 */
 	public AccountData addAccount(String name)
@@ -99,7 +102,7 @@ public class AccountManagerImpl
 		}
 
 	/**
-	 * Create a new Account.
+	 * Create a new Account, given the Account ident.
 	 *
 	 */
 	protected AccountData addAccount(CommunityIdent ident)
@@ -221,15 +224,13 @@ public class AccountManagerImpl
 
 		// TODO
 		// Need to return something to the client.
-		// Possible a new DataObject ... AccountResult ?
-		//
-
+		// Possibly a new DataObject ... ?
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return account ;
 		}
 
 	/**
-	 * Request an Account data.
+	 * Request an Account data, given the Account name.
 	 *
 	 */
 	public AccountData getAccount(String name)
@@ -239,7 +240,7 @@ public class AccountManagerImpl
 		}
 
 	/**
-	 * Request an Account data.
+	 * Request an Account data, given the Account ident.
 	 *
 	 */
 	protected AccountData getAccount(CommunityIdent ident)
@@ -341,12 +342,15 @@ public class AccountManagerImpl
 			account = null ;
 			}
 
+		// TODO
+		// Need to return something to the client.
+		// Possibly a new DataObject ... ?
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return account ;
 		}
 
 	/**
-	 * Update an Account details.
+	 * Update an existing Account data.
 	 *
 	 */
 	public AccountData setAccount(AccountData account)
@@ -460,12 +464,15 @@ public class AccountManagerImpl
 			account = null ;
 			}
 
+		// TODO
+		// Need to return something to the client.
+		// Possibly a new DataObject ... ?
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return account ;
 		}
 
 	/**
-	 * Delete an Account data.
+	 * Delete an Account, given the Account name.
 	 *
 	 */
 	public AccountData delAccount(String name)
@@ -475,7 +482,7 @@ public class AccountManagerImpl
 		}
 
 	/**
-	 * Delete an Account data.
+	 * Delete an Account, given the Account ident.
 	 *
 	 */
 	protected AccountData delAccount(CommunityIdent ident)
@@ -594,12 +601,15 @@ public class AccountManagerImpl
 			account = null ;
 			}
 
+		// TODO
+		// Need to return something to the client.
+		// Possibly a new DataObject ... ?
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return account ;
 		}
 
 	/**
-	 * Request a list of Accounts.
+	 * Request a list of local Accounts.
 	 *
 	 */
 	public Object[] getLocalAccounts()
@@ -678,9 +688,10 @@ public class AccountManagerImpl
 				}
 			}
 
+		// TODO
+		// Need to return something to the client.
+		// Possibly a new DataObject ... ?
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return array ;
 		}
-
-
 	}

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 06:19:14 $</cvs:date>
- * <cvs:version>$Revision: 1.14 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 17:21:43 $</cvs:date>
+ * <cvs:version>$Revision: 1.15 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.15  2003/09/10 17:21:43  dave
+ *   Added remote functionality to groups.
+ *
  *   Revision 1.14  2003/09/10 06:19:14  dave
  *   Fixed typos ...
  *
@@ -189,7 +192,7 @@ public class PolicyManagerImpl
 		}
 
 	/**
-	 * Create a new Account.
+	 * Create a new Account, given the Account name.
 	 *
 	 */
 	public AccountData addAccount(String name)
@@ -199,7 +202,7 @@ public class PolicyManagerImpl
 		}
 
 	/**
-	 * Create a new Account.
+	 * Create a new Account, given the Account ident.
 	 *
 	 */
 	protected AccountData addAccount(CommunityIdent ident)
@@ -230,10 +233,10 @@ public class PolicyManagerImpl
 			else {
 				if (DEBUG_FLAG) System.out.println("PASS : Ident is remote") ;
 				//
-				// Get the PolicyManager for the remote community.
+				// Get a manager for the remote community.
 				PolicyManager remote = communityManager.getPolicyManager(ident.getCommunity()) ;
 				//
-				// If we got a remote PolicyManager.
+				// If we got a remote manager.
 				if (null != remote)
 					{
 					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
@@ -253,7 +256,7 @@ public class PolicyManagerImpl
 						}
 					}
 				//
-				// If we didn't get a remote PolicyManager.
+				// If we didn't get a remote manager.
 				else {
 					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
 					}
@@ -270,7 +273,7 @@ public class PolicyManagerImpl
 		}
 
 	/**
-	 * Request an Account data.
+	 * Request an Account data, given the Account name.
 	 *
 	 */
 	public AccountData getAccount(String name)
@@ -280,7 +283,7 @@ public class PolicyManagerImpl
 		}
 
 	/**
-	 * Request an Account data.
+	 * Request an Account data, given the Account ident.
 	 *
 	 */
 	protected AccountData getAccount(CommunityIdent ident)
@@ -311,10 +314,10 @@ public class PolicyManagerImpl
 			else {
 				if (DEBUG_FLAG) System.out.println("PASS : Ident is remote") ;
 				//
-				// Get the PolicyManager for the remote community.
+				// Get a manager for the remote community.
 				PolicyManager remote = communityManager.getPolicyManager(ident.getCommunity()) ;
 				//
-				// If we got a remote PolicyManager.
+				// If we got a remote manager.
 				if (null != remote)
 					{
 					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
@@ -334,7 +337,7 @@ public class PolicyManagerImpl
 						}
 					}
 				//
-				// If we didn't get a remote PolicyManager.
+				// If we didn't get a remote manager.
 				else {
 					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
 					}
@@ -351,7 +354,7 @@ public class PolicyManagerImpl
 		}
 
 	/**
-	 * Update an Account data.
+	 * Update an existing Account data.
 	 *
 	 */
 	public AccountData setAccount(AccountData account)
@@ -383,10 +386,10 @@ public class PolicyManagerImpl
 			else {
 				if (DEBUG_FLAG) System.out.println("PASS : Ident is remote") ;
 				//
-				// Get the PolicyManager for the remote community.
+				// Get a manager for the remote community.
 				PolicyManager remote = communityManager.getPolicyManager(ident.getCommunity()) ;
 				//
-				// If we got a remote PolicyManager.
+				// If we got a remote manager.
 				if (null != remote)
 					{
 					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
@@ -406,7 +409,7 @@ public class PolicyManagerImpl
 						}
 					}
 				//
-				// If we didn't get a remote PolicyManager.
+				// If we didn't get a remote manager.
 				else {
 					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
 					}
@@ -423,7 +426,7 @@ public class PolicyManagerImpl
 		}
 
 	/**
-	 * Delete an Account data.
+	 * Delete an Account, given the Account name.
 	 *
 	 */
 	public AccountData delAccount(String name)
@@ -433,7 +436,7 @@ public class PolicyManagerImpl
 		}
 
 	/**
-	 * Delete an Account data.
+	 * Delete an Account, given the Account ident.
 	 *
 	 */
 	protected AccountData delAccount(CommunityIdent ident)
@@ -464,10 +467,10 @@ public class PolicyManagerImpl
 			else {
 				if (DEBUG_FLAG) System.out.println("PASS : Ident is remote") ;
 				//
-				// Get the PolicyManager for the remote community.
+				// Get a manager for the remote community.
 				PolicyManager remote = communityManager.getPolicyManager(ident.getCommunity()) ;
 				//
-				// If we got a remote PolicyManager.
+				// If we got a remote manager.
 				if (null != remote)
 					{
 					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
@@ -487,7 +490,7 @@ public class PolicyManagerImpl
 						}
 					}
 				//
-				// If we didn't get a remote PolicyManager.
+				// If we didn't get a remote manager.
 				else {
 					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
 					}
@@ -514,7 +517,7 @@ public class PolicyManagerImpl
 		}
 
 	/**
-	 * Request a list of remote Accounts.
+	 * Request a list of Accounts, given a remote Community name.
 	 *
 	 */
 	public Object[] getRemoteAccounts(String name)
@@ -535,10 +538,10 @@ public class PolicyManagerImpl
 		else {
 			if (DEBUG_FLAG) System.out.println("PASS : Community is remote") ;
 			//
-			// Get the PolicyManager for the remote community.
+			// Get a manager for the remote community.
 			PolicyManager remote = communityManager.getPolicyManager(name) ;
 			//
-			// If we got a remote PolicyManager.
+			// If we got a remote manager.
 			if (null != remote)
 				{
 				if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
@@ -558,7 +561,7 @@ public class PolicyManagerImpl
 					}
 				}
 			//
-			// If we didn't get a remote PolicyManager.
+			// If we didn't get a remote manager.
 			else {
 				if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
 				}
@@ -567,121 +570,670 @@ public class PolicyManagerImpl
 		return results ;
 		}
 
-//
-// ZRQ here
-//
-
-//
-// ZRQ there
-//
-
-      
-      /**
-       * Create a new Resource.
-       *
-       */
-      public ResourceData addResource(String name)
-         throws RemoteException {
-            return resourceManager.addResource(name);
-         }
-
-      /**
-       * Request an Resource details.
-       *
-       */
-      public ResourceData getResource(String ident)
-         throws RemoteException {
-            return resourceManager.getResource(ident);
-         }
-
-      /**
-       * Update an Resource details.
-       *
-       */
-      public ResourceData setResource(ResourceData resource)
-         throws RemoteException {
-            return resourceManager.setResource(resource);
-         }
-
-      /**
-       * Delete an Resource.
-       *
-       */
-      public boolean delResource(String ident)
-         throws RemoteException {
-            return resourceManager.delResource(ident);
-            
-         }
-
-      /**
-       * Request a list of Resources.
-       *
-       */
-      public Object[] getResourceList()
-         throws RemoteException {
-            return resourceManager.getResourceList();
-         }
-      
-
 	/**
-	 * Create a new Group.
+	 * Create a new Group, given the Group name.
 	 *
 	 */
-	public GroupData addGroup(String ident)
+	public GroupData addGroup(String name)
 		throws RemoteException
 		{
-		return groupManager.addGroup(ident) ;
+		return this.addGroup(new CommunityIdent(name)) ;
 		}
 
 	/**
-	 * Request an Group details.
+	 * Create a new Group, given the Group ident.
 	 *
 	 */
-	public GroupData getGroup(String ident)
+	protected GroupData addGroup(CommunityIdent ident)
 		throws RemoteException
 		{
-		return groupManager.getGroup(ident) ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.addGroup()") ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+
+		GroupData result = null ;
+		//
+		// If the ident is valid.
+		if (ident.isValid())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Ident is valid") ;
+			//
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is local") ;
+				//
+				// Use our local manager.
+				result = groupManager.addGroup(ident) ;
+				}
+			//
+			// If the ident is not local.
+			else {
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is remote") ;
+				//
+				// Get a manager for the remote community.
+				PolicyManager remote = communityManager.getPolicyManager(ident.getCommunity()) ;
+				//
+				// If we got a remote manager.
+				if (null != remote)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
+					//
+					// Use the remote manager.
+					result = remote.addGroup(ident.toString()) ;
+					//
+					// If we got a result.
+					if (null != result)
+						{
+						if (DEBUG_FLAG) System.out.println("PASS : Created remote group") ;
+						}
+					//
+					// If we didn't get a result.
+					else {
+						if (DEBUG_FLAG) System.out.println("FAIL : Failed to create remote group") ;
+						}
+					}
+				//
+				// If we didn't get a remote manager.
+				else {
+					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					}
+				}
+			}
+		//
+		// If the ident is not valid.
+		else {
+			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			}
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return result ;
 		}
 
 	/**
-	 * Update an Group details.
+	 * Request a Group data, given the Group name.
+	 *
+	 */
+	public GroupData getGroup(String name)
+		throws RemoteException
+		{
+		return this.getGroup(new CommunityIdent(name)) ;
+		}
+
+	/**
+	 * Request a Group data, given the Group ident.
+	 *
+	 */
+	protected GroupData getGroup(CommunityIdent ident)
+		throws RemoteException
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getGroup()") ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+
+		GroupData result = null ;
+		//
+		// If the ident is valid.
+		if (ident.isValid())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Ident is valid") ;
+			//
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is local") ;
+				//
+				// Use our local manager.
+				result = groupManager.getGroup(ident) ;
+				}
+			//
+			// If the ident is not local.
+			else {
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is remote") ;
+				//
+				// Get a manager for the remote community.
+				PolicyManager remote = communityManager.getPolicyManager(ident.getCommunity()) ;
+				//
+				// If we got a remote manager.
+				if (null != remote)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
+					//
+					// Use the remote manager.
+					result = remote.getGroup(ident.toString()) ;
+					//
+					// If we got a result.
+					if (null != result)
+						{
+						if (DEBUG_FLAG) System.out.println("PASS : Found remote group") ;
+						}
+					//
+					// If we didn't get a result.
+					else {
+						if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote group") ;
+						}
+					}
+				//
+				// If we didn't get a remote manager.
+				else {
+					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					}
+				}
+			}
+		//
+		// If the ident is not valid.
+		else {
+			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			}
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return result ;
+		}
+
+	/**
+	 * Update an existing Group data.
 	 *
 	 */
 	public GroupData setGroup(GroupData group)
 		throws RemoteException
 		{
-		return groupManager.setGroup(group) ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.setGroup()") ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + group.getIdent()) ;
+
+		GroupData result = null ;
+		CommunityIdent ident = new CommunityIdent(group.getIdent()) ;
+		//
+		// If the ident is valid.
+		if (ident.isValid())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Ident is valid") ;
+			//
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is local") ;
+				//
+				// Use our local manager.
+				result = groupManager.setGroup(group) ;
+				}
+			//
+			// If the ident is not local.
+			else {
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is remote") ;
+				//
+				// Get a manager for the remote community.
+				PolicyManager remote = communityManager.getPolicyManager(ident.getCommunity()) ;
+				//
+				// If we got a remote manager.
+				if (null != remote)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
+					//
+					// Use the remote manager.
+					result = remote.setGroup(group) ;
+					//
+					// If we got a result.
+					if (null != result)
+						{
+						if (DEBUG_FLAG) System.out.println("PASS : Found remote group") ;
+						}
+					//
+					// If we didn't get a result.
+					else {
+						if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote group") ;
+						}
+					}
+				//
+				// If we didn't get a remote manager.
+				else {
+					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					}
+				}
+			}
+		//
+		// If the ident is not valid.
+		else {
+			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			}
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return result ;
 		}
 
 	/**
-	 * Delete an Group.
+	 * Delete an Group, given the Group name.
 	 *
 	 */
-	public boolean delGroup(String ident)
+	public GroupData delGroup(String name)
 		throws RemoteException
 		{
-		return groupManager.delGroup(ident) ;
+		return this.delGroup(new CommunityIdent(name)) ;
 		}
 
 	/**
-	 * Request a list of Groups.
+	 * Delete an Group, given the Group ident.
 	 *
 	 */
-	public Object[] getGroupList()
+	protected GroupData delGroup(CommunityIdent ident)
 		throws RemoteException
 		{
-		return groupManager.getGroupList() ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.delGroup()") ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+
+		GroupData result = null ;
+		//
+		// If the ident is valid.
+		if (ident.isValid())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Ident is valid") ;
+			//
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is local") ;
+				//
+				// Use our local manager.
+				result = groupManager.delGroup(ident) ;
+				}
+			//
+			// If the ident is not local.
+			else {
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is remote") ;
+				//
+				// Get a manager for the remote community.
+				PolicyManager remote = communityManager.getPolicyManager(ident.getCommunity()) ;
+				//
+				// If we got a remote manager.
+				if (null != remote)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
+					//
+					// Use the remote manager.
+					result = remote.delGroup(ident.toString()) ;
+					//
+					// If we got a result.
+					if (null != result)
+						{
+						if (DEBUG_FLAG) System.out.println("PASS : Found remote group") ;
+						}
+					//
+					// If we didn't get a result.
+					else {
+						if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote group") ;
+						}
+					}
+				//
+				// If we didn't get a remote manager.
+				else {
+					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					}
+				}
+			}
+		//
+		// If the ident is not valid.
+		else {
+			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			}
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return result ;
 		}
 
 	/**
-	* Request a list of Groups.
-	*
-	*/
-	public Object[] getAccountGroupList(String account)
+	 * Request a list of local Groups.
+	 *
+	 */
+	public Object[] getLocalGroups()
 		throws RemoteException
+		{
+		return groupManager.getLocalGroups() ;
+		}
+
+	/**
+	 * Request a list of Groups, given a remote Community name.
+	 *
+	 */
+	public Object[] getRemoteGroups(String name)
+		throws RemoteException
+		{
+		Object[] results = null ;
+		//
+		// If the community is local.
+		if (CommunityConfig.getConfig().getCommunityName().equals(name))
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Community is local") ;
+			//
+			// Call our local manager.
+			results = groupManager.getLocalGroups() ;
+			}
+		//
+		// If the community is remote.
+		else {
+			if (DEBUG_FLAG) System.out.println("PASS : Community is remote") ;
+			//
+			// Get a manager for the remote community.
+			PolicyManager remote = communityManager.getPolicyManager(name) ;
+			//
+			// If we got a remote manager.
+			if (null != remote)
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
+				//
+				// Use the remote manager.
+				results = remote.getLocalGroups() ;
+				//
+				// If we got a result.
+				if (null != results)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Found remote groups") ;
+					}
+				//
+				// If we didn't get a result.
+				else {
+					if (DEBUG_FLAG) System.out.println("FAIL : Missing remote groups") ;
+					}
+				}
+			//
+			// If we didn't get a remote manager.
+			else {
+				if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+				}
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return results ;
+		}
+
+	/**
+	 * Add an Account to a Group, given the Account and Group names.
+	 *
+	 */
+	public GroupMemberData addGroupMember(String account, String group)
+		throws RemoteException
+		{
+		return this.addGroupMember(new CommunityIdent(account), new CommunityIdent(group)) ;
+		}
+
+	/**
+	 * Add an Account to a Group, given the Account and Group idents.
+	 * Group must be local, but Account can be local or remote.
+	 * For a remote Account, the Account Community needs to be accessible.
+	 *
+	 */
+	protected GroupMemberData addGroupMember(CommunityIdent account, CommunityIdent group)
+		throws RemoteException
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.addGroupMember()") ;
+		if (DEBUG_FLAG) System.out.println("  account  : " + account) ;
+		if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
+
+		GroupMemberData member = null ;
+		//
+		// If the Group is local.
+		if (group.isLocal())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Group is local") ;
+			//
+			// Try loading the local Group.
+			GroupData grp = this.getGroup(group) ;
+			//
+			// If the local Group exists.
+			if (null != grp)
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Group is found") ;
+				//
+				// If the group is an account only group.
+				// TODO Need a better test for this.
+				if (GroupData.SINGLE_TYPE.equals(grp.getType()))
+					{
+					//
+					// Fail : Account only group.
+					if (DEBUG_FLAG) System.out.println("FAIL : Group is account only") ;
+					}
+				//
+				// If the group is not an account only group.
+				else {
+					if (DEBUG_FLAG) System.out.println("PASS : Group is valid") ;
+					//
+					// Try loading the Account data.
+					AccountData acc = this.getAccount(account) ;
+					//
+					// If the Account exists (local or remote).
+					if (null != acc)
+						{
+						if (DEBUG_FLAG) System.out.println("PASS : Account is found") ;
+						//
+						// Add the membership record.
+						member = groupManager.addGroupMember(account, group) ;
+						//
+						// If the membership record was created.
+						if (null != member)
+							{
+							if (DEBUG_FLAG) System.out.println("PASS : GroupMember added") ;
+							if (DEBUG_FLAG) System.out.println("  Account : " + member.getAccount()) ;
+							if (DEBUG_FLAG) System.out.println("  Group   : " + member.getGroup()) ;
+							}
+						//
+						// If the membership record was not created.
+						else {
+							if (DEBUG_FLAG) System.out.println("FAIL : GroupMember not added") ;
+							}
+						}
+					//
+					// If the account does not exist.
+					else {
+						if (DEBUG_FLAG) System.out.println("FAIL : Account is unknown") ;
+						}
+					}
+				}
+			//
+			// If the local Group does not exist.
+			else {
+				if (DEBUG_FLAG) System.out.println("FAIL : Group is unknown") ;
+				}
+			}
+		//
+		// If the Group is not local.
+		else {
+			//
+			// Pass the request on to the remote service ??
+			if (DEBUG_FLAG) System.out.println("FAIL : Group is remote") ;
+			}
+		//
+		// TODO
+		// Should return a DataObject with status response.
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return member ;
+		}
+
+	/**
+	 * Remove an Account from a Group, given the Account and Group names.
+	 *
+	 */
+	public GroupMemberData delGroupMember(String account, String group)
+		throws RemoteException
+		{
+		return this.delGroupMember(new CommunityIdent(account), new CommunityIdent(group)) ;
+		}
+
+	/**
+	 * Remove an Account from a Group, given the Account and Group idents.
+	 * Group must be local, but Account can be anything (local, remote, or deleted).
+	 *
+	 */
+	protected GroupMemberData delGroupMember(CommunityIdent account, CommunityIdent group)
+		throws RemoteException
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.delGroupMember()") ;
+		if (DEBUG_FLAG) System.out.println("  account  : " + account) ;
+		if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
+
+		GroupMemberData member = null ;
+		//
+		// If the Group is local.
+		if (group.isLocal())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Group is local") ;
+			//
+			// Try loading the local Group.
+			GroupData grp = this.getGroup(group) ;
+			//
+			// If the local Group exists.
+			if (null != grp)
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Group is found") ;
+				//
+				// If the group is an account only group.
+				// TODO Need a better test for this.
+				if (GroupData.SINGLE_TYPE.equals(grp.getType()))
+					{
+					//
+					// Fail : Account only group.
+					if (DEBUG_FLAG) System.out.println("FAIL : Group is account") ;
+					}
+				//
+				// If the group is not an account only group.
+				else {
+					if (DEBUG_FLAG) System.out.println("PASS : Group is valid") ;
+					//
+					// Delete the membership record.
+					member = groupManager.delGroupMember(account, group) ;
+					//
+					// If the membership record was found.
+					if (null != member)
+						{
+						if (DEBUG_FLAG) System.out.println("PASS : GroupMember removed") ;
+						if (DEBUG_FLAG) System.out.println("  Account : " + member.getAccount()) ;
+						if (DEBUG_FLAG) System.out.println("  Group   : " + member.getGroup()) ;
+						}
+					//
+					// If the membership record was not found.
+					else {
+						if (DEBUG_FLAG) System.out.println("FAIL : GroupMember unknown") ;
+						}
+					}
+				}
+			//
+			// If the local Group does not exist.
+			else {
+				if (DEBUG_FLAG) System.out.println("FAIL : Group is unknown") ;
+				}
+			}
+		//
+		// If the Group is not local.
+		else {
+			//
+			// Pass the request on to the remote service ??
+			if (DEBUG_FLAG) System.out.println("FAIL : Group is remote") ;
+			}
+		//
+		// TODO
+		// Should return a DataObject with status response.
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return member ;
+		}
+
+	/**
+	 * Get a list of Group members, given the Group name.
+	 *
+	 */
+	public Object[] getGroupMembers(String name)
+		throws RemoteException
+		{
+		return this.getGroupMembers(new CommunityIdent(name)) ;
+		}
+
+	/**
+	 * Get a list of Group members, given the Group ident.
+	 * Group can be local or remote.
+	 *
+	 */
+	protected Object[] getGroupMembers(CommunityIdent ident)
+		throws RemoteException
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupMembers()") ;
+		if (DEBUG_FLAG) System.out.println("  group    : " + ident) ;
+
+		Object[] results = null ;
+		//
+		// If the Group is local.
+		if (ident.isLocal())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Group is local") ;
+			//
+			// Request the list of members.
+			results = groupManager.getGroupMembers(ident) ;
+			//
+			// If we got a result.
+			if (null != results)
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Found local groups") ;
+				}
+			//
+			// If we didn't get a result.
+			else {
+				if (DEBUG_FLAG) System.out.println("FAIL : Missing local groups") ;
+				}
+			}
+		//
+		// If the Group is not local.
+		else {
+			//
+			// Get a manager for the remote community.
+			PolicyManager remote = communityManager.getPolicyManager(ident.toString()) ;
+			//
+			// If we got a remote manager.
+			if (null != remote)
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
+				//
+				// Use the remote manager.
+				results = remote.getGroupMembers(ident.toString()) ;
+				//
+				// If we got a result.
+				if (null != results)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Found remote groups") ;
+					}
+				//
+				// If we didn't get a result.
+				else {
+					if (DEBUG_FLAG) System.out.println("FAIL : Missing remote groups") ;
+					}
+				}
+			//
+			// If we didn't get a remote manager.
+			else {
+				if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+				}
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return results;
+		}
+
+	/**
+	 *
+	 *
+	 */
+	public Object[] getAccountGroupList(String account) throws RemoteException
 		{
 		return groupManager.getAccountGroupList(account) ;
 		}
+
+//
+// ZRQ got so far ....
+//
 
 	/**
 	 * Create a new Community.
@@ -733,218 +1285,53 @@ public class PolicyManagerImpl
 		return communityManager.getCommunityList() ;
 		}
 
-	/**
-	 * Add a member to a Group.
-	 *
-	 */
-	public GroupMemberData addGroupMember(String accountName, String groupName)
-		throws RemoteException
-		{
+      
+      /**
+       * Create a new Resource.
+       *
+       */
+      public ResourceData addResource(String name)
+         throws RemoteException {
+            return resourceManager.addResource(name);
+         }
 
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.addGroupMember()") ;
-		if (DEBUG_FLAG) System.out.println("  account  : " + accountName) ;
-		if (DEBUG_FLAG) System.out.println("  group    : " + groupName) ;
+      /**
+       * Request an Resource details.
+       *
+       */
+      public ResourceData getResource(String ident)
+         throws RemoteException {
+            return resourceManager.getResource(ident);
+         }
 
-		GroupMemberData member = null ;
-		//
-		// Create a CommunityIdent for the Group and Account
-		CommunityIdent groupIdent   = new CommunityIdent(groupName) ;
-		CommunityIdent accountIdent = new CommunityIdent(accountName) ;
-		if (DEBUG_FLAG) System.out.println("  account : " + accountIdent) ;
-		if (DEBUG_FLAG) System.out.println("  group   : " + groupIdent) ;
-		//
-		// If the Group is local.
-		if (groupIdent.isLocal())
-			{
-			if (DEBUG_FLAG) System.out.println("PASS : Group is local") ;
-			//
-			// Try loading the local Group.
-			GroupData groupData = this.getGroup(groupIdent.toString()) ;
-			//
-			// If the local Group exists.
-			if (null != groupData)
-				{
-				if (DEBUG_FLAG) System.out.println("PASS : Group is found") ;
-				//
-				// If the group is an account only group.
-				// TODO Need a better test for this.
-				if (groupData.SINGLE_TYPE.equals(groupData.getType()))
-					{
-					//
-					// Fail : Account only group.
-					if (DEBUG_FLAG) System.out.println("FAIL : Group is account") ;
-					}
-				//
-				// If the group is not an account only group.
-				else {
-					if (DEBUG_FLAG) System.out.println("PASS : Group is valid") ;
-					//
-					// If the Account is local
-					if (accountIdent.isLocal())
-						{
-						if (DEBUG_FLAG) System.out.println("PASS : Account is local") ;
-						//
-						// Try loading the local Account.
-						AccountData accountData = this.getAccount(accountIdent.toString()) ;
-						//
-						// If the local Account exists.
-						if (null != accountData)
-							{
-							if (DEBUG_FLAG) System.out.println("PASS : Account is found") ;
-							//
-							// Add the membership record.
-							member = groupManager.addGroupMember(accountIdent, groupIdent) ;
-							if (DEBUG_FLAG) System.out.println("PASS : Member added : " + member) ;
-							}
-						//
-						// If the local Account does not exist.
-						else {
-							//
-							// Fail : Unknown Account
-							if (DEBUG_FLAG) System.out.println("FAIL : Account is unknown") ;
-							}
-						}
-					//
-					// If the Account is not local.
-					else {
-						if (DEBUG_FLAG) System.out.println("PASS : Account is remote") ;
-						//
-						// Try loading the remote Community.
-						CommunityData communityData = null ;
-						//
-						// If the remote community exists.
-						if (null != communityData)
-							{
-							if (DEBUG_FLAG) System.out.println("PASS : Community is found") ;
-							//
-							// Try requesting the remote Account.
-							AccountData accountData = null ;
-							//
-							// If the remote Account exists.
-							if (null != accountData)
-								{
-								if (DEBUG_FLAG) System.out.println("PASS : Account is found") ;
-								//
-								// Add the membership record.
-								member = groupManager.addGroupMember(accountIdent, groupIdent) ;
-								if (DEBUG_FLAG) System.out.println("PASS : Member added : " + member) ;
-								}
-							//
-							// If the remote Account does not exist.
-							else {
-								//
-								// Fail : Unknown Account
-								if (DEBUG_FLAG) System.out.println("FAIL : Account is unknown") ;
-								}
-							}
-						//
-						// If the remote community does not exist.
-						else {
-							//
-							// Fail : Unknown Community
-							if (DEBUG_FLAG) System.out.println("FAIL : Community is unknown") ;
-							}
-						}
-					}
-				}
-			//
-			// If the local Group does not exist.
-			else {
-				//
-				// Fail : Unknown Group
-				if (DEBUG_FLAG) System.out.println("FAIL : Group is unknown") ;
-				}
-			}
-		//
-		// If the Group is not local.
-		else {
-			//
-			// Fail : Unknown Group
-			// Pass the request on to the remote service ??
-			if (DEBUG_FLAG) System.out.println("FAIL : Group is remote") ;
-			}
-		//
-		// TODO
-		// Should return a DataObject with status response.
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return member ;
-		}
+      /**
+       * Update an Resource details.
+       *
+       */
+      public ResourceData setResource(ResourceData resource)
+         throws RemoteException {
+            return resourceManager.setResource(resource);
+         }
 
-	/**
-	 * Remove a member from a Group.
-	 *
-	 */
-	public boolean delGroupMember(String accountName, String groupName)
-		throws RemoteException
-		{
-		boolean result = false ;
+      /**
+       * Delete an Resource.
+       *
+       */
+      public boolean delResource(String ident)
+         throws RemoteException {
+            return resourceManager.delResource(ident);
+            
+         }
 
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.delGroupMember()") ;
-		if (DEBUG_FLAG) System.out.println("  account  : " + accountName) ;
-		if (DEBUG_FLAG) System.out.println("  group    : " + groupName) ;
-		//
-		// Create a CommunityIdent for the Group and Account
-		CommunityIdent groupIdent   = new CommunityIdent(groupName) ;
-		CommunityIdent accountIdent = new CommunityIdent(accountName) ;
-		if (DEBUG_FLAG) System.out.println("  account : " + accountIdent) ;
-		if (DEBUG_FLAG) System.out.println("  group   : " + groupIdent) ;
-//
-// TODO
-// Check this isn't an account group.
-//
-		//
-		// No checking required, just remove the group.
-		result = groupManager.delGroupMember(accountIdent, groupIdent) ;
-
-		//
-		// TODO
-		// Should return a DataObject with status response.
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return result ;
-		}
-
-	/**
-	 * Get a list of group members.
-	 *
-	 */
-	public Object[] getGroupMembers(String groupName)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupMembers()") ;
-		if (DEBUG_FLAG) System.out.println("  group    : " + groupName) ;
-
-		Object[] array = null ;
-		//
-		// Create a CommunityIdent for the Group.
-		CommunityIdent groupIdent   = new CommunityIdent(groupName) ;
-		if (DEBUG_FLAG) System.out.println("  group   : " + groupIdent) ;
-
-		//
-		// If the Group is local.
-		if (groupIdent.isLocal())
-			{
-			if (DEBUG_FLAG) System.out.println("PASS : Group is local") ;
-			//
-			// Request the list of members.
-			array = groupManager.getGroupMembers(groupIdent) ;
-			}
-		//
-		// If the Group is not local.
-		else {
-			//
-			// Fail : Unknown Group
-			// Pass the request on to the remote service ??
-			if (DEBUG_FLAG) System.out.println("FAIL : Group is remote") ;
-			}
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return array;
-		}
+      /**
+       * Request a list of Resources.
+       *
+       */
+      public Object[] getResourceList()
+         throws RemoteException {
+            return resourceManager.getResourceList();
+         }
+      
 
 	/**
 	 * Create a new PolicyPermission.

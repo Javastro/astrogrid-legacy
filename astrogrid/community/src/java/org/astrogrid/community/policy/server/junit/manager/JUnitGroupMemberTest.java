@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitGroupMemberTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 17:21:43 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitGroupMemberTest.java,v $
+ *   Revision 1.5  2003/09/10 17:21:43  dave
+ *   Added remote functionality to groups.
+ *
  *   Revision 1.4  2003/09/10 06:03:27  dave
  *   Added remote capability to Accounts
  *
@@ -176,12 +179,12 @@ public class JUnitGroupMemberTest
 
 		//
 		// Add the account to the group
-		GroupMemberData result = manager.addGroupMember(LOCAL_ACCOUNT_IDENT, LOCAL_GROUP_IDENT) ;
-		assertNotNull("Failed to add group member", result) ;
+		GroupMemberData member = manager.addGroupMember(LOCAL_ACCOUNT_IDENT, LOCAL_GROUP_IDENT) ;
+		assertNotNull("Failed to add group member", member) ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("  Added account to group") ;
-		if (DEBUG_FLAG) System.out.println("    account : " + result.getAccount()) ;
-		if (DEBUG_FLAG) System.out.println("    group   : " + result.getGroup()) ;
+		if (DEBUG_FLAG) System.out.println("    account : " + member.getAccount()) ;
+		if (DEBUG_FLAG) System.out.println("    group   : " + member.getGroup()) ;
 
 		//
 		// Display the group members.
@@ -213,8 +216,12 @@ public class JUnitGroupMemberTest
 
 		//
 		// Remove the member from the group.
-		boolean result = manager.delGroupMember(LOCAL_ACCOUNT_IDENT, LOCAL_GROUP_IDENT) ;
-		assertTrue("Failed to remove group member", result) ;
+		GroupMemberData member = manager.delGroupMember(LOCAL_ACCOUNT_IDENT, LOCAL_GROUP_IDENT) ;
+		assertNotNull("Failed to remove group member", member) ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("  Removed account from group") ;
+		if (DEBUG_FLAG) System.out.println("    account : " + member.getAccount()) ;
+		if (DEBUG_FLAG) System.out.println("    group   : " + member.getGroup()) ;
 
 		//
 		// Display the group members.
@@ -226,12 +233,21 @@ public class JUnitGroupMemberTest
 
 		//
 		// Remove the local group.
-		result = manager.delGroup(LOCAL_GROUP_IDENT) ;
-		assertTrue("Failed to remove group", result) ;
+		GroupData group = manager.delGroup(LOCAL_GROUP_IDENT) ;
+		assertNotNull("Failed to remove group", group) ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("  Group") ;
+		if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
+
 		//
 		// Remove the local account.
 		AccountData account = manager.delAccount(LOCAL_ACCOUNT_IDENT) ;
 		assertNotNull("Failed to remove account", account) ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("  Account") ;
+		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;

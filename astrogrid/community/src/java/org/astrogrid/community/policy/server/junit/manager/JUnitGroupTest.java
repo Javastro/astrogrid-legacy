@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitGroupTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 17:21:43 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitGroupTest.java,v $
+ *   Revision 1.4  2003/09/10 17:21:43  dave
+ *   Added remote functionality to groups.
+ *
  *   Revision 1.3  2003/09/09 14:51:47  dave
  *   Added delGroupMember - only local accounts and groups to start with.
  *
@@ -235,7 +238,7 @@ public class JUnitGroupTest
 		//
 		// Try getting the list of Groups.
 		Object[] list ;
-		list = manager.getGroupList();
+		list = manager.getLocalGroups();
 		assertNotNull("Failed to get the list of Groups", list) ;
 
 		if (DEBUG_FLAG) System.out.println("  ----") ;
