@@ -1,0 +1,464 @@
+           _____________________________________________________
+  ________|                                                     |________
+  \       |   xmlBlaster 0.845        http://www.xmlBlaster.org |       /
+   \      |        Free Message-oriented Middleware (MOM)       |      /
+   /      |_____________________________________________________|      \
+  /___________)                                              (__________\
+
+
+Welcome!
+
+We hope these hints are useful to get you running with xmlBlaster.
+If  you  have  problems, don't hesitate to contact the maintainers
+through the mailing list (see http://www.xmlBlaster.org).
+
+If  you  do  some own hacks, feel free to contribute them back, so
+anybody  benefits  from  your  glorious invention. This project is
+living  from  ideas and contributions. If you are a Python hacker,
+why  not  contribute  some  Python  helper  classes? If you prefer
+Smalltalk,  why  not contributing your xmlBlaster client solution?
+But, if you are lazy, just use and enjoy xmlBlaster as delivered!
+
+
++--------------------+
+| REQUIRED           |
++--------------------+
+
+   - JDK 1.2, 1.3 or 1.4
+
+You need to set JAVA_HOME to point to your
+JDK installation, for example:
+
+  export JAVA_HOME=/opt/jdk
+
+
+The XmlBlaster distribution comes compiled and ready to go.
+Unpack the distribution to some location ($HOME/xmlBlaster is a good spot).
+
+
++----------------------------+
+| INSTALLATION IN 30 SECONDS |
++----------------------------+
+
+This is for distributions only, if you have checked out by cvs
+please go to the next INSTALL section.
+We assume you have a proper JDK installation as described above.
+
+Start the server without environment settings:
+
+Change to the installed xmlBlaster directory and type:
+
+  java -jar lib/xmlBlaster.jar
+
+Congratulations, now the server is running and ready!
+
+Type a 'g' if you want the GUI to pop up.
+Use -help if you want usage infos.
+
+
+Now start a client:
+
+  java -classpath lib/xmlBlaster.jar javaclients.ClientSub
+
+You should see some output on your terminal telling
+that a message is published and subscribed.
+
+Find out what command line options you have:
+
+  java -classpath lib/xmlBlaster.jar javaclients.ClientSub -help
+
+
+To simplify usage, set your CLASSAPTH:
+
+  export CLASSPATH=<pathToXmlBlaster>/lib/xmlBlaster.jar  [UNIX,sh,ksh,bash]
+
+  set CLASSPATH=<pathToXmlBlaster>\lib\xmlBlaster.jar     [Windows]
+
+
+Please study the files
+  HelloWorld.java, HelloWorld2.java, HelloWorld3.java ...
+in the directory
+  xmlBlaster/demo/javaclients
+
+
+To have less overhelming logging output try
+
+  java -jar lib/xmlBlaster.jar -cluster false
+
+or
+
+  java -jar lib/xmlBlaster.jar -cluster.node.id heron
+
+
+But - if you want to adjust some properties
+or develop with xmlBlaster, please read the following section
+how to do it.
+
+
++----------------------------+
+| CONFIGURATION              |
++----------------------------+
+
+There are three property files which you may want to copy.
+
+   a) %HOME%/xmlBlaster.properties
+      There is a template %XMLBLASTER_HOME%/config/xmlBlaster.properties.template
+      to use as a base.
+
+   b) %HOME%/xmlBlasterPlugins.xml
+      There is a template %XMLBLASTER_HOME%/config/xmlBlasterPlugins.xml.template
+      to use as a base.
+
+   c) %HOME%/jacorb.properties
+      There is a template %XMLBLASTER_HOME%/config/jacorb.properties.template
+      to use as a base.
+      This file is needed only if you use the CORBA plugin.
+      A default setting is included in xmlBlaster.jar which you should remove
+      before you play with the %HOME%/jacorb.properties settings.
+
+Note that all three configuration files are in the xmlBlaster.jar file.
+xmlBlaster.properties and xmlBlasterPlugins.xml in your HOME directory have
+precedence.
+
+
++----------------------------+
+| PERSISTENCE CONFIGURATION  |
++----------------------------+
+
+
+To suppport server crash recovery and huge message
+amount to be queued (swapping) you need to start a
+database.
+
+Currently Oracle and Postgres are supported.
+Expect some 20 minutes to setup Postgres to run
+with xmlBlaster and one to two days if you decide
+to use Oracle.
+
+The details are described in
+  http://www.xmlblaster.org/xmlBlaster/doc/requirements/queue.jdbc.html
+  http://www.xmlblaster.org/xmlBlaster/doc/requirements/queue.jdbc.postgres.html
+  http://www.xmlblaster.org/xmlBlaster/doc/requirements/queue.jdbc.oracle.html
+  xmlBlaster/src/java/org/xmlBlaster/util/queue/jdbc/README
+
+
++-----------------------------------------+
+| INSTALLATION FOR DEVELOPERS - USING ANT |
++-----------------------------------------+
+
+If you want to develop with xmlBlaster you can use the
+ant build tool.
+
+1. Set JAVA_HOME environment to point to your java installation.
+
+2. Compile xmlBlaster like this (in the xmlBlaster root directory):
+
+   UNIX:       build.sh all
+
+   WINDOWS:    build.bat all
+
+Now you are done.
+
+To see other compilation options (e.g. for C++) get the usage with:
+
+   UNIX:       build.sh
+
+   WINDOWS:    build.bat
+
+
+
++--------------------+
+| RELATED LINKS      |
++--------------------+
+
+The most detailed documentation are the requirements:
+
+ http://www.xmlBlaster.org/xmlBlaster/doc/requirements/
+
+You can build the requirement documentation locally with:
+
+  cd ${XMLBLASTER_HOME}
+  build.sh requirements  (UNIX)
+  build.bat requirements (WINDOWS)
+  -> xmlBlaster/doc/requirements/index.html
+
+Further description you find in the README files:
+
+   For Java see
+    ${XMLBLASTER_HOME}/src/java/org/xmlBlaster/README
+    ${XMLBLASTER_HOME}/demo/javaclients/README
+    ${XMLBLASTER_HOME}/lib/LICENSE
+
+   For C++ see
+    ${XMLBLASTER_HOME}/src/c++/README
+    ${XMLBLASTER_HOME}/testsuite/src/c++/README
+
+   To play Micheles SVG internet chess see
+    ${XMLBLASTER_HOME}/demo/javaclients/svg/rhino/README
+
+   Explore the other READMEs flying around.
+
+
+
++-------------------------------------+
+| START XMLBLASTER AS A CORBA SERVER  |
++-------------------------------------+
+
+You have three options to start the xmlBlaster-Server.
+
+See the ${XMLBLASTER_HOME}/src/java/org/xmlBlaster/README file for more
+instructions.
+
+1. A variant using the xmlBlaster built in http server (localhost / 3412 is default)
+   (This is the Default-Startup)
+
+     java org.xmlBlaster.MainGUI
+
+   and a testclient
+    
+     java javaclients.ClientSub
+
+
+
+2. A variant using the xmlBlaster built in http server, specify the port to listen
+
+     java org.xmlBlaster.MainGUI -port 3412
+
+   and a testclient
+
+     java javaclients.ClientSub -hostname localhost -port 3412
+
+
+
+3. A variant using a file to pass the server IOR:
+
+     java org.xmlBlaster.MainGUI -ior.file /tmp/Blaster_Ref
+
+   and a testclient
+
+     java javaclients.ClientSub -ior.file /tmp/Blaster_Ref
+
+
+4. Variant using a naming service and corbaloc to find it.
+
+   Edit $HOME/jacorb.properties and set (delete jacorb.properties in xmlBlaster.jar first):
+
+     ORBInitRef.NameService=corbaloc:iiop:localhost:7608/StandardNS/NameServer-POA/_root
+     
+   start the naming service:
+
+     jaco -DOAPort=7608  org.jacorb.naming.NameServer /tmp/ns.ior
+
+   start xmlBlaster (it will use the port 7608 from jacorb.properties): 
+
+     java -jar lib/xmlBlaster.jar
+
+
+5. Variant using a naming service and a local web server to publish
+   the name service IOR.
+
+   Assuming the document root of your web server is /usr/local/httpd/htdocs/NS_Ref:
+
+     ${JacORB_HOME}/bin/ns  /usr/local/httpd/htdocs/NS_Ref
+
+   port 0 switches the internal http server off:
+
+     java org.xmlBlaster.MainGUI -port 0
+
+   This client looks into jacorb.properties to find the URL with the naming service IOR.
+   Edit ${HOME}/jacorb.properties accordingly e.g.
+
+     jacorb.NameServerURL=http://localhost:80/NS_Ref
+   
+   or without http server:
+   
+     jacorb.NameServerURL=file:/usr/local/httpd/htdocs/NS_Ref
+
+   Start a client:
+
+     java javaclients.ClientXml -port 0
+
+   If you have problems, check your web server:
+
+     telnet localhost 80
+     GET /NS_Ref HTTP/1.0
+
+   you should receive the IOR string, if everything is setup properly and the
+   naming service is running.
+
+   Dump an IOR:
+      dior `cat /usr/local/httpd/htdocs/NS_Ref`
+   
+   { OLD stuff:
+   List the naming service:
+      -DORBInitRef.NameService=corbaname:192.168.78.14:2809
+      -DORBInitRef.NameService=corbaloc::eclipse:2809/NameService
+      jaco jacorb.naming.ContextLister
+      jaco -DORBInitRef.NamingService=corbaloc::160.45.11.41:38693/StandardNS/NameServer%2DPOA/_root
+        jacorb.naming.ContextLister
+   How to replace the JDK org.omg packages:
+    http://java.sun.com/j2se/1.4.1/docs/guide/standards/index.html
+   }
+
++-----------------------------------+
+| START XMLBLASTER AS A RMI SERVER  |
++-----------------------------------+
+
+
+As a default xmlBlaster start automatically RMI support.
+If you want to know more here you go:
+
+1. Check if the driver is loaded in xmlBlaster.properties, this example starts
+   the CORBA and the RMI server (RMI driver is active by default):
+
+   ProtocolPlugin[IOR][1.0]=org.xmlBlaster.protocol.corba.CorbaDriver
+   ProtocolPlugin[RMI][1.0]=org.xmlBlaster.protocol.rmi.RmiDriver
+
+   CbProtocolPlugin[IOR][1.0]=org.xmlBlaster.protocol.corba.CallbackCorbaDriver
+   CbProtocolPlugin[RMI][1.0]=org.xmlBlaster.protocol.rmi.CallbackRmiDriver
+
+2. Adjust the security policy file if you like to (it is currently totaly relaxed):
+
+   xmlBlaster/config/xmlBlaster.policy
+
+3. Start the server:
+
+   java -Djava.security.policy=${XMLBLASTER_HOME}/config/xmlBlaster.policy  org.xmlBlaster.Main
+
+4. And the demo client:
+
+   java -Djava.security.policy=${XMLBLASTER_HOME}/config/xmlBlaster.policy  javaclients.rmi.ClientGet
+
+Note: The java.security.policy setting is optional, xmlBlaster will try
+   to find a policy file in your CLASSPATH (there is a default in xmlBlaster.jar)
+
+Note:
+   Another variant could be:
+
+     java -Djava.rmi.server.codebase=file:///${XMLBLASTER_HOME}/classes/
+          -Djava.security.policy=${XMLBLASTER_HOME}/config/xmlBlaster.policy
+          -Djava.rmi.server.hostname=localhost
+          org.xmlBlaster.Main
+
+   Consult the SUN RMI documentation about 'codebase' and 'policy' settings.
+   Especially 'codebase' should be used with a web server,
+   to test if your code runs in a distributed environment.
+     http://java.sun.com/products/jdk/1.2/docs/guide/rmi/faq.html
+     http://archives.java.sun.com/archives/rmi-users.html
+
+
+
++--------------------+
+| A DEMO CHAT CLIENT |
++--------------------+
+
+Have a look at xmlBlaster/demo/javaclients/chat/SimpleChat.java
+It´s a pretty basic kind of chat-application but worth a try.
+
+Compile it (or use '-cp lib/xmlBlaster.jar') and start it like that:
+
+   java javaclients.chat.SimpleChat -loginName Nickname
+
+where "Nickname" should be different for each client you start.
+Don´t forget to start the server (java org.xmlBlaster.Main) first.
+
+
+
++--------------------+
+| USING THE TESTSUITE|
++--------------------+
+
+In the directory ${XMLBLASTER_HOME}/testsuite/src/java/org/xmlBlaster you will find
+a number of Java based test clients to automatically test xmlBlaster.
+   
+The xmlBlaster test suite is based on the JUNIT 1.0 testsuite
+from Kent Beck and Erich Gamma, see
+   http://members.pingnet.ch/gamma/junit.htm
+
+There is a GUI based and a command line based variant of the testsuite available.
+
+Please read the
+   ${XMLBLASTER_HOME}/testsuite/src/java/org/xmlBlaster/README
+file for more informations.
+
+You may also use the provided test clients to study the usage of xmlBlaster.
+
+
+
+                            Perl - XmlRpc client
+-------------------------------------------------------------------------
+See xmlBlaster/demo/perl/xmlrpc/README
+-------------------------------------------------------------------------
+
+
+                            Perl - Corba client
+-------------------------------------------------------------------------
+Perl clients with COPE 0.50_51 (http://www.lunatech.com/research/corba/cope/)
+You need MICO first (CORBA access)
+-> CORBA is much more complicated, probably you should prefer XmlRpc
+-------------------------------------------------------------------------
+
+
+                         Tcl - Client
+-----------------------------------------------------------------------
+There are two ways for Tcl clients to access xmlBlaster:
+
+a) Using Tcl clients with TclMico http://www.mico.org/
+   tclmico-0.5c.tar.gz
+
+    See directory ${XMLBLASTER_HOME}/testsuite/src/tcl
+    for a demo client written in TCL and accessing the xmlBlaster server
+
+b) Using tcljava (TclBlend/JACL) with an ordinary Java client
+   This allows scripting of Java with Tcl, and embedding the
+   Tcl interpreter (called jacl) into Java code.
+-------------------------------------------------------------------------
+
+
+                           Python - Client
+-------------------------------------------------------------------------
+Python clients with Fnorb-1.01 http://www.dstc.edu.au/Products/Fnorb/
+   fnorb-1.01.tar.gz
+   cd src
+   make -f Makefile.pre.in boot 
+   FNORB_HOME=/Where/You/Put/Fnorb 
+   export PATH=$PATH:$FNORB_HOME/Fnorb/script 
+   export PYTHONPATH=$PYTHONPATH:$FNORB_HOME 
+-------------------------------------------------------------------------
+
+
+                   orbacus for java and c++
+-------------------------------------------------------------------------
+xmlBlaster comes with jacorb. If you want to use another corba, some setting 
+changes are necessary. XmlBlaster works also with orbacus for java
+(JOB-4.0b3 or higher) and orbacus for c++ (OB-4.0b2 or higher). For more
+information about orbacus see http://www.ooc.com.
+to compile and run xmlBlaster with orbacus do the following:
+   
+   download orbacus for java and/or orbacus for c++ from http://www.ooc.com.
+   compile & install it according to the packages instructions.
+-------------------------------------------------------------------------
+
+
+
+CORBA tuning with jacorb.properties:
+------------------------------------
+Increasing jacorb.outbuf_size=2048 to 16384 yields 1-5% performance gain
+
+Changing jacorb.reference_caching=off to 'on' does help nothing, +-2%
+
+Increasing jacorb.poa.thread_pool_max=20 to 1000                             
+       and jacorb.poa.thread_pool_min=5  to 100  decreases performance 10-40%
+
+Increasing jacorb.poa.queue_max=100 to 1000 does help nothing, +-2%
+        but increases stability on heavy load (even higher values
+        decrease performance).
+
+Changing jacorb.poa.thread_priority=MAX_PRIORITY (10) to 5 (NORM_PRIORITY)
+        does help nothing, +-2%
+
+
+
+Marcel Ruff - xmlBlaster@marcelruff.info (Unix)
+Peter Roth - Roth.Peter@gmx.de (Windows)
+
