@@ -1,70 +1,82 @@
 package org.astrogrid.registry.messaging.processor;
 
-import java.io.FileInputStream;
 import java.util.Properties;
 
-import javax.servlet.ServletContext;
 import javax.xml.rpc.server.ServletEndpointContext;
 
 import org.apache.axis.utils.XMLUtils;
-import org.apache.log4j.Category;
-import org.astrogrid.registry.messaging.queue.OpenJmsUtil;
+import org.astrogrid.registry.messaging.queue.OpenJmsConstants;
+import org.astrogrid.registry.messaging.queue.OpenJmsSender;
 import org.w3c.dom.Element;
 
 /**
  * @author peter.shillan <mailto:gps@roe.ac.uk />
  */
-public class QueueMessageProcessor implements ElementProcessor {
-  // Constants.
-  private static final String QUEUE_NAME = "queue-name";
-  private static final String OPENJMS_PROPERTIES_FILENAME = "openjms.properties";
+public class QueueMessageProcessor extends QueueMessageProcessorBase implements ElementProcessor {
+  public QueueMessageProcessor() {
+    openJmsProperties = new Properties();
+  }
   
-  // Logger.
-  private Category logger = Category.getInstance(QueueMessageProcessor.class);
-  
-  // OpenJMS connection properties.
-  private Properties openJmsProperties;
-  
+  /**
+   * @see org.astrogrid.registry.messaging.processor.ElementProcessor#init(javax.xml.rpc.server.ServletEndpointContext)
+   */
+  public void init(ServletEndpointContext servletEndpointContext) throws ProcessorException {
+    super.init(servletEndpointContext);
+  }
+
+  /**
+   * @see org.astrogrid.registry.messaging.processor.ElementProcessor#destroy()
+   */
+  public void destroy() throws ProcessorException {
+    super.destroy();
+  }
+
   /**
    * @see org.astrogrid.registry.messaging.ElementProcessor#process(org.w3c.dom.Element, javax.xml.rpc.server.ServletEndpointContext)
    */
-  public Element process(Element element, ServletEndpointContext servletEndpointContext) throws Exception {
+  public Element process(Element element, ServletEndpointContext servletEndpointContext) throws ProcessorException {
+    Element result = null;
+    
     if(logger.isDebugEnabled()) {
       logger.debug("[process] element: " + XMLUtils.ElementToString(element));
     }
     
-    String queueName = element.getAttribute(QUEUE_NAME);
+    String queueName = element.getAttribute(OpenJmsConstants.QUEUE_NAME);
     
     logger.debug("[process] queue name: " + queueName);
+    
+    OpenJmsSender messageSender = null;
+    try {
+      messageSender = new OpenJmsSender(openJmsProperties);
+      messageSender.connect(queueName, isSenderTransactional, senderAck);
+      messageSender.start();
+    
+      logger.debug("[process] connected and ready to send");
 
-    OpenJmsUtil openJms = new OpenJmsUtil(
-      getOpenJmsProperties(servletEndpointContext.getServletContext()));
-    openJms.connect(queueName);
-    
-    openJms.sendTextMessage(XMLUtils.ElementToString(element));
-    
-    openJms.disconnect();
-    
-    return null;
-  }
-  
-  private Properties getOpenJmsProperties(ServletContext servletContext) throws ProcessorException {
-    if(openJmsProperties == null) {
-      Properties props = new Properties();
+      String content = XMLUtils.ElementToString(element);
+      logger.debug("[process] message content: " + content);
+      messageSender.sendTextMessage(content, senderDelivery);
       
+      logger.debug("[process] message sent");
+    }
+    catch(Exception e) {
+      logger.error("[process] error processing queue message", e);
+      throw new ProcessorException("error processing queue message", e);
+    }
+    finally {
       try {
-        props.load(new FileInputStream(servletContext.getRealPath(OPENJMS_PROPERTIES_FILENAME)));
+        if(messageSender != null ) {
+          messageSender.stop();
+          messageSender.disconnect();
+          logger.debug("[process] stopped and disconnected");
+        } 
       }
       catch(Exception e) {
-        throw new ProcessorException("could not load OpenJMS properties: " + e.getMessage(), e);
+        logger.error("[process] error closing queue: " + e.getMessage(), e);
+        throw new ProcessorException("[process] error closing queue: " + e.getMessage(), e);
       }
-      
-      openJmsProperties = props;
     }
-    
-    logger.debug("[getOpenJmsProperties] properties: " + openJmsProperties);
-    
-    return openJmsProperties;
-  }
 
+    return result;
+  }
 }
