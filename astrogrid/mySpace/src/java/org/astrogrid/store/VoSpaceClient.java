@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceClient.java,v 1.7 2004/04/16 10:54:31 KevinBenson Exp $
+ * $Id: VoSpaceClient.java,v 1.8 2004/04/20 12:35:32 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,6 +20,7 @@ import org.astrogrid.store.delegate.VoSpaceResolver;
 import org.astrogrid.store.delegate.ResolverException;
 import java.net.URISyntaxException;
 import org.astrogrid.community.common.ivorn.CommunityIvornParser;
+import org.astrogrid.store.delegate.StoreException;
 
 /**
  * This delegate provides methods for operating on files in VoSpace - that is,
@@ -137,8 +138,7 @@ public class VoSpaceClient {
       try {
          ci = new CommunityIvornParser(user);
       }catch(Exception e) {
-         e.printStackTrace();
-         throw new IOException("Could not parse ivorn user ");
+         throw new StoreException("Could not parse ivorn user ",e);
       }
             
       client.createUser(new User(ci.getAccountName(),ci.getCommunityName(),"Anonymous","None"));
@@ -153,7 +153,6 @@ public class VoSpaceClient {
       try {
          ci = new CommunityIvornParser(user);
       }catch(Exception e) {
-         e.printStackTrace();
          throw new ResolverException("Could not parse ivorn user ",e);
       }
       client.deleteUser(new User(ci.getAccountName(),ci.getCommunityName(),"Anonymous","None"));
@@ -163,6 +162,9 @@ public class VoSpaceClient {
 
 /*
 $Log: VoSpaceClient.java,v $
+Revision 1.8  2004/04/20 12:35:32  mch
+Moved std.out stacktrace to wrapping exception
+
 Revision 1.7  2004/04/16 10:54:31  KevinBenson
 *** empty log message ***
 
