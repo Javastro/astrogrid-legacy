@@ -44,7 +44,7 @@ public class GroupBy {
 		TRACE_ENABLED = true ;
 	
 	private static Logger 
-		logger = Logger.getLogger( OrderBy.class ) ;
+		logger = Logger.getLogger( GroupBy.class ) ;
 		
 	private static final String
 	    ASTROGRIDERROR_COULD_NOT_CREATE_GROUPBY_ELEMENT = "AGDTCE00500",
