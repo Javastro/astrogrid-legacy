@@ -42,7 +42,8 @@
       </Contact>
     </Curation>
     <vg:ManagedAuthority>@REGAUTHORITY@</vg:ManagedAuthority>
-	<vg:ManagedAuthority>org.astrogrid</vg:ManagedAuthority>
+        <vg:ManagedAuthority>org.astrogrid</vg:ManagedAuthority>
+        <vg:ManagedAuthority>roe.ac.uk</vg:ManagedAuthority>
     <Interface>
       <Invocation>WebService</Invocation>
       <AccessURL use="full">@CENTRALREGISTRY@Query</AccessURL>
