@@ -1,4 +1,4 @@
-/*$Id: PostgresQueryTranslatorTest.java,v 1.2 2004/08/05 10:56:35 mch Exp $
+/*$Id: PostgresQueryTranslatorTest.java,v 1.3 2004/08/18 21:27:22 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,9 +45,11 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
     /** Test makes valid SQL from cone earch */
     public void testCone() throws Exception {
        
-       SimpleConfig.getSingleton().setProperty("conesearch.table", "OBJECTS");
-       SimpleConfig.getSingleton().setProperty("conesearch.ra.column", "ra");
-       SimpleConfig.getSingleton().setProperty("conesearch.dec.column", "dec");
+       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY, "OBJECTS");
+       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_RA_COL_KEY, "ra");
+       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_DEC_COL_KEY, "dec");
+       SimpleConfig.getSingleton().setProperty(SqlMaker.DB_TRIGFUNCS_IN_RADIANS, "true");
+       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_COL_UNITS_KEY, "deg");
        
        String sql = translator.fromCone(new ConeQuery(20,20,3));
        
@@ -80,6 +82,13 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
     
     /** Test makes valid SQL from simple adql */
     public void doFromFile(String ver, int testNum) throws Exception {
+
+       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY, "o");
+       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_RA_COL_KEY, "ra");
+       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_DEC_COL_KEY, "dec");
+       SimpleConfig.getSingleton().setProperty(SqlMaker.DB_TRIGFUNCS_IN_RADIANS, "true");
+       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_COL_UNITS_KEY, "deg");
+       
        String filename = "sample-"+ver+"-"+testNum+".xml";
        Document adqlDom = DomHelper.newDocument( SqlQueryTranslatorTest.class.getResourceAsStream(filename));
        AdqlQuery adqlQuery = new AdqlQuery(adqlDom.getDocumentElement());
@@ -99,6 +108,9 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: PostgresQueryTranslatorTest.java,v $
+Revision 1.3  2004/08/18 21:27:22  mch
+Fixed some tests; added faster results checking more logging
+
 Revision 1.2  2004/08/05 10:56:35  mch
 Removed ADQL 073 tests (no longer used)
 

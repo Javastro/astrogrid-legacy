@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.10 2004/08/17 20:19:36 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.11 2004/08/18 21:27:22 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,21 +10,21 @@
  **/
 package org.astrogrid.datacenter.queriers.sql;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringWriter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.TargetIndicator;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
@@ -40,6 +40,7 @@ import org.w3c.dom.Document;
  */
 public class SqlPluginTest extends ServerTestCase {
    
+   protected static final Log log = LogFactory.getLog(SqlPluginTest.class);
    
    public SqlPluginTest(String arg0) {
       super(arg0);
@@ -54,6 +55,9 @@ public class SqlPluginTest extends ServerTestCase {
       super.setUp();
 
       DummySqlPlugin.initConfig(); //this is set up in the default config for normal runtime
+      
+      //set max returns to something reasonably small as some of the results processing is a bit CPU intensive
+      SimpleConfig.getSingleton().setProperty(SqlResults.MAX_RETURN_ROWS_KEY, "300");
     
    }
 
@@ -83,10 +87,13 @@ public class SqlPluginTest extends ServerTestCase {
       //DummySqlPlugin.initConfig();
       
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(ra,dec,r), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
       manager.askQuerier(q);
+      log.info("Checking results...");
       Document results = DomHelper.newDocument(sw.toString());
       assertIsVotable(results);
+      long numResults = results.getElementsByTagName("TR").getLength();
+      log.info("Number of results = "+numResults);
       return results;
    }
 
@@ -127,8 +134,11 @@ public class SqlPluginTest extends ServerTestCase {
 
       manager.askQuerier(q);
       
+      log.info("Checking results...");
       Document results = DomHelper.newDocument(sw.toString());
       assertIsVotable(results);
+      long numResults = results.getElementsByTagName("TR").getLength();
+      log.info("Number of results = "+numResults);
    }
    
    
@@ -173,7 +183,11 @@ public class SqlPluginTest extends ServerTestCase {
        Document metadata = plugin.getMetadata();
        
        //debug
-       DomHelper.DocumentToStream(metadata, System.out);
+       //DomHelper.DocumentToStream(metadata, System.out);
+       
+       //check results
+       long numTables = metadata.getElementsByTagName("Table").getLength();
+       assertEquals("Should be two tables in metadata", numTables, 2);
        
     }
    
@@ -195,6 +209,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.11  2004/08/18 21:27:22  mch
+ Fixed some tests; added faster results checking more logging
+
  Revision 1.10  2004/08/17 20:19:36  mch
  Moved TargetIndicator to client
 
