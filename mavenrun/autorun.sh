@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.10 2004/05/28 17:42:09 jdt Exp $ 
+# $Id: autorun.sh,v 1.11 2004/06/28 09:07:59 jdt Exp $ 
 OLDDIR=$PWD
 
 #setup paths etc
@@ -19,11 +19,12 @@ rm $LOGFILE
 echo "Integration Test Log $DATE" >> $LOGFILE
 echo "=============================" >> $LOGFILE
 
-# Restart tomcat
+# Restart tomcat and clean it out
 echo "Shutting down Tomcat" >> $LOGFILE
 $CATALINA_HOME/bin/shutdown.sh >> $LOGFILE 2>&1
 echo "Waiting for tomcat to shutdown...." >> $LOGFILE
 sleep 15
+maven CLEANTOMCAT >> $LOGFILE 2>&1
 echo "Starting Tomcat" >> $LOGFILE
 $CATALINA_HOME/bin/startup.sh >> $LOGFILE 2>&1
 
