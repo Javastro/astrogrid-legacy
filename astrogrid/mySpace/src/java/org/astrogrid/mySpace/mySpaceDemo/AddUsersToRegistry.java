@@ -74,17 +74,17 @@ class AddUsersToRegistry
 //
 //               Create an entry for the current entry.
 
-                  int dataItemID = reg.getNextDataItemID();
-
+//                  int dataItemID = reg.getNextDataItemID();
+// TODO pah - have commented out the above and entered 0 as an argument below...
                   itemRec = new DataItemRecord(containerName,
-                    dataItemID, "none", "sysadmin", creation, creation, 0,
+                    -1, "none", "sysadmin", creation, creation, 0,
                     DataItemRecord.CON, "permissions");
 
 //
 //               Add the entry to the registry.
-
-                  boolean addSuccess = reg.addDataItemRecord(itemRec);
-                  if (addSuccess)
+//TODO pah changed this from a boolean - not sure if null is a failure condition...
+                  DataItemRecord addSuccess = reg.addDataItemRecord(itemRec);
+                  if (addSuccess!=null)
                   {  System.out.println("  Added: " + containerName);
                   }
                   else
@@ -100,8 +100,8 @@ class AddUsersToRegistry
 
 //
 //         Write the registry file to disk.
-
-            reg.rewriteRegistryFile();
+//TODO pah - not needed any more?
+//            reg.rewriteRegistryFile();
 
 //
 //         Close the input file.

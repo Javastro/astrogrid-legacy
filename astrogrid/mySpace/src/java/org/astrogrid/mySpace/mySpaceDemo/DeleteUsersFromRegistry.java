@@ -134,7 +134,8 @@ class DeleteUsersFromRegistry
 //
 //         Write the registry file to disk.
 
-            reg.rewriteRegistryFile();
+//TODO pah - deleted, not needed with the DB backend?
+//            reg.rewriteRegistryFile();
 
 //
 //         Close the input file.
