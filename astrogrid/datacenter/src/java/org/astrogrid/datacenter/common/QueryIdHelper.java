@@ -1,5 +1,5 @@
 /*
- * $Id: QueryIdHelper.java,v 1.4 2003/09/16 16:55:10 mch Exp $
+ * $Id: QueryIdHelper.java,v 1.5 2003/09/19 15:11:55 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -37,13 +37,19 @@ public class QueryIdHelper
       //return XMLUtils.newDocument(tagString).getDocumentElement();
    }
 
-   /** Finds the service tag in the given dom and returns its tag value */
+   /** Finds the service tag in the given dom and returns its tag value
+    * NWW: fixed for case when dom element is the one required */
    public static String getQueryId(Element domContainingId)
    {
+
+       
       NodeList idNodes = domContainingId.getElementsByTagName(QUERY_ID_TAG);
 
       if (idNodes.getLength() == 0)
       {
+          if (QUERY_ID_TAG.equals(domContainingId.getLocalName())) {
+              return domContainingId.getFirstChild().getNodeValue(); 
+          }
          //no service id tag found, look for attribute in top tag
          String attribute = domContainingId.getAttribute(QueryIdHelper.QUERY_ID_ATT);
 

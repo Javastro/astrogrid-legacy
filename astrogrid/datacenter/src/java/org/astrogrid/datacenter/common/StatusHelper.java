@@ -1,5 +1,5 @@
 /*
- * $Id: StatusHelper.java,v 1.8 2003/09/16 17:35:35 mch Exp $
+ * $Id: StatusHelper.java,v 1.9 2003/09/19 15:11:55 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,6 +8,7 @@ package org.astrogrid.datacenter.common;
 
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -62,11 +63,22 @@ public class StatusHelper
    /**
     * Returns the status of the given service id, given by a status tag in
     * the given dom document
+    * NWW: fixed for case when status tag is the rott element
     */
    public static QueryStatus getServiceStatus(String queryId, Element domContainingStatuses)
    {
-      NodeList idNodes = domContainingStatuses.getElementsByTagName(STATUS_TAG);
+     if (STATUS_TAG.equals(domContainingStatuses.getLocalName())) {
+         String queryIdAttr = domContainingStatuses.getAttribute(QueryIdHelper.QUERY_ID_ATT);
+         if (queryId.equals(queryIdAttr)) {
+             String status = domContainingStatuses.getNodeValue();
+             if (status == null) {
+                 status = domContainingStatuses.getFirstChild().getNodeValue();
+             }
+             return QueryStatus.getFor( status.trim());
+         }
+     }
 
+      NodeList idNodes = domContainingStatuses.getElementsByTagName(STATUS_TAG);      
       //run through nodes looking for one where the queryId attribute
       //corresponds to the given id
       for (int i=0;i<idNodes.getLength();i++)
@@ -111,6 +123,13 @@ public class StatusHelper
 
       if (idNodes.getLength() == 0)
       {
+          if (STATUS_TAG.equals(domContainingStatuses.getLocalName())) {
+              String status = domContainingStatuses.getNodeValue();
+              if (status ==  null) {
+                  status = domContainingStatuses.getFirstChild().getNodeValue();
+              }
+              return QueryStatus.getFor(status.trim());
+          }
          return null;
       }
 
