@@ -1,6 +1,8 @@
 /*
- * $Id: SubmitCone.java,v 1.1 2004/08/27 17:47:19 mch Exp $
+ * $Id: SubmitCone.java,v 1.1 2004/08/30 11:52:17 mch Exp $
  */
+
+package org.astrogrid.datacenter.servlet;
 
 import java.io.IOException;
 import java.net.URL;
