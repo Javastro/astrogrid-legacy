@@ -13,6 +13,13 @@
    xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance">
    <service name="AxisDataServer" provider="java:RPC">
       <parameter name="className" value="org.astrogrid.datacenter.service.AxisDataServer"/>
-      <parameter name="allowedMethods" value="getMetadata, getServiceStatus, getVOResource, registerServiceListener, runQuery"/>
+      <parameter name="allowedMethods"
+       value="abortQuery
+		, doQuery
+		, getMetadata
+		, getResultsAndClose
+		, getVoRegistryMetadata
+		, startQuery
+		"/>
    </service>
 </deployment>
