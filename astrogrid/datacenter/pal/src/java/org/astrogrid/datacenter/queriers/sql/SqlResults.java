@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.9 2004/11/03 01:35:18 mch Exp $
+ * $Id: SqlResults.java,v 1.10 2004/11/05 12:26:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -115,7 +115,7 @@ public class SqlResults extends QueryResults {
 //             }
             printOut.println("<FIELD ID='"+tablename+metadata.getColumnName(i)+"' "
                                 +" name='"+metadata.getColumnLabel(i)+"' "
-                                +RdbmsResourcePlugin.getVotableTypeAttr(sqlResults.getMetaData().getColumnType(i))
+                                +RdbmsResourceGenerator.getVotableTypeAttr(sqlResults.getMetaData().getColumnType(i))
                                 +" ucd='"+getUcdFor(metadata.getColumnName(i))+"' "
                                 +"/>");
          }
@@ -336,6 +336,9 @@ public class SqlResults extends QueryResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.10  2004/11/05 12:26:49  mch
+ Renamed RdbmsResourcePlugin
+
  Revision 1.9  2004/11/03 01:35:18  mch
  PAL_MCH_Candidate2 merge Part II
 
