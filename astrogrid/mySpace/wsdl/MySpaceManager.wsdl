@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wsdl:definitions targetNamespace="http://mySpaceManager.mySpace.astrogrid.org" xmlns:impl="http://mySpaceManager.mySpace.astrogrid.org" xmlns:intf="http://mySpaceManager.mySpace.astrogrid.org" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
 
+   <wsdl:message name="authoriseRequest">
+
+      <wsdl:part name="userDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="authoriseResponse">
+
+      <wsdl:part name="authoriseReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
    <wsdl:message name="changeOwnerRequest">
 
       <wsdl:part name="oldID" type="xsd:string"/>
@@ -305,6 +317,14 @@
 
       </wsdl:operation>
 
+      <wsdl:operation name="authorise" parameterOrder="userDetails">
+
+         <wsdl:input name="authoriseRequest" message="impl:authoriseRequest"/>
+
+         <wsdl:output name="authoriseResponse" message="impl:authoriseResponse"/>
+
+      </wsdl:operation>
+
    </wsdl:portType>
 
    <wsdl:binding name="MySpaceManagerSoapBinding" type="impl:MySpaceManager">
@@ -581,13 +601,31 @@
 
       </wsdl:operation>
 
+      <wsdl:operation name="authorise">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="authoriseRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="authoriseResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
    </wsdl:binding>
 
    <wsdl:service name="MySpaceManagerService">
 
       <wsdl:port name="MySpaceManager" binding="impl:MySpaceManagerSoapBinding">
 
-         <wsdlsoap:address location="http://localhost:8080/axis/MySpaceManager"/>
+         <wsdlsoap:address location="http://localhost:8080/axis/services/MySpaceManager"/>
 
       </wsdl:port>
 
