@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterSelector.java,v 1.1 2004/03/03 10:08:01 mch Exp $
+ * $Id: DatacenterSelector.java,v 1.2 2004/03/08 15:54:57 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -41,12 +41,14 @@ public class DatacenterSelector extends JPanel  {
       serverEntryField.setEditable(true);
       
       serverEntryField.setDefaultList(new String[] {
-               "http://grendel12.roe.ac.uk:8080/PAL-6dF",
-               "http://astrogrid.ast.cam.ac.uk:9080/INT-WFS",
-               "http://cass123.ast.cam.ac.uk:4040/pal-SNAPSHOT",
-               "http://virtualsky.org/servlet/cover?CAT=messier",
+               "http://grendel12.roe.ac.uk:8080/PAL-6dF/services/AxisDataServer",
+               "http://astrogrid.ast.cam.ac.uk:9080/INT-WFS/services/AxisDataServer",
+               "http://cass123.ast.cam.ac.uk:4040/pal-SNAPSHOT/services/AxisDataServer",
+               "http://virtualsky.org/servlet/cover?CAT=messier/services/AxisDataServer",
                "http://adil.ncsa.uiuc.edu/cgi-bin/vocone?survey=f",
-               "http://vm07.astrogrid.org:8080/PAL"
+               "http://vm07.astrogrid.org:8080/pal-It4.1/services/AxisDataServer",
+               "http://vm07.astrogrid.org:8080/pal-SNAPSHOT/services/AxisDataServer",
+               "http://vm07.astrogrid.org:8080/pal-05Test/services/AxisDataServer_v0_4_1"
             } );
       serverPasteBtn = new JPasteButton(serverEntryField);
 
@@ -72,7 +74,7 @@ public class DatacenterSelector extends JPanel  {
 
    public String getDelegateEndPoint()
    {
-      return serverEntryField.getText()+"/services/AxisDataServer";
+      return serverEntryField.getText();
    }
 
    public void setText(String newEntry)
@@ -99,6 +101,9 @@ public class DatacenterSelector extends JPanel  {
 
 /*
 $Log: DatacenterSelector.java,v $
+Revision 1.2  2004/03/08 15:54:57  mch
+Better exception passing, removed Metdata
+
 Revision 1.1  2004/03/03 10:08:01  mch
 Moved UI and some IO stuff into client
 

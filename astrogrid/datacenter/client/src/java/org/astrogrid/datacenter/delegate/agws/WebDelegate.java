@@ -1,12 +1,10 @@
 /*
- * $Id: WebDelegate.java,v 1.26 2004/03/07 21:10:55 mch Exp $
+ * $Id: WebDelegate.java,v 1.27 2004/03/08 15:54:57 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.agws;
-
-import org.astrogrid.datacenter.delegate.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -18,7 +16,8 @@ import java.util.Hashtable;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import org.apache.axis.AxisFault;
-import org.astrogrid.util.DomHelper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.delegate.ApplicationController;
 import org.astrogrid.applications.delegate.beans.ParameterValues;
 import org.astrogrid.applications.delegate.beans.SimpleApplicationDescription;
@@ -32,9 +31,16 @@ import org.astrogrid.datacenter.adql.generated.Where;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.delegate.ConeSearcher;
+import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.datacenter.delegate.DatacenterQuery;
+import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.FullSearcher;
+import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -55,6 +61,23 @@ import org.xml.sax.SAXException;
    
 public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationController
 {
+
+   Log log = LogFactory.getLog(WebDelegate.class);
+   
+   /**
+    * Method returnRegistryEntry
+    *
+    * @return   a String
+    *
+    * @exception   RemoteException
+    *
+    */
+   public String returnRegistryEntry() throws RemoteException
+   {
+      // TODO
+      return null;
+   }
+   
    /** Generated binding code that mirrors the service's methods */
    private AxisDataServerSoapBindingStub binding;
    
@@ -65,12 +88,13 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
    
    /* Returns the metadata
     */
-   public Metadata getMetadata() throws RemoteException {
+   public Document getMetadata() throws RemoteException {
       String metaD = binding.getMetadata(null);
       ByteArrayInputStream is = new ByteArrayInputStream(metaD.getBytes());
       try {
-         Document doc = DomHelper.newDocument(is);
-         return new Metadata(doc.getDocumentElement());
+         return DomHelper.newDocument(is);
+      } catch (RemoteException e) {
+         throw e; //just rethrow it
       } catch (Exception e) {
          throw new RemoteException("Could not parse document",e);
       }
@@ -158,7 +182,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
     * votable, fits, etc) strings as given in the datacenter's metadata
     * @param ADQL
     */
-   public DatacenterResults doQuery(String resultsFormat, Element queryBody) throws DatacenterException
+   public DatacenterResults doQuery(String resultsFormat, Element queryBody) throws IOException
    {
       try {
          //run query on server
@@ -173,10 +197,13 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
          return new DatacenterResults(rDoc.getDocumentElement());
          
       }
-      catch (DatacenterException e) {
-         throw e;
+      catch (RemoteException fault) {
+         log.error(fault);
+//       String s = fault.getFaultDetails()[0].getNodeValue();
+         throw fault;  //just rethrow
       }
       catch (Exception e) {
+         LogFactory.getLog(WebDelegate.class).error(e);
          throw new DatacenterException(e.getMessage(), e);
       }
    }
@@ -400,7 +427,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
     *
     * @return   a String
     *
-    */
+    *
    public String returnRegistryEntry() {
       
       try {
@@ -411,14 +438,17 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
       catch (RemoteException re) {
          throw new RuntimeException("Could not getMetadata", re);
       }
-      
+     
    }
-   
+    */
    
 }
 
 /*
  $Log: WebDelegate.java,v $
+ Revision 1.27  2004/03/08 15:54:57  mch
+ Better exception passing, removed Metdata
+
  Revision 1.26  2004/03/07 21:10:55  mch
  Changed apache XMLUtils to implementation-independent DomHelper
 
@@ -452,6 +482,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate.java,v $
+Revision 1.27  2004/03/08 15:54:57  mch
+Better exception passing, removed Metdata
+
 Revision 1.26  2004/03/07 21:10:55  mch
 Changed apache XMLUtils to implementation-independent DomHelper
 

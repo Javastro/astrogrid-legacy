@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQuerier.java,v 1.4 2004/01/13 00:32:47 nw Exp $
+ * $Id: AdqlQuerier.java,v 1.5 2004/03/08 15:54:57 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,14 +7,14 @@
 package org.astrogrid.datacenter.delegate;
 
 import java.io.IOException;
-
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.w3c.dom.Document;
 
 /**
  * Defines the interface for clients that want to submit ADQL queries
  *
  * @author M Hill
- * @deprecated this interface is obsolete - use {@link FullSearcher} instead. Expect this interface to 
+ * @deprecated this interface is obsolete - use {@link FullSearcher} instead. Expect this interface to
  * dissapear very soon.
  */
 
@@ -64,12 +64,15 @@ public interface AdqlQuerier
      * returns the full datacenter metadata.  Implementations might like to
      * cache it locally (but remember threadsafety)...
      */
-   public Metadata getMetadata() throws IOException;
+   public Document getMetadata() throws IOException;
 
 }
 
 /*
 $Log: AdqlQuerier.java,v $
+Revision 1.5  2004/03/08 15:54:57  mch
+Better exception passing, removed Metdata
+
 Revision 1.4  2004/01/13 00:32:47  nw
 Merged in branch providing
 * sql pass-through

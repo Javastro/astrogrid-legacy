@@ -1,5 +1,5 @@
 /*
- * $Id: FullSearcher.java,v 1.5 2004/03/06 19:34:21 mch Exp $
+ * $Id: FullSearcher.java,v 1.6 2004/03/08 15:54:57 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,7 +7,7 @@
 package org.astrogrid.datacenter.delegate;
 
 import java.io.IOException;
-
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -50,7 +50,7 @@ public interface FullSearcher
     *
     * @param queryBody query language statement
         * @see org.astrogrid.datacenter.adql.ADQLUtils#toQueryBody
-    * @see org.astrogrid.datacentrer.sql.SQLUtils#toQueryBody 
+    * @see org.astrogrid.datacentrer.sql.SQLUtils#toQueryBody
     */
    public DatacenterQuery makeQuery(Element queryBody) throws IOException;
 
@@ -72,12 +72,15 @@ public interface FullSearcher
      * returns the full datacenter metadata.  Implementations might like to
      * cache it locally (but remember threadsafety)...
      */
-   public Metadata getMetadata() throws IOException;
+   public Document getMetadata() throws IOException;
 
 }
 
 /*
 $Log: FullSearcher.java,v $
+Revision 1.6  2004/03/08 15:54:57  mch
+Better exception passing, removed Metdata
+
 Revision 1.5  2004/03/06 19:34:21  mch
 Merged in mostly support code (eg web query form) changes
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.12 2004/03/07 21:11:43 mch Exp $
+ * $Id: DummyDelegate.java,v 1.13 2004/03/08 15:54:57 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -178,12 +178,12 @@ public class DummyDelegate implements FullSearcher, ConeSearcher
    /**
     * returns example metadata file.
     */
-   public Metadata getMetadata() throws DatacenterException
+   public Document getMetadata() throws DatacenterException
    {
       try
       {
          URL url = getClass().getResource("ExampleMetadata.xml");
-         return new Metadata(DomHelper.newDocument(url.openConnection().getInputStream()));
+         return DomHelper.newDocument(url.openConnection().getInputStream());
       }
       catch (ParserConfigurationException e)
       {
@@ -207,6 +207,9 @@ public class DummyDelegate implements FullSearcher, ConeSearcher
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.13  2004/03/08 15:54:57  mch
+Better exception passing, removed Metdata
+
 Revision 1.12  2004/03/07 21:11:43  mch
 Changed apache XMLUtils to implementation-independent DomHelper
 

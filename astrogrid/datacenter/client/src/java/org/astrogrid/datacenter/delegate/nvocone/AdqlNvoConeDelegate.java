@@ -5,8 +5,6 @@
 
 package org.astrogrid.datacenter.delegate.nvocone;
 
-import org.astrogrid.datacenter.delegate.*;
-
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +21,11 @@ import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.datacenter.delegate.DatacenterQuery;
+import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.DelegateQueryListener;
+import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
 import org.astrogrid.io.Piper;
@@ -31,6 +34,7 @@ import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.util.Workspace;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -320,7 +324,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
     * a blank or zero search. This one just returns fixed metadata suitable
     * for describing the 'columns' etc you can search on...
     */
-   public Metadata getMetadata() throws IOException
+   public Document getMetadata() throws IOException
    {
       return null;
    }
@@ -356,6 +360,9 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
 
 /*
 $Log: AdqlNvoConeDelegate.java,v $
+Revision 1.16  2004/03/08 15:54:57  mch
+Better exception passing, removed Metdata
+
 Revision 1.15  2004/03/07 21:12:08  mch
 Changed apache XMLUtils to implementation-independent DomHelper
 
