@@ -189,9 +189,8 @@ public class Querier implements Runnable {
      * Use by both synchronous (blocking) and asynchronous (threaded) querying
      */
     public QueryResults doQuery() throws DatabaseAccessException {
-        // initialize the spi.
-        spi.receiveConfig(getConfig());
-        spi.receiveWorkspace(workspace);        
+
+        spi.setWorkspace(workspace);        
         setStatus(QueryStatus.CONSTRUCTED);
         
         // find the translator
@@ -495,24 +494,14 @@ public class Querier implements Runnable {
       }
    }
    
-   /** create a config object around our properties */
-   private QuerierSPI.Config getConfig() {
-       return new QuerierSPI.Config() {
 
-        public String getProperty(String key) {
-           return  SimpleConfig.getProperty(key);
-        }
-
-        public String getProperty(String key, String defaultVal) {
-            return SimpleConfig.getProperty(key,defaultVal);
-        }
-
-       };
-   }
    
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.6  2003/12/01 16:11:30  nw
+ removed config interface.
+
  Revision 1.5  2003/11/28 16:10:30  nw
  finished plugin-rewrite.
  added tests to cover plugin system.

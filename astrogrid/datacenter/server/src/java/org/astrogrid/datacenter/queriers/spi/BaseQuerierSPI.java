@@ -1,4 +1,4 @@
-/*$Id: BaseQuerierSPI.java,v 1.2 2003/11/27 17:28:09 nw Exp $
+/*$Id: BaseQuerierSPI.java,v 1.3 2003/12/01 16:11:30 nw Exp $
  * Created on 26-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,6 @@ import org.astrogrid.util.Workspace;
  */
 public abstract class BaseQuerierSPI implements QuerierSPI {
     protected Workspace workspace;
-    protected Config config;
     protected final static  Log log = LogFactory.getLog("QuerierSPI");
     protected static final SimpleTranslatorMap map = new SimpleTranslatorMap();
     /* (non-Javadoc)
@@ -31,14 +30,11 @@ public abstract class BaseQuerierSPI implements QuerierSPI {
     }
 
 
-    public void receiveConfig(Config conf) {
-        this.config = conf;
-    }
 
     /* (non-Javadoc)
      * @see org.astrogrid.datacenter.queriers.spi.QuerierSPI#receiveWorkspace(org.astrogrid.util.Workspace)
      */
-    public void receiveWorkspace(Workspace ws) {
+    public void setWorkspace(Workspace ws) {
         this.workspace = ws;
     }
     
@@ -51,6 +47,9 @@ public abstract class BaseQuerierSPI implements QuerierSPI {
 
 /* 
 $Log: BaseQuerierSPI.java,v $
+Revision 1.3  2003/12/01 16:11:30  nw
+removed config interface.
+
 Revision 1.2  2003/11/27 17:28:09  nw
 finished plugin-refactoring
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerierSPI.java,v 1.2 2003/11/27 17:28:09 nw Exp $
+ * $Id: SqlQuerierSPI.java,v 1.3 2003/12/01 16:11:29 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,6 +22,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.spi.BaseQuerierSPI;
@@ -82,8 +83,8 @@ public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource"
  */
 protected Connection createConnection() throws DatabaseAccessException {
     log.debug("Creating Connection");
-      String userId = config.getProperty(USER_KEY);
-      String password = config.getProperty(PASSWORD_KEY);
+      String userId = SimpleConfig.getProperty(USER_KEY);
+      String password = SimpleConfig.getProperty(PASSWORD_KEY);
     Connection conn = null;
     conn = createConnectionFromJNDI(userId,password);
     if (conn == null) {
@@ -121,14 +122,14 @@ protected Connection createConnection() throws DatabaseAccessException {
     protected Connection createConnectionFromProperties(String userId,String password) throws DatabaseAccessException {
           log.debug("Looking in configuration");
 
-         String jdbcURL = config.getProperty(JDBC_URL_KEY);
+         String jdbcURL = SimpleConfig.getProperty(JDBC_URL_KEY);
          if ( jdbcURL == null || jdbcURL.length() == 0)  {
              return null;
          }
 
             //get connection properties, which needs to be provided as a Properties class, from the
             //configuration file.  These will be stored as a set of keys within another key...
-            String connectionPropertyValue = config.getProperty(JDBC_CONNECTION_PROPERTIES_KEY, null);
+            String connectionPropertyValue = SimpleConfig.getProperty(JDBC_CONNECTION_PROPERTIES_KEY, null);
             if (connectionPropertyValue != null) {
                try  {
                   Properties connectionProperties = new Properties();
@@ -180,7 +181,7 @@ protected Connection createConnection() throws DatabaseAccessException {
    public   void startDrivers() throws DatabaseAccessException
    {
          //read value
-         String drivers = config.getProperty(JDBC_DRIVERS_KEY);
+         String drivers = SimpleConfig.getProperty(JDBC_DRIVERS_KEY);
          if (drivers != null)
          {
             //break down into lines

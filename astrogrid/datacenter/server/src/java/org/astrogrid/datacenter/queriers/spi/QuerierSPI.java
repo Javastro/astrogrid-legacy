@@ -1,4 +1,4 @@
-/*$Id: QuerierSPI.java,v 1.2 2003/11/28 16:10:30 nw Exp $
+/*$Id: QuerierSPI.java,v 1.3 2003/12/01 16:11:30 nw Exp $
  * Created on 26-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,16 +28,14 @@ public interface QuerierSPI {
      * */
     public String getPluginInfo();
     
-    /** pass config properties into the plugin 
-     * called before any other methods are called on the plugin */
-    public void receiveConfig(Config conf);
+
 
     /** pass workspace object to the plugi
      * again called before any of the querying methods
      * @author Noel Winstanley nw@jb.man.ac.uk 26-Nov-2003
      *
      */
-    public void receiveWorkspace(Workspace ws);
+    public void setWorkspace(Workspace ws);
     
     
     
@@ -57,18 +55,6 @@ public interface QuerierSPI {
      */
     public void close() throws Exception;
 
-    /** interface that encapsulates a configuration thingie.
-     *would have liked to use something from astrogrid.common, but no clean interfaces there.
-     * @author Noel Winstanley nw@jb.man.ac.uk 26-Nov-2003
-     *
-     */
-    public interface Config {
-        /** retrive a property associated with a key, or null*/
-        public String getProperty(String key);
-        /** retreive a property associated with a key, or default value*/
-        public String getProperty(String key,String defaultVal);
-
-    }
     
 
 }
@@ -76,6 +62,9 @@ public interface QuerierSPI {
 
 /* 
 $Log: QuerierSPI.java,v $
+Revision 1.3  2003/12/01 16:11:30  nw
+removed config interface.
+
 Revision 1.2  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.
