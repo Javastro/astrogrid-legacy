@@ -2,7 +2,7 @@
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <vr:VODescription xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.2" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/CEAService/v0.1
 \\pahlaptop\work\astrogrid\src\workflow-objects\schema\VOCEA.xsd">
-	<vr:Resource xsi:type="java:org.astrogrid.registry.beans.cea.CeaApplication">
+	<vr:Resource xsi:type="cea:CeaApplicationType">
 		<!--This is the application to concentrate on for the end of this iteration-->
 		<!--The autorityID has been chosen to be astrogrid.org as I believe that these should be defined at this level - however the registry is probably using this identifier to determine which are "local" registry entries, so there might be something else set as standard. The name of the resource might be better categorised by prepending "cea/" not sure if this is necessary....-->
 		<vr:Identifier>
