@@ -16,7 +16,8 @@ public interface StdKeys
    public final static String PAL_v05_SEC_ENDPOINT = SimpleConfig.getSingleton().getString("tomcat.root")+"/astrogrid-pal-sec-SNAPSHOT/services/AxisDataService05";
    public final static String PAL_v05_VIZIER_ENDPOINT = SimpleConfig.getSingleton().getString("tomcat.root")+"/astrogrid-pal-cds-SNAPSHOT/services/AxisDataService05";
 
-   public final static String PAL_QUERYSTATUS = "http://localhost:"+SimpleConfig.getSingleton().getString("tomcat.root")+"/astrogrid-pal-SNAPSHOT/queryStatus.jsp?";
-   public final static String MYSPACE = "myspace:http://localhost:"+SimpleConfig.getSingleton().getString("tomcat.root")+"/astrogrid-mySpace-SNAPSHOT/services/Manager";
+   public final static String PAL_QUERYSTATUS = SimpleConfig.getSingleton().getString("tomcat.root")+"/astrogrid-pal-SNAPSHOT/queryStatus.jsp?";
+   public final static String MYSPACE = "myspace:"+SimpleConfig.getSingleton().getString("tomcat.root")+"/astrogrid-mySpace-SNAPSHOT/services/Manager";
 }
+
 
