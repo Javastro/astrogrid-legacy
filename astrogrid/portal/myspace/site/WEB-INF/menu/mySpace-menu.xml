@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+  <agp:menu-def
+      name="mySpace-menu"
+      xmlns:agp="http://www.astrogrid.org/portal">
+    <agp:menu
+        contents="MySpace"
+        contents-hover="MySpace"
+        uri=""
+        target="_self"
+        status-text="Use My-Space and discover its many benefits">
+      <agp:item
+          contents="MySpace-Explorer"
+          contents-hover="MySpace-Explorer"
+          uri="/astrogrid-portal/main/mount/myspace/myspace-explorer"
+          target="_self"
+          status-text="Explore your MySpace"/>
+    </agp:menu>
+  </agp:menu-def>
+  <!-- junkYard 
+      <agp:item
+          contents="Logout"
+          contents-hover="Logout"
+          uri="/AGPortal/main/mount/login/logout"
+          target="_self"
+          status-text="Logout of the AstroGrid Portal"/>
+      <agp:item
+          contents="Register"
+          contents-hover="Register"
+          uri="/AGPortal/main/mount/login/register"
+          target="_self"
+          status-text="Register for an AstroGrid account"/>
+
+          icon="/AGPortal/icons/User.png"
+        icon="/AGPortal/icons/User.png"
+          icon="/AGPortal/icons/DeleteUser.png"
+          icon="/AGPortal/icons/EnvelopeIn.png"
+  -->
