@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.15 2004/04/29 15:29:59 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.16 2004/05/04 11:00:25 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-common</id>
@@ -60,6 +60,14 @@
             <artifactId>hsqldb</artifactId>
             <groupId>hsqldb</groupId>
             <version>1.7.1</version>
+        </dependency>
+        <!-- pico container -->
+        <dependency>
+                <id>picocontainer</id>
+                <version>1.0-RC-1-SNAPSHOT</version>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
         </dependency>
         
      </dependencies>
