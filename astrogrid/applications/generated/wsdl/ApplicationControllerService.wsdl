@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:manager.applications.astrogrid.org" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:impl.manager.applications.astrogrid.org" xmlns:intf="urn:manager.applications.astrogrid.org" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://applications.astrogrid.org" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <wsdl:types>
+  <schema targetNamespace="urn:manager.applications.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <element name="listApplicationsReturn" type="intf:ArrayOf_xsd_string"/>
+   <element name="getApplicationDescriptionReturn" type="tns2:ApplicationDescription"/>
+   <complexType name="ArrayOf_tns2_Parameter">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:Parameter[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <element name="initializeApplicationReturn" type="xsd:int"/>
+   <element name="queryApplicationStatusReturn" type="xsd:string"/>
+  </schema>
+  <schema targetNamespace="urn:impl.manager.applications.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="applicationID" type="xsd:string"/>
+   <element name="applicationID" type="xsd:string"/>
+   <element name="jobstepID" type="xsd:int"/>
+   <element name="parameters" type="intf:ArrayOf_tns2_Parameter"/>
+  </schema>
+  <schema targetNamespace="http://applications.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <complexType name="ApplicationDescription">
+    <sequence>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="parameter" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType abstract="true" name="Parameter">
+    <sequence/>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="executeApplicationResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="listApplicationsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="listApplicationsResponse">
+
+      <wsdl:part element="intf:listApplicationsReturn" name="listApplicationsReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="queryApplicationStatusResponse">
+
+      <wsdl:part element="intf:queryApplicationStatusReturn" name="queryApplicationStatusReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="initializeApplicationResponse">
+
+      <wsdl:part element="intf:initializeApplicationReturn" name="initializeApplicationReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getApplicationDescriptionRequest">
+
+      <wsdl:part element="impl:applicationID" name="applicationID"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="executeApplicationRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getApplicationDescriptionResponse">
+
+      <wsdl:part element="intf:getApplicationDescriptionReturn" name="getApplicationDescriptionReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="initializeApplicationRequest">
+
+      <wsdl:part element="impl:applicationID" name="applicationID"/>
+
+      <wsdl:part element="impl:jobstepID" name="jobstepID"/>
+
+      <wsdl:part element="impl:parameters" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="queryApplicationStatusRequest">
+
+   </wsdl:message>
+
+   <wsdl:portType name="ApplicationController">
+
+      <wsdl:operation name="listApplications">
+
+         <wsdl:input message="intf:listApplicationsRequest" name="listApplicationsRequest"/>
+
+         <wsdl:output message="intf:listApplicationsResponse" name="listApplicationsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getApplicationDescription" parameterOrder="applicationID">
+
+         <wsdl:input message="intf:getApplicationDescriptionRequest" name="getApplicationDescriptionRequest"/>
+
+         <wsdl:output message="intf:getApplicationDescriptionResponse" name="getApplicationDescriptionResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="initializeApplication" parameterOrder="applicationID jobstepID parameters">
+
+         <wsdl:input message="intf:initializeApplicationRequest" name="initializeApplicationRequest"/>
+
+         <wsdl:output message="intf:initializeApplicationResponse" name="initializeApplicationResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="executeApplication">
+
+         <wsdl:input message="intf:executeApplicationRequest" name="executeApplicationRequest"/>
+
+         <wsdl:output message="intf:executeApplicationResponse" name="executeApplicationResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="queryApplicationStatus">
+
+         <wsdl:input message="intf:queryApplicationStatusRequest" name="queryApplicationStatusRequest"/>
+
+         <wsdl:output message="intf:queryApplicationStatusResponse" name="queryApplicationStatusResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="ApplicationContrllerServiceSoapBinding" type="intf:ApplicationController">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="listApplications">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listApplicationsRequest">
+
+            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listApplicationsResponse">
+
+            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getApplicationDescription">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getApplicationDescriptionRequest">
+
+            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getApplicationDescriptionResponse">
+
+            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="initializeApplication">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="initializeApplicationRequest">
+
+            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="initializeApplicationResponse">
+
+            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="executeApplication">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="executeApplicationRequest">
+
+            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="executeApplicationResponse">
+
+            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="queryApplicationStatus">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="queryApplicationStatusRequest">
+
+            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="queryApplicationStatusResponse">
+
+            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="ApplicationControllerService">
+
+      <wsdl:port binding="intf:ApplicationContrllerServiceSoapBinding" name="ApplicationContrllerService">
+
+         <wsdlsoap:address location="http://localhost:8080/axis/services/ApplicationContrllerService"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

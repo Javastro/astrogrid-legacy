@@ -1,16 +1,26 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<!-- location of generated source tree -->
+<property name="generated.src" location="${basedir}/generated/java" />
+<property name="generated.dir" location="${basedir}/generated" />
+ <!-- Axis properties-->
+<property name="axis.base"     value="${basedir}/target/axis"/>
+<property name="axis.webapp"  value="${axis.base}/agappint"/>
+<property name="axis.host"    value="localhost"/>
+<property name="axis.port"    value="8080"/>
+<property name="axis.server"  value="${axis.host}:${axis.port}"/>
+<property name="axis.servlet" value="axis"/>
+<property name="axis.url"     value="http://${axis.server}/${axis.servlet}"/>
+<property name="axis.timeout" value="60"/>
+
+
 <!-- hooks into existing goals -->
   <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->
-     <mkdir dir="${basedir}/generated/java" />
-     <path id="generated.src" location="${basedir}/generated/java"/>
-     <path id="integration.src" locaton="${basedir}/test/int/java" />
-    <maven:addPath id="maven.compile.src.set" refid="generated.src"/>  <!-- declares new src tree to maven -->
-    <maven:addPath id="maven.compile.src.set" refid="integration.src" />
+     <mkdir dir="${generated.src}" />
+     <path id="generated.src.path" location="${generated.src}"/>
+    <maven:addPath id="maven.compile.src.set" refid="generated.src.path"/>  <!-- declares new src tree to maven -->
 <!-- don't do this for now....
-	<attainGoal name="maybe-regenerate-wsdl" />
-  	<attainGoal name="maybe-regenerate-adql" /> 
   	-->
   </preGoal>
 
@@ -26,6 +36,75 @@
 
 <!-- new goals -->
 
+  <goal name="generate-wsdl" description="generate the wsdl from the classes" prereqs="axis-declare-tasks, java:compile">
+  	<delete><!-- clean out to start with -->
+  	     <!-- need to save the server side skeleton -->
+		<fileset dir="${generated.src}" >
+			<include name="**/*.java" />
+			<include name="**/*.class" />
+			<include name="**/*.wsdd" />
+		</fileset>
+	</delete>
+  <mkdir dir="${generated.dir}/wsdl" />
+	<attainGoal name="java2wsdl" />
+	      
+  </goal>
+
+  <goal name="generate-delegate" description="generate classes from wsdl" prereqs="axis-declare-tasks">
+  	<delete><!-- clean out to start with -->
+  	     <!-- need to save the server side skeleton -->
+		<fileset dir="${generated.src}" >
+			<include name="**/*.java" />
+			<include name="**/*.class" />
+			<include name="**/*.wsdd" />
+		</fileset>
+	</delete>
+	<attainGoal name="wsdl2java" />
+   </goal>
+   
+   <goal name="java2wsdl" prereqs="axis-declare-tasks">
+   <axis-java2wsdl output="${generated.dir}/wsdl/ApplicationControllerService.wsdl"
+            classname="org.astrogrid.applications.manager.ApplicationController"
+            location="${axis.url}/services/ApplicationContrllerService"
+            namespace="urn:manager.applications.astrogrid.org"
+            namespaceimpl="urn:impl.manager.applications.astrogrid.org"
+            implclass="org.astrogrid.applications.manager.AbstractApplicationController"
+            style="DOCUMENT"
+            use="LITERAL"
+   >
+            <!-- The classpath to find the authenticationService classes -->
+            <classpath>
+                <path location="${maven.build.dest}"/>
+            </classpath>
+   </axis-java2wsdl>
+   </goal>   
+   <property name="wsdl.file" value="${generated.dir}/wsdl/ApplicationControllerService.wsdl"/>
+   <goal name="wsdl2java" prereqs="axis-declare-tasks">
+  	<axis-wsdl2java output="${generated.src}"             verbose="true"
+            serverside="false"
+            skeletondeploy="false"
+            testcase="true"
+		url="${wsdl.file}">
+	</axis-wsdl2java>
+	<!-- now generate stuff for server side - into a different package with namespace mapping.-->
+	<axis-wsdl2java output="${generated.src}"
+	 url="${wsdl.file}"
+            verbose="true"
+            serverside="true"
+            skeletondeploy="false"
+            testcase="false">
+	</axis-wsdl2java>
+	<!-- do some tidying -->
+	<mkdir dir="${basedir}/wsdd/ApplicationControllerService"/>
+	<move todir="${basedir}/wsdd/ApplicationControllerService">
+	  <fileset dir="${generated.src}">
+	    <include name="**/*.wsdd" />
+	  </fileset>
+	</move>
+	
+   </goal>
+
+
 <!-- stand - alone goals - not addons to main build -->
      <goal name="showconfig" description="A goal to show important configuration settings">
  		<echo message="tomcat.home    : ${tomcat.home}"/>
@@ -35,6 +114,30 @@
     </goal>
 
 <!-- tasks for deployment / distribution -->
+    <goal name="axis.unpack" description="download the full axis distribution and ">
+        <delete dir="${axis.base}"/>        
+        <mkdir dir="${axis.base}"/>
+        <!-- there must be a way to reference this directly surely? does it use the JSTL expression language? what is the key?-->
+        <j:forEach var="deps" items="${pom.artifacts}">
+         <j:if test="${deps.dependency.artifactId=='axis' &amp;&amp; deps.dependency.type=='zip'}">
+          <unzip src="${deps.path}" dest="${axis.base}" >
+          <patternset>
+            <include name="**/webapps/**" />
+          </patternset>
+          </unzip>
+          </j:if>
+        </j:forEach>
+         <move  todir="${axis.webapp}" >
+           <fileset dir="${axis.base}/axis-1_1/webapps/axis" />
+         </move>
+            <!--  <java classname="org.apache.axis.utils.Admin"
+            dir="${tomcat.home}/webapps/ogsa/WEB-INF"
+            classpathref="classpath" fork="yes" failonerror="true">
+        <arg value="server"/>
+        <arg value="${basedir}/build/server-deploy.wsdd"/>
+        -->
+        
+    </goal>
 
 <!-- boilerplate below here -->
  <!-- <goal name="dataserver-deploy" description="fire wsdd at axis to deploy dataserver"
@@ -48,24 +151,11 @@
   </goal>
 -->
   <goal name="axis-declare-tasks">
-      <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
+     <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
   </goal>
 
 <!-- tomcat tools -->
 <goal name="tomcat-declare-tasks">
-  <!-- work-around until these get added to ibiblio..
-  although seems to store in the wrong place at present. -->
-  <!--
-  <property name="local.catalina-ant.dir" location="${maven.repo.local}/catalina-ant/jars" />
-  <mkdir dir="${local.catalina-ant.dir}" />
-  <get src="http://www.codeczar.com/products/tomcat/distributions/catalina-ant-4.1.24.jar"
-     dest="${local.catalina-ant.dir}/catalina-ant-4.1.24.jar"
-      usetimestamp="true" ignoreerrors="true"
-     />
-     <path id="catalina-ant.path">
-     	<fileset dir="${local.catalina-ant.dir}" includes="*.jar" />
-     </path>
-     -->
    <!-- Configure the custom Ant tasks for the Manager application -->
   <taskdef name="tomcat-deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath"/>
   <taskdef name="tomcat-install"   classname="org.apache.catalina.ant.InstallTask" classpathref="maven.dependency.classpath"/>

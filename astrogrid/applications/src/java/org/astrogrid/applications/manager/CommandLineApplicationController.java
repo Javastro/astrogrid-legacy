@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.1 2003/11/13 22:44:14 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.2 2003/11/14 23:47:08 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@
 package org.astrogrid.applications.manager;
 
 import org.astrogrid.applications.Application;
+import org.astrogrid.applications.ApplicationDescription;
 import org.astrogrid.applications.Parameter;
 
 public class CommandLineApplicationController extends AbstractApplicationController {
@@ -26,7 +27,7 @@ public class CommandLineApplicationController extends AbstractApplicationControl
    /* (non-Javadoc)
     * @see org.astrogrid.applications.manager.ApplicationController#getApplicationDescription(java.lang.String)
     */
-   public Application getApplicationDescription(String applicationID) {
+   public ApplicationDescription getApplicationDescription(String applicationID) {
       // TODO Auto-generated method stub
       throw new UnsupportedOperationException("CommandLineApplicationController.getApplicationDescription() not implemented");
    }
