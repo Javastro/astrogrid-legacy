@@ -1,0 +1,7 @@
+<project>
+    <extend>${basedir}/../api/project.xml</extend>
+    <artifactId>astrogrid-slinger</artifactId>
+    <name>Astrogrid Slinger UberJar</name>
+    <description>This project takes the Slinger API and repackages it as a single jar</description>
+    <shortDescription>This project takes the Slinger API and repackages it as a single jar</shortDescription>
+</project>
