@@ -31,10 +31,42 @@
     
     </section>
     
+    <section name="Creating and sharing ClientSecurityGuards">
+    
+      <p>
+      A client creates a ClientSecurityGuard using its
+      no-argument constructor. After construction, the guard is
+      empty, holding no identities and no credentials.
+      </p>
+      <p>
+      The client must add identities and credentials to the guard
+      before using it to secure messages. This is normally done by 
+      setting a username and single-sign-on password, as described
+      in the following section. The guard can then sign on to
+      the grid and acquire other credentials for itself.  
+      </p>
+      <p>
+      Alternatively,
+      the client may set credentials and identities directly. The convenience
+      method getSubject() returns the JAAS subject in which the guard
+      stores all identities and credentials. Changing this Subject
+      changes the way in which the guard secures message.  Please
+      refer to the JAAS documentation for details of the Subject.
+      The current implemenation of the security facade uses 
+      AccountNames as JAAS Principals and NonceTokens as private
+      credentials. No public credentials are used. The textual
+      value of an AccountName must match the standard for an IVORN.
+      </p>
+      <p>
+      The client may use the same ClientSecurityGuard from multiple
+      threads.
+      </p>
+    </section>
+    
     <section name="Signing on">
     
       <p>
-      To sign on the grid, a client should call signOn() on the 
+      To sign on to the grid, a client should call signOn() on the 
       ClientSecurityGuard, passing a usename and a Password object.
       The username must be an IVORN referring to a user in a
       Community, as understood by the AstroGrid community service.
