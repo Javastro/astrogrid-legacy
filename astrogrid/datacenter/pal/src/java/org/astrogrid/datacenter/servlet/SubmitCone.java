@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.5 2004/10/25 10:43:12 jdt Exp $
+ * $Id: SubmitCone.java,v 1.6 2004/10/25 13:14:19 jdt Exp $
  */
 
 package org.astrogrid.datacenter.servlet;

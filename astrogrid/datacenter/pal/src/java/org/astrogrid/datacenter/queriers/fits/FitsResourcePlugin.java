@@ -1,4 +1,4 @@
-/*$Id: FitsResourcePlugin.java,v 1.3 2004/10/25 10:43:12 jdt Exp $
+/*$Id: FitsResourcePlugin.java,v 1.4 2004/10/25 13:14:19 jdt Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,8 +46,8 @@ public class FitsResourcePlugin implements VoResourcePlugin {
 
 /*
  $Log: FitsResourcePlugin.java,v $
- Revision 1.3  2004/10/25 10:43:12  jdt
- Merges from branch PAL_MCH
+ Revision 1.4  2004/10/25 13:14:19  jdt
+ Merges from branch PAL_MCH - another attempt
 
  Revision 1.1.2.1  2004/10/20 18:12:45  mch
  CEA fixes, resource tests and fixes, minor navigation changes

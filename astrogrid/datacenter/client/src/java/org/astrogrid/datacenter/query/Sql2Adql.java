@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql.java,v 1.4 2004/10/25 10:43:12 jdt Exp $
+ * $Id: Sql2Adql.java,v 1.5 2004/10/25 13:14:19 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,8 +27,8 @@ public class Sql2Adql {
 }
 /*
  $Log: Sql2Adql.java,v $
- Revision 1.4  2004/10/25 10:43:12  jdt
- Merges from branch PAL_MCH
+ Revision 1.5  2004/10/25 13:14:19  jdt
+ Merges from branch PAL_MCH - another attempt
 
  Revision 1.2.6.1  2004/10/21 19:10:24  mch
  Removed deprecated translators, moved SqlMaker back to server,

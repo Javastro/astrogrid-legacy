@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleQueryMaker.java,v 1.6 2004/10/25 10:43:12 jdt Exp $
+ * $Id: SimpleQueryMaker.java,v 1.7 2004/10/25 13:14:19 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -99,8 +99,8 @@ public class SimpleQueryMaker  {
 }
 /*
  $Log: SimpleQueryMaker.java,v $
- Revision 1.6  2004/10/25 10:43:12  jdt
- Merges from branch PAL_MCH
+ Revision 1.7  2004/10/25 13:14:19  jdt
+ Merges from branch PAL_MCH - another attempt
 
  Revision 1.4.6.1  2004/10/21 19:10:24  mch
  Removed deprecated translators, moved SqlMaker back to server,

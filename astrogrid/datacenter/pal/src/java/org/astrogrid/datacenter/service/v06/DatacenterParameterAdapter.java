@@ -1,4 +1,4 @@
-/*$Id: DatacenterParameterAdapter.java,v 1.4 2004/10/25 10:43:12 jdt Exp $
+/*$Id: DatacenterParameterAdapter.java,v 1.5 2004/10/25 13:14:19 jdt Exp $
  * Created on 13-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -87,8 +87,8 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
 
 /*
 $Log: DatacenterParameterAdapter.java,v $
-Revision 1.4  2004/10/25 10:43:12  jdt
-Merges from branch PAL_MCH
+Revision 1.5  2004/10/25 13:14:19  jdt
+Merges from branch PAL_MCH - another attempt
 
 Revision 1.1.12.1  2004/10/20 18:12:45  mch
 CEA fixes, resource tests and fixes, minor navigation changes

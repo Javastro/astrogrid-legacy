@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierStatus.java,v 1.5 2004/10/25 10:43:12 jdt Exp $
+ * $Id: QuerierStatus.java,v 1.6 2004/10/25 13:14:19 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -153,8 +153,8 @@ public abstract class QuerierStatus implements TaskStatus
 
 /*
 $Log: QuerierStatus.java,v $
-Revision 1.5  2004/10/25 10:43:12  jdt
-Merges from branch PAL_MCH
+Revision 1.6  2004/10/25 13:14:19  jdt
+Merges from branch PAL_MCH - another attempt
 
 Revision 1.3.10.1  2004/10/20 18:12:45  mch
 CEA fixes, resource tests and fixes, minor navigation changes

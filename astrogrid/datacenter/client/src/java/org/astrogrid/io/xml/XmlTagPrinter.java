@@ -1,5 +1,5 @@
 /*
-   $Id: XmlTagPrinter.java,v 1.7 2004/10/25 10:43:12 jdt Exp $
+   $Id: XmlTagPrinter.java,v 1.8 2004/10/25 13:14:19 jdt Exp $
 
    (c) Copyright...
 */
@@ -256,8 +256,8 @@ public class XmlTagPrinter
 
 /*
  $Log: XmlTagPrinter.java,v $
- Revision 1.7  2004/10/25 10:43:12  jdt
- Merges from branch PAL_MCH
+ Revision 1.8  2004/10/25 13:14:19  jdt
+ Merges from branch PAL_MCH - another attempt
 
  Revision 1.5.32.1  2004/10/20 20:31:11  mch
  Added assertion to catch illegal tag names

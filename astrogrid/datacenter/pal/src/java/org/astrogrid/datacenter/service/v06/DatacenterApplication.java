@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.6 2004/10/25 10:43:12 jdt Exp $
+/*$Id: DatacenterApplication.java,v 1.7 2004/10/25 13:14:19 jdt Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -252,8 +252,8 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
 $Log: DatacenterApplication.java,v $
-Revision 1.6  2004/10/25 10:43:12  jdt
-Merges from branch PAL_MCH
+Revision 1.7  2004/10/25 13:14:19  jdt
+Merges from branch PAL_MCH - another attempt
 
 Revision 1.3.8.1  2004/10/20 18:12:45  mch
 CEA fixes, resource tests and fixes, minor navigation changes

@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlXml074Parser.java,v 1.4 2004/10/25 10:43:12 jdt Exp $
+ * $Id: AdqlXml074Parser.java,v 1.5 2004/10/25 13:14:19 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -333,8 +333,8 @@ public class AdqlXml074Parser  {
 }
 /*
  $Log: AdqlXml074Parser.java,v $
- Revision 1.4  2004/10/25 10:43:12  jdt
- Merges from branch PAL_MCH
+ Revision 1.5  2004/10/25 13:14:19  jdt
+ Merges from branch PAL_MCH - another attempt
 
  Revision 1.2.6.1  2004/10/20 18:12:45  mch
  CEA fixes, resource tests and fixes, minor navigation changes

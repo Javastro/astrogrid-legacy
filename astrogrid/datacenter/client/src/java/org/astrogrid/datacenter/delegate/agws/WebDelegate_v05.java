@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate_v05.java,v 1.7 2004/10/25 10:43:12 jdt Exp $
+ * $Id: WebDelegate_v05.java,v 1.8 2004/10/25 13:14:19 jdt Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -146,8 +146,8 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
 
 /*
  $Log: WebDelegate_v05.java,v $
- Revision 1.7  2004/10/25 10:43:12  jdt
- Merges from branch PAL_MCH
+ Revision 1.8  2004/10/25 13:14:19  jdt
+ Merges from branch PAL_MCH - another attempt
 
  Revision 1.5.8.1  2004/10/21 19:10:24  mch
  Removed deprecated translators, moved SqlMaker back to server,
@@ -212,8 +212,8 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate_v05.java,v $
-Revision 1.7  2004/10/25 10:43:12  jdt
-Merges from branch PAL_MCH
+Revision 1.8  2004/10/25 13:14:19  jdt
+Merges from branch PAL_MCH - another attempt
 
 Revision 1.5.8.1  2004/10/21 19:10:24  mch
 Removed deprecated translators, moved SqlMaker back to server,
