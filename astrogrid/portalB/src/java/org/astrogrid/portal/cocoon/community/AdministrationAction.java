@@ -374,12 +374,11 @@ public class AdministrationAction extends AbstractAction
                errorMessage = "You cannot have no or empty password";
             }
             else {
-               int passwordHashed = pass.hashCode();
                try {
                   AccountData ad = adminDelegate.addAccount(ident);
                   if(ad != null) {
                      ad.setDescription(request.getParameter("description"));
-                     ad.setPassword(String.valueOf(passwordHashed));
+                     ad.setPassword(pass);
                      adminDelegate.setAccount(ad);                  
                   }
                   message = "Account inserted.";
