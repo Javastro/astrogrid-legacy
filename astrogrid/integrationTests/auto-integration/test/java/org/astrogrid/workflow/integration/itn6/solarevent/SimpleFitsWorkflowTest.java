@@ -1,4 +1,4 @@
-/*$Id: SimpleFitsWorkflowTest.java,v 1.8 2004/08/27 13:18:08 nw Exp $
+/*$Id: SimpleFitsWorkflowTest.java,v 1.9 2004/10/22 08:21:57 pah Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,7 +69,7 @@ public class SimpleFitsWorkflowTest extends AbstractTestForWorkflow implements S
         
         ParameterValue query= (ParameterValue)fitsTool.findXPathValue("input/parameter[name='Query']");
         assertNotNull(query);
-        InputStream is = this.getClass().getResourceAsStream("/org/astrogrid/datacenter/integration/SimpleFITSQuery-adql073.xml");
+        InputStream is = this.getClass().getResourceAsStream("/org/astrogrid/datacenter/integration/clientside/SimpleFITSQuery-adql074.xml");
         assertNotNull(is);
         StringWriter out = new StringWriter();
         Piper.pipe(new InputStreamReader(is),out);
@@ -106,6 +106,9 @@ public class SimpleFitsWorkflowTest extends AbstractTestForWorkflow implements S
 
 /* 
 $Log: SimpleFitsWorkflowTest.java,v $
+Revision 1.9  2004/10/22 08:21:57  pah
+input query file had moved
+
 Revision 1.8  2004/08/27 13:18:08  nw
 used AstrogridAssert to check results more thoroughly.
 
