@@ -1,5 +1,5 @@
 /*
-   $Id: XmlOutput.java,v 1.1 2004/03/03 10:08:01 mch Exp $
+   $Id: XmlTagWriter.java,v 1.1 2004/07/01 22:37:15 mch Exp $
 
    Date        Author      Changes
    8 Oct 2002  M Hill      Created
@@ -8,8 +8,7 @@
 */
 package org.astrogrid.io.xml;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import org.astrogrid.log.Log;
 
 /**
@@ -17,13 +16,36 @@ import org.astrogrid.log.Log;
  * using this 'intermediary' class, we can define tags or streams as XmlOutput,
  * and pass them around as the same thing.  Therefore there is no effective
  * difference between writing a node in a bigger XML file, and writing the
- * root node directly to an XmlOutputStream
+ * root node.
+ *
  */
 
-public abstract class XmlOutput extends OutputStream
+public class XmlTagWriter
 {
-   private XmlTag childTag = null;
+   private XmlTagWriter parent = null;
+   private XmlTagWriter child = null;  //can only have one child at a time
+   private String name = null;
 
+   
+   public XmlTagWriter(String givenName, String attrs, XmlTagWriter parentWriter) throws IOException
+   {
+      super();
+      
+      this.parent = parentWriter;
+      this.name = givenName;
+      
+      //write out tag here WITHOUT indent at this level.
+      if ((attrs == null) || (attrs.length() == 0))
+      {
+         writeLine("<"+name+">");
+      }
+      else
+      {
+         writeLine("<"+name+" "+attrs+">");
+      }
+         
+   }
+   
    /**
     * Writes out the given string as an indented line
     * at this level plus one (the indentation is dependent on the number of
@@ -47,21 +69,24 @@ public abstract class XmlOutput extends OutputStream
    }
 
    /**
-    * Abstract method that should implement writing out the given string at
-    * the given indent.  The indent is an integer representing the number of
-    * levels to indent.  The string should not include the new line character
+    * WriteIndentedLine implementation - calls parent with incremented
+    * indentation, so that the indent increases for each level of tag
     */
-   protected abstract void writeIndentedLine(int indent, String string) throws IOException;
+   protected void writeIndentedLine(int indent, String string) throws IOException
+   {
+      parent.writeIndentedLine(indent+1, string);
+   }
+   
+   /**
+    * writeString implementation - writes a string out to the parent output
+    */
+   public void writeString(String s) throws IOException
+   {
+      parent.writeString(s);
+   }
 
    /**
-    * Abstract method that should implement writing a string directly to the
-    * stream.  NB this won't do any indenting/etc - not sure if it should
-    * therefore be protected...
-    */
-   public abstract void writeString(String s) throws IOException;
-
-   /**
-    * Writes out a tag on one line
+    * Convenience routine to write a tag on one line
     */
    public void writeTag(String tag, String value) throws IOException
    {
@@ -69,7 +94,15 @@ public abstract class XmlOutput extends OutputStream
    }
 
    /**
-    * Writes out a tag with attributes on one line
+    * Convenience routine to write a comment
+    */
+   public void writeComment(String text) throws IOException
+   {
+      this.writeIndentedLine("<!-- "+text+" -->");
+   }
+
+   /**
+    * Writes out a tag with attributes (given as "name='Value'" etc) on one line
     */
    public void writeTag(String tag, String attr, String value) throws IOException
    {
@@ -110,47 +143,47 @@ public abstract class XmlOutput extends OutputStream
    }
    
    /**
-    * Called to make a new simple tag with a name and an attribute.
+    * Called to make a new simple tag with a name and a string of attributes.
     */
-   public XmlTag newTag(String tag, String attr) throws IOException
+   public XmlTagWriter newTag(String tag, String attr) throws IOException
    {
       closeChild();
-      return newTag(new XmlTag(tag, attr, this));
+      return newTag(new XmlTagWriter(tag, attr, this));
    }
 
    /**
     * Called to make a new simple tag with a name
     */
-   public XmlTag newTag(String tag) throws IOException
+   public XmlTagWriter newTag(String tag) throws IOException
    {
       closeChild();
-      return newTag(new XmlTag(tag, null, this));
+      return newTag(new XmlTagWriter(tag, null, this));
    }
 
    /**
     * Called to take the given tag and make it the child.  Allows for specialist
     * derived Tags.
     */
-   public XmlTag newTag(XmlTag tag) throws IOException
+   public XmlTagWriter newTag(XmlTagWriter tag) throws IOException
    {
       closeChild();
-      childTag = tag;
-      return childTag;
+      child = tag;
+      return child;
    }
 
    /** remove the child tag */
    protected void clearChild()
    {
-      childTag = null;
+      child = null;
    }
 
    /** closes the child tag  */
    protected void closeChild() throws IOException
    {
-      if (childTag != null)
+      if (child != null)
       {
-         childTag.close();
-         childTag = null;
+         child.close();
+         child = null;
       }
    }
 
@@ -158,28 +191,39 @@ public abstract class XmlOutput extends OutputStream
     * Returns true if the tag has a child tag - implying the child tag is open */
    public boolean hasChild()
    {
-      return (childTag != null);
+      return (child != null);
    }
 
    /**
     * Returns the child tag - only used for administration purposes by
     * subclasses
     */
-   protected XmlTag getChild()
+   protected XmlTagWriter getChild()
    {
-      return childTag;
+      return child;
    }
 
+   
    /**
-    * It's a bit naughty using OutputStream, as we don't implement the one
-    * method that should be - write(int).  However we do use the other methods
-    * - eg close - so we just chuck an exception here if anyone tries to
-    * use it
+    * Close tag
     */
-   public void write(int i)
+   public void close() throws IOException
    {
-      throw new IllegalArgumentException("XmlOutput is not intended for writing ints - use writeString(String)");
+      Log.affirm(parent.getChild() == this, "Closing XML tag but it's not the child of its parent");
+
+      closeChild();
+
+      writeLine("</"+name+">");
+      parent.clearChild();
    }
+   
+   /** For debug and display purposes
+    */
+   public String toString()
+   {
+      return "<"+name+">";
+   }
+   
 }
 
 

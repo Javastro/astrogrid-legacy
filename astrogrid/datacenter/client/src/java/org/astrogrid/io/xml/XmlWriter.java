@@ -1,5 +1,5 @@
 /*
-   $Id: XmlOutputStream.java,v 1.2 2004/07/01 22:36:14 mch Exp $
+   $Id: XmlWriter.java,v 1.1 2004/07/01 22:37:15 mch Exp $
 
   Date        Author      Changes
    8 Oct 2002  M Hill      Created
@@ -9,8 +9,9 @@
 package org.astrogrid.io.xml;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import org.astrogrid.io.ascii.AsciiOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 import org.astrogrid.log.Log;
 
 /**
@@ -24,9 +25,9 @@ import org.astrogrid.log.Log;
  *
  */
 
-public class XmlOutputStream extends XmlTagWriter
+public class XmlWriter extends XmlTagWriter
 {
-   private AsciiOutputStream out = null;
+   private PrintWriter out = null;
    
    private String indentSpaces = "   ";
    private final static int INDENT_SIZE = 3;
@@ -40,10 +41,10 @@ public class XmlOutputStream extends XmlTagWriter
     * Constructor - pass in output stream to pipe to, and
     * the initial header will be written
     */
-   public XmlOutputStream(OutputStream anOutStream) throws IOException
+   public XmlWriter(Writer aWriter) throws IOException
    {
       super(null, null, null);
-      out = new AsciiOutputStream(anOutStream);
+      out = new PrintWriter(aWriter);
       writeLine("<?xml version=\"1.0\"?>");
    }
    
@@ -127,7 +128,7 @@ public class XmlOutputStream extends XmlTagWriter
       
       try
       {
-         XmlOutputStream xOut = new XmlOutputStream(System.out);
+         XmlWriter xOut = new XmlWriter(new OutputStreamWriter(System.out));
          
          XmlTagWriter ftag = xOut.newTag("FRUIT","");
 
