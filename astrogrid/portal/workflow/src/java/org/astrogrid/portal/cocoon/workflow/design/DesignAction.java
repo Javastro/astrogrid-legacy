@@ -137,6 +137,7 @@ public class DesignAction extends AbstractAction {
     public static final String
         EDIT_CONDITION_PARAMETER = "edit_condition",
         ACTIVITY_KEY_PARAMETER = "activity_key",
+	    ACTIVITY_ORDER_PARAMETER = "activity_index_order",
         WORKFLOW_LIST_PARAMETER = "workflow-list",
         QUERY_LIST_PARAMETER = "query-list",
 	    TOOL_LIST_PARAMETER = "tool-list",
@@ -1340,6 +1341,8 @@ public class DesignAction extends AbstractAction {
               debug("activityTargetKey: " + activityTargetKey ) ;                                     
               String activityIndex = request.getParameter( ACTIVITY_INDEX_PARAMETER ) ;
               debug("activityIndex: " + activityIndex ) ;
+			  String activityOrder = request.getParameter( ACTIVITY_ORDER_PARAMETER ) ;
+			  debug("activityOrder: " + activityOrder ) ;              
                             
               if ( activityTargetKey == null) {
                   debug( "activityTargetKey is null" ) ;
@@ -1347,6 +1350,7 @@ public class DesignAction extends AbstractAction {
               else if ( activityIndex == null) {
                   debug( "activityIndex is null" ) ;
               }
+              
               
               try { 
                   index = new Integer( activityIndex ).intValue() ;
@@ -1360,13 +1364,23 @@ public class DesignAction extends AbstractAction {
               highWaterMark = activityContainer.getActivityCount() - 1;
               if( highWaterMark < 0 ) {
                   highWaterMark = 0;
-              }
-                  
+              }			  
+                                
               if( index < 0 || index > highWaterMark ){
                   index = highWaterMark;
               }
-                  
-              activityContainer.addActivity( index, activity ) ;
+              
+			  if (index == 0) { 
+			  	// Attempt to insert 'after' when activityContainer is empty will produce IndexOutOfBoundsException
+			  	// therefore if index is 0 ensure index is not incremented.
+                  activityOrder = ""; 	
+			  }
+              
+			  if (activityOrder.equalsIgnoreCase("AFTER")){
+			      index ++;
+			  }
+			           	                                                            
+              activityContainer.addActivity( index, activity ) ;              
                         
             }
             finally {
@@ -1455,28 +1469,47 @@ public class DesignAction extends AbstractAction {
            ActivityContainer activityContainer = null;
            AbstractActivity activity = null;
            String parentKey = null;
+		   int index = 0;
               
            try {
 
               String activityTargetKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
-              debug("activityTargetKey: " + activityTargetKey ) ;                                     
+              debug("activityTargetKey: " + activityTargetKey ) ; 
+			  String activityIndex = request.getParameter( ACTIVITY_INDEX_PARAMETER ) ; 
+		      debug("activityIndex: " + activityIndex ) ;
+			  index = new Integer( activityIndex ).intValue() ;                                   
                             
               if ( activityTargetKey == null) {
                   debug( "activityTargetKey is null" ) ;
               }
-              else if( activityTargetKey.equals( "/sequence" ) ) {
-                  ; // ignore the top sequence
-              }
+              
               else {
-                  parentKey = activityTargetKey.substring( 0, activityTargetKey.lastIndexOf('/'));
-                  activity = (AbstractActivity)workflow.findXPathValue( activityTargetKey );
-                  activityContainer = locateActivityContainer( workflow, parentKey );
-                  if( activityContainer != null ) {
-                      activityContainer.removeActivity( activity ) ;
-                  }
+					activity = (AbstractActivity)workflow.findXPathValue( activityTargetKey );
+					activityContainer = locateActivityContainer( workflow, activityTargetKey );
+				if( activityContainer != null ) {
+						activityContainer.removeActivity( activity ) ;
+				}					
+              	
               }
+//              else if( activityTargetKey.equals( "/sequence" ) && index == 0) {
+//                  ; // ignore the top sequence
+//              }
+//              else {
+//                  parentKey = activityTargetKey.substring( 0, activityTargetKey.lastIndexOf('/'));
+//				  debug("parentKey: " + parentKey ) ;
+//                  activity = (AbstractActivity)workflow.findXPathValue( activityTargetKey );
+//				  debug("activity: " + activity ) ;
+//                  activityContainer = locateActivityContainer( workflow, parentKey );
+//                  if( activityContainer != null ) {
+//                      activityContainer.removeActivity( activity ) ;
+//                 }
+//              }
                                     
            }
+           catch (Exception e) {
+					e.printStackTrace() ;
+					}
+					
            finally {
               if( TRACE_ENABLED ) trace( "DesignActionImpl.removeActivity() exit" ) ;
            }
