@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven project description for the AstroGrid registry client components.
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | Extend the top level project descriptor.
+        +-->
+    <extend>./maven/project.xml</extend>
+
+    <!--+
+        | The current version of the Maven project descriptor.
+        +-->
+    <pomVersion>3</pomVersion>
+
+    <!--+
+        | The short name of the project.
+        | This is used when naming jars and distribution files.
+        +-->
+    <id>astrogrid-exist-master</id>
+
+    <!--+
+        | The full name of the project.
+        | This is used when generating JavaDoc titles.
+        +-->
+    <name>AstroGrid XMLDB</name>
+
+
+        <description>
+        <![CDATA[
+	<p>
+	</p>
+	<p>
+	</p>
+	<section name="Builds">
+	
+	</section>
+		]]>        
+</description>
+        <shortDescription>Astrogrid XMLDB</shortDescription>
+        
+</project>
