@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ExpressionFunctionDescriptor.java,v 1.3 2003/09/16 13:23:24 nw Exp $
+ * $Id: ExpressionFunctionDescriptor.java,v 1.4 2003/10/13 13:49:46 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ExpressionFunctionDescriptor.
  * 
- * @version $Revision: 1.3 $ $Date: 2003/09/16 13:23:24 $
+ * @version $Revision: 1.4 $ $Date: 2003/10/13 13:49:46 $
  */
 public class ExpressionFunctionDescriptor extends org.astrogrid.datacenter.adql.generated.FunctionDescriptor {
 
@@ -56,6 +56,7 @@ public class ExpressionFunctionDescriptor extends org.astrogrid.datacenter.adql.
     public ExpressionFunctionDescriptor() {
         super();
         setExtendsWithoutFlatten(new org.astrogrid.datacenter.adql.generated.FunctionDescriptor());
+        nsURI = "http://tempuri.org/adql";
         xmlName = "ExpressionFunction";
         
         //-- set grouping compositor
@@ -92,6 +93,7 @@ public class ExpressionFunctionDescriptor extends org.astrogrid.datacenter.adql.
             }
         } );
         desc.setHandler(handler);
+        desc.setNameSpaceURI("http://tempuri.org/adql");
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
         

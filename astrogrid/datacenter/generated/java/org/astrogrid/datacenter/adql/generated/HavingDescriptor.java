@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: HavingDescriptor.java,v 1.3 2003/09/16 13:23:24 nw Exp $
+ * $Id: HavingDescriptor.java,v 1.4 2003/10/13 13:49:46 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class HavingDescriptor.
  * 
- * @version $Revision: 1.3 $ $Date: 2003/09/16 13:23:24 $
+ * @version $Revision: 1.4 $ $Date: 2003/10/13 13:49:46 $
  */
 public class HavingDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -55,6 +55,7 @@ public class HavingDescriptor extends org.exolab.castor.xml.util.XMLClassDescrip
 
     public HavingDescriptor() {
         super();
+        nsURI = "http://tempuri.org/adql";
         xmlName = "Having";
         
         //-- set grouping compositor
@@ -91,6 +92,7 @@ public class HavingDescriptor extends org.exolab.castor.xml.util.XMLClassDescrip
             }
         } );
         desc.setHandler(handler);
+        desc.setNameSpaceURI("http://tempuri.org/adql");
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
@@ -124,6 +126,7 @@ public class HavingDescriptor extends org.exolab.castor.xml.util.XMLClassDescrip
             }
         } );
         desc.setHandler(handler);
+        desc.setNameSpaceURI("http://tempuri.org/adql");
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
@@ -157,6 +160,7 @@ public class HavingDescriptor extends org.exolab.castor.xml.util.XMLClassDescrip
             }
         } );
         desc.setHandler(handler);
+        desc.setNameSpaceURI("http://tempuri.org/adql");
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
@@ -190,6 +194,7 @@ public class HavingDescriptor extends org.exolab.castor.xml.util.XMLClassDescrip
             }
         } );
         desc.setHandler(handler);
+        desc.setNameSpaceURI("http://tempuri.org/adql");
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
@@ -223,6 +228,7 @@ public class HavingDescriptor extends org.exolab.castor.xml.util.XMLClassDescrip
             }
         } );
         desc.setHandler(handler);
+        desc.setNameSpaceURI("http://tempuri.org/adql");
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
@@ -256,6 +262,7 @@ public class HavingDescriptor extends org.exolab.castor.xml.util.XMLClassDescrip
             }
         } );
         desc.setHandler(handler);
+        desc.setNameSpaceURI("http://tempuri.org/adql");
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
@@ -289,6 +296,7 @@ public class HavingDescriptor extends org.exolab.castor.xml.util.XMLClassDescrip
             }
         } );
         desc.setHandler(handler);
+        desc.setNameSpaceURI("http://tempuri.org/adql");
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
