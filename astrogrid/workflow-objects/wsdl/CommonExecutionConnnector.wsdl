@@ -1,4 +1,3 @@
-<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:impl.cea.applications.astrogrid.org" xmlns:intf="urn:cea.applications.astrogrid.org" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:cea="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:wkf="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1" xmlns:ns="http://www.astrogrid.org/schema/ExecutionRecord/v1" targetNamespace="urn:cea.applications.astrogrid.org">
 	<wsdl:types>
 		<xsd:schema targetNamespace="urn:impl.cea.applications.astrogrid.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
@@ -132,6 +131,13 @@
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
+			<xsd:element name="ceaFault">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="messy" type="xsd:string"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
 		</xsd:schema>
 	</wsdl:types>
 	<wsdl:message name="abortResponse">
@@ -171,7 +177,7 @@
 		<wsdl:part name="parameters" element="impl:getApplicationDescriptionResponse"/>
 	</wsdl:message>
 	<wsdl:message name="ceaFault">
-		<wsdl:part name="message" type="xsd:string"/>
+		<wsdl:part name="message" element="impl:ceaFault"/>
 	</wsdl:message>
 	<wsdl:portType name="CommonExecutionConnector">
 		<wsdl:operation name="execute" parameterOrder="">
