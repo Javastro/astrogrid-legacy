@@ -20,14 +20,14 @@ public class GdsQueryDelegateTest extends TestCase {
   private String testRegistryUrl = 
   // HYDRA
       "http://hydra.star.le.ac.uk:8082" +
-      "/gdw/services/ogsadai/DAIServiceGroupRegistry";	
+      "/ogsa/services/ogsadai/DAIServiceGroupRegistry";	
   // CASS123
   //   "http://astrogrid.ast.cam.ac.uk:4040" +
   //    "/gdw/services/ogsadai/DAIServiceGroupRegistry";
 
   private String testRegistryUrlBad1 = 
       "http://bogus.star.le.ac.uk:8082" +
-      "/gdw/services/ogsadai/DAIServiceGroupRegistry";	
+      "/ogsa/services/ogsadai/DAIServiceGroupRegistry";	
 
   private String testRegistryUrlBad2 = 
       "http://hydra.star.le.ac.uk:8082" +

@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.15 2004/03/25 17:22:43 kea Exp $
+ * $Id: GdsQueryDelegate.java,v 1.16 2004/03/25 20:33:39 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -255,14 +255,18 @@ public class GdsQueryDelegate
         ExtensibilityType result2 = gds.findServiceData(
            QueryHelper.getNamesQuery(OGSADAIConstants.GDS_SDE_REQUEST_STATUS));
         String status = AnyHelper.getAsString(result2);
-        if (status.indexOf(OGSADAI_STATUS_COMPLETE) != -1) {  //Completed
+        if ((status.indexOf(OGSADAI_STATUS_COMPLETE) != -1) ||
+            (status.indexOf("COMPLETED") != -1)) {  //Completed
           break;  // Out of while loop
         }
-        else if (status.indexOf("status=\"ERROR\"") != -1) { //Error 
-          logger.error(status);
-          throw new Exception(status);
+        else if (status.indexOf("ERROR") != -1) { //Error 
+          String errMess = "Got error status : " + status +
+            ", Response was " + response.getAsString();
+          logger.error(errMess);
+          throw new Exception(errMess);
         }
-        else if (status.indexOf(OGSADAI_STATUS_INCOMPLETE) != -1) { 
+        else if ((status.indexOf("PROCESSING") != -1) ||
+                 (status.indexOf(OGSADAI_STATUS_INCOMPLETE) != -1)) { 
           //Still going
           //Min termination 2 hours from now
           refreshTermination(gds,2);  
@@ -276,7 +280,8 @@ public class GdsQueryDelegate
         }
         else {
           //Unknown status, 
-          String errMess = "Didn't understand status: " + status;
+          String errMess = "Didn't understand status: " + status +
+          ", response is " + response.getAsString();
           logger.error(errMess);
           throw new Exception(errMess);
         }
@@ -485,6 +490,10 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
+Revision 1.16  2004/03/25 20:33:39  kea
+Error reporting.
+Change of default service location in test.
+
 Revision 1.15  2004/03/25 17:22:43  kea
 Tidying javadocs, deprecating old classes, improved error handling etc.
 

@@ -15,7 +15,7 @@ public class GdsDelegateTest extends TestCase {
   public GdsDelegateTest() {}
 		
   private String factoryGsh2
-      = "http://hydra.star.le.ac.uk:8082/gdw/services/"
+      = "http://hydra.star.le.ac.uk:8082/ogsa/services/"
       + "ogsadai/GridDataServiceFactory";
 
   private ExtensibilityType document = null;
@@ -24,7 +24,7 @@ public class GdsDelegateTest extends TestCase {
   private String testRegistryUrl1
     = "http://astrogrid.ast.cam.ac.uk:4040/gdw/services/ogsadai/DAIServiceGroupRegistry";
   private String testRegistryUrl2
-    = "http://hydra.star.le.ac.uk:8082/gdw/services/ogsadai/DAIServiceGroupRegistry";	
+    = "http://hydra.star.le.ac.uk:8082/ogsa/services/ogsadai/DAIServiceGroupRegistry";	
 
   private String query1 = "SELECT * FROM first WHERE DECL &gt; 59.9 LIMIT 100";
   private String query2 = "SELECT * FROM first WHERE RA &lt; 0.5 LIMIT 100";
