@@ -79,7 +79,24 @@
         <version>${astrogrid.common.version}</version>
     </dependency>
 
+	<!-- it's in one of these - dunno which one -->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>${astrogrid.community.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+            <version>${astrogrid.community.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+                <version>${astrogrid.community.version}</version>
+        </dependency>
 
     <!-- think astrogrid comes with these anyhow..
     <dependency>
