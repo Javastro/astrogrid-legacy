@@ -65,7 +65,7 @@ public class JobScheduler {
 		CONFIG_MESSAGES_COUNTRYCODE  = "MESSAGES.INSTALLATION.COUNTRYCODE" ;
 	    
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGJESZ00001:JobScheduler: Could not read my configuration file",
+		ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGJESZ00001:JobScheduler: Could not read my configuration file {0}",
 		ASTROGRIDERROR_JES_NOT_INITIALIZED          = "AGJESZ00002:JobScheduler: Not initialized. Perhaps my configuration file is missing.",
 		ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00490",
 		ASTROGRIDERROR_ULTIMATE_SCHEDULEFAILURE     = "AGJESE00500",
@@ -328,11 +328,13 @@ public class JobScheduler {
 			   catIt = jobStep.getQuery().getCatalogs();
 			
 			while( catIt.hasNext() ) {
+				
 				 catalog = (Catalog)catIt.next() ;
 	             candidateService = findService( catalog ) ; 
                  if( candidateService == null   &&   catIt.hasNext() )
                      catIt.remove() ;
-			} // end outer while
+                     
+			} // end while
 			
 		}
 		finally {
@@ -358,13 +360,15 @@ public class JobScheduler {
 			   serviceIt = catalog.getServices() ; 
 			
 			while( serviceIt.hasNext() ) {
+				
                service = (String)serviceIt.next() ;
                if( service != null  &&  !service.equals("") && candidateService == null ) { 
                    candidateService = service ; 
                } else if( serviceIt.hasNext() ){
                	   serviceIt.remove() ;
                }
-           	} // end outer while
+               
+           	} // end while
 			
 		}
 		finally {

@@ -101,7 +101,7 @@ public class JobController {
 		CONFIG_MESSAGES_COUNTRYCODE  = "MESSAGES.INSTALLATION.COUNTRYCODE" ;
 	    
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGJESZ00001:JobController: Could not read my configuration file",
+		ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGJESZ00001:JobController: Could not read my configuration file {0}",
 		ASTROGRIDERROR_JES_NOT_INITIALIZED          = "AGJESZ00002:JobController: Not initialized. Perhaps my configuration file is missing.",
 		ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00030",
 		ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE       = "AGJESE00040",
@@ -187,7 +187,7 @@ public class JobController {
 			// If successful so far, load installation-type messages
 			configureMessages() ;
 		}
-		catch ( IOException ex ) {
+		catch ( Exception ex ) {
 			Message
 				message = new Message( ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE, CONFIG_FILENAME ) ;
 			logger.error( message.toString(), ex ) ;
