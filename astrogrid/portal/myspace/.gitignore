@@ -5,3 +5,4 @@ maven.log
 mock
 velocity.log
 junit*.properties
+.clover
