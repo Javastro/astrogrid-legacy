@@ -182,6 +182,8 @@ public class DesignAction extends AbstractAction {
             myAction = null ;
         Map
             retMap = null ;
+            
+        trace( "It got this far!" ) ;
         
         try { 
 //            debug( "About to check properties loaded") ;
@@ -297,6 +299,9 @@ public class DesignAction extends AbstractAction {
             	
 				String errorMessage = null;
             	
+                if( action == null ) {
+                    action = ACTION_CREATE_WORKFLOW;
+                }
 				debug( "action is: " + action );
                 
                 this.consistencyCheck();
@@ -305,13 +310,14 @@ public class DesignAction extends AbstractAction {
                     debug( "action is null");  
                 }      
                 else if( action.equals( ACTION_CREATE_WORKFLOW ) ) {
-					template = request.getParameter( TEMPLATE_PARAM_TAG ); 
-					if ( template.equals( EMPTY_TEMPLATE ) ) {
-						this.createWorkflow();
-					}
-                    else {
-						this.createWorkflowFromTemplate( template ); 
-                    }
+                    this.createWorkflow();
+//					template = request.getParameter( TEMPLATE_PARAM_TAG ); 
+//					if ( template.equals( EMPTY_TEMPLATE ) ) {
+//						this.createWorkflow();
+//					}
+//                    else {
+//						this.createWorkflowFromTemplate( template ); 
+//                    }
                 }
                 else if( action.equals( ACTION_SAVE_WORKFLOW ) ) { 
                     this.saveWorkflow();
