@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.43 2004/03/15 11:25:35 mch Exp $
+ * $Id: Querier.java,v 1.44 2004/03/15 17:08:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -153,7 +153,7 @@ public class Querier implements Runnable {
          ask();
       }
       catch (Throwable th) {
-         log.error("Exception",th);
+         log.error("Exception during Asynchronous Run",th);
          setStatus(new QuerierError("", th));
       }
       log.info("...Ending asynchronous Query ["+id+"]");
@@ -291,8 +291,12 @@ public class Querier implements Runnable {
     * throws an exception (as each querier should only handle one query).
     * Synchronised as the queriers may be running under a different thread
     */
-   public synchronized void setStatus(org.astrogrid.datacenter.queriers.status.QuerierStatus newStatus) {
+   public synchronized void setStatus(QuerierStatus newStatus) {
 
+      //copy in old details to new ones
+      String[] oldDetails = status.getDetails();
+      for (int i=0;i<oldDetails.length;i++) { newStatus.addDetail(oldDetails[i]); }
+      
       //set times for info
       if (status instanceof QuerierClosed) {
          timeQuerierClosed = new Date();
@@ -387,6 +391,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.44  2004/03/15 17:08:52  mch
+ Added status detail copies
+
  Revision 1.43  2004/03/15 11:25:35  mch
  Fixes to emailer and JSP targetting
 
