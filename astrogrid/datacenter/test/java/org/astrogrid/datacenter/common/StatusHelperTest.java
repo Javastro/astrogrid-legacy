@@ -53,4 +53,15 @@ public class StatusHelperTest extends TestCase {
         assertEquals(result, QueryStatus.RUNNING_QUERY);
 
    }
+   
+   /** test the getServiceStatus method works in the case when the required element is the root one */
+   public void testGetServiceStatusFromRootElement() throws Exception {
+       String src = StatusHelper.makeStatusTag("foo",QueryStatus.RUNNING_QUERY);
+       Document doc = DocHelper.wrap(src);
+       assertNotNull(doc);
+       QueryStatus result = StatusHelper.getServiceStatus("foo",doc.getDocumentElement());
+       assertNotNull(result);
+       assertEquals(result,QueryStatus.RUNNING_QUERY);
+       
+   }
 }

@@ -51,4 +51,17 @@ public class QueryIdHelperTest extends TestCase {
         assertNotNull(result);
         assertEquals("noel",result);
     }
+    /** tests that query id is returned when just query id element is passed in.
+     * (this fails at present, but behaviour is required by current delegate
+     * <br>Really don't like this xml-mangling way of programming - unsurpsingly its very tricky & buggy.
+     * @throws Exception
+     */
+    public void testGetQueryIdFromRootElement() throws Exception {
+        String src = QueryIdHelper.makeQueryIdTag("noel");
+        Document doc = DocHelper.wrap(src);
+        assertNotNull(doc);
+        String result = QueryIdHelper.getQueryId(doc.getDocumentElement());
+        assertNotNull(result);
+        assertEquals("noel",result);
+    }
 }
