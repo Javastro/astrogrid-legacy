@@ -1,5 +1,5 @@
 /*
- $Id: MySpaceSunFtpDelegate.java,v 1.4 2003/12/10 12:14:34 jdt Exp $
+ $Id: MySpaceSunFtpDelegate.java,v 1.5 2004/01/11 15:59:19 acd Exp $
 
  (c) Copyright...
  */
@@ -448,6 +448,27 @@ public class MySpaceSunFtpDelegate implements MySpaceClient
       return null; //?
    }
    
+
+/**
+ * Specify whether or not the delegate writes messages to the log file.
+ *
+ * <p>
+ * In the delegate logging messages are primarily written for de-bugging
+ * purposes, ie. the output is largely from de-bugging statements.
+ *
+ * @param mySpaceLog Flag indicating whether messages are to be
+ *   written to the local MySpace delegate log file.
+ * @param echoLog Flag indicating whether messages are to be
+ *   written to standard output.
+ * @param  mySpaceLogFileName Name of the local MySpace delegate log file.
+ *   The name should include the full, absolute directory path of the name.
+ */
+
+    public void setLogging (boolean mySpaceLog, boolean echoLog,
+      String mySpaceLogFileName) {
+    }
+
+
    /**
     * Search a list of MSSs and return the MySpace names of entries which
     * match the query.

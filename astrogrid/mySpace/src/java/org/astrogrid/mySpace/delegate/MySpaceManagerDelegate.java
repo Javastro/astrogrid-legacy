@@ -65,7 +65,7 @@ public class MySpaceManagerDelegate implements MySpaceClient {
 //
 // Get and set methods.
 //
-// These method are provided to get and set the URL of the MSS to invoke
+// These methods are provided to get and set the URL of the MSS to invoke
 // and the Vector of MSSs to query.
 
 /**
@@ -153,6 +153,29 @@ public class MySpaceManagerDelegate implements MySpaceClient {
         }
 
         return allMssUrls;
+    }
+
+
+/**
+ * Specify whether or not the delegate writes messages to the log file.
+ *
+ * <p>
+ * In the delegate logging messages are primarily written for de-bugging
+ * purposes, ie. the output is largely from de-bugging statements.
+ *
+ * @param mySpaceLog Flag indicating whether messages are to be
+ *   written to the local MySpace delegate log file.
+ * @param echoLog Flag indicating whether messages are to be
+ *   written to standard output.
+ * @param  mySpaceLogFileName Name of the local MySpace delegate log file.
+ *   The name should include the full, absolute directory path of the name.
+ */
+
+    public void setLogging (boolean mySpaceLog, boolean echoLog,
+      String mySpaceLogFileName) {
+
+      DeLogger logger = new DeLogger (mySpaceLog, echoLog,
+        mySpaceLogFileName);
     }
 
 //
@@ -564,6 +587,13 @@ public class MySpaceManagerDelegate implements MySpaceClient {
     public boolean saveDataHoldingURL(String userId, String communityId, String credential, String fileName, String importURL,
                                    String category, String action) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+
+	if (DEBUG)
+	{  logger.appendMessage("Entering saveDataHoldingURL...");
+	   logger.appendMessage("  fileName: " + fileName);
+	   logger.appendMessage("  importURL: " + importURL);
+	}
+
         boolean isSaved = false;
         try {
             binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -578,9 +608,16 @@ public class MySpaceManagerDelegate implements MySpaceClient {
         }
         try{
             MySpaceHelper helper = new MySpaceHelper();
-            String jobDetails = helper.buildSaveURL(userId, communityId, credential, fileName, importURL, category, action);
-            if (DEBUG) System.out.println("filename: "+fileName+ "importURL: "+importURL);
+	    if (DEBUG) logger.appendMessage("    before buildSaveURL...");
+            String jobDetails = helper.buildSaveURL(userId, communityId,
+        credential, fileName, importURL, category, action);
+	    if (DEBUG)
+	    {  logger.appendMessage("    before upLoadURL...");
+               logger.appendMessage("    filename: "+fileName+ 
+	          "importURL: "+importURL);
+            }
             binding.upLoadURL(jobDetails);
+	    if (DEBUG) logger.appendMessage("    after upLoadURL...");
             isSaved = true;
         }catch(java.rmi.RemoteException re) {
             isSaved = false;

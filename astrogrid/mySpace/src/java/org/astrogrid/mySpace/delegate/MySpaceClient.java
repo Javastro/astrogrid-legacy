@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceClient.java,v 1.2 2003/12/08 20:33:40 mch Exp $
+ * $Id: MySpaceClient.java,v 1.3 2004/01/11 15:59:19 acd Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,7 +27,27 @@ public interface MySpaceClient {
    
    public static final String OVERWRITE = "Overwrite";
    public static final String APPEND = "Append";
-   
+
+
+/**
+ * Specify whether or not the delegate writes messages to the log file.
+ *
+ * <p>
+ * In the delegate logging messages are primarily written for de-bugging
+ * purposes, ie. the output is largely from de-bugging statements.
+ *
+ * @param mySpaceLog Flag indicating whether messages are to be
+ *   written to the local MySpace delegate log file.
+ * @param echoLog Flag indicating whether messages are to be
+ *   written to standard output.
+ * @param  mySpaceLogFileName Name of the local MySpace delegate log file.
+ *   The name should include the full, absolute directory path of the name.
+ */
+
+    public void setLogging (boolean mySpaceLog, boolean echoLog,
+      String mySpaceLogFileName);
+
+
    /**
     * Search a list of MSSs and return the MySpace names of entries which
     * match the query.
@@ -250,6 +270,11 @@ public interface MySpaceClient {
 
 /*
  $Log: MySpaceClient.java,v $
+ Revision 1.3  2004/01/11 15:59:19  acd
+ Added a method to the delegate to control logging from within the
+ delegate.  Note that such internal logging mostly comprises debugging
+ output.
+
  Revision 1.2  2003/12/08 20:33:40  mch
  Updated documentation
 

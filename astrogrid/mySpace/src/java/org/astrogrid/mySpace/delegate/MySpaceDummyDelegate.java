@@ -92,6 +92,28 @@ public class MySpaceDummyDelegate implements MySpaceClient
       }
    }
 
+/**
+ * Specify whether or not the delegate writes messages to the log file.
+ *
+ * <p>
+ * In the delegate logging messages are primarily written for de-bugging
+ * purposes, ie. the output is largely from de-bugging statements.
+ *
+ * @param mySpaceLog Flag indicating whether messages are to be
+ *   written to the local MySpace delegate log file.
+ * @param echoLog Flag indicating whether messages are to be
+ *   written to standard output.
+ * @param  mySpaceLogFileName Name of the local MySpace delegate log file.
+ *   The name should include the full, absolute directory path of the name.
+ */
+
+    public void setLogging (boolean mySpaceLog, boolean echoLog,
+      String mySpaceLogFileName) {
+
+    }
+
+
+
    /**
    * Returns a list of filenames that match the given criteria
    *
