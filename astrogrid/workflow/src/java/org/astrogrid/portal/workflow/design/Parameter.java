@@ -75,16 +75,38 @@ public class Parameter {
             
             // If the parameter is instream, the parameter contents is given by the node value, but...
             // If the parameter is a remote reference (to a file within MySpace),
-            // then the location is set by the node value.
+            // then the location is set by the node value...           
+            //bug# 106
+            debug( "element.getNodeValue():" + element.getNodeValue() ); 
+            debug( "element.getFirstChild().getNodeValue():" + element.getFirstChild().getNodeValue() );
+            
             if( this.isRemoteReference() ) {
-                this.location = element.getFirstChild().getNodeValue().trim() ;
-                trace( "location: " + this.location ) ;
-                this.contents = "" ;   
+                    
+               this.location = element.getFirstChild().getNodeValue() ;
+               //bug# 106     
+               if( location == null ) {
+                   location = "" ;
+               }
+               else {
+                   location = location.trim() ;
+               }
+               debug( "location: " + this.location ) ;
+               this.contents = "" ;   
+
             }
             else {
-                this.contents = element.getFirstChild().getNodeValue().trim() ;
-                trace( "contents: " + this.contents ) ;
-                this.location = "" ;
+                
+               this.contents = element.getFirstChild().getNodeValue() ;
+               //bug# 106
+               if( contents == null ) {
+                   contents = "" ;
+               }
+               else {
+                   contents = contents.trim() ;
+               }
+               debug( "contents: " + this.contents ) ;
+               this.location = "" ;
+                
             }
                                              
             NodeList
