@@ -6,7 +6,7 @@
   <ResourceParams name="mail/session">
   	<parameter>
 		<name>mail.smtp.host</name>
-		<value>@MAILHOST@</name>
+		<value>@MAILHOST@</value>
 	</parameter>
   </ResourceParams>
 </Context>
