@@ -1,0 +1,32 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from SimpleAuthenticatonService WSDL service -->
+
+  <service name="SimpleAuthentication" provider="java:RPC" style="rpc" use="encoded">
+      <parameter name="wsdlTargetNamespace" value="urn:authentication.services.community.astrogrid.org"/>
+      <parameter name="wsdlServiceElement" value="SimpleAuthenticatonService"/>
+      <parameter name="wsdlServicePort" value="SimpleAuthentication"/>
+      <parameter name="className" value="org.astrogrid.community.services.authentication.SimpleAuthenticationSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="SimpleAuthenticaton"/>
+      <operation name="authenticateLogin" qname="operNS:authenticateLogin" xmlns:operNS="urn:authentication.services.community.astrogrid.org" returnQName="authenticateLoginReturn" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
+        <parameter name="userName" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter name="password" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="authenticateToken" qname="operNS:authenticateToken" xmlns:operNS="urn:authentication.services.community.astrogrid.org" returnQName="authenticateTokenReturn" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
+        <parameter name="token" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <parameter name="allowedMethods" value="authenticateLogin authenticateToken"/>
+      <parameter name="scope" value="Session"/>
+
+  </service>
+</deployment>

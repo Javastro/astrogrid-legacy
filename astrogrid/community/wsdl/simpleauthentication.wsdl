@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:authentication.services.community.astrogrid.org" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:authentication.services.community.astrogrid.org" xmlns:intf="urn:authentication.services.community.astrogrid.org" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+   <wsdl:message name="authenticateTokenResponse">
+
+      <wsdl:part name="authenticateTokenReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateTokenRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateLoginResponse">
+
+      <wsdl:part name="authenticateLoginReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateLoginRequest">
+
+      <wsdl:part name="userName" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="SimpleAuthenticaton">
+
+      <wsdl:operation name="authenticateLogin" parameterOrder="userName password">
+
+         <wsdl:input message="impl:authenticateLoginRequest" name="authenticateLoginRequest"/>
+
+         <wsdl:output message="impl:authenticateLoginResponse" name="authenticateLoginResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticateToken" parameterOrder="token">
+
+         <wsdl:input message="impl:authenticateTokenRequest" name="authenticateTokenRequest"/>
+
+         <wsdl:output message="impl:authenticateTokenResponse" name="authenticateTokenResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="SimpleAuthenticationSoapBinding" type="impl:SimpleAuthenticaton">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="authenticateLogin">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="authenticateLoginRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:authentication.services.community.astrogrid.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="authenticateLoginResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:authentication.services.community.astrogrid.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticateToken">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="authenticateTokenRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:authentication.services.community.astrogrid.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="authenticateTokenResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:authentication.services.community.astrogrid.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="SimpleAuthenticatonService">
+
+      <wsdl:port binding="impl:SimpleAuthenticationSoapBinding" name="SimpleAuthentication">
+
+         <wsdlsoap:address location="http://localhost:8080/axis/services/SimpleAuthentication"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>
