@@ -31,10 +31,13 @@ public class DocHelperTest extends TestCase {
     */
    public void testBadWrap()
    {
-
+    try {
          DocHelper.wrap("<Buggle><Wuggle></Muggle>");
 
-         fail("Should have failed with a RuntimeException");
+         fail("Should have failed with an IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+        // expected.
+    }
    }
 
    /**
