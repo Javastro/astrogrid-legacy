@@ -19,7 +19,48 @@
   <inceptionYear>2002</inceptionYear>
   <package>org.astrogrid</package> <logo>http://www.astrogrid.org/images/AGlogo</logo> 
   <shortDescription>A collection of APIs abstracting security in web services.</shortDescription>
-
+  
+  <description>
+    <![CDATA[
+    <p>
+    The security-facade package implements a single-sign-on (SSO) authentication 
+    system between SOAP clients and SOAP services. Messages sent with the aid of 
+    this package are annotated with SSO credentials in the SOAP headers. Messages
+    received by services using this package are authenticated using the credentials
+    in the message.
+    </p>
+    <p>
+    The facade hides details of the authentication from the client and service code.
+    Clients use a helper class, ClientSecurityGuard, to set up SSO credentials and
+    to configure service proxies to use the credentials. Services use a matching
+    helper class, ServiceSecurityGuard, to determine the results of authentication
+    and to extract credentials after successful authentication. Encoding of 
+    credentials to SOAP, parsing of credentials from SOAP and validation of
+    credentials at authentication are all done automatically on exchange of messages
+    by JAX-RPC handlers.
+    </p>
+    <p>
+    The implementation behind the facade may use an external service to issue and
+    validate SSO credentials. The current implementation uses the AstroGrid
+    Community service, and the SSO credentials are NonceTokens.
+    </p>
+    <p>
+    This package ties together several Java standards:
+    </p>
+    <ul>
+      <li>SOAP with Attachments API for Java (SAAJ) for handling the messages;</li>
+      <li>JAX-RPC for the handlers that encode and parse the credentials;</li>
+      <li>Java Authentication and Authorization System (JAAS) for authentication.</li>
+    </ul>
+    <p>
+    Therefore, implementations of these standards must be provided to use the package.
+    SUN's JDK provides JAAS. Apache-Axis provides SAAJ and JAX-RPC. In fact, the
+    current implemenation <em>requires</em> Axism rather than another implementation,
+    on the server side.
+    </p>
+    ]]>
+  </description>
+  
   <siteDirectory>/var/www/www/maven/build/security</siteDirectory>
 
   <repository>
