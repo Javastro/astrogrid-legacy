@@ -1,0 +1,236 @@
+
+Sent Query:SELECT SURF.coverageSpectralMinimumWavelength FROM SURF WHERE {0}(SURF.coverageObjectDensity EQUALS 65) AND {1}(SURF.facility EQUALS 87) OR {2}(SURF.photometryError EQUALS 44) - JobID= demouser:democomm:JESLeicester01:293238153
+
+<job name="JobTest">
+<userid>
+demouser</userid>
+<community>
+democomm</community>
+<jobstep name="surf">
+<query>
+<from>
+<catalog name="surf">
+<service name="surf" url="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent"/>
+</catalog>
+</from>
+<return>
+<field name="coverageSpectralMinimumWavelength" type="COLUMN"/>
+</return>
+<criteria>
+<operation name="AND">
+<operation name="EQUALS">
+<field name="coverageObjectDensity" type="COLUMN"/>
+<field>
+65</field>
+</operation>
+<operation name="OR">
+<operation name="EQUALS">
+<field name="facility" type="COLUMN"/>
+<field>
+87</field>
+</operation>
+<operation name="EQUALS">
+<field name="photometryError" type="COLUMN"/>
+<field>
+44</field>
+</operation>
+</operation>
+</operation>
+</criteria>
+</query>
+</jobstep>
+</job>
+-----------------------------------------
+Sent Query:SELECT SURF.coverageObjectCount FROM SURF WHERE {0}(SURF.coverageSpectralMinimumWavelength EQUALS 76) AND {1}(SURF.coverageTemporalStartTime EQUALS 87) OR {2}(SURF.coverageSpectralMinimumWavelength EQUALS 87) AND {3}(SURF.resolutionTemporal EQUALS 98) AND {4}(SURF.coverageTemporalStopTime EQUALS 67) OR {5}(SURF.contentLevel EQUALS 34) - JobID= demouser:democomm:JESLeicester01:293238154
+
+<job name="JobTest">
+<userid>
+demouser</userid>
+<community>
+democomm</community>
+<jobstep name="surf">
+<query>
+<from>
+<catalog name="surf">
+<service name="surf" url="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent"/>
+</catalog>
+</from>
+<return>
+<field name="coverageObjectCount" type="COLUMN"/>
+</return>
+<criteria>
+<operation name="AND">
+<operation name="EQUALS">
+<field name="coverageSpectralMinimumWavelength" type="COLUMN"/>
+<field>
+76</field>
+</operation>
+<operation name="OR">
+<operation name="EQUALS">
+<field name="coverageTemporalStartTime" type="COLUMN"/>
+<field>
+87</field>
+</operation>
+<operation name="EQUALS">
+<field name="coverageSpectralMinimumWavelength" type="COLUMN"/>
+<field>
+87</field>
+</operation>
+</operation>
+<operation name="EQUALS">
+<field name="resolutionTemporal" type="COLUMN"/>
+<field>
+98</field>
+</operation>
+<operation name="OR">
+<operation name="EQUALS">
+<field name="coverageTemporalStopTime" type="COLUMN"/>
+<field>
+67</field>
+</operation>
+<operation name="EQUALS">
+<field name="contentLevel" type="COLUMN"/>
+<field>
+34</field>
+</operation>
+</operation>
+</operation>
+</criteria>
+</query>
+</jobstep>
+</job>
+
+
+
+<job name="JobTest">
+<userid>
+demouser</userid>
+<community>
+democomm</community>
+<jobstep name="surf">
+<query>
+<from>
+<catalog name="surf">
+<service name="surf" url="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent"/>
+</catalog>
+</from>
+<return>
+<field name="coverageSpectralMaximumWavelength" type="COLUMN"/>
+</return>
+<criteria>
+<operation name="EQUALS">
+<field name="coverageTemporalStopTime" type="COLUMN"/>
+<field>
+65</field>
+</operation>
+</criteria>
+</query>
+</jobstep>
+</job>
+----------------------
+
+<job name="JobTest">
+<userid>
+demouser</userid>
+<community>
+democomm</community>
+<jobstep name="surf">
+<query>
+<from>
+<catalog name="surf">
+<service name="surf" url="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent"/>
+</catalog>
+</from>
+<return>
+<field name="resolutionSpectral" type="COLUMN"/>
+</return>
+<criteria>
+<operation name="AND">
+<operation name="EQUALS">
+<field name="NULL" type="UCD"/>
+<field>
+43</field>
+</operation>
+<operation name="LESS_THAN_OR_EQUALS">
+<field name="photometryError" type="COLUMN"/>
+<field>
+65</field>
+</operation>
+</operation>
+</criteria>
+</query>
+</jobstep>
+</job>
+----------------------------------------
+
+<job name="JobTest">
+<userid>
+demouser</userid>
+<community>
+democomm</community>
+<jobstep name="surf">
+<query>
+<from>
+<catalog name="surf">
+<service name="surf" url="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent"/>
+</catalog>
+</from>
+<return>
+<field name="photometryError" type="COLUMN"/>
+</return>
+<criteria>
+<operation name="AND">
+<operation name="EQUALS">
+<field name="coverageDepth" type="COLUMN"/>
+<field>
+76</field>
+</operation>
+<operation name="EQUALS">
+<field name="astrometryError" type="COLUMN"/>
+<field>
+56</field>
+</operation>
+<operation name="EQUALS">
+<field name="contentLevel" type="COLUMN"/>
+<field>
+678</field>
+</operation>
+</operation>
+</criteria>
+</query>
+</jobstep>
+</job>
+------------------------------
+
+<job name="JobTest">
+<userid>
+demouser</userid>
+<community>
+democomm</community>
+<jobstep name="surf">
+<query>
+<from>
+<catalog name="surf">
+<service name="surf" url="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent"/>
+</catalog>
+</from>
+<return>
+<field name="timingError" type="COLUMN"/>
+</return>
+<criteria>
+<operation name="OR">
+<operation name="EQUALS">
+<field name="resolutionSpectral" type="COLUMN"/>
+<field>
+43</field>
+</operation>
+<operation name="EQUALS">
+<field name="coverageObjectCount" type="COLUMN"/>
+<field>
+578</field>
+</operation>
+</operation>
+</criteria>
+</query>
+</jobstep>
+</job>
