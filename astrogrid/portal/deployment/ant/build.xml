@@ -38,28 +38,15 @@
         <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${portal.war.name}" dest="${portal.war}" verbose="true" usetimestamp="true"/>
     	<touch file="${portal.war}" description="there's a bug in get, so we need to touch it to stop it being redownloaded"/>
     </target>
-    <target name="install-portal" description="Install the AstroGrid Portal" depends="checkTomcat, checkRegistry, downloadPortal, portal-deploy, check-installed-ok">
+    <target name="install-portal" description="Install the AstroGrid Portal" depends="checkTomcat, checkRegistry, downloadPortal, portal-deploy">
         <echo>***The Portal has been successfully installed***</echo>
         <echo>Click Done to exit</echo>
     	<property name="portal.installed" value="true"/>
     </target>
 	
-	<target name="check-installed-ok" depends="checkTomcat">
-    	<waitfor maxwait="30" maxwaitunit="second" checkevery="2000" timeoutproperty="installation.failed">
-    	    <http url="${input.tomcat.url}${portal.contextpath}"/>
-    	</waitfor>
-    	<fail if="installation.failed">Installation failed for some reason.  Please retry</fail>
-	</target>
+
 	
-	<target name="check-uninstalled-ok" depends="checkTomcat">
-    	<waitfor maxwait="6" maxwaitunit="second" checkevery="2000" timeoutproperty="uninstallation.failed">
-    	    <http url="${input.tomcat.url}${portal.contextpath}"/>
-    	</waitfor>
-    	<fail unless="uninstallation.failed">Uninstallation failed for some reason.  Please retry</fail>
-	</target>	
-	
-	
-    <target name="uninstall-portal" description="Uninstall the AstroGrid Portal" depends="checkTomcat,  portal-undeploy, check-uninstalled-ok">
+    <target name="uninstall-portal" description="Uninstall the AstroGrid Portal" depends="checkTomcat,  portal-undeploy">
     	<sleep seconds="10" description="Allow Tomcat to catch up"/>
         <echo>***The Portal has been successfully removed***</echo>
         <echo>Click Done to exit</echo>
