@@ -1,5 +1,5 @@
 /*
- * $Id: ProxyResourceSupport.java,v 1.1 2005/03/08 18:05:57 mch Exp $
+ * $Id: ProxyResourceSupport.java,v 1.2 2005/03/10 13:48:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,19 +23,22 @@ import org.xml.sax.SAXException;
 
 /**
  * Used to serve metadata generated from disk, or a URL, or some other service.
- * Provides methods for ensuring identifiers etc are correct for *this* service
+ * Provides methods for ensuring identifiers etc are correct for *this* service.
+ * NB Expect to extend from this to localise special values, such as the CEA's
+ * application <-> service links.
+ *
  * <p>
  * @author M Hill
  */
 
 public class ProxyResourceSupport extends VoResourceSupport {
    
-   /** As makeMine(Document) but takes stream to parse from
+   /** As makeLocal(Document) but takes stream to parse from
     */
-   public String makeMine(InputStream in) throws IOException {
+   public String makeLocal(InputStream in) throws IOException {
       try {
          Document doc = DomHelper.newDocument(in);
-         return makeMine(doc);
+         return makeLocal(doc);
       }
       catch (ParserConfigurationException e) {
          log.error("XML Parser not configured properly",e);
@@ -59,18 +62,18 @@ public class ProxyResourceSupport extends VoResourceSupport {
     * given doc may contain a list of <Resource>
     * elements or a Description element.  Returns the transformed document.
     */
-   public String makeMine(Document doc) throws IOException {
-      StringBuffer resources = new StringBuffer();
+   public String makeLocal(Document doc) throws IOException {
       
       String rootElementName = doc.getDocumentElement().getNodeName();
       
       //if the root element is a resource, return that
       if (rootElementName.equals("Resource"))  {
          checkResource( doc.getDocumentElement());
-         resources.append(DomHelper.ElementToString(doc.getDocumentElement())) ;
+         return DomHelper.ElementToString(doc.getDocumentElement()) ;
       }
-         //if the root element is a vodescription, return all resource elements
+      //if the root element is a vodescription, return all resource elements
       else if (rootElementName.equals("VODescription"))  {
+         StringBuffer localRes = new StringBuffer();
          NodeList voResources = doc.getElementsByTagName("Resource");
          if (voResources.getLength()==0)  {
             throw new MetadataException("No <Resource> elements in document ");
@@ -81,77 +84,55 @@ public class ProxyResourceSupport extends VoResourceSupport {
             
             checkResource(resource);
             
-            resources.append(DomHelper.ElementToString(resource));
+            localRes.append(DomHelper.ElementToString(resource));
          }
+         return localRes.toString();
       }
       else  {
          throw new MetadataException("No 'Resource' or 'VODescription' element in metadata");
       }
-      
-      return resources.toString();
    }
    
    
    /** Checks that a resource is OK for this datacenter, and sets appropriately if not */
    public void checkResource(Element remoteResource) throws IOException  {
-      
-      //use file/url date if available, otherwise current time
-      Date updated = null;
-      
-      remoteResource.setAttribute("status", "active");
-      remoteResource.setAttribute("updated", toRegistryForm(updated));
 
-      
+      /* The remoteResource DOM will be modified using values from the locally
+       * generated VoResource core metadata */
+      remoteResource.setAttribute("status", "active");
+      remoteResource.setAttribute("updated", toRegistryForm(new Date()));
+
       try {
          Element localCore = DomHelper.newDocument(makeConfigCore("")).getDocumentElement();
          
-         //set id to local id
-         Element localId = DomHelper.getSingleChildByTagName(localCore, "identifier");
-         Element remoteId = DomHelper.getSingleChildByTagName(remoteResource, "identifier");
-            
-         //set access url to local service
+         //set id to local 'core' id + last /-seperated token of the remote id
+         Element remoteIdNode = DomHelper.getSingleChildByTagName(remoteResource, "identifier");
+         String localStem = DomHelper.getValueOf(localCore, "identifier");
+         String remoteId = DomHelper.getValueOf(remoteIdNode);
+         String newId = localStem;
+         int i = remoteId.lastIndexOf("/");
+         if (i>-1) newId = newId + remoteId.substring(i);
+         DomHelper.setElementValue(remoteIdNode, newId);
+         
+         //set reference url
+         Element contentNode = DomHelper.getSingleChildByTagName(remoteResource, "content");
+         if (contentNode != null) {
+            Element refUrlNode = DomHelper.getSingleChildByTagName(contentNode, "referenceURL");
+            String localRefUrl = DomHelper.getValueOf(DomHelper.getSingleChildByTagName(localCore, "content"), "referenceURL");
+            DomHelper.setElementValue(refUrlNode, localRefUrl);
+         }
+         
          
       }
       catch (ParserConfigurationException e) {
          throw new RuntimeException("Server not configured properly", e);
       }
       catch (SAXException e) {
-         throw new MetadataException("Server error: Core Generated VoResource is invalid XML: "+makeConfigCore(""));
+         throw new MetadataException(e+" in Core Generated VoResource: "+makeConfigCore(""));
       }
    }
    
 
-   public void checkIdentifierTag(Element resource)  {
-      
-      //check that each 'returns' resource has a child <Identifier>, as some early ones didn't and we want to catch them
-      Element voIdTag = DomHelper.ensuredGetSingleChild(resource, "Identifier");
-      
-      String dsaAuthId = SimpleConfig.getSingleton().getString(AUTHID_KEY);
-      String dsaResKey = SimpleConfig.getSingleton().getString(RESKEY_KEY);
-      
-      //we need to override/make sure that they are correct for *this* service, eg
-      //we may be proxying to get the metadata
-      Element authIdTag = DomHelper.ensuredGetSingleChild(voIdTag, "AuthorityID");
-      String docAuthId = DomHelper.getValueOf(authIdTag);
-      
-      if (!docAuthId.equals(dsaAuthId))  {
-         //don't bother with warning if authority is empty
-         if (docAuthId.trim().length()>0)  {
-            log.warn("Authority is '"+docAuthId+"', but datacenter is configured for "+dsaAuthId+", changing resource to config value in Resource type "+resource.getAttribute("xsi:type"));
-         }
-         DomHelper.setElementValue(authIdTag, dsaAuthId);
-      }
-      
-      Element resKeyTag = DomHelper.ensuredGetSingleChild(voIdTag, "ResourceKey");
-      String docResKey = DomHelper.getValueOf(resKeyTag);
-      
-      //bit messy - work out how to change resource key without knowing what the one is in the docuemnt.
-      //just look for dsaResKey+"/" and replace that bit if nec.
-      if (!docResKey.startsWith(dsaResKey+"/"))  {
-         String newValue = dsaResKey+"/"+docResKey.substring(docResKey.indexOf("/")+1);
-         DomHelper.setElementValue(resKeyTag, newValue);
-      }
-   }
    
    
 }

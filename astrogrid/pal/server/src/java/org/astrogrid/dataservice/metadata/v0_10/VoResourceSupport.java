@@ -1,11 +1,14 @@
 /*
- * $Id: VoResourceSupport.java,v 1.1 2005/03/08 18:05:57 mch Exp $
+ * $Id: VoResourceSupport.java,v 1.2 2005/03/10 13:48:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.dataservice.metadata.v0_10;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.service.DataServer;
+import org.astrogrid.io.Piper;
 
 /**
  * Helper methods for constructing basic VoResource documents
@@ -50,7 +54,7 @@ public class VoResourceSupport {
          "<content>"+
            "<description>"+description+"</description>"+
            "<referenceURL>"+refUrl+"</referenceURL>"+
-           "<type>"+type+"</publisher>"+
+           "<type>"+type+"</type>"+
          "</content>";
          
       return core;
@@ -62,23 +66,34 @@ public class VoResourceSupport {
    
 
    /** Constructs core VOResource elements from settings in the configuration file */
-   public String makeConfigCore(String idEnd) {
-      return makeCore(
-         DataServer.getDatacenterName(),
-         makeId(idEnd),
-         SimpleConfig.getSingleton().getString("datacenter.publisher",null),
-         SimpleConfig.getSingleton().getString("datacenter.contact.name", ""),
-         SimpleConfig.getSingleton().getString("datacenter.contact.email", ""),
-         //SimpleConfig.getSingleton().getString("datacenter.contact.date", ""));
-         SimpleConfig.getSingleton().getString("data.description", ""),
-         SimpleConfig.getSingleton().getString("datacenter.url", ""),
-         "Other"
-      );
+   public String makeConfigCore(String idEnd) throws IOException {
+      
+      String coreFile = SimpleConfig.getSingleton().getString("dataserver.metadata.core", null);
+      if ( coreFile != null) {
+         //use an on-disk resource file
+         StringWriter sw = new StringWriter();
+         FileReader reader = new FileReader(coreFile);
+         Piper.pipe(reader, sw);
+         return sw.toString();
+      }
+      else {
+         return makeCore(
+            DataServer.getDatacenterName(),
+            makeId(idEnd),
+            SimpleConfig.getSingleton().getString("datacenter.publisher",null),
+            SimpleConfig.getSingleton().getString("datacenter.contact.name", ""),
+            SimpleConfig.getSingleton().getString("datacenter.contact.email", ""),
+            //SimpleConfig.getSingleton().getString("datacenter.contact.date", ""));
+            SimpleConfig.getSingleton().getString("data.description", ""),
+            SimpleConfig.getSingleton().getString("datacenter.url", ""),
+            "Other"
+         );
+      }
    }
    
    /** Constructs an IVORN ID from an authority key and a resource key and the given extension */
    public String makeId(String idEnd) {
-      return SimpleConfig.getSingleton().getString(AUTHID_KEY)+SimpleConfig.getSingleton().getString(RESKEY_KEY)+idEnd;
+      return SimpleConfig.getSingleton().getString(AUTHID_KEY)+"/"+SimpleConfig.getSingleton().getString(RESKEY_KEY)+"/"+idEnd;
    }
    
    
