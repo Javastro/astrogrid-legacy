@@ -2,17 +2,18 @@
 <workflow
   xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
 name="total tool">
 
   <sequence>
     <step joinCondition="any" name="detailed step" sequenceNumber="1" status="RUNNING" stepNumber="1">
       <tool interface="com.foo.tool" name="a tool">
         <input>
-          <parameter name="var1" type="anyURI">http://www.slashdot.org</parameter>
-          <parameter name="var2" type="MySpace_VOTableReference"></parameter>
+          <parameter name="var1" type="anyURI"><agpd:value>http://www.slashdot.org</agpd:value></parameter>
+          <parameter name="var2" type="MySpace_VOTableReference"><agpd:value>x</agpd:value></parameter>
         </input>
         <output>
-          <parameter name="result" type="MySpace_FileReference"></parameter>
+          <parameter name="result" type="MySpace_FileReference"><agpd:value /></parameter>
         </output>
       </tool>
       <description
