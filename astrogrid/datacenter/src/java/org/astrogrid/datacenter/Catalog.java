@@ -64,7 +64,7 @@ public class Catalog {
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				tableElement = (Element) nodeList.item(i) ;
-				if( tableElement.getTagName().equals( JobDocDescriptor.OP_ELEMENT ) ) {
+				if( tableElement.getTagName().equals( JobDocDescriptor.TABLE_ELEMENT ) ) {
 					getTables()[i] = new Table( tableElement ) ;
 				}
 				else  {
