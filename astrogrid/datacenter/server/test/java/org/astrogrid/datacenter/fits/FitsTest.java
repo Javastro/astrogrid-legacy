@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.12 2004/09/07 14:53:00 mch Exp $
+/*$Id: FitsTest.java,v 1.13 2004/09/08 15:47:31 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -59,7 +59,10 @@ public class FitsTest extends OptionalTestCase
             FitsTest.class.getResource("examples/sample6.fits")
       };
 
-      return new IndexGenerator().generateIndex(fits);
+      IndexGenerator generator = new IndexGenerator();
+      generator.raAxis = 1;
+      generator.decAxis = 2;
+      return generator.generateIndex(fits);
    }
    
    public static Test suite()
@@ -82,6 +85,9 @@ public class FitsTest extends OptionalTestCase
 
 /*
  $Log: FitsTest.java,v $
+ Revision 1.13  2004/09/08 15:47:31  mch
+ Fix to configure ra and dec axis
+
  Revision 1.12  2004/09/07 14:53:00  mch
  Fixes etc for SEC
 
