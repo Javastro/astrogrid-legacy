@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+/*$Id: DatacenterApplication.java,v 1.3 2004/10/07 10:34:44 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,7 +89,6 @@ public class DatacenterApplication extends AbstractApplication implements Querie
                 Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RA).process())
                 , Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.DEC).process())
                 , Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RADIUS).process())
-                , null
                 );
         } else if (interf.getName().equals(DatacenterApplicationDescription.ADQL_IFACE)) {
             String queryString = (String)findInputParameterAdapter(DatacenterApplicationDescription.QUERY).process();
@@ -117,7 +116,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
             TargetIndicator ti = CEATargetIndicator.newInstance();
             String resultsFormat = (String)findInputParameterAdapter(DatacenterApplicationDescription.FORMAT).process();
             Query query = buildQuery(getApplicationInterface());
-            Querier querier = Querier.makeQuerier(acc,query,ti,resultsFormat);
+            query.getResultsDef().setTarget(ti);
+            query.getResultsDef().setFormat(resultsFormat);
+            Querier querier = Querier.makeQuerier(acc,query);
             querier.addListener(this);
 
             setStatus(Status.INITIALIZED);
@@ -238,6 +239,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
 $Log: DatacenterApplication.java,v $
+Revision 1.3  2004/10/07 10:34:44  mch
+Fixes to Cone maker functions and reading/writing String comparisons from Query
+
 Revision 1.2  2004/10/06 21:12:17  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.3 2004/10/07 10:34:44 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -46,7 +46,7 @@ public class FitsQuerierTest extends TestCase
    }
 
    public void testPluginClass() throws IOException {
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(300, 60, 12), new NullTarget(), ReturnTable.VOTABLE);
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, new NullTarget(), ReturnTable.VOTABLE));
       
       assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
    }
@@ -54,7 +54,7 @@ public class FitsQuerierTest extends TestCase
    public void testCone() throws IOException
    {
       StringWriter sw = new StringWriter();
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(300, 60, 12), new NullTarget(), ReturnTable.VOTABLE);
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, new NullTarget(), ReturnTable.VOTABLE));
       
       assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
       
@@ -85,6 +85,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.3  2004/10/07 10:34:44  mch
+ Fixes to Cone maker functions and reading/writing String comparisons from Query
+
  Revision 1.2  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

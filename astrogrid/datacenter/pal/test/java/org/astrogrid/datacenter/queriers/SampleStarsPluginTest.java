@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.3 2004/10/06 21:12:17 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.4 2004/10/07 10:34:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -76,7 +76,7 @@ public class SampleStarsPluginTest extends TestCase {
       QuerierManager manager = new QuerierManager("DummyTest");
 
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30,30,6), TargetIndicator.makeIndicator(sw), ReturnTable.VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, TargetIndicator.makeIndicator(sw), ReturnTable.VOTABLE));
       manager.askQuerier(q);
       Document results = DomHelper.newDocument(sw.toString());
    }

@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQueryMaker.java,v 1.1 2004/10/06 21:12:16 mch Exp $
+ * $Id: AdqlQueryMaker.java,v 1.2 2004/10/07 10:34:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,6 +28,8 @@ import org.xml.sax.SAXException;
 
 public class AdqlQueryMaker  {
 
+   /** Constructs a Query from the given ADQL DOM.  Nasty horrible thing converts
+    * to SQL and parses it... */
    public static Query makeQuery(Element adql) throws QueryException {
       //yeuch
       StdSqlMaker maker = new StdSqlMaker();
@@ -37,18 +39,18 @@ public class AdqlQueryMaker  {
       return SqlQueryMaker.makeQuery(sql);
    }
 
-   /** Creates a Query (object model) from the given ADQL string.
+   /** Convenience routine - creates a Query (object model) from the given ADQL string.
     */
    public static Query makeQuery(String adql) throws QueryException, SAXException, IOException, ParserConfigurationException {
       return makeQuery(DomHelper.newDocument(adql).getDocumentElement());
    }
 
-   /** Constructs query from given inputstream
+   /** Convenience routine - Constructs query from given inputstream
     */
    public static Query makeQuery(InputStream in) throws QueryException, IOException, SAXException, ParserConfigurationException {
       return makeQuery(DomHelper.newDocument(in).getDocumentElement());
    }
-  
+
    public static Query makeQuery(String adql, TargetIndicator target, String format) throws QueryException, SAXException, IOException, ParserConfigurationException {
       Query query = makeQuery(adql);
       query.getResultsDef().setTarget(target);
@@ -76,6 +78,9 @@ public class AdqlQueryMaker  {
 }
 /*
  $Log: AdqlQueryMaker.java,v $
+ Revision 1.2  2004/10/07 10:34:44  mch
+ Fixes to Cone maker functions and reading/writing String comparisons from Query
+
  Revision 1.1  2004/10/06 21:12:16  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

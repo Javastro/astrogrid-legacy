@@ -1,5 +1,5 @@
 /*
- * $Id: ColumnReference.java,v 1.3 2004/10/06 21:12:16 mch Exp $
+ * $Id: ColumnReference.java,v 1.4 2004/10/07 10:34:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,6 +14,8 @@ package org.astrogrid.datacenter.query.condition;
  * whereas I think there ought to be separate types...
  */
 
+import org.astrogrid.datacenter.query.QueryException;
+
 public class ColumnReference implements SearchFieldReference {
    
    String datasetName = null;
@@ -23,9 +25,9 @@ public class ColumnReference implements SearchFieldReference {
 
    /**  Creates a reference to a column in a table. */
    public ColumnReference(String aTableName, String aColName) {
-      
-      assert aTableName.indexOf(' ')==-1 : "Table name '"+aTableName+"' contains a space";
-      assert aColName.indexOf(' ')==-1 : "Column name '"+aColName+"' contains a space";
+
+      if (aTableName.indexOf(' ') != -1) { throw new QueryException("Table name '"+aTableName+"' contains a space"); }
+      if (aColName.indexOf(' ') != -1) { throw new QueryException("Column name '"+aColName+"' contains a space"); }
       
       this.tableName = aTableName;
       this.colName = aColName;
@@ -55,6 +57,9 @@ public class ColumnReference implements SearchFieldReference {
 
 /*
 $Log: ColumnReference.java,v $
+Revision 1.4  2004/10/07 10:34:44  mch
+Fixes to Cone maker functions and reading/writing String comparisons from Query
+
 Revision 1.3  2004/10/06 21:12:16  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

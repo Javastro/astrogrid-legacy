@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.4 2004/10/06 21:12:17 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.5 2004/10/07 10:34:44 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,7 +84,7 @@ public class SqlPluginTest extends ServerTestCase {
       SampleStarsPlugin.initConfig();
       
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(ra,dec,r), new WriterTarget(sw), ReturnTable.VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra,dec,r, new WriterTarget(sw), ReturnTable.VOTABLE));
       manager.askQuerier(q);
       log.info("Checking results...");
       Document results = DomHelper.newDocument(sw.toString());
@@ -119,7 +119,7 @@ public class SqlPluginTest extends ServerTestCase {
       assertNotNull("Could not open query file :" + queryFile,is);
       
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(is), new WriterTarget(sw), ReturnTable.VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(is, new WriterTarget(sw), ReturnTable.VOTABLE));
       
       manager.askQuerier(q);
       
@@ -221,6 +221,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.5  2004/10/07 10:34:44  mch
+ Fixes to Cone maker functions and reading/writing String comparisons from Query
+
  Revision 1.4  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.4 2004/10/06 21:12:17 mch Exp $
+/*$Id: DataServiceTest.java,v 1.5 2004/10/07 10:34:44 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,7 +62,7 @@ public class DataServiceTest extends ServerTestCase {
     public void testConeSearch() throws Throwable {
        
       StringWriter sw = new StringWriter();
-       server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30, 30, 6), new ReturnTable(TargetIndicator.makeIndicator(sw), "VOTABLE"));
+       server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetIndicator.makeIndicator(sw), "VOTABLE")));
        String results = sw.toString();
 
        Document doc = DomHelper.newDocument(results);
@@ -90,7 +90,7 @@ public class DataServiceTest extends ServerTestCase {
    public void testStatus() throws Throwable {
       //submit queries
       StringWriter sw = new StringWriter();
-      server.submitQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30, 30, 6), new ReturnTable(TargetIndicator.makeIndicator(sw), "VOTABLE"));
+      server.submitQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetIndicator.makeIndicator(sw), "VOTABLE")));
        query1.setResultsDef(new ReturnTable(TargetIndicator.makeIndicator(sw), "VOTABLE"));
       server.submitQuery(Account.ANONYMOUS, query1);
 
@@ -137,6 +137,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.5  2004/10/07 10:34:44  mch
+Fixes to Cone maker functions and reading/writing String comparisons from Query
+
 Revision 1.4  2004/10/06 21:12:17  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

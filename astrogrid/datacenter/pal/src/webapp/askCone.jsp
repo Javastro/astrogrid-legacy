@@ -21,7 +21,7 @@
    ReturnSpec returns = ServletHelper.makeReturnSpec(request);
 
    try {
-      server.askQuery(Account.ANONYMOUS, new Query(null, SimpleQueryMaker.makeConeCondition(ra, dec, sr), returns));
+      server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra, dec, sr, returns));
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
       out.write(ServletHelper.exceptionAsHtmlPage("Searching Cone (RA="+ra+", DEC="+dec+", SR="+sr, th));

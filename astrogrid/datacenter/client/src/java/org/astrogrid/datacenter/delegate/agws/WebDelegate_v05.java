@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate_v05.java,v 1.4 2004/10/06 21:12:16 mch Exp $
+ * $Id: WebDelegate_v05.java,v 1.5 2004/10/07 10:34:44 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -98,7 +98,7 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
     * @return InputStream to results document, including votable
     */
    public InputStream coneSearch(double ra, double dec, double sr) throws IOException {
-      return askQuery(new Query(SimpleQueryMaker.makeConeCondition(ra, dec, sr), new ReturnTable(null, "VOTABLE")));
+      return askQuery(SimpleQueryMaker.makeConeQuery(ra, dec, sr, new ReturnTable(null, "VOTABLE")));
    }
    
    /**
@@ -107,7 +107,11 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
    public InputStream askQuery(Query query) throws IOException {
       String results = null;
       
-      results = binding.askAdqlQuery( Query2Adql074.makeAdql(query, null), query.getResultsDef().getFormat());
+      if (query.getResultsDef().getTarget() != null) {
+         throw new IllegalArgumentException("Use v06 delegates to do blocking queries that send results elsewhere.  Otherwise remove target and read returned results");
+      }
+      
+      results = binding.askAdqlQuery( Query2Adql074.makeAdql(query), query.getResultsDef().getFormat());
       
       return new StringBufferInputStream(results);
    }
@@ -142,6 +146,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
 
 /*
  $Log: WebDelegate_v05.java,v $
+ Revision 1.5  2004/10/07 10:34:44  mch
+ Fixes to Cone maker functions and reading/writing String comparisons from Query
+
  Revision 1.4  2004/10/06 21:12:16  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 
@@ -199,6 +206,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate_v05.java,v $
+Revision 1.5  2004/10/07 10:34:44  mch
+Fixes to Cone maker functions and reading/writing String comparisons from Query
+
 Revision 1.4  2004/10/06 21:12:16  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

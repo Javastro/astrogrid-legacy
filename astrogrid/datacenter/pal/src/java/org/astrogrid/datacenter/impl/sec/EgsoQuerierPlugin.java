@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierPlugin.java,v 1.1 2004/10/05 16:10:43 mch Exp $
+/*$Id: EgsoQuerierPlugin.java,v 1.2 2004/10/07 10:34:44 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,16 +13,17 @@ package org.astrogrid.datacenter.impl.sec;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
+import org.astrogrid.datacenter.impl.sec.SEC_Port;
+import org.astrogrid.datacenter.impl.sec.SEC_Service;
+import org.astrogrid.datacenter.impl.sec.SEC_ServiceLocator;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.datacenter.queriers.VotableResults;
 import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
-import org.astrogrid.datacenter.impl.sec.SEC_Port;
-import org.astrogrid.datacenter.impl.sec.SEC_Service;
-import org.astrogrid.datacenter.impl.sec.SEC_ServiceLocator;
 import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
 
@@ -56,8 +57,11 @@ public class EgsoQuerierPlugin extends QuerierPlugin {
          VotableResults results = new VotableResults(querier, DomHelper.newDocument(resultsVot));
          results.send(querier.getReturnSpec(), querier.getUser());
       }
+      catch (RemoteException e) {
+         throw new QuerierPluginException("Submitting '"+sql+"' to EGSO service at "+SEC_URL+" failed with "+e,e);
+      }
       catch (SAXException e) {
-         throw new QuerierPluginException("Egso service at "+SEC_URL+" did not return valid VOTable XML: "+e,e);
+         throw new QuerierPluginException("Submitting '"+sql+"' to Egso service at "+SEC_URL+" did not return valid VOTable XML: "+e,e);
       }
       catch (ParserConfigurationException e) {
          throw new QuerierPluginException("Server not configured correctly",e);
@@ -68,6 +72,9 @@ public class EgsoQuerierPlugin extends QuerierPlugin {
 
 /*
  $Log: EgsoQuerierPlugin.java,v $
+ Revision 1.2  2004/10/07 10:34:44  mch
+ Fixes to Cone maker functions and reading/writing String comparisons from Query
+
  Revision 1.1  2004/10/05 16:10:43  mch
  Merged with PAL
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql074.java,v 1.1 2004/10/06 21:12:16 mch Exp $
+ * $Id: Query2Adql074.java,v 1.2 2004/10/07 10:34:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -128,6 +128,16 @@ public class Query2Adql074  {
          writeNumeric(comparisonTag, "Arg", ((NumericComparison) expression).getLHS());
          writeNumeric(comparisonTag, "Arg", ((NumericComparison) expression).getRHS());
       }
+      else if (expression instanceof StringComparison) {
+         String operator = ((StringComparison) expression).getOperator().toString();
+
+         if (operator.startsWith(">")) { operator = "&gt;"+operator.substring(1); }
+         if (operator.startsWith("<")) { operator = "&lt;"+operator.substring(1); }
+         
+         XmlTagPrinter comparisonTag = tag.newTag("Condition", new String[] { "xsi:type='comparisonPredType'","Comparison='"+operator+"'"});
+         writeString(comparisonTag, "Arg", ((StringComparison) expression).getLHS());
+         writeString(comparisonTag, "Arg", ((StringComparison) expression).getRHS());
+      }
       else if (expression instanceof Function) {
          //can only be a circle.. I think...
          if ( ((Function) expression).getName().toUpperCase().equals("CIRCLE")) {
@@ -172,6 +182,25 @@ public class Query2Adql074  {
       }
       else {
          throw new UnsupportedOperationException("Unknown Numeric Expression type "+
+                                                     expression.getClass());
+      }
+   }
+
+   private static void writeString(XmlTagPrinter parentTag, String elementName, StringExpression expression) throws IOException {
+      if (expression instanceof LiteralString) {
+         XmlTagPrinter argTag=parentTag.newTag(elementName, new String[] { "xsi:type='atomType'"});
+         
+         argTag.writeTag("Literal", new String[] { "xsi:type='stringType'","Value='"+((LiteralString) expression).getValue()+"'"}, "");
+      }
+      else if (expression instanceof ColumnReference) {
+   
+         writeColRef(parentTag, elementName, (ColumnReference) expression);
+      }
+      else if (expression instanceof Function) {
+         writeFunction(parentTag, "Arg", (Function) expression);
+      }
+      else {
+         throw new UnsupportedOperationException("Unknown String Expression type "+
                                                      expression.getClass());
       }
    }
@@ -245,6 +274,9 @@ public class Query2Adql074  {
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.2  2004/10/07 10:34:44  mch
+ Fixes to Cone maker functions and reading/writing String comparisons from Query
+
  Revision 1.1  2004/10/06 21:12:16  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

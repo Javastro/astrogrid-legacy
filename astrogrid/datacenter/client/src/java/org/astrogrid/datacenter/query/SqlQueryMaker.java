@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQueryMaker.java,v 1.1 2004/10/06 21:12:16 mch Exp $
+ * $Id: SqlQueryMaker.java,v 1.2 2004/10/07 10:34:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,7 +11,6 @@ import org.astrogrid.datacenter.query.condition.*;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
 
 
@@ -197,8 +196,15 @@ public class SqlQueryMaker  {
             parseBoolean(broken.left),
             parseBoolean(broken.right) );
       }
-      else
-      {
+      else if (broken.left.trim().startsWith("'") || (broken.right.trim().startsWith("'"))) {
+         //one side is a string
+         return new StringComparison(
+            parseString(broken.left),
+            broken.operand,
+            parseString(broken.right) );
+      }
+      else {
+         //assume numeric - NB this might break if we're comparing two string columns...
          return new NumericComparison(
             parseNumeric(broken.left),
             broken.operand,
@@ -308,7 +314,18 @@ public class SqlQueryMaker  {
     * expression for the moment...
     */
    private StringExpression parseString(String expression) {
-      return new LiteralString(expression);
+      String trimmed = expression.trim();
+      if (trimmed.startsWith("'")) {
+         if (!trimmed.endsWith("'")) {
+            throw new QueryException("No closing quote after "+trimmed);
+         }
+         //remove start and end quotes
+         trimmed = trimmed.substring(1, trimmed.length()-1);
+         return new LiteralString(trimmed);
+      }
+      else {
+         return parseColumnRef(expression);
+      }
    }
    
    /**
@@ -529,9 +546,17 @@ public class SqlQueryMaker  {
    
    /** Static method for convenience */
    public static Query makeQuery(String sql) {
-      SqlQueryMaker maker = new SqlQueryMaker();
-      maker.parseStatement(sql);
-      return maker.getQuery();
+      try {
+         SqlQueryMaker maker = new SqlQueryMaker();
+         maker.parseStatement(sql);
+         return maker.getQuery();
+      }
+      catch (QueryException qe) {
+         //add information, but don't wrap as we just get stacks of caused bys
+         QueryException nqe = new QueryException(qe.getMessage()+" in SQL '"+sql+"'");
+         nqe.setStackTrace(qe.getStackTrace());
+         throw nqe;
+      }
    }
    
    
@@ -611,6 +636,9 @@ public class SqlQueryMaker  {
 
 /*
  $Log: SqlQueryMaker.java,v $
+ Revision 1.2  2004/10/07 10:34:44  mch
+ Fixes to Cone maker functions and reading/writing String comparisons from Query
+
  Revision 1.1  2004/10/06 21:12:16  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

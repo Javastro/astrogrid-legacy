@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.2 2004/10/06 22:24:58 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.3 2004/10/07 10:34:44 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -222,15 +222,17 @@ public class StdSqlMaker  extends SqlMaker {
       return sql;
    }
    /**
-    * Constructs an SQL statement for the given ADQL
+    * Constructs an SQL statement for the given Query.  Uses the ADQL generator
+    * and XSLT style sheets - there may be a better way of doing this!
     */
    public String getSql(Query query) throws QueryException {
       
       try {
-         //get the ADQL from the query
-         Document adql = DomHelper.newDocument(Query2Adql074.makeAdql(query, null));
+         //Create an ADQL string documnet from the query
+         String adqlTxt = Query2Adql074.makeAdql(query);
+         Document adqlDom = DomHelper.newDocument(adqlTxt);
          
-         return getSql(adql.getDocumentElement());
+         return getSql(adqlDom.getDocumentElement());
          
       }
       catch (SAXException e) {
@@ -409,6 +411,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
  $Log: StdSqlMaker.java,v $
+ Revision 1.3  2004/10/07 10:34:44  mch
+ Fixes to Cone maker functions and reading/writing String comparisons from Query
+
  Revision 1.2  2004/10/06 22:24:58  mch
  Fixed wrong brackets in replaceRegion
 

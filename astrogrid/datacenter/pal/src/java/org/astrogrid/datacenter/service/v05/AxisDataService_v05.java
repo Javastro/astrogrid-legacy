@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v05.java,v 1.4 2004/10/06 21:12:17 mch Exp $
+ * $Id: AxisDataService_v05.java,v 1.5 2004/10/07 10:34:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -108,7 +108,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
    public String askCone(double ra, double dec, double radius, String requestedFormat) throws AxisFault {
       try {
          StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), SimpleQueryMaker.makeConeCondition(ra, dec, radius), new ReturnTable(TargetIndicator.makeIndicator(sw), requestedFormat));
+         server.askQuery(getUser(), SimpleQueryMaker.makeConeQuery(ra, dec, radius, new ReturnTable(TargetIndicator.makeIndicator(sw), requestedFormat)));
          return sw.toString();
       }
       catch (Throwable e) {
@@ -199,6 +199,9 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
 
 /*
 $Log: AxisDataService_v05.java,v $
+Revision 1.5  2004/10/07 10:34:44  mch
+Fixes to Cone maker functions and reading/writing String comparisons from Query
+
 Revision 1.4  2004/10/06 21:12:17  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

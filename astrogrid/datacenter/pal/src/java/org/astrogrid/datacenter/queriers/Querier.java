@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.4 2004/10/06 21:12:17 mch Exp $
+ * $Id: Querier.java,v 1.5 2004/10/07 10:34:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -103,7 +103,7 @@ public class Querier implements Runnable {
       setStatus(new QuerierConstructed(this));
    }
    
-   /** Factory method, builds query from components  */
+   /** Factory method, builds query from components  - use the QueryMakers sintead
    public static Querier makeQuerier(Account forUser, Condition condition, ReturnSpec resultsDefinition) throws IOException {
       Querier querier = new Querier(forUser, new Query(null, condition, resultsDefinition));
 
@@ -117,14 +117,14 @@ public class Querier implements Runnable {
       return querier;
    }
 
-   /** Old Factory method  @deprecated  */
+   /** Old Factory method  @deprecated  - removed - use the QueryMakers instead
    public static Querier makeQuerier(Account forUser, Condition condition, TargetIndicator target, String format) throws IOException {
       Querier querier = new Querier(forUser, new Query(condition, new ReturnTable(target, format)));
 
       return querier;
    }
 
-   /** Old Factory method  @deprecated  */
+   /** Old Factory method  @deprecated  removed - use the QueryMakers instead
    public static Querier makeQuerier(Account forUser, Query query, TargetIndicator target, String format) throws IOException {
       query.getResultsDef().setTarget(target);
       query.getResultsDef().setFormat(format);
@@ -359,6 +359,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.5  2004/10/07 10:34:44  mch
+ Fixes to Cone maker functions and reading/writing String comparisons from Query
+
  Revision 1.4  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+/*$Id: QuerierManagerTest.java,v 1.3 2004/10/07 10:34:44 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,9 +45,9 @@ public class QuerierManagerTest extends ServerTestCase {
    }
    public void testHandleUniqueness() throws Exception {
       
-      s1 = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30,30,6), new ReturnTable(new NullTarget(), ReturnTable.VOTABLE));
+      s1 = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)));
       assertNotNull(s1);
-      s2 = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30,30,6), new ReturnTable(new NullTarget(), ReturnTable.VOTABLE));
+      s2 = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)));
       assertNotNull(s2);
       assertNotSame(s1,s2);
       assertFalse(s1.getId().equals(s2.getId()));
@@ -66,6 +66,9 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /*
  $Log: QuerierManagerTest.java,v $
+ Revision 1.3  2004/10/07 10:34:44  mch
+ Fixes to Cone maker functions and reading/writing String comparisons from Query
+
  Revision 1.2  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 
