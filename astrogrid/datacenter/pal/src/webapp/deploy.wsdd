@@ -8,12 +8,17 @@
 
 <deployment xmlns="http://xml.apache.org/axis/wsdd/"
             xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
- <!-- service name="AxisDataServer" provider="java:RPC">
-  <parameter name="className" value="org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingSkeleton"/>
-  <parameter name="allowedMethods" value="*"/>
- </service -->
+
  <service name="AxisDataService05" provider="java:RPC">
   <parameter name="className" value="org.astrogrid.datacenter.service.v05.AxisDataService_v05"/>
+  <parameter name="allowedMethods" value="*"/>
+ </service>
+ <service name="AxisDataService06" provider="java:RPC">
+  <parameter name="className" value="org.astrogrid.datacenter.service.v06.AxisDataService_v06"/>
+  <parameter name="allowedMethods" value="*"/>
+ </service>
+ <service name="SkyNode074" provider="java:RPC">
+  <parameter name="className" value="org.astrogrid.datacenter.service.v06.skynode.SkyNode"/>
   <parameter name="allowedMethods" value="*"/>
  </service>
 
