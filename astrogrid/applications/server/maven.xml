@@ -20,6 +20,12 @@
   <!-- hooks into existing goals -->
 <!--we want to package tests up along with classes in the jar -->
 <preGoal name="jar:jar">
+        <j:if test="${maven.test.skip}">
+                <echo>Building test classes, although we're skipping the tests</echo>
+                <j:set var="maven.test.skip" value="false" />
+                <attainGoal name="test:compile" />
+                <j:set var="maven.test.skip" value="true" />
+        </j:if>
         <echo>Server: Copying test classes into jar from ${maven.build.dir}/test-classes into ${maven.build.dest}</echo>
         <copy todir="${maven.build.dest}">
                 <fileset dir="${maven.build.dir}/test-classes">
