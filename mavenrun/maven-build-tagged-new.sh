@@ -72,13 +72,13 @@ fi
 
 
 echo "[ag-build-$PROJECT_NAME] generate and deploy SNAPSHOT"
-echo "Executing astrogrid-deploy-snapshot" >> $LOG_FILE 2>&1 
+echo "Executing astrogrid-deploy-artifact" >> $LOG_FILE 2>&1 
 if maven -Dastrogrid.iteration=$ASTROGRID_VERSION -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-snapshot >> $LOG_FILE 2>&1
 then
    echo "*** SUCCESS ***" >> $LOG_FILE
 else
    echo "*** FAILURE ***" >> $LOG_FILE
-   cat $LOG_FILE | mail -s "astrogrid-deploy-snapshot Failure for $PROJECT_NAME, $ASTROGRID_VERSION" $ADMIN_EMAIL  
+   cat $LOG_FILE | mail -s "astrogrid-deploy-artifact Failure for $PROJECT_NAME, $ASTROGRID_VERSION" $ADMIN_EMAIL  
 fi
 
 echo "[ag-build-$PROJECT_NAME] deploy build log"
