@@ -217,13 +217,16 @@
                <td>Workflow Description:</td>
                <td><xsl:value-of select="@workflow-description" /></td>                  
             </tr>
+         </table>
+         <p />
+         <table border="0" cellpadding="0" cellspacing="0">
             <tr>
                <td>
-                  <xsl:if test="@template = 'OneStepJob'"><img src="OneStepJob.gif" alt="OneStepJob" /></xsl:if>
-                  <xsl:if test="@template = 'TwoSequentialJobsteps'"><img src="TwoStepSequence.gif" alt="TwoStepSequence" /></xsl:if>
-                  <xsl:if test="@template = 'TwoParallelJobsteps'"><img src="TwoStepFlow.gif" alt="TwoStepFlow" /></xsl:if>
-                  <xsl:if test="@template = 'TwoStepFlowAndMerge'"><img src="SequenceWithTwoStepFlow.gif" alt="SequenceWithTwoStepFlow" /></xsl:if>                
-                  <xsl:if test="@template = 'ComplexWorkflow'"><img src="ComplexWorkflow.gif" alt="ComplexWorkflow" /></xsl:if> 
+                  <xsl:if test="@template = 'OneStepJob'"><img src="/astrogrid-portal/mount/workflow/OneStepJob.gif" width="110" height="200" alt="OneStepJob" /></xsl:if>
+                  <xsl:if test="@template = 'TwoSequentialJobsteps'"><img src="/astrogrid-portal/mount/workflow/TwoStepSequence.gif" width="110" height="260" alt="TwoStepSequence" /></xsl:if>
+                  <xsl:if test="@template = 'TwoParallelJobsteps'"><img src="/astrogrid-portal/mount/workflow/TwoStepFlow.gif" width="200" height="260" alt="TwoStepFlow" /></xsl:if>
+                  <xsl:if test="@template = 'TwoStepFlowAndMerge'"><img src="/astrogrid-portal/mount/workflow/SequenceWithTwoStepFlow.gif" width="200" height="260" alt="SequenceWithTwoStepFlow" /></xsl:if>                
+                  <xsl:if test="@template = 'ComplexWorkflow'"><img src="/astrogrid-portal/mount/workflow/ComplexWorkflow.gif" width="200" height="315" alt="ComplexWorkflow" /></xsl:if> 
                </td>               
                <td>
                   <xsl:for-each select="//step">
@@ -282,10 +285,11 @@
          <table border="1" cellpadding="0" cellspacing="0">
             <tr>
                <td>
-                  <xsl:if test="@template = 'OneStepJob'"><img src="OneStepJob.gif" alt="OneStepJob" /></xsl:if>
-                  <xsl:if test="@template = 'TwoSequentialJobsteps'"><img src="TwoStepSequence.gif" alt="TwoStepSequence" /></xsl:if>
-                  <xsl:if test="@template = 'TwoParallelJobsteps'"><img src="TwoStepFlow.gif" alt="TwoStepFlow" /></xsl:if>
-                  <xsl:if test="@template = 'TwoStepFlowAndMerge'"><img src="SequenceWithTwoStepFlow.gif" alt="SequenceWithTwoStepFlow" /></xsl:if>                
+                  <xsl:if test="@template = 'OneStepJob'"><img src="/astrogrid-portal/mount/workflow/OneStepJob.gif" width="110" height="200" alt="OneStepJob" /></xsl:if>
+                  <xsl:if test="@template = 'TwoSequentialJobsteps'"><img src="/astrogrid-portal/mount/workflow/TwoStepSequence.gif" width="110" height="260" alt="TwoStepSequence" /></xsl:if>
+                  <xsl:if test="@template = 'TwoParallelJobsteps'"><img src="/astrogrid-portal/mount/workflow/TwoStepFlow.gif" width="200" height="260" alt="TwoStepFlow" /></xsl:if>
+                  <xsl:if test="@template = 'TwoStepFlowAndMerge'"><img src="/astrogrid-portal/mount/workflow/SequenceWithTwoStepFlow.gif" width="200" height="260" alt="SequenceWithTwoStepFlow" /></xsl:if>
+                  <xsl:if test="@template = 'ComplexWorkflow'"><img src="/astrogrid-portal/mount/workflow/ComplexWorkflow.gif" width="200" height="315" alt="ComplexWorkflow" /></xsl:if>                
                </td>
                <td>
                   <table border="1" cellpadding="0" cellspacing="0">
@@ -400,10 +404,11 @@
       <xsl:template name="templates">
          <table cellpadding="0" cellspacing="0">
             <tr>
-               <td><img src="OneStepJob.gif" alt="OneStepJob" /></td>
-               <td><img src="TwoStepSequence.gif" alt="TwoStepSequence" /></td>
-               <td><img src="TwoStepFlow.gif" alt="TwoStepFlow" /></td>
-               <td><img src="SequenceWithTwoStepFlow.gif" alt="SequenceWithTwoStepFlow" /></td>                                                      
+               <td><img src="/astrogrid-portal/mount/workflow/OneStepJob.gif" width="110" height="200" alt="OneStepJob" /></td>
+               <td><img src="/astrogrid-portal/mount/workflow/TwoStepSequence.gif" width="110" height="260" alt="TwoStepSequence" /></td>
+               <td><img src="/astrogrid-portal/mount/workflow/TwoStepFlow.gif" width="200" height="260" alt="TwoStepFlow" /></td>
+               <td><img src="/astrogrid-portal/mount/workflow/SequenceWithTwoStepFlow.gif" width="200" height="260" alt="SequenceWithTwoStepFlow" /></td>                                   
+               <td><img src="/astrogrid-portal/mount/workflow/ComplexWorkflow.gif" width="200" height="315" alt="ComplexWorkflow" /></td>
             </tr>
          </table>
       </xsl:template>              
