@@ -292,7 +292,10 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 //   converted to the corresponding EntryRecord.
 
       Object[] fileResults = results.getEntries();
-      int numFiles = Array.getLength(fileResults);
+      if (fileResults == null) {
+         return null;
+      }
+      int numFiles = fileResults.length;
 
       if (numFiles > 0)
       {  files = new StoreFile[numFiles];
