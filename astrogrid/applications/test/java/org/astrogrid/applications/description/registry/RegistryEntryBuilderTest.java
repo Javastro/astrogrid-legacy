@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilderTest.java,v 1.2 2004/03/29 12:38:56 pah Exp $
+ * $Id: RegistryEntryBuilderTest.java,v 1.3 2004/03/30 22:45:09 pah Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,6 +13,8 @@
 
 package org.astrogrid.applications.description.registry;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
@@ -47,10 +49,10 @@ public class RegistryEntryBuilderTest extends RegEntryBaseTestCase {
       junit.textui.TestRunner.run(RegistryEntryBuilderTest.class);
    }
 
-   final public void testMakeEntry() throws MarshalException, ValidationException {
+   final public void testMakeEntry() throws MarshalException, ValidationException, IOException {
      VODescription entry = builder.makeEntry();
      assertNotNull(entry);
-     entry.marshal(new PrintWriter(System.out));
+     entry.marshal(new FileWriter("/tmp/CeaRegEntry.xml"));
      //TODO - should make more extensive tests....
    }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.17 2004/03/29 21:41:26 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.18 2004/03/30 22:45:09 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -39,7 +39,6 @@ import org.astrogrid.applications.manager.externalservices.MySpaceLocator;
 import org.astrogrid.applications.manager.externalservices.RegistryAdminLocator;
 import org.astrogrid.applications.manager.externalservices.RegistryQueryLocator;
 import org.astrogrid.applications.manager.externalservices.ServiceNotFoundException;
-import org.astrogrid.applications.service.v1.cea.CeaFault;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.beans.resource.VODescription;
 
@@ -233,13 +232,5 @@ public abstract class AbstractApplicationController
       throw new UnsupportedOperationException("AbstractApplicationController.returnRegistryEntry() not implemented");
    }
 
-   protected CeaFault createFault(String message, Exception e) {
-      logger.info("failed with exception", e);
-      CeaFault jf = new CeaFault(message);
-      jf.setStackTrace(e.getStackTrace());
-      jf.setFaultReason(e.getMessage());
-      jf.setFaultCodeAsString(e.getClass().getName());
-      return jf;
-   }
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: CeaControllerConfig.java,v 1.4 2004/03/29 12:34:00 pah Exp $
+ * $Id: CeaControllerConfig.java,v 1.5 2004/03/30 22:45:09 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -57,8 +57,9 @@ public class CeaControllerConfig {
    /**
     * Get an instance. This has been made protected to stop "accidental" use outside the inversion of control pattern.
     * @return
+    * @TODO restrict the access to this once IoC in place
     */
-   protected static CeaControllerConfig getInstance() {
+   public static CeaControllerConfig getInstance() {
       // note the double check......
       if (instance == null) {
          synchronized (CeaControllerConfig.class) {

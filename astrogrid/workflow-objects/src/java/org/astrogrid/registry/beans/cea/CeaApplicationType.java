@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CeaApplicationType.java,v 1.2 2004/03/26 00:45:57 pah Exp $
+ * $Id: CeaApplicationType.java,v 1.3 2004/03/30 22:42:55 pah Exp $
  */
 
 package org.astrogrid.registry.beans.cea;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class CeaApplicationType.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/26 00:45:57 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/30 22:42:55 $
  */
 public class CeaApplicationType extends org.astrogrid.registry.beans.resource.ResourceType 
 implements java.io.Serializable

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.16 2004/03/23 19:46:04 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.17 2004/03/30 22:45:09 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -28,7 +28,6 @@ import org.astrogrid.applications.common.config.BaseDBTestCase;
 import org.astrogrid.applications.description.ApplicationDescriptionConstants;
 import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.applications.description.TestAppConst;
-import org.astrogrid.applications.service.v1.cea.CeaFault;
 import org.astrogrid.community.User;
 
 import junit.framework.TestCase;

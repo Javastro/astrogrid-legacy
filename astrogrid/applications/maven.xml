@@ -168,7 +168,9 @@ RegistryTemplate=file://${basedir}/config/RegistryTemplate.xml
      <javac srcdir="${basedir}/src/java"
             destdir="${maven.build.dest}"
             classpathref="maven.dependency.classpath"
-            debug="on">
+            debug="on"
+            target="1.4"
+            source="1.4">
             <exclude name="**/delegate/**"/>
             <exclude name="**/avodemo/**"/> 
      </javac>
@@ -189,7 +191,7 @@ RegistryTemplate=file://${basedir}/config/RegistryTemplate.xml
    <goal name="java2wsdl" prereqs="axis-declare-tasks">
      <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
    <axis-java2wsdl output="${generated.dir}/wsdl/${appint.service.name}.wsdl"
-            classname="org.astrogrid.applications.manager.ApplicationController"
+            classname="org.astrogrid.applications.manager.Tmp"
             location="${axis.url}/services/${appint.service.name}"
             namespace="urn:manager.applications.astrogrid.org"
             namespaceimpl="urn:impl.manager.applications.astrogrid.org"
@@ -303,7 +305,7 @@ RegistryTemplate=file://${basedir}/config/RegistryTemplate.xml
         <deploy:copy-deps todir="${working.dir}" />
         <unjar dest="${working.dir}" overwrite="true">
                 <fileset dir="${working.dir}">
-                        <include name="*workflow-objects*.jar" />
+                        <include name="*workflow-objects*.jar" /> <!-- should eget the exact jar dep name -->
                 </fileset>
                 <patternset>
                         <include name="wsdd/**" />
@@ -320,8 +322,9 @@ RegistryTemplate=file://${basedir}/config/RegistryTemplate.xml
 </goal>
  
  
- <goal name="configure-webapp" prereqs="axis.unpack,grab-schema" description="assemble individual wsdd into server-config.wsdd">
+ <goal name="configure-webapp" prereqs="axis.unpack" description="assemble individual wsdd into server-config.wsdd">
  	<!-- -->
+ 	<attainGoal name="grab-schema" />
 	 <path id="fullapppath">
 	        <fileset dir="${maven.war.webapp.dir}/WEB-INF/lib/" includes="*.jar"/>
 	        <dirset dir="${maven.war.webapp.dir}/WEB-INF/classes/"/>

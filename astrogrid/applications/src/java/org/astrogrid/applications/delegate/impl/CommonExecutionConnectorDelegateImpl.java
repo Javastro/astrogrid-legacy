@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.2 2004/03/23 12:51:25 pah Exp $
+ * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.3 2004/03/30 22:45:09 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,7 +24,6 @@ import org.astrogrid.applications.beans.v1.ApplicationList;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorDelegate;
-import org.astrogrid.applications.service.v1.cea.CeaFault;
 import org.astrogrid.applications.service.v1.cea.CommonExecutionConnector;
 import org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceLocator;
 import org

@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.18 2004/03/23 12:51:25 pah Exp $
+ * $Id: ApplicationController.java,v 1.19 2004/03/30 22:45:09 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ public interface ApplicationController {
     * @return This is a simple bean wrapper for the xml application description.
     * @stereotype query 
     */
-   SimpleApplicationDescription getApplicationDescription(String applicationID);
+   SimpleApplicationDescription getApplicationDescription(String applicationID) ;
 
    /**
     * Initialize and run an application asynchronously.

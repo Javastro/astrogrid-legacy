@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.21 2004/03/29 21:41:26 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.22 2004/03/30 22:45:09 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -52,6 +52,10 @@ import org.astrogrid.workflow.beans.v1.Tool;
 public class CommandLineApplicationController extends AbstractApplicationController {
 
    /**
+    * This is a bit of a cheat to get at the instance of the applicationController - should be done elsewhere
+    */
+   private static CommandLineApplicationController instance = null;
+   /**
     * Small class to indicate that we really do want to create a CeaControllerConfig
     * @author Paul Harrison (pah@jb.man.ac.uk) 19-Mar-2004
     * @version $Name:  $
@@ -97,7 +101,8 @@ public class CommandLineApplicationController extends AbstractApplicationControl
       ServiceDesc idesc) {
          
       super(iconfig, iregistryQueryLocator,iregistryAdminLocator, imySpaceLocator, idesc);
-
+      logger.info("starting CommandLineApplicationController");
+      instance = this;
       runningApplications = new HashMap();
       //REFACTORME this should be part of the scheduler
    }
