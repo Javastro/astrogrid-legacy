@@ -1,5 +1,5 @@
 /*
- $Id: JVot.java,v 1.5 2003/01/13 18:18:15 mch Exp $
+ $Id: JVot.java,v 1.1 2003/07/10 14:25:24 KevinBenson Exp $
 
  Date       Author      Changes
  $date$     M Hill      Created
@@ -20,7 +20,7 @@ import java.io.*;
 import java.util.Vector;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import org.astrogrid.log.Log;
+import org.astrogrid.tools.log.Log;
 import org.astrogrid.ui.ExtensionFileFilter;
 import org.astrogrid.tools.xml.DomDumper;
 /**

@@ -70,7 +70,7 @@ public class Options
       }
       catch (IOException ioe)
       {
-         org.astrogrid.log.Log.logError("Could not store configuration",ioe);
+         org.astrogrid.tools.log.Log.logError("Could not store configuration",ioe);
       }
    }
 

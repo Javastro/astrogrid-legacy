@@ -16,7 +16,7 @@ import javax.xml.parsers.*;
 
 import java.io.IOException;
 
-import org.astrogrid.log.Log;
+import org.astrogrid.tools.log.Log;
 /**
  *  A class for easily loading Xml documents into a DOM.
 
