@@ -1,4 +1,4 @@
-/*$Id: ProductionComponentManager.java,v 1.7 2004/03/15 23:45:07 nw Exp $
+/*$Id: ProductionComponentManager.java,v 1.8 2004/03/18 10:54:22 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,8 @@ import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher
 import org.astrogrid.jes.jobscheduler.impl.SchedulerTaskQueueDecorator;
 import org.astrogrid.jes.jobscheduler.locator.RegistryToolLocator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
+import org.astrogrid.jes.jobscheduler.policy.FlowPolicy;
+import org.astrogrid.jes.jobscheduler.policy.JoinPolicy;
 import org.astrogrid.jes.jobscheduler.policy.LinearPolicy;
 
 import org.picocontainer.Parameter;
@@ -173,13 +175,40 @@ public final class ProductionComponentManager extends EmptyComponentManager {
         pico.registerComponentImplementation(XMLFileLocator.ToolList.class,ToolListFromConfig.class);
         
     }
+    /** key to look in config for implementation of policy touse
+     * <p>
+     * possible vales: <tt>linear</tt> | <tt>join</tt> | <tt>flow</tt> | <tt><i>java.class.name</i></tt><br />
+     * default: <tt>join</tt>
+     */
+    public static final String POLICY_KEY = "jes.policy";
+    private static final ComponentDescriptor POLICY_META = new SimpleComponentDescriptor("Policy Configuration",
+        "to select a policy implementation, set key " + POLICY_KEY + " to \n" + 
+           "'linear' - for scheduling policy that executes everything in a sequential manner, ignoring join conditions\n" +           "'join' - for scheduling policy that executes steps in a sequential manner, obeying join conditions\n" +           "'flow' - for scheduling polucy that executes steps in parallel where possible (in flows), obeying join conditions\n" +           " or name of java class to instantiate"
+           );
+            
 
-    /**
+    /** Select which policy impleemntation to use.
      * 
      */
     private final void registerPolicy() {
-
-        pico.registerComponentImplementation(Policy.class,LinearPolicy.class);
+        pico.registerComponentInstance("policy-meta",POLICY_META);
+        String policy = conf.getString(POLICY_KEY,"join").trim();
+        if ("linear".equalsIgnoreCase(policy)) {
+            pico.registerComponentImplementation(Policy.class,LinearPolicy.class);
+        } else if ("flow".equalsIgnoreCase(policy)) {
+            pico.registerComponentImplementation(Policy.class,FlowPolicy.class);
+        } else if ("join".equalsIgnoreCase(policy)) {
+            pico.registerComponentImplementation(Policy.class,JoinPolicy.class);
+        } else { 
+            log.info("Trying to instantiate " + policy);
+            try {
+                Class c = Class.forName(policy);
+                pico.registerComponentImplementation(Policy.class,c);
+            } catch (ClassNotFoundException e) {
+                log.error("Could not find java class " + policy + " falling back to linear scheduling policy",e);
+                pico.registerComponentImplementation(Policy.class,LinearPolicy.class);
+            }
+        }
     }
     protected final Config conf;
 }
@@ -187,6 +216,9 @@ public final class ProductionComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: ProductionComponentManager.java,v $
+Revision 1.8  2004/03/18 10:54:22  nw
+added code to make policy implementation configurable
+
 Revision 1.7  2004/03/15 23:45:07  nw
 improved javadoc
 
