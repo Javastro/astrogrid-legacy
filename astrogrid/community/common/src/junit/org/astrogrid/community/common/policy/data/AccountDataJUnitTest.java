@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/policy/data/Attic/AccountDataJUnitTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountDataJUnitTest.java,v $
+ *   Revision 1.4  2004/03/12 15:22:17  dave
+ *   Merged development branch, dave-dev-200403101018, into HEAD
+ *
+ *   Revision 1.3.18.1  2004/03/10 13:32:01  dave
+ *   Added home space to AccountData.
+ *   Improved null param checking in AccountManager.
+ *   Improved null param checking in AccountManager tests.
+ *
  *   Revision 1.3  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -40,6 +48,7 @@ public class AccountDataJUnitTest
     {
     /**
      * Switch for our debug statements.
+     * @TODO Refactor to use the common logging.
      *
      */
     private static boolean DEBUG_FLAG = true ;
@@ -52,70 +61,92 @@ public class AccountDataJUnitTest
         {
         //
         // Create our AccountData.
-        AccountData alpha = new AccountData() ;
-        assertNotNull("Account is null", alpha) ;
+        AccountData frog = new AccountData() ;
+        assertNotNull("Account is null", frog) ;
         //
         // Check the account ident is null.
-        assertNull("Account ident not null", alpha.getIdent()) ;
+        assertNull("Account ident not null", frog.getIdent()) ;
         }
 
     /**
      * Create an AccountData with a valid ident.
+     * @TODO Refactor to use local community ident.
      *
      */
     public void testCreateValid()
         {
         //
         // Create our AccountData.
-        AccountData alpha = new AccountData("frog") ;
-        assertNotNull("Account is null", alpha) ;
+        AccountData frog = new AccountData("frog") ;
+        assertNotNull("Account is null", frog) ;
         //
         // Check the account ident.
-        assertEquals("Account ident not equal", "frog", alpha.getIdent()) ;
+        assertEquals("Account ident not equal", "frog", frog.getIdent()) ;
+        }
+
+    /**
+     * Create an AccountData and try to change the ident
+     * @TODO Refactor to use local community ident.
+     *
+     */
+    public void testChangeValid()
+        {
+        //
+        // Create our AccountData.
+        AccountData frog = new AccountData("frog") ;
+        assertNotNull("Account is null", frog) ;
+        //
+        // Check the account ident.
+        assertEquals("Account ident not equal", "frog", frog.getIdent()) ;
+		//
+		// Try to change toe Account ident.
+		frog.setIdent("toad") ;
+        //
+        // Check the account ident.
+        assertEquals("Account ident not equal", "frog", frog.getIdent()) ;
         }
 
     /**
      * Compare two Accounts with the same ident.
-     * TODO This needs to refactored to check for local community in the ident.
+     * @TODO Refactor to use local community ident.
      *
      */
     public void testSameIdent()
         {
         //
         // Create our Accounts.
-        AccountData alpha = new AccountData("frog") ;
-        AccountData beta  = new AccountData("frog") ;
-        assertNotNull("Account is null", alpha) ;
-        assertNotNull("Account is null", beta)  ;
+        AccountData frog = new AccountData("frog") ;
+        AccountData toad  = new AccountData("frog") ;
+        assertNotNull("Account is null", frog) ;
+        assertNotNull("Account is null", toad)  ;
         //
         // Check the account idents.
-        checkEqual("Account ident not equal", "frog", alpha.getIdent()) ;
-        checkEqual("Account ident not equal", "frog", beta.getIdent()) ;
+        checkEqual("Account ident not equal", "frog", frog.getIdent()) ;
+        checkEqual("Account ident not equal", "frog", toad.getIdent()) ;
         //
         // Check that the two Accounts are the same.
-        checkEqual("Same ident accounts not equal", alpha, beta) ;
+        checkEqual("Same ident accounts not equal", frog, toad) ;
         }
 
     /**
      * Compare two Accounts with different idents.
-     * TODO This needs to refactored to check for local community in the ident.
+     * @TODO Refactor to use local community ident.
      *
      */
     public void testDifferentIdent()
         {
         //
         // Create our Accounts.
-        AccountData alpha = new AccountData("frog") ;
-        AccountData beta = new AccountData("toad") ;
-        assertNotNull("Account is null", alpha) ;
-        assertNotNull("Account is null", beta) ;
+        AccountData frog = new AccountData("frog") ;
+        AccountData toad = new AccountData("toad") ;
+        assertNotNull("Account is null", frog) ;
+        assertNotNull("Account is null", toad) ;
         //
         // Check the account idents.
-        checkEqual("Account ident not equal", "frog", alpha.getIdent()) ;
-        checkEqual("Account ident not equal", "toad", beta.getIdent()) ;
+        checkEqual("Account ident not equal", "frog", frog.getIdent()) ;
+        checkEqual("Account ident not equal", "toad", toad.getIdent()) ;
         //
         // Check that the two Accounts are not the same.
-        checkNotEqual("Different ident accounts equal", alpha, beta) ;
+        checkNotEqual("Different ident accounts equal", frog, toad) ;
         }
-
     }

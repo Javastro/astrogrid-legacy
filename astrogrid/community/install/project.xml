@@ -4,10 +4,20 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.6  2004/03/12 15:22:17  dave
+    |   Merged development branch, dave-dev-200403101018, into HEAD
+    |
+    |   Revision 1.5.16.2  2004/03/12 13:38:03  dave
+    |   Added test case for MockIvornFactory.
+    |   Fixed bugs in CommunityIvornParser.
+    |
+    |   Revision 1.5.16.1  2004/03/10 13:58:01  dave
+    |   Removed redundant pomVersion from sub-projects
+    |
     |   Revision 1.5  2004/02/20 21:11:05  dave
     |   Merged development branch, dave-dev-200402120832, into HEAD
     |
@@ -49,11 +59,6 @@
         | Extend the common project descriptor.
         +-->
     <extend>../maven/project.xml</extend>
-
-    <!--+
-        | The current version of the Maven project descriptor.
-        +-->
-    <pomVersion>3</pomVersion>
 
     <!--+
         | The short name of the project.
@@ -166,7 +171,6 @@
         </dependency>
         <!--+
             | The libraries that Castor relies on.
-            +-->
         <dependency>
             <groupId>jta</groupId>
             <artifactId>jta</artifactId>
@@ -176,9 +180,9 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
+            +-->
         <!--+
             | The Xerces and XML API jars.
-            +-->
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xerces</artifactId>
@@ -199,6 +203,7 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
+            +-->
         <!--+
             | The Hsqldb jars.
             +-->

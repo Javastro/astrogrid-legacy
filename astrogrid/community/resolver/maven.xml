@@ -1,65 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
-    | Maven build tasks for the AstroGrid community client component.
+    | Maven build tasks for the AstroGrid Community resolver.
     |
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/maven.xml,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
     | <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
-    |   Revision 1.7  2004/03/12 15:22:17  dave
+    |   Revision 1.2  2004/03/12 15:22:17  dave
     |   Merged development branch, dave-dev-200403101018, into HEAD
     |
-    |   Revision 1.6.10.1  2004/03/12 13:38:03  dave
-    |   Added test case for MockIvornFactory.
-    |   Fixed bugs in CommunityIvornParser.
+    |   Revision 1.1.2.2  2004/03/12 00:46:25  dave
+    |   Added CommunityIvornFactory and CommunityIvornParser.
+    |   Added MockIvornFactory (to be moved to common project).
     |
-    |   Revision 1.6  2004/03/08 13:42:33  dave
-    |   Updated Maven goals.
-    |   Replaced tabs with Spaces.
-    |
-    |   Revision 1.5.2.2  2004/03/08 12:53:17  dave
-    |   Changed tabs to spaces
-    |
-    |   Revision 1.5.2.1  2004/03/08 12:10:05  dave
-    |   Modified Maven build scripts to use new AstroGrid goals
-    |
-    |   Revision 1.5  2004/03/05 17:19:59  dave
-    |   Merged development branch, dave-dev-200402211936, into HEAD
-    |
-    |   Revision 1.4.4.3  2004/03/05 16:28:28  dave
-    |   Added SecurityManager delegate test casees.
-    |   Refactored Maven JUnit properties.
-    |
-    |   Revision 1.4.4.2  2004/02/23 19:43:47  dave
-    |   Refactored DatabaseManager tests to test the interface.
-    |   Refactored DatabaseManager tests to use common DatabaseManagerTest.
-    |
-    |   Revision 1.4.4.1  2004/02/22 01:50:47  dave
-    |   Refactored install and deploy goals
-    |
-    |   Revision 1.4  2004/02/12 08:12:13  dave
-    |   Merged development branch, dave-dev-200401131047, into HEAD
-    |
-    |   Revision 1.2.4.1  2004/01/17 13:54:18  dave
-    |   Removed password from AccountData
-    |
-    |   Revision 1.2  2004/01/07 10:45:37  dave
-    |   Merged development branch, dave-dev-20031224, back into HEAD
-    |
-    |   Revision 1.1.2.5  2004/01/07 04:29:15  dave
-    |   Moved properties into shared files and tested deployment goals
-    |
-    |   Revision 1.1.2.4  2004/01/05 04:45:34  dave
-    |   Removed the maven.xml import ... seems to work without it ?
-    |
-    |   Revision 1.1.2.3  2004/01/05 04:11:05  dave
-    |   Fixed the maven.xml import
-    |   Changed the primary goal to install-artifact
-    |
-    |   Revision 1.1.2.2  2004/01/01 01:44:29  dave
-    |   Moved common code into parent maven.xml script
+    |   Revision 1.1.2.1  2004/03/10 17:29:21  dave
+    |   Added initial resolver classes.
     |
     | </cvs:log>
     +-->
@@ -71,11 +28,11 @@
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
     xmlns:deploy="deploy"
-    xmlns:astro="org.astrogrid.maven"
+    xmlns:astro="org.astrogrid.community"
     >
 
     <!--+
-        | Import the goals from our parent project.
+        | Import the common from our parent project.
         | Looks like this gets included anyway, possibly because our project inherits from ../maven.project.xml ?
     <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
         +-->
@@ -171,7 +128,7 @@
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <!--+
-            | Create our artifact jar.
+            | Create our snapshot jar.
             +-->
         <attainGoal name="install-snapshot"/>
         <!--+
@@ -189,13 +146,34 @@
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Building project site ...."/>
         <attainGoal name="site:generate"/>
     </goal>
 
     <!-- ================ Component goals ================ -->
 
     <!--+
-        | Setup our JUnit tests.
+        | Prepare for the java:compile task.
+        | Generate the WSDL and Java stubs for our service interface(s).
+        +-->
+    <preGoal name="java:compile">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Preparing for java:compile ...."/>
+        <!--+
+            | Initialise our Axis tools
+            +-->
+        <attainGoal name="init.tools"/>
+        <!--+
+            | Create our output directories.
+            +-->
+        <ant:mkdir dir="${wsdlDir}"/>
+        <ant:mkdir dir="${tempDir}"/>
+        <ant:mkdir dir="${javaDir}"/>
+    </preGoal>
+
+    <!--+
+        | Deploy our WebServices into our local Axis WebApp.
         +-->
     <preGoal name="test:test">
         <ant:echo message=""/>
@@ -211,7 +189,34 @@
         <ant:echo message=""/>
         <ant:echo message="JUnit fork VM - ${maven.junit.fork}"/>
         <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
+    </preGoal>
+
+    <!--+
+        | Clean up after our tests.
+        +-->
+    <postGoal name="test:test">
         <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Cleaning up after JUnit tests"/>
+    </postGoal>
+
+    <!--+
+        | Prepare the files for the jar goal.
+        | Adds the generated WSDL files into the jar META-INF.
+        +-->
+    <preGoal name="jar:jar">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Preparing for jar:jar ...."/>
+        <!--+
+            | Initialise our paths.
+            +-->
+        <attainGoal name="init.paths"/>
+        <!--+
+            | Create the META-INF directory.
+            +-->
+        <ant:mkdir dir="${maven.build.dest}/META-INF"/>
+        <ant:mkdir dir="${maven.build.dest}/META-INF/wsdl"/>
     </preGoal>
 
 </project>

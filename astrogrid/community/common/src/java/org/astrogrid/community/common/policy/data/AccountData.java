@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/AccountData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountData.java,v $
+ *   Revision 1.6  2004/03/12 15:22:17  dave
+ *   Merged development branch, dave-dev-200403101018, into HEAD
+ *
+ *   Revision 1.5.18.1  2004/03/10 13:32:00  dave
+ *   Added home space to AccountData.
+ *   Improved null param checking in AccountManager.
+ *   Improved null param checking in AccountManager tests.
+ *
  *   Revision 1.5  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -80,21 +88,29 @@ public class AccountData
 
     /**
      * Public constructor.
+	 * No syntax checking is applied to the ident.
+     * @param ident The Account ident.
+     * @TODO Add syntax checking.
      *
      */
-    public AccountData(String value)
+    public AccountData(String ident)
         {
-        this.setIdent(value) ;
+        this.setIdent(ident) ;
         }
 
     /**
-     * Our Account ident.
+     * The Account ident.
+     * At the monet, the syntax is 'name@community', this will be refactored to 'ivo:community/name'.
+	 * No syntax checking is applied to the value.
+     * @TODO Refactor the Account ident to 'ivo:community/name'.
+     * @TODO Add syntax checking.
      *
      */
     private String ident ;
 
     /**
-     * Access to our Account ident.
+     * Access to the Account ident.
+     * @return The current Account ident.
      *
      */
     public String getIdent()
@@ -103,22 +119,59 @@ public class AccountData
         }
 
     /**
-     * Access to our Account ident.
+     * Access to the Account ident.
+     * This will fail the the ident is already set - you can't change the ident of an existing Account.
+	 * No syntax checking is applied to the value.
+     * @param value The Account ident.
+     * @TODO Add syntax checking.
      *
      */
     public void setIdent(String value)
         {
-        this.ident = value ;
+        if (null == this.ident)
+        	{
+        	this.ident = value ;
+			}
         }
 
     /**
-     * Our Account description.
+     * The Account display name.
+     * This is intended for use in the portal display pages.
+     * Displaying 'DaveMorris' in the pages, rather than 'ivo:astrogrid.org/dave'
+     *
+     */
+    private String display ;
+
+    /**
+     * Access to the Account display name.
+     * @return The current display name.
+     *
+     */
+    public String getDisplayName()
+        {
+        return this.display ;
+        }
+
+    /**
+     * Access to the Account display name.
+     * @param value The new display name.
+     *
+     */
+    public void setDisplayName(String value)
+        {
+        this.display = value ;
+        }
+
+    /**
+     * The Account description.
+     * This is intended for use in the portal display pages.
      *
      */
     private String description ;
 
     /**
-     * Access to our Account description.
+     * Access to the Account description.
+     * @return The current description.
      *
      */
     public String getDescription()
@@ -127,7 +180,8 @@ public class AccountData
         }
 
     /**
-     * Access to our Account description.
+     * Access to the Account description.
+     * @param value The new description.
      *
      */
     public void setDescription(String value)
@@ -135,10 +189,74 @@ public class AccountData
         this.description = value ;
         }
 
+    /**
+     * The Account home space URI.
+     * This is the MySpace or VoSpace URI for the account home.
+	 * No syntax checking is applied to the value.
+     * @TODO Add syntax checking.
+	 *
+     */
+    private String home ;
+
+    /**
+     * Access to the Account home space URI.
+     * @return The current home space URI.
+     *
+     */
+    public String getHomeSpace()
+        {
+        return this.home ;
+        }
+
+    /**
+     * Access to the Account home space URI.
+	 * No syntax checking is applied to the value.
+     * @param value The new home space URI.
+     * @TODO Add syntax checking.
+     *
+     */
+    public void setHomeSpace(String value)
+        {
+        this.home = value ;
+        }
+
+    /**
+     * The Account email address.
+     * The contact email address for the Account owner.
+	 * No syntax checking is applied to the value.
+     * @TODO Add syntax checking.
+     *
+     */
+    private String email ;
+
+    /**
+     * Access to the Account email address.
+     * @return The current email address.
+     *
+     */
+    public String getEmailAddress()
+        {
+        return this.email ;
+        }
+
+    /**
+     * Access to the Account email address.
+	 * No syntax checking is applied to the value.
+     * @param value The new email address.
+     * @TODO Add syntax checking.
+     *
+     */
+    public void setEmailAddress(String value)
+        {
+        this.email = value ;
+        }
+
     /*
      * Compare this with another AccountData.
      * All we want to check is the Account ident.
-     * TODO This needs to refactored to check for local community in the ident.
+     * @TODO This needs to refactored to check for local community in the ident.
+     * @param object The Object to compare.
+     * @return true if the two object represetnt the same Account (the idents are equivalent).
      *
      */
     public synchronized boolean equals(Object object)
@@ -183,8 +301,8 @@ public class AccountData
 
     /**
      * Generate a hash code for comparison tests.
-     * Just uses the ident.hashCode().
-     * TODO This needs to refactored to check for local community in the ident.
+     * At the moment, this just uses the ident.hashCode().
+     * @TODO This needs to refactored to check for local community in the ident.
      *
      */
     public synchronized int hashCode()

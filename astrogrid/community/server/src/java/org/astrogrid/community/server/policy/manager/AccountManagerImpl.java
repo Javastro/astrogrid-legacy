@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.7  2004/03/12 15:22:17  dave
+ *   Merged development branch, dave-dev-200403101018, into HEAD
+ *
+ *   Revision 1.6.12.2  2004/03/10 13:49:36  dave
+ *   Added missing properties to AccountManagerImpl.setAccount
+ *
+ *   Revision 1.6.12.1  2004/03/10 13:32:01  dave
+ *   Added home space to AccountData.
+ *   Improved null param checking in AccountManager.
+ *   Improved null param checking in AccountManager tests.
+ *
  *   Revision 1.6  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -205,12 +216,18 @@ public class AccountManagerImpl
         }
 
     /**
-     * Create a new Account, given the Account name.
+     * Create a new Account, given the Account ident as a String.
+     * @param ident The Account ident.
+     * @return A valid AccountData if the Account was created, null if the Account was not created.
+     * @TODO Execption error reporting.
      *
      */
-    public AccountData addAccount(String name)
+    public AccountData addAccount(String ident)
         {
-        return this.addAccount(new CommunityIdent(name)) ;
+		//
+		// Check for null param.
+		if (null == ident) { return null ; }
+		return this.addAccount(new CommunityIdent(ident)) ;
         }
 
     /**
@@ -225,6 +242,10 @@ public class AccountManagerImpl
      * If fragments of the account data already exist, e.g. groups, membership and permissions,
      * should we tidy them up before creating the new account or leave them as-is ?
      *
+     * @param ident The Account ident.
+     * @return A valid AccountData if the Account was created, null if the Account was not created.
+     * @TODO Execption error reporting.
+     *
      */
     protected AccountData addAccount(CommunityIdent ident)
         {
@@ -232,7 +253,9 @@ public class AccountManagerImpl
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.addAccount()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-
+		//
+		// Check for null param.
+		if (null == ident) { return null ; }
         Database    database = null ;
         AccountData account  = null ;
         GroupData   group    = null ;
@@ -386,9 +409,12 @@ public class AccountManagerImpl
      * Request an Account data, given the Account name.
      *
      */
-    public AccountData getAccount(String name)
+    public AccountData getAccount(String ident)
         {
-        return this.getAccount(new CommunityIdent(name)) ;
+		//
+		// Check for null param.
+		if (null == ident) { return null ; }
+        return this.getAccount(new CommunityIdent(ident)) ;
         }
 
     /**
@@ -401,7 +427,9 @@ public class AccountManagerImpl
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getAccount()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-
+		//
+		// Check for null param.
+		if (null == ident) { return null ; }
         Database    database = null ;
         AccountData account  = null ;
         //
@@ -495,8 +523,10 @@ public class AccountManagerImpl
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.setAccount()") ;
         if (DEBUG_FLAG) System.out.println("  Account") ;
-        if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
-        if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
+        if (DEBUG_FLAG) System.out.println("    ident : " + ((null != account) ? account.getIdent() : null)) ;
+		//
+		// Check for null param.
+		if (null == account) { return null ; }
         //
         // Create a CommunityIdent from the account.
         CommunityIdent ident = new CommunityIdent(account.getIdent()) ;
@@ -523,7 +553,10 @@ public class AccountManagerImpl
                     AccountData data = (AccountData) database.load(AccountData.class, account.getIdent()) ;
                     //
                     // Update the account data.
+                    data.setHomeSpace(account.getHomeSpace()) ;
+                    data.setDisplayName(account.getDisplayName()) ;
                     data.setDescription(account.getDescription()) ;
+                    data.setEmailAddress(account.getEmailAddress()) ;
                     //
                     // Commit the transaction.
                     database.commit() ;
@@ -592,9 +625,12 @@ public class AccountManagerImpl
      * Delete an Account, given the Account name.
      *
      */
-    public AccountData delAccount(String name)
+    public AccountData delAccount(String ident)
         {
-        return this.delAccount(new CommunityIdent(name)) ;
+		//
+		// Check for null param.
+		if (null == ident) { return null ; }
+        return this.delAccount(new CommunityIdent(ident)) ;
         }
 
     /**
@@ -607,6 +643,9 @@ public class AccountManagerImpl
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.delAccount()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+		//
+		// Check for null param.
+		if (null == ident) { return null ; }
         Database    database = null ;
         AccountData account  = null ;
         //
@@ -804,7 +843,6 @@ public class AccountManagerImpl
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getLocalAccounts()") ;
-
         //
         // Try to query the database.
         Object[] array    = null ;

@@ -4,10 +4,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/portal/Attic/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.5  2004/03/12 15:22:17  dave
+    |   Merged development branch, dave-dev-200403101018, into HEAD
+    |
+    |   Revision 1.4.18.1  2004/03/10 13:58:01  dave
+    |   Removed redundant pomVersion from sub-projects
+    |
     |   Revision 1.4  2004/02/12 08:12:13  dave
     |   Merged development branch, dave-dev-200401131047, into HEAD
     |
@@ -40,11 +46,6 @@
         | Extend the common project descriptor.
         +-->
     <extend>../maven/project.xml</extend>
-
-    <!--+
-        | The current version of the Maven project descriptor.
-        +-->
-    <pomVersion>3</pomVersion>
 
     <!--+
         | The short name of the project.

@@ -2,11 +2,19 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/config/database/astrogrid-community-database.sql,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: astrogrid-community-database.sql,v $
+ *   Revision 1.4  2004/03/12 15:22:17  dave
+ *   Merged development branch, dave-dev-200403101018, into HEAD
+ *
+ *   Revision 1.3.12.1  2004/03/10 13:32:01  dave
+ *   Added home space to AccountData.
+ *   Improved null param checking in AccountManager.
+ *   Improved null param checking in AccountManager tests.
+ *
  *   Revision 1.3  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -65,10 +73,10 @@ DROP TABLE accounts IF EXISTS ;
 CREATE TABLE accounts
     (
     ident       VARCHAR NOT NULL,
-    name        VARCHAR NULL,
-    email       VARCHAR NULL,
     display     VARCHAR NULL,
     description VARCHAR NULL,
+    home        VARCHAR NULL,
+    email       VARCHAR NULL,
     PRIMARY KEY ( ident )
     ) ;
 

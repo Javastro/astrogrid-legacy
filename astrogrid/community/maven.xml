@@ -4,10 +4,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/09 17:18:47 $</cvs:date>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.12  2004/03/12 15:22:17  dave
+    |   Merged development branch, dave-dev-200403101018, into HEAD
+    |
+    |   Revision 1.11.2.1  2004/03/10 17:29:21  dave
+    |   Added initial resolver classes.
+    |
     |   Revision 1.11  2004/03/09 17:18:47  dave
     |   Fixed the Maven deploy goals
     |
@@ -102,90 +108,14 @@
     xmlns:util="jelly:util"
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
-    xmlns:deploy="deploy"
     >
+
+    <!-- ================ Astrogrid goals ================ -->
 
     <!--+
         | Current build script goals.
-        | These are hooks to catch the goals called by the current build script.
-        | The build script goals like java:compile don't really apply in the context of the multiproject build.
+        | These are hooks to catch the goals called by the automatic build script.
         +-->
-
-    <!--+
-        | Hook for build script java:compile
-        | Calls install-artifact to build and install our SNAPSHOT jars.
-    <goal name="java:compile">
-        <attainGoal name="clean"/>
-        <attainGoal name="install-snapshot"/>
-    </goal>
-        +-->
-
-    <!--+
-        | Hook for build script clover:html-report
-        | Does nothing.
-    <goal name="clover:html-report">
-    </goal>
-        +-->
-
-    <!--+
-        | Hook for build script site:site
-        | Calls 'site' on the relevant sub-projects.
-    <goal name="site:site">
-        <attainGoal name="site"/>
-    </goal>
-        +-->
-
-    <!--+
-        | Hook for build script site:fsdeploy
-        | Fix to check if we have defined an alternative location in our build.properties.
-    <preGoal name="site:fsdeploy">
-        <ant:echo message="${pom.artifactId} - site:fsdeploy"/>
-        <ant:echo message=" build  location : ${maven.docs.dest}"/>
-        <ant:echo message=" deploy location : ${site.deploy.directory}"/>
-        <core:set var="deployLocation" value="${site.deploy.directory}"/>
-        <core:if test="${!empty(deployLocation)}">
-            <core:expr value="${pom.setSiteDirectory(deployLocation)}"/>
-        </core:if>
-    </preGoal>
-        +-->
-
-    <!--+
-        | Hook for build script jar:deploy-snapshot
-        | Calls 'deploy-snapshot' on the relevant sub-projects.
-        | I can't make this a goal, because it breaks the real call to
-        | 'jar:deploy-snapshot' in the sub-project tasks.
-    <preGoal name="jar:deploy-snapshot">
-        <attainGoal name="deploy-snapshot"/>
-    </preGoal>
-        +-->
-
-    <!--+
-        | Hook for build script jar:deploy-snapshot
-        | Delete the extra jar file.
-    <postGoal name="jar:deploy-snapshot">
-        <ant:echo message=""/>
-        <ant:echo message="Post processing jar:deploy-snapshot"/>
-        <core:set var="snapshotVersion" value="${pom.getPluginContext('maven-jar-plugin').getVariable('snapshotVersion')}"/>
-        <core:set var="snapshotRemove"  value="cd ${maven.repo.central.directory}/${pom.artifactDirectory}/jars ; rm astrogrid-community-SNAPSHOT.jar ; rm astrogrid-community-${snapshotVersion}.jar"/>
-        <ant:echo message="  Command  : ${maven.ssh.executable}"/>
-        <ant:echo message="  Username : ${maven.username}"/>
-        <ant:echo message="  Server   : ${maven.repo.central}"/>
-        <ant:echo message="  Command  : ${snapshotRemove}"/>
-        <ant:exec dir="." executable="${maven.ssh.executable}">
-            <ant:arg line="-l ${maven.username} ${maven.repo.central} '${snapshotRemove}'"/>
-        </ant:exec>
-    </postGoal>
-        +-->
-
-    <!--+
-        | Hook for build script war:deploy-snapshot
-        | Does nothing, 'deploy-snapshot' will have been called by 'jar:deploy-snapshot'.
-    <goal name="war:deploy-snapshot">
-        <ant:echo message="Skipping war:deploy-snapshot, already done by jar:deploy-snapshot"/>
-    </goal>
-        +-->
-
-    <!-- ================ Astrogrid goals ================ -->
 
     <!--+
         | These are just handlers for the top level AstroGrid goals.
@@ -247,7 +177,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml,tomcat/project.xml"
+            includes="common/project.xml,client/project.xml,server/project.xml,resolver/project.xml,webapp/project.xml,install/project.xml,tomcat/project.xml"
             goals="clean"
             banner="Cleaning build targets : "
             ignoreFailures="false"
@@ -265,7 +195,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml"
+            includes="common/project.xml,client/project.xml,server/project.xml,resolver/project.xml,webapp/project.xml,install/project.xml"
             goals="install-artifact"
             banner="Building component artifact : "
             ignoreFailures="false"
@@ -279,7 +209,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml"
+            includes="common/project.xml,client/project.xml,server/project.xml,resolver/project.xml,webapp/project.xml,install/project.xml"
             goals="install-snapshot"
             banner="Building snapshot artifact : "
             ignoreFailures="false"
@@ -293,7 +223,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml"
+            includes="common/project.xml,client/project.xml,server/project.xml,resolver/project.xml,webapp/project.xml,install/project.xml"
             goals="deploy-artifact"
             banner="Deploying snapshot artifact : "
             ignoreFailures="false"
@@ -307,7 +237,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml"
+            includes="common/project.xml,client/project.xml,server/project.xml,resolver/project.xml,webapp/project.xml,install/project.xml"
             goals="deploy-snapshot"
             banner="Deploying snapshot artifact : "
             ignoreFailures="false"

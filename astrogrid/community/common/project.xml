@@ -4,10 +4,24 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.6  2004/03/12 15:22:17  dave
+    |   Merged development branch, dave-dev-200403101018, into HEAD
+    |
+    |   Revision 1.5.12.3  2004/03/12 13:38:03  dave
+    |   Added test case for MockIvornFactory.
+    |   Fixed bugs in CommunityIvornParser.
+    |
+    |   Revision 1.5.12.2  2004/03/12 00:46:25  dave
+    |   Added CommunityIvornFactory and CommunityIvornParser.
+    |   Added MockIvornFactory (to be moved to common project).
+    |
+    |   Revision 1.5.12.1  2004/03/10 13:58:01  dave
+    |   Removed redundant pomVersion from sub-projects
+    |
     |   Revision 1.5  2004/03/05 17:19:59  dave
     |   Merged development branch, dave-dev-200402211936, into HEAD
     |
@@ -42,11 +56,6 @@
         | Extend the top level project descriptor.
         +-->
     <extend>${basedir}/../maven/project.xml</extend>
-
-    <!--+
-        | The current version of the Maven project descriptor.
-        +-->
-    <pomVersion>3</pomVersion>
 
     <!--+
         | The short name of the project.
@@ -101,6 +110,26 @@
         +-->
     <dependencies>
         <!--+
+            | The AstroGrid common components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!--+
+            | The MySpace components - required for Ivorn.
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-mySpace</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+            +-->
+        <!--+
             | The JConfig jars.
             | Soon to be replaced by the AstroGrid common tools.
             +-->
@@ -111,32 +140,6 @@
             <type>jar</type>
             <url>http://www.jconfig.org/</url>
         </dependency>
-        <!--+
-            | The MockMaker jars.
-            | Not used at the moment .....
-        <dependency>
-            <groupId>mockmaker</groupId>
-            <artifactId>mmmockobjects</artifactId>
-            <version>1.12.0</version>
-            <type>jar</type>
-            <url>http://www.mockmaker.org/</url>
-        </dependency>
-        <dependency>
-            <groupId>mockmaker</groupId>
-            <artifactId>mockmaker</artifactId>
-            <version>UNKNOWN</version>
-            <type>jar</type>
-            <url>http://www.mockmaker.org/</url>
-        </dependency>
-        <dependency>
-            <groupId>qdox</groupId>
-            <artifactId>qdox</artifactId>
-            <version>1.3</version>
-            <type>jar</type>
-            <url>http://www.mockmaker.org/</url>
-        </dependency>
-            +-->
-
     </dependencies>
 
     <!--+

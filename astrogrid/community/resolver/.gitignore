@@ -1,0 +1,5 @@
+.project
+.classpath
+target
+build.properties
+maven.log
