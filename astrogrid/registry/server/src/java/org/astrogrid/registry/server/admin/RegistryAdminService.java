@@ -243,12 +243,12 @@ public class RegistryAdminService {
       if(manageAuths.get(versionNumber) == null) {
           //okay this must be the very first time into the registry where
           //registry is empty. So put a an empty entry for this version.
-          manageAuths.put(versionNumber,null);
+          manageAuths.put(versionNumber,new HashMap());
       }
       if(otherAuths.get(versionNumber) == null) {
           //okay this must be the very first time into the registry where
           //registry is empty. So put a an empty entry for this version.
-          otherAuths.put(versionNumber,null);
+          otherAuths.put(versionNumber,new HashMap());
       }
       
       
@@ -383,14 +383,16 @@ public class RegistryAdminService {
                                 ((HashMap)otherAuths.get(versionNumber)).put(manageNodeVal,null);
                             }//if
                         }//for
+                        /*
                         RegistryHarvestService rhs = new RegistryHarvestService();
                         try {
-                            rhs.harvestResource(currentResource,null);
+                            //rhs.harvestResource(currentResource,null);
                         }catch(RegistryException re) {
                             log.error(re);
                         }catch(IOException ioe) {
                             log.error(ioe);
                         }
+                        */
                      }
                   }else if(nodeVal != null && 
                            nodeVal.indexOf("Authority") != -1)
