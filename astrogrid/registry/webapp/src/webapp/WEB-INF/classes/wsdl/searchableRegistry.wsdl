@@ -5,8 +5,8 @@
              xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
              xmlns:ris="http://www.ivoa.net/wsdl/RegistrySearch/v0.1"
              xmlns:rih="http://www.ivoa.net/wsdl/RegistryHarvest/v0.1"
-             xmlns:tns="http://myvo.org/registry/searchableRegistry.wsdl"
-             targetNamespace="http://myvo.org/registry/searchableRegistry.wsdl">
+             xmlns:tns="http://www.ivoa.net/schemas/services/QueryRegistry/wsdl"
+             targetNamespace="http://www.ivoa.net/schemas/services/QueryRegistry/wsdl">
              
 
    <import namespace="http://www.ivoa.net/wsdl/RegistrySearch/v0.1"
