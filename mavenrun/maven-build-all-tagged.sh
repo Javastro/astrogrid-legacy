@@ -39,7 +39,7 @@ $SCRIPTHOME/maven-build-tagged-new.sh portal $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FI
 #Index pages for this release
 $SCRIPTHOME/maven-build-maven-site-tagged.sh  $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 #index page for all releases
-$SCRIPTHOME/maven-build-new.sh maven-site-releases >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh maven-site-releases $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 
 echo >> $BUILD_DIR/$LOG_FILE 2>&1
 echo "AstroGrid Build ($DATE)" >> $BUILD_DIR/$LOG_FILE 2>&1
