@@ -4,7 +4,7 @@
 
 <!--we want to package tests up along with classes in the jar -->
 <preGoal name="jar:jar">
-	<echo>Copyng test classes into jar from ${maven.build.dir}/test-classes into ${maven.build.dest}</echo>
+	<echo>Server: Copying test classes into jar from ${maven.build.dir}/test-classes into ${maven.build.dest}</echo>
 	<copy todir="${maven.build.dest}">
 		<fileset dir="${maven.build.dir}/test-classes" />
 	</copy>

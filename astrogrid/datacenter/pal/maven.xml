@@ -15,19 +15,20 @@
 
 <!-- hook to add our own things to the mix -->
 <preGoal name="war:war">
+	<echo message="pal: war:war"/>
 	<copy todir="${webapp.root}" overwrite="yes">
 		<fileset dir="${webapp.docs}" />
 	</copy>
 	<attainGoal name="grab-delegate" />
 	<attainGoal name="grab-server" />
 	<attainGoal name="grab-implementations" />
-        <attainGoal name="grab-ogsadai-app"/>
+    <attainGoal name="grab-ogsadai-app"/>
 </preGoal>
 
 <goal name="webapp-site" prereqs="configure-webapp"
 	description="generate webapp docs to a temp direcotry, for inclusion later in webapp - work around for a bug that stops build">
 
-	<echo> generating webapp site into ${webapp.docs}" </echo>
+	<echo>pal: generating webapp site into ${webapp.docs}" </echo>
 	<!-- first merge two doc sets - site xdocs take precendence  -->
 	<property name="tmp.docs" location="${basedir}/target/webapp-docs-src" />
 	<mkdir dir="${tmp.docs}" />
@@ -57,6 +58,7 @@
 </goal>
 
 <goal name="grab-delegate"  description="generate source and binary dists of the delegate, place in webapp, along with javadoc">
+	<echo message="pal: grab-delegate"/>
 	<mkdir dir="${webapp.root}/delegate-dist" />
 	<copy todir="${webapp.root}/delegate-dist">
 		<fileset dir="${delegate.dir}/target/distributions">
@@ -68,7 +70,7 @@
 
 
 <goal name="grab-server" description="generate site and source dists of the server. place source dist and javadoc of server in webapp">
-
+    <echo message="pal: grab-server"/>
 	<mkdir dir="${webapp.root}/server" />
 	<copy todir="${webapp.root}/server">
 		<fileset dir="${server.dir}/target/astrogrid-datacenter-server-HEAD/bin/astrogrid-datacenter-server-HEAD/docs" />
@@ -84,7 +86,7 @@
 
 
 <goal name="grab-implementations" description="generate source and binary dists of the implementations, unzip into webapp.">
-
+	<echo message="pal: grab-implementations"/>
 	<mkdir dir="${webapp.root}/implementations" />
 	<unzip dest="${webapp.root}/implementations" >
 		<fileset dir="${implementations.dir}">
@@ -96,6 +98,7 @@
 
 <goal name="grab-ogsadai-app"
       description="copy the executable jar used for talking to OGSA-DAI">
+      	<echo message="pal: grab-ogsadai-app"/>
 	<j:forEach var="deps" items="${pom.artifacts}">
 		<j:if test="${deps.dependency.artifactId=='astrogrid-ogsadai-app'}">
 			<copy file="${deps.path}" 
@@ -106,6 +109,7 @@
 
 
 <goal name="configure-webapp" description="set properties in web.xml, server-config.wsdd, etc">
+	<echo message="pal: configure-webapp"/>
 	<echo> grabbing schema from client.jar</echo>
 	<!-- patch server-config with wsdd file contained in client.jar -->
 	<mkdir dir="${working.dir}" />
