@@ -47,8 +47,10 @@ public class Sequence extends ActivityContainer {
     }
     
     
-    public Sequence( Element element, Activity parent) {
-        super( element, parent ) ;
+    public Sequence( String communitySnippet
+                   , Element element
+                   , Activity parent ) {
+        super( communitySnippet, element, parent ) ;
         if( TRACE_ENABLED ) trace( "Sequence(Element) entry/exit") ; 
     }
     

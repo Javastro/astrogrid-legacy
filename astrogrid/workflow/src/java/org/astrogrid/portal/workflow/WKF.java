@@ -57,7 +57,15 @@ public class WKF extends org.astrogrid.Configurator {
         JES_CATEGORY = "JES" ,    
     /** Key within component's configuration identifying the Jes URL. */  
         JES_URL = "URL" ;
-    
+            
+    public static final String 
+    /** Tools category within the component's configuration */  
+        TOOLS_LIST_CATEGORY = "TOOLS_LIST" ,    
+    /** Key within component's configuration identifying the total tools. */  
+        TOOLS_LIST_TOTAL = "TOTAL" ,      
+    /** Partial key within component's configuration identifying a tool. */  
+        TOOLS_LIST_NAME = "NAME." ;
+
     private static WKF
         singletonWKF = new WKF() ;
         

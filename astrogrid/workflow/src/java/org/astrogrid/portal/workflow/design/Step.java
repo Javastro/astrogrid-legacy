@@ -51,8 +51,7 @@ public class Step extends Activity {
     private Tool
         tool ;
 
- 
-    
+  
     public Step( Activity parent ) {
         super( parent ) ;
         if( TRACE_ENABLED ) trace( "Step() entry/exit") ;
@@ -60,7 +59,9 @@ public class Step extends Activity {
     }
     
  
-    public Step( Element element, Activity parent  ) {
+    public Step( String communitySnippet
+               , Element element
+               , Activity parent  ) {
         super( parent ) ;
         if( TRACE_ENABLED ) trace( "Step(Element) entry") ; 
         
@@ -95,12 +96,13 @@ public class Step extends Activity {
                nodeList = element.getChildNodes() ; 
                            
             for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
+                
                 if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
                     
                     element = (Element) nodeList.item(i) ;
                 
-                    if ( element.getTagName().equals( WorkflowDD.NULL_TOOL_ELEMENT ) ) {
-                        this.tool = new Tool( element ) ;   
+                    if ( element.getTagName().equals( WorkflowDD.TOOL_ELEMENT ) ) {
+                        this.tool = ToolFactory.createTool( communitySnippet, element ) ;   
                     }  
                     
                 } // end if
@@ -113,40 +115,6 @@ public class Step extends Activity {
         }
         
     } 
-    
-    // JL Note: stop gap between iteration 2 and 3
-    private Element extractSelectElement( Element queryElement ){
-        if( TRACE_ENABLED ) trace( "Step.extractSelectElement() entry") ; 
-        
-        Element
-            element = null ;
-        
-        try{
-            
-            NodeList
-               nodeList = queryElement.getChildNodes() ; 
-                           
-            for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
-                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
-                    
-                    element = (Element) nodeList.item(i) ;
-                
-                    if ( element.getTagName().equals( WorkflowDD.SELECT_ELEMENT ) ) {
-                        break ;   
-                    } 
-                    
-                } // end if
-                                
-            } // end for   
-                 
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Step.extractSelectElement() exit") ; 
-        }
-        
-        return element ;
-        
-    } // end of extractSelectElement()
       
     
 	public void setName(String name) {
@@ -181,7 +149,7 @@ public class Step extends Activity {
 		this.tool = tool;
 	}
 
-	public Tool getTool() {
+	public Tool getTool() {  
 		return tool;
 	}
 
@@ -202,7 +170,6 @@ public class Step extends Activity {
             inserts[3] = new Integer( this.getSequenceNumber() ) ;
             inserts[4] = ( this.getTool() == null ) ? " " :  this.getTool().toXMLString() ;
 
-            
             response = MessageFormat.format( WorkflowDD.STEP_TEMPLATE, inserts ) ;
 
         }
@@ -217,6 +184,9 @@ public class Step extends Activity {
 
     public String toJESXMLString() {
         if( TRACE_ENABLED ) trace( "Step.toJESXMLString() entry") ;  
+        
+        //JBL Note. There should be some basis checking regarding
+        // the existence of a tool ( tool is not null ).
           
         String 
            response = null ;

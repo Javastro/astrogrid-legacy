@@ -31,49 +31,114 @@ import org.w3c.dom.* ;
  * @since   AstroGrid 1.4
  */
 public class Tool {
-    
+  
+    /** Compile-time switch used to turn tracing on/off. 
+      * Set this to false to eliminate all trace statements within the byte code.*/         
+    private static final boolean 
+        TRACE_ENABLED = true ;
+        
+    private static Logger 
+        logger = Logger.getLogger( Tool.class ) ;    
+        
     private ToolFactory
         factory ;
+    
+    private String
+        name ;
         
     private List
         inputParameters,
         outputParameters ;    
         
     protected Tool( ToolFactory factory ) {
-        this.factory = factory ;
-        // create standard set of input and output parameters here
-        
+        if( TRACE_ENABLED ) trace( "Tool( ToolFactory ) entry") ;  
+        this.factory = factory ;      
     }
     
-    public Tool( Element element ) {
-    }
-    
-    public ToolFactory getFactory() {
-        return factory ;
-    }
     
     public ListIterator getInputParameters() {
+        if( TRACE_ENABLED ) trace( "Tool.getInputParameters() entry") ; 
         return null ;
     }
+    
     
     public ListIterator getOutputParameters() {
+        if( TRACE_ENABLED ) trace( "Tool.getOutputParameters() entry") ; 
         return null ;
     }
     
-    public Parameter createInputParameter( String name ) {
+    
+    public Parameter newInputParameter( String name ) {
+        if( TRACE_ENABLED ) trace( "Tool.newInputParameter() entry") ;
+        return null ;
+    }
+ 
+ 
+    public Parameter newInputParameter( Parameter param ) {
+        if( TRACE_ENABLED ) trace( "Tool.newInputParameter() entry") ;
+        return null ;
+    }
+ 
+    
+    public Parameter newOutputParameter( String name ) {
+        if( TRACE_ENABLED ) trace( "Tool.newInputParameter() entry") ;
         return null ;
     }
     
-    public Parameter createOutputParameter( String name ) {
-        return null ;
-    }
     
+    public Parameter newOutputParameter( Parameter param ) {
+        if( TRACE_ENABLED ) trace( "Tool.newOutputParameter() entry") ;
+        return null ;
+     }
+    
+       
     protected String toXMLString() {
+        if( TRACE_ENABLED ) trace( "Tool.toXMLString() entry") ;
         return null ;
     }
+    
     
     protected String toJESXMLString() {
+        if( TRACE_ENABLED ) trace( "Tool.toJESXMLString() entry") ;
         return null ;
     }
+    
+     
+    private static void trace( String traceString ) {
+        System.out.println( traceString ) ;
+        // logger.debug( traceString ) ;
+    }
+    
+    
+    private static void debug( String logString ){
+        System.out.println( logString ) ;
+        // logger.debug( logString ) ;
+    }
 
-}
+	/**
+	   */
+	public void setInputParameters(List list) {
+		inputParameters = list;
+	}
+
+	/**
+	   */
+	public void setOutputParameters(List list) {
+		outputParameters = list;
+	}
+
+	/**
+	   * <p>Attempts to establish a connection with the data source that
+	   * this <code>DataSource</code> object represents.
+	   *
+	   * @param username the database user on whose behalf the connection is 
+	   *  being made
+	   * @param password the user's password
+	   * @return  a connection to the data source
+	   * @exception SQLException if a database access error occurs
+	   */
+	public ToolFactory getFactory() {
+		return factory;
+	}
+
+} // end of class Tool

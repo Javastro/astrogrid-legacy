@@ -49,16 +49,15 @@ public class WorkflowHelper {
     private static final String jobOne = 
         "<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
         "<workflow name = \"{0}\" templateName=\"OneStepJob\">" +
-        "<userid>{1}</userid>" +
-        "<community>{2}</community>" +
+        "<community>{1}</community>" +
         "<description>This is a one step job</description>" +
         "<!-- " +        "    | The top level structure within a workflow is " +        "    | always a sequence... =============================================== -->" +
         "<sequence>" +
         " <step name=\"StepOne\" stepNumber=\"1\" sequenceNumber=\"1\">" +
         
-                "<query type=\"adql\" target=\"http://aife.jb.man.ac.uk:8080/axis/services/AxisDataCenter\">" +
-        
-        //        "<!-- SQL equivalent" +
+                "  <tool name=\"someQueryTool\">" +
+                "   <input>" +        "   <parameter name=\"query\" type=\"adql\" >" +
+              //        "<!-- SQL equivalent" +
 //        "SELECT t.a, g.d FROM Tab a, Tab d WHERE a.d < d.e AND a.f < d.f ORDER BY t.f, g.b" +//        " -->" +
         "<Select xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " + 
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" +
@@ -149,9 +148,13 @@ public class WorkflowHelper {
           "</OrderList>" +
         "</OrderBy>" +
       "</Select>" +
+            "  </parameter>" +
       
-      
-        "</query>" +
+    "   </input>" +
+    
+    "   <output>" +    "   <parameter name=\"result\" location=\"myspace://votable2\" />" +
+    "   </output>" +
+        "</tool>" +
         
         
         "</step>" +
@@ -160,120 +163,25 @@ public class WorkflowHelper {
        
     private static final String jobTwo = 
         "<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
-        "<workflow name = \"{2}\" templateName=\"OneStepJob\">" +
-        "<userid>{1}</userid>" +
-        "<community>{3}</community>" +
+        "<workflow name = \"{0}\" templateName=\"OneStepJob\">" +
+        "<community>{1}</community>" +
         "<description>This is a one step job</description>" +
         "<!-- " +
         "    | The top level structure within a workflow is " +
         "    | always a sequence... =============================================== -->" +
         "<sequence>" +
-        " <step name=\"StepOne\" stepNumber=\"1\" sequenceNumber=\"1\">" +
-        
-        
-        "<query type=\"adql\" target=\"http://aife.jb.man.ac.uk:8080/axis/services/AxisDataCenter\">" +
-        
-        
-        "<!-- SQL equivalent" +
-        "SELECT t.a, g.d FROM Tab a, Tab d WHERE a.d < d.e AND a.f < d.f ORDER BY t.f, g.b" +
-        " -->" +
-        "<Select xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " + 
-        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" +
-        "<SelectionList>" +
-          "<ColumnExpr>" +
-            "<SingleColumnReference>" +
-              "<TableName>t</TableName>" +
-              "<Name>a</Name>" +
-            "</SingleColumnReference>" +
-          "</ColumnExpr>" +
-          "<ColumnExpr>" +
-            "<SingleColumnReference>" +
-              "<TableName>g</TableName>" +
-              "<Name>d</Name>" +
-            "</SingleColumnReference>" +
-          "</ColumnExpr>" +
-        "</SelectionList>" +
-        "<TableClause>" +
-          "<FromClause>" +
-            "<TableReference>" +
-              "<Table>" +
-                "<Name>Tab</Name>" +
-                "<AliasName>a</AliasName>" +
-              "</Table>" +
-              "<Table>" +
-                "<Name>Tab</Name>" +
-                "<AliasName>d</AliasName>" +
-              "</Table>" +
-            "</TableReference>" +
-          "</FromClause>" +
-          "<WhereClause>" +
-            "<IntersectionSearch>" +
-              "<FirstCondition xsi:type=\"PredicateSearch\">" +
-                "<ComparisonPred>" +
-                  "<FirstExpr xsi:type=\"ColumnExpr\">" +
-                    "<SingleColumnReference>" +
-                      "<TableName>a</TableName>" +
-                      "<Name>d</Name>" +
-                    "</SingleColumnReference>" +
-                  "</FirstExpr>" +
-                  "<Compare>&lt;</Compare>" +
-                  "<SecondExpr xsi:type=\"ColumnExpr\">" +
-                    "<SingleColumnReference>" +
-                      "<TableName>d</TableName>" +
-                      "<Name>e</Name>" +
-                    "</SingleColumnReference>" +
-                  "</SecondExpr>" +
-                "</ComparisonPred>" +
-              "</FirstCondition>" +
-              "<SecondCondition xsi:type=\"PredicateSearch\">" +
-                "<ComparisonPred>" +
-                  "<FirstExpr xsi:type=\"ColumnExpr\">" +
-                    "<SingleColumnReference>" +
-                      "<TableName>a</TableName>" +
-                      "<Name>f</Name>" +
-                    "</SingleColumnReference>" +
-                  "</FirstExpr>" +
-                  "<Compare>&lt;</Compare>" +
-                  "<SecondExpr xsi:type=\"ColumnExpr\">" +
-                    "<SingleColumnReference>" +
-                      "<TableName>d</TableName>" +
-                      "<Name>f</Name>" +
-                    "</SingleColumnReference>" +
-                  "</SecondExpr>" +
-                "</ComparisonPred>" +
-              "</SecondCondition>" +
-            "</IntersectionSearch>" +
-          "</WhereClause>" +
-        "</TableClause>" +
-        "<OrderBy>" +
-          "<OrderList>" +
-            "<Order>" +
-              "<Expr xsi:type=\"ColumnExpr\">" +
-                "<SingleColumnReference>" +
-                  "<TableName>t</TableName>" +
-                  "<Name>f</Name>" +
-                "</SingleColumnReference>" +
-              "</Expr>" +
-            "</Order>" +
-            "<Order>" +
-              "<Expr xsi:type=\"ColumnExpr\">" +
-                "<SingleColumnReference>" +
-                  "<TableName>g</TableName>" +
-                  "<Name>b</Name>" +
-                "</SingleColumnReference>" +
-              "</Expr>" +
-            "</Order>" +
-          "</OrderList>" +
-        "</OrderBy>" +
-      "</Select>" +
-      
-      
-        "</query>" +
-        
-        
-        "</step>" +
+        " <step name=\"StepOne\" stepNumber=\"1\" sequenceNumber=\"1\">" +    
+        "  <tool name=\"someQueryTool\">" +
+        "   <input>" +
+        "    <parameter name=\"query\" type=\"adql\" location=\"myspace://query/query01.xml\" />" +
+        "   </input>" +
+        "   <output>" +
+        "    <parameter name=\"result\" location=\"myspace://votable2\" />" +
+        "   </output>" +
+        "  </tool>" +  
+        " </step>" +
         "</sequence>" +
-        "</workflow>" ;    
+        "</workflow>" ;
         
     private static String[] workflowTable =
         { 
@@ -284,8 +192,7 @@ public class WorkflowHelper {
 
     private static String queryOne =
     "<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
-    "<query type=\"adql\" target=\"http://aife.jb.man.ac.uk:8080/axis/services/AxisDataCenter\">" +
-               
+            
      "<!-- SQL equivalent" +
      "SELECT t.a, g.d FROM Tab a, Tab d WHERE a.d < d.e AND a.f < d.f ORDER BY t.f, g.b" +
      " -->" +
@@ -377,14 +284,10 @@ public class WorkflowHelper {
          "</Order>" +
        "</OrderList>" +
      "</OrderBy>" +
-   "</Select>" +
-      
-      
-   "</query>" ;
+   "</Select>"  ;
 
 	    private static String queryTwo =
 	    "<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
-	    "<query type=\"adql\" target=\"http://aife.jb.man.ac.uk:8080/axis/services/AxisDataCenter\">" +
 	               
 	     "<!-- SQL equivalent" +
 	     "SELECT t.a, g.d FROM Tab a, Tab d WHERE a.d < d.e AND a.f < d.f ORDER BY t.f, g.b" +
@@ -477,10 +380,7 @@ public class WorkflowHelper {
 	         "</Order>" +
 	       "</OrderList>" +
 	     "</OrderBy>" +
-	   "</Select>" +
-	      
-	      
-	   "</query>" ;
+	   "</Select>" ;
 
 
 
@@ -548,7 +448,7 @@ public class WorkflowHelper {
             InputSource
                source = new InputSource( new StringReader( xmlString ) );
                          
-            workflow = new Workflow( XMLUtils.newDocument(source) ) ;
+            workflow = new Workflow( communitySnippet, XMLUtils.newDocument(source) ) ;
       
         }
         catch ( Exception ex ) {

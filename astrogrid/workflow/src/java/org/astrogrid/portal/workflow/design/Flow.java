@@ -45,8 +45,10 @@ public class Flow extends ActivityContainer {
     }
    
    
-    public Flow( Element element,  Activity parent ) {
-        super(element, parent) ;
+    public Flow( String communitySnippet
+               , Element element
+               ,  Activity parent ) {
+        super( communitySnippet, element, parent) ;
         if( TRACE_ENABLED ) trace( "Flow(Element) entry/exit") ; 
     } 
     

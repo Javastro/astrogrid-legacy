@@ -54,7 +54,9 @@ public abstract class ActivityContainer extends Activity {
     }
     
     
-    public ActivityContainer( Element element, Activity parent ) {
+    public ActivityContainer( String communitySnippet
+                            , Element element
+                            , Activity parent ) {
         super( parent ) ;
         if( TRACE_ENABLED ) trace( "ActivityContainer(Element) entry") ; 
         
@@ -69,13 +71,13 @@ public abstract class ActivityContainer extends Activity {
                     element = (Element) nodeList.item(i) ;
                 
                     if ( element.getTagName().equals( WorkflowDD.SEQUENCE_ELEMENT ) ) {
-                        this.add( new Sequence( element, this ) ) ;   
+                        this.add( new Sequence( communitySnippet, element, this ) ) ;   
                     }   
                     else if( element.getTagName().equals( WorkflowDD.FLOW_ELEMENT ) ) {
-                        this.add( new Flow( element, this ) ) ;                
+                        this.add( new Flow( communitySnippet, element, this ) ) ;                
                     }
                     else if( element.getTagName().equals( WorkflowDD.STEP_ELEMENT ) ) {
-                        this.add( new Step( element, this ) ) ;                
+                        this.add( new Step( communitySnippet, element, this ) ) ;                
                     }
                     
                 } // end if

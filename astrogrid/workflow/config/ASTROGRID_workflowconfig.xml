@@ -62,8 +62,42 @@
   <category name="JES">
 
    <!-- URL
-        This is the URL for the Jes facility -->
-    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/axis/services/JobControllerService" /> 
+        This is the URL for the Jes facility
+    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/axis/services/JobControllerService" />
+     -->
+    <property name="URL" value="" />  
+  </category>
+  
+  <!-- TOOLS LIST CATEGORY ========================================================== -->
+  <category name="TOOLS_LIST">
+    <property name="TOTAL" value="2" />
+    <property name="NAME.1" value="QueryTool" />  
+    <property name="NAME.2" value="VOTableMerge" /> 
+  </category>
+  
+  <!-- QueryTool CATEGORY ========================================================== -->
+  <category name="QueryTool">
+    <property name="INPUT_PARAMS.TOTAL" value="1" />
+    <property name="INPUT_PARAM.NAME.1" value="query" />  
+    <property name="INPUT_PARAM.query.TYPE." value="adql" />
+    <property name="INPUT_PARAM.query.CARDINALITY.MIN" value="1" />  
+    <property name="INPUT_PARAM.query.CARDINALITY.MAX" value="1" />     
+    <property name="OUTPUT_PARAMS.TOTAL" value="1" />
+    <property name="OUTPUT_PARAM.NAME.1" value="result" />  
+    <property name="OUTPUT_PARAM.result.CARDINALITY.MIN" value="1" />  
+    <property name="OUTPUT_PARAM.result.CARDINALITY.MAX" value="1" />     
+  </category>
+  
+    <!-- VOTableMerge CATEGORY ========================================================== -->
+  <category name="VOTableMerge">
+    <property name="INPUT_PARAMS.TOTAL" value="1" />
+    <property name="INPUT_PARAM.NAME.1" value="in" />  
+    <property name="INPUT_PARAM.in.CARDINALITY.MIN" value="2" />  
+    <property name="INPUT_PARAM.in.CARDINALITY.MAX" value="-1" />     
+    <property name="OUTPUT_PARAMS.TOTAL" value="1" />
+    <property name="OUTPUT.NAME.1" value="out" />  
+    <property name="INPUT_PARAM.out.CARDINALITY.MIN" value="1" />  
+    <property name="INPUT_PARAM.out.CARDINALITY.MAX" value="1" />     
   </category>
 
 </properties>
