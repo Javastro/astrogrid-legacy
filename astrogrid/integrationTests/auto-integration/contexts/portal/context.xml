@@ -16,4 +16,9 @@
     <Environment name="org.astrogrid.registry.query.endpoint" override="false" type="java.lang.String" value="@CENTRALREGISTRY@Query" 
         description="Registry Query 
         Service endpoint"/>
+    <!--for workflow/jes-->
+    <Environment name="workflow.jes.endpoint" override="false" type="java.lang.String" 
+        value="@TOMCATROOT@/astrogrid-jes-@VERSION@/services/JobControllerService" description="Jes EndPoint"/>
+    <Environment name="workflow.applist" override="false" type="java.lang.String" value="registry" 
+        description="Instructs the portal to get the list of applications from the registry"/>
 </Context>
