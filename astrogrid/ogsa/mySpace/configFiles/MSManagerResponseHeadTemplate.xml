@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+    <status>
+        <status>{0}</status>
+        <details>{1}</details>
+        <currentDate>{2}</currentDate>
+    </status>
+    <dataItemRecords>

@@ -1,0 +1,51 @@
+org/astrogrid/mySpace/mySpaceStatus
+===================================
+
+
+This directory holds the mySpace classes for status handling.  Most of
+these classes are conventional java code.  However, MySpaceStatusCode.java
+is different.  It is generated automatically from a template file and a
+properties file which contains a list of the error codes in the mySpace
+system.  The corresponding files are:
+
+  template file:                      MySpaceStatusCode.template
+  properties file with error codes:   statuscodes.properties
+
+To change MySpaceStatusCode.java edit the template file rather than the
+java file.  (Note that the template file can itself be compiled with a
+java compiler.  This feature is provided as a de-bugging aid.)
+
+To generate the java file from the template file run the Perl script
+makeMySpaceStatusCode.pl.  Simply type:
+
+  makeMySpaceStatusCode.pl
+
+This script has no arguments; it automatically picks up the required
+files.  A new MySpaceStatusCode.java will be created.  It is a standard
+java file which can be compiled and built into the mySpace system in
+the conventional way.
+
+
+Introducing a new error code into the mySpace system
+----------------------------------------------------
+
+To introduce a new error code into the mySpace system edit it into
+statuscodes.properties.  Then regenerate MySpaceStatusCode.java as
+described above.  Note that:
+
+* The error codes are turned into a java variables and hence should
+  conform to the naming conventions for java variables (for example,
+  they should not contain embedded `-' characters).  Also, the error
+  codes are forced to be unique; the resulting java class will not
+  compile if there are duplicates.
+     
+* The description should be enclosed in double-quotes (").
+     
+* There should be no spaces on either side of the equals sign (=).
+     
+* Blank lines and comment lines (which start with a `#') may be
+  introduced as required.
+
+
+A C Davenhall,
+4/7/03.

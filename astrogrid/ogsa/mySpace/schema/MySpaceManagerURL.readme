@@ -1,0 +1,15 @@
+#In order to connect to Web service MySpaceManager, portal/datacentre need to know the url connected to the machine which is:
+# 143.210.36.131
+# Parameters passed in each method please refer to MySpaceManager.wsdl
+# For request and response xml template please refer to properties files in schema directory.
+# For <status> element in MySpaceManagerResponse.properties, it will return SUCCESS or FAULT, if it is FAULT, please read <details> for details.
+
+#Excample code to invoke MySpaceManager:
+String endpoint  = "http://143.210.36.131:8080/axis/services/MySpaceManager";
+			Service service = new Service();
+			org.apache.axis.client.Call call = (Call)service.createCall();
+			call.setTargetEndpointAddress( new java.net.URL(endpoint) );
+			call.setOperationName( "upLoad" );
+			
+			call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
+                        String response = (String) call.invoke( new Object[] { "xmlRequest"} ); 

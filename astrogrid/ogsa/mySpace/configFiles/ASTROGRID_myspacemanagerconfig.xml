@@ -1,0 +1,74 @@
+<?xml version="1.0" ?>
+
+<!--   Each mySpaceManager is configured by setting properties within this file    -->
+
+<properties>
+
+  <!-- GENERAL CATEGORY ===================================================== -->  
+  <category name="GENERAL">
+    <property name="VERSION" value="1.2" />
+  </category>
+
+  <!-- MESSAGES CATEGORY =========================================================
+   Following are the base name, language code and country code for 
+   the properties file that contains all messages for a datacenter 
+   Example. 
+   Given these values:
+   INSTALLATION.BASENAME=ASTROGRID_myspacemanagermessages
+   INSTALLATION.LANGUAGECODE=en
+   INSTALLATION.COUNTRYCODE=US
+
+   suiteable file names would be:
+   ASTROGRID_myspacemanagermessages.properties        // installation default messages
+   ASTROGRID_myspacemanagermessages_en.properties     // English language default messages
+   ASTROGRID_myspacemanagermessages_en_US.properties  // US specific English language messages
+  -->
+  <category name="MESSAGES">
+    <property name="INSTALLATION.BASENAME" value="ASTROGRID_myspacemanagermessages" />
+    <property name="INSTALLATION.LANGUAGECODE" value="" />
+    <property name="INSTALLATION.COUNTRYCODE" value="" />    
+  </category>
+  
+  
+  <!-- MYSPACEMANAGER CATEGORY ===================================================== -->  
+  <category name="MYSPACEMANAGER">
+    <property name="PARSER.VALIDATION" value="false" />
+    
+    <!-- REGISTRYCONF
+        This is the directory where MySpace Registry will get/log info, please add /example at the end of your path -->
+    <property name="REGISTRYCONF" value="/usr/local/astroGrid/jakarta-tomcat-4.1.24/conf/astrogrid/mySpace/example" />
+ 
+    <!-- URL MYSPACE MANAGER
+        This is the URL for the MySpace Manager facility for the installed 
+        instance of MySpaceManager -->
+    <property name="MYSPACEMANAGERURL" value="http://localholst:8080/axis/services/MySpaceManager" /> 
+    
+    <!-- URL MYSPACE MANAGER including remote MySpace Systems -->
+    <property name="MYSPACEMANAGERURLs" value="http://localhost:8080/axis/services/MySpaceManager,http://hydra.star.le.ac.uk:8080/axis/services/MySpaceManager,http://bbc.co.uk/news," /> 
+    
+     <!-- URL SERVERMANAGER
+        This is the URL for the MySpace Server facility for the installed 
+        instance of MySpaceServer -->
+    <property name="MYSPACESERVERURL" value="http://localhost:8080/axis/services/ServerManager" /> 
+
+   <!-- MySpace Request Template -->
+    <property name="TEMPLATE.REQUEST" value="MSManagerRequestTemplate.xml" />  
+
+  
+    <!-- MySpace Response Template -->
+    <property name="TEMPLATE.RESPONSE" value="MSManagerResponseTemplate.xml" />  
+
+   
+    <!-- MySpace ResponseHead Template -->
+    <property name="TEMPLATE.RESPONSEHEAD" value="MSManagerResponseHeadTemplate.xml" />  
+   
+
+    <!-- MySpace ResponseElement Template -->
+    <property name="TEMPLATE.RESPONSEELEMENT" value="MSManagerResponseElementTemplate.xml" />  
+
+   
+    <!-- MySpace ResponseFoot Template -->
+    <property name="TEMPLATE.RESPONSEFOOT" value="MSManagerResponseFootTemplate.xml" />  
+  </category> 
+
+</properties>

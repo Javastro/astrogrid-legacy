@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request>
+    <elements>
+        <userID>{0}</userID>
+        <communityID>{1}</communityID>
+        <jobID>{2}</jobID>
+        <mySpaceAction>{3}</mySpaceAction>
+        <dataItemID>{4}</dataItemID>
+        <oldDataItemID>{5}</oldDataItemID>
+        <newDataItemName>{6}</newDataItemName>
+        <newContainerName>{7}</newContainerName>
+        <query>{8}</query>
+        <newDataHolderName>{9}</newDataHolderName>
+        <serverFileName>{10}</serverFileName>
+        <fileSize>{11}</fileSize>
+        <extentionPeriod>{12}</extentionPeriod>
+        <!--for save -->
+        <fileName>{13}</fileName> <!--fileName without full path,we deside if store in WF or Query or VOTable-->
+        <fileContent>{14}</fileContent>
+        <category>{15}{/category}<!-- WF or Query or Votable-->
+        <action>{16}{/action}<!--overwrite or append -->
+        <importURL>{17}</importURL>
+        <!--for download(get) -->
+        <!-- serverFileName -->
+        <downloadPath>{17}</downloadPath>
+    </elements>
+</request>

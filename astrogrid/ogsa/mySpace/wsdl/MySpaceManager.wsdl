@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://mySpaceManager.mySpace.astrogrid.org" xmlns:impl="http://mySpaceManager.mySpace.astrogrid.org" xmlns:intf="http://mySpaceManager.mySpace.astrogrid.org" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+ <wsdl:types>
+  <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://xml.apache.org/xml-soap">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Vector">
+    <sequence>
+     <element name="item" minOccurs="0" maxOccurs="unbounded" type="xsd:anyType"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="changeOwnerRequest">
+
+      <wsdl:part name="userid" type="xsd:string"/>
+
+      <wsdl:part name="communityid" type="xsd:string"/>
+
+      <wsdl:part name="dataHolderName" type="xsd:string"/>
+
+      <wsdl:part name="newOwnerID" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="lookupDataHolderDetailsResponse">
+
+      <wsdl:part name="lookupDataHolderDetailsReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="exportDataHolderRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="copyDataHolderRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="upLoadURLRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishResponse">
+
+      <wsdl:part name="publishReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteDataHolderRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listExpiredDataHoldersResponse">
+
+      <wsdl:part name="listExpiredDataHoldersReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listExpiredDataHoldersRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUserResponse">
+
+      <wsdl:part name="deleteUserReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createUserResponse">
+
+      <wsdl:part name="createUserReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="exportDataHolderResponse">
+
+      <wsdl:part name="exportDataHolderReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="upLoadURLResponse">
+
+      <wsdl:part name="upLoadURLReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getServerURLsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="extendLeaseRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="lookupDataHolderDetailsRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="moveDataHolderResponse">
+
+      <wsdl:part name="moveDataHolderReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteDataHolderResponse">
+
+      <wsdl:part name="deleteDataHolderReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="lookupDataHoldersDetailsResponse">
+
+      <wsdl:part name="lookupDataHoldersDetailsReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="upLoadRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createUserRequest">
+
+      <wsdl:part name="userid" type="xsd:string"/>
+
+      <wsdl:part name="communityid" type="xsd:string"/>
+
+      <wsdl:part name="servers" type="apachesoap:Vector"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="upLoadResponse">
+
+      <wsdl:part name="upLoadReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createContainerRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="copyDataHolderResponse">
+
+      <wsdl:part name="copyDataHolderReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="extendLeaseResponse">
+
+      <wsdl:part name="extendLeaseReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getServerURLsResponse">
+
+      <wsdl:part name="getServerURLsReturn" type="apachesoap:Vector"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUserRequest">
+
+      <wsdl:part name="userid" type="xsd:string"/>
+
+      <wsdl:part name="communityid" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="moveDataHolderRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="lookupDataHoldersDetailsRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createContainerResponse">
+
+      <wsdl:part name="createContainerReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="changeOwnerResponse">
+
+      <wsdl:part name="changeOwnerReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="MySpaceManager">
+
+      <wsdl:operation name="publish" parameterOrder="jobDetails">
+
+         <wsdl:input name="publishRequest" message="impl:publishRequest"/>
+
+         <wsdl:output name="publishResponse" message="impl:publishResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="upLoad" parameterOrder="jobDetails">
+
+         <wsdl:input name="upLoadRequest" message="impl:upLoadRequest"/>
+
+         <wsdl:output name="upLoadResponse" message="impl:upLoadResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="upLoadURL" parameterOrder="jobDetails">
+
+         <wsdl:input name="upLoadURLRequest" message="impl:upLoadURLRequest"/>
+
+         <wsdl:output name="upLoadURLResponse" message="impl:upLoadURLResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="lookupDataHolderDetails" parameterOrder="jobDetails">
+
+         <wsdl:input name="lookupDataHolderDetailsRequest" message="impl:lookupDataHolderDetailsRequest"/>
+
+         <wsdl:output name="lookupDataHolderDetailsResponse" message="impl:lookupDataHolderDetailsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="lookupDataHoldersDetails" parameterOrder="jobDetails">
+
+         <wsdl:input name="lookupDataHoldersDetailsRequest" message="impl:lookupDataHoldersDetailsRequest"/>
+
+         <wsdl:output name="lookupDataHoldersDetailsResponse" message="impl:lookupDataHoldersDetailsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="copyDataHolder" parameterOrder="jobDetails">
+
+         <wsdl:input name="copyDataHolderRequest" message="impl:copyDataHolderRequest"/>
+
+         <wsdl:output name="copyDataHolderResponse" message="impl:copyDataHolderResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="moveDataHolder" parameterOrder="jobDetails">
+
+         <wsdl:input name="moveDataHolderRequest" message="impl:moveDataHolderRequest"/>
+
+         <wsdl:output name="moveDataHolderResponse" message="impl:moveDataHolderResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="exportDataHolder" parameterOrder="jobDetails">
+
+         <wsdl:input name="exportDataHolderRequest" message="impl:exportDataHolderRequest"/>
+
+         <wsdl:output name="exportDataHolderResponse" message="impl:exportDataHolderResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createContainer" parameterOrder="jobDetails">
+
+         <wsdl:input name="createContainerRequest" message="impl:createContainerRequest"/>
+
+         <wsdl:output name="createContainerResponse" message="impl:createContainerResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteDataHolder" parameterOrder="jobDetails">
+
+         <wsdl:input name="deleteDataHolderRequest" message="impl:deleteDataHolderRequest"/>
+
+         <wsdl:output name="deleteDataHolderResponse" message="impl:deleteDataHolderResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="extendLease" parameterOrder="jobDetails">
+
+         <wsdl:input name="extendLeaseRequest" message="impl:extendLeaseRequest"/>
+
+         <wsdl:output name="extendLeaseResponse" message="impl:extendLeaseResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createUser" parameterOrder="userid communityid servers">
+
+         <wsdl:input name="createUserRequest" message="impl:createUserRequest"/>
+
+         <wsdl:output name="createUserResponse" message="impl:createUserResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUser" parameterOrder="userid communityid">
+
+         <wsdl:input name="deleteUserRequest" message="impl:deleteUserRequest"/>
+
+         <wsdl:output name="deleteUserResponse" message="impl:deleteUserResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="changeOwner" parameterOrder="userid communityid dataHolderName newOwnerID">
+
+         <wsdl:input name="changeOwnerRequest" message="impl:changeOwnerRequest"/>
+
+         <wsdl:output name="changeOwnerResponse" message="impl:changeOwnerResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listExpiredDataHolders" parameterOrder="jobDetails">
+
+         <wsdl:input name="listExpiredDataHoldersRequest" message="impl:listExpiredDataHoldersRequest"/>
+
+         <wsdl:output name="listExpiredDataHoldersResponse" message="impl:listExpiredDataHoldersResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getServerURLs">
+
+         <wsdl:input name="getServerURLsRequest" message="impl:getServerURLsRequest"/>
+
+         <wsdl:output name="getServerURLsResponse" message="impl:getServerURLsResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="MySpaceManagerSoapBinding" type="impl:MySpaceManager">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="publish">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="publishRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="publishResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="upLoad">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="upLoadRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="upLoadResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="upLoadURL">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="upLoadURLRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="upLoadURLResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="lookupDataHolderDetails">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="lookupDataHolderDetailsRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="lookupDataHolderDetailsResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="lookupDataHoldersDetails">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="lookupDataHoldersDetailsRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="lookupDataHoldersDetailsResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="copyDataHolder">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="copyDataHolderRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="copyDataHolderResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="moveDataHolder">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="moveDataHolderRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="moveDataHolderResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="exportDataHolder">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="exportDataHolderRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="exportDataHolderResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createContainer">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createContainerRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createContainerResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteDataHolder">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteDataHolderRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteDataHolderResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="extendLease">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="extendLeaseRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="extendLeaseResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createUserRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createUserResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteUserRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteUserResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="changeOwner">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="changeOwnerRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="changeOwnerResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listExpiredDataHolders">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listExpiredDataHoldersRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listExpiredDataHoldersResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getServerURLs">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getServerURLsRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getServerURLsResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="MySpaceManagerService">
+
+      <wsdl:port name="MySpaceManager" binding="impl:MySpaceManagerSoapBinding">
+
+         <wsdlsoap:address location="http://localhost:8080/axis/services/MySpaceManager"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>
