@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.8 2004/03/15 23:45:07 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.9 2004/03/24 08:05:08 pah Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,9 @@
 **/
 package org.astrogrid.jes.jobscheduler.dispatcher;
 
-import org.astrogrid.applications.delegate.ApplicationController;
+import org.astrogrid.applications.delegate.CEADelegateException;
+import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
-import org.astrogrid.applications.delegate.beans.ParameterValues;
-import org.astrogrid.applications.delegate.beans.User;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
@@ -41,138 +40,116 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Feb-2004
  *
  */
-public class ApplicationControllerDispatcher implements Dispatcher , ComponentDescriptor{
-    private static final Log logger = LogFactory.getLog(ApplicationControllerDispatcher.class); 
-    /** Configuration component for Application Controller Dispatcher
-     * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
-     *
-     */
-    public interface MonitorEndpoint {
-        URL getURL();
-    }    
-    /** Construct a new ApplicationControllerDispatcher    
-     * @param locator tool locator component to use to resolve endpoints
-     * @param endpoint configuration component that specifies the endpoint of the JobMonitor service. This is used by the ApplicationController to 
-     * return execution information back to the JES server.
-     */
-    public ApplicationControllerDispatcher(Locator locator, MonitorEndpoint endpoint)  {
-        this.locator = locator;
-        this.monitorURL = endpoint.getURL();
-        assert monitorURL != null;
-        logger.info("monitor URL set to " + monitorURL.toString());
-    }
-    /** tool locator component */
-    protected final Locator locator;
-    /** endpoint of local jobmonitor service - used as a callback */
-    protected final URL monitorURL;
-    /**
-     * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(java.lang.String, org.astrogrid.jes.job.JobStep)
-     */
-    public void dispatchStep( Workflow job, Step js) throws JesException {
-        boolean succeeded = false;
+public class ApplicationControllerDispatcher implements Dispatcher, ComponentDescriptor {
+   private static final Log logger =
+      LogFactory.getLog(ApplicationControllerDispatcher.class);
+   /** Configuration component for Application Controller Dispatcher
+    * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
+    *
+    */
+   public interface MonitorEndpoint {
+      URL getURL();
+   }
+   /** Construct a new ApplicationControllerDispatcher    
+    * @param locator tool locator component to use to resolve endpoints
+    * @param endpoint configuration component that specifies the endpoint of the JobMonitor service. This is used by the ApplicationController to 
+    * return execution information back to the JES server.
+    */
+   public ApplicationControllerDispatcher(Locator locator, MonitorEndpoint endpoint) {
+      this.locator = locator;
+      this.monitorURL = endpoint.getURL();
+      assert monitorURL != null;
+      logger.info("monitor URL set to " + monitorURL.toString());
+   }
+   /** tool locator component */
+   protected final Locator locator;
+   /** endpoint of local jobmonitor service - used as a callback */
+   protected final URL monitorURL;
+   /**
+    * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(java.lang.String, org.astrogrid.jes.job.JobStep)
+    */
+   public void dispatchStep(Workflow job, Step js) throws JesException {
+      boolean succeeded = false;
 
-        String toolLocation = locator.locateTool(js);
-        ApplicationController appController = DelegateFactory.createDelegate(toolLocation);
+      String toolLocation = locator.locateTool(js);
+      CommonExecutionConnectorClient appController =
+         DelegateFactory.createDelegate(toolLocation);
 
-        User user = buildUser(job);
-        ParameterValues params = buildParameterValues(js);
-            String xpath = job.getXPathFor(js);
-            JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(),xpath);
-            logger.debug("Calling application controller at " + toolLocation + " for " + js.getTool().getName() + ", " + id.getValue());
-            try {
-            String applicationID = appController.initializeApplication( js.getTool().getName() 
-                                                                       , id.getValue()
-                                                                       , monitorURL.toString()
-                                                                       , user
-                                                                       , params ) ;
-                                                                        
-            succeeded = appController.executeApplication( applicationID ) ;
-            if (! succeeded) {
-                logger.error(id.getValue() + " : Appcontroller failed with unspecified error - just returned false");
-                throw new JesException("Application controller failed with unspecified error - just returned false");
-            }
-        } catch (RemoteException re) {
-            logger.error(id.getValue() + " : Failed to communitcate with application controller",re);
-            throw new JesException("Failed to communicate with application controller",re);
-        } 
-         
-    }
-    
-    /**Build appCon's 'user' parameter, from the credentials contained within the workflow document */
-    protected User buildUser(Workflow parent) throws JesException {
-        User user = new User();
-        user.setAccount(parent.getCredentials().getAccount().getName()+"@"+parent.getCredentials().getAccount().getCommunity());
-        user.setGroup(parent.getCredentials().getGroup().getName());
-        user.setToken(parent.getCredentials().getSecurityToken());
-        return user;
-    }
-    
-    /** construct the parameter values to pass to the appclication controller*/
-    protected ParameterValues buildParameterValues(Step js) throws JesException{
-        try {
-        ParameterValues params = new ParameterValues();
-        params.setMethodName(locator.getToolInterface(js));
-        StringWriter sw = new StringWriter();
-        js.getTool().marshal(sw);
-        sw.close();
-        logger.debug("ParameterSpec := " + sw.toString());
-        params.setParameterSpec(sw.toString());
-        return params;
-        } catch (Exception e) {
-            throw new JesException("cold not serialize to xml",e);
-        }
-    }
+      String xpath = job.getXPathFor(js);
+      JobIdentifierType id =
+         JesUtil.createJobId(job.getJobExecutionRecord().getJobId(), xpath);
+      logger.debug(
+         "Calling application controller at "
+            + toolLocation
+            + " for "
+            + js.getTool().getName()
+            + ", "
+            + id.getValue());
+      try {
+         String applicationID =
+            appController.execute(js.getTool(), id, monitorURL.toString());
 
-    /**
-     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
-     */
-    public String getName() {
-        return "ApplicationController Dispatcher";
-    }
+      }
+      catch (CEADelegateException e) {
+         logger.error(
+            id.getValue() + " : Failed to communitcate with application controller",
+            e);
+         throw new JesException("Failed to communicate with application controller", e);
+      }
 
-    /**
-     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
-     */
-    public String getDescription() {
-        return "Dispatcher that executes job steps by calling application controllers"
-            +" Configured to tell application controllers to call back to:\n" + monitorURL.toString();
-    }
+   }
 
-    /**
-     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
-     */
-    public Test getInstallationTest() {        
-        TestSuite suite  = new TestSuite("Tests for ApplicationControllerDispatcher");
-        suite.addTest(new InstallationTest("testCanConnectMonitorURL"));
-        suite.addTest(new InstallationTest("testCanCallMonitorURL"));
-        return suite;    
-    }
+   /**
+    * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+    */
+   public String getName() {
+      return "ApplicationController Dispatcher";
+   }
 
+   /**
+    * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+    */
+   public String getDescription() {
+      return "Dispatcher that executes job steps by calling application controllers"
+         + " Configured to tell application controllers to call back to:\n"
+         + monitorURL.toString();
+   }
 
-    
-    protected class InstallationTest extends TestCase {
-        public InstallationTest(String s) {
-            super(s);
-        }
-        public void testCanConnectMonitorURL() throws Exception {
-            URLConnection conn = monitorURL.openConnection();
-            assertNotNull(conn);
-            conn.connect();
-           
-        }
-        public void testCanCallMonitorURL() throws Exception{
-            JobMonitor mon = JesDelegateFactory.createJobMonitor(monitorURL.toString());
-            assertNotNull(mon);
-            // call, with null parameters. will be ignored by other end - if it gets there. we're checking it gets there..
-            mon.monitorJob(null,null);
-        }
-    }
+   /**
+    * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+    */
+   public Test getInstallationTest() {
+      TestSuite suite = new TestSuite("Tests for ApplicationControllerDispatcher");
+      suite.addTest(new InstallationTest("testCanConnectMonitorURL"));
+      suite.addTest(new InstallationTest("testCanCallMonitorURL"));
+      return suite;
+   }
+
+   protected class InstallationTest extends TestCase {
+      public InstallationTest(String s) {
+         super(s);
+      }
+      public void testCanConnectMonitorURL() throws Exception {
+         URLConnection conn = monitorURL.openConnection();
+         assertNotNull(conn);
+         conn.connect();
+
+      }
+      public void testCanCallMonitorURL() throws Exception {
+         JobMonitor mon = JesDelegateFactory.createJobMonitor(monitorURL.toString());
+         assertNotNull(mon);
+         // call, with null parameters. will be ignored by other end - if it gets there. we're checking it gets there..
+         mon.monitorJob(null, null);
+      }
+   }
 
 }
 
-
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.9  2004/03/24 08:05:08  pah
+call the new CommonExecutionConnector Delegate
+
 Revision 1.8  2004/03/15 23:45:07  nw
 improved javadoc
 
