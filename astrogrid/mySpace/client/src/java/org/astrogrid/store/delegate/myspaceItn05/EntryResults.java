@@ -15,7 +15,7 @@ public class EntryResults  implements java.io.Serializable {
     private long expiryDate;
     private java.lang.String ownerId;
     private java.lang.String permissionsMask;
-    private int size;
+    private long size;
     private int type;
 
     public EntryResults() {
@@ -77,11 +77,11 @@ public class EntryResults  implements java.io.Serializable {
         this.permissionsMask = permissionsMask;
     }
 
-    public int getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(long size) {
         this.size = size;
     }
 

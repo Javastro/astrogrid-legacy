@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFile.java,v 1.2 2004/06/14 23:08:52 jdt Exp $
+ * $Id: MySpaceFile.java,v 1.3 2004/08/27 22:43:15 dave Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -26,9 +26,9 @@ import java.util.Date;
 
 
 public class MySpaceFile implements StoreFile {
-   
-   String name
-      , owner, created, expires, size, permissions = null;
+
+	long size ;   
+   String name , owner, created, expires, permissions = null;
    URL url = null;
    
    MySpaceFileType type = null;
@@ -39,7 +39,7 @@ public class MySpaceFile implements StoreFile {
       this.parentFolder = parent;
    }
    
-   public MySpaceFile(MySpaceFolder parent, String aFilename, String anOwner, String aCreatedDate, String anExpiryDate, String aSize, String somePermissions, MySpaceFileType aType) {
+   public MySpaceFile(MySpaceFolder parent, String aFilename, String anOwner, String aCreatedDate, String anExpiryDate, long aSize, String somePermissions, MySpaceFileType aType) {
       this(parent, aFilename);
       
       this.owner = anOwner;
@@ -53,7 +53,7 @@ public class MySpaceFile implements StoreFile {
    /**
     * constructor taking URL too - for historical purposes - URLs should be deprecated
     */
-   public MySpaceFile(MySpaceFolder parent, String aFilename, String anOwner, String aCreatedDate, String anExpiryDate, String aSize, String somePermissions, MySpaceFileType aType, URL aUrl) {
+   public MySpaceFile(MySpaceFolder parent, String aFilename, String anOwner, String aCreatedDate, String anExpiryDate, long aSize, String somePermissions, MySpaceFileType aType, URL aUrl) {
       this(parent, aFilename);
       
       this.owner = anOwner;
@@ -76,7 +76,7 @@ public class MySpaceFile implements StoreFile {
       
    public String getExpires() { return expires; }
 
-   public long getSize() { return Integer.parseInt(size); }
+   public long getSize() { return size; }
 
    public String getPermissions() { return permissions; }
 
@@ -126,6 +126,12 @@ public class MySpaceFile implements StoreFile {
 
 /*
  $Log: MySpaceFile.java,v $
+ Revision 1.3  2004/08/27 22:43:15  dave
+ Updated filestore and myspace to report file size correctly.
+
+ Revision 1.2.66.1  2004/08/27 16:16:15  dave
+ Added temp debug ...
+
  Revision 1.2  2004/06/14 23:08:52  jdt
  Merge from branches
  ClientServerSplit_JDT

@@ -76,11 +76,6 @@ public class DataItemRecordTest extends TestCase
 			"file",
 			dataItem.getDataItemFile()
 			);
-		dataItem.resetDataItemFile();
-		assertEquals(
-			null,
-			dataItem.getDataItemFile()
-			);
 		}
 
 /**

@@ -265,6 +265,10 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
     * Creates a MySpaceFile/Folder from the given entry result
     */
    public StoreFile makeStoreFile(MySpaceFolder parent, EntryResults result) {
+System.out.println("FROG : makeStoreFile()");
+System.out.println("  Name : " + result.getEntryName());
+System.out.println("  Size : " + result.getSize());
+
       StoreFile file;
       if (result.getType() == EntryCodes.CON) {
          if (parent == null) {
@@ -285,6 +289,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
             file = new MySpaceFile(parent, result);
          }
       }
+System.out.println("  Size : " + file.getSize());
       return file;
    }
 
@@ -398,6 +403,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
    public StoreFile getFile(String path) throws IOException
    {
+System.out.println("FROG : getFile()");
+System.out.println("  Path : " + path);
 
       if (!path.startsWith("/")) path = "/"+path;
       
@@ -1409,6 +1416,15 @@ System.out.println("Done");
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.8  2004/08/27 22:43:15  dave
+Updated filestore and myspace to report file size correctly.
+
+Revision 1.7.12.2  2004/08/27 16:17:48  dave
+....
+
+Revision 1.7.12.1  2004/08/27 16:16:15  dave
+Added temp debug ...
+
 Revision 1.7  2004/08/18 19:00:01  dave
 Myspace manager modified to use remote filestore.
 Tested before checkin - integration tests at 91%.

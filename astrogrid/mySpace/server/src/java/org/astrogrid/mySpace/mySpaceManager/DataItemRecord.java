@@ -68,7 +68,7 @@ public class DataItemRecord implements Serializable
    private String ownerID;          // Owner's identifier.
    private Date   creationDate;     // Creation date.
    private Date   expiryDate;       // Expiry date.
-   private int    size;             // Size (in bytes).
+   private long   size;             // Size (in bytes).
    private int    type;             // Type code (VOTable etc).
    private String permissionsMask;  // Access permissions mask.
 
@@ -78,7 +78,6 @@ public class DataItemRecord implements Serializable
 /**
  * Constructor in which arguments are passed to set all the member
  * variables (except dataItemUri is not passed).
- * @deprecated - all of the params should be set (use next constructor).
 
    public DataItemRecord (String dataItemName,  int dataItemID,
      String dataItemFile,  String ownerID,  Date creationDate,
@@ -109,7 +108,7 @@ public class DataItemRecord implements Serializable
 		String ownerID,
 		Date creationDate,
 		Date expiryDate,
-		int size,
+		long size,
 		int type, 
 		String permissionsMask
 		) {
@@ -140,7 +139,7 @@ public class DataItemRecord implements Serializable
 		this.ownerID = null;
 		this.creationDate = null;
 		this.expiryDate = null;
-		this.size = -1;
+		this.size = -1L;
 		this.type = UNKNOWN;
 		this.permissionsMask = null;
 		}
@@ -172,13 +171,12 @@ public class DataItemRecord implements Serializable
  * out of the mySpace system.  This method resets the name in the current
  * DataItemRecord to null.  It is typically invoked prior to exporting
  * the DataItemRecord.
- * @deprecated - external systems will need to know the file identifier.
  *
- */
 
    public void resetDataItemFile()
    {  this.dataItemFile = null;
    }
+ */
 
 
 /**
@@ -190,6 +188,13 @@ public class DataItemRecord implements Serializable
    {  this.dataItemIvorn = dataItemIvorn;
    }
 
+/**
+ * Set the file size.
+ *
+ */
+   protected void setSize(long size)
+   {  this.size = size;
+   }
 
 // ----------------------------------------------------------------------
 
@@ -271,7 +276,7 @@ public class DataItemRecord implements Serializable
  * Return the size of the <code>DataHolder</code> (in bytes).
  */
 
-   public int getSize()
+   public long getSize()
    {  return size;
    }
 

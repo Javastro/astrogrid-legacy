@@ -121,7 +121,7 @@ public class RegistryManager
            "ownerID VARCHAR(20), " +
            "creationDate DATE, " +
            "expiryDate DATE, " +
-           "size INTEGER, " +
+           "size BIGINT, " +
            "type INTEGER,  " +
            "permissionsMask VARCHAR(20) )";
 
@@ -377,7 +377,10 @@ public class RegistryManager
 
    public boolean updateDataItemRecord(DataItemRecord dataItemRecord)
    {  boolean status = true;
-
+System.out.println("FROG : updateDataItemRecord()");
+System.out.println("  Ident : " + dataItemRecord.getDataItemID());
+System.out.println("  Name  : " + dataItemRecord.getDataItemName());
+System.out.println("  Size  : " + dataItemRecord.getSize());
       try
       {
 //
@@ -487,7 +490,8 @@ public class RegistryManager
 
    public DataItemRecord lookupDataItemRecord(int dataItemID)
    {  DataItemRecord returnItemRecord = null;
-
+System.out.println("FROG : lookupDataItemRecord()");
+System.out.println("  Ident : " + dataItemID);
       try
       {
 //
@@ -503,6 +507,10 @@ public class RegistryManager
          if (dbvec != null)
          {  if (dbvec.size() == 1)
             {  returnItemRecord = (DataItemRecord)dbvec.elementAt(0);
+
+System.out.println("  Name  : " + returnItemRecord.getSize());
+System.out.println("  Size  : " + returnItemRecord.getSize());
+
 /*
  *
                String uri = this.getServerURI("serv1") +
@@ -550,6 +558,8 @@ public class RegistryManager
    public Vector lookupDataItemRecords(String dataHolderNameExpr)
    {  Vector returnItemRecords = new Vector();
 
+System.out.println("FROG : lookupDataItemRecords()");
+System.out.println("  Path  : " + dataHolderNameExpr);
       try
       {
 //
@@ -574,6 +584,12 @@ public class RegistryManager
             {  for(int loop=0; loop<dbvec.size(); loop++)
                {  DataItemRecord currRec =
                     (DataItemRecord)dbvec.elementAt(loop);
+
+System.out.println("");
+System.out.println("  Ident : " + currRec.getDataItemID());
+System.out.println("  Name  : " + currRec.getDataItemName());
+System.out.println("  Size  : " + currRec.getSize());
+
 /*
  *
                   String uri = this.getServerURI("serv1") +
@@ -971,7 +987,7 @@ public class RegistryManager
                     sqlResults.getString("ownerID"),
                     creation,
                     expiry,
-                    sqlResults.getInt("size"),
+                    sqlResults.getLong("size"),
                     sqlResults.getInt("type"),
                     sqlResults.getString("permissionsMask")
                   );

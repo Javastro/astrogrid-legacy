@@ -2,10 +2,16 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/FileStoreImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreImpl.java,v $
+ *   Revision 1.8  2004/08/27 22:43:15  dave
+ *   Updated filestore and myspace to report file size correctly.
+ *
+ *   Revision 1.7.12.1  2004/08/26 19:06:50  dave
+ *   Modified filestore to return file size in properties.
+ *
  *   Revision 1.7  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -371,13 +377,14 @@ public class FileStoreImpl
      * @param ident The internal identifier of the target file.
      * @param properties An optional array of FileProperties describing the copy.
      * @return An array of FileProperties describing the copied data.
+     * @throws FileStoreTransferException if unable to transfer the data.
      * @throws FileStoreIdentifierException if the identifier is null or not valid.
      * @throws FileStoreNotFoundException if unable to locate the file.
      * @throws FileStoreServiceException if unable handle the request.
      *
      */
     public FileProperty[] duplicate(String ident, FileProperty[] properties)
-        throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
+        throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException, FileStoreTransferException
         {
         //
         // Check for null ident.

@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/server/src/java/org/astrogrid/mySpace/mySpaceManager/FileStoreDriver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreDriver.java,v $
+ *   Revision 1.3  2004/08/27 22:43:15  dave
+ *   Updated filestore and myspace to report file size correctly.
+ *
+ *   Revision 1.2.12.1  2004/08/27 14:06:52  dave
+ *   Modified FileStoreDriver and DataItemRecord to propagate size.
+ *
  *   Revision 1.2  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -412,7 +418,6 @@ public class FileStoreDriver
 			) ;
 		}
 
-
 	/**
 	 * Delete data from the store.
 	 * @param item The data item record for the data.
@@ -440,13 +445,14 @@ public class FileStoreDriver
 	 * Copy a file within the server.
 	 * @param source      - the data item to copy from.
 	 * @param destination - the data item to copy into.
+	 * @throws FileStoreTransferException if unable to transfer the data.
 	 * @throws FileStoreIdentifierException if the source identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
 	public void duplicate(DataItemRecord source, DataItemRecord destination)
-		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
+		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException, FileStoreTransferException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -498,6 +504,11 @@ public class FileStoreDriver
 		// Update the data item URL.
 		item.setDataItemUri(
 			properties.getResourceUrl().toString()
+			) ;
+		//
+		// Update the data item size.
+		item.setSize(
+			properties.getContentSize()
 			) ;
 		}
 	}

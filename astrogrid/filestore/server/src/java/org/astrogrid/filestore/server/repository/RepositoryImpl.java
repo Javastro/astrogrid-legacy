@@ -2,10 +2,16 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryImpl.java,v $
+ *   Revision 1.7  2004/08/27 22:43:15  dave
+ *   Updated filestore and myspace to report file size correctly.
+ *
+ *   Revision 1.6.12.1  2004/08/26 19:06:50  dave
+ *   Modified filestore to return file size in properties.
+ *
  *   Revision 1.6  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -189,12 +195,13 @@ public class RepositoryImpl
 	 * @param ident The identifier of the container.
 	 * @return The new file container.
 	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
+	 * @throws FileStoreTransferException If unable to transfer the data.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
 	public RepositoryContainer duplicate(String ident)
-		throws FileStoreServiceException, FileStoreNotFoundException, FileStoreIdentifierException
+		throws FileStoreServiceException, FileStoreNotFoundException, FileStoreIdentifierException, FileStoreTransferException
 		{
 		//
 		// Try to load the existing container.
@@ -208,28 +215,13 @@ public class RepositoryImpl
 			) ;
 		//
 		// Transfer the data.
-		try {
-			TransferUtil trans = new TransferUtil(
-				original.getDataInputStream(),
-				duplicate.getDataOutputStream()
-				) ;
-			trans.transfer() ;
-			}
-		catch (IOException ouch)
-			{
-			throw new FileStoreServiceException(
-				"Unable to transfer file data",
-				ouch
-				) ;
-			}
-		//
-		// Save our properties.
-
+		duplicate.importData(
+			original.getDataInputStream()
+			) ;
 		//
 		// Return the new container.
 		return duplicate ;
 		}
-
 
 	/**
 	 * Inner class to implement a container.
@@ -286,36 +278,8 @@ public class RepositoryImpl
 			// Create a new identifier.
 			this.ident = new FileIdentifier() ;
 			//
-			// Set the service ivorn.
-			this.properties.setProperty(
-				FileProperties.STORE_SERVICE_IVORN,
-				config.getServiceIvorn().toString()
-				) ;
-			//
-			// Set the resource ident.
-			this.properties.setProperty(
-				FileProperties.STORE_RESOURCE_IDENT,
-				ident.toString()
-				) ;
-			//
-			// Set the resource ivorn.
-			this.properties.setProperty(
-				FileProperties.STORE_RESOURCE_IVORN,
-				config.getResourceIvorn(
-					ident.toString()
-					).toString()
-				) ;
-			//
-			// Set the resource URL.
-			this.properties.setProperty(
-				FileProperties.STORE_RESOURCE_URL,
-				config.getResourceUrl(
-					ident.toString()
-					).toString()
-				) ;
-			//
-			// Save the container info.
-			this.save() ;
+			// Update and save the properties.
+			this.update() ;
 			}
 
 		/**
@@ -366,6 +330,81 @@ public class RepositoryImpl
 				config.getDataDirectory(),
 				this.ident.toString() + ".dat"
 				) ;
+			}
+
+		/**
+		 * Get the data file size.
+		 *
+		 */
+		public long getDataFileSize()
+			{
+			try {
+				return getDataFile().length() ;
+				}
+			catch (FileStoreServiceException ouch)
+				{
+				return 0 ;
+				}
+			}
+
+		/**
+		 * Update the properties.
+		 *
+		 */
+		public void update()
+			throws FileStoreServiceException
+			{
+			//
+			// Create our properties.
+			if (null == this.properties)
+				{
+				this.properties = new FileProperties() ;
+				}
+			//
+			// Set the resource ident.
+			this.properties.setProperty(
+				FileProperties.STORE_RESOURCE_IDENT,
+				ident.toString()
+				) ;
+			//
+			// Set the resource size.
+			this.properties.setProperty(
+				FileProperties.CONTENT_SIZE_PROPERTY,
+				String.valueOf(
+					this.getDataFileSize()
+					)
+				) ;
+			//
+			// Try setting the config properties.
+			try {
+				//
+				// Set the service ivorn.
+				this.properties.setProperty(
+					FileProperties.STORE_SERVICE_IVORN,
+					config.getServiceIvorn().toString()
+					) ;
+				//
+				// Set the resource ivorn.
+				this.properties.setProperty(
+					FileProperties.STORE_RESOURCE_IVORN,
+					config.getResourceIvorn(
+						ident.toString()
+						).toString()
+					) ;
+				//
+				// Set the resource URL.
+				this.properties.setProperty(
+					FileProperties.STORE_RESOURCE_URL,
+					config.getResourceUrl(
+						ident.toString()
+						).toString()
+					) ;
+				}
+			//
+			// Save the properties.
+			finally {
+				this.save() ;
+				}
 			}
 
 		/**
@@ -445,6 +484,8 @@ public class RepositoryImpl
 		public void importBytes(byte[] bytes)
 			throws FileStoreServiceException
 			{
+			//
+			// Transfer the data.
 			try {
 				this.getDataOutputStream().write(bytes) ;
 				}
@@ -454,6 +495,11 @@ public class RepositoryImpl
 					"Unable to write file data",
 					ouch
 					) ;
+				}
+			//
+			// Update our properties.
+			finally {
+				this.update() ;
 				}
 			}
 
@@ -495,6 +541,8 @@ public class RepositoryImpl
 		public void appendBytes(byte[] bytes)
 			throws FileStoreServiceException, FileStoreNotFoundException
 			{
+			//
+			// Transfer the data.
 			try {
 				getDataOutputStream(true).write(bytes) ;
 				}
@@ -504,6 +552,11 @@ public class RepositoryImpl
 					"Unable to write file data",
 					ouch
 					) ;
+				}
+			//
+			// Update our properties.
+			finally {
+				this.update() ;
 				}
 			}
 
@@ -604,9 +657,6 @@ public class RepositoryImpl
 				this.importData(
 					connection.getInputStream()
 					) ;
-				//
-				// Save our container info.
-				this.save() ;
 				}
 			catch (IOException ouch)
 				{
@@ -627,6 +677,8 @@ public class RepositoryImpl
 		public void importData(InputStream stream)
 			throws FileStoreServiceException, FileStoreTransferException
 			{
+			//
+			// Transfer the data.
 			try {
 				TransferUtil trans = new TransferUtil(
 					stream,
@@ -640,6 +692,11 @@ public class RepositoryImpl
 					"Encountered error while transferring data",
 					ouch
 					) ;
+				}
+			//
+			// Update the properties.
+			finally {
+				this.update() ;
 				}
 			}
 

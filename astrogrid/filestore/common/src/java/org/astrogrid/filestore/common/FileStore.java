@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStore.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStore.java,v $
+ *   Revision 1.6  2004/08/27 22:43:15  dave
+ *   Updated filestore and myspace to report file size correctly.
+ *
+ *   Revision 1.5.38.1  2004/08/26 19:06:50  dave
+ *   Modified filestore to return file size in properties.
+ *
  *   Revision 1.5  2004/07/23 09:11:16  dave
  *   Merged development branch, dave-dev-200407221513, into HEAD
  *
@@ -168,6 +174,7 @@ public interface FileStore
 	 * @param ident The internal identifier of the target file.
 	 * @param properties An optional array of FileProperties describing the copy.
 	 * @return An array of FileProperties describing the copied data.
+     * @throws FileStoreTransferException if unable to transfer the data.
 	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 * @throws FileStoreServiceException if unable handle the request.
@@ -175,7 +182,7 @@ public interface FileStore
 	 *
 	 */
 	public FileProperty[] duplicate(String ident, FileProperty[] properties)
-		throws RemoteException, FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException ;
+		throws RemoteException, FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException, FileStoreTransferException ;
 
 	/**
 	 * Delete a file.

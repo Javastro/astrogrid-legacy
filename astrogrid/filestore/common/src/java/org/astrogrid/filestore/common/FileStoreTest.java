@@ -1,10 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreTest.java,v $
+ *   Revision 1.8  2004/08/27 22:43:15  dave
+ *   Updated filestore and myspace to report file size correctly.
+ *
+ *   Revision 1.7.12.3  2004/08/27 11:48:41  dave
+ *   Added getContentSize to FileProperties.
+ *
+ *   Revision 1.7.12.2  2004/08/26 19:41:47  dave
+ *   Updated tests to check import URL size.
+ *
+ *   Revision 1.7.12.1  2004/08/26 19:06:50  dave
+ *   Modified filestore to return file size in properties.
+ *
  *   Revision 1.7  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -674,11 +686,6 @@ public class FileStoreTest
 			) ;
 		}
 
-
-//
-// Import bytes.
-//
-
 	/**
 	 * Check we get the right Exception if we import a null byte array.
 	 *
@@ -791,10 +798,6 @@ public class FileStoreTest
 			TEST_PROPERTY_VALUE
 			) ;
 		}
-
-//
-// Export bytes.
-//
 
 	/**
 	 * Check we get the right Exception for a null ident.
@@ -912,10 +915,6 @@ public class FileStoreTest
 				)
 			) ;
 		}
-
-//
-// Info request.
-//
 
 	/**
 	 * Check we get the right Exception for a null ident.
@@ -1040,10 +1039,6 @@ public class FileStoreTest
 				)
 			) ;
 		}
-
-//
-// Delete
-//
 
 	/**
 	 * Check we get the right Exception for a null ident.
@@ -1255,10 +1250,6 @@ public class FileStoreTest
 		fail("Expected FileStoreNotFoundException") ;
 		}
 
-//
-// Append string
-//
-
 	/**
 	 * Check we get the right Exception for a null string.
 	 *
@@ -1409,10 +1400,6 @@ public class FileStoreTest
 				)
 			) ;
 		}
-
-//
-// Replicate ....
-//
 
 	/**
 	 * Check we get the right Exception for a null ident.
@@ -1860,10 +1847,6 @@ public class FileStoreTest
 //
 
 //
-// Check the file size after an import.
-//
-
-//
 // Check the MD5 after an import.
 //
 
@@ -2018,4 +2001,174 @@ public class FileStoreTest
 				)
 			) ;
 		}
+
+	/**
+	 * Check that an imported byte array has the right size.
+	 *
+	 */
+	public void testImportBytesSize()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportBytesSize()") ;
+		//
+		// Import some bytes.
+		FileProperties imported = new FileProperties(
+			target.importBytes(
+				null,
+				TEST_BYTES
+				)
+			) ;
+		//
+		// Check the imported file size.
+		assertEquals(
+			TEST_BYTES.length,
+			imported.getContentSize()
+			) ;
+		}
+
+	/**
+	 * Check that an imported string has the right size.
+	 *
+	 */
+	public void testImportStringSize()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportStringSize()") ;
+		//
+		// Import the test string.
+		FileProperties imported = new FileProperties(
+			target.importString(
+				null,
+				TEST_STRING
+				)
+			) ;
+		//
+		// Check the imported file size.
+		assertEquals(
+			TEST_STRING.getBytes().length,
+			imported.getContentSize()
+			) ;
+		}
+
+	/**
+	 * Check that an appended byte array has the right size.
+	 *
+	 */
+	public void testAppendBytesSize()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testAppendBytesSize()") ;
+		//
+		// Import some bytes.
+		FileProperties imported = new FileProperties(
+			target.importBytes(
+				null,
+				TEST_BYTES
+				)
+			) ;
+		//
+		// Append some bytes.
+		FileProperties modified = new FileProperties(
+			target.appendBytes(
+				imported.getProperty(
+					FileProperties.STORE_RESOURCE_IDENT
+					),
+				EXTRA_BYTES
+				)
+			) ;
+		//
+		// Check the imported file size.
+		assertEquals(
+			TEST_BYTES.length + EXTRA_BYTES.length,
+			modified.getContentSize()
+			) ;
+		}
+
+	/**
+	 * Check that an imported file URL has the right size.
+	 *
+	 */
+	public void testImportFileUrlSize()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportFileUrlSize()") ;
+		//
+		// Create our URL.
+		URL url = new URL(
+			getTestProperty(
+				"data.file.text"
+				)
+			) ;
+		//
+		// Import some bytes.
+		TransferProperties transfer = 
+			target.importData(
+				new UrlGetTransfer(
+					url
+					)
+				) ;
+		//
+		// Get the file properties.
+		FileProperties properties = new FileProperties(
+			transfer.getFileProperties()
+			) ;
+		//
+		// Check the imported file size.
+		assertEquals(
+			url.openConnection().getContentLength(),
+			properties.getContentSize()
+			) ;
+		}
+
+	/**
+	 * Check that an imported http URL has the right size.
+	 *
+	 */
+	public void testImportHttpUrlSize()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportHttpUrlSize()") ;
+		//
+		// Create our URL.
+		URL url = new URL(
+			getTestProperty(
+				"data.http.jar"
+				)
+			) ;
+		//
+		// Import some bytes.
+		TransferProperties transfer = 
+			target.importData(
+				new UrlGetTransfer(
+					url
+					)
+				) ;
+		//
+		// Get the file properties.
+		FileProperties properties = new FileProperties(
+			transfer.getFileProperties()
+			) ;
+		//
+		// Check the imported file size.
+		assertEquals(
+			url.openConnection().getContentLength(),
+			properties.getContentSize()
+			) ;
+		}
+
+//
+// Check that setting the mime type before a url import
+// overrides the url mime type.
+// ....
+
 	}

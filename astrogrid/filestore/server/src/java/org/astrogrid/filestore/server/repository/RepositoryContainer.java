@@ -2,10 +2,16 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryContainer.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryContainer.java,v $
+ *   Revision 1.5  2004/08/27 22:43:15  dave
+ *   Updated filestore and myspace to report file size correctly.
+ *
+ *   Revision 1.4.12.1  2004/08/26 19:06:50  dave
+ *   Modified filestore to return file size in properties.
+ *
  *   Revision 1.4  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -153,6 +159,14 @@ public interface RepositoryContainer
 	 */
 	public void exportData(OutputStream stream)
 		throws FileStoreServiceException, FileStoreNotFoundException, FileStoreTransferException ;
+
+	/**
+	 * Update the container properties.
+	 * Note - if you change the underlying data file you must update the properties.
+	 *
+	 */
+	public void update()
+		throws FileStoreServiceException ;
 
 	}
 

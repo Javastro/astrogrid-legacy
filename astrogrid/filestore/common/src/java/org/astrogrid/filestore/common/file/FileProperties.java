@@ -1,10 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/file/FileProperties.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileProperties.java,v $
+ *   Revision 1.5  2004/08/27 22:43:15  dave
+ *   Updated filestore and myspace to report file size correctly.
+ *
+ *   Revision 1.4.12.2  2004/08/27 11:48:41  dave
+ *   Added getContentSize to FileProperties.
+ *
+ *   Revision 1.4.12.1  2004/08/26 19:06:50  dave
+ *   Modified filestore to return file size in properties.
+ *
  *   Revision 1.4  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -98,7 +107,13 @@ public class FileProperties
 	public static final String TRANSFER_SOURCE_URL  = "org.astrogrid.filestore.transfer.source.url" ;
 
 	/**
-	 * The property key for content type .
+	 * The property key for content size.
+	 *
+	 */
+	public static final String CONTENT_SIZE_PROPERTY  = "org.astrogrid.filestore.content.size" ;
+
+	/**
+	 * The property key for content type.
 	 *
 	 */
 	public static final String MIME_TYPE_PROPERTY  = "org.astrogrid.filestore.content.type" ;
@@ -269,7 +284,19 @@ public class FileProperties
 					{
 					continue ;
 					}
+				if (STORE_SERVICE_IVORN.equals(array[i].getName()))
+					{
+					continue ;
+					}
 				if (STORE_RESOURCE_IDENT.equals(array[i].getName()))
+					{
+					continue ;
+					}
+				if (STORE_RESOURCE_IVORN.equals(array[i].getName()))
+					{
+					continue ;
+					}
+				if (STORE_RESOURCE_URL.equals(array[i].getName()))
 					{
 					continue ;
 					}
@@ -349,6 +376,30 @@ public class FileProperties
 		return getProperty(
 			STORE_RESOURCE_IDENT
 			) ;
+		}
+
+	/**
+	 * Get the content size.
+	 *
+	 */
+	public long getContentSize()
+		{
+		String string = getProperty(
+			FileProperties.CONTENT_SIZE_PROPERTY
+			) ;
+		if (null != string)
+			{
+			try {
+				return Long.parseLong(string) ;
+				}
+			catch (NumberFormatException ouch)
+				{
+				return -1L ;
+				}
+			}
+		else {
+			return -1L ;
+			}
 		}
 
 	/**

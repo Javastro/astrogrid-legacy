@@ -1,10 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreMock.java,v $
+ *   Revision 1.7  2004/08/27 22:43:15  dave
+ *   Updated filestore and myspace to report file size correctly.
+ *
+ *   Revision 1.6.12.2  2004/08/26 19:41:47  dave
+ *   Updated tests to check import URL size.
+ *
+ *   Revision 1.6.12.1  2004/08/26 19:06:50  dave
+ *   Modified filestore to return file size in properties.
+ *
  *   Revision 1.6  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -175,58 +184,8 @@ public class FileStoreMock
 			// Create our properties.
 			this.properties = new FileProperties(props) ;
 			//
-			// Update our file properties.
-//			this.properties.setProperty(
-//				FileProperties.STORE_SERVICE_IDENT,
-//				MOCK_SERVICE_IDENT
-//				) ;
-			//
-			// Set the service ivorn.
-			this.properties.setProperty(
-				FileProperties.STORE_SERVICE_IVORN,
-				MOCK_SERVICE_IVORN
-				) ;
-			//
-			// Set the resource ident.
-			this.properties.setProperty(
-				FileProperties.STORE_RESOURCE_IDENT,
-				this.ident()
-				) ;
-			//
-			// Set the resource ivorn.
-			try {
-				this.properties.setProperty(
-					FileProperties.STORE_RESOURCE_IVORN,
-					FileStoreIvornFactory.createIdent(
-						MOCK_SERVICE_IDENT,
-						this.ident()
-						)
-					) ;
-				}
-			catch (FileStoreIdentifierException ouch)
-				{
-				this.properties.setProperty(
-					FileProperties.STORE_RESOURCE_IVORN,
-					null
-					) ;
-				}
-			//
-			// Set the service URL.
-			try {
-				this.properties.setProperty(
-					FileProperties.STORE_RESOURCE_URL,
-					new URL(
-						MOCK_SERVICE_URL + "/" + this.ident()
-						).toString()
-					) ;
-				}
-			catch (MalformedURLException ouch)
-				{
-				this.properties.setProperty(
-					FileProperties.STORE_RESOURCE_URL,
-					null
-					) ;
-				}
+			// Update our properties.
+			this.update() ;
 			}
 
 		/**
@@ -241,6 +200,9 @@ public class FileStoreMock
 			//
 			// Make a copy of the data.
 			this.data = (byte[]) that.data.clone() ;
+			//
+			// Update our properties.
+			this.update() ;
 			}
 
 		/**
@@ -280,12 +242,32 @@ public class FileStoreMock
 		protected byte[] data ;
 
 		/**
+		 * Access to the data size.
+		 *
+		 */
+		public int getSize()
+			{
+			if (null != this.data)
+				{
+				return this.data.length ;
+				}
+			else {
+				return 0 ;
+				}
+			}
+
+		/**
 		 * Import an array of bytes.
 		 *
 		 */
 		public void importBytes(byte[] bytes)
 			{
-			this.data = bytes ;
+			//
+			// Make a copy of the data.
+			this.data = (byte[]) bytes.clone() ;
+			//
+			// Update our properties.
+			this.update() ;
 			}
 
 		/**
@@ -322,6 +304,9 @@ public class FileStoreMock
 				{
 				this.data[i] = extra[j] ;
 				}
+			//
+			// Update our properties.
+			this.update() ;
 			}
 
 		/**
@@ -372,6 +357,72 @@ public class FileStoreMock
 			//
 			// Convert into a byte array.
 			this.data = out.toByteArray() ;
+			//
+			// Update our properties.
+			this.update() ;
+			}
+
+		/**
+		 * Update the container properties.
+		 *
+		 */
+		public void update()
+			{
+			//
+			// Update the service ivorn.
+			this.properties.setProperty(
+				FileProperties.STORE_SERVICE_IVORN,
+				MOCK_SERVICE_IVORN
+				) ;
+			//
+			// Update the resource ident.
+			this.properties.setProperty(
+				FileProperties.STORE_RESOURCE_IDENT,
+				this.ident()
+				) ;
+			//
+			// Update the resource size.
+			this.properties.setProperty(
+				FileProperties.CONTENT_SIZE_PROPERTY,
+				String.valueOf(
+					this.getSize()
+					)
+				) ;
+			//
+			// Update the resource ivorn.
+			try {
+				this.properties.setProperty(
+					FileProperties.STORE_RESOURCE_IVORN,
+					FileStoreIvornFactory.createIdent(
+						MOCK_SERVICE_IDENT,
+						this.ident()
+						)
+					) ;
+				}
+			catch (FileStoreIdentifierException ouch)
+				{
+				this.properties.setProperty(
+					FileProperties.STORE_RESOURCE_IVORN,
+					null
+					) ;
+				}
+			//
+			// Update the service URL.
+			try {
+				this.properties.setProperty(
+					FileProperties.STORE_RESOURCE_URL,
+					new URL(
+						MOCK_SERVICE_URL + "/" + this.ident()
+						).toString()
+					) ;
+				}
+			catch (MalformedURLException ouch)
+				{
+				this.properties.setProperty(
+					FileProperties.STORE_RESOURCE_URL,
+					null
+					) ;
+				}
 			}
 		}
 

@@ -215,7 +215,7 @@ public class Actions
 
                      int dataItemType = contentsType;
 
-                     int dataItemSize = 0;
+                     long dataItemSize = -1L;
                      if (fileType)
                      {  dataItemSize = stringContents.length();
                      }
@@ -522,7 +522,7 @@ ouch.printStackTrace() ;
 //
 //                  [TODO]: Set the size properly.
 
-                     int dataItemSize = 10;
+                     long dataItemSize = -1L;
 
                      DataItemRecord newDataItem = new DataItemRecord(
                          newDataItemName,
@@ -1124,8 +1124,8 @@ ouch.printStackTrace() ;
                         int newdataItemID = -1;
                         String dataItemFileName = "";
 
-                        int dataItemType = oldDataItem.getType();
-                        int dataItemSize = oldDataItem.getSize();
+                        int  dataItemType = oldDataItem.getType();
+                        long dataItemSize = oldDataItem.getSize();
 
                         DataItemRecord newDataItem = new DataItemRecord(
                             newDataItemName,
@@ -1401,8 +1401,8 @@ System.out.println("FROG : Exception - " + ouch) ;
 
                         String dataItemFileName = 
                           oldDataItem.getDataItemFile();
-                        int dataItemType = oldDataItem.getType();
-                        int dataItemSize = oldDataItem.getSize();
+                        int  dataItemType = oldDataItem.getType();
+                        long dataItemSize = oldDataItem.getSize();
                         String permissionsMask =
                           oldDataItem.getPermissionsMask();
 

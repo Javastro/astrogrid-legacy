@@ -1,10 +1,31 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/myspace/integration/Attic/MySpaceIntegrationTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/20 15:18:30 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: MySpaceIntegrationTest.java,v $
+ *   Revision 1.4  2004/08/27 22:43:15  dave
+ *   Updated filestore and myspace to report file size correctly.
+ *
+ *   Revision 1.3.6.6  2004/08/27 16:34:00  dave
+ *   Dumb typo ...
+ *
+ *   Revision 1.3.6.5  2004/08/27 16:30:45  dave
+ *   Removed extra stage to test ...
+ *
+ *   Revision 1.3.6.4  2004/08/27 15:34:13  dave
+ *   Fixed wrong file path in test ...
+ *
+ *   Revision 1.3.6.3  2004/08/27 15:26:47  dave
+ *   Dumb typo ...
+ *
+ *   Revision 1.3.6.2  2004/08/27 15:18:25  dave
+ *   Added test for imported URL size.
+ *
+ *   Revision 1.3.6.1  2004/08/27 14:27:05  dave
+ *   Added test for file size ....
+ *
  *   Revision 1.3  2004/08/20 15:18:30  dave
  *   Patched myspace.xsp to use localhost:8080 (temp fix only).
  *   Modified myspace integration test to prevent name collision when repeated.
@@ -491,7 +512,7 @@ public class MySpaceIntegrationTest
         myspace.putUrl(
             url,
             this.getUserPath(
-                "imported-bytes"
+                "imported-html"
                 ),
             false
             );
@@ -524,7 +545,7 @@ public class MySpaceIntegrationTest
         myspace.putUrl(
             url,
             this.getUserPath(
-                "imported-bytes"
+                "imported-jar"
                 ),
             false
             );
@@ -874,6 +895,107 @@ public class MySpaceIntegrationTest
             connection.getResponseCode()
             ) ;
         }
+
+	/**
+	 * Check that an imported string has the right size.
+	 *
+	 */
+	public void testImportStringSize()
+		throws Exception
+		{
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Import some data.
+        myspace.putString(
+            TEST_STRING,
+            this.getUserPath(
+                "imported-string"
+                ),
+            false
+            );
+		//
+		// Get the file info.
+		StoreFile file = myspace.getFile(
+			this.getUserPath(
+				"imported-string"
+				)
+			) ;
+		//
+		// Check the file size.
+		assertEquals(
+			(long) TEST_STRING.length(),
+			file.getSize()
+			) ;
+		}
+
+	/**
+	 * Check that an imported URL has the right size.
+	 *
+	 */
+	public void testImportUrlSize()
+		throws Exception
+		{
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Get the URL from our config.
+        URL source = new URL(
+            getTestProperty(
+                "data.http.jar"
+                )
+            ) ;
+        //
+        // Import some data.
+        myspace.putUrl(
+            source,
+            this.getUserPath(
+                "imported.jar"
+                ),
+            false
+            );
+		//
+		// Get the original file size.
+		long size = source.openConnection().getContentLength() ;
+		//
+		// Get the file info.
+		StoreFile file = myspace.getFile(
+			this.getUserPath(
+				"imported.jar"
+				)
+			) ;
+		//
+		// Check the file info size.
+		assertEquals(
+			size,
+			file.getSize()
+			) ;
+        //
+        // Get the file URL from the manager.
+        URL stored = myspace.getUrl(
+            this.getUserPath(
+                "imported.jar"
+                )
+            ) ;
+		//
+		// Check the stored file size.
+//		assertEquals(
+//			size,
+//			stored.openConnection().getContentLength()
+//			) ;
+		}
 
 //
 // What happens is we overwrite an existing file ?
