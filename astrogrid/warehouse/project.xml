@@ -62,54 +62,44 @@
     <dependency>
       <id>astrogrid-common</id>
       <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
   
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
       <artifactId>astrogrid-datacenter-server</artifactId>
-      <version>Warehouse01</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
+      <version>SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
       <artifactId>astrogrid-datacenter-client</artifactId>
-      <version>Warehouse01</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
+      <version>SNAPSHOT</version>
     </dependency>
-
+    
     <!-- This is needed for runtime tests because 
          the datacentre stuff needs it. -->
     <dependency>
       <id>astrogrid-mySpace</id>
       <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
+   
     
     <dependency>
       <id>astrogrid-applications</id>
       <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>    
-
+    
+    <dependency>
+      <groupId>astrogrid-datacenter</groupId>
+      <artifactId>pal</artifactId>
+      <version>SNAPSHOT</version>
+      <type>war</type>
+    </dependency>
+    
     <!-- more standard deps -->
     <dependency>
       <id>axis</id>
       <version>1.1</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
 
     <dependency>
@@ -117,9 +107,6 @@
       <type>jar</type>
       <artifactId>activation</artifactId>
       <version>axis-1.1</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
 
     <dependency>
@@ -127,17 +114,11 @@
       <type>jar</type>
       <artifactId>mailapi</artifactId>
       <version>axis-1.1</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
 
     <dependency>
       <id>wsdl4j</id>
       <version>1.0</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
 
     <dependency>
@@ -152,33 +133,21 @@
     <dependency>
       <id>commons-logging</id>
       <version>1.0.3</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
 
     <dependency>
       <id>commons-discovery</id>
       <version>20030211.213356</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
     
     <dependency>
       <id>jaxrpc-api</id>
       <version>1.0.3</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
     
     <dependency>
       <id>xml-apis</id>
       <version>1.0.b2</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
     
     <dependency>
@@ -192,18 +161,12 @@
     <dependency>
       <id>xercesImpl</id>
       <version>2.1.0</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
 
     <!-- dependencies from datacenter -->
     <dependency>
       <id>castor</id>
       <version>0.9.5-xml</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
 
   </dependencies>
@@ -231,14 +194,6 @@
 
     <resources>
     
-      <!-- This the is product of the build of the ogsadai sub-project. -->
-      <resource>
-        <directory>ogsadai/target</directory>
-        <includes>
-          <include>astrogrid-ogsadai-delegates.jar</include>
-        </includes>
-      </resource>
-      
       <resource><!-- config files -->
         <directory>${basedir}/src/java</directory>
           <includes>
