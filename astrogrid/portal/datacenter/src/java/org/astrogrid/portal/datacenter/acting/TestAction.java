@@ -1,6 +1,9 @@
 package org.astrogrid.portal.datacenter.acting;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,16 +77,16 @@ public class TestAction extends AbstractAction {
       String delegateService = params.getParameter("datacenter-delegate-service", DatacenterDelegateFactory.DUMMY_SERVICE);
       logger.debug("[act] delegate service type: " + delegateService);
 
-      String datacenterEndPoint = utils.getRequestParameter("datacenter-end-point", params, request);
+      String datacenterEndPoint = utils.getAnyParameter("datacenter-end-point", params, request);
       logger.debug("[act] datacenter end point: " + datacenterEndPoint);
       
-      String userId = utils.getRequestParameter("username", params, request);
+      String userId = utils.getAnyParameter("username", params, request);
       logger.debug("[act] userId: " + userId);
 
-      String communityId = utils.getRequestParameter("community-id", params, request);
+      String communityId = utils.getAnyParameter("community-id", params, request);
       logger.debug("[act] communityId: " + communityId);
 
-      String credential = utils.getRequestParameter("credential", params, request);
+      String credential = utils.getAnyParameter("credential", params, request);
       logger.debug("[act] credential: " + credential);
 
       AdqlQuerier delegate =
@@ -91,11 +94,8 @@ public class TestAction extends AbstractAction {
               new Certification(userId, credential), datacenterEndPoint, delegateService);
       logger.debug("[act] datacenter delegate class: " + delegate.getClass().getName());
       
-      String adql = utils.getRequestParameter("adql-query", params, request);
+      String adql = utils.getAnyParameter("adql-query", params, request);
       logger.debug("[act] adql: " + adql);
-
-      Element queryInput = utils.getDomElement(adql);
-      logger.debug("[act] query input: " + queryInput); 
 
       DatacenterResults datacenterResult = null;
       datacenterResult = delegate.doQuery(
@@ -113,12 +113,38 @@ public class TestAction extends AbstractAction {
       logger.debug("[act] exception: " + e.getLocalizedMessage());
       request.setAttribute("adql-query-errors", "true");
       request.setAttribute("adql-query-error-message", e.getLocalizedMessage());
+      
+      StringWriter stackTrace = new StringWriter();
+      e.printStackTrace(new PrintWriter(stackTrace));
+      request.setAttribute("adql-query-stack-trace", stackTrace.toString());
+      
+      try {
+        stackTrace.close();
+      }
+      catch(IOException ioe)
+      {
+        // Do nothing.
+      }
+      
       sitemapParams = null;
     }
 		catch(Throwable t) {
 			logger.debug("[act] exception: " + t.getLocalizedMessage());
 			request.setAttribute("adql-query-errors", "true");
 			request.setAttribute("adql-query-error-message", t.getLocalizedMessage());
+
+      StringWriter stackTrace = new StringWriter();
+      t.printStackTrace(new PrintWriter(stackTrace));
+      request.setAttribute("adql-query-stack-trace", stackTrace.toString());
+
+      try {
+        stackTrace.close();
+      }
+      catch(IOException ioe)
+      {
+        // Do nothing.
+      }
+
 			sitemapParams = null;
 		}
   

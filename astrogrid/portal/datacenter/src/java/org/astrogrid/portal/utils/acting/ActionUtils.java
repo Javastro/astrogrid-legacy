@@ -25,15 +25,17 @@ public interface ActionUtils {
    * 
    * @return value of request parameter
    */
-  public abstract String getRequestParameter(String sitemapParam, String defaultValue, Parameters params, Request request);
+  public String getRequestParameter(String sitemapParam, String defaultValue, Parameters params, Request request);
   /**
    * @see ActionUtils#getRequestParameter(String, String, Parameters, Request)
    */
-  public abstract String getRequestParameter(String sitemapParam, Parameters params, Request request);
+  public String getRequestParameter(String sitemapParam, Parameters params, Request request);
+  public String getAnyParameter(String sitemapParam, Parameters params, Request request);
+  public String getAnyParameter(String sitemapParam, String defaultValue, Parameters params, Request request);
   /**  
    * @see ActionUtils#getNewObject(String, String, Parameters, Object[])
    */
-  public abstract Object getNewObject(String sitemapParam, Parameters params, Request request, List args) throws CreatorException;
+  public Object getNewObject(String sitemapParam, Parameters params, Request request, List args) throws CreatorException;
   /**
    * Get a new instance of a class name given in the sitemap parameters.
    * 
@@ -47,9 +49,9 @@ public interface ActionUtils {
    * 
    * @return new instance
    */
-  public abstract Object getNewObject(String sitemapParam, String defaultClassName, Parameters params, Request request, List args) throws CreatorException;
-  public abstract Element getDomElement(String adql) throws ParserConfigurationException, SAXException, IOException;
-  public abstract ValidationHandler validate(String xml);
-  public abstract boolean shouldValidate(String xml);
-  public abstract boolean shouldBeNSAware(String xml);
+  public Object getNewObject(String sitemapParam, String defaultClassName, Parameters params, Request request, List args) throws CreatorException;
+  public Element getDomElement(String adql) throws ParserConfigurationException, SAXException, IOException;
+  public ValidationHandler validate(String xml);
+  public boolean shouldValidate(String xml);
+  public boolean shouldBeNSAware(String xml);
 }

@@ -12,9 +12,10 @@ import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.log4j.Category;
+import org.astrogrid.mySpace.delegate.MySpaceClient;
+import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.portal.utils.acting.ActionUtils;
 import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 
 /**
  * This class provides the DataCenter UI with the facility to
@@ -69,9 +70,7 @@ public class BrowseAction extends AbstractAction {
     try {
       List delegateArgs = new ArrayList();
       delegateArgs.add(endPoint);
-      MySpaceManagerDelegate delegate =
-          (MySpaceManagerDelegate) utils.getNewObject(
-              "myspace-delegate-class", params, request, delegateArgs);
+      MySpaceClient delegate = MySpaceDelegateFactory.createDelegate(endPoint);
     
       logger.debug("[act] myspace-delegate-class: " + delegate.getClass().getName());
 

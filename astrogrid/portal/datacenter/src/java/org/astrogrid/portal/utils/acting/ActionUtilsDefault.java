@@ -66,6 +66,26 @@ public class ActionUtilsDefault implements ActionUtils {
   public String getRequestParameter(String sitemapParam, Parameters params, Request request) {
     return getRequestParameter(sitemapParam, "", params, request);
   }
+  
+  public String getAnyParameter(String sitemapParam, Parameters params, Request request) {
+    return getAnyParameter(sitemapParam, "", params, request);
+  }
+  
+  public String getAnyParameter(String sitemapParam, String defaultValue, Parameters params, Request request) {
+    String result = "";
+    
+    // Try a request parameter first.
+    result = getRequestParameter(sitemapParam, params, request);
+    if(result != null && result.length() > 0) {
+      logger.debug("[getAnyParameter] REQUEST: [" + sitemapParam + "," + result + "]");
+      return result;
+    }
+    
+    // Get either sitemap parameter or the default value.
+    result = params.getParameter(sitemapParam, defaultValue);
+    
+    return result;
+  }
 
   /**  
    * @see ActionUtils#getNewObject(String, String, Parameters, Object[])
