@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerierTest.java,v 1.4 2003/09/22 17:38:12 mch Exp $
+ * $Id: MySqlQuerierTest.java,v 1.5 2003/09/25 03:16:40 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,6 +21,8 @@ import junit.framework.TestSuite;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.mysql.MySqlQuerier;
@@ -52,8 +54,10 @@ public class MySqlQuerierTest extends TestCase
      // Query query = new Query(queryElement);
 
       //make connection to database
-      MySqlQuerier querier = new MySqlQuerier(fileDoc.getDocumentElement());
-
+      Configuration.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY,MySqlQuerier.class.getName());
+      DatabaseQuerier q = DatabaseQuerierManager.createQuerier(fileDoc.getDocumentElement());
+      assertTrue(q instanceof MySqlQuerier);
+      MySqlQuerier querier = (MySqlQuerier)q;
       //send query & store results
       QueryResults results = querier.queryDatabase(new Query(queryElement));
 
