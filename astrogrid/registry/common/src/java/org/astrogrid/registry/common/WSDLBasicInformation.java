@@ -1,9 +1,18 @@
 package org.astrogrid.registry.common;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.Hashtable;
 import java.util.Enumeration;
 
 
 public class WSDLBasicInformation {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(WSDLBasicInformation.class);
    
    private Hashtable  endPoint = null;
    private String targetNameSpace = null;

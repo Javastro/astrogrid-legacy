@@ -1,5 +1,8 @@
 package org.astrogrid.registry.common.versionNS;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.registry.common.versionNS.IRegistryInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,6 +21,10 @@ import javax.xml.parsers.ParserConfigurationException;
  *
  */
 public abstract class Registry implements IRegistryInfo{
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(Registry.class);
    
    private final double VERSION_NUMBER = 0.9;
  
@@ -27,7 +34,8 @@ public abstract class Registry implements IRegistryInfo{
    
    public Document getDocument() {
       Document registryDoc = null;
-      System.out.println("yeah entered the realm of creating the document");
+    logger
+            .info("getDocument() - yeah entered the realm of creating the document");
       try {
          DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          registryDoc = registryBuilder.newDocument();
@@ -53,7 +61,7 @@ public abstract class Registry implements IRegistryInfo{
          " http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd");
          registryDoc.appendChild(root);
       }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();   
+        logger.error("getDocument()", pce);   
       }
       
       return registryDoc;

@@ -1,5 +1,8 @@
 package org.astrogrid.registry.common;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import javax.xml.namespace.QName;
 import javax.wsdl.xml.WSDLReader;
 import javax.wsdl.*;
@@ -16,6 +19,10 @@ import org.astrogrid.registry.RegistryException;
 
 
 public class WSDLInformation {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(WSDLInformation.class);
    
    public WSDLInformation() {
       
@@ -42,10 +49,14 @@ public class WSDLInformation {
                ExtensibilityElement extElement = (ExtensibilityElement)lst.get(i);
                if(extElement instanceof SOAPBody) {
                   SOAPBody soapBody = (SOAPBody)extElement;                
-                  System.out.println("the nanespaceuri from soapbody = " + soapBody.getNamespaceURI());
+                logger
+                        .info("getNameSpaceFromBinding(String, String) - the nanespaceuri from soapbody = "
+                                + soapBody.getNamespaceURI());
                   return soapBody.getNamespaceURI();
                }//if
-               System.out.println("the extensiblity type = " + extElement.getElementType().toString());
+            logger
+                    .info("getNameSpaceFromBinding(String, String) - the extensiblity type = "
+                            + extElement.getElementType().toString());
             }
          }
       }catch(WSDLException wse) {
@@ -56,13 +67,17 @@ public class WSDLInformation {
    
    public static WSDLBasicInformation getBasicInformationFromURL(String url) throws RegistryException {
          WSDLBasicInformation wsdlBasic = null;
-         System.out.println("begin getBasicInformationFromURL with url = " + url);
+        logger
+                .info("getBasicInformationFromURL(String) - begin getBasicInformationFromURL with url = "
+                        + url);
          try {
             WSDLFactory wf = WSDLFactory.newInstance();
             WSDLReader wr = wf.newWSDLReader();                        
             Definition def = wr.readWSDL(url);
             
-            System.out.println("processed targetnamespace = " + def.getTargetNamespace());
+            logger
+                    .info("getBasicInformationFromURL(String) - processed targetnamespace = "
+                            + def.getTargetNamespace());
             wsdlBasic = new WSDLBasicInformation();
             wsdlBasic.setTargetNameSpace(def.getTargetNamespace());
             //do a getBinding from the definition then a getBindingOperation
@@ -86,13 +101,17 @@ public class WSDLInformation {
                      ExtensibilityElement extElement = (ExtensibilityElement)lst.get(i);                        
                      if(extElement instanceof SOAPAddress) {
                         SOAPAddress soapAddress = (SOAPAddress)extElement;                
-                        System.out.println("the locationuri = " + soapAddress.getLocationURI());           
+                        logger
+                                .info("getBasicInformationFromURL(String) - the locationuri = "
+                                        + soapAddress.getLocationURI());           
                         wsdlBasic.addEndPoint(port.getName(),soapAddress.getLocationURI());   
                      }//if   
                   }//for                        
                }//while                     
             }//while
-            System.out.println("finished with getBasicInformationFromURL and wsdlBasic = " + wsdlBasic.toString());
+            logger
+                    .info("getBasicInformationFromURL(String) - finished with getBasicInformationFromURL and wsdlBasic = "
+                            + wsdlBasic.toString());
          }catch(WSDLException wse) {
             throw new RegistryException(wse);
          }

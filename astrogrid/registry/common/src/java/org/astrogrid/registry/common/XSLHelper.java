@@ -1,5 +1,8 @@
 package org.astrogrid.registry.common;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.net.URL;
 import java.io.InputStream;
 
@@ -17,6 +20,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.util.DomHelper;
 
 public class XSLHelper {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(XSLHelper.class);
    
    /**
     * The default name of our database.
@@ -60,7 +67,9 @@ public class XSLHelper {
       ClassLoader loader = this.getClass().getClassLoader();
       InputStream is = null;
       is = loader.getResourceAsStream("ADQLToXQL-" + versionNumber + ".xsl");
-      System.out.println("the file resource = " + "ADQLToXQL-" + versionNumber + ".xsl");
+    logger
+            .info("transformADQLToXQL(Node, String) - the file resource = ADQLToXQL-"
+                    + versionNumber + ".xsl");
       Source xslSource = new StreamSource(is);
       DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
       
@@ -87,11 +96,11 @@ public class XSLHelper {
          //System.out.println("the resultwriter transform = " + sw.toString());
          //System.out.println("The result of adql to xql = " + DomHelper.DocumentToString(resultDoc));
       }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();
+        logger.error("transformADQLToXQL(Node, String)", pce);
       }catch(TransformerConfigurationException tce) {
-         tce.printStackTrace();
+        logger.error("transformADQLToXQL(Node, String)", tce);
       }catch(TransformerException te) {
-         te.printStackTrace();
+        logger.error("transformADQLToXQL(Node, String)", te);
       }
       return null;
    }
@@ -121,11 +130,11 @@ public class XSLHelper {
          transformer.transform(xmlSource,result);
          //System.out.println("the resultwriter transform = " + sw.toString());
       }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();
+        logger.error("transformToOAI(Node, String)", pce);
       }catch(TransformerConfigurationException tce) {
-         tce.printStackTrace();
+        logger.error("transformToOAI(Node, String)", tce);
       }catch(TransformerException te) {
-         te.printStackTrace();
+        logger.error("transformToOAI(Node, String)", te);
       }
       return resultDoc;
    }
@@ -162,11 +171,11 @@ public class XSLHelper {
              resultDoc.appendChild(root);
          }
       }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();
+        logger.error("transformExistResult(Node, String, String)", pce);
       }catch(TransformerConfigurationException tce) {
-         tce.printStackTrace();
+        logger.error("transformExistResult(Node, String, String)", tce);
       }catch(TransformerException te) {
-         te.printStackTrace();
+        logger.error("transformExistResult(Node, String, String)", te);
       }
       return resultDoc;
    }
@@ -177,7 +186,8 @@ public class XSLHelper {
        Source xmlSource = new DOMSource(doc);
        Document resultDoc = null;
        String styleSheetName = "UpdateProcess_" + versionNumber + ".xsl";
-       System.out.println("the stylesheet name = " + styleSheetName);
+    logger.info("transformUpdate(Node, String) - the stylesheet name = "
+            + styleSheetName);
        Source xslSource = new StreamSource(loadStyleSheet(styleSheetName));
        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
        try {
@@ -193,13 +203,14 @@ public class XSLHelper {
           transformer.transform(xmlSource,result);
           
        }catch(ParserConfigurationException pce) {
-          pce.printStackTrace();
+        logger.error("transformUpdate(Node, String)", pce);
        }catch(TransformerConfigurationException tce) {
-          tce.printStackTrace();
+        logger.error("transformUpdate(Node, String)", tce);
        }catch(TransformerException te) {
-          te.printStackTrace();
+        logger.error("transformUpdate(Node, String)", te);
        }
-       System.out.println("THIS IS AFTER THE TRANSFORMUPDATE");
+    logger
+            .info("transformUpdate(Node, String) - THIS IS AFTER THE TRANSFORMUPDATE");
        DomHelper.DocumentToStream(resultDoc,System.out);
        return resultDoc;
     }   
@@ -227,11 +238,11 @@ public class XSLHelper {
          transformer.transform(xmlSource,result);
          
       }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();
+        logger.error("transformDatabaseProcess(Node)", pce);
       }catch(TransformerConfigurationException tce) {
-         tce.printStackTrace();
+        logger.error("transformDatabaseProcess(Node)", tce);
       }catch(TransformerException te) {
-         te.printStackTrace();
+        logger.error("transformDatabaseProcess(Node)", te);
       }
       return resultDoc;
       
@@ -259,11 +270,11 @@ public class XSLHelper {
          transformer.transform(xmlSource,result);
          
       }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();
+        logger.error("transformCastorProcess(Node)", pce);
       }catch(TransformerConfigurationException tce) {
-         tce.printStackTrace();
+        logger.error("transformCastorProcess(Node)", tce);
       }catch(TransformerException te) {
-         te.printStackTrace();
+        logger.error("transformCastorProcess(Node)", te);
       }
       return resultDoc;
    }
