@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.13 2004/09/02 12:33:49 mch Exp $
+/*$Id: Query2MySpaceTest.java,v 1.14 2004/09/09 11:35:37 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -103,7 +103,7 @@ public class Query2MySpaceTest extends TestCase implements StdKeys {
       Agsl resultsTarget = new Agsl(new Msrl(StdKeys.MYSPACE), resultsPath);
 
 
-      InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
+      InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql074.xml");
       assertNotNull("Could not find test query", in);
       
       String queryId = delegate.submitQuery(
@@ -141,7 +141,7 @@ public class Query2MySpaceTest extends TestCase implements StdKeys {
       String resultsPath = "anonymous/Query2MySpaceTest.Submit.vot";
       Ivorn resultsTarget = new Ivorn("ivo://org.astrogrid.localhost/myspace#"+resultsPath);
 
-      InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
+      InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql074.xml");
       assertNotNull("Could not find test query", in);
       
       String queryId = delegate.submitQuery(
@@ -201,6 +201,9 @@ public class Query2MySpaceTest extends TestCase implements StdKeys {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.14  2004/09/09 11:35:37  mch
+Updated from ADQL 0.7.4
+
 Revision 1.13  2004/09/02 12:33:49  mch
 Added better tests and reporting
 
