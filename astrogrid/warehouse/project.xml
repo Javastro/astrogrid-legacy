@@ -17,108 +17,94 @@
 
 <section name="Installation"><p> 
 
-The front-end web service is available for download. Please download warehouse.war. The front-end web-service works with a back-end grid (OGSI) service. The back-end components are not currently distributed by AstroGrid as they are difficult to install. 
+This documentation refers to the Iteration 5 release of the
+AstroGrid Grid Data Warehouse.
+
 </p><p>
-The front-end service should be installed in Jakarta-Tomcat. In principle, it can be installed in another web container, but the supported installation, described below, is specific to Tomcat. 
+At present, the Astrogrid Grid Data Warehouse (GDW) is a specialised deployment
+of the standard <a href="../datacenter/index.html">Astrogrid
+DataCenter</a>.  All required GDW front-end components are distributed as
+part of the AstroGrid DataCenter package, distributed as PAL-{version}.war.
+After installation, this package will need certain minor reconfigurations 
+to run as a GDW (see below).
 </p><p>
-The main configuration-file is included in <i>warehouse.war</i> but must be extracted and installed separately. The WAR is structurally a jar file, so jar tools can be used. On Unix or Linux, use the jar command: 
+<strong>Preliminaries</strong>
 </p><p>
-  <tt>jar xf warehouse.war WEB-INF/classes/AstroGridConfig.properties</tt>
+To supply its actual database access, the GDW requires an installation of 
+the <a href="http://www.ogsadai.org.uk">OGSA-DAI</a> grid middleware.
+The Iteration 4.1 release of GDW assumed OGSA-DAI 3.0;  the Iteration 5
+release assumes OGSA-DAI 3.1 (the latest release at the time of writing).
+
 </p><p>
-On Windows, extract <i>AstroGridConfig.properties</i> using <i>WinZip</i>. 
+OGSA-DAI itself currently relies on the OGSA implementation (v. 3.0.2) in the
+<a href="http://www-unix.globus.org/toolkit/download.html#core">Globus Toolkit 3
+core</a> distribution from the <a href="http://www.globus.org">Globus
+Alliance</a>.
+
 </p><p>
-Copy <i>AstroGridConfig.properties</i> to <i>$CATALINA_HOME/conf/</i> where <i>$CATALINA_HOME</i> stands for the absolute path to the Tomcat installation. 
+Both of the above packages come with comprehensive installation
+instructions;  a vanilla installation of both should work with the GDW.
+
 </p><p>
-Load <i>warehouse.war</i> using Tomcat's manager interface (see the Tomcat manual). This will create a web-application called <i>warehouse</i>. 
+<strong>Important note:</strong> At present, it is required that the
+OGSA-DAI (and thus OGSA) installation <strong>be co-located on the same host 
+as the GDW installation</strong>.  (They do not have to be running in the same
+tomcat instance, however).  This is because local file storage is currently 
+used for delivery of results from OGSA-DAI.  Future releases of the GDW will 
+not have this limitation. 
 </p><p>
-Now stop the warehouse web-application, using the manager interface. This prevents users from running the web-application until you have it properly configured. 
+
 </p><p>
-Open Tomcat's administration interface (see the Tomcat manual). In the tree display at the left of the screen, open the "Environment entities" object in the "Resources" section. From the drop-down menu, labelled "Available Actions", select "Create New Env Entry". Make an entry as follows:<ol> 
-<li>name = org.astrogrid.config.url</li>
-<li>type = java.lang.String </li>
-<li>value = $CATALINA_HOME/conf/AstroGridConfig.properties</li>
-<li>description = Path to AstroGrid central configuration</li>
-</ol>
+<strong>DataCenter installation</strong>
 </p><p>
-but you must replace $CATALINA_HOME with the full path to the Tomcat directory when typing the entry. 
-</p><p>
-Edit the warehouse configuration if needed to suit your site. Q.v. the configuration guide (the file CONFIG in the installation kit). The default configuration is correct for operation with the GDW back-end service on <i>hydra.star.le.ac.uk</i>. 
-</p><p>
-Go back to the manager interface and start the warehouse web-application. This makes it available to users over the Internet. 
-</p><p>
-Check the installation.
-<ol>
-<li>Validate the Axis installation: all the core jars should be present, but some optional jars may be missing.</li> 
-<li>View the list of available services: <i>AxisDataServer</i> should be present.</li> 
-<li>Submit a test query using the web form; the ADQL pre-loaded the query page is suitable for the GDW database at Leicester.</li> 
-</ol>
+Download and install a standard AstroGrid DataCenter component;  the 
+DataCenter component provides comprehensive installation and post-install
+test instructions in its 
+<a href="../datacenter/multiproject/pal/INSTALL.html">PAL install 
+documentation</a>.
 </p>
 </section>
 
-<section name="Release Notes"><p>
-The front-end web-service is released as an AstroGrid component; the back-end grid-service is not. There is nothing "secret" about the back-end service, but it is harder to install and configure than the front-end service. For now, AstroGrid offers a pre-installed back-end service at http://hydra.star.le.ac.uk:8082/gdw/. The released software is preconfigured to use this back-end service. Please see <a href="http://wiki.astrogrid.org/bin/view/GdwCataloguesIteration4">GdwCataloguesIteration4</a> for a list of data-sets installed in the back-end service. 
-</p><p>
-The web interface for a test query times out if the query runs longer than about two minutes. This interface is not intended for long tests. 
-</p><p>
-It is impossible to install the warehouse front-end service in the same Tomcat as a datacenter installation because the entries in AstroGridConfig.properties clash. This is due to warehouse being a specialized form of datacenter and re-using many classes from the latter component. We hope to remove this limitation in a later release. 
-</p>
-</section>
+<section name="Configuration">
+<p>
+To configure the installed datacenter as a GDW, the following entries 
+need to be added or adjusted in the tomcat configuration file 
+<tt>${CATALINA_HOME}/conf/datacenter.properties</tt>, where
+<tt>${CATALINA_HOME}</tt> is the tomcat toplevel directory for the 
+tomcat in which the DataCenter webapp is installed:
 
-<section name="Configuration"><p>
-To configure the data warehouse module of the Astrogrid software, only two configuration files need to be edited: the WarehouseQuerier.properties file and the AstroGridConfig.properties file. Please note that the default settings for both of these files will work without further configuration required. $TOMCAT is used below to indicate the Tomcat installation directory. 
-</p><p>
-<b>A. $TOMCAT/webapps/warehouse/WEB-INF/classes/org/astrogrid/warehouse/queriers/ogsadai/WarehouseQuerier.properties</b>
-</p><p>
-This file configures the data warehouse querier. Change the parameter names to specify the warehouse querier class name, the location of the OGSA-DAI registry, the XSLT stylesheet used to transform rowsets to VOTable, a specific java virtual machine for the querier (optional), and the location of the OGSA-DAI jar files. 
-</p>
+<pre>
+# Configure DataCenter to use GDW plugin
+# (DELETE ANY OTHER ENTRIES FOR datacenter.querier.plugin)
+datacenter.querier.plugin=org.astrogrid.datacenter.queriers.ogsadai.WarehouseQue
+rier
 
-<p>
-<ol>
-<li>DatabaseQuerierClassConfigure the type of querier. Enter the package name of the data centre querier class here: 
-<ul>
-<li>DatabaseQuerierClass = org.astrogrid.warehouse.queriers.ogsadai.WarehouseQuerier</li>
-</ul>
-</li> 
-<li>OgsaDaiHostString and OgsaDaiRegistryStringConfigure the location of the OGSA-DAI grid service registry. Enter the URL for the OGSA-DAI registry host machine followed by the local identifier of the OGSA-DAI registry: 
-<ul>
-<li>OgsaDaiHostString=http://hydra.star.le.ac.uk:8082</li>
-<li>OgsaDaiRegistryString=/gdw/services/ogsadai/DAIServiceGroupRegistry</li>
-</ul> 
-</li>
-<li>XslTransformConfigure the name and location of the XSLT stylesheet that will convert XML rowsets to VOTable. Enter the URL of the XSLT stylesheet: 
-<ul>
-<li>XslTransform=http://astrogrid.ast.cam.ac.uk/xslt/ag-warehouse-first.xsl</li>
-</ul>
-</li>
-<li>WarehouseJVM (Optional) Configure the JVM for the GdsQueryDelegate. Only set this variable if the GdsQueryDelegate requires a specific java virtual machine (other than the one specified in Tomcat's $JAVA-HOME variable). 
-<ul>
-<li>WarehouseJvm=/data/cass123a/kea/j2sdk1.4.1_01/bin/java</li>
-</ul>
-</li>
-<li>ExecutableJarPathConfigure the executable path for OGSA-DAI classes. Set this variable to the relative pathname that holds the OGSA-DAI package jar file in Tomcat(note - an absolute path can be used as well): 
-<ul>
-<li>ExecutableJarPath=../webapps/warehouse/WEB-INF/classes/ </li>
-</ul>
-</li>
-<li>ExecutableJarNameConfigure the OGSA-DAI jar filename. Enter the filename of the OGSA-DAI jar file located in the relative pathname above: 
-<ul>
-<li>ExecutableJarName=astrogrid-ogsadai-delegates.jar</li>
-</ul>
-</li> 
-</ol>
-<b>B. $TOMCAT/conf/AstroGridConfig.properties </b>
-</p>
-<p>
-This is the configuration file for an Astrogrid data centre - it can be specialized to describe a data warehouse. Only one parameter needs to be changed to specify the warehouse. 
-</p>
-<p>
-<ol>
-<li>DatabaseQuerierClassConfigure the package name of the class that will query the data warehouse: 
-<ul>
-<li>DatabaseQuerierClass= org.astrogrid.warehouse.queriers.ogsadai.WarehouseQuerier </li>
-</ul>
-</li>
-</ol>
+# Location of OGSA-DAI grid service registry
+# CONFIGURE THIS TO MATCH YOUR OGSA-DAI INSTALLATION
+WAREHOUSE_OgsaDaiHostString=http://hydra.star.le.ac.uk:8082
+WAREHOUSE_OgsaDaiRegistryString=/gdw/services/ogsadai/DAIServiceGroupRegistry
+
+# Location of XSLT stylesheet for XML RowSet -> VOTable transformation
+# This is a one-size-fits-all hack that will need replacing.
+# NO NEED TO CHANGE THIS
+WAREHOUSE_XslTransform=http://astrogrid.ast.cam.ac.uk/xslt/ag-warehouse-first.xs
+l
+
+# Location of JVM for shelling out to GdsQueryDelegate
+# CONFIGURE THIS TO MATCH YOUR JAVA INSTALLATION
+WAREHOUSE_WarehouseJvm=/usr/local/java/j2sdk1.4.1_02/bin/java
+
+# Location of executable jar for shelled-out ogsadai call
+# hydra
+# CONFIGURE THIS TO MATCH THE WEB-INF/classes DIRECTORY IN YOUR OWN
+# DATACENTER INSTALLATION
+WAREHOUSE_ExecutableJarPath=/home/data/gdw/tomcat1/webapps/pal-SNAPSHOT/WEB-INF/classes/
+
+# CHANGE {VERSION} TO MATCH THE NAME OF THE EXECUTABLE JAR FOUND 
+# IN THE WAREHOUSE_ExecutableJarPath DIRECTORY OF YOUR DATACENTER INST.
+# 
+WAREHOUSE_ExecutableJarName=astrogrid-ogsadai-app-{VERSION}.jar
+</pre>
 </p>
 </section>
 	]]>
