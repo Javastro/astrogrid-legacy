@@ -168,13 +168,11 @@ public class Workflow extends Activity {
         "  </step>" +
         "  <step name=\"StepFour\" stepNumber=\"4\" sequenceNumber=\"1\">" +
         "  </step>" +
-        "  <step name=\"StepFive\" stepNumber=\"5\" sequenceNumber=\"1\">" +
-        "  </step>" +        
         " </flow>" +
         "  <!-- These subsequent steps will be dispatched only when steps one to five have finished correctly ======= -->" +
-        "  <step name=\"StepSix\" joinCondition=\"true\" stepNumber=\"6\" sequenceNumber=\"2\">" +
+        "  <step name=\"StepSix\" joinCondition=\"true\" stepNumber=\"5\" sequenceNumber=\"2\">" +
         "  </step>" +
-        "  <step name=\"StepSeven\" joinCondition=\"true\" stepNumber=\"7\" sequenceNumber=\"3\">" +
+        "  <step name=\"StepSeven\" joinCondition=\"true\" stepNumber=\"6\" sequenceNumber=\"3\">" +
         "  </step>" +        
         "</sequence>" +
         "</workflow>" ;                    
@@ -911,7 +909,6 @@ public class Workflow extends Activity {
         dirty ;
         
     /**
-      * <p> 
       * Default Workflow constructor.
       * <p> 
       * The parent is set to null by calling super(null).
@@ -930,7 +927,6 @@ public class Workflow extends Activity {
     
     
     /**
-      * <p> 
       * Workflow constructor using Document.
       * <p>
       * The parent is set to null by calling super(null).
@@ -1349,6 +1345,7 @@ public class Workflow extends Activity {
         Iterator iterator = null ;
         java.util.Vector vector = null ;
         String account ;
+        Object obj = null ;
         
         try {
                
@@ -1371,8 +1368,10 @@ public class Workflow extends Activity {
 //            debug( "vector.size(): " + vector.size() ) ;
 //            debug( "vector.isEmpty(): " + vector.isEmpty() ) ;
                        
-            if( !( (vector == null) || (vector.size() == 0) ) ) {     
-                iterator = ((Vector)vector.firstElement()).iterator() ;                  
+            if( !( (vector == null) || (vector.size() == 0) ) ) { 
+                obj = vector.firstElement() ;  
+                debug( "Class name: " + obj.getClass().getName() ) ; 
+                iterator = ((Vector)obj).iterator() ;                  
             }
                            
         }
