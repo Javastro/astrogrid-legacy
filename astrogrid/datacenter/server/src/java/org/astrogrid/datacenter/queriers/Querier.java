@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.46 2004/03/16 17:41:14 mch Exp $
+ * $Id: Querier.java,v 1.47 2004/03/17 12:53:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,6 +25,7 @@ import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreException;
+import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 
 /**
  * Represents a single running query.
@@ -393,6 +394,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.47  2004/03/17 12:53:44  mch
+ Fixed QuerierStatus being gotten from somewhere else
+
  Revision 1.46  2004/03/16 17:41:14  mch
  set querier error status only if not already set in run
 
