@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.11 2004/09/20 16:40:43 pah Exp $
+ * $Id: CommandLineApplication.java,v 1.12 2004/09/21 11:23:09 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -265,34 +265,43 @@ private final void endApplication()  {
             adapter.writeBack(null);
          } catch (CeaException e) {                        
                 reportError("There was a problem writing back parameter "+adapter.getWrappedParameter().getName(),e);
+                //set non-zero exit status if not already set to force the reporting of standard error below....
+                exitStatus = exitStatus == 0? 1 : exitStatus;
          }
       }        
 
       reportMessage("The application has completed with exit status="+exitStatus);
       if (exitStatus != 0) {
           setStatus(Status.ERROR); // send the stderr output as well
-          try {
-            BufferedReader errReader = new BufferedReader( new FileReader(applicationEnvironment.getErrorLog()));
-            StringBuffer errMsg = new StringBuffer();
-            String line;
-            while((line = errReader.readLine()) != null)
-            {
-               errMsg.append(line);
-               errMsg.append('\n');
-            }
-            //TODO - need to think about limiting the size of the returned error messages...
-            reportMessage("The standard error from the command line application follows");
-            reportMessage(errMsg.toString());
-        }
-        catch (IOException e) {
-           reportError("cannot write back standard error", e);
-        }
+          reportStandardError();
       } else {
           setStatus(Status.COMPLETED);//it notifies that results are ready to be consumed.
       }
    }
    
    /**
+ * Report the standard error output to the listeners.
+ */
+private void reportStandardError() {
+    try {
+        BufferedReader errReader = new BufferedReader( new FileReader(applicationEnvironment.getErrorLog()));
+        StringBuffer errMsg = new StringBuffer();
+        String line;
+        while((line = errReader.readLine()) != null)
+        {
+           errMsg.append(line);
+           errMsg.append('\n');
+        }
+        //TODO - need to think about limiting the size of the returned error messages...
+        reportMessage("The standard error from the command line application follows");
+        reportMessage(errMsg.toString());
+    }
+    catch (IOException e) {
+       reportError("cannot write back standard error", e);
+    }
+}
+
+/**
      * Hook to allow for manipulation of the environment before the application gets run. Occurs when the command line has been built for the application. This does nothing in the default implementation.
      *
      */
