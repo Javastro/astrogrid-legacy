@@ -4,7 +4,8 @@
 	<xsl:param name="user-param" />
 	<xsl:param name="name" />
 	<xsl:param name="community" />	
-	<xsl:param name="action" />		
+	<xsl:param name="action" />
+    <xsl:param name="errormessage" />			
 
 	<!--+
 	    | Match the root element.
@@ -95,7 +96,16 @@
                 Send
               </a>
             </td>
-          </tr>      
+          </tr>
+	        <xsl:if test="$errormessage != ''">	
+	            <tr>
+	                <td>
+			            <font color="red">
+				            <xsl:value-of select="$errormessage" />
+			            </font>
+			        </td>
+			    </tr>
+		    </xsl:if>                
         </tbody>
       </table>
 	</xsl:template>
