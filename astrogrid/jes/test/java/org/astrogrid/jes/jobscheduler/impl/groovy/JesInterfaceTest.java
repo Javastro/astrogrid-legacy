@@ -1,4 +1,4 @@
-/*$Id: JesInterfaceTest.java,v 1.3 2004/08/03 16:32:26 nw Exp $
+/*$Id: JesInterfaceTest.java,v 1.4 2004/08/06 11:59:25 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,11 +40,13 @@ public class JesInterfaceTest extends TestCase {
         Sequence seq = new Sequence();
         seq.setId("2");
         wf.setSequence(seq);
-        Step step = new Step();
+        step = new Step();
         step.setId("3");
+        step.setName("foo");
         seq.addActivity(step);
     }
     protected JesInterface jes;
+    protected Step step;
 
     public void testGetWorkflow() {
        assertNotNull(jes.getWorkflow());
@@ -61,6 +63,19 @@ public class JesInterfaceTest extends TestCase {
     public void testId() {
         assertNull(jes.getId("6"));
         assertNotNull(jes.getId("3"));
+    }
+    
+    public void testNewParameter() {
+        assertNotNull(jes.newParameter());
+    }
+    
+    public void testGetSteps() {
+        assertNotNull(jes.getSteps());
+        assertEquals(1,jes.getSteps().size());
+        assertNotNull(jes.getSteps().get(0));
+        assertEquals(step,jes.getSteps().get(0));
+        
+        
     }
 
     /* a pain to test
@@ -79,19 +94,15 @@ public class JesInterfaceTest extends TestCase {
     }
     */
 
-    public void testCompleteStepWithId() {
-        //@todo Implement completeStepWithId().
-    }
-
-    public void testSetStatus() {
-        //@todo Implement setStatus().
-    }
 
 }
 
 
 /* 
 $Log: JesInterfaceTest.java,v $
+Revision 1.4  2004/08/06 11:59:25  nw
+test for helper methods
+
 Revision 1.3  2004/08/03 16:32:26  nw
 remove unnecessary envId attrib from rules
 implemented variable propagation into parameter values.
