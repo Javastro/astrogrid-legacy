@@ -1,4 +1,4 @@
-/*$Id: IdTranslator.java,v 1.2 2004/01/13 00:33:14 nw Exp $
+/*$Id: IdTranslator.java,v 1.3 2004/01/15 12:18:07 nw Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.datacenter.queriers.spi;
 import org.astrogrid.datacenter.axisdataserver.types.Language;
 import org.w3c.dom.Element;
 
-/** Simplest possible translator - returns its Element argument unchanged
+/** The simplest possible {@link Translator} - returns its input argument unchanged
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Nov-2003
  *
  */
@@ -26,28 +26,29 @@ public class IdTranslator implements Translator {
 
     }
 
-    /* (non-Javadoc)
-     * @see org.astrogrid.datacenter.queriers.spi.Translator#translate(org.w3c.dom.Element)
-     */
-    public Object translate(Element e) throws Exception {
+/**
+ * Returns the input element unchanged
+ * @param e the input query document
+ * @return the input query document, unchanged */
+    public Object translate(Element e)  {
         return e;
     }
 
-    /* (non-Javadoc)
-     * @see org.astrogrid.datacenter.queriers.spi.Translator#getResultType()
-     */
+/**  
+ * returns the {@link org.w3c.dom.Element} class object 
+ */
     public Class getResultType() {
         return Element.class;
     }
 
     /** 
-     * Dummy translator map - always returns an Id translator, for any namespace
+     * A dummy implementation of {@link TranslatorMap} that always returns an {@link IdTranslator}, for any namespace
      * @author Noel Winstanley nw@jb.man.ac.uk 27-Nov-2003
      *
      */
     public static class DummyTranslatorMap implements TranslatorMap {
 
-        /** always retirns an Idtranslator */
+        /** @return a new {@link IdTranslator} */
         public Translator lookup(String namespace) {
             return new IdTranslator();
         }
@@ -63,6 +64,9 @@ public class IdTranslator implements Translator {
 
 /* 
 $Log: IdTranslator.java,v $
+Revision 1.3  2004/01/15 12:18:07  nw
+improved documentation
+
 Revision 1.2  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through
