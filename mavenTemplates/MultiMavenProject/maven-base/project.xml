@@ -5,6 +5,15 @@
 not used to build a subproject of its own.  This base POM in turn extends a global maven-base POM used to defined settings
 across all Astrogrid components.</description>
     <shortDescription>An example base POM</shortDescription>
+    <!--
+        This is set in astrogrid/maven-base, but is incorrect for this project since
+        it is not a "standard" astrogrid project
+    -->
+    <repository>
+        <connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:mavenTemplates/MultiMavenProject</connection>
+        <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:mavenTemplates/MultiMavenProject</developerConnection>
+        <url>http://www.astrogrid.org/viewcvs/mavenTemplates/MultiMavenProject/</url>
+    </repository>
     <!--we have this common structure for all subprojects-->
     <build>
         <sourceDirectory>src/java</sourceDirectory>
