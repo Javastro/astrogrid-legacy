@@ -1,4 +1,4 @@
-/* $Id: JobControllerTest.java,v 1.3 2003/11/14 19:07:48 jdt Exp $
+/* $Id: JobControllerTest.java,v 1.4 2003/11/14 19:11:54 jdt Exp $
  * Created on 29-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,26 +9,20 @@
  */
 package org.astrogrid.jes.jobcontroller;
 
-import org.astrogrid.AstroGridException;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.spi.NamingManager;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.*;
 import org.hsqldb.jdbcDataSource;
-
-import junit.framework.TestCase;
 
 import org.astrogrid.jes.JES;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
@@ -170,6 +164,9 @@ public class JobControllerTest extends TestCase {
 
 /*
 *$Log: JobControllerTest.java,v $
+*Revision 1.4  2003/11/14 19:11:54  jdt
+*Minor changes to satisfy coding stds.
+*
 *Revision 1.3  2003/11/14 19:07:48  jdt
 *Now cleanly runs through the submit process, all I need to do it check that it's working.
 *
