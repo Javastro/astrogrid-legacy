@@ -12,7 +12,7 @@ package org.astrogrid.datacenter;
 
 import org.astrogrid.i18n.AstroGridMessage;
 
-
+/** General Exception class thrown by the datacenter service */
 public class DatacenterException extends org.astrogrid.AstroGridException {
 	
 	public DatacenterException( AstroGridMessage message ) { 
