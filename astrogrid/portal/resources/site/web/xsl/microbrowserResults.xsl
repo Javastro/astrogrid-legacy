@@ -100,6 +100,7 @@
     /*
      * populateAndCloseCatalog()
      * Populate relevant text field in parent window
+     * Includes correction for crossbrowser amplisand issue
      *
      * @param identifier      value to insert           
      */ 
@@ -107,8 +108,10 @@
     {
       var url = "/astrogrid-portal/main/mount/datacenter/variablesFromMB.html?action=getTable&amp;uniqueID=";
       url = url + identifier;
+      var safe_url = url.substring(0,url.indexOf("amp;"));
+      safe_url = safe_url + url.substring(url.indexOf("amp;")+4, url.length);      
 	  parent.window.close();
-	  parent.opener.parent.location.href = url;
+	  parent.opener.parent.location.href = safe_url;
 	  parent.opener.parent.focus();     
 	}    
     
