@@ -13,6 +13,10 @@ BUILD_HOME=/home/maven/build
 SCRIPTHOME=/home/maven/mavenrun
 PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
 LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
+
+echo "Build Log for $PROJECT_NAME on $DATE" >> $LOG_FILE 2>&1
+echo "====================================" >> $LOG_FILE 2>&1
+
 cd $BUILD_HOME
 echo "[ag-build-$PROJECT_NAME] remove old log"
 rm $LOG_FILE
@@ -49,7 +53,7 @@ maven site:fsdeploy >> $LOG_FILE 2>&1
 maven jar:deploy-snapshot >> $LOG_FILE 2>&1
 maven war:deploy-snapshot >> $LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] deploy build log"
-cp $LOG_FILE /var/www/www/maven/build/log
+cp $LOG_FILE /var/www/www/maven/docs/snapshot/log
 
 echo "[ag-build-$PROJECT_NAME] back to start dir: $OLDDIR"
 cd $OLDDIR
