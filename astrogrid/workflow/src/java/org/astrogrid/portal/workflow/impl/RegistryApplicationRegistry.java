@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistry.java,v 1.6 2004/10/08 20:04:39 pah Exp $
+/*$Id: RegistryApplicationRegistry.java,v 1.7 2004/10/12 11:24:21 pah Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -72,9 +72,9 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
     public final static String LIST_QUERY_STRING= "<query><selectionSequence>" +
     "<selection item='searchElements' itemOp='EQ' value='vr:Resource'/>" +
     "<selectionOp op='$and$'/>" +
-    "<selection item='@*:type' itemOp='EQ' value='CeaApplicationType'/>"  +
+    "<selection item='@xsi:type' itemOp='EQ' value='CeaApplicationType'/>"  +
     "<selectionOp op='OR'/>" +
-    "<selection item='@*:type' itemOp='EQ' value='CeaHttpApplicationType'/>"  +
+    "<selection item='@xsi:type' itemOp='EQ' value='CeaHttpApplicationType'/>"  +
     "</selectionSequence></query>";
 
     
@@ -139,6 +139,9 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
 
 /* 
 $Log: RegistryApplicationRegistry.java,v $
+Revision 1.7  2004/10/12 11:24:21  pah
+used explicit namespaces in query for 200x speedup!
+
 Revision 1.6  2004/10/08 20:04:39  pah
 optimize the tool query to use namespaces - better performance than using wildcard
 
