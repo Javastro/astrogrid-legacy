@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+	<author email="pah@jb.man.ac.uk">Paul Harrison</author>
+	<title>Application Controller Installation Information</title>
+</properties>
+
+<body>
+<section name="Common Execution Architecture Design">
+    <subsection name="Introduction">
+        <p>The Common Execution Architecture (CEA) is an attempt to create a reasonably small set of interfaces and schema
+           to model how to execute a typical Astronomical application within the Virtual Observatory (VO). 
+           In this context an application can be any process that consumes or produces data. </p>
+           <p>The CEA has been primarily designed to work within a web services calling mechanism, although it is possible to have specific language bindings using the same interfaces. 
+               For example Astrogrid has a java implementation of the interfaces that can be called directly from other </p>
+        
+    </subsection>
+    <subsection name="Motivation">
+        <p>The primary motivation behind creating this</p>
+        
+    </subsection>
+    <subsection name="">
+        
+    </subsection>
+    
+</section>
+<section name="Formal Definition">
+    <subsection name="Interfaces">
+        
+    </subsection>
+    <subsection name="Objects">
+        
+    </subsection>
+    
+</section>
+<section name="Deployment">
+    <subsection name="Typical Scenario"></subsection>
+    <subsection name="Astrogrid Implementation"></subsection>
+</section>
+<section name="Future Directions">
+    
+</section>
+</body>
+</document>

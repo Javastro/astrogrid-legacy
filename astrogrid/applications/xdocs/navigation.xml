@@ -5,13 +5,14 @@
   <title>AstroGrid Project - Application Integration</title>
 
     <menu name="Installation">
-       <item name="Install" href="INSTALL.xml"/>
-       <item name="Read me" href="README.xml"/>
+       <item name="Install" href="INSTALL.html"/>
+       <item name="Read me" href="README.html"/>
        <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-applications-SNAPSHOT.war"/>
         
     </menu>     
     <menu name="CEA" >
-     	<item name="UML Design" href="http://www.astrogrid.org/maven/design/applications/" />   
+        <item name="Design Document" href="design//>
+     	<item name="UML Diagrams" href="http://www.astrogrid.org/maven/design/applications/" />   
         <!-- would be nice to have a submenu here  - how? -->
     	<item name="Schema"  href="http://www.astrogrid.org/viewcvs/astrogrid/applications/schema/"/>
      	<item name="Parameter Schema Documentation"  href="http://www.astrogrid.org/schema/documentation/AGParameterDefinition/"/>
