@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreMock.java,v $
+ *   Revision 1.5  2004/07/23 09:11:16  dave
+ *   Merged development branch, dave-dev-200407221513, into HEAD
+ *
+ *   Revision 1.4.6.1  2004/07/23 02:10:58  dave
+ *   Added IvornFactory and IvornParser
+ *
  *   Revision 1.4  2004/07/21 18:11:55  dave
  *   Merged development branch, dave-dev-200407201059, into HEAD
  *
@@ -69,7 +75,7 @@ import org.astrogrid.filestore.common.transfer.TransferUtil ;
 import org.astrogrid.filestore.common.transfer.TransferProperties ;
 import org.astrogrid.filestore.common.exception.FileStoreException ;
 import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
-import org.astrogrid.filestore.common.exception.FileIdentifierException ;
+import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 
 /**
@@ -381,13 +387,13 @@ public class FileStoreMock
 	 * @param ident The internal identifier of the target.
 	 * @param data The string to append.
 	 * @return An array of FileProperties describing the imported data.
-	 * @throws FileIdentifierException if the identifier is null or not valid.
+	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 * @throws FileStoreException if the string is null.
 	 *
 	 */
 	public FileProperty[] appendString(String ident, String data)
-		throws FileIdentifierException, FileStoreNotFoundException, FileStoreException
+		throws FileStoreIdentifierException, FileStoreNotFoundException, FileStoreException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -413,13 +419,13 @@ public class FileStoreMock
 	 * @param ident The internal identifier of the target.
 	 * @param data The bytes to append.
 	 * @return An array of FileProperties describing the imported data.
-	 * @throws FileIdentifierException if the identifier is null or not valid.
+	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 * @throws FileStoreException if the data array is null.
 	 *
 	 */
 	public FileProperty[] appendBytes(String ident, byte[] data)
-		throws FileIdentifierException, FileStoreNotFoundException, FileStoreException
+		throws FileStoreIdentifierException, FileStoreNotFoundException, FileStoreException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -436,7 +442,7 @@ public class FileStoreMock
 		// Check for null ident.
 		if (null == ident)
 			{
-			throw new FileIdentifierException() ;
+			throw new FileStoreIdentifierException() ;
 			}
 		//
 		// Try to locate a matching container.
@@ -467,12 +473,12 @@ public class FileStoreMock
 	 * Export (read) the contents of a file as a string.
 	 * @param ident The internal identifier of the target file.
 	 * @return The contents of a data object as a string.
-	 * @throws FileIdentifierException if the identifier is null or not valid.
+	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 *
 	 */
 	public String exportString(String ident)
-		throws FileIdentifierException, FileStoreNotFoundException
+		throws FileStoreIdentifierException, FileStoreNotFoundException
 		{
 		return new String(
 			this.exportBytes(
@@ -485,18 +491,18 @@ public class FileStoreMock
 	 * Export (read) the contents of a file as a string.
 	 * @param ident The internal identifier of the target file.
 	 * @return The contents of a data object as a string.
-	 * @throws FileIdentifierException if the identifier is null or not valid.
+	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 *
 	 */
 	public byte[] exportBytes(String ident)
-		throws FileIdentifierException, FileStoreNotFoundException
+		throws FileStoreIdentifierException, FileStoreNotFoundException
 		{
 		//
 		// Check for null ident.
 		if (null == ident)
 			{
-			throw new FileIdentifierException() ;
+			throw new FileStoreIdentifierException() ;
 			}
 		//
 		// Try to locate a matching container.
@@ -523,18 +529,18 @@ public class FileStoreMock
 	 * @param ident The internal identifier of the target file.
 	 * @param properties An optional array of FileProperties describing the copy.
 	 * @return An array of FileProperties describing the copied data.
-	 * @throws FileIdentifierException if the identifier is null or not valid.
+	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 *
 	 */
 	public FileProperty[] duplicate(String ident, FileProperty[] properties)
-		throws FileIdentifierException, FileStoreNotFoundException
+		throws FileStoreIdentifierException, FileStoreNotFoundException
 		{
 		//
 		// Check for null ident.
 		if (null == ident)
 			{
-			throw new FileIdentifierException() ;
+			throw new FileStoreIdentifierException() ;
 			}
 		//
 		// Try to locate a matching container.
@@ -572,18 +578,18 @@ public class FileStoreMock
 	 * Delete a file.
 	 * @param ident The internal identifier of the target file.
 	 * @return An array of FileProperties describing the deleted data.
-	 * @throws FileIdentifierException if the identifier is null or not valid.
+	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 *
 	 */
 	public FileProperty[] delete(String ident)
-		throws FileIdentifierException, FileStoreNotFoundException
+		throws FileStoreIdentifierException, FileStoreNotFoundException
 		{
 		//
 		// Check for null ident.
 		if (null == ident)
 			{
-			throw new FileIdentifierException() ;
+			throw new FileStoreIdentifierException() ;
 			}
 		//
 		// Try to locate a matching container.
@@ -612,20 +618,20 @@ public class FileStoreMock
 	 * Get the meta data information for a file.
 	 * @param ident The internal identifier of the target file.
 	 * @return An array of FileProperties describing the data.
-	 * @throws FileIdentifierException if the identifier is null or not valid.
+	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 * @throws FileStoreServiceException if unable handle the request.
      * @throws RemoteException If the WebService call fails.
 	 *
 	 */
 	public FileProperty[] properties(String ident)
-		throws FileIdentifierException, FileStoreNotFoundException
+		throws FileStoreIdentifierException, FileStoreNotFoundException
 		{
 		//
 		// Check for null ident.
 		if (null == ident)
 			{
-			throw new FileIdentifierException() ;
+			throw new FileStoreIdentifierException() ;
 			}
 		//
 		// Try to locate a matching container.
@@ -746,14 +752,14 @@ public class FileStoreMock
 		}
 
 	/**
-	 * Throw a FileIdentifierException, useful for debugging the transfer of Exceptions via SOAP.
-	 * @throws FileIdentifierException as requested.
+	 * Throw a FileStoreIdentifierException, useful for debugging the transfer of Exceptions via SOAP.
+	 * @throws FileStoreIdentifierException as requested.
 	 *
 	 */
 	public void throwIdentifierException()
-		throws FileIdentifierException
+		throws FileStoreIdentifierException
 		{
-		throw new FileIdentifierException(
+		throw new FileStoreIdentifierException(
 			"TEST FAULT",
 			"TEST IDENT"
 			) ;

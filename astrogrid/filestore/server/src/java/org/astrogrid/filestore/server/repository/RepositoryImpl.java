@@ -2,10 +2,16 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryImpl.java,v $
+ *   Revision 1.5  2004/07/23 09:11:16  dave
+ *   Merged development branch, dave-dev-200407221513, into HEAD
+ *
+ *   Revision 1.4.6.1  2004/07/23 02:10:58  dave
+ *   Added IvornFactory and IvornParser
+ *
  *   Revision 1.4  2004/07/21 18:11:55  dave
  *   Merged development branch, dave-dev-200407201059, into HEAD
  *
@@ -52,7 +58,7 @@ import org.astrogrid.filestore.common.file.FileIdentifier ;
 import org.astrogrid.filestore.common.transfer.TransferUtil ;
 import org.astrogrid.filestore.common.exception.FileStoreException ;
 import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
-import org.astrogrid.filestore.common.exception.FileIdentifierException ;
+import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 import org.astrogrid.filestore.common.exception.FileStoreServiceException ;
 import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 
@@ -134,20 +140,20 @@ public class RepositoryImpl
 	 * Locate an existing container.
 	 * @param ident The identifier of the container.
 	 * @return The file container, if it exists.
-	 * @throws FileIdentifierException if the identifier is null or not valid.
+	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
 	public RepositoryContainer load(String ident)
-		throws FileStoreServiceException, FileStoreNotFoundException, FileIdentifierException
+		throws FileStoreServiceException, FileStoreNotFoundException, FileStoreIdentifierException
 		{
 		//
 		// Check for null ident.
 		if (null == ident)
 			{
-			throw new FileIdentifierException(
-				FileIdentifierException.NULL_IDENT_MESSAGE
+			throw new FileStoreIdentifierException(
+				FileStoreIdentifierException.NULL_IDENT_MESSAGE
 				) ;
 			}
 		//
@@ -161,13 +167,13 @@ public class RepositoryImpl
 	 * Copy an existing container.
 	 * @param ident The identifier of the container.
 	 * @return The new file container.
-	 * @throws FileIdentifierException if the identifier is null or not valid.
+	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
 	public RepositoryContainer duplicate(String ident)
-		throws FileStoreServiceException, FileStoreNotFoundException, FileIdentifierException
+		throws FileStoreServiceException, FileStoreNotFoundException, FileStoreIdentifierException
 		{
 		//
 		// Try to load the existing container.
@@ -276,13 +282,13 @@ public class RepositoryImpl
 		/**
 		 * Constructor to load an existing container.
 		 * @param ident The identifier of the container.
-		 * @throws FileIdentifierException if the identifier is null or not valid.
+		 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 		 * @throws FileStoreNotFoundException if unable to locate the file.
 		 * @throws FileStoreServiceException if unable handle the request.
 		 *
 		 */
 		public RepositoryContainerImpl(String ident)
-			throws FileStoreServiceException, FileStoreNotFoundException, FileIdentifierException
+			throws FileStoreServiceException, FileStoreNotFoundException, FileStoreIdentifierException
 			{
 			//
 			// Create our identifier.

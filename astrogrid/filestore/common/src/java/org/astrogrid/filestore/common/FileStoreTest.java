@@ -1,10 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/22 13:40:26 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreTest.java,v $
+ *   Revision 1.6  2004/07/23 09:11:16  dave
+ *   Merged development branch, dave-dev-200407221513, into HEAD
+ *
+ *   Revision 1.5.4.2  2004/07/23 03:37:06  dave
+ *   Debugged tests and parser bugs
+ *
+ *   Revision 1.5.4.1  2004/07/23 02:10:58  dave
+ *   Added IvornFactory and IvornParser
+ *
  *   Revision 1.5  2004/07/22 13:40:26  dave
  *   Merged development branch, dave-dev-200407211922, into HEAD
  *
@@ -58,7 +67,7 @@ import org.astrogrid.filestore.common.file.FileProperties ;
 import org.astrogrid.filestore.common.transfer.TransferProperties ;
 import org.astrogrid.filestore.common.exception.FileStoreException ;
 import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
-import org.astrogrid.filestore.common.exception.FileIdentifierException ;
+import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 
 import org.astrogrid.filestore.common.transfer.UrlGetTransfer ;
@@ -70,6 +79,12 @@ import org.astrogrid.filestore.common.transfer.UrlGetTransfer ;
 public class FileStoreTest
 	extends TestCase
 	{
+	/**
+	 * Switch for our debug statements.
+	 *
+	 */
+	protected static final boolean DEBUG_FLAG = true ;
+
 	/**
 	 * The name of our test property.
 	 *
@@ -229,11 +244,11 @@ public class FileStoreTest
 		try {
 			target.throwIdentifierException() ;
 			}
-		catch (FileIdentifierException ouch)
+		catch (FileStoreIdentifierException ouch)
 			{
 			return ;
 			}
-		fail("Expected FileIdentifierException") ;
+		fail("Expected FileStoreIdentifierException") ;
 		}
 	 */
 
@@ -244,6 +259,9 @@ public class FileStoreTest
 	public void testGetServiceIdentifier()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testGetServiceIdentifier()") ;
 		assertNotNull(
 			"Null service identifier",
 			target.identifier()
@@ -390,6 +408,9 @@ public class FileStoreTest
 	public void testImportNullString()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportNullString()") ;
 		try {
 			target.importString(
 				null,
@@ -410,6 +431,9 @@ public class FileStoreTest
 	public void testImportString()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportString()") ;
 		//
 		// Import the test string.
 		FileProperties properties = new FileProperties(
@@ -445,6 +469,9 @@ public class FileStoreTest
 	public void testImportStringInfo()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportStringInfo()") ;
 		//
 		// Create our data info.
 		FileProperties properties = new FileProperties() ;
@@ -500,16 +527,19 @@ public class FileStoreTest
 	public void testExportNullString()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testExportNullString()") ;
 		try {
 			target.exportString(
 				null
 				) ;
 			}
-		catch (FileIdentifierException ouch)
+		catch (FileStoreIdentifierException ouch)
 			{
 			return ;
 			}
-		fail("Expected FileIdentifierException") ;
+		fail("Expected FileStoreIdentifierException") ;
 		}
 
 	/**
@@ -519,6 +549,9 @@ public class FileStoreTest
 	public void testExportUnknownString()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testExportUnknownString()") ;
 		try {
 			target.exportString(
 				"unknown"
@@ -538,6 +571,9 @@ public class FileStoreTest
 	public void testImportStringExportString()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportStringExportString()") ;
 		//
 		// Import the test string.
 		FileProperties imported = new FileProperties(
@@ -571,6 +607,9 @@ public class FileStoreTest
 	public void testImportStringExportBytes()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportStringExportBytes()") ;
 		//
 		// Import the test string.
 		FileProperties imported = new FileProperties(
@@ -611,6 +650,9 @@ public class FileStoreTest
 	public void testImportNullBytes()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportNullBytes()") ;
 		try {
 			target.importBytes(
 				null,
@@ -631,6 +673,9 @@ public class FileStoreTest
 	public void testImportBytes()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportBytes()") ;
 		FileProperties imported = new FileProperties(
 			target.importBytes(
 				null,
@@ -664,6 +709,9 @@ public class FileStoreTest
 	public void testImportBytesInfo()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportBytesInfo()") ;
 		//
 		// Create our data info.
 		FileProperties properties = new FileProperties() ;
@@ -719,16 +767,19 @@ public class FileStoreTest
 	public void testExportNullBytes()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testExportNullBytes()") ;
 		try {
 			target.exportBytes(
 				null
 				) ;
 			}
-		catch (FileIdentifierException ouch)
+		catch (FileStoreIdentifierException ouch)
 			{
 			return ;
 			}
-		fail("Expected FileIdentifierException") ;
+		fail("Expected FileStoreIdentifierException") ;
 		}
 
 	/**
@@ -738,6 +789,9 @@ public class FileStoreTest
 	public void testExportUnknownBytes()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testExportUnknownBytes()") ;
 		try {
 			target.exportBytes(
 				"unknown"
@@ -757,6 +811,9 @@ public class FileStoreTest
 	public void testImportBytesExportBytes()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportBytesExportBytes()") ;
 		//
 		// Import the test bytes.
 		FileProperties imported = new FileProperties(
@@ -789,6 +846,9 @@ public class FileStoreTest
 	public void testImportBytesExportString()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportBytesExportString()") ;
 		//
 		// Import the test bytes.
 		FileProperties imported = new FileProperties(
@@ -828,16 +888,19 @@ public class FileStoreTest
 	public void testRequestNullInfo()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testRequestNullInfo()") ;
 		try {
 			target.properties(
 				null
 				) ;
 			}
-		catch (FileIdentifierException ouch)
+		catch (FileStoreIdentifierException ouch)
 			{
 			return ;
 			}
-		fail("Expected FileIdentifierException") ;
+		fail("Expected FileStoreIdentifierException") ;
 		}
 
 	/**
@@ -847,6 +910,9 @@ public class FileStoreTest
 	public void testRequestUnknownInfo()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testRequestUnknownInfo()") ;
 		try {
 			target.properties(
 				"unknown"
@@ -866,6 +932,9 @@ public class FileStoreTest
 	public void testRequestStringInfo()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testRequestStringInfo()") ;
 		//
 		// Store the test string.
 		FileProperties imported = new FileProperties(
@@ -903,6 +972,9 @@ public class FileStoreTest
 	public void testRequestBytesInfo()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testRequestBytesInfo()") ;
 		//
 		// Store the test string.
 		FileProperties imported = new FileProperties(
@@ -944,16 +1016,19 @@ public class FileStoreTest
 	public void testDeleteNull()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testDeleteNull()") ;
 		try {
 			target.delete(
 				null
 				) ;
 			}
-		catch (FileIdentifierException ouch)
+		catch (FileStoreIdentifierException ouch)
 			{
 			return ;
 			}
-		fail("Expected FileIdentifierException") ;
+		fail("Expected FileStoreIdentifierException") ;
 		}
 
 	/**
@@ -963,6 +1038,9 @@ public class FileStoreTest
 	public void testDeleteUnknown()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testDeleteUnknown()") ;
 		try {
 			target.delete(
 				"unknown"
@@ -982,6 +1060,9 @@ public class FileStoreTest
 	public void testDeleteString()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testDeleteString()") ;
 		//
 		// Store the test string.
 		FileProperties imported = new FileProperties(
@@ -1019,6 +1100,9 @@ public class FileStoreTest
 	public void testDeleteBytes()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testDeleteBytes()") ;
 		//
 		// Store the test string.
 		FileProperties imported = new FileProperties(
@@ -1056,6 +1140,9 @@ public class FileStoreTest
 	public void testInfoDeleted()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testInfoDeleted()") ;
 		//
 		// Store the test string.
 		FileProperties imported = new FileProperties(
@@ -1096,6 +1183,9 @@ public class FileStoreTest
 	public void testExportDeleted()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testExportDeleted()") ;
 		//
 		// Store the test string.
 		FileProperties imported = new FileProperties(
@@ -1140,6 +1230,9 @@ public class FileStoreTest
 	public void testAppendNullString()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testAppendNullString()") ;
 		try {
 			target.appendString(
 				"anything",
@@ -1160,17 +1253,20 @@ public class FileStoreTest
 	public void testAppendStringNullIdent()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testAppendStringNullIdent()") ;
 		try {
 			target.appendString(
 				null,
 				EXTRA_STRING
 				) ;
 			}
-		catch (FileIdentifierException ouch)
+		catch (FileStoreIdentifierException ouch)
 			{
 			return ;
 			}
-		fail("Expected FileIdentifierException") ;
+		fail("Expected FileStoreIdentifierException") ;
 		}
 
 	/**
@@ -1180,6 +1276,9 @@ public class FileStoreTest
 	public void testAppendStringUnknownIdent()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testAppendStringUnknownIdent()") ;
 		try {
 			target.appendString(
 				"unknown",
@@ -1200,6 +1299,9 @@ public class FileStoreTest
 	public void testImportStringAppendString()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportStringAppendString()") ;
 		//
 		// Import the test string.
 		FileProperties imported = new FileProperties(
@@ -1238,6 +1340,9 @@ public class FileStoreTest
 	public void testImportStringAppendBytes()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportStringAppendBytes()") ;
 		//
 		// Import the test string.
 		FileProperties imported = new FileProperties(
@@ -1280,17 +1385,20 @@ public class FileStoreTest
 	public void testDuplicateNullIdent()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testDuplicateNullIdent()") ;
 		try {
 			target.duplicate(
 				null,
 				null
 				) ;
 			}
-		catch (FileIdentifierException ouch)
+		catch (FileStoreIdentifierException ouch)
 			{
 			return ;
 			}
-		fail("Expected FileIdentifierException") ;
+		fail("Expected FileStoreIdentifierException") ;
 		}
 
 	/**
@@ -1300,6 +1408,9 @@ public class FileStoreTest
 	public void testDuplicateUnknownIdent()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testDuplicateUnknownIdent()") ;
 		try {
 			target.duplicate(
 				"unknown",
@@ -1320,6 +1431,9 @@ public class FileStoreTest
 	public void testDuplicateIdent()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testDuplicateIdent()") ;
 		//
 		// Import the test string.
 		FileProperties imported = new FileProperties(
@@ -1359,6 +1473,9 @@ public class FileStoreTest
 	public void testDuplicateString()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testDuplicateString()") ;
 		//
 		// Import the test string.
 		FileProperties imported = new FileProperties(
@@ -1397,6 +1514,9 @@ public class FileStoreTest
 	public void testDuplicateInfo()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testDuplicateInfo()") ;
 		//
 		// Create our data info.
 		FileProperties properties = new FileProperties() ;
@@ -1458,6 +1578,9 @@ public class FileStoreTest
 	public void testDuplicateAppend()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testDuplicateAppend()") ;
 		//
 		// Import the test string.
 		FileProperties imported = new FileProperties(
@@ -1517,6 +1640,9 @@ public class FileStoreTest
 	public void testCreateNullUrlGetTransfer()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testCreateNullUrlGetTransfer()") ;
 		try {
 			new UrlGetTransfer(
 				null
@@ -1536,6 +1662,9 @@ public class FileStoreTest
 	public void testCreateUrlGetTransfer()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testCreateUrlGetTransfer()") ;
 		System.out.println("--------") ;
 		System.out.println(
 			getTestProperty(
@@ -1562,6 +1691,9 @@ public class FileStoreTest
 	public void testImportNullTransfer()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportNullTransfer()") ;
 		try {
 			target.importData(
 				null
@@ -1581,6 +1713,9 @@ public class FileStoreTest
 	public void testImportMissing()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportMissing()") ;
 		try {
 			target.importData(
 				new UrlGetTransfer(
@@ -1606,6 +1741,9 @@ public class FileStoreTest
 	public void testImportFile()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportFile()") ;
 		TransferProperties transfer = 
 			target.importData(
 				new UrlGetTransfer(
@@ -1629,6 +1767,9 @@ public class FileStoreTest
 	public void testImportHttp()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportHttp()") ;
 		TransferProperties transfer = 
 			target.importData(
 				new UrlGetTransfer(
@@ -1652,6 +1793,9 @@ public class FileStoreTest
 	public void testImportProperties()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportProperties()") ;
 		TransferProperties transfer = 
 			target.importData(
 				new UrlGetTransfer(
@@ -1694,6 +1838,9 @@ public class FileStoreTest
 	public void testImportContent()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportContent()") ;
 		//
 		// Import a text file.
 		TransferProperties transfer = 
@@ -1731,6 +1878,9 @@ public class FileStoreTest
 	public void testImportTypeHtml()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportTypeHtml()") ;
 		//
 		// Import a text file.
 		TransferProperties transfer = 
@@ -1752,7 +1902,7 @@ public class FileStoreTest
 		// Check the imported data has the right type.
 		checkTypeProperties(
 			imported,
-			"text/html; charset=UTF-8",
+			"text/html; charset=ISO-8859-1",
 			null
 			) ;
 		}
@@ -1764,6 +1914,9 @@ public class FileStoreTest
 	public void testImportTypeJar()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportTypeJar()") ;
 		//
 		// Import a text file.
 		TransferProperties transfer = 
@@ -1797,6 +1950,9 @@ public class FileStoreTest
 	public void testImportSource()
 		throws Exception
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportSource()") ;
 		//
 		// Import a text file.
 		TransferProperties transfer = 

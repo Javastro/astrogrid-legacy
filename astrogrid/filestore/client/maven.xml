@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/15 13:24:28 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.4  2004/07/23 09:11:16  dave
+    |   Merged development branch, dave-dev-200407221513, into HEAD
+    |
+    |   Revision 1.3.10.1  2004/07/23 08:35:12  dave
+    |   Added properties for local registry (incomplete)
+    |
     |   Revision 1.3  2004/07/15 13:24:28  dave
     |   Merged development branch, dave-dev-200407141515, into HEAD
     |
@@ -31,6 +37,7 @@
     xmlns:define="jelly:define"
     xmlns:artifact="artifact"
     xmlns:filestore="org.astrogrid.filestore"
+    xmlns:resolver="org.astrogrid.filestore.resolver"
     default="astrogrid-rebuild-snapshot"
     >
 
@@ -161,6 +168,63 @@
 			/>
     </goal>
 
+    <!-- ================ Custom tags ================ -->
+
+    <!--+
+        | Define our local tag library.
+        +-->
+    <define:taglib uri="org.astrogrid.filestore.resolver">
+        <!--+
+            | Deploy a service into the local Axis config.
+            | Attrib : service.name  eg. PolicyManager
+            | Attrib : service.class eg. org.astrogrid.community.common.policy.manager.PolicyManager
+            | Attrib : service.file  eg. local.manager.policy.xml
+            +-->
+        <define:tag name="register.service.local">
+            <ant:echo message=""/>
+            <ant:echo message="Registering local service"/>
+            <ant:echo message="  Service name      : ${service.name}"/>
+            <ant:echo message="  Service class     : ${service.class}"/>
+            <ant:echo message="  Service authority : ${service.authority}"/>
+            <ant:echo message="  Service resource  : ${service.resource}"/>
+            <ant:echo message="  Service file      : ${service.file}"/>
+            <ant:echo message="  Service wsdl      : ${wsdlDir}/${service.name}.wsdl"/>
+            <ant:echo message="  Service href      : local:///${service.name}"/>
+            <!--+
+                | Modify the service WSDL to include a 'local://..' url.
+                +-->
+            <ant:xslt style="${basedir}/src/xsl/registry/service.wsdl.xsl"
+                  in="${wsdlDir}/${service.name}.wsdl"
+                  out="${wsdlDir}/${service.name}.tmp">
+                <outputproperty name="method" value="xml"/>
+                <outputproperty name="indent" value="yes"/>
+                <param name="service.name" expression="${service.name}"/>
+                <param name="service.href" expression="local://${service.name}"/>
+            </ant:xslt>
+            <ant:move overwrite="true" file="${wsdlDir}/${service.name}.tmp" toFile="${wsdlDir}/${service.name}.wsdl"/>
+            <!--+
+                | Create the registry entry that points to the service WSDL.
+                +-->
+            <ant:xslt style="${basedir}/src/xsl/registry/service.entry.xsl"
+                  in="${basedir}/src/config/registry/service.entry.xml"
+                  out="${org.astrogrid.registry.data}/${service.file}">
+                <outputproperty name="method" value="xml"/>
+                <outputproperty name="indent" value="yes"/>
+                <param name="service.authority" expression="${service.authority}"/>
+                <param name="service.resource"  expression="${service.resource}"/>
+                <param name="service.wsdl"      expression="file:///${wsdlDir}/${service.name}.wsdl"/>
+            </ant:xslt>
+            <!--+
+                | Add the config property reference.
+                +-->
+            <ant:propertyfile file="${maven.build.dir}/config/astrogrid.properties">
+                <entry
+                    key="${service.authority}/${service.resource}"
+                    value="file:///${org.astrogrid.registry.data}/${service.file}"/>
+            </ant:propertyfile>
+        </define:tag>
+    </define:taglib>
+
     <!-- ================ Component goals ================ -->
 
     <!--+
@@ -216,10 +280,36 @@
         <ant:echo message="JUnit fork VM - ${maven.junit.fork}"/>
         <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
         <!--+
-            | Deploy our services.
+            | Copy our config properties.
             +-->
-        <filestore:service.deploy service.name="FileStore"/>
         <ant:echo message=""/>
+        <ant:echo message="Copying config properties ..."/>
+        <ant:mkdir dir="${maven.build.dir}/config"/>
+        <ant:copy verbose="false" todir="${maven.build.dir}/config">
+            <ant:fileset dir="${basedir}/src/config">
+                <include name="astrogrid.properties"/>
+            </ant:fileset>
+        </ant:copy>
+        <!--+
+            | Deploy our service.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Deploying mock WebService ..."/>
+        <filestore:service.deploy
+        	service.name="FileStore"
+        	/>
+        <!--+
+            | Register our service.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Registering mock WebService ..."/>
+        <resolver:register.service.local
+            service.name="FileStore"
+            service.class="org.astrogrid.filestore.common.FileStore"
+            service.authority="org.astrogrid.test"
+            service.resource="filestore"
+            service.file="filestore.xml"
+            />
     </preGoal>
 
     <!--+

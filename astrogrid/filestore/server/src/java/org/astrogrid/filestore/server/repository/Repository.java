@@ -2,10 +2,16 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/Repository.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: Repository.java,v $
+ *   Revision 1.3  2004/07/23 09:11:16  dave
+ *   Merged development branch, dave-dev-200407221513, into HEAD
+ *
+ *   Revision 1.2.12.1  2004/07/23 02:10:58  dave
+ *   Added IvornFactory and IvornParser
+ *
  *   Revision 1.2  2004/07/14 13:50:29  dave
  *   Merged development branch, dave-dev-200406301228, into HEAD
  *
@@ -27,7 +33,7 @@ import org.astrogrid.filestore.common.file.FileProperty ;
 import org.astrogrid.filestore.common.file.FileProperties ;
 import org.astrogrid.filestore.common.exception.FileStoreException ;
 import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
-import org.astrogrid.filestore.common.exception.FileIdentifierException ;
+import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 import org.astrogrid.filestore.common.exception.FileStoreServiceException ;
 
 /**
@@ -50,24 +56,24 @@ public interface Repository
 	 * Locate an existing container.
 	 * @param ident The identifier of the container.
 	 * @return The file container, if it exists.
-	 * @throws FileIdentifierException if the identifier is null or not valid.
+	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
 	public RepositoryContainer load(String ident)
-		throws FileStoreServiceException, FileStoreNotFoundException, FileIdentifierException ;
+		throws FileStoreServiceException, FileStoreNotFoundException, FileStoreIdentifierException ;
 
 	/**
 	 * Duplicate (copy) an existing container.
 	 * @param ident The identifier of the container.
 	 * @return The new file container.
-	 * @throws FileIdentifierException if the identifier is null or not valid.
+	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
 	public RepositoryContainer duplicate(String ident)
-		throws FileStoreServiceException, FileStoreNotFoundException, FileIdentifierException ;
+		throws FileStoreServiceException, FileStoreNotFoundException, FileStoreIdentifierException ;
 
 	}

@@ -3,10 +3,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.3  2004/07/23 09:11:16  dave
+    |   Merged development branch, dave-dev-200407221513, into HEAD
+    |
+    |   Revision 1.2.12.2  2004/07/23 08:35:12  dave
+    |   Added properties for local registry (incomplete)
+    |
+    |   Revision 1.2.12.1  2004/07/23 02:10:58  dave
+    |   Added IvornFactory and IvornParser
+    |
     |   Revision 1.2  2004/07/14 13:50:29  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
     |
@@ -94,6 +103,98 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
+        <!--+
+            | The Registry common classes.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <jar.fileset>true</jar.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The Registry client components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-registry-client</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <jar.fileset>true</jar.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The JXpath library - required for Registry delegate.
+            +-->
+       <dependency>
+            <artifactId>commons-jxpath</artifactId>
+            <groupId>commons-jxpath</groupId>
+            <version>1.1</version>
+            <type>jar</type>
+            <url></url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The Jakarta Regexp library - required for Registry delegate.
+            +-->
+       <dependency>
+            <artifactId>jakarta-regexp</artifactId>
+            <groupId>jakarta-regexp</groupId>
+            <version>1.3</version>
+            <type>jar</type>
+            <url></url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The Castor XML library - required for Registry delegate.
+            +-->
+        <dependency>
+            <groupId>castor</groupId>
+            <artifactId>castor-xml</artifactId>
+            <version>0.9.5</version>
+            <jar>castor-0.9.5-xml.jar</jar>
+            <type>jar</type>
+            <url>http://www.castor.org/</url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The Xerces library that Castor relies on.
+            +-->
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xerces</artifactId>
+            <version>2.4.0</version>
+            <type>jar</type>
+            <url>http://xml.apache.org/</url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The XML library that Xerces relies on.
+            +-->
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.0.b2</version>
+            <type>jar</type>
+            <url>http://xml.apache.org/</url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
     </dependencies>
 
     <!--+
@@ -116,7 +217,7 @@
                 | Which tests to include.
                 +-->
             <includes>
-                <include>**/*TestCase.java</include>
+                <include>**/FileStoreEndpointResolverTestCase.java</include>
             </includes>
             <!--+
                 | The resources for our tests.
