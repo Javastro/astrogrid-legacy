@@ -524,7 +524,7 @@
 		<ag:GetDeploy name="jes"/>
 	</goal>
 	<goal name="applications-deploy" prereqs="tomcat-declare-tasks" >
-		<echo>note that applications takes its local config from ${work.dir}/cea/config/datacenter.properties</echo>
+		<echo>note that applications takes its local config from ${work.dir}/cea/config/CeaApplicationConfig.xml</echo>
 		<!-- note that this is not made a webapp for security reasons - also perhaps not all of the standard config is needed.... -->
 	   <copy file="webapps/astrogrid-configuration/AstroGridConfig.properties"
 		 tofile="${work.dir}/cea/config/astrogrid.properties" filtering="true" overwrite="true" />
@@ -533,7 +533,7 @@
 	   <copy file="${work.dir}/cea/config/CeaApplicationConfig.xml"
 		 tofile="${work.dir}/cea/config/CeaApplicationConfigProcessed.xml" filtering="true" overwrite="false" /> <!-- allow local template -->
 		 
-		<ag:GetDeploy name="applications"/>
+		<ag:GetDeploy name="cea-commandline"/>
 	</goal>
 	<goal name="registry-deploy" prereqs="tomcat-declare-tasks" >
 		<ag:GetDeploy name="registry" />
