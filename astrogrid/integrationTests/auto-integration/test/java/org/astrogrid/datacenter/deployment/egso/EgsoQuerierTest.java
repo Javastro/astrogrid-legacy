@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierTest.java,v 1.3 2004/10/07 10:48:20 mch Exp $
+/*$Id: EgsoQuerierTest.java,v 1.4 2004/10/11 15:37:25 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,7 +40,7 @@ public class EgsoQuerierTest extends TestCase {
    
     protected void setUp() throws Exception {
         super.setUp();
-         SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, EgsoQuerierPlugin.class.getName());
+         SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, EgsoQuerierPlugin.class.getName());
     }
    
    public void testAdql1() throws Exception {
@@ -97,6 +97,9 @@ public class EgsoQuerierTest extends TestCase {
 
 /*
  $Log: EgsoQuerierTest.java,v $
+ Revision 1.4  2004/10/11 15:37:25  mch
+ New plugin key constant
+
  Revision 1.3  2004/10/07 10:48:20  mch
  Fixes to EGSO tests
 

@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierTest.java,v 1.3 2004/10/07 10:48:20 mch Exp $
+/*$Id: VizierQuerierTest.java,v 1.4 2004/10/11 15:37:25 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,7 +70,7 @@ public class VizierQuerierTest extends DatacenterTestCase {
     */
 
     public void testDoQuery() throws Exception
-    {  SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY,
+    {  SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY,
           VizierQuerierPlugin.class.getName());
 
 //
@@ -126,7 +126,7 @@ public class VizierQuerierTest extends DatacenterTestCase {
     */
 
     public void testDoMetaDataQuery() throws Exception
-    {  SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY,
+    {  SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY,
           VizierQuerierPlugin.class.getName());
 
 //
@@ -172,6 +172,9 @@ public class VizierQuerierTest extends DatacenterTestCase {
 
 /*
 $Log: VizierQuerierTest.java,v $
+Revision 1.4  2004/10/11 15:37:25  mch
+New plugin key constant
+
 Revision 1.3  2004/10/07 10:48:20  mch
 Fixes to EGSO tests
 
