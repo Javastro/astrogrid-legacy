@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.14 2004/08/05 09:52:59 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.15 2004/08/05 10:56:56 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -134,7 +134,8 @@ public class StdSqlMaker  extends SqlMaker {
          return //sql + " AND "+
          "("+
             "(2 * ASIN( SQRT( "+
-               "POWER( SIN( ("+decColRad+"-"+dec.asRadians()+")/2 ) ,2) +"+
+                  //surround dec with extra brackets in order to cope with negative decs
+               "POWER( SIN( ("+decColRad+"-("+dec.asRadians()+") )/2 ) ,2) +"+
                   "COS("+dec.asRadians()+") * COS("+decColRad+") * "+
                   "POWER( SIN( ("+raColRad+"-"+ra.asRadians()+")/2 ), 2) "+
             "))) < "+radius.asRadians()+
@@ -390,6 +391,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.15  2004/08/05 10:56:56  mch
+Fix for negative dec
+
 Revision 1.14  2004/08/05 09:52:59  mch
 Removed aql073 and added 08
 
