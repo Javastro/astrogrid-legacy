@@ -1,5 +1,5 @@
 /*
- * $Id: FactoryProvider.java,v 1.1 2003/08/20 14:50:25 nw Exp $
+ * $Id: FactoryProvider.java,v 1.2 2003/08/21 12:27:03 nw Exp $
  * Created on 20-Aug-2003
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -46,15 +46,18 @@ public interface FactoryProvider {
      * @return the default query factory
      */
     public abstract QueryFactory getDefaultQueryFactory();
-    /** verify whether a particular query factory is present
-     * 
+    /** verify whether a query factory specific to a particular catalogue is present
+     * note that if it is not available, the default query factory will be used.
      * @param catalogName name of the catalog to check query factory for
      * @return true if the query factory for this catalog is present.
      */
-    public abstract boolean isQueryFactoryLoaded(String catalogName);
+    public abstract boolean isQueryFactoryAvailable(String catalogName);
 }
 /*
 $Log: FactoryProvider.java,v $
+Revision 1.2  2003/08/21 12:27:03  nw
+renamed a method to make it more meaningful
+
 Revision 1.1  2003/08/20 14:50:25  nw
 added interface to a factory management system
 
