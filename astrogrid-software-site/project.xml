@@ -47,6 +47,12 @@
     		<type>war</type>
     		<version>${astrogrid.aggregate.version}</version>
     	</dependency>    	    	    	
+    	<dependency>
+    		<artifactId>topcat</artifactId>
+    		<groupId>org.astrogrid</groupId>
+    		<type>war</type>
+    		<version>${astrogrid.aggregate.version}</version>
+    	</dependency>  
     </dependencies>
     <reports>
         <report>maven-license-plugin</report>
