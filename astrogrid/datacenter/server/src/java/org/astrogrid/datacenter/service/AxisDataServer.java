@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.21 2004/01/13 00:33:14 nw Exp $
+ * $Id: AxisDataServer.java,v 1.22 2004/01/14 17:41:18 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -36,8 +36,10 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * This class is the public web interface, called by Axis
- * when Axis receives the SOAP message from the client. It is a singleton
+ * The implementation of the Datacenter web service
+ * <p>
+ * When Axis receives a SOAP message from the client it is routed to this class for processing. 
+ * It is a singleton
  * - all state depends on the DataService instances, one of
  * which is created for each data query call.
  *<p>
