@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.4 2003/11/21 18:18:30 mch Exp $
+/*$Id: AllTests.java,v 1.5 2003/11/24 21:04:54 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.datacenter;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -34,7 +37,23 @@ public class AllTests {
         //suite.addTest(QueryTestSuite.suite());
         //$JUnit-END$
         // and add other suites too.
-         suite.addTest(org.astrogrid.datacenter.ClientTests.suite());
+            try {
+                Class c = Class.forName("org.astrogrid.datacenter.ClientTests");
+                Method m = c.getMethod("suite",new Class[]{});
+                m.invoke(null,null);
+            } catch (ClassNotFoundException e) {
+                // oh well, not on the classpath then.
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
         suite.addTest(org.astrogrid.datacenter.queriers.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.service.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.sql.AllTests.suite());
@@ -46,6 +65,10 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.5  2003/11/24 21:04:54  nw
+fixed test linking
+tidied up database connection JNDI lookup
+
 Revision 1.4  2003/11/21 18:18:30  mch
 Added client tests to server to get complete tests for server
 

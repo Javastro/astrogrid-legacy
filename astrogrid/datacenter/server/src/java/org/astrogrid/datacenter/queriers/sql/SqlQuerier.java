@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.2 2003/11/21 17:37:56 nw Exp $
+ * $Id: SqlQuerier.java,v 1.3 2003/11/24 21:04:54 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -49,8 +49,7 @@ public class SqlQuerier extends DatabaseQuerier
     protected static final Log log = LogFactory.getLog(SqlQuerier.class);
    /** connection to the database */
    protected Connection jdbcConnection;
-   /** configuration file key, that gives us the name of a datasource in JNDI to use for this database querier */
-   public static final String JNDI_DATASOURCE_KEY = "DatabaseQuerier.JndiDatasource";
+
    /** configuration file key, stores a JDBC connection URL for tis database querier */
    public static final String JDBC_URL_KEY = "DatabaseQuerier.JdbcUrl";
    /** configuration file key, stores the user id for the JDBC connection URL for this database querier */
@@ -83,6 +82,9 @@ public class SqlQuerier extends DatabaseQuerier
 
    }
 
+/** JNDI key where datasource is expected */
+public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource";
+
 /** @todo this rigmarole is gone through every time a DatabaseQuerier is created. Factor out into a factory for efficiency.
  * @todo introduce a jdbc connection pool - new connection is currently made for each database querier. then discarded after a single query.
  * @return
@@ -92,92 +94,75 @@ protected Connection createConnection() throws DatabaseAccessException {
     log.debug("Creating Connection");
       String userId = SimpleConfig.getProperty(USER_KEY);
       String password = SimpleConfig.getProperty(PASSWORD_KEY);
-    
-      // look for jndi link to datasource,
-      String jndiDataSourceName = SimpleConfig.getProperty(JNDI_DATASOURCE_KEY);
-      if ( jndiDataSourceName != null)
-      {
-         try
-         {
+    Connection conn = null;
+    conn = createConnectionFromJNDI(userId,password);
+    if (conn == null) {
+        conn = createConnectionFromProperties(userId,password);
+    } 
+    if (conn == null) {
+           throw new DatabaseAccessException("No information on how to connect to JDBC - no '"+JNDI_DATASOURCE+"' defined in JNDI or '"+JDBC_URL_KEY+"' key in configuration file");
+    }
+    return conn;
+}
+  
+    protected Connection createConnectionFromJNDI(String userId,String password) throws DatabaseAccessException  {  
             log.debug("Looking for datasource in JNDI");
-            DataSource ds = (DataSource)new InitialContext().lookup(jndiDataSourceName);
-    
-            //connect (using user/password if given)
-            if (userId != null)
-            {
-               return ds.getConnection(userId, password);
+            try {            
+            Object o = new InitialContext().lookup(JNDI_DATASOURCE);
+            if (o == null || ! (o instanceof DataSource)) {
+                return null;
             }
-            else
-            {
+            DataSource ds = (DataSource)o;   
+            //connect (using user/password if given)
+            if (userId != null) {
+               return ds.getConnection(userId, password);
+            } else {
                return ds.getConnection();
             }
+            } catch (NamingException e) {
+                log.info("Failed to retreive datasource from jndi",e);
+                return null;
+            } catch (SQLException e) {
+                throw new DatabaseAccessException("Failed to connect to database via JNDI datasource");
+            }
          }
-         catch (NamingException ne)
-         {
-             log.error("Encountered naming exception",ne);
-            throw new DatabaseAccessException(ne,"Failed to lookup datasource for '"+jndiDataSourceName+"'" + ne.getMessage());
-         }
-         catch (SQLException ne)
-         {
-            log.error("Failed to connect to datasrouce",ne);
-            throw new DatabaseAccessException(ne,"Failed to connect to datasource '"+jndiDataSourceName+"'" + ne.getMessage());
-         }
-      }
-      else
-      {
+
+
+    protected Connection createConnectionFromProperties(String userId,String password) throws DatabaseAccessException {
           log.debug("Looking in configuration");
-         // failing that, look for a URL in configuration
+
          String jdbcURL = SimpleConfig.getProperty(JDBC_URL_KEY);
-         if ( jdbcURL != null)
-         {
+         if ( jdbcURL == null || jdbcURL.length() == 0)  {
+             return null;
+         }
+
             //get connection properties, which needs to be provided as a Properties class, from the
             //configuration file.  These will be stored as a set of keys within another key...
             String connectionPropertyValue = SimpleConfig.getProperty(JDBC_CONNECTION_PROPERTIES_KEY, null);
-            if (connectionPropertyValue != null)
-            {
-               try
-               {
+            if (connectionPropertyValue != null) {
+               try  {
                   Properties connectionProperties = new Properties();
                   connectionProperties.load(new ByteArrayInputStream(connectionPropertyValue.getBytes()));
                   return DriverManager.getConnection(jdbcURL,connectionProperties);
-               }
-               catch (IOException ioe)
-               {
+               } catch (IOException ioe) {
                    log.error("Failed to load connection properties",ioe);
                   throw new DatabaseAccessException(ioe,"Failed to load connection properties from key '"+JDBC_CONNECTION_PROPERTIES_KEY+"'");
-               }
-               catch (SQLException se)
-               {
+               }  catch (SQLException se)  {
                    log.error("Failed to connect to db",se);
                   throw new DatabaseAccessException(se,"Failed to connect to '"+jdbcURL+"'");
                }
-            }
-            else
-            {
-               try
-               {
+            } else   {
+               try  {
                   //if a user/password are set, use that
-                  if (userId != null)
-                  {
+                  if (userId != null) {
                      return DriverManager.getConnection(jdbcURL,userId, password);
-                  }
-                  else
-                  {
+                  } else  {
                      return DriverManager.getConnection(jdbcURL);
                   }
-               }
-               catch (SQLException se)
-               {
+               }  catch (SQLException se)   {
                   throw new DatabaseAccessException(se,"Failed to connect to '"+jdbcURL+"'");
                }
-            }
-    
-         }
-         else
-         {
-            throw new DatabaseAccessException("No information on how to connect to JDBC - no '"+JNDI_DATASOURCE_KEY+"' or '"+JDBC_URL_KEY+"' keys in configuration file");
-         }
-      }
+            }        
 }
 
    /**
