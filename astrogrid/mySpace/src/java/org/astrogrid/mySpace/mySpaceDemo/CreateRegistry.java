@@ -1,11 +1,13 @@
 import java.io.*;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 import org.astrogrid.mySpace.mySpaceManager.*;
 
 /**
- * Create example mySpace registry file.
+ * Program to create a new MySpace registry.  The registry is
+ * initialised with top-level user containers and second-level
+ * containers for all the servers which each user can access.
+ * The full names for these containers are read from a file.
  *
  * @author A C Davenhall (Edinburgh)
  * @version Iteration 2.
@@ -13,73 +15,90 @@ import org.astrogrid.mySpace.mySpaceManager.*;
 
 class CreateRegistry
 {  public static void main (String argv[])
-   {  Date creation = new Date();
-        creation = Calendar.getInstance().getTime();
+   {  if (argv.length == 1)
+      {  String registryName = argv[0];
 
-      DataItemRecord itemRec0 = new DataItemRecord("/ktn",
-        1, "f1", "ktn", creation, creation, 99999, DataItemRecord.CON,
-        "permissions");
+         String registryFileName = registryName + ".reg";
+         String registryInitialName = registryName + ".initial";
 
-      DataItemRecord itemRec1 = new DataItemRecord("/ktn/con1",
-        2, "f2", "ktn", creation, creation, 99999, DataItemRecord.CON,
-        "permissions");
+//
+//      Attempt to open the input file from which the initial list
+//      of top- and second-level containers are to be read.
 
-      DataItemRecord itemRec2 = new DataItemRecord("/ktn/con1/table1",
-        3, "f3", "ktn", creation, creation, 99999, DataItemRecord.VOT,
-        "permissions");
+         try
+         {  File registryInitialFile = new File(registryInitialName);
+            FileReader in = new FileReader(registryInitialFile);
+            char c[] = new char[(int)registryInitialFile.length()];
+            in.read(c);
+            String s = new String(c);
 
-      DataItemRecord itemRec3 = new DataItemRecord("/ktn/con1/table2",
-        4, "f4", "ktn", creation, creation, 99999, DataItemRecord.VOT,
-        "permissions");
+//
+//         Convert the input file into a vector of individual lines.
 
-      DataItemRecord itemRec4 = new DataItemRecord("/ktn/con2",
-        5, "f5", "ktn", creation, creation, 99999, DataItemRecord.CON,
-        "permissions");
+            Vector inputLines = new Vector();
 
-      DataItemRecord itemRec5 = new DataItemRecord("/ktn/con2/table3",
-        6, "f6", "ktn", creation, creation, 99999, DataItemRecord.VOT,
-        "permissions");
+            StringTokenizer token = new StringTokenizer(s, "\n");
 
+            while(token.hasMoreTokens())
+            {  inputLines.add(token.nextToken());
+            }
 
-      DataItemRecord itemRec6 = new DataItemRecord("/clq",
-        7, "f7", "clq", creation, creation, 99999, DataItemRecord.CON,
-        "permissions");
+//
+//         Create a registry manager to which the new entries will be
+//         written.
 
-      DataItemRecord itemRec7 = new DataItemRecord("/clq/con1",
-        8, "f8", "clq", creation, creation, 99999, DataItemRecord.CON,
-        "permissions");
+            RegistryManager reg = new RegistryManager("example", "new");
 
-      DataItemRecord itemRec8 = new DataItemRecord("/clq/con1/table1",
-        9, "f9", "ktn", creation, creation, 99999, DataItemRecord.VOT,
-        "permissions");
+            DataItemRecord itemRec = new DataItemRecord();
 
+            Date creation = new Date();
+            creation = Calendar.getInstance().getTime();
 
-      DataItemRecord itemRec9 = new DataItemRecord("/acd",
-        10, "f10", "acd", creation, creation, 99999, DataItemRecord.CON,
-        "permissions");
+//
+//         Loop through the lines read from the input file creating an
+//         entry in the registry for each one.
 
-      DataItemRecord itemRec10 = new DataItemRecord("/acd/table1",
-        11, "f11", "acd", creation, creation, 99999, DataItemRecord.VOT,
-        "permissions");
+            for (int loop = 0; loop < inputLines.size(); loop++)
+            {
 
+//
+//            Create an entry for the current entry.
 
+               String containerName = (String)inputLines.get(loop);
+               System.out.println("loop, containerName: "
+                 + loop + " " + containerName);
 
+               itemRec = new DataItemRecord(containerName,
+                 loop+1, "none", "sysadmin", creation, creation, 0,
+                 DataItemRecord.CON, "permissions");
 
-      RegistryManager reg = new RegistryManager("example", "new");
+//
+//            Add the entry to the registry.
 
-      reg.addDataItemRecord(itemRec8);
-      reg.addDataItemRecord(itemRec7);
-      reg.addDataItemRecord(itemRec6);
-      reg.addDataItemRecord(itemRec5);
-      reg.addDataItemRecord(itemRec4);
-      reg.addDataItemRecord(itemRec3);
-      reg.addDataItemRecord(itemRec2);
-      reg.addDataItemRecord(itemRec1);
-      reg.addDataItemRecord(itemRec0);
+               reg.addDataItemRecord(itemRec);
+            }
 
-//      reg.addDataItemRecord(itemRec9);
-//      reg.addDataItemRecord(itemRec10);
+//
+//         Finalize the registry in order to write it to disk.
 
-      reg.finalize();
+            reg.finalize();
+
+//
+//         Close the input file.
+
+            in.close();
+         }
+         catch (java.io.IOException ex)
+         {  System.out.println(
+              "Failed to read registry initialisation file " +
+              registryInitialName);
+
+            ex.printStackTrace();
+         }
+      }
+      else
+      {  System.out.println("Usage:-");
+         System.out.println("  java CreateRegistry registryName");
+      }
    }
 }

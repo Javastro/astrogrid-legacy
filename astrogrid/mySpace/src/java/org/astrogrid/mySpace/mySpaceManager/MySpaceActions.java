@@ -12,8 +12,6 @@ import org.astrogrid.mySpace.mySpaceStatus.*;
 
 public class MySpaceActions
 {  private static String registryName;
-   private RegistryManager reg = new RegistryManager();
-                                    // MySpace registry for this mySpace.
 
 //
 // Constructor.
@@ -46,7 +44,7 @@ public class MySpaceActions
 //
 //   Attempt to open the registry and proceed if ok.
 
-      reg = new RegistryManager(registryName);
+      RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
@@ -125,10 +123,43 @@ public class MySpaceActions
 //
 //   Attempt to open the registry and proceed if ok.
 
-      reg = new RegistryManager(registryName);
+      RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
+
+//
+//  -- debug --------------------------------------------------
+//
+//      print out details of registry config. file.
+
+         int expiryPeriod = reg.getExpiryPeriod();
+         System.out.println("Expiry period (days): " + expiryPeriod);
+
+         Vector serverNames = reg.getServerNames();
+
+         if (serverNames != null)
+         {  int numServers = serverNames.size();
+
+            String serverName;
+            String serverURI;
+
+            for (int loop=0; loop < numServers; loop++)
+            {  serverName = (String)serverNames.get(loop);
+               serverURI = reg.getServerURI(serverName);
+
+               System.out.println("Server " + loop + " is called "
+                 + serverName + " at " + serverURI);
+            }
+         }
+         else
+         {  System.out.println("No servers specified.");
+         }
+
+//  -- end debug ----------------------------------------------
+
+
+
 
 //
 //      Assemble the UserAccount from the UserID and CommunityID.
@@ -220,7 +251,7 @@ public class MySpaceActions
 //
 //   Attempt to open the registry and proceed if ok.
 
-      reg = new RegistryManager(registryName);
+//      reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
@@ -259,7 +290,9 @@ public class MySpaceActions
 
                   if(this.checkCanBeCreated(newDataItemName, userAcc, jobID)
                     == true)
-                  { 
+                  {
+
+                     RegistryManager reg = new RegistryManager(registryName);
 
 //
 //                  Create a DataItemRecord for the new DataHolder.
@@ -322,6 +355,7 @@ public class MySpaceActions
                      {  status.addCode("MS-E-FCRTDHR",
                           MySpaceStatusCode.ERROR);
                      }
+                     reg.finalize();
                   }
                }
                else
@@ -335,7 +369,7 @@ public class MySpaceActions
 //
 //   Re-write the registry.
 
-      reg.finalize();
+//      reg.finalize();
 
       return returnedDataItem;
    }
@@ -359,7 +393,7 @@ public class MySpaceActions
 //
 //   Attempt to open the registry and proceed if ok.
 
-      reg = new RegistryManager(registryName);
+//      reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
@@ -400,6 +434,8 @@ public class MySpaceActions
                     == true)
                   { 
 
+                     RegistryManager reg = new RegistryManager(registryName);
+
 //
 //                  Create a DataItemRecord for the new DataHolder.
 
@@ -435,6 +471,7 @@ public class MySpaceActions
                      {  status.addCode("MS-E-FLMOVDH",
                           MySpaceStatusCode.ERROR);
                      }
+                     reg.finalize();
                   }
                }
                else
@@ -448,7 +485,7 @@ public class MySpaceActions
 //
 //   Re-write the registry.
 
-      reg.finalize();
+//      reg.finalize();
 
       return returnedDataItem;
    }
@@ -473,7 +510,7 @@ public class MySpaceActions
 //
 //   Attempt to open the registry and proceed if ok.
 
-      reg = new RegistryManager(registryName);
+//      reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
@@ -496,6 +533,7 @@ public class MySpaceActions
               == true)
             {
 
+               RegistryManager reg = new RegistryManager(registryName);
 //
 //            Create a DataItemRecord for the container.
 
@@ -517,6 +555,7 @@ public class MySpaceActions
 //
 //            Attempt to add this entry to the registry.
 
+
                if (reg.addDataItemRecord(newDataItem) )
                {  newDataHolder = newDataItem;
                }
@@ -524,6 +563,7 @@ public class MySpaceActions
                {  status.addCode("MS-E-FCRTDHR",
                     MySpaceStatusCode.ERROR);
                }
+               reg.finalize();
             }
          }
       }
@@ -531,7 +571,7 @@ public class MySpaceActions
 //
 //   Re-write the registry.
 
-      reg.finalize();
+//      reg.finalize();
 
       return newDataHolder;
    }
@@ -551,7 +591,7 @@ public class MySpaceActions
 //
 //   Attempt to open the registry and proceed if ok.
 
-      reg = new RegistryManager(registryName);
+//      reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
@@ -600,8 +640,32 @@ public class MySpaceActions
 //                  Assemble the URI for the DataHolder from the
 //                  server URI and the file name of the DataHolder.
 
+                     String dataItemName = dataItem.getDataItemName();
+
+                     int containSepPos1 = dataItemName.indexOf("/");
+                     int containSepPos2 =
+                       dataItemName.indexOf("/", containSepPos1+1);
+                     int containSepPos3 =
+                       dataItemName.indexOf("/", containSepPos2+1);
+
+                     String serverURI;
+
+                     if (containSepPos3 > 0)
+                     {  String serverName =
+                          dataItemName.substring
+                            (containSepPos2+1, containSepPos3);
+
+                        RegistryManager reg =
+                          new RegistryManager(registryName);
+                        serverURI = reg.getServerURI(serverName);
+                        reg.finalize();
+                     }
+                     else
+                     {  serverURI = "bad_URI/";
+                     }
+
                      dataHolderURI =
-                       reg.getServerURI() + dataItem.getDataItemFile();
+                       serverURI + dataItem.getDataItemFile();
                   }
                   else
                   {  status.addCode("MS-E-FACCSDH",
@@ -623,7 +687,7 @@ public class MySpaceActions
 //
 //   Re-write the registry.
 
-      reg.finalize();
+//      reg.finalize();
 
       return dataHolderURI;
    }
@@ -644,7 +708,7 @@ public class MySpaceActions
 //
 //   Attempt to open the registry and proceed if ok.
 
-      reg = new RegistryManager(registryName);
+//      reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
@@ -667,6 +731,7 @@ public class MySpaceActions
               == true)
             {
 
+               RegistryManager reg = new RegistryManager(registryName);
 //
 //            Create a DataItemRecord for the container.
 
@@ -696,6 +761,7 @@ public class MySpaceActions
                {  status.addCode("MS-E-FLCRTCN",
                     MySpaceStatusCode.ERROR);
                }
+               reg.finalize();
             }
          }
       }
@@ -703,7 +769,7 @@ public class MySpaceActions
 //
 //   Re-write the registry.
 
-      reg.finalize();
+//      reg.finalize();
 
       return newContainer;
    }
@@ -721,7 +787,7 @@ public class MySpaceActions
 //
 //   Attempt to open the registry and proceed if ok.
 
-      reg = new RegistryManager(registryName);
+//      reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
@@ -798,7 +864,11 @@ public class MySpaceActions
 //                     Delete the entry for the DataHolder in the registry,
 //                     to bring the registry into line with reality.
 
+                        RegistryManager reg =
+                          new RegistryManager(registryName);
                         reg.deleteDataItemRecord(dataItemID);
+                        reg.finalize();
+
 //
 //                     Set the return status to success.
 
@@ -825,7 +895,7 @@ public class MySpaceActions
 //
 //   Re-write the registry.
 
-      reg.finalize();
+//      reg.finalize();
 
       return returnStatus;
    }
@@ -849,6 +919,9 @@ public class MySpaceActions
  * </p>
  * <ul>
  *  <li> that the DataHolder or container does not already exist,
+ *  <li> that the item is at least three levels deep in the container
+ *    hierarchy; ie. that an attempt is not being made to create a
+ *    top-level user container or a second-level server container.
  *  <li> that the parent container exists,
  *  <li> that the user is allowed to write to the parent.
  * </ul>
@@ -879,38 +952,73 @@ public class MySpaceActions
       {
 
 //
-//      Check that the user is permitted to create the output
-//      DataHolder:
-//        obtain the name of its parent container,
-//        check that this container exists,
-//        check that the user is allowed to write to this container.
+//      Check that the container hierarchy is at least three levels
+//      deep; ie. that an attempt is not being made to create a
+//      top-level user container or a second-level server container.
 
-         String parentContainer = newDataItemName.substring
-             (0, newDataItemName.lastIndexOf("/") );
-         Vector parentDataItemVector = 
-           this.lookupDataHoldersDetails(userID, communityID,
-           jobID, parentContainer);
+         int containSepPos1 = newDataItemName.indexOf("/");
+         int containSepPos2 = newDataItemName.indexOf("/", containSepPos1+1);
+         int containSepPos3 = newDataItemName.indexOf("/", containSepPos2+1);
 
-         if (parentDataItemVector != null)
-         {  DataItemRecord parentDataItem =
-              (DataItemRecord)parentDataItemVector.firstElement();
+         if (containSepPos3 > 0)
+         {
 
-            String permissions;
-            permissions = parentDataItem.getPermissionsMask();
-            String ownerID;
-            ownerID = parentDataItem.getOwnerID();
+//
+//         Check that the server name is valid.
 
-            if (userAcc.checkAuthorisation(UserAccount.WRITE, ownerID,
-              permissions))
-            {  canBeCreated = true;
+            String serverName = 
+              newDataItemName.substring(containSepPos2+1, containSepPos3);
+
+            System.out.println("serverName: " + serverName);
+
+            RegistryManager reg = new RegistryManager(registryName);
+            if(reg.isServerName(serverName))
+            {
+
+//
+//            Check that the user is permitted to create the output
+//            DataHolder:
+//              obtain the name of its parent container,
+//              check that this container exists,
+//              check that the user is allowed to write to this container.
+
+               String parentContainer = newDataItemName.substring
+                 (0, newDataItemName.lastIndexOf("/") );
+               Vector parentDataItemVector = 
+                 this.lookupDataHoldersDetails(userID, communityID,
+                 jobID, parentContainer);
+
+               if (parentDataItemVector != null)
+               {  DataItemRecord parentDataItem =
+                    (DataItemRecord)parentDataItemVector.firstElement();
+
+                  String permissions;
+                  permissions = parentDataItem.getPermissionsMask();
+                  String ownerID;
+                  ownerID = parentDataItem.getOwnerID();
+
+                  if (userAcc.checkAuthorisation(UserAccount.WRITE,
+                    ownerID, permissions))
+                  {  canBeCreated = true;
+                  }
+                  else
+                  {  status.addCode("MS-E-NPRWPCN",
+                        MySpaceStatusCode.ERROR);
+                  }
+               }
+               else
+               {  status.addCode("MS-E-PCNNTEX",
+                    MySpaceStatusCode.ERROR);
+               }
             }
             else
-            {  status.addCode("MS-E-NPRWPCN",
-                  MySpaceStatusCode.ERROR);
+            {  status.addCode("MS-E-SRVINVN",
+                 MySpaceStatusCode.ERROR);
             }
+            reg.finalize();
          }
          else
-         {  status.addCode("MS-E-PCNNTEX",
+         {  status.addCode("MS-E-ILLSRCN",
               MySpaceStatusCode.ERROR);
          }
       }
@@ -921,5 +1029,3 @@ public class MySpaceActions
       return canBeCreated;
    }
 }
-
-

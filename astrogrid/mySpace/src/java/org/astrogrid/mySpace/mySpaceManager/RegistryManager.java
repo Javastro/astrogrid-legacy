@@ -51,12 +51,18 @@ public class RegistryManager
                            // Name of the registry.
    private String registryFileName;
                            // Name of the file holding the registry.
+   private String registryConfigFileName;
+                           // Name of the registry configuration file.
    private int dataItemIDSeqNo;
                            // Sequence number for new dataItems.
-   private int expiryPeriod = 30;
+
+   private int expiryPeriod = -1;
                            // Expiry period for the registry (days).
-   private String serverURI = "http://www.blue.nowhere.org/";
-                           // Base URI for the server.
+
+   private Vector serverNames = new Vector();
+                     // Names of the servers known to this MySpace registry.
+   private Vector serverURIs = new Vector();
+                     // URIs of the servers known to this MySpace registry.
 
 //
 // Constructors.
@@ -73,7 +79,8 @@ public class RegistryManager
 //
 //   Attempt to read the registry configuration file.
 
-//    TBD.
+      registryConfigFileName = registryName + ".config";
+      this.readConfigFile(registryConfigFileName);
 
 //
 //   Attempt to read the user details file for the registry.
@@ -84,7 +91,7 @@ public class RegistryManager
 //   Attempt to read the file containing the MySpace registry.
 
       registryFileName = registryName + ".reg";
-      this.ReadRegistryFile(registryFileName);
+      this.readRegistryFile(registryFileName);
    }
 
 /**
@@ -100,7 +107,8 @@ public class RegistryManager
 //
 //   Attempt to read the registry configuration file.
 
-//    TBD.
+      registryConfigFileName = registryName + ".config";
+      this.readConfigFile(registryConfigFileName);
 
 //
 //   Attempt to read the user details file for the registry.
@@ -174,7 +182,7 @@ public class RegistryManager
   * Read an existing Registry file.
   */
 
-   private void ReadRegistryFile(String registryFileName)
+   private void readRegistryFile(String registryFileName)
    {
 
 //
@@ -193,6 +201,8 @@ public class RegistryManager
          int count = 0;
          dataItemIDSeqNo = 0;
 
+         System.out.println(" ");
+
          while (more == true)
          {  try
             {  DataItemRecord itemRec = (DataItemRecord)ois.readObject();
@@ -204,6 +214,10 @@ public class RegistryManager
 
                String key = "" + itemRec.getDataItemID();
                dataItemRecordHashMap.put(key, itemRec);
+
+               System.out.println("dataItemID, dataItemIDSeqNo: "
+                 + itemRec.getDataItemID() + " " + dataItemIDSeqNo);
+
                if (itemRec.getDataItemID() > dataItemIDSeqNo)
                {  dataItemIDSeqNo = itemRec.getDataItemID();
                }
@@ -232,29 +246,231 @@ public class RegistryManager
    }
 
 /**
-  * Return the expiry period of the registry (in days).
+  * Read the Registry configuration file.
   */
 
-  public int getExpiryPeriod()
-  {  return expiryPeriod;
-  }
+   private void readConfigFile(String configFileName)
+   {
+
+//
+//   Try to read the file
+
+      try
+      {  File configFile = new File(configFileName);
+         FileReader in = new FileReader(configFile);
+         char c[] = new char[(int)configFile.length()];
+         in.read(c);
+         String s = new String(c);
+
+//
+//      Convert the input file into a vector of individual lines.
+
+         Vector inputLines = new Vector();
+
+         StringTokenizer token = new StringTokenizer(s, "\n");
+
+         while(token.hasMoreTokens())
+         {  inputLines.add(token.nextToken());
+         }
+
+//
+//      Examine every line, decoding the details of the registry
+//      configuration.
+
+         String currentLine = "";
+         int lineCount = 0;
+         int numServers = 0;
+
+         expiryPeriod = -1;
+
+         Iterator iter = inputLines.iterator();
+         while(iter.hasNext())
+         {  lineCount = lineCount + 1;
+
+            currentLine = (String)iter.next();
+
+//            System.out.println("processing line " + lineCount 
+//              + ": " + currentLine);
+
+//
+//         Remove any comments.  Remember that comments start with a
+//         '#' character.
+
+            int commentPos = currentLine.indexOf("#");
+            if (commentPos > 0)
+            {  currentLine = currentLine.substring(0, commentPos-1);
+            }
+
+//
+//         Split the remaining line into a series of elements (or
+//         'tokens') separated by blanks.  Proceed if there are any
+//         such elements.
+
+            StringTokenizer currentLineToken =
+              new StringTokenizer(currentLine);
+
+            int    currentElementCount = -1;
+            Vector currentElements = new Vector();
+
+            while(currentLineToken.hasMoreTokens())
+            {  currentElementCount = currentElementCount + 1;
+
+               String currentElem = currentLineToken.nextToken();
+//               System.out.println(currentElem);
+
+               currentElements.add(
+                 currentElementCount, currentElem);
+            }
+
+            int numElements = currentElements.size();
+
+            if (numElements > 0)
+            {
+
+//
+//            Check if the first element corresponds to an expiry
+//            date.
+
+               if (((String)currentElements.get(0)).equals("expiryperiod"))
+               {  if (numElements > 0)
+                  {  Integer expiryBuffer = new
+                       Integer((String)currentElements.get(1));
+                     int expiryTemp = expiryBuffer.intValue();
+
+                     if (expiryTemp > 0)
+                     {  expiryPeriod = expiryTemp;
+                     }
+                     else
+                     {  MySpaceStatus status  =
+                          new MySpaceStatus("MS-W-RGCEXPM",
+                          MySpaceStatusCode.WARN);
+                     }
+                  }
+                  else
+                  {  MySpaceStatus status  =
+                       new MySpaceStatus("MS-W-RGCEXPM",
+                       MySpaceStatusCode.WARN);
+                  }
+               }
+
+//
+//            Check if the first element corresponds to a server.
+
+               if (((String)currentElements.get(0)).equals("server"))
+               {  if (numElements > 2)
+                  {  String currentServer = (String)currentElements.get(1);
+                     String currentURI = (String)currentElements.get(2);
+
+                     numServers = numServers + 1;
+
+                     serverNames.add(currentServer);
+                     serverURIs.add(currentURI);
+                  }
+                  else
+                  {  MySpaceStatus status  =
+                       new MySpaceStatus("MS-W-RGCSRVI",
+                       MySpaceStatusCode.WARN);
+                  }
+               }
+            }
+         }
+
+//
+//      Check that an expiry period has been set and if not issue a
+//      warning.
+
+         if (expiryPeriod < 1)
+         {  expiryPeriod = 30;
+
+            MySpaceStatus status  =
+              new MySpaceStatus("MS-W-RGCEXPM",
+              MySpaceStatusCode.WARN);
+         }
+
+//
+//      Check that at least one server has been specified, and if not
+//      report an error.
+
+         if (serverNames.size() < 1)
+         {  MySpaceStatus status  =
+              new MySpaceStatus("MS-E-RGCSRVM",
+              MySpaceStatusCode.ERROR);
+         }
+
+         in.close();
+      }
+      catch (java.io.IOException ex)
+      {  MySpaceStatus status = new MySpaceStatus("MS-E-RGCSRVM",
+           MySpaceStatusCode.ERROR);
+
+//         System.out.println("Cannot read input file.");
+//         ex.printStackTrace();
+      }
+   }
 
 /**
-  * Return the base URI for the server.
-  */
+ * Return the expiry period of the registry (in days).
+ */
 
-  public String getServerURI()
-  {  return serverURI;
-  }
+   public int getExpiryPeriod()
+   {  return expiryPeriod;
+   }
+
+/**
+ * Return the Vector of server names.
+ */
+
+   public Vector getServerNames()
+   {  return serverNames;
+   }
+
+/**
+ * Check whether a given name is the name of a server.  A value of
+ * true is returned if the name is valid; otherwise false is returned.
+ */
+
+   public boolean isServerName(String serverName)
+   {  boolean isName;
+
+      int serverIndex = serverNames.indexOf(serverName);
+
+      if (serverIndex > -1)
+      {  isName = true;
+      }
+      else
+      {  isName = false;
+      }
+
+      return isName;
+   }
+
+/**
+ * Return the base URI for a given server.
+ */
+
+   public String getServerURI(String serverName)
+   {  String serverURI;
+
+      int serverIndex = serverNames.indexOf(serverName);
+
+      if (serverIndex > -1)
+      {  serverURI = (String)serverURIs.get(serverIndex);
+      }
+      else
+      {  serverURI = null;
+      }
+
+      return serverURI;
+   }
 
 /**
   * Return the sequence number to be used for a new DataItemRecord.
   */
 
-  public int getNextDataItemID()
-  {  dataItemIDSeqNo = dataItemIDSeqNo + 1;
-     return dataItemIDSeqNo;
-  }
+   public int getNextDataItemID()
+   {  dataItemIDSeqNo = dataItemIDSeqNo + 1;
+      return dataItemIDSeqNo;
+   }
 
 
 /**
@@ -284,6 +500,9 @@ public class RegistryManager
          status = true;
       }
 
+      System.out.println("Status from addDataItemRecord: "
+        + status + "  key = " + key);
+
       return status;
    }
 
@@ -307,8 +526,11 @@ public class RegistryManager
 
       boolean status;
 
+      System.out.println("key to be removed: " + key);
+
       if (dataItemRecordHashMap.containsKey(key))
       {  dataItemRecordHashMap.remove(key);
+         System.out.println(" ... key removed.");
          status = true;
       }
       else
@@ -445,3 +667,4 @@ public class RegistryManager
       return returnItemRecords;
    }
 }
+
