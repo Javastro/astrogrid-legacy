@@ -2,14 +2,15 @@
 <DatacenterMetadata version="0.1">
 
    <Publisher>JBO</Publisher>
+            <Contact>
+                <Name>A.M.S. Richards</Name>
+                <Email>amsr@jb.man.ac.uk</Email>
+            </Contact>
    <Contact>
       <Name>Noel Winstanley</Name>
       <email>nw@jb.man.ac.uk</email>
    </Contact>
-   <Contact>
-      <Name>Simon Garrington</Name>
-      <email>stg@jb.man.ac.uk</email>
-   </Contact>
+
 <table name="merlinCatalog">
 <description>
   This database contains a log of MERLIN archive data since 1992 which have been
