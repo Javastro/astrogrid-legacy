@@ -31,7 +31,7 @@ import org.astrogrid.workflow.design.Step;
  * @see     
  * @since   AstroGrid 1.3
  */
-public class ActivityContainer extends Activity {
+public abstract class ActivityContainer extends Activity {
     
     private LinkedList
         children = new LinkedList() ;
