@@ -44,6 +44,8 @@
         <developerConnection>
             scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry
         </developerConnection>
+                <url> http://www.astrogrid.org/viewcvs/astrogrid/registry/ 
+            </url>
     </repository>
 
     <!--+
