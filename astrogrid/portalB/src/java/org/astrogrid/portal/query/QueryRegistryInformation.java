@@ -21,11 +21,11 @@ public class QueryRegistryInformation {
 
 	public static String getAllDataSetInformationFromRegistry() {
 		//the thing about this string it is always going to be the same.
-		return 	"<query><selectionSequence>" +				"<selection item='searchElements' itemOp='EQ' value='all'/>" +				"<selectionOp op='$and$'/>" +				"<selection item='ticker' itemOp='EQ' value='all'/>" +				"</selectionSequence></query>";
+		return 	"<query><selectionSequence>" +				"<selection item='searchElements' itemOp='EQ' value='all'/>" +				"<selectionOp op='$and$'/>" +				"<selection item='shortName' itemOp='EQ' value='all'/>" +				"</selectionSequence></query>";
 	}
 
 	public static String getAllContentInformationFromRegistryForDataSet(String dsName) {
-		return 	"<query><selectionSequence>" +				"<selection item='searchElements' itemOp='EQ' value='content'/>" +				"<selectionOp op='$and$'/>" +				"<selection item='ticker' itemOp='EQ' value='" + dsName + "'/>" +				"</selectionSequence></query>"; 
+		return 	"<query><selectionSequence>" +				"<selection item='searchElements' itemOp='EQ' value='content'/>" +				"<selectionOp op='$and$'/>" +				"<selection item='shortName' itemOp='EQ' value='" + dsName + "'/>" +				"</selectionSequence></query>";
 	}
 
 	public static Object[] getDataSetItemsFromRegistryResponse(String response) {
@@ -33,7 +33,7 @@ public class QueryRegistryInformation {
 		ArrayList items = new ArrayList();
 		int start = 0,end = 0;
 		String temp = "";
-		while( (end = response.indexOf("item='ticker'",end)) != -1) {
+		while( (end = response.indexOf("item='shortName'",end)) != -1) {
 			start = response.indexOf("value=",end) + 7;
 			end = response.indexOf("'",start+1);
 			if(end <= 0) { end = response.indexOf("\"",start+1); }
