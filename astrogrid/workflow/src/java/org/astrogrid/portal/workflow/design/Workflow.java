@@ -15,7 +15,6 @@ import java.util.HashMap ;
 //import java.util.ListIterator;
 import java.util.Map ;
 import java.util.Collections ;
-import java.util.Vector ;
 import java.util.Iterator ;
 import java.util.ArrayList ;
 import java.text.MessageFormat ;
@@ -33,7 +32,8 @@ import org.astrogrid.community.common.util.CommunityMessage ;
 //import org.astrogrid.AstroGridException ;
 import org.astrogrid.jes.delegate.jobController.*;
 
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
+import org.astrogrid.mySpace.delegate.MySpaceClient;
+import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.design.activity.*;
 import org.w3c.dom.Document ;
@@ -163,8 +163,8 @@ public class Workflow extends Activity {
     private static final String
         ASTROGRIDERROR_SOMEMESSAGE = "AGWKFE00050" ; // none so far 
         
-    private MySpaceManagerDelegate
-        mySpace ;
+   // private MySpaceClient //@TODO check this - removed by JDT since it was just shadowing local vars.
+   //     mySpace ;
     
     
     public static Workflow createWorkflow(  String communitySnippet
@@ -321,8 +321,8 @@ public class Workflow extends Activity {
             }
             else {
                 
-                MySpaceManagerDelegate
-                   mySpace = new MySpaceManagerDelegate( mySpaceLocation ) ;
+                MySpaceClient
+                   mySpace =  MySpaceDelegateFactory.createDelegate( mySpaceLocation ) ; 
                 
                 pathBuffer
                    .append( "/")
@@ -381,8 +381,8 @@ public class Workflow extends Activity {
          }
          else {
              
-             MySpaceManagerDelegate
-                 mySpace = new MySpaceManagerDelegate( mySpaceLocation ) ;
+             MySpaceClient
+                 mySpace = MySpaceDelegateFactory.createDelegate( mySpaceLocation ) ;  
             
              retValue = mySpace.saveDataHolding( Workflow.extractUserid( account ) 
                                                , Workflow.extractCommunity( account ) 
@@ -1055,8 +1055,8 @@ public class Workflow extends Activity {
                
             account = CommunityMessage.getAccount( communitySnippet ) ;
                             
-            MySpaceManagerDelegate
-                mySpace = new MySpaceManagerDelegate( myspaceLocation ) ;
+            MySpaceClient
+                mySpace =  MySpaceDelegateFactory.createDelegate( myspaceLocation ) ;
                 
             vector = mySpace.listDataHoldings( Workflow.extractUserid( account )
                                              , Workflow.extractCommunity( account )
@@ -1093,8 +1093,8 @@ public class Workflow extends Activity {
             
             account = CommunityMessage.getAccount( communitySnippet ) ;
             
-            MySpaceManagerDelegate
-                mySpace = new MySpaceManagerDelegate( myspaceLocation ) ;
+            MySpaceClient
+                mySpace = MySpaceDelegateFactory.createDelegate( myspaceLocation ) ;
             
             fileString = mySpace.getDataHolding( Workflow.extractUserid( account )
                                                , Workflow.extractCommunity( account )
