@@ -64,7 +64,7 @@ public class RegistryHarvestService implements org.astrogrid.registry.RegistryHa
          //df.appendChild(nl.item(i));
          Document harvestedDoc = harvestCallableRegistry(nl.item(i));   
          if(harvestedDoc != null) {
-            RegistryFileHelper.updateDocument(RegistryFileHelper.loadRegistryFile(),harvestedDoc);
+            RegistryFileHelper.updateDocument(harvestedDoc);
          }               
       }            
    }
@@ -91,7 +91,7 @@ public class RegistryHarvestService implements org.astrogrid.registry.RegistryHa
            //df.appendChild(nl.item(i));
            harvestedDoc = harvestCallableRegistry(nl.item(i));   
            if(harvestedDoc != null) {
-              RegistryFileHelper.updateDocument(RegistryFileHelper.loadRegistryFile(),harvestedDoc);
+              RegistryFileHelper.updateDocument(harvestedDoc);
            }               
         }            
      }
