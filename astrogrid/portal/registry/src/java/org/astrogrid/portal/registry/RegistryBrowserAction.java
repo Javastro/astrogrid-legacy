@@ -368,7 +368,7 @@ public class RegistryBrowserAction extends AbstractAction
      if ( identifier != null && identifier.length() > 0 )
         query += "\n<selectionOp op='AND'/>" +
           "<selection item='vr:Identifier/vr:AuthorityID' itemOp='CONTAINS'" + 
-          "value='" + identifier + "'/>";
+          " value='" + identifier + "'/>";
      if ( title != null && title.length() > 0 )
         query += "\n<selectionOp op='AND'/>" +
          "<selection item='vr:Title' itemOp='CONTAINS' value='" + title + "'/>";
