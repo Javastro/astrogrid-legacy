@@ -1,5 +1,5 @@
 /*
- * $Id: QueryState.java,v 1.1 2004/03/07 00:33:50 mch Exp $
+ * $Id: QueryState.java,v 1.2 2004/03/10 02:35:39 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -48,6 +48,10 @@ public class QueryState extends TypeSafeEnumerator
       this.order = givenOrder;
    }
 
+   public int getOrder() {
+      return order;
+   }
+   
    /**
     * Returns true if the order of this instance is before the given one, ie
     * this.order < givenStatus.order
@@ -70,6 +74,9 @@ public class QueryState extends TypeSafeEnumerator
 
 /*
 $Log: QueryState.java,v $
+Revision 1.2  2004/03/10 02:35:39  mch
+Published order so we can compare
+
 Revision 1.1  2004/03/07 00:33:50  mch
 Started to separate It4.1 interface from general server services
 
