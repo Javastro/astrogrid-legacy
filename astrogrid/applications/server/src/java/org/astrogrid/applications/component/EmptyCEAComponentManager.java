@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.5 2004/07/26 12:07:38 nw Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.6 2004/08/11 16:50:56 nw Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.applications.component;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
@@ -64,6 +67,12 @@ import java.util.Iterator;
  *
  */
 public abstract class EmptyCEAComponentManager extends EmptyComponentManager implements CEAComponentManager{
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(EmptyCEAComponentManager.class);
+
     /** Construct a new EmptyCEAComponentManager
      * 
      */
@@ -92,6 +101,12 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
     /** dummy component that ensures required componets are registered with the container
      * not interesting, but needs to be publc so that picocontainer can instantiate it */ 
     public static final class VerifyRequiredComponents {
+        /**
+         * Commons Logger for this class
+         */
+        private static final Log logger = LogFactory
+                .getLog(VerifyRequiredComponents.class);
+
         public VerifyRequiredComponents(ExecutionController ignored,MetadataService ignoredToo, QueryService dontcare) {
         }
     }
@@ -102,6 +117,9 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
     /** register the default top-level services core of CEA 
      * registers default implementations of {@link QueryService}, {@link MetadataService} and {@link ExecutionController},
      * plus the {@link ApplicationDescriptionEnvironment}
+     * also registers a composite application description library, and a container application description library.
+     * @see #registerCompositeApplicationDescriptionLibrary(MutablePicoContainer)
+     * @see #registerContainerApplicationDescriptionLibrary(MutablePicoContainer)
      * */
     protected static final void registerDefaultServices(MutablePicoContainer pico) {
         log.info("Registering default services");
@@ -109,7 +127,8 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
         pico.registerComponentImplementation(ExecutionController.class, DefaultExecutionController.class);
         pico.registerComponentImplementation(MetadataService.class, DefaultMetadataService.class);     
         pico.registerComponentImplementation(QueryService.class,DefaultQueryService.class);   
-      
+       registerCompositeApplicationDescriptionLibrary(pico);
+        registerContainerApplicationDescriptionLibrary(pico);
         }
     
     /** registers the default implementaiton of the indirection protocol library 
@@ -225,7 +244,8 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
         // on startup (i.e. after everythinig has been registered, this throwaway component will add all other application description libraries to this one
         pico.registerComponentInstance(new Startable() {
             public void start() {
-                CompositeApplicationDescriptionLibrary uberLib = (CompositeApplicationDescriptionLibrary)pico.getComponentAdapterOfType(CompositeApplicationDescriptionLibrary.class);
+                logger.info("Registering application description libraries in composite");
+                CompositeApplicationDescriptionLibrary uberLib = (CompositeApplicationDescriptionLibrary)pico.getComponentInstanceOfType(CompositeApplicationDescriptionLibrary.class);
                 for (Iterator i = pico.getComponentAdaptersOfType(ApplicationDescriptionLibrary.class).iterator(); i.hasNext(); ) {
                     ComponentAdapter ca = (ComponentAdapter)i.next();
                     ApplicationDescriptionLibrary lib = (ApplicationDescriptionLibrary)ca.getComponentInstance();
@@ -251,7 +271,7 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
        pico.registerComponentInstance(new Startable() {
 
         public void start() {
-            BaseApplicationDescriptionLibrary lib = (BaseApplicationDescriptionLibrary)pico.getComponentAdapter(BaseApplicationDescriptionLibrary.class);
+            BaseApplicationDescriptionLibrary lib = (BaseApplicationDescriptionLibrary)pico.getComponentInstanceOfType(BaseApplicationDescriptionLibrary.class);
             for (Iterator i = pico.getComponentAdaptersOfType(ApplicationDescription.class).iterator(); i.hasNext();) {
                 ComponentAdapter ca = (ComponentAdapter)i.next();
                 ApplicationDescription appDesc = (ApplicationDescription)ca.getComponentInstance();
@@ -268,6 +288,9 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
+Revision 1.6  2004/08/11 16:50:56  nw
+added in default application description libraries.
+
 Revision 1.5  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package
