@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.33 2003/10/06 18:56:27 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.34 2003/10/13 16:06:47 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,7 +21,7 @@ import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.Workspace;
 import org.astrogrid.log.Log;
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
+import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -69,6 +69,9 @@ public abstract class DatabaseQuerier implements Runnable
     * userid and communityid for using myspace
     */
    private String userid, communityid = null;
+   /** credential for myspace
+   @todo initialize this correctly - currently isn't being set by anything */
+   private String credential = "";
 
    /**
     * Where the result should be sent on completion.  Probably a myspace
@@ -78,7 +81,7 @@ public abstract class DatabaseQuerier implements Runnable
 
    /** Handle to the results from the query - the location (prob myspace) where
     * the results can be found */
-   private URL resultsLoc = null;
+   private String resultsLoc = null;
 
    /** For measuring how long the query took */
    private Date timeQueryStarted = null;
@@ -92,12 +95,12 @@ public abstract class DatabaseQuerier implements Runnable
    {
       return handle;
    }
-   
+
    /** set the handle for this querier */
    void setHandle(String handle) {
        this.handle = handle;
    }
-       
+
       /** set the workspace for this querier */
       void setWorkspace(Workspace workspace) {
           this.workspace = workspace;
@@ -106,16 +109,19 @@ public abstract class DatabaseQuerier implements Runnable
      void setCommunityId(String communityid) {
          this.communityid = communityid;
      }
-     
+
      /** set the userid for this querier */
      void setUserId(String userid) {
          this.userid = userid;
      }
-     
+
+     void setCredential(String credential) {
+        this.credential = credential;
+     }
    /**
     * Creates the query model based on the given DOM.
     */
-   void setQuery(Element givenDOM) throws ADQLException, QueryException
+ void setQuery(Element givenDOM) throws ADQLException, QueryException
    {
       query = new Query(givenDOM);
       setStatus(QueryStatus.CONSTRUCTED);
@@ -208,6 +214,11 @@ public abstract class DatabaseQuerier implements Runnable
          Log.logError("Could not create file on myspace",e);
          setErrorStatus(e);
       }
+      catch (Exception e)
+      {
+      	Log.logError("Myspace raised an undescriptive exception",e);
+	setErrorStatus(e);
+	}
    }
 
 
@@ -217,18 +228,18 @@ public abstract class DatabaseQuerier implements Runnable
     *
     * @throws IOException if the operation fails for any reason
     */
-   protected void testResultsDestination() throws IOException
+   protected void testResultsDestination() throws Exception
    {
       Log.affirm(resultsDestination != null,
                  "No Result target (eg myspace) given in config file (key "+DatabaseQuerierManager.RESULTS_TARGET_KEY+"), "+
                  "and no key "+DocMessageHelper.RESULTS_TARGET_TAG+" in given DOM ");
 
-      MySpaceDummyDelegate myspace = new MySpaceDummyDelegate(resultsDestination);
+      MySpaceManagerDelegate myspace = new MySpaceManagerDelegate(resultsDestination);
 
-      myspace.saveDataHolding(userid, communityid, "testFile",
+      myspace.saveDataHolding(userid, communityid, credential,"testFile",
                               "This is a test file to make sure we can create a file in myspace, so our query results are not lost",
                               "test",
-                              myspace.OVERWRITE);
+                              "Overwrite"); // this interface needs refactoring. constants would be a start.
    }
 
    /**
@@ -237,11 +248,11 @@ public abstract class DatabaseQuerier implements Runnable
     * to work out a way of streaming this properly to myspace - I expect this to break
     * on very very large votables - mch.
     */
-   protected void sendResults(QueryResults results) throws IOException
+   protected void sendResults(QueryResults results) throws Exception
    {
       Log.affirm(results != null, "No results to send");
 
-      MySpaceDummyDelegate myspace = new MySpaceDummyDelegate(resultsDestination);
+      MySpaceManagerDelegate myspace = new MySpaceManagerDelegate(resultsDestination);
 
       String myspaceFilename = getHandle()+"_results";
 
@@ -252,13 +263,13 @@ public abstract class DatabaseQuerier implements Runnable
          ByteArrayOutputStream ba = new ByteArrayOutputStream();
          results.toVotable(ba);
          ba.close();
-      
-         myspace.saveDataHolding(userid, communityid, myspaceFilename,
+
+         myspace.saveDataHolding(userid, communityid, credential, myspaceFilename,
                               ba.toString(),
                               "VOTable",
-                              myspace.OVERWRITE);
+                              "Overwrite");
 
-         resultsLoc = myspace.getDataHoldingUrl(userid, communityid, myspaceFilename);
+         resultsLoc = myspace.getDataHoldingUrl(userid, communityid, credential, myspaceFilename);
       }
       catch (SAXException se)
       {
@@ -268,7 +279,7 @@ public abstract class DatabaseQuerier implements Runnable
          ByteArrayOutputStream ba = new ByteArrayOutputStream();
          results.toCSV(ba);
          ba.close();
-      
+
          myspace.saveDataHolding(userid, communityid, myspaceFilename,
                               ba.toString(),
                               "CSV",
@@ -299,7 +310,7 @@ public abstract class DatabaseQuerier implements Runnable
    /** Returns the results - returns null if the results have not yet
     * been returned
     */
-   public URL getResultsLoc()
+   public String getResultsLoc()
    {
       return resultsLoc;
    }
