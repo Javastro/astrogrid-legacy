@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/09 07:28:23 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/01/09 07:37:34 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
+    |   Revision 1.6  2004/01/09 07:37:34  dave
+    |   Replaced static XML with XSP pages
+    |
     |   Revision 1.5  2004/01/09 07:28:23  dave
     |   Fixed duplicate generator error
     |
@@ -89,15 +92,17 @@
 					+-->
 				<map:act type="astro-login">
 					<!--+
-						| If we are logged in, display the nice page.
+						| If we are logged in, display a nice page.
+						| We can't do a redirect, because this page is requested indirectly
+						| via the map:aggregate in the main site map.
 						+-->
-					<map:generate type="file" src="xml/login-pass.xml"/>
+					<map:generate type="serverpages" src="xml/login-pass.xsp"/>
 					<map:serialize type="xml"/>
 				</map:act>
 				<!--+
 					| If we are not logged in, display the login form.
 					+-->
-				<map:generate type="file" src="xml/login-form.xml"/>
+				<map:generate type="serverpages" src="xsp/login-form.xsp"/>
 				<map:serialize type="xml"/>
 			</map:match>
 
