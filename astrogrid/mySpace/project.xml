@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.32 2004/02/19 01:02:50 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.33 2004/03/08 16:14:15 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-mySpace</id>
-    <name>mySpace</name>
+    <name>Astrogrid MySpace</name>
     <description> MySpace provides astronomers with data storage that is not 
         necessarily at their home institution and which they can use to store 
         things (e.g. result sets from queries, workflows, private datasets, 
