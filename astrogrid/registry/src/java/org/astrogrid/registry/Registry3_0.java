@@ -31,9 +31,12 @@ public class Registry3_0 {
 		String response = "";
 		boolean goodParameters = true;
 		
+
+		
 		try {
 		  parameterBuilder = parameterFactory.newDocumentBuilder();
 		  parameterDoc = parameterBuilder.parse("http://msslxy.mssl.ucl.ac.uk:8080/org/astrogrid/registry/parameters_v1_0.xml");
+		  //parameterDoc = parameterBuilder.parse("http://localhost:8080/org/astrogrid/registry/parameters_v1_0.xml");
 		}
 		catch (ParserConfigurationException e) {
 		  response = "<error>REGISTRY - " + e.toString() + "</error>";
@@ -92,12 +95,17 @@ public class Registry3_0 {
 				catch (Exception e){
 					response = "<error>REGISTRY - " + e.toString()+ "</error>";
 				}
-	
 				Document resultDoc = DOMUtil.createDocument();
 				Element root = resultDoc.createElement("queryResponse");
 				resultDoc.appendChild(root);
-				XQL.execute(query, doc, root);
-
+				try{
+					XQL.execute(query, doc, root);
+				}
+				catch (Exception e){
+					response = "<error>Malformed XQL statement.</error>";
+					System.out.println("In try catch: response = " + response);
+				}
+				
 				try{
 				  Writer w = new StringWriter();
 				  XMLWriter out = new XMLWriter(w);
@@ -113,6 +121,20 @@ public class Registry3_0 {
 		}
 		if (response.indexOf("<queryResponse>") == -1){
 			response = "<queryResponse>" + response+ "</queryResponse>";
+
+		}
+		//System.out.println("Query: " + query);
+		System.out.println("XQL response 2: " + response);
+		
+		if (response.indexOf("<?xml version=") > -1){
+			String editedResponse = response.substring(0, response.indexOf("?xml")) + response.substring(response.indexOf("<?xml version")+24, response.length());  
+			response = null;
+			response = editedResponse;
+		}
+		if (response.indexOf("<queryResponse/>") > -1){
+			String editedResponse2 = response.substring(0, response.indexOf("<queryResponse/>")) + response.substring(response.indexOf("<queryResponse/>")+16, response.length());  
+			response = null;
+			response = editedResponse2;
 		}
 		return response;
 	}
