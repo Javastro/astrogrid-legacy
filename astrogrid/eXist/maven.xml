@@ -159,7 +159,7 @@
     <!--+
         | Build and deploy our components.
         +-->
-    <goal name="astrogrid-deploy-artifact">
+    <!--goal name="astrogrid-deploy-artifact">
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
@@ -168,7 +168,7 @@
             banner="Deploying snapshot artifact : "
             ignoreFailures="false"
             />
-    </goal>
+    </goal-->
     
     
  
