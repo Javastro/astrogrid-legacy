@@ -158,13 +158,13 @@ public class JES extends org.astrogrid.Configurator {
         return Configurator.getProperty( SUBSYSTEM_ACRONYM, key, category ) ;
     }
  
-    protected String getConfigFileName() { return CONFIG_FILENAME ; }    
+    public String getConfigFileName() { return CONFIG_FILENAME ; }    
     protected String getSubsystemAcronym() { return SUBSYSTEM_ACRONYM ; }
     
     /**
       * This is the name used in the NamingService to locate the URL of the properties file
       */
-    protected String getJNDIName() {
+    public String getJNDIName() {
        return JNDI_NAME;
     }
 	 
