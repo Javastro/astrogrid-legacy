@@ -24,18 +24,22 @@
             <tr>
                 <td>Name:</td><td>Type:</td><td>Value:</td><td></td><td></td>
             </tr>                               
-                <xsl:apply-templates select="tool/input/parameter">
-                    <xsl:with-param name="direction">input</xsl:with-param>
-                </xsl:apply-templates>
+            <xsl:for-each select="./tool/inputParam">
+              <xsl:call-template name="parameter">
+                <xsl:with-param name="direction">input</xsl:with-param>
+              </xsl:call-template>
+            </xsl:for-each>
             <tr>
-                <td align="center" colspan="5">Output:</td>
+                <td align="center" colspan="5"> Output:</td>
             </tr>
             <tr>
                 <td>Name:</td><td>Type:</td><td>Value:</td><td></td><td></td>
-            </tr>
-            <xsl:apply-templates select="tool/output/parameter">
-                    <xsl:with-param name="direction">output</xsl:with-param>            
-            </xsl:apply-templates>
+            </tr>                               
+            <xsl:for-each select="./tool/outputParam">
+              <xsl:call-template name="parameter">
+                <xsl:with-param name="direction">output</xsl:with-param>
+              </xsl:call-template>
+            </xsl:for-each>            
         </table>
     </xsl:template>
 
@@ -43,27 +47,29 @@
     <!--+
           | Match the parameter element.
           +-->
-    <xsl:template match="parameter">
+    <xsl:template name="parameter">
         <xsl:param name="direction"/>
-            <form name="parameter_form" >
+            <form name="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html">
                 <tr>
-                    <td><xsl:value-of select="@name"/></td>
-                    <td><xsl:value-of select="@type"/></td>
+                    <td>name<xsl:value-of select="@param-name"/></td>
+                    <td>type<xsl:value-of select="@param-type"/></td>
                     <xsl:choose>
-                        <xsl:when test="count(child::*) != 1 ">
-                            <td><input type="text" name="" size="30" /></td>
+                        <xsl:when test="@param-value = '' ">
+                            <td><input type="text" name="param-value" size="30"></input></td>
                             <td><input type="submit" value="submit" /></td>
                             <td><input name="Input" type="button" value="... " onClick="popUpWindow('myspace_blank.html',200,200,200,200);"/></td>
                         </xsl:when>
-                        <xsl:when test="count(child::*) =1 ">
-                            <td><xsl:value-of select="." /></td>
-                        </xsl:when>
+                        <xsl:otherwise>
+                            <td><xsl:value-of select="@param-value" /></td>
+                            <td></td>
+                            <td></td>
+                        </xsl:otherwise>
                     </xsl:choose>                                       
                 </tr>
-                <input type="hidden" name="action" value="insert-value" />
-                <input type="hidden" name="param-name"><xsl:attribute name="value"></xsl:attribute></input>
-                <input type="hidden" name="activity-key"><xsl:attribute name="value"></xsl:attribute></input>            
-                <input type="hidden" name="direction"><xsl:attribute name="value">@direction</xsl:attribute></input>
+                <input type="hidden" name="action" value="insert-input-value" />
+                <input type="hidden" name="param-name"><xsl:attribute name="value"><xsl:value-of select="@param-name"/></xsl:attribute></input>
+                <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="../../@key"/></xsl:attribute></input>            
+                <input type="hidden" name="direction"><xsl:attribute name="value"><xsl:value-of select="$direction"/></xsl:attribute></input>
             </form>
     </xsl:template>
 
