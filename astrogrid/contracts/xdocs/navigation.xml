@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Contracts">
+
+  <title>AstroGrid Project - service contracts</title>
+
+  <body>
+    <menu name="Reference">
+    	<item name="Schema documents (.wsdl, .xsd)"  href="schema/index.html"/>
+    </menu>
+    
+    <links>
+       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
+       <item name="Projects"   href="../../index.html"/>
+       <item name="Contracts Maven-project" href="../index.html"/>
+    </links>
+  </body>
+</project>

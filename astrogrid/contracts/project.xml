@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+  <extend>../maven-base/project.xml</extend>
+  <artifactId>astrogrid-contracts</artifactId>
+  <currentVersion>${astrogrid.contracts.version}</currentVersion>
+  <name>Astrogrid sub-system contracts</name>
+  <description><![CDATA[
+        Contracts for interfaces to major components of AstroGrid.
+        </p><p>
+        The contracts contain the XML schemata for the interfaces plus
+        textual descriptions of the semantics.
+        ]]>
+  </description>
+    
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+  
+    <!-- This section controls the set of files other than Java classes that 
+         are built into the jar artefact (Java classes are included automatically). -->
+    <resources>
+
+      <!-- Assorted junk mixed in with the Java source. @TODO clean this up. -->
+      <resource>
+        <directory>${basedir}/src/java</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.properties</include>
+        </includes>
+      </resource>
+      
+      <!-- The schemata collection. This includes a directory tree rooted at
+           "schema", as required for publication on the AstroGrid software site. -->
+      <resource>
+        <directory>${basedir}/src</directory>
+        <includes>
+          <include>schema/*</include>
+          <include>schema/**/*</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+    
+  <dependencies>
+  </dependencies>
+        
+</project>
