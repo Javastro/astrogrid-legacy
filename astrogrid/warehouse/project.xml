@@ -105,6 +105,26 @@
     </dependency>
 
     <dependency>
+      <groupId>axis</groupId>
+      <type>jar</type>
+      <artifactId>activation</artifactId>
+      <version>axis-1.1</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>axis</groupId>
+      <type>jar</type>
+      <artifactId>mailapi</artifactId>
+      <version>axis-1.1</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
       <id>wsdl4j</id>
       <version>1.0</version>
       <properties>
