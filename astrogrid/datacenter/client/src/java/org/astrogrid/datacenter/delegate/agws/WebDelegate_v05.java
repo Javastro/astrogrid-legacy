@@ -1,43 +1,32 @@
 /*
- * $Id: WebDelegate_v041.java,v 1.3 2004/04/22 15:14:34 mch Exp $
+ * $Id: WebDelegate_v05.java,v 1.1 2004/04/22 15:14:34 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.agws;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringBufferInputStream;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.Hashtable;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.rpc.ServiceException;
-import org.apache.axis.types.URI;
+import javax.xml.rpc.Service;
+import org.apache.axis.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.datacenter.adql.ADQLException;
-import org.astrogrid.datacenter.adql.ADQLUtils;
-import org.astrogrid.datacenter.adql.generated.Circle;
-import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.adql.generated.TableExpression;
-import org.astrogrid.datacenter.adql.generated.Where;
-import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
-import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
+import org.astrogrid.datacenter.axisdataserver.v05.AxisDataServerV05SoapBindingStub;
+import org.astrogrid.datacenter.axisdataserver.v05.AxisDataServer_v05_ServiceLocator;
+import org.astrogrid.datacenter.axisdataserver.v05.QueryStatusSoapyBean;
 import org.astrogrid.datacenter.delegate.ClientQueryListener;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
-import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.RawSqlQuery;
 import org.astrogrid.store.Agsl;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
 
 /**
  * A standard AstroGrid datacenter delegate implementation, based on
@@ -51,20 +40,19 @@ import org.xml.sax.SAXException;
  */
   
    
-public class WebDelegate_v041 implements QuerySearcher, ConeSearcher {
+public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
    
-
    Log log = LogFactory.getLog(WebDelegate_v041.class);
    
    /** listeners indexed by query id */
    Hashtable listeners = new Hashtable();
    
    /** Generated binding code that mirrors the service's methods */
-   private AxisDataServerSoapBindingStub binding;
+   private AxisDataServerV05SoapBindingStub binding;
    
    /** Returns the metadata  */
    public String getMetadata() throws RemoteException {
-      return binding.getMetadata(null);
+      return binding.getMetadata();
    }
    
    
@@ -72,9 +60,9 @@ public class WebDelegate_v041 implements QuerySearcher, ConeSearcher {
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
     * of datacenter delegates in the future...
     */
-   public WebDelegate_v041(URL givenEndPoint) throws ServiceException
+   public WebDelegate_v05(URL givenEndPoint) throws AxisFault
    {
-      binding =(AxisDataServerSoapBindingStub) new AxisDataServerServiceLocator().getAxisDataServer( givenEndPoint );
+      binding = new AxisDataServerV05SoapBindingStub(givenEndPoint, new AxisDataServer_v05_ServiceLocator());
    }
    
    /**
@@ -93,158 +81,82 @@ public class WebDelegate_v041 implements QuerySearcher, ConeSearcher {
    }
 
    /**
-    * convert a sql string object to an Element that can be used as the query body in a
-     * {@link org.astrogrid.datacenter.delegate.FullSearcher}
-    * @param sql
-    * @return
+    * Submits a query (asynchronous), returning a string identifying the query
     */
-   public static Element sqlToQueryBody(String sql) throws IOException {
-      try {
-         Document doc = DomHelper.newDocument();
-         Element root = doc.createElementNS("urn:sql","sql:sql");
-         doc.appendChild(root);
-         Text text = doc.createTextNode(sql);
-         root.appendChild(text);
-         return root;
-      } catch (ParserConfigurationException pe) {
-         throw new IOException("Parser Configuration failed:" + pe.getMessage());
-      }
-   }
-            
-   /**
-    * Makes wrapping org.astrogrid.datacenter.axisdataserver.types.Query from
-    * implementation of interface org.astrogrid.datacenter.query.Query
-    */
-   private org.astrogrid.datacenter.axisdataserver.types.Query makev41Query(org.astrogrid.datacenter.query.Query query) throws IOException {
-      if ((query instanceof AdqlQuery)) {
-         //create the old wrapper query
-         org.astrogrid.datacenter.axisdataserver.types.Query q = new org.astrogrid.datacenter.axisdataserver.types.Query();
-         //convert from new to old
-         q.setQueryBody( ((AdqlQuery) query).toDom().getDocumentElement());
-
-         return q;
-      }
-      else if ((query instanceof RawSqlQuery)) {
-         //create the old wrapper query
-         org.astrogrid.datacenter.axisdataserver.types.Query q = new org.astrogrid.datacenter.axisdataserver.types.Query();
-         //convert from new to old
-         q.setQueryBody( sqlToQueryBody( ((RawSqlQuery) query).getSql() ));
-         return q;
+   public String submitQuery(Query query, Agsl resultsTarget, String resultsFormat) throws IOException {
+      if (query instanceof AdqlQuery) {
+         return binding.submitAdqlQuery( ((AdqlQuery) query).toAdqlString(), resultsTarget.toString(), resultsFormat);
       }
       else {
-         throw new UnsupportedOperationException("Don't know how to adapt query "+query);
+         throw new UnsupportedOperationException("Can only submit adql queries; use askQuery for other query types");
       }
    }
    
+   /**
+    * Simple cone-search call.
+    * @param ra Right Ascension in decimal degrees, J2000
+    * @param dec Decliniation in decimal degress, J2000
+    * @param sr search radius in decimal degrees.
+    * @return InputStream to results document, including votable
+    */
+   public InputStream coneSearch(double ra, double dec, double sr) throws IOException {
+      return askQuery(new ConeQuery(ra, dec, sr), "VOTABLE");
+   }
+   
+
    /**
     * Simple blocking query; submit Query, get stream to results
     */
-   public InputStream askQuery(org.astrogrid.datacenter.query.Query query, String resultsFormat) throws IOException {
-      if ((query instanceof AdqlQuery) || (query instanceof RawSqlQuery)) {
-         try {
-            //create the old wrapper query
-            org.astrogrid.datacenter.axisdataserver.types.Query q = makev41Query(query);
-
-            //make query on server
-            String results = binding.doQuery(resultsFormat, q);
-            
-            return new ByteArrayInputStream(results.getBytes());
-         }
-         catch (SAXException se) {
-            throw new DatacenterException("",se);
-         }
+   public InputStream askQuery(Query query, String resultsFormat) throws IOException {
+      String results = null;
+      
+      if (query instanceof AdqlQuery) {
+         results = binding.askAdqlQuery( ((AdqlQuery) query).toAdqlString(), resultsFormat);
       }
-      else if (!(query instanceof ConeQuery)) {
-         return coneSearch( ((ConeQuery) query).getRa(),
-                            ((ConeQuery) query).getDec(),
-                            ((ConeQuery) query).getRadius());
+      else if (query instanceof ConeQuery) {
+         results = binding.askCone( ((ConeQuery) query).getRa(), ((ConeQuery) query).getDec(), ((ConeQuery) query).getRadius(), resultsFormat);
+      }
+      else if (query instanceof RawSqlQuery) {
+         results = binding.askSql( ((RawSqlQuery) query).getSql(), resultsFormat);
       }
       else {
-         throw new UnsupportedOperationException("Don't know how to query using "+query);
+         throw new UnsupportedOperationException("Can only submit adql queries; use askQuery for other query types");
       }
+      
+      return new StringBufferInputStream(results);
    }
-   
-   /**
-    * Submits a query (asynchronous), returning a string identifying the query
-    */
-   public String submitQuery(org.astrogrid.datacenter.query.Query query, Agsl resultsTarget, String resultsFormat) throws IOException {
-      if ((query instanceof AdqlQuery) || (query instanceof RawSqlQuery)) {
-         try {
-            //create the old wrapper query
-            org.astrogrid.datacenter.axisdataserver.types.Query q = makev41Query(query);
-
-            //make query on server
-            String id = binding.makeQuery(q);
-            binding.setResultsDestination(id, new URI(resultsTarget.toString()));
-            binding.startQuery(id);
-            return id;
-         }
-         catch (SAXException se) {
-            throw new DatacenterException("",se);
-         }
-      }
-      else {
-         throw new UnsupportedOperationException("Don't know how to query using "+query);
-      }
-   }
+  
    
    /**
     * Get Status of query
     */
    public String getStatus(String id) throws IOException {
-      return binding.getStatus(id);
-   }
-   
-   /**
-    * ConeSearcher implementation.  Creates ADQL from the parameters that can
-    * be submitted to the service.
-    *
-    * @param ra Right Ascension in decimal degrees, J2000
-    * @param dec Decliniation in decimal degress, J2000
-    * @param sr search radius in decimal degrees.
-    * @return InputStream to results document, including votable
-    * @todo fix botch around returning votable as stream.
-    */
-   
-   public InputStream coneSearch(double ra, double dec, double sr) throws IOException {
+      QueryStatusSoapyBean status = binding.getQueryStatus(id);
       
-      try
-      {
-         Select s = ADQLUtils.buildMinimalQuery();
-         TableExpression tc = new TableExpression();
-         s.setTableClause(tc);
-         
-         Where w = new Where();
-         tc.setWhereClause(w);
-         
-         Circle c = new Circle();
-         c.setDec(ADQLUtils.mkApproxNum(dec));
-         c.setRa(ADQLUtils.mkApproxNum(ra));
-         c.setRadius(ADQLUtils.mkApproxNum(sr));
-         w.setCircle(c);
-
-         org.astrogrid.datacenter.axisdataserver.types.Query q = new org.astrogrid.datacenter.axisdataserver.types.Query();
-         q.setQueryBody(ADQLUtils.toQueryBody(s));
-         
-         String results = binding.doQuery(VOTABLE, q);
-         
-         return new ByteArrayInputStream(results.getBytes());
-         
-      }
-       catch (ADQLException e) {
-         throw new DatacenterException("Invalid ADQL created from cone search parameters",e);
-      }
-       catch (SAXException e) {
-         throw new DatacenterException("Error calling server",e);
-      }
+      return status.toString();
    }
    
 
+   public void addListener(String queryId, ClientQueryListener aListener) {
+   }
+   
+   public void removeListener(String queryId) {
+   }
+   
+   public void removeListener(ClientQueryListener aListener) {
+   }
+      
+   public class StatusPoller implements Runnable {
+      
+      public void run() {
+         //poll service for statuses of indexed listeners
+      }
+   }
 }
 
 /*
- $Log: WebDelegate_v041.java,v $
- Revision 1.3  2004/04/22 15:14:34  mch
+ $Log: WebDelegate_v05.java,v $
+ Revision 1.1  2004/04/22 15:14:34  mch
  Introduced WebDelegate_v05
 
  Revision 1.2  2004/03/13 16:19:38  mch
@@ -291,8 +203,8 @@ public class WebDelegate_v041 implements QuerySearcher, ConeSearcher {
 
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
-$Log: WebDelegate_v041.java,v $
-Revision 1.3  2004/04/22 15:14:34  mch
+$Log: WebDelegate_v05.java,v $
+Revision 1.1  2004/04/22 15:14:34  mch
 Introduced WebDelegate_v05
 
 Revision 1.2  2004/03/13 16:19:38  mch

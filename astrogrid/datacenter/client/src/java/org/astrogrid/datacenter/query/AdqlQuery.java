@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQuery.java,v 1.4 2004/04/22 13:26:08 mch Exp $
+ * $Id: AdqlQuery.java,v 1.5 2004/04/22 15:14:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -90,6 +90,12 @@ public class AdqlQuery implements Query {
 
    }
    
+   /**
+    * Returns adql string */
+   public String toAdqlString() {
+      return adqlXml;
+   }
+   
    /** Human representation for debugging, trace, etc */
    public String toString() {
       return "AdqlQuery";
@@ -98,6 +104,9 @@ public class AdqlQuery implements Query {
 }
 /*
  $Log: AdqlQuery.java,v $
+ Revision 1.5  2004/04/22 15:14:34  mch
+ Introduced WebDelegate_v05
+
  Revision 1.4  2004/04/22 13:26:08  mch
  Allowed IVORN for query
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.17 2004/03/13 16:26:25 mch Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.18 2004/04/22 15:14:34 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,6 +11,7 @@ import java.net.URL;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate_v041;
+import org.astrogrid.datacenter.delegate.agws.WebDelegate_v05;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.delegate.nvocone.NvoConeSearchDelegate;
 /**
@@ -107,7 +108,12 @@ public class DatacenterDelegateFactory {
          return new DummyDelegate();
       }
       if (serviceType.equals(ASTROGRID_WEB_SERVICE)) {
-         return new WebDelegate_v041(new URL(givenEndPoint));
+         if (givenEndPoint.endsWith("AxisDataServer")) {
+            return new WebDelegate_v041(new URL(givenEndPoint));
+         }
+         else {
+            return new WebDelegate_v05(new URL(givenEndPoint));
+         }
       }
       if (serviceType.equals(ASTROGRID_DIRECT)) {
          //lets see if we can find DirectDelegate on the class path - if so then we
@@ -129,6 +135,9 @@ public class DatacenterDelegateFactory {
 }
 /*
  $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.18  2004/04/22 15:14:34  mch
+ Introduced WebDelegate_v05
+
  Revision 1.17  2004/03/13 16:26:25  mch
  Changed makeFullSearcher to makeQuerySearcher
 
