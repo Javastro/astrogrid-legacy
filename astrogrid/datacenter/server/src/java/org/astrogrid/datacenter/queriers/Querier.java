@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.44 2004/03/15 17:08:52 mch Exp $
+ * $Id: Querier.java,v 1.45 2004/03/15 19:16:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -68,7 +68,7 @@ public class Querier implements Runnable {
    private Vector listeners = new Vector();
    
    /** status of query */
-   private QuerierStatus status = new QuerierConstructed();
+   private QuerierStatus status;
    
    /** Format requested by user */
    private String requestedFormat = QueryResults.FORMAT_VOTABLE; //by default
@@ -118,6 +118,8 @@ public class Querier implements Runnable {
        **/
        //make plugin
       QuerierPlugin plugin = QuerierPluginFactory.createPlugin(this);
+      
+      setStatus(new QuerierConstructed(this));
    }
    
    /** Convenience constructor for struct a querier from the given details. Takes a writer so generally used
@@ -154,7 +156,7 @@ public class Querier implements Runnable {
       }
       catch (Throwable th) {
          log.error("Exception during Asynchronous Run",th);
-         setStatus(new QuerierError("", th));
+         setStatus(new QuerierError(this, "", th));
       }
       log.info("...Ending asynchronous Query ["+id+"]");
       
@@ -268,7 +270,7 @@ public class Querier implements Runnable {
     */
    public QuerierStatus abort() {
       plugin.abort();
-      setStatus(new QuerierAborted());
+      setStatus(new QuerierAborted(this));
       return getStatus();
    }
    
@@ -293,26 +295,24 @@ public class Querier implements Runnable {
     */
    public synchronized void setStatus(QuerierStatus newStatus) {
 
-      //copy in old details to new ones
-      String[] oldDetails = status.getDetails();
-      for (int i=0;i<oldDetails.length;i++) { newStatus.addDetail(oldDetails[i]); }
-      
-      //set times for info
-      if (status instanceof QuerierClosed) {
-         timeQuerierClosed = new Date();
-      }
-      if ((status instanceof QuerierQueried) && (timeQueryCompleted == null)) {
-         timeQueryCompleted = new Date();
+      if (status != null) {
+         //set times for info
+         if (status instanceof QuerierClosed) {
+            timeQuerierClosed = new Date();
+         }
+         if ((status instanceof QuerierQueried) && (timeQueryCompleted == null)) {
+            timeQueryCompleted = new Date();
+         }
+         
+         if ((status instanceof QuerierError) || (newStatus.isBefore(status))) {
+            String msg = "Trying to start a step '"+newStatus+"' when status is already "+status;
+            log.error(msg);
+            throw new IllegalStateException(msg);
+         }
       }
       
       log.info("Query ["+id+"] for "+user+", now "+newStatus);
-      
-      if ((status instanceof QuerierError) || (newStatus.isBefore(status))) {
-         String msg = "Trying to start a step '"+newStatus+"' when status is already "+status;
-         log.error(msg);
-         throw new IllegalStateException(msg);
-      }
-      
+         
       status = newStatus;
       
       fireStatusChanged(status);
@@ -391,6 +391,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.45  2004/03/15 19:16:12  mch
+ Lots of fixes to status updates
+
  Revision 1.44  2004/03/15 17:08:52  mch
  Added status detail copies
 

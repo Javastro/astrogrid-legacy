@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.22 2004/03/15 17:50:57 mch Exp $
+/*$Id: QuerierManager.java,v 1.23 2004/03/15 19:16:12 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -113,7 +113,7 @@ public class QuerierManager implements QuerierListener {
       //if it's changed to closed, then move to closed list
       if (querier.getStatus() instanceof QuerierClosed) {
          runningQueriers.remove(querier.getId());
-         runningQueriers.put(querier.getId(), querier);
+         closedQueriers.put(querier.getId(), querier);
       }
    }
    
@@ -126,6 +126,9 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.23  2004/03/15 19:16:12  mch
+ Lots of fixes to status updates
+
  Revision 1.22  2004/03/15 17:50:57  mch
  Added 'closed' querier queue and more published status information
 

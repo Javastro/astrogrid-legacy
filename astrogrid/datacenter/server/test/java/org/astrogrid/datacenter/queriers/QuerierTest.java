@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.6 2004/03/14 04:13:16 mch Exp $
+ * $Id: QuerierTest.java,v 1.7 2004/03/15 19:16:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -59,7 +59,7 @@ public class QuerierTest extends ServerTestCase {
       assertEquals(QueryState.CONSTRUCTED, querier.getStatus().getState());
 
       // check we can change to next step.
-      querier.setStatus(new QuerierQuerying());
+      querier.setStatus(new QuerierQuerying(querier));
       assertEquals(QueryState.RUNNING_QUERY,querier.getStatus().getState());
       listener.reset();
       
@@ -84,7 +84,7 @@ public class QuerierTest extends ServerTestCase {
 
       // now set an error
       Exception e = new Exception("blerghh");
-      querier.setStatus(new QuerierError("More bleurgh",e));
+      querier.setStatus(new QuerierError(querier, "More bleurgh",e));
       assertEquals(QueryState.ERROR,querier.getStatus().getState());
       listener.reset();
       assertEquals(e, ((QuerierError) querier.getStatus()).getCause());

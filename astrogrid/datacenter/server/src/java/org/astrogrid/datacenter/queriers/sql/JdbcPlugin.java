@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.3 2004/03/15 17:12:54 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.4 2004/03/15 19:16:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,6 +18,7 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
+import org.astrogrid.datacenter.queriers.status.QuerierQueried;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 
 /**
@@ -71,14 +72,14 @@ public class JdbcPlugin extends QuerierPlugin  {
          Connection jdbcConnection = connectionManager.createConnection();
          Statement statement = jdbcConnection.createStatement();
          
-//       querier.getStatus().addDetail("Connection: "+jdbcConnection);
-
-         querier.setStatus(new QuerierQuerying());
+         querier.setStatus(new QuerierQuerying(querier));
          
          //execute query
          log.debug("Query to perform: " + sql);
          statement.execute(sql);
          ResultSet results = statement.getResultSet();
+
+         querier.setStatus(new QuerierQueried(querier));
          
          if (!aborted) {
             //sort out results
@@ -87,7 +88,7 @@ public class JdbcPlugin extends QuerierPlugin  {
          
          //tidy up immediately
          jdbcConnection.close();
-         
+
       }
       catch (SQLException e) {
          //try to tidy up now

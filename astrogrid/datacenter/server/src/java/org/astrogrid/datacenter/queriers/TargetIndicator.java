@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.3 2004/03/15 17:08:11 mch Exp $
+ * $Id: TargetIndicator.java,v 1.4 2004/03/15 19:16:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -59,6 +59,10 @@ public class TargetIndicator  {
    public Writer getWriter() {
       return out;
    }
+
+   public boolean isIvorn() {
+      return (ivorn != null);
+   }
    
    public Agsl resolveAgsl() throws IOException {
       if (agsl != null) {
@@ -107,6 +111,9 @@ public class TargetIndicator  {
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.4  2004/03/15 19:16:12  mch
+ Lots of fixes to status updates
+
  Revision 1.3  2004/03/15 17:08:11  mch
  Added compression adn format placeholders
 

@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierPlugin.java,v 1.6 2004/03/15 17:13:21 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.7 2004/03/15 19:16:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -77,13 +77,13 @@ public abstract class QuerierPlugin  {
       if (target.getEmail() != null) {
 
          log.info(querier+", emailing results to "+target.getEmail());
-         resultsStatus.addDetail("emailing results to "+target.getEmail());
+         resultsStatus.setNote("emailing results to "+target.getEmail());
          
          emailResults(results, target.getEmail(), resultsStatus);
       }
       else {
 
-         resultsStatus.addDetail("Sending results to "+target);
+         resultsStatus.setNote("Sending results to "+target);
 
          Writer writer = target.resolveWriter(querier.getUser());
       
@@ -94,6 +94,11 @@ public abstract class QuerierPlugin  {
          results.write(writer, resultsStatus, querier.getRequestedFormat());
          writer.close();
       }
+
+      String s = "Results sent to "+target;
+      if (target.isIvorn()) s = s + " => "+target.resolveAgsl();
+      resultsStatus.addDetail(s);
+      resultsStatus.setNote("");
         
       log.info(querier+" results sent");
    }
@@ -144,6 +149,9 @@ public abstract class QuerierPlugin  {
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.7  2004/03/15 19:16:12  mch
+ Lots of fixes to status updates
+
  Revision 1.6  2004/03/15 17:13:21  mch
  changed to configurable from address
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.18 2004/03/15 11:25:35 mch Exp $
+ * $Id: SqlResults.java,v 1.19 2004/03/15 19:16:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -111,7 +111,7 @@ public class SqlResults extends QueryResults
          while (sqlResults.next())
          {
             row++;
-            statusToUpdate.setProgress("Processing Row "+row+" of "+maxRow);
+            statusToUpdate.setNote("Processing Row "+row+" of "+maxRow);
 
             printOut.println("               <TR>");
             for (int i=1;i<=cols;i++)
@@ -165,7 +165,7 @@ public class SqlResults extends QueryResults
          while (sqlResults.next())
          {
             row++;
-            statusToUpdate.setProgress("Processing Row "+row+" of "+maxRow);
+            statusToUpdate.setNote("Processing Row "+row+" of "+maxRow);
 
             for (int c=1;c<=cols;c++)
             {
@@ -221,6 +221,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.19  2004/03/15 19:16:12  mch
+ Lots of fixes to status updates
+
  Revision 1.18  2004/03/15 11:25:35  mch
  Fixes to emailer and JSP targetting
 

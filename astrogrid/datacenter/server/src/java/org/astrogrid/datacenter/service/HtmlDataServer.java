@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.7 2004/03/15 17:50:43 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.8 2004/03/15 19:16:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -127,9 +127,6 @@ public class HtmlDataServer
    public static String queryStatusAsHtml(String queryId, QuerierStatus status) {
 
       StringBuffer html = new StringBuffer(
-         "<html>\n"+
-         "<head><title>Status of Query "+queryId+"</title></head>\n"+
-         "<body>\n"+
          "<h1>Status of Query "+queryId+"</h1>\n");
 
       if (status == null) {
@@ -146,10 +143,6 @@ public class HtmlDataServer
          html.append("<p>"+details[i]+"</p>\n");
       }
       
-      html.append(
-         "</body>\n"+
-         "</html>\n");
-      
       return html.toString();
 
    }
@@ -162,9 +155,6 @@ public class HtmlDataServer
       String[] running = server.querierManager.getRunning();
       
       StringBuffer html = new StringBuffer(
-         "<html>\n"+
-         "<head><title>Datacenter Service Status </title></head>\n"+
-         "<body>\n"+
          "<h1>Datacenter Service Status at "+new Date()+"</h1>\n"+
          "<p>Started: "+server.startTime+"</p>"+
          "<h3>Memory</h3>"+
@@ -172,10 +162,10 @@ public class HtmlDataServer
          "Max:"+Runtime.getRuntime().maxMemory()+"<br/>"+
          "Total:"+Runtime.getRuntime().totalMemory()+"<br/></p>\n"+
          "<h3>Load</h3>"+
-         "<p>Running Queries: "+running.length+"</p");
+         "<p>Running Queries: "+running.length+"</p>");
 
       for (int i=0;i<running.length;i++) {
-         html.append(running[i]+"<br/>\n");
+         html.append("<a href='queryStatus.jsp?ID="+running[i]+"'>"+running[i]+"</a><br/>\n");
       }
    
       String[] done = server.querierManager.getRan();
@@ -183,18 +173,20 @@ public class HtmlDataServer
       html.append(
          "</p>"+
          "<h3>History</h3>"+
-         "<p>Closed Queries: "+done.length+"</p");
+         "<p>Closed Queries: "+done.length+"</p>");
 
       for (int i=0;i<done.length;i++) {
-         html.append(done[i]+"<br/>\n");
+         html.append("<a href='queryStatus.jsp?ID="+done[i]+"'>"+done[i]+"</a><br/>\n");
       }
-      
-      html.append(
-         "</p>"+
-         "</body>\n"+
-         "</html>\n");
+
+      html.append("</p>");
       
       return html.toString();
+   }
+   
+   public static String makeRefreshSnippet(int secs, String url) {
+         return("(Refreshes every "+secs+" seconds)"+
+                "<META HTTP-EQUIV='Refresh' CONTENT='"+secs+";URL="+url+"'>");
    }
    
    /**
@@ -234,6 +226,7 @@ public class HtmlDataServer
       return exceptionAsHtml(title, th, "");
    }
 }
+
 
 
 

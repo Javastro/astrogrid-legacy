@@ -109,7 +109,7 @@ public class PluginQuerier extends QuerierPlugin {
 
         
         //do the query.
-        querier.setStatus(new QuerierQuerying());
+        querier.setStatus(new QuerierQuerying(querier));
         try {
             QueryResults results = spi.doQuery(intermediateRep,expectedType);
             processResults(results);
@@ -190,6 +190,9 @@ public class PluginQuerier extends QuerierPlugin {
 }
 /*
  $Log: PluginQuerier.java,v $
+ Revision 1.11  2004/03/15 19:16:12  mch
+ Lots of fixes to status updates
+
  Revision 1.10  2004/03/12 20:04:57  mch
  It05 Refactor (Client)
 

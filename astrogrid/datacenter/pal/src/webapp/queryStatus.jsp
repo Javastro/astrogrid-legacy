@@ -12,7 +12,15 @@
 <%@ page language="java" %>
 <%!
     HtmlDataServer server = new HtmlDataServer();
-%><%
+%>
+<html>
+<head><title>Status of Query
+<%
+   request.getParameter("ID");
+%>
+</title></head>
+<body>
+<%
    /*
     * Returns the status of the given query
     */
@@ -20,14 +28,15 @@
 
    URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
 
+   //URL serverStatusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/serverStatus.jsp");
+
    try {
       QuerierStatus status = server.getQuerierStatus(Account.ANONYMOUS, id);
       out.write(server.queryStatusAsHtml(id, status));
 
       if (!(status instanceof QuerierClosed)) {
          //automatic refresh
-         out.write("<p><p>(Refreshes every 3 seconds)</p>");
-         out.write("<META HTTP-EQUIV='Refresh' CONTENT='3;URL="+statusUrl+"?ID="+id+"'>");
+         out.write(server.makeRefreshSnippet(3, statusUrl+"?ID="+id));
       }
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
@@ -36,4 +45,6 @@
     
 
 %>
+</body>
+</html>
 

@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierQueried.java,v 1.2 2004/03/15 17:11:31 mch Exp $
+ * $Id: QuerierQueried.java,v 1.3 2004/03/15 19:16:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,27 +16,21 @@ import org.astrogrid.datacenter.query.QueryState;
 
 public class QuerierQueried extends QuerierStatus
 {
-   long timeTaken;
-   int resultsCount =-1;
-   String resultsCanBeFoundAt = null;
    
    public QuerierQueried(Querier querier) {
-      addDetail("Queried at "+new Date());
-      timeTaken = querier.getQueryTimeTaken();
-//    resultsCount = querier.get
+      super(querier);
+      addDetail("Finished Query phase at "+new Date());
    }
    
    public QueryState getState() { return QueryState.QUERY_COMPLETE; }
    
-   /** Returns where the results have been sent to, if applicabale. */
-   public String getResults() {     return resultsCanBeFoundAt;   }
-
-   /** Returns the number of results found; returns -1 if unknown */
-   public int getResultsCount() {      return resultsCount; }
 }
 
 /*
 $Log: QuerierQueried.java,v $
+Revision 1.3  2004/03/15 19:16:12  mch
+Lots of fixes to status updates
+
 Revision 1.2  2004/03/15 17:11:31  mch
 Better information
 

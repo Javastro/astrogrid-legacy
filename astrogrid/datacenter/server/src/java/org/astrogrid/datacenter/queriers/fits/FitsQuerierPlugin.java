@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.2 2004/03/12 20:04:57 mch Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.3 2004/03/15 19:16:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -57,14 +57,11 @@ public class FitsQuerierPlugin extends QuerierPlugin
          loadIndex();
       }
       
-         String[] filenames = coneSearch(new ConeQueryMaker().getConeQuery(querier.getQuery()));
+      String[] filenames = coneSearch(new ConeQueryMaker().getConeQuery(querier.getQuery()));
 
-         if (!aborted) {
-            querier.setStatus(new QuerierAborted());
-         }
-         else {
-            processResults(new FitsResults(filenames));
-         }
+      if (!aborted) {
+         processResults(new FitsResults(filenames));
+      }
    }
 
    public String[] coneSearch(ConeQuery query) throws IOException {
@@ -175,6 +172,9 @@ public class FitsQuerierPlugin extends QuerierPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.3  2004/03/15 19:16:12  mch
+ Lots of fixes to status updates
+
  Revision 1.2  2004/03/12 20:04:57  mch
  It05 Refactor (Client)
 

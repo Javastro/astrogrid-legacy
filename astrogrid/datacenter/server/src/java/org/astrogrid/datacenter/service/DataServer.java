@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.21 2004/03/15 17:50:43 mch Exp $
+ * $Id: DataServer.java,v 1.22 2004/03/15 19:16:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -77,7 +77,7 @@ public class DataServer
          log.error(msg, th);
          if (querier != null) {
             if (!(querier.getStatus() instanceof QuerierError)) {
-               querier.setStatus(new QuerierError(msg,th));
+               querier.setStatus(new QuerierError(querier, msg,th));
             }
          }
          throw th;
@@ -101,7 +101,7 @@ public class DataServer
          log.error(msg, th);
          if (querier != null) {
             if (!(querier.getStatus() instanceof QuerierError)) {
-               querier.setStatus(new QuerierError(msg,th));
+               querier.setStatus(new QuerierError(querier, msg,th));
             }
          }
          throw th;
@@ -131,7 +131,7 @@ public class DataServer
          log.error(msg, th);
          if (querier != null) {
             if (!(querier.getStatus() instanceof QuerierError)) {
-               querier.setStatus(new QuerierError(msg,th));
+               querier.setStatus(new QuerierError(querier, msg,th));
             }
          }
          throw th;

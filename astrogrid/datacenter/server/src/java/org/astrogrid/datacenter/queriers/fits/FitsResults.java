@@ -1,5 +1,5 @@
 /*
- * $Id: FitsResults.java,v 1.7 2004/03/14 02:17:07 mch Exp $
+ * $Id: FitsResults.java,v 1.8 2004/03/15 19:16:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,13 +73,14 @@ public class FitsResults extends QueryResults {
       printOut.println("<DATA>");
       
       for (int i=0;i<filenames.length;i++) {
-         statusToUpdate.setProgress("Adding File "+i+" of "+getCount());
+         statusToUpdate.setNote("Adding File "+i+" of "+getCount());
          printOut.println("<FITS>");
          printOut.println("   <STREAM>"+filenames+"</STREAM>");
          
          printOut.println("</FITSA>");
       }
       
+      statusToUpdate.setNote("");
       printOut.println("</DATA>");
       
       printOut.println("</TABLE>");
@@ -111,6 +112,9 @@ public class FitsResults extends QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.8  2004/03/15 19:16:12  mch
+ Lots of fixes to status updates
+
  Revision 1.7  2004/03/14 02:17:07  mch
  Added CVS format and emailer
 

@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierConstructed.java,v 1.2 2004/03/15 17:11:31 mch Exp $
+ * $Id: QuerierConstructed.java,v 1.3 2004/03/15 19:16:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,11 +7,13 @@
 package org.astrogrid.datacenter.queriers.status;
 
 import java.util.Date;
+import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.query.QueryState;
 
 public class QuerierConstructed extends QuerierStatus
 {
-   public QuerierConstructed() {
+   public QuerierConstructed(Querier querier) {
+      super(querier);
       addDetail("Querier started at "+new Date());
    }
    
@@ -20,6 +22,9 @@ public class QuerierConstructed extends QuerierStatus
 
 /*
 $Log: QuerierConstructed.java,v $
+Revision 1.3  2004/03/15 19:16:12  mch
+Lots of fixes to status updates
+
 Revision 1.2  2004/03/15 17:11:31  mch
 Better information
 

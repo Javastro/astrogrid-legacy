@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierComplete.java,v 1.2 2004/03/15 17:11:31 mch Exp $
+ * $Id: QuerierComplete.java,v 1.3 2004/03/15 19:16:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,7 +13,7 @@ import org.astrogrid.datacenter.query.QueryState;
 /** Indicates the final state where the search has been carried out on the database
  * the results processed and everything done and tidied up successfully */
 
-public class QuerierComplete extends QuerierQueried implements QuerierClosed
+public class QuerierComplete extends QuerierStatus implements QuerierClosed
 {
    public QuerierComplete(Querier querier) {
       super(querier);
@@ -26,6 +26,9 @@ public class QuerierComplete extends QuerierQueried implements QuerierClosed
 
 /*
 $Log: QuerierComplete.java,v $
+Revision 1.3  2004/03/15 19:16:12  mch
+Lots of fixes to status updates
+
 Revision 1.2  2004/03/15 17:11:31  mch
 Better information
 
