@@ -994,7 +994,7 @@ public class JobFactoryImpl implements JobFactory {
                 insertOneParameter( (Parameter)iterator.next(), "input" ) ;          
             } 
            
-            iterator = tool.getInputParameters() ; 
+            iterator = tool.getOutputParameters() ; 
             
             while ( iterator.hasNext() ) {
                 insertOneParameter( (Parameter)iterator.next(), "output" ) ;          
