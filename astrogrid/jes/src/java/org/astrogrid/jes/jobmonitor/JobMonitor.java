@@ -496,8 +496,7 @@ public class JobMonitor {
 			Object []
 			    inserts = new Object[ 5 ] ;
 			inserts[0] = JobMonitor.getProperty( MONITOR_URL ) ;            // source
-			//JBL Note: what should this be...
-			inserts[1] = JobMonitor.getProperty( MONITOR_URL ) ;            // destination
+			inserts[1] = JobMonitor.getProperty( MESSAGE_LOG_URL ) ;        // destination
 			inserts[2] = new Timestamp( new Date().getTime() ).toString() ; // timestamp - is this OK?
 			inserts[3] = "JobStep Completion" ;                             // subject
 			

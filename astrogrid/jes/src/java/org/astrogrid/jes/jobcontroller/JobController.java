@@ -487,8 +487,7 @@ public class JobController {
 			Object []
 				inserts = new Object[ 5 ] ;
 			inserts[0] = JobController.getProperty( CONTROLLER_URL ) ;            // source
-			//JBL Note: what should this be...
-			inserts[1] = JobController.getProperty( CONTROLLER_URL ) ;            // destination
+			inserts[1] = JobController.getProperty( MESSAGE_LOG_URL ) ;           // destination
 			inserts[2] = new Timestamp( new Date().getTime() ).toString() ;       // timestamp - is this OK?
 			inserts[3] = "Job submitted" ;                                        // subject
 			
