@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.10 2004/03/10 02:37:01 mch Exp $
+ * $Id: DataServer.java,v 1.11 2004/03/10 02:38:11 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -101,13 +101,9 @@ public class DataServer
          log.debug("Returning: "+sw.toString());
          return sw.toString();
       }
-      catch (Exception e) {
-         log.error(e);
-         return exceptionAsHtml("searchCone", e);
-      }
       catch (Throwable th) {
          log.error(th);
-         return "Error: "+th;
+         return exceptionAsHtml("searchCone", e);
       }
    }
    
@@ -227,10 +223,10 @@ public class DataServer
     * Returns an error in html form.  Not strictly a data server
     * activity, but useful for JSPs to use.
     */
-   public static String exceptionAsHtml(String title, Exception e, String details) {
+   public static String exceptionAsHtml(String title, Throwable th, String details) {
 
       StringWriter sw = new StringWriter();
-      e.printStackTrace(new PrintWriter(sw));
+      th.printStackTrace(new PrintWriter(sw));
             
       return
 //       "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>\n"+
@@ -239,7 +235,7 @@ public class DataServer
          "<body>\n"+
          "<h1>ERROR REPORT</h1>\n"+
          "<b>"+title+"</b>\n"+
-         "<p><b>"+e.getMessage()+"</b></p>\n"+
+         "<p><b>"+th.getMessage()+"</b></p>\n"+
          "<p><pre>"+sw.toString()+"</pre></p>"+
          "<p><pre>"+details+"</pre></p>\n"+
          "</body>\n"+
@@ -247,10 +243,11 @@ public class DataServer
    }
 
    /** Convenience routine for exceptionAsHtml(String, Exception, String)   */
-   public static String exceptionAsHtml(String title, Exception e) {
-      return exceptionAsHtml(title, e, "");
+   public static String exceptionAsHtml(String title, Throwable th) {
+      return exceptionAsHtml(title, th, "");
    }
 }
+
 
 
 
