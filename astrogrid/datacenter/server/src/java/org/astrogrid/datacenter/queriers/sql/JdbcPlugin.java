@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.19 2004/08/18 18:44:12 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.20 2004/08/19 18:59:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -262,13 +262,13 @@ public class JdbcPlugin extends QuerierPlugin  {
                XmlTagPrinter tableTag = metaTag.newTag("Table", "name='"+getColumnValue(tables, "TABLE_NAME")+"'");
                tableTag.writeTag("Description", getColumnValue(tables, "REMARKS"));
                tableTag.writeComment("schema='"+getColumnValue(tables, "TABLE_SCHEM")+"'");
-               tableTag.writeComment("cat='"+getColumnValue(tables, "TABLE_CAT")+"'");
-               tableTag.writeComment("type='"+getColumnValue(tables, "TABLE_TYPE")+"'");
-               tableTag.writeComment("typecat='"+getColumnValue(tables, "TYPE_CAT")+"'");
-               tableTag.writeComment("typeschema='"+getColumnValue(tables, "TYPE_SCHEM")+"'");
-               tableTag.writeComment("typename='"+getColumnValue(tables, "TYPE_NAME")+"'");
-               tableTag.writeComment("selfref='"+getColumnValue(tables, "SELF_REFERENCING_COL_NAME")+"'");
-               tableTag.writeComment("refgen='"+getColumnValue(tables, "REF_GENERATION")+"'");
+//               tableTag.writeComment("cat='"+getColumnValue(tables, "TABLE_CAT")+"'");
+//               tableTag.writeComment("type='"+getColumnValue(tables, "TABLE_TYPE")+"'");
+//               tableTag.writeComment("typecat='"+getColumnValue(tables, "TYPE_CAT")+"'");
+//               tableTag.writeComment("typeschema='"+getColumnValue(tables, "TYPE_SCHEM")+"'");
+//               tableTag.writeComment("typename='"+getColumnValue(tables, "TYPE_NAME")+"'");
+//               tableTag.writeComment("selfref='"+getColumnValue(tables, "SELF_REFERENCING_COL_NAME")+"'");
+//               tableTag.writeComment("refgen='"+getColumnValue(tables, "REF_GENERATION")+"'");
                
                ResultSet columns = metadata.getColumns(null, null, tables.getString("TABLE_NAME"), "%");
                
@@ -278,9 +278,9 @@ public class JdbcPlugin extends QuerierPlugin  {
                      "Column",
                      "name='"+getColumnValue(columns, "COLUMN_NAME")+"' "+getVotableTypeAttr(sqlType)+" indexed='false'"
                   );
-                  colTag.writeComment("schema='"+getColumnValue(columns, "TABLE_SCHEM")+"'");
-                  colTag.writeComment("cat='"+getColumnValue(columns, "TABLE_CAT")+"'");
-                  colTag.writeComment("table='"+getColumnValue(columns, "TABLE_NAME")+"'");
+//                  colTag.writeComment("schema='"+getColumnValue(columns, "TABLE_SCHEM")+"'");
+//                  colTag.writeComment("cat='"+getColumnValue(columns, "TABLE_CAT")+"'");
+//                  colTag.writeComment("table='"+getColumnValue(columns, "TABLE_NAME")+"'");
    //               colTag.writeTag("DataType", getColumnValue(columns, "DATA_TYPE"));
                   colTag.writeTag("Description", getColumnValue(columns, "REMARKS"));
                   colTag.writeTag("Units", " ");
