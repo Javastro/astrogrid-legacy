@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsp/Attic/explorer.xsp,v $</cvs:source>
-    | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/07/03 15:17:17 $</cvs:author>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Author: clq2 $</cvs:date>
+    | <cvs:author>$Date: 2003/09/19 16:24:30 $</cvs:author>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsp,v $
+    | Revision 1.5  2003/09/19 16:24:30  clq2
+    | new functions
+    |
     | Revision 1.4  2003/07/03 15:17:17  dave
     | Updated list of MySpace services for demo
     |
@@ -57,6 +60,7 @@
 			]]>
 			<xsp:element name="node">
 				<xsp:attribute name="ident"><xsp:expr>node.getIdent()</xsp:expr></xsp:attribute>
+                                
 				<xsp:attribute name="name"><xsp:expr>node.getName()</xsp:expr></xsp:attribute>
 				<xsp:attribute name="href-name"><xsp:expr>view.encode(node.getName())</xsp:expr></xsp:attribute>
 				<xsp:attribute name="type"><xsp:expr>node.getType()</xsp:expr></xsp:attribute>
@@ -115,15 +119,21 @@
 			<!-- Static list of available paths -->
 			<paths>
 				<path path="/"          name="root"/>
-				<path path="/clq"       name="clq"/>
-				<path path="/clq/serv1" name="clq/serv1"/>
-				<path path="/clq/serv2" name="clq/serv2"/>
+				<path path="/clqLeicester"       name="clqLeicester"/>
+				<path path="/clqLeicester/serv1" name="clqLeicester/serv1"/>
+				<path path="/clqLeicester/serv2" name="clqLeicester/serv2"/>
 			</paths>
 			<!-- Static list of available services -->
 			<services>
+                               <xsp:element name="service">
+                                       <xsp:attribute name="default">true</xsp:attribute>
+                                        <xsp:attribute name="name">Localhost </xsp:attribute>
+                                        <xsp:attribute name="url">http://localhost:8080/axis/services/MySpaceManager</xsp:attribute>
+                                </xsp:element>
+
+
 				<xsp:element name="service">
-					<xsp:attribute name="default">true</xsp:attribute>
-					<xsp:attribute name="name">Leicester (hydra)</xsp:attribute>
+					<xsp:attribute name="name">Leicester service(hydra)</xsp:attribute>
 					<xsp:attribute name="url">http://hydra.star.le.ac.uk:8080/axis/services/MySpaceManager</xsp:attribute>
 				</xsp:element>
 <!-- Removed for demo version
@@ -136,10 +146,6 @@
 					<xsp:attribute name="url">http://capc49.ast.cam.ac.uk:8080/axis/services/MySpaceManager</xsp:attribute>
 				</xsp:element>
 -->
-				<xsp:element name="service">
-					<xsp:attribute name="name">Localhost </xsp:attribute>
-					<xsp:attribute name="url">http://localhost:8080/axis/services/MySpaceManager</xsp:attribute>
-				</xsp:element>
 			</services>
 		</options>
 		<xsp:logic>
@@ -226,6 +232,7 @@
 						<xsp:attribute name="action"><xsp:expr>view.getSelectedAction()</xsp:expr></xsp:attribute>
 					</selected>
 					<tree>
+
 						<xsp:logic>
 							<![CDATA[
 								//

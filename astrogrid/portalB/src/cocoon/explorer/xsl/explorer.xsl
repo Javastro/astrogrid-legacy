@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsl/Attic/explorer.xsl,v $</cvs:source>
-    | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/09/03 07:47:56 $</cvs:author>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:date>$Author: clq2 $</cvs:date>
+    | <cvs:author>$Date: 2003/09/19 16:23:23 $</cvs:author>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsl,v $
-    | Revision 1.9  2003/09/03 07:47:56  KevinBenson
-    | Finishing up the topcat plugin, still needs a few more testing and has one snag that needs to be resolved, but it is about 90-95% there.
+    | Revision 1.10  2003/09/19 16:23:23  clq2
+    | new functions
     |
     | Revision 1.8  2003/06/30 14:23:15  dave
     | Disabled access to root node in the tree
@@ -51,7 +51,6 @@
 	    +-->
 	<xsl:param name="explorer-page">explorer</xsl:param>
 	<xsl:param name="votable-page">votable</xsl:param>
-	<xsl:param name="plot-page">plot</xsl:param>
 
 	<!--+
 	    | Match the root element.
@@ -205,7 +204,7 @@
 				<td class="info" width="100">Current item</td>
 				<td class="info" width="550" align="left">
 					<xsl:value-of select="current/@path"/>
-					<xsl:if test="current/@type = '2'">
+					<xsl:if test="current/@type != '1'">
 						<xsl:text> </xsl:text>
 						<link type="action">
 							<display>View</display>
@@ -220,19 +219,7 @@
 									<xsl:value-of select="@ident"/>
 								</param>
 							</href>
-						</link>
-						<xsl:text> </xsl:text>
-						<link type="action">
-							<display>Plot</display>
-							<href>
-								<base>
-									<xsl:value-of select="$plot-page"/>
-								</base>
-								<param name="url">
-									<xsl:value-of select="current/@uri"/>
-								</param>
-							</href>
-						</link>						
+						</link>                               
 					</xsl:if>
 				</td>
 			</tr>
@@ -268,6 +255,10 @@
 			<xsl:when test="$action = 'rename-item'">
 				<xsl:call-template name="rename-item"/>
 			</xsl:when>
+                        <!-- Display the extendlease item form -->
+                        <xsl:when test="$action = 'extendlease-item'">
+                                <xsl:call-template name="extendlease-item"/>
+                        </xsl:when>
 			<!-- Display our tree -->
 			<xsl:otherwise>
 				<xsl:apply-templates select="tree"/>
@@ -324,6 +315,38 @@
 					</xsl:when>
 					<!-- If this is an item -->
 					<xsl:when test="@type = '2'">
+						<link type="node">
+							<!-- If this matches the current path -->
+							<xsl:if test="@path = //explorer/view/current/@path">
+								<xsl:attribute name="selected">true</xsl:attribute>
+							</xsl:if>
+							<image src="explorer/images/item.icon.gif"/>
+							<text><xsl:value-of select="@name"/></text>
+							<href>
+								<base><xsl:value-of select="$explorer-page"/></base>
+								<param name="action">current-path</param>
+								<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
+								<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
+							</href>
+						</link>
+					</xsl:when>
+					<xsl:when test="@type = '3'">
+						<link type="node">
+							<!-- If this matches the current path -->
+							<xsl:if test="@path = //explorer/view/current/@path">
+								<xsl:attribute name="selected">true</xsl:attribute>
+							</xsl:if>
+							<image src="explorer/images/item.icon.gif"/>
+							<text><xsl:value-of select="@name"/></text>
+							<href>
+								<base><xsl:value-of select="$explorer-page"/></base>
+								<param name="action">current-path</param>
+								<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
+								<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
+							</href>
+						</link>
+					</xsl:when>
+					<xsl:when test="@type = '4'">
 						<link type="node">
 							<!-- If this matches the current path -->
 							<xsl:if test="@path = //explorer/view/current/@path">
@@ -426,7 +449,7 @@
 	<xsl:template name="node-actions">
 		<xsl:choose>
 			<!-- If this is an item -->
-			<xsl:when test="@type = '2'">
+			<xsl:when test="@type != '1'">
 				<!-- Add the cut-item action -->
 				<xsl:text> </xsl:text>
 				<link type="action">
@@ -466,6 +489,7 @@
 						<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 					</href>
 				</link>
+
 				<!-- Add the delete-item action -->
 				<xsl:text> </xsl:text>
 				<link type="action">
@@ -479,7 +503,35 @@
 						<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 					</href>
 				</link>
-			</xsl:when>
+				<!-- Add the extendlease-item action -->
+				<xsl:text> </xsl:text>
+				<link type="action">
+					<display>
+						<xsl:text>ExtendLease</xsl:text>
+					</display>
+					<href>
+						<base><xsl:value-of select="$explorer-page"/></base>
+						<param name="action">extendlease-item</param>
+						<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
+						<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
+                                                
+					</href>
+				</link>
+				<!-- Add the changeOwner-item action -->
+				<xsl:text> </xsl:text>
+				<link type="action">
+					<display>
+						<xsl:text>ChangeOwner</xsl:text>
+					</display>
+					<href>
+						<base><xsl:value-of select="$explorer-page"/></base>
+						<param name="action">change-owner</param>
+						<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
+						<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
+                                                
+					</href>
+				</link>
+			</xsl:when>http://www.movietrak.co.uk/DVDdetailsrental.asp?ProductID=5064
 			<!-- If this is a container -->
 			<xsl:when test="@type = '1'">
 				<!-- If this is below the top two levels -->
@@ -545,7 +597,8 @@
 							<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 						</href>
 					</link>
-				</xsl:if>
+                                   </xsl:if>
+				
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>
@@ -729,6 +782,62 @@
 			</table>
 		</form>
 	</xsl:template>
+
+
+
+
+
+
+	<!--+
+	    | Generate the extendLease item form.
+	    +-->
+	<xsl:template name="extendlease-item">
+		<form method="get">
+			<input type="hidden" name="AST-VIEW">
+				<xsl:attribute name="value">
+					<xsl:value-of select="//explorer/view/@ident"/>
+				</xsl:attribute>
+			</input>
+			<input type="hidden" name="AST-PATH">
+				<xsl:attribute name="value">
+					<xsl:value-of select="//explorer/view/selected/@path"/>
+				</xsl:attribute>
+			</input>
+			<input type="hidden" name="action"   value="extendlease-item"/>
+			<input type="hidden" name="confirm"  value="true"/>
+			<table class="info" border="0">
+				<tr class="info">
+					<td class="info">
+						Path
+					</td>
+					<td class="info">
+						<xsl:value-of select="//explorer/view/selected/@path"/>
+					</td>
+				</tr>
+				<tr class="info">
+					<td class="info">
+						Name
+					</td>
+					<td class="info">
+						<input type="text" name="AST-NAME">
+							<xsl:attribute name="value">
+								<xsl:value-of select="//explorer/view/selected/@name"/>
+							</xsl:attribute>
+						</input>
+					</td>
+				</tr>
+				<tr class="info">
+					<td class="info">
+					</td>
+					<td class="info">
+						<input type="submit" value="ExtendLease"/>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</xsl:template>
+
+
 
 	<!--+
 	    | Default template, copy all and apply templates.
