@@ -31,7 +31,7 @@
 </service>
 
 <service type="Registry">
-        <endpoint>@TOMCATROOT@/astrogrid-registry-@VERSION@/services/Registry</endpoint>
+        <endpoint>@TOMCATROOT@/astrogrid-registry-@VERSION@/services/RegistryQuery</endpoint>
         <description>local registry query endpoint</description>
 </service>
 <service type="RegistryAdmin">
