@@ -4,14 +4,19 @@
  */
 
 package org.astrogrid.mySpace.delegate;
-import org.astrogrid.mySpace.delegate.*;
-
-import java.io.*;
-
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Vector;
-import org.astrogrid.mySpace.delegate.MySpaceManagerDelegate;
 //import org.astrogrid.log.Log;
 
 /**
@@ -390,25 +395,27 @@ public class MySpaceDummyDelegate implements MySpaceClient
       return fileName;
    }
    
-   /**
-    * Returns the URL of the given file name
-    *
-   * @param: userid: userid
-    * @param: communityid: communityid
-   * @param: fullFileName: full file name in mySpace for Workflow or Query you want to find
-   * @return: URL of file
+  /**
+   * Returns the URL of the given file name
+   *
+   * @param userid userid
+   * @param communityid communityid
+   * @param credentials credentials
+   * @param fullFileName full file name in mySpace for Workflow or Query you want to find
+   * @return URL of file
+   * @throws IOException if getCanonicalPath fails
    */
-   public String getDataHoldingUrl(String userid, String communityid, String credentials, String fullFileName) throws IOException {
+   public final String getDataHoldingUrl(final String userid, final String communityid, final String credentials, final String fullFileName) throws IOException  {
 
-      fullFileName = makeSafeFilename(fullFileName);
+      String safeFullFileName = makeSafeFilename(fullFileName);
       
-      File file = new File(getPath(userid, communityid)+fullFileName);
+      File file = new File(getPath(userid, communityid)+safeFullFileName);
 
   //    Log.affirm(file.exists(), "File '"+fullFileName+"' not found");
 
       String fullpath = file.getCanonicalPath();
 
-      return "file://"+fullpath;
+      return "file://localhost:"+fullpath;
    }
 
    /**
