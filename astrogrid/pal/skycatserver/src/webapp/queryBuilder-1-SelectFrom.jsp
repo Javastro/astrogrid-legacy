@@ -33,7 +33,7 @@ empty you will receive all the columns in your results.
    NodeList tables = metadata.getElementsByTagName("Table");
    if (tables.getLength() == 0) {
       //would like to use assert but some Tomcats can't compile it properly
-      throw new RuntimeException("No <Table> element in metadata");
+      throw new RuntimeException("No &lt;Table&gt; element in metadata");
    }
    for (int t=0;t<tables.getLength();t++) {
       Element tableElement = (Element) tables.item(t);

@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsMetadataResources.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: RdbmsMetadataResources.java,v 1.2 2005/03/10 22:39:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,10 +8,11 @@ package org.astrogrid.tableserver.metadata;
 
 import java.io.IOException;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
+import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
+import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableInfo;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
-import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 
 /**
  * Deprecated RdbmsMetadata resource - use TabuluarDB or Queryable when it arrives...
@@ -28,7 +29,7 @@ public class RdbmsMetadataResources extends VoResourceSupport implements VoResou
 
       StringBuffer tabularDb = new StringBuffer(
          makeVoResourceElement("RdbmsMetadata")+
-         makeCore("/rdbms")
+         makeCore("rdbms")
       );
       
       //only one catalog in resource at the moment
@@ -42,7 +43,7 @@ public class RdbmsMetadataResources extends VoResourceSupport implements VoResou
          tabularDb.append(
             "<Table>"+
                "<Name>"+tables[t].getName()+"</Name>"+
-               "<Description>"+tables[t].getDescription()+"</Description>"
+               "<Description>"+XmlPrinter.transformSpecials(tables[t].getDescription())+"</Description>"
          );
          
          ColumnInfo[] columns = reader.getColumns(catalog, tables[t].getName());
@@ -52,7 +53,7 @@ public class RdbmsMetadataResources extends VoResourceSupport implements VoResou
                "<Column datatype='"+columns[c].getDatatype()+"'>"+
                   "<Name>"+columns[c].getName()+"</Name>"+
                   "<Datatype>"+columns[c].getDatatype()+"</Datatype>"+
-                  "<Description>"+columns[c].getDescription()+"</Description>"+
+                  "<Description>"+XmlPrinter.transformSpecials(columns[c].getDescription())+"</Description>"+
                   "<UCD>"+columns[c].getUcd("1")+"</UCD>"+
                   "<Units>"+columns[c].getUnits()+"</Units>"+
                "</Column>"
@@ -65,7 +66,7 @@ public class RdbmsMetadataResources extends VoResourceSupport implements VoResou
       }
       
       tabularDb.append(
-         "</vor:Resource>");
+         "</"+VORESOURCE_ELEMENT+">");
       
       return tabularDb.toString();
    }

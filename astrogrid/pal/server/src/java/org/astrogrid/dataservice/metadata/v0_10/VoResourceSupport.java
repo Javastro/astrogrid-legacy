@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.3 2005/03/10 15:13:48 mch Exp $
+ * $Id: VoResourceSupport.java,v 1.4 2005/03/10 22:39:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -69,7 +69,7 @@ public class VoResourceSupport {
 
    /** Constructs  a VoResource opening tag with the given resource type */
    public String makeVoResourceElement(String vorType) {
-      return "<vor:Resource status='active' updated='"+toRegistryForm(new Date())+"' xsi:type='"+vorType+"'>";
+      return "<"+VORESOURCE_ELEMENT+" status='active' updated='"+toRegistryForm(new Date())+"' xsi:type='"+vorType+"'>";
    }
 
    /** Constructs core VOResource elements with given string appended to the

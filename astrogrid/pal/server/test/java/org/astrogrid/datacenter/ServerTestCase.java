@@ -1,4 +1,4 @@
-/*$Id: ServerTestCase.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: ServerTestCase.java,v 1.2 2005/03/10 22:39:17 mch Exp $
  * Created on 20-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,7 +56,7 @@ public class ServerTestCase extends XMLTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         URL u  = ServerTestCase.class.getResource("VOTable.dtd");
-        assertNotNull(u);
+        assertNotNull("Could not find VOTable.dtd", u);
         VOTABLE_SYSTEM_ID = u.toString();
     }
 
@@ -198,8 +198,11 @@ public class ServerTestCase extends XMLTestCase {
 
 /*
 $Log: ServerTestCase.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/03/10 22:39:17  mch
+Fixed tests more metadata fixes
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:25  mch
 Initial checkin

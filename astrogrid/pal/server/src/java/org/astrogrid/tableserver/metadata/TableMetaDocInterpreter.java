@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.2 2005/03/10 20:19:21 mch Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.3 2005/03/10 22:39:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -37,26 +37,23 @@ public class TableMetaDocInterpreter
    
    Element metadoc;
 // Element[] catalogs; //root list of catalogs
+   URL docUrl = null;
    
    public final static String TABLE_METADOC_URL_KEY = "datacenter.metadoc.url";
    public final static String TABLE_METADOC_FILE_KEY = "datacenter.metadoc.file";
    
    /** Construct to interpret the table metadoc given in the config file */
    public TableMetaDocInterpreter() throws IOException {
-      URL url = SimpleConfig.getSingleton().getUrl(TABLE_METADOC_URL_KEY, null);
-      if (url != null) {
-         loadUrl(url);
+      docUrl = SimpleConfig.getSingleton().getUrl(TABLE_METADOC_URL_KEY, null);
+      if (docUrl != null) {
+         loadUrl(docUrl);
       }
       else {
-         url = Config.resolveFilename(SimpleConfig.getSingleton().getString(TABLE_METADOC_FILE_KEY));
-         loadUrl(url);
+         docUrl = Config.resolveFilename(SimpleConfig.getSingleton().getString(TABLE_METADOC_FILE_KEY));
+         loadUrl(docUrl);
       }
    }
 
-   
-   public TableMetaDocInterpreter(String url) throws IOException {
-      loadUrl(new URL(url));
-   }
    
    /** Loads metadoc from given URL */
    private void loadUrl(URL url) throws IOException {
@@ -129,7 +126,7 @@ public class TableMetaDocInterpreter
 
       if (tableRes == null) {
          //no such table
-         throw new IllegalArgumentException("Table '"+table+"' not found in RdbmsRes");
+         throw new IllegalArgumentException("Table '"+table+"' not found in Table MetaDoc at "+docUrl);
       }
 
       Element[] cols = DomHelper.getChildrenByTagName(tableRes, "Column");

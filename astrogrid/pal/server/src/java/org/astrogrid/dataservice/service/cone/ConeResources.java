@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.3 2005/03/10 15:13:49 mch Exp $
+/*$Id: ConeResources.java,v 1.4 2005/03/10 22:39:17 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,7 +42,7 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
          "  <Invocation>Custom</Invocation>"+
          "  <AccessURL>"+ServletHelper.getUrlStem()+"cone/SubmitCone?</AccessURL>"+
          "</Interface>"+
-         "</Resource>";
+         "</"+VORESOURCE_ELEMENT+">";
       
       return cone;
    }
@@ -53,6 +53,9 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: ConeResources.java,v $
+ Revision 1.4  2005/03/10 22:39:17  mch
+ Fixed tests more metadata fixes
+
  Revision 1.3  2005/03/10 15:13:49  mch
  Seperating out fits, table and xdb servers
 

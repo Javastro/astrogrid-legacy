@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.7 2005/03/10 20:19:21 mch Exp $
+/*$Id: MetadataTest.java,v 1.8 2005/03/10 22:39:17 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,7 @@ public class MetadataTest extends TestCase {
    }
    
    /** Checks that the identifiers are there and valid and not duplicates */
-   public void assertIdentifiersOK(Document candidate) {
+   public static void assertIdentifiersOK(Document candidate) {
       
       Hashtable ids = new Hashtable();
       

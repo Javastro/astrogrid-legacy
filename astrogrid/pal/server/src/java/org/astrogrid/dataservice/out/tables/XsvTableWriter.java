@@ -1,5 +1,5 @@
 /*
- * $Id: XsvTableWriter.java,v 1.3 2005/03/10 15:13:48 mch Exp $
+ * $Id: XsvTableWriter.java,v 1.4 2005/03/10 22:39:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -82,7 +82,9 @@ public class XsvTableWriter extends AsciiTableSupport {
       
       //units, line 3
       for (int i = 0; i < cols.length; i++) {
-         printOut.print(cols[i].getUnits());
+         if (cols[i].getUnits() != null) {
+            printOut.print(cols[i].getUnits().toString());
+         }
          if (i < cols.length-1) {
             printOut.print(separator);
          }
@@ -133,6 +135,9 @@ public class XsvTableWriter extends AsciiTableSupport {
 
 /*
  $Log: XsvTableWriter.java,v $
+ Revision 1.4  2005/03/10 22:39:17  mch
+ Fixed tests more metadata fixes
+
  Revision 1.3  2005/03/10 15:13:48  mch
  Seperating out fits, table and xdb servers
 

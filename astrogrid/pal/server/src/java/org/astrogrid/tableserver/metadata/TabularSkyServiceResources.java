@@ -1,5 +1,5 @@
 /*
- * $Id: TabularSkyServiceResources.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: TabularSkyServiceResources.java,v 1.2 2005/03/10 22:39:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,11 +28,11 @@ public class TabularSkyServiceResources extends VoResourceSupport implements VoR
 
       StringBuffer tabularDb = new StringBuffer(
          makeVoResourceElement("vor:TabularSkyService")+
-         makeCore("/SkyService")
+         makeCore("SkyService")
       );
       
       tabularDb.append(
-         "</vor:Resource>");
+         "</"+VORESOURCE_ELEMENT+">");
       
       return tabularDb.toString();
    }

@@ -1,11 +1,12 @@
 /*
- * $Id: MicrosoftSqlWriter.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: MicrosoftSqlWriter.java,v 1.2 2005/03/10 22:39:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.tableserver.jdbc.sqlserver;
 
+import org.astrogrid.query.QueryException;
 import org.astrogrid.tableserver.jdbc.StdSqlWriter;
 
 
@@ -16,10 +17,17 @@ import org.astrogrid.tableserver.jdbc.StdSqlWriter;
 public class MicrosoftSqlWriter extends StdSqlWriter
 {
 
-   /** Adds 'top' if appropriate  */
+   /** Adds 'top' if appropriate, just after SELECT and before anything else  */
    public void visitLimit(long limit) {
       if (limit>0) {
-         sql.append(" TOP "+limit+" ");
+         String newSql = sql.toString();
+         int selectIdx = newSql.indexOf("SELECT ");
+         if (selectIdx == -1) {
+            throw new QueryException("No SELECT found while adding TOP");
+         }
+         newSql = newSql.substring(0,selectIdx+7)+" TOP "+limit+" "+newSql.substring(selectIdx+7);
+         
+         sql = new StringBuffer(newSql);
       }
    }
    
@@ -27,6 +35,9 @@ public class MicrosoftSqlWriter extends StdSqlWriter
 
 /*
  $Log: MicrosoftSqlWriter.java,v $
+ Revision 1.2  2005/03/10 22:39:17  mch
+ Fixed tests more metadata fixes
+
  Revision 1.1  2005/03/10 16:42:55  mch
  Split fits, sql and xdb
 

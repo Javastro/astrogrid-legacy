@@ -15,7 +15,7 @@
 %>
 <html>
 <head>
-<title>Metadata for <%=DataServer.getDatacenterName() %> </title>
+<title>MetaDoc for <%=DataServer.getDatacenterName() %> </title>
 <style type="text/css" media="all">
           @import url("./style/astrogrid.css");
 </style>
@@ -29,7 +29,7 @@
 
 <div id='bodyColumn'>
 
-<h1>Metadata for <%=DataServer.getDatacenterName() %></h1>
+<h1>MetaDoc for <%=DataServer.getDatacenterName() %></h1>
 <%
    VoDescriptionServer.clearCache(); //force refresh
    //Document voDescription = VoDescriptionServer.getVoDescription();

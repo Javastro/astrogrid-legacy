@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: TabularDbResources.java,v 1.2 2005/03/10 22:39:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,10 +8,11 @@ package org.astrogrid.tableserver.metadata;
 
 import java.io.IOException;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
+import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
+import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableInfo;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
-import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 
 /**
  * Generates Resource elements for tabular sky services.
@@ -28,7 +29,7 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
 
       StringBuffer tabularDb = new StringBuffer(
          makeVoResourceElement("tdb:TabularDB")+
-         makeCore("/DB")+
+         makeCore("TDB")+
          "<tdb:db>"
       );
       
@@ -44,7 +45,7 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
          tabularDb.append(
             "<tdb:table>"+
                "<name>"+tables[t].getName()+"</name>"+
-               "<description>"+tables[t].getDescription()+"</description>"
+               "<description>"+XmlPrinter.transformSpecials(tables[t].getDescription())+"</description>"
          );
          
          ColumnInfo[] columns = reader.getColumns(catalog, tables[t].getName());
@@ -53,7 +54,7 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
             tabularDb.append(
                "<column>"+
                   "<name>"+columns[c].getName()+"</name>"+
-                  "<description>"+columns[c].getDescription()+"</description>"+
+                  "<description>"+XmlPrinter.transformSpecials(columns[c].getDescription())+"</description>"+
                   "<ucd>"+columns[c].getUcd("1")+"</ucd>"+
                   "<unit>"+columns[c].getUnits()+"</unit>"+
                "</column>"
@@ -67,7 +68,7 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
 
       tabularDb.append(
          "</tdb:db>"+
-         "</vor:Resource>");
+         "</"+VORESOURCE_ELEMENT+">");
       
       return tabularDb.toString();
    }

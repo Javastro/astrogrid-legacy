@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocRenderer.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: TableMetaDocRenderer.java,v 1.2 2005/03/10 22:39:17 mch Exp $
  */
 package org.astrogrid.tableserver.metadata;
 
@@ -86,14 +86,14 @@ public class TableMetaDocRenderer {
       html.append(
          "<tr>"+
             "<th>"+column.getName() +"</th>"+
-            "<td>"+column.getDatatype()+"</td>"+
-            "<td>"+column.getUnits() +"</td>"+
+            "<td>"+emptyIfNull(column.getDatatype())+"</td>"+
+            "<td>"+column.getUnits().toString() +"</td>"+
             "<td>"+column.getUnits().getDimEq() +"</td>"+
             "<td>"+column.getUnits().getDimScale()  +"</td>"+
-            "<td>"+column.getUcd("1") +"</td>"+
-            "<td>"+column.getUcd("1+") +"</td>"+
-            "<td>"+column.getErrorField() +"</td>"+
-            "<td>"+column.getDescription() +"</td>");
+            "<td>"+emptyIfNull(column.getUcd("1")) +"</td>"+
+            "<td>"+emptyIfNull(column.getUcd("1+")) +"</td>"+
+            "<td>"+emptyIfNull(column.getErrorField()) +"</td>"+
+            "<td>"+emptyIfNull(column.getDescription()) +"</td>");
 
       //links
       String[] links = column.getLinks();
@@ -110,7 +110,13 @@ public class TableMetaDocRenderer {
       html.append(
          "</tr>");
    }
-   
+
+   public static String emptyIfNull(String s) {
+      if (s==null) {
+         return "";
+      }
+      else return s;
+   }
 
 }
 

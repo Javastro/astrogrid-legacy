@@ -1,5 +1,5 @@
 /*
- * $Id: Units.java,v 1.2 2005/03/10 13:49:53 mch Exp $
+ * $Id: Units.java,v 1.3 2005/03/10 22:39:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,12 +15,15 @@ package org.astrogrid.units;
 
 public class Units
 {
-   String unitEquation = null; // eg "km s-1"
-   String dimensionEquation = null; // eg "L T-1"
-   long dimensionScale = 0; //
+   String unitEquation = ""; // eg "km s-1"
    
    public Units(String unitEq) {
-      this.unitEquation = unitEq;
+      if (unitEq == null) {
+         this.unitEquation = "";
+      }
+      else {
+         this.unitEquation = unitEq;
+      }
    }
 
    public String toString() {

@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.4 2005/03/10 15:13:48 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.5 2005/03/10 22:39:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,13 +73,10 @@ public class VoDescriptionServer {
    
    /** Checks that the given document is a valid vodescription, throwing an
     * exception if not */
-   public static void validateDescription(String vod) throws MetadataException {
+   public static void validateDescription(String vod) throws SAXException, MetadataException {
       Element root = null;
       try {
          root = DomHelper.newDocument(vod).getDocumentElement();
-      }
-      catch (SAXException e) {
-         throw new MetadataException("Invalid Metadata Resource document "+vod,e);
       }
       catch (IOException e) {
          throw new RuntimeException(e);
@@ -236,22 +233,19 @@ public class VoDescriptionServer {
       if (plugins != null) {
          for (int p = 0; p < plugins.length; p++) {
             log.debug("Including Resource plugin "+plugins[p].toString());
+
             //make plugin
             VoResourcePlugin plugin = createVoResourcePlugin(plugins[p].toString());
-            //get resources from plugin
-            String resources = plugin.getVoResource();
             
-            validateDescription(VODESCRIPTION_ELEMENT+resources+VODESCRIPTION_ELEMENT_END);
-            
-            vod.append(resources);
+            checkAndAppendResource(vod, plugin);
             
             if (plugin instanceof CeaResources) { ceaDone = true; }
          }
       }
 
       //add the standard ones - cea, cone etc
-      if (!ceaDone) { vod.append(new CeaResources()); }
-      vod.append( new ConeResources());
+      if (!ceaDone) { checkAndAppendResource(vod, new CeaResources()); }
+      checkAndAppendResource(vod, new ConeResources());
 //      addResources(vod, new SkyNodeResourceServer());
       
       //finish vod element
@@ -260,7 +254,25 @@ public class VoDescriptionServer {
       return vod.toString();
    }
 
+   public static void checkAndAppendResource(StringBuffer vod, VoResourcePlugin plugin) throws MetadataException, IOException {
 
+      //get resources from plugin
+      String resources = plugin.getVoResource();
+
+      try {
+         validateDescription(VODESCRIPTION_ELEMENT+resources+VODESCRIPTION_ELEMENT_END);
+      
+         vod.append(resources+"\n\n");
+      }
+      catch (SAXException e) {
+  //       throw new MetadataException("Plugin "+plugin.getClass()+" generated invalid XML ",e);
+    
+         log.error("Plugin "+plugin.getClass()+" generated invalid XML ",e);
+         vod.append(resources+"\n\n");
+      }
+   }
+
+   
    /**
     * Returns the resource element of the given type eg 'AuthorityID'.
     * Matches the given string against the attribute 'xsi:type' of the elements
