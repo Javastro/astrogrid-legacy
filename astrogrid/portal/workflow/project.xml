@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- -->
+<!DOCTYPE project [
+  <!ENTITY cocoon-deps SYSTEM "../cocoon-dependencies-nowar.xml">
+]>
+<!-- -->
+<project
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../maven-project.xsd">
+  <extend>../project.xml</extend>
+  
+  <id>astrogrid-portal-workflow</id>
+  <name>AstroGrid Portal DataCenter</name>
+
+  <dependencies>
+    <!-- Datacenter -->
+    <dependency>
+      <groupId>astrogrid-workflow</groupId>
+      <artifactId>astrogrid-workflow-client</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+    <!-- MySpace -->
+    <dependency>
+      <groupId>astrogrid-mySpace</groupId>
+      <artifactId>astrogrid-mySpace-delegate</artifactId>
+      <version>it03</version>
+    </dependency>
+    
+    <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
+    &cocoon-deps;
+  </dependencies>
+  
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+  </build>
+</project>
