@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/23 18:40:50 $</cvs:date>
-    | <cvs:version>$Revision: 1.15 $</cvs:version>
+    | <cvs:date>$Date: 2004/12/23 12:47:56 $</cvs:date>
+    | <cvs:version>$Revision: 1.16 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.16  2004/12/23 12:47:56  jdt
+    |   A few simplifications to the pom
+    |
     |   Revision 1.15  2004/11/23 18:40:50  jdt
     |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
     |   http://software.astrogrid.org/developerdocs/developmentprocess.html
@@ -58,7 +61,7 @@
         | The short name of the project.
         | This is used when naming jars and distribution files.
         +-->
-    <artifactId>astrogrid-community-project</artifactId>
+    <id>astrogrid-community-project</id>
 
     <!--+
         | The full name of the project.
@@ -66,22 +69,6 @@
         +-->
     <name>AstroGrid community</name>
 
-    <!--+
-        | The location of our deployed web site.
-    <siteDirectory>/home/bkm/var/www/www/maven/build/community</siteDirectory>
-        +-->
-
-    <!--+
-        | Our cvs repository location.
-        +-->
-    <repository>
-        <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/community
-        </connection>
-        <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community
-        </developerConnection>
-    </repository>
     
     <reports>
         <report> maven-changelog-plugin </report>

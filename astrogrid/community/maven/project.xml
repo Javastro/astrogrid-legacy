@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/23 18:40:50 $</cvs:date>
-    | <cvs:version>$Revision: 1.21 $</cvs:version>
+    | <cvs:date>$Date: 2004/12/23 12:47:56 $</cvs:date>
+    | <cvs:version>$Revision: 1.22 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.22  2004/12/23 12:47:56  jdt
+    |   A few simplifications to the pom
+    |
     |   Revision 1.21  2004/11/23 18:40:50  jdt
     |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
     |   http://software.astrogrid.org/developerdocs/developmentprocess.html
@@ -93,65 +96,7 @@
     </astrogridVersions>
         +-->
 
-    <!--+
-        | The cvs repository location.
-        +-->
-    <repository>
-        <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/community
-        </connection>
-        <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community
-        </developerConnection>
-    </repository>
-
-    <!--+
-        | Bugzilla URL.
-        +-->
-    <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
-
-    <!--+
-        | The project developers.
-        +-->
-    <developers>
-        <!--+
-            | Kevin Benson
-            +-->
-        <developer>
-            <name>Kevin Benson</name>
-            <id>KevinBenson</id>
-            <email>kmb@mssl.ucl.ac.uk</email>
-            <organization>MSSL</organization>
-            <roles>
-                <role>Work group leader</role>
-            </roles>
-        </developer>
-        <!--+
-            | Brian McIlwrath
-            +-->
-        <developer>
-            <name>Brian McIlwrath</name>
-            <id>bkm</id>
-            <email>bkm@star.rl.ac.uk</email>
-            <organization>CCLRC/RAL/SSTD/Astrogrid</organization>
-            <roles>
-                <role>Software developer</role>
-            </roles>
-        </developer>
-        <!--+
-            | Dave Morris
-            +-->
-        <developer>
-            <name>Dave Morris</name>
-            <id>dave</id>
-            <email>maven-report@codon.demon.co.uk</email>
-            <organization>IoA Cambridge</organization>
-            <roles>
-                <role>Software developer</role>
-            </roles>
-        </developer>
-    </developers>
-
+ 
     <!--+
         | Describes the licenses for this project.
     <licenses>
@@ -210,49 +155,4 @@
         </dependency>
     </dependencies>
 
-    <!--+
-        | The list of reports to generate for each component.
-
-    <reports>
-        <report>
-            maven-changelog-plugin
-        </report>
-        <report>
-            maven-changes-plugin
-        </report>
-        <report>
-            maven-checkstyle-plugin
-        </report>
-        <report>
-            maven-clover-plugin
-        </report>
-        <report>
-            maven-developer-activity-plugin
-        </report>
-        <report>
-            maven-file-activity-plugin
-        </report>
-        <report>
-            maven-javadoc-plugin
-        </report>
-        <report>
-            maven-junit-report-plugin
-        </report>
-        <report>
-            maven-jxr-plugin
-        </report>
-        <report>
-            maven-license-plugin
-        </report>
-        <report>
-            maven-pmd-plugin
-        </report>
-        <report>
-            maven-tasklist-plugin
-        </report>
-        <report>
-            maven-simian-plugin
-        </report>
-    </reports>
-        +-->
 </project>
