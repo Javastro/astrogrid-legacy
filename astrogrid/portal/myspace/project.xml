@@ -15,21 +15,21 @@
   <dependencies>
     <!-- Common -->
     <dependency>
-      <groupId>astrogrid-common</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
       <version>SNAPSHOT</version>
     </dependency>
     
     <!-- Portal Common -->
     <dependency>
-      <groupId>astrogrid-portal</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-portal-common</artifactId>
       <version>SNAPSHOT</version>
     </dependency>
     
     <!-- MySpace -->
     <dependency>
-      <groupId>astrogrid-mySpace</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-mySpace</artifactId>
       <version>SNAPSHOT</version>
       <properties>
