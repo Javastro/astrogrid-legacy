@@ -1,5 +1,5 @@
 /*
- * $Id: User.java,v 1.10 2004/02/14 17:15:56 mch Exp $
+ * $Id: User.java,v 1.11 2004/02/15 23:18:17 mch Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -22,7 +22,7 @@ import org.astrogrid.community.common.util.CommunityMessage;
  * identifies the individual within a community.  The individual may be an
  * automaton (eg a server) rather than human.
  *
- * IVO references are of the form account@community.
+ * IVO references to users/accounts are of the form individual@community.
  *
  * While an individual can belong to one and only one community, he/she/it may
  * belong to several 'groups'.  A group may cross community boundaries.
@@ -41,7 +41,7 @@ import org.astrogrid.community.common.util.CommunityMessage;
  * The token is some kind of certification that is carried along with the account
  * and community identifiers to prove that this individual really is this individual...
 
- * @todo merged with the @link org.astrogrid.community.common.util.CommunityMessage class, which effectively does xml deserializtion
+ * @todo merge with @link org.astrogrid.community.common.util.CommunityMessage, which effectively does xml deserializtion
  *
  * @author Paul Harrison (pah@jb.man.ac.uk), mch
  * @since iteration4
@@ -173,9 +173,12 @@ public class User {
 }
 
 /* $Log: User.java,v $
- * Revision 1.10  2004/02/14 17:15:56  mch
- * Added assertions and made community, individual, ivoreference etc explicit
+ * Revision 1.11  2004/02/15 23:18:17  mch
+ * minor doc changes
  *
+/* Revision 1.10  2004/02/14 17:15:56  mch
+/* Added assertions and made community, individual, ivoreference etc explicit
+/*
 /* Revision 1.9  2004/01/09 21:38:13  pah
 /* added new constructor
 /*
@@ -197,4 +200,5 @@ public class User {
 /* Revision 1.3  2003/12/16 13:35:06  mch
 /* Added anonymous class constant for 'default' user
 /* */
+
 

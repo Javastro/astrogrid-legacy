@@ -1,5 +1,11 @@
 /*
- * $Id: Piper.java,v 1.1 2003/12/09 13:01:33 mch Exp $
+ * $Id: Piper.java,v 1.2 2004/02/15 23:17:59 mch Exp $
+ *
+ * Copyright 2003 AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid Software License,
+ * a copy of which has been included with this distribution in the LICENSE.txt file.
+ *
  */
 
 package org.astrogrid.io;
@@ -41,8 +47,7 @@ public class Piper
    
    /**
     * Helper method for reading all the bytes from the given reader
-    * and sending them to the given writer.  Remember that it is much
-    * more efficient to use Buffered streams. @see bufferedPipe.
+    * and sending them to the given writer.
     */
    public static void pipe(Reader in, Writer out) throws IOException
    {
@@ -66,6 +71,9 @@ public class Piper
 }
 
 /* $Log: Piper.java,v $
- * Revision 1.1  2003/12/09 13:01:33  mch
- * Moved Piper to common
- * */
+ * Revision 1.2  2004/02/15 23:17:59  mch
+ * minor doc changes
+ *
+/* Revision 1.1  2003/12/09 13:01:33  mch
+/* Moved Piper to common
+/* */
