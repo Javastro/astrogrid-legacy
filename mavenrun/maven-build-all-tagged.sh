@@ -1,6 +1,6 @@
 TAG_TO_BUILD=$1
 
-BUILD_DIR=/home/maven/build
+BUILD_DIR=/home/maven/build/release
 SCRIPTHOME=/home/maven/mavenrun
 
 DOCLOCATION=$MAVEN_PUBLIC/docs
