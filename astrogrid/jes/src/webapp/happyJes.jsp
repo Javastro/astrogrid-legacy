@@ -97,7 +97,7 @@
                   </li>
                   <li>
                     <a href=
-                    "TestServlet?suite=org.astrogrid.JES.installationTests.DeploymentTests">
+                    "TestServlet?suite=org.astrogrid.jes.installationTests.DeploymentTests">
                     Run installation tests</a> to ensure that all
                     config files etc are located correctly
                   </li>

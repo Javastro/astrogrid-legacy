@@ -274,7 +274,7 @@ if (loadedConfig) {
 		  Query Tool URL: 
   <input:text name="queryToolUrl" attributesText='size="100"'/> <br> 
 		  S-Extractor URL: 
-  <input:text name="sExtractorUrl" attributesText='size="100"'/> <br> 
+  <input:text name="sextractorUrl" attributesText='size="100"'/> <br> 
 
 	
 	
@@ -286,7 +286,7 @@ if (loadedConfig) {
 <input:text name="<%=filenameTxt%>" attributesText='size="50"' default="../ASTROGRID_jesconfig.export"/>
 </input:form>
 <%  } %>
-<p>Run the <a href="TestServlet?suite=org.astrogrid.Job Entry System.installationTests.DeploymentTests">Installation Tests</a> to see if the configuration is correct.<BR>
+<p>Run the <a href="TestServlet?suite=org.astrogrid.jes.installationTests.DeploymentTests">Installation Tests</a> to see if the configuration is correct.<BR>
 Back to <a href="index.html">index page</a>.</p>
    
      

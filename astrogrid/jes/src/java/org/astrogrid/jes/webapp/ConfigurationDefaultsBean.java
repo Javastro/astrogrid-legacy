@@ -1,4 +1,4 @@
-/* $Id: ConfigurationDefaultsBean.java,v 1.1 2004/01/19 19:33:01 jdt Exp $
+/* $Id: ConfigurationDefaultsBean.java,v 1.2 2004/01/21 17:51:34 jdt Exp $
  * Created on 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ public final class ConfigurationDefaultsBean {
   /** 
    * bean property associated with property in config file
    */
-  private String sExtractorUrl;
+  private String sextractorUrl;
   /** 
    * bean property associated with property in config file
    */
@@ -102,8 +102,8 @@ public final class ConfigurationDefaultsBean {
    * Getter
    * @return property
    */
-  public String getSExtractorUrl() {
-    return sExtractorUrl;
+  public String getSextractorUrl() {
+    return sextractorUrl;
   }
 
   /**
@@ -166,8 +166,8 @@ public final class ConfigurationDefaultsBean {
    * setter
    * @param string property
    */
-  public void setSExtractorUrl(final String string) {
-    sExtractorUrl = string;
+  public void setSextractorUrl(final String string) {
+    sextractorUrl = string;
   }
 
   /**
@@ -195,7 +195,7 @@ public final class ConfigurationDefaultsBean {
         JES.TOOLS_CATEGORY);
     hyperZUrl =
       JES.getProperty(JES.TOOLS_LOCATION + "HyperZ", JES.TOOLS_CATEGORY);
-    sExtractorUrl =
+    sextractorUrl =
       JES.getProperty(JES.TOOLS_LOCATION + "SExtractor", JES.TOOLS_CATEGORY);
     queryToolUrl =
       JES.getProperty(JES.TOOLS_LOCATION + "QueryTool", JES.TOOLS_CATEGORY);
@@ -221,7 +221,7 @@ public final class ConfigurationDefaultsBean {
     JES.setProperty(
       JES.TOOLS_LOCATION + "SExtractor",
       JES.TOOLS_CATEGORY,
-      sExtractorUrl);
+      sextractorUrl);
     JES.setProperty(
       JES.TOOLS_LOCATION + "QueryTool",
       JES.TOOLS_CATEGORY,
@@ -231,6 +231,9 @@ public final class ConfigurationDefaultsBean {
 
 /*
 *$Log: ConfigurationDefaultsBean.java,v $
+*Revision 1.2  2004/01/21 17:51:34  jdt
+*Some installation tests, and some bug fixes of configuration.jsp and some broken links
+*
 *Revision 1.1  2004/01/19 19:33:01  jdt
 *tarting up the config pages
 *
