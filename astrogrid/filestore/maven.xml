@@ -2,11 +2,17 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/12/13 15:31:05 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/03/17 08:31:35 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.5  2005/03/17 08:31:35  clq2
+    |   FLSTR_JDT_966
+    |
+    |   Revision 1.4.18.1  2005/03/16 00:15:59  jdt
+    |   ensured that the installer gets included in the build
+    |
     |   Revision 1.4  2004/12/13 15:31:05  jdt
     |   worry about this another time
     |
@@ -82,7 +88,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            includes="deployment/project.xml,installer/project.xml,common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
             goals="clean"
             banner="Cleaning build targets : "
             ignoreFailures="false"
@@ -100,7 +106,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            includes="deployment/project.xml,installer/project.xml,common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
             goals="astrogrid-install-artifact"
             banner="Building component artifact : "
             ignoreFailures="false"
@@ -114,7 +120,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            includes="deployment/project.xml,installer/project.xml,common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
             goals="astrogrid-install-snapshot"
             banner="Building snapshot artifact : "
             ignoreFailures="false"
@@ -128,7 +134,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            includes="deployment/project.xml,installer/project.xml,common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
             goals="astrogrid-deploy-artifact"
             banner="Deploying snapshot artifact : "
             ignoreFailures="false"
@@ -142,7 +148,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            includes="deployment/project.xml,installer/project.xml,common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
             goals="astrogrid-deploy-snapshot"
             banner="Deploying snapshot artifact : "
             ignoreFailures="false"

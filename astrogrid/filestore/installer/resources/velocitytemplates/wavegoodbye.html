@@ -1,0 +1,27 @@
+<h1>AstroGrid FileStore Installer</h1>
+The 
+#if ($filestore_installed=="true" && $filestore_uninstalled=="true")
+reinstallation
+#elseif ($filestore_installed=="true")
+installation
+#elseif ($filestore_uninstalled=="true")
+uninstallation
+#end 
+process is now complete.
+<br>
+#if ($filestore_installed=="true")
+The filestore may now be accessed from <a href="$input_tomcat_url$input_filestore_contextpath">$input_tomcat_url$input_filestore_contextpath</a>.
+<br>
+#end
+
+#if ($properties_saved=="true")
+Your configuration properties have been saved to $input_saveProperties_file.  These may be reused
+by reloading them when prompted by the installer or by executing this installer
+from the commandline<BR>
+<tt>
+    java -jar (installer) -p $input_saveProperties_file
+</tt><br>
+#end
+
+For further information consult the AstroGrid website <a href="http://www.astrogrid.org">http://www.astrogrid.org</a> or
+email <a href="mailto:jdt@roe.ac.uk">jdt@roe.ac.uk</a>.

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VODescription
+  xmlns="http://www.ivoa.net/xml/VOResource/v0.9"
+  xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="vr:ServiceType">
+    <Identifier>
+      <AuthorityID>@REGAUTHORITY@</AuthorityID>
+      <ResourceKey>@REGKEY@</ResourceKey>
+    </Identifier>
+    <Title>Filestore Service Entry</Title>
+    <Summary>
+      <Description>
+         VoStore filestore service.
+      </Description>
+      <ReferenceURL>http://www.astrogrid.org/maven/docs/HEAD/filestore</ReferenceURL>
+    </Summary>
+    <Type>Archive</Type>
+    <Curation>
+      <Publisher>
+         <Title>Filestore Service</Title>
+      </Publisher>    
+      <Contact>
+        <Name>John Taylor</Name>
+        <Email>jdt@roe.ac.uk</Email>
+      </Contact>
+      <Creator>
+        <Name>John Taylor</Name>
+      </Creator>
+      <Contributor>
+        <Name>Dave Morris</Name>
+      </Contributor>
+      <Contributor>
+        <Name>Kevin Benson</Name>
+      </Contributor>     
+    </Curation>
+    <Subject>Users VOSpace</Subject>
+    <Interface>
+      <Invocation>WebService</Invocation>
+      <AccessURL use="base">@SERVICEURL@</AccessURL>
+    </Interface>
+  </vr:Resource>
+</VODescription>

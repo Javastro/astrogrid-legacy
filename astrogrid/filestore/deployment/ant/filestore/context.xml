@@ -1,0 +1,31 @@
+<Context path="@FILESTORE_WEBAPP@">
+    <Environment
+        name="org.astrogrid.filestore.service.name"
+        override="false" type="java.lang.String"
+        value="@FILESTORE_NAME@"/>
+    <Environment
+        name="@FILESTORE_NAME@.service.ivorn"
+        override="false" type="java.lang.String"
+        value="@FILESTORE_IVORN@"/>
+    <Environment
+        name="@FILESTORE_NAME@.service.url"
+        override="false" type="java.lang.String"
+        value="@FILESTORE_URL@"/>
+    <Environment
+        name="@FILESTORE_NAME@.repository"
+        override="false" type="java.lang.String"
+        value="@FILESTORE_REPO@"/>
+        
+        
+        
+        <!--	
+	# The identifier for FileStore one.
+	org.astrogrid.filestore-one.service.ivorn=ivo://@REGAUTHORITY@/filestore-one
+	#
+	# The access URL for FileStore one.
+	org.astrogrid.filestore-one.service.url=@TOMCATROOT@/astrogrid-filestore-one-@VERSION@/filestore
+	#
+	# The local repository for FileStore one.
+	org.astrogrid.filestore-one.repository=@WORKDIR@/filestore-one/repository
+-->
+</Context>
