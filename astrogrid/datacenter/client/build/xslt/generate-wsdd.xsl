@@ -16,7 +16,7 @@ the adql package, mangle serializer and deserializer attributes
 <xsl:template match="node()">
     <xsl:choose>
     <!-- change typemappings to use castor serializers -->
-    <xsl:when test="name() = 'typeMapping' and contains(@type,'org.astrogrid.datacenter.adql.generated')">
+    <xsl:when test="name() = 'typeMapping' and (contains(@type,'org.astrogrid.datacenter.adql.generated') or contains(@type,'org.astrogrid.datacenter.axisdataserver.types'))">
         <xsl:copy>
             <xsl:copy-of select="@*[not(name()='serializer' or name()='deserializer')]" />
             <xsl:attribute name="serializer">org.apache.axis.encoding.ser.castor.CastorSerializerFactory</xsl:attribute>

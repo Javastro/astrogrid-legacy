@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<binding defaultBindingType="type" xmlns="http://www.castor.org/SourceGenerator/Binding">
+  <package>
+    <name>org.astrogrid.datacenter.adql.generated</name>
+    <namespace>http://tempuri.org/adql</namespace>
+  </package>
+  <package>
+    <name>org.astrogrid.datacenter.axisdataserver.types</name>
+    <namespace>http://www.astrogrid.org/datacenter/It04/dataserver/v1/types</namespace>
+  </package>
+</binding>

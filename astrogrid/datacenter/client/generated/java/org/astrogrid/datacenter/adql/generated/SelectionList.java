@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: SelectionList.java,v 1.2 2003/11/17 12:12:28 nw Exp $
+ * $Id: SelectionList.java,v 1.3 2003/11/18 14:21:03 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class SelectionList.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/11/17 12:12:28 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/18 14:21:03 $
  */
 public class SelectionList extends org.astrogrid.datacenter.adql.generated.Selection 
 implements java.io.Serializable

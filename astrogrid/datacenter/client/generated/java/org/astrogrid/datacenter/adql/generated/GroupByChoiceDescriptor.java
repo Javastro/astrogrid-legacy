@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: GroupByChoiceDescriptor.java,v 1.2 2003/11/17 12:12:28 nw Exp $
+ * $Id: GroupByChoiceDescriptor.java,v 1.3 2003/11/18 14:21:03 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class GroupByChoiceDescriptor.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/11/17 12:12:28 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/18 14:21:03 $
  */
 public class GroupByChoiceDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
