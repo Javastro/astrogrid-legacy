@@ -467,6 +467,8 @@ this.readToolList(); // temp PJN
             try {
                 
                 // 22nd April 2004.JBL note. This is Jeff's quick fix...
+                // fullUserid contains something like...
+                // ivo://org.atrogrid.localhost/frog
                 String fullUserid = (String)session.getAttribute( USER_TAG );
                 this.userid = fullUserid.substring( fullUserid.lastIndexOf('/')+1 );
                 this.community = fullUserid.substring( fullUserid.indexOf('/')+2, fullUserid.lastIndexOf('/') );
@@ -495,10 +497,8 @@ this.readToolList(); // temp PJN
                 credentials.setGroup( group );
                 credentials.setSecurityToken( "dummy" );
                 
-                this.user = new User();
-                user.setAccount( this.userid );
-                user.setGroup( this.group );
-                user.setToken( this.token );
+                //JL Late change - 26/04/2004
+                this.user = new User( this.userid, this.community, this.group, this.token );
                      
             }
             finally {

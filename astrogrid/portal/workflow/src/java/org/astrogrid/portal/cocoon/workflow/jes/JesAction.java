@@ -299,10 +299,8 @@ public class JesAction extends AbstractAction {
 		                credentials.setGroup( group );
 		                credentials.setSecurityToken( "dummy" );
 		                
-		                this.user = new User();
-		                user.setAccount( this.userid );
-		                user.setGroup( this.group );
-		                user.setToken( this.token );
+                        //JL Late change - 26/04/2004
+                        this.user = new User( this.userid, this.community, this.group, this.token );
 		                     
 		            }
 		            finally {
