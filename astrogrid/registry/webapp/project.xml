@@ -193,7 +193,11 @@
 
         </unitTest>
     </build>
-    <reports/> <!--no reports for this project-->
+    <reports>
+        <report><!--few reports for this subproject-->
+            maven-changelog-plugin
+        </report>
+    </reports>
 </project>
 
 
