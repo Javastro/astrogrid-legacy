@@ -1,4 +1,4 @@
-/*$Id: JavaClassParameterAdapter.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: JavaClassParameterAdapter.java,v 1.3 2004/07/23 08:03:05 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,7 +41,7 @@ public class JavaClassParameterAdapter extends DefaultParameterAdapter {
     public Object process() throws CeaException {
         String result = (String)super.process(); // we know super always returns a string.
         Class targetClass = ((JavaClassParameterDescription)description).getTargetClass();
-        return ConvertUtils.convert(result,targetClass);
+        return ConvertUtils.convert(result.trim(),targetClass); //remove trailing white space, as it seems to change the conversion process. (e.g. '2/n' => 0), which isn't good.
     }
 
 }
@@ -49,6 +49,9 @@ public class JavaClassParameterAdapter extends DefaultParameterAdapter {
 
 /* 
 $Log: JavaClassParameterAdapter.java,v $
+Revision 1.3  2004/07/23 08:03:05  nw
+fixed bug in conversion from string
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization
