@@ -557,13 +557,13 @@ h6 {
                         <xsl:variable name="improvements" select="$insamepackage/testcase[not(error|failure) and baseline[@name=current()/baseline-name]/@failure=1]"/>
                         <xsl:choose>
                                 <xsl:when test="$regressions and $improvements">
-                                        <span class="change"><nobr><xsl:value-of select="baseline-name"/> </nobr></span>
+                                        <span class="change"><nobr><xsl:value-of select="baseline-name"/></nobr></span><br />
                                 </xsl:when>
                                 <xsl:when test="$regressions">
-                                        <span class="regression"><nobr><xsl:value-of select="baseline-name" /> </nobr></span>
+                                        <span class="regression"><nobr><xsl:value-of select="baseline-name" /></nobr></span><br />
                                 </xsl:when>
                                 <xsl:when test="$improvements">
-                                        <span class="improvement"><nobr><xsl:value-of select="baseline-name" /> </nobr></span>
+                                        <span class="improvement"><nobr><xsl:value-of select="baseline-name" /></nobr></span><br />
                                 </xsl:when>
                         </xsl:choose>
                     </xsl:for-each>
@@ -725,13 +725,13 @@ h6 {
                 <xsl:variable name="improvements" select="../testcase[not(error|failure) and baseline[@name=current()/@name]/@failure=1]"/>
                 <xsl:choose>
                         <xsl:when test="$regressions and $improvements">
-                                <span class="change"><nobr><xsl:value-of select="@name"/> </nobr></span>
+                                <span class="change"><nobr><xsl:value-of select="@name"/> </nobr></span><br />
                         </xsl:when>
                         <xsl:when test="$regressions">
-                                <span class="regression"><nobr><xsl:value-of select="@name" /> </nobr></span>
+                                <span class="regression"><nobr><xsl:value-of select="@name" /> </nobr></span><br />
                         </xsl:when>
                         <xsl:when test="$improvements">
-                                <span class="improvement"><nobr><xsl:value-of select="@name" /> </nobr></span>
+                                <span class="improvement"><nobr><xsl:value-of select="@name" /> </nobr></span><br />
                         </xsl:when>
                 </xsl:choose>
 
