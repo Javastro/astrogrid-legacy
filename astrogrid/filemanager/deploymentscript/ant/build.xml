@@ -17,12 +17,12 @@
     	<property file="${input.loadProperties.file}"/>
     </target>
 
-	<target name="install" description="Install FileManager" depends="checkTomcat, download, deploy, check-installed-ok">
+	<target name="install" description="Install FileManager" depends="checkTomcat, download, deploy">
 	        <echo>***The filemanager has been successfully installed***</echo>
 	    	<property name="filemanager.installed" value="true"/>
     </target>		
 	
-	<target name="register" description="Register this FileManager" depends="checkRegistry, get-registry-keys,set-context-path">
+	<target name="register" description="Register this FileManager" depends="define-custom-tasks,checkRegistry, get-registry-keys,set-context-path">
 		<echo>Registering the filemanager...</echo>
 		<echo>Registering ${input.filemanager.regkey} under authority ${input.filemanager.regauthority} with service URL ${filemanager.service.url}</echo>
 		<input addproperty="input.contact.name" defaultvalue="John Taylor">Please enter a contact name</input>
@@ -43,7 +43,7 @@
 		<echo>This filemanager has been registered in ${astrogrid.registry.endpoint}</echo>
 	</target>
 	
-	<target name="remove" description="Remove FileManager" depends="checkTomcat,  undeploy, check-uninstalled-ok">
+	<target name="remove" description="Remove FileManager" depends="checkTomcat,  undeploy">
     	<sleep seconds="10" description="Allow Tomcat to catch up"/>
         <echo>***The filemanager has been successfully removed***</echo>
     	<property name="filemanager.uninstalled" value="true"/>
@@ -64,8 +64,8 @@
 	</target>
 		
     <target name="checkTomcat" depends="fail-if-no-tomcat,get-tomcat-url">
-        <input addProperty="input.tomcat.manager.user" defaultvalue="admin"> Please enter the Tomcat manager username </input>
-        <input addProperty="input.tomcat.manager.pass" defaultvalue="admin"> Please enter the Tomcat manager password </input>
+        <input addProperty="input.tomcat.manager.user" defaultvalue="tomcat"> Please enter the Tomcat manager username </input>
+        <input addProperty="input.tomcat.manager.pass" defaultvalue="tomcat"> Please enter the Tomcat manager password </input>
         <echo>Attempting to contact Tomcat Manager...</echo>
         <tempfile property="page.check"/>
         <property name="tomcat.manager.url" value="${input.tomcat.url}/manager"/>
@@ -78,9 +78,9 @@
 	</target>
 
 	<target name="fail-if-no-tomcat">
-		<input addProperty="input.tomcat.present" validargs="yes,no"> Is Tomcat running on your system with the Manager app enabled? </input>
+		<input addProperty="input.tomcat.present" validargs="continue,abort"> Pleas ensure that Tomcat is running on your system with the Manager app enabled. </input>
         <condition property="tomcat.present.true">
-	            <equals arg1="${input.tomcat.present}" arg2="yes"/>
+	            <equals arg1="${input.tomcat.present}" arg2="continue"/>
         </condition>
         <fail message="Please start Tomcat and retry the installation" unless="tomcat.present.true"/>
 	</target>
@@ -94,7 +94,7 @@
     </target>
 
 	
-    <target name="deploy" depends="createTmpDir,checkTomcat,download,update-war,set-context-path">
+    <target name="deploy" depends="createTmpDir,checkTomcat,download,update-war,set-context-path,define-custom-tasks">
         <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
             path="${input.filemanager.contextpath}" war="${local.filemanager.war}" />
     </target>
@@ -104,7 +104,7 @@
 		<property name="filemanager.service.url" value="${input.tomcat.url}${input.filemanager.contextpath}/services/FileManagerPort"/>
 	</target>
 	
-    <target name="undeploy" depends="checkTomcat,set-context-path">
+    <target name="undeploy" depends="checkTomcat,set-context-path,define-custom-tasks">
         <tomcat-remove url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
             path="${input.filemanager.contextpath}"  />
     </target>   
@@ -177,17 +177,18 @@
     </target>
  
 
-	
-	<!-- Configure the custom Ant tasks for the Manager application -->
-    <taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" />
-    <taskdef name="tomcat-install" classname="org.apache.catalina.ant.InstallTask" />
-    <taskdef name="tomcat-list" classname="org.apache.catalina.ant.ListTask" />
-    <taskdef name="tomcat-reload" classname="org.apache.catalina.ant.ReloadTask" />
-    <taskdef name="tomcat-remove" classname="org.apache.catalina.ant.RemoveTask" />
-    <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" />
-    <taskdef name="tomcat-roles" classname="org.apache.catalina.ant.RolesTask" />
-    <taskdef name="tomcat-start" classname="org.apache.catalina.ant.StartTask" />
-    <taskdef name="tomcat-stop" classname="org.apache.catalina.ant.StopTask" />
-    <taskdef name="tomcat-undeploy" classname="org.apache.catalina.ant.UndeployTask" />
-    <taskdef name="register-entry" classname="org.astrogrid.deployment.RegistryLoaderTask"/>
+	<target name="define-custom-tasks" unless="custom.tasks.defined">
+		<!-- Configure the custom Ant tasks for the Manager application -->
+	    <taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" />
+	    <taskdef name="tomcat-install" classname="org.apache.catalina.ant.InstallTask" />
+	    <taskdef name="tomcat-list" classname="org.apache.catalina.ant.ListTask" />
+	    <taskdef name="tomcat-reload" classname="org.apache.catalina.ant.ReloadTask" />
+	    <taskdef name="tomcat-remove" classname="org.apache.catalina.ant.RemoveTask" />
+	    <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" />
+	    <taskdef name="tomcat-roles" classname="org.apache.catalina.ant.RolesTask" />
+	    <taskdef name="tomcat-start" classname="org.apache.catalina.ant.StartTask" />
+	    <taskdef name="tomcat-stop" classname="org.apache.catalina.ant.StopTask" />
+	    <taskdef name="tomcat-undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+	    <taskdef name="register-entry" classname="org.astrogrid.deployment.RegistryLoaderTask"/>
+	</target>
 </project>
