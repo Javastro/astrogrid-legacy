@@ -38,7 +38,7 @@ the file into a text box, below.
   <tr>
     <td>File:</td>
     <td><input name="file" type="text"
-      value="newfile" size=20></td>
+      value="/clq@lei/serv1/workflow/newfile" size=40></td>
   </tr>
 
   <tr>
@@ -75,8 +75,8 @@ Return to the <a href="functions.html">MySpace Service Test</a> page.
 <h2>Notes</h2>
 
 <p>
-You should supply the MySpace name of the file without a container path.
-The file will be created in the standard <code>workflow</code> container.
+You should supply the full MySpace name of the destination file or
+container, with a complete container path.
 </p>
 
 <p>

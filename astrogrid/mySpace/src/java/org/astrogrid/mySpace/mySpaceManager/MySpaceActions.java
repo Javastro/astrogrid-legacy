@@ -1995,6 +1995,10 @@ public class MySpaceActions
 
          deleteOk = this.deleteDataHolder(userID, communityID,
            credentials, existingId);
+
+         if (deleteOk)
+         {  logger.appendMessage(dataItemName + " overwritten.");
+         }
       }
 
       return deleteOk;
