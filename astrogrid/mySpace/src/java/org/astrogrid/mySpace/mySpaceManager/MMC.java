@@ -26,7 +26,7 @@ public class MMC extends Configurator {
   /**
    * JNDI name of URL of config file
    */
-  private static final String JNDI_NAME ="java:comp/env/mmcConfigFileURL";
+  private static final String JNDI_NAME ="java:comp/env/org.astrogrid.mySpace.config.url";
 
   public static final String 
 	/** Three letter acronym for this subsystem within the overall AstroGrid system... 
