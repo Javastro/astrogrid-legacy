@@ -1,4 +1,4 @@
-/* $Id: JobControllerTest.java,v 1.1 2003/10/29 16:42:52 jdt Exp $
+/* $Id: JobControllerTest.java,v 1.2 2003/11/10 10:48:26 anoncvs Exp $
  * Created on 29-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,14 +11,9 @@ package org.astrogrid.jes.jobcontroller;
 
 //import org.astrogrid.AstroGridException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import junit.framework.TestCase;
+
+import org.astrogrid.jes.testutils.io.FileResourceLoader;
 
 /**
  * Test class for the JobController
@@ -49,7 +44,7 @@ public class JobControllerTest extends TestCase {
    */
   protected final void setUp() throws Exception {
     super.setUp();
-    goodJobXML = getResourceAsString("submit-job.xml", this.getClass());
+    goodJobXML = new FileResourceLoader(this).getResourceAsString("submit-job.xml");
   }
 
   /**
@@ -92,48 +87,13 @@ public class JobControllerTest extends TestCase {
     JobController jobController = new JobController();
     String result = jobController.submitJob(goodJobXML);
   }
-  /**
-   * load a resource file into a string - pinched from datacenter test code
-   * @param resource file to be found
-   * @param callee a class in the same directory as the resource we're after
-   * @return contents of that file as a string
-   * @throws IOException if something goes pear shaped trying to find the file
-   * @TODO refactor this away
-   */
-  private static String getResourceAsString(
-    final String resource,
-    final Class callee)
-    throws IOException {
-    InputStream is = callee.getResourceAsStream(resource);
-    assertNotNull(is);
-    String script = streamToString(is);
-    return script;
-  }
-  /**
-   * Takes the contents of an InputStream and turns it into a string
-   * @param is said InputStream
-   * @return said String
-   * @throws IOException if there's a problem with the InputStream
-   */
-  private static String streamToString(final InputStream is)
-    throws IOException {
-    BufferedReader r = new BufferedReader(new InputStreamReader(is));
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    String line = null;
-    while ((line = r.readLine()) != null) {
-      pw.println(line);
-    }
-    pw.close();
-    r.close();
-    String str = sw.toString();
-    assertNotNull(str);
-    return str;
-  }
 }
 
 /*
 *$Log: JobControllerTest.java,v $
+*Revision 1.2  2003/11/10 10:48:26  anoncvs
+*Refactored out some of the nonsense into a separate class.
+*
 *Revision 1.1  2003/10/29 16:42:52  jdt
 *Initial commit of some JobController test files, and mods to the config file
 *so that they get picked up.
