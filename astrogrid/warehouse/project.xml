@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
@@ -71,6 +71,12 @@
       <version>SNAPSHOT</version>
     </dependency>
       -->
+      <!-- TEMP FIX -->
+    <dependency>
+      <groupId>astrogrid-datacenter</groupId>
+      <artifactId>astrogrid-datacenter-server</artifactId>
+      <version>TEMP</version>
+    </dependency>
 
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
@@ -83,11 +89,6 @@
     <dependency>
       <id>astrogrid-mySpace</id>
       <version>SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <id>astrogrid-datacenter-server</id>
-      <version>TEMP</version>
     </dependency>
 
     <!-- more standard deps -->
