@@ -116,3 +116,26 @@
         popUpWin = open(URLStr, 'popUpWin', 'toolbar=no,location=no,directories=no,status=no,menub ar=no,scrollbar=yes,resizable=yes,copyhistory=yes,width='+width+',height='+height+',left='+left+', top='+top+',screenX='+left+',screenY='+top+'');
     }
     
+    
+    function toggleColumn(jobIdColumn)
+    {
+        var i, id, target;
+        for (i = 0; (link = document.links[i]); i++) 
+        {              
+            if (/\bjobIdColumn\b/.exec(link.className)) 
+            {
+                if (link.href == "javascript:void(0);") 
+                {
+                    toggle("full_column_heading");
+                    toggle("short_column_heading");
+                }
+                else
+                {
+                    id = link.href.substring((link.href.lastIndexOf("jes")),(link.href.length));
+                    toggle("full_"+id);
+                    toggle("short_"+id);
+                }
+            }
+        }
+    }
+    
