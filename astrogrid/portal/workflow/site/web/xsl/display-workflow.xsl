@@ -45,9 +45,21 @@
 
     <xsl:template match="*"> 
         <tr>
+<xsl:if test="name() = 'sequence'">
             <xsl:call-template name="format-cells">
                 <xsl:with-param name="count" select="count(ancestor::*)"/>
             </xsl:call-template>                    
+</xsl:if>
+<xsl:if test="name() = 'flow'">
+            <xsl:call-template name="format-cells">
+                <xsl:with-param name="count" select="count(ancestor::*)"/>
+            </xsl:call-template>                    
+</xsl:if> 
+<xsl:if test="name() = 'step'">
+            <xsl:call-template name="format-cells">
+                <xsl:with-param name="count" select="count(ancestor::*)"/>
+            </xsl:call-template>                    
+</xsl:if>            
             <td valign="top" align="left">            
                 <xsl:choose>                                      
                     <xsl:when test="name() = 'sequence'">  <!--  SEQUENCE -->         
