@@ -1,4 +1,4 @@
-/* $Id: FactoryManager.java,v 1.5 2003/08/25 22:00:55 mch Exp $
+/* $Id: FactoryManager.java,v 1.6 2003/08/27 22:40:13 mch Exp $
  * Created on 19-Aug-2003
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -59,7 +59,7 @@ public class FactoryManager implements FactoryProvider {
         return queryFactoryMap.containsKey(catalogName);
     }
     /** check that all factories are present
-     * TODO - produce a proper astrogrid message for this.
+     * @todo - produce a proper astrogrid message for this.
      * @throws DatacenterException if any factory field is set to null
      */
     public void verify() throws AstroGridException {
@@ -125,6 +125,9 @@ public class FactoryManager implements FactoryProvider {
 }
 /*
  * $Log: FactoryManager.java,v $
+ * Revision 1.6  2003/08/27 22:40:13  mch
+ * todo javadocced
+ *
  * Revision 1.5  2003/08/25 22:00:55  mch
  * Removed DatacenterException
  *

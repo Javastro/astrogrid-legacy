@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterStatusListener.java,v 1.3 2003/08/27 17:34:29 mch Exp $
+ * $Id: DatacenterStatusListener.java,v 1.4 2003/08/27 22:40:28 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -13,7 +13,7 @@ package org.astrogrid.datacenter.delegate;
  * will be informed when the status of the job changes, rather than having to
  * poll the service.
  *
- * ToDo: probably a proper typesafe enumeration of the states
+ * @todo probably need a proper typesafe enumeration of the states.
  *
  * @author M Hill
  */
@@ -39,6 +39,9 @@ public interface DatacenterStatusListener
 
 /*
 $Log: DatacenterStatusListener.java,v $
+Revision 1.4  2003/08/27 22:40:28  mch
+todo javadocced
+
 Revision 1.3  2003/08/27 17:34:29  mch
 Comment etc changes after reading Maven report :-)
 
