@@ -18,27 +18,15 @@
    /**
     * Runs ADQL query from given ADQL string
     */
-   Document adqlXml = DomHelper.newDocument(new StringBufferInputStream(request.getParameter("AdqlXml")));
+   String adqlXml = request.getParameter("AdqlXml");
+   Document adqlDom = DomHelper.newDocument(new StringBufferInputStream(adqlXml));
    
-   
-   /* Direct server call - and why not? */
    try {
-     Document votable = server.askAdql(Account.ANONYMOUS, ADQLUtils.unmarshalSelect(adqlXml)).toVotable();
-      
-     XMLUtils.DocumentToWriter(votable, out);
-      
-   } catch (Exception e) {
-      LogFactory.getLog("searchCone").error("askAdqlXml failed", e);
-      //this should probably be a VOtable error...
-      out.println("<html>");
-      out.println("<head><title>Ask ADQL XML Failed</title></head>");
-      out.println("<body>");
-      out.println("<H1>SERVER ERROR</H1>");
-      out.println("<pre>");
-      e.printStackTrace(new PrintWriter(out));
-      out.println("</pre>");
-      out.println("</body>");
-      out.println("</html>");
+     server.askAdql(Account.ANONYMOUS, ADQLUtils.unmarshalSelect(adqlDom)).toVotable(out);
+   }
+   catch (Exception e) {
+      LogFactory.getLog(request.getContextPath()).error(e);
+      out.write(server.exceptionAsHtml("Asking ADQL/sql ", e, adqlXml));
    }
 
 %>

@@ -1,38 +1,39 @@
-<%@ page import="java.io.*,
-       java.net.URL,
+<% // NB Don't allow any blank lines to be printed before the results %><%@ page import="java.io.*,
        org.w3c.dom.*,
-       org.apache.axis.utils.XMLUtils,
-       org.astrogrid.datacenter.delegate.*,
+       org.apache.commons.logging.LogFactory,
        org.astrogrid.io.*,
-       org.astrogrid.community.User,
-       org.astrogrid.datacenter.adql.generated.*"
+       org.astrogrid.community.Account,
+       org.astrogrid.datacenter.service.DataServer"
    isThreadSafe="false"
    session="false"
    contentType="text/xml"
-%>
-
-<%@ page language="java" %>
-
-<%
-   /**
-    * Simple image access protocol
+%><%@ page language="java" %><%!
+    DataServer server = new DataServer();
+%><%
+   /*
+    * Simple image access protocol - similar to cone search but different
+    * (and awkward) position format for some wierd reason.
     */
-   
-   String pos = request.getParameter("POS");
-   String size = request.getParameter("SIZE");
-   String formatList = request.getParameter("FORMAT");
+   try {
+      String pos = request.getParameter("POS");
+      double size = Double.parseDouble(request.getParameter("SIZE"));
+      String formatList = request.getParameter("FORMAT");
 
-   int comma = pos.indexOf(",");
-   String ra = pos.substring(0,comma);
-   String dec = pos.substring(comma+1);
-   
-   URL serviceURL = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath() + "/services/AxisDataServer");
+      int comma = pos.indexOf(",");
+      double ra = Double.parseDouble(pos.substring(0,comma));
+      double dec = Double.parseDouble(pos.substring(comma+1));
+      
+      try {
+         out.write(server.searchCone(Account.ANONYMOUS, ra, dec, size));
+      } catch (Exception e) {
+         LogFactory.getLog(request.getContextPath()).error(e);
+         out.write(server.exceptionAsHtml("SIAP; Searching Cone (RA="+ra+", DEC="+dec+", SIZE="+size+", FORMAT="+formatList, e));
+      }
+      
+   } catch (NumberFormatException e) {
+      out.write(server.exceptionAsHtml("Input Error", e));
+   }
 
-   ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(serviceURL.toString());
-
-   InputStream results = delegate.coneSearch(Double.parseDouble(ra), Double.parseDouble(dec), Double.parseDouble(size));
-
-   Piper.bufferedPipe(new InputStreamReader(results), (Writer) out);
 
 %>
 
