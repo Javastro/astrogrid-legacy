@@ -1,5 +1,5 @@
 /*
- * $Id: TaskStatus.java,v 1.2 2004/10/05 15:04:00 mch Exp $
+ * $Id: TaskStatus.java,v 1.1 2004/10/08 15:14:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -55,6 +55,9 @@ public interface TaskStatus
 
 /*
 $Log: TaskStatus.java,v $
+Revision 1.1  2004/10/08 15:14:59  mch
+Moved from server to client
+
 Revision 1.2  2004/10/05 15:04:00  mch
 Added Queued
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SelfMonitorBody.java,v 1.5 2004/10/06 21:12:17 mch Exp $
+ * $Id: SelfMonitorBody.java,v 1.1 2004/10/08 15:14:59 mch Exp $
  */
 
 package org.astrogrid.status;
@@ -25,8 +25,12 @@ public class SelfMonitorBody  {
             "<tr><td align='right'>Free<td><td align='right'>"+status.getFreeMemory()+"</td></tr>"+
             "<tr><td align='right'>Max<td><td align='right'>"+status.getMaxMemory()+"</td></tr>"+
             "<tr><td align='right'>Total<td><td align='right'>"+status.getTotalMemory()+"</td></tr>"+
-            "</table></p>"+
-            "<h3>Tasks</h3>"+
+            "</table></p>");
+
+      TaskStatus[] tasks = status.getTasks();
+   
+      out.write(
+            "<h3>Tasks ("+(tasks.length)+")</h3>"+
             "<table>"+
             "<tr>"+
             "<th>Query</th>"+
@@ -35,12 +39,8 @@ public class SelfMonitorBody  {
             "<th>State</th>"+
             "</tr>");
       
-      TaskStatus[] qStatuses = status.getTasks();
-      
-      out.write("<p>Queries: "+ qStatuses.length+"</p>");
-      
-      for (int i=0;i<qStatuses.length;i++) {
-         writeTaskStatusRow(out, qStatuses[i]);
+      for (int i=0;i<tasks.length;i++) {
+         writeTaskStatusRow(out, tasks[i]);
       }
       
       out.write(

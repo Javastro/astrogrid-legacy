@@ -1,16 +1,23 @@
 /*
- * $Id: Monitor.java,v 1.3 2004/10/05 19:21:41 mch Exp $
+ * $Id: Monitor.java,v 1.1 2004/10/08 15:14:59 mch Exp $
  */
 
 package org.astrogrid.status.monitor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.Enumeration;
 import java.util.Vector;
+import javax.xml.rpc.ServiceException;
+import javax.xml.rpc.encoding.XMLType;
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import org.astrogrid.status.ServiceStatus;
 import org.astrogrid.util.TimeStamp;
 
 /**
@@ -23,7 +30,11 @@ public class Monitor  {
 
    Vector datacenters = null;
    Vector ceaServices = null;
- 
+
+   final static String ERR_COLOUR = "#FF0000";
+   final static String OK_COLOUR = "#00FF00";
+   final static String WARN_COLOUR = "#FFFF00";
+   
    /** Set up with default list of datacenters */
    protected void initialise() {
       datacenters = new Vector();
@@ -35,6 +46,11 @@ public class Monitor  {
       datacenters.add("http://astrogrid.roe.ac.uk:8080/pal-twomass");
       datacenters.add("http://zhumulangma.star.le.ac.uk:8080/astrogrid-pal-SNAPSHOT");
       datacenters.add("http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-pal-fits-SNAPSHOT");
+      datacenters.add("http://ag01.ast.cam.ac.uk:8080/astrogrid-pal-Itn05_release");
+      datacenters.add("http://twmbarlwm.star.le.ac.uk:8888/astrogrid-pal-SNAPSHOT");
+      datacenters.add("http://twmbarlwm.star.le.ac.uk:8888/astrogrid-pal-fits-SNAPSHOT");
+      datacenters.add("http://twmbarlwm.star.le.ac.uk:8888/astrogrid-pal-cds-SNAPSHOT");
+      datacenters.add("http://twmbarlwm.star.le.ac.uk:8888/astrogrid-pal-sec-SNAPSHOT");
          
       ceaServices = new Vector();
       ceaServices.add("http://grendel12.roe.ac.uk:8080/pal-6df");
@@ -60,7 +76,7 @@ public class Monitor  {
       out.print("<h3>Datacenters</h3>");
       out.print("<table>"+
                    "<tr>"+
-                   "<th>Endpoint</th><th>Status</th>"+
+                   "<th>Endpoint</th><th>JSP</th><th>SOAP</th>"+
                    "</tr>");
       
       Enumeration datacenter = datacenters.elements();
@@ -79,23 +95,62 @@ public class Monitor  {
       out.println("<tr>");
       out.println("<td><a href='"+endpoint+"'>"+endpoint+"</a></td>");
       try {
+         //test JSP connection
          TimeStamp timestamp = new TimeStamp();
          URL url = new URL(endpoint+"/serverStatus.jsp");
          InputStream in = url.openStream();
-         //could parse it but can't be bothered just now. Should really do
-         //something more sensible anyway
-         String bgcolor="#00FF00";
-         if (timestamp.getSecsSince()>5) { bgcolor="#FFFF00"; }
+         String bgcolor=OK_COLOUR;
+         if (timestamp.getSecsSince()>5) { bgcolor=WARN_COLOUR; }
          out.println("<td bgcolor='"+bgcolor+"'>"+timestamp.getSecsSince()+"s</td>");
       }
       catch (MalformedURLException mue) {
-         out.println("<td bgcolor='#FF0000'>"+mue.getMessage()+"</td>");
+         out.println("<td bgcolor='"+ERR_COLOUR+"'>"+mue.getMessage()+"</td>");
       }
       catch (IOException ioe) {
-         out.println("<td bgcolor='#FF0000'>"+ioe.getMessage()+"</td>");
+         out.println("<td bgcolor='"+ERR_COLOUR+"'>"+ioe.getMessage()+"</td>");
       }
-      out.println("</tr>");
+         
+      //test SOAP connection
+      try {
+         TimeStamp timestamp = new TimeStamp();
+         ServiceStatus status = getDatacenterStatus(endpoint);
+         out.println("<td bgcolor='"+OK_COLOUR+"'>"+timestamp.getSecsSince()+"s</td>");
+      }
+      catch (ServiceException e) {
+         out.println("<td bgcolor='"+ERR_COLOUR+"'>"+e+"</td>");
+      }
+      catch (RemoteException e) {
+         out.println("<td bgcolor='"+ERR_COLOUR+"'>"+e+"</td>");
+      }
+         
+      out.println("</tr>\n");
       
+   }
+   
+   public static ServiceStatus getDatacenterStatus(String endpoint) throws ServiceException, RemoteException {
+      Service  service = new Service();
+      Call     call    = (Call) service.createCall();
+      
+      call.setTargetEndpointAddress( endpoint+"/services/AxisDataService06");
+      call.setOperationName("getServiceStatus");
+      
+      //call.setReturnType( XMLType.XSD_STRING );
+      
+      Object response = call.invoke( new Object[] {  } );
+      
+      return null;
+   }
+   
+   public static String getSimpleDatacenterStatus(String endpoint) throws ServiceException, RemoteException {
+      Service  service = new Service();
+      Call     call    = (Call) service.createCall();
+      
+      call.setTargetEndpointAddress( endpoint+"/services/AxisDataService06");
+      call.setOperationName("getSimpleServiceStatus");
+      
+      call.setReturnType( XMLType.XSD_STRING );
+      
+      return (String) call.invoke( new Object[] {  } );
    }
    /*
    public String getCeaStatus(String endpoint) {
@@ -138,5 +193,16 @@ public class Monitor  {
       }
    }
     */
+   
+   /**
+    *
+    */
+   public static void main(String[] args) throws IOException {
+      Monitor m = new Monitor();
+      PrintWriter out =new PrintWriter(new OutputStreamWriter(System.out));
+      out.write("<html><body>");
+      m.writeHtmlTables(out);
+      out.write("</body></html>");
+   }
 }
 
