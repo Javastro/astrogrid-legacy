@@ -293,6 +293,33 @@ public class MySpaceHelper{
 		}
 		return request.toString();
 	}	
+	
+	public String buildContainer(String userid, String communityid, String newContainerName){
+		StringBuffer request = new StringBuffer() ;
+		Vector vector = new Vector();
+		try {		
+			request.append("<request>") ;
+			request.append("<userID>") ;
+			request.append(userid);
+			request.append("</userID>");
+	
+			request.append("<communityID>") ;
+			request.append(communityid);
+			request.append("</communityID>");
+	
+			request.append("<newContainerName>") ;
+			request.append(newContainerName) ;
+			request.append("</newContainerName>") ;			
+	
+			request.append("</request>") ;
+			
+		}
+		catch ( Exception ex ) {
+			System.out.println("MySpaceHelper.buildCreateContainer exception: "+ex.toString());
+			ex.printStackTrace();
+		}
+		return request.toString();
+	}		
 
 	public Vector getList( String xmlRequest ){
 		Vector request = new Vector();

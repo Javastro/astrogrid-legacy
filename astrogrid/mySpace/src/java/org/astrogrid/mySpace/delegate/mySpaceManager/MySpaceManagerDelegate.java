@@ -172,8 +172,7 @@ public class MySpaceManagerDelegate {
 	* @param: fileName: unique file name for Workflow or Query you want to store.
 	* @param: fileContent: content of workflow or data query
 	* @param: category "WF" or "QUERY", if not set, default is "VOTable"
-	* @param: action "Overwrite" or "Append", if not set, default is
-	* "Overwrite"
+	* @param: action "Overwrite" or "Append", if not set, default is "Overwrite"
 	* @return: boolean true if file successfully stored in MySapce false otherwise.
 	*/
 	
@@ -290,15 +289,16 @@ public class MySpaceManagerDelegate {
 		}
 		return (String)value;
 	}		
-			
+	
 	/**
 	 * 
-	 * @param jobDetails: use mySpace/configFiles/MSManagerRequestTemplate.xml to create an xml String by filling in userID/communityID/jobID/newContainerName
+	 * @param userid
+	 * @param communityid
+	 * @param newContainerName
 	 * @return
-	 * @throws Exception
 	 */
-	//public String createContainer(String jobDetails) throws Exception {
-	public String createFolder(String jobDetails) throws Exception {
+	public String createContainer(String userid, String communityid, String newContainerName)throws Exception {
+	//public String createFolder(String jobDetails) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -309,6 +309,8 @@ public class MySpaceManagerDelegate {
 				jre.getLinkedCause().printStackTrace();
 		}
 		try{
+			MySpaceHelper helper = new MySpaceHelper();
+			String jobDetails = helper.buildContainer(userid, communityid, newContainerName);
 			value = binding.createContainer(jobDetails);
 		}catch(java.rmi.RemoteException re) {
 				re.printStackTrace();
@@ -352,7 +354,7 @@ public class MySpaceManagerDelegate {
 	 */
 	//need to delete the second argument and rebuild the delegate supporting classes.
 	
-	public String deleteUser(String userID, Vector servers) throws Exception {
+	public String deleteUser(String userID) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
