@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.16 2004/08/06 12:04:19 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.17 2004/08/24 12:55:09 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -278,20 +278,20 @@ public class StdSqlMaker  extends SqlMaker {
          throw new QueryException("No namespace specified in query document, so don't know what it is");
       }
       else if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
-         xsltDoc = "adql05-2-sql.xsl";
+         xsltDoc = "./xslt/adql05-2-sql.xsl";
       }
       //for some reason this version has never worked
 //      else if (namespaceURI.equals("http://adql.ivoa.net/v0.73")) {
 //         xsltDoc = "adql073-2-sql.xsl";
 //      }
       else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
-         xsltDoc = "adql074-2-sql.xsl";
+         xsltDoc = "./xslt/adql074-2-sql.xsl";
       }
       else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.8")) {
-         xsltDoc = "adql08-2-sql.xsl";
+         xsltDoc = "./xslt/adql08-2-sql.xsl";
       }
       else if (namespaceURI.equals("http://astrogrid.org/sadql/v1.1")) {
-         xsltDoc = "sadql1.1-2-sql.xsl";
+         xsltDoc = "./xslt/sadql1.1-2-sql.xsl";
       }
       
       //look up in config but using above softcoded as defaults
@@ -305,13 +305,14 @@ public class StdSqlMaker  extends SqlMaker {
       Transformer transformer = null;
       try {
          //find specified sheet on classpath/working directory
-         InputStream xsltIn = new BufferedInputStream(StdSqlMaker.class.getResourceAsStream("./xslt/"+xsltDoc));
+         InputStream xsltIn = new BufferedInputStream(StdSqlMaker.class.getResourceAsStream(xsltDoc));
       
          if (xsltIn == null) {
             throw new QueryException("Could not find/create ADQL->SQL transformer doc "+xsltDoc);
          }
          
-         log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at './xslt/"+xsltDoc+"'");
+         //create transformer
+         log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at '"+xsltDoc+"'");
          TransformerFactory tFactory = TransformerFactory.newInstance();
          transformer = tFactory.newTransformer(new StreamSource(xsltIn));
          try {
@@ -322,6 +323,7 @@ public class StdSqlMaker  extends SqlMaker {
             //we don't want to use namespaces anyway so taht's fine
          }
          
+         //transform
          StringWriter sw = new StringWriter();
          transformer.transform(new DOMSource(queryBody), new StreamResult(sw));
          String sql = sw.toString();
@@ -404,6 +406,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.17  2004/08/24 12:55:09  mch
+Minor fixes to xslt translator
+
 Revision 1.16  2004/08/06 12:04:19  mch
 Added unit description to conesearch columns to cope with ESO milliarcseconds (& others in future)
 
