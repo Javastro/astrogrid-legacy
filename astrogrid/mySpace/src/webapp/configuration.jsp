@@ -33,10 +33,10 @@ try {
 %>
 <h3>MySpace Manager</h3>
 <form action="configuration.jsp" method="post">
-Version: <input type="text" name="version" value="<%=MMC.getProperty(MMC.GENERAL_VERSION_NUMBER, MMC.GENERAL_CATEGORY) %>" size="5"/><BR>
-MySpaceManagerURL: <input type="text" name="msm_url" value="<%=MMC.getProperty(MMC.mySpaceManagerLoc,MMC.CATLOG)%>" size="30"/><BR>
-MySpaceServerURL:  <input type="text" name="mss_url" value="<%=MMC.getProperty(MMC.serverManagerLoc,MMC.CATLOG)%>" size="30"/><BR>
-MySpaceServerURLs: <input type="text" name="msss_url" value="<%=MMC.getProperty(MMC.MYSPACEMANAGERURLs,MMC.CATLOG)%>" size="30"/><BR>
+Version: <input type="text" name="version" value="<%=MMC.getProperty(MMC.GENERAL_VERSION_NUMBER, MMC.GENERAL_CATEGORY) %>" size="15"/><BR>
+MySpaceManagerURL: <input type="text" name="msm_url" value="<%=MMC.getProperty(MMC.mySpaceManagerLoc,MMC.CATLOG)%>" size="70"/><BR>
+MySpaceServerURL:  <input type="text" name="mss_url" value="<%=MMC.getProperty(MMC.serverManagerLoc,MMC.CATLOG)%>" size="70"/><BR>
+MySpaceServerURLs: <input type="text" name="msss_url" value="<%=MMC.getProperty(MMC.MYSPACEMANAGERURLs,MMC.CATLOG)%>" size="70"/><BR>
 <button type="submit" >Change</button>
 </form>
 (button is a dummy at the moment - these props are readonly....)
