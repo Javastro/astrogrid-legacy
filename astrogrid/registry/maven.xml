@@ -1,0 +1,16 @@
+<project
+    xmlns:m="jelly:maven"
+    xmlns:j="jelly:core"
+    xmlns:u="jelly:util">
+  <preGoal name="java:compile">
+    <attainGoal name="add-stubs-path"/>
+  </preGoal>
+
+  <goal name="add-stubs-path">
+    <path id="stubs.path">
+      <pathelement location="${basedir}/stubs/java"/>
+    </path>
+
+    <m:addPath id="maven.compile.src.set" refid="stubs.path"/>
+  </goal>
+</project>
