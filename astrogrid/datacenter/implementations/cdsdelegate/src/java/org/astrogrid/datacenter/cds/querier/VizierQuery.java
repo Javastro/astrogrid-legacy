@@ -1,4 +1,4 @@
-/*$Id: VizierQuery.java,v 1.1 2004/03/13 23:40:59 mch Exp $
+/*$Id: VizierQuery.java,v 1.2 2004/08/14 14:28:37 acd Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
 **/
 package org.astrogrid.datacenter.cds.querier;
 
+import org.astrogrid.config.SimpleConfig;
+
 import java.io.IOException;
 import java.io.Writer;
 import org.astrogrid.datacenter.cdsdelegate.vizier.Target;
@@ -20,10 +22,13 @@ import org.astrogrid.datacenter.query.Query;
 import org.w3c.dom.Document;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
+import org.apache.axis.utils.XMLUtils;
+
 
 /** Dataclass that represents a vizier cone search.
  * <p>
- * Contains fields for each of the required or optional search terms that can be passed to vizier.
+ * Contains fields for each of the required or optional search terms
+ * that can be passed to vizier.
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Nov-2003
  *
  */
@@ -43,49 +48,108 @@ public class VizierQuery implements Query {
 
     }
     
-    /** double-dispatch thingie - chooses which query method of the vizier delegate to call, based on which search terms are currently set.
+    /** double-dispatch thingie - 
+     *   chooses which query method of the vizier delegate to call,
+     *   based on which search terms are currently set.
+     *
      * @param delegate - delegate to call method on
-     * @return votable document returned by the delegate
+     * @param out - Writer to which the results returned by the delegate
+     *   are written.
+     *
+     * @todo This method uses the passed VizierDelegate to obtain results
+     *   from Vizier.  Vizier ultimately returns a String.
+     *   VizierDelegate converts this String to a Document.  The present
+     *   method converts this Document back to a String and writes it
+     *   to a Writer.  If VizierDelegate was modified to return Vizier's
+     *   original String the conversion to and from a Document could be
+     *   avoided.  I avoided doing this because I wanted to make no more
+     *   changes than were strictly necessary.  ACD.
      */
-    public Document doDelegateQuery(VizierDelegate delegate, Writer out) throws IOException {
+    public void doDelegateQuery(VizierDelegate delegate, Writer out) 
+      throws IOException {
+       String catalogueName = 
+          SimpleConfig.getProperty(VizierQuerierPlugin.CATALOGUE_NAME);
+
+       System.out.println("catalogueName: " + catalogueName);
+
+       String MetaDataFlag =
+          SimpleConfig.getProperty(VizierQuerierPlugin.METADATA);
+
+       if (MetaDataFlag != null) {
+          if (MetaDataFlag.equalsIgnoreCase("TRUE") ||
+              MetaDataFlag.equalsIgnoreCase("YES") ) {
+             metaData = true;
+          }
+       }
+
+       System.out.println("MetaDataFlag, metaData: " + MetaDataFlag
+         + "  " + metaData);
+
+
        try {
+         Document results = XMLUtils.newDocument();
+         results = null;
+
         //special case for metadata=true and nothing else
         if (metaData && target == null) {
-             return delegate.metaAll();
+             results = delegate.metaAll();
        }
        // always require a Target and radius
        if (target == null || radius == 0.0 || unit == null) {
-          throw new IllegalArgumentException("Must specify target, radius an unit");
+          throw new IllegalArgumentException(
+            "Must specify target, radius an unit");
         }
         if (metaData) {
             if (wavelength == null) {
                 if (additionalTerms == null) {
-                    return delegate.cataloguesMetaData(target,radius,unit);
+
+                    results = delegate.cataloguesMetaData(target,radius,
+                      unit,catalogueName);
+
                 } else {
-                    return delegate.cataloguesMetaData(target,radius,unit,additionalTerms);
+                    results = 
+                      delegate.cataloguesMetaData(target,radius,unit,
+                        additionalTerms);
                 }
             } else {
                 if (additionalTerms == null) {
-                    return delegate.cataloguesMetaData(target,radius,unit,wavelength);
+                    results = 
+                      delegate.cataloguesMetaData(target,radius,unit,
+                        wavelength);
                 } else {
-                    return delegate.cataloguesMetaData(target,radius,unit,wavelength,additionalTerms);
+                    results = delegate.cataloguesMetaData(target,
+                      radius,unit,wavelength,additionalTerms);
                 }
             }
         } else { // non meta-data query
             if (wavelength == null) {
                 if (additionalTerms == null) {
-                    return delegate.cataloguesData(target,radius,unit);
+
+                    results = delegate.cataloguesData(target,radius,unit,
+                      catalogueName);
+
                 } else {
-                    return delegate.cataloguesData(target,radius,unit,additionalTerms);
+                    results = delegate.cataloguesData(target,radius,
+                      unit,additionalTerms);
                 }
             } else {
                 if (additionalTerms == null) {
-                    return delegate.cataloguesData(target,radius,unit,wavelength);
+                    results = delegate.cataloguesData(target,radius,
+                      unit,wavelength);
                 } else {
-                    return delegate.cataloguesData(target,radius,unit,wavelength,additionalTerms);
+                    results = delegate.cataloguesData(target,radius,
+                      unit,wavelength,additionalTerms);
                 }
             }
         }
+
+        if (results != null) {
+           out.write( XMLUtils.DocumentToString(results) );
+        } else {
+           throw new RuntimeException(
+             "No results obtained from Vizier.");
+        }
+
        }
        catch (ParserConfigurationException e) {
           throw new RuntimeException("Vizier not configured properly: "+e, e);
@@ -93,7 +157,9 @@ public class VizierQuery implements Query {
        catch (SAXException e) {
           throw new RuntimeException("Vizier error: "+e, e);
        }
-    }
+
+       return;
+   }
 
    
     
@@ -152,6 +218,20 @@ public class VizierQuery implements Query {
 
 /*
 $Log: VizierQuery.java,v $
+Revision 1.2  2004/08/14 14:28:37  acd
+Fix the Vizier proxy to correctly perform cone searches.
+
+Revision 1.3  2004/08/13 18:09:00 acd
+Made changes corresponding to those below for the `metadata'
+clauses.  Also made to obtain the metadata flag from the properties
+file.
+
+Revision 1.2  2004/08/12 17:40:00  acd
+Fixed method doDelegateQuery to write its results to Writer out,
+rather than returning them as a Document.  Also made to obtain the
+name of the Vizier catalogue which is to be queried from the properties
+file.
+
 Revision 1.1  2004/03/13 23:40:59  mch
 Changes to adapt to It05 refactor
 

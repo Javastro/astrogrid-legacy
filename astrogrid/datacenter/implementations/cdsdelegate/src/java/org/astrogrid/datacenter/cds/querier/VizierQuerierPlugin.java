@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierPlugin.java,v 1.2 2004/03/14 04:14:20 mch Exp $
+/*$Id: VizierQuerierPlugin.java,v 1.3 2004/08/14 14:28:37 acd Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,16 @@ import org.w3c.dom.Document;
  * @author Noel Winstanley nw@jb.man.ac.uk 13-Nov-2003
  */
 public class VizierQuerierPlugin extends QuerierPlugin {
-   
+
+  /** Key specifying which Vizier catalogue to query. */
+   public static final String CATALOGUE_NAME = 
+     "datacenter.querier.catalogueName";
+
+  /** Flag indicating whether the query is to return metadata only, or
+      perform a real query. */
+   public static final String METADATA = "datacenter.querier.metadata";
+
+
    protected VizierDelegate delegate;
 
    /** @todo check configuration for endpoint setting before settling with default */
@@ -52,6 +61,15 @@ public class VizierQuerierPlugin extends QuerierPlugin {
 
 /*
  $Log: VizierQuerierPlugin.java,v $
+ Revision 1.3  2004/08/14 14:28:37  acd
+ Fix the Vizier proxy to correctly perform cone searches.
+
+ Revision 1.4  2004/08/13 16:50:00  acd
+ Added static final String METADATA.
+
+ Revision 1.3  2004/08/12 17:31:00  acd
+ Added static final String CATALOGUE_NAME.
+
  Revision 1.2  2004/03/14 04:14:20  mch
  Wrapped output target in TargetIndicator
 
