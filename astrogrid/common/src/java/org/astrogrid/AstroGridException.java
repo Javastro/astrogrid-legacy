@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-package org.astrogrid ;
+package org.astrogrid;
 
 import org.astrogrid.i18n.AstroGridMessage;
 
@@ -18,47 +18,45 @@ import org.astrogrid.i18n.AstroGridMessage;
  *
  */
 public class AstroGridException extends Exception {
-	/**
+  /**
    * embedded message
-	 */
-	private AstroGridMessage
-	    message = null ;
-	    
-	/**
+   */
+  private AstroGridMessage message = null;
+
+  /**
    * ctor
    * @param message message to wrap
    */
-  public AstroGridException( final AstroGridMessage message ) {
-		this.message = message ;
-	}
+  public AstroGridException(final AstroGridMessage message) {
+    this.message = message;
+  }
 
-
-	/**
+  /**
    * ctor
    * @param message to wrap
    * @param throwable underlying exception
    */
-  public AstroGridException( final AstroGridMessage message, final Throwable throwable ) {
-		super( throwable ) ;
-		this.message = message ;
-	}
-    
-    
-    /**
-     * ctor
-     * @param throwable underlying exception
-     */
-    public AstroGridException( final Throwable throwable ) {
-        super( throwable ) ;
-    }
+  public AstroGridException(
+    final AstroGridMessage message,
+    final Throwable throwable) {
+    super(throwable);
+    this.message = message;
+  }
 
+  /**
+   * ctor
+   * @param throwable underlying exception
+   */
+  public AstroGridException(final Throwable throwable) {
+    super(throwable);
+  }
 
-    /**
-     * getter
-     * @return wrapped message
-     */
-    public final AstroGridMessage getAstroGridMessage() {
-    	return message ;
-    }
-    
+  /**
+   * getter
+   * @return wrapped message
+   */
+  public final AstroGridMessage getAstroGridMessage() {
+    return message;
+  }
+
 }
