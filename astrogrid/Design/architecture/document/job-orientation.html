@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>AstroGrid's job-orientation</title></head><body style="direction: ltr;">
+<h1><span style="font-weight: bold;">Workflow and job orientation</span></h1>
+<h1><span style="font-weight: bold;"></span></h1>
+<h2>What are workflows for?<br>
+</h2>
+<p>A workflow is a way for an end-user to programme the system such
+that low-level operations are combined into scientifically-meaningful
+experiments. Workflows are roughly equivalent to shell scripts in a
+traditional, desktop system, but the AstroGrid workflow facility has
+these major differences from conventional scripting.</p>
+<ul>
+  <li>The workflows are set up graphically using the web portal. There is no scripting language available to end users.</li>
+  <li>Where a desktop scripting-language has commands to local programmes, the workflow facility has calls to web services.</li>
+  <li>Workflows execute asynchronously as batch jobs.<br>
+  </li>
+  <li>The workflow facility is specially designed to support parallel operations.</li>
+  <li>Workflows are supposed to be easy to re-use for subsequent data-sets.</li>
+  <li>The workflow executor automatically logs the results of
+workflows, both the bulk-data outputs and the status of the jobs; no
+user-programming is needed to store results.</li>
+</ul>
+<p>A particular running instance of a workflow is called a "job". A
+single operation within that job is called a "job-step". Each job-step
+represents one usage of a web service, with that usage spread over
+several&nbsp; SOAP messages. <br>
+</p>
+<p>The AstroGrid architecture is based on workflows. The architecture
+distinguishes data-processing work, including archive queries, from
+other operations such as browsing directories of resources or
+adminstering the system. Data processing is always done via workflows;
+the other operations are always done interactively through the web
+portal.</p>
+<p>This defines AstroGrid as a "job-oriented" system. Every operation
+that is not expected to be trivially short is a batch job and any
+operation touching data is assumed to be non-trivial. An interactive
+operation on data in AstroGrid is a batch job that completes in seconds
+rather than hours or days. An end-user can treat any job as interactive
+simply by polling its staus and waiting for it to finish. Conversely,
+any job that was expected to be quick but turns out to lengthy can be
+left to run to completion in batch; the user need do nothing extra to
+make this happen.</p>
+<p>AstroGrid is job-oriented in order to be scalable. The underlying
+assumption for AstroGrid is that the virtual observatory is for
+handling large processing jobs; jobs small enough to run interactively
+are a special case. Therefore, the whole system has job orientation,
+not just selected parts for which large-data-volume use cases are known.</p>
+<h2>How are workflows defined and executed?</h2>
+Workflows are:<br>
+<ul>
+  <li>defined by end-users via the web portal;</li>
+  <li>recorded permanently in MySpace files;</li>
+  <li>submitted for execution by the users via the web-portal;</li>
+  <li>executed by the Job Execution Service (JES), which is an AstroGrid sub-system built as a web service;</li>
+  <li>clients of the web-services that actually operate on the data;<br>
+  </li>
+  <li>monitored by the users via the web portal.<br>
+  </li>
+</ul>
+<p>It is JES that calls the web-services designated in a workflow.</p>
+<p>The processes involved are explained more fully in the <a href="generated/use-cases/workflow-use-cases.html">workflow use cases</a>.</p>
+<h2>How does job orientation affect the architecture?</h2>
+<p>Job orientation <span style="font-style: italic;">defines</span>
+AstroGrid's architecture. No useful work can be done on AstroGrid (at
+least via the supported use cases) without building a workflow and
+submitting a job. The most-important parts of the architecture are the
+interfaces between the web portal and JES and between JES and the
+data-handling services. These interface are AstroGrid's <a href="cea.html">Common Execution Architecture</a> (CEA).</p>
+<p>Job orientation demands that the system record the specification of
+each job. CEA is a mechanism for recording those specifications and for
+passing them to web services. This descriptive power means that all CEA
+services have the same interface (same WSDL contract) and execution of
+any workflow, for any astronomical purpose, can be described by the
+same use case. The differences between jobs show up only inside the
+portal and inside the CEA services.<br>
+</p>
+<p><br>
+</p>
+</body></html>
