@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="html"/>
 
-   <xsl:include href="../../commonxsl/astrogrid.xsl"/>
+   <xsl:include href="../../common/xsl/agtemplate.xsl"/>
 
    <xsl:template match="responseRecord">
        <form> <table>

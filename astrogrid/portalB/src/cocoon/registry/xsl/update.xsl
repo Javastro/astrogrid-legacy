@@ -3,7 +3,7 @@
 <xsl:output method="html"/>
 <xsl:strip-space elements="testNode//*"/>
 
-   <xsl:include href="../../common/xsl/astrogrid.xsl"/>
+   <xsl:include href="../../common/xsl/registrytemplate.xsl"/>
  
    <xsl:template match="registry">
         <xsl:apply-templates/>

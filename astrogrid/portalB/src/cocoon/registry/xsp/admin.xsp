@@ -23,11 +23,12 @@
    <xsp:logic>
       String out = null;
       String servers[][] = {
-         { "MSSL", "axis://msslxy.mssl.ucl.ac.uk:8080" }
+         { "MSSL", "axis://msslxy.mssl.ucl.ac.uk:8080" },
+         { "Leicester", "axis://uml03.astrogrid.org:8080" }
       };
 
    <h2>Registry Administration Service</h2>
-   <form method='POST' action='update.xsp'>
+   <form method='POST' action='registry/update.xsp'>
       <table>
       <tr><td>User Name: </td>
           <td><input name='User' type='TEXT'/> </td></tr>

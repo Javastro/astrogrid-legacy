@@ -83,26 +83,24 @@
       String delete = <xsp-request:get-parameter name='Delete' as='string'/>;
       if ( delete != null ) actiontype = delete;
       
+      int approved = 0;
+      if (username.equals("guest")) approved = approved + 1;
+      if (certificate.equals("guest")) approved = approved + 1;
 
-   int approved = 0;
-   if (username.equals("guest")) approved = approved + 1;
-   if (certificate.equals("guest")) approved = approved + 1;
+      if (approved == 2 ){
 
-   if (approved == 2 ){
+         site = webserver;
+         soapservice = null;
 
-      site = webserver;
-      soapservice = null;
+         if ( site.substring(0,5).equals( "soap:" ) ) {
+            service = "http:" + site.substring(5) + "/soap/servlet/rpcrouter";
+            soapservice = "urn:org.astrogrid.registry." + webservice;
+         } else {
+            service = "http:" + site.substring(5) + "/axis/services/"+ webservice;
+         }
 
-      if ( site.substring(0,5).equals( "soap:" ) ) {
-        service = "http:" + site.substring(5) + "/soap/servlet/rpcrouter";
-        soapservice = "urn:org.astrogrid.registry." + webservice;
-      } else {
-        service = "http:" + site.substring(5) + "/axis/services/"+ webservice;
-      }
-
-      site = site.substring(7);
-
-      <p>Web Server: <strong><xsp:expr>site</xsp:expr> </strong></p>
+         site = site.substring(7);
+         <p>Web Server: <strong><xsp:expr>site</xsp:expr> </strong></p>
 
             XSPUtil util2 =  new XSPUtil();
  
@@ -132,12 +130,10 @@
             }
 
       } else {
-// Get parameters from form
+         // Get parameters from form
          querytype = <xsp-request:get-parameter name="QueryType"/>;
          if ( querytype == null ) querytype = "identity";
          webserver = <xsp-request:get-parameter name="WebServer"/>;
-//         webservice = <xsp-request:get-parameter name="Service"/>;
-//         if ( webservice == null ) webservice = "RegistryInterface";
          element1 = <xsp-request:get-parameter name="Element1"/>;
          op1 = <xsp-request:get-parameter name="Operator1"/>;
          value1 = <xsp-request:get-parameter name="Value1"/>;
@@ -146,12 +142,12 @@
          op2 = <xsp-request:get-parameter name="Operator2"/>;
          value2 = <xsp-request:get-parameter name="Value2"/>;
 
-// Construct the Query
+         // Construct the Query
          query = constructQuery( querytype, element1, op1, value1,
                                  seperator, element2, op2, value2 );   
          adminQuery = constructAdminQuery(certificate, actiontype, query);
 
-// Call the Webserver
+         // Call the Webserver
 
          try {
            Service axis = new Service();
@@ -180,7 +176,7 @@
             String results2 = results.replaceAll("<service>", "<edit><webserver>" + site + "</webserver><service>");
             String results3 = results2.replaceAll("</service>", "</service></edit>");
             ]]>
-// Now print thte results to the output
+            // Now print thte results to the output
             XSPUtil util =  new XSPUtil();
             util.includeString( results3, manager, contentHandler );
 
@@ -189,7 +185,7 @@
             String results2 = results.replaceAll("<service>", "<delete><webserver>" + site + "</webserver><service>");
             String results3 = results2.replaceAll("</service>", "</service></delete>");
             ]]> 
-// Now print the results to the output
+            // Now print the results to the output
             XSPUtil util =  new XSPUtil();
             util.includeString( results3, manager, contentHandler );
          } else {

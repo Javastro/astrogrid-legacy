@@ -24,14 +24,12 @@
       String out = null;
       String servers[][] = {
          { "MSSL", "axis://msslxy.mssl.ucl.ac.uk:8080" },
-         { "RAL", "axis://stargrid1.bnsc.rl.ac.uk:8080" },
-         { "Leicester", "axis://katatjuta.star.le.ac.uk:8080" },
-         { "Testing", "axis://rlspc14.bnsc.rl.ac.uk:8080"}
+         { "Leicester", "axis://uml03.astrogrid.org:8080" }
       };
       String webservice = "RegistryInterface3_0";
 
    <h2>Registry Browser</h2>
-   <form method='POST' action='action.xsp'>
+   <form method='POST' action='registry/action.xsp'>
       <input type='HIDDEN' name='Service' value='RegistryInterface3_0'/>
       <p> Check a Registry Query Type: </p>
       <input type='RADIO' name='QueryType' value='all'/>

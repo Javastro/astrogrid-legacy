@@ -2,10 +2,25 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/astrogrid.xsl,v $</cvs:source>
     | <cvs:date>$Author: eca $</cvs:date>
-    | <cvs:author>$Date: 2003/10/08 14:11:23 $</cvs:author>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:author>$Date: 2003/10/10 04:37:25 $</cvs:author>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     | $Log: astrogrid.xsl,v $
+    | Revision 1.10  2003/10/10 04:37:25  eca
+    | Edited serveral pages to update registry browser / admin:
+    | 
+    | portalB/src/cocoon/sitemap.xmap 
+    | portalB/src/cocoon/common/xsl/astrogrid.xsl
+    | portalB/src/cocoon/common/xsl/agtemplate.xsl
+    | portalB/src/cocoon/common/xsl/registrytemplate.xsl
+    | portalB/src/cocoon/html/agindex.html
+    | portalB/src/cocoon/html/agregistry.html
+    | portalB/src/cocoon/html/agregadmin.html
+    | portalB/src/cocoon/registry/xsl/*.xsl
+    | portalB/src/cocoon/registry/xsp/*.xsp
+    | 
+    | 10 October 2003 by Elizabeth Auden
+    |
     | Revision 1.9  2003/10/08 14:11:23  eca
     | Edited portalB/src/cocoon/common/xsl/astrogrid.xsl to include reg admin
     | 8 October 2003 by Elizabeth Auden
@@ -30,7 +45,7 @@
     | Okay DataQuery is now under cocoon.  Yeah.
     |
     | Revision 1.1  2003/07/23 15:31:46  KevinBenson
-    | These files are not ready yet, but they are getting their.
+    | These files are not ready yet, but they are getting there.
     |
     | Revision 1.3  2003/07/03 16:43:45  dave
     | Fixed styles in page navigation
@@ -87,7 +102,7 @@
 	<xsl:param name="tools-page">agtools.html</xsl:param>
 	<xsl:param name="logout-page">aglogout.html</xsl:param>
 
-	<xsl:template match="/page">
+	<xsl:template match="/page">  
 		<html>
 			<head>
 				<title>
@@ -324,7 +339,7 @@
 				</table>
 			</body>
 		</html>
-	</xsl:template>
+	</xsl:template> 
 
 	<!-- Match the page navigation -->
 	<xsl:template match="/page/menu">
