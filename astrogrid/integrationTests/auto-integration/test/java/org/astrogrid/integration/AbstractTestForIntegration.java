@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.1 2004/04/21 13:42:26 nw Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.2 2004/04/23 00:27:13 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,6 +63,7 @@ public class AbstractTestForIntegration extends TestCase {
     public static final String MYSPACE = COMMUNITY + "/myspace";
     public static final String TESTDSA = COMMUNITY + "/testdsa";
     public static final String TESTAPP = COMMUNITY + "/testapp";
+    public static final String TESTAPP2 = COMMUNITY + "/testap2"; //note it isn't double 'p'
     
    protected Ivorn createIVORN(String path)
    {
@@ -74,6 +75,9 @@ public class AbstractTestForIntegration extends TestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.2  2004/04/23 00:27:13  nw
+added constant for testap2
+
 Revision 1.1  2004/04/21 13:42:26  nw
 moved abstract test up to root of package hierarchy
 
