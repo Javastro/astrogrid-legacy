@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.1 2003/09/05 01:05:32 nw Exp $
+/*$Id: SqlQuerierTest.java,v 1.2 2003/09/05 13:24:13 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,9 +49,9 @@ public class SqlQuerierTest extends HsqlTestCase {
      * @see TestCase#tearDown()
      */
     protected void tearDown() throws Exception {
-        if (querier.jdbcConnection != null) {
-            querier.jdbcConnection.close();
-        }
+       if (querier != null) {
+           querier.close();
+       }
     }
     
     public void test1() throws Exception {
@@ -100,6 +100,9 @@ public class SqlQuerierTest extends HsqlTestCase {
 
 /* 
 $Log: SqlQuerierTest.java,v $
+Revision 1.2  2003/09/05 13:24:13  nw
+now uses close method
+
 Revision 1.1  2003/09/05 01:05:32  nw
 added testing of SQLQuerier over an in-memory Hsql database,
 
