@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF8"?> 
-<!-- Template for making SOAP requests to the JobMonitor -->
-<job name="{0}" 
-     userid="{1}" 
-     community="{2}" 
-     jobURN="{3}" 
-     time="{4}" > 
-   <jobstep name="{5}" stepNumber="{6}" status="{7}"/> 
-</job>
