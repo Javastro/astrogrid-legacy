@@ -4,3 +4,4 @@ target
 .classpath
 server-config.wsdd
 bin
+.metadata

@@ -35,7 +35,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -43,7 +43,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-client</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -51,7 +51,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-common</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -59,7 +59,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-common</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -67,7 +67,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-resolver</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -75,7 +75,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-client</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -83,7 +83,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-store-client</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -91,7 +91,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-jes-delegate</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -99,7 +99,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-workflow-objects</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -108,7 +108,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-cea-client</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <type>zip</type>
       <properties>
         <war.target.path>client</war.target.path>

@@ -31,7 +31,7 @@ This functionality is provided with the ApplicationController service, of which 
         <dependency>
                 <groupId>org.astrogrid</groupId>
                 <artifactId>astrogrid-cea-server-jar</artifactId>
-                <version>SNAPSHOT</version>
+		        <version>${pom.currentVersion}</version>
                 <type>jar</type>
                 <jar>astrogrid-cea-server-SNAPSHOT.jar</jar>
                 <properties>
@@ -41,7 +41,7 @@ This functionality is provided with the ApplicationController service, of which 
         <dependency>
                 <groupId>org.astrogrid</groupId>
                 <artifactId>astrogrid-cea-server</artifactId>
-                <version>SNAPSHOT</version>
+                <version>${pom.currentVersion}</version>
                 <type>war</type>
         </dependency>
         <!-- nww-end-hack -->
