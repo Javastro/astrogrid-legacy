@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.39 2004/03/14 00:39:55 mch Exp $
+ * $Id: Querier.java,v 1.40 2004/03/14 01:10:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -99,6 +99,11 @@ public class Querier implements Runnable {
       //check raw sql
       if ((query instanceof RawSqlQuery) && (!SimpleConfig.getSingleton().getBoolean(DataServer.SQL_PASSTHROUGH_ENABLED, false))) {
          throw new IllegalArgumentException("This datacenter does not allow raw SQL Queriers to be constructed");
+      }
+      
+      //default to votable
+      if ((resultsFormat == null) || (resultsFormat.trim().length() ==0)) {
+         resultsFormat = QueryResults.FORMAT_VOTABLE;
       }
       
       //default results destination is taken from default myspace given in config
@@ -374,6 +379,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.40  2004/03/14 01:10:00  mch
+ Defaults to VOTable
+
  Revision 1.39  2004/03/14 00:39:55  mch
  Added error trapping to DataServer and setting Querier error status
 
