@@ -1,0 +1,8 @@
+<Context path="/astrogrid-portal">
+  <!-- dunno what it needs -->
+     <Environment name="org.astrogrid.config.url" override="false" type="java.lang.String"
+           value="@CONFIGPATH@/AstroGridConfig.properties"/>
+     <!-- require this for the login page -->
+     <Environment name="org.astrogrid.community.config" override="false" type="java.lang.String"
+           value="@CONFIGPATH@/AstroGridConfig.properties"/>
+</Context>
