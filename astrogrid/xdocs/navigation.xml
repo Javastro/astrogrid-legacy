@@ -22,15 +22,15 @@
 				| and rely on deploying to Apache 2.x 
 				+--> 
             <item name="Server Applications" href="/server.html" collapse="true">
-                <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*-0.7-0.7-b*.war"/>
-                <item name="Applications" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-cea-*-0.7-0.7-b*.war"/>
-                <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-community-*-0.7-0.7-b*.war"/>
-                <item name="DataCenter" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*pal-0.7-0.7-b*.war"/>
-                <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-filestore-0.7-0.7-b*.war"/>
-                <item name="Job Management" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-jes-0.7-0.7-b*.war"/>
-                <item name="mySpace" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-mySpace-0.7-0.7-b*.war"/>
-                <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-portal-*-0.7-0.7-b*.war"/>
-                <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-registry-0.7-0.7-b*.war"/>
+                <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*-0.7-b*.war"/>
+                <item name="Applications" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-cea-*-0.7-b*.war"/>
+                <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-community-*-0.7-b*.war"/>
+                <item name="DataCenter" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*pal-0.7-b*.war"/>
+                <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-filestore-0.7-b*.war"/>
+                <item name="Job Management" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-jes-0.7-b*.war"/>
+                <item name="mySpace" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-mySpace-0.7-b*.war"/>
+                <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-portal-*-0.7-b*.war"/>
+                <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-registry-0.7-b*.war"/>
             </item>
             <item name="Client/Delegate" href="/delegate.html" collapse="true">
                 <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-*-0.7-b*.jar"/>
