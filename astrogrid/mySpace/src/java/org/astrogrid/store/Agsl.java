@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.15 2004/04/01 15:16:36 mch Exp $
+ * $Id: Agsl.java,v 1.16 2004/04/06 15:39:53 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -69,7 +69,12 @@ public class Agsl
     */
    public Agsl(String endpoint, String path) throws MalformedURLException
    {
-      this(SCHEME+":"+endpoint.trim()+"#"+path.trim());
+      if (path == null) {
+         init(endpoint);
+      }
+      else {
+         init(endpoint.trim()+"#"+path.trim());
+      }
    }
    
    /** Make a reference from the given string representation. Takes agsl forms,
@@ -94,6 +99,13 @@ public class Agsl
          rl = rl.substring(SCHEME.length()+1);
       }
       
+      init(rl);
+   }
+   
+   /**
+    * Makes an AGSL out of the given myspace: or url
+    */
+   private void init(String rl)  throws MalformedURLException {
       if (Msrl.isMsrl(rl))
       {
          msrl = new Msrl(rl);
@@ -250,6 +262,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.16  2004/04/06 15:39:53  mch
+Fixes for creating with nul path
+
 Revision 1.15  2004/04/01 15:16:36  mch
 Added toIvorn() method
 
