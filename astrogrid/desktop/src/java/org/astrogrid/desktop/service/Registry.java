@@ -1,4 +1,4 @@
-/*$Id: Registry.java,v 1.2 2005/02/22 01:10:31 nw Exp $
+/*$Id: Registry.java,v 1.3 2005/03/14 11:59:04 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -99,16 +99,19 @@ public class Registry {
      * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
      *@todo make this a list of strings..
      */
-    public String list() throws RegistryException {
+  /*  public String list() throws RegistryException {
         Document dom = getReg().listIdentifiers();
         return XMLUtils.DocumentToString(dom);
     }
-    
+    */
 }
 
 
 /* 
 $Log: Registry.java,v $
+Revision 1.3  2005/03/14 11:59:04  nw
+fixed code to fit with latest reg and myspace changes.
+
 Revision 1.2  2005/02/22 01:10:31  nw
 enough of a prototype here to do a show-n-tell on.
 
