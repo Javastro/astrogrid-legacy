@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<xsd:schema targetNamespace="http://www.astrogrid.org/schema/AGWorkflow/" xmlns:agwf="http://www.astrogrid.org/schema/AGWorkflow/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/" elementFormDefault="unqualified" attributeFormDefault="unqualified">
-	<xsd:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/" schemaLocation="http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd"/>
+<xsd:schema targetNamespace="http://www.astrogrid.org/schema/AGWorkflow/" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:agwf="http://www.astrogrid.org/schema/AGWorkflow/" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/" schemaLocation="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/schema/AGParameterDefinition.xsd?rev=HEAD&content-type=text/plain"/>
 	<xsd:element name="workflow">
 		<xsd:complexType>
 			<xsd:sequence>
