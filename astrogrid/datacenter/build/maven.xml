@@ -3,10 +3,7 @@
 <project xmlns:j="jelly:core"  xmlns:u="jelly:util" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
 <!-- hooks to farm out everything to subprojects -->
 
-<!-- bugfix suggested by john -->
-<preGoal name="site">
-	<attainGoal name="dist:prepare-bin-filesystem" />
-</preGoal>
+
 
   <!-- ================= -->
   <!-- Global Properties -->

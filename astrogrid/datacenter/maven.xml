@@ -36,6 +36,14 @@
 
 <!-- goal called by nightly build -->
 <preGoal name="site:fsdeploy">
+	<!-- fix suggested by john -->
+	<maven:reactor
+		basedir="${basedir}"
+		postProcessing="false"
+		includes="*/project.xml,implementations/*/project.xml"
+		goals="dist:prepare-bin-filesystem"
+		banner="preparing filesystems"
+		ignoreFailures="true" />
 	<attainGoal name="multiproject:site" />
 </preGoal>
 
