@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.7 2004/09/06 15:40:46 nw Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.8 2004/09/10 13:53:14 jdt Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -195,8 +195,16 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
   */
  public String returnRegistryEntry() throws RemoteException, CeaFault
  {
+	 if (logger.isTraceEnabled()) {
+		logger.trace("returnRegistryEntry() -- start");
+     }
+
      try {
-         return CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();     
+         final String registryEntry = CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
+ 		 if (logger.isTraceEnabled()) {
+			logger.trace("returnRegistryEntry() - end");
+		 }
+         return registryEntry;     
      } catch (Throwable e) {
 		 logger.error("returnRegistryEntry()", e);
          throw makeFault("A throwable occured in return registry entry",e);
