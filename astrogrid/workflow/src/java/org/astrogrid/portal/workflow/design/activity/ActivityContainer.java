@@ -11,8 +11,8 @@
 
 package org.astrogrid.portal.workflow.design.activity;
 
-import java.util.LinkedList;
-
+import java.util.LinkedList; 
+import org.apache.log4j.Logger ;
 import org.astrogrid.portal.workflow.design.Flow;
 import org.astrogrid.portal.workflow.design.Sequence;
 import org.astrogrid.portal.workflow.design.Step;
@@ -32,6 +32,14 @@ import org.astrogrid.portal.workflow.design.Step;
  * @since   AstroGrid 1.3
  */
 public abstract class ActivityContainer extends Activity {
+
+    /** Compile-time switch used to turn tracing on/off. 
+      * Set this to false to eliminate all trace statements within the byte code.*/         
+    private static final boolean 
+        TRACE_ENABLED = true ;
+        
+    private static Logger 
+        logger = Logger.getLogger( ActivityContainer.class ) ; 
     
     private LinkedList
         children = new LinkedList() ;
@@ -67,10 +75,19 @@ public abstract class ActivityContainer extends Activity {
    
     
     private Activity create( int index, Activity activity ) {
-        children.add( index, activity ) ;
-        activity.setParent( this ) ;
-        this.getWorkflow().putActivity( activity ) ;
-        return activity ;                    
+        if( TRACE_ENABLED ) trace( "Activity.create() entry") ;
+        
+        try {
+            children.add( index, activity ) ;
+            activity.setParent( this ) ;
+            this.getWorkflow().putActivity( activity ) ;
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Activity.create() exit") ;
+        }
+
+        return activity ;    
+                        
     }
     
     
@@ -95,5 +112,15 @@ public abstract class ActivityContainer extends Activity {
     public String toXMLString() {
         return null ;
     }
+    
+    private static void trace( String traceString ) {
+        System.out.println( traceString ) ;
+        // logger.debug( traceString ) ;
+    }
+    
+    private static void debug( String logString ){
+        System.out.println( logString ) ;
+        // logger.debug( logString ) ;
+    }  
     
 } // end of class ActivityContainer

@@ -12,7 +12,7 @@
 package org.astrogrid.portal.workflow.design.activity;
 
 import java.util.ListIterator ;
-
+import org.apache.log4j.Logger ;
 /**
  * The <code>ActivityIterator</code> class represents... 
  * <p>
@@ -28,6 +28,14 @@ import java.util.ListIterator ;
  * @since   AstroGrid 1.3
  */
 public class ActivityIterator {
+    
+    /** Compile-time switch used to turn tracing on/off. 
+      * Set this to false to eliminate all trace statements within the byte code.*/         
+    private static final boolean 
+        TRACE_ENABLED = true ;
+        
+    private static Logger 
+        logger = Logger.getLogger( ActivityIterator.class ) ; 
     
     private ListIterator
         iterator ;
@@ -47,5 +55,15 @@ public class ActivityIterator {
     public void remove() {
         iterator.remove() ;
     }
+    
+    private static void trace( String traceString ) {
+        System.out.println( traceString ) ;
+        // logger.debug( traceString ) ;
+    }
+    
+    private static void debug( String logString ){
+        System.out.println( logString ) ;
+        // logger.debug( logString ) ;
+    }  
 
 } // end of class ActivityIterator

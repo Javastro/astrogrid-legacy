@@ -46,7 +46,15 @@ public abstract class Activity {
         parent ;
         
     public Activity() {
-        key = ActivityKey.createKey() ;
+        if( TRACE_ENABLED ) trace( "Activity() entry") ; 
+        
+        try {  
+            key = ActivityKey.createKey() ;
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Activity() exit") ; 
+        }
+        
     }
 
 	public ActivityKey getKey() { return key; }
@@ -59,27 +67,35 @@ public abstract class Activity {
     }
     
     protected void remove() {
-        // First we tell the workflow to forget this activity,
-        // i.e. remove it from its navigation collection...
-        this.getWorkflow().removeActivity( this ) ;
+        if( TRACE_ENABLED ) trace( "Activity.remove() entry") ;    
         
-        // Then - if this is itself a container of activities -
-        // We cascade the removal of a whole branch...
-        if( this instanceof ActivityContainer ) {
-            ActivityIterator
-                iterator = ((ActivityContainer)this).getChildren() ;
-            // For every element in the collection...
-            // (1) We invoke remove on each. This is equivalent to
-            //     a cascade delete, as the remove action cascades 
-            //     down into any children this element itself possesses.
-            // (2) We remove it from the current collection.
-            while( iterator.hasNext() ) {
-                iterator.next().remove() ; 
-                iterator.remove() ;
-            } // end while 
+        try { 
+            // First we tell the workflow to forget this activity,
+            // i.e. remove it from its navigation collection...
+            this.getWorkflow().removeActivity( this ) ;
+        
+            // Then - if this is itself a container of activities -
+            // We cascade the removal of a whole branch...
+            if( this instanceof ActivityContainer ) {
+                ActivityIterator
+                    iterator = ((ActivityContainer)this).getChildren() ;
+                // For every element in the collection...
+                // (1) We invoke remove on each. This is equivalent to
+                //     a cascade delete, as the remove action cascades 
+                //     down into any children this element itself possesses.
+                // (2) We remove it from the current collection.
+                while( iterator.hasNext() ) {
+                    iterator.next().remove() ; 
+                    iterator.remove() ;
+                } // end while 
             
-        } // end if
-
+            } // end if
+            
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Activity.remove() exit") ;  
+        }
+ 
     } // end of remove()
     
     
@@ -87,17 +103,25 @@ public abstract class Activity {
     
     
     public Workflow getWorkflow() {
-        
-        Activity
-            parent = this.getParent(),
-            workflowCandidate = this ;
+        if( TRACE_ENABLED ) trace( "Activity.getWorkflow() entry") ;       
+              
+        try {
             
-        while( parent != null ) {
-            workflowCandidate = parent ;
-            parent = this.getParent() ;
+            Activity
+                 parent = this.getParent(),
+                 workflowCandidate = this ;
+                 
+            while( parent != null ) {
+                 workflowCandidate = parent ;
+                 parent = this.getParent() ;
+             }
+             
+             return (Workflow)workflowCandidate ;
         }
-        return (Workflow)workflowCandidate ;
-        
+        finally {
+            if( TRACE_ENABLED ) trace( "Activity.getWorkflow() exit") ;       
+        }
+            
     } // end of getWorkflow()
     
     

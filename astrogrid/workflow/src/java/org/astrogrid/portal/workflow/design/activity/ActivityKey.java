@@ -40,7 +40,7 @@ public class ActivityKey {
         
         
     public static synchronized ActivityKey createKey() {
-        if( TRACE_ENABLED ) trace( "createKey() entry") ; 
+        if( TRACE_ENABLED ) trace( "ActivityKey.createKey() entry") ; 
         ActivityKey
             key = null ;
         try {
@@ -48,7 +48,7 @@ public class ActivityKey {
             debug( "key: " + key.toString() ) ;
         }
         finally {
-            if( TRACE_ENABLED ) trace( "createKey() exit") ; 
+            if( TRACE_ENABLED ) trace( "ActivityKey.createKey() exit") ; 
         }
         
         return key ;
@@ -56,11 +56,13 @@ public class ActivityKey {
     
     
     public ActivityKey( int key ) {
+        if( TRACE_ENABLED ) trace( "ActivityKey(int) entry/exit") ; 
         this.key = key ;
     }
     
     
     public ActivityKey( String key ) {
+        if( TRACE_ENABLED ) trace( "ActivityKey(String) entry/exit") ; 
         this.key = new Integer( key ).intValue() ;          
     }
     
