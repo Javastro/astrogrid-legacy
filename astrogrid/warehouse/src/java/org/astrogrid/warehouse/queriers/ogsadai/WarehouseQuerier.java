@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.5 2003/12/02 16:22:13 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.6 2003/12/04 18:54:56 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,6 +73,7 @@ public class WarehouseQuerier extends Querier
   //public WarehouseQuerier() 
    //   throws DatabaseAccessException, IOException, SAXException {
     super(queryId, query);
+    log.info("Got into WarehouseQuerier constructor.");
 
     try {
       // Load installation-specific runtime properties
@@ -90,6 +91,7 @@ public class WarehouseQuerier extends Querier
           "Couldn't load properties from WarehouseQuerier.properties: " + 
            e.getMessage());
     }
+    log.info("Successfully loaded properties in WarehouseQuerier constructor.");
   }
 
   /**
@@ -317,6 +319,9 @@ public class WarehouseQuerier extends Querier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.6  2003/12/04 18:54:56  kea
+Minimal logging added - more to follow.
+
 Revision 1.5  2003/12/02 16:22:13  kea
 Moved ogsa-dai functionality out into GdsQuerierDelegate.
 Misc. changes to accommodate changes in datacenter codebase.
