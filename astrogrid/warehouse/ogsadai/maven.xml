@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+
+<!-- extension maven script -->
+<project default="jar:jar">
+
+  <!-- After compiling, copy all properties files in the source tree to
+       the classes tree in the build. -->
+  <postGoal name="java:compile">
+    <copy toDir="${basedir}/target/classes">
+      <fileset dir="src/java">
+        <include name="**/*.properties"/> 
+      </fileset>
+    </copy>
+  </postGoal>
+
+</project>
