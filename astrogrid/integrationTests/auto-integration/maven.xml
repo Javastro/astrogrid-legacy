@@ -134,6 +134,9 @@
         <attainGoal name="community-register"/>
         <attainGoal name="setup-applications" />
         <attainGoal name="setup-myspace" />
+        <!--Finally kick the CommonExecutionController to register itself-->
+        <http url="${tomcat.url}/astrogrid-applications-SNAPSHOT/servlet/initForRegistry"/>
+        
 </goal>
 
 <goal name="setup-working-dir" description="create working dir, copy across templates">
