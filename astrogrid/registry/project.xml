@@ -183,6 +183,9 @@
   
   <reports>
     <report>
+      maven-clover-plugin
+    </report>
+    <report>
       maven-changelog-plugin
     </report>
     <report>
