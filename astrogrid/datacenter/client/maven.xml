@@ -66,7 +66,7 @@ Requires:
    </delete>
    </goal>
 
-   <!--- generates classes for It04.1 axis web interface --->
+   <!-- generates classes for It04.1 axis web interface -->
    <goal name="wsdl2java" prereqs="axis-declare-tasks">
       <axis-wsdl2java output="${generated.src}" verbose="true" testcase="true"
          url="${basedir}/src/wsdl/AxisDataServer.wsdl"
@@ -84,7 +84,7 @@ Requires:
       
    </goal>
 
-   <!--- generates classes for It05 axis web interface --->
+   <!-- generates classes for It05 axis web interface -->
    <goal name="AxisIt05wsdl2java" prereqs="axis-declare-tasks">
       <axis-wsdl2java output="${generated.src}" verbose="true" testcase="true"
          url="${basedir}/src/wsdl/AxisDataServer_v05.wsdl"
@@ -93,7 +93,7 @@ Requires:
       
    </goal>
 
-   <!--- mch: added this to do other generations.  Don't know if it will break or whether it needs seperate goals... -->
+   <!-- mch: added this to do other generations.  Don't know if it will break or whether it needs seperate goals... -->
    <goal name="SkyNodeWsdl2java" prereqs="axis-declare-tasks">
 
       <axis-wsdl2java output="${generated.src}" verbose="true" testcase="true"
