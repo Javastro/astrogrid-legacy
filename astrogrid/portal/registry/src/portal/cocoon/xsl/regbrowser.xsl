@@ -160,9 +160,8 @@
     <xsl:choose>
       <xsl:when test="$mainelement = 'Catalog'">   <!-- CATALOG --> 
         <p>
-          <form method="post" action="registrybrowser.html"
+          <form method="post" action="/astrogrid-portal/bare/mount/datacenter/variablesFromMB.html"
                 name="RegistryBrowser" id="RegistryBrowser">
-            <input type="hidden" name="action" value="selectentry" />
             <input type="hidden" name="mainelement">
               <xsl:attribute name="value">
                 <xsl:value-of select="$mainelement"/>
@@ -188,7 +187,7 @@
                   <td>                                           
                     <input type="radio" name="selection" id="selection">
                       <xsl:attribute name="value">
-             <xsl:value-of select="../@identifier"/>/<xsl:value-of select="."/>
+                        <xsl:value-of select="../@identifier"/>/<xsl:value-of select="."/>
                       </xsl:attribute>
                     </input>
                     <xsl:value-of select="."/>
@@ -197,11 +196,7 @@
                 </xsl:for-each>
               </xsl:for-each>
             </table>
-            <input name="queryregistry" type="button" value="Browse...">
-              <xsl:attribute name="onClick">findSelection()</xsl:attribute>
-            </input>
-            <xsl:text>          </xsl:text>
-            <input type="submit" name="queryregistry" value="Restart" />
+            <input name="queryregistry" type="button" value="Select..." onclick="findSelection()"/>
             <xsl:text>          </xsl:text>
             <input type="button" value="Cancel" onclick="window.close()"/>
           </form>

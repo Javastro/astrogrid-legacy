@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.15 2004/08/31 14:57:41 jl99 Exp $
+    | CVS $Id: sitemap.xmap,v 1.16 2004/09/01 16:06:55 pjn3 Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -251,7 +251,7 @@
 
          <map:match pattern="variablesFromMB.html">
             <map:act type="astrogrid-registry-browser">
-              <map:generate src="web/dynamic/variables.xsp"
+              <map:generate src="web/dynamic/xscreen.xsp"
                             type="serverpages" label="XML, HTML"/>  
               <map:transform src="web/style/xsl/dataQuery.xsl" label="PAGE">
                   <map:parameter name="errormessage"
@@ -269,7 +269,7 @@
                   <map:parameter name="authId"
                                  value="{authId}" />
                   <map:parameter name="resourceKey"
-                                 value="{resourceKey}" />
+                                 value="{resourceKey}" />                                 
               </map:transform>
             </map:act>
             <map:serialize type="html" label="FINAL"/>
