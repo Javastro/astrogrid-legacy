@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:s1="http://skyservice.pha.jhu.edu" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:s0="http://voql.ivoa.net/" xmlns:s2="http://www.ivoa.net/xml/prop/VOResource" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" targetNamespace="http://voql.ivoa.net/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://voql.ivoa.net/">
+      <s:import namespace="http://skyservice.pha.jhu.edu" />
+      <s:import namespace="http://www.ivoa.net/xml/prop/VOResource" />
+      <s:element name="ucd">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="tableName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="columnName" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ucdResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ucdResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="performQuery">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Select" nillable="true" type="s0:Select" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="performQueryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="performQueryResult" type="s1:VOTABLE" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="columns">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="tableName" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="columnsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="columnsResult" type="s0:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="tables">
+        <s:complexType />
+      </s:element>
+      <s:element name="tablesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="tablesResult" type="s0:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="metaData">
+        <s:complexType />
+      </s:element>
+      <s:element name="metaDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="metaDataResult" type="s2:ArrayOfGenericResource" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="genericResource" nillable="true" type="s2:genericResource" />
+      <s:element name="string" nillable="true" type="s:string" />
+      <s:element name="ArrayOfString" nillable="true" type="s0:ArrayOfString" />
+      <s:element name="ArrayOfGenericResource" nillable="true" type="s2:ArrayOfGenericResource" />
+    </s:schema>
+  </types>
+  <message name="ucdSoapIn">
+    <part name="parameters" element="s0:ucd" />
+  </message>
+  <message name="ucdSoapOut">
+    <part name="parameters" element="s0:ucdResponse" />
+  </message>
+  <message name="performQuerySoapIn">
+    <part name="parameters" element="s0:performQuery" />
+  </message>
+  <message name="performQuerySoapOut">
+    <part name="parameters" element="s0:performQueryResponse" />
+  </message>
+  <message name="columnsSoapIn">
+    <part name="parameters" element="s0:columns" />
+  </message>
+  <message name="columnsSoapOut">
+    <part name="parameters" element="s0:columnsResponse" />
+  </message>
+  <message name="tablesSoapIn">
+    <part name="parameters" element="s0:tables" />
+  </message>
+  <message name="tablesSoapOut">
+    <part name="parameters" element="s0:tablesResponse" />
+  </message>
+  <message name="metaDataSoapIn">
+    <part name="parameters" element="s0:metaData" />
+  </message>
+  <message name="metaDataSoapOut">
+    <part name="parameters" element="s0:metaDataResponse" />
+  </message>
+  <message name="ucdHttpGetIn">
+    <part name="tableName" type="s:string" />
+    <part name="columnName" type="s:string" />
+  </message>
+  <message name="ucdHttpGetOut">
+    <part name="Body" element="s0:string" />
+  </message>
+  <message name="columnsHttpGetIn">
+    <part name="tableName" type="s:string" />
+  </message>
+  <message name="columnsHttpGetOut">
+    <part name="Body" element="s0:ArrayOfString" />
+  </message>
+  <message name="tablesHttpGetIn" />
+  <message name="tablesHttpGetOut">
+    <part name="Body" element="s0:ArrayOfString" />
+  </message>
+  <message name="metaDataHttpGetIn" />
+  <message name="metaDataHttpGetOut">
+    <part name="Body" element="s0:ArrayOfGenericResource" />
+  </message>
+  <message name="ucdHttpPostIn">
+    <part name="tableName" type="s:string" />
+    <part name="columnName" type="s:string" />
+  </message>
+  <message name="ucdHttpPostOut">
+    <part name="Body" element="s0:string" />
+  </message>
+  <message name="columnsHttpPostIn">
+    <part name="tableName" type="s:string" />
+  </message>
+  <message name="columnsHttpPostOut">
+    <part name="Body" element="s0:ArrayOfString" />
+  </message>
+  <message name="tablesHttpPostIn" />
+  <message name="tablesHttpPostOut">
+    <part name="Body" element="s0:ArrayOfString" />
+  </message>
+  <message name="metaDataHttpPostIn" />
+  <message name="metaDataHttpPostOut">
+    <part name="Body" element="s0:ArrayOfGenericResource" />
+  </message>
+  <portType name="ArchiveServiceSoap">
+    <operation name="ucd">
+      <documentation>Find the unique content descriptor for a particular table column</documentation>
+      <input message="s0:ucdSoapIn" />
+      <output message="s0:ucdSoapOut" />
+    </operation>
+    <operation name="performQuery">
+      <documentation>Perfrom an ADQL query on an archive and get the result as a VOTABLE</documentation>
+      <input message="s0:performQuerySoapIn" />
+      <output message="s0:performQuerySoapOut" />
+    </operation>
+    <operation name="columns">
+      <documentation>Find the different columns in a table</documentation>
+      <input message="s0:columnsSoapIn" />
+      <output message="s0:columnsSoapOut" />
+    </operation>
+    <operation name="tables">
+      <documentation>Find the different tables in an archive</documentation>
+      <input message="s0:tablesSoapIn" />
+      <output message="s0:tablesSoapOut" />
+    </operation>
+    <operation name="metaData">
+      <documentation>Get the Metadata of the archive as a VODescription</documentation>
+      <input message="s0:metaDataSoapIn" />
+      <output message="s0:metaDataSoapOut" />
+    </operation>
+  </portType>
+  <portType name="ArchiveServiceHttpGet">
+    <operation name="ucd">
+      <documentation>Find the unique content descriptor for a particular table column</documentation>
+      <input message="s0:ucdHttpGetIn" />
+      <output message="s0:ucdHttpGetOut" />
+    </operation>
+    <operation name="columns">
+      <documentation>Find the different columns in a table</documentation>
+      <input message="s0:columnsHttpGetIn" />
+      <output message="s0:columnsHttpGetOut" />
+    </operation>
+    <operation name="tables">
+      <documentation>Find the different tables in an archive</documentation>
+      <input message="s0:tablesHttpGetIn" />
+      <output message="s0:tablesHttpGetOut" />
+    </operation>
+    <operation name="metaData">
+      <documentation>Get the Metadata of the archive as a VODescription</documentation>
+      <input message="s0:metaDataHttpGetIn" />
+      <output message="s0:metaDataHttpGetOut" />
+    </operation>
+  </portType>
+  <portType name="ArchiveServiceHttpPost">
+    <operation name="ucd">
+      <documentation>Find the unique content descriptor for a particular table column</documentation>
+      <input message="s0:ucdHttpPostIn" />
+      <output message="s0:ucdHttpPostOut" />
+    </operation>
+    <operation name="columns">
+      <documentation>Find the different columns in a table</documentation>
+      <input message="s0:columnsHttpPostIn" />
+      <output message="s0:columnsHttpPostOut" />
+    </operation>
+    <operation name="tables">
+      <documentation>Find the different tables in an archive</documentation>
+      <input message="s0:tablesHttpPostIn" />
+      <output message="s0:tablesHttpPostOut" />
+    </operation>
+    <operation name="metaData">
+      <documentation>Get the Metadata of the archive as a VODescription</documentation>
+      <input message="s0:metaDataHttpPostIn" />
+      <output message="s0:metaDataHttpPostOut" />
+    </operation>
+  </portType>
+  <binding name="ArchiveServiceSoap" type="s0:ArchiveServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+    <operation name="ucd">
+      <soap:operation soapAction="http://voql.ivoa.net/ucd" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="performQuery">
+      <soap:operation soapAction="http://voql.ivoa.net/performQuery" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="columns">
+      <soap:operation soapAction="http://voql.ivoa.net/columns" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="tables">
+      <soap:operation soapAction="http://voql.ivoa.net/tables" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="metaData">
+      <soap:operation soapAction="http://voql.ivoa.net/metaData" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+  <binding name="ArchiveServiceHttpGet" type="s0:ArchiveServiceHttpGet">
+    <http:binding verb="GET" />
+    <operation name="ucd">
+      <http:operation location="/ucd" />
+      <input>
+        <http:urlEncoded />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="columns">
+      <http:operation location="/columns" />
+      <input>
+        <http:urlEncoded />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="tables">
+      <http:operation location="/tables" />
+      <input>
+        <http:urlEncoded />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="metaData">
+      <http:operation location="/metaData" />
+      <input>
+        <http:urlEncoded />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+  </binding>
+  <binding name="ArchiveServiceHttpPost" type="s0:ArchiveServiceHttpPost">
+    <http:binding verb="POST" />
+    <operation name="ucd">
+      <http:operation location="/ucd" />
+      <input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="columns">
+      <http:operation location="/columns" />
+      <input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="tables">
+      <http:operation location="/tables" />
+      <input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="metaData">
+      <http:operation location="/metaData" />
+      <input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+  </binding>
+  <service name="ArchiveService">
+    <port name="ArchiveServiceSoap" binding="s0:ArchiveServiceSoap">
+      <soap:address location="http://skyservice.pha.jhu.edu/devel/AdqlArchive/ArchiveService.asmx" />
+    </port>
+    <port name="ArchiveServiceHttpGet" binding="s0:ArchiveServiceHttpGet">
+      <http:address location="http://skyservice.pha.jhu.edu/devel/AdqlArchive/ArchiveService.asmx" />
+    </port>
+    <port name="ArchiveServiceHttpPost" binding="s0:ArchiveServiceHttpPost">
+      <http:address location="http://skyservice.pha.jhu.edu/devel/AdqlArchive/ArchiveService.asmx" />
+    </port>
+  </service>
+</definitions>
