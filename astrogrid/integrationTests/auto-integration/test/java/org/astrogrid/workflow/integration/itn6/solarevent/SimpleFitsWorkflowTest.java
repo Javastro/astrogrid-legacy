@@ -1,4 +1,4 @@
-/*$Id: SimpleFitsWorkflowTest.java,v 1.6 2004/08/12 22:05:43 nw Exp $
+/*$Id: SimpleFitsWorkflowTest.java,v 1.7 2004/08/17 13:35:58 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,6 +45,14 @@ public class SimpleFitsWorkflowTest extends AbstractTestForWorkflow implements S
         super(new String[]{FITS_APP}, arg0);
     }
  
+    /** Construct a new SimpleFitsWorkflowTest
+     * @param strings
+     * @param arg0
+     */
+    public SimpleFitsWorkflowTest(String[] strings, String arg0) {
+        super(strings,arg0);
+    }
+
     /**
      * @see org.astrogrid.workflow.integration.AbstractTestForWorkflow#buildWorkflow()
      */
@@ -98,6 +106,9 @@ public class SimpleFitsWorkflowTest extends AbstractTestForWorkflow implements S
 
 /* 
 $Log: SimpleFitsWorkflowTest.java,v $
+Revision 1.7  2004/08/17 13:35:58  nw
+added constructor for subclassing with
+
 Revision 1.6  2004/08/12 22:05:43  nw
 added checking of results of steps, and parsing of urls in interstep script
 
