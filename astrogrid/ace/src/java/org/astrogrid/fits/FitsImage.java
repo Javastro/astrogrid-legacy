@@ -1,5 +1,5 @@
 /*
- $Id: FitsImage.java,v 1.1 2003/08/25 18:36:27 mch Exp $
+ $Id: FitsImage.java,v 1.2 2004/01/12 18:45:56 mch Exp $
 
  Copyright (c) etc
  */
@@ -9,7 +9,7 @@ package org.astrogrid.fits;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
-import org.astrogrid.common.myspace.MySpaceResolver;
+import org.astrogrid.common.myspace.SourceResolver;
 import org.astrogrid.log.Log;
 
 /**
@@ -44,7 +44,7 @@ public class FitsImage
    {
       //test can be found
       Log.trace("Resolving access to image '"+fileLocation+"'..");
-      return MySpaceResolver.resolveInputStream(fileLocation);
+      return SourceResolver.resolveInputStream(fileLocation);
 
    }
 
@@ -153,8 +153,11 @@ public class FitsImage
 
 /*
  $Log: FitsImage.java,v $
- Revision 1.1  2003/08/25 18:36:27  mch
- *** empty log message ***
+ Revision 1.2  2004/01/12 18:45:56  mch
+ Switched from obsolete myspace clients to astrogrid ones
+
+ Revision 1.1.1.1  2003/08/25 18:36:27  mch
+ Reimported to fit It02 source structure
 
  Revision 1.1  2003/07/03 18:14:51  mch
  Fits file handling

@@ -1,17 +1,16 @@
 package org.astrogrid.ace.sextractor;
 
 
-import java.io.IOException;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
+import org.astrogrid.ace.service.AceParameterBundle;
+import org.astrogrid.common.wrapper.ProgramExecutor;
+import org.astrogrid.common.wrapper.SingleParameter;
+import org.astrogrid.io.Piper;
 import org.astrogrid.log.Log;
-import org.astrogrid.tools.io.StreamPiper;
-import org.astrogrid.tools.io.OutputStreamSplitter;
-import org.astrogrid.common.wrapper.*;
-import org.astrogrid.common.myspace.*;
-import org.astrogrid.common.client.*;
-
-import org.astrogrid.ace.service.*;
+import org.astrogrid.mySpace.delegate.MySpaceClient;
 
 /**
  * Executes the sextractor program
@@ -205,43 +204,19 @@ public class SExtractorExecutor extends ProgramExecutor
       else
       {
          //some kind of protocol given...
-         URL imageUrl = new URL(bundle.getImageToMeasure());
+         URL imageUrl = new URL(fileId);
          if (imageUrl.getProtocol().equalsIgnoreCase("file"))
          {
             //ordinary file - NB, while this may be locally available, this
             // might be difficult to resolve in practice...
             //for now, remove protocol and return
-            return "//"+imageUrl.getHost()+"/"+imageUrl.getPath();
+            String localName = "//"+imageUrl.getHost()+"/"+imageUrl.getPath();
+            if (new File(localName).exists()) return localName;
          }
 
          //remote protocol, therefore we have to copy it in from somewhere
-         //this is a botch, as we have no way of passing
-         // info about which myspace we're using.  We could do with an extra
-         // line in the SOAP doc for this.  In the meantime...
-         MySpaceClient myspace = null;
-         MySpaceServers myspaceServers = new MySpaceServers();
-
-         if (imageUrl.getProtocol().equals("http"))
-         {
-            myspace = new MySpaceUrlClient();
-         }
-         else if (imageUrl.getProtocol().equals("ftp") && (imageUrl.getHost().indexOf("grendel12")>-1))
-         {
-            //roe grendel ftp server
-            myspace = myspaceServers.getMySpaceClient(MySpaceServers.ROE_GRENDEL);
-         }
-         else if (imageUrl.getProtocol().equals("ftp"))
-         {
-            myspace = new MySpaceUrlClient();
-         }
-         else
-         {
-            myspace = new MySpaceLocalClient();
-         }
-
-         myspace.connect();
-         String localFilename = myspace.update(""+imageUrl, getWorkingDirectory());
-         myspace.disconnect();
+         String localFilename = getWorkingDirectory()+"/"+fileId;
+         Piper.pipe(imageUrl.openStream(), new FileOutputStream(localFilename));
 
          return localFilename;
       }
@@ -275,15 +250,10 @@ public class SExtractorExecutor extends ProgramExecutor
       }
 
       //copy in from site
-      MySpaceClient myspace = new MySpaceUrlClient();
-
-      myspace.connect();
-      String localFilename = myspace.update(
-         "http://www.astro.ku.dk/software/SExtractor/sex2.1.0/config/"+fileId,
-         commonDir
-      );
-      myspace.disconnect();
-
+      URL url = new URL("http://www.astro.ku.dk/software/SExtractor/sex2.1.0/config/"+fileId);
+      String localFilename = commonDir+"/"+fileId;
+      Piper.pipe(url.openStream(), new FileOutputStream(localFilename));
+      
       return localFilename;
    }
    /**
