@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.2 2005/03/10 13:49:53 mch Exp $
+ * $Id: SubmitCone.java,v 1.3 2005/03/11 14:23:21 mch Exp $
  */
 
 package org.astrogrid.dataservice.service.cone;
@@ -16,6 +16,7 @@ import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.condition.CircleCondition;
 import org.astrogrid.query.returns.ReturnSpec;
+import org.astrogrid.slinger.mime.MimeTypes;
 import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.webapp.DefaultServlet;
 
@@ -54,7 +55,7 @@ public class SubmitCone extends DefaultServlet {
          }
          else {
             //otherwise we direct the response to the target and put status info to the browser
-            response.setContentType("text/html");
+            response.setContentType(MimeTypes.HTML);
             response.getWriter().println(
                "<html>"+
                "<head><title>Submitting Query</title></head>"+

@@ -1,14 +1,12 @@
 /*
- * $Id: VoResourceSupport.java,v 1.4 2005/03/10 22:39:17 mch Exp $
+ * $Id: VoResourceSupport.java,v 1.5 2005/03/11 14:23:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.dataservice.metadata.v0_10;
 
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,11 +15,14 @@ import java.util.Locale;
 import java.util.TimeZone;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.service.DataServer;
-import org.astrogrid.io.Piper;
 import org.astrogrid.xml.DomHelper;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -81,16 +82,22 @@ public class VoResourceSupport {
       String coreFile = SimpleConfig.getSingleton().getString("dataserver.metadata.core", null);
       if ( coreFile != null) {
          //use an on-disk resource file
-         StringWriter sw = new StringWriter();
-         FileReader reader = new FileReader(coreFile);
-         Piper.pipe(reader, sw);
          try {
-            DomHelper.newDocument(sw.toString());//validate
+            Document coreDoc = DomHelper.newDocument(Config.resolveFilename(coreFile));//validate & load
+
+            //set ID
+            NodeList idNodes = coreDoc.getElementsByTagName("identifier");
+            if (idNodes.getLength() != 1) {
+               throw new MetadataException("Should be exactly one identifier node in core resource document at "+coreFile);
+            }
+            Element idNode = (Element) idNodes.item(0);
+            DomHelper.setElementValue(idNode, DomHelper.getValueOf(idNode)+idEnd);
+            
+            return DomHelper.DocumentToString(coreDoc);
          }
          catch (SAXException e) {
             throw new MetadataException(e+" parsing Core Resource/Metadata document at "+coreFile,e);
          }
-         return sw.toString();
       }
       else {
          return makeConfigCore(idEnd);
@@ -115,7 +122,7 @@ public class VoResourceSupport {
    
    /** Constructs an IVORN ID from an authority key and a resource key and the given extension */
    public String makeId(String idEnd) {
-      return SimpleConfig.getSingleton().getString(AUTHID_KEY)+"/"+SimpleConfig.getSingleton().getString(RESKEY_KEY)+"/"+idEnd;
+      return "ivo://"+SimpleConfig.getSingleton().getString(AUTHID_KEY)+"/"+SimpleConfig.getSingleton().getString(RESKEY_KEY)+"/"+idEnd;
    }
    
    

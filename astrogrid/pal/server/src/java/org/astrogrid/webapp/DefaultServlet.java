@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultServlet.java,v 1.2 2005/03/10 20:19:21 mch Exp $
+ * $Id: DefaultServlet.java,v 1.3 2005/03/11 14:23:21 mch Exp $
  */
 
 package org.astrogrid.webapp;
@@ -22,6 +22,7 @@ import org.astrogrid.dataservice.service.ServletHelper;
 public abstract class DefaultServlet extends HttpServlet {
    
    Log log = LogFactory.getLog(DefaultServlet.class);
+   
    
    /** Do same on POST requests as GET requests */
    public void doPost(HttpServletRequest request,
