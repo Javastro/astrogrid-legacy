@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.84 2004/08/26 08:28:03 pah Exp $ -->
+<!-- $Id: maven.xml,v 1.85 2004/08/27 11:50:26 KevinBenson Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -76,7 +76,6 @@
 
 <goal name="deploy-all" prereqs="init" description="deploy all webapps, setup environment.">
         <echo>*** Deploying all webapps...</echo>
-
         <attainGoal name="common-libs-deploy" />
         <attainGoal name="configuration-deploy" />
         <sleep seconds="2" />
@@ -95,11 +94,13 @@
         <attainGoal name="filestore-deploy" />
         <sleep seconds="2" />
         <attainGoal name="pal-deploy" />
-        <sleep seconds="2" />
+        <sleep seconds="4" />
         <attainGoal name="pal-fits-deploy" />
-        <sleep seconds="2" />
+        <sleep seconds="4" />
         <attainGoal name="pal-sec-deploy" />
-        <sleep seconds="2" />
+        <sleep seconds="4" />
+	    <attainGoal name="pal-cds-deploy" />
+    	<sleep seconds="2" />	
         <attainGoal name="community-deploy"/>
         <sleep seconds="2" />
         <attainGoal name="portal-deploy" />
@@ -120,6 +121,7 @@
         <attainGoal name="pal-undeploy" />
         <attainGoal name="pal-fits-undeploy" />
         <attainGoal name="pal-sec-undeploy" />
+		<attainGoal name="pal-cds-undeploy" />	
         <attainGoal name="community-undeploy" />
         <attainGoal name="portal-undeploy" />
 </goal>
@@ -691,6 +693,22 @@
   </j:catch>
 </goal>
 
+	<goal name="pal-cds-deploy" >
+	        <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
+	                      tofile="${temporary.dir}/pal-cds-${pom.currentVersion}.war" />
+	        <copy todir="${temporary.dir}/pal_cds" filtering="true">
+	                <fileset dir="contexts/pal_cds" />
+	        </copy>
+	        <war update="true" destfile="${temporary.dir}/pal-cds-${pom.currentVersion}.war">
+	                <metainf dir="${temporary.dir}/pal_cds"/>
+	        </war>
+	  <j:catch>
+	  <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+	          path="/astrogrid-pal-cds-${pom.currentVersion}" war="file:///${temporary.dir}/pal-cds-${pom.currentVersion}.war"/>
+	  </j:catch>
+	</goal>
+	
+	
 <goal name="portal-deploy">
         <copy todir="${temporary.dir}/portal" filtering="true">
                 <fileset dir="contexts/portal" />
@@ -801,7 +819,13 @@
           path="/astrogrid-pal-sec-${pom.currentVersion}" />
   </j:catch>
 </goal>
-
+	
+<goal name="pal-cds-undeploy" >
+	  <j:catch>
+	  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+	          path="/astrogrid-pal-cds-${pom.currentVersion}" />
+	  </j:catch>
+</goal>	
 
 <goal name="configuration-undeploy" >
   <j:catch>
