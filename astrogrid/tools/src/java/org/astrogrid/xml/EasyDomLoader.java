@@ -14,6 +14,8 @@ import org.w3c.dom.Element;
 
 import javax.xml.parsers.*;
 
+import java.io.IOException;
+
 import org.astrogrid.log.Log;
 /**
  *  A class for easily loading Xml documents into a DOM.
@@ -26,7 +28,7 @@ public class EasyDomLoader
     * Loads and returns the root DOM node (Element) from the given
     * XML file
     */
-   public static Element loadElement(String filename)
+   public static Element loadElement(String filename) throws IOException
    {
       try
       {
@@ -38,7 +40,20 @@ public class EasyDomLoader
          DocumentBuilder builder = dbf.newDocumentBuilder();
          Document doc = builder.parse(new java.io.File(filename));
          
-         Element rootNode = (Element) doc.getChildNodes().item(0);
+         //look through root nodes until we find the first element (ones before
+         //may be comments)
+         int i =0;
+         while ((i<doc.getChildNodes().getLength()-1)
+                && !(doc.getChildNodes().item(i) instanceof Element))
+         {
+            i++;
+         }
+         if (i>doc.getChildNodes().getLength()-1)
+         {
+            throw new IOException("No root element found");
+         }
+         
+         Element rootNode = (Element) doc.getChildNodes().item(i);
          
          if (rootNode == null)
          {
