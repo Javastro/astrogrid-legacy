@@ -1,4 +1,4 @@
-/*$Id: ApplicationsInstallationTest.java,v 1.2 2004/04/26 12:16:07 nw Exp $
+/*$Id: ApplicationsInstallationTest.java,v 1.3 2004/05/17 12:37:31 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,7 +35,7 @@ import java.util.List;
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
-public class ApplicationsInstallationTest extends AbstractTestForIntegration {
+public class ApplicationsInstallationTest extends AbstractTestForApplications {
     /**
      * Constructor for ApplicationsIntegrationTest.
      * @param arg0
@@ -44,49 +44,11 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
         super(arg0);
     }
     
-    protected void setUp() throws Exception {
-        super.setUp();
-        List apps = ag.getApplications();
-        assertNotNull(apps);
-        assertTrue("no application servers found",apps.size() > 0);
-        serv = findRequiredService(apps.iterator());        
-        delegate = (CommonExecutionConnectorClient)serv.createDelegate();
-    } 
-    
-    protected String applicationName() {
-        return TESTAPP2;
-    }
-    
-    protected Service findRequiredService(Iterator apps) {
-        while( apps.hasNext() ) { // find the correct one
-            Service s = (Service)apps.next();
-            if (s.getDescription().indexOf("command-line") != -1) {
-                return s;
-            }           
-        }
-        fail("failed to find command-line service");
-        // never reached.
-        return null;
-    }
-    
-    protected Service serv;
-    protected CommonExecutionConnectorClient delegate;
-    
     public void testApplicationsRegistered() throws Exception {        
         ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
         assertNotNull(reg.getDescriptionFor(applicationName()));
     }
 
-    public void testApplicationResolvable() throws Exception {
-        URL requestURL = new URL("http://localhost:8080/astrogrid-jes-SNAPSHOT/backdoor?action=locate&name=" + applicationName());
-        InputStream is = requestURL.openStream();
-        BufferedReader in = new BufferedReader(new InputStreamReader(is));
-        String line = in.readLine();
-        assertNotNull(line);
-        URL endpoint = new URL(line); // checks its a valid url.
-        
-    }    
-    
     public void testListApplications() throws Exception {
         ApplicationList results = delegate.listApplications();        
         assertNotNull("list of applications is null",results);
@@ -112,50 +74,14 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
         // I guess its xml or something. need to add further testing here
     }
     
-    public void testExecute() throws Exception {
-        ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
-        ApplicationDescription descr = reg.getDescriptionFor(applicationName());
-        assertNotNull("could not get application description",descr);
-        Tool tool = descr.createToolFromDefaultInterface();
-        assertNotNull("tool is null",tool);
-        populateTool(tool);
-        descr.validate(tool);
-        
-        JobIdentifierType id = new JobIdentifierType(); // not too bothered about this.
-        id.setValue(this.getClass().getName());
-       String returnEndpoint ="http://localhost:8080/astrogrid-jes-SNAPSHOT/services/JobMonitorService";      
-      String execId = delegate.execute(tool,id,returnEndpoint);
-      assertNotNull(execId);
-      
-    }
-
-    /**
-     * @param tool
-     */
-    protected void populateTool(Tool tool) throws Exception{
-          File tmpInFile = File.createTempFile("ApplictionsInstallationTest-input","txt");
-          File tmpOutFile = File.createTempFile("ApplicationsInstallationTest-output","txt");
-
-        PrintWriter pw = new PrintWriter(new FileOutputStream(tmpInFile));
-        assertNotNull(pw);
-        pw.println("test contents");
-        pw.close();          
-          ParameterValue pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P1']");
-          pval.setValue("1"); // wait one second...
-          pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P2']");
-          pval.setValue("30.5");
-          pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P4']");
-          pval.setValue("test string");
-          pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P9']");
-          pval.setValue(tmpInFile.getAbsolutePath());
-          pval = (ParameterValue)tool.findXPathValue("output/parameter[name='P3']");
-          pval.setValue(tmpOutFile.getAbsolutePath());
-       }                                   
     }
 
 
 /* 
 $Log: ApplicationsInstallationTest.java,v $
+Revision 1.3  2004/05/17 12:37:31  pah
+Improve CEA tests that call application controller directly
+
 Revision 1.2  2004/04/26 12:16:07  nw
 got applications int test working.
 dsa works, but suspect its failing under the hood.

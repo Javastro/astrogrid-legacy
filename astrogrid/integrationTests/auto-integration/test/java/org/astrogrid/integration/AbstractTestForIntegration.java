@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.2 2004/04/23 00:27:13 nw Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.3 2004/05/17 12:37:31 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import junit.framework.TestCase;
  *
  */
 public class AbstractTestForIntegration extends TestCase {
-    /**
+   /**
      * Constructor for AbstractTestForIntegration.
      * @param arg0
      */
@@ -39,7 +39,7 @@ public class AbstractTestForIntegration extends TestCase {
         super.setUp();
         ag = Astrogrid.getInstance();
         // credentials object
-        acc = ag.getObjectHelper().createAccount("frog",COMMUNITY); // will want to change this to a standard user later.
+        acc = ag.getObjectHelper().createAccount(USERNAME,COMMUNITY); // will want to change this to a standard user later.
         group = ag.getObjectHelper().createGroup("devel",COMMUNITY);
         creds = ag.getObjectHelper().createCredendtials(acc,group);
 
@@ -48,6 +48,9 @@ public class AbstractTestForIntegration extends TestCase {
         user.setAccount(creds.getAccount().getName() + "@" + creds.getAccount().getCommunity());
         user.setGroup(creds.getGroup().getName() + "@" + creds.getGroup().getCommunity());
         user.setToken(creds.getSecurityToken());        
+        userIvorn = new Ivorn("ivo://"+COMMUNITY+"/"+USERNAME);
+        mySpaceIvorn = new Ivorn("ivo://"+MYSPACE);
+      
 
         wf = ag.getWorkflowManager().getWorkflowBuilder().createWorkflow(creds,"test workflow","a description");    
     }
@@ -58,7 +61,10 @@ public class AbstractTestForIntegration extends TestCase {
     protected Credentials creds;
     protected User user;
     protected Workflow wf;
+   protected Ivorn userIvorn;
+   protected Ivorn mySpaceIvorn;
     
+    public static final String USERNAME = "frog";
     public static final String COMMUNITY = "org.astrogrid.localhost";
     public static final String MYSPACE = COMMUNITY + "/myspace";
     public static final String TESTDSA = COMMUNITY + "/testdsa";
@@ -75,6 +81,9 @@ public class AbstractTestForIntegration extends TestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.3  2004/05/17 12:37:31  pah
+Improve CEA tests that call application controller directly
+
 Revision 1.2  2004/04/23 00:27:13  nw
 added constant for testap2
 

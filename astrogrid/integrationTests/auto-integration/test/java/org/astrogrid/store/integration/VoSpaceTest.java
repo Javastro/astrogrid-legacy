@@ -1,4 +1,4 @@
-/*$Id: VoSpaceTest.java,v 1.8 2004/05/11 11:23:00 pah Exp $
+/*$Id: VoSpaceTest.java,v 1.9 2004/05/17 12:37:31 pah Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -217,10 +217,14 @@ public class VoSpaceTest extends AbstractTestForIntegration {
    /**
     * tests simply storing a file in vospace for the frog user who should pre-exist
     */
-   public void testFrogStoreFile() throws IOException
+   public void testFrogStoreFile() throws IOException, URISyntaxException
    {
     VoSpaceClient voclient = new VoSpaceClient(user);
     assertNotNull(voclient);
+    
+    //need to create the fron user
+    
+    voclient.createUser(mySpaceIvorn, userIvorn);
       
     Ivorn inputIvorn = createIVORN("/vospaceFile");   
     assertNotNull(inputIvorn);
@@ -268,6 +272,9 @@ public class VoSpaceTest extends AbstractTestForIntegration {
 
 /*
 $Log: VoSpaceTest.java,v $
+Revision 1.9  2004/05/17 12:37:31  pah
+Improve CEA tests that call application controller directly
+
 Revision 1.8  2004/05/11 11:23:00  pah
 *** empty log message ***
 
