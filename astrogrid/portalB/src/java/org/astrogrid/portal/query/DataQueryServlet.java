@@ -11,6 +11,18 @@ import org.astrogrid.portal.generated.jobcontroller.client.*;
 public class DataQueryServlet extends HttpServlet {
 
 
+	public void init(ServletConfig conf) {
+		ServletContext sc = conf.getServletContext();
+		ArrayList dsInfo = (ArrayList)sc.getAttribute("DataSetArrayList");
+		if(dsInfo == null || dsInfo.size() <= 0) {
+			dsInfo = getDataSetsFromRegistry();
+			System.out.println("it was called");
+			sc.setAttribute("DataSetArrayList",dsInfo);
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.HOUR_OF_DAY,5);
+			sc.setAttribute("DataSetInitTime",cal);
+		}//if
+	}
 
 	protected void doGet( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		processRequest(request,response);
@@ -20,7 +32,34 @@ public class DataQueryServlet extends HttpServlet {
 		processRequest(request,response);
 	}
 
+	private void checkDataSetTime(ServletContext sc, Calendar current) {
+		Calendar dsTime = (Calendar)sc.getAttribute("DataSetInitTime");
+		if(dsTime == null || current.after(dsTime)) {
+			ArrayList dsInfo = getDataSetsFromRegistry();
+			sc.setAttribute("DataSetArrayList",dsInfo);
+			current.add(Calendar.HOUR_OF_DAY,5);
+			sc.setAttribute("DataSetInitTime",current);
+		}
+	}
 
+	private ArrayList getDataSetsFromRegistry() {
+		String reqXmlString = QueryRegistryInformation.getAllDataSetInformationFromRegistry();
+		System.out.println(reqXmlString);
+		String respXmlString = QueryRegistryInformation.sendRegistryQuery(reqXmlString);
+		System.out.println(respXmlString);
+		Object []items = QueryRegistryInformation.getItemsFromRegistryResponse(respXmlString);
+		if(items.length > 0) {
+			System.out.println("The item = " + items[0]);
+		}
+		ArrayList ds = new ArrayList(items.length);
+
+		for(int i=0;i< items.length;i++) {
+			DataSetInformation dsInfo = new DataSetInformation((String)items[i]);
+			dsInfo.addDataSetColumn("test","COLUMN");
+			ds.add(dsInfo);
+		}
+		return ds;
+	}
 
 	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Okay in the processrequest");
@@ -34,21 +73,11 @@ public class DataQueryServlet extends HttpServlet {
 			qb = new QueryBuilder("JObTest");
 		}
 
-		ArrayList preFill = new ArrayList();
-		DataSetInformation dsInfoTest = new DataSetInformation("USNOB");
-		dsInfoTest.addDataSetColumn("ID","COLUMN");
-		dsInfoTest.addDataSetColumn("URA","COLUMN");
-		dsInfoTest.addDataSetColumn("UDEC","COLUMN");
-		dsInfoTest.addDataSetColumn("PHOT_TYCHO","UCD");
-		dsInfoTest.addDataSetColumn("CONE","FUNCTION");
-		preFill.add(dsInfoTest);
-		dsInfoTest = new DataSetInformation("PreFilTest-2");
-		dsInfoTest.addDataSetColumn("Test1");
-		dsInfoTest.addDataSetColumn("Test2");
-		dsInfoTest.addDataSetColumn("Test3");
-		preFill.add(dsInfoTest);
-		session.setAttribute("DataSetArrayList",preFill);
-
+		checkDataSetTime(getServletConfig().getServletContext(),Calendar.getInstance());
+		ArrayList alTemp = (ArrayList)getServletContext().getAttribute("DataSetArrayList");
+		if(alTemp == null || alTemp.size() <= 0) {
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"Cannot access service to get Data Set List");
+		}
 
 		Enumeration en = request.getParameterNames();
 		while(en.hasMoreElements()) {
@@ -111,8 +140,7 @@ public class DataQueryServlet extends HttpServlet {
 		}else if(validParameter(request.getParameter("RemoveCriteria"))) {
 			if(validParameter(request.getParameter("DataSetNameCriteria")) &&
 			   validParameter(request.getParameter("FilterColumn")) &&
-			   validParameter(request.getParameter("Operator")) &&
-			   validParameter(request.getParameter("Value")) ) {
+			   validParameter(request.getParameter("Operator")) ) {
 				DataSetInformation dsInfo = null;
 				reqTemp = request.getParameter("FilterColumn").split("-");
 				if( (dsInfo = qb.getDataSetInformation(request.getParameter("DataSetNameCriteria"))) != null) {

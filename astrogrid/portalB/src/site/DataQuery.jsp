@@ -3,9 +3,14 @@
 <%@ page import = "org.astrogrid.portal.query.DataSetColumn" %>
 
 <%
-	java.util.ArrayList dataSets = (ArrayList)session.getAttribute("DataSetArrayList");
 	Iterator info;
+	//java.util.ArrayList dataSets = (ArrayList)session.getAttribute("DataSetArrayList");
+	java.util.ArrayList dataSets = (ArrayList)application.getAttribute("DataSetArrayList");
+	if(dataSets == null || dataSets.size() <= 0 ) {
 %>
+	<jsp:forward page="/DataQuery" />
+<%}%>
+
 
 <html>
 <head>
@@ -79,7 +84,6 @@ if (errorMessage != null) {
 	%>
 	<option value="<%=dsInfo.getName()%>"><%=dsInfo.getName()%></option>
 	<%}}%>	
-	<option value="USNOB">USNOB</option>
 </select>
 
 <!---<input type="text" name="ReturnColumn" />--->
@@ -120,7 +124,6 @@ if (errorMessage != null) {
 	%>
 	<option value="<%=dsInfo.getName()%>"><%=dsInfo.getName()%></option>
 	<%}}%>	
-	<option value="USNOB">USNOB</option>
 </select>
 
 <select name="FilterColumn">
