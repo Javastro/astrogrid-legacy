@@ -5,8 +5,8 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.DummyQuerierSPI;
-import org.astrogrid.datacenter.queriers.DummyQueryResults;
+import org.astrogrid.datacenter.sitedebug.DummyQuerierSPI;
+import org.astrogrid.datacenter.sitedebug.DummyQueryResults;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.w3c.dom.Document;
 

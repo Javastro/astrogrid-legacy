@@ -1,4 +1,4 @@
-/*$Id: DirectDelegateTest.java,v 1.2 2004/01/13 00:33:14 nw Exp $
+/*$Id: DirectDelegateTest.java,v 1.3 2004/02/16 23:07:04 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,12 +22,12 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.community.User;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.community.Account;
+import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.queriers.DummyQuerier;
+import org.astrogrid.datacenter.sitedebug.DummyQuerier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -39,7 +39,7 @@ public class DirectDelegateTest  extends TestCase {
 
    public void testFactory() throws ServiceException, MalformedURLException, IOException
    {
-      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(User.ANONYMOUS, "local", DatacenterDelegateFactory.ASTROGRID_DIRECT);
+      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(Account.ANONYMOUS, "local", DatacenterDelegateFactory.ASTROGRID_DIRECT);
       
       assertNotNull(querier);
    }
@@ -49,9 +49,9 @@ public class DirectDelegateTest  extends TestCase {
     */
    public void testQuery() throws ServiceException, MalformedURLException, IOException, ParserConfigurationException, SAXException, ADQLException
    {
-      SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, DummyQuerier.class.getName());
+      AttomConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, DummyQuerier.class.getName());
       
-      FullSearcher delegate = DatacenterDelegateFactory.makeFullSearcher(User.ANONYMOUS, "local", DatacenterDelegateFactory.ASTROGRID_DIRECT);
+      FullSearcher delegate = DatacenterDelegateFactory.makeFullSearcher(Account.ANONYMOUS, "local", DatacenterDelegateFactory.ASTROGRID_DIRECT);
       
       assertNotNull(delegate);
       
@@ -82,6 +82,9 @@ public class DirectDelegateTest  extends TestCase {
 
 /*
 $Log: DirectDelegateTest.java,v $
+Revision 1.3  2004/02/16 23:07:04  mch
+Moved DummyQueriers to std server and switched to AttomConfig
+
 Revision 1.2  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through

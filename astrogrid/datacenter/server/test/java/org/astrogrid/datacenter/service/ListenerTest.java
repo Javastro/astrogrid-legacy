@@ -23,7 +23,7 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DelegateQueryListener;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
-import org.astrogrid.datacenter.queriers.DummyQuerierSPI;
+import org.astrogrid.datacenter.sitedebug.DummyQuerierSPI;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -121,6 +121,9 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.9  2004/02/16 23:07:05  mch
+Moved DummyQueriers to std server and switched to AttomConfig
+
 Revision 1.8  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through

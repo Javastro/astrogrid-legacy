@@ -1,4 +1,4 @@
-/*$Id: DatacenterTest.java,v 1.8 2004/02/15 23:19:58 mch Exp $
+/*$Id: DatacenterTest.java,v 1.9 2004/02/16 23:07:04 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.apache.axis.client.AdminClient;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.astrogrid.datacenter.service.ServiceServer;
@@ -59,9 +59,9 @@ public class DatacenterTest extends AbstractTestInstallation {
         // set configuration parameters
         HsqlTestCase.initializeConfiguration();
         // set location of metadata
-        SimpleConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
+        AttomConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
         // set myspace to use
-        SimpleConfig.setProperty(QuerierManager.RESULTS_TARGET_KEY,MySpaceDummyDelegate.DUMMY);
+        AttomConfig.setProperty(QuerierManager.RESULTS_TARGET_KEY,MySpaceDummyDelegate.DUMMY);
         // populate the database
         String script = ServerTestCase.getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
@@ -106,6 +106,9 @@ public class DatacenterTest extends AbstractTestInstallation {
 
 /*
 $Log: DatacenterTest.java,v $
+Revision 1.9  2004/02/16 23:07:04  mch
+Moved DummyQueriers to std server and switched to AttomConfig
+
 Revision 1.8  2004/02/15 23:19:58  mch
 minor import changes
 

@@ -1,4 +1,4 @@
-/*$Id: SiteTestWebService.java,v 1.1 2004/01/15 18:12:25 nw Exp $
+/*$Id: SiteTestWebService.java,v 1.2 2004/02/16 23:07:05 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.astrogrid.community.User;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
@@ -50,7 +50,7 @@ public class SiteTestWebService extends TestCase {
    
    public void testMetadata() throws IOException, ServiceException
    {
-      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(User.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(Account.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       
       Metadata metadata = querier.getMetadata();
       
@@ -59,7 +59,7 @@ public class SiteTestWebService extends TestCase {
    
    public void testBlockingQuery() throws Exception
    {
-      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(User.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(Account.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
 
       InputStream is = SiteTestWebService.class.getResourceAsStream("test-query.adql");
 
@@ -95,6 +95,9 @@ public class SiteTestWebService extends TestCase {
 
 /*
 $Log: SiteTestWebService.java,v $
+Revision 1.2  2004/02/16 23:07:05  mch
+Moved DummyQueriers to std server and switched to AttomConfig
+
 Revision 1.1  2004/01/15 18:12:25  nw
 Renamed, otherwise it gets picked up by the nightly
 build - its not suited for running with this, and fails.

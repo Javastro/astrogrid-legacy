@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.6 2004/01/23 11:14:09 nw Exp $
+/*$Id: FitsQuerierTest.java,v 1.7 2004/02/16 23:07:05 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -18,7 +18,7 @@ import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
@@ -42,7 +42,7 @@ public class FitsQuerierTest extends OptionalTestCase
    public void testLots() throws IOException
    {
       org.astrogrid.log.Log.logToConsole();
-      FitsQuerier querier = new FitsQuerier("test",null);  
+      FitsQuerier querier = new FitsQuerier("test",null);
       setIndex(querier);
 
       org.astrogrid.log.Log.trace("Starting cone search...");
@@ -83,7 +83,7 @@ public class FitsQuerierTest extends OptionalTestCase
     */
    public void testPlugin() throws DatabaseAccessException
    {
-      SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, FitsQuerier.class.getName());
+      AttomConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, FitsQuerier.class.getName());
       
       Querier querier = QuerierManager.createQuerier(null);
       
@@ -111,6 +111,9 @@ public class FitsQuerierTest extends OptionalTestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.7  2004/02/16 23:07:05  mch
+ Moved DummyQueriers to std server and switched to AttomConfig
+
  Revision 1.6  2004/01/23 11:14:09  nw
  altered to extend org.astrogrid.test.OptionalTestCase -
  means that these tests can be disabled as needed

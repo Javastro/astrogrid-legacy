@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.9 2004/01/13 00:33:14 nw Exp $
+/*$Id: SqlQuerierTest.java,v 1.10 2004/02/16 23:07:05 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
@@ -70,7 +70,7 @@ public class SqlQuerierTest extends ServerTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         HsqlTestCase.initializeConfiguration();
-        SimpleConfig.setProperty(SqlQueryTranslator.SQL_PASSTHRU_ENABLED_KEY,"true");
+        AttomConfig.setProperty(SqlQueryTranslator.SQL_PASSTHRU_ENABLED_KEY,"true");
         String script = getResourceAsString("create-test-db.sql");
         assertNotNull(script);
         conn = new HsqlTestCase.HsqlDataSource().getConnection();
@@ -147,6 +147,9 @@ public class SqlQuerierTest extends ServerTestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.10  2004/02/16 23:07:05  mch
+Moved DummyQueriers to std server and switched to AttomConfig
+
 Revision 1.9  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through

@@ -1,16 +1,16 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.5 2004/01/13 00:33:14 nw Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.6 2004/02/16 23:07:05 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.sql.SQLUtils;
@@ -40,9 +40,9 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         trans = new SqlQueryTranslator();
-        SimpleConfig.setProperty(SqlQueryTranslator.SQL_PASSTHRU_ENABLED_KEY,"true");
+        AttomConfig.setProperty(SqlQueryTranslator.SQL_PASSTHRU_ENABLED_KEY,"true");
     }
-    protected Translator trans; 
+    protected Translator trans;
     /*
      * @see ServerTestCase#tearDown()
      */
@@ -53,7 +53,7 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
     public void testReturnType() {
         assertEquals(String.class,trans.getResultType());
     }
-    public final static String QUERY = "select * from bling";    
+    public final static String QUERY = "select * from bling";
     public final static String INVALID_XML = "<?xml version='1.0'?><Sql>" + QUERY + "</Sql>";
     public final static String DUPLICATE_XML = "<?xml version='1.0'?><foo><sql></sql><sql></sql></foo>";
     public final static String QUERY1 = "select * from hens where teeth < 1"; // has a < in it
@@ -65,7 +65,7 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
         Object o = trans.translate(SQLUtils.toQueryBody(QUERY));
         assertNotNull(o);
         assertEquals(trans.getResultType(),o.getClass());
-        assertEquals(QUERY,o);               
+        assertEquals(QUERY,o);
     }
     
     public void testInvalid() throws Exception {
@@ -105,8 +105,11 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 }
 
 
-/* 
+/*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.6  2004/02/16 23:07:05  mch
+Moved DummyQueriers to std server and switched to AttomConfig
+
 Revision 1.5  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through

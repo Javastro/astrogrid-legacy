@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.3 2003/12/01 20:58:42 mch Exp $
+/*$Id: QuerierManagerTest.java,v 1.4 2004/02/16 23:07:05 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,9 @@
  *
 **/
 package org.astrogrid.datacenter.queriers;
+import org.astrogrid.datacenter.sitedebug.*;
 
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.axisdataserver.types.QueryHelper;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
@@ -36,8 +37,8 @@ public class QuerierManagerTest extends ServerTestCase {
     
     protected void setUp() throws Exception {
         super.setUp();
-        SimpleConfig.setProperty(PluginQuerier.QUERIER_SPI_KEY,DummyQuerierSPI.class.getName());
-       SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, PluginQuerier.class.getName());
+        AttomConfig.setProperty(PluginQuerier.QUERIER_SPI_KEY,DummyQuerierSPI.class.getName());
+       AttomConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, PluginQuerier.class.getName());
     }
     
     protected void tearDown() throws Exception {
@@ -83,6 +84,9 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /*
 $Log: QuerierManagerTest.java,v $
+Revision 1.4  2004/02/16 23:07:05  mch
+Moved DummyQueriers to std server and switched to AttomConfig
+
 Revision 1.3  2003/12/01 20:58:42  mch
 Abstracting coarse-grained plugin
 

@@ -21,14 +21,14 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.DummyQuerierSPI;
+import org.astrogrid.datacenter.sitedebug.DummyQuerierSPI;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.datacenter.query.QueryException;
@@ -51,8 +51,8 @@ public class ServerTest extends ServerTestCase
    {
       //make sure database querier to be used is the dummy one - only available
       //in the test suite
-      SimpleConfig.setProperty(PluginQuerier.QUERIER_SPI_KEY, DummyQuerierSPI.class.getName());
-       SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, PluginQuerier.class.getName());
+      AttomConfig.setProperty(PluginQuerier.QUERIER_SPI_KEY, DummyQuerierSPI.class.getName());
+       AttomConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, PluginQuerier.class.getName());
 
       //create the server
       AxisDataServer server = new AxisDataServer();
@@ -106,6 +106,9 @@ public class ServerTest extends ServerTestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.8  2004/02/16 23:07:05  mch
+Moved DummyQueriers to std server and switched to AttomConfig
+
 Revision 1.7  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through

@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.6 2004/02/15 23:20:25 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.7 2004/02/16 23:07:04 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,8 @@ package org.astrogrid.datacenter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import junit.framework.TestCase;
-import org.astrogrid.community.User;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.community.Account;
+import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
@@ -55,7 +55,7 @@ public class InstallationSelfCheck extends TestCase {
    
    
    public void testLoadPlugin() throws Exception {
-      String pluginClass = SimpleConfig.getProperty(QuerierManager.DATABASE_QUERIER_KEY);
+      String pluginClass = AttomConfig.getString(QuerierManager.DATABASE_QUERIER_KEY);
       assertNotNull(QuerierManager.DATABASE_QUERIER_KEY + " is not defined",pluginClass);
       // try to load plugin class.
       Class plugin = null;
@@ -77,7 +77,7 @@ public class InstallationSelfCheck extends TestCase {
 //         fail("Plugin class "+pluginClass+" missing correct constructor ");
 //      }
       // else, go on and check the SPI too.
-      String spiClass = SimpleConfig.getProperty(PluginQuerier.QUERIER_SPI_KEY);
+      String spiClass = AttomConfig.getString(PluginQuerier.QUERIER_SPI_KEY);
       assertNotNull(PluginQuerier.QUERIER_SPI_KEY + " is not defined",spiClass);
       Class clazz = null;
 //      try {
@@ -105,15 +105,15 @@ public class InstallationSelfCheck extends TestCase {
     */
    public void testCanSeeMySpace() throws IOException, Exception {
 
-      String defaultTarget = SimpleConfig.getProperty(QuerierManager.RESULTS_TARGET_KEY);
+      String defaultTarget = AttomConfig.getString(QuerierManager.RESULTS_TARGET_KEY);
 
       if (defaultTarget == null) {
          return;
       }
 
-      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(User.ANONYMOUS, defaultTarget);
+      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(Account.ANONYMOUS, defaultTarget);
       
-      myspace.getEntries(User.ANONYMOUS, "*");
+      myspace.getEntries(Account.ANONYMOUS, "*");
    }
    
    
@@ -122,6 +122,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.7  2004/02/16 23:07:04  mch
+ Moved DummyQueriers to std server and switched to AttomConfig
+
  Revision 1.6  2004/02/15 23:20:25  mch
  Fixes to use It04.1 myspaces
 

@@ -1,10 +1,13 @@
 /*
- * $Id: DummyQuerierTest.java,v 1.7 2003/12/03 19:37:03 mch Exp $
+ * $Id: DummyQuerierTest.java,v 1.8 2004/02/16 23:07:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
+import org.astrogrid.datacenter.sitedebug.*;
+
+
 
 import java.util.ArrayList;
 import java.util.List;

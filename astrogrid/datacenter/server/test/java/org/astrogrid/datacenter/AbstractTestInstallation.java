@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.9 2004/01/16 13:30:57 nw Exp $
+/*$Id: AbstractTestInstallation.java,v 1.10 2004/02/16 23:07:04 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,22 +10,13 @@
 **/
 package org.astrogrid.datacenter;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Enumeration;
-
 import javax.xml.rpc.ServiceException;
-
 import org.apache.axis.client.Call;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
@@ -36,7 +27,6 @@ import org.astrogrid.datacenter.delegate.Metadata;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
 
 /** Abstract base class that captures commonality between top level unit test and installation test.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Sep-2003
@@ -100,14 +90,14 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
             fail("Could not get registryMetaData: " + e.getMessage());
         }
     }
- */    
+ */
     
     public void testGetMetatdata() throws Throwable{
         try {
         FullSearcher del = createDelegate();
             Metadata result = del.getMetadata();
             assertNotNull(result);
-            Document d = result.getDocument();             
+            Document d = result.getDocument();
              assertIsMetadata(d);
         } catch (Throwable t) {
             t.printStackTrace();
@@ -196,7 +186,7 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
         QueryStatus stat = query.getStatus();
         assertNotNull("status is null",stat);
         assertEquals("status code is not as expected",QueryStatus.UNKNOWN,stat);
-       // need to add this back in later - maybe a web listener that can't find its endpoint should just failsafe..               
+       // need to add this back in later - maybe a web listener that can't find its endpoint should just failsafe..
        // URL notifyURL = new URL("http://www.nobody.there.com");
        // query.registerWebListener(notifyURL);
                  
@@ -213,7 +203,7 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
         DatacenterResults result = query.getResultsAndClose();
         assertNotNull("result of query is null",result);
         
-        // specific to what query is being performed - works for {@link DatacenterTest} - should be moved into there 
+        // specific to what query is being performed - works for {@link DatacenterTest} - should be moved into there
         assertFalse(result.isFits());
         assertFalse(result.isVotable());
         assertTrue(result.isUrls());
@@ -297,6 +287,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.10  2004/02/16 23:07:04  mch
+Moved DummyQueriers to std server and switched to AttomConfig
+
 Revision 1.9  2004/01/16 13:30:57  nw
 got final test working
 
