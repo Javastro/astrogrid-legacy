@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.15 2004/08/22 01:40:05 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.16 2004/09/03 13:10:43 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -83,6 +83,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         JobURN urn = null;
         try {
             buildWorkflow();
+            writeWorkflowToVOSpace(this.getClass().getName() + ".workflow",wf);
             assertTrue("workflow is not valid", wf.isValid());
             urn = jes.submitWorkflow(wf);
             assertNotNull("submitted workflow produced null urn", urn);
@@ -108,6 +109,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         while (System.currentTimeMillis() < startTime + WAIT_TIME) {
             try {
                 Workflow w11 = jes.readJob(urn);
+                writeWorkflowToVOSpace(this.getClass().getName() + "-result.workflow",w11);
                 if (w11.getJobExecutionRecord() != null
                     && w11.getJobExecutionRecord().getStatus().getType() >= ExecutionPhase.COMPLETED_TYPE) {
                     completed = true;
@@ -135,6 +137,19 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
  
     }
     
+    /** write workflow out to vospace.
+     * @param string
+     * @param w11
+     */
+    private void writeWorkflowToVOSpace(String filename, Workflow w11) {
+        try {
+            ag.getWorkflowManager().getWorkflowStore().saveWorkflow(user,createIVORN("workflow/" + filename),w11);
+        } catch (WorkflowInterfaceException e) {
+            System.err.println("Could not save workflow to myspace");
+            e.printStackTrace(System.err);
+        }
+    }
+
     // helper assertions to use.
     /**
      * @param result
@@ -255,6 +270,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.16  2004/09/03 13:10:43  nw
+saves workflows before and after execution into myspace
+
 Revision 1.15  2004/08/22 01:40:05  nw
 improved assertions
 
