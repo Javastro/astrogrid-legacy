@@ -1,4 +1,4 @@
-/*$Id: ActivityStatusStore.java,v 1.4 2004/08/13 09:10:30 nw Exp $
+/*$Id: ActivityStatusStore.java,v 1.5 2004/09/06 16:30:25 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**Maintains current state of each activity in the workflow.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
- *@todo find more efficient data structures 
+ * @see ActivityStatus
  */
 public class ActivityStatusStore {
 
@@ -27,7 +27,12 @@ public class ActivityStatusStore {
     }
     protected Map states = new HashMap();
 
-    /** get state from map, if present, else create one */
+    /** get state from map, if present, else create one 
+     * 
+     * @param key key to rertreive status for
+     * @return if key is present in store, returns associated activityStatus<br>
+     * if key is not present in store, returns a fresh, initialized activity status (which is also added to store)
+     */
     protected ActivityStatus getActivityStatus(String key) {
         ActivityStatus status = (ActivityStatus)states.get(key);
         if (status == null) {
@@ -37,42 +42,31 @@ public class ActivityStatusStore {
         }
         return status;
     }
-    /** return the a status code associated with the activity key */
+    /** return the a status code associated with the activity key
+     * convenience method. */
     public Status getStatus(String key) {     
         return getActivityStatus(key).getStatus();
     }
     
-    /** set the status code for an actrivity key 
+    /** set the status code for an actrivity key
+     * convenience method 
      * */
     public void setStatus(String key,Status status) {
         getActivityStatus(key).setStatus(status);
     }
     
-    /** get the environemnt associated aith an acitvity key - may be {} */
+    /** get the environemnt associated aith an acitvity key - convenience method */
     public  Vars getEnv(String key) {
         
         return getActivityStatus(key).getEnv();        
     }
     
+    /** set the environment associated with an activity key - convenience method */
     public void setEnv(String key,Vars env) {
         getActivityStatus(key).setEnv(env);
     }
 
-    /** merge environments into  new binding 
-     * @todo work out how to do this now -- tricky.
-     * maybe need linked list of envs - so can utilize sharing - so no need to explicitly merge.
-     * ... - or should they be in independent environments anyhow?? if we care about this, use the scope tag..
-     * */
-    /* temporarily commented out for now - necessary for the parFor only.
-    public  Vars mergeVars(List keyList) {
-        Vars result = new Vars();
-        for (Iterator i = keyList.iterator(); i.hasNext(); ) {
-            Vars b = this.getEnv((String)i.next());
-            result.e.putAll(b.e);
-        }
-        return result;
-    }
-*/
+
     /**
      * Returns <code>true</code> if this <code>ActivityStatusStore</code> is the same as the o argument.
      *
@@ -116,6 +110,9 @@ public class ActivityStatusStore {
 
 /* 
 $Log: ActivityStatusStore.java,v $
+Revision 1.5  2004/09/06 16:30:25  nw
+javadoc
+
 Revision 1.4  2004/08/13 09:10:30  nw
 tidied imports
 

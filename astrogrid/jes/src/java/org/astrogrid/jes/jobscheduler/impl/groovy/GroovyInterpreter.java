@@ -1,4 +1,4 @@
-/*$Id: GroovyInterpreter.java,v 1.4 2004/08/09 17:32:18 nw Exp $
+/*$Id: GroovyInterpreter.java,v 1.5 2004/09/06 16:30:25 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,35 +24,58 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/** top level class from python prototype.
+/**(misnamed) Top level class of rules engine / state machine.
+ * 
+ *  Its a container for the store of states and rulebase. Provides methods to select next triggerable rule, run next rule, etc.
+ * <p>
+ * this object is serialized to xml, and then persisted to an 'extension' element in the workflow document. This 'pickles' all the execution state for
+ * the workflow, and enables the interpreter to be unpickled and continue where it left off. 
+ * <p>
+ * Some of the design of this class has been constrained by needing to be picklable. In particular, a nullary constructor is required - which means that dependencies
+ * are passed in via setters.
+ * @see XStreamPickler 
+ * @see ActivityStatusStore
+ * @see ActivityStatus
+ * @see Rule
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
  *
  */
 public class GroovyInterpreter  {
 
-    /** Construct a new Interpreter
-     * 
+    /** Construct a new Interpreter, with empty rule base.
+     * used by XStreamPickler to marshal / unmarshal from xml.
      */
     public GroovyInterpreter() {
         this(new ArrayList());
     }
-    
+    /** construct a new interpreter, passing in a list of rules 
+     *  Construct a new GroovyInterpreter
+     * @param rs list of {@link Rule} objects
+     */
     public GroovyInterpreter(List rs) {
         this.ruleStore = rs;    
         
        
     }
     private  static final Log logger = LogFactory.getLog(GroovyInterpreter.class);
-    
+    /** set of rules 
+     * @todo would be better modelled as a Set actually.*/
     protected List ruleStore;
+    /** store of states */
     protected ActivityStatusStore stateMap = new ActivityStatusStore();
+    /** interface into scripting engine - used to execute script embedded within rules */
     protected final transient JesShell shell = new JesShell();
     
+    /** add a rule to the rulestore */
     public void addRule(Rule r) {
         ruleStore.add(r);
     }
         
-    /** find next candidate */
+    /** find a  triggered rule that can be validly executed
+     * 
+     * @return a triggered rule, or null if no rules are currently triggered.
+     * @throws ScriptEngineException if evaluati;on of triggers fails in some way.
+     */
     public Rule findNext() throws ScriptEngineException {
         try {
             for (Iterator i = ruleStore.iterator(); i.hasNext(); ) {
@@ -66,7 +89,10 @@ public class GroovyInterpreter  {
             throw new ScriptEngineException("Failed to find next",e);
         }
     } 
-    
+    /** select a triggered rule, and then run it
+     * @see #findNext
+     * @throws ScriptEngineException
+     */
     public void runNext() throws ScriptEngineException{
         try {
             Rule rule = findNext();
@@ -76,7 +102,8 @@ public class GroovyInterpreter  {
             throw new ScriptEngineException("Failed to run next",e);
         }
     }
-    /** run the interpreter, until no more rules can be triggered */
+    /** run the interpreter, until no more rules can be triggered
+     * @see #runNext */
     public void run() throws ScriptEngineException {
         try {
         for (Rule rule= findNext(); rule != null; rule = findNext()) {
@@ -88,6 +115,7 @@ public class GroovyInterpreter  {
         }
     }
     
+    /** update the status of an step - called when a cea server returns information about execution progress of a step execytion */ 
     public void updateStepStatus(Step step, ExecutionPhase phase)  {
         if (phase.equals(ExecutionPhase.COMPLETED)) {
             stateMap.setStatus(step.getId(),Status.FINISH);
@@ -98,7 +126,7 @@ public class GroovyInterpreter  {
         }
         
     }
-    /**
+    /**store the results of a step execution - called when a cea server returns step execution results.
      * @param step
      * @param results
      */
@@ -115,7 +143,8 @@ public class GroovyInterpreter  {
         stateMap.setStatus(step.getId() + "-results",Status.FINISHED);
     }    
     
-    /**
+    /** sets link to the jes interface component - provides the rules engine with necessary hooks into jes server.
+     * this is a setter, rather than my usual constructor-dependency-injection, so that the GroovyInterpreter can be created via reflection.
      * @param jesInterface The jesInterface to set.
      */
     public void setJesInterface(JesInterface jesInterface) {
@@ -176,6 +205,9 @@ public class GroovyInterpreter  {
 
 /* 
 $Log: GroovyInterpreter.java,v $
+Revision 1.5  2004/09/06 16:30:25  nw
+javadoc
+
 Revision 1.4  2004/08/09 17:32:18  nw
 updated due to removing RuleStore
 

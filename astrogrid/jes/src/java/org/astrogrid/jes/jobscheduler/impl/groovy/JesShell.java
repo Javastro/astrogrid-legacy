@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.11 2004/08/18 21:50:15 nw Exp $
+/*$Id: JesShell.java,v 1.12 2004/09/06 16:30:25 nw Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -93,7 +93,6 @@ public class JesShell {
         Binding scriptBinding = createScriptBinding(map,rules);
         Vars vars= map.getEnv(id);
         vars.addToBinding(scriptBinding);
-
         Script sc = shell.parse(script);
         sc.setBinding(scriptBinding);
         PrintStream originalErr = System.err;
@@ -278,6 +277,9 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.12  2004/09/06 16:30:25  nw
+javadoc
+
 Revision 1.11  2004/08/18 21:50:15  nw
 improved error propagation and reporting.
 messages are now logged to workflow document

@@ -1,4 +1,4 @@
-/*$Id: ActivityStatus.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: ActivityStatus.java,v 1.3 2004/09/06 16:30:25 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,8 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 
-/**
+/** Represents the status of an activity (step) in the workflow.
+ * its a pretty dumb bean.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
  *
  */
@@ -28,13 +29,13 @@ public class ActivityStatus {
     protected Status status = Status.UNSTARTED;
     protected Vars env = new Vars();
 
-    /**
-     * @return Returns the env.
+    /** Access the environment of bindings in scope for this activity.
+     * @return Returns the env. defaults to an empty set of bindings.
      */
     public Vars getEnv() {        
         return this.env;
     }
-    
+    /** set the environment of bindings available to this activity */
     public void setEnv(Vars env) {
        this.env = env;
     }
@@ -52,13 +53,13 @@ public class ActivityStatus {
     public void setKey(String key) {
         this.key = key;
     }
-    /**
-     * @return Returns the status.
+    /** access the execution status this activity is currently in
+     * @return Returns the status. defaults to {@link Status#UNSTARTED}
      */
     public Status getStatus() {
         return this.status;
     }
-    /**
+    /** set the execution status of this activity.
      * @param status The status to set.
      */
     public void setStatus(Status status) {
@@ -116,6 +117,9 @@ public class ActivityStatus {
 
 /* 
 $Log: ActivityStatus.java,v $
+Revision 1.3  2004/09/06 16:30:25  nw
+javadoc
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

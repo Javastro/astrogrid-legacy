@@ -1,4 +1,4 @@
-/*$Id: GroovyInterpreterFactory.java,v 1.3 2004/08/09 17:32:18 nw Exp $
+/*$Id: GroovyInterpreterFactory.java,v 1.4 2004/09/06 16:30:25 nw Exp $
  * Created on 14-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import java.io.Writer;
 import java.util.List;
 
 /** Factory object that takes care of creating fresh and unpickling existing groovy interpreters.
+ * @see GroovyInterpreter
  * @author Noel Winstanley nw@jb.man.ac.uk 14-May-2004
  */
 public class GroovyInterpreterFactory {
@@ -32,17 +33,35 @@ public class GroovyInterpreterFactory {
      *
      */
     public interface Pickler {
+        
+        /** serialize / pickle an intepreter (i.e. all hte state of an executing workflow) to a writer
+         * @param out
+         * @param interp
+         * @throws Exception
+         */
         void marshallInterpreter(Writer out, GroovyInterpreter interp) throws Exception;
+        /** unmarshal a previously pickled interpreter.
+         * @param in
+         * @return
+         * @throws Exception
+         */
         GroovyInterpreter unmarshallInterpreter(Reader in) throws Exception;     
+        /** unmarshal a previously pickled rulestore (subcomponent of an intepreter).
+         * @param reader
+         * @return
+         * @throws Exception
+         */
         List unmarshallRuleStore(Reader reader)  throws Exception;        
     }
-    
+    /** construct a new factory, passing in the pickler implementatio to use */
     public GroovyInterpreterFactory(Pickler p) {
         this.pickler = p;
     }
     protected final Pickler pickler;
     
     private static final Log log = LogFactory.getLog(GroovyInterpreterFactory.class);
+    /** key used in workflow extension to store pickled workflow.
+     */
     public static final String EXTENSION_KEY = "pickled.groovy.interpreter";
     static final String EXTENSION_XPATH = "jobExecutionRecord/extension[key='" +  EXTENSION_KEY+ "']";
     
@@ -97,6 +116,9 @@ public class GroovyInterpreterFactory {
 
 /* 
 $Log: GroovyInterpreterFactory.java,v $
+Revision 1.4  2004/09/06 16:30:25  nw
+javadoc
+
 Revision 1.3  2004/08/09 17:32:18  nw
 updated due to removing RuleStore
 
