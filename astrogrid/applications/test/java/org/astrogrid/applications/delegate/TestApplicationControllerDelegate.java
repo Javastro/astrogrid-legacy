@@ -1,5 +1,5 @@
 /*
- * $Id: TestApplicationControllerDelegate.java,v 1.3 2004/01/09 00:25:08 pah Exp $
+ * $Id: TestApplicationControllerDelegate.java,v 1.4 2004/01/18 12:28:00 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -63,7 +63,7 @@ public class TestApplicationControllerDelegate extends TestCase {
       user.setGroup("nogroup");
       user.setToken("notoken");
 
-     monitorURL="JESMonitorDummy";
+     monitorURL=null;
      applicationid = TestAppConst.TESTAPP_NAME;
      parameters = new ParameterValues();
   }

@@ -2,7 +2,7 @@
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <ApplicationController xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGParameterDefinition/
 \\pahlaptop\work\astrogrid\src\applications\schema\AGParameterDefinition.xsd">
-	<Application name="testapp" instanceClass="org.astrogrid.applications.commandline.TestApp">
+	<Application name="testapp" > <!-- do not test specific instance app for now -->
 		<!--This is the main test application-->
 		<ExecutionPath>/home/applications/tools/testapp.sh</ExecutionPath>
 		<Parameters>

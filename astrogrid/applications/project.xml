@@ -110,6 +110,19 @@ This functionality is provided with the ApplicationController service, of which 
 	</properties>
     </dependency>
 
+
+    <dependency>
+      <groupId>voi</groupId>
+<artifactId>voi-vowrite</artifactId>
+      <version>UNKNOWN</version>
+      <jar>voi.vowrite.jar</jar>
+	<properties>
+	          <war.bundle>true</war.bundle>
+	</properties>
+    </dependency>
+
+
+<!-- not really using the two below - cannot find documentation on their use -->
     <dependency>
       <groupId>objectwiz-votable</groupId>
 <artifactId>objectwiz-votable</artifactId>
@@ -127,6 +140,8 @@ This functionality is provided with the ApplicationController service, of which 
       <jar>VOTableUtil.jar</jar>
     </dependency>
     <dependency>
+    
+    
       <groupId>commons-digester</groupId>
       <artifactId>commons-digester</artifactId>
       <version>1.5</version>

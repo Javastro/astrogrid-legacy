@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractor.java,v 1.1 2004/01/16 22:18:58 pah Exp $
+ * $Id: SExtractor.java,v 1.2 2004/01/18 12:28:00 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -10,6 +10,10 @@
  */
 
 package org.astrogrid.applications.commandline.sextractor;
+
+import java.io.IOException;
+
+import com.sun.corba.se.internal.corba.EncapsInputStream;
 
 import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.manager.AbstractApplicationController;
@@ -23,10 +27,48 @@ public class SExtractor extends CmdLineApplication {
     */
    public SExtractor(AbstractApplicationController controller, User user) {
       super(controller, user);
-      // TODO Auto-generated constructor stub
    }
    public SExtractor()
    {
    }
  
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.commandline.CmdLineApplication#preWritebackHook()
+    */
+   protected void preWritebackHook() {
+      
+      // need to convert the output to a VOTable
+      
+     try {
+      ASCII2VOTableConverter conv = new ASCII2VOTableConverter(findParameter("CATALOG_NAME"), findParameter("PARAMETERS_NAME"), applicationEnvironment);
+      conv.writeVOTable();
+   }
+   catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+   }     
+   }
+   
+   
+  
+   
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.commandline.CmdLineApplication#preRunHook()
+    */
+   protected void preRunHook() {
+      argvals.add("-CATALOG_TYPE");
+      argvals.add("ASCII_HEAD");
+      // FIXME temp kludge to work for AVO demo
+      argvals.add("-FILTER_NAME");
+      argvals.add("/home/applications/demo/h_goods_r1.0z_detect_conv.txt");
+      argvals.add("-CHECKIMAGE_TYPE");
+      argvals.add("NONE");
+      argvals.add("-WEIGHT_TYPE");
+      argvals.add("BACKGROUND");
+      argvals.add("-DETECT_THRESH");
+      argvals.add("4.0");
+      args = (String[])argvals.toArray(new String[0]);
+   }
+
 }

@@ -21,7 +21,10 @@
 
      <target name="initialize">
         <antcall target="hsqldb.database.create"></antcall>
-        <copy file="${appcon.webapp.home}/test/app/testapp.sh" todir="/home/applications/tools/"></copy>
+        <copy file="${appcon.webapp.home}/test/app/testapp.sh" todir="${basedir}/tools/"></copy>
+        <chmod file="${basedir}/tools/testapp.sh" perm="ugo+rx"/>
+        <copy file="${appcon.webapp.home}/ApplicationControllerDelegate.jar" todir="${basedir}/tools/"></copy>
+        
      </target>
     
     <target name="show" depends="axis.tasks">
@@ -66,7 +69,7 @@
         <mkdir dir="${hsqldb.home}"/>
         <java taskname="hsqldb" classname="org.hsqldb.Server" fork="true" dir="${hsqldb.home}">
             <!-- Use the Hsqldb classpath -->
-            <classpath refid="hsqldb.classpath"/>
+            <classpath refid="testpath"/>
             <!-- Args for the Hsqldb server -->
             <arg value="-database"/>
             <arg value="${hsqldb.name}"/>
@@ -83,7 +86,7 @@
         <echo message="Stopping Hqsldb ...."/>
         <java taskname="hsqldb" classname="org.hsqldb.util.ShutdownServer" fork="true" dir="${hsqldb.home}">
             <!-- Use the Hsqldb classpath -->
-            <classpath refid="hsqldb.classpath"/>
+            <classpath refid="testpath"/>
             <!-- Args for the Hsqldb server -->
             <arg value="-url"/>
             <arg value="${hsqldb.url}"/>
@@ -116,7 +119,7 @@
         <echo message="Initialising Hqsldb ...."/>
         <sql driver="org.hsqldb.jdbcDriver"
              url="${hsqldb.url}"
-             classpathref="hsqldb.classpath"
+             classpathref="testpath"
              userid="sa"
              password=""
              print="true"
@@ -154,7 +157,7 @@
         <antcall target="hsqldb.init"/>
         <sql driver="org.hsqldb.jdbcDriver"
              url="${hsqldb.url}"
-             classpathref="hsqldb.classpath"
+             classpathref="testpath"
              userid="${hsqldb.user}"
              password="${hsqldb.pass}"
              print="true"
@@ -169,7 +172,7 @@
     <target name="hsqldb.database.select" depends="">
         <sql driver="org.hsqldb.jdbcDriver"
              url="${hsqldb.url}"
-             classpathref="hsqldb.classpath"
+             classpathref="testpath"
              userid="${hsqldb.user}"
              password="${hsqldb.pass}"
              print="true"
@@ -186,7 +189,7 @@
     <target name="hsqldb.database.delete" depends="">
         <sql driver="org.hsqldb.jdbcDriver"
              url="${hsqldb.url}"
-             classpathref="hsqldb.classpath"
+             classpathref="testpath"
              userid="${hsqldb.user}"
              password="${hsqldb.pass}"
              print="true"

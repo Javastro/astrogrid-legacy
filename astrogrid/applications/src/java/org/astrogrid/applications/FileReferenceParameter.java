@@ -1,5 +1,5 @@
 /*
- * $Id: FileReferenceParameter.java,v 1.6 2004/01/16 22:18:58 pah Exp $
+ * $Id: FileReferenceParameter.java,v 1.7 2004/01/18 12:28:00 pah Exp $
  * 
  * Created on 15-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -12,6 +12,8 @@
  */ 
 
 package org.astrogrid.applications;
+
+import java.io.File;
 
 import org.astrogrid.applications.description.ParameterDescription;
 
@@ -31,6 +33,31 @@ public class FileReferenceParameter extends Parameter {
       ParameterDescription parameterDescription) {
       super(application, parameterDescription);
       // TODO Auto-generated constructor stub
+   }
+
+   protected File realFile;
+
+   /**
+       * @return
+       */
+   public File getRealFile() {
+      return realFile;
+   }
+
+   /**
+       * @param file
+       */
+   public void setRealFile(File file) {
+      realFile = file;
+   }
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.Parameter#setRawValue(java.lang.String)
+    */
+   public void setRawValue(String string) {
+      super.setRawValue(string);
+      // set the file also - this is the essence of what it is to be a file reference parameter...
+      realFile = new File(string);
    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceReferenceParameter.java,v 1.1 2004/01/15 13:51:26 pah Exp $
+ * $Id: MySpaceReferenceParameter.java,v 1.2 2004/01/18 12:28:00 pah Exp $
  *
  * Created on 08 December 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -20,27 +20,12 @@ import org.astrogrid.applications.common.config.ApplicationControllerConfig;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.community.User;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
-public class MySpaceReferenceParameter extends Parameter {
-   private File realFile;
+public class MySpaceReferenceParameter extends FileReferenceParameter {
    /**
     * @param parameterDescription
     */
    public MySpaceReferenceParameter(AbstractApplication application, ParameterDescription parameterDescription) {
       super(application, parameterDescription);
-   }
-
-   /**
-    * @return
-    */
-   public File getRealFile() {
-      return realFile;
-   }
-
-   /**
-    * @param file
-    */
-   public void setRealFile(File file) {
-      realFile = file;
    }
 
    /* (non-Javadoc)

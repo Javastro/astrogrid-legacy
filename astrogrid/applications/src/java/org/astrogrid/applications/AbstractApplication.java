@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.10 2004/01/16 22:18:58 pah Exp $
+ * $Id: AbstractApplication.java,v 1.11 2004/01/18 12:28:00 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.applications;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
@@ -180,5 +181,22 @@ public abstract class AbstractApplication implements Application {
       this.status = status;
    }
 
+
+   protected Parameter findParameter(String name)
+   {
+      //REFACTORME should really do this with a map that is created when each of the parameters is added
+      Parameter retval = null;
+      for (Iterator iter = parameters.iterator(); iter.hasNext();) {
+         Parameter element = (Parameter)iter.next();
+         if(element.getName().equals(name))
+         {
+            retval = element;
+            break;
+         }
+         
+      }
+      
+      return retval;
+   }
 }
 

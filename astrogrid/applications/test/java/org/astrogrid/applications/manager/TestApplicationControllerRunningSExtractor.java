@@ -1,5 +1,5 @@
 /*
- * $Id: TestApplicationControllerRunningSExtractor.java,v 1.1 2004/01/16 22:18:58 pah Exp $
+ * $Id: TestApplicationControllerRunningSExtractor.java,v 1.2 2004/01/18 12:28:00 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -72,9 +72,22 @@ public class TestApplicationControllerRunningSExtractor extends BaseApplicationT
    }
 
    final public void testExecuteApplication() {
-      initializeApplication();
+      initializeApplication("b");
       controller.executeApplication(executionId);
-      System.out.print("run app ok");
+      String runStatus = controller.queryApplicationExecutionStatus(executionId);
+      try {
+         while (!runStatus.equals(Status.COMPLETED.toString())) {
+           Thread.sleep(20000);
+           runStatus = controller.queryApplicationExecutionStatus(executionId);
+         
+         }
+         
+      }
+      catch (InterruptedException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+           System.out.print("run app ok");
    }
 
    final public void testGetApplicationDescription() {
@@ -101,16 +114,21 @@ public class TestApplicationControllerRunningSExtractor extends BaseApplicationT
       assertEquals("this is not implemented yet", reg); // need to change when implemented!
    }
 
-   final public void initializeApplication() {
+   final public void initializeApplication(String band) {
       
-      executionId = initApp();
+      executionId = initApp(band);
       
    }
 
-   private String initApp() {
+   private String initApp(String band) {
       String exid;
       parameters.setMethodName("Simple");
-      parameters.setParameterSpec("<tool><input><parameter name='DetectionImage'>/home/applications/data/GOODS/h_sz_sect23_v1.0_drz_img.fits</parameter><parameter name='config_file'>/home/applications/test/config.sex</parameter><parameter name='PARAMETERS_NAME'>/home/applications/test/std.param</parameter></input><output><parameter name='CATALOG_NAME'>out1file</parameter></output></tool>");
+      
+      String paramstr=
+      "<tool><input><parameter name='DetectionImage'>/home/applications/data/GOODS/h_sz_sect23_v1.0_drz_img.fits</parameter>"
+      +"<parameter name='PhotoImage'>/home/applications/data/GOODS/h_s"+band+"_sect23_v1.0_drz_img.fits</parameter>"
+      +"<parameter name='config_file'>/home/applications/demo/h_goods_n"+band+"_r1.0z_phot_sex.txt</parameter><parameter name='PARAMETERS_NAME'>/home/applications/test/std.param</parameter></input>"       +"<output><parameter name='CATALOG_NAME'>out1file_"+band+"</parameter></output></tool>";
+      parameters.setParameterSpec(paramstr);
       exid = controller.initializeApplication(applicationid, jobstepid, monitorURL, user, parameters);
       CmdLineApplication app = controller.getRunningApplication(exid);
       assertNotNull("applicaton object not returned after initialization", app);

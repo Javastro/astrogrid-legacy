@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZ.java,v 1.1 2004/01/16 22:18:58 pah Exp $
+ * $Id: HyperZ.java,v 1.2 2004/01/18 12:28:00 pah Exp $
  * 
  * Created on 16-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -50,7 +50,7 @@ public class HyperZ extends CmdLineApplication {
     */
    protected void preRunHook() {
       
-      // Add in the missing parameters from the simple interface REFACTORME - add these to the main interface and remove from here...
+      // Add in the missing parameters from the simple interface FIXME - add these to the main interface and remove from here...
       argvals.add("-FILTERS_RES");
       argvals.add("/home/applications/demo/hyperz/FILTER.RES");
       argvals.add("-FILTERS_FILE");

@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.10 2004/01/16 22:18:58 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.11 2004/01/18 12:28:00 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -238,7 +238,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
 
    }
 
-   private CmdLineApplicationEnvironment applicationEnvironment;
+   protected CmdLineApplicationEnvironment applicationEnvironment;
    /**
     * @return
     */
