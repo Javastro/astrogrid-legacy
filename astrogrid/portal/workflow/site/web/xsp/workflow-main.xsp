@@ -356,7 +356,7 @@
          try{
             if( TRACE_ENABLED ) trace( "workflow-main-xsp: Retrieving Tool list from request object start") ; 	     
 		    String[] toolArray = (String[])<xsp-request:get-attribute name="tool-list" as="object"/>; 
-//	        toolList( toolArray );
+	        toolList( toolArray );
          }
          catch(Exception e) {
             if( TRACE_ENABLED ) trace( "workflow-main-xsp: Error retrieving Tool list from request object ") ;
