@@ -5,6 +5,12 @@
   </properties>
   <body>
   <release version="HEAD">
+        <action dev="jdt" type="fix" issue="936">
+            Community now builds under Maven 1.0.2
+        </action>
+        <action dev="jdt" type="fix" issue="933">
+            Registry now builds under Maven 1.0.2
+        </action>
         <action dev="jdt" type="add" issue="882"> 
             Created a graphical installer for the portal.  Download from <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>.
         </action>
