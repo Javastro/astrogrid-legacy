@@ -1,3 +1,5 @@
+REGISTRYCONF=/home/clq2/develop/MSRegistryTestDir/example
+TEMPPATHTO=/tmp/mySpaceTest
 MS-E-REGDWRT="Failed to write registry data file."
 MS-E-REGDCRT="Registry data file is corrupt."
 MS-E-REGDRED="Failed to read registry data file."
