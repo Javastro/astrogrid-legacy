@@ -10,10 +10,8 @@
   <description>
     SOAP service that publishes a data set to AstroGrid.
   </description>
-  <listener>
-   <listener-class>org.astrogrid.datacenter.servlet.LifecycleListener</listener-class>
-   </listener>
-   
+
+ 
   <servlet>
     <servlet-name>AxisServlet</servlet-name>
     <display-name>Apache-Axis Servlet</display-name>
