@@ -63,16 +63,7 @@
       </body>
     </html>
   </xsl:template>
-  
-  <!-- Add <menu/> element -->
-  <xsl:template name="ag-menu">
-    <xsl:element name="script">
-      <xsl:attribute name="src">/astrogrid-portal/<xsl:value-of select="@name"/>.dmm</xsl:attribute>
-      <xsl:attribute name="type">text/javascript</xsl:attribute>
-      null;
-    </xsl:element>
-  </xsl:template>
-  
+    
   <!-- Add <link/> element -->
   <xsl:template name="ag-link">
     <xsl:element name="link">
