@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/tree.jsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/23 23:21:12 $</cvs:author>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/24 10:43:25 $</cvs:author>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     | $Log: tree.jsp,v $
+    | Revision 1.6  2003/06/24 10:43:25  dave
+    | Fixed bugs in DataTreeWalker and tree page
+    |
     | Revision 1.5  2003/06/23 23:21:12  dave
     | Updated the page actions
     |
@@ -103,7 +106,7 @@ if ("path".equals(action))
 		view.setPath(path) ;
 		//
 		// Clear the selected item.
-		view.setItem("") ;
+		view.setItemPath("") ;
 		}
 	}
 
@@ -120,7 +123,7 @@ if ("item".equals(action))
 		{
 		//
 		// Set the selected item.
-		view.setItem(path) ;
+		view.setItemPath(path) ;
 		}
 	}
 
@@ -140,7 +143,7 @@ if ("delete".equals(action))
 		view.deleteItem(path) ;
 		//
 		// Clear the selected item.
-		view.setItem("") ;
+		view.setItemPath("") ;
 		}
 	}
 
@@ -233,7 +236,7 @@ if ("close".equals(action))
 						<table border="1">
 							<tr>
 								<td>Path</td>
-								<td><%= view.getItem() %></td>
+								<td><%= view.getItemPath() %></td>
 							</tr>
 						</table>
 						<br>
@@ -294,7 +297,7 @@ if ("close".equals(action))
 														}
 													//
 													// If this is the currently selected item.
-													else if (node.getPath().equals(view.getItem()))
+													else if (node.getPath().equals(view.getItemPath()))
 														{
 														writer.write("<b>") ;
 														writer.write(node.getName()) ;
@@ -324,7 +327,7 @@ if ("close".equals(action))
 														writer.write("&") ;
 														writer.write("path") ;
 														writer.write("=") ;
-														writer.write(node.getPath()) ;
+														writer.write(view.URLEncode(node.getPath())) ;
 														writer.write("&") ;
 														writer.write("action") ;
 														writer.write("=") ;
@@ -349,7 +352,7 @@ if ("close".equals(action))
 														writer.write("&") ;
 														writer.write("path") ;
 														writer.write("=") ;
-														writer.write(node.getPath()) ;
+														writer.write(view.URLEncode(node.getPath())) ;
 														writer.write("&") ;
 														writer.write("action") ;
 														writer.write("=") ;
@@ -378,7 +381,7 @@ if ("close".equals(action))
 														writer.write("&") ;
 														writer.write("path") ;
 														writer.write("=") ;
-														writer.write(node.getPath()) ;
+														writer.write(view.URLEncode(node.getPath())) ;
 														writer.write("&") ;
 														writer.write("action") ;
 														writer.write("=") ;
@@ -412,7 +415,7 @@ if ("close".equals(action))
 														writer.write("&") ;
 														writer.write("path") ;
 														writer.write("=") ;
-														writer.write(node.getPath()) ;
+														writer.write(view.URLEncode(node.getPath())) ;
 														writer.write("&") ;
 														writer.write("action") ;
 														writer.write("=") ;
@@ -431,8 +434,8 @@ if ("close".equals(action))
 
 												writer.write("<td>") ;
 													//
-													// If this node below the top two levels.
-													if (level > 2)
+													// If this node is an item below the top two levels.
+													if ("2".equals(node.getType()))
 														{
 														writer.write("<a") ;
 														writer.write(" ") ;
@@ -446,7 +449,7 @@ if ("close".equals(action))
 														writer.write("&") ;
 														writer.write("path") ;
 														writer.write("=") ;
-														writer.write(node.getPath()) ;
+														writer.write(view.URLEncode(node.getPath())) ;
 														writer.write("&") ;
 														writer.write("action") ;
 														writer.write("=") ;
@@ -480,7 +483,7 @@ if ("close".equals(action))
 														writer.write("&") ;
 														writer.write("path") ;
 														writer.write("=") ;
-														writer.write(node.getPath()) ;
+														writer.write(view.URLEncode(node.getPath())) ;
 														writer.write("&") ;
 														writer.write("action") ;
 														writer.write("=") ;
@@ -514,11 +517,11 @@ if ("close".equals(action))
 														writer.write("&") ;
 														writer.write("path") ;
 														writer.write("=") ;
-														writer.write(node.getPath()) ;
+														writer.write(view.URLEncode(node.getPath())) ;
 														writer.write("&") ;
 														writer.write("action") ;
 														writer.write("=") ;
-														writer.write("select") ;
+														writer.write("path") ;
 														writer.write("\"") ;
 														writer.write(">") ;
 															writer.write("[New]") ;

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/23 23:21:11 $</cvs:author>
-    | <cvs:version>$Revision: 1.12 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/24 10:43:25 $</cvs:author>
+    | <cvs:version>$Revision: 1.13 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.13  2003/06/24 10:43:25  dave
+    | Fixed bugs in DataTreeWalker and tree page
+    |
     | Revision 1.12  2003/06/23 23:21:11  dave
     | Updated the page actions
     |
@@ -113,6 +116,15 @@
 	<!-- Portal components -->
 	<property name="portal.build" value="build/portal"/>
 
+	<!-- Cocoon build properties -->
+	<property name="cocoon.cvsroot" value=":pserver:anoncvs@cvs.apache.org:/home/cvspublic"/>
+	<property name="cocoon.project" value="xml-cocoon2"/>
+	<property name="cocoon.date"    value="20 May 2003"/>
+	<property name="cocoon.source"  value="build/${cocoon.project}"/>
+	<property name="cocoon.build"   value="build/${cocoon.project}/build"/>
+	<property name="cocoon.webapp"  value="build/${cocoon.project}/build/webapp"/>
+	<property name="cocoon.site"    value="${basedir}/build/cocoon"/>
+
 	<!-- ================ Project tasks ================ -->
 	<!-- Initialise the build environment -->
 	<target name="init">
@@ -160,10 +172,70 @@
 		<echo message="axis.url     : ${axis.url}"/>
 		<echo message=""/>
 
+		<echo message="cocoon.project : ${cocoon.project}"/>
+		<echo message="cocoon.date    : ${cocoon.date}"/>
+		<echo message="cocoon.source  : ${cocoon.source}"/>
+		<echo message="cocoon.build   : ${cocoon.build}"/>
+		<echo message="cocoon.webapp  : ${cocoon.webapp}"/>
+		<echo message=""/>
+
 		<echo message="build.home   : ${basedir}"/>
 		<echo message="build.file   : ${ant.file}"/>
 		<echo message="build.date   : ${build.date}"/>
 		<echo message="build.time   : ${build.time}"/>
+	</target>
+
+	<!-- ================ Ant tasks ================ -->
+	<!-- The Ant libraries -->
+	<path id="ant.classpath">
+		<pathelement location="${ant.home}/lib/ant.jar"/>
+		<pathelement location="${ant.home}/lib/optional.jar"/>
+	</path>
+
+	<!-- ================ JUnit tasks ================ -->
+	<!-- The JUnit libraries -->
+	<path id="junit.classpath">
+		<pathelement location="${junit.home}/junit.jar"/>
+	</path>
+
+	<!-- Delete the JUnit files -->
+	<target name="junit.delete" depends="">
+		<delete dir="${junit.build}" failonerror="false"/>
+	</target>
+
+	<!-- Unpack the JUnit binary --> 
+	<target name="junit.unzip" depends="">
+		<unzip src="${junit.src}" dest="${junit.build}"/>
+	</target>
+
+	<!-- Install the JUnit library --> 
+	<target name="junit.REBUILD" depends="">
+		<antcall target="junit.unzip"/>
+	</target>
+
+	<!-- ================ JAF tasks ================ -->
+	<!--+
+	    | We only need this to install activation.jar into the Tomcat endorsed directory for Axis.
+	    | Once we have the dependencies sorted, this can go.
+	    | Required with JDK 1.4.2
+	    +-->
+	<!-- Delete the JAF files -->
+	<target name="jaf.delete" depends="">
+		<delete dir="${jaf.build}" failonerror="false"/>
+	</target>
+
+	<!-- Unpack the JAF files --> 
+	<target name="jaf.unzip" depends="">
+		<unzip src="${jaf.src}" dest="${jaf.build}"/>
+	</target>
+
+	<!--+
+	    | Patch the Tomcat endorsed classes to enable Axis.
+	    | Copy activation.jar into the Tomcat endorsed directory.
+	    | Required with JDK 1.4.2
+	    +-->
+	<target name="axis.endorsed" depends="jaf.unzip">
+		<copy verbose="false" file="${jaf.home}/activation.jar" toDir="${tomcat.home}/common/endorsed"/>
 	</target>
 
 	<!-- ================ Tomcat tasks ================ -->
@@ -237,59 +309,6 @@
 		<delete failonerror="false">
 			<fileset dir="${tomcat.home}/logs" includes="*"/>
 		</delete>
-	</target>
-
-	<!-- ================ Ant tasks ================ -->
-	<!-- The Ant libraries -->
-	<path id="ant.classpath">
-		<pathelement location="${ant.home}/lib/ant.jar"/>
-		<pathelement location="${ant.home}/lib/optional.jar"/>
-	</path>
-
-	<!-- ================ JUnit tasks ================ -->
-	<!-- The JUnit libraries -->
-	<path id="junit.classpath">
-		<pathelement location="${junit.home}/junit.jar"/>
-	</path>
-
-	<!-- Delete the JUnit files -->
-	<target name="junit.delete" depends="">
-		<delete dir="${junit.build}" failonerror="false"/>
-	</target>
-
-	<!-- Unpack the JUnit binary --> 
-	<target name="junit.unzip" depends="">
-		<unzip src="${junit.src}" dest="${junit.build}"/>
-	</target>
-
-	<!-- Install the JUnit library --> 
-	<target name="junit.REBUILD" depends="">
-		<antcall target="junit.unzip"/>
-	</target>
-
-	<!-- ================ JAF tasks ================ -->
-	<!--+
-	    | We only need this to install activation.jar into the Tomcat endorsed directory for Axis.
-	    | Once we have the dependencies sorted, this can go.
-	    | Required with JDK 1.4.2
-	    +-->
-	<!-- Delete the JAF files -->
-	<target name="jaf.delete" depends="">
-		<delete dir="${jaf.build}" failonerror="false"/>
-	</target>
-
-	<!-- Unpack the JAF files --> 
-	<target name="jaf.unzip" depends="">
-		<unzip src="${jaf.src}" dest="${jaf.build}"/>
-	</target>
-
-	<!--+
-	    | Patch the Tomcat endorsed classes to enable Axis.
-	    | Copy activation.jar into the Tomcat endorsed directory.
-	    | Required with JDK 1.4.2
-	    +-->
-	<target name="axis.endorsed" depends="jaf.unzip">
-		<copy verbose="false" file="${jaf.home}/activation.jar" toDir="${tomcat.home}/common/endorsed"/>
 	</target>
 
 	<!-- ================ Axis tasks ================ -->
@@ -406,6 +425,181 @@
 		<waitfor maxwait="${tomcat.timeout}" maxwaitunit="second" checkevery="500">
 			<http url="${axis.url}/happyaxis.jsp"/>
 		</waitfor>
+	</target>
+
+	<!-- ================ Cocoon tasks ================ -->
+	<!-- Checkout a specific version of the Cocoon source from cvs --> 
+	<target name="cocoon.source.fetch" depends="">
+		<!-- Checkout a specific version of the Cocoon build --> 
+		<cvs cvsRoot="${cocoon.cvsroot}"
+		     command="checkout"
+		     date="${cocoon.date}"
+		     package="${cocoon.project}"
+		     dest="build"
+		     />
+	</target>
+
+	<!-- Delete the Cocoon source -->
+	<target name="cocoon.source.delete" depends="">
+		<delete dir="${cocoon.source}" failonerror="false"/>
+	</target>
+
+	<!-- Delete the Cocoon build -->
+	<target name="cocoon.build.delete" depends="">
+		<delete dir="${cocoon.build}" failonerror="false"/>
+	</target>
+
+	<!-- Build the Cocoon web-app -->
+	<target name="cocoon.webapp.build" depends="">
+		<!-- Call the build target in the Cocoon build.xml -->
+		<ant antfile="build.xml" dir="${cocoon.source}" target="webapp"/>
+	</target>
+
+	<!-- Delete the Cocoon webapp -->
+	<target name="cocoon.webapp.delete" depends="">
+		<delete dir="${cocoon.webapp}" failonerror="false"/>
+	</target>
+
+	<!-- Install our Cocoon web-app -->
+	<target name="cocoon.webapp.install" depends="tomcat.tasks">
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Install our web-app -->
+		<echo message=""/>
+		<echo message="Installing Cocoon ...."/>
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon" war="file://${basedir}/${cocoon.webapp}"/>
+	</target>
+
+	<!-- Start the Cocoon web-app -->
+	<target name="cocoon.webapp.start" depends="tomcat.tasks">
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Start our web-app -->
+		<tomcat.start username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon"/>
+	</target>
+
+	<!-- Stop the Cocoon web-app -->
+	<target name="cocoon.webapp.stop" depends="tomcat.tasks">
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Stop our web-app -->
+		<tomcat.stop username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon"/>
+	</target>
+
+	<!-- Reload the Cocoon web-app -->
+	<target name="cocoon.webapp.reload" depends="tomcat.tasks">
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Reload our web-app -->
+		<tomcat.reload username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon"/>
+	</target>
+
+	<!-- Remove the Cocoon web-app -->
+	<target name="cocoon.webapp.remove" depends="tomcat.tasks">
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Remove our web-app -->
+		<tomcat.remove username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon"/>
+	</target>
+
+	<!-- Patch the Xerces version for the Cocoon web-app -->
+	<!-- No longer required with JDK 1.4.2
+	<target name="cocoon.libraries.patch">
+		<copy verbose="true" todir="${tomcat.home}/common/endorsed">
+			<fileset dir="${cocoon.source}/lib/endorsed" includes="*.jar"/>
+		</copy>
+	</target>
+	-->
+
+	<!-- Patch the main sitemap with our matcher -->
+	<target name="cocoon.sitemap.patch" depends="">
+		<!-- Move the existing sitemap to backup xml file -->
+		<move file="${cocoon.webapp}/sitemap.xmap" tofile="${cocoon.webapp}/sitemap.xml" overwrite="true"/>
+		<!-- Apply our xslt transform -->
+		<xslt style="src/cocoon/sitemap.xslt"
+		      in="${cocoon.webapp}/sitemap.xml"
+		      out="${cocoon.webapp}/sitemap.xmap">
+			<outputproperty name="method" value="xml"/>
+			<outputproperty name="indent" value="yes"/>
+			<!-- Pass in the location of the astrogrid sitemap -->
+			<param name="sitemap" expression="${cocoon.site}/sitemap.xmap"/>
+		</xslt>
+	</target>
+
+	<!-- Wait for Cocoon to respond -->
+	<target name="cocoon.wait" depends="">
+		<echo message="Waiting for Cocoon ...."/>
+		<echo message="URL : ${tomcat.url}/cocoon/"/>
+		<waitfor maxwait="${tomcat.timeout}" maxwaitunit="second" checkevery="500">
+			<http url="${tomcat.url}/cocoon/"/>
+		</waitfor>
+	</target>
+
+	<!-- Clean the Cocoon logs -->
+	<target name="cocoon.clean" depends="">
+		<echo message=""/>
+		<echo message="Cleaning Cocoon log files ...."/>
+		<delete failonerror="false">
+			<fileset dir="${cocoon.webapp}/WEB-INF/logs" includes="*"/>
+		</delete>
+	</target>
+
+	<!-- Build our Cocoon webapp from clean -->
+	<target name="cocoon.BUILD" depends="init">
+		<!-- Build the Cocoon web-app -->
+		<antcall target="cocoon.webapp.build"/>
+		<!-- Patch the Cocoon sitemap -->
+		<antcall target="cocoon.sitemap.patch"/>
+	</target>
+
+	<!-- Re-build our Cocoon webapp from clean -->
+	<target name="cocoon.REBUILD" depends="init">
+		<!-- Remove the Cocoon webapp -->
+		<antcall target="cocoon.webapp.remove"/>
+		<!-- Delete the Cocoon webapp -->
+		<antcall target="cocoon.webapp.delete"/>
+		<!-- Delete the Cocoon build -->
+		<antcall target="cocoon.build.delete"/>
+		<!-- Delete the Cocoon source -->
+		<antcall target="cocoon.source.delete"/>
+		<!-- Fetch the Cocoon source -->
+		<antcall target="cocoon.source.fetch"/>
+		<!-- Build the Cocoon webapp -->
+		<antcall target="cocoon.BUILD"/>
+	</target>
+
+<!-- FROG -->
+
+	<!-- Deploy our cocoon site -->
+	<target name="cocoon.site.deploy" depends="">
+		<!-- Copy our site files -->
+		<copy verbose="false" toDir="${cocoon.site}">
+			<fileset dir="src/cocoon">
+				<exclude name="**/CVS/**"/>
+			</fileset>
+		</copy>
+		<!-- Copy our portal jar -->
+		<copy verbose="false" toDir="${cocoon.webapp}/WEB-INF/lib">
+			<fileset dir="${portal.build}/lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+		<!--+
+		    | Copy the Axis client jars.
+		    | FIXME : We probably don't need ALL of these,
+		    | need to check which ones we really do need to run the client stubs.
+		    +-->
+		<copy verbose="false" toDir="${cocoon.webapp}/WEB-INF/lib">
+			<fileset dir="${axis.home}/lib">
+				<include name="axis.jar"/>
+				<include name="axis-ant.jar"/>
+				<include name="commons-discovery.jar"/>
+				<include name="commons-logging.jar"/>
+				<include name="jaxrpc.jar"/>
+				<include name="saaj.jar"/>
+				<include name="wsdl4j.jar"/>
+			</fileset>
+		</copy>
 	</target>
 
 	<!-- ================ Site tasks ================ -->
@@ -1632,7 +1826,9 @@
 	    +-->
 	<target name="project.REBUILD" depends="init">
 		<!-- Delete everything -->
+<!-- FIXME (Cocoon build takes tooo long)
 		<delete dir="build" failonerror="false"/>
+-->
 		<!-- Unpack the Axis binary -->
 		<antcall target="axis.REBUILD"/>
 		<!-- Unpack the JUnit binary -->
@@ -1640,6 +1836,16 @@
 		<!-- Start Tomcat and re-build everything -->
 		<antcall target="project.RUN"/>
 	</target>
+
+	<target name="COCOON.TEST" depends="init">
+		<!-- Deploy our Cocoon site -->
+		<antcall target="cocoon.site.deploy"/>
+		<!-- Add our site to the sitemap -->
+		<antcall target="cocoon.sitemap.patch"/>
+		<!-- Install our Cocoon WebApp -->
+		<antcall target="cocoon.webapp.install"/>
+	</target>
+
 
 </project>
 

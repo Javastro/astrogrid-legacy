@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/services/myspace/client/actions/copy/Attic/CopyResponseParser.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/22 04:03:41 $</cvs:author>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/24 10:43:25 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log: CopyResponseParser.java,v $
+ * Revision 1.2  2003/06/24 10:43:25  dave
+ * Fixed bugs in DataTreeWalker and tree page
+ *
  * Revision 1.1  2003/06/22 04:03:41  dave
  * Added actions and parsers for MySpace messages
  *
@@ -67,9 +70,14 @@ public class CopyResponseParser
 			System.out.println("----") ;
 			}
 		//
-		// Remove the bad header from the response.
+		// If the response starts with a bad header.
 		String header = "<?xml version=1.0 encoding=UTF-8?>" ;
-		response = response.substring(header.length()) ;
+		if (response.startsWith(header))
+			{
+			//
+			// Remove the header from the response.
+			response = response.substring(header.length()) ;
+			}
 		//
 		// Wrap it in a String Reader.
 		Reader reader = new StringReader(response) ;

@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/explorer/Attic/AstPortalView.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/23 23:21:11 $</cvs:author>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/24 10:43:25 $</cvs:author>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalView.java,v $
+ * Revision 1.9  2003/06/24 10:43:25  dave
+ * Fixed bugs in DataTreeWalker and tree page
+ *
  * Revision 1.8  2003/06/23 23:21:11  dave
  * Updated the page actions
  *
@@ -42,9 +45,12 @@ import org.astrogrid.portal.base.AstPortalIdent ;
 
 import org.astrogrid.portal.session.AstPortalSession ;
 
+import java.net.URLEncoder ;
+
 import java.io.Reader ;
 import java.io.StringReader ;
 import java.io.IOException ;
+import java.io.UnsupportedEncodingException ;
 
 import java.util.Map ;
 import java.util.Iterator ;
@@ -134,12 +140,30 @@ public class AstPortalView
 		this.session = session ;
 		//
 		// Initialise our service location.
-		setMySpaceLocation(service) ;
+		this.setMySpaceLocation(service) ;
 		//
 		// Initialise our path.
-		this.path = path ;
+		this.setPath(path) ;
 		}
 
+	/**
+	 * Encode a string.
+	 *
+	 */
+	public String URLEncode(String string)
+		{
+		try {
+			string = URLEncoder.encode(string, "UTF-8") ;
+			}
+		catch (UnsupportedEncodingException ouch)
+			{
+			//
+			// FIXME
+			if (DEBUG_FLAG) System.out.println("Exception encoding a string") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		return string ;
+		}
 	/**
 	 * Our view search path.
 	 *
@@ -153,6 +177,15 @@ public class AstPortalView
 	public String getPath()
 		{
 		return this.path ;
+		}
+
+	/**
+	 * Access to our search path, URL encoded.
+	 *
+	 */
+	public String getURLEncodedPath()
+		{
+		return URLEncode(this.getPath()) ;
 		}
 
 	/**
@@ -174,16 +207,25 @@ public class AstPortalView
 	 * Access to our selected item.
 	 *
 	 */
-	public String getItem()
+	public String getItemPath()
 		{
 		return this.item ;
+		}
+
+	/**
+	 * Access to our selected item, URL encoded.
+	 *
+	 */
+	public String getURLEncodedItemPath()
+		{
+		return URLEncode(this.getItemPath()) ;
 		}
 
 	/**
 	 * Access to our selected item.
 	 *
 	 */
-	public void setItem(String item)
+	public void setItemPath(String item)
 		{
 		this.item = item ;
 		}
@@ -201,6 +243,15 @@ public class AstPortalView
 	public String getDestPath()
 		{
 		return this.dest ;
+		}
+
+	/**
+	 * Access to our destination path, URL encoded.
+	 *
+	 */
+	public String getURLEncodedDestPath()
+		{
+		return URLEncode(this.getDestPath()) ;
 		}
 
 	/**
@@ -228,6 +279,15 @@ public class AstPortalView
 		}
 
 	/**
+	 * Access to our destination name, URL encoded.
+	 *
+	 */
+	public String getURLEncodedDestName()
+		{
+		return URLEncode(this.getDestName()) ;
+		}
+
+	/**
 	 * Access to our destination path.
 	 *
 	 */
@@ -237,12 +297,21 @@ public class AstPortalView
 		}
 
 	/**
-	 * Access to our destination file.
+	 * Access to our destination file name.
 	 *
 	 */
 	public String getDestFile()
 		{
 		return this.dest + "/" + this.name ;
+		}
+
+	/**
+	 * Access to our destination file name, URL encoded.
+	 *
+	 */
+	public String getURLEncodedDestFile()
+		{
+		return URLEncode(this.getDestFile()) ;
 		}
 
 	/**
@@ -391,7 +460,7 @@ public class AstPortalView
 		try {
 			//
 			// Create our service request
-			LookupRequestBuilder request = new LookupRequestBuilder(this.getPath() + "/*") ;
+			LookupRequestBuilder request = new LookupRequestBuilder(this.getPath() + "*") ;
 			if (DEBUG_FLAG)
 				{
 				System.out.println("----") ;
@@ -451,7 +520,6 @@ public class AstPortalView
 		return tree ;
 		}
 
-
 	/**
 	 * Request a DataNode for our selected item.
 	 *
@@ -466,7 +534,7 @@ public class AstPortalView
 		try {
 			//
 			// Create our service request
-			DetailsRequestBuilder request = new DetailsRequestBuilder(this.getItem()) ;
+			DetailsRequestBuilder request = new DetailsRequestBuilder(this.getItemPath()) ;
 			if (DEBUG_FLAG)
 				{
 				System.out.println("----") ;
@@ -544,7 +612,7 @@ public class AstPortalView
 //
 			//
 			// If we are copying the item into the same directory.
-			if (this.getItem().equals(this.getDestFile()))
+			if (this.getItemPath().equals(this.getDestFile()))
 				{
 				//
 				// Add 'Copy of' to the name
@@ -552,7 +620,7 @@ public class AstPortalView
 				}
 			//
 			// Create our service request
-			CopyRequestBuilder request = new CopyRequestBuilder(this.getItem(), this.getDestFile()) ;
+			CopyRequestBuilder request = new CopyRequestBuilder(this.getItemPath(), this.getDestFile()) ;
 			if (DEBUG_FLAG)
 				{
 				System.out.println("----") ;
@@ -626,7 +694,7 @@ public class AstPortalView
 		try {
 			//
 			// Create our service request
-			MoveRequestBuilder request = new MoveRequestBuilder(this.getItem(), (this.getDestPath() + "/" + this.getDestName())) ;
+			MoveRequestBuilder request = new MoveRequestBuilder(this.getItemPath(), this.getDestFile()) ;
 			if (DEBUG_FLAG)
 				{
 				System.out.println("----") ;
@@ -690,7 +758,7 @@ public class AstPortalView
 	 * Delete a data item.
 	 *
 	 */
-	public StatusNode deleteItem(String item)
+	public StatusNode deleteItem(String name)
 		{
 		DataNode   data   = null ;
 		StatusNode status = null ;
@@ -700,7 +768,7 @@ public class AstPortalView
 		try {
 			//
 			// Create our service request
-			DeleteRequestBuilder request = new DeleteRequestBuilder(item) ;
+			DeleteRequestBuilder request = new DeleteRequestBuilder(name) ;
 			if (DEBUG_FLAG)
 				{
 				System.out.println("----") ;

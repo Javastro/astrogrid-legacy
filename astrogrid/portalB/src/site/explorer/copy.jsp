@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/copy.jsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/23 23:21:12 $</cvs:author>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/24 10:43:25 $</cvs:author>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     | $Log: copy.jsp,v $
+    | Revision 1.6  2003/06/24 10:43:25  dave
+    | Fixed bugs in DataTreeWalker and tree page
+    |
     | Revision 1.5  2003/06/23 23:21:12  dave
     | Updated the page actions
     |
@@ -144,7 +147,7 @@ if ("item".equals(action))
 		{
 		//
 		// Select the item.
-		view.setItem(path) ;
+		view.setItemPath(path) ;
 		//
 		// Convert the path into an abstract file.
 		File file = new File(path) ;
@@ -181,7 +184,7 @@ if ("paste".equals(action))
 			//
 			// Redirect back to the view page.
 			response.sendRedirect(
-				response.encodeRedirectURL("tree.jsp?view=" + view.getIdent() + "&path=" + view.getDestFile() + "&action=item")
+				response.encodeRedirectURL("tree.jsp?view=" + view.getIdent() + "&path=" + view.getURLEncodedDestFile() + "&action=item")
 				) ;
 			}
 		//
@@ -264,7 +267,7 @@ if ("paste".equals(action))
 						<table border="1">
 							<tr>
 								<td>From</td>
-								<td><%= view.getItem() %></td>
+								<td><%= view.getItemPath() %></td>
 							</tr>
 							<tr>
 								<td>Path</td>
@@ -328,7 +331,7 @@ if ("paste".equals(action))
 														}
 													//
 													// If this is the currently selected item.
-													else if (node.getPath().equals(view.getItem()))
+													else if (node.getPath().equals(view.getItemPath()))
 														{
 														writer.write("<b>") ;
 														writer.write(node.getName()) ;
@@ -362,7 +365,7 @@ if ("paste".equals(action))
 															writer.write("&") ;
 															writer.write("path") ;
 															writer.write("=") ;
-															writer.write(node.getPath()) ;
+															writer.write(view.URLEncode(node.getPath())) ;
 															writer.write("&") ;
 															writer.write("action") ;
 															writer.write("=") ;
@@ -387,7 +390,7 @@ if ("paste".equals(action))
 															writer.write("&") ;
 															writer.write("path") ;
 															writer.write("=") ;
-															writer.write(node.getPath()) ;
+															writer.write(view.URLEncode(node.getPath())) ;
 															writer.write("&") ;
 															writer.write("action") ;
 															writer.write("=") ;

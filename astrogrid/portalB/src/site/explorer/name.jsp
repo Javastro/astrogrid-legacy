@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/name.jsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/23 23:21:12 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/24 10:43:25 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: name.jsp,v $
+    | Revision 1.2  2003/06/24 10:43:25  dave
+    | Fixed bugs in DataTreeWalker and tree page
+    |
     | Revision 1.1  2003/06/23 23:21:12  dave
     | Updated the page actions
     |
@@ -85,7 +88,7 @@ if ("item".equals(action))
 		{
 		//
 		// Select the item.
-		view.setItem(path) ;
+		view.setItemPath(path) ;
 		//
 		// Convert the path into an abstract file.
 		File file = new File(path) ;
@@ -114,7 +117,7 @@ if ("name".equals(action))
 		view.setDestName(name) ;
 		//
 		// If the name has NOT changed.
-		if (view.getDestFile().equals(view.getItem()))
+		if (view.getDestFile().equals(view.getItemPath()))
 			{
 			//
 			// Redirect back to the view page.
@@ -134,11 +137,11 @@ if ("name".equals(action))
 				{
 				//
 				// Clear the selected item.
-				view.setItem("") ;
+				view.setItemPath("") ;
 				//
 				// Redirect back to the view page.
 				response.sendRedirect(
-					response.encodeRedirectURL("tree.jsp?view=" + view.getIdent() + "&path=" + view.getDestFile() + "&action=item")
+					response.encodeRedirectURL("tree.jsp?view=" + view.getIdent() + "&path=" + view.getURLEncodedDestFile() + "&action=item")
 					) ;
 				}
 			//
@@ -222,7 +225,7 @@ if ("name".equals(action))
 						<table border="1">
 							<tr>
 								<td>Path</td>
-								<td><%= view.getItem() %></td>
+								<td><%= view.getItemPath() %></td>
 							</tr>
 							<tr>
 								<form method="get">

@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/services/myspace/client/data/Attic/DataTreeWalker.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/22 04:03:41 $</cvs:author>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/24 10:43:25 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log: DataTreeWalker.java,v $
+ * Revision 1.2  2003/06/24 10:43:25  dave
+ * Fixed bugs in DataTreeWalker and tree page
+ *
  * Revision 1.1  2003/06/22 04:03:41  dave
  * Added actions and parsers for MySpace messages
  *
@@ -46,17 +49,22 @@ public abstract class DataTreeWalker
 	protected void step(DataNode node, boolean more, int index, int level)
 		{
 		//
-		// Call our action for this node.
-		action(node, more, index, level) ;
-		//
-		// Step through each of the child nodes.
-		Iterator iter = node.iterator() ;
-		for (int i = 0 ; iter.hasNext() ; i++)
+		// If we hace a node.
+		if (null != node)
 			{
 			//
-			// Step down the next node in the tree.
-			DataNode next = (DataNode) iter.next() ;
-			step(next, (iter.hasNext()), i, (level + 1)) ;
+			// Call our action for this node.
+			action(node, more, index, level) ;
+			//
+			// Step through each of the child nodes.
+			Iterator iter = node.iterator() ;
+			for (int i = 0 ; iter.hasNext() ; i++)
+				{
+				//
+				// Step down the next node in the tree.
+				DataNode next = (DataNode) iter.next() ;
+				step(next, (iter.hasNext()), i, (level + 1)) ;
+				}
 			}
 		}
 

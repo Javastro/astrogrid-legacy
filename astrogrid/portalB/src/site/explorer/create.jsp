@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/create.jsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/23 23:21:12 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/24 10:43:25 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: create.jsp,v $
+    | Revision 1.2  2003/06/24 10:43:25  dave
+    | Fixed bugs in DataTreeWalker and tree page
+    |
     | Revision 1.1  2003/06/23 23:21:12  dave
     | Updated the page actions
     |
@@ -72,7 +75,7 @@ AstPortalView view = portal.getView(request.getParameter("view")) ;
 String action = request.getParameter("action") ;
 
 //
-// If the action is 'path'.
+// If the action is 'select'.
 if ("path".equals(action))
 	{
 	//
@@ -82,29 +85,6 @@ if ("path".equals(action))
 	// If we have a view.
 	if (null != view)
 		{
-		//
-		// Set our view path.
-		view.setPath(path) ;
-		//
-		// Set our destination path.
-		//view.setDestPath(path) ;
-		}
-	}
-
-//
-// If the action is 'select'.
-if ("select".equals(action))
-	{
-	//
-	// Get the path from our request params.
-	String path = request.getParameter("path") ;
-	//
-	// If we have a view.
-	if (null != view)
-		{
-		//
-		// Set our view path.
-		view.setPath(path) ;
 		//
 		// Set our destination path.
 		view.setDestPath(path) ;
@@ -134,7 +114,7 @@ if ("create".equals(action))
 			{
 			//
 			// Clear the selected item.
-			view.setItem("") ;
+			view.setItemPath("") ;
 			//
 			// Redirect back to the view page.
 			response.sendRedirect(

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/delete.jsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/23 23:21:12 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/24 10:43:25 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: delete.jsp,v $
+    | Revision 1.2  2003/06/24 10:43:25  dave
+    | Fixed bugs in DataTreeWalker and tree page
+    |
     | Revision 1.1  2003/06/23 23:21:12  dave
     | Updated the page actions
     |
@@ -85,7 +88,7 @@ if ("item".equals(action))
 		{
 		//
 		// Select the item.
-		view.setItem(path) ;
+		view.setItemPath(path) ;
 		}
 	}
 
@@ -99,14 +102,14 @@ if ("delete".equals(action))
 		{
 		//
 		// Delete the selected item
-		StatusNode status = view.deleteItem(view.getItem()) ;
+		StatusNode status = view.deleteItem(view.getItemPath()) ;
 		//
 		// If the operation worked.
 		if ("SUCCESS".equals(status.getStatus()))
 			{
 			//
 			// Clear the selected item.
-			view.setItem("") ;
+			view.setItemPath("") ;
 			//
 			// Redirect back to the view page.
 			response.sendRedirect(
@@ -194,7 +197,7 @@ if ("delete".equals(action))
 							<tr>
 								<form method="get">
 									<td>Path</td>
-									<td><%= view.getItem() %></td>
+									<td><%= view.getItemPath() %></td>
 									<td>
 										<input name="view"   type="hidden" value="<%= view.getIdent() %>"/>
 										<input name="action" type="hidden" value="delete"/>
