@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.8 2004/08/03 16:31:25 nw Exp $
+/*$Id: RegistryToolLocator.java,v 1.9 2004/08/25 11:42:12 KevinBenson Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,7 +63,7 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
             logger.debug("retreiving tool location for " +name);
             Document toolDocument;
             try {
-                toolDocument = delegate.getResourceByIdentifierDOM(name);
+                toolDocument = delegate.getResourceByIdentifier(name);
                 if (logger.isDebugEnabled()) {
                     StringWriter sw = new StringWriter();
                     XMLUtils.PrettyDocumentToWriter(toolDocument,sw);
@@ -91,7 +91,7 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
             logger.debug("Query to find services supporting this:" + queryString);
             Document results = null;
             try {
-               results = delegate.submitQueryStringDOM(queryString);
+               results = delegate.submitQuery(queryString);
                if (logger.isDebugEnabled()) {
                    StringWriter sw = new StringWriter();
                    XMLUtils.PrettyDocumentToWriter(results,sw);
@@ -147,9 +147,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
                     "<selectionOp op='$and$'/>" +
                     "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
                     "<selectionOp op='AND'/>" +
-                    "<selection item='ManagedApplications/*:ApplicationReference/*:AuthorityID' itemOp='EQ' value='" + toolId.getAuthorityID() + "'/>"  +
+                    "<selection item='*:ManagedApplications/*:ApplicationReference/*:AuthorityID' itemOp='EQ' value='" + toolId.getAuthorityID() + "'/>"  +
                     "<selectionOp op='AND'/>" +
-                    "<selection item='ManagedApplications/*:ApplicationReference/*:ResourceKey' itemOp='EQ' value='" + toolId.getResourceKey() + "'/>"  +                                           
+                    "<selection item='*:ManagedApplications/*:ApplicationReference/*:ResourceKey' itemOp='EQ' value='" + toolId.getResourceKey() + "'/>"  +                                           
                     /* don't think that we need these....
                     "<selectionOp op='OR'/>" +
                     "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
@@ -199,6 +199,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.9  2004/08/25 11:42:12  KevinBenson
+changed to use prefixes
+
 Revision 1.8  2004/08/03 16:31:25  nw
 simplified interface to dispatcher and locator components.
 removed redundant implementations.
