@@ -43,8 +43,8 @@ public class ServerManager {
     		if  (file == null || !file.exists()){
 				if (DEBUG)  logger.debug("File not exist! can't delete.");
 				MySpaceMessage msMessage = new MySpaceMessage("NULL_FILE_DELETE");
-				status.addCode(MySpaceStatusCode.AGMSCE00031,MySpaceStatusCode.ERROR);
-			    response = MSC.FAULT+MySpaceStatusCode.AGMSCE00031;
+				status.addCode(MySpaceStatusCode.AGMSCE01001,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			    response = MSC.FAULT+MySpaceStatusCode.AGMSCE01001;
 				return response;
     		}else{
 	    		try{
@@ -55,17 +55,17 @@ public class ServerManager {
 					return response;
 	    		}catch(SecurityException se){
 					MySpaceMessage msMessage = new MySpaceMessage("ERR_SECURITY_DELETE_DATA_HOLDER");
-					status.addCode(MySpaceStatusCode.AGMSCE00045,MySpaceStatusCode.ERROR);
-					response = MSC.FAULT+MySpaceStatusCode.AGMSCE00045;
+					status.addCode(MySpaceStatusCode.AGMSCE01045,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+					response = MSC.FAULT+MySpaceStatusCode.AGMSCE01045;
 					return response;
 	    		}
     		}
     	}
     	catch(Exception e){
     		logger.error("Exception caught while deleting dataholder: "+e.toString());
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00046", this.getComponentName()) ;
-			status.addCode(MySpaceStatusCode.AGMSCE00046,MySpaceStatusCode.ERROR);
-			response = MSC.FAULT+MySpaceStatusCode.AGMSCE00046;
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE01046", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMSCE01046,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			response = MSC.FAULT+MySpaceStatusCode.AGMSCE01046;
 			return response;
 			}
     }
@@ -117,9 +117,9 @@ public class ServerManager {
 				    
 		}catch (Exception e) {//catch unexpected Exception
 			logger.error("FAULT ServerManagetr.saveDataHolder!!! "+e.toString());
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00040", this.getComponentName()) ;
-			status.addCode(MySpaceStatusCode.AGMSCE00040,MySpaceStatusCode.ERROR);
-			response = MSC.FAULT+MySpaceStatusCode.AGMSCE00040+"::"+generalMessage.toString();			
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE01040", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMSCE01040,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			response = MSC.FAULT+MySpaceStatusCode.AGMSCE01040+"::"+generalMessage.toString();			
 			return response; 
 		}finally{
 			//close file
@@ -129,8 +129,8 @@ public class ServerManager {
 				}
 			}catch(Exception e){
 				logger.error("Exception caught in finally block: ServerManager.saveDataHolder: "+e.toString());
-				AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00040", this.getComponentName()) ;	
-				response = MSC.FAULT+MySpaceStatusCode.AGMSCE00040+"::"+generalMessage.toString();		
+				AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE01040", this.getComponentName()) ;	
+				response = MSC.FAULT+MySpaceStatusCode.AGMSCE01040+"::"+generalMessage.toString();		
 			}
 		}
     }

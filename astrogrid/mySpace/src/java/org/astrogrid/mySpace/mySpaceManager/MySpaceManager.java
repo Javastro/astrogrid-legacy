@@ -184,8 +184,8 @@ public String upLoad(String jobDetails){
 						    	
 				}	
 			} else{
-				status.addCode(MySpaceStatusCode.AGMMCE00035,MySpaceStatusCode.ERROR);
-				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00035", this.getComponentName()) ;
+				status.addCode(MySpaceStatusCode.AGMMCE00202,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00202", this.getComponentName()) ;
 				if(errCode=="")
 				  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 				else
@@ -195,8 +195,8 @@ public String upLoad(String jobDetails){
 			if( DEBUG ) logger.debug("RESPONSE: "+response); 
 		}catch(Exception e){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
-			status.addCode(MySpaceStatusCode.AGMMCE00049,MySpaceStatusCode.ERROR);
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00049", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00216", this.getComponentName()) ;
 			if(errCode=="")
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 			else
@@ -265,8 +265,8 @@ public String upLoad(String jobDetails){
 					    	
 			}	
 		} else{
-			status.addCode(MySpaceStatusCode.AGMMCE00035,MySpaceStatusCode.ERROR);
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00035", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMMCE00202,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00202", this.getComponentName()) ;
 			if (errCode=="")
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 			else
@@ -278,8 +278,8 @@ public String upLoad(String jobDetails){
 			return response;
 		}catch(Exception e){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
-			status.addCode(MySpaceStatusCode.AGMMCE00055,MySpaceStatusCode.ERROR);
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00055", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMMCE00218,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00218", this.getComponentName()) ;
 			if (errCode=="") 
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 			else
@@ -351,8 +351,8 @@ public String upLoad(String jobDetails){
 							return response;								    	
 						}				
 					}else{
-						status.addCode(MySpaceStatusCode.AGMMCE00035,MySpaceStatusCode.ERROR);
-						AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00035", this.getComponentName()) ;
+						status.addCode(MySpaceStatusCode.AGMMCE00202,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+						AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00202", this.getComponentName()) ;
 						if (errCode=="")
 						  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");  
 						else
@@ -368,8 +368,8 @@ public String upLoad(String jobDetails){
 			return response;
 		}catch(Exception e){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
-			status.addCode(MySpaceStatusCode.AGMMCE00054,MySpaceStatusCode.ERROR);
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00054", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMMCE00217,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00217", this.getComponentName()) ;
 			if (errCode=="")
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 			else
@@ -439,8 +439,8 @@ public String upLoad(String jobDetails){
 						    	
 			}	
 		} else{
-			status.addCode(MySpaceStatusCode.AGMMCE00035,MySpaceStatusCode.ERROR);
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00035", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMMCE00202,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00202", this.getComponentName()) ;
 			if (errCode=="")
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 			else
@@ -453,8 +453,8 @@ public String upLoad(String jobDetails){
 			return response;
 		}catch(Exception e){
 			logger.error("ERROR ERR_COPY_DATA_HOLDER MYSPACEMANAGER" +e.toString());
-			status.addCode(MySpaceStatusCode.AGMSCE00043,MySpaceStatusCode.ERROR);
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00043", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMSCE01043,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE01043", this.getComponentName()) ;
 			if (errCode=="")
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 			else
@@ -524,8 +524,8 @@ public String upLoad(String jobDetails){
 			return response;
 		}catch(Exception e){
 			logger.error("ERROR MOVING MYSPACEMANAGER" +e.toString());
-			status.addCode(MySpaceStatusCode.AGMMCE00038,MySpaceStatusCode.ERROR);
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00038", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMMCE00205,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00205", this.getComponentName()) ;
 			if (errCode=="") 
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 			else
@@ -596,8 +596,8 @@ public String upLoad(String jobDetails){
 			return response;
 		}catch(Exception e){
 			logger.error("ERROR EXPORT MYSPACEMANAGER" +e.toString());
-			status.addCode(MySpaceStatusCode.AGMMCE00056,MySpaceStatusCode.ERROR);
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00056", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMMCE00219,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00219", this.getComponentName()) ;
 			if (errCode=="")  
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),dataHolderURI);
 			else
@@ -646,8 +646,8 @@ public String upLoad(String jobDetails){
 						    	
 			}	
 		} else{
-			status.addCode(MySpaceStatusCode.AGMMCE00035,MySpaceStatusCode.ERROR);
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00035", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMMCE00202,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00202", this.getComponentName()) ;
 			response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 			return response;
 		}
@@ -655,8 +655,8 @@ public String upLoad(String jobDetails){
 			return response;
 		}catch(Exception e){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
-			status.addCode(MySpaceStatusCode.AGMMCE00038,MySpaceStatusCode.ERROR);
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00038", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMMCE00205,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00205", this.getComponentName()) ;
 			if (errCode=="")
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 			else
@@ -720,10 +720,10 @@ public String upLoad(String jobDetails){
 						    	
 			}	
 		} else{
-			status.addCode(MySpaceStatusCode.AGMMCE00035,MySpaceStatusCode.ERROR);
-			MySpaceMessage message =  new MySpaceMessage("MS_E_FLCRTDH");
+			status.addCode(MySpaceStatusCode.AGMMCE00202,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			MySpaceMessage message =  new MySpaceMessage("AGMMCE00202");
 			if (errCode=="")
-			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,"MS_E_FLCRTDH","");
+			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,"AGMMCE00202","");
 			else
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode,"");	
 			 
@@ -733,8 +733,8 @@ public String upLoad(String jobDetails){
 			return response;
 		}catch(Exception e){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
-			status.addCode(MySpaceStatusCode.AGMSCE00046,MySpaceStatusCode.ERROR);
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00046", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMSCE01046,MySpaceStatusCode.ERROR,  MySpaceStatusCode.NOLOG, this.getComponentName());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE01046", this.getComponentName()) ;
 			if (errCode=="")    
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 			else
@@ -827,8 +827,8 @@ public String upLoad(String jobDetails){
 			try{
 				if(request.get("fileSize")!=null) fileSize = Integer.parseInt(request.get("fileSize").toString());
 			}catch(NumberFormatException nfe){
-				AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00034", this.getComponentName()) ;
-				status.addCode(MySpaceStatusCode.AGMSCE00034,MySpaceStatusCode.ERROR);
+				AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE01004", this.getComponentName()) ;
+				status.addCode(MySpaceStatusCode.AGMSCE01004,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 				response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 				if ( DEBUG )  logger.debug("generalMessage.toString: "+generalMessage.toString());
 				if ( DEBUG )  logger.debug("response in upload = "+response);
@@ -836,8 +836,8 @@ public String upLoad(String jobDetails){
 			}
 
 		}catch(NullPointerException npe){
-			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00036", this.getComponentName()) ;
-			status.addCode(MySpaceStatusCode.AGMSCE00036,MySpaceStatusCode.ERROR);
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE01006", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMSCE01006,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 			return response;
 		} 
