@@ -1,4 +1,4 @@
-/*$Id: DatacenterParameterAdapter.java,v 1.1 2004/07/13 17:11:09 nw Exp $
+/*$Id: DatacenterParameterAdapter.java,v 1.2 2004/07/20 02:14:48 nw Exp $
  * Created on 13-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,30 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
     public DatacenterParameterAdapter(ParameterValue arg0, ParameterDescription arg1, IndirectParameterValue arg2) {
         super(arg0, arg1, arg2);
     }
-    /**
+    
+    /** returns value if direct.
+     * if indirect, reads contents into string buffer (we know the parameters are never going to be very big).
+     * @see org.astrogrid.applications.parameter.ParameterAdapter#process()
+     */
+    public Object process() throws CeaException {
+        if (indirectVal == null) {
+            return val.getValue();
+        } else {
+            StringWriter sw = new StringWriter();
+            Reader r = new InputStreamReader(indirectVal.read());
+            try {
+                Piper.pipe(r, sw);
+                r.close();
+                sw.close();
+            }
+            catch (IOException e) {
+                throw new CeaException("Could not prociess parameter " + val.getName());
+            }
+            return sw.toString();
+        }
+    }
+    
+    /** @param arg0 - expects a {@link CEATargetIndicator} from which it will slurp the results.
      * @see org.astrogrid.applications.parameter.ParameterAdapter#writeBack(java.lang.Object)
      */
     public void writeBack(Object arg0) throws CeaException {
@@ -49,12 +72,13 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
                 StringWriter sw = new StringWriter();
                 Reader r = new InputStreamReader(ti.getStream());
                 Piper.pipe(r,sw);
+                val.setValue(sw.toString());
             } else {
                 InputStream is = ti.getStream();
                 OutputStream os = indirectVal.write();
                 Piper.pipe(is,os);
-                is.close();
                 os.close();
+                
             }
         } catch (IOException e) {
             throw new ParameterWriteBackException("Could not write back parameter",e);
@@ -66,6 +90,9 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
 
 /* 
 $Log: DatacenterParameterAdapter.java,v $
+Revision 1.2  2004/07/20 02:14:48  nw
+final implementaiton of itn06 Datacenter CEA interface
+
 Revision 1.1  2004/07/13 17:11:09  nw
 first draft of an itn06 CEA implementation for datacenter
  

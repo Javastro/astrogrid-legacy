@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionTest.java,v 1.1 2004/07/13 17:11:32 nw Exp $
+/*$Id: DatacenterApplicationDescriptionTest.java,v 1.2 2004/07/20 02:15:05 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,7 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
         super.setUp();
         ds = new DataServer();
         env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultIndirectionProtocolLibrary());
-        appDesc = new DatacenterApplicationDescription(ds,env);
+        appDesc = new DatacenterApplicationDescription("testdss",ds,env);
     }
     protected ApplicationDescription appDesc;
     protected DataServer ds;
@@ -65,6 +65,9 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
 
 /* 
 $Log: DatacenterApplicationDescriptionTest.java,v $
+Revision 1.2  2004/07/20 02:15:05  nw
+final implementaiton of itn06 Datacenter CEA interface
+
 Revision 1.1  2004/07/13 17:11:32  nw
 first draft of an itn06 CEA implementation for datacenter
  

@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescription.java,v 1.1 2004/07/13 17:11:09 nw Exp $
+/*$Id: DatacenterApplicationDescription.java,v 1.2 2004/07/20 02:14:48 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,18 +26,27 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/**
+/** Descrption object for the datacenter 'application'.
+ * Supports two interfaces - a cone search interface, and a full ADQL.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Jul-2004
  *
  */
 public class DatacenterApplicationDescription extends AbstractApplicationDescription {
+    /** name of the cone search interface */
     public static final String CONE_IFACE = "cone";
+    /** name of the adql search interface */
     public static final String ADQL_IFACE = "adql";
+    /** name of the 'ra' parameter */
     public static final String RA = "RA";
+    /** name of the 'dec' parameter */
     public static final String DEC = "DEC";
+    /** name of the 'radius' parameter */
     public static final String RADIUS = "Radius";
+    /** name of the 'result' output parameter */
     public static final String RESULT = "Result";
+    /** name of the 'query' parameter */
     public static final String QUERY = "Query";
+    /** name of the 'format' parameter */
     public static final String FORMAT = "Format";
     /**
      * Commons Logger for this class
@@ -47,14 +56,14 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
     /** Construct a new DatacenterApplicationDescription
      * @param arg0
      */
-    public DatacenterApplicationDescription(DataServer ds,ApplicationDescriptionEnvironment arg0) {
+    public DatacenterApplicationDescription(String name,DataServer ds,ApplicationDescriptionEnvironment arg0) {
         super(arg0);
         this.ds = ds;        
             try {
-                this.createMetadata();
+                this.createMetadata(name);
             }
             catch (ParameterDescriptionNotFoundException e) {
-                // really should not happen
+                // really should not happen - as statically build.
                 logger.fatal("Programming error",e);
                 throw new RuntimeException("Programming error",e);
             }
@@ -64,8 +73,8 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
     /** adds self-description bits to the application description
      *@todo get an astronomer-type to check over this metadata, verify it is sensible, etc.
      */
-    protected final void createMetadata() throws ParameterDescriptionNotFoundException {
-        this.setName("Datacenter");
+    protected final void createMetadata(String name) throws ParameterDescriptionNotFoundException {
+        this.setName(name);
         BaseParameterDescription query = new BaseParameterDescription();
         query.setDisplayDescription("Astronomy Data Query Language that defines the search criteria");
         query.setDisplayName(QUERY);
@@ -98,6 +107,7 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
         format.setDisplayDescription("How the results are to be returned.  VOTABLE or CSV for now");
         format.setDisplayName(FORMAT);
         format.setName(FORMAT);
+        format.setDefaultValue("VOTABLE");
         format.setType(ParameterTypes.TEXT);        
         this.addParameterDescription(format);
         
@@ -130,6 +140,7 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
      */
     public Application initializeApplication(String id, User user, Tool tool) throws Exception {
         String newID = env.getIdGen().getNewID();
+        logger.debug("Initializing new datacenter application " + newID + " " + id);        
         final DefaultIDs ids = new DefaultIDs(id,newID,user);
         ApplicationInterface interf = this.getInterface(tool.getInterface());    
         return new DatacenterApplication(ids,tool,interf,env.getProtocolLib(),ds);
@@ -140,6 +151,9 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
 
 /* 
 $Log: DatacenterApplicationDescription.java,v $
+Revision 1.2  2004/07/20 02:14:48  nw
+final implementaiton of itn06 Datacenter CEA interface
+
 Revision 1.1  2004/07/13 17:11:09  nw
 first draft of an itn06 CEA implementation for datacenter
  

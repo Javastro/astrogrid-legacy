@@ -1,4 +1,4 @@
-/*$Id: CEATargetIndicator.java,v 1.1 2004/07/13 17:11:09 nw Exp $
+/*$Id: CEATargetIndicator.java,v 1.2 2004/07/20 02:14:48 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,32 +14,35 @@ import org.astrogrid.datacenter.queriers.TargetIndicator;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.Pipe;
 
-/** Indirection, so cea can manage the results of a query itself.
- * sets up a piped reader-writer pair - so results from querier are piped into cea system,
+/**Extended TargetIndirector, that redirects results of query into cea framework.
+ * <p/> This is so the same CEA libraries can be used in the datacenter implementation as in the other cea servers
+ * Works by setting up a nio Pipe - so results from querier are piped into cea system,
  * where they can be disposed of using the cea library framework.
- * @todo check pipe limits, etc - may be better to use something from the concurrent package..
+ * <p />
+ * As the datacenter framework can't know in general when to close the stream (as it depends on its use), the output stream into the pipe
+ * must be called by the cea framework.
+ * @todo check pipe limits, etc
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Jul-2004
  *
  */
 public class CEATargetIndicator extends TargetIndicator {
 
-    /** need to have a factory method - arse */
+    /** need to have a factory method*/
     public static CEATargetIndicator newInstance() throws IOException {
-        PipedOutputStream os = new PipedOutputStream();
-        return new CEATargetIndicator(os);
+        Pipe pipe = Pipe.open();
+        return new CEATargetIndicator(pipe);
     }
 
-    private CEATargetIndicator(PipedOutputStream out) throws IOException {       
-        super(new OutputStreamWriter(out));
-        this.is = new PipedInputStream(out);
+    private CEATargetIndicator(Pipe pipe) throws IOException {       
+        super(Channels.newWriter(pipe.sink(),"UTF-8"));
+        this.pipe = pipe;
     }
-    protected final PipedInputStream is;
+    protected final Pipe pipe;
     public InputStream getStream() {
-        return is;
+        return Channels.newInputStream(pipe.source());
     }
     
     
@@ -48,6 +51,9 @@ public class CEATargetIndicator extends TargetIndicator {
 
 /* 
 $Log: CEATargetIndicator.java,v $
+Revision 1.2  2004/07/20 02:14:48  nw
+final implementaiton of itn06 Datacenter CEA interface
+
 Revision 1.1  2004/07/13 17:11:09  nw
 first draft of an itn06 CEA implementation for datacenter
  
