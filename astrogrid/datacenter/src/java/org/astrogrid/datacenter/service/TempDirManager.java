@@ -1,5 +1,5 @@
 /**
- * $Id: TempDirManager.java,v 1.2 2003/08/27 11:11:15 mch Exp $
+ * $Id: TempDirManager.java,v 1.3 2003/08/27 17:36:19 mch Exp $
  */
 
 package org.astrogrid.datacenter.service;
@@ -44,7 +44,7 @@ public class TempDirManager
    {
       String workRoot = config.getProperty( WORKSPACE_DIRECTORY_KEY, WORKSPACE_DIRECTORY_CAT);
 
-      workspacePath = workRoot + File.pathSeparator + workspaceId;
+      workspacePath = workRoot + File.separator + workspaceId;
 
       File workspaceFile = new File(workspacePath);
 
