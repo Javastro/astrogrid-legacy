@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 17:43:16 $</cvs:author>
-    | <cvs:version>$Revision: 1.31 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 18:10:52 $</cvs:author>
+    | <cvs:version>$Revision: 1.32 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.32  2003/06/30 18:10:52  dave
+    | Added release task to REBUILD
+    |
     | Revision 1.31  2003/06/30 17:43:16  dave
     | Added missing classes from data query release
     |
@@ -2046,15 +2049,14 @@
 		<!--+
 		    | Install our Cocoon site components.
 		    | This assumes that we have a ready built Cocoon WebApp to install.
-		    +-->
 		<antcall target="cocoon.INSTALL"/>
-		<!-- Wait for Cocoon to startup -->
 		<antcall target="cocoon.wait"/>
+		    +-->
 
-		<!-- Release our WebApp -->
-<!--
+		<!-- Build our release WebApps -->
 		<antcall target="project.RELEASE"/>
--->
+
+
 		<echo message="Ok ... Astrogrid portal is running."/>
 	</target>
 
@@ -2295,7 +2297,7 @@
 		<antcall target="tomcat.manager.wait"/>
 		<!-- Install our web-app -->
 		<echo message=""/>
-		<echo message="Installing project webapp ...."/>
+		<echo message="Installing source webapp ...."/>
 		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/source" war="file://${basedir}"/>
 	</target>
 
@@ -2304,8 +2306,10 @@
 		<antcall target="query.release"/>
 		<antcall target="cocoon.release"/>
 		<antcall target="project.webapp.install"/>
+		<echo message="Installing project webapps ...."/>
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon" war="file://${basedir}/build/release/cocoon/cocoon.war"/>
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/DataQuery" war="file://${basedir}/build/release/DataQuery/DataQuery.war"/>
 	</target>
-
 
 </project>
 
