@@ -1,4 +1,4 @@
-/*$Id: WorkflowBuilder.java,v 1.3 2004/03/03 11:15:23 nw Exp $
+/*$Id: WorkflowBuilder.java,v 1.4 2004/03/09 15:33:27 nw Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.portal.workflow.intf;
 
 import org.astrogrid.community.beans.v1.Credentials;
-import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 /** A component of methods to help build workflow documents
@@ -29,11 +28,13 @@ public interface WorkflowBuilder {
      */
     Workflow createWorkflow(Credentials creds,String name,String description) throws WorkflowInterfaceException;
 
-/* may add more methods here, as needed */
 }
 
 /* 
 $Log: WorkflowBuilder.java,v $
+Revision 1.4  2004/03/09 15:33:27  nw
+tidied imports
+
 Revision 1.3  2004/03/03 11:15:23  nw
 tarted up javadocs, reviewed types
 
