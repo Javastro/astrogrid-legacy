@@ -1,4 +1,4 @@
-/*$Id: AstrogridAssert.java,v 1.6 2004/09/02 11:25:25 nw Exp $
+/*$Id: AstrogridAssert.java,v 1.7 2004/09/03 09:18:03 nw Exp $
  * Created on 27-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,23 +10,31 @@
 **/
 package org.astrogrid.test;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.io.Piper;
 import org.astrogrid.util.DomHelper;
 
 import org.custommonkey.xmlunit.Validator;
 import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
@@ -34,10 +42,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
 
 /** class of static JUnit assertion methods, for asserting things relevant to astrogrid.
  * extends XMLAssert - which makes assertions about xml documents - 
@@ -46,6 +57,10 @@ import junit.framework.Assert;
  *
  */
 public class AstrogridAssert extends XMLAssert{
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(AstrogridAssert.class);
 
     /** Construct a new XMLAssertions
      * 
@@ -177,6 +192,7 @@ public class AstrogridAssert extends XMLAssert{
         } catch (Exception e) {
             fail("failed to validate against schema: " + e.getMessage());
         }
+
     }
     
     /**assert xml is schema valid.
@@ -220,15 +236,27 @@ public class AstrogridAssert extends XMLAssert{
     public static void assertSchemaValid(Element e,String rootElementName,Map schemaLocations) {
         assertSchemaValid(DomHelper.ElementToString(e),rootElementName,schemaLocations);
     }
+
+
     
+    
+    /** create an xml parser, setup to validate using schema, register 
+     * appropriate schema locations, and an error handler 
+     * @param schemaLocations
+     * @return
+     */
     private static XMLReader createParser(Map schemaLocations)  {
         
         String locationString = mkSchemaLocationString(schemaLocations);
         try {
+
             XMLReader reader = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
             reader.setFeature("http://xml.org/sax/features/validation",true);
             reader.setFeature("http://apache.org/xml/features/validation/schema",true);
-            reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",locationString);                
+            reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",locationString);
+            DefaultHandler handler = new AstrogridAssertDefaultHandler();
+            reader.setErrorHandler(handler);
+            reader.setContentHandler(handler);
             return reader;
         } catch (SAXNotRecognizedException e) {
             fail("required features not rcognized by this xml parser " + e.getMessage());
@@ -241,7 +269,7 @@ public class AstrogridAssert extends XMLAssert{
 
         
     }
-
+    /** collapse the map into a space-separated string, suitable for passing to the parser */
     private static String mkSchemaLocationString(Map schemaLocations) {
         StringBuffer result = new StringBuffer();
         for (Iterator i = schemaLocations.entrySet().iterator(); i.hasNext(); ) {
@@ -309,12 +337,38 @@ public class AstrogridAssert extends XMLAssert{
        Piper.bufferedPipe(new InputStreamReader(is), sw);
        return sw.toString();
     }    
-
+    /** handler passed to schema-validation parses - logs all errors, throws assertion failed if errors seen by end */
+    static class AstrogridAssertDefaultHandler extends DefaultHandler {
+        /**
+         * Commons Logger for this class
+         */
+            boolean sawError = false;
+            public void endDocument() throws SAXException {
+            if (sawError) {
+                throw new AssertionFailedError("document failed to schema validate");
+            }
+        }
+        public void error(SAXParseException e) throws SAXException {
+            sawError = true;
+            System.err.println("Error:" + e.getMessage());
+        }
+        public void fatalError(SAXParseException e) throws SAXException {
+            sawError = true;
+            System.err.println("Fatal: " + e.getMessage());
+        }
+        public void warning(SAXParseException e) throws SAXException {
+           System.err.println("Warn: " + e.getMessage());
+        }
+}
+    
 }
 
 
 /* 
 $Log: AstrogridAssert.java,v $
+Revision 1.7  2004/09/03 09:18:03  nw
+got schema validation asserts working.
+
 Revision 1.6  2004/09/02 11:25:25  nw
 got schema validation working.
 
