@@ -73,6 +73,7 @@ public class MySpaceManager {
 	private String query = " ";
 	private int oldDataItemID = 0;
 	private String newDataItemName = " ";
+	private int extentionPeriod = 0;
 	private int dataItemID = 0;
 	private String newContainerName = " ";
 	private String returnStatus = " "; //if the method is completed successful
@@ -823,9 +824,11 @@ public String upLoad(String jobDetails){
 			if(request.get("query")!=null) query = request.get("query").toString();		
 			if(request.get("newDataItemName")!=null) newDataItemName = request.get("newDataItemName").toString();
 			if(request.get("newContainerName")!=null) newContainerName = request.get("newContainerName").toString();	
+			
 
 			try{
 				if(request.get("fileSize")!=null) fileSize = Integer.parseInt(request.get("fileSize").toString());
+				if(request.get("extentionPeriod")!=null) extentionPeriod = Integer.parseInt(request.get("extentionPeriod").toString());
 			}catch(NumberFormatException nfe){
 				AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE01004", this.getComponentName()) ;
 				status.addCode(MySpaceStatusCode.AGMSCE01004,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
@@ -878,7 +881,80 @@ public String upLoad(String jobDetails){
 		}
     
 	public String extendLease(String jobDetails){
-			return "Not Implemented";
+		if ( DEBUG )  logger.debug("MySpaceManager.extendLease");
+		DataItemRecord dataitem = null;
+		Call call = null;
+	
+			try{
+				response = getValues(jobDetails);
+
+				if ( DEBUG ) logger.debug("About to invoke myspaceaction.advanceExpiryDataHolder");  
+				msA.setRegistryName(registryName);
+
+				Vector dataItemRecords = msA.lookupDataHoldersDetails(
+				  userID, communityID, jobID, serverFileName);
+
+				if (dataItemRecords != null)
+				{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
+					dataItemID = dataItem.getDataItemID();
+				   logger.debug("EXTENDLEASE TRING TO GET DATAITEMID: " +dataItemID);
+				}else{
+					logger.debug("EXTENDLEASE DATAITEMRCORDS = NULL!");
+				}
+				
+				dataitem = msA.advanceExpiryDataHolder(userID, communityID, jobID, dataItemID, extentionPeriod );
+				
+				if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"jobid"+jobID+"dataItemID"+dataItemID
+									   +"extentionPeriod"+extentionPeriod);
+				if ( errCode!="" )
+				  errCode = errCode +"," +checkStatus("EXTENDLEASE STATUS EXTENDLEASE");
+				else 
+				  errCode = checkStatus("EXTENDLEASE STATUS EXTENDLEASE");
+	
+			//   Get other stuff which can usefully be returned.
+			//   (Note that the current date needs to be returned to facilitate
+			//   comparisons with the expiry date; the MySpace system might be in
+			//   a different time-zone to the Explorer or portal.)
+	
+				boolean successStatus = status.getSuccessStatus();
+				boolean warningStatus = status.getWarningStatus();
+	
+				Date currentMySpaceDate = new Date();
+	
+			//   Format and return the results as XML.
+				if(dataitem!=null){
+					response = util.buildMySpaceManagerResponse(dataitem, returnStatus, details,"");
+					if (successStatus){
+						if (errCode=="")
+						  response = util.buildMySpaceManagerResponse(dataitem, MMC.SUCCESS, "","");	
+						else
+						  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode,""); 	    	
+					}else {
+						response = getErrorCode();
+						    	
+					}	
+				} else{
+					status.addCode(MySpaceStatusCode.AGMMCE00202,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+					AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00202", this.getComponentName()) ;
+					if(errCode=="")
+					  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
+					else
+					  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),"");  
+					return response;
+				}
+				if( DEBUG ) logger.debug("RESPONSE: "+response); 
+			}catch(Exception e){
+				logger.error("ERROR EXTEND LEASE MYSPACEMANAGER" +e.toString());
+				status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00216", this.getComponentName()) ;
+				if(errCode=="")
+				  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
+				else
+				  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),""); 		  
+				return response;
+			}
+			return response;
+
 		}
 		
 	public String publish(String jobDetails){
