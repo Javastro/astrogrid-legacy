@@ -24,7 +24,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.adql.Adql074Writer;
@@ -103,7 +103,7 @@ public class XqlMaker {
       
       //look up in config but using above softcoded as defaults
       String key = "datacenter.sqlmaker.xslt."+namespaceURI.replaceAll(":","_");
-      xsltDoc = SimpleConfig.getSingleton().getString(key, xsltDoc);
+      xsltDoc = ConfigFactory.getCommonConfig().getString(key, xsltDoc);
       
       if (xsltDoc == null) {
          throw new RuntimeException("No XSLT sheet given for ADQL (namespace '"+namespaceURI+"'); set configuration key '" + key+"'");
@@ -172,6 +172,9 @@ public class XqlMaker {
 
 /*
 $Log$
+Revision 1.6  2005/03/21 18:31:51  mch
+Included dates; made function types more explicit
+
 Revision 1.5  2005/03/11 15:01:42  mch
 DomHelper now traps ParserConfigException
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Function.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: Function.java,v 1.2 2005/03/21 18:31:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,15 +11,18 @@ import org.astrogrid.query.QueryVisitor;
 
 
 /**
- * Represents a general numeric function with a name and a list of arguments
+ * Represents a function with a name and a list of arguments.  In order to type
+ * functions properly, this is abstract and Subclasses should
+ * implement NumericExpression, or Condition (eg CircleCondition)
+ * or StringExpression, as appropriate
  */
 
-public class Function implements NumericExpression, Condition, StringExpression {
+public abstract class Function  {
    
    String funcName = null;
    Expression[] funcArgs = null;
    
-   public Function(String name, Expression[] args) {
+   protected Function(String name, Expression[] args) {
       this.funcName = name;
       this.funcArgs = args;
    }
@@ -47,8 +50,11 @@ public class Function implements NumericExpression, Condition, StringExpression 
 
 /*
 $Log: Function.java,v $
-Revision 1.1  2005/02/17 18:37:34  mch
-*** empty log message ***
+Revision 1.2  2005/03/21 18:31:50  mch
+Included dates; made function types more explicit
+
+Revision 1.1.1.1  2005/02/17 18:37:34  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:23  mch
 Initial checkin

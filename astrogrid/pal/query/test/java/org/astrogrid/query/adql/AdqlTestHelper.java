@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlTestHelper.java,v 1.1 2005/02/28 19:36:39 mch Exp $
+ * $Id: AdqlTestHelper.java,v 1.2 2005/03/21 18:31:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,7 @@ package org.astrogrid.query.adql;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -109,6 +109,9 @@ public class AdqlTestHelper    {
 
 /*
  $Log: AdqlTestHelper.java,v $
+ Revision 1.2  2005/03/21 18:31:51  mch
+ Included dates; made function types more explicit
+
  Revision 1.1  2005/02/28 19:36:39  mch
  Fixes to tests
 

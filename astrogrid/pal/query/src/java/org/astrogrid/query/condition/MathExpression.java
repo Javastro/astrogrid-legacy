@@ -1,10 +1,14 @@
 /*
- * $Id: MathExpression.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: MathExpression.java,v 1.2 2005/03/21 18:31:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.query.condition;
+
+import java.io.IOException;
+import org.astrogrid.query.QueryVisitor;
+import org.astrogrid.units.Units;
 
 
 /**
@@ -13,16 +17,15 @@ package org.astrogrid.query.condition;
  * a true/false answer when evaluated.
  */
 
-import java.io.IOException;
-import org.astrogrid.query.QueryVisitor;
-
 public class MathExpression implements NumericExpression {
 
    private NumericExpression lhs = null; //left hand side of expression
    private NumericExpression rhs = null;
 
    private MathOperator operator = null; //for now - this ought to be an enumerated thingamy
-  
+
+   private Units units = null;           //no units calculated yet
+   
    public MathExpression(NumericExpression givenLHS, String givenOperator, NumericExpression givenRHS) {
       this.lhs = givenLHS;
       this.rhs = givenRHS;
@@ -30,7 +33,7 @@ public class MathExpression implements NumericExpression {
    }
 
    public String toString() {
-      return "("+lhs+") "+operator+" ("+rhs+")";
+      return "( ("+lhs+") "+operator+" ("+rhs+") ["+getUnits()+"] )";
    }
 
    public MathOperator getOperator() { return operator; }
@@ -41,12 +44,19 @@ public class MathExpression implements NumericExpression {
    public void acceptVisitor(QueryVisitor visitor)  throws IOException  {
       visitor.visitMath(this);
    }
+   
+   public Units getUnits() {
+      return null;
+   }
 }
 
 /*
 $Log: MathExpression.java,v $
-Revision 1.1  2005/02/17 18:37:34  mch
-*** empty log message ***
+Revision 1.2  2005/03/21 18:31:51  mch
+Included dates; made function types more explicit
+
+Revision 1.1.1.1  2005/02/17 18:37:34  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:23  mch
 Initial checkin

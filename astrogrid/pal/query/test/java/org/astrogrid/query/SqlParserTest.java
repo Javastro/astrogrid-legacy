@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParserTest.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: SqlParserTest.java,v 1.2 2005/03/21 18:31:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.query.adql.Adql074Writer;
 import org.astrogrid.query.sql.SqlParser;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.xml.sax.SAXException;
 
 
@@ -23,7 +23,7 @@ import org.xml.sax.SAXException;
 
 public class SqlParserTest extends TestCase   {
    
-   public void assertValidXml(String s) throws ParserConfigurationException, IOException {
+   public void assertValidXml(String s) throws IOException {
       try {
          DomHelper.newDocument(s);
          //print out for human checking...
@@ -34,7 +34,7 @@ public class SqlParserTest extends TestCase   {
       }
    }
    
-   public void testSelectAll() throws IOException, ParserConfigurationException {
+   public void testSelectAll() throws IOException {
       String s = "SELECT * FROM CHARLIE";
       
       String adql = translate(s);
@@ -66,11 +66,11 @@ public class SqlParserTest extends TestCase   {
 
    /* need to move this to the server side
    public void testConvertedCircle() throws IOException, ParserConfigurationException {
-      SimpleConfig.setProperty(StdSqlMaker.DB_TRIGFUNCS_IN_RADIANS, "true");
-      SimpleConfig.setProperty(StdSqlWriter.CONE_SEARCH_TABLE_KEY, "ConeTable");
-      SimpleConfig.setProperty(StdSqlWriter.CONE_SEARCH_RA_COL_KEY, "RA");
-      SimpleConfig.setProperty(StdSqlWriter.CONE_SEARCH_DEC_COL_KEY, "DEC");
-      SimpleConfig.setProperty(StdSqlMaker.CONE_SEARCH_COL_UNITS_KEY, "deg");
+      ConfigFactory.getCommonConfig().setProperty(StdSqlMaker.DB_TRIGFUNCS_IN_RADIANS, "true");
+      ConfigFactory.getCommonConfig().setProperty(StdSqlWriter.CONE_SEARCH_TABLE_KEY, "ConeTable");
+      ConfigFactory.getCommonConfig().setProperty(StdSqlWriter.CONE_SEARCH_RA_COL_KEY, "RA");
+      ConfigFactory.getCommonConfig().setProperty(StdSqlWriter.CONE_SEARCH_DEC_COL_KEY, "DEC");
+      ConfigFactory.getCommonConfig().setProperty(StdSqlMaker.CONE_SEARCH_COL_UNITS_KEY, "deg");
       String s = "SELECT * FROM table WHERE "+new StdSqlMaker().makeSqlCircleCondition(new Angle(25.0), new Angle(35), new Angle(6));
       assertValidXml(translate(s));
    }
@@ -112,6 +112,8 @@ public class SqlParserTest extends TestCase   {
       ));
    }
     /**/
+
+   
    
    public void testNvo7() throws IOException, ParserConfigurationException {
       assertValidXml(translate(
@@ -124,6 +126,18 @@ public class SqlParserTest extends TestCase   {
    public void testNvo8() throws IOException, ParserConfigurationException {
       assertValidXml(translate(
          "Select (a.b - c.d), atwo.* From Tab as a, Bob as b, b.e as atwo"
+      ));
+   }
+
+   public void testDate() throws IOException {
+      assertValidXml(translate(
+         "Select * From Tab as a, Bob as b, b.e as atwo WHERE atwo = 2004-12-03"
+      ));
+   }
+
+   public void testDateTime() throws IOException {
+      assertValidXml(translate(
+         "Select * From Tab as a, Bob as b, b.e as atwo WHERE atwo > 2004-12-03T00:12:00"
       ));
    }
    
@@ -172,7 +186,13 @@ public class SqlParserTest extends TestCase   {
          "SELECT * FROM TABLE WHERE SUM(TABLE.RA * 2) > 12 AND (TABLE.T * 4 > LOG(TABLE.V) )"));
    }
    
-
+   /**  see if Min/Max and subtring works --
+   public void testMinMaxSubstring() throws IOException, ParserConfigurationException {
+      assertValidXml(translate(
+         "SELECT * FROM TABLE WHERE MIN(TABLE.RA * 2, 4) > 12 AND MAX(TABLE.T * 4, 10) > 3 OR SUBSTRING('Wibble',12) )"));
+   }
+    */
+   
    //--- Savas' SQL ---
    public void testSavas() throws IOException, ParserConfigurationException {
       assertValidXml(translate(

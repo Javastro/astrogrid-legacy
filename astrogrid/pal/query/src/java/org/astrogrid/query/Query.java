@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: Query.java,v 1.2 2005/03/21 18:31:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,7 @@ package org.astrogrid.query;
 
 import java.io.IOException;
 import java.util.Hashtable;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.query.condition.Condition;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.slinger.targets.TargetIdentifier;
@@ -78,7 +78,7 @@ public class Query  {
 
    /** Returns the lowest of the query or local limit */
    public long getLocalLimit() {
-      long localLimit = SimpleConfig.getSingleton().getInt(MAX_RETURN_KEY, 0);
+      long localLimit = ConfigFactory.getCommonConfig().getInt(MAX_RETURN_KEY, 0);
       long queryLimit = getLimit();
       if ((queryLimit <= 0) || ((queryLimit > localLimit) && (localLimit > 0))) {
          queryLimit = localLimit;
@@ -128,8 +128,11 @@ public class Query  {
 
 /*
  $Log: Query.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/21 18:31:50  mch
+ Included dates; made function types more explicit
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:23  mch
  Initial checkin

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParser.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: SqlParser.java,v 1.2 2005/03/21 18:31:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -53,6 +53,67 @@ public class SqlParser  {
          funcsAvailable.put(FunctionDefinition.STD_ADQL_FUNCS[i].getName(),
                             FunctionDefinition.STD_ADQL_FUNCS[i]);
       }
+   }
+   
+   /**
+    * Parses a full SQL statement, building up the alias list from the FROM
+    * and/or SELECT statements, then creating a table results definition from the
+    * SELECT part and a BooleanExpression from the WHERE part
+    */
+   public void parseStatement(String sql) {
+
+      //prepare/cleanup string
+      sql = sql.replace('\n', ' ').replace('\r', ' ').replace('\f', ' ').replace('\t', ' ').trim();
+      
+      scope = new Vector(); //clear scope
+
+      //break down into SELECT ...  LIMIT ... FROM ... WHERE ... ORDER BY in that order
+      if (!sql.toUpperCase().startsWith("SELECT")) {
+         throw new IllegalArgumentException("SQL doesn't start with SELECT - Can't cope");
+      }
+      
+      //includes space search, so bear in mind idx is off by minus 1 from actual word
+      int limitIdx = sql.toUpperCase().indexOf(" LIMIT ");
+      int fromIdx = sql.toUpperCase().indexOf(" FROM ");
+      int whereIdx = sql.toUpperCase().indexOf(" WHERE ");
+      int orderByIdx = sql.toUpperCase().indexOf(" ORDER BY ");
+
+      //start with FROM so we get the scope and aliases
+      if (fromIdx == -1) {
+         throw new IllegalArgumentException("No FROM in SQL statement");
+      }
+      else {
+         int end = whereIdx;
+         if (end == -1) end = orderByIdx;
+         if (end == -1) {
+            parseFrom(sql.substring(fromIdx+5));
+         }
+         else {
+            parseFrom(sql.substring(fromIdx+5, end));
+         }
+      }
+      
+      
+      if (orderByIdx > -1) {
+         parseOrderBy(sql.substring(orderByIdx+9));
+         sql = sql.substring(0, orderByIdx);
+      }
+
+      if (whereIdx > -1) {
+         parseWhere(sql.substring(whereIdx+6));
+         sql = sql.substring(0, whereIdx);
+      }
+
+      //remove from
+      sql = sql.substring(0, fromIdx);
+      
+      if (limitIdx > -1) {
+         parseLimit(sql.substring(limitIdx+6));
+         sql = sql.substring(0, limitIdx);
+      }
+      
+      parseSelect(sql.substring(6));//remove 'SELECT'
+      
    }
    
    /**
@@ -228,8 +289,8 @@ public class SqlParser  {
          if (expression.indexOf("(")==-1) {
             throw new IllegalArgumentException("Don't recognise any operands in '"+expression+"'; no space-separated logical/comparison operator AND, OR, <, >, =, etc");
          }
-         //might be a function - there's a bracket there
-         return parseFunction(expression);
+         //might be a conditional function - there's a bracket there
+         return parseConditionFunction(expression);
       }
       
       if (broken.operand.trim().equals("AND")) {
@@ -242,7 +303,8 @@ public class SqlParser  {
             parseBoolean(broken.left),
             parseBoolean(broken.right) );
       }
-      else if (broken.left.trim().startsWith("'") || (broken.right.trim().startsWith("'")) || broken.left.trim().startsWith("\"") || (broken.right.trim().startsWith("\""))) {
+      else if (broken.left.trim().startsWith("'") || (broken.right.trim().startsWith("'")) ||
+               broken.left.trim().startsWith("\"") || (broken.right.trim().startsWith("\""))) {
          //one side is a string
          return new StringComparison(
             parseString(broken.left),
@@ -250,7 +312,7 @@ public class SqlParser  {
             parseString(broken.right) );
       }
       else {
-         //assume numeric - NB this might break if we're comparing two string columns...
+         //assume numeric - NB this might break if we're comparing two string *columns*...
          return new NumericComparison(
             parseNumeric(broken.left),
             broken.operand,
@@ -282,7 +344,7 @@ public class SqlParser  {
             //wasn't a number, must be a column reference or a function
             if ((broken.left.indexOf('(') > -1) &&
                 (broken.left.indexOf('(') < new String(broken.left+" ").indexOf(' '))) {
-               return parseFunction(broken.left);
+               return parseNumericFunction(broken.left);
             }
             
             return parseFieldRef(broken.left);
@@ -381,12 +443,35 @@ public class SqlParser  {
    }
    
    /**
+    * Parses a NumericFunction
+    */
+   public NumericFunction parseNumericFunction(String expression) {
+      Function func = parseFunction(expression);
+      if (func instanceof NumericFunction) {
+         return (NumericFunction) func;
+      }
+      throw new QueryException("Numeric "+expression+" parses to function "+func.getName()+" which is not a numeric function");
+   }
+   
+   /**
+    * Parses a ConditionalFunction
+    */
+   public ConditionalFunction parseConditionFunction(String expression) {
+      Function func = parseFunction(expression);
+      if (func instanceof ConditionalFunction) {
+         return (ConditionalFunction) func;
+      }
+      throw new QueryException("Condition "+expression+" parses to function "+func.getName()+" which is not a conditional function");
+   }
+   
+   
+   /**
     * Parses a function, ie a function name and a list of comma separated
     * arguments within following brackets
     */
    public Function parseFunction(String expression) {
       if (expression.indexOf('(')==-1) {
-         throw new IllegalArgumentException(expression+" looks like a function but has no opening bracket");
+         throw new IllegalArgumentException("SQL Parser error; '"+expression+"' looks like a function but has no opening bracket");
       }
       String funcName = expression.substring(0,expression.indexOf('(')).trim();
 
@@ -469,7 +554,7 @@ public class SqlParser  {
          return new CircleCondition((Expression[]) argExps.toArray(new Expression[] {}));
       }
       
-      return new Function(funcName, (Expression[]) argExps.toArray(new Expression[] {}));
+      return new NumericFunction(funcName, (Expression[]) argExps.toArray(new Expression[] {}));
       
    }
    
@@ -599,67 +684,6 @@ public class SqlParser  {
    }
       
    /**
-    * Parses a full SQL statement, building up the alias list from the FROM
-    * and/or SELECT statements, then creating a table results definition from the
-    * SELECT part and a BooleanExpression from the WHERE part
-    */
-   public void parseStatement(String sql) {
-
-      //prepare/cleanup string
-      sql = sql.replace('\n', ' ').replace('\r', ' ').replace('\f', ' ').replace('\t', ' ').trim();
-      
-      scope = new Vector(); //clear scope
-
-      //break down into SELECT ...  LIMIT ... FROM ... WHERE ... ORDER BY in that order
-      if (!sql.toUpperCase().startsWith("SELECT")) {
-         throw new IllegalArgumentException("SQL doesn't start with SELECT - Can't cope");
-      }
-      
-      //includes space search, so bear in mind idx is off by minus 1 from actual word
-      int limitIdx = sql.toUpperCase().indexOf(" LIMIT ");
-      int fromIdx = sql.toUpperCase().indexOf(" FROM ");
-      int whereIdx = sql.toUpperCase().indexOf(" WHERE ");
-      int orderByIdx = sql.toUpperCase().indexOf(" ORDER BY ");
-
-      //start with FROM so we get the scope and aliases
-      if (fromIdx == -1) {
-         throw new IllegalArgumentException("No FROM in SQL statement");
-      }
-      else {
-         int end = whereIdx;
-         if (end == -1) end = orderByIdx;
-         if (end == -1) {
-            parseFrom(sql.substring(fromIdx+5));
-         }
-         else {
-            parseFrom(sql.substring(fromIdx+5, end));
-         }
-      }
-      
-      
-      if (orderByIdx > -1) {
-         parseOrderBy(sql.substring(orderByIdx+9));
-         sql = sql.substring(0, orderByIdx);
-      }
-
-      if (whereIdx > -1) {
-         parseWhere(sql.substring(whereIdx+6));
-         sql = sql.substring(0, whereIdx);
-      }
-
-      //remove from
-      sql = sql.substring(0, fromIdx);
-      
-      if (limitIdx > -1) {
-         parseLimit(sql.substring(limitIdx+6));
-         sql = sql.substring(0, limitIdx);
-      }
-      
-      parseSelect(sql.substring(6));//remove 'SELECT'
-      
-   }
-   
-   /**
     * For humans/debuggign
     */
    public String toString() {
@@ -769,8 +793,11 @@ public class SqlParser  {
 
 /*
  $Log: SqlParser.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/21 18:31:51  mch
+ Included dates; made function types more explicit
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.2  2005/02/17 18:19:24  mch
  More rearranging into seperate packages

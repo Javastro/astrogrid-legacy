@@ -1,10 +1,10 @@
 /*
- * $Id: AdqlXml074Parser.java,v 1.2 2005/03/21 18:31:50 mch Exp $
+ * $Id: FadqlXml01Parser.java,v 1.1 2005/03/21 18:31:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.query.adql;
+package org.astrogrid.query.fadql;
 
 import org.astrogrid.query.condition.*;
 
@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  */
 
 
-public class AdqlXml074Parser  {
+public class FadqlXml01Parser  {
 
    Hashtable alias = new Hashtable();
    Vector scope = new Vector();
@@ -41,7 +41,7 @@ public class AdqlXml074Parser  {
    /** Static convenience method, creates an instance, parses the given ADQL object model
     * and returns a Query model */
    public static Query makeQuery(Element adql) {
-      AdqlXml074Parser parser = new AdqlXml074Parser();
+      FadqlXml01Parser parser = new FadqlXml01Parser();
       return parser.parseSelect(adql);
    }
    
@@ -426,8 +426,8 @@ public class AdqlXml074Parser  {
    
 }
 /*
- $Log: AdqlXml074Parser.java,v $
- Revision 1.2  2005/03/21 18:31:50  mch
+ $Log: FadqlXml01Parser.java,v $
+ Revision 1.1  2005/03/21 18:31:51  mch
  Included dates; made function types more explicit
 
  Revision 1.1.1.1  2005/02/17 18:37:34  mch

@@ -1,11 +1,15 @@
 /*
- * $Id: ColumnReference.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: ColumnReference.java,v 1.2 2005/03/21 18:31:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.query.condition;
 
+import java.io.IOException;
+import org.astrogrid.query.QueryException;
+import org.astrogrid.query.QueryVisitor;
+import org.astrogrid.units.Units;
 
 /**
  * For storing a reference to a column in a table.  Consists of a table name
@@ -14,12 +18,10 @@ package org.astrogrid.query.condition;
  * whereas I think there ought to be separate types...
  */
 
-import java.io.IOException;
-import org.astrogrid.query.QueryException;
-import org.astrogrid.query.QueryVisitor;
 
 public class ColumnReference extends SearchFieldReference {
   
+   //searchfield already has datasetName
    String tableName = null;
    String colName = null;
    
@@ -62,13 +64,22 @@ public class ColumnReference extends SearchFieldReference {
    public void acceptVisitor(QueryVisitor visitor)  throws IOException  {
       visitor.visitColumnReference(this);
    }
+
+   /** At the moment, returns null ('unknown') but probably should look up units in metadata somehow */
+   public Units getUnits() {
+      return null;
+   }
+   
    
 }
 
 /*
 $Log: ColumnReference.java,v $
-Revision 1.1  2005/02/17 18:37:34  mch
-*** empty log message ***
+Revision 1.2  2005/03/21 18:31:50  mch
+Included dates; made function types more explicit
+
+Revision 1.1.1.1  2005/02/17 18:37:34  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:23  mch
 Initial checkin

@@ -1,5 +1,5 @@
 /*
- * $Id: CircleCondition.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: CircleCondition.java,v 1.2 2005/03/21 18:31:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,9 +14,9 @@ package org.astrogrid.query.condition;
 
 import java.io.IOException;
 import org.astrogrid.query.QueryVisitor;
-import org.astrogrid.sky.Angle;
+import org.astrogrid.geom.Angle;
 
-public class CircleCondition extends Function  {
+public class CircleCondition extends ConditionalFunction implements Condition {
    
    public static final String NAME = "CIRCLE";
 
@@ -108,8 +108,11 @@ public class CircleCondition extends Function  {
 
 /*
 $Log: CircleCondition.java,v $
-Revision 1.1  2005/02/17 18:37:34  mch
-*** empty log message ***
+Revision 1.2  2005/03/21 18:31:50  mch
+Included dates; made function types more explicit
+
+Revision 1.1.1.1  2005/02/17 18:37:34  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:23  mch
 Initial checkin

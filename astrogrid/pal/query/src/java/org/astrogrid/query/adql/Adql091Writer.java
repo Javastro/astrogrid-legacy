@@ -1,5 +1,5 @@
 /*
- * $Id: Adql091Writer.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: Adql091Writer.java,v 1.2 2005/03/21 18:31:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -244,7 +244,10 @@ public class Adql091Writer implements QueryVisitor {
       argTag.writeTag("Literal", new String[] { "xsi:type='realType'","Value='"+angle.getAngle().asDegrees()+"'"}, "");
    }
    
-
+   public void visitDate(LiteralDate date) throws IOException {
+      throw new UnsupportedOperationException("ADQL 0.7.4 does not support dates");
+   }
+   
    /** Writes out the adql for a circle/cone search */
    public void visitCircle(CircleCondition circleFunc) throws IOException  {
       

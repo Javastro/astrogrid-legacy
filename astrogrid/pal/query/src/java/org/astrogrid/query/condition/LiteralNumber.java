@@ -1,19 +1,19 @@
 /*
- * $Id: LiteralNumber.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: LiteralNumber.java,v 1.2 2005/03/21 18:31:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.query.condition;
 
+import java.io.IOException;
+import org.astrogrid.query.QueryVisitor;
+import org.astrogrid.units.Units;
+
 
 /**
  * A LiteralNumber is a numeric value such as '3' (integer) or '12.0' (real)
  */
-
-import java.io.IOException;
-import org.astrogrid.query.QueryVisitor;
-import org.astrogrid.units.Units;
 
 public abstract class LiteralNumber implements NumericExpression, Literal {
 
@@ -44,8 +44,11 @@ public abstract class LiteralNumber implements NumericExpression, Literal {
 
 /*
 $Log: LiteralNumber.java,v $
-Revision 1.1  2005/02/17 18:37:34  mch
-*** empty log message ***
+Revision 1.2  2005/03/21 18:31:51  mch
+Included dates; made function types more explicit
+
+Revision 1.1.1.1  2005/02/17 18:37:34  mch
+Initial checkin
 
 Revision 1.2  2005/02/17 18:15:40  mch
 Split LiteralNumber into LiteralInteger and LiteralReal and added units

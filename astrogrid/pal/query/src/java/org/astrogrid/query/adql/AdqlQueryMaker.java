@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQueryMaker.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: AdqlQueryMaker.java,v 1.2 2005/03/21 18:31:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,7 +30,7 @@ public class AdqlQueryMaker  {
    
    /** Constructs a Query from the given ADQL DOM.  */
    public static Query makeQuery(Element adql) throws QueryException {
-      
+      //should look at namespace to work out which version to use
       return AdqlXml074Parser.makeQuery(adql);
    }
 
@@ -38,7 +38,7 @@ public class AdqlQueryMaker  {
     * Includes a botch fix for linux browsers, which seem to insist on changing closing </Table>
     * and </Select> elements to lower case
     */
-   public static Query makeQuery(String adql) throws QueryException, SAXException, IOException, ParserConfigurationException {
+   public static Query makeQuery(String adql) throws QueryException, SAXException, IOException {
       //botch fix for linux browsers
       adql.replaceAll("</table>", "</Table>");
       adql.replaceAll("</select>", "</Select>");
@@ -48,7 +48,7 @@ public class AdqlQueryMaker  {
 
    /** Convenience routine - Constructs query from given inputstream
     */
-   public static Query makeQuery(InputStream in) throws QueryException, IOException, SAXException, ParserConfigurationException {
+   public static Query makeQuery(InputStream in) throws QueryException, IOException, SAXException {
       return makeQuery(DomHelper.newDocument(in).getDocumentElement());
    }
 
@@ -79,8 +79,11 @@ public class AdqlQueryMaker  {
 }
 /*
  $Log: AdqlQueryMaker.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/21 18:31:50  mch
+ Included dates; made function types more explicit
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.2  2005/02/16 21:19:00  mch
  started incoporating into maven

@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleQueryMaker.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: SimpleQueryMaker.java,v 1.2 2005/03/21 18:31:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,7 +11,7 @@ import org.astrogrid.query.condition.*;
 import java.io.StringWriter;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.TargetIdentifier;
@@ -48,7 +48,7 @@ public class SimpleQueryMaker  {
     * The scope ('FROM') is loaded from the configuration file, if given
     */
    public static Query makeConeQuery(double givenRa, double givenDec, double givenRadius, ReturnSpec returns) {
-      String coneTable = SimpleConfig.getSingleton().getString("conesearch.table", null);
+      String coneTable = ConfigFactory.getCommonConfig().getString("conesearch.table", null);
       if (coneTable != null) {
          return new Query(new String[] { coneTable },
                            new CircleCondition("J2000", givenRa, givenDec, givenRadius),
@@ -96,8 +96,11 @@ public class SimpleQueryMaker  {
 }
 /*
  $Log: SimpleQueryMaker.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/21 18:31:50  mch
+ Included dates; made function types more explicit
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:23  mch
  Initial checkin

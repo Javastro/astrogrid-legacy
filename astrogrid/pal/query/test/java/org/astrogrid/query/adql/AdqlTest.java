@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlTest.java,v 1.1 2005/02/28 19:36:39 mch Exp $
+ * $Id: AdqlTest.java,v 1.2 2005/03/21 18:31:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,7 @@ import junit.framework.TestSuite;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.adql.Adql074Writer;
 import org.astrogrid.query.adql.AdqlXml074Parser;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Element;
 
 
@@ -60,6 +60,9 @@ public class AdqlTest extends TestCase   {
 
 /*
  $Log: AdqlTest.java,v $
+ Revision 1.2  2005/03/21 18:31:51  mch
+ Included dates; made function types more explicit
+
  Revision 1.1  2005/02/28 19:36:39  mch
  Fixes to tests
 

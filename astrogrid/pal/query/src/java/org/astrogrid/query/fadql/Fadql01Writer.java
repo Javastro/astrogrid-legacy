@@ -1,10 +1,10 @@
 /*
- * $Id: Adql074Writer.java,v 1.3 2005/03/21 18:31:50 mch Exp $
+ * $Id: Fadql01Writer.java,v 1.1 2005/03/21 18:31:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.query.adql;
+package org.astrogrid.query.fadql;
 
 import org.astrogrid.query.condition.*;
 
@@ -29,10 +29,10 @@ import org.xml.sax.SAXException;
  * Writes out a Query in ADQL 0.7.4
  */
 
-public class Adql074Writer implements QueryVisitor {
+public class Fadql01Writer implements QueryVisitor {
    
    
-   protected static Log log = LogFactory.getLog(Adql074Writer.class);
+   protected static Log log = LogFactory.getLog(Fadql01Writer.class);
 
    StringWriter adqlXml = new StringWriter();
    
@@ -41,7 +41,7 @@ public class Adql074Writer implements QueryVisitor {
    String tagName = null;
 
    /** Constructor - sets up tag printers */
-   public Adql074Writer(String comment) throws IOException {
+   public Fadql01Writer(String comment) throws IOException {
       currentTag = new XmlAsciiWriter(adqlXml, true);
       if (comment != null) {
          currentTag.writeComment(comment);
@@ -50,14 +50,14 @@ public class Adql074Writer implements QueryVisitor {
    
    /** Convenience routine */
    public static String makeAdql(Query query, String comment) throws IOException {
-      Adql074Writer adqlMaker = new Adql074Writer(comment);
+      Fadql01Writer adqlMaker = new Fadql01Writer(comment);
       query.acceptVisitor(adqlMaker);
       return adqlMaker.getAdqlXml();
    }
 
    /** Convenience routine */
    public static String makeAdql(Query query) throws IOException {
-      Adql074Writer adqlMaker = new Adql074Writer(null);
+      Fadql01Writer adqlMaker = new Fadql01Writer(null);
       query.acceptVisitor(adqlMaker);
       return adqlMaker.getAdqlXml();
    }
@@ -71,7 +71,7 @@ public class Adql074Writer implements QueryVisitor {
       
       currentTag.writeComment("ADQL (originally) generated from: "+query+" on "+new Date());
 
-      currentTag = currentTag.newTag("Select", new String[] { "xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4' ",
+      currentTag = currentTag.newTag("Select", new String[] { //"xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4' ",
                                                       "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' ",
                                                       "xmlns:xsd='http://www.w3.org/2001/XMLSchema'"});
 
@@ -88,7 +88,6 @@ public class Adql074Writer implements QueryVisitor {
          XmlPrinter save = currentTag;
          currentTag = currentTag.newTag("Where");
       
-         tagName = "Condition";
          query.getCriteria().acceptVisitor(this);
          currentTag =save;
       }
@@ -109,7 +108,7 @@ public class Adql074Writer implements QueryVisitor {
 //            if (query.getAlias(alias) != null) {
 //               alias = query.getAlias(alias);
 //            }
-         fromTag.writeTag("Table", new String[] { "xsi:type='tableType'","Name='"+scope[i]+"'" /*,"Alias='"+alias+"'"*/}, "");
+         fromTag.writeTag("Table", new String[] { "Name='"+scope[i]+"'" /*,"Alias='"+alias+"'"*/}, "");
       }
    }
 
@@ -249,11 +248,8 @@ public class Adql074Writer implements QueryVisitor {
       throw new UnsupportedOperationException("ADQL 0.7.4 does not support dates");
    }
    
-
    /** Writes out the adql for a circle/cone search */
    public void visitCircle(CircleCondition circleFunc) throws IOException  {
-   
-      assert (tagName != null) : "Null tagname writing circle condition in ADQL 0.7.4";
       
       XmlPrinter tTag = currentTag.newTag(tagName, new String[] { "xsi:type='regionSearchType'" });
       XmlPrinter regionTag = tTag.newTag("Region", new String[] { "xmlns:q1='urn:nvo-region'","xsi:type='q1:circleType'","coord_system_id='"+circleFunc.getEquinox()+"'"});
@@ -277,7 +273,6 @@ public class Adql074Writer implements QueryVisitor {
    
    /** Writes out the adql for a general numeric function */
    public void visitFunction(Function function) throws IOException {
-      
       String type = null;
       String name = function.getName().toUpperCase();
       if (FunctionDefinition.aggregateFuncs.indexOf(" "+name+" ")>-1) {
@@ -329,11 +324,11 @@ public class Adql074Writer implements QueryVisitor {
       
       Query q = SqlParser.makeQuery(sql);
       
-      String adql = Adql074Writer.makeAdql(q, "Hello");
+      String adql = Fadql01Writer.makeAdql(q, "Hello");
       
       System.out.println(adql);
       
-      q = AdqlXml074Parser.makeQuery(adql);
+      q = FadqlXml01Parser.makeQuery(adql);
 
       System.out.println(q);
 
