@@ -1,13 +1,13 @@
 #=============================================================================#
-#                    AstroGrid DATACENTER README.                             #
+#                    AstroGrid DATACENTER README.                             
 #=============================================================================#
 
 
 1.0 SOFTWARE PREREQUISITES:
-***************************
+*****************************
 
 1.1 Externals.
---------------
+----------------
 
 These are the environments under which the datacenter was developed:
 . RedHat Linux 7.3 
@@ -28,7 +28,7 @@ home-grown database!
 
 
 1.2 Internals.
---------------
+----------------
 
 Two important software prerequisites are the datacenter's two properties files:
 
@@ -47,14 +47,14 @@ the MySpace facility, which is separately installable.
 Please install MySpace prior to installing the datacenter.
 
 Other prerequisites are included with the distribution. 
-See section 3.0 Install below.
+See section 4.0 Install below.
 
 
 2.0 DATABASES:
-**************
+****************
 
 2.1 Overview of Databases.
---------------------------
+----------------------------
 
 The datacenter requires two types of database:
 
@@ -73,7 +73,7 @@ using Sybase.
 
 
 2.2 JNDI.        **** IMPORTANT ****
----------
+-----------
 
 The datacenter uses JNDI to lookup it's associated databases, two files require 
 altering within Axis and Tomcat to enable this to happen:
@@ -146,11 +146,26 @@ by JNDI (eg. driverClassName, URL, User, Password):
      </DefaultContext>
      
      
-3.0 INSTALL:
-************
+3.0 LIMITATIONS:
+******************
+There are limitations on the query parameters that equate to
+the SQL submitted against an astronomical database. 
+The following are not yet supported:
 
-3.1 Unjar the datacenter.jar archive.
--------------------------------------
+ORDER BY
+GROUP BY
+sub-selects
+column arithmetic
+ANY
+ALL
+
+Most if not all of these will be available shortly.  
+     
+4.0 INSTALL:
+**************
+
+4.1 Unjar the datacenter.jar archive.
+---------------------------------------
 
 Unjar to some convenient temporary directory. The archive contains the following:
 
@@ -162,50 +177,50 @@ Unjar to some convenient temporary directory. The archive contains the following
 . dbscripts             -    contains script for creating database tables.
 . wsdd                  -    contains deployment descriptors for deploying datacenter as a SOAP service within Axis
 
-3.2 Make sure the external prerequisites are fullfilled.
---------------------------------------------------------
+4.2 Make sure the external prerequisites are fullfilled.
+----------------------------------------------------------
 See section 1.1
 
 
-3.3 Copy archive files into appropriate classpath location for Axis.
---------------------------------------------------------------------
+4.3 Copy archive files into appropriate classpath location for Axis.
+----------------------------------------------------------------------
 Suggest the best location is the webapps/axis/WEB-INF/lib directory
 that is created when Axis is installed, but any convenient place
 where they can be picked up as part of a classpath.
 
 
-3.4 READ THE DATACENTERS CONFIGURATION PROPERTIES FILE.
--------------------------------------------------------
+4.4 READ THE DATACENTERS CONFIGURATION PROPERTIES FILE.
+---------------------------------------------------------
 Look in the config directory.
 
 
-3.4 Fullfill Database conditions.
----------------------------------
+4.4 Fullfill Database conditions.
+-----------------------------------
 . Create appropriate astronomical databases (if not already in existence).
 . Create job database by running script held in dbscripts directory.
   This may <<will>> require alteration for your flavour of RDBMS.
 . Alter Tomcat and Axis files to allow for JNDI (see section 2.2 above)
 
 
-3.5 Alter the datacenter's configuration file.
-----------------------------------------------
+4.5 Alter the datacenter's configuration file.
+------------------------------------------------
 . You must make appropriate database configuration details and other
   items available by altering this file. ***Please read it***.
 . Place the configuration file and the messages file in a convenient
-  classpath-aware location. See section 3.3 above.
+  classpath-aware location. See section 4.3 above.
 
 
-3.6 Ensure Database, Tomcat and Axis are running.
--------------------------------------------------
-You may have to restart Tomcat after step 3.4
+4.6 Ensure Database, Tomcat and Axis are running.
+---------------------------------------------------
+You may have to restart Tomcat after step 4.4
 
 
-3.7 Deploy datacenter as a SOAP service within Axis.
-----------------------------------------------------
+4.7 Deploy datacenter as a SOAP service within Axis.
+------------------------------------------------------
 See the wsdd descriptors within the wsdd directory.
 These are commented to show which command is required to execute deployment.
 The datacenterBIN.jar must be available when the command is executed. 
 
 
-3.8 You are ready to go! Happy Astronomical Hunting!
-----------------------------------------------------
+4.8 You are ready to go! Happy Astronomical Hunting!
+------------------------------------------------------
