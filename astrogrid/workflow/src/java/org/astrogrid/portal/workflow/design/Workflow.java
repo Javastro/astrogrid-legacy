@@ -276,8 +276,8 @@ public class Workflow extends Activity {
         userid,
         community ;
         
-    private Sequence
-        mySequence = null ;
+    private Sequence 
+        child = null ;
         
     private Map 
         activities = null ;
@@ -344,7 +344,7 @@ public class Workflow extends Activity {
                     }  
                     else if ( element.getTagName().equals( WorkflowDD.SEQUENCE_ELEMENT ) ) {
                         // We must be certain these appear in StepNumber order!
-                        mySequence = new Sequence( element ) ;   
+                        setChild(new Sequence( element )) ;   
                     }                   
                     
                 } // end if
@@ -430,7 +430,7 @@ public class Workflow extends Activity {
             inserts[1] = this.userid ;
             inserts[2] = this.community ;
             inserts[3] = this.description ;
-            inserts[4] = mySequence.toXMLString() ;
+            inserts[4] = getChild().toXMLString() ;
             
             response = MessageFormat.format( response, inserts ) ;
 
@@ -530,7 +530,15 @@ public class Workflow extends Activity {
     private static void debug( String logString ){
         System.out.println( logString ) ;
         // logger.debug( logString ) ;
-    }  
+    }
+
+	public void setChild(Sequence child) {
+		this.child = child;
+	}
+
+	public Sequence getChild() {
+		return child;
+	}  
 /*     
     private Document parseRequest( String jobXML ) throws DatasetAgentException {   
         if( TRACE_ENABLED ) trace( "parseRequest() entry") ;

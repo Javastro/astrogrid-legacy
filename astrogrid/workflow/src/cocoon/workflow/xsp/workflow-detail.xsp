@@ -115,7 +115,7 @@
 					<xsp:attribute name="key"><xsp:expr>step.getKey()</xsp:expr></xsp:attribute>
 					<xsp:element name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:element>
 					<xsp:element name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:element>
-					<xsp:element name="tool"><xsp:expr>step.getTool().getToolName()</xsp:expr></xsp:element>
+					<xsp:element name="tool"><xsp:expr>step.getTool().getName()</xsp:expr></xsp:element>
 					<xsp:element name="joinCondition">
 						<xsp:attribute name="value">
 							<xsp:expr>step.getJoinCondition()</xsp:expr>
@@ -196,7 +196,7 @@
 			<![CDATA[
 			//========================================================================
 			
-			activityTree( workflow ) ;
+			activityTree( workflow.getChild() ) ;
 		
 			//========================================================================
 			]]>
