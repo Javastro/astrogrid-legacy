@@ -37,7 +37,6 @@ resources - such as checkstyle and license files - can also be shared between pr
 them in <tt>build</tt> directory.
 </p></section>
 <section name="Nightly Build"><p>
-<em>This section is now out of date and will be updated shortly</em><BR>
 The nightly build script calls the following maven goals
 <ol>
 <li><tt>java:compile</tt> - compile up sources</li>

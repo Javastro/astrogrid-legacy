@@ -1,5 +1,5 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.13 2004/03/05 19:23:52 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.14 2004/03/06 19:34:21 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -13,6 +13,10 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
+import org.astrogrid.jes.delegate.JesDelegateException;
+import org.astrogrid.jes.delegate.JesDelegateFactory;
+import org.astrogrid.jes.delegate.JobMonitor;
+import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
 
 /**
  * Very much like the WebNotifyServiceListener, this one creates a special
@@ -43,13 +47,12 @@ public class JobNotifyServiceListener implements QuerierListener
    {
 //      try {
  
-//         JobMonitor jmd = JesDelegateFactory.createJobMonitor(jobMonitor.toString());
+         JobMonitor jmd = JesDelegateFactory.createJobMonitor(jobMonitor.toString());
 
          
          //create Job Info bean
          
-      log.warn("No MonitorDelegate yet; would send status "+querier.getStatus()+" to monitor at "+jobMonitor);
-//         log.debug("Querier ["+querier.getExtRef()+"] telling "+jobMonitor+" of status '"+querier.getStatus());
+         log.debug("Querier ["+querier.getExtRef()+"] telling "+jobMonitor+" of status '"+querier.getStatus());
 //         jmd.monitorJob(querier.getExtRef(), status, message);
 //      }
 //      catch (JesDelegateException e) {
@@ -61,8 +64,8 @@ public class JobNotifyServiceListener implements QuerierListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
-Revision 1.13  2004/03/05 19:23:52  mch
-Store delegates were moved
+Revision 1.14  2004/03/06 19:34:21  mch
+Merged in mostly support code (eg web query form) changes
 
 Revision 1.12  2004/03/02 01:37:20  mch
 Updates from changes to StoreClient and AGSLs

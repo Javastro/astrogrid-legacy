@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommander.java,v 1.2 2004/03/05 19:23:52 mch Exp $
+ * $Id: MySpaceCommander.java,v 1.3 2004/03/06 19:34:21 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -26,11 +26,11 @@ import java.io.*;
 import org.astrogrid.community.User;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.MySpaceFile;
+import org.astrogrid.store.delegate.MySpaceFolder;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreFile;
-import org.astrogrid.store.delegate.myspace.MySpaceFile;
-import org.astrogrid.store.delegate.myspace.MySpaceFolder;
 
 public class MySpaceCommander
 {
@@ -47,8 +47,8 @@ public class MySpaceCommander
       System.out.println("Commands:    list   - lists the files at the given VospaceRL");
       System.out.println("Commands:    get    - downloads from the given VospaceRL to the given file");
       System.out.println();
-      System.out.println("VospaceRL is of the form: vospace://protocol.authority/endpointpath#myspace/path/filename");
-      System.out.println("eg    vospace://http.grendel12.roe.ac.uk:8080/astrogrid-mySpace#test.astrogrid.org/avodemo/serv1/votable/6dfResults");
+      System.out.println("AGSL is of the form: "+Agsl.FORM);
+      System.out.println("eg    astrogrid:store:myspace:http://grendel12.roe.ac.uk:8080/astrogrid-mySpace#avodemo@test.astrogrid.org/serv1/votable/6dfResults");
    }
 
    public static StoreClient contactServer(Agsl vorl) throws IOException {
@@ -163,8 +163,8 @@ public class MySpaceCommander
 
 /*
 $Log: MySpaceCommander.java,v $
-Revision 1.2  2004/03/05 19:23:52  mch
-Store delegates were moved
+Revision 1.3  2004/03/06 19:34:21  mch
+Merged in mostly support code (eg web query form) changes
 
 Revision 1.1  2004/03/03 17:40:58  mch
 Moved ui package

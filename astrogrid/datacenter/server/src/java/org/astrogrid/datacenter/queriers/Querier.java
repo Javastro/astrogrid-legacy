@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.26 2004/03/05 19:23:52 mch Exp $
+ * $Id: Querier.java,v 1.27 2004/03/06 19:34:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,8 +26,6 @@ import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
-import org.astrogrid.store.delegate.StoreException;
-import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -203,18 +201,16 @@ public abstract class Querier implements Runnable {
          setStatus(QueryStatus.FINISHED);
          
       }
-      /**
       catch (QueryException e) {
          log.error("Could not construct query in spawned thread ",e);
          setErrorStatus(e);
       }
-       */
       catch (DatabaseAccessException e) {
          log.error("Could not access database in spawned thread ",e);
          setErrorStatus(e);
       }
-      catch (IOException e) {
-         log.error(e);
+      catch (Exception e) {
+         log.error("Exception",e);
          setErrorStatus(e);
       }
       log.info("...Ending asynchronous Query ["+id+"]");
@@ -244,11 +240,11 @@ public abstract class Querier implements Runnable {
     *
     * @throws IOException if the operation fails for any reason
     */
-   protected void testResultsDestination() throws IOException {
+   protected void testResultsDestination() throws Exception {
       if (resultsDestination == null) {
          log.error(
                "No default myspace given in config file (key "+QuerierManager.DEFAULT_MYSPACE+"), "+
-               "and no results destination specified");
+               "and results destination specified");
          throw new IllegalStateException("no results destination");
       }
       
@@ -256,10 +252,6 @@ public abstract class Querier implements Runnable {
       
       store.putString("This is a test file to make sure we can create a file in the given myspace, so our query results are not lost",
                         "testFile", false);
-      
-      if (store.getUrl("testFile") == null) {
-         log.warn("Looks like testFile did not appear on server at "+resultsDestination.getEndpoint());
-      }
    }
    
    /**
@@ -267,7 +259,7 @@ public abstract class Querier implements Runnable {
     * @todo At some point we ought to work out a way of streaming this to myspace
     * - I expect this to break on very very large votables - mch.
     */
-   protected void sendResults(QueryResults results) throws IOException {
+   protected void sendResults(QueryResults results) throws Exception {
       if(results == null) {
          log.error("No results to send");
          throw new IllegalStateException("No results to send");
@@ -288,11 +280,8 @@ public abstract class Querier implements Runnable {
          myspace.putString(ba.toString(), resultsDestination.getPath(), false);
          
          log.info("Querier ["+id+"] results sent");
-
-         //check it's there
-         if ( myspace.getFile(resultsDestination.getPath()) == null) {
-            throw new StoreException("Results cannot be seen on server at "+resultsDestination);
-         }
+      
+         //resultsLoc = myspace.getUrl("/"+user.getAstrogridId()+"/"+myspaceFilename).toString();
       }
       catch (SAXException se) {
          log.error("Could not create VOTable",se);
@@ -461,8 +450,8 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
- Revision 1.26  2004/03/05 19:23:52  mch
- Store delegates were moved
+ Revision 1.27  2004/03/06 19:34:21  mch
+ Merged in mostly support code (eg web query form) changes
 
  Revision 1.25  2004/03/02 01:37:20  mch
  Updates from changes to StoreClient and AGSLs

@@ -57,26 +57,23 @@
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
 
-  <!-- not sure why but this is breaking the config - and do we need it anyway? mch
   <resource-ref>
-   <description>Datasource to use to access the database</description>
-   <res-ref-name>jdbc/pal-datasource</res-ref-name>
-   <res-type>javax.sql.DataSource</res-type>
-   <res-auth>Container</res-auth>
+  	<description>Datasource to use to access the database</description>
+  	<res-ref-name>jdbc/pal-datasource</res-ref-name>
+	<res-type>javax.sql.DataSource</res-type>
+	<res-auth>Container</res-auth>
   </resource-ref>
-  -->
 
   <env-entry>
-    <description>URL giving location of the properties file to use for configuration</description>
-    <env-entry-name>org.astrogrid.config.filename</env-entry-name>
-    <env-entry-type>java.lang.String</env-entry-type>
-    <env-entry-value>pal-default.properties</env-entry-value>
+    	<description>URL giving location of the properties file to use for configuration</description>
+  	<env-entry-name>org.astrogrid.config.url</env-entry-name>
+  	<env-entry-type>java.lang.String</env-entry-type>
   </env-entry>
   <!--
   <resource-ref>
-   <res-ref-name>org.astrogrid.config.url</res-ref-name>
-   <res-type>java.lang.String</res-type>
-   <res-auth>Container</res-auth>
+  	<res-ref-name>org.astrogrid.config.url</res-ref-name>
+	<res-type>java.lang.String</res-type>
+	<res-auth>Container</res-auth>
   </resource-ref>
 -->
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.9 2004/03/06 19:00:56 mch Exp $
+ * $Id: DummyDelegate.java,v 1.10 2004/03/06 19:34:21 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -151,10 +151,6 @@ public class DummyDelegate implements FullSearcher, ConeSearcher
       return new DatacenterResults(getSampleResults());
    }
    
-   public DatacenterResults doAdqlSql(String resultsFormat, String adqlSql) throws DatacenterException
-   {
-      return new DatacenterResults(getSampleResults());
-   }
  
    
    
@@ -217,8 +213,8 @@ public class DummyDelegate implements FullSearcher, ConeSearcher
 
 /*
 $Log: DummyDelegate.java,v $
-Revision 1.9  2004/03/06 19:00:56  mch
-Added doAdqlSql
+Revision 1.10  2004/03/06 19:34:21  mch
+Merged in mostly support code (eg web query form) changes
 
 Revision 1.8  2004/01/13 00:32:47  nw
 Merged in branch providing

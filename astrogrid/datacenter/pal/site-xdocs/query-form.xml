@@ -2,35 +2,48 @@
 <document>
 <properties>
    <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+   <author email="mch@roe.ac.uk">Martin Hill</author>
    <title>Datacenter query form</title>
 </properties>
 
 <body>
-  <section name="Submit an ADQL Query">
+  <section name="Submit an ADQL/sql Query">
     <p>
-      <b>Enter your ADQL query here:</b>
+      <form action="processAdqlSqlForm.jsp" method="POST">
+       <p>
+         ADQL/sql <input type="text" name="AdqlSql"/><br />
+       </p>
+       <input type="submit" value="Run ADQL" />
+      </form>
+    </p>
+  </section>
+
+  <section name="Submit an ADQL/xml Query">
+    <p>
+      <b>Enter your ADQL/xml query here:</b>
       (<a href="http://skyservice.pha.jhu.edu/devel/AdqlTranslator/Convertor.aspx">Translate from SQL</a>)
       (<a href="adql">Sample queries</a>)
       <br />
-      <form action="processQueryForm.jsp" method="POST">
-        <textarea name="query" rows="20" cols="100%"></textarea>
+      <form action="processAdqlXmlForm.jsp" method="POST">
+        <textarea name="AdqlXml" rows="20" cols="100%"></textarea>
         <p/>
-        <input type="submit" value="Run Query" />
+        <input type="submit" value="Run ADQL" />
       </form>
     </p>
   </section>
 
   <section name="Submit a Region Query">
     <p>
-      <form action="processConeForm.jsp" method="POST">
+      <form action="coneSearch.jsp" method="POST">
        <p>
-         Right Ascension in decimal degrees, J2000 <input type="text" name="ra"/><br />
-         Decliniation in decimal degress, J2000 <input type="text" name="dec" /><br />
-         Search radius in decimal degrees <input type="text" name="rad" /><br />
+         Right Ascension in decimal degrees, J2000 <input type="text" name="RA"/><br />
+         Decliniation in decimal degress, J2000 <input type="text" name="DEC" /><br />
+         Search radius in decimal degrees <input type="text" name="SR" /><br />
        </p>
        <input type="submit" value="Run Cone" />
      </form>
    </p>
   </section>
+
 </body>
 </document>

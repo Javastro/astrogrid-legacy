@@ -1,4 +1,4 @@
-/*$Id: DatacenterTest.java,v 1.13 2004/03/05 19:23:52 mch Exp $
+/*$Id: DatacenterTest.java,v 1.14 2004/03/06 19:34:21 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.astrogrid.datacenter.service.ServiceServer;
+import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
 
 /**
  * Unit test that exercises the entire server application.
@@ -60,7 +61,7 @@ public class DatacenterTest extends AbstractTestInstallation {
         // set location of metadata
         SimpleConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
         // set myspace to use
-        SimpleConfig.setProperty(QuerierManager.DEFAULT_MYSPACE, "myspace:file://DatacenterTest");
+        SimpleConfig.setProperty(QuerierManager.DEFAULT_MYSPACE, MySpaceDummyDelegate.DUMMY);
        
         SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.sitedebug.DummyQuerier");
         // populate the database
@@ -110,8 +111,8 @@ public class DatacenterTest extends AbstractTestInstallation {
 
 /*
 $Log: DatacenterTest.java,v $
-Revision 1.13  2004/03/05 19:23:52  mch
-Store delegates were moved
+Revision 1.14  2004/03/06 19:34:21  mch
+Merged in mostly support code (eg web query form) changes
 
 Revision 1.12  2004/03/04 23:43:48  mch
 Fixes for tests that broke with changes to config

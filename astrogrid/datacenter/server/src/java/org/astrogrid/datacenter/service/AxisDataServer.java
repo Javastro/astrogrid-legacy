@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.28 2004/03/05 19:23:52 mch Exp $
+ * $Id: AxisDataServer.java,v 1.29 2004/03/06 19:34:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -58,8 +58,6 @@ import org.xml.sax.SAXException;
 public class AxisDataServer extends ServiceServer implements org.astrogrid.datacenter.axisdataserver.AxisDataServer  {
    
    public static Log log = LogFactory.getLog(AxisDataServer.class);
-   
-   
    
 //   public static String CONFIG_URL = AttomConfig.CONFIG_URL;//"java:comp/env/org.astrogrid.config.url";
    

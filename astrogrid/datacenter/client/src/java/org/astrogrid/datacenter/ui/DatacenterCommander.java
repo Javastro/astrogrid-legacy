@@ -1,4 +1,4 @@
-/*$Id: DatacenterCommander.java,v 1.1 2004/03/03 10:08:01 mch Exp $
+/*$Id: DatacenterCommander.java,v 1.2 2004/03/06 19:34:21 mch Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -7,18 +7,14 @@
  * Software License version 1.2, a copy of which has been included
  * with this distribution in the LICENSE.txt file.
  *
-**/
+ **/
 package org.astrogrid.datacenter.ui;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import javax.xml.rpc.ServiceException;
-
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
@@ -27,6 +23,7 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.sql.SQLUtils;
+import org.astrogrid.io.Piper;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Element;
@@ -50,127 +47,143 @@ import org.w3c.dom.Element;
  *
  */
 public class DatacenterCommander {
-
-    public final static void main(String[] args) throws Exception {
-       DatacenterCommander q = new DatacenterCommander();
-       try {
-          q.parse(args);
-          q.doIt();
-       } catch (Exception e) {
-          System.out.println("Error: " + e.getClass().getName() + " - " + e.getMessage());
-          q.usage();
-       }
-    }
-
-    public DatacenterCommander() {
-    }
-    
-    public void parse(String[] args) throws IllegalArgumentException, MalformedURLException{
-        if (args.length < 2 || args.length > 3) {
-            throw new IllegalArgumentException("Incorrect number of arguments");
-        }
-        endpoint = new URL(args[0]);
-        if (args[1].toLowerCase().startsWith("--sql")) {
-           if (args.length != 3) {
-              throw new IllegalArgumentException("Must provide a sql expression");
-           }
-           sql = args[2].trim();
-           if (sql == null || sql.length() == 0) {
-              throw new IllegalArgumentException("Must provide a sql expression");
-           }
-        } else {
-         queryFile = new File(args[1]);
-         if (!queryFile.exists()) {
-            throw new IllegalArgumentException("Query file does not exist: " + queryFile.getAbsolutePath());
-         }
-        }
-    }
-    
-    protected URL endpoint;
-    protected File queryFile;
-    protected String sql;
    
-   public void usage() {
-      System.out.println("Usage: java org.astrogrid.datacenter.tools.SimpleQuerier <service URL> [ <query file> | --sql \"<sql expression>\"]");
+   /** Main method interprets inputs */
+   public final static void main(String[] args) throws Exception {
+      try {
+         
+         if (args.length<2) {
+            usage();
+         }
+         else {
+            String command = args[0].toLowerCase().trim();
+            String endpoint = args[1];
+            
+            if (command.equals("adql")) {
+               doAdql(endpoint, args);
+            }
+            else if (command.equals("sql")) {
+               if (args.length<3) {
+                  System.out.println("No SQL given");
+                  usage();
+               }
+               else {
+                  doSql(endpoint, args[2]);
+               }
+            }
+            else if (command.equals("cone")) {
+               doCone(endpoint);
+            }
+            else {
+               System.out.println("Unknown command: "+command);
+               usage();
+            }
+         }
+      } catch (Exception e) {
+         System.out.println("Error: " + e.getClass().getName() + " - " + e.getMessage());
+         usage();
+      }
    }
    
-    public void doIt() throws ServiceException, MarshalException, ValidationException, IOException, ADQLException{
-        FullSearcher del = DatacenterDelegateFactory.makeFullSearcher(endpoint.toString());
-        Element queryBody = null;
-        if (queryFile != null) {
-            Select select = Select.unmarshalSelect(new InputStreamReader ( new FileInputStream(queryFile)));
-            queryBody = ADQLUtils.toQueryBody(select);
-        } else {
-           queryBody = SQLUtils.toQueryBody(sql);
-        }
-        DatacenterResults results = del.doQuery(FullSearcher.VOTABLE,queryBody);
-        XMLUtils.PrettyElementToStream(results.getVotable(), System.out);
-    }
-
-
-    /**
-     * @return
-     */
-    public URL getEndpoint() {
-        return endpoint;
-    }
-
-    /**
-     * @return
-     */
-    public File getQuery() {
-        return queryFile;
-    }
-
-    /**
-     * @param url
-     */
-    public void setEndpoint(URL url) {
-        endpoint = url;
-    }
-
-    /**
-     * @param file
-     */
-    public void setQuery(File file) {
-        queryFile = file;
-    }
-
+   public DatacenterCommander() {
+   }
+   
+   
+   public static void usage() {
+      System.out.println("Usage: java "+DatacenterCommander.class+" <command> <service URL> [ parameters ]");
+      System.out.println();
+      System.out.println("commands:");
+      System.out.println("   sql: submit string given in parameters as SQL ");
+      System.out.println("   adql: submit query at url given in parameter ");
+      System.out.println("   cone: do cone search; give serviceurl as base?RA=20;DEC=30;SR=4 as normal NVO");
+   }
+   
+   public static void doAdql(String endpoint, String[] args) throws ServiceException, MarshalException, ValidationException, IOException, ADQLException{
+      
+      if (args.length<3) {
+         System.out.println("No ADQL file given");
+         usage();
+         return;
+      }
+      File queryFile = new File(args[2]);
+      if (queryFile == null) {
+         System.out.println("Cannot find ADQL query file "+args[2]);
+         usage();
+         return;
+      }
+      System.out.println("Connecting to server...");
+      FullSearcher del = DatacenterDelegateFactory.makeFullSearcher(endpoint.toString());
+      System.out.println("Reading query...");
+      Select select = Select.unmarshalSelect(new InputStreamReader ( new FileInputStream(queryFile)));
+      Element queryBody = ADQLUtils.toQueryBody(select);
+      System.out.println("Asking query...");
+      DatacenterResults results = del.doQuery(FullSearcher.VOTABLE,queryBody);
+      System.out.println("Results:");
+      XMLUtils.PrettyElementToStream(results.getVotable(), System.out);
+   }
+   
+   
+   public static void doCone(String endpoint) throws MalformedURLException, IOException {
+      URL url = new URL(endpoint);
+      
+      System.out.println("Asking query...");
+      InputStream in = url.openStream();
+      OutputStream out = System.out;
+      
+      System.out.println("Results:");
+      Piper.bufferedPipe(in, out);
+   }
+   
+   public static void doSql(String endpoint, String sql) throws ServiceException, MarshalException, ValidationException, IOException, ADQLException{
+      
+      System.out.println("Connecting to server...");
+      FullSearcher del = DatacenterDelegateFactory.makeFullSearcher(endpoint.toString());
+      System.out.println("Reading query...");
+      Element queryBody = SQLUtils.toQueryBody(sql);
+      System.out.println("Asking query...");
+      DatacenterResults results = del.doQuery(FullSearcher.VOTABLE,queryBody);
+      System.out.println("Results:");
+      XMLUtils.PrettyElementToStream(results.getVotable(), System.out);
+   }
+   
 }
 
 
 /*
-$Log: DatacenterCommander.java,v $
-Revision 1.1  2004/03/03 10:08:01  mch
-Moved UI and some IO stuff into client
+ $Log: DatacenterCommander.java,v $
+ Revision 1.2  2004/03/06 19:34:21  mch
+ Merged in mostly support code (eg web query form) changes
 
-Revision 1.5  2004/01/14 12:55:28  nw
-improved documentation
+ Revision 1.1  2004/03/03 10:08:01  mch
+ Moved UI and some IO stuff into client
 
-Revision 1.4  2004/01/14 12:49:49  nw
-improved documentation
+ Revision 1.5  2004/01/14 12:55:28  nw
+ improved documentation
 
-Revision 1.3  2004/01/13 00:32:47  nw
-Merged in branch providing
-* sql pass-through
-* replace Certification by User
-* Rename _query as Query
+ Revision 1.4  2004/01/14 12:49:49  nw
+ improved documentation
 
-Revision 1.2.10.3  2004/01/12 17:04:50  nw
-fixed bug with argument parsing
+ Revision 1.3  2004/01/13 00:32:47  nw
+ Merged in branch providing
+ * sql pass-through
+ * replace Certification by User
+ * Rename _query as Query
 
-Revision 1.2.10.2  2004/01/08 09:42:26  nw
-tidied imports
+ Revision 1.2.10.3  2004/01/12 17:04:50  nw
+ fixed bug with argument parsing
 
-Revision 1.2.10.1  2004/01/08 09:10:20  nw
-replaced adql front end with a generalized front end that accepts
-a range of query languages (pass-thru sql at the moment)
+ Revision 1.2.10.2  2004/01/08 09:42:26  nw
+ tidied imports
 
-Revision 1.2  2003/11/26 16:31:46  nw
-altered transport to accept any query format.
-moved back to axis from castor
+ Revision 1.2.10.1  2004/01/08 09:10:20  nw
+ replaced adql front end with a generalized front end that accepts
+ a range of query languages (pass-thru sql at the moment)
 
-Revision 1.1  2003/11/24 21:06:01  nw
-added little command-line tool to query datacenter
+ Revision 1.2  2003/11/26 16:31:46  nw
+ altered transport to accept any query format.
+ moved back to axis from castor
+
+ Revision 1.1  2003/11/24 21:06:01  nw
+ added little command-line tool to query datacenter
  
-*/
+ */
