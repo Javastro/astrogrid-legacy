@@ -1,4 +1,4 @@
-/*$Id: DefaultMetadataService.java,v 1.3 2004/07/26 12:07:38 nw Exp $
+/*$Id: DefaultMetadataService.java,v 1.4 2004/08/17 15:09:20 nw Exp $
  * Created on 21-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,6 +52,7 @@ public class DefaultMetadataService implements MetadataService, ComponentDescrip
          
        }
        catch (Exception e) {
+           logger.debug(e);
          throw new CeaException("problem returning registry entry", e);
        }
     }    
@@ -92,6 +93,9 @@ public class DefaultMetadataService implements MetadataService, ComponentDescrip
 
 /* 
 $Log: DefaultMetadataService.java,v $
+Revision 1.4  2004/08/17 15:09:20  nw
+minor improvement on logging
+
 Revision 1.3  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package
