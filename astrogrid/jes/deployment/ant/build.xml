@@ -184,5 +184,4 @@
     <taskdef name="tomcat-start" classname="org.apache.catalina.ant.StartTask" />
     <taskdef name="tomcat-stop" classname="org.apache.catalina.ant.StopTask" />
     <taskdef name="tomcat-undeploy" classname="org.apache.catalina.ant.UndeployTask" />
-    <taskdef name="register-entry" classname="org.astrogrid.deployment.RegistryLoaderTask"/>
 </project>
