@@ -42,7 +42,7 @@
 		 using a Java-like syntax.
 		</i></blockquote>
 		Installation is similar to that for Javascript.
-		<a href="http://www.astrogrid.org/maven/astrogrid-scripting/distributions/astrogrid-scripting-rhino-SNAPSHOT.tar.gz">Download</a> the tarball snapshot, unzip, and configure
+		<a href="http://www.astrogrid.org/maven/astrogrid-scripting/distributions/astrogrid-scripting-groovy-SNAPSHOT.tar.gz">Download</a> the tarball snapshot, unzip, and configure
 		by setting the <tt>GROOVY_HOME</tt> environment variable to point to the unpackaged code.
 		<p />
 		Again, <tt>bin</tt> contains to run groovy, <tt>examples</tt> has groovy versions of the example programs.
