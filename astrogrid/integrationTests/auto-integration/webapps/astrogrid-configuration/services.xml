@@ -2,12 +2,20 @@
 <services>
 <!-- configuration file for scripting - lists all known services. -->
 <service type="Application">
-        <endpoint>@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService</endpoint>
-        <description>dummy command-line application</description>
+        <endpoint>@TOMCATROOT@/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</endpoint>
+        <description>cea command-line provider</description>
 </service>
 <service type="Application">
-        <endpoint>@TOMCATROOT@/astrogrid-pal-SNAPSHOT/services/CeaDataService</endpoint>
-        <description>cea interface to a datacenter</description>
+        <endpoint>@TOMCATROOT@/astrogrid-cea-server-SNAPSHOT/services/CommonExecutionConnectorService</endpoint>
+        <description>cea java provider</description>
+</service>
+<service type="Application">
+        <endpoint>@TOMCATROOT@/astrogrid-cea-http-SNAPSHOT/services/CommonExecutionConnectorService</endpoint>
+        <description>cea http provider</description>
+</service>
+<service type="Application">
+        <endpoint>@TOMCATROOT@/astrogrid-pal-SNAPSHOT/services/itn06/CommonExecutionConnectorService</endpoint>
+        <description>cea datacenter provider</description>
 </service>
 <service type="jobcontrol">
         <endpoint>@TOMCATROOT@/astrogrid-jes-SNAPSHOT/services/JobControllerService</endpoint>
@@ -22,11 +30,6 @@
         <description>local datacenter</description>
 </service>
 
-<service type="Myspace">
-        <endpoint>@TOMCATROOT@/astrogrid-mySpace-SNAPSHOT/services/MySpaceManager</endpoint>
-        <description>local myspace</description>
-</service>
-
 <service type="Registry">
         <endpoint>@TOMCATROOT@/astrogrid-registry-SNAPSHOT/services/Registry</endpoint>
         <description>local registry query endpoint</description>
@@ -35,5 +38,5 @@
         <endpoint>@TOMCATROOT@/astrogrid-registry-SNAPSHOT/services/RegistryAdmin</endpoint>
         <description>local registry query endpoint</description>
 </service>
-	<!-- more to come here -->
+        <!-- more to come here -->
 </services>
