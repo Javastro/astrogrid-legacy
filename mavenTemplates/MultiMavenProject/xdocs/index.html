@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.1  (Win32)">
 	<META NAME="CREATED" CONTENT="20040716;17054949">
 	<META NAME="CHANGEDBY" CONTENT="John Taylor">
-	<META NAME="CHANGED" CONTENT="20040716;18041778">
+	<META NAME="CHANGED" CONTENT="20040717;12503407">
 </HEAD>
 <BODY LANG="en-GB" DIR="LTR">
 <H1>Introduction</H1>
@@ -77,7 +77,8 @@ for this project, execute
 This examines the Master project's project.properties for a list of
 subprojects to build, builds the documentation for the subprojects,
 then copies that in to the site documentation for this Master
-project, automatically generating links to the subproject documents.</P>
+project, automatically generating links to the subproject documents. 
+This is the documentation you are now reading.</P>
 <P>To build the jars and wars for the subproject execute 
 </P>
 <PRE STYLE="margin-bottom: 0.5cm">maven multiproject:artifact</PRE><P>
@@ -88,11 +89,26 @@ a subproject produces a war or a jar is set by a property in the
 subproject's project.properties.</P>
 <P>The Multiproject plugin only provides the most commonly used
 goals. If you have a special goal that you wish to run on all of the
-subprojects then you can use the reactor directly. For example, you
-might place this in your master project's maven.xml: 
+subprojects then you need to write some simple &ldquo;jelly&rdquo;
+code. For example, you might place this in your master project's
+maven.xml: 
 </P>
-<PRE STYLE="margin-bottom: 0.5cm">code here</PRE><H2>
-POM inheritance</H2>
+<P><FONT FACE="Courier New"><FONT SIZE=2><FONT COLOR="#800000">&lt;!--execute
+the goal &ldquo;HelloWorld&rdquo; on all the subprojects</FONT></FONT></FONT></P>
+<P><FONT FACE="Courier New"><FONT SIZE=2><FONT COLOR="#800000">	</FONT><FONT COLOR="#000080">&lt;goal</FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000080">name=</FONT><FONT COLOR="#008000">&quot;HelloWorldMulti&quot;</FONT><FONT COLOR="#000080">&gt;</FONT></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT COLOR="#800000"><FONT FACE="Courier New"><FONT SIZE=2>		&lt;!--
+the goal multiproject:goal runs the goal defined in the variable
+&quot;goal&quot; on the subprojects --&gt;</FONT></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT COLOR="#800000"><FONT FACE="Courier New"><FONT SIZE=2>		&lt;!--
+sorry about the above tongue twister--&gt;</FONT></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Courier New"><FONT SIZE=2><FONT COLOR="#800000">		</FONT><FONT COLOR="#000080">&lt;j:set</FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000080">var=</FONT><FONT COLOR="#008000">&quot;goal&quot;</FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000080">value=</FONT><FONT COLOR="#008000">&quot;HelloWorld&quot;</FONT><FONT COLOR="#000080">/&gt;</FONT></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Courier New"><FONT SIZE=2><FONT COLOR="#800000">		</FONT><FONT COLOR="#000080">&lt;attainGoal</FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000080">name=</FONT><FONT COLOR="#008000">&quot;multiproject:goal&quot;</FONT><FONT COLOR="#000080">/&gt;</FONT></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT SIZE=2><FONT FACE="Courier New"><FONT COLOR="#800000">	</FONT><FONT COLOR="#000080">&lt;/goal&gt;</FONT></FONT></FONT></P>
+<H2>POM inheritance</H2>
 <P STYLE="margin-bottom: 0cm">POM settings, project.properties and
 maven.xml code can all be inherited and overridden. Examine the code
 for this project to see some of the possibilities.</P>
