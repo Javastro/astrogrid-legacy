@@ -1,4 +1,4 @@
-/*$Id: RuleTest.java,v 1.3 2004/08/03 14:27:38 nw Exp $
+/*$Id: RuleTest.java,v 1.4 2004/08/03 16:32:26 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,14 +25,11 @@ public class RuleTest extends TestCase {
     protected void setUp() {
         rule = new Rule();
         rule.setTrigger("states.getStatus('testEnv') == UNSTARTED");
-        rule.setBody("vars.set('msg','hello world'); x=vars.get('x')+1");
-        rule.setEnvId("testEnv");
+        rule.setBody("states.setStatus('anotherEnv',STARTED);");
         rule.setName("test rule");
         shell = new JesShell();
         shell.setJesInterface(new MockJes());
         store = new ActivityStatusStore();
-        Vars vars = store.getEnv("testEnv");
-        vars.set("x",new Integer(1));
         rules = new RuleStore();
         rules.addRule(rule);
     }
@@ -50,10 +47,8 @@ public class RuleTest extends TestCase {
 
     public void testFire() throws CompilationFailedException, IOException {
         rule.fire(shell,store,rules); 
-        Vars vars = store.getEnv("testEnv");
-        //assertEquals(2,vars.e.size());
-        assertEquals("hello world",vars.get("msg"));
-        assertEquals(new Integer(1),vars.get("x")); // as updated x not stored back into vars..
+        assertEquals(Status.STARTED,store.getStatus("anotherEnv"));
+        
     }
 
     public void testReferences() {
@@ -80,6 +75,10 @@ public class RuleTest extends TestCase {
 
 /* 
 $Log: RuleTest.java,v $
+Revision 1.4  2004/08/03 16:32:26  nw
+remove unnecessary envId attrib from rules
+implemented variable propagation into parameter values.
+
 Revision 1.3  2004/08/03 14:27:38  nw
 added set/unset/scope features.
 

@@ -1,4 +1,4 @@
-/*$Id: JesInterface.java,v 1.3 2004/08/03 14:27:38 nw Exp $
+/*$Id: JesInterface.java,v 1.4 2004/08/03 16:32:26 nw Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
@@ -77,12 +78,13 @@ public class  JesInterface {
      * dispatach a tool step 
      * @param id - the identifier of the step to execute
      * */ 
-    public void dispatchStep(String id) throws JesException {
+    public void dispatchStep(String id, JesShell shell, ActivityStatusStore states, RuleStore rules) throws JesException {
         Step step = (Step)getId(id);
           StepExecutionRecord er = AbstractJobSchedulerImpl.newStepExecutionRecord();
           step.addStepExecutionRecord(er);
            try{
-               getDispatcher().dispatchStep(getWorkflow(),step);
+               Tool tool = shell.evaluateTool(step.getTool(),id,states,rules);
+               getDispatcher().dispatchStep(getWorkflow(),step,tool); 
                er.setStatus(ExecutionPhase.RUNNING);
            } catch (Throwable t) { // absolutely anything
                getLog().info("Step execution failed:",t);                 
@@ -192,6 +194,10 @@ public class  JesInterface {
 
 /* 
 $Log: JesInterface.java,v $
+Revision 1.4  2004/08/03 16:32:26  nw
+remove unnecessary envId attrib from rules
+implemented variable propagation into parameter values.
+
 Revision 1.3  2004/08/03 14:27:38  nw
 added set/unset/scope features.
 

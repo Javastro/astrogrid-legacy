@@ -1,4 +1,4 @@
-/*$Id: StepFeatureTest.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: StepFeatureTest.java,v 1.3 2004/08/03 16:32:26 nw Exp $
  * Created on 09-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,13 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
+import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -34,8 +36,13 @@ public class StepFeatureTest extends AbstractTestForFeature {
     /**
      * @see org.astrogrid.jes.jobscheduler.impl.scripting.AbstractTestForFeature#buildWorkflow()
      */
-    protected Workflow buildWorkflow() {
+    protected Workflow buildWorkflow() {              
         Workflow wf = super.createMinimalWorkflow();
+        Set set = new Set();
+        set.setVar("x");
+        set.setValue("${42}");
+        wf.getSequence().addActivity(set);
+        
         Step s = new Step();
         s.setName("test step");
         Tool t = new Tool();
@@ -43,7 +50,17 @@ public class StepFeatureTest extends AbstractTestForFeature {
         t.setName("test tool");
         t.setInput(new Input());
         t.setOutput(new Output());
-        //@todo add parameters in here later.
+        ParameterValue in = new ParameterValue();
+        in.setName("in");
+        in.setValue("${x}");
+        t.getInput().addParameter(in);
+        
+        ParameterValue out = new ParameterValue();
+        out.setName("out");
+        out.setIndirect(true);
+        out.setValue("resuts-${new java.util.Date()}.xml");
+        t.getOutput().addParameter(out);
+        
         s.setTool(t);
         wf.getSequence().addActivity(s);
         return wf;
@@ -53,9 +70,14 @@ public class StepFeatureTest extends AbstractTestForFeature {
      * @see org.astrogrid.jes.jobscheduler.impl.scripting.AbstractTestForFeature#verifyWorkflow(org.astrogrid.workflow.beans.v1.Workflow)
      */
     protected void verifyWorkflow(Workflow result) {
-        Step step =(Step)result.getSequence().getActivity(0);
+        Step step =(Step)result.getSequence().getActivity(1);
         assertStepCompleted(step);
         super.assertWorkflowCompleted(result);
+        
+        assertEquals(1,super.disp.getCallCount());
+        Tool t = super.disp.getLatestTool();
+        assertNotNull(t);
+        assertEquals("42", t.findXPathValue("input/parameter[name='in']/value"));
     }
     /**
      * @see org.astrogrid.jes.jobscheduler.impl.scripting.AbstractTestForFeature#furtherProcessing()
@@ -63,7 +85,7 @@ public class StepFeatureTest extends AbstractTestForFeature {
     protected void furtherProcessing(JobURN urn) throws Exception{
             //check call has been made.
         Workflow wf = jobFactory.findJob(urn);
-        Step step  = (Step)wf.getSequence().getActivity(0);
+        Step step  = (Step)wf.getSequence().getActivity(1);
         assertStepRunning(step);
         // ok, looks good. now we simulate the 'return' from the application.
         //@todo later need to work with return results, etc.
@@ -79,6 +101,10 @@ public class StepFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: StepFeatureTest.java,v $
+Revision 1.3  2004/08/03 16:32:26  nw
+remove unnecessary envId attrib from rules
+implemented variable propagation into parameter values.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

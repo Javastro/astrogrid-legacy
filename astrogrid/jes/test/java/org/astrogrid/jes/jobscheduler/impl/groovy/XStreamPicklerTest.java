@@ -1,4 +1,4 @@
-/*$Id: XStreamPicklerTest.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: XStreamPicklerTest.java,v 1.3 2004/08/03 16:32:26 nw Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,6 @@ public class XStreamPicklerTest extends TestCase {
         interp = new GroovyInterpreter();
         rule = new Rule();
         rule.setBody("foo\n bar \n\t boo; i< 10 && x > 1");
-        rule.setEnvId("neep");
         rule.setName("a rule");
         rule.setTrigger("trigger code here");
         interp.addRule(rule);
@@ -81,6 +80,10 @@ public class XStreamPicklerTest extends TestCase {
 
 /* 
 $Log: XStreamPicklerTest.java,v $
+Revision 1.3  2004/08/03 16:32:26  nw
+remove unnecessary envId attrib from rules
+implemented variable propagation into parameter values.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

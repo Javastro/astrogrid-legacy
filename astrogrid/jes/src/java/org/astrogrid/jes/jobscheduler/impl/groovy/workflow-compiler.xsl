@@ -13,7 +13,6 @@ format of a rule element:
 <rule>
   <trigger>boolean-expression</trigger>
   <name>textual name</name>
-  <envId>key"</envId>
   <body>
     script statements
   </body>
@@ -23,10 +22,6 @@ the trigger element (required) should be a boolean expression with no side effec
 evaluated frequently. when it evaluates to true, the rule is able to fire.
 
 the name element (optional) of the rule is used for documentation and logging
-
-the env element (optional) gives a key to a state. the environment stored in this state
-is the environment the body of the rule should be executed in. if no env is declared, then
-the body of the rule is executed in the default environment
 
 the body element (required) contains script instructions.
 they are executed in order by the script interpreter.
@@ -104,6 +99,10 @@ as it allows you to travese and select on all the different xpath axis...
 		</xsl:choose>
 </xsl:template>
 
+<!-- ******************************************
+	root of workflow 
+	*********************************************
+	-->
 <xsl:template match="wf:workflow" >
 	
   <rules>
@@ -158,12 +157,13 @@ states.setStatus('<xsl:value-of select="generate-id(..)"/>',ERROR);
   </rule>
 </xsl:template>
 
-<!-- rules for variables -->
+<!-- *****************************
+	variables
+	******************************** -->
 <xsl:template match="wf:set" name="set">
 	<rule>
 		<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
 		<name>set-variable</name>
-		<envId><xsl:value-of select="generate-id()"/></envId>
 		<body>
 			if (jes.executeSet('<xsl:value-of select="generate-id()"/>',shell,states,rules)) {
 				states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
@@ -207,17 +207,17 @@ states.setStatus('<xsl:value-of select="generate-id(..)"/>',ERROR);
 	</rule>			
 </xsl:template>
 
-<!-- atomic activities -->
+<!--**********************************************
+	 atomic activities
+	*********************************************8 -->
 <xsl:template match="wf:script" name="script">
 <!-- set the statis to started, execute the script body, set status to finished
 trigger is standard, env taken from associated state 
-tested
 -->
 <xsl:comment>script</xsl:comment>
 <rule> 
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
 	<name>script</name>
-	<envId><xsl:value-of select="generate-id()"/></envId>
 	<body>
 states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
 if(jes.dispatchScript('<xsl:value-of select="generate-id()"/>',shell,states,rules)) {
@@ -229,12 +229,41 @@ states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
 </rule>
 </xsl:template>
 
+
+<xsl:template match="wf:step" name="step">
+<!-- rules for a step execution
+start - get envronment from associated state, create tool object, populate with parameters, call cea
+finish - triggered by response from cea. collects any results from the call back into environment-->
+<xsl:comment>step <xsl:value-of select="@name"/></xsl:comment>
+<rule>
+	<name>step-start</name>
+	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
+<body>
+states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
+jes.dispatchStep('<xsl:value-of select="generate-id()"/>',shell,states,rules);
+</body>
+</rule>
+
+<rule> 
+	<name>step-end</name>
+	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == FINISH</trigger>
+<body>
+states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
+jes.completeStep('<xsl:value-of select="generate-id()"/>');
+</body>
+</rule>
+</xsl:template>
+
+<!-- 
+	***********************************
+	Sequencing
+	************************************
+	-->
 <xsl:template match="wf:sequence" name="sequence">
 <!-- rules for a sequence 
 - statt: pass env into first child, call start on it.
 - create a rule for each element in the sequence that chains one to the next, propagating environment
 - end: when last child in the sequence finishes, the sequence finishes.
-tested
 -->
 <xsl:comment>sequence</xsl:comment>
 <rule>
@@ -314,43 +343,19 @@ states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED) ;
 </rule>
 </xsl:template>
 
-<xsl:template match="wf:step" name="step">
-<!-- rules for a step execution
-start - get envronment from associated state, crate tool object, populate with parameters, call cea
-finish - triggered by response from cea. collects any results from the call back into environment
-TODO - implement this fully - just a dummy for now, while prototyping -->
-<xsl:comment>step <xsl:value-of select="@name"/></xsl:comment>
-<rule>
-	<name>step-start</name>
-	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
-    <envId><xsl:value-of select="generate-id()"/></envId>
-<body>
-states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
-jes.dispatchStep('<xsl:value-of select="generate-id()"/>');
-</body>
-</rule>
-
-<rule> 
-	<name>step-end</name>
-	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == FINISH</trigger>
-	<envId><xsl:value-of select="generate-id()"/></envId>
-<body>
-states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
-jes.completeStep('<xsl:value-of select="generate-id()"/>');
-</body>
-</rule>
-</xsl:template>
+<!--**************************************
+	Branching
+	***************************************
+	-->
 
 <xsl:template match="wf:if" name="if">
 <!-- rules for an if
 evaluate the expression, bracnh accordingly. different behaviour depending on whether if has an else or not
-tested
 -->
 <xsl:comment>if</xsl:comment>
 <rule>
 	 <name>if-start</name>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
-	 <envId><xsl:value-of select="generate-id()"/></envId>
 <body>
 if (<xsl:value-of select="@test" />) {
 	  	states.setStatus('<xsl:value-of select="generate-id(./then/*)"/>', START);
@@ -384,6 +389,10 @@ states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
 </rule>
 </xsl:template>
 
+<!-- ****************************************************
+	Looping
+	******************************************************
+	-->
 <xsl:template match="wf:while" name="while">
 <!-- rules for an while
 to start - if test passes, trigger body rule, pass current environment in.
@@ -394,7 +403,6 @@ tested
 <rule>
 	 <name>while-init</name>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
-	 <envId><xsl:value-of select="generate-id()"/></envId>
 	<body>
 if (<xsl:value-of select="@test" />) {
 		states.setStatus('<xsl:value-of select="generate-id(./*)"/>',START);
@@ -408,7 +416,6 @@ if (<xsl:value-of select="@test" />) {
 <rule>
 	 <name>while-loop</name>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == FINISHED</trigger>
-	<envId><xsl:value-of select="generate-id()"/></envId>
 	<body>
 if (<xsl:value-of select="@test" />) {
 		states.setStatus('<xsl:value-of select="generate-id(./*)"/>',START);
@@ -429,7 +436,6 @@ hmmm - subtle. further work
 <rule>
 	 <name>for-init</name>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger> 
-	 <envId><xsl:value-of select="generate-id()"/></envId>
 	<body>
 _<xsl:value-of select="generate-id()"/>_iter = iter(<xsl:value-of select="@range" />)
 _setStatus('<xsl:value-of select="generate-id()"/>',STARTED)
@@ -445,7 +451,6 @@ except:
 <rule>
 	 <name>for-loop</name>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == FINISHED</trigger> 
-	 <envId><xsl:value-of select="generate-id()"/></envId>
 	<body>
 try:
 		<xsl:value-of select="@var" /> = _<xsl:value-of select="generate-id()"/>_iter.next()
@@ -455,6 +460,11 @@ except:
 	</body>
 </rule>
 </xsl:template>
+
+<!-- ***************************************
+	parallel constructs 
+	*******************************************
+	-->
 
 <xsl:template match="wf:parfor" name="parfor">
 <!-- Phew! - this is the biggie. all the rest of the language constructs are static in some way.

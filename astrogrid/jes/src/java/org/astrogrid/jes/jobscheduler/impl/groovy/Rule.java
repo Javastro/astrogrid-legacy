@@ -1,4 +1,4 @@
-/*$Id: Rule.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: Rule.java,v 1.3 2004/08/03 16:32:26 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,6 @@ import java.io.IOException;
 /**   represents a rule that is fired - has a trigger, location of environment, and list of actions to execute
  Written as a bean, for easy serialization.
  @todo make strinig manipulation more efficient.
- @todo cache compiled triggers for reuse - as are called often.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
  *
  */
@@ -40,7 +39,6 @@ public class Rule {
     protected String trigger;
     protected String name;
     protected String body;
-    protected String envId;
     protected transient Script compiledTrigger;
     /** returns true if trigger of rule succeeds. 
      * @throws IOException
@@ -58,9 +56,7 @@ public class Rule {
     
     /** return true if any trigger, env or body action references this key */
     public boolean references(String key) {
-        if (this.envId.equals(key)) {
-            return true;
-        }
+
         return referencesTest(this.trigger,key) || this.referencesTest(this.body,key);
     }
     
@@ -71,12 +67,10 @@ public class Rule {
     
     /** create a copy of this rule, rewritten so that all references to old key reference new key*/
     public Rule rewriteAs(String oldKey, String newKey) {
-        String newEnvId = this.envId == oldKey ? newKey : oldKey;
         Rule result = new Rule();
         result.setName(this.name = " branch " + newKey);
         result.setTrigger(replace(this.trigger,oldKey,newKey));
         result.setBody(replace(this.body,oldKey,newKey));
-        result.setEnvId(newEnvId);
         return result;
     }
 
@@ -103,15 +97,7 @@ public class Rule {
     /**
      * @return Returns the envId.
      */
-    public String getEnvId() {
-        return this.envId;
-    }
-    /**
-     * @param envId The envId to set.
-     */
-    public void setEnvId(String envId) {
-        this.envId = envId;
-    }
+
     /**
      * @return Returns the name.
      */
@@ -155,11 +141,10 @@ public class Rule {
         buffer.append(name);
         buffer.append(" body: ");
         buffer.append(body);
-        buffer.append(" envId: ");
-        buffer.append(envId);
         buffer.append("]");
         return buffer.toString();
     }
+
     /**
      * Returns <code>true</code> if this <code>Rule</code> is the same as the o argument.
      *
@@ -182,9 +167,9 @@ public class Rule {
             && (this.name == null ? castedObj.name == null : this.name
                 .equals(castedObj.name))
             && (this.body == null ? castedObj.body == null : this.body
-                .equals(castedObj.body)) && (this.envId == null
-            ? castedObj.envId == null
-            : this.envId.equals(castedObj.envId)));
+                .equals(castedObj.body)) && (this.compiledTrigger == null
+            ? castedObj.compiledTrigger == null
+            : this.compiledTrigger.equals(castedObj.compiledTrigger)));
     }
     /**
      * Override hashCode.
@@ -193,10 +178,13 @@ public class Rule {
      */
     public int hashCode() {
         int hashCode = 1;
+        hashCode = 31 * hashCode + (logger == null ? 0 : logger.hashCode());
         hashCode = 31 * hashCode + (trigger == null ? 0 : trigger.hashCode());
         hashCode = 31 * hashCode + (name == null ? 0 : name.hashCode());
         hashCode = 31 * hashCode + (body == null ? 0 : body.hashCode());
-        hashCode = 31 * hashCode + (envId == null ? 0 : envId.hashCode());
+        hashCode = 31
+            * hashCode
+            + (compiledTrigger == null ? 0 : compiledTrigger.hashCode());
         return hashCode;
     }
 }
@@ -204,6 +192,10 @@ public class Rule {
 
 /* 
 $Log: Rule.java,v $
+Revision 1.3  2004/08/03 16:32:26  nw
+remove unnecessary envId attrib from rules
+implemented variable propagation into parameter values.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

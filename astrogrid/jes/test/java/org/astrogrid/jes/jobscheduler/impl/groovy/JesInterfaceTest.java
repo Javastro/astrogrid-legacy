@@ -1,4 +1,4 @@
-/*$Id: JesInterfaceTest.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: JesInterfaceTest.java,v 1.3 2004/08/03 16:32:26 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,14 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
+import org.astrogrid.workflow.beans.v1.Input;
+import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 import junit.framework.TestCase;
@@ -54,13 +58,16 @@ public class JesInterfaceTest extends TestCase {
         assertNotNull(jes.getLog());
     }
 
-    public void testd() {
+    public void testId() {
         assertNull(jes.getId("6"));
         assertNotNull(jes.getId("3"));
     }
 
+    /* a pain to test
     public void testDispatchStepWithId() throws JesException {
-        jes.dispatchStep("3");
+        Tool t = new Tool();
+
+        jes.dispatchStep("3",t);
         // take a look
         Step s = (Step)jes.getId("3");
         assertNotNull(s);
@@ -70,6 +77,7 @@ public class JesInterfaceTest extends TestCase {
        
         
     }
+    */
 
     public void testCompleteStepWithId() {
         //@todo Implement completeStepWithId().
@@ -84,6 +92,10 @@ public class JesInterfaceTest extends TestCase {
 
 /* 
 $Log: JesInterfaceTest.java,v $
+Revision 1.3  2004/08/03 16:32:26  nw
+remove unnecessary envId attrib from rules
+implemented variable propagation into parameter values.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

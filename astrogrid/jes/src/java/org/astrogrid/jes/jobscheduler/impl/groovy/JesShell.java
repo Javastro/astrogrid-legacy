@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.3 2004/08/03 14:27:38 nw Exp $
+/*$Id: JesShell.java,v 1.4 2004/08/03 16:32:26 nw Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,11 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.workflow.beans.v1.Input;
+import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Set;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.log4j.Logger;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -22,6 +26,7 @@ import groovy.lang.Script;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Enumeration;
 import java.util.Iterator;
 
 /** class that encapuslates the execution and evaluation of grouvy code.
@@ -60,8 +65,6 @@ public class JesShell {
     public void executeBody(Rule r,ActivityStatusStore map, RuleStore store) throws CompilationFailedException, IOException {
         logger.info("firing " + r.getName());
         Binding bodyBinding = createBodyBinding(map,store);
-        Vars vars = map.getEnv(r.getEnvId()); 
-        bodyBinding.setProperty("vars",vars);        
         logger.debug(r);    
         Script sc = shell.parse(r.getBody());       
         sc.setBinding(bodyBinding);
@@ -115,8 +118,61 @@ public class JesShell {
             return true;
         }
     }
+    
+    public Tool evaluateTool(Tool original,String id,ActivityStatusStore map, RuleStore rules) throws CompilationFailedException, IOException {
+        Tool copy = new Tool();
+        copy.setInterface(original.getInterface());
+        copy.setName(original.getName());
+        Input input = new Input();
+        copy.setInput(input);
+        
+        Vars vars = map.getEnv(id);
+        Binding scriptBinding = createScriptBinding(map,rules);
+        vars.addToBinding(scriptBinding);
+        if (original.getInput() != null) { // possible we have no inputs, I suppose
+        for (int i = 0; i < original.getInput().getParameterCount(); i++) {
+            ParameterValue originalP = original.getInput().getParameter(i);
+            ParameterValue copyP = processParameter(originalP, scriptBinding);
+            input.addParameter(copyP);
+        }
+        }
+        
+        if (original.getOutput() != null) {
+        // do identical for ouputs.
+        Output output = new Output();
+        copy.setOutput(output);
+        for (int i =0; i < original.getOutput().getParameterCount(); i++) {
+            ParameterValue originalP = original.getOutput().getParameter(i);
+            ParameterValue copyP = processParameter(originalP,scriptBinding);
+            output.addParameter(copyP);
+        }
+        }
+        return copy;
+    }
 
-//  binding creation functions - so that scripts can access the status store.
+/**
+     * @param original
+     * @param scriptBinding
+     * @param i
+     * @return
+     * @throws CompilationFailedException
+     * @throws IOException
+     */
+    private ParameterValue processParameter(ParameterValue originalP, Binding scriptBinding) throws CompilationFailedException, IOException {
+        ParameterValue copyP = new ParameterValue();
+        copyP.setName(originalP.getName());
+        copyP.setIndirect(originalP.getIndirect());
+        copyP.setEncoding(originalP.getEncoding());
+        // evaluate value.. -- always to string.
+        String expr = "<<<GSTRING\n" + originalP.getValue()  + "\nGSTRING\n";
+        Script sc = shell.parse(expr);
+        sc.setBinding(scriptBinding);
+        Object result = sc.run();
+        copyP.setValue( result.toString());
+        return copyP;
+    }
+
+    //  binding creation functions - so that scripts can access the status store.
     private Binding createTriggerBinding(ActivityStatusStore map) {
         Binding b = new Binding();
         b.setVariable("states",map);
@@ -172,6 +228,10 @@ public class JesShell {
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.4  2004/08/03 16:32:26  nw
+remove unnecessary envId attrib from rules
+implemented variable propagation into parameter values.
+
 Revision 1.3  2004/08/03 14:27:38  nw
 added set/unset/scope features.
 
