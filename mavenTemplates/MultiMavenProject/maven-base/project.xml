@@ -20,6 +20,9 @@ not used to build a subproject of its own.</description>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.0.3</version>
+            <properties>
+    			<war.bundle>${war.bundle}</war.bundle>
+    		</properties>
         </dependency>
     </dependencies>
 </project>

@@ -1,0 +1,26 @@
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <artifactId>multiproject-server</artifactId>
+    <name>Multiproject Example Server</name>
+    <shortDescription>An example server subproject</shortDescription>
+	<description>see xdocs</description>
+	
+    <dependencies>
+    	<dependency>
+    		<groupId>org.astrogrid</groupId>
+    		<artifactId>multiproject-common</artifactId>
+    		<version>${pom.currentVersion}</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>org.astrogrid</groupId>
+    		<artifactId>multiproject-client</artifactId>
+    		<version>${pom.currentVersion}</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    </dependencies>
+</project>

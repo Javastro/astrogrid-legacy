@@ -9,6 +9,7 @@
     	<dependency>
     		<groupId>org.astrogrid</groupId>
     		<artifactId>multiproject-common</artifactId>
+    		<version>${pom.currentVersion}</version>
     	</dependency>
     </dependencies>
 </project>

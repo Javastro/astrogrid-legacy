@@ -1,0 +1,8 @@
+<project>
+
+	<!--override the version of this goal defined in maven-base-->	
+	<goal name="HelloWorld">
+		<echo message="Hello, this subproject is called ${myvar.name}"/>
+		<echo message="And my value of war.bundle is ${war.bundle}"/>
+	</goal>
+</project>
