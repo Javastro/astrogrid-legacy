@@ -1,30 +1,41 @@
-/*$Id: ServiceListener.java,v 1.3 2003/09/05 13:21:48 nw Exp $
- * Created on 05-Sep-2003
+/*
+ * $Id: ServiceListener.java,v 1.4 2003/09/07 18:46:42 mch Exp $
  *
- * Copyright (C) AstroGrid. All rights reserved.
- *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
- *
-**/
+ * (C) Copyright AstroGrid...
+ */
+
 package org.astrogrid.datacenter.service;
 
-/** interface for something that want to listen to the querying process
- * @author Noel Winstanley nw@jb.man.ac.uk 05-Sep-2003
- *@see ProxyServiceListener
+import org.astrogrid.datacenter.servicestatus.ServiceStatus;
+
+
+/**
+ * This is an interface for any classes that want to listen to status changes
+ * on the query service
+ *
+ * @author M Hill
  */
-public interface ServiceListener {
-    /** Called by the service when it has a
+
+public interface ServiceListener
+{
+   /** Called by the service when it has a
     * status change
     */
-    public abstract void serviceStatusChanged(String newStatus);
+   public void serviceStatusChanged(ServiceStatus newStatus);
 }
 
-/* 
+/*
 $Log: ServiceListener.java,v $
-Revision 1.3  2003/09/05 13:21:48  nw
-changed from an implementation to an interface.
-previous implementation is in ProxyServiceListener.
- 
+Revision 1.4  2003/09/07 18:46:42  mch
+Added stateful (threaded) queries and typesafe service status
+
+Revision 1.2  2003/08/29 07:57:12  maven
+- changed '&' to '&amp;'
+
+Revision 1.1  2003/08/28 13:07:41  mch
+Added service listener placeholders
+
+
+
 */
+

@@ -1,5 +1,5 @@
 /*
- * $Id: ProxyServiceListener.java,v 1.1 2003/09/05 13:22:12 nw Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.1 2003/09/07 18:46:42 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,12 +7,12 @@
 package org.astrogrid.datacenter.service;
 
 import java.net.URL;
+import org.astrogrid.datacenter.servicestatus.ServiceStatus;
 
 
 /**
- * This is an implementation of a listener design, because any listeners will
- * be remote (ie made a listen/please notify request to the web service) and
- * so this must be capable of passing that information back to the remote
+ * This is an implementation of a listener design for remote listeners (ie service
+ * clients). So this must be capable of passing that information back to the remote
  * client.
  *
  * @todo this is just a placeholder at the moment, need to work out how
@@ -23,7 +23,7 @@ import java.net.URL;
  * @author M Hill
  */
 
-public class ProxyServiceListener implements ServiceListener
+public class WebNotifyServiceListener implements ServiceListener
 {
    private URL clientListener = null;
 
@@ -32,7 +32,7 @@ public class ProxyServiceListener implements ServiceListener
     *
     * @todo design &amp; implement properly...
     */
-   public ProxyServiceListener(URL aClientListener)
+   public WebNotifyServiceListener(URL aClientListener)
    {
       this.clientListener = aClientListener;
    }
@@ -40,13 +40,20 @@ public class ProxyServiceListener implements ServiceListener
    /** Called by the service when it has a
     * status change
     */
-   public void serviceStatusChanged(String newStatus)
+   public void serviceStatusChanged(ServiceStatus newStatus)
    {
+      //try and connect to client
+
+      //send document to client
+
    }
 }
 
 /*
-$Log: ProxyServiceListener.java,v $
+$Log: WebNotifyServiceListener.java,v $
+Revision 1.1  2003/09/07 18:46:42  mch
+Added stateful (threaded) queries and typesafe service status
+
 Revision 1.1  2003/09/05 13:22:12  nw
 class formerly known as ServiceListener
 
