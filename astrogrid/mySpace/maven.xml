@@ -8,7 +8,7 @@
 		<mkdir dir="${basedir}/target/classes"/>
 		<!-- JDepend fails if this dir is not present.  Hack to fix it. -->
 	</preGoal>
-	<!--<property name="maven.war.src" value="${axis.webapp.srcdir}"/> deleted by JDT for quick and dirty war-->
+
 	<postGoal name="war:webapp">
 		<echo message="${maven.war.src}"/>
 		<echo message="Copying xml templates and properties across to src directory"/>
