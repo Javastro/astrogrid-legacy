@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterStatusListener.java,v 1.11 2003/09/15 22:05:34 mch Exp $
+ * $Id: DelegateQueryListener.java,v 1.1 2003/10/06 18:55:21 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,24 +9,25 @@ package org.astrogrid.datacenter.delegate;
 import org.astrogrid.datacenter.common.QueryStatus;
 
 /**
- * Classes that implement this interface, and register with the
- * DatacenterDelegate,
- * will be informed when the status of the job changes, rather than having to
- * poll the service.
+ * Defines what a class must implement in order to listen to changes on the
+ * <b>delegate</b> query.
  *
  * @author M Hill
  */
 
-public interface DatacenterStatusListener
+public interface DelegateQueryListener
 {
-   /** Called by the datacenter delegate when it has been notified of a
-    * status change.  NB a delegate may have several services running at once.
+   /** Called by the delegate query when it has been notified of a
+    * status change.
     */
-   public void datacenterStatusChanged(String queryId, QueryStatus newStatus);
+   public void delegateQueryChanged(DatacenterQuery query, QueryStatus newStatus);
 }
 
 /*
-$Log: DatacenterStatusListener.java,v $
+$Log: DelegateQueryListener.java,v $
+Revision 1.1  2003/10/06 18:55:21  mch
+Naughtily large set of changes converting to SOAPy bean/interface-based delegates
+
 Revision 1.11  2003/09/15 22:05:34  mch
 Renamed service id to query id throughout to make identifying state clearer
 

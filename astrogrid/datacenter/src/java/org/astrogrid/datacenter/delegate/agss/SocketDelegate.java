@@ -1,28 +1,24 @@
 /*
- * $Id: SocketDelegate.java,v 1.18 2003/10/02 12:53:49 mch Exp $
+ * $Id: SocketDelegate.java,v 1.1 2003/10/06 18:55:21 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
-package org.astrogrid.datacenter.delegate;
+package org.astrogrid.datacenter.delegate.agss;
+import org.astrogrid.datacenter.common.*;
+import org.astrogrid.datacenter.delegate.*;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
-import java.rmi.RemoteException;
+import java.net.URL;
 import java.util.Hashtable;
-
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.common.DocHelper;
-import org.astrogrid.datacenter.common.QueryIdHelper;
-import org.astrogrid.datacenter.common.QueryStatus;
-import org.astrogrid.datacenter.common.ResponseHelper;
-import org.astrogrid.datacenter.common.StatusHelper;
+import org.astrogrid.datacenter.adql.QOM;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
-import org.astrogrid.datacenter.io.TraceInputStream;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -45,7 +41,7 @@ import org.xml.sax.SAXException;
  * @author Jeff Lusted (from DatasetAgentDelegate)
  */
 
-public class SocketDelegate extends DatacenterDelegate
+public class SocketDelegate implements AdqlQuerier
 {
    /** The socket connection - opened when the instance is constructed */
    private Socket socket = null;
@@ -56,8 +52,14 @@ public class SocketDelegate extends DatacenterDelegate
    private SocketXmlInputStream in = null;
 
    /** listeners to query status changes, keyed by queryId */
-   private Hashtable listeners = new Hashtable();
+   //private Hashtable listeners = new Hashtable();
 
+   /** Running queries, indexed by query id */
+   private Hashtable queries = new Hashtable();
+   
+   /** User certification */
+   private Certification certification = null;
+   
    /** String used to request registry metadata */
    public static final String REQ_REGISTRY_METADATA_TAG = "RequestRegistryMetata";
    /** String used to request metadata */
@@ -83,8 +85,9 @@ public class SocketDelegate extends DatacenterDelegate
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
     * of datacenter delegates in the future...
     */
-   public SocketDelegate(InetSocketAddress socketAddress) throws IOException
+   public SocketDelegate(InetSocketAddress socketAddress, Certification givenCertification) throws IOException
    {
+      this.certification = givenCertification;
       setSocket(new Socket(socketAddress.getAddress(), socketAddress.getPort()));
    }
 
@@ -92,8 +95,10 @@ public class SocketDelegate extends DatacenterDelegate
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
     * of datacenter delegates in the future...
     */
-   public SocketDelegate(String endPoint) throws IOException
+   public SocketDelegate(String endPoint, Certification givenCertification) throws IOException
    {
+      this.certification = givenCertification;
+
       //parse string to extract address & port
       String host = endPoint.substring(9); //remove 'socket://'
       int colon = host.indexOf(":");
@@ -137,67 +142,96 @@ public class SocketDelegate extends DatacenterDelegate
 
    }
 
-
-  /**
-    * General purpose query database; pass in an XML document with the query
-    * described in ADQL (Astronomical Data Query Language).  Returns the
-    * results part of the returned document, which may be VOTable or otherwise
-    * depending on the results format specified in the ADQL
+   /**
+    * Class used to manage the query at the server
     */
-   public Element doQuery(Element adql) throws IOException
+   private class SocketQueryDelegate implements DatacenterQuery
    {
-      //need to construct a wrapper around the given element, bit messy this
-      String query = XMLUtils.ElementToString(adql);
-      String reqTag = "<"+DO_QUERY_TAG+">\n"
-                     +getUserTag()+"\n"
-                     +query
-                     +"\n</"+DO_QUERY_TAG+">";
+      private String queryId = null;
+      
+      public SocketQueryDelegate(String id)
+      {
+         this.queryId = id;
+      }
 
-      return atomicSendReceive(reqTag);
-   }
+      public String getId()
+      {
+         return queryId;
+      }
+      
+      
+      public URL getResultsAndClose() throws IOException
+      {
+         String reqTag = "<"+REQ_RESULTS_TAG+">\n"
+//                     +getUserTag()+"\n"
+                        +QueryIdHelper.makeQueryIdTag(queryId)+"\n"
+                        +"\n</"+REQ_RESULTS_TAG+">";
 
-   /** Constructs a query at the server with the given adql
-    */
-   public Element makeQuery(Element adql) throws RemoteException, IOException
-   {
-      //need to construct a wrapper around the given element, bit messy this
-      String query = XMLUtils.ElementToString(adql);
-      String reqTag = "<"+CREATE_QUERY_TAG+">\n"
-                     +getUserTag()+"\n"
-                     +query
-                     +"\n</"+CREATE_QUERY_TAG+">";
-
-      return atomicSendReceive(reqTag);
-   }
-
-   /** Constructs a query at the server with the given adql
-    */
-   public Element startQuery(String queryId) throws RemoteException, IOException
-   {
-      Log.affirm(queryId != null, "queryId is null");
-      Log.affirm(queryId.length()>0, "queryId is empty");
-
-      String reqTag = "<"+START_QUERY_TAG+">\n"
-                     +getUserTag()+"\n"
+         Element response = atomicSendReceive(reqTag);
+         
+         NodeList urls = response.getElementsByTagName(ResponseHelper.RESULTS_TAG);
+         
+         return new URL(urls.item(0).getNodeValue());
+      }
+      
+      
+      public void setResultsDestination(URL myspace) throws IOException
+      {
+         throw new UnsupportedOperationException();
+      }
+      
+      public void start() throws IOException
+      {
+         String reqTag = "<"+START_QUERY_TAG+">\n"
+                     //+getUserTag()+"\n"
                      +QueryIdHelper.makeQueryIdTag(queryId)+"\n"
                      +"\n</"+START_QUERY_TAG+">";
 
-      return atomicSendReceive(reqTag);
-   }
-
-   /** Get the results of a query (or the status so far)
-    */
-   public Element getResultsAndClose(String queryId) throws RemoteException, IOException
-   {
-      Log.affirm(queryId != null, "queryId is null");
-      Log.affirm(queryId.length()>0, "queryId is empty");
-
-      String reqTag = "<"+REQ_RESULTS_TAG+">\n"
-                     +getUserTag()+"\n"
+         atomicSendReceive(reqTag);
+      }
+      
+      public QueryStatus getStatus() throws IOException
+      {
+         String reqTag = "<"+REQ_STATUS_TAG+">\n"
+      //               +getUserTag()+"\n"
                      +QueryIdHelper.makeQueryIdTag(queryId)+"\n"
-                     +"\n</"+REQ_RESULTS_TAG+">";
+                     +"\n</"+REQ_STATUS_TAG+">";
 
-      return atomicSendReceive(reqTag);
+         Element response = atomicSendReceive(reqTag);
+
+         return StatusHelper.getServiceStatus(response);
+      }
+      
+      public void abort() throws DatacenterException
+      {
+         
+      }
+      
+      public void registerListener(DelegateQueryListener newListener)
+      {
+         throw new UnsupportedOperationException();
+      }
+      public void registerWebListener(URL url)
+      {
+         throw new UnsupportedOperationException();
+      }
+      public void registerJobListener(URL url)
+      {
+         throw new UnsupportedOperationException();
+      }
+      
+      
+   }
+   
+
+   /**
+    * Register listener. The delegate is already a listener for all status
+    * updates; the given listener is therefore registered locally to be
+    * informed as necessary
+    *
+   public void registerListener(String queryId, DatacenterStatusListener listener)
+   {
+      listeners.put(queryId, listener);
    }
 
    /**
@@ -205,51 +239,97 @@ public class SocketDelegate extends DatacenterDelegate
     * doing checks on how big the result set is likely to be before it has to be
     * transferred about the net.
     */
-   public int adqlCountDatacenter(Element adql)
+   public int countQuery(QOM adql) throws DatacenterException
    {
       throw new UnsupportedOperationException();
    }
 
    /**
-    * returns metadata (an XML document describing the data the
-    * center serves) in the form required by registries. See the VOResource
-    * schema; I think that is what this should return...
+    * Support method for creating the right xml from the adql object model. Bit
+    * of a pain this SOAPy beans in some way - means we keep converting from &
+    * to XML, but at least things are being type-checked...
     */
-   public Element getVoRegistryMetadata() throws IOException
+   private String getAdqlXml(QOM adql)
    {
-      Element response = atomicSendReceive("<"+REQ_REGISTRY_METADATA_TAG+"/>\n");
-
-      return response;
+      StringWriter writer = new StringWriter();
+      try {
+         adql.marshal(writer);
+         return writer.toString();
+      }
+      catch (org.exolab.castor.xml.CastorException e)
+      {
+         throw new RuntimeException("Could not write adql to string");
+      }
    }
-
+   
+   
    /**
-    * Polls the service and asks for the current status
+    * Simple blocking query.
+    * @param user user information for authentication/authorisation
+    * @param resultsformat string specifying how the results will be returned (eg
+    * votable, fits, etc) strings as given in the datacenter's metadata
+    * @param ADQL
+    * @todo move adql package into common
     */
-   public QueryStatus getStatus(String queryId) throws IOException
+   public DatacenterResults doQuery(String resultsFormat, QOM adql) throws IOException
    {
-      Log.affirm(queryId != null, "queryId is null");
-      Log.affirm(queryId.length()>0, "queryId is empty");
+      String reqTag = "<"+DO_QUERY_TAG+">\n"
+                     //+getUserTag()+"\n"
+                     +getAdqlXml(adql)
+                     +"\n</"+DO_QUERY_TAG+">";
 
-      String reqTag = "<"+REQ_STATUS_TAG+">\n"
-                     +getUserTag()+"\n"
-                     +QueryIdHelper.makeQueryIdTag(queryId)+"\n"
-                     +"\n</"+REQ_STATUS_TAG+">";
+      return new DatacenterResults(atomicSendReceive(reqTag));
+   }
+   
+   /**
+    * Constructs the query at the
+    * server end, but does not start it yet as other Things May Need To Be Done
+    * such as registering listeners or setting the destination for the results.
+    *
+    * @param adql object model
+    * @param givenId an id for the query is assigned here rather than
+    * generated by the server
+    */
+   public DatacenterQuery makeQuery(QOM adql, String givenId) throws IOException
+   {
+      String reqTag = "<"+CREATE_QUERY_TAG+">\n";
+      if (givenId != null) {
+         reqTag = reqTag +"<"+DocMessageHelper.ASSIGN_QUERY_ID_TAG+">"+givenId+"</"+DocMessageHelper.ASSIGN_QUERY_ID_TAG+">";
+      }
+
+      reqTag = reqTag //+getUserTag()+"\n"
+                     +getAdqlXml(adql)
+                     +"\n</"+CREATE_QUERY_TAG+">";
 
       Element response = atomicSendReceive(reqTag);
-
-      return StatusHelper.getServiceStatus(response);
+      
+      return new SocketQueryDelegate(QueryIdHelper.getQueryId(response));
    }
 
    /**
-    * Register listener. The delegate is already a listener for all status
-    * updates; the given listener is therefore registered locally to be
-    * informed as necessary
+    * Constructs the query at the
+    * server end, but does not start it yet as other Things May Need To Be Done
+    * such as registering listeners or setting the destination for the results.
+    *
+    * @param adql object model
     */
-   public void registerListener(String queryId, DatacenterStatusListener listener)
+   public DatacenterQuery makeQuery(QOM adql) throws IOException
    {
-      listeners.put(queryId, listener);
+      return makeQuery(adql, null);
    }
+   
+   /**
+   * returns the full datacenter metadata.  Implementations might like to
+   * cache it locally (but remember threadsafety)...
+   */
+   public Metadata getMetadata() throws IOException
+   {
+      String reqTag = "<"+REQ_METADATA_TAG+"/>\n";
 
+      return new Metadata(atomicSendReceive(reqTag));
+   }
+   
+   
    /**
     * An asynchronous message was received from the server.  Currently only
     * status notifications arrive this way - so call status listeners
@@ -264,11 +344,12 @@ public class SocketDelegate extends DatacenterDelegate
 
          String queryId = status.getAttribute(QueryIdHelper.QUERY_ID_ATT);
 
-         DatacenterStatusListener listener = (DatacenterStatusListener) listeners.get(queryId);
-         if (listener != null)
-         {
-            listener.datacenterStatusChanged(queryId, StatusHelper.getServiceStatus(status));
-         }
+         throw new UnsupportedOperationException();
+//         QueryStatusListener listener = (QueryStatusListener) listeners.get(queryId);
+//         if (listener != null)
+//         {
+//            listener.queryStatusChanged(queryId, StatusHelper.getServiceStatus(status));
+//         }
       }
    }
 
@@ -341,24 +422,14 @@ public class SocketDelegate extends DatacenterDelegate
       }
    }
 
-/* (non-Javadoc)
- * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#abortQuery(java.lang.String)
- */
-public void abortQuery(String queryId) throws IOException {
-    throw new UnsupportedOperationException();
-}
-
-/* (non-Javadoc)
- * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#getMetadata()
- */
-public Element getMetadata() throws IOException {
-    throw new UnsupportedOperationException();
-}
 
 }
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.1  2003/10/06 18:55:21  mch
+Naughtily large set of changes converting to SOAPy bean/interface-based delegates
+
 Revision 1.18  2003/10/02 12:53:49  mch
 It03-Close
 

@@ -1,24 +1,22 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.7 2003/09/25 01:22:50 nw Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.8 2003/10/06 18:56:58 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
-package org.astrogrid.datacenter.delegate;
-
+package org.astrogrid.datacenter.service;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import javax.xml.rpc.ParameterMode;
 import javax.xml.rpc.ServiceException;
-
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.DocHelper;
-import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.common.StatusHelper;
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 
@@ -29,9 +27,10 @@ import org.w3c.dom.Document;
  *
  * @author M Hill
  * @modified Noel Winstanley - made into a bean, so is SOAP-transportable.
+ * @modified MCH no longer transported via soap..., my only silly fault that it was in the first place
  */
 
-public class WebNotifyServiceListener implements DatacenterStatusListener
+public class WebNotifyServiceListener implements QuerierListener
 {
    /** URL of client listener - this is a web service that will receive
     * a document containing the new status */
@@ -48,19 +47,22 @@ public class WebNotifyServiceListener implements DatacenterStatusListener
    }
    
    /** default constructor */
-   public WebNotifyServiceListener() {       
+   public WebNotifyServiceListener() {
    }
 
    /** Called by the service when it has a
     * status change. Opens a connection to the URL and sends it a document, which
     * is defined in StatusHelper
     */
-   public void datacenterStatusChanged(String id, QueryStatus newStatus)
+   public void queryStatusChanged(DatabaseQuerier querier)
    {
-      Log.trace("WebNotifyServiceListener.serviceStatusChanged("+newStatus+")") ;
+      throw new UnsupportedOperationException("We have not yet defined what method a web listener will implement");
+
+      /*
+      Log.trace("WebNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
 
       try {
-         Document statusDoc = DocHelper.wrap(StatusHelper.makeStatusTag(id, newStatus));
+         Document statusDoc = DocHelper.wrap(StatusHelper.makeStatusTag(querier.getid, querier.getStatus()));
 
          Object[] parms = new Object[]
          {
@@ -70,7 +72,7 @@ public class WebNotifyServiceListener implements DatacenterStatusListener
          Call call = (Call) new Service().createCall() ;
 
          call.setTargetEndpointAddress( clientListener ) ;
-         call.setOperationName( "serviceStatusChanged" ) ;  // Set method to invoke (same as ServiceListener)
+         call.setOperationName( "serviceStatusChanged" ) ;  // Set method to invoke
          call.addParameter("serviceStatusXML", XMLType.XSD_STRING,ParameterMode.IN);
          call.setReturnType(XMLType.XSD_STRING);
 
@@ -82,7 +84,7 @@ public class WebNotifyServiceListener implements DatacenterStatusListener
       }
 
       Log.trace("exit WebNotifyServiceListener.serviceStatusChanged("+newStatus+")") ;
-
+       */
 
    }
 /**
@@ -92,7 +94,7 @@ public String getClientListener() {
     return clientListener.toString();
 }
 
-/** 
+/**
  * @param url
  */
 public void setClientListener(String url) {
@@ -107,6 +109,9 @@ public void setClientListener(String url) {
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.8  2003/10/06 18:56:58  mch
+Naughtily large set of changes converting to SOAPy bean/interface-based delegates
+
 Revision 1.7  2003/09/25 01:22:50  nw
 altered getter/setter types from URL to String to make this soap-portable
 

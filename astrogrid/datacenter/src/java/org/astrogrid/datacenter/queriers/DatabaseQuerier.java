@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.32 2003/10/02 12:53:49 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.33 2003/10/06 18:56:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,10 +13,11 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Vector;
 import org.astrogrid.datacenter.adql.ADQLException;
+import org.astrogrid.datacenter.adql.QOM;
 import org.astrogrid.datacenter.common.DocMessageHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
-import org.astrogrid.datacenter.delegate.JobNotifyServiceListener;
-import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
+import org.astrogrid.datacenter.service.JobNotifyServiceListener;
+import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.Workspace;
 import org.astrogrid.log.Log;
@@ -110,12 +111,22 @@ public abstract class DatabaseQuerier implements Runnable
      void setUserId(String userid) {
          this.userid = userid;
      }
+     
    /**
     * Creates the query model based on the given DOM.
     */
- void setQuery(Element givenDOM) throws ADQLException, QueryException
+   void setQuery(Element givenDOM) throws ADQLException, QueryException
    {
       query = new Query(givenDOM);
+      setStatus(QueryStatus.CONSTRUCTED);
+   }
+
+   /**
+    * Creates the query model based on the given DOM.
+    */
+   void setQuery(QOM adql)
+   {
+      query = new Query(adql);
       setStatus(QueryStatus.CONSTRUCTED);
    }
 
@@ -143,10 +154,9 @@ public abstract class DatabaseQuerier implements Runnable
 
       for (int i=0; i<listenerTags.getLength();i++)
       {
-         WebNotifyServiceListener listener = new WebNotifyServiceListener(
-            new URL(((Element) listenerTags.item(i)).getNodeValue())
+         registerListener(new WebNotifyServiceListener(
+               new URL(((Element) listenerTags.item(i)).getNodeValue()))
          );
-         registerListener(new QueryStatusForwarder(listener));
       }
 
       //look for job web listeners
@@ -154,15 +164,12 @@ public abstract class DatabaseQuerier implements Runnable
 
       for (int i=0; i<listenerTags.getLength();i++)
       {
-         JobNotifyServiceListener listener = new JobNotifyServiceListener(
-            new URL(((Element) listenerTags.item(i)).getNodeValue())
+         registerListener(new JobNotifyServiceListener(
+            new URL(((Element) listenerTags.item(i)).getNodeValue()))
          );
-         registerListener(new QueryStatusForwarder(listener));
       }
 
    }
-    /**/
-
 
    /**
     * Runnable implementation - this method is called when the thread to run
@@ -431,7 +438,7 @@ public abstract class DatabaseQuerier implements Runnable
     * just get 'starting', 'working' and 'completed' messages based around the
     * basic http exchange.
     */
-   public void registerListener(QueryListener aListener)
+   public void registerListener(QuerierListener aListener)
    {
       serviceListeners.add(aListener);
    }
@@ -443,7 +450,7 @@ public abstract class DatabaseQuerier implements Runnable
    {
       for (int i=0;i<serviceListeners.size();i++)
       {
-         ((QueryListener) serviceListeners.get(i)).serviceStatusChanged(this);
+         ((QuerierListener) serviceListeners.get(i)).queryStatusChanged(this);
       }
    }
 

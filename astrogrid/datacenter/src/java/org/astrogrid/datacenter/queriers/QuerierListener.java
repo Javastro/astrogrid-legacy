@@ -1,5 +1,5 @@
 /*
- * $Id: QueryListener.java,v 1.2 2003/09/17 14:51:30 nw Exp $
+ * $Id: QuerierListener.java,v 1.1 2003/10/06 18:56:27 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -15,16 +15,19 @@ package org.astrogrid.datacenter.queriers;
  * @author M Hill
  */
 
-public interface QueryListener
+public interface QuerierListener
 {
    /** Called by the service when it has a
     * status change
     */
-   public void serviceStatusChanged(DatabaseQuerier querier);
+   public void queryStatusChanged(DatabaseQuerier querier);
 }
 
 /*
-$Log: QueryListener.java,v $
+$Log: QuerierListener.java,v $
+Revision 1.1  2003/10/06 18:56:27  mch
+Naughtily large set of changes converting to SOAPy bean/interface-based delegates
+
 Revision 1.2  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 

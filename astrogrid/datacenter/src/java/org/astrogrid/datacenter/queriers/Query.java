@@ -82,6 +82,11 @@ public class Query
       }
    }
 
+   public Query(QOM givenAdql)
+   {
+      this.adql = givenAdql;
+   }
+   
    /**
     * Temporary for compatibiliyt
     *
@@ -111,6 +116,9 @@ public class Query
 
 /*
 $Log: Query.java,v $
+Revision 1.7  2003/10/06 18:56:27  mch
+Naughtily large set of changes converting to SOAPy bean/interface-based delegates
+
 Revision 1.6  2003/09/26 11:38:00  nw
 improved documentation, fixed imports
 

@@ -1,11 +1,11 @@
-/*$Id: DatabaseQuerierManager.java,v 1.3 2003/09/26 11:38:00 nw Exp $
+/*$Id: DatabaseQuerierManager.java,v 1.4 2003/10/06 18:56:27 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.queriers;
@@ -16,8 +16,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
-
 import org.astrogrid.datacenter.adql.ADQLException;
+import org.astrogrid.datacenter.adql.QOM;
 import org.astrogrid.datacenter.common.CommunityHelper;
 import org.astrogrid.datacenter.common.DocHelper;
 import org.astrogrid.datacenter.common.DocMessageHelper;
@@ -97,7 +97,7 @@ public class DatabaseQuerierManager {
             querier.setWorkspace(new Workspace(handle));
             querier.setResultsDestination(resultsDestination);
     
-            // finally 
+            // finally
             if (rootElement != null) {
                 querier.setUserId(CommunityHelper.getUserId(rootElement));
                 querier.setCommunityId(CommunityHelper.getCommunityId(rootElement));
@@ -105,7 +105,7 @@ public class DatabaseQuerierManager {
                 querier.registerWebListeners(rootElement);  //looks through dom for web listeners
             }
             return querier;
-        } 
+        }
         catch (IOException e) {
             reportException(e);
         }
@@ -118,6 +118,34 @@ public class DatabaseQuerierManager {
         return null; // unreachable;
     }
 
+    /**
+        * A factory method that Returns a Querier implementation based on the
+        * settings in the configuration file and the document parameter.
+        * @throws DatabaseAccessException on error (contains cause exception)
+        *
+        */
+    public static DatabaseQuerier createQuerier(QOM adql, String handle) throws DatabaseAccessException {
+       
+       DatabaseQuerier querier = instantiateQuerier();
+       //assigns handle
+       try {
+          if (handle == null) {
+             handle = generateHandle();
+          }
+          Log.affirm(queriers.get(handle) == null, "Handle '" + handle + "' already in use");
+          querier.setHandle(handle);
+          queriers.put(handle, querier);
+          
+          querier.setWorkspace(new Workspace(handle));
+          querier.setQuery(adql);
+          return querier;
+       }
+       catch (IOException e) {
+        throw new DatabaseAccessException(e,"Could not create workspace for id:"+handle);
+       }
+    }
+    
+    
     /** method that handles the business of instantiating the querier object */
     private static DatabaseQuerier instantiateQuerier()
         throws DatabaseAccessException {
@@ -129,7 +157,7 @@ public class DatabaseQuerierManager {
                     + "cannot be found in the configuration file(s) '"  + Configuration.getLocations() + "'");
         }
 
-        //create querier implementation              
+        //create querier implementation
         try {
             Class qClass = Class.forName(querierClass);
             /* NWW - interesting bug here.
@@ -163,7 +191,7 @@ public class DatabaseQuerierManager {
     private static void reportException(Throwable t) throws DatabaseAccessException {
         //Log.logWarning() - log a message here.
         throw new DatabaseAccessException(t,"Could not load Database Querier: " + t.getMessage());
-    }        
+    }
 
     /**
       * Generates a handle for use by a particular instance; uses the current
@@ -193,8 +221,11 @@ public class DatabaseQuerierManager {
 
 }
 
-/* 
+/*
 $Log: DatabaseQuerierManager.java,v $
+Revision 1.4  2003/10/06 18:56:27  mch
+Naughtily large set of changes converting to SOAPy bean/interface-based delegates
+
 Revision 1.3  2003/09/26 11:38:00  nw
 improved documentation, fixed imports
 

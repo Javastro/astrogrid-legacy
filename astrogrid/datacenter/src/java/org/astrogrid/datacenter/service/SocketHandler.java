@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.17 2003/10/02 12:53:49 mch Exp $
+ * $Id: SocketHandler.java,v 1.18 2003/10/06 18:56:58 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -15,13 +15,13 @@ import org.astrogrid.datacenter.common.QueryIdHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.StatusHelper;
-import org.astrogrid.datacenter.delegate.SocketDelegate;
+import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
 import org.astrogrid.datacenter.io.TraceInputStream;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
-import org.astrogrid.datacenter.queriers.QueryListener;
+import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.log.Log;
@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public class SocketHandler extends ServiceServer implements Runnable, QueryListener
+public class SocketHandler extends ServiceServer implements Runnable, QuerierListener
 {
    /** Socket connection */
    private Socket socket = null;
@@ -65,7 +65,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
    /** called when the status changes - writes out the new status to the
     * socket
     */
-   public void serviceStatusChanged(DatabaseQuerier querier)
+   public void queryStatusChanged(DatabaseQuerier querier)
    {
       try
       {
@@ -117,6 +117,13 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
                Log.trace("SocketHandler["+socket.getPort()+"]: Writing registry metadata");
 
                out.writeAsDoc(getVOResource());
+            }
+            if (docRequest.getElementsByTagName(SocketDelegate.REQ_METADATA_TAG).getLength() > 0)
+            {
+               //requested metadata
+               Log.trace("SocketHandler["+socket.getPort()+"]: Writing metadata");
+
+               out.writeAsDoc(getMetadata());
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.CREATE_QUERY_TAG).getLength() > 0)
             {
@@ -243,6 +250,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.18  2003/10/06 18:56:58  mch
+Naughtily large set of changes converting to SOAPy bean/interface-based delegates
+
 Revision 1.17  2003/10/02 12:53:49  mch
 It03-Close
 

@@ -1,10 +1,12 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.6 2003/09/24 16:40:18 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.3 2003/10/06 18:56:58 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
-package org.astrogrid.datacenter.delegate;
+package org.astrogrid.datacenter.service;
+import org.astrogrid.datacenter.service.*;
+
 
 import java.net.URL;
 
@@ -24,6 +26,7 @@ import org.w3c.dom.Document;
 /**
  * Very much like the WebNotifyServiceListener, this one creates a special
  * Iteration 02 document specifically made for notifying the job execution system
+ * @deprecated
  *
  * @author M Hill
  */
@@ -47,7 +50,7 @@ public class JobNotifyServiceListener extends WebNotifyServiceListener
     */
    public void serviceStatusChanged(DatabaseQuerier querier)
    {
-      Log.trace("WebNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
+      Log.trace("JobNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
 
       try {
 //         String
@@ -83,7 +86,7 @@ public class JobNotifyServiceListener extends WebNotifyServiceListener
          Log.logError("Could not connect to client "+clientListener+" to send status update", e);
       }
 
-      Log.trace("exit WebNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
+      Log.trace("exit JobNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
 
 
    }
@@ -91,6 +94,9 @@ public class JobNotifyServiceListener extends WebNotifyServiceListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.3  2003/10/06 18:56:58  mch
+Naughtily large set of changes converting to SOAPy bean/interface-based delegates
+
 Revision 1.6  2003/09/24 16:40:18  mch
 Changed job notification to include querier so fuller details can be sent
 

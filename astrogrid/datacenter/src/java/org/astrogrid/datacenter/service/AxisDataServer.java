@@ -1,22 +1,24 @@
 /*
- * $Id: AxisDataServer.java,v 1.23 2003/09/26 11:01:31 nw Exp $
+ * $Id: AxisDataServer.java,v 1.24 2003/10/06 18:56:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
 import java.io.IOException;
-import org.astrogrid.datacenter.common.QueryIdHelper;
+import java.net.MalformedURLException;
+import java.net.URL;
+import org.astrogrid.datacenter.adql.QOM;
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.config.Configuration;
-import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.QueryStatusForwarder;
 import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.service.WebNotifyServiceListener;
+import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
            
@@ -62,14 +64,6 @@ public class AxisDataServer extends ServiceServer
       return super.getMetadata();
    }
 
-   /**
-    * Returns metadata in a format suitable for a VO Registry
-    * @soap
-    */
-   public Element getVoRegistryMetadata()
-   {
-      return super.getVOResource();
-   }
 
    /**
     * Carries out a full synchronous (ie blocking) query.  Note that queries
@@ -78,14 +72,12 @@ public class AxisDataServer extends ServiceServer
     * Takes a soap document including the query, and returns a document
     * including the results (or location of the results)
     * <p>
-    * If the querier has an error (status = error) throws the exception. (Don't
-    * like this too general throwing Throwable)
-    * <p>
     * @soap
     */
-   public Element doQuery(Element soapBody) throws IOException, DatabaseAccessException, QueryException, Throwable
+   public Element doQuery(String resultsFormat,  QOM adql) throws IOException, QueryException, SAXException
    {
-      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(soapBody);
+      Log.affirm(resultsFormat.toLowerCase().equals("votable"), "Can only produce votable results");
+      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(adql, null);
 
       QueryResults results = querier.doQuery();
 
@@ -100,87 +92,85 @@ public class AxisDataServer extends ServiceServer
    }
 
    /**
-    * Creates an asynchronous query, returns a document including the id.
+    * Creates an asynchronous query, returns the query id
     * Does not start the query running - may want to register listeners with
     * it first
     * <p>
-    * If the querier has an error (status = error) throws the exception. (Don't
-    * like this too general throwing Throwable)
-    * <p>
     * @soap
     */
-   public Element makeQuery(Element soapBody) throws QueryException, DatabaseAccessException, IOException, SAXException, Throwable
+   public String makeQuery(QOM adql) throws QueryException, IOException, SAXException
    {
-      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(soapBody);
+      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(adql, null);
 
       //construct reply with id in it...
-      return ResponseHelper.makeQueryCreatedResponse(querier).getDocumentElement();
+      return querier.getHandle();
    }
 
    /**
-    * Starts an existing query running
+    * Creates an asynchronous query with the given id, returning that id
+    * Does not start the query running - may want to register listeners with
+    * it first
     * <p>
-    * If the querier has an error (status = error) throws the exception. (Don't
-    * like this too general throwing Throwable)
+    * @soap
     */
-   public Element startQuery(Element soapBody) throws Throwable
+   public String makeQuery(QOM adql, String assignedId) throws QueryException, IOException, SAXException
+   {
+      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(adql, assignedId);
+
+      //construct reply with id in it...
+      return querier.getHandle();
+   }
+
+   /**
+    * Sets where the results are to be sent
+    * @soap
+    */
+   public void setResultsDestination(String myspaceUrl)
+   {
+   }
+   
+   /**
+    * Starts an existing query running
+    * @soap
+    */
+   public void startQuery(String id)
    {
       //get id from soap body
-      String queryId = QueryIdHelper.getQueryId(soapBody);
-      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
+      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(id);
 
       Thread queryThread = new Thread(querier);
       queryThread.start();
-
-      return ResponseHelper.makeQueryStartedResponse(querier).getDocumentElement();
    }
 
    /**
-    * Checks the service specified by the service id given in the soapBody.
-    * If the query has not finished, returns the status.
-    * If it has, returns a document including the results (or location of the
-    * results) and closes the querier.
-    * <p>
-    * If the querier has an error (status = error) throws the exception. (Don't
-    * like this too general throwing Throwable)
+    * Checks the query specified by the given id
+    * If the query has finished, returns the URL of where the results are
     * <p>
     * @soap
     */
-   public Element getResultsAndClose(Element soapBody) throws IOException, SAXException, Throwable
+   public String getResultsAndClose(String queryId) throws IOException, SAXException
    {
-      String queryID = QueryIdHelper.getQueryId(soapBody);
-      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryID);
+      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
 
       //has querier finished?
-      if (querier.getStatus().isBefore(QueryStatus.FINISHED))
+      if (!querier.getStatus().isBefore(QueryStatus.FINISHED))
       {
-         //not finished - return status
-         return getQuerierStatus(queryID);
+         return querier.getResultsLoc().toString();
       }
       else
       {
-         Element result = ResponseHelper.makeResultsResponse(
-            querier,
-            querier.getResultsLoc()
-         ).getDocumentElement();
-         querier.close();
-         return result;
-
+         return null;
       }
    }
 
    /**
-    * Aborts the query specified by the service id in the given soap body. Returns
+    * Aborts the query specified by the given id.  Returns
     * nothing - if there are any problems doing this it's a server-end problem.
-    * <p>
-    * If the querier has an error (status = error) throws the exception. (Don't
-    * like this too general throwing Throwable)
     * <p>
     * @soap
     */
-   public void abortQuery(Element soapBody)
+   public void abortQuery(String queryId)
    {
-      String queryId = QueryIdHelper.getQueryId(soapBody);
       DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
 
       querier.abort();
@@ -191,9 +181,8 @@ public class AxisDataServer extends ServiceServer
     * <p>
     * @soap
     */
-   public String getStatus(Element soapBody)
+   public String getStatus(String queryId)
    {
-       String queryId = QueryIdHelper.getQueryId(soapBody);
       return DatabaseQuerierManager.getQuerier(queryId).getStatus().toString();
    }
 
@@ -202,11 +191,23 @@ public class AxisDataServer extends ServiceServer
     * <p>
     * @soap
     */
-   public void registerWebListener(Element soapBody, WebNotifyServiceListener listener)
+   public void registerWebListener(String queryId, String url) throws MalformedURLException
    {
-      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(QueryIdHelper.getQueryId(soapBody));
+      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
 
-      querier.registerListener(new QueryStatusForwarder(listener));
+      querier.registerListener(new WebNotifyServiceListener(new URL(url)));
+   }
+
+   /**
+    * Register the given URL as a service to be notified when the status changes
+    * <p>
+    * @soap
+    */
+   public void registerJobMonitor(String queryId, String url) throws MalformedURLException
+   {
+      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
+
+      querier.registerListener(new WebNotifyServiceListener(new URL(url)));
    }
 
 }

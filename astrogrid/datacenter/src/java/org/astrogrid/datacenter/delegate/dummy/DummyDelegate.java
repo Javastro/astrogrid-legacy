@@ -1,41 +1,41 @@
 /*
- * $Id: DummyDelegate.java,v 1.10 2003/09/18 13:12:14 nw Exp $
+ * $Id: DummyDelegate.java,v 1.11 2003/10/06 18:55:21 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.dummy;
 
+import org.astrogrid.datacenter.delegate.*;
+
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.adql.QOM;
 import org.astrogrid.datacenter.common.DocHelper;
 import org.astrogrid.datacenter.common.QueryIdHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.common.ResponseHelper;
-import org.astrogrid.datacenter.delegate.DatacenterDelegate;
-import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.xpath.*;
 import org.xml.sax.SAXException;
-
+   
 /**
- * An implementation of the DatacenterDelegate that validates inputs and
+ * An implementation of the ConeSearcher and AdqlQuerier implementations that validates inputs and
  * returns valid results, but does not call any datacenter services.
  * Provided for unit and integration test purposes, so applications can run
- * against a realistic data center without having to set one up.
+ * against a realistic 'data center' without having to set one up.
  *
- * @see DatacenterDelegate
+ * @todo not properly tidied after It04 refactoring
  *
  * @author M Hill
  * @author Jeff Lusted (from DatasetAgentDelegate)
  */
 
-public class DummyDelegate extends DatacenterDelegate
+public class DummyDelegate implements AdqlQuerier, ConeSearcher
 {
    /** used for generating random results... */
    private static java.util.Random random = new java.util.Random();
@@ -55,6 +55,9 @@ public class DummyDelegate extends DatacenterDelegate
    /** Last status set */
    private QueryStatus lastStatus = QueryStatus.CONSTRUCTED;
 
+   /** Sample results file */
+   public static final String RESULTSFILENAME = "ExampleResults.xml";
+   
    /** Generally speaking don't use this directly - use the factory
     * method DatacenterDelegate.makeDelegate(null), which is a
     * so that it can make decisions on new sorts
@@ -72,10 +75,28 @@ public class DummyDelegate extends DatacenterDelegate
       //nothing needs done
    }
 
+   
+   /**
+    * Simple cone-search call.
+    * @param ra Right Ascension in decimal degrees, J2000
+    * @param dec Decliniation in decimal degress, J2000
+    * @param sr search radius.
+    * @return VOTable
+    * @todo returns set example results, not those in the given ra/dec
+    */
+   public Element coneSearch(double ra, double dec, double sr) throws DatacenterException
+   {
+      //hmmm needs to do more than this if the results are going to be realistic...
+      return getSampleResults();
+   }
+   
+   
    /**
     * Checks that the given ADQL is valid (makes a query from it), returns an
     * example VOTable supplied in this package
     */
+   
+   
    public Element doQuery(Element adql) throws RemoteException
    {
       setStatus(QueryStatus.STARTING);
@@ -108,7 +129,7 @@ public class DummyDelegate extends DatacenterDelegate
    /**
     * Dummy create query method - returns an example 'created' response
     */
-   public Element makeQuery(Element adql) throws RemoteException
+   public Element makeQuery(Element adql)
    {
       setStatus(QueryStatus.CONSTRUCTED);
 
@@ -121,35 +142,42 @@ public class DummyDelegate extends DatacenterDelegate
    }
 
    /**
+    * General purpose asynchronous query database.  Constructs the query at the
+    * server end, but does not start it yet as other Things May Need To Be Done
+    * such as registering listeners or setting the destination for the results.
+    *
+    * @param user for authorisation/authentication
+    * @param pass in an XML document with the query
+    * described in ADQL (Astronomical Data Query Language).  Returns the
+    * response document including the query id that corresponds to that query.
+    * @see startAdqlQuery
+    * @see registerListener
+    * @see setResultsDestination
+    */
+   public DatacenterQuery makeQuery(QOM adql) throws DatacenterException
+   {
+      return new DummyQuery(this, QUERY_ID);
+   }
+   
+   /**
     * DUmmy starts query method - returns an example 'started' responses
     */
-   public Element startQuery(String queryId) throws RemoteException
+   public void startQuery(String queryId)
    {
       setStatus(QueryStatus.RUNNING_QUERY);
-
-      String response =
-            "<"+ResponseHelper.QUERY_STARTED_RESP_TAG+">"+
-            QueryIdHelper.makeQueryIdTag(QUERY_ID)+
-            "</"+ResponseHelper.QUERY_STARTED_RESP_TAG+">";
-
-      return DocHelper.wrap(response).getDocumentElement();
    }
 
    /**
     * private method for loading the example results document
     */
-   private Element getSampleResults()
+   public static Element getSampleResults()
    {
       //load example response votable
       URL url = null;
       try
       {
-         setStatus(QueryStatus.RUNNING_RESULTS);
-
-         url = getClass().getResource("ExampleResults.xml");
+         url = DummyDelegate.class.getResource(RESULTSFILENAME);
          Document resultsDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
-
-         setStatus(QueryStatus.FINISHED);
 
          return resultsDoc.getDocumentElement();
       }
@@ -167,98 +195,157 @@ public class DummyDelegate extends DatacenterDelegate
    }
 
    /**
-    * Returns a sample votable
+    * Returns the url to the sample votable
     */
-   public Element getResultsAndClose(String id) throws RemoteException
+   public URL getResultsAndClose(String id) throws DatacenterException
    {
       if (id.equals(QUERY_ID))
       {
-         return getSampleResults();
+         return getClass().getResource(RESULTSFILENAME);
       }
       else
       {
-         return ResponseHelper.makeUnknownIdResponse(id).getDocumentElement();
+         throw new DatacenterException("Unknown Query ID: '"+id+"'");
       }
    }
 
 
    /**
-    * Returns a random number between 0 and 100...
+    * returns example metadata file.
     */
-   public int adqlCountDatacenter(Element adql)
+   public Metadata getMetadata() throws DatacenterException
    {
-      return random.nextInt(100);
-   }
-
-   /**
-    * returns example voregistry - formatted metadata file.
-    */
-   public Element getVoRegistryMetadata() throws IOException
-   {
-         //load example response votable
       try
       {
-         URL url = getClass().getResource("ExampleVoRegistry.xml");
-         return XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
+         URL url = getClass().getResource("ExampleMetadata.xml");
+         return new Metadata(XMLUtils.newDocument(url.openConnection().getInputStream()));
       }
       catch (ParserConfigurationException e)
       {
-         //rethrow as IOException
-         throw new IOException("XML parser not configured: ("+e+") Dummy delegate failed to load example metadata");
+         //rethrow as runtime as a setup error
+         throw new RuntimeException("XML parser not configured: ("+e+") Dummy delegate failed to load example metadata");
       }
       catch (SAXException e)
       {
-         //rethrow as IOException
-         throw new IOException("Example dummy VoRegistry metadata is invalid:"+e);
+         //rethrow as runtime as the file is static and shouldn't be invalid
+         throw new RuntimeException("Example dummy metadata is invalid:"+e);
+      }
+      catch (IOException e)
+      {
+         //rethrow as runtime as the file should just be there
+         throw new RuntimeException("Fault opening dummy metadata:"+e);
       }
    }
 
    /**
-    * Sets the status, does update, etc
+    * Sets the status, does update, etc.
+    * Public so that test tools can reach it.
     */
    public void setStatus(QueryStatus newStatus)
    {
       lastStatus = newStatus;
 
-      fireStatusChanged(QUERY_ID, lastStatus);
+      //fireStatusChanged(QUERY_ID, lastStatus);
    }
+
 
    /**
-    * Returns unknown
+    * Abort a  query.  Does nothing
     */
-   public QueryStatus getStatus(String queryId)
+   public void abortQuery(String queryId) throws DatacenterException
    {
-      return lastStatus;
    }
-
+   
    /**
-    * Registers a listener with this service.
+    * Blocking query.
+    * @param user user information for authentication/authorisation
+    * @param resultsformat string specifying how the results will be returned (eg
+    * votable, fits, etc)
+    * @param ADQL
+    * @todo move adql package into common
     */
-   public void registerListener(String queryId, DatacenterStatusListener listener)
+   public DatacenterResults doQuery(Certification user, String resultsFormat, QOM adql) throws DatacenterException
    {
-      addListener(listener);
+      return new DatacenterResults(getSampleResults());
    }
-
-/* (non-Javadoc)
- * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#abortQuery(java.lang.String)
- */
-public void abortQuery(String queryId) throws IOException {
-    //do nothing.
-    
-}
-
-/* (non-Javadoc)
- * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#getMetadata()
- */
-public Element getMetadata() throws IOException {
-    return null;
-}
-
-
+   
+   /**
+    * Returns the number of items that match the given query.  This is useful for
+    * doing checks on how big the result set is likely to be before it has to be
+    * transferred about the net.
+    * <p>
+    * Returns a random number between 0 and 100...
+    */
+   public int countQuery(Certification user, QOM adql) throws DatacenterException
+   {
+      return random.nextInt(100);
+   }
+   
+   /**
+    * Give the datacenter the location of the service that the results should
+    * be sent to when complete.  If none is given, a default one might be used,
+    * or the service may throw an exception when attempting to start the
+    * query
+    */
+   protected void setResultsDestination(String queryId, URL myspace) throws DatacenterException
+   {
+   }
+   
+   /**
+    * Constructs the query at the
+    * server end, but does not start it yet as other Things May Need To Be Done
+    * such as registering listeners or setting the destination for the results.
+    *
+    * @param adql object model
+    * @param givenId an id for the query is assigned here rather than
+    * generated by the server
+    */
+   public DatacenterQuery makeQuery(QOM adql, String givenId) throws DatacenterException
+   {
+      return null;
+   }
+   
+   /**
+    * Returns the number of items that match the given query.  This is useful for
+    * doing checks on how big the result set is likely to be before it has to be
+    * transferred about the net.
+    */
+   public int countQuery(QOM adql) throws DatacenterException
+   {
+      return 0;
+   }
+   
+   /**
+    * Blocking query.
+    * @param user user information for authentication/authorisation
+    * @param resultsformat string specifying how the results will be returned (eg
+    * votable, fits, etc)
+    * @param ADQL
+    * @todo move adql package into common
+    */
+   public DatacenterResults doQuery(String resultsFormat, QOM adql) throws DatacenterException
+   {
+      return null;
+   }
+   
+   /**
+    * Polls the service and asks for the current status.  Used by clients that
+    * spawn asynchronous queries but cannot publish a url for the service to
+    * send status updates to.
+    */
+   protected QueryStatus getQueryStatus(String queryId) throws DatacenterException
+   {
+      return null;
+   }
+   
+   
 }
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.11  2003/10/06 18:55:21  mch
+Naughtily large set of changes converting to SOAPy bean/interface-based delegates
+
 Revision 1.10  2003/09/18 13:12:14  nw
 renamed delegate methods to match those in web service
 
