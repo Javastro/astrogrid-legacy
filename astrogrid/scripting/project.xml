@@ -162,7 +162,13 @@
            <artifactId>astrogrid-applications</artifactId>
            <version>SNAPSHOT</version>
         </dependency>
-    
+        <!-- doesn't build at the moment - so will have to be commented out for now
+        <dependency>
+        	<groupId>astrogrid-registry</groupId>
+        	<artifactId>astrogrid-registry</artifactId>
+        	<version>SNAPSHOT</version>
+        </dependency>
+    	-->
     <!-- stuff for datacenter -->
     <dependency>
     	<groupId>astrogrid-datacenter</groupId>
