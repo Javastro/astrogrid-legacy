@@ -1,4 +1,4 @@
-/*$Id: RegistryInstallationTest.java,v 1.9 2004/08/05 12:13:58 KevinBenson Exp $
+/*$Id: RegistryInstallationTest.java,v 1.10 2004/09/03 09:45:59 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,9 +44,9 @@ public class RegistryInstallationTest extends RegistryBaseTest {
     
     public void testRoot() throws Exception {
         Document doc = delegate.loadRegistry();
-       //Document doc = delegate.loadRegistry();
         assertNotNull(doc);
         XMLUtils.PrettyDocumentToStream(doc,System.out);
+        assertVODescription(doc);
     }
     
     public void testAuthority() throws RegistryException
@@ -68,6 +68,9 @@ public class RegistryInstallationTest extends RegistryBaseTest {
 
 /* 
 $Log: RegistryInstallationTest.java,v $
+Revision 1.10  2004/09/03 09:45:59  nw
+asserted that a vodescription is returned.
+
 Revision 1.9  2004/08/05 12:13:58  KevinBenson
 Changed the name of the BaseTestCase to BaseTest and made sure all it's child classes extnded reference the new name.
 
