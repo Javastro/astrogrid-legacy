@@ -20,7 +20,7 @@ import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.service.JobNotifyServiceListener;
 import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
+import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
@@ -440,6 +440,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.9  2003/12/02 17:57:35  mch
+ Moved MySpaceDummyDelegate
+
  Revision 1.8  2003/12/01 20:57:39  mch
  Abstracting coarse-grained plugin
 
