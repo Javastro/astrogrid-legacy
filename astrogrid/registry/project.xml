@@ -55,6 +55,11 @@
     </dependency>
 
     <dependency>
+      <id>clover</id>
+      <version>1.2</version>
+    </dependency>
+
+    <dependency>
       <id>axis</id>
       <version>1_1RC2</version>
     </dependency>
@@ -140,6 +145,11 @@
       <id>concurrent</id>
       <version>1.3.2</version>
     </dependency>
+    
+    <dependency>
+      <id>ipsi</id>
+      <version>1.0.2</version>
+    </dependency>
   </dependencies>
   
   <build>
@@ -147,9 +157,27 @@
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
     
     <unitTest>
-      <includes>
-        <include>**/*Test.java</include>
-      </includes>
+      <resources>
+        <resource>
+          <directory>${basedir}/test/java</directory>
+
+          <includes>
+            <include>org/astrogrid/registry/messaging/**/*Test.java</include>
+          </includes>
+
+          <excludes>
+            <exclude>org/astrogrid/registry/xquery/*.java</exclude>
+          </excludes>
+        </resource>
+
+        <resource>
+          <directory>${basedir}/src/java</directory>
+
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </resource>
+      </resources>
     </unitTest>
   </build>
   
