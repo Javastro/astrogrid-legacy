@@ -16,8 +16,18 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
-        _operations = new org.apache.axis.description.OperationDesc[7];
+        _operations = new org.apache.axis.description.OperationDesc[10];
         org.apache.axis.description.OperationDesc oper;
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("getStatus");
+        oper.addParameter(new javax.xml.namespace.QName("", "id"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        oper.setReturnClass(java.lang.String.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "getStatusReturn"));
+        oper.setStyle(org.apache.axis.enum.Style.RPC);
+        oper.setUse(org.apache.axis.enum.Use.ENCODED);
+        _operations[0] = oper;
+
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getMetadata");
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
@@ -25,7 +35,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         oper.setReturnQName(new javax.xml.namespace.QName("", "getMetadataReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
-        _operations[0] = oper;
+        _operations[1] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getMetadata");
@@ -35,7 +45,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         oper.setReturnQName(new javax.xml.namespace.QName("", "getMetadataReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
-        _operations[1] = oper;
+        _operations[2] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getVoRegistryMetadata");
@@ -44,7 +54,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         oper.setReturnQName(new javax.xml.namespace.QName("", "getVoRegistryMetadataReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
-        _operations[2] = oper;
+        _operations[3] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("doQuery");
@@ -66,14 +76,14 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
                       new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"), 
                       false
                      ));
-        _operations[3] = oper;
+        _operations[4] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("startQuery");
+        oper.setName("makeQuery");
         oper.addParameter(new javax.xml.namespace.QName("", "soapBody"), new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Element"), org.w3c.dom.Element.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Element"));
         oper.setReturnClass(org.w3c.dom.Element.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "startQueryReturn"));
+        oper.setReturnQName(new javax.xml.namespace.QName("", "makeQueryReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
         oper.addFault(new org.apache.axis.description.FaultDesc(
@@ -94,7 +104,17 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
                       new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"), 
                       false
                      ));
-        _operations[4] = oper;
+        _operations[5] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("startQuery");
+        oper.addParameter(new javax.xml.namespace.QName("", "soapBody"), new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Element"), org.w3c.dom.Element.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Element"));
+        oper.setReturnClass(org.w3c.dom.Element.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "startQueryReturn"));
+        oper.setStyle(org.apache.axis.enum.Style.RPC);
+        oper.setUse(org.apache.axis.enum.Use.ENCODED);
+        _operations[6] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getResultsAndClose");
@@ -110,7 +130,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
                       new javax.xml.namespace.QName("http://sax.xml.org", "SAXException"), 
                       true
                      ));
-        _operations[5] = oper;
+        _operations[7] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("abortQuery");
@@ -118,7 +138,16 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
-        _operations[6] = oper;
+        _operations[8] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("registerWebListener");
+        oper.addParameter(new javax.xml.namespace.QName("", "queryId"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("", "listener"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"), java.lang.Object.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
+        oper.setStyle(org.apache.axis.enum.Style.RPC);
+        oper.setUse(org.apache.axis.enum.Use.ENCODED);
+        _operations[9] = oper;
 
     }
 
@@ -147,6 +176,13 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
             java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
+            qName = new javax.xml.namespace.QName("http://sax.xml.org", "SAXException");
+            cachedSerQNames.add(qName);
+            cls = org.xml.sax.SAXException.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
             qName = new javax.xml.namespace.QName("http://astrogrid.org", "AstroGridException");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.AstroGridException.class;
@@ -157,13 +193,6 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             qName = new javax.xml.namespace.QName("http://query.datacenter.astrogrid.org", "QueryException");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.datacenter.query.QueryException.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://sax.xml.org", "SAXException");
-            cachedSerQNames.add(qName);
-            cls = org.xml.sax.SAXException.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -226,12 +255,40 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         }
     }
 
-    public java.lang.Object getMetadata() throws java.rmi.RemoteException {
+    public java.lang.String getStatus(java.lang.String id) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
         _call.setOperation(_operations[0]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("http://localhost:8080/axis/services/AxisDataServer", "getStatus"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {id});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (java.lang.String) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (java.lang.String) org.apache.axis.utils.JavaUtils.convert(_resp, java.lang.String.class);
+            }
+        }
+    }
+
+    public java.lang.Object getMetadata() throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[1]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -259,7 +316,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[1]);
+        _call.setOperation(_operations[2]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -287,7 +344,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[2]);
+        _call.setOperation(_operations[3]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -315,7 +372,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[3]);
+        _call.setOperation(_operations[4]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -338,12 +395,40 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         }
     }
 
-    public org.w3c.dom.Element startQuery(org.w3c.dom.Element soapBody) throws java.rmi.RemoteException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException, org.astrogrid.datacenter.delegate.axisdataserver.DatabaseAccessException {
+    public org.w3c.dom.Element makeQuery(org.w3c.dom.Element soapBody) throws java.rmi.RemoteException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException, org.astrogrid.datacenter.delegate.axisdataserver.DatabaseAccessException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[4]);
+        _call.setOperation(_operations[5]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("http://localhost:8080/axis/services/AxisDataServer", "makeQuery"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {soapBody});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (org.w3c.dom.Element) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (org.w3c.dom.Element) org.apache.axis.utils.JavaUtils.convert(_resp, org.w3c.dom.Element.class);
+            }
+        }
+    }
+
+    public org.w3c.dom.Element startQuery(org.w3c.dom.Element soapBody) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[6]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -371,7 +456,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[5]);
+        _call.setOperation(_operations[7]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -399,7 +484,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[6]);
+        _call.setOperation(_operations[8]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -408,6 +493,27 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         setRequestHeaders(_call);
         setAttachments(_call);
         java.lang.Object _resp = _call.invoke(new java.lang.Object[] {soapBody});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        extractAttachments(_call);
+    }
+
+    public void registerWebListener(java.lang.String queryId, java.lang.Object listener) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[9]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("http://localhost:8080/axis/services/AxisDataServer", "registerWebListener"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {queryId, listener});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;

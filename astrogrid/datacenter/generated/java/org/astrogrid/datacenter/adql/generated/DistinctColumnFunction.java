@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: DistinctColumnFunction.java,v 1.1 2003/09/10 13:01:27 nw Exp $
+ * $Id: DistinctColumnFunction.java,v 1.2 2003/09/16 12:47:59 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class DistinctColumnFunction.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/09/10 13:01:27 $
+ * @version $Revision: 1.2 $ $Date: 2003/09/16 12:47:59 $
  */
 public class DistinctColumnFunction extends org.astrogrid.datacenter.adql.generated.Function 
 implements java.io.Serializable

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: SearchDescriptor.java,v 1.1 2003/09/10 13:01:27 nw Exp $
+ * $Id: SearchDescriptor.java,v 1.2 2003/09/16 12:47:59 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class SearchDescriptor.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/09/10 13:01:27 $
+ * @version $Revision: 1.2 $ $Date: 2003/09/16 12:47:59 $
  */
 public class SearchDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
