@@ -149,14 +149,15 @@ public class Query {
     	   buffer = new StringBuffer(256) ;
     	   
     	buffer
-    	  .append( "SELECT " )
-    	  .append( getReturn().toSQLString() )
-    	  .append( " FROM ")
-    	  .append( getFrom().toSQLString() )
-    	  .append( " WHERE ")
-    	  .append( getCriteria().toSQLString() );
-    	   
-    	return buffer.toString() ;
+    	    .append( "SELECT " )
+    	    .append( getReturn().toSQLString() )
+    	    .append( " FROM ")
+    	    .append( getFrom().toSQLString() )
+    	    .append( " WHERE ")
+    	    .append( getCriteria().toSQLString() );
+		     logger.debug("SQL Query: "+ buffer.toString()); 
+    	     	   
+    	return buffer.toString().toUpperCase() ;
     	
     } // end of toSQLString() 
 
