@@ -14,18 +14,10 @@ import uk.org.ogsadai.service.OGSADAIConstants;
 import uk.org.ogsadai.service.daiservicegroups.DAIServiceGroupRegistrationPortType;
 import uk.org.ogsadai.service.daiservicegroups.DAIServiceGroupRegistrationServiceLocator;
 import uk.org.ogsadai.service.daiservicegroups.helpers.DAIServiceGroupQueryHelper;
-//import uk.org.ogsadai.wsdl.gdsf.GridDataServiceFactoryPortType;
-//import uk.org.ogsadai.wsdl.gdsf.GridDataServiceFactoryServiceLocator;
 
 import java.net.URL;
 import org.apache.axis.client.Stub;
 import javax.xml.namespace.QName;
-
-/* These imports are declared but not currently used:
-import org.gridforum.ogsi.EntryType;
-import org.gridforum.ogsi.HandleType;
-import org.gridforum.ogsi.LocatorType;
-*/
 
 /**
  * A delegate for the Grid Data Service (GDS) of OGSA-DAI.
@@ -36,18 +28,14 @@ import org.gridforum.ogsi.LocatorType;
  * the latter being copied verbatim from the "Anglo-Australian
  * Demonstration" (AAD) produced by AstroGrid and AusVO in 2003.
  *
- * The delegate assumes that the GSH of the Grid Data Service
- * factory (GDSF) is known to the calling application; the
- * delgate does not know how to find the GDSF using
- * OGSA-DAI's service-group registry. As with all delegates
- * based on AAD, the caller must set the GSH of the factory after
- * constructing the delegate by calling 
- * {@link GridServiceDelegate.setFactoryHandle}; that method is
- * inherited by the current class.
+ * On construction, the GSH of the service factory is not set
+ * in the delegate.  The caller must either set this GSH directly,
+ * using {@link setFactoryHandle} or tell the delegate to obtain
+ * it from the OGSA-DAI registry using {@link setFactoryGshFromRegistry}.
  */
 public class GdsDelegate extends GridServiceDelegate {
 
-	/**
+  /**
    * Configuration properties for the service.
    * These use the GdsDelegate.properties file to discover
    * the location of the OGSA-DAI warehouse services, configure
@@ -62,7 +50,6 @@ public class GdsDelegate extends GridServiceDelegate {
    * Initialises the GdsDelegate using values in its properties file
    * GdsDelegate.properties.
    */
- 
   public GdsDelegate() throws Exception {
 
     // Create and load default properties
@@ -84,10 +71,9 @@ public class GdsDelegate extends GridServiceDelegate {
     }
   }
 
-   /**
-    *  Getter and setter methods for factory grid service handle.
-    */
-   
+  /**
+   *  Getter and setter methods for factory grid service handle.
+   */ 
   public String getFactoryGsh() {
 	return this.factoryGsh;
   }
@@ -100,13 +86,12 @@ public class GdsDelegate extends GridServiceDelegate {
    * Invokes an SQL select statement on the GDS instance. The
    * SQL is passed  to the GDS in a "perform" document that is 
    * created internally. The GDS' reply, is a "response" and this
-s   * is returned as the method result
+   * is returned as the method result
    *
    * @param query The SQL SELECT statment.
    *
    * @return The OGSA-DAI response document.
-   */
-  
+   */  
   public ExtensibilityType performSelect (String query) throws Exception {
   
     // Build the perform document.
