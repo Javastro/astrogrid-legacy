@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+  <body>
+
+  <title>CEA - Commandline Application Provider</title>
+
+    <menu name="Installation">
+       <item name="Install" href="INSTALL.html"/>
+       <item name="Release" href="RELEASE.html"/>
+       <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-applications-SNAPSHOT.war"/>
+
+    </menu>
+    <menu name="Documentation">
+        <item name="Project information" href="project-info.html" />
+    </menu>
+
+    <menu name="Development Documentation">
+      <item name="javadoc" href="apidocs" />
+      <item name="Formatted Source" href="xref" />
+      <item name="Formatted Test Source" href="xref-test" />
+    </menu>
+
+    <links>
+       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
+       <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
+       <item name="CEA Framework" href=".." />
+       </links>
+  </body>
+</project>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- take note - this project extends the generic server project
+    - in this way we inhierit all the dependencies -->
+  <extend>${basedir}/../server/project.xml</extend>
+  <id>astrogrid-cea-commandline</id>
+  <name>AstroGrid Commandline applications CEA server</name>
+
+  <description><![CDATA[
+  The applications integration component provides users with a mechanism to run applications. They will most often be run from a workflow component, rather than being invoked directly.
+  <p> The main functionality that this component provides is.
+         <ol>
+          <li>A standard description of application parameters that allows for automated GUI building and workflow creation.</li>
+          <li>A wrapper to allow the application to retrieve/store information in MySpace.</li>
+         </ol>
+This functionality is provided with the ApplicationController service, of which there can be specializations to call command line applications, datacentre and other general web services. In iteration 4 there is only a  specialization to call command line applications.
+</p>
+
+<p>The delegate is built in the same directory using the delegate-project.xml, but all of the reports are generated from this main project</p>
+]]>
+  </description>
+
+  <shortDescription>AstroGrid Commandline Application CEA Server</shortDescription>
+
+
+
+    <dependencies>
+        <!-- NWW - begin-hack -->
+        <!-- necessary to give this one a 'fake' name to force maven to grab this _and_ the equivalent war file. -->
+        <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-cea-server-jar</artifactId>
+                <version>SNAPSHOT</version>
+                <type>jar</type>
+                <jar>astrogrid-cea-server-SNAPSHOT.jar</jar>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
+        </dependency>
+        <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-cea-server</artifactId>
+                <version>SNAPSHOT</version>
+                <type>war</type>
+        </dependency>
+        <!-- nww-end-hack -->
+    <dependency>
+      <groupId>commons-digester</groupId>
+      <artifactId>commons-digester</artifactId>
+      <version>1.5</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+ <!-- stuff for tools, although some stuff liable to get moved back into core - once two implementations use it -->
+        <dependency>
+            <groupId>voi</groupId>
+            <artifactId>voi-vowrite</artifactId>
+            <version>UNKNOWN</version>
+            <jar>voi.vowrite.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>kxml</groupId>
+            <artifactId>kxml2</artifactId>
+            <version>UNKNOWN</version>
+            <jar>kxml2.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>cds</groupId>
+            <artifactId>savot-model</artifactId>
+            <version>UNKNOWN</version>
+            <jar>cds.savot.model.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>cds</groupId>
+            <artifactId>savot-pull</artifactId>
+            <version>UNKNOWN</version>
+            <jar>cds.savot.pull.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>cds</groupId>
+            <artifactId>xml</artifactId>
+            <version>UNKNOWN</version>
+            <jar>cds.xml.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>cds</groupId>
+            <artifactId>samples</artifactId>
+            <version>UNKNOWN</version>
+            <jar>cds.savot.samples.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+    </dependencies>
+
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+
+      <resources>
+        <resource>
+          <directory>${basedir}/test/java</directory>
+          <includes>
+            <include>app/**</include>
+            <include>**/*.xml</include>
+            <include>**/*.properties</include>
+            <include>**/*.sql</include>
+         </includes>
+        </resource>
+      </resources>
+    </unitTest>
+
+    <resources>
+            <resource><!-- config files -->
+                <directory>${basedir}/src/java</directory>
+                <includes>
+                        <include>**/*.xml</include>
+                        <include>**/*.properties</include>
+                </includes>
+        </resource>
+
+    </resources>
+
+  </build>
+
+</project>

@@ -1,0 +1,136 @@
+/*
+ * $Id: HyperZ.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * 
+ * Created on 16-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
+ *
+ * Copyright 2004 AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+ */ 
+
+package org.astrogrid.applications.commandline.hyperz;
+
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.commandline.CommandLineApplication;
+import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
+import org.astrogrid.applications.commandline.CommandLineParameterAdapterFactory;
+import org.astrogrid.applications.commandline.CommandLineParameterDescription;
+import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.ParameterAdapterFactory;
+import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
+import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
+import org.astrogrid.workflow.beans.v1.Tool;
+
+import cds.savot.model.SavotVOTable;
+
+/**
+ * Specialization for HyperZ. This needs to take a VOTable and convert it to suitable form for native input into hyperZ, and then create a 
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration4.1
+ * @TODO there are dependencies on the AVO DEMO setup file paths that need to be removed
+ */
+public class HyperZ extends CommandLineApplication {
+   
+   /** Construct a new HyperZ
+     * @param id
+     * @param jobStepId
+     * @param user
+     * @param description
+     */
+    public HyperZ(String id, String jobStepId, Tool tool, ApplicationInterface description, CommandLineApplicationEnvironment env,IndirectionProtocolLibrary lib) {
+        super(jobStepId, tool,description,env,lib);
+    }
+
+    private SavotVOTable inputVOTable;
+
+   
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.commandline.CmdLineApplication#preRunHook()
+    */
+   protected void preRunHook() {
+      
+      // Add in the missing parameters from the simple interface FIXME - add these to the main interface and remove from here...
+      argvals.add("-FILTERS_RES");
+      argvals.add("/home/applications/demo/hyperz/FILTER.RES");
+      argvals.add("-FILTERS_FILE");
+      argvals.add("/home/applications/demo/hyperz/cdfs-bviz.param");
+      argvals.add("-TEMPLATES_FILE");
+      argvals.add("/home/applications/demo/hyperz/spectra.param");
+    
+      
+   }
+
+/*
+   protected void preWritebackHook() {
+      // TODO convert the output file 
+      HyperZVOTableWriter wrt = new HyperZVOTableWriter(inputVOTable, (FileReferenceCommandLineParameterAdapter)findParameterAdapter("output_catalog"), applicationEnvironment);
+      wrt.write();
+      
+   }
+   */
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.commandline.CmdLineApplication#postParamSetupHook()
+    */
+    /*
+   protected void postParamSetupHook() {
+      // create read the input file from the VOTable
+      HyperZVOTableReader conv = new HyperZVOTableReader((FileReferenceCommandLineParameterAdapter) findParameterAdapter("input_catalog"),applicationEnvironment);
+      inputVOTable = conv.read();
+   }*/
+   
+   
+
+    /**
+     * @see org.astrogrid.applications.AbstractApplication#createAdapterFactory()
+     */
+    protected ParameterAdapterFactory createAdapterFactory() {
+        return new HyperZParameterAdapterFactory(lib,getApplicationEnvironment(),getApplicationInterface());
+    }
+    
+    /** specialized parameter adapter factory, that will build custom parameter adapters for the input and output files - 
+     * more structured than the previous technique of hacking with pre and post- hooks.     
+     * @author Noel Winstanley nw@jb.man.ac.uk 07-Jun-2004
+     *
+     */
+    public static class HyperZParameterAdapterFactory extends CommandLineParameterAdapterFactory {
+        private HyperZParameterAdapterFactory(IndirectionProtocolLibrary arg0,CommandLineApplicationEnvironment env,ApplicationInterface interf) {
+            super(arg0,env,interf);           
+        }        
+        protected final VOTableSourceIndirector votableSource = new VOTableSourceIndirector(); // necessary, as we may see output param before input param!        
+        protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, IndirectParameterValue indirectVal) {
+            if (pval.getName().equals("input_catalog")) {
+                HyperZVOTableReader reader = new HyperZVOTableReader(appInterface,pval, (CommandLineParameterDescription) desr,env,indirectVal);
+                votableSource.setSource(reader);
+                return reader;
+            } else if (pval.getName().equals("output_catalog")) {
+                return new HyperZVOTableWriter(appInterface, pval,(CommandLineParameterDescription)desr,env,indirectVal,votableSource);
+            } else { // default behaviour                
+                return super.instantiateAdapter(pval,desr,indirectVal);
+            }            
+          }        
+
+
+}
+
+    /* inderector - allows late binding between reader and writer */
+    static class VOTableSourceIndirector implements HyperZVOTableWriter.VOTableSource {
+        public SavotVOTable getVOTable() {
+            return source.getVOTable();
+        }
+        private HyperZVOTableWriter.VOTableSource source;
+        public void setSource(HyperZVOTableWriter.VOTableSource source) {
+            this.source = source;
+        }
+    }
+
+
+
+}
