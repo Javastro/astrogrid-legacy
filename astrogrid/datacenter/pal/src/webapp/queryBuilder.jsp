@@ -38,7 +38,7 @@
    String[] searchCols = request.getParameterValues("searchColumn");
    if (searchCols == null) { searchCols = new String[0]; }  //don't have to check for nulls
    String[] resultCols = request.getParameterValues("resultColumn");
-   if (resultCols == null) { resultCols = new String[0]; }
+   if (resultCols == null) { resultCols = new String[] {"*"}; }
    String[] conditionColumns = request.getParameterValues("conditionColumn");
    if (conditionColumns == null) { conditionColumns = new String[0]; }
    String[] conditionOperands = request.getParameterValues("conditionOperand");
