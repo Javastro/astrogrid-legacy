@@ -15,7 +15,15 @@
           MySpace actions
           -->
         <div style="text-align:center;">
-          <input name="action" type="submit" value="Load"/>&#160;<input name="myspace-name" type="text"/>&#160;<input name="action" type="submit" value="Save"/>        </div>
+          <input name="action" type="submit" value="Load"/>
+          &#160;
+          <input name="action" type="submit" value="Save"/>
+          &#160;
+          <input id="myspace-agsl" name="myspace-name" type="text"/>
+          <input id="myspace-ivorn" name="myspace-name" type="hidden"/>
+          &#160;
+          <input name="myspace-name" type="button" value="Browse..." onclick="javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=yes, width=300, height=200'))"/>
+        </div>
 
   <!--
           <div style="float:right;width:50%;">
