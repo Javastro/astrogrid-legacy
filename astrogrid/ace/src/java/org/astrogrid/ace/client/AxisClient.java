@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------
-// $Id: AxisClient.java,v 1.1 2003/08/25 18:36:04 mch Exp $
+// $Id: AxisClient.java,v 1.2 2004/01/12 18:43:50 mch Exp $
 //
 // DATE       AUTHOR    NOTES
 // ----       ------    -----
@@ -13,21 +13,22 @@
 
 package org.astrogrid.ace.client;
 
-import org.w3c.dom.Element;
-import org.apache.axis.MessageContext;
-import org.apache.axis.AxisFault;
-import org.apache.axis.client.Service;
-import org.apache.axis.client.Call;
-import org.apache.axis.message.SOAPBodyElement;
-import org.apache.axis.utils.XMLUtils;
-import javax.xml.rpc.ServiceException;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Vector;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.rpc.ServiceException;
+import org.apache.axis.AxisFault;
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import org.apache.axis.message.SOAPBodyElement;
+import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.log.Log;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 
 public class AxisClient
@@ -45,7 +46,7 @@ public class AxisClient
       File paramFile = new File(inputFilename);
       FileInputStream fis = new FileInputStream(paramFile);
       return  invokeService(XMLUtils.newDocument(fis).getDocumentElement());
-
+      
    }
 
    public Element invokeService(Element inputDom) throws IOException
