@@ -22,8 +22,7 @@
       </xs:documentation>
    </xs:annotation>
 
-   <xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9"
-              schemaLocation="VOResource-v0.9.xsd"/>
+   <xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9"/>
 
    <xs:element name="Organisation" type="vc:OrganisationType" 
                substitutionGroup="vr:Resource">

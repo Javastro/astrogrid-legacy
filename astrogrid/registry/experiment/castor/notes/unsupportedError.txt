@@ -1,0 +1,19 @@
+java org.exolab.castor.builder.SourceGenerator -i VOTable.xsd 
+Warning: Currently, the W3C datatype 'token' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'token' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'token' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'token' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'astroYear' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'astroYear' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'token' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'token' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'token' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'token' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'precType' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'token' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'token' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'token' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'precType' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'token' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'token' is supported only as a String by Castor Source Generator.
+Warning: Currently, the W3C datatype 'arrayDEF' is supported only as a String by Castor Source Generator.

@@ -1,0 +1,18 @@
+>java org.exolab.castor.builder.SourceGenerator -i VODataServiceCoverage.xsd 
+Exception in thread "main" java.lang.IllegalArgumentException: The schema:file:///VODataServiceCoverage-v0.2.x
+sd is not valid.
+<element ref="vs:StartTime"> is not resolvable.
+        at org.exolab.castor.builder.SourceGenerator.generateSource(SourceGenerator.java:329)
+        at org.exolab.castor.builder.SourceGenerator.generateSource(SourceGenerator.java:410)
+        at org.exolab.castor.builder.SourceGenerator.generateSource(SourceGenerator.java:441)
+        at org.exolab.castor.builder.SourceGenerator.main(SourceGenerator.java:797)
+
+
+>java org.exolab.castor.builder.SourceGenerator -i VODataServiceCoverage-v0.2.xsd 
+Exception in thread "main" java.lang.IllegalArgumentException: The schema:file:///VODataServiceCoverage-v0.2.x
+sd is not valid.
+<element ref="vs:StartTime"> is not resolvable.
+        at org.exolab.castor.builder.SourceGenerator.generateSource(SourceGenerator.java:329)
+        at org.exolab.castor.builder.SourceGenerator.generateSource(SourceGenerator.java:410)
+        at org.exolab.castor.builder.SourceGenerator.generateSource(SourceGenerator.java:441)
+        at org.exolab.castor.builder.SourceGenerator.main(SourceGenerator.java:797)

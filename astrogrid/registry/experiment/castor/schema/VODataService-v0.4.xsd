@@ -23,10 +23,8 @@
       </xs:documentation>
    </xs:annotation>
 
-   <xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9"
-              schemaLocation="VOResource-v0.9.xsd"/>
-   <xs:import namespace="http://www.ivoa.net/xml/VOTable/v1.0"
-              schemaLocation="VOTable.xsd"/>
+   <xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9"/>
+   <xs:import namespace="http://www.ivoa.net/xml/VOTable/v1.0"/>
 
    <xs:include schemaLocation="VODataServiceCoverage.xsd"/>
 

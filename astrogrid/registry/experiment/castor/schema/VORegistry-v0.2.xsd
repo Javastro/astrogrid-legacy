@@ -7,8 +7,7 @@
            elementFormDefault="qualified" attributeFormDefault="unqualified"
 	   version="0.2">
 
-   <xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9" 
-              schemaLocation="VOResource-v0.9.xsd"/>
+   <xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9" />
 
    <xs:element name="Registry" type="vg:RegistryType" 
 			       substitutionGroup="vr:Service">

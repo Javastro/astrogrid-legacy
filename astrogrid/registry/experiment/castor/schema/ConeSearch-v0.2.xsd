@@ -19,10 +19,8 @@
       </xs:documentation>
    </xs:annotation>
 
-   <xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9"
-              schemaLocation="VOResource-v0.9.xsd"/>
-   <xs:import namespace="http://www.ivoa.net/xml/VODataService/v0.4"
-              schemaLocation="VODataService-v0.4.xsd"/>
+   <xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9"/>
+   <xs:import namespace="http://www.ivoa.net/xml/VODataService/v0.4"/>
 
    <xs:element name="ConeSearch" type="cs:ConeSearchType" 
                substitutionGroup="vr:Capability">
