@@ -130,6 +130,16 @@ tomcat.password=secret<br />
       <version>SNAPSHOT</version>
     </dependency>
 
+    <!-- JavaMail -->
+    <dependency>
+      <id>JavaMail</id>
+      <version>UNKNOWN</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+      <jar>JavaMail.jar</jar>
+    </dependency>
+
     <dependency>
       <groupId>astrogrid-jes</groupId>
       <artifactId>astrogrid-jes-delegate</artifactId>
