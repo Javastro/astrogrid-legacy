@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registryB/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/10/28 12:02:09 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2003/10/29 08:43:11 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.3  2003/10/29 08:43:11  KevinBenson
+    |   Okay cleaned up a little of the ant tasks and situated out the delegates and service a little more.
+    |
     |   Revision 1.2  2003/10/28 12:02:09  KevinBenson
     |   Straiten up the build.xml where it will compile and started on a MockDelegate
     |
@@ -115,8 +118,17 @@
         </ant>
     </target>
     
+    <target name="registry.classes.clean" depends="">
+		<delete dir="${registry.classes}" failonerror="false"/>
+    </target>
+    
+    <target name="registry.jar.clean" depends="">
+		<delete dir="${project.build}/jar" failonerror="false"/>
+    </target>
+    
+    
     <!--+
-        | Compile our delegate and client interface
+        | Compile our registry
         +-->
     <target name="registry.javac" depends="">
 		<!-- Create our build directory -->
@@ -135,6 +147,46 @@
             </classpath>
         </javac>
     </target>
+    
+
+	<property name="registry.server.jar"  value="registry-server-${project.version}.jar"/>
+	<property name="registry.client.jar"  value="registry-client-${project.version}.jar"/>
+    
+
+    <!--+
+        | Jar up the client information
+        +-->
+    <target name="registry.client.jar" depends="registry.javac">
+		<!-- Create our build directory -->
+        <mkdir dir="${project.build}/jar/client"/>
+        <echo message=""/>
+        <echo message="Jar the Beans"/>
+		<jar destfile="${project.build}/jar/client/${registry.client.jar}">
+			<!-- Copy our own Java source -->
+			<fileset dir="${registry.classes}">
+			    <exclude name="**/server/**" />
+			</fileset>
+		</jar>    
+	</target>
+    
+    <!--+
+        | Jar up the client information
+        +-->
+    <target name="registry.server.jar" depends="registry.javac">
+		<!-- Create our build directory -->
+        <mkdir dir="${project.build}/jar/server"/>
+        <echo message=""/>
+        <echo message="Jar the Beans"/>
+		<jar destfile="${project.build}/jar/server/${registry.server.jar}">
+			<!-- Copy our own Java source -->
+			<fileset dir="${registry.classes}">
+			    <exclude name="**/delegate/**" />
+			</fileset>
+		</jar>    
+	</target>
+    
+    
+    
     
 
 </project>
