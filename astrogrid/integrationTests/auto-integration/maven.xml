@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.78 2004/08/19 13:58:28 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.79 2004/08/19 16:28:12 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -841,6 +841,12 @@
         <style basedir="${basedir}/target/" destdir="${basedir}/target/docs/junit-full" style="${basedir}/build/junit-frames.xsl">
                 <include name="TESTS-TestSuites-Annotated.xml" />
                 <param name="output.dir" expression="${basedir}/target/docs/junit-full" />
+        </style>
+
+      <!-- now the workflow documents-->
+      <style basedir="${basedir}/target/docs/junit-full" destdir="${basedir}/target/docs/junit-full"
+        style="${basedir}/build/workflow.xsl">
+                <include name="*-workflow.xml" />
         </style>
 
 </goal>

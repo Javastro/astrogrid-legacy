@@ -1,6 +1,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
     xmlns:lxslt="http://xml.apache.org/xslt"
     xmlns:redirect="org.apache.xalan.xslt.extensions.Redirect"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     extension-element-prefixes="redirect">
 <xsl:output method="html" indent="yes" encoding="US-ASCII"/>
 <xsl:decimal-format decimal-separator="." grouping-separator=","/>
@@ -293,6 +294,17 @@ h6 {
                 <xsl:apply-templates select="./testcase" mode="print.test"/>
             </table>
             <h2>Logs</h2>
+
+        <xsl:if test="contains(system-err,'***WORKFLOW***')"> <!-- we detect an embedded workflow in stderr .. -->
+        <xsl:variable name="xmlFile" select="concat($class.name,'-workflow.xml')" />
+        <xsl:variable name="htmlFile" select="concat($class.name,'-workflow.html')" />
+           <redirect:write file="{$output.dir}/{$xmlFile}">
+                <xsl:value-of disable-output-escaping="yes"
+                select="substring-before(substring-after(system-err,'***WORKFLOW***'),'***END-WORKFLOW***')" />
+            </redirect:write>
+
+           Resulting Workflow Document <a href="{$output.dir}/{$htmlFile}" frame='_blank'>html</a>, <a href="{$output.dir}/{$xmlFile}" frame='_blank'>xml</a>
+        </xsl:if>
             <table class="details" border="0" celpadding="5" cellspacing="2" width="95%">
             <tr>
                     <td valign="top"><b>System.out</b></td>
