@@ -7,7 +7,7 @@
     <xsl:param name="display_tool_values" />
     
     <xsl:template match="workflow">
-    <ag-div>
+    <ag-div>        
        <agComponentTitle>Workflow</agComponentTitle>        
         <ag-script type="text/javascript" src="/astrogrid-portal/mount/workflow/workflow-functions.js"/>
         <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/workflow/workflow.css"/>               
@@ -18,9 +18,10 @@
             </ag-onload>
           </xsl:if>
         </xsl:if>
+        <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="name_desc_form">        
             <table border="1">
                 <tr>
-                  <td colspan="2">
+                  <td colspan="3">
                     <ag-menu name="workflow-menu"/>
                   </td>
                 </tr>
@@ -31,7 +32,12 @@
                             <xsl:attribute name="type">text</xsl:attribute>
                             <xsl:attribute name="size">40</xsl:attribute>
                             <xsl:attribute name="value"><xsl:value-of select="@workflow-name"/></xsl:attribute>
+                            <xsl:attribute name="name">workflow-name</xsl:attribute>
                         </xsl:element>           
+                    </td>
+                    <td rowspan="2">
+                        <input type="submit" value="change" />
+                        <input type="hidden" name="action" value="add-name-description" />
                     </td>                                
                 </tr>
                 <tr>
@@ -41,10 +47,12 @@
                             <xsl:attribute name="type">text</xsl:attribute>
                             <xsl:attribute name="size">40</xsl:attribute>
                             <xsl:attribute name="value"><xsl:value-of select="@workflow-description"/></xsl:attribute>
+                            <xsl:attribute name="name">workflow-description</xsl:attribute>
                         </xsl:element>                  
                     </td>
                 </tr>                    
-            </table>            
+            </table>
+          </form>            
             <table border="0" cellpadding="0" cellspacing="0">  
                 <tr>
                     <xsl:apply-templates select="*"/>
@@ -110,8 +118,8 @@
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">step</xsl:attribute>
-                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>'); populate_tool_details('<xsl:value-of select="@step-name"/>','<xsl:value-of select="@joinCondition"/>','<xsl:value-of select="@step-description"/>','<xsl:value-of select="@key"/>', '<xsl:value-of select="./tool/@tool-name"/>','<xsl:value-of select="./tool/@tool-documentation"/>'); show_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');</xsl:attribute>             
-                            <xsl:attribute name="onClick">toggle('parameters:<xsl:value-of select="@key"/>');</xsl:attribute>
+                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>'); populate_tool_details('<xsl:value-of select="@step-name"/>','<xsl:value-of select="@joinCondition"/>','<xsl:value-of select="@step-description"/>','<xsl:value-of select="@key"/>', '<xsl:value-of select="./tool/@tool-name"/>','<xsl:value-of select="./tool/@tool-documentation"/>'); show_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');footer();</xsl:attribute>             
+                            <xsl:attribute name="onClick">toggle('parameters:<xsl:value-of select="@key"/>');footer();</xsl:attribute>
                         </xsl:element>                       
                         <td>
                             <xsl:attribute name="colspan">20</xsl:attribute>

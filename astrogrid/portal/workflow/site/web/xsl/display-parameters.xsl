@@ -80,7 +80,7 @@
                                   <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
                                 </xsl:element>                                
                                 <xsl:element name="input">
-                                  <xsl:attribute name="id"><xsl:value-of select="../../@key"/><xsl:value-of select="count(preceding-sibling::*)"/>myspace-ivorn</xsl:attribute>
+                                  <xsl:attribute name="id"><xsl:value-of select="../../@key"/><xsl:value-of select="@param-value"/>myspace-ivorn</xsl:attribute>
                                   <xsl:attribute name="type">hidden</xsl:attribute>
                                   <xsl:attribute name="name">ivorn-value</xsl:attribute>
                                 </xsl:element>
