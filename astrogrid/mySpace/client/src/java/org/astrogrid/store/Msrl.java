@@ -1,5 +1,5 @@
 /*
- * $Id: Msrl.java,v 1.2 2004/06/14 23:08:53 jdt Exp $
+ * $Id: Msrl.java,v 1.3 2004/07/06 20:19:06 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import org.astrogrid.community.User;
 import org.astrogrid.log.Log;
@@ -20,22 +21,26 @@ import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 
 /**
- * MySpace Resrource Locator.  An Myspace-specific way of <b>locating</b> a
- * file (or the location to create a file) completely in MySpace
+ * MySpace Resource Locator.  An Myspace-specific way of identifying a file (or
+ the location to create a file) in MySpace
  * <p>
  * It is of the form:
  * <pre>
  *    myspace:{delegateendpoint}[#{myspacepath}[!{serverId}]]
  * </pre>
+ * or
+ * <pre>
+ *    myspace:{ivorn}[#{myspacepath}[!{serverId}]]
+ * </pre>
  * If the path fragment is empty, the MSRL refers to a myspace store service
  * <p>
- * Note that this should normally be used by only AGSLs and other Store classes
  */
 
 public class Msrl
 {
    private String serverId = null;  //may be an IVORN?
    private URL delegateEndpoint = null;
+   private Ivorn manager = null;
    private String filepath = null;
    
    public static final String SCHEME = "myspace";
@@ -54,6 +59,14 @@ public class Msrl
    public Msrl(URL aDelegateEndpoint, String myspacePath)
    {
       this.delegateEndpoint = aDelegateEndpoint;
+      this.filepath = myspacePath;
+   }
+   
+   /** Make a single myspace:// reference string out of a delegate endpoint
+    * (eg a myspace manager service) and a path to the file   */
+   public Msrl(Ivorn aManagerIvorn, String myspacePath)
+   {
+      this.manager = aManagerIvorn;
       this.filepath = myspacePath;
    }
    
@@ -96,8 +109,22 @@ public class Msrl
          
          this.filepath = fragment;
       }
-      
-      this.delegateEndpoint = new URL(msrl.substring(SCHEME.length()+1));
+
+      //look for whether start is an Ivorn or URL
+      msrl = msrl.substring(SCHEME.length()+1);
+      if (Ivorn.isIvorn(msrl)) {
+         try {
+            this.manager = new Ivorn(msrl);
+         }
+         catch (URISyntaxException use) {
+            //should really throw this, but don't know what that will do to backwards compatibility
+            throw new MalformedURLException(""+use);
+         }
+      }
+      else {
+         //assume URL
+         this.delegateEndpoint = new URL(msrl.substring(SCHEME.length()+1));
+      }
    }
 
    /**
@@ -106,7 +133,13 @@ public class Msrl
     * must be true.
     */
    public String toString() {
-      String msrl = SCHEME+":"+delegateEndpoint;
+      String msrl = SCHEME+":";
+      if (delegateEndpoint != null) {
+         msrl = msrl + delegateEndpoint;
+      }
+      else {
+         msrl = msrl + manager;
+      }
       if (filepath != null) { msrl = msrl +"#"+filepath; }
       if (serverId != null) { msrl = msrl +"!"+serverId; }
       return msrl;
@@ -114,6 +147,9 @@ public class Msrl
 
    /** Returns just the delegate end point */
    public URL getDelegateEndpoint()   {   return delegateEndpoint;   }
+   
+   /** Returns just the ivorn to the manager */
+   public Ivorn getManagerIvorn()   {   return manager;   }
    
    /** Returns the myspace filepath */
    public String getPath()             {  return filepath; }
@@ -169,12 +205,6 @@ public class Msrl
       return msrl.toLowerCase().startsWith(SCHEME+":");
    }
 
-   /** Returns the AGSL version of this reference */
-   public Agsl toAgsl()
-   {
-      return new Agsl(this);
-   }
-   
    /** Opens an inputstream to the file.  Just like url.openStream()....
     */
    public InputStream openInputStream() throws IOException {
@@ -184,7 +214,7 @@ public class Msrl
    /** Opens an outputstream to the file.
     */
    public OutputStream openOutputStream() throws IOException {
-      StoreClient myspace = StoreDelegateFactory.createDelegate(User.ANONYMOUS, toAgsl());
+      StoreClient myspace = StoreDelegateFactory.createDelegate(User.ANONYMOUS, new Agsl(this));
       return myspace.putStream(getPath(), false);
    }
    
@@ -192,7 +222,7 @@ public class Msrl
     * Returns a standard URL to the file
     */
    public URL resolveURL() throws IOException {
-      StoreClient myspace = StoreDelegateFactory.createDelegate(User.ANONYMOUS, toAgsl());
+      StoreClient myspace = StoreDelegateFactory.createDelegate(User.ANONYMOUS, new Agsl(this));
          
       URL url = myspace.getUrl(getPath());
 
@@ -206,19 +236,30 @@ public class Msrl
 
 /*
 $Log: Msrl.java,v $
+Revision 1.3  2004/07/06 20:19:06  mch
+Added Itn06 file identifiers
+
 Revision 1.2  2004/06/14 23:08:53  jdt
 Merge from branches
+
 ClientServerSplit_JDT
+
 and
+
 MySpaceClientServerSplit_JDT
 
+
+
 MySpace now split into a client/delegate jar
+
 astrogrid-myspace-<version>.jar
+
 and a server/manager war
+
 astrogrid-myspace-server-<version>.war
 
 Revision 1.1.2.1  2004/06/14 22:33:21  jdt
-Split into delegate jar and server war.  
+Split into delegate jar and server war.
 Delegate: astrogrid-myspace-SNAPSHOT.jar
 Server/Manager: astrogrid-myspace-server-SNAPSHOT.war
 
