@@ -6,7 +6,7 @@
 
 <web-app>
 
-  <display-name>Astrogrid Job Entry System</display-name>
+  <display-name>Astrogrid JES</display-name>
   <description>
     SOAP service (what is JES for?)
   </description>
@@ -23,6 +23,10 @@
     <description>JUnitEE test runner</description>
     <servlet-class>org.junitee.servlet.JUnitEEServlet</servlet-class>
   </servlet>
+ <servlet-mapping>
+    <servlet-name>JUnitEETestServlet</servlet-name>
+    <url-pattern>/TestServlet/*</url-pattern>
+ </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
@@ -34,10 +38,6 @@
     <url-pattern>/services/*</url-pattern>
   </servlet-mapping>
 
- <servlet-mapping>
-    <servlet-name>JUnitEETestServlet</servlet-name>
-    <url-pattern>/TestServlet/*</url-pattern>
-  </servlet-mapping>
 
   
     <!-- currently the W3C havent settled on a media type for WSDL;
@@ -58,13 +58,6 @@
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
 
-  <resource-ref>
-    <description>Datasource to use to access the database</description>
-    <res-ref-name>jdbc/jes-datasource</res-ref-name>
-    <res-type>java.sql.DataSource</res-type>
-    <res-auth>Container</res-auth>
-  </resource-ref>
-  
   <taglib>
     <taglib-uri>http://jakarta.apache.org/taglibs/input-1.0</taglib-uri>
     <taglib-location>/WEB-INF/tld/taglibs-input-tld-20040115.tld</taglib-location>
