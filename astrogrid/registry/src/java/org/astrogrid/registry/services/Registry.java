@@ -107,7 +107,7 @@ public class Registry {
 		return response;
 	}
 	
-	public static int getNodeNumbers(Node node, int tabCounter, int counter){
+	private static int getNodeNumbers(Node node, int tabCounter, int counter){
 		if(node.hasChildNodes()) {
 			NodeList children = node.getChildNodes();
 			if (children != null) {
