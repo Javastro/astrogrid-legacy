@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<vr:VODescription xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v0.9
-http://www.ivoa.net/xml/VOResource/VOResource-v0.9.xsd">
-	<vr:Resource>
+<vr:VODescription xmlns="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/CEAService/v0.1
+\\pahlaptop\work\astrogrid\src\workflow-objects\schema\VOCEA.xsd">
+	<vr:Resource xsi:type="java:org.astrogrid.registry.beans.cea.CeaApplicationType">
 		<!--The autorityID has been chosen to be astrogrid.org as I believe that these should be defined at this level - however the registry is probably using this identifier to determine which are "local" registry entries, so there might be something else set as standard. The name of the resource might be better categorised by prepending "cea/" not sure if this is necessary....-->
 		<vr:Identifier>
 			<vr:AuthorityID>astrogrid.org</vr:AuthorityID>
@@ -33,10 +33,18 @@ http://www.ivoa.net/xml/VOResource/VOResource-v0.9.xsd">
 			<vr:Version>Iteration 5</vr:Version>
 		</vr:Curation>
 		<vr:Subject>???</vr:Subject>
-		<vr:ContentLevel>Research</vr:ContentLevel>
+		<ApplicationDefinition>
+			<Parameters/>
+			<Interfaces>
+				<ceab:Interface name="">
+					<ceab:input/>
+					<ceab:output/>
+				</ceab:Interface>
+			</Interfaces>
+		</ApplicationDefinition>
 	</vr:Resource>
 	<!-- yucky castor hack on xsi type.... xsi:type="java:org.astrogrid.registry.beans.resource.ServiceType"-->
-	<vr:Resource xsi:type="vr:ServiceType">
+	<vr:Resource xsi:type="java:org.astrogrid.registry.beans.cea.CeaServiceType">
 		<!--The autorityID has been chosen to be astrogrid.org as I believe that these should be defined at this level - however the registry is probably using this identifier to determine which are "local" registry entries, so there might be something else set as standard. The name of the resource might be better categorised by prepending "cea/" not sure if this is necessary....-->
 		<vr:Identifier>
 			<vr:AuthorityID>astrogrid.org</vr:AuthorityID>
@@ -75,10 +83,14 @@ http://www.ivoa.net/xml/VOResource/VOResource-v0.9.xsd">
 			</vr:StandardID>
 		</vr:Capability>
 		<vr:Interface>
-		      <vr:Invocation>WebService</vr:Invocation>
-              <vr:AccessURL use="base">TemplateEntry</vr:AccessURL>
-		    
+			<vr:Invocation>WebService</vr:Invocation>
+			<vr:AccessURL use="base">TemplateEntry</vr:AccessURL>
 		</vr:Interface>
-
+		<ManagedApplications>
+			<ApplicationReference>
+				<vr:AuthorityID>astrogrid.org</vr:AuthorityID>
+				<vr:ResourceKey>TemplateEntry</vr:ResourceKey>
+			</ApplicationReference>
+		</ManagedApplications>
 	</vr:Resource>
 </vr:VODescription>
