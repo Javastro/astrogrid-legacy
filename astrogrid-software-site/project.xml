@@ -1,4 +1,5 @@
 <project>
+<!--pointless comment-->
     <extend>${basedir}/../maven-base/project.xml</extend>
     <artifactId>astrogrid-software-site</artifactId>
     <name>AstroGrid</name>
