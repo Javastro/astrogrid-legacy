@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/explorer/junit/Attic/JUnitTestCase.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/18 01:33:15 $</cvs:author>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/22 04:03:41 $</cvs:author>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  * $Log: JUnitTestCase.java,v $
+ * Revision 1.4  2003/06/22 04:03:41  dave
+ * Added actions and parsers for MySpace messages
+ *
  * Revision 1.3  2003/06/18 01:33:15  dave
  * Moved message parser into separate class and added service lookup to pages
  *
@@ -31,7 +34,8 @@ import org.astrogrid.portal.base.AstPortalIdent ;
 import org.astrogrid.portal.base.AstPortalBase ;
 
 import org.astrogrid.portal.explorer.AstPortalView ;
-import org.astrogrid.portal.services.myspace.client.DataItemRecord ;
+import org.astrogrid.portal.services.myspace.client.data.DataNode ;
+import org.astrogrid.portal.services.myspace.client.data.DataTreeWalker ;
 
 /**
  *
@@ -91,42 +95,12 @@ public class JUnitTestCase
 
 		//
 		// Check can locate our MySpace service.
-		boolean init = view.initMySpaceService() ;
+		boolean init = view.initService() ;
 		assertTrue("No service", init) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
-
-	/**
-	 * Check that we can ping our MySpace service.
-	 * Deprecated ... not supported on live service.
-	public void testPingService()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testPingService") ;
-
-		//
-		// Check can create a view.
-		AstPortalView view = new AstPortalView(null, "") ;
-		assertNotNull("Null view", view) ;
-
-		//
-		// Check can locate our MySpace service.
-		boolean init = view.initMySpaceService() ;
-		assertTrue("Null service", init) ;
-
-		//
-		// Check can ping our MySpace service.
-		boolean ping = view.pingMySpaceService() ;
-		assertTrue("Unable to ping", ping) ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-	 */
 
 	/**
 	 * Check that we can set the path.
@@ -159,15 +133,15 @@ public class JUnitTestCase
 		}
 
 	/**
-	 * Check that we can call lookupDataHoldersDetails
+	 * Check that we can get a tree of data nodes.
 	 *
 	 */
-	public void testLookupDataHoldersDetails()
+	public void testGetTree()
 		throws Exception
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testLookupDataHoldersDetails") ;
+		if (DEBUG_FLAG) System.out.println("testGetTree") ;
 
 		//
 		// Check can create a view.
@@ -175,42 +149,42 @@ public class JUnitTestCase
 		assertNotNull("Null view", view) ;
 		//
 		// Check can locate our MySpace service.
-		boolean init = view.initMySpaceService() ;
+		boolean init = view.initService() ;
 		assertTrue("No service", init) ;
 		//
 		// Set the lookup path.
 		view.setPath("*") ;
 		//
 		// Check we can call our service method.
-		view.lookupDataHoldersDetails() ;
-		//
-		// Check we got some results.
-		Collection results = view.getDataItems() ;
-		assertNotNull("Null results", results) ;
+		DataNode tree = view.getTree() ;
+		assertNotNull("Null tree", tree) ;
 		//
 		// Print out our results.
 		if (DEBUG_FLAG)
 			{
-			Iterator iter = results.iterator() ;
-			while (iter.hasNext())
+			//
+			// Check we create a TreeWalker to print the tree.
+			DataTreeWalker walker = new DataTreeWalker()
 				{
-				DataItemRecord item = (DataItemRecord) iter.next() ;
-				if (DEBUG_FLAG) System.out.println("----") ;
-				if (DEBUG_FLAG) System.out.println("DataItemRecord") ;
-				if (DEBUG_FLAG) System.out.println("Name    : " + item.getName()) ;
-				if (DEBUG_FLAG) System.out.println("Ident   : " + item.getIdent()) ;
-				if (DEBUG_FLAG) System.out.println("Size    : " + item.getSize()) ;
-				if (DEBUG_FLAG) System.out.println("Type    : " + item.getType()) ;
-				if (DEBUG_FLAG) System.out.println("Owner   : " + item.getOwner()) ;
-				if (DEBUG_FLAG) System.out.println("Created : " + item.getCreated()) ;
-				if (DEBUG_FLAG) System.out.println("Expires : " + item.getExpires()) ;
-				if (DEBUG_FLAG) System.out.println("----") ;
-				}
+				public void action(DataNode node, boolean more, int index, int level)
+					{
+					System.out.println("----") ;
+					System.out.println("Name  : " + node.getName()) ;
+					System.out.println("Ident : " + node.getIdent()) ;
+					System.out.println("Path  : " + node.getPath()) ;
+					System.out.println("More  : " + more) ;
+					System.out.println("Index : " + index) ;
+					System.out.println("Level : " + level) ;
+					System.out.println("----") ;
+					}
+				} ;
+			//
+			// Check we can walk the results tree.
+			walker.walk(tree) ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
-
 
 	}

@@ -1,0 +1,66 @@
+REGISTRYCONF=/usr/local/jakarta-tomcat-4.1.24/conf/astrogrid/mySpace/example
+TEMPPATHTO=/tmp/mySpaceTest/
+##location of service: MySpaceManager
+MYSPACEMANAGER=http://localhost:8080/axis/services/MySpaceManager
+##location of service: ServerManager
+SERVERMANAGER=http://localhost:8080/axis/services/ServerManager
+
+##qin.star.le.ac.uk:
+#REGISTRYCONF=/home/clq2/develop/MSRegistryTestDir/example
+#TEMPPATHTO=/tmp/mySpaceTest/
+##location of service: MySpaceManager
+#MYSPACEMANAGER=http://143.210.36.131:8080/axis/services/MySpaceManager
+##location of service: ServerManager
+#SERVERMANAGER=http://143.210.36.131:8080/axis/services/ServerManager
+
+#hydra:
+#REGISTRYCONF=/usr/local/jakarta-tomcat-4.1.24/conf/astrogrid/mySpace
+#TEMPPATHTO=/tmp/mySpaceTest/
+#MYSPACEMANAGER=http://143.210.36.120:8080/axis/services/MySpaceManager
+#SERVERMANAGER=http://143.210.36.120:8080/axis/services/ServerManager
+
+MS-E-REGDWRT="Failed to write registry data file."
+MS-E-REGDCRT="Registry data file is corrupt."
+MS-E-REGDRED="Failed to read registry data file."
+MS-E-DHNTFND="Requested Data Holder not found."
+MS-I-NDHMTCH="No Data Holders matched query string."
+MS-E-FLCRTDH="Failed to create Data Holder."
+MS-E-FCRTDHR="Failed to create Data Holder (registry update failure)."
+MS-E-CPYDHCN="Attempt to copy a container instead of a Data Holder."
+MS-E-FLMOVDH="Failed to move Data Holder."
+MS-E-MOVDHCN="Attempt to move a container instead of a Data Holder."
+MS-E-FACCSDH="Cannot access Data Holder."
+MS-E-FNTCNDH="Item is neither a container nor a Data Holder."
+MS-E-FLCRTCN="Failed to create container."
+MS-E-DNEMPCN="Attempt to delete a container which is not empty."
+MS-E-FLDELDH="Failed to delete Data Holder."
+MS-E-NTPERDH="User not permitted to delete this Data Holder or container."
+MS-E-NPRWPCN="User not permitted to write to parent container."
+MS-E-PCNNTEX="The parent container does not exist."
+MS-E-DHCNAEX="Data Holder or container already exists."
+MS-W-RGCEXPI="Invalid expiry period in the registry configuration file."
+MS-W-RGCSRVI="Invalid server details in the registry configuration file."
+MS-W-RGCWXPM="Expiry period not set; default adopted."
+MS-E-RGCSRVM="No servers specified in the registry configuration file."
+MS-E-RGCDRED="Failed to read the registry configuration file."
+MS-E-SRVINVN="Invalid server name."
+MS-E-ILLSRCN="Illegal attempt to create or modify user or server containers."
+NULL_FILE_DELETE=There is no file to delete, check your file path and try again.otherwise this fuction is failed!!cat
+NULL_FILE_SAVE=There is no file to save, check file path and try again.
+ERROR_READING_FILE=Error Reading from file.
+PARSE_REQUEST_ERROR=Error parsing xmlRequest in MySpaceUtils.parseRequest.
+NUMBER_FORMAT_ERROR=Error Casting from String to int.
+ERROR_CALL_SERVER_MANAGER=Error Calling MySpace ServerManager.
+NULL_POINTER_GETTING_REQUEST=Null pointer getting one or more of the attributes from request string in MySpace.
+ERR_SAVE_DATAHOLDER=Error Saving DataHolder.
+MOVE_DATA_HOLDER_ERROR=Error Moving DataHolder.
+DATA_HOLDER_MOVED=Data Holder has been moved.
+ERR_COPY_DATA_HOLDER=Error Copying DataHolder.
+DATA_HOLDER_COPIED=Data Holder Has Been Copied. ERR_SECURITY_DELETE_DATA_HOLDER=Can't delete the data holder because of security issues.
+ERR_DELETE_DATA_HOLDER=Unkown Error occourd whild deleting data holder.
+FILE_NOT_EXIST=File not exist!
+ERR_IO_BUILD_RESPONS=There is an io exception whild building response xml.
+MS_E_UPLOAD=Error Uploading file from datacentre.
+MS_E_LOOKUP_DATAHOLDERS=Error look up dataholderS details.
+MS_E_LOOKUP_DATAHOLDER=Error look up dataholder details.
+MS_E_EXPORT=Error Exporting Data Holder.
