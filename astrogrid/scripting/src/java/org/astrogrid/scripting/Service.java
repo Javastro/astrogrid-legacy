@@ -1,4 +1,4 @@
-/*$Id: Service.java,v 1.3 2004/02/01 00:38:24 nw Exp $
+/*$Id: Service.java,v 1.4 2004/02/27 00:51:01 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,7 @@ import javax.xml.rpc.ServiceException;
 
 import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
-import org.astrogrid.jes.delegate.jobController.JobControllerDelegate;
-import org.astrogrid.jes.delegate.jobMonitor.JobMonitorDelegate;
-import org.astrogrid.jes.delegate.jobScheduler.JobSchedulerDelegate;
+import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 
 
@@ -72,13 +70,13 @@ public class Service {
          return DelegateFactory.createDelegate(endpoint);
       }
       if (JOBCONTROL_SERVICE.equals(type)) {
-         return JobControllerDelegate.buildDelegate(endpoint);
+         return JesDelegateFactory.createJobController(endpoint);
       }
       if (JOBMONITOR_SERVICE.equals(type)) {
-         return JobMonitorDelegate.buildDelegate(endpoint);
+         return JesDelegateFactory.createJobMonitor(endpoint);
       }
       if (JOBSCHEDULER_SERVICE.equals(type)){
-         return new JobSchedulerDelegate(endpoint);
+         return JesDelegateFactory.createJobScheduler(endpoint);
       }
       throw new IllegalStateException("Unknown service type - cannot create delegate:" + this.endpoint);
    }
@@ -137,6 +135,9 @@ public class Service {
 
 /* 
 $Log: Service.java,v $
+Revision 1.4  2004/02/27 00:51:01  nw
+updated to use new jes delegates
+
 Revision 1.3  2004/02/01 00:38:24  nw
 added two other kinds of job delegate
 
