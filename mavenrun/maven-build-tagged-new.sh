@@ -4,16 +4,23 @@ PROJECT_NAME=$1
 TAGNAME=$2
 
 DATE=`date`
+BUILD_HOME=/home/maven/build/$TAGNAME
+SCRIPTHOME=/home/maven/mavenrun
+PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
+DOC_HOME=/var/www/www/maven/docs
+ASTROGRID_VERSION=$TAGNAME
+LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
+ADMIN_EMAIL=jdt@roe.ac.uk
 
 echo
-echo "[ag-build] building $PROJECT_NAME"
+echo "[ag-build] building $PROJECT_NAME $ASTROGRID_VERSION"
 echo "[ag-build] build log: maven-build-$PROJECT_NAME.log"
 echo
 
-BUILD_HOME=/home/maven/build/release
-SCRIPTHOME=/home/maven/mavenrun
-PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
-LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
+
+
+
+
 cd $BUILD_HOME
 echo "[ag-build-$PROJECT_NAME] remove old log"
 rm $LOG_FILE
@@ -35,13 +42,9 @@ cd $BUILD_HOME >> $LOG_FILE 2>&1
 
 
 echo "[ag-build-$PROJECT_NAME] removing $PROJECT_HOME"
-rm -fr $PROJECT_HOME >> $LOG_FILE 2>&1
 rm -fr $BUILD_HOME/astrogrid/maven-base >> $LOG_FILE 2>&1
+rm -fr $PROJECT_HOME >> $LOG_FILE 2>&1
 
-#both snapshot and branch deploy to same area, so safer to
-#delete first in case there's a build problem
-echo "[ag-build-$PROJECT_NAME] remove old site"
-sh $SCRIPTHOME/clean-site.sh $PROJECT_NAME >> $LOG_FILE 2>&1
 
 
 echo "[ag-build-$PROJECT_NAME] removing astrogrid files from local maven repository"
@@ -60,13 +63,28 @@ cd $PROJECT_HOME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] generate and deploy site"
 echo "Executing astrogrid-deploy-site" >> $LOG_FILE 2>&1 
-maven astrogrid-deploy-site >> $LOG_FILE 2>&1 
-echo "[ag-build-$PROJECT_NAME] generate and deploy artifact"
-echo "Executing astrogrid-deploy-artifact" >> $LOG_FILE 2>&1 
-maven astrogrid-deploy-artifact >> $LOG_FILE 2>&1
+if maven -Dastrogrid.iteration=$ASTROGRID_VERSION -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-site >> $LOG_FILE 2>&1 
+then
+   echo "*** SUCCESS ***\n" >> $LOG_FILE
+else
+   echo "*** FAILURE ***\n" >> $LOG_FILE
+   cat $LOG_FILE | mail -s "astrogrid-deploy-site Failure for $PROJECT_NAME, $ASTROGRID_VERSION" $ADMIN_EMAIL 
+fi
+
+
+echo "[ag-build-$PROJECT_NAME] generate and deploy SNAPSHOT"
+echo "Executing astrogrid-deploy-snapshot" >> $LOG_FILE 2>&1 
+if maven -Dastrogrid.iteration=$ASTROGRID_VERSION -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-snapshot >> $LOG_FILE 2>&1
+then
+   echo "*** SUCCESS ***" >> $LOG_FILE
+else
+   echo "*** FAILURE ***" >> $LOG_FILE
+   cat $LOG_FILE | mail -s "astrogrid-deploy-snapshot Failure for $PROJECT_NAME, $ASTROGRID_VERSION" $ADMIN_EMAIL  
+fi
 
 echo "[ag-build-$PROJECT_NAME] deploy build log"
-cp $LOG_FILE /var/www/www/maven/build/log
+cp $LOG_FILE $DOC_HOME/$ASTROGRID_VERSION/log
+
 echo "[ag-build-$PROJECT_NAME] back to start dir: $OLDDIR"
 cd $OLDDIR
 

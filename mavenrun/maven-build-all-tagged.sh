@@ -3,7 +3,7 @@ TAG_TO_BUILD=$1
 
 echo "Building tag $TAG_TO_BUILD"
 
-BUILD_DIR=/home/maven/build/release
+BUILD_DIR=/home/maven/build/$TAG_TO_BUILD
 SCRIPTHOME=/home/maven/mavenrun
 
 
@@ -20,28 +20,23 @@ echo "AstroGrid Build ($DATE)" >> $BUILD_DIR/$LOG_FILE 2>&1
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" >> $BUILD_DIR/$LOG_FILE 2>&1
 echo >> $BUILD_DIR/$LOG_FILE 2>&1
 
-$SCRIPTHOME/maven-build-tagged-new.sh common $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build-tagged.sh applications $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build-tagged.sh community $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build-tagged-new.sh datacenter $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build-tagged.sh jes $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build-tagged.sh mySpace $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build-tagged-new.sh portal $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build-tagged.sh registry $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build-tagged.sh scripting $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build-tagged.sh warehouse $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build-tagged.sh workflow $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-
-$SCRIPTHOME/maven-build-tagged-new.sh maven-site $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-
-MAVEN_PUBLIC=/var/www/www/maven
-DOCLOCATION=$MAVEN_PUBLIC/docs
-RELEASEDOCS=$DOCLOCATION/release
-
-echo "Moving docs to release location" >> $BUILD_DIR/$LOG_FILE 2>&1
-#rm -r $RELEASEDOCS >> $BUILD_DIR/$LOG_FILE 2>&1
-cp -r $MAVEN_PUBLIC/build/* $RELEASEDOCS
-echo "Copying redirect pages over old location" >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh common >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh workflow-objects >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh applications >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh community >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh datacenter >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh jes >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh mySpace >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh portal >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh registry >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh scripting >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh security >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh warehouse >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh workflow >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh ui >> $BUILD_DIR/$LOG_FILE 2>&1
+#Index pages for this release
+$SCRIPTHOME/maven-build-tagged-new.sh maven-site >> $BUILD_DIR/$LOG_FILE 2>&1
+#index page for all releases
 $SCRIPTHOME/maven-build-new.sh maven-site-releases >> $BUILD_DIR/$LOG_FILE 2>&1
 
 echo >> $BUILD_DIR/$LOG_FILE 2>&1
