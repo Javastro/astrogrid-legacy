@@ -117,6 +117,7 @@ public class QueryDBService {
       DomHelper.DocumentToStream(queryDoc,dos);
       dos.flush();
       dos.close();
+      log.debug("http response -"+huc.getResponseMessage());
       Document resultDoc = DomHelper.newDocument(huc.getInputStream());
       //System.out.println("the resultDoc in QueryDbservice = " + DomHelper.DocumentToString(resultDoc));
       long endQ = System.currentTimeMillis();
