@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/xsp/Attic/login-form.xsp,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/09 10:30:33 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/01/09 10:32:14 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: login-form.xsp,v $
+    |   Revision 1.6  2004/01/09 10:32:14  dave
+    |   Added default name to login-form
+    |
     |   Revision 1.5  2004/01/09 10:30:33  dave
     |   Added default name to login-form
     |
@@ -57,7 +60,7 @@
 		<xsp:logic>
 			<![CDATA[
 				String message = (String) request.getAttribute(LoginAction.MESSAGE_PARAM) ;
-				String name    = (String) request.getAttribute(LoginAction.NAME_PARAM) ;
+				String name    = (String) request.getParameter(LoginAction.NAME_PARAM) ;
 			]]>
 		</xsp:logic>
 		<form method="get" action="login-form">
