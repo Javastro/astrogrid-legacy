@@ -4,10 +4,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/07 10:45:39 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/01/13 10:42:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.3  2004/01/13 10:42:00  dave
+    |   Removed build.xml and updated maven build version
+    |
     |   Revision 1.2  2004/01/07 10:45:39  dave
     |   Merged development branch, dave-dev-20031224, back into HEAD
     |
@@ -38,7 +41,7 @@
         | The current version of the project.
         | This value is used when naming jars and distribution files.
         +-->
-    <currentVersion>1.4.1</currentVersion>
+    <currentVersion>1.5.0</currentVersion>
 
     <!--+
         | The cvs repository location.
