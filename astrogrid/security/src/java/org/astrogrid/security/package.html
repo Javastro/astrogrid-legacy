@@ -1,0 +1,102 @@
+<html>
+
+<head>
+<title>org.astrogrid.security: package description</title>
+</head>
+
+<body>
+
+<h1>
+Secure messaging and control of access to resources
+for web services and their clients.
+</h1>
+
+<p>
+'Secure messaging' means that messages to and from services
+are protected against tampering (e.g. by digital signature),
+or made confidential (e.g. by encryption) or made proof against
+misuse (e.g. by using security contexts to prevent an attacker
+replaying captured messages). 'Access control' means that the
+identity of the the sender of the message is checked and made
+known to the service and that use of a service is checked
+against recorded policy.
+</p>
+
+<p>
+This package provides a common interface by which applications,
+both clients and services, can call security-related classes.
+The package follows the Gang-of-Four patterns 'Facade', in that
+a uniform interface is provided to disparate components and
+'Mediator' in that several components are made to work together
+without mutual knowledge.
+</p>
+
+<p>
+The classes are in three groups: <code>SecurityGuard</code>
+and its sub-classes; JAX-RPC message handlers; Java-bean
+equivalents of SOAP-header blocks. Applications only make
+direct calls to the <code>SecurityGuard</code> variants; the
+other classes are called from within the framework.
+</p>
+
+<p>
+A <code>SecurityGuard</code> is a Java bean whose properties
+represent credentials. The basic bean is simply an abstract
+way of passing credentials between objects inside one JVM;
+it has no methods for manipulating or using the credentials.
+</p>
+
+<p>
+The <code>ClientSecurityGuard</code> extends <code>SecurityGuard</code>
+with methods for setting credentials into messages sent out from
+a client application. The client may associate the
+<code>ClientSecurityGuard</code> with a JAX-RPC service endpoint
+by calling <code>mountGuard</code>. If the service endpoint is being
+managed by a delegate interface, then the delegate should provide
+a way for the application to pass in a reference to the
+<code>ClientSecurityGuard</code>.
+</p>
+
+<p>
+The <code>ServiceSecurityGuard</code> extends <code>SecurityGuard</code>
+with methods for reading and using credentials in messages received at a
+service endpoint. Using a static method of the class, a service
+implementation may retrieve a <code>ServiceSecurityGuard</code> from
+the message context. The application may then read and use the credentials.
+</p>
+
+<p>
+If a client A calls service B and then B delegates the work to service C,
+then A uses a <code>ClientSecurityGuard</code> to talk to B; B uses a
+<code>ServiceSecurityGuard</code> to check A's request and a
+<code>ClientSecurityGuard</code> to talk to C; C uses a
+<code>ServiceSecurityGuard</code> to check B's request.
+B can generate its <code>ClientSecurityGuard</code> based on its
+<code>ServiceSecurityGuard</code> using a factory method. This method
+ensures that the credentials are copied over correctly. Please note that
+some credentials, such as one-shot passwords and X.509 certificates are not
+useful if copied verbatim and new credentials have to be derived for the
+<code>ClientSecurityGuard</code>.
+
+<p>
+<code>ClientCredentialHandler</code> and <code>ServiceCredentialHandler</code>
+are JAX-RPC message handlers. The former handles requests sent from
+clients to services and replies from the services to the clients. The latter
+handles requests received by services and replies sent by services to clients.
+Both handlers work with SOAP-header structures, converting credentials between
+XML form and the object form in <code>SecurityGuard</code> instances. The
+handlers are minimal wrappers around a set of classes, such as
+<code>WsseHeaderElement</code>. Each of the latter classes is a serializer
+and deserializer for a specific header structure.
+</p>
+
+
+@see javax.xml.soap.SOAPEnvelope
+@see org.astrogrid.security.ClientSecurityGuard
+@see org.astrogrid.security.ClientCredentialHandler
+
+@author Guy Rixon
+
+</body>
+
+</html>
