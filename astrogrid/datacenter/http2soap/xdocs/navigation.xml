@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Project</title>
+
+  <body>
+    <menu name="Publishers Astrogrid Library">
+    	<item name="Download PAL snapshot" href="pal.zip" />
+    </menu>
+    <links>
+       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
+       <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
+       <item name="DataCenter" href="http://www.astrogrid.org/maven/build/datacenter/index.html"/>
+    </links>
+  </body>
+</project>

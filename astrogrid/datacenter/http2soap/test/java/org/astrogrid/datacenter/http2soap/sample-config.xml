@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<legacy-service     interface-name="TestInterface" target-package="foo.bar.choo"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.astrogrid.org"
+    xsi:schemaLocation="http://www.astrogrid.org /home/noel/eclipse/datacenter/src/java/org/astrogrid/datacenter/legacy/legacy-service-descriptor.xsd"
+>
+
+  <method name="searchGoogle">
+  	  <request type="get" endpoint="http://www.google.com/search">   	  
+	  	  	<parameter name="q" type="string" />
+	  	  	  <parameter name="g" fixed="true" type="flag" />
+	  	  	<parameter name="p" type="int" />
+  	  </request>
+			<response type="regexp">
+				<set-property name="exp" value="(.*)" />
+			</response>
+  	  <result type="string" />  	  
+  </method>
+  
+  <method name="versionWsdl">
+  	<request type="get" endpoint="http://localhost:8080/axis/services/Version">
+  		<parameter name="wsdl" type="flag" fixed="true" />
+  	</request>
+  	<result type="element" />
+  </method>
+  
+  <method name="getVersion">
+  	<request type="get" endpoint="http://localhost:8080/axis/services/Version">
+  		<parameter name="method" fixed="true" value="getVersion"  type="string"/>
+  	</request>  	
+  	<result type="string" />
+  </method>
+  
+  <method name="slashdotRdf">
+    <request type="get"  endpoint="http://slashdot.org/slashdot.rdf">
+    	<!-- no params -->
+    </request>
+    <response-chain>
+       <response type="script">
+       		<set-property name="language" value="javascript" />
+       		<set-property name="script">
+       			print("hello world");
+       		</set-property>
+       </response>
+    	<response type="xslt">
+    		<set-property name="xslt">
+    			<xml-document>
+    			<some>
+    				<arbitrary/>
+    				<xml />
+    		   </some>
+    		</xml-document>
+    		</set-property>
+	    </response>
+	</response-chain>
+    <result type="element" />
+  </method>
+
+</legacy-service>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DTD for legacy web service descriptor -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    xmlns="http://www.astrogrid.org" targetNamespace="http://www.astrogrid.org"
+>
+  <xs:element name="legacy-service">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="method"/>
+      </xs:sequence>
+          <xs:attribute name="interface-name" use="required" type="java-param" />
+          <xs:attribute name="target-package" use="required" type="java-package" />
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="method">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="request"/>
+        <xs:choice minOccurs="0">
+          <xs:element ref="response"/>
+          <xs:element ref="response-chain"/>
+        </xs:choice>
+        <xs:element ref="result"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="xs:ID"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="request">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="parameter"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="set-property"/>
+      </xs:sequence>
+      <xs:attribute name="type">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="get"/>
+            <xs:enumeration value="post"/>
+          </xs:restriction> 
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="endpoint" use="required" type="xs:anyURI"/>
+      <xs:attribute name="class-name" type="java-class"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="response">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="set-property"/>
+      </xs:sequence>
+      <xs:attribute name="type">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="regexp"/>
+            <xs:enumeration value="xslt"/>
+            <xs:enumeration value="script"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="class-name" type="java-class"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="response-chain">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="response"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="result">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="set-property"/>
+      </xs:sequence>
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="string"/>
+            <xs:enumeration value="int"/>
+            <xs:enumeration value="boolean"/>
+            <xs:enumeration value="element"/>
+            <xs:enumeration value="bytes"/>
+            <xs:enumeration value="float"/>
+            <xs:enumeration value="void" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="class-name" type="java-class"/>
+      <xs:attribute name="bufferSize" type="xs:int" />
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="parameter">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="java-param"/> 
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="string"/>
+            <xs:enumeration value="int"/>
+            <xs:enumeration value="flag"/>
+            <xs:enumeration value="boolean"/>
+            <xs:enumeration value="float" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="fixed" type="xs:boolean" default="false" /> 
+      <xs:attribute name="value"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="set-property">
+    <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="1" name="xml-document"/>
+            </xs:sequence>
+            <xs:attribute name="name" use="required" type="java-param"/>
+            <xs:attribute name="value" />              
+    </xs:complexType>
+    </xs:element>
+        
+<xs:element name="xml-document">
+  <xs:complexType mixed="true">
+      <xs:sequence>
+          <xs:any minOccurs="1" maxOccurs="1" processContents="skip"/>
+      </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:simpleType name="java-param">
+    <xs:restriction base="xs:token">
+        <xs:pattern value="[a-zA-Z][a-zA-Z0-9]*"/>
+        </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="java-class">
+        <xs:restriction base="xs:token">
+            <xs:pattern value="([a-zA-Z0-9]+\.)*[a-zA-Z][a-zA-Z0-9]*" />
+        </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="java-package">
+    <xs:restriction base="xs:token">
+        <xs:pattern value="([a-zA-Z0-9]+\.)*[a-zA-Z0-9]*" />
+    </xs:restriction>
+</xs:simpleType>
+
+</xs:schema>
