@@ -1,11 +1,14 @@
 /*
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/FileStoreImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: gtr $</cvs:author>
+ * <cvs:date>$Date: 2004/08/18 10:03:19 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreImpl.java,v $
+ *   Revision 1.6  2004/08/18 10:03:19  gtr
+ *   BZ486. I added an early version of the getSecureUrl operation. This implementation doesn't yet work.
+ *
  *   Revision 1.5  2004/07/23 09:11:16  dave
  *   Merged development branch, dave-dev-200407221513, into HEAD
  *
@@ -69,459 +72,503 @@ import org.astrogrid.filestore.server.repository.RepositoryConfig ;
 import org.astrogrid.filestore.server.repository.RepositoryConfigImpl ;
 import org.astrogrid.filestore.server.repository.RepositoryContainer ;
 
+import org.astrogrid.filestore.server.streamer.StreamTicket;
+import org.astrogrid.filestore.server.streamer.StreamTicketList;
+
 /**
  * The main server implementation of the store service.
  *
  */
 public class FileStoreImpl
-	implements FileStore
-	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	protected static final boolean DEBUG_FLAG = true ;
+  implements FileStore
+  {
+  /**
+   * Switch for our debug statements.
+   *
+   */
+  protected static final boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public FileStoreImpl()
-		{
-		this(
-			new RepositoryConfigImpl()
-			) ;
-		}
+  /**
+   * Public constructor.
+   *
+   */
+  public FileStoreImpl()
+    {
+    this(
+      new RepositoryConfigImpl()
+      ) ;
+    }
 
-	/**
-	 * Public constructor.
-	 * @param config The local repository configuration.
-	 *
-	 */
-	public FileStoreImpl(RepositoryConfig config)
-		{
-		this(
-			config,
-			new RepositoryImpl(
-				config
-				)
-			) ;
-		}
+  /**
+   * Public constructor.
+   * @param config The local repository configuration.
+   *
+   */
+  public FileStoreImpl(RepositoryConfig config)
+    {
+    this(
+      config,
+      new RepositoryImpl(
+        config
+        )
+      ) ;
+    }
 
-	/**
-	 * Public constructor.
-	 * @param config The local repository configuration.
-	 * @param repository A local file repository.
-	 *
-	 */
-	public FileStoreImpl(RepositoryConfig config, Repository repository)
-		{
-		this.config = config ;
-		this.repository = repository ;
-		}
+  /**
+   * Public constructor.
+   * @param config The local repository configuration.
+   * @param repository A local file repository.
+   *
+   */
+  public FileStoreImpl(RepositoryConfig config, Repository repository)
+    {
+    this.config = config ;
+    this.repository = repository ;
+    }
 
-	/**
-	 * Reference to our configuration.
-	 *
-	 */
-	private RepositoryConfig config ;
+  /**
+   * Reference to our configuration.
+   *
+   */
+  private RepositoryConfig config ;
 
-	/**
-	 * Reference to our repository.
-	 *
-	 */
-	private Repository repository ;
+  /**
+   * Reference to our repository.
+   *
+   */
+  private Repository repository ;
 
-	/**
-	 * Get the service identifier - used for testing.
-	 * @return The ivo identifier for this service.
-	 *
-	 */
-	public String identifier()
-		{
-		return config.getServiceIdent() ;
-		}
+  /**
+   * Get the service identifier - used for testing.
+   * @return The ivo identifier for this service.
+   *
+   */
+  public String identifier()
+    {
+    return config.getServiceIdent() ;
+    }
 
-	/**
-	 * Import (store) a string of data.
-	 * @param properties An array of FileProperties describing the imported data.
-	 * @param data The string of data to store.
-	 * @return An array of FileProperties describing the imported data.
-	 * @throws FileStoreException if the data string is null.
-	 * @throws FileStoreServiceException if unable handle the request.
-	 *
-	 */
-	public FileProperty[] importString(FileProperty[] properties, String data)
-		throws FileStoreServiceException, FileStoreException
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("FileStoreImpl.importString()") ;
-		if (DEBUG_FLAG) System.out.println("TOAD") ;
-		//
-		// Check for null data.
-		if (null == data)
-			{
-			throw new FileStoreException(
-				"Null data"
-				) ;
-			}
-		//
-		// Convert to bytes and import that.
-		return this.importBytes(
-			properties,
-			data.getBytes()
-			) ;
-		}
+  /**
+   * Import (store) a string of data.
+   * @param properties An array of FileProperties describing the imported data.
+   * @param data The string of data to store.
+   * @return An array of FileProperties describing the imported data.
+   * @throws FileStoreException if the data string is null.
+   * @throws FileStoreServiceException if unable handle the request.
+   *
+   */
+  public FileProperty[] importString(FileProperty[] properties, String data)
+    throws FileStoreServiceException, FileStoreException
+    {
+    if (DEBUG_FLAG) System.out.println("") ;
+    if (DEBUG_FLAG) System.out.println("----\"----") ;
+    if (DEBUG_FLAG) System.out.println("FileStoreImpl.importString()") ;
+    if (DEBUG_FLAG) System.out.println("TOAD") ;
+    //
+    // Check for null data.
+    if (null == data)
+      {
+      throw new FileStoreException(
+        "Null data"
+        ) ;
+      }
+    //
+    // Convert to bytes and import that.
+    return this.importBytes(
+      properties,
+      data.getBytes()
+      ) ;
+    }
 
-	/**
-	 * Import (store) a byte array of data.
-	 * @param properties An array of FileProperties describing the imported data.
-	 * @param data The byte array of data to store.
-	 * @return An array of FileProperties describing the imported data.
-	 * @throws FileStoreException if the data string is null.
-	 * @throws FileStoreServiceException if unable handle the request.
-	 *
-	 */
-	public FileProperty[] importBytes(FileProperty[] properties, byte[] data)
-		throws FileStoreServiceException, FileStoreException
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("FileStoreImpl.importBytes()") ;
-		//
-		// Check for null data.
-		if (null == data)
-			{
-			throw new FileStoreException(
-				"Null data"
-				) ;
-			}
-		//
-		// Create a new container.
-		RepositoryContainer container = repository.create(
-			new FileProperties(
-				properties
-				)
-			) ;
-		//
-		// Import our data into the container.
-		container.importBytes(
-			data
-			) ;
-		//
-		// Return the container properties.
-		return container.properties().toArray() ;
-		}
+  /**
+   * Import (store) a byte array of data.
+   * @param properties An array of FileProperties describing the imported data.
+   * @param data The byte array of data to store.
+   * @return An array of FileProperties describing the imported data.
+   * @throws FileStoreException if the data string is null.
+   * @throws FileStoreServiceException if unable handle the request.
+   *
+   */
+  public FileProperty[] importBytes(FileProperty[] properties, byte[] data)
+    throws FileStoreServiceException, FileStoreException
+    {
+    if (DEBUG_FLAG) System.out.println("") ;
+    if (DEBUG_FLAG) System.out.println("----\"----") ;
+    if (DEBUG_FLAG) System.out.println("FileStoreImpl.importBytes()") ;
+    //
+    // Check for null data.
+    if (null == data)
+      {
+      throw new FileStoreException(
+        "Null data"
+        ) ;
+      }
+    //
+    // Create a new container.
+    RepositoryContainer container = repository.create(
+      new FileProperties(
+        properties
+        )
+      ) ;
+    //
+    // Import our data into the container.
+    container.importBytes(
+      data
+      ) ;
+    //
+    // Return the container properties.
+    return container.properties().toArray() ;
+    }
 
-	/**
-	 * Append a string to existing file.
-	 * @param ident The internal identifier of the target.
-	 * @param data The string to append.
-	 * @return An array of FileProperties describing the imported data.
-	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
-	 * @throws FileStoreNotFoundException if unable to locate the file.
-	 * @throws FileStoreException if the string is null.
-	 * @throws FileStoreServiceException if unable handle the request.
-	 *
-	 */
-	public FileProperty[] appendString(String ident, String data)
-		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException, FileStoreException
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("FileStoreImpl.appendString()") ;
-		//
-		// Check for null ident.
-		if (null == ident)
-			{
-			throw new FileStoreIdentifierException(
-				FileStoreIdentifierException.NULL_IDENT_MESSAGE
-				) ;
-			}
-		//
-		// Check for null data.
-		if (null == data)
-			{
-			throw new FileStoreException(
-				"Null data"
-				) ;
-			}
-		//
-		// Convert to bytes and append that.
-		return this.appendBytes(
-			ident,
-			data.getBytes()
-			) ;
-		}
+  /**
+   * Append a string to existing file.
+   * @param ident The internal identifier of the target.
+   * @param data The string to append.
+   * @return An array of FileProperties describing the imported data.
+   * @throws FileStoreIdentifierException if the identifier is null or not valid.
+   * @throws FileStoreNotFoundException if unable to locate the file.
+   * @throws FileStoreException if the string is null.
+   * @throws FileStoreServiceException if unable handle the request.
+   *
+   */
+  public FileProperty[] appendString(String ident, String data)
+    throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException, FileStoreException
+    {
+    if (DEBUG_FLAG) System.out.println("") ;
+    if (DEBUG_FLAG) System.out.println("----\"----") ;
+    if (DEBUG_FLAG) System.out.println("FileStoreImpl.appendString()") ;
+    //
+    // Check for null ident.
+    if (null == ident)
+      {
+      throw new FileStoreIdentifierException(
+        FileStoreIdentifierException.NULL_IDENT_MESSAGE
+        ) ;
+      }
+    //
+    // Check for null data.
+    if (null == data)
+      {
+      throw new FileStoreException(
+        "Null data"
+        ) ;
+      }
+    //
+    // Convert to bytes and append that.
+    return this.appendBytes(
+      ident,
+      data.getBytes()
+      ) ;
+    }
 
-	/**
-	 * Append an array of bytes to existing data.
-	 * @param ident The internal identifier of the target.
-	 * @param data The bytes to append.
-	 * @return An array of FileProperties describing the imported data.
-	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
-	 * @throws FileStoreNotFoundException if unable to locate the file.
-	 * @throws FileStoreException if the array is null.
-	 * @throws FileStoreServiceException if unable handle the request.
-	 *
-	 */
-	public FileProperty[] appendBytes(String ident, byte[] data)
-		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException, FileStoreException
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("FileStoreImpl.appendBytes()") ;
-		//
-		// Check for null ident.
-		if (null == ident)
-			{
-			throw new FileStoreIdentifierException(
-				FileStoreIdentifierException.NULL_IDENT_MESSAGE
-				) ;
-			}
-		//
-		// Check for null data.
-		if (null == data)
-			{
-			throw new FileStoreException(
-				"Null data"
-				) ;
-			}
-		//
-		// Locate the container.
-		RepositoryContainer container = repository.load(ident) ;
-		//
-		// Append the data to our container.
-		container.appendBytes(
-			data
-			) ;
-		//
-		// Return the container properties.
-		return container.properties().toArray() ;
-		}
+  /**
+   * Append an array of bytes to existing data.
+   * @param ident The internal identifier of the target.
+   * @param data The bytes to append.
+   * @return An array of FileProperties describing the imported data.
+   * @throws FileStoreIdentifierException if the identifier is null or not valid.
+   * @throws FileStoreNotFoundException if unable to locate the file.
+   * @throws FileStoreException if the array is null.
+   * @throws FileStoreServiceException if unable handle the request.
+   *
+   */
+  public FileProperty[] appendBytes(String ident, byte[] data)
+    throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException, FileStoreException
+    {
+    if (DEBUG_FLAG) System.out.println("") ;
+    if (DEBUG_FLAG) System.out.println("----\"----") ;
+    if (DEBUG_FLAG) System.out.println("FileStoreImpl.appendBytes()") ;
+    //
+    // Check for null ident.
+    if (null == ident)
+      {
+      throw new FileStoreIdentifierException(
+        FileStoreIdentifierException.NULL_IDENT_MESSAGE
+        ) ;
+      }
+    //
+    // Check for null data.
+    if (null == data)
+      {
+      throw new FileStoreException(
+        "Null data"
+        ) ;
+      }
+    //
+    // Locate the container.
+    RepositoryContainer container = repository.load(ident) ;
+    //
+    // Append the data to our container.
+    container.appendBytes(
+      data
+      ) ;
+    //
+    // Return the container properties.
+    return container.properties().toArray() ;
+    }
 
-	/**
-	 * Export (read) the contents of a file as a string.
-	 * @param ident The internal identifier of the target file.
-	 * @return The contents of a data object as a string.
-	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
-	 * @throws FileStoreNotFoundException if unable to locate the file.
-	 * @throws FileStoreServiceException if unable handle the request.
-	 *
-	 */
-	public String exportString(String ident)
-		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("FileStoreImpl.exportString()") ;
-		return new String(
-			this.exportBytes(
-				ident
-				)
-			) ;
-		}
+  /**
+   * Export (read) the contents of a file as a string.
+   * @param ident The internal identifier of the target file.
+   * @return The contents of a data object as a string.
+   * @throws FileStoreIdentifierException if the identifier is null or not valid.
+   * @throws FileStoreNotFoundException if unable to locate the file.
+   * @throws FileStoreServiceException if unable handle the request.
+   *
+   */
+  public String exportString(String ident)
+    throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
+    {
+    if (DEBUG_FLAG) System.out.println("") ;
+    if (DEBUG_FLAG) System.out.println("----\"----") ;
+    if (DEBUG_FLAG) System.out.println("FileStoreImpl.exportString()") ;
+    return new String(
+      this.exportBytes(
+        ident
+        )
+      ) ;
+    }
 
-	/**
-	 * Export (read) the contents of a file as an array of bytes.
-	 * @param ident The internal identifier of the target file.
-	 * @return The contents of a data object as a string.
-	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
-	 * @throws FileStoreNotFoundException if unable to locate the file.
-	 * @throws FileStoreServiceException if unable handle the request.
-	 *
-	 */
-	public byte[] exportBytes(String ident)
-		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("FileStoreImpl.exportBytes()") ;
-		//
-		// Check for null ident.
-		if (null == ident)
-			{
-			throw new FileStoreIdentifierException(
-				FileStoreIdentifierException.NULL_IDENT_MESSAGE
-				) ;
-			}
-		return repository.load(ident).exportBytes() ;
-		}
+  /**
+   * Export (read) the contents of a file as an array of bytes.
+   * @param ident The internal identifier of the target file.
+   * @return The contents of a data object as a string.
+   * @throws FileStoreIdentifierException if the identifier is null or not valid.
+   * @throws FileStoreNotFoundException if unable to locate the file.
+   * @throws FileStoreServiceException if unable handle the request.
+   *
+   */
+  public byte[] exportBytes(String ident)
+    throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
+    {
+    if (DEBUG_FLAG) System.out.println("") ;
+    if (DEBUG_FLAG) System.out.println("----\"----") ;
+    if (DEBUG_FLAG) System.out.println("FileStoreImpl.exportBytes()") ;
+    //
+    // Check for null ident.
+    if (null == ident)
+      {
+      throw new FileStoreIdentifierException(
+        FileStoreIdentifierException.NULL_IDENT_MESSAGE
+        ) ;
+      }
+    return repository.load(ident).exportBytes() ;
+    }
 
-	/**
-	 * Create a local duplicate (copy) of a file.
-	 * @param ident The internal identifier of the target file.
-	 * @param properties An optional array of FileProperties describing the copy.
-	 * @return An array of FileProperties describing the copied data.
-	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
-	 * @throws FileStoreNotFoundException if unable to locate the file.
-	 * @throws FileStoreServiceException if unable handle the request.
-	 *
-	 */
-	public FileProperty[] duplicate(String ident, FileProperty[] properties)
-		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
-		{
-		//
-		// Check for null ident.
-		if (null == ident)
-			{
-			throw new FileStoreIdentifierException(
-				FileStoreIdentifierException.NULL_IDENT_MESSAGE
-				) ;
-			}
-		return repository.duplicate(ident).properties().toArray() ;
-		}
+  /**
+   * Create a local duplicate (copy) of a file.
+   * @param ident The internal identifier of the target file.
+   * @param properties An optional array of FileProperties describing the copy.
+   * @return An array of FileProperties describing the copied data.
+   * @throws FileStoreIdentifierException if the identifier is null or not valid.
+   * @throws FileStoreNotFoundException if unable to locate the file.
+   * @throws FileStoreServiceException if unable handle the request.
+   *
+   */
+  public FileProperty[] duplicate(String ident, FileProperty[] properties)
+    throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
+    {
+    //
+    // Check for null ident.
+    if (null == ident)
+      {
+      throw new FileStoreIdentifierException(
+        FileStoreIdentifierException.NULL_IDENT_MESSAGE
+        ) ;
+      }
+    return repository.duplicate(ident).properties().toArray() ;
+    }
 
-	/**
-	 * Delete a file.
-	 * @param ident The internal identifier of the target file.
-	 * @return An array of FileProperties describing the deleted data.
-	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
-	 * @throws FileStoreNotFoundException if unable to locate the file.
-	 * @throws FileStoreServiceException if unable handle the request.
-     * @throws RemoteException If the WebService call fails.
-	 *
-	 */
-	public FileProperty[] delete(String ident)
-		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
-		{
-		//
-		// Locate the container.
-		RepositoryContainer container = repository.load(ident) ;
-		//
-		// Try to delete the container.
-		container.delete() ;
-		//
-		// Return the original properties.
-		return container.properties().toArray() ;
-		}
+  /**
+   * Delete a file.
+   * @param ident The internal identifier of the target file.
+   * @return An array of FileProperties describing the deleted data.
+   * @throws FileStoreIdentifierException if the identifier is null or not valid.
+   * @throws FileStoreNotFoundException if unable to locate the file.
+   * @throws FileStoreServiceException if unable handle the request.
+   * @throws RemoteException If the WebService call fails.
+   *
+   */
+  public FileProperty[] delete(String ident)
+    throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
+    {
+    //
+    // Locate the container.
+    RepositoryContainer container = repository.load(ident) ;
+    //
+    // Try to delete the container.
+    container.delete() ;
+    //
+    // Return the original properties.
+    return container.properties().toArray() ;
+    }
 
-	/**
-	 * Get the local meta data information for a file.
-	 * @param ident The internal identifier of the target file.
-	 * @return An array of FileProperties describing the data.
-	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
-	 * @throws FileStoreNotFoundException if unable to locate the file.
-	 * @throws FileStoreServiceException if unable handle the request.
-	 *
-	 */
-	public FileProperty[] properties(String ident)
-		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
-		{
-		//
-		// Locate the container and return the info.
-		return repository.load(ident).properties().toArray() ;
-		}
+  /**
+   * Get the local meta data information for a file.
+   * @param ident The internal identifier of the target file.
+   * @return An array of FileProperties describing the data.
+   * @throws FileStoreIdentifierException if the identifier is null or not valid.
+   * @throws FileStoreNotFoundException if unable to locate the file.
+   * @throws FileStoreServiceException if unable handle the request.
+   *
+   */
+  public FileProperty[] properties(String ident)
+    throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
+    {
+    //
+    // Locate the container and return the info.
+    return repository.load(ident).properties().toArray() ;
+    }
 
-	/**
-	 * Prepare to receive a data object from a remote source.
-	 * @param transfer A TransferProperties describing the transfer.
-	 * @return A new TransferProperties describing the transfer.
-	 *
-	 */
-	public TransferProperties importInit(TransferProperties transfer)
-		{
-		return transfer ;
-		}
+  /**
+   * Prepare to receive a data object from a remote source.
+   * @param transfer A TransferProperties describing the transfer.
+   * @return A new TransferProperties describing the transfer.
+   *
+   */
+  public TransferProperties importInit(TransferProperties transfer)
+    {
+    return transfer ;
+    }
 
-	/**
-	 * Import a data object from a remote source.
-	 * @param transfer A TransferProperties describing the transfer.
-	 * @return A new TransferProperties describing the transfer.
-	 * @throws FileStoreServiceException if there is an error in the service.
-	 * @throws FileStoreTransferException if there is an error in the transfer.
-	 *
-	 */
-	public TransferProperties importData(TransferProperties transfer)
-		throws FileStoreServiceException, FileStoreTransferException
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("FileStoreImpl.importData()") ;
-		//
-		// Check for null transfer properties.
-		if (null == transfer)
-			{
-			throw new FileStoreTransferException(
-				"Null transfer properties"
-				) ;
-			}
-		//
-		// Check for null URL.
-		if (null == transfer.getSource())
-			{
-			throw new FileStoreTransferException(
-				"Null transfer source"
-				) ;
-			}
-		//
-		// Create a new container.
-		RepositoryContainer container = repository.create(
-			new FileProperties(
-				transfer.getFileProperties()
-				)
-			) ;
-		//
-		// Transfer the data into our container.
-		try {
-			container.importData(
-				new URL(
-					transfer.getSource()
-					)
-				) ;
-			}
-		catch (MalformedURLException ouch)
-			{
-			throw new FileStoreTransferException(
-				ouch
-				) ;
-			}
-		//
-		// Add the updated file properties.
-		transfer.setFileProperties(
-			container.properties().toArray()
-			) ;
-		//
-		// Return the transfer properties.
-		return transfer ;
-		}
+  /**
+   * Import a data object from a remote source.
+   * @param transfer A TransferProperties describing the transfer.
+   * @return A new TransferProperties describing the transfer.
+   * @throws FileStoreServiceException if there is an error in the service.
+   * @throws FileStoreTransferException if there is an error in the transfer.
+   *
+   */
+  public TransferProperties importData(TransferProperties transfer)
+    throws FileStoreServiceException, FileStoreTransferException
+    {
+    if (DEBUG_FLAG) System.out.println("") ;
+    if (DEBUG_FLAG) System.out.println("----\"----") ;
+    if (DEBUG_FLAG) System.out.println("FileStoreImpl.importData()") ;
+    //
+    // Check for null transfer properties.
+    if (null == transfer)
+      {
+      throw new FileStoreTransferException(
+        "Null transfer properties"
+        ) ;
+      }
+    //
+    // Check for null URL.
+    if (null == transfer.getSource())
+      {
+      throw new FileStoreTransferException(
+        "Null transfer source"
+        ) ;
+      }
+    //
+    // Create a new container.
+    RepositoryContainer container = repository.create(
+      new FileProperties(
+        transfer.getFileProperties()
+        )
+      ) ;
+    //
+    // Transfer the data into our container.
+    try {
+      container.importData(
+        new URL(
+          transfer.getSource()
+          )
+        ) ;
+      }
+    catch (MalformedURLException ouch)
+      {
+      throw new FileStoreTransferException(
+        ouch
+        ) ;
+      }
+    //
+    // Add the updated file properties.
+    transfer.setFileProperties(
+      container.properties().toArray()
+      ) ;
+    //
+    // Return the transfer properties.
+    return transfer ;
+    }
 
-	/**
-	 * Prepare to send a data object to a remote destination.
-	 * @param transfer A TransferProperties describing the transfer.
-	 * @return A new TransferProperties describing the transfer.
-	 *
-	 */
-	public TransferProperties exportInit(TransferProperties transfer)
-		{
-		return transfer ;
-		}
+  /**
+   * Prepare to send a data object to a remote destination.
+   * @param transfer A TransferProperties describing the transfer.
+   * @return A new TransferProperties describing the transfer.
+   *
+   */
+  public TransferProperties exportInit(TransferProperties transfer)
+    {
+    return transfer ;
+    }
 
-	/**
-	 * Export a data object to a remote destination.
-	 * @param transfer A TransferProperties describing the transfer.
-	 * @return A new TransferProperties describing the transfer.
-	 *
-	 */
-	public TransferProperties exportData(TransferProperties transfer)
-		{
-		return transfer ;
-		}
+  /**
+   * Export a data object to a remote destination.
+   * @param transfer A TransferProperties describing the transfer.
+   * @return A new TransferProperties describing the transfer.
+   *
+   */
+  public TransferProperties exportData(TransferProperties transfer)
+    {
+    return transfer ;
+    }
 
-	/**
-	 * Throw a FileStoreIdentifierException, useful for debugging the transfer of Exceptions via SOAP.
-	 * @throws FileStoreIdentifierException as requested.
-	 *
-	 */
-	public void throwIdentifierException()
-		throws FileStoreIdentifierException
-		{
-		throw new FileStoreIdentifierException(
-			"TEST FAULT",
-			"TEST IDENT"
-			) ;
-		}
+  /**
+   * Throw a FileStoreIdentifierException, useful for debugging the transfer of Exceptions via SOAP.
+   * @throws FileStoreIdentifierException as requested.
+   *
+   */
+  public void throwIdentifierException()
+    throws FileStoreIdentifierException
+    {
+    throw new FileStoreIdentifierException(
+      "TEST FAULT",
+      "TEST IDENT"
+      ) ;
+    }
 
-	}
+  /**
+   * Issues a stream ticket (see {@link org.astrogrid.filestore.server.streamer})
+   * for a data item and returns a URL from which that item may be streamed.
+   * The URL embeds the name of the ticket, which is not predictable and may
+   * only be streamed once. Hence, the streaming is reasonably secure.
+   * This operation is intended to make data items available to web browsers
+   * without making them public.
+   *
+   * @param ident The filestore identifier for the data item to be streamed.
+   * @return the URL from which the data may be streamed.
+   * @throws FileStoreIdentifierException if the identifier is null or not valid.
+   * @throws FileStoreNotFoundException if unable to locate the file.
+   * @throws FileStoreServiceException if unable handle the request.
+   * @throws RemoteException If the WebService call fails.
+   */
+  public String getSecureUrl(String ident)
+      throws FileStoreServiceException,
+             FileStoreIdentifierException,
+             FileStoreNotFoundException,
+             RemoteException {
+    String streamUrl = null;
+
+    // Locate the container for the data item.
+    // This throws  FileStoreIdentifierException if the id
+    // is null or otherwise invalid.
+    RepositoryContainer container = repository.load(ident);
+
+    // Issue the stream ticket, thus authorizing the streaming of the data.
+    // The target property of the ticket is set to the data-item id; i.e. the
+    // ticketing mechanism has to work with the repository mechanism to
+    // find the data.
+    StreamTicket ticket = new StreamTicket();
+    ticket.setTarget(ident);
+    // @TODO Set the MIME type of the data.
+    StreamTicketList list = new StreamTicketList();
+    list.add(ticket);
+    streamUrl = ticket.getName();
+
+    return streamUrl;
+  }
+
+}
 
