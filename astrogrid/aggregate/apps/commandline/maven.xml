@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core" default="astrogrid-build-site" xmlns:deploy="deploy">
+
+
+        <goal name="astrogrid-deploy-site">
+            <echo message="Please deploy the site docs from the base myspace project"/>
+        </goal>
+        <goal name="astrogrid-deploy-snapshot" prereqs="dist:deploy-bin-snapshot"/>
+        <goal name="astrogrid-build-snapshot" prereqs="dist:build-bin">
+                <echo>NB - no goal exists to build dist snapshot - called dist:build-bin instead</echo>
+        </goal>
+        <goal name="astrogrid-install-snapshot" prereqs="dist:build-bin">
+                <echo>NB - no goal exist to install dist - calling dist:build-bin instead</echo>
+        </goal>
+        <goal name="astrogrid-deploy-artifact" prereqs="dist:deploy-bin"/>
+        <goal name="astrogrid-build-artifact" prereqs="dist:build-bin"/>
+        <goal name="astrogrid-install-artifact" prereqs="dist:build-bin">
+                <echo>NB - no goal exist to install dist - calling dist:build-bin instead</echo>
+        </goal>
+
+
+<!-- don't want to precompile these groovy scripts..
+        <postGoal name="java:compile">
+                <attainGoal name="groovy-compile" />
+        </postGoal>
+        <goal name="groovy-compile">
+          <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc"
+            classpathref="maven.dependency.classpath" />
+          <groovyc destdir="${basedir}/target/classes"
+                srcdir="${basedir}/src/groovy"
+                listfiles="true" classpathref="maven.dependency.classpath">
+          </groovyc>
+        </goal>
+-->
+
+<!-- set up dist to do what we want -->
+        <!-- remove artificial jar-->
+        <postGoal name="dist:prepare-bin-filesystem">
+                <delete>
+                 <fileset dir="${maven.dist.bin.assembly.dir}">
+                        <include name="*.jar" />
+                 </fileset>
+                </delete>
+                <!-- rename our docs, to prevent them getting overwritten -->
+                <mkdir dir="${maven.dist.bin.assembly.dir}/ag-docs" />
+                <move todir="${maven.dist.bin.assembly.dir}/ag-docs">
+                	<fileset dir="${maven.dist.bin.assembly.dir}/docs" />
+                </move>
+                <!-- copy in our dependent distros. -->
+                <deploy:copy-deps todir="${maven.build.dir}" excludes="*.jar"/>
+                <!-- unpackage groovy dist, copy into dist -->
+                <untar compression="gzip" dest="${maven.build.dir}">
+                	<fileset dir="${maven.build.dir}">
+                		<include name="*groovy*.tar.gz" />
+                	</fileset>
+                </untar>
+                <move todir="${maven.dist.bin.assembly.dir}">          
+                	<fileset dir="${maven.build.dir}/groovy-1.0-beta-7"/> <!-- vulnerable to version change - watch this -->
+                </move>
+                <!-- unpackage cdk -->
+                <untar compression="gzip" dest="${maven.build.dir}">
+                	<fileset dir="${maven.build.dir}">
+                		<include name="*cdk*.tar.gz" />
+                	</fileset>
+                </untar>
+                <!-- copy in cdk docs -->
+                <mkdir dir="${maven.dist.bin.assembly.dir}/cdk-docs" />
+                <move todir="${maven.dist.bin.assembly.dir}/cdk-docs">
+                	<fileset dir="${maven.build.dir}/astrogrid-cdk-scripting-${astrogrid.aggregate.version}/docs" />
+                </move>
+                <!-- copy in jars  from cdk-->
+                <move todir="${maven.dist.bin.assembly.dir}/lib">
+                	<fileset dir="${maven.build.dir}/astrogrid-cdk-scripting-${astrogrid.aggregate.version}">
+                		<include name="*.jar" />
+                		<!-- groovy already comes with versions of these .. -->
+                		<exclude name="junit*" />
+                		<exclude name="commons-collections*" />
+                		<exclude name="commons-logging*" />
+                		<exclude name="xerces*" />
+                		<exclude name="xml-apis*" />
+                	</fileset>
+                </move>
+                <!-- copy in other jar dependencies -->
+                <deploy:copy-deps todir="${maven.dist.bin.assembly.dir}/lib" excludes="*.tar.gz"/>
+                <!-- work-around for bug -->
+                <delete>
+                	<fileset dir="${maven.dist.bin.assembly.dir}/lib">
+                		<include name="*.tar.gz" />
+                	</fileset>
+                </delete>
+                <!-- copy in scripts -->
+                <copy todir="${maven.dist.bin.assembly.dir}/bin">
+                	<fileset dir="${basedir}/src/scripts" />
+                </copy>
+                <!-- copy in configuration files -->
+                <copy todir="${maven.dist.bin.assembly.dir}/conf">
+                	<fileset dir="${basedir}/src/conf" />
+                </copy>
+        </postGoal>
+
+
+
+
+</project>
