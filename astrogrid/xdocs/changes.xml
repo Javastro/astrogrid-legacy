@@ -4,6 +4,11 @@
     <author email="jdt@roe.ac.uk">John Taylor</author>
   </properties>
   <body>
+    <release version="TBD" date="6/12/04">
+        <action dev="nw" type="fix" issue="776">
+            Summary objects return more data.
+        </action>
+    </release>
     <release  version="0.7-b001g,0.7-b001h,0.7-b000r" date="25/11/04" description="FileManager Project Integrated">
       <action dev="dave" type="add"  >
         FileManager project integrated into AGINAB
