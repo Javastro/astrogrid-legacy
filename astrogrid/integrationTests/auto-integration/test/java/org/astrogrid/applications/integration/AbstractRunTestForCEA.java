@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractRunTestForCEA.java,v 1.4 2004/09/07 01:41:04 nw Exp $
+ * $Id: AbstractRunTestForCEA.java,v 1.5 2004/09/07 14:04:04 nw Exp $
  * 
  * Created on 14-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -79,7 +79,7 @@ public abstract class AbstractRunTestForCEA
             softFail("application has taken too long to complete");
          }
       }
-      softAssertEquals("the application has not completed successfully", ExecutionPhase.COMPLETED, status.getPhase());
+      assertEquals("the application has not completed successfully", ExecutionPhase.COMPLETED, status.getPhase());
       
       //      
       ResultListType results = delegate.getResults(execId);
