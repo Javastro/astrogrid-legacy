@@ -41,8 +41,10 @@ sh $SCRIPTHOME/maven-remove-jars.sh $PROJECT_NAME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] removing $PROJECT_HOME"
 rm -fr $PROJECT_HOME >> $LOG_FILE 2>&1
+rm -fr $BUILD_HOME/astrogrid/maven-base >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] cvs checkout"
+cvs -d $CVSROOT co -A astrogrid/maven-base >> $LOG_FILE 2>&1
 cvs -d $CVSROOT co -A astrogrid/$PROJECT_NAME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] project home: $PROJECT_HOME"
