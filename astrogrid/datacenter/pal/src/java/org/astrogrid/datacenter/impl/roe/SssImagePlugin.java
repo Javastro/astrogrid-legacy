@@ -1,5 +1,5 @@
 /*
- * $Id: SssImagePlugin.java,v 1.2 2004/11/11 23:23:29 mch Exp $
+ * $Id: SssImagePlugin.java,v 1.3 2004/11/12 13:49:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -46,8 +46,7 @@ public class SssImagePlugin extends DefaultPlugin {
       querier.setStatus(new QuerierQuerying(querier.getStatus()));
 
       //extract query to specific keys
-      KeywordMaker maker = new KeywordMaker();
-      maker.makeKeywords(query);
+      KeywordMaker maker = new KeywordMaker(query);
 
       Angle ra = Angle.parseAngle(maker.getRequiredValue(maker.RA_KEYWORD).toString());
       Angle dec = Angle.parseAngle(maker.getRequiredValue(maker.DEC_KEYWORD).toString());
@@ -58,17 +57,22 @@ public class SssImagePlugin extends DefaultPlugin {
 //       waveband = "1";
 //    }
       if (imageWidth.asArcMins()>15) {
-         throw new IllegalArgumentException("Maximum Radius is 15 arc minutes");
+         throw new IllegalArgumentException("Maximum Radius is 15 arc minutes; Radius given was "+imageWidth.asArcMins()+" arcmins (="+imageWidth.asDegrees()+" deg)");
       }
       
-      //build urls to images depending on if there are any at that wavelength.
-      //hmmm actually for now just assume there is everywhere
       Vector urls = new Vector();
+      //build urls to images depending on if there are any at that wavelength.
+      /*
       for (int waveband = 0; waveband < 5; waveband++) {
          if (isCovered(ra, dec, waveband)) {
             urls.add(SSS_URL+"ra="+ra.asDegrees()+"&dec="+dec.asDegrees()+"&mime-type=image/x-gfits&x="+imageWidth.asArcMins()+"&y="+imageHeight.asArcMins()+"&waveband="+waveband);
          }
       }
+       */
+      //Use the 'red' and 'blue' waveband form which has whole sky coverage
+      urls.add(SSS_URL+"ra="+ra.asDegrees()+"&dec="+dec.asDegrees()+"&mime-type=image/x-gfits&x="+imageWidth.asArcMins()+"&y="+imageHeight.asArcMins()+"&waveband=red");
+      urls.add(SSS_URL+"ra="+ra.asDegrees()+"&dec="+dec.asDegrees()+"&mime-type=image/x-gfits&x="+imageWidth.asArcMins()+"&y="+imageHeight.asArcMins()+"&waveband=blue");
+      
       
       UrlListResults results = new UrlListResults(querier, (String[]) urls.toArray(new String[] {} ));
       results.send(query.getResultsDef(), user);
@@ -87,8 +91,14 @@ public class SssImagePlugin extends DefaultPlugin {
       return getCountFromResults(user, query, querier);
    }
 
+   /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */
+   public String[] getFormats() {
+      return UrlListResults.getFormats();
+   }
+   
    
 }
+
 
 
 

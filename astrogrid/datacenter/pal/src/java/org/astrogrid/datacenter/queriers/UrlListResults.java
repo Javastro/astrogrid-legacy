@@ -1,5 +1,5 @@
 /*
- * $Id: UrlListResults.java,v 1.1 2004/11/11 23:23:29 mch Exp $
+ * $Id: UrlListResults.java,v 1.2 2004/11/12 13:49:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -109,6 +109,9 @@ public class UrlListResults extends QueryResults {
       printOut.println("</HEAD>");
       
       printOut.println("<BODY>");
+      printOut.println("<h1>Query Results</h1>");
+      printOut.println("<p>Query "+this.querier.getQuery());
+      printOut.println("<p>");
       
       if (statusToUpdate != null) {
          statusToUpdate.newProgress("Adding File", getCount());
@@ -117,7 +120,7 @@ public class UrlListResults extends QueryResults {
          if (statusToUpdate != null) {
             statusToUpdate.setProgress(i);
          }
-         printOut.println("   <P>"+urls[i]+"</P>");
+         printOut.println("   <P><a href='"+urls[i]+"'>"+urls[i]+"</a></P>");
       }
       
       if (statusToUpdate != null)   { statusToUpdate.clearProgress(); }
@@ -158,6 +161,9 @@ public class UrlListResults extends QueryResults {
 
 /*
  $Log: UrlListResults.java,v $
+ Revision 1.2  2004/11/12 13:49:12  mch
+ Fix where keyword maker might not have had keywords made
+
  Revision 1.1  2004/11/11 23:23:29  mch
  Prepared framework for SSAP and SIAP
 

@@ -1,4 +1,4 @@
-/*$Id: KeywordMakerTest.java,v 1.1 2004/11/03 05:14:33 mch Exp $
+/*$Id: KeywordMakerTest.java,v 1.2 2004/11/12 13:49:12 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -27,12 +27,11 @@ public class KeywordMakerTest extends OptionalTestCase
    public void testJustCircle() throws IOException
    {
       Query query = SimpleQueryMaker.makeConeQuery(12, 20, 3);
-      KeywordMaker maker = new KeywordMaker();
-      Hashtable keywords = maker.makeKeywords(query);
+      KeywordMaker maker = new KeywordMaker(query);
       
-      assertTrue("RA not set correctly", keywords.get(KeywordMaker.RA_KEYWORD).equals("12.0"));
-      assertTrue("DEC not set correctly", keywords.get(KeywordMaker.DEC_KEYWORD).equals("20.0"));
-      assertTrue("Radius not set correctly", keywords.get(KeywordMaker.RADIUS_KEYWORD).equals("3.0"));
+      assertTrue("RA not set correctly", maker.getValue(KeywordMaker.RA_KEYWORD).equals("12.0"));
+      assertTrue("DEC not set correctly", maker.getValue(KeywordMaker.DEC_KEYWORD).equals("20.0"));
+      assertTrue("Radius not set correctly", maker.getValue(KeywordMaker.RADIUS_KEYWORD).equals("3.0"));
    }
       
    public void testJustKeyword() throws IOException
@@ -42,32 +41,29 @@ public class KeywordMakerTest extends OptionalTestCase
       testKeys.put("Catalogue", "SSA");
       testKeys.put("Wavelength", "optical");
       Query query = new Query(SimpleQueryMaker.makeKeywordCondition(testKeys), null);
-      KeywordMaker maker = new KeywordMaker();
-      Hashtable keywords = maker.makeKeywords(query);
+      KeywordMaker maker = new KeywordMaker(query);
       
-      assertTrue(keywords.get("NAME").equals("Arthur"));
-      assertTrue(keywords.get("CATALOGUE").equals("SSA"));
-      assertTrue(keywords.get("WAVELENGTH").equals("optical"));
+      assertTrue(maker.getValue("NAME").equals("Arthur"));
+      assertTrue(maker.getValue("CATALOGUE").equals("SSA"));
+      assertTrue(maker.getValue("WAVELENGTH").equals("optical"));
    }
 
    public void testSql1() throws IOException
    {
       Query query = SqlQueryMaker.makeQuery("SELECT * FROM ANYWHERE WHERE Name='Arthur' AND Catalogue='SSA' AND Wavelength=12");
-      KeywordMaker maker = new KeywordMaker();
-      Hashtable keywords = maker.makeKeywords(query);
+      KeywordMaker maker = new KeywordMaker(query);
       
-      assertTrue(keywords.get("NAME").equals("Arthur"));
-      assertTrue(keywords.get("CATALOGUE").equals("SSA"));
-      assertTrue(keywords.get("WAVELENGTH").equals("12"));
+      assertTrue(maker.getValue("NAME").equals("Arthur"));
+      assertTrue(maker.getValue("CATALOGUE").equals("SSA"));
+      assertTrue(maker.getValue("WAVELENGTH").equals("12"));
    }
    
    /** Check that ORs fail */
    public void testNotOr() throws IOException
    {
       Query query = SqlQueryMaker.makeQuery("SELECT * FROM ANYWHERE WHERE Name='Arthur' OR Catalogue='SSA' OR Wavelength='optical'");
-      KeywordMaker maker = new KeywordMaker();
       try {
-         Hashtable keywords = maker.makeKeywords(query);
+         new KeywordMaker(query);
          fail("Should have failed due to OR");
       }
       catch (IllegalArgumentException iae) {
@@ -96,6 +92,9 @@ public class KeywordMakerTest extends OptionalTestCase
 
 /*
  $Log: KeywordMakerTest.java,v $
+ Revision 1.2  2004/11/12 13:49:12  mch
+ Fix where keyword maker might not have had keywords made
+
  Revision 1.1  2004/11/03 05:14:33  mch
  Bringing Vizier back online
 

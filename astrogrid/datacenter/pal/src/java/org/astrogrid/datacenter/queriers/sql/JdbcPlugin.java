@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.12 2004/11/10 22:01:50 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.13 2004/11/12 13:49:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -179,6 +179,10 @@ public class JdbcPlugin extends DefaultPlugin {
    public void assertQueryLegal(Query query) {
    }
    
+   /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */
+   public String[] getFormats() {
+      return SqlResults.getFormats();
+   }
    
    /** Makes SqlResults for the resultset.  This means subclasses can override it
     * to make an easy way to transform the results */

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.12 2004/11/08 16:15:50 mch Exp $
+ * $Id: SqlResults.java,v 1.13 2004/11/12 13:49:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,6 +20,7 @@ import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.returns.ReturnTable;
 
 /**
  * Implementation of <tt>QueryResults</tt> as a wrapper around a <tt>ResultSet</tt>
@@ -225,7 +226,9 @@ public class SqlResults extends QueryResults {
                printOut.println("<TD>"+sqlResults.getString(i)+"</TD>");
             }
             printOut.println("</TR>");
-            
+
+            //a different check to the 'natural' queryLimit check in the while loop. If the results hit the
+            //users limit, that's fine.  If it hits the datacenter limit, we need to make sure the user is informed
             if ((localLimit!=-1) && (row>localLimit)) {
                statusToUpdate.addDetail("Results limited to "+localLimit+" rows by datacenter");
                log.warn("Limiting returned results to "+localLimit);
@@ -334,12 +337,20 @@ public class SqlResults extends QueryResults {
       return "unknown";
    }
    
+   /** Returns the formats that this plugin can provide.  Doesn't provide Raw */
+   public static String[] getFormats() {
+      return new String[] { ReturnTable.VOTABLE, ReturnTable.CSV, ReturnTable.HTML } ;
+   }
+   
    
    
 }
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.13  2004/11/12 13:49:12  mch
+ Fix where keyword maker might not have had keywords made
+
  Revision 1.12  2004/11/08 16:15:50  mch
  added flush to each row
 

@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierPlugin.java,v 1.10 2004/11/11 23:23:29 mch Exp $
+/*$Id: VizierQuerierPlugin.java,v 1.11 2004/11/12 13:49:12 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,14 +69,10 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
       querier.setStatus(new QuerierQuerying(querier.getStatus()));
 
       //extract query to specific keys
-      KeywordMaker maker = new KeywordMaker();
-      Hashtable keywords = maker.makeKeywords(query);
+      KeywordMaker maker = new KeywordMaker(query);
 
-      String text = (String) keywords.get("TEXT");
-      String r = (String) keywords.get(KeywordMaker.RADIUS_KEYWORD);
-      if (r == null) {
-         throw new IllegalArgumentException(KeywordMaker.RADIUS_KEYWORD+" must be specified in query");
-      }
+      String text = (String) maker.getValue("TEXT");
+      String r = (String) maker.getRequiredValue(KeywordMaker.RADIUS_KEYWORD);
       double radius = 0;
       try {
          radius = Double.parseDouble(r);
@@ -85,19 +81,19 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
          throw new IllegalArgumentException(KeywordMaker.RADIUS_KEYWORD+" has non-numeric value "+r);
       }
       
-      String u = (String) keywords.get("UNIT");
+      String u = (String) maker.getValue("UNIT");
       VizierUnit unit = VizierUnit.getFor(RdbmsResourceReader.getUnitsOf("Vizier","Radius")); //default to what's in the resource file
       if (u != null) {
          unit = VizierUnit.getFor(u);
       }
       
-      String w = (String) keywords.get("WAVELENGTH");
+      String w = (String) maker.getValue("WAVELENGTH");
       VizierWavelength wavelength = null;
       if (w != null) { wavelength = VizierWavelength.getFor(w); }
       
-      String target = (String) keywords.get("TARGET");
-      String ra = (String) keywords.get(KeywordMaker.RA_KEYWORD);
-      String dec = (String) keywords.get(KeywordMaker.DEC_KEYWORD);
+      String target = (String) maker.getValue("TARGET");
+      String ra = (String) maker.getValue(KeywordMaker.RA_KEYWORD);
+      String dec = (String) maker.getValue(KeywordMaker.DEC_KEYWORD);
       if (  ((ra == null) && (dec != null)) || ((ra != null) && (dec == null))  ) {
          throw new IllegalArgumentException("RA is "+ra+" but DEC is "+dec);
       }
@@ -193,13 +189,20 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
    public long getCount(Account user, Query query, Querier querier) throws IOException {
       return getCountFromResults(user, query, querier);
    }
-   
+
+   /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */
+   public String[] getFormats() {
+      return VotableInResults.getFormats();
+   }
    
 }
 
 
 /*
  $Log: VizierQuerierPlugin.java,v $
+ Revision 1.11  2004/11/12 13:49:12  mch
+ Fix where keyword maker might not have had keywords made
+
  Revision 1.10  2004/11/11 23:23:29  mch
  Prepared framework for SSAP and SIAP
 
@@ -276,5 +279,6 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
  mavenized cds delegate
  
  */
+
 
 

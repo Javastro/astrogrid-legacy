@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierPlugin.java,v 1.4 2004/11/03 00:17:56 mch Exp $
+/*$Id: EgsoQuerierPlugin.java,v 1.5 2004/11/12 13:49:12 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -101,6 +101,11 @@ public class EgsoQuerierPlugin extends DefaultPlugin {
       }
    }
    
+   /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */
+   public String[] getFormats() {
+      return VotableDomResults.getFormats();
+   }
+   
    
    
 }
@@ -108,6 +113,9 @@ public class EgsoQuerierPlugin extends DefaultPlugin {
 
 /*
  $Log: EgsoQuerierPlugin.java,v $
+ Revision 1.5  2004/11/12 13:49:12  mch
+ Fix where keyword maker might not have had keywords made
+
  Revision 1.4  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

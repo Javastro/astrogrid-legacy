@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.11 2004/11/09 17:42:22 mch Exp $
+ * $Id: PalProxyPlugin.java,v 1.12 2004/11/12 13:49:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -172,6 +172,11 @@ public class PalProxyPlugin extends DefaultPlugin implements VoResourcePlugin {
          s[i] = DomHelper.ElementToString(resources[i]);
       }
       return s;
+   }
+   
+   /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */
+   public String[] getFormats() {
+      return VotableInResults.getFormats();
    }
    
    
