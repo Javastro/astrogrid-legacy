@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerierTest.java,v 1.1 2003/09/10 13:05:05 nw Exp $
+ * $Id: MySqlQuerierTest.java,v 1.2 2003/09/11 13:53:02 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,11 +19,11 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.mysql.MySqlQuerier;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 import org.astrogrid.datacenter.query.AdqlTags;
-import org.astrogrid.datacenter.service.Workspace;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -53,7 +53,7 @@ public class MySqlQuerierTest extends TestCase
       MySqlQuerier querier = new MySqlQuerier();
 
       //send query & store results
-      QueryResults results = querier.queryDatabase(queryElement);
+      QueryResults results = querier.queryDatabase(new Query(queryElement));
 
       //convert results to VOTable
       Document votable = results.toVotable();
