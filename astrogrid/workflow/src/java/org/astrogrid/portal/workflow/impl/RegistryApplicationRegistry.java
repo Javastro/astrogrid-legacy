@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistry.java,v 1.3 2004/04/05 15:14:59 nw Exp $
+/*$Id: RegistryApplicationRegistry.java,v 1.4 2004/08/03 13:34:54 KevinBenson Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -83,7 +83,7 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
     
     public String[] listApplications() throws WorkflowInterfaceException {
         try {           
-            Document doc = service.submitQueryStringDOM(LIST_QUERY_STRING);
+            Document doc = service.submitQuery(LIST_QUERY_STRING);
             assert doc != null;
             NodeList nl = doc.getElementsByTagNameNS("*","Identifier");
             
@@ -107,7 +107,7 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
      */
     public ApplicationDescription getDescriptionFor(String applicationName) throws WorkflowInterfaceException {
         try {
-            Document doc = service.getResourceByIdentifierDOM(applicationName);
+            Document doc = service.getResourceByIdentifier(applicationName);
             assert doc != null;
             // navigate down to the bit we're interested in.
             NodeList nl = doc.getElementsByTagNameNS("*","ApplicationDefinition");
@@ -141,6 +141,12 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
 
 /* 
 $Log: RegistryApplicationRegistry.java,v $
+Revision 1.4  2004/08/03 13:34:54  KevinBenson
+result of merge with case3 to change to registry-client-lite dependency
+
+Revision 1.3.46.1  2004/07/30 12:44:01  KevinBenson
+changed to registry-client-lite
+
 Revision 1.3  2004/04/05 15:14:59  nw
 implemented
 
