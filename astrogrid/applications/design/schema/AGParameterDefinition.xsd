@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:pd="http://www.astrogrid.org/schema/AGParameterDefinition" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="BaseParameterDefinition">
+		<xs:attribute name="name" type="xs:ID" use="required"/>
+	</xs:complexType>
+	<xs:element name="ParameterDefinition">
+		<xs:annotation>
+			<xs:documentation>Basic Parameter definition</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:simpleType name="parameterTypes">
+		<xs:annotation>
+			<xs:documentation>The list of possible parameter types</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:QName">
+			<xs:enumeration value="xs:integer"/>
+			<xs:enumeration value="xs:real"/>
+		</xs:restriction>
+		<!--
+	       This type is not yet complete - probably most of the standard 2001 schema types should be supported as well as the specialized types
+	     -->
+	</xs:simpleType>
+	<xs:simpleType name="fileParameter">
+		<xs:annotation>
+			<xs:documentation>A general file parameter</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+</xs:schema>

@@ -1,0 +1,460 @@
+package id27nmcdmemsok6dmepabop;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node21:oiref><oihard>
+@__modelType reference 
+*/
+class reference22 {
+}/**
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node27:oiref><oihard>
+@__modelType reference 
+*/
+class reference28 {
+}/**
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node37:oiref><oihard>
+@__modelType reference 
+*/
+class reference38 {
+}/**
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node48:oiref><oihard>
+@__modelType reference 
+*/
+class reference52 {
+}}/**
+This describes the creation of a single job step within a workflow
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node37.node66.link:oiref>=1278,871,530,920,410,989:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node44:oiref>=170,380,227,210,0:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node.link42:oiref>=846,452,846,500:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node44.node40:oiref>=172,513,228,29,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node27.node:oiref>=1000,580,168,51,0:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node41:oiref>=750,500,192,60,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node27.node.link:oiref>=1084,631,1084,650:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node19:oiref>=290,80,12,12,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node41.link:oiref>=750,538,400,538:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node37.node68:oiref>=1217,990,212,119,0:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node62.link:oiref>=340,1030,190,1030,190,750,280,750:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node50.link:oiref>=804,267,357,248:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node46:oiref>=200,650,183,23,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node70:oiref>=300,920,144,23,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node44.node39.link:oiref>=384,463,730,442:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47:oiref>=180,700,480,380,0:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node25:oiref>=160,110,270,190,0:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node:oiref>=140,37,560,1213,0:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node67:oiref>=365,989,60,6,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node37:oiref>=1215,43,215,1177,0:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node44.node39:oiref>=180,453,204,23,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node34.link:oiref>=279,333,279,350:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node19.link:oiref>=296,92,296,110:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node37.node68.link:oiref>=1326,990,1326,871:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node44.link:oiref>=291,590,291,650:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node31.link:oiref>=740,208,357,239:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node62.link65:oiref>=398,1123,160,13,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node25.node53:oiref>=190,160,228,29,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node21:oiref>=720,40,250,571,0:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node62.link65:oiref>=388,1050,388,1220:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node50:oiref>=804,255,125,60,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node25.node32:oiref>=210,230,147,23,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node70.link:oiref>=387,943,387,989:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node.link:oiref>=788,452,286,513:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node54.link:oiref>=836,840,100,13,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node55.link:oiref>=370,763,370,820:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node34:oiref>=180,310,198,23,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node31.link51:oiref>=866,213,866,255:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node44.node40.link:oiref>=286,542,1084,580:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node54:oiref>=340,820,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35:oiref>=160,350,520,840,0:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node67.link:oiref>=395,995,395,1020:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node31:oiref>=740,190,212,23,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node25.node32.link:oiref>=283,253,283,310:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node55:oiref>=280,740,228,23,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node54.link71:oiref>=370,840,370,920:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node63:oiref>=380,1220,15,15,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node54.link71:oiref>=380,868,84,13,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node46.link:oiref>=291,673,291,700:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node48:oiref>=1470,390,280,260,0:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node54.link:oiref>=400,830,540,830,1230,830:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node62.link:oiref>=200,878,112,13,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node48.link:oiref>=1470,605,1168,605:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node:oiref>=730,410,228,42,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node27.node43.link:oiref>=997,663,383,663:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node27:oiref>=990,40,190,710,0:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node25.node53.link:oiref>=418,179,740,199:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node62:oiref>=340,1020,90,30,0:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node27.node43:oiref>=997,650,181,60,1:oigroup>
+<oigroup:<oiref:design#Class#id27nmcdmemsok6dmepabop.node37.node66:oiref>=1230,820,193,51,0:oigroup>
+*/
+class __positions {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name Portal
+@backgroundColor 200,200,200 
+*/
+class node {
+/**
+The Job step is undefined, but this state represents a step that is occuring within a workflow sequence - so it is assumed that there are jobsteps before and after this one.
+@shapeType StartState
+@__modelType node
+@name JobStepUndefined 
+*/
+class node19 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node25:oiref><oihard> 
+*/
+class link {
+}}/**
+In the portal the user should be presented with a list of applications that they can run - as this list gets longer it would be desirable to be able to specify extra constraints when listing available applications.
+@shapeType State
+@__modelType node
+@name Application not Chosen 
+*/
+class node25 {
+/**
+@shapeType Activity
+@__modelType node
+@name Present list in Gui 
+*/
+class node32 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node34:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Query Registy For Applications 
+*/
+class node53 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node31:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType State
+@__modelType node
+@name Application Chosen 
+*/
+class node35 {
+/**
+@shapeType State
+@__modelType node
+@name No Parameter GUI 
+*/
+class node44 {
+/**
+@shapeType Activity
+@__modelType node
+@name Query Application location 
+*/
+class node39 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Query Application Parameter Definitions 
+*/
+class node40 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node27.node:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node46:oiref><oihard> 
+*/
+class link {
+}}/**
+The GUI component uses the returned parameter definition list to generate a GUI on the fly. This is done by iterating over the parameter definitions and creating an appropriate control for each one, and then presenting the whole screen to the user.
+@shapeType Activity
+@__modelType node
+@name Generate Parameter GUI 
+*/
+class node46 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType State
+@__modelType node
+@name GUI Generated 
+*/
+class node47 {
+/**
+There are different options depending whether the parameter is
+@shapeType Decision
+@__modelType node
+@name ParameterType 
+*/
+class node54 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node37.node66:oiref><oihard>
+@event File or VOtable
+@name File or VOtable
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node70:oiref><oihard>
+@event Atomic type 
+*/
+class link71 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name User Specifies Parameter Value
+*/
+class node55 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node54:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name MoreParameters 
+*/
+class node62 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node55:oiref><oihard>
+@event More Parameters
+@name More Parameters
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node63:oiref><oihard>
+@event All parameters specified 
+*/
+class link65 {
+}}/**
+@shapeType SyncBar
+@__modelType node
+@name SyncBar1 
+*/
+class node67 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node62:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name User Enters value 
+*/
+class node70 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node67:oiref><oihard> 
+*/
+class link {
+}}}}/**
+@shapeType Activity
+@__modelType node
+@name User Chooses Application 
+*/
+class node34 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType EndState
+@__modelType node
+@name JobStepSpecified 
+*/
+class node63 {
+}}/**
+@shapeType SwimLane
+@__modelType node
+@name Registry
+@backgroundColor 200,200,200 
+*/
+class node21 {
+/**
+@shapeType Activity
+@__modelType node
+@name generate list of applications 
+*/
+class node31 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node25.node32:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType ObjectFlowLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node50:oiref><oihard> 
+*/
+class link51 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Generate list of application controllers that serve particular application 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node44.node40:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType ObjectFlowLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node21.node41:oiref><oihard> 
+*/
+class link42 {
+}}/**
+@shapeType Object
+@__modelType node
+@name ApplicationControllerList 
+*/
+class node41 {
+/**
+@shapeType ObjectFlowLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node44.node40:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Object
+@__modelType node
+@name Application List 
+*/
+class node50 {
+/**
+@shapeType ObjectFlowLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node25.node32:oiref><oihard> 
+*/
+class link {
+}}}/**
+This is a particular application controller instance that might be controlling serveral applications.
+@shapeType SwimLane
+@__modelType node
+@name Application Controller
+@backgroundColor 200,200,200 
+*/
+class node27 {
+/**
+@shapeType Activity
+@__modelType node
+@name Retrieve Parameter Definitions 
+*/
+class node {
+/**
+@shapeType ObjectFlowLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node27.node43:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Object
+@__modelType node
+@name ParameterListDefinition 
+*/
+class node43 {
+/**
+@shapeType ObjectFlowLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node46:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name MySpace
+@backgroundColor 200,200,200 
+*/
+class node37 {
+/**
+@shapeType Activity
+@__modelType node
+@name Browse MySpace for suitable components
+*/
+class node66 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node.node35.node47.node67:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note2
+@text Need a symbolic way of specifying/storing the results of a previous job step 
+*/
+class node68 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node37.node66:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text The step where the application contoller is questioned about the parameter definitions is necessary at the moment because the IVOA registry schema is not detailed enough for our purposes - we could perhaps create an extension that would be sufficient, so that the portal need only talk to the registry to find all the application information that it needs. 
+*/
+class node48 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id27nmcdmemsok6dmepabop.node27.node:oiref><oihard> 
+*/
+class link {
+}}

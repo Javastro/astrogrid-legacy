@@ -1,0 +1,277 @@
+package id456vkdlid04undlihu9i6;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node7:oiref><oihard>
+@__modelType reference 
+*/
+class reference8 {
+}/**
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node9:oiref><oihard>
+@__modelType reference 
+*/
+class reference10 {
+}/**
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node11:oiref><oihard>
+@__modelType reference 
+*/
+class reference12 {
+}/**
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node13:oiref><oihard>
+@__modelType reference 
+*/
+class reference14 {
+}/**
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node1:oiref><oihard>
+@__modelType reference 
+*/
+class reference2 {
+}/**
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node3:oiref><oihard>
+@__modelType reference 
+*/
+class reference4 {
+}/**
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node10:oiref><oihard>
+@__modelType reference 
+*/
+class reference11 {
+}}/**
+
+@__tags
+@shapeType UseCaseDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node7:oiref>=440,90,325,530,0:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node10:oiref>=800,240,229,126,0:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node7.node:oiref>=450,230,156,21,1:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node7.node.link:oiref>=528,230,909,198:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node3:oiref>=10,350,140,250,0:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node7.node12.link:oiref>=639,370,639,321:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node1.node.link:oiref>=308,459,489,251:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node7.node6:oiref>=460,480,151,21,1:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node9.node:oiref>=838,129,143,69,0:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node7.node.link7:oiref>=588,251,588,300:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node7.node14.link:oiref>=547,581,547,501:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node7.node.link8:oiref>=528,251,528,480:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node1.node:oiref>=256,459,105,70,0:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node13:oiref>=10,10,394,180,0:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node:oiref>=260,230,100,77,1:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node11:oiref>=830,390,250,200,0:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node10.node.link:oiref>=810,318,751,318:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node1:oiref>=220,384,162,194,0:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node9:oiref>=800,80,214,138,0:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node7.node14:oiref>=515,581,248,21,1:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node7.node12:oiref>=583,370,180,80,0:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node11.node13:oiref>=849,533,229,21,1:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node.link:oiref>=360,248,450,248:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node10.node:oiref>=810,270,208,67,0:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node7.node5:oiref>=570,300,181,21,1:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node3.link:oiref>=150,494,256,494:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node11.node:oiref>=850,430,208,65,0:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node11.node13.link:oiref>=963,533,579,501:oigroup>
+<oigroup:<oiref:design#Class#id456vkdlid04undlihu9i6.node11.node.link:oiref>=954,430,695,321:oigroup>
+
+*/
+class __positions {
+}/**
+@shapeType Actor
+@__modelType node
+@name AstroGrid User 
+*/
+class node {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node7.node:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType SystemBoundary
+@__modelType node
+@name Portal
+@backgroundColor 200,200,200 
+*/
+class node7 {
+/**
+This encapsulates the case where
+@shapeType UseCase
+@__modelType node
+@name Run Application 
+*/
+class node {
+/**
+@shapeType IncludesLink
+@__modelType link
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node9.node:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType IncludesLink
+@__modelType link
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node7.node5:oiref><oihard> 
+*/
+class link7 {
+}/**
+@shapeType IncludesLink
+@__modelType link
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node7.node6:oiref><oihard> 
+*/
+class link8 {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name Specify Parameters 
+*/
+class node5 {
+}/**
+@shapeType UseCase
+@__modelType node
+@name Receive Results 
+*/
+class node6 {
+}/**
+@shapeType UseCase
+@__modelType node
+@name Use GUI Form to input parameters 
+*/
+class node12 {
+/**
+@shapeType GeneralizationLink
+@__modelType link
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node7.node5:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name Display Results in Browser 
+*/
+class node14 {
+/**
+@shapeType GeneralizationLink
+@__modelType link
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node7.node6:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType SystemBoundary
+@__modelType node
+@name Registry
+@backgroundColor 200,200,200 
+*/
+class node9 {
+/**
+@shapeType UseCase
+@__modelType node
+@name Find Application 
+*/
+class node {
+}}/**
+@shapeType SystemBoundary
+@__modelType node
+@name MySpace
+@backgroundColor 200,200,200 
+*/
+class node11 {
+/**
+@shapeType UseCase
+@__modelType node
+@name Use previously saved configuration 
+*/
+class node {
+/**
+@shapeType GeneralizationLink
+@__modelType link
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node7.node5:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name Save Results in MySpace 
+*/
+class node13 {
+/**
+@shapeType GeneralizationLink
+@__modelType link
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node7.node6:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text This is a use case from the end user's viewpoint and
+only gives a rough indication of the interactions likely
+between the astrogrid components
+
+The use case could be for the creation of a job step or for a "single pass" invocation direct from the Portal UI.
+*/
+class node13 {
+}/**
+@shapeType SystemBoundary
+@__modelType node
+@name DataCentre
+@backgroundColor 200,200,200 
+*/
+class node1 {
+/**
+@shapeType UseCase
+@__modelType node
+@name Run Data Query 
+*/
+class node {
+/**
+@shapeType GeneralizationLink
+@__modelType link
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node7.node:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType Note
+@__modelType node
+@name Note2
+@text Should a data query be considered to be a type of application? might make sense for Workflow 
+*/
+class node3 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node1.node:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType SystemBoundary
+@__modelType node
+@name JES/Workflow
+@backgroundColor 200,200,200 
+*/
+class node10 {
+/**
+@shapeType UseCase
+@__modelType node
+@name Take output from previous job step 
+*/
+class node {
+/**
+@shapeType GeneralizationLink
+@__modelType link
+@__ref <oiref:design#Class#id456vkdlid04undlihu9i6.node7.node5:oiref><oihard> 
+*/
+class link {
+}}}
