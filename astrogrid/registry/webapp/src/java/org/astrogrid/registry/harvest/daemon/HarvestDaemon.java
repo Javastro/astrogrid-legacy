@@ -76,18 +76,21 @@ public class HarvestDaemon extends HttpServlet implements Runnable
 			 e.printStackTrace();
 	     }
          */
+         try{
+             rhs.harvestAll(false,true);
+         }catch(RegistryException re) {
+             re.printStackTrace();
+         }
+              
+         
 
  		 try{
-            rhs.harvestAll(false,true);
-//            myThread.sleep(10000);
             myThread.sleep(harvestInterval*3600*1000);
 	     }
 	     catch(InterruptedException e)
 	     {
 			 e.printStackTrace();
-	     }catch(RegistryException re) {
-	         re.printStackTrace();
-        }
+	     }
          //System.out.println("Still looping in run() method! ...waiting 10 secs");
      }
    }
