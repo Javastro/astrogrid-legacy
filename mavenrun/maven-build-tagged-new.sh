@@ -53,8 +53,8 @@ rm -rf  ~/.maven/repository/org.astrogrid
 
 echo "[ag-build-$PROJECT_NAME] cvs checkout for tag $TAGNAME"
 #first need to check out the common maven stuff
-cvs -d $CVSROOT export -kv -r $TAGNAME astrogrid/maven-base >> $LOG_FILE 2>&1
-cvs -d $CVSROOT export -kv -r $TAGNAME astrogrid/$PROJECT_NAME >> $LOG_FILE 2>&1
+cvs -d $CVSROOT co -A -r $TAGNAME astrogrid/maven-base >> $LOG_FILE 2>&1
+cvs -d $CVSROOT co -A -r $TAGNAME astrogrid/$PROJECT_NAME >> $LOG_FILE 2>&1
 
 
 
