@@ -1,4 +1,4 @@
-/*$Id: MockRegistryAdminService.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: MockRegistryAdminService.java,v 1.3 2004/08/25 21:12:40 KevinBenson Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,13 +12,13 @@ package org.astrogrid.applications.description.registry;
 
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.beans.resource.VODescription;
-import org.astrogrid.registry.client.admin.RegistryAdminService;
+import org.astrogrid.registry.client.admin.UpdateRegistry;
 
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 
 
-public class MockRegistryAdminService extends RegistryAdminService {
+public class MockRegistryAdminService extends UpdateRegistry {
     public int callCount = 0;
     public Document update(VODescription desc) throws RegistryException{
         callCount++;
@@ -32,6 +32,9 @@ public class MockRegistryAdminService extends RegistryAdminService {
 
 /* 
 $Log: MockRegistryAdminService.java,v $
+Revision 1.3  2004/08/25 21:12:40  KevinBenson
+Needed to use the new class, RegistryAdminService is now an interface in the client-lite
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization
