@@ -1,4 +1,4 @@
-/*$Id: AladinImageTest.java,v 1.2 2004/10/05 17:08:22 mch Exp $
+/*$Id: AladinImageTest.java,v 1.3 2004/10/16 09:48:24 mch Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,10 @@
 package org.astrogrid.datacenter.deployment.vizier.aladinimage;
 
 import junit.framework.TestCase;
+import org.astrogrid.datacenter.impl.cds.generated.aladinimage.AladinImage;
+import org.astrogrid.datacenter.impl.cds.generated.aladinimage.AladinService;
+import org.astrogrid.datacenter.impl.cds.generated.aladinimage.AladinServiceLocator;
+import javax.xml.rpc.ServiceException;
 
 /** Not currently running - CDS have just documented this web service, and want people to send an email before using it - probably
  * because it loads the servers more. hence, it seems unfair to thrash it in a unit test. will leave for now.
@@ -28,6 +32,13 @@ public class AladinImageTest extends TestCase {
         super(arg0);
     }
 
+    public void testItsThere() throws ServiceException {
+      AladinService service = new AladinServiceLocator();
+       AladinImage imageClient = service.getAladinImage();
+       
+       //see comment above - don't test yet
+    }
+    
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AladinImageTest.class);
     }
@@ -37,6 +48,9 @@ public class AladinImageTest extends TestCase {
 
 /*
 $Log: AladinImageTest.java,v $
+Revision 1.3  2004/10/16 09:48:24  mch
+Added test skeleton
+
 Revision 1.2  2004/10/05 17:08:22  mch
 Fixed package names and imports
 
