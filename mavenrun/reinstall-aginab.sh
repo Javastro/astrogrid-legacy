@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: reinstall-aginab.sh,v 1.3 2004/11/28 21:36:57 jdt Exp $ 
+# $Id: reinstall-aginab.sh,v 1.4 2004/11/29 18:00:35 jdt Exp $ 
 ######################################################
 # Script to reinstall AGINAB, assumes TOMCAT is running
 ######################################################
@@ -12,7 +12,7 @@ echo "Reinstalling AGINAB from $BUILDHOME"
 OLDDIR=$PWD
 cd $BUILDHOME 
 echo "Undeploying old apps..." 
-if maven $MY_OPTS undeploy-all 
+if maven $MY_MAVEN_OPTS undeploy-all 
 then
    echo "*** SUCCESS ***" 
 else
@@ -20,11 +20,11 @@ else
 fi
 
 echo "Cleaning out Tomcat..."
-maven $MY_OPTS CLEANTOMCAT
+maven $MY_MAVEN_OPTS CLEANTOMCAT
 
 #While we have memory problems restrict ourselves to reinstalling all bar the portal
 echo "Deploying all AGINAB components *except portal*"
-if maven $MY_OPTS deploy-all-except-portal 
+if maven $MY_MAVEN_OPTS deploy-all-except-portal 
 then
    echo "*** SUCCESS ***" 
 else

@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: run-int-test.sh,v 1.3 2004/11/28 21:36:57 jdt Exp $ 
+# $Id: run-int-test.sh,v 1.4 2004/11/29 18:00:35 jdt Exp $ 
 ######################################################
 # Script to install AGINAB, run the integration
 # tests and publish the results
@@ -28,21 +28,22 @@ fi
 OLDDIR=$PWD
 
 # Variables for which we can supply defaults
-DOCMACHINE=${DOCMACHINE:-maven@www.astrogrid.org\}
-DOCLOCATION=${DOCLOCATION:-/var/www/www/maven/docs/HEAD\}
+DOCMACHINE=${DOCMACHINE:-maven@www.astrogrid.org}
+DOCLOCATION=${DOCLOCATION:-/var/www/www/maven/docs/HEAD}
 
 echo "Going to deploy docs to $DOCLOCATION on $DOCMACHINE - hit ctrl-c if this isn't what you want"
 
 # Fairly fixed variables
 TESTMODULE=astrogrid/integrationTests/auto-integration
 BUILDHOME=$CHECKOUTHOME/$TESTMODULE
+export BUILDHOME
 LOGFILE=$SCRIPTHOME/intTest.log
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
 ADMIN_EMAIL="jdt@roe.ac.uk clq2@star.le.ac.uk"
 TOMLOGS=$CATALINA_HOME/logs
-export CVS_RSH=ssh
-export CVSROOT=:pserver:anoncvs@cvs.astrogrid.org:/devel
+#export CVS_RSH=ssh
+#export CVSROOT=:pserver:anoncvs@cvs.astrogrid.org:/devel
 
 
 # Processing Starts Here
@@ -50,29 +51,31 @@ rm $LOGFILE
 echo "Integration Test Log $DATE" >> $LOGFILE
 echo "=============================" >> $LOGFILE
 
-
+echo "Running Integration Tests"
+echo "Have you remembered to edit ~/build.properties with the test version numbers?"
+echo "Checking out maven-base and AGINAB from cvs"
 if $SCRIPTHOME/cvs-checkout.sh $TESTMODULE $1 >> $LOGFILE 2>&1
 then
 else
     cat $LOGFILE | mail -s "run-int-test: cvs failure" $ADMIN_EMAIL
 	exit 1
 fi
-
+echo "Reinstalling AstroGrid"
 if $SCRIPTHOME/reinstall-aginab.sh >> $LOGFILE 2>&1
 then
 else
     cat $LOGFILE | mail -s "run-int-test: reinstall aginab failure" $ADMIN_EMAIL
 	exit 1
 fi
-
+echo "Bouncing Tomcat"
 $SCRIPTHOME/bounce-tomcat.sh >> $LOGFILE 2>&1
-
+echo "Running Tests"
 if $SCRIPTHOME/run-and-publish-tests.sh >> $LOGFILE 2>&1
 then
 else
     cat $LOGFILE | mail -s "run-int-test: run-and-publish-tests.sh failure" $ADMIN_EMAIL
 fi
-
+echo "Installing Portal"
 if $SCRIPTHOME/install-portal.sh >> $LOGFILE 2>&1
 then
 else
