@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.95 2004/09/09 09:19:36 clq2 Exp $ -->
+<!-- $Id: maven.xml,v 1.96 2004/09/09 11:40:29 dave Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -431,13 +431,11 @@
     <!--+
         | Register our service.
         +-->
-    
-	    <ant
-	        target="service.register"
-	        dir="${temporary.dir}/community/toolkit"
-	        antfile="${temporary.dir}/community/toolkit/install.xml"
-	        />
-    
+    <ant
+        target="service.register"
+        dir="${temporary.dir}/community/toolkit"
+        antfile="${temporary.dir}/community/toolkit/install.xml"
+        />
 </goal>
 <!--+
     | Wait for the Community service to respond.
