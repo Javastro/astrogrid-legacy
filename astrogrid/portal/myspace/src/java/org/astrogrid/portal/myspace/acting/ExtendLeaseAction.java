@@ -54,7 +54,7 @@ public class ExtendLeaseAction extends AbstractAction {
 
       String noOfDaysParam = utils.getAnyParameter("myspace-extension-days", params, request); 
       int noOfDays = Integer.parseInt(noOfDaysParam);
-      logger.debug("[act] oldMySpaceName: " + oldMySpaceName);
+      logger.debug("[act] noOfDays: " + noOfDaysParam);
 
       renameResult = delegate.extendLease(userId, communityId, credential, oldMySpaceName, noOfDays);
       

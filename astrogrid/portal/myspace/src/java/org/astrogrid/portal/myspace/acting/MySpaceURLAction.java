@@ -54,13 +54,13 @@ public class MySpaceURLAction extends AbstractAction {
 
       url = delegate.getDataHoldingUrl(userId, communityId, credential, mySpaceName);
       
-      request.setAttribute("myspace-votable-view", "true");
-      request.setAttribute("myspace-votable-url", url);
-      sitemapParams.put("myspace-votable-url", url);
+      request.setAttribute("myspace-url-found", "true");
+      request.setAttribute("myspace-url", url);
+      sitemapParams.put("myspace-url", url);
     }
     catch(Throwable t) {
-      request.setAttribute("myspace-votable-view", "false");
-      request.setAttribute("myspace-votable-view-error-message", t.getLocalizedMessage());
+      request.setAttribute("myspace-url-found", "false");
+      request.setAttribute("myspace-url-error-message", t.getLocalizedMessage());
       sitemapParams = null;
       
       logger.debug("[act] throwable: " + t.getClass() + ", msg: " + t.getLocalizedMessage());

@@ -15,7 +15,7 @@ import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.portal.utils.acting.ActionUtils;
 import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
 
-public class CopyAction extends AbstractAction {
+public class URLUploadAction extends AbstractAction {
 
   /* (non-Javadoc)
    * @see org.apache.cocoon.acting.Action#act(org.apache.cocoon.environment.Redirector, org.apache.cocoon.environment.SourceResolver, java.util.Map, java.lang.String, org.apache.avalon.framework.parameters.Parameters)
@@ -34,7 +34,6 @@ public class CopyAction extends AbstractAction {
     String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request);
     logger.debug("[act] endPoint: " + endPoint);
 
-    String renameResult = null;
     try {
       MySpaceClient delegate = MySpaceDelegateFactory.createDelegate(endPoint);
     
@@ -49,20 +48,28 @@ public class CopyAction extends AbstractAction {
       String credential = utils.getAnyParameter("credential", params, request);
       logger.debug("[act] credential: " + credential);
 
-      String oldMySpaceName = utils.getAnyParameter("myspace-old-name", params, request);
-      logger.debug("[act] oldMySpaceName: " + oldMySpaceName);
+      String mySpaceName = utils.getAnyParameter("myspace-name", params, request);
+      logger.debug("[act] mySpaceName: " + mySpaceName);
 
-      String newMySpaceName = utils.getAnyParameter("myspace-new-name", params, request);
-      logger.debug("[act] newMySpaceName: " + newMySpaceName);
+      String uploadURL = utils.getAnyParameter("myspace-upload-url", params, request);
+      logger.debug("[act] uploadURL: " + uploadURL);
+
+      String uploadCategory = utils.getAnyParameter("myspace-upload-category", params, request);
+      logger.debug("[act] uploadCategory: " + uploadCategory);
+
+      boolean saved = delegate.saveDataHoldingURL(userId, communityId, credential, mySpaceName, uploadURL, uploadCategory, "Overwrite");
       
-      renameResult = delegate.copyDataHolding(userId, communityId, credential, oldMySpaceName, newMySpaceName);
-      
-      request.setAttribute("myspace-copy", "true");
-      request.setAttribute("myspace-copy-result", renameResult);
+      if(saved) {
+        request.setAttribute("myspace-upload", "true");
+      }
+      else {
+        request.setAttribute("myspace-upload", "false");
+      }
+         
     }
     catch(Throwable t) {
-      request.setAttribute("myspace-copy", "false");
-      request.setAttribute("myspace-copy-error-message", t.getLocalizedMessage());
+      request.setAttribute("myspace-upload", "false");
+      request.setAttribute("myspace-upload-error-message", t.getLocalizedMessage());
       sitemapParams = null;
       
       logger.debug("[act] throwable: " + t.getClass() + ", msg: " + t.getLocalizedMessage());
