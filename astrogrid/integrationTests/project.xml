@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: project.xml,v 1.11 2004/02/07 00:52:45 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
+    <extend>../maven-base/project.xml</extend>
 	<pomVersion>3</pomVersion>
 	<id>astrogrid-integrationTests</id>
-	<name>Astrogrid Integration Tests</name>
-	<currentVersion>SNAPSHOT</currentVersion>
-	<organization>
-		<name>AstroGrid</name>
-		<url>http://www.astrogrid.org</url>
-		<logo>http://www.astrogrid.org/images/AGlogo</logo>
-	</organization>
-	<inceptionYear>2002</inceptionYear>
+	<name>integrationTests</name>
 	<description> This project consists of test scripts and code to run integration tests on 
 	Astrogrid.  Currently these consist of a number of JUnit tests.</description>
 	<shortDescription>AstroGrid Integration Tests</shortDescription>
-	<siteDirectory>/var/www/www/maven/build/integrationTests</siteDirectory>
-	<issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
-	<package>org.astrogrid</package>
-	<logo>http://www.astrogrid.org/images/AGlogo</logo>
+    <!-- Temporary Overrides till we get consistent artifactIds-->
+    <groupId>astrogrid-integrationTests</groupId>
+    <!-- end of overrides -->
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
 		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
@@ -35,39 +29,6 @@
 			</resources>
 		</unitTest>
 	</build>
-	<developers>
-		<developer>
-			<name>John D Taylor</name>
-			<id>jdt</id>
-			<email>jdt@roe.ac.uk</email>
-		</developer>
-		<developer>
-			<name>Paul Harrison</name>
-			<id>pah</id>
-			<email>pah@jb.man.ac.uk</email>
-		</developer>
-		<developer>
-			<name>Martin Hill</name>
-			<id>mch</id>
-			<email>mch@roe.ac.uk</email>
-			<organization>ROE</organization>
-		</developer>
-		<developer>
-			<name>Noel Winstanley</name>
-			<id>nw</id>
-			<email>nw@jb.man.ac.uk</email>
-			<organization>Jodrell Bank</organization>
-		</developer>
-	</developers>
-	<repository>
-		<connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/integrationTests
-    </connection>
-		<developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/integrationTests
-    </developerConnection>
-		<url>http://www.astrogrid.org/viewcvs/astrogrid/integrationTests/</url>
-	</repository>
 	<dependencies>
 		<dependency>
 			<artifactId>astrogrid-mySpace</artifactId>
