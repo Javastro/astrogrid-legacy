@@ -1,4 +1,4 @@
-/*$Id: Service.java,v 1.6 2004/03/14 23:11:32 nw Exp $
+/*$Id: Service.java,v 1.7 2004/03/16 13:57:41 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.scripting;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javax.xml.rpc.ServiceException;
 
@@ -18,12 +19,12 @@ import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
 
 
 /**
  * Data object representing a service 
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2004
- * @todo add registry delegate
  *
  */ 
 public class Service {
@@ -66,13 +67,16 @@ public class Service {
          throw new UnsupportedOperationException("Registry currently not building - can't compile against delegate");
       }
       if(APPLICATION_SERVICE.equals(type)) {
-         return DelegateFactory(endpoint);
+         return DelegateFactory.createDelegate(endpoint);
       }
       if (JOBCONTROL_SERVICE.equals(type)) {
          return JesDelegateFactory.createJobController(endpoint);
       }
       if (JOBMONITOR_SERVICE.equals(type)) {
          return JesDelegateFactory.createJobMonitor(endpoint);
+      }
+      if (REGISTRY_SERVICE.equals(type)) {
+          return RegistryDelegateFactory.createQuery(new URL(endpoint));
       }
       throw new IllegalStateException("Unknown service type - cannot create delegate:" + this.endpoint);
    }
@@ -131,6 +135,9 @@ public class Service {
 
 /* 
 $Log: Service.java,v $
+Revision 1.7  2004/03/16 13:57:41  nw
+added in registry delegate
+
 Revision 1.6  2004/03/14 23:11:32  nw
 commented out code that used methods that have dissapeared from datacenter and applications delegate jars
 
