@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.3 2004/04/15 18:15:59 pah Exp $
+ * $Id: InitServlet.java,v 1.4 2004/04/16 11:14:33 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -9,13 +9,20 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- */ 
+ */
 
 package org.astrogrid.applications.manager;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
@@ -36,7 +43,7 @@ public class InitServlet extends HttpServlet {
     */
    public InitServlet() {
       super();
-      
+
    }
 
    /** 
@@ -44,18 +51,48 @@ public class InitServlet extends HttpServlet {
     */
    public void init(ServletConfig conf) throws ServletException {
       // build the service endpoint & then call the service
-      
-      //FIXME - this is not the servlet context that we need
-    
-      String endpoint = conf.getServletContext().getRealPath("services/CommonExecutionConnectorService");
-      logger.info("initializing service at endpoint="+endpoint);
-      
-      CommonExecutionConnectorClient client = DelegateFactory.createDelegate(endpoint);
+
+      //FIXME - this is not the servlet context that we need - don't think it is possible from init...
+
+   }
+
+   private URL computeEndpoint(HttpServletRequest req) throws MalformedURLException {
+
+      URL endpoint =
+         new URL(
+            "http",
+            req.getServerName(),
+            req.getServerPort(),
+            req.getContextPath() + "/services/CommonExecutionConnectorService");
+      return endpoint;
+   }
+
+   /** 
+    * Service a get. This is used entirely to initialize the CommonExecutionController by making a call to it.
+    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+    * @TODO Find a nicer way to case the initialization - would be better to create a container anyway...
+    */
+   protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1)
+      throws ServletException, IOException {
+      //TODO would be a good idea to allow regestration to specified registry...
+      URL endpoint = computeEndpoint(arg0);
+      logger.info("initializing service at endpoint=" + endpoint);
+
+      CommonExecutionConnectorClient client =
+         DelegateFactory.createDelegate(endpoint.toString());
       try {
          client.listApplications();
+         //         arg1.setStatus(arg1.SC_OK, "?");
+         // write a very simple response - not really ever viewed...
+         PrintWriter out = arg1.getWriter();
+         out.println("<html><body>");
+         out.println("<h1>Initialising CommonExecutionController</h1>");
+         out.println("</body></html>");
       }
       catch (CEADelegateException e) {
-        throw new ServletException("problem prompting initialization of application controller", e);
+         throw new ServletException(
+            "problem prompting initialization of application controller",
+            e);
       }
    }
 

@@ -48,7 +48,10 @@
       <load-on-startup>200</load-on-startup>
   	
   </servlet>
-
+ <servlet-mapping>
+     <servlet-name>CommonExecutionControllerInitializer</servlet-name> 
+     <url-pattern/>/servlet/initForRegistry </url-pattern>	
+ </servlet-mapping>
  <servlet-mapping>
     <servlet-name>JUnitEETestServlet</servlet-name>
     <url-pattern>/TestServlet/*</url-pattern>
