@@ -29,7 +29,7 @@
     <dependency>
       <id>astrogrid-config</id>
       <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.config.version}</version>
+      <version>${astrogrid.config.stable}</version>
       <properties>
          <war.bundle>true</war.bundle>
       </properties>
@@ -56,7 +56,7 @@
     <dependency>
       <id>astrogrid-xml</id>
       <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.xml.version}</version>
+      <version>${astrogrid.xml.stable}</version>
       <properties>
          <war.bundle>true</war.bundle>
       </properties>

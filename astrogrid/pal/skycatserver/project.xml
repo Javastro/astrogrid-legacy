@@ -39,7 +39,7 @@
     <dependency>
       <id>astrogrid-config</id>
       <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.config.version}</version>
+      <version>${astrogrid.config.stable}</version>
       <properties>
          <war.bundle>true</war.bundle>
       </properties>
@@ -66,7 +66,7 @@
     <dependency>
       <id>astrogrid-xml</id>
       <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.xml.version}</version>
+      <version>${astrogrid.xml.stable}</version>
       <properties>
          <war.bundle>true</war.bundle>
       </properties>
@@ -284,6 +284,16 @@
       <groupId>commons-net</groupId>
       <artifactId>commons-net</artifactId>
       <version>1.1.0</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <!-- For emailing results and Mime Attachments  -->
+    <dependency>
+      <groupId>JavaMail</groupId>
+      <artifactId>JavaMail</artifactId>
+      <version>UNKNOWN</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
