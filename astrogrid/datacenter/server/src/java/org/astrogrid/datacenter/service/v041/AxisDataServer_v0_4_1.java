@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_4_1.java,v 1.7 2004/03/18 11:46:53 mch Exp $
+ * $Id: AxisDataServer_v0_4_1.java,v 1.8 2004/03/18 11:48:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -190,7 +190,7 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
     */
    public void startQuery(String id) throws AxisFault {
       try {
-         Querier querier = server.getQuerier(id);
+         Querier querier = (Querier) madeQueriers.get(id);
          if (querier == null)
             throw new DatacenterException("Querier not found for ID "+id);
          server.submitQuerier(querier);
@@ -258,6 +258,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
 /*
 $Log: AxisDataServer_v0_4_1.java,v $
+Revision 1.8  2004/03/18 11:48:39  mch
+fix for startQuery
+
 Revision 1.7  2004/03/18 11:46:53  mch
 Added better checking for nul queriers
 
@@ -292,4 +295,5 @@ Revision 1.30  2004/03/07 00:33:50  mch
 Started to separate It4.1 interface from general server services
 
  */
+
 
