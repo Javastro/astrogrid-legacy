@@ -446,13 +446,13 @@ public class DesignAction extends AbstractAction {
 				}                
                 
                 if( workflow == null ) {
-                    workflow = Workflow.createWorkflow( userid, community, name, description ) ;; 
+                    workflow = Workflow.createWorkflow( communitySnippet(), name, description ) ;; 
                 }
                 else if( workflow.isDirty() && (bConfirm == true) ) {
-                    workflow = Workflow.createWorkflow( userid, community, name, description ) ;
+                    workflow = Workflow.createWorkflow( communitySnippet(), name, description ) ;
                 }
                 else if( !workflow.isDirty() ) {
-                    workflow = Workflow.createWorkflow( userid, community, name, description ) ;
+                    workflow = Workflow.createWorkflow( communitySnippet(), name, description ) ;
                 }
                 else {
                     debug( "Create ignored - bConfirm == false" ) ;
@@ -476,7 +476,7 @@ public class DesignAction extends AbstractAction {
                     throw new ConsistencyException() ; 
                 }
                 else {
-                    Workflow.saveWorkflow( workflow ) ;
+                    Workflow.saveWorkflow( communitySnippet(), workflow ) ;
                 }            
             }
             finally {
@@ -505,16 +505,15 @@ public class DesignAction extends AbstractAction {
                 }
                 
                 if( workflow == null ) {
-                    workflow = Workflow.readWorkflow( userid, community, communitySnippet(), name ) ; 
+                    workflow = Workflow.readWorkflow( communitySnippet(), name ) ; 
                 }
                 else if( workflow.isDirty() == false ) {
-                    workflow = Workflow.readWorkflow( userid, community, communitySnippet(), name ) ; 
+                    workflow = Workflow.readWorkflow( communitySnippet(), name ) ; 
                 }
                 else if( bConfirm == true ) {
-                    workflow = Workflow.readWorkflow( userid, community, communitySnippet(), name ) ;
+                    workflow = Workflow.readWorkflow( communitySnippet(), name ) ;
                 }        
                 debug( "userid: " + workflow.getUserid() ) ;
-                debug( "community: " + workflow.getCommunity() ) ;
                 debug( "name: " + workflow.getName() ) ; 
                 debug( "description: " + workflow.getDescription() ) ;      
                     
@@ -540,13 +539,13 @@ public class DesignAction extends AbstractAction {
                 }
                 
                 if( workflow == null ) {
-                    Workflow.deleteWorkflow( userid, community, communitySnippet(), name ) ; 
+                    Workflow.deleteWorkflow( communitySnippet(), name ) ; 
                 }
                 else if( workflow.isDirty() == false ) {
-                    Workflow.deleteWorkflow( userid, community, communitySnippet(), name ) ;  
+                    Workflow.deleteWorkflow( communitySnippet(), name ) ;  
                 }
                 else if( bConfirm == true ) {
-                    Workflow.deleteWorkflow( userid, community, communitySnippet(), name ) ;  
+                    Workflow.deleteWorkflow( communitySnippet(), name ) ;  
                 }                              
             }
             finally {
@@ -577,13 +576,13 @@ public class DesignAction extends AbstractAction {
 				}                
        
 				else if( workflow == null ) {
-					workflow = Workflow.createWorkflowFromTemplate( userid, community, name, description, template  ) ; 
+					workflow = Workflow.createWorkflowFromTemplate( communitySnippet(), name, description, template  ) ; 
 				}
 				else if( workflow.isDirty() && (bConfirm == true) ) {
-				    workflow = Workflow.createWorkflowFromTemplate( userid, community, name, description, template ) ;
+				    workflow = Workflow.createWorkflowFromTemplate( communitySnippet(), name, description, template ) ;
 				}
 				else if( !workflow.isDirty() ) {
-					workflow = Workflow.createWorkflowFromTemplate( userid, community, name, description, template ) ;
+					workflow = Workflow.createWorkflowFromTemplate( communitySnippet(), name, description, template ) ;
 				}
 				else {
 					debug( "Create ignored - bConfirm == false" ) ;
@@ -606,7 +605,7 @@ public class DesignAction extends AbstractAction {
                     throw new ConsistencyException() ; 
                 }
                 else {
-                    Workflow.submitWorkflow( workflow ) ;
+                    Workflow.submitWorkflow( communitySnippet(), workflow ) ;
                 }          
             }
             finally {
@@ -726,10 +725,8 @@ public class DesignAction extends AbstractAction {
                                
                 //NB: The filter argument is ignored at present (Sept 2003).
                 Iterator
-                    iterator =  Workflow.readWorkflowList( userid
-                                                         , community
-                                                         , "*"
-                                                         , communitySnippet() ) ;
+                    iterator =  Workflow.readWorkflowList( communitySnippet()
+                                                         , "*" ) ;
                 this.request.setAttribute( WORKFLOW_LIST_PARAMETER, iterator ) ;               
             }
             catch( WorkflowException wfex ) {
@@ -750,7 +747,7 @@ public class DesignAction extends AbstractAction {
             try {
 //              NB: The filter argument is ignored at present (Sept 2003).
                 Iterator
-                    iterator =  Query.readQueryList( userid, community, communitySnippet(), "*" ) ;
+                    iterator =  Workflow.readQueryList( communitySnippet(), "*" ) ;
                 this.request.setAttribute( QUERY_LIST_PARAMETER, iterator ) ;               
             }
             finally {
@@ -771,16 +768,11 @@ public class DesignAction extends AbstractAction {
                                
 					//NB: The filter argument is ignored at present (Sept 2003).
 					Iterator
-						workflowIterator =  Workflow.readWorkflowList( userid
-																	 , community
-																	 , "*"
-																	 , communitySnippet() ) ;
+						workflowIterator =  Workflow.readWorkflowList( communitySnippet()
+																	 , "*" ) ;
 					this.request.setAttribute( WORKFLOW_LIST_PARAMETER, workflowIterator ) ;
 					Iterator
-						queryIterator = Query.readQueryList( userid
-															,community
-															,communitySnippet()
-															, "*" ) ;
+						queryIterator = Workflow.readQueryList( communitySnippet(), "*" ) ;
 					this.request.setAttribute( QUERY_LIST_PARAMETER, queryIterator ) ;               
 				}
 				catch( WorkflowException wfex ) {
