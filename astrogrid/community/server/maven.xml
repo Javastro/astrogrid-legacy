@@ -4,10 +4,28 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/07 10:45:45 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/02/12 06:56:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.3  2004/02/12 06:56:45  dave
+    |   Merged development branch, dave-dev-200401131047, into HEAD
+    |
+    |   Revision 1.2.4.5  2004/01/30 14:55:46  dave
+    |   Added PasswordData object
+    |
+    |   Revision 1.2.4.4  2004/01/29 04:47:13  dave
+    |   Added service deployment to the test:test pre-goal.
+    |
+    |   Revision 1.2.4.3  2004/01/26 16:59:22  dave
+    |   Experimented with in-memory databases - they don't work
+    |
+    |   Revision 1.2.4.2  2004/01/26 13:18:08  dave
+    |   Added new DatabaseManager to enable local JUnit testing
+    |
+    |   Revision 1.2.4.1  2004/01/17 13:54:18  dave
+    |   Removed password from AccountData
+    |
     |   Revision 1.2  2004/01/07 10:45:45  dave
     |   Merged development branch, dave-dev-20031224, back into HEAD
     |
@@ -41,6 +59,12 @@
     >
 
     <!--+
+        | Import the goals from our parent project.
+        | Looks like this gets included anyway, possibly because our project inherits from ../maven.project.xml ?
+    <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
+        +-->
+
+    <!--+
         | Primary goals are :
         |     clean
         |     install-artifact
@@ -56,14 +80,6 @@
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
     </goal>
-
-    <!--+
-        | Import our plugin goals from our parent project.
-        | Looks like this gets included anyway ...
-        | Possibly because our project inherits from ../maven.project.xml ?
-        | Maven : Any more unexpected suprises !?
-    <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
-        +-->
 
     <!--+
         | Reactor goals.
@@ -297,6 +313,208 @@
                 <include name="**/*.wsdd"/>
             </ant:fileset>
         </ant:copy>
+    </preGoal>
+
+    <!--+
+        | Prepare the database config files for our JUnit tests.
+        +-->
+    <preGoal name="test:test-resources">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Preparing test-resources ...."/>
+        <!--+
+            | Setup our database properties.
+            +-->
+        <ant:property name="database.name"   value="test"/>
+        <ant:property name="database.data"   value="${maven.build.dir}/database/data"/>
+        <ant:property name="database.config" value="${maven.build.dir}/database/config"/>
+        <!--+
+            | Create our config directory.
+            +-->
+        <ant:mkdir dir="${database.config}"/>
+        <!--+
+            | Copy our database mapping file.
+            | Not required at the moment, the standard mapping.xml is included as a test resource.
+			| However, we may need custom mapping files for some of the error condition testing.
+        <ant:copy overwrite="true" file="src/config/database/mapping.xml" toDir="${database.config}"/>
+            +-->
+        <!--+
+            | Create our database directory.
+            +-->
+        <ant:mkdir dir="${database.data}"/>
+        <!--+
+            | Fix the jaxp properties.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Fixing Maven JAXP properties"/>
+        <core:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+        <ant:echo message=""/>
+        <!--+
+            | Create our config for test-database-001.
+            | A local in-process database, with file storage and tables already created.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Creating Castor config for test-database-001"/>
+        <ant:xslt style="src/xsl/database-config.xsl"
+            in="src/config/database/database.xml"
+            out="${database.config}/test-database-001.xml">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="name"    expression="test-database-001"/>
+            <param name="engine"  expression="hsql"/>
+            <param name="url"     expression="jdbc:hsqldb:${database.data}/test-database-001"/>
+            <param name="mapping" expression="mapping.xml"/>
+            <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
+            <param name="user"    expression="sa"/>
+            <param name="pass"    expression=""/>
+        </ant:xslt>
+        <!--+
+            | Create our the database tables for test-database-001.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Creating database tables for test-database-001"/>
+        <ant:sql driver="org.hsqldb.jdbcDriver"
+             url="jdbc:hsqldb:${database.data}/test-database-001"
+             classpathref="maven.dependency.classpath"
+             userid="sa"
+             password=""
+             print="true"
+            >
+            <transaction src="src/config/database/database.sql"/>
+        </ant:sql>
+        <!--+
+            | Create our config for test-database-002.
+            | A local in-process database, with file storage and tables already created.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Creating Castor config for test-database-002"/>
+        <ant:xslt style="src/xsl/database-config.xsl"
+            in="src/config/database/database.xml"
+            out="${database.config}/test-database-002.xml">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="name"    expression="test-database-002"/>
+            <param name="engine"  expression="hsql"/>
+            <param name="url"     expression="jdbc:hsqldb:${database.data}/test-database-002"/>
+            <param name="mapping" expression="mapping.xml"/>
+            <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
+            <param name="user"    expression="sa"/>
+            <param name="pass"    expression=""/>
+        </ant:xslt>
+        <!--+
+            | Create our the database tables for test-database-002.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Creating database tables for test-database-002"/>
+        <ant:sql driver="org.hsqldb.jdbcDriver"
+             url="jdbc:hsqldb:${database.data}/test-database-002"
+             classpathref="maven.dependency.classpath"
+             userid="sa"
+             password=""
+             print="true"
+            >
+            <transaction src="src/config/database/database.sql"/>
+        </ant:sql>
+        <!--+
+            | Create our config for test-database-003.
+            | A local in-process database, with file storage.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Creating Castor config for test-database-003"/>
+        <ant:xslt style="src/xsl/database-config.xsl"
+            in="src/config/database/database.xml"
+            out="${database.config}/test-database-003.xml">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="name"    expression="test-database-003"/>
+            <param name="engine"  expression="hsql"/>
+            <param name="url"     expression="jdbc:hsqldb:${database.data}/test-database-003"/>
+            <param name="mapping" expression="mapping.xml"/>
+            <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
+            <param name="user"    expression="sa"/>
+            <param name="pass"    expression=""/>
+        </ant:xslt>
+        <!--+
+            | Create our config for test-database-004.
+            | A local in-process database, with file storage.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Creating Castor config for test-database-004"/>
+        <ant:xslt style="src/xsl/database-config.xsl"
+            in="src/config/database/database.xml"
+            out="${database.config}/test-database-004.xml">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="name"    expression="test-database-004"/>
+            <param name="engine"  expression="hsql"/>
+            <param name="url"     expression="jdbc:hsqldb:${database.data}/test-database-004"/>
+            <param name="mapping" expression="mapping.xml"/>
+            <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
+            <param name="user"    expression="sa"/>
+            <param name="pass"    expression=""/>
+        </ant:xslt>
+        <!--+
+            | Create a config for an in-memory-database.
+            | At the moment, this fails many of the tests.
+            | I suspect that this may be because it drops the data as soon as the JDBC connection is closed.
+            | Need to look at this one in more detail though.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Creating Castor config for memory-database-test"/>
+        <ant:xslt style="src/xsl/database-config.xsl"
+            in="src/config/database/database.xml"
+            out="${database.config}/memory-database-test.xml">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="name"    expression="memory-database-test"/>
+            <param name="engine"  expression="hsql"/>
+            <param name="url"     expression="jdbc:hsqldb:."/>
+            <param name="mapping" expression="mapping.xml"/>
+            <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
+            <param name="user"    expression="sa"/>
+            <param name="pass"    expression=""/>
+        </ant:xslt>
+    </preGoal>
+
+    <!--+
+        | Deploy our WebServices into our local Axis WebApp.
+		| At the moment, this isn't used in the tests.
+		| The JUnit tests explicitly deploy each service by calling the AdminClient.
+		| Eventually, I want to find a way of telling the in-process Axis service
+		| to load the server-config.wsdd file from the Axis WebApplication.
+        +-->
+    <preGoal name="test:test">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Preparing services for tests"/>
+        <!--+
+            | Initialise our classpaths.
+            +-->
+        <attainGoal name="init.classpath"/>
+        <!--+
+            | Deploy our PolicyManger service.
+            +-->
+        <ant:echo message="Deploying PolicyManager WebService"/>
+        <ant:java classname="org.apache.axis.utils.Admin"
+            dir="${axisDir}/WEB-INF"
+            classpathref="maven.dependency.classpath"
+            fork="true"
+            >
+            <arg value="server"/>
+            <arg value="${wsddDir}/PolicyManager.wsdd"/>
+        </ant:java>
+        <!--+
+            | Deploy our PolicyService service.
+            +-->
+        <ant:echo message="Deploying PolicyService WebService"/>
+        <ant:java classname="org.apache.axis.utils.Admin"
+            dir="${axisDir}/WEB-INF"
+            classpathref="maven.dependency.classpath"
+            fork="true"
+            >
+            <arg value="server"/>
+            <arg value="${wsddDir}/PolicyService.wsdd"/>
+        </ant:java>
     </preGoal>
 
 </project>

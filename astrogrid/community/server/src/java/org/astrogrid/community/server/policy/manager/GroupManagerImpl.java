@@ -1,11 +1,26 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/07 10:45:45 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/12 06:56:46 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.3  2004/02/12 06:56:46  dave
+ *   Merged development branch, dave-dev-200401131047, into HEAD
+ *
+ *   Revision 1.2.4.3  2004/02/06 13:49:09  dave
+ *   Moved CommunityManagerBase into server.common.CommunityServer.
+ *   Moved getServiceStatus into server.common.CommunityServer.
+ *   Moved JUnit tests to match.
+ *
+ *   Revision 1.2.4.2  2004/01/27 18:55:08  dave
+ *   Removed unused imports listed in PMD report
+ *
+ *   Revision 1.2.4.1  2004/01/27 05:19:17  dave
+ *   Moved Exception logging into CommunityManagerBase
+ *   Replaced if(null == database) with DatabaseNotFoundException
+ *
  *   Revision 1.2  2004/01/07 10:45:45  dave
  *   Merged development branch, dave-dev-20031224, back into HEAD
  *
@@ -69,29 +84,26 @@ package org.astrogrid.community.server.policy.manager ;
 
 import java.util.Vector ;
 import java.util.Collection ;
-import java.util.ArrayList;
 
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.OQLQuery;
 import org.exolab.castor.jdo.QueryResults;
-import org.exolab.castor.jdo.PersistenceException ;
 import org.exolab.castor.jdo.ObjectNotFoundException ;
-import org.exolab.castor.jdo.DatabaseNotFoundException ;
 import org.exolab.castor.jdo.DuplicateIdentityException ;
-import org.exolab.castor.jdo.TransactionNotInProgressException ;
-import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 
 import org.exolab.castor.persist.spi.Complex ;
 
-import org.astrogrid.community.common.policy.data.ServiceData ;
 import org.astrogrid.community.common.policy.data.GroupData ;
 import org.astrogrid.community.common.policy.data.GroupMemberData ;
 import org.astrogrid.community.common.policy.data.CommunityIdent ;
 
 import org.astrogrid.community.common.policy.manager.GroupManager ;
-import org.astrogrid.community.server.policy.manager.DatabaseManager ;
+
+import org.astrogrid.community.server.common.CommunityServer ;
+import org.astrogrid.community.server.database.DatabaseConfiguration ;
 
 public class GroupManagerImpl
+	extends CommunityServer
     implements GroupManager
     {
     /**
@@ -101,35 +113,21 @@ public class GroupManagerImpl
     protected static final boolean DEBUG_FLAG = true ;
 
     /**
-     * Our database manager.
-     *
-     */
-    private DatabaseManager databaseManager ;
-
-    /**
-     * Our database connection.
-     *
-     */
-    private Database database ;
-
-    /**
-     * Public constructor.
+     * Public constructor, using default database configuration.
      *
      */
     public GroupManagerImpl()
         {
+		super() ;
         }
 
     /**
-     * Initialise our manager.
+     * Public constructor, using specific database configuration.
      *
      */
-    public void init(DatabaseManager databaseManager)
+    public GroupManagerImpl(DatabaseConfiguration config)
         {
-        //
-        // Keep a reference to our database connection.
-        this.databaseManager = databaseManager ;
-        this.database = databaseManager.getDatabase() ;
+		super(config) ;
         }
 
     /**
@@ -152,7 +150,8 @@ public class GroupManagerImpl
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.addGroup()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 
-        GroupData group = null ;
+        GroupData group    = null ;
+        Database  database = null ;
         //
         // If the ident is valid.
         if (ident.isValid())
@@ -168,69 +167,54 @@ public class GroupManagerImpl
                 //
                 // Try performing our transaction.
                 try {
+					//
+					// Open our database connection.
+					database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
                     //
                     // Try creating the group in the database.
                     database.create(group);
+					//
+					// Commit the transaction.
+					database.commit() ;
                     }
                 //
                 // If we already have an object with that ident.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (DuplicateIdentityException ouch)
                     {
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("DuplicateIdentityException in addGroup()") ;
-
+					//
+					// Log the exception.
+					logException(ouch, "GroupManagerImpl.addGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("") ;
+					//
+					// Cancel the database transaction.
+					rollbackTransaction(database) ;
                     }
                 //
                 // If anything else went bang.
                 catch (Exception ouch)
                     {
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("Exception in addGroup()") ;
-
+					//
+					// Log the exception.
+					logException(ouch, "GroupManagerImpl.addGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("") ;
+					//
+					// Cancel the database transaction.
+					rollbackTransaction(database) ;
                     }
                 //
-                // Commit the transaction.
+                // Close our database connection.
                 finally
                     {
-                    try {
-                        if (null != group)
-                            {
-                            database.commit() ;
-                            }
-                        else {
-                            database.rollback() ;
-                            }
-                        }
-                    catch (Exception ouch)
-                        {
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("Exception in addGroup() finally clause") ;
-
-                        //
-                        // Set the response to null.
-                        group = null ;
-
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        }
+					closeConnection(database) ;
                     }
                 }
             //
@@ -278,7 +262,8 @@ public class GroupManagerImpl
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroup()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 
-        GroupData group = null ;
+        GroupData group    = null ;
+        Database  database = null ;
         //
         // If the ident is valid.
         if (ident.isValid())
@@ -288,69 +273,54 @@ public class GroupManagerImpl
             if (ident.isLocal())
                 {
                 try {
+					//
+					// Open our database connection.
+					database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
                     //
                     // Load the Group from the database.
                     group = (GroupData) database.load(GroupData.class, ident.toString()) ;
+					//
+					// Commit the transaction.
+					database.commit() ;
                     }
                 //
                 // If we couldn't find the object.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (ObjectNotFoundException ouch)
                     {
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in getGroup()") ;
-
+					//
+					// Log the exception.
+					logException(ouch, "GroupManagerImpl.getGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("") ;
+					//
+					// Cancel the database transaction.
+					rollbackTransaction(database) ;
                     }
                 //
                 // If anything else went bang.
                 catch (Exception ouch)
                     {
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("Exception in getGroup()") ;
-
+					//
+					// Log the exception.
+					logException(ouch, "GroupManagerImpl.getGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("") ;
+					//
+					// Cancel the database transaction.
+					rollbackTransaction(database) ;
                     }
                 //
-                // Commit the transaction.
+                // Close our database connection.
                 finally
                     {
-                    try {
-                        if (null != group)
-                            {
-                            database.commit() ;
-                            }
-                        else {
-                            database.rollback() ;
-                            }
-                        }
-                    catch (Exception ouch)
-                        {
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("Exception in getGroup() finally clause") ;
-
-                        //
-                        // Set the response to null.
-                        group = null ;
-
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        }
+					closeConnection(database) ;
                     }
                 }
             //
@@ -393,6 +363,7 @@ public class GroupManagerImpl
         //CommunityIdent ident = new CommunityIdent() ;
         //ident.setIdent(group.getIdent()) ;
         CommunityIdent ident = new CommunityIdent(group.getIdent()) ;
+        Database database = null ;
         //
         // If the ident is valid.
         if (ident.isValid())
@@ -404,6 +375,9 @@ public class GroupManagerImpl
                 //
                 // Try update the database.
                 try {
+					//
+					// Open our database connection.
+					database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
@@ -415,64 +389,46 @@ public class GroupManagerImpl
                     data.setDescription(group.getDescription()) ;
 //
 // Should not be able to modify the type.
-//                    data.setType(group.getType()) ;
+//					data.setType(group.getType()) ;
+					//
+					// Commit the transaction.
+					database.commit() ;
                     }
                 //
                 // If we couldn't find the object.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (ObjectNotFoundException ouch)
                     {
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in setGroup()") ;
-
+					//
+					// Log the exception.
+					logException(ouch, "GroupManagerImpl.setGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("") ;
+					//
+					// Cancel the database transaction.
+					rollbackTransaction(database) ;
                     }
                 //
                 // If anything else went bang.
                 catch (Exception ouch)
                     {
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("Exception in setGroup()") ;
-
+					//
+					// Log the exception.
+					logException(ouch, "GroupManagerImpl.setGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("") ;
+					//
+					// Cancel the database transaction.
+					rollbackTransaction(database) ;
                     }
                 //
-                // Commit the transaction.
+                // Close our database connection.
                 finally
                     {
-                    try {
-                        if (null != group)
-                            {
-                            database.commit() ;
-                            }
-                        else {
-                            database.rollback() ;
-                            }
-                        }
-                    catch (Exception ouch)
-                        {
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("Exception in setGroup() finally clause") ;
-
-                        //
-                        // Set the response to null.
-                        group = null ;
-
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        }
+					closeConnection(database) ;
                     }
                 }
             //
@@ -523,7 +479,8 @@ public class GroupManagerImpl
 // TODO
 // Prevent the client from deleting an Account Group if the Account still exists.
 //
-        GroupData group = null ;
+        GroupData group    = null ;
+        Database  database = null ;
         //
         // If the ident is valid.
         if (ident.isValid())
@@ -535,6 +492,9 @@ public class GroupManagerImpl
                 //
                 // Try update the database.
                 try {
+					//
+					// Open our database connection.
+					database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
@@ -544,63 +504,45 @@ public class GroupManagerImpl
                     //
                     // Delete the Group.
                     database.remove(group) ;
+					//
+					// Commit the transaction.
+					database.commit() ;
                     }
                 //
                 // If we couldn't find the object.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (ObjectNotFoundException ouch)
                     {
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in delGroup()") ;
-
+					//
+					// Log the exception.
+					logException(ouch, "GroupManagerImpl.delGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("") ;
+					//
+					// Cancel the database transaction.
+					rollbackTransaction(database) ;
                     }
                 //
                 // If anything else went bang.
                 catch (Exception ouch)
                     {
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("Exception in delGroup()") ;
-
+					//
+					// Log the exception.
+					logException(ouch, "GroupManagerImpl.delGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("") ;
+					//
+					// Cancel the database transaction.
+					rollbackTransaction(database) ;
                     }
                 //
-                // Commit the transaction.
+                // Close our database connection.
                 finally
                     {
-                    try {
-                        if (null != group)
-                            {
-                            database.commit() ;
-                            }
-                        else {
-                            database.rollback() ;
-                            }
-                        }
-                    catch (Exception ouch)
-                        {
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("Exception in delGroup() finally clause") ;
-
-                        //
-                        // Set the response to null.
-                        group = null ;
-
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        }
+					closeConnection(database) ;
                     }
                 }
             //
@@ -639,7 +581,11 @@ public class GroupManagerImpl
         //
         // Try to query the database.
         Object[] array = null ;
+        Database database = null ;
         try {
+			//
+			// Open our database connection.
+			database = this.getDatabase() ;
             //
             // Begin a new database transaction.
             database.begin();
@@ -665,50 +611,30 @@ public class GroupManagerImpl
             //
             // Convert it into an array.
             array = collection.toArray() ;
+			//
+			// Commit the transaction.
+			database.commit() ;
             }
         //
         // If anything went bang.
         catch (Exception ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("Exception in getLocalGroups()") ;
-
+			//
+			// Log the exception.
+			logException(ouch, "GroupManagerImpl.getLocalGroups()") ;
             //
             // Set the response to null.
             array = null ;
-
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             }
         //
-        // Commit the transaction.
+        // Close our database connection.
         finally
             {
-            try {
-                if (null != array)
-                    {
-                    database.commit() ;
-                    }
-                else {
-                    database.rollback() ;
-                    }
-                }
-            catch (Exception ouch)
-                {
-                if (DEBUG_FLAG) System.out.println("") ;
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("Exception in getLocalGroups() finally clause") ;
-
-                //
-                // Set the response to null.
-                array = null ;
-
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("") ;
-                }
+			closeConnection(database) ;
             }
-
         // TODO
         // Need to return something to the client.
         // Possibly a new DataObject ... ?
@@ -769,70 +695,56 @@ public class GroupManagerImpl
         member.setGroup(group.toString()) ;
         //
         // Try performing our transaction.
+        Database database = null ;
         try {
+			//
+			// Open our database connection.
+			database = this.getDatabase() ;
             //
             // Begin a new database transaction.
             database.begin();
             //
             // Try creating the record in the database.
             database.create(member);
+			//
+			// Commit the transaction.
+			database.commit() ;
             }
         //
         // If the account is already a member of this group.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
         catch (DuplicateIdentityException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("DuplicateIdentityException in addGroupMember()") ;
-
+			//
+			// Log the exception.
+			logException(ouch, "GroupManagerImpl.addGroupMember()") ;
             //
             // Set the response to null.
             member = null ;
-
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             }
         //
         // If anything else went bang.
         catch (Exception ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("Generic exception in addGroupMember()") ;
-
+			//
+			// Log the exception.
+			logException(ouch, "GroupManagerImpl.addGroupMember()") ;
             //
             // Set the response to null.
             member = null ;
-
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             }
         //
-        // Commit the transaction.
+        // Close our database connection.
         finally
             {
-            try {
-                if (null != group)
-                    {
-                    database.commit() ;
-                    }
-                else {
-                    database.rollback() ;
-                    }
-                }
-            catch (Exception ouch)
-                {
-                if (DEBUG_FLAG) System.out.println("") ;
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("Generic exception in addGroup() finally clause") ;
-
-                //
-                // Set the response to null.
-                member = null ;
-
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("") ;
-                }
+			closeConnection(database) ;
             }
         //
         // TODO
@@ -871,8 +783,12 @@ public class GroupManagerImpl
 //
         //
         // Try update the database.
-        GroupMemberData member = null ;
+        GroupMemberData member   = null ;
+        Database        database = null ;
         try {
+			//
+			// Open our database connection.
+			database = this.getDatabase() ;
             //
             // Begin a new database transaction.
             database.begin();
@@ -891,65 +807,46 @@ public class GroupManagerImpl
             //
             // Delete the record.
             database.remove(member) ;
+			//
+			// Commit the transaction.
+			database.commit() ;
             }
         //
         // If we couldn't find the object.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
         catch (ObjectNotFoundException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in delGroupMember()") ;
-
+			//
+			// Log the exception.
+			logException(ouch, "GroupManagerImpl.delGroupMember()") ;
             //
             // Set the response to null.
             member = null ;
-
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             }
         //
         // If anything else went bang.
         catch (Exception ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("Generic exception in delGroupMember()") ;
-
+			//
+			// Log the exception.
+			logException(ouch, "GroupManagerImpl.delGroupMember()") ;
             //
             // Set the response to null.
             member = null ;
-
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             }
         //
-        // Commit the transaction.
+        // Close our database connection.
         finally
             {
-            try {
-                if (null != member)
-                    {
-                    database.commit() ;
-                    }
-                else {
-                    database.rollback() ;
-                    }
-                }
-            catch (Exception ouch)
-                {
-                if (DEBUG_FLAG) System.out.println("") ;
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("Generic exception in delGroupMember() finally clause") ;
-
-                //
-                // Set the response to null.
-                member = null ;
-
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("") ;
-                }
+			closeConnection(database) ;
             }
-
         //
         // TODO
         // Should return a DataObject with status response.
@@ -970,8 +867,12 @@ public class GroupManagerImpl
         if (DEBUG_FLAG) System.out.println("  account  : " + account) ;
         if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
 
-        GroupMemberData member = null ;
+        GroupMemberData member   = null ;
+        Database        database = null ;
         try {
+			//
+			// Open our database connection.
+			database = this.getDatabase() ;
             //
             // Begin a new database transaction.
             database.begin();
@@ -987,63 +888,45 @@ public class GroupManagerImpl
             //
             // Load the GroupMember from the database.
             member = (GroupMemberData) database.load(GroupMemberData.class, key) ;
+			//
+			// Commit the transaction.
+			database.commit() ;
             }
         //
         // If we couldn't find the object.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
         catch (ObjectNotFoundException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in getGroupMember()") ;
-
+			//
+			// Log the exception.
+			logException(ouch, "GroupManagerImpl.getGroupMember()") ;
             //
             // Set the response to null.
             member = null ;
-
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             }
         //
         // If anything else went bang.
         catch (Exception ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("Generic exception in getGroupMember()") ;
-
+			//
+			// Log the exception.
+			logException(ouch, "GroupManagerImpl.getGroupMember()") ;
             //
             // Set the response to null.
             member = null ;
-
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             }
         //
-        // Commit the transaction.
+        // Close our database connection.
         finally
             {
-            try {
-                if (null != member)
-                    {
-                    database.commit() ;
-                    }
-                else {
-                    database.rollback() ;
-                    }
-                }
-            catch (Exception ouch)
-                {
-                if (DEBUG_FLAG) System.out.println("") ;
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("Generic exception in getGroupMember() finally clause") ;
-
-                //
-                // Set the response to null.
-                member = null ;
-
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("") ;
-                }
+			closeConnection(database) ;
             }
         //
         // TODO
@@ -1063,7 +946,8 @@ public class GroupManagerImpl
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupMembers()") ;
         if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
 
-        Object[] array = null ;
+        Object[] array    = null ;
+        Database database = null ;
         //
         // If the Group is local.
         if (group.isLocal())
@@ -1072,6 +956,9 @@ public class GroupManagerImpl
             //
             // Try to query the database.
             try {
+				//
+				// Open our database connection.
+				database = this.getDatabase() ;
                 //
                 // Begin a new database transaction.
                 database.begin();
@@ -1096,49 +983,30 @@ public class GroupManagerImpl
                 // 
                 // Convert it into an array.
                 array = collection.toArray() ;
+				//
+				// Commit the transaction.
+				database.commit() ;
                 }
             //
             // If anything went bang.
             catch (Exception ouch)
                 {
-                if (DEBUG_FLAG) System.out.println("") ;
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList()") ;
-
+				//
+				// Log the exception.
+				logException(ouch, "GroupManagerImpl.getGroupList()") ;
                 //
                 // Set the response to null.
                 array = null ;
-
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("") ;
+				//
+				// Cancel the database transaction.
+				rollbackTransaction(database) ;
                 }
-            //
-            // Commit the transaction.
-            finally
-                {
-                try {
-                    if (null != array)
-                        {
-                        database.commit() ;
-                        }
-                    else {
-                        database.rollback() ;
-                        }
-                    }
-                catch (Exception ouch)
-                    {
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList() finally clause") ;
-
-                    //
-                    // Set the response to null.
-                    array = null ;
-
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    }
-                }
+	        //
+	        // Close our database connection.
+	        finally
+	            {
+				closeConnection(database) ;
+	            }
             }
         //
         // If the Group is not local.
@@ -1174,7 +1042,8 @@ public class GroupManagerImpl
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getLocalAccountGroups()") ;
         if (DEBUG_FLAG) System.out.println("  account   : " + account) ;
-        Object[] array = null ;
+        Object[] array    = null ;
+        Database database = null ;
         //
         // If the Account ident is valid.
         if (account.isValid())
@@ -1183,6 +1052,9 @@ public class GroupManagerImpl
             //
             // Try to query the database.
             try {
+				//
+				// Open our database connection.
+				database = this.getDatabase() ;
                 //
                 // Begin a new database transaction.
                 database.begin();
@@ -1207,49 +1079,30 @@ public class GroupManagerImpl
                 // 
                 // Convert it into an array.
                 array = collection.toArray() ;
+				//
+				// Commit the transaction.
+				database.commit() ;
                 }
             //
             // If anything went bang.
             catch (Exception ouch)
                 {
-                if (DEBUG_FLAG) System.out.println("") ;
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("Generic exception in getLocalAccountGroups()") ;
-
+				//
+				// Log the exception.
+				logException(ouch, "GroupManagerImpl.getLocalAccountGroups()") ;
                 //
                 // Set the response to null.
                 array = null ;
-
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("") ;
+				//
+				// Cancel the database transaction.
+				rollbackTransaction(database) ;
                 }
-            //
-            // Commit the transaction.
-            finally
-                {
-                try {
-                    if (null != array)
-                        {
-                        database.commit() ;
-                        }
-                    else {
-                        database.rollback() ;
-                        }
-                    }
-                catch (Exception ouch)
-                    {
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("Generic exception in getLocalAccountGroups() finally clause") ;
-
-                    //
-                    // Set the response to null.
-                    array = null ;
-
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    }
-                }
+	        //
+	        // Close our database connection.
+	        finally
+	            {
+				closeConnection(database) ;
+	            }
             }
         //
         // If the Account ident is not valid.

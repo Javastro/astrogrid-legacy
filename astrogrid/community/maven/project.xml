@@ -4,10 +4,29 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/13 10:42:00 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2004/02/12 06:56:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.4  2004/02/12 06:56:45  dave
+    |   Merged development branch, dave-dev-200401131047, into HEAD
+    |
+    |   Revision 1.3.4.4  2004/02/12 06:26:37  dave
+    |   Reconfiguring install toolkit
+    |
+    |   Revision 1.3.4.3  2004/02/10 01:20:12  dave
+    |   Changed the build version to SNAPSHOT
+    |
+    |   Revision 1.3.4.2  2004/02/10 01:18:13  dave
+    |   Changed internal depends to use ${pom.currentVersion}.
+    |   Tried using a properties file, but depends from project.xml are loaded before any of the properties.
+    |   TODO Need to make this configurable, to set the versions of other astrogrid depends.
+    |
+    |   Revision 1.3.4.1  2004/02/10 00:40:37  dave
+    |   Added install tooklit to the Maven build.
+    |   Changed Maven project to use 'org.astrogrid' as the group name.
+    |   Fixed dependencies that used the original group name.
+    |
     |   Revision 1.3  2004/01/13 10:42:00  dave
     |   Removed build.xml and updated maven build version
     |
@@ -23,8 +42,16 @@
     | </cvs:log>
     +-->
 <project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ant="jelly:ant"
+	xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | Force a load of the version properties file
+		| Guess ... didn't work.
+    <ant:property file="versions.properties"/>
+    <ant:echo message="astrogrid.community.version : ${astrogrid.community.version}"/>
+        +-->
 
     <!--+
         | The current version of the Maven project descriptor.
@@ -34,14 +61,29 @@
     <!--+
         | The short name of the project group.
         | This value is used to group all jars for a project in one directory.
-        +-->
+		| TODO - This should come from the top level master project.
+    <groupId>org.astrogrid</groupId>
     <groupId>astrogrid-community</groupId>
+        +-->
+    <groupId>org.astrogrid</groupId>
 
     <!--+
         | The current version of the project.
-        | This value is used when naming jars and distribution files.
-        +-->
+        | This is used when naming jars and distribution files.
+        | This is also used to resolve the internal dependencies within this project.
+    <currentVersion>SNAPSHOT</currentVersion>
     <currentVersion>1.5.0</currentVersion>
+        +-->
+    <currentVersion>SNAPSHOT</currentVersion>
+
+    <!--+
+        | The current versions of other AstroGrid components.
+		| Guess ... didn't work.
+    <astrogridVersions>
+		<community>SNAPSHOT</community>
+		<myspace>SNAPSHOT</myspace>
+    </astrogridVersions>
+        +-->
 
     <!--+
         | The cvs repository location.

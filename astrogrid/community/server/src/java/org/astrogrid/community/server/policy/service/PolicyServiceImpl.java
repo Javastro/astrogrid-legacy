@@ -1,11 +1,41 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/service/Attic/PolicyServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/07 10:45:45 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/12 06:56:46 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceImpl.java,v $
+ *   Revision 1.3  2004/02/12 06:56:46  dave
+ *   Merged development branch, dave-dev-200401131047, into HEAD
+ *
+ *   Revision 1.2.4.8  2004/02/06 16:14:17  dave
+ *   Removed import java.rmi.Remote
+ *
+ *   Revision 1.2.4.7  2004/02/06 15:42:12  dave
+ *   Fixes to pass JUnit tests.
+ *
+ *   Revision 1.2.4.6  2004/02/06 13:51:11  dave
+ *   Fixed missing import
+ *
+ *   Revision 1.2.4.5  2004/02/06 13:49:09  dave
+ *   Moved CommunityManagerBase into server.common.CommunityServer.
+ *   Moved getServiceStatus into server.common.CommunityServer.
+ *   Moved JUnit tests to match.
+ *
+ *   Revision 1.2.4.4  2004/01/27 07:43:03  dave
+ *   Removed old DatabaseManager code
+ *
+ *   Revision 1.2.4.3  2004/01/27 06:46:19  dave
+ *   Refactored PermissionManagerImpl and added initial JUnit tests
+ *
+ *   Revision 1.2.4.2  2004/01/27 06:16:20  dave
+ *   Removed calls to GroupManagerImpl.init()
+ *
+ *   Revision 1.2.4.1  2004/01/26 23:23:23  dave
+ *   Changed CommunityManagerImpl to use the new DatabaseManager.
+ *   Moved rollback and close into CommunityManagerBase.
+ *
  *   Revision 1.2  2004/01/07 10:45:45  dave
  *   Merged development branch, dave-dev-20031224, back into HEAD
  *
@@ -48,22 +78,22 @@ package org.astrogrid.community.server.policy.service ;
 
 import java.rmi.RemoteException ;
 
-import org.astrogrid.community.common.policy.data.ServiceData ;
 import org.astrogrid.community.common.policy.data.GroupMemberData ;
 import org.astrogrid.community.common.policy.data.PolicyPermission  ;
 import org.astrogrid.community.common.policy.data.PolicyCredentials ;
 import org.astrogrid.community.common.policy.data.CommunityIdent ;
 
-import org.astrogrid.community.common.config.CommunityConfig ;
-
 import org.astrogrid.community.common.policy.service.PolicyService ;
 
 import org.astrogrid.community.server.policy.manager.GroupManagerImpl ;
-import org.astrogrid.community.server.policy.manager.DatabaseManagerImpl ;
 import org.astrogrid.community.server.policy.manager.CommunityManagerImpl ;
 import org.astrogrid.community.server.policy.manager.PermissionManagerImpl ;
 
+import org.astrogrid.community.server.common.CommunityServer ;
+import org.astrogrid.community.server.database.DatabaseConfiguration ;
+
 public class PolicyServiceImpl
+	extends CommunityServer
     implements PolicyService
     {
     /**
@@ -73,84 +103,79 @@ public class PolicyServiceImpl
     protected static final boolean DEBUG_FLAG = true ;
 
     /**
-     * Our DatabaseManager.
-     *
-     */
-    private DatabaseManagerImpl databaseManager ;
-
-    /**
      * Our GroupManager.
      *
      */
-    private GroupManagerImpl groupManager ;
+    private GroupManagerImpl groupManager = new GroupManagerImpl() ;
 
     /**
      * Our CommunityManager.
      *
      */
-    private CommunityManagerImpl communityManager ;
+    private CommunityManagerImpl communityManager = new CommunityManagerImpl() ;
 
     /**
      * Our PermissionManager
      *
      */
-    private PermissionManagerImpl permissionManager;
+    private PermissionManagerImpl permissionManager = new PermissionManagerImpl() ;
 
     /**
-     * Public constructor.
+     * Public constructor, using default database configuration.
      *
      */
     public PolicyServiceImpl()
         {
-        this.init() ;
+		super() ;
+		//
+		// Configure our local managers.
+		configLocalManagers() ;
         }
 
     /**
-     * Initialise our service.
+     * Public constructor, using specific database configuration.
      *
      */
-    protected void init()
-        {
-        //
-        // Initialise our configuration.
-        CommunityConfig.loadConfig() ;
-        //
-        // Initialise our DatabaseManager.
-        databaseManager = new DatabaseManagerImpl() ;
-        //
-        // Initialise our GroupManager.
-        groupManager = new GroupManagerImpl() ;
-        groupManager.init(databaseManager) ;
-        //
-        // Initialise our CommunityManager.
-        communityManager = new CommunityManagerImpl() ;
-        communityManager.init(databaseManager) ;
-        //
-        // Initialise our PermissionManager.
-        permissionManager = new PermissionManagerImpl();
-        permissionManager.init(databaseManager);
-        }
+	public PolicyServiceImpl(DatabaseConfiguration config)
+		{
+		super(config) ;
+		//
+		// Configure our local managers.
+		configLocalManagers() ;
+		}
 
-    /**
-     * Service health check.
-     *
-     */
-    public ServiceData getServiceStatus()
-        {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceImpl.getServiceStatus()") ;
+	/**
+	 * Set our database configuration.
+	 * This makes it easier to run JUnit tests with a different database configurations.
+	 * This calls our base class method and then updates all of our local managers.
+	 *
+	 */
+	public void setDatabaseConfiguration(DatabaseConfiguration config)
+		{
+		//
+		// Call our base class method.
+		super.setDatabaseConfiguration(config) ;
+		//
+		// Configure our local managers.
+		configLocalManagers() ;
+		}
 
-        ServiceData status =  new ServiceData() ;
-
-        status.setCommunityName(CommunityConfig.getCommunityName()) ;
-        status.setConfigPath(CommunityConfig.getProperty("config.location")) ;
-        status.setServiceUrl(CommunityConfig.getServiceUrl()) ;
-        status.setManagerUrl(CommunityConfig.getManagerUrl()) ;
-
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return status ;
-        }
+	/**
+	 * Configure our local managers.
+	 * This calls setDatabaseConfiguration on all of our local managers.
+	 * We need this in a separate method to initialise the local managers after they are created.
+	 *
+	 */
+	private void configLocalManagers()
+		{
+		//
+		// Configure our local managers.
+		if (null != groupManager) groupManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+//		if (null != accountManager) accountManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+//		if (null != resourceManager) resourceManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+		if (null != communityManager) communityManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+		if (null != permissionManager) permissionManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+		}
 
     /**
      * Confirm access permissions
@@ -161,9 +186,27 @@ public class PolicyServiceImpl
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("PolicyServiceImpl.checkPermissions()") ;
-
+		//
+		// Check for null params.
+		if (null == credentials) return null ;
+		if (null == resource) return null ;
+		if (null == action) return null ;
+		//
+		// Trim spaces.
+		resource = resource.trim() ;
+		action = action.trim() ;
+		//
+		// Check for empty params.
+		if (resource.length() == 0) return null ;
+		if (action.length() == 0) return null ;
+		//
+		// Get the credential details.
         String group   = credentials.getGroup() ;
         String account = credentials.getAccount() ;
+		//
+		// Check for null params.
+		if (null == group) return null ;
+		if (null == account) return null ;
 
         if (DEBUG_FLAG) System.out.println("  Credentials") ;
         if (DEBUG_FLAG) System.out.println("    Group   : " + group)   ;
@@ -212,6 +255,9 @@ public class PolicyServiceImpl
         // If we didn't get a result.
         else {
             if (DEBUG_FLAG) System.out.println("FAIL : No permission found") ;
+/*
+ * I can't remember why we return an object here.
+ * Returning an object means that this service behaves differently to the rest.
             //
             // Create a dummy permission.
             permission = new PolicyPermission() ;
@@ -220,6 +266,8 @@ public class PolicyServiceImpl
             permission.setAction(action) ;
             permission.setStatus(PolicyPermission.STATUS_PERMISSION_UNKNOWN) ;
             permission.setReason("Permission not found") ;
+ *
+ */
             }
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         return permission ;

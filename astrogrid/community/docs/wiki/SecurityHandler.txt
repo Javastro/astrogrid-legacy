@@ -1,0 +1,449 @@
+In order to talk about the proposed new SecurityDelegate API, it might make things useful to think about an example scenario based around Portal, JobEntrySystem, DataCenter and MySpace.
+
+Some or all of the following may be wrong, it is just an initial guess.
+
+Please feel free to add comments, suggestions or objections.
+
+---++ Login to Portal
+
+The user logs-in to the portal by choosing a community and supplying a name and password.
+The portal calls the relevant Community, supplying name and password, and gets back the Account identifier, plus a token.
+
+<verbatim>
+	<message>
+		<name>dave</name>
+		<pass>####</pass>
+	</message>
+</verbatim>
+<verbatim>
+	<response>
+		<account>dave@community</account>
+		<token>2347834589tafc\sd9q359\sv</token>
+	</response>
+</verbatim>
+
+---++ Portal session
+
+The data returned from the Community login should be stored in the current CocoonSession.
+However, the CommunityPortal toolkit should include a SecurityContext helper class to retrieve the data.
+
+This means that the other components do not have to fiddle around looking for individual params in the request, session or config.
+The other components do not need to know the details of where the data is held, just how to get at it easily.
+
+<verbatim>
+public class ComponentAction extends AbstractAction
+	{
+	....
+	public Map act(....)
+		{
+		//
+		// Create a SecurityContextHelper.
+		SecurityContextHelper securityContext = new CocoonSecurityContextHelper(request, session, objectModel) ;
+		//
+		// Get the current Account from the SecurityContextHelper.
+		AccountDetails account = securityContext.getAccount() ;
+		....
+		}
+	}
+</verbatim>
+
+---++ DataCenter query
+
+The user creates a job, involving a query to a DataCenter.
+The query is sent from the Portal to the JobEntrySystem, passing the security details in the header.
+
+_At the moment, the user will need to select the Group membership that allows them to perform the action._
+_Later implementations should not require this._
+
+<verbatim>
+	<header>
+		<wsse:UsernameToken>
+			<wsse:Username>ivo://ast.cam.ac.uk/dave|ivo://star.le.ac.uk/xray-studies</wsse:Username>
+			<astrogrid:IdentityToken>2347834589tafc\sd9q359\sv</astrogrid:IdentityToken>
+		</wsee:UsernameToken>
+	</header>
+	<message>
+		<job>
+			<query>details of the ADQL query</query>
+			....
+		</job>
+	</message>
+</verbatim>
+
+---++ JobEntry processing
+
+When the message arrives at the JobEntrySystem, the SecurityHandler processes the message headers before it is passed on to the JobEntrySystem service.
+
+   * _If sender supplies valid credentials, then the message is passed on to the service as normal._
+   * _If sender supplies invalid credentials, then the message is bounced by the Axis handler and does not reach the service._
+   * _If sender does not supply any credentials in the header, then the message is passed to the service, but the authentication checks return false or null._
+   * _This allows our services to handle anonymous calls from external components._
+
+When the message arrives at the JobEntrySystem service, the service method can request the SecurityContext from the SecurityDelegate, which allows them to check that the sender of the message has been authenticated.
+
+<verbatim>
+	public Object jobEntryMethod(Object params ...)
+		{
+		//
+		// Get a SecurityDelegate.
+		SecurityDelegate securityDelegate = SecurityDelegateFactory.getSecurityDelegate() ;
+		//
+		// Get the message SecurityContext from the delegate
+		SecurityContext securityContext = securityDelegate.getSecurityContext() ;
+		//
+		// Check that the message sender has been authenticated.
+		if (securityContext.isAuthenticated())
+			{
+			//
+			// Perform the service for an authenticated Account.
+			//
+			}
+		//
+		// If the message sender has not been authenticated.
+		else {
+			//
+			// Perform the service for an anonymous user ?
+			//
+			}
+		}
+</verbatim>
+
+To check that the message sender is allowed to schedule jobs, the JobEntrySystem can query the current SecurityContext.
+
+<verbatim>
+	public Object jobEntryMethod(Object params ...)
+		{
+		....
+			{
+			//
+			// Check that the message sender is allowed to schedule jobs.
+			Permission permisson = securityContext.checkPermissions("job-scheduler", "insert") ;
+			if (permission.isValid())
+				{
+				//
+				// Schedule the job ....
+				//
+				}
+			}
+		....
+		}
+</verbatim>
+
+---++ Saving SecurityContext
+
+As part of the process of scheduling the job, the JobEntrySystem may want to save the current SecurityContext, without having to know what it contains.
+This would suggest that the SecurityContext should be serializable in some form (Castor XML, String or just BLOB ?).
+
+<verbatim>
+	public Object jobEntryMethod(Object params ...)
+		{
+		....
+			{
+			....
+				{
+				//
+				// Save the current SecurityContext.
+				database.store(securityContext) ;
+				}
+			}
+		....
+		}
+</verbatim>
+
+When the job is ready to execute, the JobScheduler will want to restore the original SecurityContext.
+
+<verbatim>
+	public Object jobSchedulerMethod(Object params ...)
+		{
+		//
+		// Restore the original SecurityContext.
+		SecurityContext originalContext = database.load(identifier) ;
+		//
+		// Set the current SecurityContext for this Thread.
+		securityDelegate.setSecurityContext(originalContext) ;
+		....
+		}
+</verbatim>
+
+The JobScheduler will then want to send messages to other services, e.g. DataCenter, using this restored context.
+
+<verbatim>
+	public Object jobSchedulerMethod(Object params ...)
+		{
+		//
+		// Restore the original SecurityContext.
+		SecurityContext originalContext = database.load(identifier) ;
+		//
+		// Get a SecurityDelegate.
+		SecurityDelegate securityDelegate = SecurityDelegateFactory.getSecurityDelegate() ;
+		//
+		// Set the current SecurityContext for this Thread.
+		securityDelegate.setSecurityContext(originalContext) ;
+		....
+		//
+		// Call DataCenter to perform the query.
+		DataCenterDelegate dataCenterDelegate = DataCenterDelegateFactory.getDataCenterDelegate() ;
+		//
+		// Setup the query details ....
+		//
+		dataCenterDelegate.dataCenterMethod(query) ;
+		}
+</verbatim>
+
+Setting the current SecurityContext on the SecurityDelegate means that any subsequent outbound calls to other services
+automatically have the SecurityContext details added to their message headers.
+
+<verbatim>
+	<header>
+		<wsse:UsernameToken>
+			<wsse:Username>ivo://ast.cam.ac.uk/dave|ivo://star.le.ac.uk/xray-studies</wsse:Username>
+			<astrogrid:IdentityToken>2347834589tafc\sd9q359\sv</astrogrid:IdentityToken>
+		</wsee:UsernameToken>
+	</header>
+	<message>
+		<query>details of the ADQL query</query>
+	</message>
+</verbatim>
+
+---++ DataCenter processing
+
+When the message arrives at the DataCenter, the SecurityHandler processes the message headers before it is passed on to the DataCenter service.
+The DataCenter service can then get the current SecurityContext from the SecurityDelegate.
+
+<verbatim>
+	public Object dataCenterMethod(Object params ...)
+		{
+		//
+		// Get a SecurityDelegate.
+		SecurityDelegate securityDelegate = SecurityDelegateFactory.getSecurityDelegate() ;
+		//
+		// Get the message SecurityContext from the delegate
+		SecurityContext securityContext = securityDelegate.getSecurityContext() ;
+		//
+		// Check that the message sender has been authenticated.
+		if (securityContext.isAuthenticated())
+			{
+			//
+			// Perform the service for an authenticated Account.
+			//
+			}
+		//
+		// If the message sender has not been authenticated.
+		else {
+			//
+			// Perform the service for an anonymous Account ?
+			//
+			}
+		}
+</verbatim>
+
+To check that the message sender is allowed to access a database table, the DataCenter can query the current SecurityContext.
+
+<verbatim>
+	public Object dataCenterMethod(Object params ...)
+		{
+		....
+			{
+			//
+			// Check that the message sender is allowed to access the database table.
+			Permission permisson = securityContext.checkPermissions("table-name", "select") ;
+			if (permission.isValid())
+				{
+				//
+				// Perform the database query ....
+				//
+				}
+			}
+		....
+		}
+</verbatim>
+
+---++ Access to MySpace home
+
+The DataCenter may need access to the MySpaceManager for the Account in order to find out where to put the results of the query.
+The MySpaceManager address and 'home' identifier should be stored as part of the Account details in the Community.
+The DataCenter should be able to request the Account details for the message sender from the current SecurityContext.
+
+<verbatim>
+	public Object dataCenterMethod(Object params ...)
+		{
+		....
+			{
+				{
+				//
+				// Perform the database query ....
+				....
+				//
+				// Get the Account details.
+				AccountDetails account = securityContext.getAccountDetails() ;
+				//
+				// Get the MySpace 'home' reference.
+				MySpaceReference myspaceHome = account.getMySpaceHome() ;
+				//
+				// Create a MySpace delegate.
+				MySpaceManagerDelegate mySpaceDelegate =
+					MySpaceManagerDelegateFactory.getMySpaceManagerDelegate(myspaceHome) ;
+				//
+				// Negotiate space for the results.
+				MySpaceReference destination = mySpaceDelegate.method(params) ;
+				//
+				// Send the results to the Account MySpace.
+				OutputStream stream = destination.getOutputStream() ;
+				.....
+				}
+			}
+		....
+		}
+</verbatim>
+
+Again, the current SecurityContext headers are added to all of the outbound service calls from the DataCenter to the MySpaceManager.
+
+<verbatim>
+	<header>
+		<wsse:UsernameToken>
+			<wsse:Username>ivo://ast.cam.ac.uk/dave|ivo://star.le.ac.uk/xray-studies</wsse:Username>
+			<astrogrid:IdentityToken>2347834589tafc\sd9q359\sv</astrogrid:IdentityToken>
+		</wsee:UsernameToken>
+	</header>
+	<message>
+		<request>details of the MySpace message</request>
+	</message>
+</verbatim>
+
+The MySpaceManager can then request the current SecurityContext and perform its own policy checking before allocating space for the data.
+
+<verbatim>
+	public Object mySpaceManagerMethod(Object params ...)
+		{
+		//
+		// Get a SecurityDelegate.
+		SecurityDelegate securityDelegate = SecurityDelegateFactory.getSecurityDelegate() ;
+		//
+		// Get the message SecurityContext from the delegate
+		SecurityContext securityContext = securityDelegate.getSecurityContext() ;
+		//
+		// Check that the message sender has been authenticated.
+		if (securityContext.isAuthenticated())
+			{
+			//
+			// Perform the service for an authenticated Account.
+			//
+			}
+		}
+</verbatim>
+
+----
+
+---++ SecurityToken
+
+In the above examples, the messages are shown with the same SecurityToken in all of the messages.
+
+In the real implementation, each time the SecurityDetails are passed through the SecurityHandler, SecurityDelegate or SecurityContext,
+the existing SecurityToken would be validated and then replaced with a new SecurityToken.
+
+----
+
+---++ Additional cases
+
+---+++ Change SecurityContext
+
+In some cases, some of the services may want to send a message to another service using a different SecurityContext, e.g. Call a service using an anonymous or administrator Account.
+In order to support this, a service should be able to create a new SecurityContext, and apply that to some messages, and then swap back to the original SecurityContext when done.
+
+<verbatim>
+	public Object someServiceMethod(Object params ...)
+		{
+		//
+		// Get a SecurityDelegate.
+		SecurityDelegate securityDelegate = SecurityDelegateFactory.getSecurityDelegate() ;
+		//
+		// Get the message SecurityContext from the delegate
+		SecurityContext originalContext = securityDelegate.getSecurityContext() ;
+		....
+		//
+		// Outbound messages use the original SecurityContext, from the inbound message.
+		//
+		....
+		//
+		// Create a new SecurityContext.
+		SecurityContext specialContext = securityDelegate.newSecurityContext(
+			account,
+			group,
+			token
+			) ;
+		//
+		// Make this the current SecurityContext for outbound messages.
+		securityDelegate.setSecurityContext(anonymousContext) ;
+		....
+		//
+		// Outbound messages use the new SecurityContext, created internally.
+		//
+		....
+		//
+		// Change back to the original SecurityContext, from the inbound message
+		securityDelegate.setSecurityContext(originalContext) ;
+		....
+		//
+		// Outbound messages use the original SecurityContext, from the inbound message.
+		//
+		....
+		}
+</verbatim>
+
+---+++ Null SecurityContext
+
+In some cases, some of the services may want to send a message to another, non-astrogrid service without the SecurityContext hedares.
+In order to support this, a service should be able to set the current SecurityContext to null, send the messages, and then swap back to the original SecurityContext when done.
+
+<verbatim>
+	public Object someServiceMethod(Object params ...)
+		{
+		//
+		// Get a SecurityDelegate.
+		SecurityDelegate securityDelegate = SecurityDelegateFactory.getSecurityDelegate() ;
+		//
+		// Get the message SecurityContext from the delegate
+		SecurityContext originalContext = securityDelegate.getSecurityContext() ;
+		....
+		//
+		// Outbound messages use the original SecurityContext, from the inbound message.
+		//
+		....
+		//
+		// Set the SecurityContext to null
+		securityDelegate.setSecurityContext(null) ;
+		....
+		//
+		// Outbound messages do not have the SecurityContext hedares.
+		//
+		....
+		//
+		// Change back to the original SecurityContext, from the inbound message
+		securityDelegate.setSecurityContext(originalContext) ;
+		....
+		//
+		// Outbound messages use the original SecurityContext, from the inbound message.
+		//
+		....
+		}
+</verbatim>
+
+---+++ SecurityContext on replies
+
+I'm not sure about this one, but if DataCenter calls MySpaceManager, should the same SecurityContext headers also be added to the responses returned from the MySpaceManager back to the DataCenter.
+
+<verbatim>
+	<header>
+		<wsse:UsernameToken>
+			<wsse:Username>ivo://ast.cam.ac.uk/dave|ivo://star.le.ac.uk/xray-studies</wsse:Username>
+			<astrogrid:IdentityToken>2347834589tafc\sd9q359\sv</astrogrid:IdentityToken>
+		</wsee:UsernameToken>
+	</header>
+	<message>
+		<response>details of the MySpace response</response>
+	</message>
+</verbatim>
+
+Probably not applicable for the current implementation.
+
+

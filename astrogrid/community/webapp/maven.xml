@@ -4,10 +4,24 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/07 10:45:45 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/02/12 06:56:46 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.3  2004/02/12 06:56:46  dave
+    |   Merged development branch, dave-dev-200401131047, into HEAD
+    |
+    |   Revision 1.2.4.3  2004/02/10 00:40:37  dave
+    |   Added install tooklit to the Maven build.
+    |   Changed Maven project to use 'org.astrogrid' as the group name.
+    |   Fixed dependencies that used the original group name.
+    |
+    |   Revision 1.2.4.2  2004/01/17 13:54:18  dave
+    |   Removed password from AccountData
+    |
+    |   Revision 1.2.4.1  2004/01/13 14:29:41  dave
+    |   Added initial JUnit tests
+    |
     |   Revision 1.2  2004/01/07 10:45:45  dave
     |   Merged development branch, dave-dev-20031224, back into HEAD
     |
@@ -59,6 +73,12 @@
     >
 
     <!--+
+        | Import the goals from our parent project.
+        | Looks like this gets included anyway, possibly because our project inherits from ../maven.project.xml ?
+    <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
+        +-->
+
+    <!--+
         | Primary goals are :
         |     clean
         |     install-artifact
@@ -74,14 +94,6 @@
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
     </goal>
-
-    <!--+
-        | Import our plugin goals from our parent project.
-        | Looks like this gets included anyway ...
-        | Possibly because our project inherits from ../maven.project.xml ?
-        | Maven : Any more unexpected suprises !?
-    <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
-        +-->
 
     <!--+
         | Reactor goals.
@@ -122,32 +134,54 @@
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <ant:echo message="Building snapshot artifact ...."/>
         <attainGoal name="war:install-snapshot"/>
+		<!--+
+			| Create the war file.
+		<attainGoal name="war:war"/>
+			+-->
+		<!--+
+			| The rest is basically copy-paste from jar:deploy-snapshot.
+		<maven:snapshot project="${pom}"/>
+		<core:set var="artifactFile" value="${pom.groupId}.war"/>
+		<core:set var="snapshotFile" value="${pom.groupId}-${snapshotVersion}.war"/>
+		<ant:move file="${maven.build.dir}/${artifactFile}" toFile="${maven.build.dir}/${snapshotFile}"/>
+		<ant:property name="jardir__" value="${maven.repo.local}/${pom.artifactDirectory}/jars"/>
+		<ant:mkdir dir="${jardir__}"/>
+		<ant:copy
+			file="${maven.build.dir}/${artifactFile}"
+			tofile="${jardir__}/${pom.artifactId}-SNAPSHOT.jar"
+			overwrite="true"
+			/>
+		<ant:copy
+			file="${maven.build.dir}/${artifactFile}"
+			tofile="${jardir__}/${maven.final.name}.jar"
+			/>
+			+-->
     </goal>
 
     <!--+
         | Deploy our snapshot war.
         | (required as a target goal for the reactor)
+        | Contains copy-paste code from jar:deploy-snapshot with jar crossed out and war written in in crayon.
         +-->
     <goal name="deploy-snapshot">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <ant:echo message="Deploying snapshot artifact ...."/>
-	    <!--+
-		<attainGoal name="war:deploy-snapshot"/>
-	        | Replaced with code from jar:deploy-snapshot with jar crossed out and war written in in crayon.
-	        +-->
+		<!--+
+			| Create the war file.
+			+-->
 		<attainGoal name="war:war"/>
-
+		<!--+
+			| The rest is basically copy-paste from jar:deploy-snapshot.
+			+-->
 		<maven:snapshot project="${pom}"/>
-
-		<core:set var="artifactFile" value="${pom.groupId}.war"/>
-		<core:set var="snapshotFile" value="${pom.groupId}-${snapshotVersion}.war"/>
-
+		<core:set var="artifactFile" value="${pom.artifactId}.war"/>
+		<core:set var="snapshotFile" value="${pom.artifactId}-${snapshotVersion}.war"/>
 		<ant:move file="${maven.build.dir}/${artifactFile}" toFile="${maven.build.dir}/${snapshotFile}"/>
 		<!--
 		<core:set var="maven.final.name" value="${snapshotSignature}"/>
-        <core:set var="maven.war.final.name" value="${pom.groupId}.war"/>
+        <core:set var="maven.war.final.name" value="${pom.artifactId}.war"/>
 		-->
 		<maven:user-check user="${maven.username}"/>
 		<ant:property name="maven.war.to.deploy" value="${snapshotFile}"/>
@@ -217,8 +251,10 @@
         <!--+
             | Locate our community server jar.
             +-->
+        <core:set var="serverJarIdent" value="${pom.groupId}:astrogrid-community-server"/>
+        <ant:echo message="Looking for server jar : ${serverJarIdent}"/>
         <core:forEach var="artifact" items="${pom.getArtifacts()}">
-            <core:if test="${artifact.getDependency().getId().equals('astrogrid-community:astrogrid-community-server')}">
+            <core:if test="${artifact.getDependency().getId().equals(serverJarIdent)}">
                 <ant:echo message="Found community server jar"/>
                 <ant:echo message="Name     : ${artifact.getName()}"/>
                 <ant:echo message="Path     : ${artifact.getPath()}"/>
@@ -274,7 +310,6 @@
         | Prepare for the war war task
         | Modify the war file name to use just our group name.
         | This don't work ....
-        +-->
     <preGoal name="war:war">
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
@@ -285,5 +320,6 @@
         <ant:echo message="  After  : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.final.name')}"/>
         <core:set var="maven.war.final.name" value="${pom.groupId}.war"/>
     </preGoal>
+        +-->
 
 </project>

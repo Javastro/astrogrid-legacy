@@ -1,11 +1,28 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/PermissionManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/07 10:45:45 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/12 06:56:46 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PermissionManagerImpl.java,v $
+ *   Revision 1.3  2004/02/12 06:56:46  dave
+ *   Merged development branch, dave-dev-200401131047, into HEAD
+ *
+ *   Revision 1.2.4.4  2004/02/06 15:42:12  dave
+ *   Fixes to pass JUnit tests.
+ *
+ *   Revision 1.2.4.3  2004/02/06 13:49:09  dave
+ *   Moved CommunityManagerBase into server.common.CommunityServer.
+ *   Moved getServiceStatus into server.common.CommunityServer.
+ *   Moved JUnit tests to match.
+ *
+ *   Revision 1.2.4.2  2004/01/27 18:55:08  dave
+ *   Removed unused imports listed in PMD report
+ *
+ *   Revision 1.2.4.1  2004/01/27 06:46:19  dave
+ *   Refactored PermissionManagerImpl and added initial JUnit tests
+ *
  *   Revision 1.2  2004/01/07 10:45:45  dave
  *   Merged development branch, dave-dev-20031224, back into HEAD
  *
@@ -34,30 +51,23 @@ package org.astrogrid.community.server.policy.manager ;
 
 //import java.rmi.RemoteException ;
 
-import java.util.Vector ;
-import java.util.Collection ;
-
 import org.exolab.castor.jdo.Database;
-import org.exolab.castor.jdo.OQLQuery;
-import org.exolab.castor.jdo.QueryResults;
-import org.exolab.castor.jdo.PersistenceException ;
 import org.exolab.castor.jdo.ObjectNotFoundException ;
-import org.exolab.castor.jdo.DatabaseNotFoundException ;
 import org.exolab.castor.jdo.DuplicateIdentityException ;
-import org.exolab.castor.jdo.TransactionNotInProgressException ;
-import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 
 import org.exolab.castor.persist.spi.Complex ;
 
-import org.astrogrid.community.common.policy.data.ServiceData ;
 import org.astrogrid.community.common.policy.data.PolicyPermission ;
 import org.astrogrid.community.common.policy.data.ResourceIdent ;
 import org.astrogrid.community.common.policy.data.CommunityIdent ;
 
 import org.astrogrid.community.common.policy.manager.PermissionManager ;
-import org.astrogrid.community.server.policy.manager.DatabaseManager ;
+
+import org.astrogrid.community.server.common.CommunityServer ;
+import org.astrogrid.community.server.database.DatabaseConfiguration ;
 
 public class PermissionManagerImpl
+	extends CommunityServer
     implements PermissionManager
     {
     /**
@@ -67,35 +77,21 @@ public class PermissionManagerImpl
     protected static final boolean DEBUG_FLAG = true ;
 
     /**
-     * Our database manager.
-     *
-     */
-    private DatabaseManager databaseManager ;
-
-    /**
-     * Our database connection.
-     *
-     */
-    private Database database ;
-
-    /**
-     * Public constructor.
+     * Public constructor, using default database configuration.
      *
      */
     public PermissionManagerImpl()
         {
+		super() ;
         }
 
     /**
-     * Initialise our manager.
+     * Public constructor, using specific database configuration.
      *
      */
-    public void init(DatabaseManager databaseManager)
+    public PermissionManagerImpl(DatabaseConfiguration config)
         {
-        //
-        // Keep a reference to our database connection.
-        this.databaseManager = databaseManager ;
-        this.database = databaseManager.getDatabase() ;
+		super(config) ;
         }
 
     /**
@@ -111,6 +107,7 @@ public class PermissionManagerImpl
         if (DEBUG_FLAG) System.out.println("  group    : " + groupName) ;
         if (DEBUG_FLAG) System.out.println("  action   : " + action) ;
 
+        Database         database   = null ;
         PolicyPermission permission = null ;
         //
         // Create a ResourceIdent for our Resource.
@@ -120,7 +117,6 @@ public class PermissionManagerImpl
         // Create a CommunityIdent for our Group.
         CommunityIdent groupIdent = new CommunityIdent(groupName) ;
         if (DEBUG_FLAG) System.out.println("  group    : " + groupIdent) ;
-
         //
         // If the resource ident is valid.
         if (resourceIdent.isValid())
@@ -143,70 +139,53 @@ public class PermissionManagerImpl
                     //
                     // Try adding it to the database.
                     try {
+						//
+						// Open our database connection.
+						database = this.getDatabase() ;
                         //
                         // Begin a new database transaction.
                         database.begin();
                         //
-                        // Try creating it in the database.
+                        // Try creating the permission.
                         database.create(permission);
+						//
+						// Commit the transaction.
+						database.commit() ;
                         }
                     //
                     // If we already have an object with that ident.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
                     catch (DuplicateIdentityException ouch)
                         {
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("DuplicateIdentityException in addPermission()") ;
-
+						//
+						// Log the exception.
+						logException(ouch, "PermissionManagerImpl.addPermission()") ;
                         //
                         // Set the response to null.
                         permission = null ;
-
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("") ;
+// TODO
+// Need to rollback transaction
                         }
                     //
                     // If anything else went bang.
                     catch (Exception ouch)
                         {
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("Generic exception in addPermission()") ;
-
+						//
+						// Log the exception.
+						logException(ouch, "PermissionManagerImpl.addPermission()") ;
                         //
                         // Set the response to null.
                         permission = null ;
-
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("") ;
+// TODO
+// Need to rollback transaction
                         }
-                    //
-                    // Commit the transaction.
-                    finally
-                        {
-                        try {
-                            if (null != permission)
-                                {
-                                database.commit() ;
-                                }
-                            else {
-                                database.rollback() ;
-                                }
-                            }
-                        catch (Exception ouch)
-                            {
-                            if (DEBUG_FLAG) System.out.println("") ;
-                            if (DEBUG_FLAG) System.out.println("  ----") ;
-                            if (DEBUG_FLAG) System.out.println("Generic exception in addPermission() finally clause") ;
-
-                            //
-                            // Set the response to null.
-                            permission = null ;
-
-                            if (DEBUG_FLAG) System.out.println("  ----") ;
-                            if (DEBUG_FLAG) System.out.println("") ;
-                            }
-                        }
+	                //
+	                // Close our database connection.
+	                finally
+	                    {
+						closeConnection(database) ;
+	                    }
                     }
                 //
                 // If the group ident is not valid.
@@ -252,7 +231,8 @@ public class PermissionManagerImpl
         if (DEBUG_FLAG) System.out.println("  group    : " + groupName) ;
         if (DEBUG_FLAG) System.out.println("  action   : " + action) ;
 
-        PolicyPermission result = null ;
+        Database         database = null ;
+        PolicyPermission result   = null ;
         //
         // Create a ResourceIdent for our Resource.
         ResourceIdent resourceIdent = new ResourceIdent(resourceName) ;
@@ -287,70 +267,53 @@ public class PermissionManagerImpl
                     //
                     // Try loading the PolicyPermission from the database.
                     try {
+						//
+						// Open our database connection.
+						database = this.getDatabase() ;
                         //
                         // Begin a new database transaction.
                         database.begin();
                         //
                         // Load the PolicyPermission from the database.
                         result = (PolicyPermission) database.load(PolicyPermission.class, key) ;
+						//
+						// Commit the transaction.
+						database.commit() ;
                         }
                     //
                     // If we couldn't find the object.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
                     catch (ObjectNotFoundException ouch)
                         {
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in getPermission()") ;
-
+						//
+						// Log the exception.
+						logException(ouch, "PermissionManagerImpl.getPermission()") ;
                         //
                         // Set the response to null.
                         result = null ;
-
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("") ;
+// TODO
+// Need to rollback transaction
                         }
                     //
                     // If anything else went bang.
                     catch (Exception ouch)
                         {
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("Generic exception in getPermission()") ;
-
+						//
+						// Log the exception.
+						logException(ouch, "PermissionManagerImpl.getPermission()") ;
                         //
                         // Set the response to null.
                         result = null ;
-
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("") ;
+// TODO
+// Need to rollback transaction
                         }
-                    //
-                    // Commit the transaction.
-                    finally
-                        {
-                        try {
-                            if (null != result)
-                                {
-                                database.commit() ;
-                                }
-                            else {
-                                database.rollback() ;
-                                }
-                            }
-                        catch (Exception ouch)
-                            {
-                            if (DEBUG_FLAG) System.out.println("") ;
-                            if (DEBUG_FLAG) System.out.println("  ----") ;
-                            if (DEBUG_FLAG) System.out.println("Generic exception in getPermission() finally clause") ;
-
-                            //
-                            // Set the response to null.
-                            result = null ;
-
-                            if (DEBUG_FLAG) System.out.println("  ----") ;
-                            if (DEBUG_FLAG) System.out.println("") ;
-                            }
-                        }
+	                //
+	                // Close our database connection.
+	                finally
+	                    {
+						closeConnection(database) ;
+	                    }
                     }
                 //
                 // If the group ident is not valid.
@@ -396,7 +359,8 @@ public class PermissionManagerImpl
         if (DEBUG_FLAG) System.out.println("  group    : " + permission.getGroup()) ;
         if (DEBUG_FLAG) System.out.println("  action   : " + permission.getAction()) ;
 
-        PolicyPermission result = null ;
+        Database         database = null ;
+        PolicyPermission result   = null ;
         //
         // Create a ResourceIdent for our Resource.
         ResourceIdent resourceIdent = new ResourceIdent(permission.getResource()) ;
@@ -431,6 +395,9 @@ public class PermissionManagerImpl
                     //
                     // Try update the database.
                     try {
+						//
+						// Open our database connection.
+						database = this.getDatabase() ;
                         //
                         // Begin a new database transaction.
                         database.begin();
@@ -441,64 +408,44 @@ public class PermissionManagerImpl
                         // Update the PolicyPermission data.
                         result.setStatus(permission.getStatus()) ;
                         result.setReason(permission.getReason()) ;
+						//
+						// Commit the transaction.
+						database.commit() ;
                         }
                     //
                     // If we couldn't find the object.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
                     catch (ObjectNotFoundException ouch)
                         {
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in setPermission()") ;
-
+						//
+						// Log the exception.
+						logException(ouch, "PermissionManagerImpl.setPermission()") ;
                         //
                         // Set the response to null.
                         result = null ;
-
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("") ;
+// TODO
+// Need to rollback transaction
                         }
                     //
                     // If anything else went bang.
                     catch (Exception ouch)
                         {
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("Generic exception in setPermission()") ;
-
+						//
+						// Log the exception.
+						logException(ouch, "PermissionManagerImpl.setPermission()") ;
                         //
                         // Set the response to null.
                         result = null ;
-
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("") ;
+// TODO
+// Need to rollback transaction
                         }
-                    //
-                    // Commit the transaction.
-                    finally
-                        {
-                        try {
-                            if (null != result)
-                                {
-                                database.commit() ;
-                                }
-                            else {
-                                database.rollback() ;
-                                }
-                            }
-                        catch (Exception ouch)
-                            {
-                            if (DEBUG_FLAG) System.out.println("") ;
-                            if (DEBUG_FLAG) System.out.println("  ----") ;
-                            if (DEBUG_FLAG) System.out.println("Generic exception in setPermission() finally clause") ;
-
-                            //
-                            // Set the response to null.
-                            result = null ;
-
-                            if (DEBUG_FLAG) System.out.println("  ----") ;
-                            if (DEBUG_FLAG) System.out.println("") ;
-                            }
-                        }
+	                //
+	                // Close our database connection.
+	                finally
+	                    {
+						closeConnection(database) ;
+	                    }
                     }
                 //
                 // If the group ident is not valid.
@@ -544,7 +491,8 @@ public class PermissionManagerImpl
         if (DEBUG_FLAG) System.out.println("  group    : " + groupName) ;
         if (DEBUG_FLAG) System.out.println("  action   : " + action) ;
 
-        PolicyPermission result = null ;
+        Database         database = null ;
+        PolicyPermission result   = null ;
         //
         // Create a ResourceIdent for our Resource.
         ResourceIdent resourceIdent = new ResourceIdent(resourceName) ;
@@ -575,6 +523,9 @@ public class PermissionManagerImpl
                 //
                 // Try update the database.
                 try {
+					//
+					// Open our database connection.
+					database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
@@ -584,63 +535,43 @@ public class PermissionManagerImpl
                     //
                     // Dete the PolicyPermission data.
                     database.remove(result) ;
+					//
+					// Commit the transaction.
+					database.commit() ;
                     }
                 //
                 // If we couldn't find the object.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (ObjectNotFoundException ouch)
                     {
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in delPermission()") ;
-
+					//
+					// Log the exception.
+					logException(ouch, "PermissionManagerImpl.delPermission()") ;
                     //
                     // Set the response to null.
                     result = null ;
-
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("") ;
+// TODO
+// Need to rollback transaction
                     }
                 //
                 // If anything else went bang.
                 catch (Exception ouch)
                     {
-                    if (DEBUG_FLAG) System.out.println("") ;
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("Generic exception in delPermission()") ;
-
+					//
+					// Log the exception.
+					logException(ouch, "PermissionManagerImpl.delPermission()") ;
                     //
                     // Set the response to null.
                     result = null ;
-
-                    if (DEBUG_FLAG) System.out.println("  ----") ;
-                    if (DEBUG_FLAG) System.out.println("") ;
+// TODO
+// Need to rollback transaction
                     }
                 //
-                // Commit the transaction.
+                // Close our database connection.
                 finally
                     {
-                    try {
-                        if (null != result)
-                            {
-                            database.commit() ;
-                            }
-                        else {
-                            database.rollback() ;
-                            }
-                        }
-                    catch (Exception ouch)
-                        {
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("Generic exception in delPermission() finally clause") ;
-
-                        //
-                        // Set the response to null.
-                        result = null ;
-
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        if (DEBUG_FLAG) System.out.println("") ;
-                        }
+					closeConnection(database) ;
                     }
                 }
             //

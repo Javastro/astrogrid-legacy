@@ -1,11 +1,25 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/GroupData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/07 10:45:38 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/12 06:56:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupData.java,v $
+ *   Revision 1.3  2004/02/12 06:56:45  dave
+ *   Merged development branch, dave-dev-200401131047, into HEAD
+ *
+ *   Revision 1.2.4.3  2004/01/27 19:09:52  dave
+ *   Fixed dumb typo ...
+ *
+ *   Revision 1.2.4.2  2004/01/27 19:07:28  dave
+ *   Fixed PMD report violations
+ *   1) Removed unused imports.
+ *   2) Added override for hashCode() to match custom equals().
+ *
+ *   Revision 1.2.4.1  2004/01/27 05:48:02  dave
+ *   Added custom equals() to GroupData
+ *
  *   Revision 1.2  2004/01/07 10:45:38  dave
  *   Merged development branch, dave-dev-20031224, back into HEAD
  *
@@ -151,4 +165,62 @@ public class GroupData
         {
         this.type = value ;
         }
+
+	/*
+	 * Compare this with another GroupData.
+	 * All we want to check is the Group ident.
+	 * TODO This needs to refactored to check for local community in the ident.
+	 *
+	 */
+	public synchronized boolean equals(Object that)
+		{
+		//
+		// If that is null.
+		if (null == that)
+			{
+			return false ;
+			}
+		//
+		// If that is not null.
+		else {
+			//
+			// If that is an GroupData
+			if (that instanceof GroupData)
+				{
+				GroupData group = (GroupData) that ;
+				//
+				// If our ident is null
+				if (null == this.getIdent())
+					{
+					//
+					// Check that ident is null.
+					return (null == group.getIdent()) ;
+					}
+				//
+				// If our ident is not null.
+				else {
+					//
+					// Check that ident is the same.
+					return (this.getIdent().equals(group.getIdent())) ;
+					}
+				}
+			//
+			// If that is not an GroupData
+			else {
+				return false ;
+				}
+			}
+		}
+
+	/**
+	 * Generate a hash code for comparison tests.
+	 * Just uses the ident.hashCode().
+	 * TODO This needs to refactored to check for local community in the ident.
+	 *
+	 */
+	public synchronized int hashCode()
+		{
+		return (null != this.ident) ? this.ident.hashCode() : 0 ;
+		}
+
     }

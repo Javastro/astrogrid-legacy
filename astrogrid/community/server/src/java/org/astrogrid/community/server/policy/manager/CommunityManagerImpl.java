@@ -1,11 +1,32 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/CommunityManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/07 10:45:45 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/12 06:56:46 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerImpl.java,v $
+ *   Revision 1.3  2004/02/12 06:56:46  dave
+ *   Merged development branch, dave-dev-200401131047, into HEAD
+ *
+ *   Revision 1.2.4.5  2004/02/06 13:49:09  dave
+ *   Moved CommunityManagerBase into server.common.CommunityServer.
+ *   Moved getServiceStatus into server.common.CommunityServer.
+ *   Moved JUnit tests to match.
+ *
+ *   Revision 1.2.4.4  2004/01/27 19:18:16  dave
+ *   Removed unused imports listed in PMD report
+ *
+ *   Revision 1.2.4.3  2004/01/27 18:55:08  dave
+ *   Removed unused imports listed in PMD report
+ *
+ *   Revision 1.2.4.2  2004/01/27 03:54:28  dave
+ *   Changed database name to database config in CommunityManagerBase
+ *
+ *   Revision 1.2.4.1  2004/01/26 23:23:23  dave
+ *   Changed CommunityManagerImpl to use the new DatabaseManager.
+ *   Moved rollback and close into CommunityManagerBase.
+ *
  *   Revision 1.2  2004/01/07 10:45:45  dave
  *   Merged development branch, dave-dev-20031224, back into HEAD
  *
@@ -57,16 +78,9 @@ import java.util.Collection ;
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.OQLQuery;
 import org.exolab.castor.jdo.QueryResults;
-import org.exolab.castor.jdo.PersistenceException ;
 import org.exolab.castor.jdo.ObjectNotFoundException ;
-import org.exolab.castor.jdo.DatabaseNotFoundException ;
 import org.exolab.castor.jdo.DuplicateIdentityException ;
-import org.exolab.castor.jdo.TransactionNotInProgressException ;
-import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 
-import java.util.ArrayList;
-
-import org.astrogrid.community.common.policy.data.ServiceData ;
 import org.astrogrid.community.common.policy.data.CommunityData ;
 
 import org.astrogrid.community.common.policy.manager.PolicyManager ;
@@ -78,9 +92,12 @@ import org.astrogrid.community.common.policy.service.PolicyServiceService ;
 import org.astrogrid.community.common.policy.service.PolicyServiceServiceLocator ;
 
 import org.astrogrid.community.common.policy.manager.CommunityManager ;
-import org.astrogrid.community.server.policy.manager.DatabaseManager ;
+
+import org.astrogrid.community.server.common.CommunityServer ;
+import org.astrogrid.community.server.database.DatabaseConfiguration ;
 
 public class CommunityManagerImpl
+	extends CommunityServer
     implements CommunityManager
     {
     /**
@@ -90,35 +107,21 @@ public class CommunityManagerImpl
     protected static final boolean DEBUG_FLAG = true ;
 
     /**
-     * Our database manager.
-     *
-     */
-    private DatabaseManager databaseManager ;
-
-    /**
-     * Our database connection.
-     *
-     */
-    private Database database ;
-
-    /**
-     * Public constructor.
+     * Public constructor, using default database configuration.
      *
      */
     public CommunityManagerImpl()
         {
+		super() ;
         }
 
     /**
-     * Initialise our manager.
+     * Public constructor, using specific database configuration.
      *
      */
-    public void init(DatabaseManager databaseManager)
+    public CommunityManagerImpl(DatabaseConfiguration config)
         {
-        //
-        // Keep a reference to our database connection.
-        this.databaseManager = databaseManager ;
-        this.database = databaseManager.getDatabase() ;
+		super(config) ;
         }
 
     /**
@@ -132,7 +135,7 @@ public class CommunityManagerImpl
         if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.addCommunity()") ;
         if (DEBUG_FLAG) System.out.println("  name : " + name) ;
 
-        //
+        // TODO
         // Check that the name is valid.
         //
 
@@ -142,30 +145,50 @@ public class CommunityManagerImpl
 		community.setIdent(name) ;
         //
         // Set the default endpoint urls.
+//
+// TODO
+// Replace these with constants, or just remove them altogether.
         community.setServiceUrl("http://" + name + ":8080/axis/services/PolicyService") ;
         community.setManagerUrl("http://" + name + ":8080/axis/services/PolicyManager") ;
         //
         // Try performing our transaction.
+        Database database = null ;
         try {
-            //
-            // Begin a new database transaction.
-            database.begin();
-            //
-            // Try creating the community in the database.
-            database.create(community);
+			//
+			// Open a connection to our database.
+			database = this.getDatabase() ;
+			//
+			// If we got a database connection.
+			if (null != database)
+				{
+	            //
+	            // Begin a new database transaction.
+	            database.begin();
+	            //
+	            // Try creating the community in the database.
+	            database.create(community);
+				//
+				// Commit the transaction.
+				database.commit() ;
+				}
             }
         //
         // If we already have an object with that ident.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
         catch (DuplicateIdentityException ouch)
             {
             if (DEBUG_FLAG) System.out.println("") ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("DuplicateIdentityException in addCommunity()") ;
-
+            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
-
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("") ;
             }
@@ -176,47 +199,27 @@ public class CommunityManagerImpl
             if (DEBUG_FLAG) System.out.println("") ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("Exception in addCommunity()") ;
-
+            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
-
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("") ;
             }
         //
-        // Commit the transaction.
+        // Close our connection.
         finally
             {
-            try {
-                if (null != community)
-                    {
-                    database.commit() ;
-                    }
-                else {
-                    database.rollback() ;
-                    }
-                }
-            catch (Exception ouch)
-                {
-                if (DEBUG_FLAG) System.out.println("") ;
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("Exception in addCommunity() finally clause") ;
-
-                //
-                // Set the response to null.
-                community = null ;
-
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("") ;
-                }
+			closeConnection(database) ;
             }
-
         // TODO
         // Need to return something to the client.
         // Possible a new DataObject ... CommunityResult ?
-        //
-
+        // Something to indicate success or failure and the reasons why ....
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         return community ;
         }
@@ -233,26 +236,43 @@ public class CommunityManagerImpl
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 
         CommunityData community = null ;
+        Database database = null ;
         try {
-            //
-            // Begin a new database transaction.
-            database.begin();
-            //
-            // Load the Community from the database.
-            community = (CommunityData) database.load(CommunityData.class, ident) ;
+			//
+			// Open a connection to our database.
+			database = this.getDatabase() ;
+			//
+			// If we got a database connection.
+			if (null != database)
+				{
+	            //
+	            // Begin a new database transaction.
+	            database.begin();
+	            //
+	            // Load the Community from the database.
+	            community = (CommunityData) database.load(CommunityData.class, ident) ;
+				//
+				// Commit the transaction.
+				database.commit() ;
+				}
             }
         //
         // If we couldn't find the object.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
         catch (ObjectNotFoundException ouch)
             {
             if (DEBUG_FLAG) System.out.println("") ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in getCommunity()") ;
-
+            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
-
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("") ;
             }
@@ -263,40 +283,22 @@ public class CommunityManagerImpl
             if (DEBUG_FLAG) System.out.println("") ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("Exception in getCommunity()") ;
-
+            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
-
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("") ;
             }
         //
-        // Commit the transaction.
+        // Close our connection.
         finally
             {
-            try {
-                if (null != community)
-                    {
-                    database.commit() ;
-                    }
-                else {
-                    database.rollback() ;
-                    }
-                }
-            catch (Exception ouch)
-                {
-                if (DEBUG_FLAG) System.out.println("") ;
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("Exception in getCommunity() finally clause") ;
-
-                //
-                // Set the response to null.
-                community = null ;
-
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("") ;
-                }
+			closeConnection(database) ;
             }
 
         if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -320,31 +322,48 @@ public class CommunityManagerImpl
 
         //
         // Try update the database.
+        Database database = null ;
         try {
-            //
-            // Begin a new database transaction.
-            database.begin();
-            //
-            // Load the Community from the database.
-            CommunityData data = (CommunityData) database.load(CommunityData.class, community.getIdent()) ;
-            //
-            // Update the community data.
-            data.setManagerUrl(community.getManagerUrl()) ;
-            data.setServiceUrl(community.getServiceUrl()) ;
-            data.setDescription(community.getDescription()) ;
+			//
+			// Open a connection to our database.
+			database = this.getDatabase() ;
+			//
+			// If we got a database connection.
+			if (null != database)
+				{
+	            //
+	            // Begin a new database transaction.
+	            database.begin();
+	            //
+	            // Load the Community from the database.
+	            CommunityData data = (CommunityData) database.load(CommunityData.class, community.getIdent()) ;
+	            //
+	            // Update the community data.
+	            data.setManagerUrl(community.getManagerUrl()) ;
+	            data.setServiceUrl(community.getServiceUrl()) ;
+	            data.setDescription(community.getDescription()) ;
+				//
+				// Commit the transaction.
+				database.commit() ;
+				}
             }
         //
         // If we couldn't find the object.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
         catch (ObjectNotFoundException ouch)
             {
             if (DEBUG_FLAG) System.out.println("") ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in setCommunity()") ;
-
+            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
-
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("") ;
             }
@@ -355,7 +374,11 @@ public class CommunityManagerImpl
             if (DEBUG_FLAG) System.out.println("") ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("Exception in setCommunity()") ;
-
+            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             //
             // Set the response to null.
             community = null ;
@@ -363,31 +386,10 @@ public class CommunityManagerImpl
             if (DEBUG_FLAG) System.out.println("") ;
             }
         //
-        // Commit the transaction.
+        // Close our connection.
         finally
             {
-            try {
-                if (null != community)
-                    {
-                    database.commit() ;
-                    }
-                else {
-                    database.rollback() ;
-                    }
-                }
-            catch (Exception ouch)
-                {
-                if (DEBUG_FLAG) System.out.println("") ;
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("Exception in setCommunity() finally clause") ;
-
-                //
-                // Set the response to null.
-                community = null ;
-
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("") ;
-                }
+			closeConnection(database) ;
             }
 
         if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -407,29 +409,40 @@ public class CommunityManagerImpl
         //
         // Try QUERY the database.
         Object[] array = null ;
+        Database database = null ;
         try {
-            //
-            // Begin a new database transaction.
-            database.begin();
-            //
-            // Create our OQL query.
-            OQLQuery query = database.getOQLQuery(
-                "SELECT communitys FROM org.astrogrid.community.policy.data.CommunityData communitys"
-                );
-            //
-            // Execute our query.
-            QueryResults results = query.execute();
-
-            //
-            // Transfer our results to a vector.
-            Collection collection = new Vector() ;
-            while (results.hasMore())
-                {
-                collection.add(results.next()) ;
-                }
-            // 
-            // Convert it into an array.
-            array = collection.toArray() ;
+			//
+			// Open a connection to our database.
+			database = this.getDatabase() ;
+			//
+			// If we got a database connection.
+			if (null != database)
+				{
+	            //
+	            // Begin a new database transaction.
+	            database.begin();
+	            //
+	            // Create our OQL query.
+	            OQLQuery query = database.getOQLQuery(
+	                "SELECT communitys FROM org.astrogrid.community.policy.data.CommunityData communitys"
+	                );
+	            //
+	            // Execute our query.
+	            QueryResults results = query.execute();
+	            //
+	            // Transfer our results to a vector.
+	            Collection collection = new Vector() ;
+	            while (results.hasMore())
+	                {
+	                collection.add(results.next()) ;
+	                }
+	            // 
+	            // Convert it into an array.
+	            array = collection.toArray() ;
+				//
+				// Commit the transaction.
+				database.commit() ;
+				}
             }
         //
         // If anything went bang.
@@ -438,42 +451,23 @@ public class CommunityManagerImpl
             if (DEBUG_FLAG) System.out.println("") ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("Exception in getCommunityList()") ;
-
+            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             array = null ;
-
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("") ;
             }
         //
-        // Commit the transaction.
+        // Close our connection.
         finally
             {
-            try {
-                if (null != array)
-                    {
-                    database.commit() ;
-                    }
-                else {
-                    database.rollback() ;
-                    }
-                }
-            catch (Exception ouch)
-                {
-                if (DEBUG_FLAG) System.out.println("") ;
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("Exception in getCommunityList() finally clause") ;
-
-                //
-                // Set the response to null.
-                array = null ;
-
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("") ;
-                }
+			closeConnection(database) ;
             }
-
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         return array ;
         }
@@ -492,29 +486,53 @@ public class CommunityManagerImpl
         CommunityData community = null ;
         //
         // Try update the database.
+        Database database = null ;
         try {
-            //
-            // Begin a new database transaction.
-            database.begin();
-            //
-            // Load the Community from the database.
-            community = (CommunityData) database.load(CommunityData.class, ident) ;
-            //
-            // Delete the community.
-            database.remove(community) ;
+			//
+			// Open a connection to our database.
+			database = this.getDatabase() ;
+			//
+			// If we got a database connection.
+			if (null != database)
+				{
+	            //
+	            // Begin a new database transaction.
+	            database.begin();
+	            //
+	            // Load the Community from the database.
+	            community = (CommunityData) database.load(CommunityData.class, ident) ;
+	            //
+	            // Delete the community.
+	            database.remove(community) ;
+				//
+				// Commit the transaction.
+				database.commit() ;
+				}
+			//
+			// If we didn't get a database connection.
+			else {
+				//
+				// Set the response to null.
+				community = null ;
+				}
             }
         //
         // If we couldn't find the object.
+// TODO
+// The only reason to treat this differently is that we might one day report it differently to the client.
         catch (ObjectNotFoundException ouch)
             {
             if (DEBUG_FLAG) System.out.println("") ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in delCommunity()") ;
-
+            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
-
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("") ;
             }
@@ -525,42 +543,23 @@ public class CommunityManagerImpl
             if (DEBUG_FLAG) System.out.println("") ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("Exception in delCommunity()") ;
-
+            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
-
+			//
+			// Cancel the database transaction.
+			rollbackTransaction(database) ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
             if (DEBUG_FLAG) System.out.println("") ;
             }
         //
-        // Commit the transaction.
+        // Close our connection
         finally
             {
-            try {
-                if (null != community)
-                    {
-                    database.commit() ;
-                    }
-                else {
-                    database.rollback() ;
-                    }
-                }
-            catch (Exception ouch)
-                {
-                if (DEBUG_FLAG) System.out.println("") ;
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("Exception in delCommunity() finally clause") ;
-
-                //
-                // Set the response to null.
-                community = null ;
-
-                if (DEBUG_FLAG) System.out.println("  ----") ;
-                if (DEBUG_FLAG) System.out.println("") ;
-                }
+			closeConnection(database) ;
             }
-
         if (DEBUG_FLAG) System.out.println("----\"----") ;
 
         return community ;

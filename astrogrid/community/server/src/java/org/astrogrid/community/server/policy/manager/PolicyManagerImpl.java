@@ -1,11 +1,47 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/07 10:45:45 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/12 06:56:46 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.3  2004/02/12 06:56:46  dave
+ *   Merged development branch, dave-dev-200401131047, into HEAD
+ *
+ *   Revision 1.2.4.10  2004/02/06 13:49:09  dave
+ *   Moved CommunityManagerBase into server.common.CommunityServer.
+ *   Moved getServiceStatus into server.common.CommunityServer.
+ *   Moved JUnit tests to match.
+ *
+ *   Revision 1.2.4.9  2004/01/27 18:55:08  dave
+ *   Removed unused imports listed in PMD report
+ *
+ *   Revision 1.2.4.8  2004/01/27 17:10:00  dave
+ *   Refactored database handling in JUnit tests
+ *
+ *   Revision 1.2.4.7  2004/01/27 07:43:03  dave
+ *   Removed old DatabaseManager code
+ *
+ *   Revision 1.2.4.6  2004/01/27 07:10:11  dave
+ *   Refactored ResourceManagerImpl
+ *
+ *   Revision 1.2.4.5  2004/01/27 06:46:19  dave
+ *   Refactored PermissionManagerImpl and added initial JUnit tests
+ *
+ *   Revision 1.2.4.4  2004/01/27 06:16:20  dave
+ *   Removed calls to GroupManagerImpl.init()
+ *
+ *   Revision 1.2.4.3  2004/01/26 23:23:23  dave
+ *   Changed CommunityManagerImpl to use the new DatabaseManager.
+ *   Moved rollback and close into CommunityManagerBase.
+ *
+ *   Revision 1.2.4.2  2004/01/26 13:18:08  dave
+ *   Added new DatabaseManager to enable local JUnit testing
+ *
+ *   Revision 1.2.4.1  2004/01/17 13:54:18  dave
+ *   Removed password from AccountData
+ *
  *   Revision 1.2  2004/01/07 10:45:45  dave
  *   Merged development branch, dave-dev-20031224, back into HEAD
  *
@@ -98,7 +134,6 @@ package org.astrogrid.community.server.policy.manager ;
 import java.rmi.RemoteException ;
 
 import org.astrogrid.community.common.policy.data.GroupData ;
-import org.astrogrid.community.common.policy.data.ServiceData ;
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.data.ResourceData;
 import org.astrogrid.community.common.policy.data.CommunityData ;
@@ -110,10 +145,11 @@ import org.astrogrid.community.common.config.CommunityConfig ;
 
 import org.astrogrid.community.common.policy.manager.PolicyManager ;
 
-import org.astrogrid.community.server.policy.manager.DatabaseManager ;
-import org.astrogrid.community.server.policy.manager.DatabaseManagerImpl ;
+import org.astrogrid.community.server.common.CommunityServer ;
+import org.astrogrid.community.server.database.DatabaseConfiguration ;
 
 public class PolicyManagerImpl
+	extends CommunityServer
     implements PolicyManager
     {
     /**
@@ -123,125 +159,113 @@ public class PolicyManagerImpl
     protected static final boolean DEBUG_FLAG = true ;
 
     /**
-     * Public constructor.
+     * Public constructor, using default database configuration.
      *
      */
     public PolicyManagerImpl()
         {
-        this.init() ;
+		super() ;
+		//
+		// Configure our local managers.
+		configLocalManagers() ;
         }
 
     /**
-     * Our DatabaseManager.
+     * Public constructor, using specific database configuration.
      *
      */
-//    private DatabaseManagerImpl databaseManager ;
-    private DatabaseManager databaseManager ;
+	public PolicyManagerImpl(DatabaseConfiguration config)
+		{
+		super(config) ;
+		//
+		// Configure our local managers.
+		configLocalManagers() ;
+		}
+
+	/**
+	 * Set our database configuration.
+	 * This makes it easier to run JUnit tests with a different database configurations.
+	 * This calls our base class method and then updates all of our local managers.
+	 *
+	 */
+	public void setDatabaseConfiguration(DatabaseConfiguration config)
+		{
+		//
+		// Call our base class method.
+		super.setDatabaseConfiguration(config) ;
+		//
+		// Configure our local managers.
+		configLocalManagers() ;
+		}
+
+	/**
+	 * Configure our local managers.
+	 * This calls setDatabaseConfiguration on all of our local managers.
+	 * We need this in a separate method to initialise the local managers after they are created.
+	 *
+	 */
+	private void configLocalManagers()
+		{
+		//
+		// Configure our local managers.
+		if (null != groupManager) groupManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+		if (null != accountManager) accountManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+		if (null != resourceManager) resourceManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+		if (null != communityManager) communityManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+		if (null != permissionManager) permissionManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+		}
 
     /**
      * Our AccountManager.
      *
      */
-    private AccountManagerImpl accountManager ;
+    private AccountManagerImpl accountManager = new AccountManagerImpl() ; 
 
     /**
      * Our GroupManager.
      *
      */
-    private GroupManagerImpl groupManager ;
+    private GroupManagerImpl groupManager = new GroupManagerImpl() ;
 
     /**
      * Our CommunityManager.
      *
      */
-    private CommunityManagerImpl communityManager ;
+    private CommunityManagerImpl communityManager = new CommunityManagerImpl() ;
 
     /**
      * Our ResourceManager
      *
      */
-    private ResourceManagerImpl resourceManager;
+    private ResourceManagerImpl resourceManager = new ResourceManagerImpl() ;
 
     /**
      * Our PermissionManager
      *
      */
-    private PermissionManagerImpl permissionManager;
-
-    /**
-     * Initialise our service.
-     *
-     */
-    public void init()
-        {
-        //
-        // Initialise our configuration.
-        CommunityConfig.loadConfig() ;
-        //
-        // Initialise our DatabaseManager.
-        databaseManager = new DatabaseManagerImpl() ;
-        //
-        // Initialise our AccountManager.
-        accountManager = new AccountManagerImpl() ;
-        accountManager.init(databaseManager) ;
-        //
-        // Initialise our GroupManager.
-        groupManager = new GroupManagerImpl() ;
-        groupManager.init(databaseManager) ;
-        //
-        // Initialise our CommunityManager.
-        communityManager = new CommunityManagerImpl() ;
-        communityManager.init(databaseManager) ;
-        //
-        // Initialise our ResourceManager.
-        resourceManager = new ResourceManagerImpl();
-        resourceManager.init(databaseManager);
-        //
-        // Initialise our PermissionManager.
-        permissionManager = new PermissionManagerImpl();
-        permissionManager.init(databaseManager);
-        }
-
-    /**
-     * Service health check.
-     *
-     */
-    public ServiceData getServiceStatus()
-        {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getServiceStatus()") ;
-
-        ServiceData status =  new ServiceData() ;
-
-        status.setCommunityName(CommunityConfig.getCommunityName()) ;
-        status.setConfigPath(CommunityConfig.getProperty("config.location")) ;
-        status.setServiceUrl(CommunityConfig.getServiceUrl()) ;
-        status.setManagerUrl(CommunityConfig.getManagerUrl()) ;
-
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return status ;
-        }
+    private PermissionManagerImpl permissionManager = new PermissionManagerImpl() ;
 
     /**
      * Get the password for an Account.
      * This should only be available via an encrypted connection.
      *
-     */
+	 * Removed for refactoring.
     public String getPassword(String name)
         {
         return this.accountManager.getPassword(name);
         }
+     */
 
     /**
      * Set the password for an Account.
      * This should only be available via an encrypted connection.
      *
-     */
+	 * Removed for refactoring.
     public AccountData setPassword(String ident, String password)
         {
         return this.accountManager.setPassword(ident, password);
         }
+     */
 
     /**
      * Create a new Account, given the Account name.

@@ -1,11 +1,34 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/AccountData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/07 10:45:38 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/12 06:56:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountData.java,v $
+ *   Revision 1.3  2004/02/12 06:56:45  dave
+ *   Merged development branch, dave-dev-200401131047, into HEAD
+ *
+ *   Revision 1.2.4.6  2004/01/30 03:21:23  dave
+ *   Added initial code for SecurityManager and SecurityService
+ *
+ *   Revision 1.2.4.5  2004/01/27 19:09:52  dave
+ *   Fixed dumb typo ...
+ *
+ *   Revision 1.2.4.4  2004/01/27 19:07:28  dave
+ *   Fixed PMD report violations
+ *   1) Removed unused imports.
+ *   2) Added override for hashCode() to match custom equals().
+ *
+ *   Revision 1.2.4.3  2004/01/17 13:54:18  dave
+ *   Removed password from AccountData
+ *
+ *   Revision 1.2.4.2  2004/01/13 15:17:40  dave
+ *   Put password back in for a moment
+ *
+ *   Revision 1.2.4.1  2004/01/13 14:29:41  dave
+ *   Added initial JUnit tests
+ *
  *   Revision 1.2  2004/01/07 10:45:38  dave
  *   Merged development branch, dave-dev-20031224, back into HEAD
  *
@@ -32,111 +55,134 @@
  *
  * </cvs:log>
  *
+ * TODO : Refactor this into AccountData and AccountDetails.
+ * TODO : Refactor this to inherit from CommunityBase (common code for equals and ident handling).
+ *
  */
 package org.astrogrid.community.common.policy.data ;
 
 public class AccountData
     {
-    /**
-     * Public constructor.
-     *
-     */
-    public AccountData()
-        {
-        this(null, null) ;
-        }
+	/**
+	 * Public constructor.
+	 *
+	 */
+	public AccountData()
+		{
+		this(null) ;
+		}
 
-    /**
-     * Public constructor.
-     *
-     */
-    public AccountData(String ident)
-        {
-        this(ident, null) ;
-        }
+	/**
+	 * Public constructor.
+	 *
+	 */
+	public AccountData(String value)
+		{
+		this.setIdent(value) ;
+		}
 
-    /**
-     * Public constructor.
-     *
-     */
-    public AccountData(String ident, String password)
-        {
-        this.ident = ident ;
-        this.password = password ;
-        }
+	/**
+	 * Our Account ident.
+	 *
+	 */
+	private String ident ;
 
-    /**
-     * Our Account ident.
-     *
-     */
-    private String ident ;
+	/**
+	 * Access to our Account ident.
+	 *
+	 */
+	public String getIdent()
+		{
+		return this.ident ;
+		}
 
-    /**
-     * Access to our Account ident.
-     *
-     */
-    public String getIdent()
-        {
-        return this.ident ;
-        }
+	/**
+	 * Access to our Account ident.
+	 *
+	 */
+	public void setIdent(String value)
+		{
+		this.ident = value ;
+		}
 
-    /**
-     * Access to our Account ident.
-     *
-     */
-    public void setIdent(String value)
-        {
-        this.ident = value ;
-        }
+	/**
+	 * Our Account description.
+	 *
+	 */
+	private String description ;
 
+	/**
+	 * Access to our Account description.
+	 *
+	 */
+	public String getDescription()
+		{
+		return this.description ;
+		}
 
-      /**
-       * Our Account description.
-       *
-       */
-      private String description ;
+	/**
+	 * Access to our Account description.
+	 *
+	 */
+	public void setDescription(String value)
+		{
+		this.description = value ;
+		}
 
-      /**
-       * Access to our Account description.
-       *
-       */
-      public String getDescription()
-         {
-         return this.description ;
-         }
+	/*
+	 * Compare this with another AccountData.
+	 * All we want to check is the Account ident.
+	 * TODO This needs to refactored to check for local community in the ident.
+	 *
+	 */
+	public synchronized boolean equals(Object object)
+		{
+		//
+		// If the object is null.
+		if (null == object)
+			{
+			return false ;
+			}
+		//
+		// If the object is not null.
+		else {
+			//
+			// If the object is an AccountData
+			if (object instanceof AccountData)
+				{
+				AccountData that = (AccountData) object ;
+				//
+				// If our ident is null
+				if (null == this.ident)
+					{
+					//
+					// Check that ident is null.
+					return (null == that.getIdent()) ;
+					}
+				//
+				// If our ident is not null.
+				else {
+					//
+					// Check that ident is the same.
+					return (this.ident.equals(that.getIdent())) ;
+					}
+				}
+			//
+			// If that is not an AccountData
+			else {
+				return false ;
+				}
+			}
+		}
 
-      /**
-       * Access to our Account description.
-       *
-       */
-      public void setDescription(String value)
-         {
-         this.description = value ;
-         }
-
-
-    /**
-     * Our Account description.
-     *
-     */
-    private String password ;
-
-    /**
-     * Access to our Account description.
-     *
-     */
-    public String getPassword()
-        {
-        return this.password ;
-        }
-
-    /**
-     * Access to our Account description.
-     *
-     */
-    public void setPassword(String value)
-        {
-        this.password = value ;
-        }
-
+	/**
+	 * Generate a hash code for comparison tests.
+	 * Just uses the ident.hashCode().
+	 * TODO This needs to refactored to check for local community in the ident.
+	 *
+	 */
+	public synchronized int hashCode()
+		{
+		return (null != this.ident) ? this.ident.hashCode() : 0 ;
+		}
     }

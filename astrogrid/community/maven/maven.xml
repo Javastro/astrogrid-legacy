@@ -4,10 +4,24 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/07 10:45:39 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/02/12 06:56:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.3  2004/02/12 06:56:45  dave
+    |   Merged development branch, dave-dev-200401131047, into HEAD
+    |
+    |   Revision 1.2.4.3  2004/02/10 00:40:37  dave
+    |   Added install tooklit to the Maven build.
+    |   Changed Maven project to use 'org.astrogrid' as the group name.
+    |   Fixed dependencies that used the original group name.
+    |
+    |   Revision 1.2.4.2  2004/01/17 13:54:18  dave
+    |   Removed password from AccountData
+    |
+    |   Revision 1.2.4.1  2004/01/13 14:29:41  dave
+    |   Added initial JUnit tests
+    |
     |   Revision 1.2  2004/01/07 10:45:39  dave
     |   Merged development branch, dave-dev-20031224, back into HEAD
     |
@@ -49,7 +63,7 @@
 		| Load the axis properties.
 		| Note, if we use util:properties, then the references to other properties are not resolved.
 		+-->
-	<ant:echo message="Loading axis properties : ${project.base.root}/maven/axis.properties"/>
+	<ant:echo message="Loading axis properties  : ${project.base.root}/maven/axis.properties"/>
 	<ant:property file="${project.base.root}/maven/axis.properties"/>
 
 <!--
@@ -195,22 +209,9 @@
             <core:set var="astroInitPathsDone" value="true"/>
             <!--+
                 | Set the local paths.
-            <core:set scope="parent" var="axisUrl" value="${astro.axis.url}"/>
-            <core:set scope="parent" var="axisDir" value="${astro.axis.webapp.dir}"/>
-            <core:set scope="parent" var="tempDir" value="${astro.axis.generated.temp.dir}"/>
-            <core:set scope="parent" var="javaDir" value="${astro.axis.generated.java.dir}"/>
-            <core:set scope="parent" var="wsdlDir" value="${astro.axis.generated.wsdl.dir}"/>
-            <core:set scope="parent" var="wsddDir" value="${astro.axis.generated.wsdd.dir}"/>
-
-            <core:set var="axisUrl" value="http://${astro.axis.host}:${astro.axis.port}/${pom.groupId}"/>
-            <core:set var="axisDir" value="${maven.build.dir}/axis/webapp"/>
-            <core:set var="tempDir" value="${maven.build.dir}/generated/temp"/>
-            <core:set var="javaDir" value="${maven.build.dir}/generated/java"/>
-            <core:set var="wsdlDir" value="${maven.build.dir}/generated/wsdl"/>
-            <core:set var="wsddDir" value="${maven.build.dir}/generated/wsdd"/>
+                | TODO, make the astrogrid-community configurable, was ${pom.groupId}.
                 +-->
-
-            <core:set var="axisUrl" value="http://${astro.axis.host}:${astro.axis.port}/${pom.groupId}"/>
+            <core:set var="axisUrl" value="http://${astro.axis.host}:${astro.axis.port}/astrogrid-community"/>
             <core:set var="axisDir" value="${astro.axis.webapp.dir}"/>
             <core:set var="tempDir" value="${astro.axis.generated.temp.dir}"/>
             <core:set var="javaDir" value="${astro.axis.generated.java.dir}"/>

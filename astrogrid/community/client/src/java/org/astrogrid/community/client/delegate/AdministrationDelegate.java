@@ -87,7 +87,10 @@ public class AdministrationDelegate {
       return policyURL;      
    }
    
-   
+
+  /*
+   * Removed for refactoring.
+   *
    public String getPassword(String name) throws Exception {
       String policyURL = getSecureURL();
       if(policyURL == null) {
@@ -96,7 +99,12 @@ public class AdministrationDelegate {
       PolicyManager secureService = getService(policyURL);
       return secureService.getPassword(name);      
    }
+  *
+  */
 
+  /*
+   * Removed for refactoring.
+   *
    public AccountData setPassword(String account,String password) throws Exception {
       String policyURL = getSecureURL();
       if(policyURL == null) {
@@ -105,8 +113,9 @@ public class AdministrationDelegate {
       PolicyManager secureService = getService(policyURL);
       return secureService.setPassword(account,password);      
    }
+  *
+  */
 
-   
    
    /**
     * Creates a new permission in the database tying a resource to a group for a specefic action.
@@ -180,7 +189,7 @@ public class AdministrationDelegate {
    }
    
    /**
-    * Get an Account object which consists of a name, password, and description.
+    * Get an Account object which consists of a name, and description.
     * @param name
     * @return
     * @throws Exception

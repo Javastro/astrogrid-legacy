@@ -4,10 +4,21 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/07 10:45:37 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2004/02/12 06:56:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.4  2004/02/12 06:56:45  dave
+    |   Merged development branch, dave-dev-200401131047, into HEAD
+    |
+    |   Revision 1.3.4.2  2004/02/10 00:40:37  dave
+    |   Added install tooklit to the Maven build.
+    |   Changed Maven project to use 'org.astrogrid' as the group name.
+    |   Fixed dependencies that used the original group name.
+    |
+    |   Revision 1.3.4.1  2004/01/17 13:54:18  dave
+    |   Removed password from AccountData
+    |
     |   Revision 1.3  2004/01/07 10:45:37  dave
     |   Merged development branch, dave-dev-20031224, back into HEAD
     |
@@ -161,7 +172,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml"
             goals="clean"
             banner="Cleaning build targets : "
             ignoreFailures="false"
@@ -179,7 +190,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml"
             goals="install-artifact"
             banner="Building component artifact : "
             ignoreFailures="false"
@@ -193,7 +204,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml"
             goals="install-snapshot"
             banner="Building snapshot artifact : "
             ignoreFailures="false"
@@ -238,7 +249,7 @@
                 <ant:echo message="Build artifact  : ${pom.artifactId}"/>
                 <ant:echo message="Build version   : ${pom.currentVersion}"/>
                 <ant:echo message="Build directory : ${maven.build.dir}"/>
-                <ant:echo message="Building sub-project site : "/>
+                <ant:echo message="Building top level project site : "/>
                 <attainGoal name="site:generate"/>
             </core:case>
             <!--+
@@ -264,7 +275,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml"
             goals="deploy-snapshot"
             banner="Deploying snapshot artifact : "
             ignoreFailures="false"

@@ -4,10 +4,23 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/07 10:45:45 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/02/12 06:56:46 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.3  2004/02/12 06:56:46  dave
+    |   Merged development branch, dave-dev-200401131047, into HEAD
+    |
+    |   Revision 1.2.4.2  2004/02/10 01:18:13  dave
+    |   Changed internal depends to use ${pom.currentVersion}.
+    |   Tried using a properties file, but depends from project.xml are loaded before any of the properties.
+    |   TODO Need to make this configurable, to set the versions of other astrogrid depends.
+    |
+    |   Revision 1.2.4.1  2004/02/10 00:40:37  dave
+    |   Added install tooklit to the Maven build.
+    |   Changed Maven project to use 'org.astrogrid' as the group name.
+    |   Fixed dependencies that used the original group name.
+    |
     |   Revision 1.2  2004/01/07 10:45:45  dave
     |   Merged development branch, dave-dev-20031224, back into HEAD
     |
@@ -83,9 +96,9 @@
             | The Community common components.
             +-->
         <dependency>
-            <groupId>astrogrid-community</groupId>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -96,9 +109,9 @@
             | The Community server components.
             +-->
         <dependency>
-            <groupId>astrogrid-community</groupId>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-community-server</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>

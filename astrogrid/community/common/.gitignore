@@ -2,4 +2,6 @@
 .classpath
 target
 build.properties
+cvs.log
 maven.log
+velocity.log

@@ -3,4 +3,5 @@
 target
 build.properties
 maven.log
+server-config.wsdd
 

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/CommunityData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/07 10:45:38 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/12 06:56:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityData.java,v $
+ *   Revision 1.3  2004/02/12 06:56:45  dave
+ *   Merged development branch, dave-dev-200401131047, into HEAD
+ *
+ *   Revision 1.2.4.1  2004/01/30 14:55:46  dave
+ *   Added PasswordData object
+ *
  *   Revision 1.2  2004/01/07 10:45:38  dave
  *   Merged development branch, dave-dev-20031224, back into HEAD
  *
@@ -146,22 +152,23 @@ public class CommunityData
        */
    private String authentication ;
 
-      /**
-       * Access to our manager url.
-       *
-       */
-   public String getAuthenticationUrl() {
-         return this.authentication ;
-   }
+	/**
+	 * Access to our manager url.
+	 *
+	 */
+	public String getAuthenticationUrl()
+		{
+		return this.authentication ;
+		}
 
-      /**
-       * Access to our Community url.
-       *
-       */
-   public void setAuthenticationUrl(String value) {
-         this.authentication = value ;
-   }
-      
+	/**
+	 * Access to our Community url.
+	 *
+	 */
+	public void setAuthenticationUrl(String value)
+		{
+		this.authentication = value ;
+		}
 
     /**
      * Our Community description.
@@ -183,8 +190,64 @@ public class CommunityData
      *
      */
     public void setDescription(String value)
-        {
-        this.description = value ;
-        }
+		{
+		this.description = value ;
+		}
 
-    }
+	/*
+	 * Compare this with another CommunityData.
+	 * All we want to check is the community ident.
+	 *
+	 */
+	public synchronized boolean equals(Object object)
+		{
+		//
+		// If the object is null.
+		if (null == object)
+			{
+			return false ;
+			}
+		//
+		// If the object is not null.
+		else {
+			//
+			// If the object is an CommunityData
+			if (object instanceof CommunityData)
+				{
+				CommunityData that = (CommunityData) object ;
+				//
+				// If our ident is null
+				if (null == this.ident)
+					{
+					//
+					// Check that ident is null.
+					return (null == that.getIdent()) ;
+					}
+				//
+				// If our ident is not null.
+				else {
+					//
+					// Check that ident is the same.
+					return (this.ident.equals(that.getIdent())) ;
+					}
+				}
+			//
+			// If that is not an CommunityData
+			else {
+				return false ;
+				}
+			}
+		}
+
+	/**
+	 * Generate a hash code for comparison tests.
+	 * Just uses the ident.hashCode().
+	 * TODO This needs to refactored to check for local community in the ident.
+	 *
+	 */
+	public synchronized int hashCode()
+		{
+		return (null != this.ident) ? this.ident.hashCode() : 0 ;
+		}
+
+	}

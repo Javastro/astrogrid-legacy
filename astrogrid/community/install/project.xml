@@ -4,10 +4,23 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/07 10:45:39 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/02/12 06:56:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.3  2004/02/12 06:56:45  dave
+    |   Merged development branch, dave-dev-200401131047, into HEAD
+    |
+    |   Revision 1.2.4.2  2004/02/10 01:18:13  dave
+    |   Changed internal depends to use ${pom.currentVersion}.
+    |   Tried using a properties file, but depends from project.xml are loaded before any of the properties.
+    |   TODO Need to make this configurable, to set the versions of other astrogrid depends.
+    |
+    |   Revision 1.2.4.1  2004/02/10 00:40:37  dave
+    |   Added install tooklit to the Maven build.
+    |   Changed Maven project to use 'org.astrogrid' as the group name.
+    |   Fixed dependencies that used the original group name.
+    |
     |   Revision 1.2  2004/01/07 10:45:39  dave
     |   Merged development branch, dave-dev-20031224, back into HEAD
     |
@@ -86,31 +99,99 @@
             | The Community common components.
             +-->
         <dependency>
-            <groupId>astrogrid-community</groupId>
-            <artifactId>astrogrid-community</artifactId>
-            <version>SNAPSHOT</version>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+            <properties>
+                <jar.fileset>true</jar.fileset>
+            </properties>
         </dependency>
         <!--+
             | The Community client components.
             +-->
         <dependency>
-            <groupId>astrogrid-community</groupId>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+            <properties>
+                <jar.fileset>true</jar.fileset>
+            </properties>
         </dependency>
         <!--+
             | The Community webapp.
             +-->
         <dependency>
-            <groupId>astrogrid-community</groupId>
-            <artifactId>astrogrid-community</artifactId>
-            <version>SNAPSHOT</version>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-community-webapp</artifactId>
+            <version>${pom.currentVersion}</version>
             <type>war</type>
             <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.fileset>true</war.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The Castor jars.
+            +-->
+        <dependency>
+            <groupId>castor</groupId>
+            <artifactId>castor</artifactId>
+            <version>0.9.5</version>
+            <type>jar</type>
+            <url>http://www.castor.org/</url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>castor</groupId>
+            <artifactId>castor-xml</artifactId>
+            <version>0.9.5</version>
+            <jar>castor-0.9.5-xml.jar</jar>
+            <type>jar</type>
+            <url>http://www.castor.org/</url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The libraries that Castor relies on.
+            +-->
+        <dependency>
+            <groupId>jta</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.0.1</version>
+            <type>jar</type>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The Xerces and XML API jars.
+            +-->
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xerces</artifactId>
+            <version>2.4.0</version>
+            <type>jar</type>
+            <url>http://xml.apache.org/</url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.0.b2</version>
+            <type>jar</type>
+            <url>http://xml.apache.org/</url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
         </dependency>
         <!--+
             | The Hsqldb jars.
@@ -121,6 +202,9 @@
             <version>1.7.1</version>
             <type>jar</type>
             <url>http://www.hsqldb.org/</url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
         </dependency>
     </dependencies>
 
