@@ -7,13 +7,11 @@
 </properties>
 
 <body>
-  <section name="Submit a Region Query">
+  <section name="Submit an ADQL/sql Query">
     <p>
-      <form action="submitCone.jsp" method="POST">
+      <form action="submitAdqlSql.jsp" method="POST">
        <p>
-         Right Ascension in decimal degrees, J2000 <input type="text" name="RA"/><br />
-         Decliniation in decimal degress, J2000 <input type="text" name="DEC" /><br />
-         Search radius in decimal degrees <input type="text" name="SR" /><br />
+         ADQL/sql <textarea name="AdqlSql" rows='1' cols='100%'/><br />
        </p>
        <p>
           Results Format
@@ -27,10 +25,11 @@
           </select>
           Send them to
           <input type="text" name="Target"/>
-          <input type="submit" value="Search Cone" />
+          <input type="submit" value="Submit ADQL" />
        </p>
-     </form>
-   </p>
+
+      </form>
+    </p>
   </section>
 </body>
 </document>

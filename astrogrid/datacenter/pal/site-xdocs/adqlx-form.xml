@@ -7,15 +7,16 @@
 </properties>
 
 <body>
-  <section name="Submit a Region Query">
+  <section name="Submit an ADQL/xml Query">
     <p>
-      <form action="submitCone.jsp" method="POST">
-       <p>
-         Right Ascension in decimal degrees, J2000 <input type="text" name="RA"/><br />
-         Decliniation in decimal degress, J2000 <input type="text" name="DEC" /><br />
-         Search radius in decimal degrees <input type="text" name="SR" /><br />
-       </p>
-       <p>
+      <b>Enter your ADQL/xml query here:</b>
+      (<a href="http://openskyquery.net/AdqlTranslator/Convertor.aspx">Translate from SQL</a>)
+      (<a href="adql">Sample queries</a> <i>Note that some browsers will modify viewed XML, so check for DEFANGED, case changes, etc</i>)
+      <br />
+      <form action="submitAdqlXml.jsp" method="POST">
+        <textarea name="AdqlXml" rows="20" cols="100%"></textarea>
+        <p/>
+        <p>
           Results Format
           <select name='Format'>
              <option value="VOTABLE">VOTable</option>
@@ -27,10 +28,11 @@
           </select>
           Send them to
           <input type="text" name="Target"/>
-          <input type="submit" value="Search Cone" />
+          <input type="submit" value="Submit ADQL" />
        </p>
-     </form>
-   </p>
+      </form>
+    </p>
   </section>
+
 </body>
 </document>
