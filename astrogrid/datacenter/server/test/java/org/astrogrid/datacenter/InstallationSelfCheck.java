@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.10 2004/03/02 01:32:18 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.11 2004/03/06 22:34:58 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.datacenter.service.AxisDataServer;
+import org.astrogrid.datacenter.service.ServiceServer;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
@@ -120,11 +121,21 @@ public class InstallationSelfCheck extends TestCase {
    }
    
    
+   /**
+    * Checks metadata is OK
+    */
+   public void testMetadata() throws IOException {
+      new ServiceServer().getVODescription();
+   }
+   
 }
 
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.11  2004/03/06 22:34:58  mch
+ Added metadata test
+
  Revision 1.10  2004/03/02 01:32:18  mch
  Replaced Account in StoreClient with User
 
