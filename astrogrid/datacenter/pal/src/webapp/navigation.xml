@@ -7,7 +7,7 @@
          <li><a href="RELEASE.html">RELEASE</a>
          <!-- <li><a href="WEB-INF/classes/default.properties">Sample Configuration</a> -->
          <li><a href="self-test.html">Installation Test</a>
-         <li><a href="fingerpring.jsp">Fingerprint</a>
+         <li><a href="fingerprint.jsp">Fingerprint</a>
       </ul>
    </div>
    <div id='menuQuery'>
