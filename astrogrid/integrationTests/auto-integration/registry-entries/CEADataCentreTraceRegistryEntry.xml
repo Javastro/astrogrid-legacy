@@ -3,7 +3,7 @@
         <vr:Resource xsi:type="CeaApplicationType">
                 <vr:Identifier>
                         <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
-                        <vr:ResourceKey>noaa_trace_dsa</vr:ResourceKey>
+                        <vr:ResourceKey>trace_dsa</vr:ResourceKey>
                 </vr:Identifier>
                 <vr:Title>CEA entry for the Trace Instrument Fits Catalogue</vr:Title>
                 <vr:ShortName>TemplateEntry</vr:ShortName>
