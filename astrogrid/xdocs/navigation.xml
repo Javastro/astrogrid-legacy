@@ -22,8 +22,8 @@
 				| and rely on deploying to Apache 2.x 
 				+--> 
             <item name="Installers" href="/installers.html" collapse="true">
-                <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=*-installer-0.?-b*.jar"/>
-                <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-portal-installer*-0.?-b*.jar"/>
+                <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/apps/*.jar"/>
+                <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?P=astrogrid-portal-installer*-0.?-b*.jar"/>
             </item>    
             <item name="Server Applications" href="/server.html" collapse="true">
                 <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*-0.?-b*.war"/>
