@@ -30,7 +30,7 @@ cd $MAVEN_PUBLIC/org.astrogrid/
 #  echo "No snapshot jar... looked in <$PWD> for <$REAL_SNAPSHOT_JAR>"
 #fi 
 
-## alternative - get rid of all the snapshot type files older than 8 days
-find . -regex ".*-200[0-9]+\.[0-9]+\.\(war\|jar\)\(\.md5\)?" -ctime +8 -exec rm '{}' ';' -print
+## alternative - get rid of all the snapshot type files older than 5 days
+find . -regex ".*-200[0-9]+\.[0-9]+\.\(war\|jar\)\(\.md5\)?" -ctime +5 -exec rm '{}' ';' -print
 
 cd $OLDDIR
