@@ -178,7 +178,7 @@ public class RegistryAdminService implements
       String tempIdent = null;
       boolean addManageError = false;
       System.out.println("here is the nl length = " + nl.getLength() + " and manauths size = " + manageAuths.size() + " and otherAuths size = " + otherAuths.size());
-
+      String versionNumber = conf.getString("org.astrogrid.registry.version");
       // Need to revamp/refactor a bunch to not use a while loop anymore
       // just use a for loop througha ll the Resources.  Also no need to use Document fragments.
       //while(nl.getLength() > 0) {
@@ -202,7 +202,7 @@ public class RegistryAdminService implements
             //XQueryExecution.updateQuery(tempIdent,df);
             //XQueryExecution.updateQuery("xml","astrogridv0_9",tempIdent,currentResource);         
             //XQueryExecution.updateQuery("xml","astrogridv0_9",tempIdent,df);
-            XQueryExecution.updateQuery("xml","astrogridv0_9",tempIdent,root);
+            XQueryExecution.updateQuery("xml","astrogridv" + versionNumber,tempIdent,root);
          }else {
             addManageError = true;
             if(currentResource.hasAttributes()) {
@@ -223,7 +223,7 @@ public class RegistryAdminService implements
                      //XQueryExecution.updateQuery(tempIdent,df);                  
                      //XQueryExecution.updateQuery("xml","astrogridv0_9",tempIdent,currentResource);
                      //XQueryExecution.updateQuery("xml","astrogridv0_9",tempIdent,df);
-                     XQueryExecution.updateQuery("xml","astrogridv0_9",tempIdent,root);
+                     XQueryExecution.updateQuery("xml","astrogridv" + versionNumber,tempIdent,root);
                   }else if(nodeVal != null && nodeVal.indexOf("AuthorityType") != -1) {
                      if(!otherAuths.containsKey((String)ident)) {
                         System.out.println("This is an AuthorityType and not managed by other authorities");
@@ -250,7 +250,7 @@ public class RegistryAdminService implements
                            RegistryFileHelper.addStatusMessage("Entering new entry: " + tempIdent);                  
                            //XQueryExecution.updateQuery("xml","astrogridv0_9",tempIdent,currentResource);
                            //XQueryExecution.updateQuery("xml","astrogridv0_9",tempIdent,df);
-                           XQueryExecution.updateQuery("xml","astrogridv0_9",tempIdent,root);
+                           XQueryExecution.updateQuery("xml","astrogridv" + versionNumber,tempIdent,root);
    
                            ident = getAuthorityID(loadedRegistry.getDocumentElement());
                            resKey = getResourceKey(loadedRegistry.getDocumentElement());
@@ -260,7 +260,7 @@ public class RegistryAdminService implements
                            Element elem = loadedRegistry.createElement("AstrogridResource");
                            elem.appendChild(loadedRegistry.getDocumentElement());
                            //XQueryExecution.updateQuery("xml","astrogridv0_9",tempIdent, loadedRegistry);
-                           XQueryExecution.updateQuery("xml","astrogridv0_9",tempIdent, elem);
+                           XQueryExecution.updateQuery("xml","astrogridv" + versionNumber,tempIdent, elem);
                            manageAuths = RegistryFileHelper.doManageAuthorities();
                         }else {
                            System.out.println("IN THE AUTO-INTEGRATION YOU SHOULD NOT GET HERE, BUT REMOVING CHILD FOR INFINITE LOOP");
@@ -374,7 +374,7 @@ public class RegistryAdminService implements
       if(nl.getLength() == 0) {
          nl = xsDoc.getElementsByTagName("vr:Resource" );
       }
-    
+      String versionNumber = conf.getString("org.astrogrid.registry.version");
       ArrayList al = new ArrayList();
       String xql = null;
       DocumentFragment df = null;
@@ -408,7 +408,7 @@ public class RegistryAdminService implements
          root.appendChild(currentResource);
          //df.appendChild(root);
          RegistryFileHelper.addStatusMessage("Entering new entry: " + tempIdent);
-         XQueryExecution.updateQuery("xml","astrogridv0_9",tempIdent,root);         
+         XQueryExecution.updateQuery("xml","astrogridv" + versionNumber,tempIdent,root);         
       }//for
    }
   
