@@ -25,7 +25,6 @@
 
   <shortDescription>Astrogrid Datacenter</shortDescription>
 
-  <url>http://www.astrogrid.org/maven/datacenter</url>
   <siteDirectory>/var/www/www/maven/build/datacenter</siteDirectory>
 
   <repository>
