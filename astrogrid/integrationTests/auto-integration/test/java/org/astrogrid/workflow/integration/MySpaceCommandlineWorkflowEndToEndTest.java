@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.8 2004/05/27 13:58:58 nw Exp $
+ * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.9 2004/07/01 11:47:39 nw Exp $
  * 
  * Created on 23-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,12 +14,16 @@
 package org.astrogrid.workflow.integration;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.integration.commandline.CommandLineProviderServerInfo;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
+import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.Workflow;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -51,100 +55,55 @@ public class MySpaceCommandlineWorkflowEndToEndTest
       super(arg0);
    }
 
-   public static void main(String[] args) {
-      junit.textui.TestRunner.run(MySpaceCommandlineWorkflowEndToEndTest.class);
-   }
-
+    protected VoSpaceClient voSpaceClient;
    /*
     * @see SimpleCommandlineWorkflowEndToEndTest#setUp()
     */
    protected void setUp() throws Exception {
       super.setUp();
-      targetApplication = TESTAPP;
       targetIvorn = createIVORN("/MySpaceCommandlineWorkflowEndToEndTest-output");        
-      inputIvorn =  createIVORN("/MySpaceCommandlineWorkflowEndToEndTest-input");        
-   }
-
-   /*
-    * @see TestCase#tearDown()
-    */
-   protected void tearDown() throws Exception {
-      super.tearDown();
-   }
-
-   /** 
-    * @see org.astrogrid.workflow.integration.SimpleCommandlineWorkflowEndToEndTest#configureToolParameters(org.astrogrid.workflow.beans.v1.Tool)
-    */
-   protected void configureToolParameters(Tool tool) {
-      super.configureToolParameters(tool);
-      ParameterValue pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P9']");
-      pval.setValue(inputIvorn.toString());
-      pval = (ParameterValue)tool.findXPathValue("output/parameter[name='P3']");
-      pval.setValue(targetIvorn.toString());    
-   }
-   
-   public void setupAndVerifyVOSpaceFiles()  throws Exception {
-      System.out.println("Input IVORN: " + inputIvorn.toString());
-      System.out.println("Output IVORN: " + targetIvorn.toString());
+      inputIvorn =  createIVORN("/MySpaceCommandlineWorkflowEndToEndTest-input"); 
        // write to myspace...
-       VoSpaceClient voSpaceClient = new VoSpaceClient(user);
+       voSpaceClient = new VoSpaceClient(user);
        OutputStream os = voSpaceClient.putStream(inputIvorn);
        assertNotNull(os);
        PrintWriter pout = new PrintWriter(new OutputStreamWriter(os));
-       pout.println(TESTCONTENTS);
+       pout.println(CommandLineProviderServerInfo.TEST_CONTENTS);
        pout.close();
-       
-       InputStream is = voSpaceClient.getStream(inputIvorn);
-       assertNotNull(is);
-       BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-       String content = reader.readLine();
-       assertNotNull(content);
-       reader.close();
-       assertEquals("contents not written to input file correctly",TESTCONTENTS,content);
+
        // remove output file if there already.
        try {
         voSpaceClient.delete(targetIvorn);
        } catch (Exception e) {
            // don't care. just make sure its gone.
-       }
-      
+       }    
+   }
+
+
+   /** 
+    * @see org.astrogrid.workflow.integration.SimpleCommandlineWorkflowEndToEndTest#configureToolParameters(org.astrogrid.workflow.beans.v1.Tool)
+    */
+   protected void configureToolParameters(Tool tool) {
+       info.populateIndirectTool(tool,inputIvorn.toString(),targetIvorn.toString());
    }
    
-   public void testResultFileInMyspace() throws Exception {
-       VoSpaceClient client = new VoSpaceClient(user);
-       InputStream is = client.getStream(targetIvorn);
-       assertNotNull(is);
+   public void checkExecutionResults(Workflow wf)  {
+       super.checkExecutionResults(wf);
+       // get the result, check its what we expect.
+       Step s = (Step)wf.getSequence().getActivity(0);
+       String value = s.getTool().getOutput().getParameter(0).getValue();
+       softAssertEquals("results not at expected location",targetIvorn.toString(),value);  
+        try {       
+        InputStream is = voSpaceClient.getStream(targetIvorn);
+        assertNotNull(is);
        
        // now check target ivorn has same contents as the original.
-       Reader reader = new InputStreamReader(is);
-       StringWriter writer = new StringWriter();
-       Piper.pipe(reader,writer);
-       reader.close();
-       writer.close();
-       System.out.println("Result file contents:");
-       System.out.println(writer.toString());      
-       assertTrue("contents of result file do not include contents of input file",writer.toString().indexOf(TESTCONTENTS) != -1);
+        Reader reader = new InputStreamReader(is);
+        StringWriter writer = new StringWriter();    
+        assertTrue("contents of result file do not include contents of input file",writer.toString().indexOf(CommandLineProviderServerInfo.TEST_CONTENTS) != -1);
+        } catch (IOException e) {
+            softFail("exception when reading result: " + e.getMessage());
+        }
        }
    
-   public static Test suite() {
-        TestSuite suite = new TestSuite(MySpaceCommandlineWorkflowEndToEndTest.class.getName());        
-
-        suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("verifyRequiredRegistryEntries"));
-        suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("setupAndVerifyVOSpaceFiles"));
-        suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("testSubmitWorkflow"));
-        suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("testExecutionProgress"));
-        suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("testCheckExecutionResults"));
-        suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("testResultFileInMyspace"));
-        suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("tidyUp"));        
-        return suite;
-    }
-
-   /* (non-Javadoc)
-    * @see org.astrogrid.workflow.integration.SimpleCommandlineWorkflowEndToEndTest#buildWorkflow()
-    */
-   protected void buildWorkflow() throws Exception {
-      super.buildWorkflow();
-      wf.setName("MySpaceUsingWorkflow");
-   }
-
 }

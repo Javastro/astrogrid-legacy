@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractTestForApplications.java,v 1.2 2004/05/17 22:54:59 pah Exp $
+ * $Id: AbstractTestForCEA.java,v 1.1 2004/07/01 11:43:33 nw Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,34 +13,46 @@
 
 package org.astrogrid.applications.integration;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.integration.AbstractTestForIntegration;
 import org.astrogrid.scripting.Service;
 
-/**
+import java.util.Iterator;
+import java.util.List;
+
+/** Abstract class for all cea server tests - provides a delegate pointing to the required server.
  * @author Paul Harrison (pah@jb.man.ac.uk) 11-May-2004
  * @version $Name:  $
  * @since iteration5
  */
-public abstract class AbstractTestForApplications extends AbstractTestForIntegration {
+public abstract class AbstractTestForCEA extends AbstractTestForIntegration {
 
    /**
     * @param arg0
     */
-   public AbstractTestForApplications(String arg0) {
+   public AbstractTestForCEA(String searchString,String arg0) {
       super(arg0);
-      // TODO Auto-generated constructor stub
+      this.searchString = searchString;
    }
+
+    /** string to search in service list for */
+    protected final String searchString;
 
    protected void setUp() throws Exception {
         super.setUp();
         List apps = ag.getApplications();
         assertNotNull(apps);
         assertTrue("no application servers found",apps.size() > 0);
-        serv = findRequiredService(apps.iterator());        
+        Iterator apps1 = apps.iterator();
+        while(apps1.hasNext()) {
+            Service s = (Service)apps1.next();
+            if (s.getDescription().indexOf(searchString) != -1) {
+                serv = s;
+            }
+        }
+        if (serv == null) {
+            fail("failed to find service matching '" + searchString + "'");
+        }      
         delegate = (CommonExecutionConnectorClient)serv.createDelegate();
     }
 
@@ -48,17 +60,4 @@ public abstract class AbstractTestForApplications extends AbstractTestForIntegra
 
    protected CommonExecutionConnectorClient delegate;
 
-   protected Service findRequiredService(Iterator apps) {
-        while( apps.hasNext() ) { // find the correct one
-            Service s = (Service)apps.next();
-            if (s.getDescription().indexOf("command-line") != -1) {
-                return s;
-            }           
-        }
-        fail("failed to find command-line service");
-        // never reached.
-        return null;
-    }
-
-   protected abstract String applicationName();
 }

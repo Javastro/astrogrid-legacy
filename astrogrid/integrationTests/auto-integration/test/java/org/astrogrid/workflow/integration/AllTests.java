@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.13 2004/04/26 12:17:56 nw Exp $
+/*$Id: AllTests.java,v 1.14 2004/07/01 11:47:39 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,22 +22,29 @@ public class AllTests {
     }
     public static Test suite() {
         TestSuite suite = new TestSuite("Workflow");
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(CompositeWorkflowEndToEndTest.class));
-        suite.addTest(FlowWorkflowTest.suite());
         suite.addTest(new TestSuite(JesInstallationTest.class));
         suite.addTest(new TestSuite(JesSelfTest.class));
-        suite.addTest(MySpaceCommandlineWorkflowEndToEndTest.suite());
+
         suite.addTest(new TestSuite(MySpaceIntegrationTest.class));
         suite.addTest(new TestSuite(RegistryIntegrationTest.class));
-        suite.addTest(SimpleCommandlineWorkflowEndToEndTest.suite());
-        suite.addTest(SimpleDSAWorkflowEndToEndTest.suite());
-        //$JUnit-END$
+        
+
+        suite.addTest(new TestSuite(SimpleCommandlineWorkflowEndToEndTest.class));
+        suite.addTest(new TestSuite(SimpleJavaWorkflowEndToEndTest.class));
+        suite.addTest(new TestSuite(SimpleDSAWorkflowEndToEndTest.class));        
+        suite.addTest(new TestSuite(MySpaceCommandlineWorkflowEndToEndTest.class));
+        
+        suite.addTest(new TestSuite(CompositeWorkflowEndToEndTest.class));
+        suite.addTest(new TestSuite(FlowWorkflowTest.class));
+
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.14  2004/07/01 11:47:39  nw
+cea refactor
+
 Revision 1.13  2004/04/26 12:17:56  nw
 *** empty log message ***
 

@@ -1,4 +1,4 @@
-/*$Id: JesInstallationTest.java,v 1.4 2004/04/23 00:27:56 nw Exp $
+/*$Id: JesInstallationTest.java,v 1.5 2004/07/01 11:47:39 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,8 +45,8 @@ public class JesInstallationTest extends AbstractTestForIntegration {
 
         //list
         JobSummary[] arr = delegate.readJobList(acc);
-        assertNotNull("null job list returned",arr);
-        assertTrue("empty job list returned",arr.length > 0);
+        softAssertNotNull("null job list returned",arr);
+        softAssertTrue("empty job list returned",arr.length > 0);
         
         boolean found = false;
         for (int i = 0; i < arr.length; i++) {
@@ -54,21 +54,21 @@ public class JesInstallationTest extends AbstractTestForIntegration {
                 found = true;
             }
         }        
-        assertTrue("newly submitted job not in list",found);
+        softAssertTrue("newly submitted job not in list",found);
         
         //read
         Workflow wf1 = delegate.readJob(urn);
         assertNotNull("read workflow is null",wf1);
-        assertNotNull("read workfow was not executed",wf1.getJobExecutionRecord());
-        assertEquals("read workfow did not complete",ExecutionPhase.COMPLETED,wf1.getJobExecutionRecord().getStatus());
-        assertEquals("read workflow does not have expected urn",urn.getContent(),wf1.getJobExecutionRecord().getJobId().getContent());
+        softAssertNotNull("read workfow was not executed",wf1.getJobExecutionRecord());
+        softAssertEquals("read workfow did not complete",ExecutionPhase.COMPLETED,wf1.getJobExecutionRecord().getStatus());
+        softAssertEquals("read workflow does not have expected urn",urn.getContent(),wf1.getJobExecutionRecord().getJobId().getContent());
     
 
        delegate.deleteJob(urn);
        Thread.sleep(2000); // wait for the request to be processed
        try {
             Workflow wf = delegate.readJob(urn);
-            fail("Expected to barf, when reading a deleted job");
+            softFail("Expected to barf, when reading a deleted job");
        } catch (WorkflowInterfaceException e) {
                 // ok
             }
@@ -80,6 +80,9 @@ public class JesInstallationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: JesInstallationTest.java,v $
+Revision 1.5  2004/07/01 11:47:39  nw
+cea refactor
+
 Revision 1.4  2004/04/23 00:27:56  nw
 reorganized end-to-end tests. added test to verify flows are executed in parallel
 

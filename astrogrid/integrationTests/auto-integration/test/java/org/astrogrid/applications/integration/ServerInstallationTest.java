@@ -1,4 +1,4 @@
-/*$Id: ApplicationsInstallationTest.java,v 1.4 2004/05/17 22:54:59 pah Exp $
+/*$Id: ServerInstallationTest.java,v 1.1 2004/07/01 11:43:33 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,62 +10,62 @@
 **/
 package org.astrogrid.applications.integration;
 
-import org.astrogrid.applications.beans.v1.ApplicationList;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
-import org.astrogrid.integration.*;
-import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+
+import org.astrogrid.io.Piper;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
-import org.astrogrid.scripting.Service;
-import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
 
 /** 
- * Test CEA interface of command-line application controller.
+ * Test basic installation of a cea server - verify it exists, can serve metadata, and its applications have been placed in the registry.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
-public class ApplicationsInstallationTest extends AbstractTestForApplications {
+public class ServerInstallationTest extends AbstractTestForCEA {
+    
+    public ServerInstallationTest(String arg0) {
+        this(new JavaProviderServerInfo(),arg0);
+    }
+    
     /**
      * Constructor for ApplicationsIntegrationTest.
      * @param arg0
      */
-    public ApplicationsInstallationTest(String arg0) {
-        super(arg0);
+    public ServerInstallationTest(ServerInfo info,String arg0) {
+        super(info.getServerSearchString(),arg0);
+        this.info = info;
     }
+    protected final ServerInfo info;
+    
+    public void testServicePresent() throws Exception {
+        URL url = new URL( delegate.getTargetEndPoint());
+        // will throw malformed if a problem..
+        // now just try a http-get to the endpoint - should return something (i.e. not a 404).
+        Reader r = new InputStreamReader( url.openStream());
+        StringWriter sw = new StringWriter();
+        Piper.pipe(r,sw);        
+        assertEquals("endpoint page contains error:" + sw.toString(),-1,sw.toString().toLowerCase().indexOf("error"));                
+    } 
     
     public void testApplicationsRegistered() throws Exception {        
         ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
-        assertNotNull(reg.getDescriptionFor(applicationName()));
+        //assertNotNull(reg.getDescriptionFor(applicationName()));
+        String appNames[] = info.getApplicationNames();
+        for (int i = 0; i < appNames.length; i++) {
+            try {
+                ApplicationDescription appDesc = reg.getDescriptionFor(appNames[i]);
+                softAssertNotNull("application " + appNames[i] + "not registered",appDesc);
+            } catch (WorkflowInterfaceException e) {
+                softFail("application " + appNames[i] + "not registered: " + e.getMessage());
+            }
+        }
     }
 
-    public void testListApplications() throws Exception {
-        ApplicationList results = delegate.listApplications();        
-        assertNotNull("list of applications is null",results);
-        
-        assertTrue("no applications present",results.getApplicationDefnCount() > 0);
-        System.out.println("Applications for Server " + serv.getEndpoint());
-        for (int i = 0; i < results.getApplicationDefnCount(); i++) {
-            System.out.print(results.getApplicationDefn(i)+ " ");
-        } 
-    }
-    public void testApplicationDescription() throws Exception {
-        ApplicationList results = delegate.listApplications();
-        String name = results.getApplicationDefn(0).getName();
-        String description = delegate.getApplicationDescription(name);
-        assertNotNull("description of application is null",description);
-        System.out.println(description);
-    }
     
     
     public void testReturnRegistryEntry() throws Exception {
@@ -74,18 +74,15 @@ public class ApplicationsInstallationTest extends AbstractTestForApplications {
         // I guess its xml or something. need to add further testing here
     }
 
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.integration.AbstractTestForApplications#applicationName()
-    */
-   protected String applicationName() {
-      return TESTAPP2;
-     }
     
     }
 
 
 /* 
-$Log: ApplicationsInstallationTest.java,v $
+$Log: ServerInstallationTest.java,v $
+Revision 1.1  2004/07/01 11:43:33  nw
+cea refactor
+
 Revision 1.4  2004/05/17 22:54:59  pah
 look at the actual interfaces that are being run
 

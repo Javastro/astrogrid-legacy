@@ -1,4 +1,4 @@
-/*$Id: RegistryIntegrationTest.java,v 1.7 2004/04/23 00:27:56 nw Exp $
+/*$Id: RegistryIntegrationTest.java,v 1.8 2004/07/01 11:47:39 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,11 +51,11 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
         assertTrue("no application names",appNames.length > 0);
         for (int i = 0; i < appNames.length; i++) {           
             String name = appNames[i];
-            assertNotNull("name is null",name);
-            assertTrue("empty name",name.trim().length() > 0);
+            softAssertNotNull("name is null",name);
+            softAssertTrue("empty name",name.trim().length() > 0);
             ApplicationDescription descr = reg.getDescriptionFor(name);
-            assertNotNull("description is null",descr);
-            assertEquals("name is not as expected",name,descr.getName());
+            softAssertNotNull("description is null",descr);
+            softAssertEquals("name is not as expected",name,descr.getName());
         }
     }
         
@@ -68,7 +68,7 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
             try {
                 is = requestURL.openStream();
             } catch (IOException e) {
-                fail("failed to resolve location for " + appNames[i] + ": " + e.getMessage());
+                softFail("failed to resolve location for " + appNames[i] + ": " + e.getMessage());
             }
             BufferedReader in = new BufferedReader(new InputStreamReader(is));
             String line = in.readLine();
@@ -88,6 +88,9 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: RegistryIntegrationTest.java,v $
+Revision 1.8  2004/07/01 11:47:39  nw
+cea refactor
+
 Revision 1.7  2004/04/23 00:27:56  nw
 reorganized end-to-end tests. added test to verify flows are executed in parallel
 

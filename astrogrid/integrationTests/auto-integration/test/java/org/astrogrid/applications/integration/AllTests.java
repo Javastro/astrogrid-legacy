@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2004/05/17 12:37:31 pah Exp $
+/*$Id: AllTests.java,v 1.4 2004/07/01 11:43:33 nw Exp $
  * Created on 20-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,22 +16,25 @@ import junit.framework.TestSuite;
  *
  */
 public class AllTests {
-   public static void main(String[] args) {
-      junit.textui.TestRunner.run(AllTests.class);
-   }
-   public static Test suite() {
-      TestSuite suite = new TestSuite("CEA");
-      //$JUnit-BEGIN$
-      suite.addTest(new TestSuite(ApplicationsInstallationTest.class));
-      suite.addTest(new TestSuite(ApplicationRunTest.class));
-      suite.addTest(new TestSuite(ApplicationRunWithVOSpaceTest.class));
-      suite.addTest(new TestSuite(DataCenterIntegrationTest.class));
-      //$JUnit-END$
-      return suite;
-   }
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(AllTests.class);
+    }
+    public static Test suite() {
+        TestSuite suite = new TestSuite("Tests for Generic CEA and java provider");
+        //$JUnit-BEGIN$
+        suite.addTest(new TestSuite(ServerInstallationTest.class));        
+        suite.addTest(new TestSuite(DirectExecutionTest.class));
+        suite.addTest(new TestSuite(FileIndirectExecutionTest.class));
+        suite.addTest(new TestSuite(VOSpaceIndirectExecutionTest.class));
+        //$JUnit-END$
+        return suite;
+    }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.4  2004/07/01 11:43:33  nw
+cea refactor
+
 Revision 1.3  2004/05/17 12:37:31  pah
 Improve CEA tests that call application controller directly
 

@@ -1,4 +1,4 @@
-/*$Id: SimpleDSAWorkflowEndToEndTest.java,v 1.2 2004/05/26 14:48:46 nw Exp $
+/*$Id: SimpleDSAWorkflowEndToEndTest.java,v 1.3 2004/07/01 11:47:39 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@ package org.astrogrid.workflow.integration;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.integration.ServerInfo;
+import org.astrogrid.applications.integration.datacenter.DataCenterProviderServerInfo;
 import org.astrogrid.integration.*;
 import org.astrogrid.io.Piper;
 import org.astrogrid.jes.delegate.JobSummary;
@@ -41,89 +43,32 @@ import junit.framework.TestSuite;
 
 /** end-to-end test of workfow - usecase of creating and submitting a workflow.
  * <p>
- * involves jes, cea, registry and myspace, all orchestrated through the workflow library.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
-public class SimpleDSAWorkflowEndToEndTest extends SimpleCommandlineWorkflowEndToEndTest {
+public class SimpleDSAWorkflowEndToEndTest extends AbstractTestForSimpleWorkflow {
 
     /** Construct a new SimpleDSAWorkflowEndToEndTest
+     * @param info
      * @param arg0
      */
-    public SimpleDSAWorkflowEndToEndTest(String arg0) {
-        super(arg0);
+    public SimpleDSAWorkflowEndToEndTest( String arg0) {
+        super(new DataCenterProviderServerInfo(), arg0);
     }
- 
- 
+
     /**
-     * @see junit.framework.TestCase#setUp()
+     * @see org.astrogrid.workflow.integration.AbstractTestForSimpleWorkflow#configureToolParameters(org.astrogrid.workflow.beans.v1.Tool)
      */
-    protected void setUp() throws Exception {
-        super.setUp();
-        targetApplication = TESTDSA;        
-        targetIvorn = createIVORN( "/SimpleDSAWorkflowEndToEndTest-votable.xml");        
+    protected void configureToolParameters(Tool tool) {
+        info.populateDirectTool(tool);
     }
-
-
-    protected Ivorn targetIvorn;
-    /**
-      * @see org.astrogrid.workflow.integration.SimpleCommandlineWorkflowEndToEndTest#buildWorkflow()
-      */
-     protected void buildWorkflow() throws Exception {
-         wf.setName("Simple Datacenter Workflow Test");
-             // create a tool
-            ApplicationDescription descr = reg.getDescriptionFor(targetApplication);
-            assertNotNull("could not get application description",descr);
-            Tool tool = descr.createToolFromDefaultInterface();
-            assertNotNull("tool is null",tool);
-            ParameterValue query= (ParameterValue)tool.findXPathValue("input/parameter[name='Query']");
-           assertNotNull(query);
-           InputStream is = this.getClass().getResourceAsStream("simple-query.xml");
-           assertNotNull(is);
-           StringWriter out = new StringWriter();
-           Piper.pipe(new InputStreamReader(is),out); 
-           query.setValue(out.toString());       
-                        
-            
-           ParameterValue target = (ParameterValue)tool.findXPathValue("output/parameter[name='Target']");
-           assertNotNull(target);
-           target.setValue(targetIvorn.toString());
-
-         descr.validate(tool);             
-            // add a step to the workflow.
-            Step step = new Step();
-            step.setDescription("single step");
-            step.setName("test step");
-            step.setTool(tool);
-            wf.getSequence().addActivity(step);         
-     }
-     
-     /** check the datacenter has put results in myspace 
-      * @todo check its a votable*/
-     public void testResultsInVospace() throws Exception {
-         VoSpaceClient client = new VoSpaceClient(user); 
-         assertNotNull("target ivorn does not exist",client.getFile(targetIvorn));      
-         InputStream is = client.getStream(targetIvorn);
-         assertNotNull(is);
-         StringWriter os = new StringWriter();;
-         Piper.pipe(new InputStreamReader(is),os);
-         String votable = os.toString();
-         assertNotNull(os);
-         System.out.println(os);
-     }
+    /** @todo add more result checking */
+    public void checkExecutionResults(Workflow wf)  {
+    super.checkExecutionResults(wf);
+    // get the result, check its what we expect.
+    String value = (String)wf.findXPathValue("sequence/activity/tool/output/parameter/value");
+    softAssertNotNull(value);
     
-    public static Test suite() {
-        TestSuite suite = new TestSuite(SimpleDSAWorkflowEndToEndTest.class.getName());
-        
-        suite.addTest(new SimpleDSAWorkflowEndToEndTest("verifyRequiredRegistryEntries"));
-        suite.addTest(new SimpleDSAWorkflowEndToEndTest("testSubmitWorkflow"));
-        suite.addTest(new SimpleDSAWorkflowEndToEndTest("testExecutionProgress"));
-        suite.addTest(new SimpleDSAWorkflowEndToEndTest("testCheckExecutionResults"));
-        suite.addTest(new SimpleDSAWorkflowEndToEndTest("testResultsInVospace"));
-        suite.addTest(new SimpleDSAWorkflowEndToEndTest("tidyUp"));
-        
-        return suite;
-
     }
  
 
@@ -132,6 +77,9 @@ public class SimpleDSAWorkflowEndToEndTest extends SimpleCommandlineWorkflowEndT
 
 /* 
 $Log: SimpleDSAWorkflowEndToEndTest.java,v $
+Revision 1.3  2004/07/01 11:47:39  nw
+cea refactor
+
 Revision 1.2  2004/05/26 14:48:46  nw
 changed ivorn to correct format.
 

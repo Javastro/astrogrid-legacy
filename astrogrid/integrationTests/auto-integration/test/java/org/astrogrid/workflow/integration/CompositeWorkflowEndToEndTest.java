@@ -1,4 +1,4 @@
-/*$Id: CompositeWorkflowEndToEndTest.java,v 1.2 2004/04/26 12:17:33 nw Exp $
+/*$Id: CompositeWorkflowEndToEndTest.java,v 1.3 2004/07/01 11:47:39 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,15 +71,15 @@ public class CompositeWorkflowEndToEndTest extends AbstractTestForIntegration {
            assertNotNull("submitted workflow produced null urn",urn);
            //check its in the list.
            JobSummary summaries[] = jes.readJobList(acc);
-           assertNotNull("null job list returned",summaries);
-           assertTrue("empty job list returned",summaries.length > 0);
+           softAssertNotNull("null job list returned",summaries);
+           softAssertTrue("empty job list returned",summaries.length > 0);
            boolean found = false;
            for (int i = 0; i < summaries.length; i++) {
                if (summaries[i].getJobURN().getContent().equals(urn.getContent())) {
                    found=true;
                }
            }
-           assertTrue("job not found in list",found);
+           softAssertTrue("job not found in list",found);
         Thread.sleep(20000);
         Workflow w1 = jes.readJob(urn);
                assertNotNull("null workflow returned",w1);
@@ -145,6 +145,9 @@ public class CompositeWorkflowEndToEndTest extends AbstractTestForIntegration {
 
 /* 
 $Log: CompositeWorkflowEndToEndTest.java,v $
+Revision 1.3  2004/07/01 11:47:39  nw
+cea refactor
+
 Revision 1.2  2004/04/26 12:17:33  nw
 fixed query name
 

@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.10 2004/05/19 14:09:35 nw Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.11 2004/07/01 11:47:39 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,204 +9,67 @@
  *
 **/
 package org.astrogrid.workflow.integration;
-
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
-
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.integration.commandline.CommandLineProviderServerInfo;
 import org.astrogrid.integration.AbstractTestForIntegration;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.portal.workflow.intf.JobExecutionService;
+import org.astrogrid.portal.workflow.intf.ToolValidationException;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.portal.workflow.intf.WorkflowManager;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-/** end-to-end test of workfow - usecase of creating and submitting a workflow.
- * <p>
- * involves jes, cea, registry, all orchestrated through the workflow library.
- * <p>
+/**end-to-end test - creates a single-step workflow, submits, expects results to be added to the workflow. 
  * Test for a workflow that has a single step that calls the testapp
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  * @author Paul Harrison pah@jb.man.ac.uk 23-Apr-2004
  *
  */
-public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegration {
-    private  String INFILENAME = "/tmp/in";
-   private  String OUTFILENAME = "/tmp/out";
-   private File infile;
-    private File outfile;
-    protected final String TESTCONTENTS = "workflow test contents";
-  /**
-     * Constructor for WorkflowManagerIntegrationTest.
-     * @param arg0
-     */
+public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForSimpleWorkflow {
+
+    /**
+       * Constructor for WorkflowManagerIntegrationTest.
+       * @param arg0
+       */
     public SimpleCommandlineWorkflowEndToEndTest(String arg0) {
-        super(arg0);
-    }
-    /*
-     * @see AbstractTestForIntegration#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        WorkflowManager manager = ag.getWorkflowManager();
-        jes = manager.getJobExecutionService();
-        reg = manager.getToolRegistry();
-        targetApplication = TESTAPP2;
-        
-        
-        
-    }
-    
-    protected JobExecutionService jes;    
-    protected ApplicationRegistry reg;  
-    protected String targetApplication;
-    protected static JobURN urn;
-
-    public void verifyRequiredRegistryEntries() throws Exception {
-        ApplicationDescription description = reg.getDescriptionFor(targetApplication);
-        assertNotNull(description);
-        assertEquals(targetApplication,description.getName());
+        super(new CommandLineProviderServerInfo()  ,arg0);
     }
 
 
-    public void testSubmitWorkflow() throws Exception {
-       outfile = File.createTempFile("scworkout", ".tmp");
-       assertNotNull(outfile);
-       outfile.delete(); // important, otherwise can't be created by cea process.
-       outfile.deleteOnExit(); // tidy up.
-       OUTFILENAME = outfile.getAbsolutePath();
-       System.out.println("output file is "+OUTFILENAME);
-       infile =File.createTempFile("scworkin", ".tmp");
-       assertNotNull(infile);
-       infile.deleteOnExit();       
-       INFILENAME = infile.getAbsolutePath();
-       PrintWriter pw = new PrintWriter(new FileOutputStream(infile));
-       assertNotNull(pw);
-       pw.println(TESTCONTENTS);
-       pw.close();
-
-        buildWorkflow();
-        assertTrue("workflow is not valid",wf.isValid());
-        urn = jes.submitWorkflow(wf);
-         assertNotNull("submitted workflow produced null urn",urn);
-        System.out.println(this.getClass().getName() + ": assigned URN is " + urn.getContent());             
-         //check its in the list.
-         JobSummary summaries[] = jes.readJobList(acc);       
-         assertNotNull("null job list returned",summaries);
-         assertTrue("empty job list returned",summaries.length > 0);
-         boolean found = false;
-         for (int i = 0; i < summaries.length; i++) {
-             if (summaries[i].getJobURN().getContent().equals(urn.getContent())) {
-                 found=true;
-             }
-         }
-         assertTrue("job not found in list",found);    
-    }
-    
-    
-    /** build a simple one-step workflow */
-    protected void buildWorkflow() throws Exception  {
-        wf.setName("Simple CommandLine Workflow Test");
-            // create a tool
-           ApplicationDescription descr = reg.getDescriptionFor(targetApplication);
-           assertNotNull("could not get application description",descr);
-           Tool tool = descr.createToolFromDefaultInterface();
-           assertNotNull("tool is null",tool);
-           configureToolParameters(tool);
-           descr.validate(tool); // shouold be ready to go, with no further config.
-           // add a step to the workflow.
-           Step step = new Step();
-           step.setDescription("single step");
-           step.setName("test step");
-           step.setTool(tool);
-           wf.getSequence().addActivity(step);
-    }
-    
     /**
     * Fine tune the parameter values... 
     */
-   protected void configureToolParameters(Tool tool) {
-      ParameterValue pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P1']");
-      pval.setValue("1"); // wait one second...
-      pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P2']");
-      pval.setValue("30.5");
-      pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P4']");
-      pval.setValue("test string");
-      pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P9']");
-      pval.setValue(INFILENAME);
-      pval = (ParameterValue)tool.findXPathValue("output/parameter[name='P3']");
-      pval.setValue(OUTFILENAME);
-   }
-   
-   public static final long WAIT_TIME = 60 * 1000; 
-    public void testExecutionProgress() throws Exception {
-        // loop, polling progress, until seen completed.
-        long startTime= System.currentTimeMillis();
-        while(System.currentTimeMillis() < startTime + WAIT_TIME) {
-            try {
-                Workflow w1 = jes.readJob(urn);
-                if (w1.getJobExecutionRecord() != null && w1.getJobExecutionRecord().getStatus().getType() >= ExecutionPhase.COMPLETED_TYPE) {
-                    return;
-                }        
-                Thread.sleep(1000); // have a little breather.     
-            } catch (WorkflowInterfaceException e) {
-                // doesn't matter - we'll get it next time round.
-            }            
-        }
-        fail("Job failed to complete in expected time");
-    }
-
-    
-    public void testCheckExecutionResults() throws Exception {
-        wf = jes.readJob(urn);
-        assertNotNull("null workflow returned",wf);  
-        /* not really relevant
-        System.out.println("worklow completion message");
-        MessageType[] messages = wf.getJobExecutionRecord().getMessage();
-        MessageType lastMessage = messages[messages.length -1];
-        System.out.println(lastMessage.getContent());
-        */
-       assertEquals("Workflow not completed",ExecutionPhase.COMPLETED,wf.getJobExecutionRecord().getStatus()); // i.e. its not in error              
+    protected void configureToolParameters(Tool tool) {
+        info.populateDirectTool(tool);
     }
     
-    public void tidyUp() throws Exception {
-        // if workflow completed without error, delete it.
-        Workflow w1 = jes.readJob(urn);
-        if (w1.getJobExecutionRecord().getStatus().equals(ExecutionPhase.COMPLETED)) {
-            jes.deleteJob(urn);
-        }
+    public void checkExecutionResults(Workflow wf)  {
+        super.checkExecutionResults(wf);
+        // get the result, check its what we expect.
+        Step s = (Step)wf.getSequence().getActivity(0);
+        String value = s.getTool().getOutput().getParameter(0).getValue();
+        softAssertTrue("result doesn't contain expected value",value.indexOf(CommandLineProviderServerInfo.TEST_CONTENTS) != -1);
     }
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite(SimpleCommandlineWorkflowEndToEndTest.class.getName());        
-
-        suite.addTest(new SimpleCommandlineWorkflowEndToEndTest("verifyRequiredRegistryEntries"));
-        suite.addTest(new SimpleCommandlineWorkflowEndToEndTest("testSubmitWorkflow"));
-        suite.addTest(new SimpleCommandlineWorkflowEndToEndTest("testExecutionProgress"));
-        suite.addTest(new SimpleCommandlineWorkflowEndToEndTest("testCheckExecutionResults"));
-        suite.addTest(new SimpleCommandlineWorkflowEndToEndTest("tidyUp"));        
-        return suite;
-    }
- 
-
-    
 }
-
-
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.11  2004/07/01 11:47:39  nw
+cea refactor
+
 Revision 1.10  2004/05/19 14:09:35  nw
 calmed this test down a bit - stress tested a bit.
 
