@@ -9,6 +9,7 @@
          <li><a href="self-test.html">Installation Test</a>
          <li><a href="fingerprint.jsp">Fingerprint</a>
          <li><a href="http://grendel12.roe.ac.uk:8080/pal-6df/servlet/AxisServlet">SOAP WSDL</a>
+         <li><a href="client-dist/astrogrid-datacenter-client-SNAPSHOT.zip">Java client API</a>
       </ul>
    </div>
    <div id='menuQuery'>
@@ -31,6 +32,23 @@
          <li><a href="admin/GetLog">Log</a>
       </ul>
    </div>
+   <div id='menuDevelop'>
+      <h5>Develop</h5>
+      <ul>
+         <li><a href="other-back-end.html">Writing a new back-end</a>
+         <li><a href="implementations" >Example back-ends </a>
+         <li><a href="server/index.html" >Server Development Documentation </a>
+      </ul>
+   </div>
+   <div id='menuCEA'>
+      <h5>CEA</h5>
+      <ul>
+         <li><a href="cea-fingerprint.jsp" >Fingerprint</a>
+         <li><a href="TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory" >Installation Tests</a>
+         <li><a href="cec-http?method=returnRegistryEntry" >View VODescription </a>
+      </ul>
+   </div>
+
 </div>
 </div>
 
