@@ -5,7 +5,7 @@
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
-
+	<extend>${basedir}/../../maven-base/project.xml</extend>
     <!--+
         | The current version of the Maven project descriptor.
         +-->
@@ -17,11 +17,6 @@
         +-->
     <groupId>org.astrogrid</groupId>
 
-    <!--+
-        | The current version of the project.
-        | This value is used when naming jars and distribution files.
-        +-->
-    <currentVersion>${astrogrid.iteration}</currentVersion>
 
     <!--+
         | The cvs repository location.

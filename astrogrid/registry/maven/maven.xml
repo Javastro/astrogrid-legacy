@@ -12,7 +12,7 @@
     xmlns:define="jelly:define"
     xmlns:deploy="deploy"
     >
-	<extend>${basedir}/../../maven-base/project.xml</extend>
+
 	<!--+
 		| Determine what the top-level project root is
 		+-->
