@@ -2,6 +2,7 @@ package org.astrogrid.security;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.Configuration;
+import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginContext;
 import javax.xml.rpc.handler.MessageContext;
 import javax.xml.rpc.JAXRPCException;
@@ -44,13 +45,13 @@ public class ServiceCredentialHandler extends CredentialHandler {
     mc.setProperty("Subject", s);
 
     try {
-      System.out.println("ServiceCredentialHandler.handleRequest(): parsing credentials...");
+      this.print("Parsing credentials...");
       WsseHeaderElement.parse(sm, s);
-      System.out.println("ServiceCredentialHandler.handleRequest(): credentials were parsed successfully.");
+      this.print("Credentials were parsed successfully.");
     }
     catch (NoCredentialsException e1) {
       // Don't authenticate.  Allow anonymous access.
-      System.out.println("No credentials were found. Access is anonymous.");
+      this.print("No credentials were found. Access is anonymous.");
       return true;
     }
     catch (Exception e2) {
@@ -58,16 +59,16 @@ public class ServiceCredentialHandler extends CredentialHandler {
     }
 
     try {
-      System.out.println("ServiceCredentialHandler.handleRequest(): attempting authentication...");
+      this.print("Attempting authentication...");
       Configuration.setConfiguration(new SimpleLoginConfiguration());
       LoginContext l = new LoginContext("", s);
       l.login();
-      System.out.println("Authentication OK.");
+      this.print("Authentication succeeded.");
     }
-    catch (Exception e3) {
-      System.out.println("ServiceCredentialHandler.handleRequest(): authentication failed.");
-      System.out.println(e3.getMessage());
-      System.out.println("Here's the rejected request:");
+    catch (FailedLoginException e3) {
+      this.print("Authentication failed due to bad credentials.");
+      this.print(e3.getMessage());
+      this.print("Here's the rejected request:");
       try {
         sm.writeTo(System.out);
       }
@@ -75,9 +76,23 @@ public class ServiceCredentialHandler extends CredentialHandler {
         // Ignore this.
       }
       System.out.println("");
-      throw new JAXRPCException("Authentication failed", e3);
+      throw new JAXRPCException("Authentication failed due to bad credentials", e3);
+    }
+    catch (Exception e5) {
+	  this.print("Authentication failed due to internal system error.");
+	  this.print(e5.getMessage());
+	  throw new JAXRPCException("Authentication failed " +
+	                            "due to internal system error", e5);
     }
 
     return true;
   }
+
+  /**
+   * Logs a message from this handler.
+   */
+  private void print (String message) {
+	System.out.println("ServiceCredentialHandler.handleRequest(): " + message);
+  }
+
 }

@@ -87,6 +87,10 @@ public class NonceTokenCheck implements LoginModule {
       oldToken = (NonceToken) tokens.iterator().next();
       this.account = new AccountName(oldToken.getAccount());
     }
+    System.out.println(" NonceTokenCheck.login(): attempting authentication for " +
+                       this.account.getName() +
+                       " with token " +
+                       oldToken.toString());
 
     // Check the original token in the community service.
     // This can cause several types of exception to be thrown.
