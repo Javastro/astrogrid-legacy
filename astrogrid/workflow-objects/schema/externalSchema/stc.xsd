@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Arnold Rots (Smithsonian Astrophysical Observatory) -->
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by Arnold Rots (Smithsonian Astrophysical Observatory) -->
+<!-- $Id: stc.xsd,v 1.2 2004/03/09 14:33:20 pah Exp $ -->
+<!-- Schema definition for the SpaceTimeCoords -->
+<!--Change Log:
+$Log: stc.xsd,v $
+Revision 1.2  2004/03/09 14:33:20  pah
+result of merge wfo_pah_147
+
+Revision 1.1.2.1  2004/03/04 17:08:44  pah
+add these external schema here to make life a bit easier when offline...
+
+Revision 1.1  2003/12/11 13:23:02  pah
+some general tidying
+
+Revision 1.9  2003/08/06 19:31:04  arots
+Added time reference direction to time frame.
+
+Revision 1.8  2003/05/15 10:04:23  arots
+Allow multiple intervals, add fill factor.
+
+Revision 1.7  2003/05/08 20:28:19  arots
+Added spectral coordinate.
+Fixed intervals.
+Rationalized coordinate frames.
+
+Revision 1.6  2003/05/02 18:46:43  arots
+Removed coord_sys_id attribute from time interval.
+
+Revision 1.5  2003/04/30 16:55:58  arots
+Added CoordSpec to Resource and Search - was needed.
+
+Revision 1.4  2003/04/30 13:27:12  arots
+Fixed up change log, changed schema locations.
+
+Revision 1.3  2003/04/29 21:04:37  arots
+Trivial.
+
+Revision 1.2  2003/04/29 20:56:40  arots
+Completed new astronTimeType and proper handling of units.
+
+Revision 1.1  2003/04/28 16:25:34  arots
+Initial revision
+-->
+<xs:schema targetNamespace="urn:nvo-stc" xmlns:stc="urn:nvo-stc" xmlns:crd="urn:nvo-coords" xmlns:reg="urn:nvo-region" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:import namespace="urn:nvo-coords" schemaLocation="http://hea-www.harvard.edu/~arots/nvometa/coords.xsd"/>
+	<xs:import namespace="urn:nvo-region" schemaLocation="http://hea-www.harvard.edu/~arots/nvometa/region.xsd"/>
+	<!-- CoordSystem -->
+	<!-- Reference frames -->
+	<xs:simpleType name="coordEquinoxType">
+		<xs:annotation>
+			<xs:documentation>Coordinate equinox: B{year} or J{year} with at least one decimal; do not use in conjunction with ICRS</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[BJ]\-?\d?\d?\d?\d\d\d\d\.\d\d?\d?"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="coordFrameType">
+		<xs:annotation>
+			<xs:documentation>Coordinate reference frame: optional equinox with either a standard reference system (ICRS, FK5, FK4) and optional standard pole (equatorial, ecliptic, galactic, etc.), or pole (positive Z-axis) and positive X-axis direction </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CoordEquinox" type="stc:coordEquinoxType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Coordinate equinox: B{year} or J{year} with at least one decimal; do not use in conjunction with ICRS</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice>
+				<xs:sequence>
+					<xs:annotation>
+						<xs:documentation>Most common: standard reference system with optional pole direction (default: equatorial)</xs:documentation>
+					</xs:annotation>
+					<xs:element name="RefSystem" default="ICRS">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="ICRS"/>
+								<xs:enumeration value="FK5"/>
+								<xs:enumeration value="FK4"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="StandardPole" default="EQUATORIAL" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="EQUATORIAL"/>
+								<xs:enumeration value="ECLIPTIC"/>
+								<xs:enumeration value="GALACTIC"/>
+								<xs:enumeration value="SUPERGALACTIC"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+				<xs:sequence>
+					<xs:annotation>
+						<xs:documentation>Define coordinate reference frame from scratch; pole and X-axis need to be defined in a known coordinate system</xs:documentation>
+					</xs:annotation>
+					<xs:element name="Pole_Zaxis" type="crd:coordsType"/>
+					<xs:element name="Xaxis" type="crd:coordsType"/>
+				</xs:sequence>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="refPosType">
+		<xs:annotation>
+			<xs:documentation>Origin of the coordinate reference frame: either a "known place" such as geocenter or barycenter, or a position defined in a known coordinate system</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="RefPos" default="TELESCOPE">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="BARYCENTER"/>
+						<xs:enumeration value="HELIOCENTER"/>
+						<xs:enumeration value="TELESCOPE"/>
+						<xs:enumeration value="GEOCENTER"/>
+						<xs:enumeration value="MOON"/>
+						<xs:enumeration value="EMBARYCENTER"/>
+						<xs:enumeration value="MERCURY"/>
+						<xs:enumeration value="VENUS"/>
+						<xs:enumeration value="MARS"/>
+						<xs:enumeration value="JUPITER"/>
+						<xs:enumeration value="SATURN"/>
+						<xs:enumeration value="URANUS"/>
+						<xs:enumeration value="NEPTUNE"/>
+						<xs:enumeration value="PLUTO"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="CoordOrigin" type="crd:coordsType"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="spaceFrameType">
+		<xs:sequence>
+			<xs:element name="CoordFrame" type="stc:coordFrameType">
+				<xs:annotation>
+					<xs:documentation>Coordinate reference frame: optional equinox with either a standard reference system (ICRS, FK5, FK4) and optional standard pole (equatorial, ecliptic, galactic, etc.), or pole (positive Z-axis) and positive X-axis direction </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CoordRefPosition" type="stc:refPosType">
+				<xs:annotation>
+					<xs:documentation>Origin of the coordinate reference frame: either a "known place" such as geocenter or barycenter, or a position defined in a known coordinate system</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="timeFrameType">
+		<xs:sequence>
+			<xs:element name="TimeScale" type="crd:timeScaleType">
+				<xs:annotation>
+					<xs:documentation>The time reference frame consists of a time scale, a time format, and a reference time, if needed</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TimeRefPosition" type="stc:refPosType">
+				<xs:annotation>
+					<xs:documentation>Origin of the coordinate reference frame: either a "known place" such as geocenter or barycenter, or a position defined in a known coordinate system</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TimeRefDirection" type="crd:coordsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Some time transformations (e.g., change of RefPos) depend on an assumed directonal position of the source</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="planetaryEphemType">
+		<xs:annotation>
+			<xs:documentation>If solar system positions are implied anywhere, the planetary ephemeris to be used needs to be provided - usually JPL-DE405 with ICRS and JPL-DE200 with FK5</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="JPL-DE200"/>
+			<xs:enumeration value="JPL-DE405"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="dopplerDefinitionType">
+		<xs:annotation>
+			<xs:documentation>The Doppler definition used: optical, radio, or pseudo-relativistic (i.e., how is a redshift converted to a velocity); the most common is optical, except when the reference is LSR (usually radio)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OPTICAL"/>
+			<xs:enumeration value="RADIO"/>
+			<xs:enumeration value="RELATIVISTIC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="dopplerReferenceType">
+		<xs:annotation>
+			<xs:documentation>The reference frame for the Doppler velocities; note presence of LSR</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OBSERVATORY"/>
+			<xs:enumeration value="GEOCENTER"/>
+			<xs:enumeration value="HELIOCENTER"/>
+			<xs:enumeration value="BARYCENTER"/>
+			<xs:enumeration value="LSR"/>
+			<xs:enumeration value="GALACTIC_CENTER"/>
+			<xs:enumeration value="SUPER_GALACTIC_CENTER"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="dopplerType" mixed="true">
+		<xs:annotation>
+			<xs:documentation>Contains the Doppler definitions, including whether the values are velocity or redshift (value_type)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="DopplerDefinition" type="stc:dopplerDefinitionType">
+				<xs:annotation>
+					<xs:documentation>The Doppler definition used: optical, radio, or pseudo-relativistic (i.e., how is a redshift converted to a velocity); the most common is optical, except when the reference is LSR (usually radio)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DopplerReference" type="stc:dopplerReferenceType">
+				<xs:annotation>
+					<xs:documentation>The reference frame for the Doppler velocities; note presence of LSR</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="value_type" type="xs:string" use="optional" default="VELOCITY"/>
+	</xs:complexType>
+	<xs:complexType name="coordFlavorType">
+		<xs:annotation>
+			<xs:documentation>Provides the coordinate definitions: number of axes, SPHERICAL or CARTESIAN, presence of velocities, and the Doppler definitions (if needed)</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="coord_naxes" default="2">
+			<xs:simpleType>
+				<xs:restriction base="xs:integer">
+					<xs:minInclusive value="1"/>
+					<xs:maxInclusive value="3"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="coord_type" default="SPHERICAL">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="SPHERICAL"/>
+					<xs:enumeration value="CARTESIAN"/>
+					<xs:enumeration value="UNIT_SPHERE"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="coord_vel" type="xs:boolean" default="false"/>
+		<xs:attribute name="coord_doppler" type="xs:boolean" default="false"/>
+	</xs:complexType>
+	<!-- CoordSystem -->
+	<xs:complexType name="coordSystemType">
+		<xs:annotation>
+			<xs:documentation>The coordinate system definition: spatial coordinate frame and reference position; time frame and reference position; the coordinate flavor; and the planetary ephemeris; an ID is required, since this is how coordinate elements are associated with their coordinate systems</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TimeFrame" type="stc:timeFrameType">
+				<xs:annotation>
+					<xs:documentation>The time coordinate reference frame</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SpaceFrame" type="stc:spaceFrameType">
+				<xs:annotation>
+					<xs:documentation>The spatial coordinate reference frame</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SpectralFrame" type="stc:dopplerReferenceType">
+				<xs:annotation>
+					<xs:documentation>The reference frame for the spectral coordinate; note presence of LSR</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DopplerFrame" type="stc:dopplerType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Contains the Doppler definitions, including whether the values are velocity or redshift (value_type)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CoordFlavor" type="stc:coordFlavorType">
+				<xs:annotation>
+					<xs:documentation>Provides the coordinate definitions: number of axes, SPHERICAL or CARTESIAN, presence of velocities, and the Doppler definitions (if needed)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PlanetaryEphem" type="stc:planetaryEphemType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>If solar system positions are implied anywhere, the planetary ephemeris to be used needs to be provided - usually JPL-DE405 with ICRS and JPL-DE200 with FK5</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="ID" type="xs:ID" use="required"/>
+	</xs:complexType>
+	<!-- CoordArea -->
+	<xs:complexType name="timeIntervalType">
+		<xs:annotation>
+			<xs:documentation>The time interval needs to contain a start time or a stop time or both; it needs to refer to a coordinate system; boundaries may or may not be inclusive</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="StartTime" type="crd:astronTimeType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>astronTime may be expressed in ISO8601 or as a double relative to a reference time; or it may be provided in an entity refered to by the Reference element</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StopTime" type="crd:astronTimeType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>astronTime may be expressed in ISO8601 or as a double relative to a reference time; or it may be provided in an entity refered to by the Reference element</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="start_include" type="xs:boolean" default="true"/>
+		<xs:attribute name="stop_include" type="xs:boolean" default="true"/>
+		<xs:attribute name="fill_factor" type="xs:float" use="optional" default="1.0"/>
+	</xs:complexType>
+	<xs:complexType name="coordIntervalType">
+		<xs:annotation>
+			<xs:documentation>The spatial coordinate interval needs to contain a minimum or maximum scalar or vector value, or both; it needs to refer to a coordinate system; boundaries may or may not be inclusive</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:sequence>
+				<xs:element name="LoLimitScalar" type="crd:coordValueType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="HiLimitScalar" type="crd:coordValueType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+			<xs:sequence>
+				<xs:element name="LoLimit2Vec" type="crd:coord2ValueType" minOccurs="0"/>
+				<xs:element name="HiLimit2Vec" type="crd:coord2ValueType" minOccurs="0"/>
+			</xs:sequence>
+			<xs:sequence>
+				<xs:element name="LoLimit3Vec" type="crd:coord3ValueType" minOccurs="0"/>
+				<xs:element name="HiLimit3Vec" type="crd:coord3ValueType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:choice>
+		<xs:attribute name="lo_include" type="xs:boolean" default="true"/>
+		<xs:attribute name="hi_include" type="xs:boolean" default="true"/>
+		<xs:attribute name="fill_factor" type="xs:float" use="optional" default="1.0"/>
+	</xs:complexType>
+	<xs:complexType name="velIntervalType">
+		<xs:complexContent>
+			<xs:extension base="stc:coordIntervalType">
+				<xs:attribute name="vel_time_unit" type="crd:velTimeUnitType" use="optional" default="s"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="circleOrSphereType">
+		<xs:annotation>
+			<xs:documentation>A special kind of area is a circle or sphere (in two or three dimensions), defined by a center position and a radius; the radius requires a unit</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Radius" type="xs:double"/>
+			<xs:element name="Center" type="crd:coordsType"/>
+		</xs:sequence>
+		<xs:attribute name="radius_unit" type="crd:posUnitType" use="optional" default="deg"/>
+	</xs:complexType>
+	<xs:complexType name="coordAreaType">
+		<xs:annotation>
+			<xs:documentation>A coordinate area consists of a time interval, a spatial area, a velocity interval, and a redshift interval (as needed); the spatial area may be specified by an interval, a circle or sphere, a region element, or a region file</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TimeInterval" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="stc:timeIntervalType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:choice minOccurs="0">
+				<xs:element name="CircleOrSphere" type="stc:circleOrSphereType"/>
+				<xs:element name="CoordInterval" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="stc:coordIntervalType"/>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="RegionFile" type="xs:anyURI"/>
+				<xs:element name="Region" type="reg:regionType"/>
+			</xs:choice>
+			<xs:element name="VelocityInterval" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="stc:velIntervalType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SpectralInterval" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="LoLimit" type="crd:coordSpectralValueType" minOccurs="0"/>
+						<xs:element name="HiLimit" type="crd:coordSpectralValueType" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="lo_include" type="xs:boolean" default="true"/>
+					<xs:attribute name="hi_include" type="xs:boolean" default="true"/>
+					<xs:attribute name="fill_factor" type="xs:float" use="optional" default="1.0"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="RedshiftInterval" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="LoLimit" type="crd:coordValueType" minOccurs="0"/>
+						<xs:element name="HiLimit" type="crd:coordValueType" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="lo_include" type="xs:boolean" default="true"/>
+					<xs:attribute name="hi_include" type="xs:boolean" default="true"/>
+					<xs:attribute name="vel_time_unit" type="crd:velTimeUnitType" use="optional" default="s"/>
+					<xs:attribute name="fill_factor" type="xs:float" use="optional" default="1.0"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="ID" type="xs:ID" use="required"/>
+		<xs:attribute name="coord_system_id" type="xs:IDREF" use="required"/>
+	</xs:complexType>
+	<!-- Toplevel: STCmetadata contains a choice of: ResourceProfile, SearchLocation, CatalogEntryLocation, and
+ObservationLocation plus ObservatoryLocation elements -->
+	<xs:element name="STCmetadata">
+		<xs:annotation>
+			<xs:documentation>Toplevel: STCmetadata contains a choice of: ResourceProfile, SearchLocation, CatalogEntryLocation, or
+ObservationLocation plus ObservatoryLocation elements </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:element name="ResourceProfile">
+					<xs:annotation>
+						<xs:documentation>Describes the spatial and temporal coverage of a resource</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="CoordSystem" type="stc:coordSystemType" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>The coordinate system definition: spatial coordinate frame and reference position; time frame and reference position; the coordinate flavor; and the planetary ephemeris; an ID is required, since this is how coordinate elements are associated with their coordinate systems</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="CoordArea" type="stc:coordAreaType">
+								<xs:annotation>
+									<xs:documentation>The coverage area of the resource; the fill factor does not need to be 1.0</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="CoordSpec" type="crd:coordsType">
+								<xs:annotation>
+									<xs:documentation>CoordSpec contains information on time and spatial resolution, errors, and pixelsizes (if fixed); typical best numbers are expected</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="ID" type="xs:ID" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="SearchLocation">
+					<xs:annotation>
+						<xs:documentation>Defines the spatial and temporal coordinate space specified by a query</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="CoordSystem" type="stc:coordSystemType" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>The coordinate system definition: spatial coordinate frame and reference position; time frame and reference position; the coordinate flavor; and the planetary ephemeris; an ID is required, since this is how coordinate elements are associated with their coordinate systems</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="CoordArea">
+								<xs:annotation>
+									<xs:documentation>Region of Interest</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:complexContent>
+										<xs:extension base="stc:coordAreaType"/>
+									</xs:complexContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="CoordSpec" type="crd:coordsType" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>CoordSpec contains information on desired time and spatial resolution, errors, and pixelsizes (if fixed); typical best numbers are expected</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="ID" type="xs:ID" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="CatalogEntryLocation">
+					<xs:annotation>
+						<xs:documentation>Describes the spatial and temporal coverage of a catalog (fragment)</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="CoordSystem" type="stc:coordSystemType" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>The coordinate system definition: spatial coordinate frame and reference position; time frame and reference position; the coordinate flavor; and the planetary ephemeris; an ID is required, since this is how coordinate elements are associated with their coordinate systems</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Coords" type="crd:coordsType" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>The coordinate element consists either of a coordinate file or a sequence of time element, spatial coordinate element, velocity element, and redshift element; the spatial and velocity elements may be scalar or vector; it needs to refer to a coordinate system</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="CoordArea" type="stc:coordAreaType" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Optional specification of the area covered by the catalog data</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="ID" type="xs:ID" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:sequence>
+					<xs:annotation>
+						<xs:documentation>Describes the spatial and temporal volume covered by an observation</xs:documentation>
+					</xs:annotation>
+					<xs:element name="ObservatoryLocation">
+						<xs:annotation>
+							<xs:documentation>Specifies the location of the observatory during the observation</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="CoordSystem" type="stc:coordSystemType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:documentation>The coordinate system definition: spatial coordinate frame and reference position; time frame and reference position; the coordinate flavor; and the planetary ephemeris; an ID is required, since this is how coordinate elements are associated with their coordinate systems</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="Coords" type="crd:coordsType">
+									<xs:annotation>
+										<xs:documentation>The coordinate element consists either of a coordinate file or a sequence of time element, spatial coordinate element, velocity element, and redshift element; the spatial and velocity elements may be scalar or vector; it needs to refer to a coordinate system</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+							<xs:attribute name="ID" type="xs:ID" use="required"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ObservationLocation">
+						<xs:annotation>
+							<xs:documentation>Describes the spatial and temporal coverage of the observation</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="CoordSystem" type="stc:coordSystemType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:documentation>The coordinate system definition: spatial coordinate frame and reference position; time frame and reference position; the coordinate flavor; and the planetary ephemeris; an ID is required, since this is how coordinate elements are associated with their coordinate systems</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="Coords" type="crd:coordsType">
+									<xs:annotation>
+										<xs:documentation>The coordinate element consists either of a coordinate file or a sequence of time element, spatial coordinate element, velocity element, and redshift element; the spatial and velocity elements may be scalar or vector; it needs to refer to a coordinate system</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="CoordArea" type="stc:coordAreaType">
+									<xs:annotation>
+										<xs:documentation>The field of view</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+							<xs:attribute name="ID" type="xs:ID" use="required"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

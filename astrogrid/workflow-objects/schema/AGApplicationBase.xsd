@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGApplicationBase.xsd,v 1.2 2004/03/02 14:09:49 pah Exp $ -->
+<!-- $Id: AGApplicationBase.xsd,v 1.3 2004/03/09 14:33:20 pah Exp $ -->
 <!-- This is refactored from the AGParameterDefinition.xsd -->
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
-<xs:schema targetNamespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:agab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema targetNamespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" schemaLocation="AGParameterDefinition.xsd"/>
 	<xs:annotation>
 		<xs:documentation>this file captures some of the ideas used in the WSDL-like parameter definition files, but as yet is not used for validation</xs:documentation>
@@ -13,7 +13,7 @@
 	<xs:annotation>
 		<xs:documentation>important types are defined here that would have special significance....</xs:documentation>
 	</xs:annotation>
-	<xs:complexType name="Application" abstract="false">
+	<xs:complexType name="ApplicationBase" abstract="false">
 		<xs:annotation>
 			<xs:documentation>Base Application definition</xs:documentation>
 		</xs:annotation>
@@ -34,7 +34,7 @@
 	<!--perhaps this is not the way to go - need to get the executionPath back in though somehow....-->
 	<xs:complexType name="CommandLineApplication">
 		<xs:complexContent>
-			<xs:extension base="agab:Application">
+			<xs:extension base="agab:ApplicationBase">
 				<xs:sequence>
 					<xs:element name="ExecutionPath" type="xs:string"/>
 				</xs:sequence>
@@ -43,12 +43,12 @@
 	</xs:complexType>
 	<xs:complexType name="WebServiceApplication">
 		<xs:complexContent>
-			<xs:extension base="agab:Application"/>
+			<xs:extension base="agab:ApplicationBase"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="DataCentreApplication">
 		<xs:complexContent>
-			<xs:extension base="agab:Application"/>
+			<xs:extension base="agab:ApplicationBase"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Interface">
@@ -59,14 +59,14 @@
 			<xs:element name="input">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element ref="agab:pref" maxOccurs="unbounded"/>
+						<xs:element name="pref" type="agab:parameterRef" maxOccurs="unbounded"/>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="output">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element ref="agab:pref" maxOccurs="unbounded"/>
+						<xs:element name="pref" type="agab:parameterRef" maxOccurs="unbounded"/>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -78,21 +78,13 @@
 			<xs:documentation>reference to an existing parameter</xs:documentation>
 		</xs:annotation>
 		<xs:attribute name="ref" type="xs:string"/>
-		<xs:attribute name="repeatable" type="xs:boolean" use="optional" default="false"/>
-		<xs:attribute name="optional" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="minoccurs" type="xs:integer" use="optional" default="1"/>
+		<xs:attribute name="maxoccurs" type="xs:integer" use="optional" default="1">
+			<xs:annotation>
+				<xs:documentation>a value of 0 implies unbounded</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
-	<xs:element name="pref">
-		<xs:annotation>
-			<xs:documentation>a reference to a parameter</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:complexContent>
-				<xs:restriction base="agab:parameterRef">
-					<xs:attribute name="ref" type="xs:string" use="required"/>
-				</xs:restriction>
-			</xs:complexContent>
-		</xs:complexType>
-	</xs:element>
 	<xs:complexType name="WebServiceParameterDefinition">
 		<xs:annotation>
 			<xs:documentation>Special properties for web serivce parameters</xs:documentation>
@@ -252,4 +244,17 @@
 			</xs:complexContent>
 		</xs:complexType>
 	</xs:element>
+	<!--need a way to represent a list of applications-->
+	<xs:complexType name="ApplicationList">
+		<xs:annotation>
+			<xs:documentation>list of applications</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ApplicationDefn" type="agab:ApplicationBase">
+				<xs:annotation>
+					<xs:documentation>This is a generic application definition that does not take in all of the specializations for web/commandline etc</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
 </xs:schema>

@@ -66,6 +66,7 @@
 			</sequence>
 		</flow>
 		<step name="dft" joinCondition="any" stepNumber="5" sequenceNumber="5">
+			<description>This is patricios dft tool</description>
 			<tool name="CrossMatcher" interface="Simple">
 				<input>
 					<parameter name="targets" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_z</parameter>
@@ -77,9 +78,9 @@
 					<parameter name="merged_output" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/merged</parameter>
 				</output>
 			</tool>
-			<description>This is patricios tool</description>
 		</step>
 		<step name="hyperz" joinCondition="any" stepNumber="6" sequenceNumber="6">
+			<description>generate the photo z</description>
 			<tool name="HyperZ" interface="Simple">
 				<input>
 					<parameter name="config_file" type="FileReference">/home/applications/demo/hyperz/zphot.param</parameter>
@@ -89,7 +90,6 @@
 					<parameter name="output_catalog" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/hyperzout</parameter>
 				</output>
 			</tool>
-			<description>generate the photo z</description>
 		</step>
 	</sequence>
 	<description>Workflow involving multi-band sextractor run followed by a data federation and hyperz run</description>

@@ -1,0 +1,1 @@
+See also the CEA configuration files in the applications project in the config subdirectory

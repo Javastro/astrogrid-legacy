@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGParameterDefinition.xsd,v 1.5 2004/03/03 18:24:52 pah Exp $ -->
-<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<!-- $Id: AGParameterDefinition.xsd,v 1.6 2004/03/09 14:33:20 pah Exp $ -->
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
 <xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
 		<xs:documentation>this file captures some of the ideas used in the WSDL-like parameter definition files, but as yet is not used for validation</xs:documentation>
@@ -11,7 +11,7 @@
 	<xs:annotation>
 		<xs:documentation>important types are defined here that would have special significance....</xs:documentation>
 	</xs:annotation>
-	<!---->
+	<!-- This is the standard type -->
 	<xs:simpleType name="parameterTypes">
 		<xs:annotation>
 			<xs:documentation>The list of possible parameter types</xs:documentation>
