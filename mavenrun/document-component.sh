@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: document-component.sh,v 1.4 2004/12/05 23:39:32 jdt Exp $ 
+# $Id: document-component.sh,v 1.5 2004/12/13 11:12:09 jdt Exp $ 
 ####################################################################
 # Document a component on our website
 # First argument (required) cvs name of component _under_ astrogrid
@@ -15,7 +15,12 @@
 # MY_MAVEN_OPTS = -Dmaven.download.meter=bootstrap #options to Maven itself
 # These scripts need to be on your path!
 
+DATE=`date`
+TIMESTAMP=`date +%Y%m%d-%T`
+LOGFILE=/tmp/$COMPONENT_NAME-docs.log
+rm $LOGFILE
 
+(
 COMPONENT_NAME=$1
 
 
@@ -31,39 +36,37 @@ OLDDIR=$PWD
 MODULE=astrogrid/$COMPONENT_NAME
 BUILDHOME=$CHECKOUTHOME/$MODULE
 
-DATE=`date`
-TIMESTAMP=`date +%Y%m%d-%T`
-LOGFILE=/tmp/$COMPONENT_NAME-docs.log
-rm $LOGFILE
+
 
 
 
 # Processing Starts Here
-echo "Documenting $COMPONENT_NAME, $2 on $DATE" >> $LOGFILE 2>&1
+echo "Documenting $COMPONENT_NAME, $2 on $DATE" 
 echo "====================================" 
 echo "Have you remembered to edit ~/build.properties with the correct version numbers?"
-echo "Checking out maven-base and $COMPONENT_NAME from cvs into $CHECKOUTHOME" >> $LOGFILE 2>&1
-if cvs-checkout.sh $MODULE $2 >> $LOGFILE 2>&1
+echo "Checking out maven-base and $COMPONENT_NAME from cvs into $CHECKOUTHOME" 
+if cvs-checkout.sh $MODULE $2 
 then
-	echo "OK" >> $LOGFILE 2>&1
+	echo "OK" 
 else
-        echo "document-component: cvs failure" >> $LOGFILE 2>&1
+        echo "document-component: cvs failure" 
 	exit 1
 fi
 
 cd $BUILDHOME
-echo >> $LOGFILE 2>&1
-maven astrogrid-echo-versions >> $LOGFILE 2>&1
-echo >> $LOGFILE 2>&1
+echo 
+maven astrogrid-echo-versions 
+echo 
 
-echo "Building and deploying artifacts" >> $LOGFILE 2>&1
-if maven $MY_MAVEN_OPTS astrogrid-deploy-site -Dastrogrid.docs.root=$DOCLOCATION >> $LOGFILE 2>&1
+echo "Building and deploying artifacts" 
+if maven $MY_MAVEN_OPTS astrogrid-deploy-site -Dastrogrid.docs.root=$DOCLOCATION 
 then
-    echo "OK" >> $LOGFILE 2>&1
+    echo "OK" 
 else
-    echo "document-component: site documentation failure" >> $LOGFILE 2>&1
+    echo "document-component: site documentation failure" 
     cd $OLDDIR
     exit 1
 fi
 scp $LOGFILE $DOCMACHINE:$DOCLOCATION/log/maven-build-$COMPONENT_NAME.log
 cd $OLDDIR
+) 2>&1 | tee $LOGFILE
