@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.8 2004/03/10 00:46:41 mch Exp $
+ * $Id: DataServer.java,v 1.9 2004/03/10 00:48:37 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -230,7 +230,7 @@ public class DataServer
          "<b>"+title+"</b>\n"+
          "<p><b>"+e.getMessage()+"</b></p>\n"+
          "<p><pre>"+sw.toString()+"</pre></p>"+
-         "<p>"+details+"</p>\n"+
+         "<p><pre>"+details+"</pre></p>\n"+
          "</body>\n"+
          "</html>\n";
    }
