@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerierSPI.java,v 1.7 2004/03/04 23:43:48 mch Exp $
+ * $Id: SqlQuerierSPI.java,v 1.8 2004/03/09 21:05:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -59,9 +59,11 @@ public class SqlQuerierSPI extends BaseQuerierSPI implements QuerierSPI {
    /** Adql -> SQL translator class */
    public static final String ADQL_SQL_TRANSLATOR = "DatabaseQuerier.AdqlSqlTranslator";
 
-/** JNDI key where datasource is expected */
-public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource";
+   /** JNDI key where datasource is expected */
+   public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource";
 
+   private static boolean driversStarted = false;
+   
   /** configure translators */
   static {
       map.add(ADQLUtils.ADQL_XMLNS,new AdqlQueryTranslator());
@@ -84,6 +86,8 @@ public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource"
    * @throws DatabaseAccessException
    */
   protected Connection createConnection() throws DatabaseAccessException {
+     if (!driversStarted) { startDrivers(); }
+     
      log.debug("Creating Connection");
      String userId = SimpleConfig.getSingleton().getString(USER_KEY, null);
      String password = SimpleConfig.getSingleton().getString(PASSWORD_KEY, null);
@@ -180,8 +184,9 @@ public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource"
     * @todo create a spi factory, move call to this method there.
     *
     */
-   public   void startDrivers() throws DatabaseAccessException
+   public static synchronized  void startDrivers() throws DatabaseAccessException
    {
+      if (!driversStarted) {
          //read value
          String drivers = SimpleConfig.getSingleton().getString(JDBC_DRIVERS_KEY, null);
          if (drivers != null)
@@ -194,6 +199,7 @@ public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource"
                startDriver(driver);
             }
          }
+      }
    }
 
    /**
