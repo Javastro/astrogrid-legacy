@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.13 2003/09/22 16:52:12 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.14 2003/09/24 21:11:14 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,7 @@
  *
 **/
 package org.astrogrid.datacenter.service;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -20,11 +21,16 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.DummyQuerier;
 import org.astrogrid.datacenter.queriers.QueryListener;
+import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
+import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Document;
 
 /** Test the entire DataQueryService, end-to-end, over a Hsql database
@@ -49,7 +55,9 @@ public class DataQueryServiceTest extends TestCase {
     protected void setUp() throws Exception {
         //wsTest.setUp(); //sets up workspace
         HsqlTestCase.initializeConfiguration();
+        Configuration.setProperty(DatabaseQuerierManager.RESULTS_TARGET_KEY,"fooble");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
+        File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
         conn = ds.getConnection();
           String script = HsqlTestCase.getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
         HsqlTestCase.runSQLScript(script,conn);
@@ -66,68 +74,59 @@ public class DataQueryServiceTest extends TestCase {
             try {
                 conn.close();
             } catch (Exception e) {
-                e.printStackTrace();
             }
         }
-        //wsTest.tearDown(); //tears down workspace
     }
 
-    /** work around for lack of multiple inheritance..
-     * just want to get access to the setup and tearDown methods
-     * @author Noel Winstanley nw@jb.man.ac.uk 05-Sep-2003
-     *
-     * I gather this was a convenient way of creating temporary workspaces...
-     * hopefully Workspace should now do that properly now
-    private class MyWorkspaceTest extends WorkspaceTest {
-        public MyWorkspaceTest(String s) {
-            super(s);
-        }
-     }*/
+    public void testHandleUniqueness() throws IOException {
+        Configuration.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY,DummyQuerier.class.getName());
+         DatabaseQuerier s1 = DatabaseQuerierManager.createQuerier();
+         assertNotNull(s1);
+         DatabaseQuerier s2 = DatabaseQuerierManager.createQuerier();
+         assertNotNull(s2);
+         assertNotSame(s1,s2);
+         assertTrue(! s1.getHandle().trim().equals(s2.getHandle().trim()));
+     }
 
 
     public void testRunQuery() throws Exception
     {
        //set up
-        DatabaseQuerier querier = new DummyQuerier(null);
-        TestListener l = new TestListener();
-        querier.registerListener(l);
-
        //get test query
         InputStream queryIn = this.getClass().getResourceAsStream("/org/astrogrid/datacenter/queriers/sql/sql-querier-test-3.xml");
         assertNotNull(queryIn);
         Document testQuery = XMLUtils.newDocument(queryIn);
         assertNotNull(testQuery);
+        
+        DatabaseQuerier querier =  DatabaseQuerierManager.createQuerier(testQuery.getDocumentElement());
+        assertNotNull(querier);
+        assertEquals(QueryStatus.CONSTRUCTED,querier.getStatus());
+        assertEquals(-1.0,querier.getQueryTimeTaken(),0.001);
+        TestListener l = new TestListener();
+        querier.registerListener(l);
+       
 
        //run query
-        querier.setQuery(testQuery.getDocumentElement());
-        querier.doQuery();
+        querier.run(); // note this is running in the same thread - simpler for testing - we don't mind wating.
+        assertEquals(QueryStatus.FINISHED,querier.getStatus());
+        assertTrue(querier.getQueryTimeTaken() > 0);
         URL votableLoc = querier.getResultsLoc();
         assertNotNull(votableLoc);
 
         Document votable = XMLUtils.newDocument(votableLoc.openStream());
-
         assertEquals("VOTABLE",votable.getDocumentElement().getLocalName());
-        assertEquals(QueryStatus.QUERY_COMPLETE,querier.getStatus());
-
-       // check what the listener recorded.
-//not always        assertEquals(4,l.statusList.size());
-//        String[] expected = new String[]{ServiceStatus.STARTING,ServiceStatus.RUNNING_QUERY,ServiceStatus.RUNNING_RESULTS,ServiceStatus.FINISHED};
-        assertEquals(QueryStatus.QUERY_COMPLETE,l.getLast());
+    
+       // check what the listener recorded. - should always be the same pattern for this query.
+        assertEquals(4,l.statusList.size());
+        QueryStatus[] expected = new QueryStatus[]{QueryStatus.RUNNING_QUERY,QueryStatus.QUERY_COMPLETE,QueryStatus.RUNNING_RESULTS,QueryStatus.FINISHED};
+        for (int i = 0; i < l.statusList.size(); i++) {
+            assertEquals(expected[i],l.statusList.get(i));
+        }
     }
 
-    public void testHandleUniqueness() throws IOException {
-        DatabaseQuerier s1 = new DummyQuerier(null);
-        assertNotNull(s1);
-        DatabaseQuerier s2 = new DummyQuerier(null);
-        assertNotNull(s2);
-        assertNotSame(s1,s2);
-        assertTrue(! s1.getHandle().trim().equals(s2.getHandle().trim()));
-    }
+ 
 
-    public void testStatus() throws IOException {
-        DatabaseQuerier s1 = new DummyQuerier(null);
-        assertEquals(s1.getStatus(),QueryStatus.CONSTRUCTED);
-    }
+
 
     static class TestListener implements QueryListener {
         public List statusList = new ArrayList();
@@ -149,6 +148,9 @@ public class DataQueryServiceTest extends TestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.14  2003/09/24 21:11:14  nw
+altered to fit with new configuration and behaviour
+
 Revision 1.13  2003/09/22 16:52:12  mch
 Fixes for changes to posts results to dummy myspace
 
