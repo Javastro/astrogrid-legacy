@@ -4,7 +4,7 @@
         <vr:Resource xsi:type="CeaServiceType">
                 <vr:Identifier>
                         <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
-                        <vr:ResourceKey>6df</vr:ResourceKey>
+                        <vr:ResourceKey>6dfservice</vr:ResourceKey>
                 </vr:Identifier>
                 <vr:Title>TemplateEntry</vr:Title>
                 <vr:ShortName>TemplateEntry</vr:ShortName>
