@@ -1,4 +1,4 @@
-/*$Id: XMLHelper.java,v 1.1 2004/03/12 13:50:23 nw Exp $
+/*$Id: XMLHelper.java,v 1.2 2004/03/14 23:11:32 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.scripting;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.sql.SQLUtils;
+//import org.astrogrid.datacenter.sql.SQLUtils;
 
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -44,12 +44,12 @@ public class XMLHelper {
     public Element toQueryBody(Select s) throws ADQLException {
        return ADQLUtils.toQueryBody(s);
     }
-    /** convert an sql string query to an Element
-     * @see org.astrogrid.datacenter.sql.SQLUtils */
+    /*convert an sql string query to an Element
+     * @see org.astrogrid.datacenter.sql.SQLUtils 
     public Element toQueryBody(String s) throws IOException {
        return SQLUtils.toQueryBody(s);
     }
-
+*/
 
 
     // XML helper methods
@@ -80,6 +80,9 @@ public class XMLHelper {
 
 /* 
 $Log: XMLHelper.java,v $
+Revision 1.2  2004/03/14 23:11:32  nw
+commented out code that used methods that have dissapeared from datacenter and applications delegate jars
+
 Revision 1.1  2004/03/12 13:50:23  nw
 improved scripting object
  

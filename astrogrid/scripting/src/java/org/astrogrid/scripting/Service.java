@@ -1,4 +1,4 @@
-/*$Id: Service.java,v 1.5 2004/03/05 16:27:28 nw Exp $
+/*$Id: Service.java,v 1.6 2004/03/14 23:11:32 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,7 +57,7 @@ public class Service {
     */
    public Object createDelegate() throws  ServiceException, IOException {
       if (DATACENTER_SERVICE.equals(type)) {
-         return DatacenterDelegateFactory.makeFullSearcher(endpoint);
+         return DatacenterDelegateFactory.makeQuerySearcher(endpoint);
       } 
       if (MYSPACE_SERVICE.equals(type)) {
          return MySpaceDelegateFactory.createDelegate(endpoint);
@@ -66,7 +66,7 @@ public class Service {
          throw new UnsupportedOperationException("Registry currently not building - can't compile against delegate");
       }
       if(APPLICATION_SERVICE.equals(type)) {
-         return DelegateFactory.createDelegate(endpoint);
+         return DelegateFactory(endpoint);
       }
       if (JOBCONTROL_SERVICE.equals(type)) {
          return JesDelegateFactory.createJobController(endpoint);
@@ -131,6 +131,9 @@ public class Service {
 
 /* 
 $Log: Service.java,v $
+Revision 1.6  2004/03/14 23:11:32  nw
+commented out code that used methods that have dissapeared from datacenter and applications delegate jars
+
 Revision 1.5  2004/03/05 16:27:28  nw
 updated to new jes delegates
 
