@@ -37,7 +37,7 @@
 
   <service name="security-sample" provider="java:RPC">
     <requestFlow>
-      <handler type="java:org.astrogrid.security.ServiceCredentialHandler"/>
+      <handler type="java:org.astrogrid.security.ServiceCredentialAxisHandler"/>
     </requestFlow>
     <parameter name="className" value="org.astrogrid.security.sample.SampleImpl"/>
     <parameter name="allowedMethods" value="*"/>
