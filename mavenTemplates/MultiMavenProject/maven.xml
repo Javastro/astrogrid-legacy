@@ -1,9 +1,40 @@
-<project>
-	<!--+
-	    | This pregoal takes any simple html docs in the xdocs folder and turns them into xdoc xml,
-	    | before they are turned back into maven-style html docs.  Why?  html is easier to write in
-	    | a WYSIWIG editor than xdoc xml
-	    +-->
+<project xmlns:j="jelly:core">
+		<!-- 
+         Custom astrogrid goals for nightly build 
+         Overrides those in astrogrid/maven-base which are not suitable for a multiproject
+        -->
+		
+	<goal name="astrogrid-clean" prereqs="multiproject:clean"/>
+	<goal name="astrogrid-deploy-site" 
+		prereqs="astrogrid-build-site,site:sshdeploy" />
+	<goal name="astrogrid-build-site" prereqs="multiproject:site"/>
+		<!-- 
+		   The multiproject: goals defined here generate jars or wars for each subproject
+		   depending on how that subproject has defined the property maven.multiproject.type
+		 -->
+	<goal name="astrogrid-deploy-snapshot" prereqs="multiproject:deploy-snapshot"/>
+	<goal name="astrogrid-build-snapshot" prereqs="multiproject:artifact"/>
+	<goal name="astrogrid-install-snapshot" prereqs="multiproject:install-snapshot"/>
+	<goal name="astrogrid-deploy-artifact" prereqs="multiproject:deploy"/>
+	<goal name="astrogrid-build-artifact" prereqs="multiproject:artifact"/>
+	<goal name="astrogrid-install-artifact" prereqs="multiproject:install"/>
+	
+         <!--
+	      How to use the multiproject plugin in run a "non-standard" goal
+	     -->
+	<goal name="HelloWorldMulti">
+		<attainGoal name="HelloWorld"/>
+		<!-- the goal multiproject:goal runs the goal defined in the variable "goal" on the subprojects -->
+		<!-- sorry about the above tongue twister-->
+		<j:set var="goal" value="HelloWorld"/>
+		<attainGoal name="multiproject:goal"/>
+	</goal>
+
+         <!--
+	      This pregoal takes any simple html docs in the xdocs folder and turns them into xdoc xml,
+	      before they are turned back into maven-style html docs.  Why?  html is easier to write in
+	      a WYSIWIG editor than xdoc xml
+	     -->
 	<preGoal name="xdoc:jelly-transform">
 	    <attainGoal name="html2xdoc"/>
 	</preGoal>

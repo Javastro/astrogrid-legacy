@@ -2,7 +2,8 @@
     <extend>${basedir}/../../maven-base/project.xml</extend>
     <name>Multiproject Example Base</name>
     <description>This POM is purely to provide a base for common settings between the MultiMavenProject subprojects.  It is
-not used to build a subproject of its own.</description>
+not used to build a subproject of its own.  This base POM in turn extends a global maven-base POM used to defined settings
+across all Astrogrid components.</description>
     <shortDescription>An example base POM</shortDescription>
     <!--we have this common structure for all subprojects-->
     <build>
@@ -14,7 +15,12 @@ not used to build a subproject of its own.</description>
             </includes>
         </unitTest>
     </build>
-    <!--Dependencies common to *all* subcomponents-->
+    <!--
+        Dependencies common to *all* subcomponents
+        When a subproject extends this POM, normally its tags override any
+        settings defined here.  However, in the case of dependencies the
+        dependencies are added to the ones defined here
+     -->
     <dependencies>
     	<dependency>
             <groupId>commons-logging</groupId>
