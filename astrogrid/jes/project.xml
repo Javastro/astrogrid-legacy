@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.38 2004/02/02 17:15:02 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.39 2004/02/02 17:36:32 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
-    <pomVersion>3</pomVersion>
+    <extend>../maven-base/project.xml</extend>
     <id>astrogrid-jes</id>
     <name>AstroGrid Job Management</name>
-    <currentVersion>$Name:  $</currentVersion>
-    <organization>
-        <name>AstroGrid</name>
-        <url>http://www.astrogrid.org</url>
-        <logo>http://www.astrogrid.org/images/AGlogo</logo>
-    </organization>
-    <inceptionYear>2002</inceptionYear>
     <description> This work package provides AstroGrid with the facility to 
         submit jobs. Jobs will initially consist of a query to be run 
         asynchronously against one or more catalogues held at a particular data 
@@ -26,7 +19,6 @@
         trigger subsequent steps.</description>
     <shortDescription>AstroGrid Job Management Components</shortDescription>
     <siteDirectory>/var/www/www/maven/build/jes</siteDirectory>
-    <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
     <package>org.astrogrid</package>
     <logo>http://www.astrogrid.org/images/AGlogo</logo>
     <build>
@@ -50,31 +42,6 @@
             </resources>
         </unitTest>
     </build>
-    <developers>
-        <developer>
-            <name>Jeff Lusted</name>
-            <id>jl99</id>
-            <email>jl99@star.le.ac.uk</email>
-        </developer>
-        <developer>
-            <name>John D Taylor</name>
-            <id>jdt</id>
-            <email>jdt@roe.ac.uk</email>
-        </developer>
-        <developer>
-            <name>Phil Nicholson</name>
-            <id>pjn3</id>
-            <email>pjn3@star.le.ac.uk</email>
-        </developer>
-        <developer>
-            <name>Paul Harrison</name>
-            <id>pah</id>
-            <email>pah@jb.man.ac.uk</email>
-            <roles>
-                <role>WGL</role>
-            </roles>
-        </developer>
-    </developers>
     <repository>
         <connection> 
             scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/jes 
@@ -268,21 +235,4 @@
             <!-- hsqldb - for testing -->
         </dependency>
     </dependencies>
-    <reports>
-        <report> maven-changelog-plugin </report>
-        <report> maven-changes-plugin </report>
-        <report> maven-checkstyle-plugin </report>
-        <report> maven-clover-plugin </report>
-        <report> maven-developer-activity-plugin </report>
-        <report> maven-file-activity-plugin </report>
-        <report> maven-javadoc-plugin </report>
-        <report> maven-jdepend-plugin </report>
-        <report> maven-junit-report-plugin </report>
-        <report> maven-jxr-plugin </report>
-        <report> maven-license-plugin </report>
-        <report> maven-linkcheck-plugin </report>
-        <report> maven-pmd-plugin </report>
-        <report> maven-tasklist-plugin </report>
-        <report> maven-simian-plugin </report>
-    </reports>
 </project>
