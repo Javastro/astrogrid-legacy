@@ -1,4 +1,4 @@
-/*$Id: DynamicFactoryManagerTest.java,v 1.4 2003/08/25 21:47:57 mch Exp $
+/*$Id: DynamicFactoryManagerTest.java,v 1.5 2003/08/25 22:01:17 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,11 +11,9 @@
 package org.astrogrid.datacenter.datasetagent;
 
 import java.util.Map;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.astrogrid.datacenter.DatacenterException;
+import org.astrogrid.AstroGridException;
 import org.astrogrid.datacenter.FactoryProvider;
 import org.astrogrid.datacenter.FactoryProviderTestSpec;
 import org.astrogrid.datacenter.config.Configuration;
@@ -53,7 +51,7 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
         DynamicFactoryManager fac = new DynamicFactoryManager(conf);
         try {
              fac.verify();
-         } catch (DatacenterException e) {
+         } catch (AstroGridException e) {
              fail("failed to create a populated facotry provider");
          }
          return fac;
@@ -83,41 +81,45 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
     public final static String QUERY_KEY = MapConfiguration.mkKey(ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY,ConfigurationKeys.CATALOG_CATEGORY);
     public final static String VOTABLE_KEY = MapConfiguration.mkKey(ConfigurationKeys.VOTABLE_FACTORY,ConfigurationKeys.VOTABLE_CATEGORY);
     public final static String CATALOG_QUERY_KEY = MapConfiguration.mkKey(FactoryProviderTestSpec.TEST_QUERY_FACTORY_KEY +ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY,ConfigurationKeys.CATALOG_CATEGORY);
-    public void testLoadJobFactory() throws DatacenterException {
+
+    public void testLoadJobFactory() throws AstroGridException
+    {
         try {
         dynFacMan.loadJobFactory();
         fail("expected to barf");
-        } catch (DatacenterException e) {
+        } catch (AstroGridException e) {
         }
 
         internalMap.put(JOB_KEY,"unknown.class");
         try {
             dynFacMan.loadJobFactory();
             fail("expected to barf");
-        } catch (DatacenterException e) {
+        } catch (AstroGridException e) {
         }
         internalMap.put(JOB_KEY,NullJobFactory.class.getName());
         dynFacMan.loadJobFactory();
     }
 
-    public void testLoadDefaultQueryFactory() throws DatacenterException {
+    public void testLoadDefaultQueryFactory() throws AstroGridException
+    {
          try {
          dynFacMan.loadDefaultQueryFactory();
          fail("expected to barf");
-         } catch (DatacenterException e) {
+         } catch (AstroGridException e) {
          }
 
          internalMap.put(QUERY_KEY,"unknown.class");
          try {
              dynFacMan.loadDefaultQueryFactory();
              fail("expected to barf");
-         } catch (DatacenterException e) {
+         } catch (AstroGridException e) {
          }
          internalMap.put(QUERY_KEY,NullQueryFactory.class.getName());
          dynFacMan.loadDefaultQueryFactory();
      }
 
-    public void testGetMissingQueryFactory() throws DatacenterException{
+    public void testGetMissingQueryFactory() throws AstroGridException
+     {
         // first set up dynFacMan with a default.
         internalMap.put(QUERY_KEY,NullQueryFactory.class.getName());
         dynFacMan.loadDefaultQueryFactory();
@@ -129,7 +131,8 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
         assertFalse(dynFacMan.isQueryFactoryAvailable("unknownCatalog"));
     }
 
-    public void testGetPresentQueryFactory() throws DatacenterException{
+    public void testGetPresentQueryFactory() throws AstroGridException
+    {
         // first set up dynFacMan with a default.
         internalMap.put(QUERY_KEY,NullQueryFactory.class.getName());
         dynFacMan.loadDefaultQueryFactory();
@@ -144,12 +147,13 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
 
     }
 
-    public void testVerify() throws DatacenterException{
+    public void testVerify() throws AstroGridException
+    {
         try {
             // verifying an empty / uninitialized factory manager should barf.
             dynFacMan.verify();
             fail("Should raise DatacenterException");
-        } catch (DatacenterException e) {
+        } catch (AstroGridException e) {
         }
         // verifying a full one shouldn't complain.
         populateMap();
@@ -186,6 +190,9 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
 
 /*
 $Log: DynamicFactoryManagerTest.java,v $
+Revision 1.5  2003/08/25 22:01:17  mch
+Removed DatacenterException
+
 Revision 1.4  2003/08/25 21:47:57  mch
 Removed VOTable-middleman classes (to replace with more general ResultSet)
 

@@ -1,4 +1,4 @@
-/* $Id: FactoryManager.java,v 1.4 2003/08/25 21:42:45 mch Exp $
+/* $Id: FactoryManager.java,v 1.5 2003/08/25 22:00:55 mch Exp $
  * Created on 19-Aug-2003
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -12,8 +12,7 @@ package org.astrogrid.datacenter.config;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.astrogrid.datacenter.DatacenterException;
+import org.astrogrid.AstroGridException;
 import org.astrogrid.datacenter.FactoryProvider;
 import org.astrogrid.datacenter.job.JobFactory;
 import org.astrogrid.datacenter.query.QueryException;
@@ -63,9 +62,9 @@ public class FactoryManager implements FactoryProvider {
      * TODO - produce a proper astrogrid message for this.
      * @throws DatacenterException if any factory field is set to null
      */
-    public void verify() throws DatacenterException {
+    public void verify() throws AstroGridException {
        if (jobFactory == null || defaultQueryFactory == null){
-            throw new DatacenterException(new AstroGridMessage("some.factories.null"));
+            throw new AstroGridException(new AstroGridMessage("some.factories.null"));
         }
     }
 // mutators
@@ -126,6 +125,9 @@ public class FactoryManager implements FactoryProvider {
 }
 /*
  * $Log: FactoryManager.java,v $
+ * Revision 1.5  2003/08/25 22:00:55  mch
+ * Removed DatacenterException
+ *
  * Revision 1.4  2003/08/25 21:42:45  mch
  * Removed VOTable-middleman classes (to replace with more general ResultSet)
  *

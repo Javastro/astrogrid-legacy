@@ -3,11 +3,9 @@ package org.astrogrid.datacenter.config;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.astrogrid.datacenter.DatacenterException;
+import org.astrogrid.AstroGridException;
 import org.astrogrid.datacenter.FactoryProvider;
 import org.astrogrid.datacenter.FactoryProviderTestSpec;
 import org.astrogrid.datacenter.job.JobFactory;
@@ -84,13 +82,14 @@ public class FactoryManagerTest extends FactoryProviderTestSpec implements Invoc
    }
 
 
-   public void testVerify() throws DatacenterException{
+   public void testVerify() throws AstroGridException
+   {
 
       try {
          // verifying an empty / uninitialized factory manager should barf.
          facMan.verify();
          fail("Should raise DatacenterException");
-      } catch (DatacenterException e) {
+      } catch (AstroGridException e) {
       }
 
         // verifying a full one shouldn't complain.
