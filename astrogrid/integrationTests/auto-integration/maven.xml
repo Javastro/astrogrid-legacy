@@ -265,7 +265,7 @@
         target="register"
         antfile="register.xml"
         >
-        <property name="registry.entry" value="tmp/community/config/service/policy.manager.xml"/>
+        <property name="registry.entry" value="${temporary.dir}/community/config/service/policy.manager.xml"/>
     </ant>
 </goal>
 
