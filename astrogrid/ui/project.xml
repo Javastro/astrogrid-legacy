@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
-  <extend>../maven-base/project.xml</extend>
-  <id>astrogrid-ui</id>
-  <name>AstroGrid UI</name>
-
-  
-  <shortDescription>AstroGrid User Interface</shortDescription>
-
-  <developers>
-    <developer>
-      <name>Martin Hill</name>
-      <id>mch</id>
-      <email>mch@roe.ac.uk</email>
-    </developer>
-  </developers>
-  
-  <dependencies>
-              <dependency>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="maven-project.xsd">
+    <extend>../maven-base/project.xml</extend>
+    <id>astrogrid-ui</id>
+    <name>AstroGrid UI</name>
+    <shortDescription>AstroGrid User Interface</shortDescription>
+    <developers>
+        <developer>
+            <name>Martin Hill</name>
+            <id>mch</id>
+            <email>mch@roe.ac.uk</email>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>astrogrid-common</groupId>
             <version>SNAPSHOT</version>
@@ -26,28 +21,23 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-    <dependency>
-      <id>junit</id>
-      <version>3.8</version>
-    </dependency>
+        <dependency>
+            <id>junit</id>
+            <version>3.8</version>
+        </dependency>
         <!-- votable parsers/etc for JVotBox -->
-    <dependency>
-      <id>breezetk</id>
-      <version>UNKNOWN</version>
-      <jar>breezetk.jar</jar>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-
-   <dependency>
-      <groupId>axis</groupId>
-      <artifactId>axis-ant</artifactId>
-      <version>1.1</version>
-   </dependency>
-  </dependencies>
-
-
-
+        <dependency>
+            <id>breezetk</id>
+            <version>UNKNOWN</version>
+            <jar>breezetk.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-ant</artifactId>
+            <version>1.1</version>
+        </dependency>
+    </dependencies>
 </project>
