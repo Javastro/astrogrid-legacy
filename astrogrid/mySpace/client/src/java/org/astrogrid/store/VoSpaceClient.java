@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceClient.java,v 1.2 2004/06/14 23:08:53 jdt Exp $
+ * $Id: VoSpaceClient.java,v 1.3 2004/09/06 11:22:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -56,6 +56,14 @@ public class VoSpaceClient {
       Agsl fileAgsl = VoSpaceResolver.resolveAgsl(fileIvorn);
       StoreClient client = StoreDelegateFactory.createDelegate(operator, fileAgsl);
       return client.getFile(fileAgsl.getPath());
+   }
+
+   /**
+    * Returns a StoreClient delegate for the given ivorn for direct file manipulation
+    */
+   public StoreClient getDelegate(Ivorn storeIvorn) throws IOException {
+      Agsl storeAgsl = VoSpaceResolver.resolveAgsl(storeIvorn);
+      return StoreDelegateFactory.createDelegate(operator, storeAgsl);
    }
 
    /**
@@ -164,19 +172,30 @@ public class VoSpaceClient {
 
 /*
 $Log: VoSpaceClient.java,v $
+Revision 1.3  2004/09/06 11:22:44  mch
+Added method to make storeclient from ivorn
+
 Revision 1.2  2004/06/14 23:08:53  jdt
 Merge from branches
+
 ClientServerSplit_JDT
+
 and
+
 MySpaceClientServerSplit_JDT
 
+
+
 MySpace now split into a client/delegate jar
+
 astrogrid-myspace-<version>.jar
+
 and a server/manager war
+
 astrogrid-myspace-server-<version>.war
 
 Revision 1.1.2.1  2004/06/14 22:33:21  jdt
-Split into delegate jar and server war.  
+Split into delegate jar and server war.
 Delegate: astrogrid-myspace-SNAPSHOT.jar
 Server/Manager: astrogrid-myspace-server-SNAPSHOT.war
 
