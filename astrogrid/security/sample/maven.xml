@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project default="astrogrid-build-site" xmlns:j="jelly:core">
+
+  <!-- custom astrogrid goals for nightly build -->
+  <goal name="astrogrid-clean" prereqs="clean"/>
+  <goal name="astrogrid-deploy-site" 
+      prereqs="astrogrid-build-site,site:fsdeploy" />
+  <goal name="astrogrid-build-site" prereqs="site"/>
+  <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot"/>
+  <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,war:war"/>
+  <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot"/>
+  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy"/>
+  <goal name="astrogrid-build-artifact" prereqs="jar:jar"/>
+  <goal name="astrogrid-install-artifact" prereqs="jar:install"/>
+	
+	
+  <preGoal name="java:compile">
+    <mkdir dir="${basedir}/target/classes"/>
+    <!-- JDepend fails if this dir is not present.  Hack to fix it. -->
+  </preGoal>
+	
+</project>
