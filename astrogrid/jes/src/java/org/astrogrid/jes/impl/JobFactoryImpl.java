@@ -52,7 +52,7 @@ public class JobFactoryImpl implements JobFactory {
 		
 	public static final String
 	    JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, JOBXML ) " +
-	                          "VALUES ( '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}' )" ,
+	                          "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'', ''{6}'', ''{7}'' )" ,
 	    JOB_UPDATE_TEMPLATE = "UPDATE {0} SET STATUS = ? WHERE JOBURN = ?" ,
 	    JOB_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1}" ,
 	    JOB_GENERAL_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE {1}" ,	    
@@ -66,7 +66,31 @@ public class JobFactoryImpl implements JobFactory {
 	    COL_USERID = 5,
 	    COL_COMMUNITY = 6,
 	    COL_JOBXML = 7 ;
-	    
+	 
+	public static final String
+		JOBSTEP_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, STEPNAME, STATUS, COMMENT ) " +
+							  "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'' )" ,
+        JOBSTEP_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1} AND STEPNUMBER = {2}" ;   
+	
+	public static final String
+        QUERY_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER ) " +
+						  "VALUES ( ''{1}'', ''{2}'' )" ;   
+
+	public static final String
+		CATALOG_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, CATALOGNAME ) " +
+						  "VALUES ( ''{1}'', ''{2}'', ''{3}'' )" ;   
+    
+	public static final String
+		TABLE_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, CATALOGNAME, TABLENAME ) " +
+						  "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'' )" ; 
+						  
+	public static final String
+		SERVICE_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, CATALOGNAME, SERVICENAME, SERVICEURL ) " +
+						  "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'' )" ;   						    
+    
+    
+    
+    
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_DATASOURCE            = "AGJESE00150",
 		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGJESE00160",
@@ -189,7 +213,8 @@ public class JobFactoryImpl implements JobFactory {
 			inserts[7] = job.getDocumentXML() ;
 
 			String
-			   updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 			
+			   updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 
+			logger.debug( "Create Job: " + updateString ) ;			
 			statement = getConnection().createStatement() ;
 			statement.executeUpdate( updateString );
 			job.setDirty( false ) ;
@@ -276,6 +301,8 @@ public class JobFactoryImpl implements JobFactory {
 				job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
 				job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
 				job.setDirty( false ) ;
+				
+//				findJobSteps( job ) ;
 				
 				if( rs.next() == true ) {
 					// We have a duplicate Job!!! This should be impossible...
@@ -494,12 +521,15 @@ public class JobFactoryImpl implements JobFactory {
 			Object []
 			   inserts = new Object[6] ;
 			inserts[0] = JobController.getProperty( JOBSTEP_TABLENAME ) ;
-			inserts[1] = jobStep.getStepNumber() ;  // unique for step within job
-			inserts[2] = jobStep.getName() ;
-			inserts[3] = jobStep.getParent().getId() ;            // foreign key to parent
+			inserts[1] = jobStep.getParent().getId() ;            // foreign key to parent
+			inserts[2] = jobStep.getStepNumber() ;                // unique for step within job
+			inserts[3] = jobStep.getName() ;
+			inserts[4] = jobStep.getStatus() ;            
+			inserts[5] = jobStep.getComment() ;
 
 			String
-			   updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 			
+			   updateString = MessageFormat.format( JOBSTEP_INSERT_TEMPLATE, inserts ) ; 
+			logger.debug( "Create JobStep: " + updateString ) ;			
 			statement = getConnection().createStatement() ;
 			statement.executeUpdate( updateString );
 			createQuery( jobStep.getQuery() ) ;
@@ -533,7 +563,8 @@ public class JobFactoryImpl implements JobFactory {
 			 inserts[2] = query.getParent().getStepNumber() ;
 
 			 String
-				updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 			
+				updateString = MessageFormat.format( QUERY_INSERT_TEMPLATE, inserts ) ; 
+		     logger.debug( "Create Query: " + updateString ) ;			
 			 statement = getConnection().createStatement() ;
 			 statement.executeUpdate( updateString );
 			 createCatalogs( query ) ;
@@ -584,14 +615,16 @@ public class JobFactoryImpl implements JobFactory {
 		try {
 
 			Object []
-			   inserts = new Object[6] ;
+			   inserts = new Object[4] ;
 			inserts[0] = JobController.getProperty( CATALOG_TABLENAME ) ;
-			inserts[1] = catalog.getName() ;
+			inserts[1] = catalog.getParent().getParent().getParent().getId() ;            
 			inserts[2] = catalog.getParent().getParent().getStepNumber() ;
-			inserts[3] = catalog.getParent().getParent().getParent().getId() ;            
+			inserts[3] = catalog.getName() ;
+
 
 			String
-			   updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 			
+			   updateString = MessageFormat.format( CATALOG_INSERT_TEMPLATE, inserts ) ; 	
+			logger.debug( "Create Catalog: " + updateString ) ;		
 			statement = getConnection().createStatement() ;
 			statement.executeUpdate( updateString );
 			createTables( catalog ) ;
@@ -660,15 +693,16 @@ public class JobFactoryImpl implements JobFactory {
 		try {
 
 			Object []
-			   inserts = new Object[6] ;
+			   inserts = new Object[5] ;
 			inserts[0] = JobController.getProperty( TABLE_TABLENAME ) ;
-			inserts[1] = table.getName() ;
-			inserts[2] = table.getParent().getName() ;     
-			inserts[3] = table.getParent().getParent().getParent().getStepNumber() ;
-			inserts[4] = table.getParent().getParent().getParent().getParent().getId() ;                
-
+			inserts[1] = table.getParent().getParent().getParent().getParent().getId() ;  // JobURN
+			inserts[2] = table.getParent().getParent().getParent().getStepNumber() ;      // step number
+			inserts[3] = table.getParent().getName() ;                                    // catalog name
+			inserts[4] = table.getName() ;                                                // table name
+   
 			String
-			   updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 			
+			   updateString = MessageFormat.format( TABLE_INSERT_TEMPLATE, inserts ) ; 
+			logger.debug( "Create Table: " + updateString ) ;			
 			statement = getConnection().createStatement() ;
 			statement.executeUpdate( updateString );
 		}
@@ -697,14 +731,15 @@ public class JobFactoryImpl implements JobFactory {
 			Object []
 			   inserts = new Object[6] ;
 			inserts[0] = JobController.getProperty( SERVICE_TABLENAME ) ;
-			inserts[1] = service.getName() ;
-			inserts[2] = service.getUrl() ;            
-			inserts[3] = service.getParent().getName() ;     
-			inserts[4] = service.getParent().getParent().getParent().getStepNumber() ;
-			inserts[5] = service.getParent().getParent().getParent().getParent().getId() ;   
-			 
+			inserts[1] = service.getParent().getParent().getParent().getParent().getId() ; // JobURN  
+			inserts[2] = service.getParent().getParent().getParent().getStepNumber() ;     // step number
+			inserts[3] = service.getParent().getName() ;                                   // catalog name
+			inserts[4] = service.getName() ;                                               // service name
+			inserts[5] = service.getUrl() ;                                                // service url
+  		 
 			String
-			   updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 			
+			   updateString = MessageFormat.format( SERVICE_INSERT_TEMPLATE, inserts ) ; 
+			logger.debug( "Create Service: " + updateString ) ;			
 			statement = getConnection().createStatement() ;
 			statement.executeUpdate( updateString );
 		}
