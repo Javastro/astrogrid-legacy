@@ -342,9 +342,9 @@ public class DesignAction extends AbstractAction {
 				else if( action.equals( ACTION_EDIT_WORKFLOW ) ) {
 					this.readWorkflow(); 
 				}                
-                else if( action.equals( ACTION_DELETE_WORKFLOW ) ) {
-                    this.deleteWorkflow(); 
-                }
+//                else if( action.equals( ACTION_DELETE_WORKFLOW ) ) {
+//                    this.deleteWorkflow(); 
+//              }
                 else if( action.equals( ACTION_SUBMIT_WORKFLOW ) ) {
                     this.submitWorkflow(); 
                 }
@@ -354,15 +354,15 @@ public class DesignAction extends AbstractAction {
                 else if( action.equals( ACTION_EDIT_JOINCONDITION ) ) {
                     this.editJoinCondition(); 
                 }
-                else if( action.equals( ACTION_READ_WORKFLOW_LIST ) ) {
-                    this.readWorkflowList(); 
-                }
+//                else if( action.equals( ACTION_READ_WORKFLOW_LIST ) ) {
+//                    this.readWorkflowList(); 
+//                }
                 else if( action.equals( ACTION_READ_TOOL_LIST ) ) {
                     this.readToolList(); 
                 }
-                else if( action.equals( ACTION_READ_QUERY_LIST ) ) {
-                    this.readQueryList(); 
-                }
+//                else if( action.equals( ACTION_READ_QUERY_LIST ) ) {
+//                    this.readQueryList(); 
+//                }
 				else if( action.equals( ACTION_READ_LISTS ) ) {
 					this.readLists(); 
 				}			
@@ -557,15 +557,15 @@ public class DesignAction extends AbstractAction {
                 }
                 else {
                     WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
-                    wfStore.saveWorkflow( credentials.getAccount(), workflow ) ;
+//                    wfStore.saveWorkflow( credentials.getAccount(), workflow ) ;
 //					session.setAttribute( HTTP_WORKFLOW_TAG, null) ;
                     session.removeAttribute( HTTP_WORKFLOW_TAG );
 					workflow = null ;
                 }            
             }
-            catch( WorkflowInterfaceException wix ) {
-                wix.printStackTrace();
-            }
+//            catch( WorkflowInterfaceException wix ) {
+//                wix.printStackTrace();
+//            }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.saveWorkflow() exit" ) ;
             }
@@ -596,12 +596,12 @@ public class DesignAction extends AbstractAction {
                     
                 if( name == null ) {
                     ; // some logging here
-                    throw new ConsistencyException() ;
+                    throw new ConsistencyException() ; 
                 }
                 
                 if( workflow == null  || bConfirm == true ) {
                     WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
-                    workflow = wfStore.readWorkflow( credentials.getAccount(), name ) ;
+//                    workflow = wfStore.readWorkflow( credentials.getAccount(), name ) ;
                 } 
                 
                 if( workflow != null ) {   
@@ -611,9 +611,9 @@ public class DesignAction extends AbstractAction {
                 }
                     
             }
-            catch( WorkflowInterfaceException wix ) {
-                wix.printStackTrace(); //JBL note
-            }
+//            catch( WorkflowInterfaceException wix ) {
+//                wix.printStackTrace(); //JBL note
+//            }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflow() exit" ) ;
             }
@@ -642,47 +642,19 @@ public class DesignAction extends AbstractAction {
 				}
 				else{
                     WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
-                    workflow = wfStore.readWorkflow( credentials.getAccount(), name ) ;
-					workflow.setName( newName ) ;
-                    wfStore.saveWorkflow( credentials.getAccount(), workflow ) ;
+//                    workflow = wfStore.readWorkflow( credentials.getAccount(), name ) ;
+//					workflow.setName( newName ) ;
+//                    wfStore.saveWorkflow( credentials.getAccount(), workflow ) ;
 					workflow = null ;   //JBL Is this OK?             
 				}
             }
-            catch( WorkflowInterfaceException wix ) {
-                wix.printStackTrace(); //JBL note
-            }
+//            catch( WorkflowInterfaceException wix ) {
+//                wix.printStackTrace(); //JBL note
+//            }
 			finally {
 				if( TRACE_ENABLED ) trace( "DesignActionImpl.copyWorkflow() exit" ) ;
 			}
 		}        
-        
-        
-        private void deleteWorkflow() throws ConsistencyException {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.deleteWorkflow() entry" ) ;
-              
-            try {
-                
-                String
-                    name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
-                    
-                if( name == null ) {
-                    ; // some logging here
-                    throw new ConsistencyException() ;
-                }
-                
-                if( workflow == null || bConfirm == true ) {
-                    WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
-                    wfStore.deleteWorkflow( credentials.getAccount(), name ) ;
-                }                    
-            }
-            catch( WorkflowInterfaceException wix ) {
-                wix.printStackTrace(); // JBL note
-            }
-            finally {
-                if( TRACE_ENABLED ) trace( "DesignActionImpl.deleteWorkflow() exit" ) ;
-            }
-         
-        }
         
         
         private void createWorkflowFromTemplate( String template ) throws ConsistencyException {       
@@ -705,7 +677,7 @@ public class DesignAction extends AbstractAction {
 
 			   if( workflow == null ) {
                   WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
-                  wfStore.readWorkflow( credentials.getAccount(), name ) ;
+//                  wfStore.readWorkflow( credentials.getAccount(), name ) ;
 			   }
 
                if( workflow == null ) {
@@ -862,56 +834,6 @@ public class DesignAction extends AbstractAction {
         } // end of createTool(toolName)
            
            
-        private void readWorkflowList() {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflowList() entry" ) ;
-            
-            String[] workflows = null;
-              
-            try {
-                    
-                // For the moment this is where we have placed the door.
-                // If users cannot see a list, then they cannot do anything...
-//                this.checkPermissions( AUTHORIZATION_RESOURCE_WORKFLOW
-//                                     , AUTHORIZATION_ACTION_EDIT ) ;
-                               
-
-                WorkflowStore wfStore = workflowManager.getWorkflowStore();
-                workflows = wfStore.listWorkflows( credentials.getAccount() ) ;
-                this.request.setAttribute( WORKFLOW_LIST_PARAMETER, workflows ) ;               
-            }
-            catch( WorkflowInterfaceException wix ) {
-                this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
-            }
-            catch( Exception ex ) { 
-                this.request.setAttribute( ERROR_MESSAGE_PARAMETER, "permission denied" ) ;
-            }
-            finally {
-                if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflowList() exit" ) ;
-            }
-                    
-        } // end of readWorkflowList()   
-           
-   
-        private void readQueryList() {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.readQueryList() entry" ) ;
-              
-            String[] queries = null;
-              
-            try {   
-                WorkflowStore wfStore = workflowManager.getWorkflowStore();
-                queries = wfStore.listQueries( credentials.getAccount() ) ;
-                this.request.setAttribute( QUERY_LIST_PARAMETER, queries ) ;               
-            }
-            catch( WorkflowInterfaceException wix ) {
-                this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;                       
-            }
-            finally {
-                if( TRACE_ENABLED ) trace( "DesignActionImpl.readQueryList() exit" ) ;
-            }
-                    
-        } // end of readQueryList()
-        
-        
         private void readToolList() {
            if( TRACE_ENABLED ) trace( "DesignActionImpl.readToolList() entry" ) ;
            
@@ -951,9 +873,9 @@ public class DesignAction extends AbstractAction {
 					// If users cannot see a list, then they cannot do anything...
 //					this.checkPermissions( AUTHORIZATION_RESOURCE_WORKFLOW
 //									     , AUTHORIZATION_ACTION_EDIT ) ;
-                     
-                    this.readWorkflowList();          
-                    this.readQueryList();
+//                     
+//                    this.readWorkflowList();          
+//                    this.readQueryList();
                     this.readToolList();
 
 				}
