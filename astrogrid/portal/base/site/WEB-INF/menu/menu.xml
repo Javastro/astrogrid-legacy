@@ -6,22 +6,24 @@
       contents="AstroGrid"
       contents-hover="AstroGrid"
       uri="http://localhost:8080/astrogrid-portal"
-      icon="/astrogrid-portal/icons/aglogo.png"
       target="_self"
       status-text="AstroGrid...">
     <agp:item
         contents="Information Site"
         contents-hover="Information Site"
         uri="http://www.astrogrid.org"
-        icon="/astrogrid-portal/icons/aglogo.png"
         target="_blank"
         status-text="AstroGrid Main Site: Information"/>
     <agp:item
         contents="BugZilla"
         contents-hover="BugZilla"
         uri="http://www.astrogrid.org/bugzilla"
-        icon="/astrogrid-portal/icons/RedFlag.png"
         target="_blank"
         status-text="AstroGrid BugZilla Installation"/>
   </agp:menu>
 </agp:menu-def>
+	<!-- pfo's junkyard
+        icon="/astrogrid-portal/icons/RedFlag.png"
+        icon="/astrogrid-portal/icons/aglogo.png"
+      icon="/astrogrid-portal/icons/aglogo.png"
+      -->
