@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.20 2004/08/19 18:59:57 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.21 2004/08/19 19:48:43 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -260,7 +260,7 @@ public class JdbcPlugin extends QuerierPlugin  {
             //and we don't want to make these public.  I believe
             if (!getColumnValue(tables, "TABLE_NAME").startsWith("sys")) {
                XmlTagPrinter tableTag = metaTag.newTag("Table", "name='"+getColumnValue(tables, "TABLE_NAME")+"'");
-               tableTag.writeTag("Description", getColumnValue(tables, "REMARKS"));
+               tableTag.writeTag("Description", getColumnValue(tables, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
                tableTag.writeComment("schema='"+getColumnValue(tables, "TABLE_SCHEM")+"'");
 //               tableTag.writeComment("cat='"+getColumnValue(tables, "TABLE_CAT")+"'");
 //               tableTag.writeComment("type='"+getColumnValue(tables, "TABLE_TYPE")+"'");
@@ -282,7 +282,7 @@ public class JdbcPlugin extends QuerierPlugin  {
 //                  colTag.writeComment("cat='"+getColumnValue(columns, "TABLE_CAT")+"'");
 //                  colTag.writeComment("table='"+getColumnValue(columns, "TABLE_NAME")+"'");
    //               colTag.writeTag("DataType", getColumnValue(columns, "DATA_TYPE"));
-                  colTag.writeTag("Description", getColumnValue(columns, "REMARKS"));
+                  colTag.writeTag("Description", getColumnValue(columns, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
                   colTag.writeTag("Units", " ");
                   colTag.writeTag("UCD", " ");
                   colTag.writeTag("UcdPlus", " ");
@@ -317,4 +317,5 @@ public class JdbcPlugin extends QuerierPlugin  {
    
    
 }
+
 

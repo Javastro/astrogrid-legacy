@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataServer.java,v 1.9 2004/08/19 18:58:16 mch Exp $
+ * $Id: MetadataServer.java,v 1.10 2004/08/19 19:48:43 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,6 +29,8 @@ public class MetadataServer
    protected static Log log = LogFactory.getLog(MetadataServer.class);
 
    public final static String PLUGIN_KEY = "datacenter.metadata.plugin";
+   
+   private static Document cache = null;
    
    /** Instantiates the class with the given name.  This is useful for things
     * such as 'plugins', where a class name might be given in a configuration file.
@@ -74,6 +76,14 @@ public class MetadataServer
       return (MetadataPlugin) plugin;
    
    }
+
+   /**
+    * Clears the cache - useful to call before doing a set of operations, forces
+    * metadata to be refreshed from disk
+    */
+   public synchronized static void clearCache() {
+      cache = null;
+   }
    
    /**
     * Returns the VODescription element of the metadata
@@ -98,9 +108,12 @@ public class MetadataServer
    /**
     * Returns the whole metadata file as a DOM document
     */
-   public static Document getMetadata() throws IOException
+   public synchronized static Document getMetadata() throws IOException
    {
-      return createPlugin().getMetadata();
+      if (cache == null) {
+        cache = createPlugin().getMetadata();
+      }
+      return cache;
    }
    
    
@@ -187,5 +200,6 @@ public class MetadataServer
    }
    
 }
+
 
 
