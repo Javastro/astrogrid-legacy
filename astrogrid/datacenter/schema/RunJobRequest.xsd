@@ -152,15 +152,11 @@
                         <xsd:enumeration value="NOT"/>
                         <xsd:enumeration value="LESS_THAN"/>
                         <xsd:enumeration value="GREATER_THAN"/>
-                        <xsd:enumeration value="DIFFERENCE"/>
-                        <xsd:enumeration value="AVERAGE"/>
                         <xsd:enumeration value="CONE"/>
                         <xsd:enumeration value="EQUALS"/>
+                        <xsd:enumeration value="NOT_EQUALS"/>
                         <xsd:enumeration value="GREATER_THAN_OR_EQUALS"/>
                         <xsd:enumeration value="LESS_THAN_OR_EQUALS"/>
-                        <xsd:enumeration value="IN"/>
-                        <xsd:enumeration value="ANY"/>
-                        <xsd:enumeration value="ALL"/>
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:attribute>
