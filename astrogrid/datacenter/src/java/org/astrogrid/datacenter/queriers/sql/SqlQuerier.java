@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.11 2003/09/10 18:58:44 mch Exp $
+ * $Id: SqlQuerier.java,v 1.12 2003/09/11 09:28:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -212,7 +212,7 @@ public class SqlQuerier extends DatabaseQuerier
       {
          Statement statement = jdbcConnection.createStatement();
          QueryTranslator trans = createQueryTranslator();
-         sql = trans.translate(query.getXml());
+         sql = query.toSql(trans);
          statement.execute(sql);
          ResultSet results = statement.getResultSet();
 

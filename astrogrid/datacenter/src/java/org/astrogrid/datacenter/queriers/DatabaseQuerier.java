@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.18 2003/09/10 18:58:44 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.19 2003/09/11 09:28:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,6 +26,7 @@ import org.astrogrid.datacenter.service.Workspace;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * The Querier classes handle a single, individual query to an individual
@@ -77,7 +78,7 @@ public abstract class DatabaseQuerier implements Runnable
 
    /** The query object model */
    private Query query = null;
-   
+
    /** Handle to the results from the query */
    protected QueryResults results = null;
 
@@ -85,7 +86,7 @@ public abstract class DatabaseQuerier implements Runnable
    private Date timeQueryStarted = null;
    /** For measuring how long query took */
    private Date timeQueryCompleted = null;
-   
+
    /**
     * Constructor - creates a handle to identify this instance
     */
@@ -100,7 +101,7 @@ public abstract class DatabaseQuerier implements Runnable
    /**
     * Creates the query model based on the given DOM
     */
-   public void setQuery(Element givenDOM)
+   public void setQuery(Element givenDOM) throws SAXException
    {
       query = new Query(givenDOM);
    }
@@ -168,7 +169,7 @@ public abstract class DatabaseQuerier implements Runnable
       however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
       worse, as InvocatioinTargetException is a checked exception, the compiler rejects code with a catch clause for invocationTargetExcetpion - as it thinks it cannot be thrown.
       this means the exception boils out of the code, and is unstoppable - dodgy
-      
+
       work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
       // Original Code
       //DatabaseQuerier querier = (DatabaseQuerier)qClass.newInstance();
@@ -178,10 +179,14 @@ public abstract class DatabaseQuerier implements Runnable
          querier.setQuery(domContainingQuery);
 
          querier.registerWebListeners(domContainingQuery); //looks through dom for web listeners
-         
+
          return querier;
       } // NWW - temporarily added more to messages being thrown back - as we're not getting the embedded exceptions back on the server side.
        // think this is an issue with WSDL and DatabaseAccessException not having a null constructor - because is subclass of IOException.
+      catch (SAXException e)
+      {
+         throw new DatabaseAccessException(e,"Could not parse Query: " + e.getMessage());
+      }
       catch (ClassNotFoundException e)
       {
          throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"' :" + e.getMessage());
@@ -249,7 +254,7 @@ public abstract class DatabaseQuerier implements Runnable
             new URL(((Element) listenerTags.item(i)).getNodeValue())
          );
       }
-      
+
       //look for job web listeners
       listenerTags = domContainingQuery.getElementsByTagName(DocMessageHelper.JOBLISTENER_TAG);
 
@@ -258,11 +263,11 @@ public abstract class DatabaseQuerier implements Runnable
          JobNotifyServiceListener listener = new JobNotifyServiceListener(
             new URL(((Element) listenerTags.item(i)).getNodeValue())
          );
-         
+
       }
-      
+
    }
-   
+
    /**
     * Runnable implementation - this method is called when the thread to run
     * this asynchronously is started.  @see spawnQuery
@@ -307,7 +312,7 @@ public abstract class DatabaseQuerier implements Runnable
       return results;
    }
 
-   
+
    /**
     * Returns the time it took to complete the query in milliseconds, or the
     * time since it started (if it's still running).  -1 if the query has not
@@ -320,8 +325,8 @@ public abstract class DatabaseQuerier implements Runnable
       {
          return -1; //may not have started for some reason
       }
-         
-      
+
+
       if (timeQueryCompleted == null)
       {
          Date timeNow = new Date();
