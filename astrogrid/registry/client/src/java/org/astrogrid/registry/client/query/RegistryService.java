@@ -69,16 +69,10 @@ public class RegistryService  {
     */
    private URL endPoint = null;
    
-   private boolean dummyMode = false;
-   
    private boolean useCache = false;
    
    private static final String NAMESPACE_URI =  "http://query.server.registry.astrogrid.org";
-   
-   private static final String DUMMY_MODE_PROPERTY = "org.astrogrid.registry.dummy.mode.on";
-   
-   private static final String DUMMY_XML_URL_PROPERTY = "org.astrogrid.registry.dummy.xml.url";
-   
+      
    public static Config conf = null;
    
    private static boolean DEBUG_FLAG = true ;   
@@ -106,7 +100,6 @@ public class RegistryService  {
    public RegistryService(URL endPoint) {
       if(DEBUG_FLAG) System.out.println("entered const(url) of RegistryService");
       this.endPoint = endPoint;
-      //dummyMode = Boolean.valueOf(conf.getString(DUMMY_MODE_PROPERTY,"false")).booleanValue();
       if(this.endPoint == null) {
          useCache = true;
       }
@@ -140,22 +133,7 @@ public class RegistryService  {
          return _call;   
       }       
    }
-   
-   private Document getDummyDocument() {
-      DocumentBuilder registryBuilder = null;
-      try { 
-         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-         return registryBuilder.parse(conf.getString(DUMMY_XML_URL_PROPERTY));
-      }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();   
-      }catch(IOException ioe) {
-         ioe.printStackTrace();
-      }catch(SAXException sax) {
-         sax.printStackTrace();
-      }      
-      return null;     
-   }
-   
+      
    public Document submitQueryStringDOM(String query) throws RegistryException {
       if(DEBUG_FLAG) System.out.println("entered submitQueryStringDOM()");      
       try {
@@ -260,7 +238,8 @@ public class RegistryService  {
       Document resultDoc = submitQueryDOM(query);
       try {
          XSLHelper xs = new XSLHelper();
-         Document castorXS = xs.transformCastorProcess((Node)resultDoc);                     
+         Document castorXS = xs.transformCastorProcess((Node)resultDoc); 
+         System.out.println("the castorxs in submitQuery = " + XMLUtils.DocumentToString(castorXS));                    
          vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,castorXS);
       }catch(ValidationException ve) {
          vo = null;
@@ -387,7 +366,6 @@ public class RegistryService  {
    }
    
    public VODescription getResourceByIdentifier(String ident)  throws RegistryException {
-      //if(dummyMode) return null;
       if(DEBUG_FLAG) System.out.println("entered getResourceByIdentifier");
       VODescription vo = null;
       try {
@@ -439,9 +417,89 @@ public class RegistryService  {
    public WSDLBasicInformation getBasicWSDLInformation(Ivorn ident) throws RegistryException {
       return getBasicWSDLInformation(ident.getPath());   
    }
-      
    
+   private String getXMLValue(Document doc,String lookFor) {
+      NodeList nl = doc.getElementsByTagName(lookFor);
+      if(nl.getLength() > 0){ 
+         return nl.item(0).getFirstChild().getNodeValue();   
+      } 
+      nl = doc.getElementsByTagName("vr:" + lookFor);
+      if(nl.getLength() > 0){ 
+         return nl.item(0).getFirstChild().getNodeValue();   
+      } 
+      nl = doc.getElementsByTagNameNS("vr",lookFor);      
+      if(nl.getLength() > 0){ 
+         return nl.item(0).getFirstChild().getNodeValue();   
+      } 
+      
+      nl = doc.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9",lookFor);      
+      if(nl.getLength() > 0){ 
+         return nl.item(0).getFirstChild().getNodeValue();   
+      } 
+      return null;
+   }
+      
+
    public WSDLBasicInformation getBasicWSDLInformation(String ident) throws RegistryException {
+      if(DEBUG_FLAG) System.out.println("entered getBasicWSDLInformation with ident = " + ident);
+      //VODescription vodesc = getResourceByIdentifier(ident);
+      Document voDoc = getResourceByIdentifierDOM(ident);
+      WSDLBasicInformation wsdlBasic = null;
+      String invocType = getXMLValue(voDoc,"Invocation");
+      if(invocType == null) {
+         throw new RegistryException("cannot find invocation type");  
+      }
+      if("WebService".equals(invocType)) {
+         String accessURL = getXMLValue(voDoc,"AccessURL");
+         if(accessURL == null) {
+            throw new RegistryException("Cound not find an AccessURL with a web service invocation type");
+         }
+         try {
+            if(DEBUG_FLAG) System.out.println("status msg for getBasicWSDLInformation, the invocation is a Web service being processing wsdl");
+            WSDLFactory wf = WSDLFactory.newInstance();
+            WSDLReader wr = wf.newWSDLReader();               
+            Definition def = wr.readWSDL(accessURL);
+            wsdlBasic = new WSDLBasicInformation();
+            wsdlBasic.setTargetNameSpace(def.getTargetNamespace());
+            Map mp = def.getServices();               
+            Set serviceSet = mp.keySet();
+            Iterator iter = serviceSet.iterator();
+            while(iter.hasNext()) {
+               //I think this is actually a QName may need to change.
+               //String serviceName = (String)iter.next();
+//             javax.wsdl.Service service = (javax.wsdl.Service)mp.get(serviceName);
+               QName serviceQName = (QName)iter.next();
+               javax.wsdl.Service service = (javax.wsdl.Service)mp.get(serviceQName);
+               Set portSet = service.getPorts().keySet();
+               Iterator portIter = portSet.iterator();
+               while(portIter.hasNext()) {
+                  //Probably also a QName
+                  String portName = (String)portIter.next();
+                  Port port = (Port)service.getPorts().get(portName);
+                  List lst = port.getExtensibilityElements();
+                  for(int i = 0; i < lst.size();i++) {
+                     ExtensibilityElement extElement = (ExtensibilityElement)lst.get(i);                        
+                     if(extElement instanceof SOAPAddress) {
+                        SOAPAddress soapAddress = (SOAPAddress)extElement;
+                        if(DEBUG_FLAG) System.out.println("status msg for getBasicWSDLInformation, found a LocationURI in the wsdl = " + soapAddress.getLocationURI());                           
+                        wsdlBasic.addEndPoint(port.getName(),soapAddress.getLocationURI());   
+                     }//if   
+                  }//for                        
+               }//while                     
+            }//while
+         }catch(WSDLException wsdle) {
+            wsdle.printStackTrace();
+            throw new RegistryException(wsdle);
+         }         
+      }else {
+         throw new RegistryException("Invalid Entry in Method: This method only accepts WEBSERVICE InvocationTypes");         
+      }
+      if(DEBUG_FLAG) System.out.println("exiting getBasicWSDLInformation with ident");
+      return wsdlBasic;     
+   }
+
+   
+   public WSDLBasicInformation getBasicWSDLInformation2(String ident) throws RegistryException {
       if(DEBUG_FLAG) System.out.println("entered getBasicWSDLInformation with ident = " + ident);
       VODescription vodesc = getResourceByIdentifier(ident);
       WSDLBasicInformation wsdlBasic = null;
