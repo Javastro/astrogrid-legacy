@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.4 2004/03/15 19:16:12 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.5 2004/03/16 16:19:23 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -58,6 +58,7 @@ public class JdbcPlugin extends QuerierPlugin  {
       }
 
       String sql = "(not set)";
+      Connection jdbcConnection = null;
       
       try {
          //convert to SQL
@@ -69,7 +70,7 @@ public class JdbcPlugin extends QuerierPlugin  {
       
          //connect to database
          log.debug("Connecting to the database");
-         Connection jdbcConnection = connectionManager.createConnection();
+         jdbcConnection = connectionManager.createConnection();
          Statement statement = jdbcConnection.createStatement();
          
          querier.setStatus(new QuerierQuerying(querier));
@@ -86,18 +87,18 @@ public class JdbcPlugin extends QuerierPlugin  {
             processResults(new SqlResults(results));
          }
          
-         //tidy up immediately
-         jdbcConnection.close();
-
       }
       catch (SQLException e) {
-         //try to tidy up now
-         
-         
          //we don't really need to store stack info for the SQL exception, which saves logging...
          throw new DatabaseAccessException("Could not query database using '" + sql + "': "+e);
       }
-      
+      finally {
+         //try to tidy up now
+         try {
+            if (jdbcConnection != null) { jdbcConnection.close(); }
+         } catch (SQLException e) { } //ignore
+      }
+
    }
    
    /**
