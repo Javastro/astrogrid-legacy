@@ -433,6 +433,9 @@ public class RegistryBrowserAction extends AbstractAction
 		 else if ( TOOL_SEARCH.equals( main ) ) {
 			 query += "\n<selection item='@xsi:type' itemOp='EQ'";
 			 query += " value='CeaApplicationType'/>";
+			 // bug# 632
+			 query += "<selectionOp op='OR'/>";
+             query += "<selection item='@xsi:Type' itemOp='EQ' value='CeaHttpApplicationType'/>";             			 
 //		Following removed as there seems to be a confusion over id or key and the value of
 //		authid was getting included as part of the search string in the form:
 //				 vr:Identifier/vr:AuthorityID = "tool_name" which prevented anything from being found!
