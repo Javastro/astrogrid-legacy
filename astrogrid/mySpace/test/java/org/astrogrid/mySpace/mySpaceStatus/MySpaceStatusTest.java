@@ -2,14 +2,20 @@ package org.astrogrid.mySpace.mySpaceStatus;
 
 import junit.framework.*;
 
+import java.util.ArrayList;
+
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
+
+import org.astrogrid.store.delegate.myspaceItn05.StatusCodes;
+import org.astrogrid.store.delegate.myspaceItn05.StatusResults;
 
 /**
  * Junit tests for the <code>MySpaceStatus</code> class.
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 3.
+ * @since Iteration 3.
+ * @version Iteration 5.
  */
 
 public class MySpaceStatusTest extends TestCase
@@ -110,6 +116,35 @@ public class MySpaceStatusTest extends TestCase
        String code = msStatus.translateCode(MySpaceStatusCode.AGMMCE00031);
        Assert.assertEquals(code, "AGMMCE00031");
    }
+
+/**
+ * Test the <code>getStatusResults</code> method.
+ */
+
+  public void testGetStatusResults()
+  {  MySpaceStatus msStatus = new
+        MySpaceStatus(MySpaceStatusCode.AGMMCI00250,
+          MySpaceStatusCode.INFO, MySpaceStatusCode.NOLOG,
+          this.getClassName() );
+
+      msStatus.addCode(MySpaceStatusCode.AGMMCW00150,
+        MySpaceStatusCode.WARN, MySpaceStatusCode.NOLOG,
+        this.getClassName() );
+
+      ArrayList statusList = msStatus.getStatusResults();
+
+      Assert.assertEquals(statusList.size(), 2);
+
+      StatusResults result = (StatusResults)statusList.get(0);
+
+      int severity = result.getSeverity();
+//      String message = result.getMessage();
+//      System.out.println("severity, message: " + severity + " " +
+//        message);
+
+      Assert.assertEquals(severity, StatusCodes.INFO);
+  }
+
 
 /**
  * Obtain the name of the current Java class.
