@@ -23,6 +23,8 @@
       for (int table=0;table<tables.length;table++) {
 %>
 <h2>Table '<%=tables[table] %>'</h2>
+<p><%= MetadataServer.getTableDescription(tables[table]) %></p>
+<p>
 <table border=1 summary='Column details for table <%=tables[table] %>' cellpadding='5%'>
 <tr>
 <th>Column</th>

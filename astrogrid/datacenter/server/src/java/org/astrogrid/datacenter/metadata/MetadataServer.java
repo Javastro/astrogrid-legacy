@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataServer.java,v 1.8 2004/08/18 18:44:12 mch Exp $
+ * $Id: MetadataServer.java,v 1.9 2004/08/19 18:58:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -145,23 +145,33 @@ public class MetadataServer
       return tables;
    }
    
-   
-   /** Returns a list of the columns for the given table */
-   public static String[] getColumns(String tableName) throws IOException {
+   public static Element getTableElement(String tableName) throws IOException {
       NodeList tables = getMetadata().getElementsByTagName("Table");
 
-      Element tableElement = null;
       for (int t=0;t<tables.getLength();t++) {
          if (((Element) tables.item(t)).getAttribute("name").equals(tableName)) {
-            tableElement = (Element) tables.item(t);
+            return (Element) tables.item(t);
          }
       }
       
-      if (tableElement == null) {
-         throw new IllegalArgumentException("No such table '"+tableName+"' in metadata");
-      }
+      throw new IllegalArgumentException("No such table '"+tableName+"' in metadata");
+   }
+   
+   public static String getTableDescription(String tableName) throws IOException {
 
-      NodeList colNodes = tableElement.getElementsByTagName("Column");
+      NodeList descs = getTableElement(tableName).getElementsByTagName("Description");
+   
+      if (descs.getLength()==0) {
+         return "";
+      }
+         
+      return DomHelper.getValue((Element) descs.item(0));
+   }
+   
+   /** Returns a list of the columns for the given table */
+   public static String[] getColumns(String tableName) throws IOException {
+
+      NodeList colNodes = getTableElement(tableName).getElementsByTagName("Column");
       
       String[] columns = new String[colNodes.getLength()];
       for (int t=0;t<columns.length;t++) {
