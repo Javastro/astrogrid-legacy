@@ -1,4 +1,4 @@
-/*$Id: TreeBundler.java,v 1.2 2005/03/11 13:37:05 clq2 Exp $
+/*$Id: TreeBundler.java,v 1.3 2005/03/31 16:00:11 dave Exp $
  * Created on 24-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,8 +71,23 @@ public class TreeBundler {
      * @return an array of at least one node ( the target node). Probably more - but the target node will always be the first item in the array.
      */
     public Node[] bundleTree(Node node, BundlePreferences prefs) {
-        int prefetchDepth = prefs.getMaxExtraNodes() == null ? defaults.getMaxExtraNodes().intValue() :prefs.getPrefetchDepth().intValue();
-        int maxExtraNodes = prefs.getPrefetchDepth() == null ? defaults.getPrefetchDepth().intValue(): prefs.getMaxExtraNodes().intValue();
+//      int prefetchDepth = prefs.getMaxExtraNodes() == null ? defaults.getMaxExtraNodes().intValue() :prefs.getPrefetchDepth().intValue();
+//      int maxExtraNodes = prefs.getPrefetchDepth() == null ? defaults.getPrefetchDepth().intValue(): prefs.getMaxExtraNodes().intValue();
+
+        int prefetchDepth = defaults.getPrefetchDepth().intValue();
+        int maxExtraNodes = defaults.getMaxExtraNodes().intValue();
+        if (null != prefs)
+            {
+            if (null != prefs.getPrefetchDepth())
+                {
+                prefetchDepth = prefs.getPrefetchDepth().intValue();
+                }
+            if (null != prefs.getMaxExtraNodes())
+                {
+                maxExtraNodes = prefs.getMaxExtraNodes().intValue();
+                }
+            }
+
         // check for negatives - which means 'all' and replace with a really big number - makes the following code easier..
         if (prefetchDepth < 0) prefetchDepth = Integer.MAX_VALUE;
         if (maxExtraNodes < 0) maxExtraNodes = Integer.MAX_VALUE;
@@ -85,11 +100,14 @@ public class TreeBundler {
         results.add(node);
         
         // parents
-        if (prefs.isFetchParents() && prefetchDepth > 0) {
-                List ancestors = this.getAncestors(prefetchDepth,node);
-                results.addAll(ancestors);
-                maxExtraNodes -= ancestors.size();
-        }
+        if (null != prefs)
+            {
+	        if (prefs.isFetchParents() && prefetchDepth > 0) {
+	                List ancestors = this.getAncestors(prefetchDepth,node);
+	                results.addAll(ancestors);
+	                maxExtraNodes -= ancestors.size();
+	        	}
+            }
         //bail out now, if full.
         if (maxExtraNodes < 1) {
             return  (Node[])results.toArray(new Node[results.size()]);        
@@ -199,6 +217,12 @@ public class TreeBundler {
 
 /* 
 $Log: TreeBundler.java,v $
+Revision 1.3  2005/03/31 16:00:11  dave
+Fixed a null pointer exception.
+
+Revision 1.2.10.1  2005/03/30 09:02:41  dave
+Fixed NullPointerException in nodestore ...
+
 Revision 1.2  2005/03/11 13:37:05  clq2
 new filemanager merged with filemanager-nww-jdt-903-943
 
