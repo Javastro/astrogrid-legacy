@@ -1,11 +1,11 @@
-/*$Id: DynamicFactoryManagerTest.java,v 1.2 2003/08/22 10:37:07 nw Exp $
+/*$Id: DynamicFactoryManagerTest.java,v 1.3 2003/08/25 21:05:36 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.datasetagent;
@@ -22,7 +22,6 @@ import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.config.FactoryManagerTest;
 import org.astrogrid.datacenter.impl.empty.NullJobFactory;
-import org.astrogrid.datacenter.impl.empty.NullMySpaceFactory;
 import org.astrogrid.datacenter.impl.empty.NullQueryFactory;
 import org.astrogrid.datacenter.impl.empty.NullVOTableFactory;
 import org.astrogrid.datacenter.query.QueryFactory;
@@ -60,24 +59,23 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
          }
          return fac;
      }
-     
+
     protected void populateMap() {
         internalMap.put(JOB_KEY,NullJobFactory.class.getName());
         internalMap.put(VOTABLE_KEY,NullVOTableFactory.class.getName());
         internalMap.put(QUERY_KEY,NullQueryFactory.class.getName());
-        internalMap.put(MYSPACE_KEY,NullMySpaceFactory.class.getName());
         internalMap.put(CATALOG_QUERY_KEY,NullQueryFactory.class.getName());
     }
- 
-    
-    
+
+
+
     /** overridden to provide a configuration with some entries present */
-    protected void setUp() {        
+    protected void setUp() {
         internalMap =  new java.util.HashMap();
         conf = new MapConfiguration(internalMap);
         dynFacMan = new DynamicFactoryManager(conf);
         facMan = dynFacMan;
-        
+
     }
     protected Map internalMap;
     protected DynamicFactoryManager dynFacMan;
@@ -104,22 +102,6 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
         dynFacMan.loadJobFactory();
     }
 
-    public void testLoadMySpaceFactory() throws DatacenterException {
-         try {
-         dynFacMan.loadMySpaceFactory();
-         fail("expected to barf");
-         } catch (DatacenterException e) {
-         }
-
-         internalMap.put(MYSPACE_KEY,"unknown.class");
-         try {
-             dynFacMan.loadMySpaceFactory();
-             fail("expected to barf");
-         } catch (DatacenterException e) {
-         }
-         internalMap.put(MYSPACE_KEY,NullMySpaceFactory.class.getName());
-         dynFacMan.loadMySpaceFactory();
-     }
     public void testLoadDefaultQueryFactory() throws DatacenterException {
          try {
          dynFacMan.loadDefaultQueryFactory();
@@ -152,7 +134,7 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
          internalMap.put(VOTABLE_KEY,NullVOTableFactory.class.getName());
          dynFacMan.loadVOTableFactory();
      }
- 
+
     public void testGetMissingQueryFactory() throws DatacenterException{
         // first set up dynFacMan with a default.
         internalMap.put(QUERY_KEY,NullQueryFactory.class.getName());
@@ -162,9 +144,9 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
         assertNotNull(qf);
         assertSame(qf,dynFacMan.getDefaultQueryFactory());
         // and catalog name will not be present now.
-        assertFalse(dynFacMan.isQueryFactoryAvailable("unknownCatalog"));      
+        assertFalse(dynFacMan.isQueryFactoryAvailable("unknownCatalog"));
     }
-    
+
     public void testGetPresentQueryFactory() throws DatacenterException{
         // first set up dynFacMan with a default.
         internalMap.put(QUERY_KEY,NullQueryFactory.class.getName());
@@ -177,7 +159,7 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
         assertNotSame(qf,dynFacMan.getDefaultQueryFactory());
         // and catalog name will be present now.
         assertTrue(dynFacMan.isQueryFactoryAvailable("knownCatalog"));
-       
+
     }
 
     public void testVerify() throws DatacenterException{
@@ -189,11 +171,11 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
         }
         // verifying a full one shouldn't complain.
         populateMap();
-        dynFacMan.verify();        
+        dynFacMan.verify();
     }
 
     /** simple implementation of a configuration that wraps a map object. - useful for testing when we don't
-      * want to load confifgurationdata from the filesystem 
+      * want to load confifgurationdata from the filesystem
       * @author Noel Winstanley nw@jb.man.ac.uk 21-Aug-2003
       *
       */
@@ -220,8 +202,11 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
 }
 
 
-/* 
+/*
 $Log: DynamicFactoryManagerTest.java,v $
+Revision 1.3  2003/08/25 21:05:36  mch
+Removed dummy MySpace-related classes
+
 Revision 1.2  2003/08/22 10:37:07  nw
 tidied imports
 
@@ -229,5 +214,5 @@ Revision 1.1  2003/08/21 12:29:18  nw
 added unit testing for factory manager hierarchy.
 added 'AllTests' suite classes to draw unit tests together - single
 place to run all.
- 
+
 */
