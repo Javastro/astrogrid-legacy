@@ -14,6 +14,7 @@ import java.text.MessageFormat ;
 import org.apache.log4j.Logger ;
 import org.astrogrid.i18n.*;
 import org.astrogrid.workflow.*;
+import org.astrogrid.workflow.design.activity.*;
 
 /**
  * The <code>Flow</code> class represents... 
@@ -43,9 +44,6 @@ public class Flow extends ActivityContainer {
         super() ;
     }
     
-    public Flow( String key ) {
-        super( key ) ;
-    }
     
     public String toXMLString() {
         if( TRACE_ENABLED ) logger.debug( "toXMLString() entry") ;   

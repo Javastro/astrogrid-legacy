@@ -8,12 +8,11 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-package org.astrogrid.workflow.design ;
+package org.astrogrid.workflow.design.activity;
 
 import org.apache.log4j.Logger ;
-import java.util.HashMap ;
-import java.util.Map ;
-import java.util.Collections ;
+import org.astrogrid.workflow.design.Workflow;
+
 
 /**
  * The <code>Activity</code> class represents... 
@@ -39,42 +38,18 @@ public abstract class Activity {
     private static Logger 
         logger = Logger.getLogger( Activity.class ) ; 
         
-    private static Map 
-        usedKeys ;
-        
-    static {
- //       uniqueKey =   new Integer( Math.random() * Integer.MAX_VALUE ).intValue() ;  
-        usedKeys = Collections.synchronizedMap( new HashMap() ) ;
-    }
-    
-    public static synchronized String generateKey() {
-/*        
-        while( usedKeys.containsKey( uniqueKey ) ) {
-            uniqueKey = new Double( uniqueKey.doubleValue() + 1 ) ;
-        }
-        
-        usedKeys.put( uniqueKey, uniqueKey ) ;
-*/        
-        return null ;
-        
-    } // end of generateKey()
-        
-    private String 
+
+    private ActivityKey 
         key ;
         
     private Activity
         parent ;
         
     public Activity() {
-        key = Activity.generateKey() ;
-    }
-    
-    public Activity( String key ) {
-        this.key = key ;
-        usedKeys.put( key, key ) ;
+        key = ActivityKey.createKey() ;
     }
 
-	public String getKey() { return key; }
+	public ActivityKey getKey() { return key; }
         
 	public void setParent( Activity parent ) { this.parent = parent ; }
 	public Activity getParent() { return parent ; }

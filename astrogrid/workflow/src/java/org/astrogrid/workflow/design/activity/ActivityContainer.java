@@ -9,9 +9,13 @@
  *
  */
 
-package org.astrogrid.workflow.design ;
+package org.astrogrid.workflow.design.activity;
 
 import java.util.LinkedList;
+
+import org.astrogrid.workflow.design.Flow;
+import org.astrogrid.workflow.design.Sequence;
+import org.astrogrid.workflow.design.Step;
 
 /**
  * The <code>ActivityContainer</code> class represents... 
@@ -36,9 +40,6 @@ public class ActivityContainer extends Activity {
         super() ;
     }
     
-    public ActivityContainer( String key ) {
-        super( key ) ;
-    }
     
     public synchronized Sequence createSequence() {
         return this.createSequence( children.size() ) ;

@@ -9,7 +9,7 @@
  *
  */
 
-package org.astrogrid.workflow.design ;
+package org.astrogrid.workflow.design.activity;
 
 import java.util.ListIterator ;
 

@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-
+ 
 package org.astrogrid.workflow.design ;
 
 import java.util.HashMap ;
@@ -21,15 +21,49 @@ import org.apache.log4j.Logger ;
 
 import org.astrogrid.i18n.*;
 import org.astrogrid.workflow.*;
+import org.astrogrid.workflow.design.activity.*;
 import org.astrogrid.AstroGridException ;
+
+import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.w3c.dom.Document ;
 
 /**
- * The <code>Workflow</code> class represents... 
- * <p>
- *
- * <p>
- * The class... 
+ * The <code>Workflow</code> class represents a complex tree of Activities.
+ * The following is a crude representation of the inheritance hierarchy.
+ * Once a Workflow is instantiated, it forms the root of an arbitrarilly
+ * complex tree of Steps, Flows and Sequences.
+ * 
+ * 
+ * Activity ( Abstract )
+ * |
+ * |
+ * |__Step ( Can only be a bottom leaf )
+ * |   
+ * |
+ * |__ActivityContainer ( Abstract. Can contain any number of any instances
+ *    |                   of an Activity apart from a Workflow itself )
+ *    |
+ *    |__Flow
+ *    |
+ *    |
+ *    |__Sequence 
+ *       |
+ *       |
+ *       |__Workflow
+ * 
+ * 
+ * Workflow contains some static factory methods for manipulating Workflows
+ * on a persistent basis.
+ * 
+ * A Workflow instance contains sufficient methods to manipulate its internal 
+ * structure (adding and subtracting an Activity, and so on).
+ * 
+ * There is one highly significant fact that is critical to navigating around
+ * Workflow from the top level. Each instance of an Activity has a unique 
+ * key and Workflow maintains a collection that maps key to Activity. If you
+ * know the key, you can navigate to the Activity straight from the top level
+ * irrespective of the complexity of the tree. @see getActivity() method. 
+ * From an Activity it is relatively trivial to find parent and children in context.  
  * 
  *
  * @author  Jeff Lusted
@@ -50,6 +84,9 @@ public class Workflow extends Sequence {
         
     private static final String
         ASTROGRIDERROR_SOMEMESSAGE = "AGWKFE00050" ; // none so far 
+        
+    private static MySpaceManagerDelegate
+        mySpace ;
         
     static {
         
@@ -86,36 +123,93 @@ public class Workflow extends Sequence {
         
         
     public static Workflow readWorkflow( String userid, String community, String name ) {
-        String
-            location = Workflow.locateMySpace( userid, community ) ;
+        if( TRACE_ENABLED ) logger.debug( "readWorkflow() entry") ; 
+        
+        Workflow
+            workflow = null;
+         
+        try {
+        
+            MySpaceManagerDelegate
+                mySpace = new MySpaceManagerDelegate( Workflow.locateMySpace( userid, community ) ) ;
+                
+            //JBL format`the MySpace request here
             
-        // (1) instantiate MySpaceDelegate here, with location    
-        // (2) invoke
+            String
+                workflowXML = mySpace.lookupDataHolderDetails( "" ) ;
+                
+            workflow = new Workflow( workflowXML ) ;
         
+        }
+        catch ( Exception ex ) {
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "readWorkflow() exit") ; 
+        }
+       
+        return workflow ;
         
-        
-        return null ;
     }
     
     
     public static boolean deleteWorkflow( String userid, String community, String name  ) {
-        String
-            location = Workflow.locateMySpace( userid, community ) ;
-            
-        // (1) instantiate MySpaceDelegate here, with location    
-        // (2) invoke
+        if( TRACE_ENABLED ) logger.debug( "deleteWorkflow() entry") ; 
         
-        return false ;
+        boolean
+            retValue = false ;
+         
+        try {
+        
+            MySpaceManagerDelegate
+                mySpace = new MySpaceManagerDelegate( Workflow.locateMySpace( userid, community ) ) ;
+                
+            //JBL format`the MySpace request here
+            
+            String
+                responseXML = mySpace.deleteDataHolder( "" ) ;
+                
+            //JBL decode the response here...
+        
+        }
+        catch ( Exception ex ) {
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "deleteWorkflow() exit") ; 
+        }
+        
+        return retValue ;
+        
     }
     
     
     public static boolean saveWorkflow( Workflow workflow ) {
-        String
-            location = Workflow.locateMySpace( workflow.getUserid(), workflow.getCommunity() ) ;
+        if( TRACE_ENABLED ) logger.debug( "saveWorkflow() entry") ; 
+        
+     boolean
+         retValue = false ;
+         
+     try {
+        
+         MySpaceManagerDelegate
+             mySpace = new MySpaceManagerDelegate( Workflow.locateMySpace( workflow.getUserid()
+                                                                         , workflow.getCommunity() ) ) ;
+                
+         //JBL format`the MySpace request here
             
-        // (1) instantiate MySpaceDelegate here, with location    
-        // (2) invoke
-        return false ;
+         String
+             responseXML = mySpace.upLoad( "" ) ;
+                
+         //JBL decode the response here...
+        
+     }
+     catch ( Exception ex ) {
+     }
+     finally {
+         if( TRACE_ENABLED ) logger.debug( "saveWorkflow() exit") ; 
+     }
+        
+     return retValue ;
+
     }
     
     
@@ -180,7 +274,9 @@ public class Workflow extends Sequence {
     
     /**
       * <p> 
-      * A navigational aid. Navigates to the Activity given a key.
+      * A navigational aid. Navigates straight to the Activity 
+      * given a key without having to know how to traverse the Worlflow.
+      * In effect, this gets you straight into context.
       * <p>
       * 
       * @param String key - the key of the activity
@@ -190,12 +286,18 @@ public class Workflow extends Sequence {
     public Activity getActivity( String key ) {
         if( TRACE_ENABLED ) logger.debug( "getActivity() entry") ; 
         try { 
-            return (Activity)activities.get( key ) ;
+            return (Activity)activities.get( new ActivityKey( key ) ) ;
         }
         finally {
             if( TRACE_ENABLED ) logger.debug( "getActivity() exit") ;  
         }
     }
+    
+    
+    
+    
+    
+    
     
     public boolean putActivity( Activity activity ) {
         if( TRACE_ENABLED ) logger.debug( "putActivity() entry") ;  
@@ -292,6 +394,43 @@ public class Workflow extends Sequence {
             if( TRACE_ENABLED ) logger.debug( "locateMySpace() exit") ;
         }
     }
- 
+    
+    
+/*     
+    private Document parseRequest( String jobXML ) throws DatasetAgentException {   
+        if( TRACE_ENABLED ) logger.debug( "parseRequest() entry") ;
+        
+        Document 
+           queryDoc = null;
+        DocumentBuilderFactory 
+           factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder 
+           builder = null;
+           
+        try {
+                    
+           factory.setValidating( Boolean.getBoolean( DTC.getProperty( DTC.DATASETAGENT_PARSER_VALIDATION
+                                                                     , DTC.DATASETAGENT_CATEGORY )  )  ) ;      
+           builder = factory.newDocumentBuilder();
+           logger.debug( jobXML ) ;
+           InputSource
+              jobSource = new InputSource( new StringReader( jobXML ) );
+           queryDoc = builder.parse( jobSource );
+        }
+        catch ( Exception ex ) {
+            AstroGridMessage
+                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST
+                                              , this.getComponentName() ) ; 
+            logger.error( message.toString(), ex ) ;
+            throw new DatasetAgentException( message, ex );
+        } 
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "parseRequest() exit") ;  
+        }
+        
+        return queryDoc ;
+
+    } // end parseRequest()
+*/
  
 } // end of class Workflow

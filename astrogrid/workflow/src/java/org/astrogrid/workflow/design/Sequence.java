@@ -15,6 +15,7 @@ import java.text.MessageFormat ;
 import org.apache.log4j.Logger ;
 import org.astrogrid.i18n.*;
 import org.astrogrid.workflow.*;
+import org.astrogrid.workflow.design.activity.*;
 
 /**
  * The <code>Sequence</code> class represents... 
@@ -46,11 +47,6 @@ public class Sequence extends ActivityContainer {
         if( TRACE_ENABLED ) logger.debug( "Sequence() entry/exit") ; 
     }
     
-    
-    public Sequence( String key ) {
-        super( key ) ;
-        if( TRACE_ENABLED ) logger.debug( "Sequence(String) entry/exit") ; 
-    }
     
     public String toXMLString() {
         if( TRACE_ENABLED ) logger.debug( "toXMLString() entry") ;   

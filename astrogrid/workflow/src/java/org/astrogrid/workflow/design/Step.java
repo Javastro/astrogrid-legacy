@@ -11,6 +11,8 @@
 
 package org.astrogrid.workflow.design ;
 
+import org.astrogrid.workflow.design.activity.*;
+
 /**
  * The <code>Step</code> class represents... 
  * <p>
@@ -40,7 +42,7 @@ public class Step extends Activity {
         inputResources = null ,
         outputResources = null ;
     
-    protected Step() {}
+    public Step() {}
 
 	public void setName(String name) {
 		this.name = name;
