@@ -32,8 +32,11 @@ public class DatabaseAccessException extends IOException
    public DatabaseAccessException(Throwable cause, String message)
    {
       super(message);
-      initCause(cause);
-      setStackTrace(cause.getStackTrace());
+      if (cause != null)
+      {
+         initCause(cause);
+         setStackTrace(cause.getStackTrace());
+      }
    }
 
    /**
@@ -49,6 +52,9 @@ public class DatabaseAccessException extends IOException
 
 /*
 $Log: DatabaseAccessException.java,v $
+Revision 1.2  2003/09/07 18:54:47  mch
+Fix for null causes
+
 Revision 1.1  2003/08/27 17:34:56  mch
 Now subclassed (more appropriately) from IOException
 
