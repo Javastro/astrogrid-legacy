@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.35 2004/10/21 11:51:11 jdt Exp $ -->
+<!-- $Id: tests-project.xml,v 1.36 2004/10/29 09:45:18 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <id>auto-integration-tests</id>
@@ -35,7 +35,11 @@
     </packageGroups>
     <build> 
         <!--The aren't really any sources, but we set the source folder to the same as the test folder as a hack
-            to force maven to generate javadoc for the test code-->
+            to force maven to generate javadoc for the test code
+			
+			NWW - however, this does cause problems when running the goal eclipse-int-test - it generates an invalid eclipse project with 2 entries for /test/java
+			dunno if this is insurmountable - but needs to be fixed by hand for now. 
+			-->
         <sourceDirectory>test/java</sourceDirectory>
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
         <unitTest>
