@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/26 15:26:29 $</cvs:author>
-    | <cvs:version>$Revision: 1.17 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/26 15:44:14 $</cvs:author>
+    | <cvs:version>$Revision: 1.18 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.18  2003/06/26 15:44:14  dave
+    | Included test data for the MySpace client JUnit tests
+    |
     | Revision 1.17  2003/06/26 15:26:29  dave
     | Added a local copy of the Cocoon blocks.properties
     |
@@ -1509,6 +1512,15 @@
 		<antcall target="MYSPACE.wait"/>
 		<!-- Create the reports directory -->
 		<mkdir dir="build/myspace/live/client/junit"/>
+
+		<!-- Copy the test data for the xml parsers -->
+		<copy verbose="true" toDir="build/myspace/live/client/classes">
+			<fileset dir="src/java">
+				<!-- Include the XML test data -->
+				<include name="**/myspace/client/**/junit/*.xml"/>
+			</fileset>
+		</copy>
+
 		<!-- Run the JUnit tests -->
 		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
 			<!-- Use our local classes -->
@@ -1542,6 +1554,15 @@
 		<antcall target="MYSPACE.wait"/>
 		<!-- Create the reports directory -->
 		<mkdir dir="build/myspace/live/client/junit"/>
+
+		<!-- Copy the test data for the xml parsers -->
+		<copy verbose="true" toDir="build/myspace/live/client/classes">
+			<fileset dir="src/java">
+				<!-- Include the XML test data -->
+				<include name="**/myspace/client/**/junit/*.xml"/>
+			</fileset>
+		</copy>
+
 		<!-- Run the JUnit tests -->
 		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
 			<!-- Use our local classes -->
@@ -1577,6 +1598,15 @@
 		<antcall target="MYSPACE.wait"/>
 		<!-- Create the reports directory -->
 		<mkdir dir="build/myspace/live/client/junit"/>
+
+		<!-- Copy the test data for the xml parsers -->
+		<copy verbose="true" toDir="build/myspace/live/client/classes">
+			<fileset dir="src/java">
+				<!-- Include the XML test data -->
+				<include name="**/myspace/client/**/junit/*.xml"/>
+			</fileset>
+		</copy>
+
 		<!-- Run the JUnit tests -->
 		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
 			<!-- Use our local classes -->
@@ -1612,6 +1642,15 @@
 		<antcall target="MYSPACE.wait"/>
 		<!-- Create the reports directory -->
 		<mkdir dir="build/myspace/live/client/junit"/>
+
+		<!-- Copy the test data for the xml parsers -->
+		<copy verbose="true" toDir="build/myspace/live/client/classes">
+			<fileset dir="src/java">
+				<!-- Include the XML test data -->
+				<include name="**/myspace/client/**/junit/*.xml"/>
+			</fileset>
+		</copy>
+
 		<!-- Run the JUnit tests -->
 		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
 			<!-- Use our local classes -->
@@ -1645,6 +1684,15 @@
 		<antcall target="MYSPACE.wait"/>
 		<!-- Create the reports directory -->
 		<mkdir dir="build/myspace/live/client/junit"/>
+
+		<!-- Copy the test data for the xml parsers -->
+		<copy verbose="true" toDir="build/myspace/live/client/classes">
+			<fileset dir="src/java">
+				<!-- Include the XML test data -->
+				<include name="**/myspace/client/**/junit/*.xml"/>
+			</fileset>
+		</copy>
+
 		<!-- Run the JUnit tests -->
 		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
 			<!-- Use our local classes -->
@@ -1679,6 +1727,15 @@
 		<antcall target="MYSPACE.wait"/>
 		<!-- Create the reports directory -->
 		<mkdir dir="build/myspace/live/client/junit"/>
+
+		<!-- Copy the test data for the xml parsers -->
+		<copy verbose="true" toDir="build/myspace/live/client/classes">
+			<fileset dir="src/java">
+				<!-- Include the XML test data -->
+				<include name="**/myspace/client/**/junit/*.xml"/>
+			</fileset>
+		</copy>
+
 		<!-- Run the JUnit tests -->
 		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
 			<!-- Use our local classes -->
@@ -1712,6 +1769,15 @@
 		<antcall target="MYSPACE.wait"/>
 		<!-- Create the reports directory -->
 		<mkdir dir="build/myspace/live/client/junit"/>
+
+		<!-- Copy the test data for the xml parsers -->
+		<copy verbose="true" toDir="build/myspace/live/client/classes">
+			<fileset dir="src/java">
+				<!-- Include the XML test data -->
+				<include name="**/myspace/client/**/junit/*.xml"/>
+			</fileset>
+		</copy>
+
 		<!-- Run the JUnit tests -->
 		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
 			<!-- Use our local classes -->
