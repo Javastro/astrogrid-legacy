@@ -123,33 +123,7 @@
       <!--+
          | Create the war file.
          +-->
-      <attainGoal name="war:war"/>
-      <!--+
-         | The rest is basically copy-paste from jar:deploy-snapshot.
-         +-->
-      <maven:snapshot project="${pom}"/>
-      <core:set var="artifactFile" value="${pom.artifactId}.war"/>
-      <core:set var="snapshotFile" value="${pom.artifactId}-${snapshotVersion}.war"/>
-      <ant:move file="${maven.build.dir}/${artifactFile}" toFile="${maven.build.dir}/${snapshotFile}"/>
-      <!--
-      <core:set var="maven.final.name" value="${snapshotSignature}"/>
-        <core:set var="maven.war.final.name" value="${pom.groupId}.war"/>
-      -->
-      <maven:user-check user="${maven.username}"/>
-      <ant:property name="maven.war.to.deploy" value="${snapshotFile}"/>
-      <ant:property name="dir" value="${maven.repo.central.directory}/${pom.artifactDirectory}/wars"/>
-      <util:replace var="warToDeploy" oldChar="\" newChar="/">${maven.build.dir}/${maven.war.to.deploy}</util:replace>
-      <util:replace var="forwardSlashBaseDir" oldChar="\" newChar="/" value="${basedir}"/>
-      <core:if test="${!forwardSlashBaseDir.endsWith('/')}">
-         <core:set var="base" value="${forwardSlashBaseDir}/" />
-      </core:if>
-      <core:set var="relativePath">${warToDeploy.substring(base.length())}</core:set>
-      <deploy:artifact
-         artifact="${relativePath}"
-         type="wars"
-         assureDirectoryCommand="mkdir -p"
-         siteCommand="cd @deployDirectory@; chmod g+w ${maven.war.to.deploy}; chgrp ${maven.remote.group} ${maven.war.to.deploy}; ln -sf ${maven.war.to.deploy} ${pom.artifactId}-SNAPSHOT.war; echo ${snapshotVersion} > ${pom.groupId}-snapshot-version"
-      />
+      <attainGoal name="war:deploy-snapshot"/>
     </goal>
     
     <goal name="astrogrid-deploy-snapshot">
