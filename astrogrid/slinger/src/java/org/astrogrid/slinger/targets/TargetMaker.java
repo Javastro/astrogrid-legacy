@@ -1,5 +1,5 @@
 /*
- * $Id: TargetMaker.java,v 1.3 2005/01/26 17:31:57 mch Exp $
+ * $Id: TargetMaker.java,v 1.4 2005/02/14 17:53:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.slinger.targets;
 
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.net.MalformedURLException;
@@ -28,7 +29,7 @@ public abstract class TargetMaker  {
    /**
     * Tests the string & creates the right kind of TargetIndicator
     */
-   public static TargetIdentifier makeTarget(String id) throws MalformedURLException, URISyntaxException {
+   public static TargetIdentifier makeTarget(String id) throws URISyntaxException, IOException {
       if ((id == null) || (id.trim().length() == 0) || (id.toLowerCase().equals("null")) || (id.toLowerCase().equals(NullTarget.NULL_TARGET_URI.toString().toLowerCase()))) {
          return new NullTarget();
       }
@@ -69,7 +70,7 @@ public abstract class TargetMaker  {
    /**
     * Creates the right kind of TargetIndicator for the given URI
     */
-   public static TargetIdentifier makeTarget(URI target) throws MalformedURLException, URISyntaxException {
+   public static TargetIdentifier makeTarget(URI target) throws IOException, URISyntaxException {
       return makeTarget(target.toString());
    }
    
@@ -92,7 +93,7 @@ public abstract class TargetMaker  {
    /**
     * Makes a target that will write to the given URL
     */
-   public static TargetIdentifier makeTarget(URL target)   {
+   public static TargetIdentifier makeTarget(URL target) throws IOException  {
       return new UrlTarget(target);
    }
    
@@ -133,6 +134,9 @@ public abstract class TargetMaker  {
 }
 /*
  $Log: TargetMaker.java,v $
+ Revision 1.4  2005/02/14 17:53:38  mch
+ Split between webnode (webapp) and library, prepare to split between API and special implementations
+
  Revision 1.3  2005/01/26 17:31:57  mch
  Split slinger out to scapi, swib, etc.
 

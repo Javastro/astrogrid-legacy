@@ -1,5 +1,5 @@
 /*
- * $Id: IVOSRN.java,v 1.5 2005/01/27 18:52:11 mch Exp $
+ * $Id: IVOSRN.java,v 1.6 2005/02/14 17:53:38 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import org.astrogrid.slinger.SRI;
+import org.astrogrid.slinger.SRL;
 import org.astrogrid.slinger.StoreException;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.sources.SourceMaker;
@@ -81,7 +82,7 @@ public class IVOSRN extends IVORN implements SRI, TargetIdentifier, SourceIdenti
       return new InputStreamReader(resolveInputStream(user));
    }
    
-   /** resolves to a target locator  */
+   /** resolves to a target identifier (which may be another IVOSRN)  */
    public TargetIdentifier resolveTarget() throws IOException {
 
       try {
@@ -92,11 +93,11 @@ public class IVOSRN extends IVORN implements SRI, TargetIdentifier, SourceIdenti
       }
    }
 
-   /** resolves to a Source locator  */
+   /** resolves to a Source identifier (which may be another IVOSRN) */
    public SourceIdentifier resolveSource() throws IOException {
 
       try {
-         return SourceMaker.makeSource(resolve()); //@todo what about fragment
+         return  SourceMaker.makeSource(resolve());
       }
       catch (URISyntaxException e) {
          throw new StoreException("IVORN "+this+" resolves to illegal URI "+resolve(), e);
@@ -108,6 +109,9 @@ public class IVOSRN extends IVORN implements SRI, TargetIdentifier, SourceIdenti
 
 /*
 $Log: IVOSRN.java,v $
+Revision 1.6  2005/02/14 17:53:38  mch
+Split between webnode (webapp) and library, prepare to split between API and special implementations
+
 Revision 1.5  2005/01/27 18:52:11  mch
 Added resolve source/target
 

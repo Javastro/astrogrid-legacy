@@ -1,5 +1,5 @@
 /*
- * $Id: NullTarget.java,v 1.3 2005/01/26 17:31:57 mch Exp $
+ * $Id: NullTarget.java,v 1.4 2005/02/14 17:53:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.security.Principal;
 import org.astrogrid.slinger.SRI;
-import org.astrogrid.slinger.io.NullOutputStream;
+import org.astrogrid.io.NullOutputStream;
 
 /**
  * Convenience null target for testing - output is written out to NullWriter and
@@ -50,6 +50,9 @@ public class NullTarget implements SRI, TargetIdentifier
 }
 /*
  $Log: NullTarget.java,v $
+ Revision 1.4  2005/02/14 17:53:38  mch
+ Split between webnode (webapp) and library, prepare to split between API and special implementations
+
  Revision 1.3  2005/01/26 17:31:57  mch
  Split slinger out to scapi, swib, etc.
 

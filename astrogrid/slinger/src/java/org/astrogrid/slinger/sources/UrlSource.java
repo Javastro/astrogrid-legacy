@@ -1,5 +1,5 @@
 /*
- * $Id: UrlSource.java,v 1.3 2005/01/26 17:31:57 mch Exp $
+ * $Id: UrlSource.java,v 1.4 2005/02/14 17:53:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,9 +14,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.Principal;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.slinger.StoreException;
 
 /**
- * A SourceIdentifier wrapper to URLs.  Identifies a source with a URL
+ * A SourceIdentifier wrapper to URLs.  Identifies a source with a URL.
+ * <p>
+ * Note that files are *not* served by default.  This may be overkill, but give a
+ * layer of protection against 'default' installations
  *
  */
 
@@ -28,9 +33,16 @@ public class UrlSource extends UriSource {
       super(sourceUrl.toString());
    }
 
-   public URL getUrl() {
+   public URL getUrl() throws StoreException {
       try {
-         return new URL(uri.toString());
+         URL url = new URL(uri.toString());
+
+         //for safety, refuse to serve files unless specifically configured to allow it
+         if (url.getProtocol().toLowerCase().startsWith("file") && !SimpleConfig.getSingleton().getBoolean("servefiles")) {
+            throw new StoreException("This service is not configured to serve files");
+         }
+         
+         return url;
       }
       catch (MalformedURLException e) {
          //since this class only allows AGSLs to be set, this shouldn't happen...
@@ -60,6 +72,9 @@ public class UrlSource extends UriSource {
 }
 /*
  $Log: UrlSource.java,v $
+ Revision 1.4  2005/02/14 17:53:38  mch
+ Split between webnode (webapp) and library, prepare to split between API and special implementations
+
  Revision 1.3  2005/01/26 17:31:57  mch
  Split slinger out to scapi, swib, etc.
 

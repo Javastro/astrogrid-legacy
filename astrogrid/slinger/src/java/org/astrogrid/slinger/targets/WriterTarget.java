@@ -1,5 +1,5 @@
 /*
- * $Id: WriterTarget.java,v 1.3 2005/01/26 17:31:57 mch Exp $
+ * $Id: WriterTarget.java,v 1.4 2005/02/14 17:53:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,8 +10,8 @@ package org.astrogrid.slinger.targets;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.security.Principal;
-import org.astrogrid.slinger.io.NoCloseWriter;
-import org.astrogrid.slinger.io.WriterStream;
+import org.astrogrid.io.NoCloseWriter;
+import org.astrogrid.io.WriterStream;
 
 /**
  * Where the target is a Writer (eg an http response.out)
@@ -72,6 +72,9 @@ public class WriterTarget implements TargetIdentifier {
 }
 /*
  $Log: WriterTarget.java,v $
+ Revision 1.4  2005/02/14 17:53:38  mch
+ Split between webnode (webapp) and library, prepare to split between API and special implementations
+
  Revision 1.3  2005/01/26 17:31:57  mch
  Split slinger out to scapi, swib, etc.
 

@@ -1,5 +1,5 @@
 /*
- * $Id: UrlTarget.java,v 1.3 2005/01/26 17:31:57 mch Exp $
+ * $Id: UrlTarget.java,v 1.4 2005/02/14 17:53:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,7 +13,9 @@ import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.Principal;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.slinger.SRL;
+import org.astrogrid.slinger.StoreException;
 
 /**
  * Used to indicate the target where the results are to be sent when it's been
@@ -27,8 +29,14 @@ public class UrlTarget implements SRL, TargetIdentifier {
 
    URL url; //as well as superclasses URI, saves making new URL each getUrl()
    
-   public UrlTarget(URL targetUrl) {
+   public UrlTarget(URL targetUrl) throws StoreException {
       url = targetUrl;
+
+      //for safety, refuse to allow file targets unless specifically configured to allow it
+      if (url.getProtocol().toLowerCase().startsWith("file") && !SimpleConfig.getSingleton().getBoolean("servefiles")) {
+         throw new StoreException("This service is not configured to serve files");
+      }
+         
    }
 
    public URL getUrl() {
@@ -70,6 +78,9 @@ public class UrlTarget implements SRL, TargetIdentifier {
 }
 /*
  $Log: UrlTarget.java,v $
+ Revision 1.4  2005/02/14 17:53:38  mch
+ Split between webnode (webapp) and library, prepare to split between API and special implementations
+
  Revision 1.3  2005/01/26 17:31:57  mch
  Split slinger out to scapi, swib, etc.
 

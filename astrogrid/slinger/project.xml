@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.4 2005/02/04 14:39:28 mch Exp $ -->
+<!-- $Id: project.xml,v 1.5 2005/02/14 17:53:38 mch Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -88,6 +88,15 @@
             <groupId>commons-logging</groupId>
             <version>1.0.3</version>
         </dependency>
+
+    <!-- servlet support (for compiling against - no need for deployment war as servlet container should have it) -->
+    <dependency>
+      <id>servletapi</id>
+      <version>2.3</version>
+      <properties>
+        <war.bundle>false</war.bundle>
+      </properties>
+    </dependency>
 
 
     </dependencies>

@@ -1,5 +1,5 @@
 /*
- * $Id: IVORN.java,v 1.4 2005/01/26 17:41:48 mch Exp $
+ * $Id: IVORN.java,v 1.5 2005/02/14 17:53:38 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -105,12 +105,6 @@ public class IVORN
       }
    }
 
-   /** Representation to be used when submitting the IVORN to a registry
-    * to be resolved *
-   public String toRegistryString() {
-      return SCHEME+"://"+getPath();
-   }
-   
    /** Returns true if the given string is likely to be an ivorn - ie if it
     * starts with ivo://
     */
@@ -119,7 +113,7 @@ public class IVORN
    }
    
    /**
-    * Given an IVO Storepoint Resource Name, resolves a string using the local
+    * Given an IVO Resource Name, resolves a string using the local
     * config or Registry (ie this does not work with account ivorns - use Homespace), which will be some
     * kind of URI (and which may not be alocation - it may be another IVORN)
     */
@@ -147,10 +141,13 @@ public class IVORN
             //if not found, throw an exception
             throw new FileNotFoundException("Cannot resolve "+this+" from "+lookedIn);
          }
-         else {
-            LogFactory.getLog(IVORN.class).trace("Registry-Resolved "+this+" to "+resolvedEndPoint+" (from "+registry+")");
-            return resolvedEndPoint;
+
+         if (getFragment() != null) {
+            resolvedEndPoint = resolvedEndPoint+"#"+getFragment();
          }
+         
+         LogFactory.getLog(IVORN.class).trace("Registry-Resolved "+this+" to "+resolvedEndPoint+" (from "+registry+")");
+         return resolvedEndPoint;
       }
       catch (RegistryException e) {
          IOException ioe = new IOException(e+", getting endpoint for '"+this+"' from "+registry);
@@ -163,6 +160,9 @@ public class IVORN
 
 /*
 $Log: IVORN.java,v $
+Revision 1.5  2005/02/14 17:53:38  mch
+Split between webnode (webapp) and library, prepare to split between API and special implementations
+
 Revision 1.4  2005/01/26 17:41:48  mch
 fix to compile until resolving is properly handled
 
