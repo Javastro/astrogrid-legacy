@@ -292,6 +292,24 @@
             <xsl:apply-templates select="@*|node()"/>
          </cea:ApplicationDefinition>
    </xsl:template>
+
+   <xsl:template match="cea2:Parameters">
+         <cea:Parameters>
+            <xsl:apply-templates select="@*|node()"/>
+         </cea:Parameters>
+   </xsl:template>
+
+   <xsl:template match="cea2:ParameterDefinition">
+         <cea:ParameterDefinition>
+            <xsl:apply-templates select="@*|node()"/>
+         </cea:ParameterDefinition>
+   </xsl:template>
+
+   <xsl:template match="cea2:Interfaces">
+         <cea:Interfaces>
+            <xsl:apply-templates select="@*|node()"/>
+         </cea:Interfaces>
+   </xsl:template>
    
    <xsl:template match="cea2:ManagedApplications">
             <cea:ManagedApplications>
