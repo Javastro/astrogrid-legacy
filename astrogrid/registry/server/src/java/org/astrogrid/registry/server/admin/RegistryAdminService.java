@@ -205,40 +205,11 @@ public class RegistryAdminService {
       log.info("server side update the xsDoc = " + 
               DomHelper.DocumentToString(xsDoc));      
       
+      if(manageAuths.get(versionNumber) == null)
+          populateManagedMaps(collectionName, versionNumber);
       
-      //get All the Managed Authorities, the getManagedAutories() does not
-      //perform a query every time only once.
-      HashMap versionManaged = null;
-      HashMap versionOtherManaged = null;
-      try {
-         //manageAuths = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
-          versionManaged = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
-          manageAuths.put(versionNumber,versionManaged);
-      }catch(SAXException se) {
-         //throw new AxisFault("Could not parse xml for getting the Managed Authorities", se);
-      }catch(MalformedURLException me) {
-       //  throw new AxisFault("Could not construct url to the query database", me);
-      }catch(ParserConfigurationException pce) {
-       //  throw new AxisFault("Server configuration error", pce);
-      }catch(IOException ioe) {
-       //  throw new AxisFault("IO problem", ioe);   
-      }
-
-      //get All the Managed Authorities, the getOtherManagedAutories() does not
-      //perform a query every time only once.
-      try {
-         //otherAuths = RegistryServerHelper.getOtherManagedAuthorities(collectionName, versionNumber);
-          versionOtherManaged = RegistryServerHelper.getOtherManagedAuthorities(collectionName, versionNumber);
-          otherAuths.put(versionNumber,versionOtherManaged);
-      }catch(SAXException se) {
-         //throw new AxisFault("Could not parse xml for getting the Managed Authorities", se);
-      }catch(MalformedURLException me) {
-         //  throw new AxisFault("Could not construct url to the query database", me);
-      }catch(ParserConfigurationException pce) {
-         //  throw new AxisFault("Server configuration error", pce);
-      }catch(IOException ioe) {
-         //  throw new AxisFault("IO problem", ioe);   
-      }
+      if(otherAuths.get(versionNumber) == null)
+          populateOtherManagedMaps(collectionName, versionNumber);
       
       if(manageAuths.get(versionNumber) == null) {
           //okay this must be the very first time into the registry where
@@ -540,6 +511,62 @@ public class RegistryAdminService {
 
       return returnDoc;
    }
+   
+   private void populateOtherManagedMaps(String collectionName, String versionNumber) {
+       log.debug("start populateOtherManagedMaps");
+       HashMap versionOtherManaged = null;
+       //get All the Managed Authorities, the getOtherManagedAutories() does not
+       //perform a query every time only once.
+       try {
+          //otherAuths = RegistryServerHelper.getOtherManagedAuthorities(collectionName, versionNumber);
+           versionOtherManaged = RegistryServerHelper.getOtherManagedAuthorities(collectionName, versionNumber);
+           log.info("found other managed authorities size = " + 
+                   versionOtherManaged.size() + " for registry version = "
+                     + versionNumber);           
+           otherAuths.put(versionNumber,versionOtherManaged);
+       }catch(SAXException se) {
+           //hmmm need to relook the first time with an empty eXist db an
+           //exception is okay, but probably only IOException. 
+       }catch(MalformedURLException me) {
+           //hmmm need to relook the first time with an empty eXist db an
+           //exception is okay, but probably only IOException. 
+       }catch(ParserConfigurationException pce) {
+           //hmmm need to relook the first time with an empty eXist db an
+           //exception is okay, but probably only IOException.            
+       }catch(IOException ioe) {
+           //hmmm need to relook the first time with an empty eXist db an
+           //exception is okay, but probably only IOException.   
+       }
+       log.debug("end populateOtherManagedMaps");
+   }
+   
+   private void populateManagedMaps(String collectionName, String versionNumber) {
+       log.debug("start populateManagedMaps");       
+       //get All the Managed Authorities, the getManagedAutories() does not
+       //perform a query every time only once.
+       HashMap versionManaged = null;
+
+       try {
+          //manageAuths = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
+           versionManaged = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
+           log.info("found managed authorities size = " + versionManaged.size()
+                    + " for registry version = " + versionNumber);
+           manageAuths.put(versionNumber,versionManaged);
+       }catch(SAXException se) {
+         //hmmm need to relook the first time with an empty eXist db an
+         //exception is okay, but probably only IOException. 
+       }catch(MalformedURLException me) {
+           //hmmm need to relook the first time with an empty eXist db an
+           //exception is okay, but probably only IOException. 
+       }catch(ParserConfigurationException pce) {
+           //hmmm need to relook the first time with an empty eXist db an
+           //exception is okay, but probably only IOException. 
+       }catch(IOException ioe) {
+           //hmmm need to relook the first time with an empty eXist db an
+           //exception is okay, but probably only IOException.    
+       }
+       log.debug("end populateManagedMaps");
+   }
  
    /**
     * Not used and Not finished yet, but this will be a validate method to
@@ -658,7 +685,6 @@ public class RegistryAdminService {
 
       XSLHelper xs = new XSLHelper();
       
-      
       //Okay we need to get the vr attribute namespace.
       //The confusing part is since we are using message style there is a chance it 
       //could be in the root element (which might be the web service operation name)
@@ -679,6 +705,14 @@ public class RegistryAdminService {
       log.info("Collection Name = " + collectionName);
       log.info("Number of Resources = " + nl.getLength());
       UpdateDBService udbService = new UpdateDBService();
+      
+      if(manageAuths.get(versionNumber) == null)
+          populateManagedMaps(collectionName, versionNumber);
+      
+      if(otherAuths.get(versionNumber) == null)
+          populateOtherManagedMaps(collectionName, versionNumber);
+
+      
 
       // This does seem a little strange as if an infinte loop,
       // but later on an appendChild is performed which
