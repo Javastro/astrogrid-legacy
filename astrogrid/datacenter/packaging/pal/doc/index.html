@@ -2,44 +2,146 @@
   <head>
     <title>Astrogrid Datacenter Documentation</title>
     <meta content="">
-    <style></style>
+    <style>dt{font-weight:bold;padding-top:5px;}
+    h1,h2{background-color:#CCCCCC;}
+    h3,h4{background-color:#DDDDDD;margin-left:10px;}
+    pre{background-color:#EEEEEE;margin-left:20px;padding:5px;}
+    </style>
   </head>
   <body>
 <h1>Astrogrid Datacenter Documentation</h1>
+The Astrogrid datacenter server makes a collection of astronomical data available on the Astrogrid.
+This document describes how to publish an data collection - i.e. how to install and configure an Astrogrid Datacenter Server.
 
-<h2>Installation Instructions</h2>
+<h2>Overview</h2>
+Publishing a data collection involves the following steps
+<ul>
+<li>install the system pre-requisites
+<li>install the datacenter server
+<li>configure the connection to the data collection
+<li>create a  description of the data collection
+<li>enable the datacenter server web service
+<li>test the installation
+<li>add the data collection with the Astrogrid Registry
+</ul>
 
-<h3>Pre-requisites</h3>
-<i>Tomcat server,<br>
-axis - for your conveneince we provide a base axis webapp
-</i>
+<h2>Pre-requisites</h2>
+The Datacenter Server relies upon the following software components, which must be installed and configured before installing the Datacenter Server.
+<dl>
+<dt>Java Virtual Machine</dt>
+<dd>
+Specify version. Available from <a href="">find link</a>
+</dd>
+<dt>Tomcat Server</dt>
+<dd>Available from <a href="">find link</a>; Installation instructions <a href="">find link</a>. Specify versions.
+<p>
+Set shell variable <tt>CATALINA_HOME</tt> to the root of your tomcat installation, as detailed in their instructions.
+</dd>
+<dt>A JDBC-compliant database</dt>
+<dd>
+The Datacenter Server connects to the data collection via a JDBC driver. Hence the collection should be stored in a database for which a JDBC driver is available. The Publishers Astrogrid Library bundles drivers for
+<ul>
+<li>MySQL - the MM-MySQL JDBC Driver
+<li>Sybase -
+<li>HSQL -
+</ul>
+<p>
+Interfacing to other databases is also possible, but requires an appropriate JDBC driver.
+<p>
+Accessing forms of data storage other than JDBC-databases is theoretically possible, but would require writing custom code to interface with the database.
+</dd>
+<dt>Axis SOAP Server</dt>
+<dd>
+For your convenience, we provide a stripped-down version of the Axis web application
+at <tt>lib/axis.war</tt>
+Place this in the <tt>${CATALINA_HOME}/webapps</tt> directory of your tomcat installation, and restart tomcat (run <tt>${CATALINA_HOME}/bin/shutdown.sh</tt>
+followed by <tt>${CATALINA_HOME}/bin/startup.sh</tt>). This will unzip the web application into the directory <tt>${CATALINA_HOME}/webapps/axis</tt>
+</dd>
+</dl>
+<h2>Install the Datacenter</h2>
+Unzip the file <tt>lib/datacenter-server.zip</tt> over the top of the previously installed axis web application.
 
+<pre>
+% cd ${CATALINA_HOME}/webapps/axis/
+% unzip <i>path/to/pal/</i>lib/datacenter-server.zip
+</pre>
+<!--
+NWW - remove axis-ant from datacenter-server.zip - already present.
+-->
 
-<h3>Install Datacenter</h3>
-<i>unzip over existing axis webap</i>
-
-<h3>Set Database Connections</h3>
-
-<h4>Supported databases</h4>
-
-<h4>Configuration</h4>
-<i><b>Either</b><br>
- set properties in config file<br>
-<b>or</b><br>
+<h2>Set Database Connections</h2>
+Next the connection to the astronomical data collection must be configured. At present this is limited to JDBC-compliant databases.
+<h3>Supported databases</h3>
+Any database that accepts standard SQL and has a JDBC driver available should be sufficient. The method of connecting to the dat
+<h3>Database Configuration</h3>
+<h4>Via configuration file</h4>
+ set properties in config file
+ <h4>Via DataSource</h4>
 set up datasource - requires editing of web.xml and server.xml
 </i>
+web.xml in axis/WEB-INF - add declaration of datasource right at bottom, just within </web-app> tag.
+<pre>
+  <resource-ref>
+  	<res-ref-name>jdbc/merlin-datasource</res-ref-name>
+	<res-type>javax.sql.DataSource</res-type>
+	<res-auth>Container</res-auth>
+  </resource-ref>
+</pre>
 
-<h4>Adapting or writing your own dataprovider</h4>
+server.xml in tomcat/conf - add definition of datasource,within chosen 'Engine' tag
+
+<pre>
+    <!-- default context - place to set up jndi database connections -->
+      <DefaultContext>
+
+
+    <Resource name="jdbc/merlin-datasource"
+    	auth="Container"
+	type="javax.sql.DataSource" />
+        <ResourceParams name="jdbc/merlin-datasource">
+      <parameter>
+        <name>driverClassName</name>
+        <value>com.mysql.jdbc.Driver</value>
+      </parameter>
+      <parameter>
+        <name>url</name>
+        <value>jdbc:mysql://localhost/merlin</value>
+      </parameter>
+      <parameter>
+        <name>username</name>
+        <value>noel</value>
+      </parameter>
+      <parameter>
+        <name>password</name>
+        <value>appleapple</value>
+      </parameter>
+      <parameter>
+        <name>removeAbandoned</name>
+        <value>true</value>
+      </parameter>
+    </ResourceParams>
+    </DefaultContext>
+
+</pre>
+
+then need to copy mysql driver class into /tomcat/common/lib
+
+then edit AstroGridConfig.properties.
+<h3>Configure the ADQL translator</h3>
+<h3>Adapting or writing your own dataprovider</h3>
 <i>link to separate document</i>
 
-<h3>Set Metadata</h3>
+<h2>Metadata - Describe te data collection</h2>
 <i>provide link to schema for this document</i>
 
-<h3>Registering the Datacenter webservice</h3>
+<h2>Enable the Datacenter webservice</h2>
 <i>Execute java -jar bin/register-service.jar</i>
+check this is being build correctly.
 
-<h3>Validate the installation</h3>
+<h2>Verify the installation</h2>
 <i>Execute java -jar bin/test-server.jar</i>
+
+<h2>Add the datacenter to the Astrogrid Registry</h2>
 
 <h2>Development Documentation</h2>
 <ul>
@@ -50,6 +152,11 @@ set up datasource - requires editing of web.xml and server.xml
 <h2>References</h2>
 <ul>
 <li><a href="http://www.astrogrid.org">Astrogrid Homepage</a>
+<li><a href="">Java Homepage</a>
+<li><a href="">Jakarta Tomcat Homepage</a>
+<li><a href="">Apache Axis Homepage</a>
+<li><a href="">JDBC</a>
+<li><a href="">List of known JDBC drivers</a>
 </ul>
 
 </body>
