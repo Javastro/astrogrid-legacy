@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
- * <cvs:version>$Revision: 1.20 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/24 21:56:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.21 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.21  2003/09/24 21:56:06  dave
+ *   Added setPassword() to AccountManager
+ *
  *   Revision 1.20  2003/09/17 19:47:21  dave
  *   1) Fixed classnotfound problems in the build.
  *   2) Added the JUnit task to add the initial accounts and groups.
@@ -210,6 +213,16 @@ public class PolicyManagerImpl
 	public String getPassword(String name)
 		{
 		return this.accountManager.getPassword(name);
+		}
+
+	/**
+	 * Set the password for an Account.
+	 * This should only be available via an encrypted connection.
+	 *
+	 */
+	public AccountData setPassword(String ident, String password)
+		{
+		return this.accountManager.setPassword(ident, password);
 		}
 
 	/**

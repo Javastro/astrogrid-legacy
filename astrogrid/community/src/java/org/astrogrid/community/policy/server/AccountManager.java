@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManager.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/15 16:05:45 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/24 21:56:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManager.java,v $
+ *   Revision 1.6  2003/09/24 21:56:06  dave
+ *   Added setPassword() to AccountManager
+ *
  *   Revision 1.5  2003/09/15 16:05:45  KevinBenson
  *   *** empty log message ***
  *
@@ -46,6 +49,13 @@ public interface AccountManager
     * @return
     */
    public String getPassword(String name) throws RemoteException;
+
+	/**
+	 * Update an Account password.
+	 *
+	 */
+	public AccountData setPassword(String account, String password)
+		throws RemoteException ;
 
 	/**
 	 * Request an Account data, given the Account name.

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/24 15:47:37 $</cvs:date>
-    | <cvs:version>$Revision: 1.42 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/24 21:56:06 $</cvs:date>
+    | <cvs:version>$Revision: 1.43 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.43  2003/09/24 21:56:06  dave
+    |   Added setPassword() to AccountManager
+    |
     |   Revision 1.42  2003/09/24 15:47:37  dave
     |   Added policy database loader tools.
     |
@@ -3606,11 +3609,11 @@ To repeat
 		<antcall target="policy.server.prepare"/>
 		<antcall target="policy.server.javac"/>
 		<antcall target="policy.server.jar"/>
-		<!-- Copy our test data -->
-		<antcall target="policy.loader.data"/>
 		<!-- Run our loader tests -->
 		<!-- <antcall target="policy.loader.junit"/> -->
-		<antcall target="policy.loader"/>
+		<antcall target="policy.loader">
+			<param name="community.name"  value="codon.demon.co.uk"/>
+		</antcall>
 		<!-- Display our database contents -->
 		<antcall target="hsqldb.database.select"/>
 	</target>

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/24 21:56:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.12 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.12  2003/09/24 21:56:06  dave
+ *   Added setPassword() to AccountManager
+ *
  *   Revision 1.11  2003/09/17 19:47:21  dave
  *   1) Fixed classnotfound problems in the build.
  *   2) Added the JUnit task to add the initial accounts and groups.
@@ -402,6 +405,132 @@ public class AccountManagerImpl
    }
 
 	/**
+	 * Update an Account password.
+	 *
+	 */
+	public AccountData setPassword(String account, String password)
+		{
+		return setPassword(new CommunityIdent(account), password) ;
+		}
+
+	/**
+	 * Update an existing Account data.
+	 *
+	 */
+	public AccountData setPassword(CommunityIdent ident, String password)
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.setPassword()") ;
+		if (DEBUG_FLAG) System.out.println("  Account") ;
+		if (DEBUG_FLAG) System.out.println("    ident : " + ident) ;
+		if (DEBUG_FLAG) System.out.println("    pass  : " + password) ;
+
+		AccountData account = null ;
+		//
+		// If the ident is valid.
+		if (ident.isValid())
+			{
+			//
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				//
+				// Try update the database.
+				try {
+					//
+					// Begin a new database transaction.
+					database.begin();
+					//
+					// Load the Account from the database.
+					account = (AccountData) database.load(AccountData.class, ident.toString()) ;
+					//
+					// Update the account data.
+					account.setPassword(password);
+					}
+				//
+				// If we couldn't find the object.
+				catch (ObjectNotFoundException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in setPassword()") ;
+
+					//
+					// Set the response to null.
+					account = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				//
+				// If anything else went bang.
+				catch (Exception ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("Exception in setPassword()") ;
+					if (DEBUG_FLAG) System.out.println("  Exception  : " + ouch) ;
+
+					//
+					// Set the response to null.
+					account = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				//
+				// Commit the transaction.
+				finally
+					{
+					try {
+						if (null != account)
+							{
+							database.commit() ;
+							}
+						else {
+							database.rollback() ;
+							}
+						}
+					catch (Exception ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("") ;
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						if (DEBUG_FLAG) System.out.println("Exception in setPassword() finally clause") ;
+
+						//
+						// Set the response to null.
+						account = null ;
+
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						if (DEBUG_FLAG) System.out.println("") ;
+						}
+					}
+				}
+			//
+			// If the ident is not local.
+			else {
+				//
+				// Set the response to null.
+				account = null ;
+				}
+			}
+			//
+			// If the ident is not valid.
+		else {
+			//
+			// Set the response to null.
+			account = null ;
+			}
+
+		// TODO
+		// Need to return something to the client.
+		// Possibly a new DataObject ... ?
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return account ;
+		}
+
+	/**
 	 * Request an Account data, given the Account name.
 	 *
 	 */
@@ -556,11 +685,8 @@ public class AccountManagerImpl
 					AccountData data = (AccountData) database.load(AccountData.class, account.getIdent()) ;
 					//
 					// Update the account data.
+					// Ignore the password, use setPassword() to change it.
 					data.setDescription(account.getDescription()) ;
-//
-// Not nice.
-// We ought to have a separate https method just for this.
-					data.setPassword(account.getPassword());
 					}
 				//
 				// If we couldn't find the object.

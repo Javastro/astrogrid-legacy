@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/loader/Attic/AccountDataParser.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/24 15:47:38 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/24 21:56:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountDataParser.java,v $
+ *   Revision 1.2  2003/09/24 21:56:06  dave
+ *   Added setPassword() to AccountManager
+ *
  *   Revision 1.1  2003/09/24 15:47:38  dave
  *   Added policy database loader tools.
  *
@@ -118,11 +121,11 @@ public class AccountDataParser
 								{
 								if (null != account)
 									{
-									if (DEBUG_FLAG) System.out.println("  PASS : Got community") ;
+									if (DEBUG_FLAG) System.out.println("  PASS : Got account") ;
 									account.setDescription(value) ;
 									}
 								else {
-									if (DEBUG_FLAG) System.out.println("  FAIL : Null community") ;
+									if (DEBUG_FLAG) System.out.println("  FAIL : Null account") ;
 									}
 								}
 							}
@@ -293,11 +296,28 @@ public class AccountDataParser
 		if (DEBUG_FLAG) System.out.println("  Password : " + value) ;
 
 		//
-		// Update the Account description.
+		// Update the Account.
 		if (null != account)
 			{
 			if (DEBUG_FLAG) System.out.println("  PASS : Got account") ;
-			account.setPassword(value) ;
+			//
+			// Try updating the database
+			if (null != getManager())
+				{
+				if (DEBUG_FLAG) System.out.println("  PASS : Got manager") ;
+				try {
+					account = getManager().setPassword(account.getIdent().toString(), value) ;
+					}
+				catch (Exception ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("  FAIL : Exception while creating Account") ;
+					ouch.printStackTrace() ;
+					}
+				}
+			if (null != account)
+				{
+				if (DEBUG_FLAG) System.out.println("  PASS : Got account") ;
+				}
 			}
 		//
 		// If we don't have an Account.
