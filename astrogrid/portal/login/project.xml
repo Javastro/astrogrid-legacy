@@ -53,7 +53,30 @@
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
-		
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry-client</artifactId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
         <!--+
         	| The JConfig jars.
         	+-->
@@ -72,22 +95,40 @@
             <groupId>jaxrpc-api</groupId>
             <artifactId>jaxrpc-api</artifactId>
             <version>1.0.3</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
-    
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis</artifactId>
+            <version>1.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>wsdl4j</groupId>
+            <artifactId>wsdl4j</artifactId>
+            <version>1.4</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
 		<!--+
 		    | Both these are needed for javamail
 		    +-->
 		<dependency>
+            <groupId>sun</groupId>
 			<artifactId>mail</artifactId>
-			<groupId>sun</groupId>
 			<version>1.3.1</version>
 			<properties>
 				<war.bundle>true</war.bundle>
             </properties>
 		</dependency>
 		<dependency>
+            <groupId>activation</groupId>
 			<artifactId>activation</artifactId>
-			<groupId>activation</groupId>
 			<version>1.0.2</version>
 			<properties>
 				<war.bundle>true</war.bundle>
@@ -98,8 +139,8 @@
 		    | Mock maker needed only for testing
 		    +-->
 		 <dependency>
+            <groupId>mmmockobjects</groupId>
 			<artifactId>mmmockobjects</artifactId>
-			<groupId>mmmockobjects</groupId>
 			<version>1.11.0</version>
 			<properties>
 				<war.bundle>false</war.bundle>

@@ -1,12 +1,13 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.23 2004/04/02 10:21:12 jdt Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.24 2004/04/02 11:53:17 jdt Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/04/02 10:21:12 $</cvs:date>
- * <cvs:version>$Revision: 1.23 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/02 11:53:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.24 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,9 +20,6 @@ import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.SourceResolver;
-import org.astrogrid.community.client.security.service.SecurityServiceDelegate;
-import org.astrogrid.community.client.security.service.SecurityServiceMockDelegate;
-import org.astrogrid.community.client.security.service.SecurityServiceSoapDelegate;
 import org.astrogrid.community.common.config.CommunityConfig;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
@@ -29,24 +27,37 @@ import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
 import org.astrogrid.community.common.security.data.SecurityToken;
 import org.astrogrid.community.common.security.service.SecurityServiceMock;
+import org.astrogrid.community.resolver.CommunityPasswordResolver;
+import org.astrogrid.community.resolver.exception.CommunityResolverException;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.portal.login.common.SessionKeys;
+import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
 /**
  * Login Action.  Extracts login parameters from the 
  * request action and checks them with the security 
  * delegate.
+ * The portal expects to be told the endpoint of a registry service (see configuration
+ * property below).  If this is unset, then a local, properties-based registry
+ * will be used. See the Registry docs http://www.astrogrid.org/maven/docs/snapshot/registry/index.html
+ * for more details.
+ * Note that using an incorrect community will cause this class' act() method
+ * to throw an exception, since an
+ * attempt is made to look up the community in the registry.  If you have not configured
+ * a registry then you can use the back door community "org.astrogrid.mock" to avoid this.  
+ * This is provided for testing purposes and is configured so that the password "secret"
+ * will allow access.
+ * 
  * @TODO plumb in the policy delegate to check
  * we have permission to view the site!
- * @TODO plumb in Dave's rather clever security delegate factory
  * @author dave/jdt
  */
 public final class LoginAction extends AbstractAction {
     /**
      * Name of JNDI property holding security delegate endpoint URL
      */
-    public static final String ORG_ASTROGRID_PORTAL_COMMUNITY_URL = "org.astrogrid.portal.community.url";
+    public static final String ORG_ASTROGRID_PORTAL_REGISTRY_URL = "org.astrogrid.portal.registry.url";
     /**
      * Parameter names to look for in the request object. We could refer to
      * these vars for better safety in the xsps, but it makes the code so ugly
@@ -76,13 +87,18 @@ public final class LoginAction extends AbstractAction {
     private Logger log;
   
     /**
+     * Add's a password to Dave's backdoor - see class description
+     * @TODO remove this in production
+     */
+    static {
+        SecurityServiceMock.setPassword("secret");
+    }
+  
+    /**
      * Our action method. Expects the "user", "community" and "pass" to be in
      * the request header.  Returns null if the user fails to
      * login, or a hashmap (currently empty) on success.
-     * Disasters raise exceptions now.  @TODO find a pretty
-     * way of dealing with these in cocoon, otherwise we'll have
-     * to trap them here, and return an empty hashmap along with 
-     * an error message in the session.
+     * Disasters raise exceptions now.  
      * 
      * @param redirector see org.apache.cocoon.acting.Action#act
      * @param resolver see org.apache.cocoon.acting.Action#act
@@ -108,10 +124,9 @@ public final class LoginAction extends AbstractAction {
 
         // Ensure logger is set correctly
         checkLogger();
-        log = getLogger();
         //
         // Initialise our community config.
-        init();
+        // init(); @TODO jdt find out if we need to do this.
         //
         // Get our current request and session.
         final Request request = ObjectModelHelper.getRequest(objectModel);
@@ -141,27 +156,38 @@ public final class LoginAction extends AbstractAction {
         log.debug("  Ivorn : " + ivorn);
         final String name = ivorn.toString();
         //
-        // Try creating a Community delegate.
-        final SecurityServiceDelegate authenticator;
+        // Create a community password resolver
+        // This attempts to connect to the registry, and then
+        // automatically connects the correct community
+        // based on the community parameter in the Ivorn
+        // If a registry endpoint hasn't been set up, then a "local"
+        // registry is used instead.
+        final CommunityPasswordResolver passwordResolver;
         try {
-            authenticator = getSecurityDelegate();
-        } catch (MalformedURLException ex) {
-          log.error("Unable to create SecurityDelegate", ex);
-          throw new LoginException("Unable to create Security Delegate", ex);
+            final Config config = SimpleConfig.getSingleton();
+            final String endpoint = config.getString(ORG_ASTROGRID_PORTAL_REGISTRY_URL, null);
+            log.debug("Registry endpoint:"+endpoint);
+            if (endpoint!=null) {
+                passwordResolver = new CommunityPasswordResolver(new URL(endpoint));
+            } else {
+                passwordResolver = new CommunityPasswordResolver();
+        }
+            log.debug("Got CommunityPasswordResolver "+passwordResolver);
+        } catch (MalformedURLException e1) {
+            log.error("Unable to create registry URL", e1);
+            throw new LoginException("Unable to contact registry.  Please check your registry URL",e1);
         }
 
-        assert authenticator!=null : "Security service delegate was null";
 
-        log.debug("PASS : Got AuthenticationDelegate");
 
         //
         // Try logging in to the Community.
         final SecurityToken token;
-        
+        log.debug("Attempting to get token...");
         try {
-            token = authenticator.checkPassword(name, pass);
+            token = passwordResolver.checkPassword(name, pass);
         } catch (CommunityServiceException e) {
-            log.error("Exception from security delegate",e);
+            log.error("CommunityServiceException from security delegate",e);
             throw new LoginException("Exception from security delegate",e);
         } catch (CommunitySecurityException e) {
             log.debug("Security check failed",e);
@@ -169,6 +195,12 @@ public final class LoginAction extends AbstractAction {
         } catch (CommunityIdentifierException e) {
             log.debug("Account identifier invalid",e);
             return null; //failed to log in
+        } catch (CommunityResolverException e) {
+            log.error("CommunityResolverException from security delegate",e);
+            throw new LoginException("CommunityResolverException from security delegate.  Please check that your community has been entered correctly and that your registry is properly configured.",e);
+        } catch (RegistryException e) {
+            log.error("RegistryException from security delegate",e);
+            throw new LoginException("RegistryException from security delegate",e);
         }
         
         assert token!=null : "Token should not be null" ;
@@ -221,28 +253,6 @@ public final class LoginAction extends AbstractAction {
         return newParam;
     }
     /**
-     * Get the security delegate.  Looks for the
-     * property org.astrogrid.portal.community.url
-     * if this property is not found (or is set to "dummy")
-     * then a mock delegate is
-     * returned.  This mock delegate will only accept the password "secret".
-     * @return either a genuine or mock delegate
-     * @throws MalformedURLException if the url is malformed
-     * @TODO consider factoring this into a separate class
-     */
-    private SecurityServiceDelegate getSecurityDelegate() throws MalformedURLException {
-        final Config config = SimpleConfig.getSingleton();
-        final String endpoint = config.getString(ORG_ASTROGRID_PORTAL_COMMUNITY_URL, "dummy");
-        if ("dummy".equals(endpoint)) {
-            SecurityServiceMock.setPassword("secret");
-            log.debug("Using dummy delegate");
-            return new SecurityServiceMockDelegate();
-        } else {
-            log.debug("Using delegate at "+endpoint);
-            return new SecurityServiceSoapDelegate(endpoint);
-        }
-    }
-    /**
      * Load our community config.
      *  
      */
@@ -260,30 +270,19 @@ public final class LoginAction extends AbstractAction {
      *  
      */
     private void checkLogger() {
-        final Logger logger = super.getLogger();
-        if (logger == null || debugToSystemOutOn) {
+        log = super.getLogger();
+        if (log == null || debugToSystemOutOn) {
             enableLogging(new ConsoleLogger());
+            log = super.getLogger();
         }
     }
 }
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
- * Revision 1.23  2004/04/02 10:21:12  jdt
- * Construct the ivorn using community factory class.
+ * Revision 1.24  2004/04/02 11:53:17  jdt
+ * Merge from PLGN_JDT_bz#281a
  *
- * Revision 1.22  2004/03/26 18:08:39  jdt
- * Merge from PLGN_JDT_bz#275
- *
- * Revision 1.21.2.1  2004/03/26 17:43:03  jdt
- * Factored out the keys used to store the session into a separate
- * class that everyone can access.
- *
- * Revision 1.21  2004/03/25 15:18:13  jdt
- * Some refactoring of the debugging and added unit tests.
- *
- * Revision 1.20  2004/03/24 18:31:33  jdt
- * Merge from PLGN_JDT_bz#201
  * 
  * </cvs:log>
  */

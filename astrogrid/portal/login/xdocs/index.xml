@@ -16,7 +16,7 @@
             The simplest way to configure it is to enter the JNDI properties below
             into Tomcat's server.xml file using the Tomcat administrator tool.
             <ul>
-                <li>org.astrogrid.portal.community.url=end point of the community webservice [MockDelegate]</li>
+                <li>org.astrogrid.portal.registry.url=end point of the registry webservice [MockDelegate]</li>
                 <li>emailserver.address=address of your smtp server [127.0.0.1]</li>
                 <li>emailserver.user=user whose account is used for sending reminder emails [astrogrid]</li>
                 <li>emailserver.password=user's password (if necessary) []</li>

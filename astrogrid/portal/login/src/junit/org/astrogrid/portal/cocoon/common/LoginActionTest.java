@@ -1,7 +1,9 @@
 /*
- * $Id: LoginActionTest.java,v 1.4 2004/03/26 18:08:39 jdt Exp $ Created on Mar
- * 23, 2004 by jdt Copyright (C) AstroGrid. All rights reserved. It's my
- * birthday! This software is published under the terms of the AstroGrid
+ * $Id: LoginActionTest.java,v 1.5 2004/04/02 11:53:16 jdt Exp $ 
+ * Created on Mar 23, 2004 by jdt 
+ * Copyright (C) AstroGrid. All rights reserved. 
+ * It's my birthday! 
+ * This software is published under the terms of the AstroGrid
  * Software License version 1.2, a copy of which has been included with this
  * distribution in the LICENSE.txt file.
  *  
@@ -11,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import junit.framework.TestCase;
 import org.apache.cocoon.environment.ObjectModelHelper;
+import org.astrogrid.community.common.security.service.SecurityServiceMock;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 /**
@@ -34,10 +37,7 @@ public final class LoginActionTest extends TestCase {
      *  
      */
     public void setUp() {
-        final Config config = SimpleConfig.getSingleton();
-        config.setProperty(
-            LoginAction.ORG_ASTROGRID_PORTAL_COMMUNITY_URL,
-            "dummy");
+        SecurityServiceMock.setPassword("secret");
     }
     /**
      * Try a successful login
@@ -49,7 +49,7 @@ public final class LoginActionTest extends TestCase {
         final Map objectModel = new HashMap();
         final DummyRequest request = new DummyRequest();
         request.addParameter(LoginAction.USER_PARAM, "John");
-        request.addParameter(LoginAction.COMMUNITY_PARAM, "roe");
+        request.addParameter(LoginAction.COMMUNITY_PARAM, "org.astrogrid.mock");
         request.addParameter(LoginAction.PASS_PARAM, "secret");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
         final Map results = action.act(null, null, objectModel, null, null);
@@ -65,7 +65,7 @@ public final class LoginActionTest extends TestCase {
         final Map objectModel = new HashMap();
         final DummyRequest request = new DummyRequest();
         request.addParameter(LoginAction.USER_PARAM, "John");
-        request.addParameter(LoginAction.COMMUNITY_PARAM, "roe");
+        request.addParameter(LoginAction.COMMUNITY_PARAM, "org.astrogrid.mock");
         request.addParameter(LoginAction.PASS_PARAM, "wrongpassword");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
         final Map results = action.act(null, null, objectModel, null, null);
@@ -83,7 +83,7 @@ public final class LoginActionTest extends TestCase {
         request.addParameter(LoginAction.PASS_PARAM, "wrongpassword");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
         try {
-            final Map results = action.act(null, null, objectModel, null, null);
+            action.act(null, null, objectModel, null, null);
             fail("Expected a LoginException");
         } catch (LoginException le) {
             return; //expected
@@ -101,7 +101,7 @@ public final class LoginActionTest extends TestCase {
         request.addParameter(LoginAction.PASS_PARAM, "wrongpassword");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
         try {
-            final Map results = action.act(null, null, objectModel, null, null);
+            action.act(null, null, objectModel, null, null);
             fail("Expected a LoginException");
         } catch (LoginException le) {
             return; //expected
@@ -119,7 +119,7 @@ public final class LoginActionTest extends TestCase {
         //request.addParameter(LoginAction.PASS_PARAM,"wrongpassword");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
         try {
-            final Map results = action.act(null, null, objectModel, null, null);
+            action.act(null, null, objectModel, null, null);
             fail("Expected a LoginException");
         } catch (LoginException le) {
             return; //expected
@@ -137,7 +137,7 @@ public final class LoginActionTest extends TestCase {
         request.addParameter(LoginAction.PASS_PARAM, "wrongpassword");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
         try {
-            final Map results = action.act(null, null, objectModel, null, null);
+            action.act(null, null, objectModel, null, null);
             fail("Expected a LoginException");
         } catch (LoginException le) {
             return; //expected
@@ -155,7 +155,7 @@ public final class LoginActionTest extends TestCase {
         request.addParameter(LoginAction.PASS_PARAM, "wrongpassword");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
         try {
-            final Map results = action.act(null, null, objectModel, null, null);
+            action.act(null, null, objectModel, null, null);
             fail("Expected a LoginException");
         } catch (LoginException le) {
             return; //expected
@@ -173,7 +173,7 @@ public final class LoginActionTest extends TestCase {
         request.addParameter(LoginAction.PASS_PARAM, "");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
         try {
-            final Map results = action.act(null, null, objectModel, null, null);
+            action.act(null, null, objectModel, null, null);
             fail("Expected a LoginException");
         } catch (LoginException le) {
             return; //expected
@@ -185,7 +185,7 @@ public final class LoginActionTest extends TestCase {
     public void testBadlyConfigured() {
         final Config config = SimpleConfig.getSingleton();
         config.setProperty(
-            LoginAction.ORG_ASTROGRID_PORTAL_COMMUNITY_URL,
+            LoginAction.ORG_ASTROGRID_PORTAL_REGISTRY_URL,
             "bad address");
         final LoginAction action = new LoginAction();
         final Map objectModel = new HashMap();
@@ -195,7 +195,7 @@ public final class LoginActionTest extends TestCase {
         request.addParameter(LoginAction.PASS_PARAM, "pass");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
         try {
-            final Map results = action.act(null, null, objectModel, null, null);
+            action.act(null, null, objectModel, null, null);
             fail("Expected a LoginException");
         } catch (LoginException le) {
             return; //expected
@@ -204,18 +204,8 @@ public final class LoginActionTest extends TestCase {
 }
 /*
  * $Log: LoginActionTest.java,v $
- * Revision 1.4  2004/03/26 18:08:39  jdt
- * Merge from PLGN_JDT_bz#275
+ * Revision 1.5  2004/04/02 11:53:16  jdt
+ * Merge from PLGN_JDT_bz#281a
  *
- * Revision 1.3.2.1  2004/03/26 17:43:03  jdt
- * Factored out the keys used to store the session into a separate
- * class that everyone can access.
- *
- * Revision 1.3  2004/03/25 15:18:40  jdt
- * Some refactoring of the debugging and added unit tests.
- * Revision 1.2 2004/03/24 18:31:33 jdt Merge
- * from PLGN_JDT_bz#201
- * 
- * Revision 1.1.2.1 2004/03/24 18:15:02 jdt new
  *  
  */
