@@ -9,10 +9,7 @@ import org.astrogrid.mySpace.mySpaceUtil.FileTransferFake;
 
 // Java.
 
-//import java.io.PrintWriter;
 import java.io.File;
-//import java.io.FileOutputStream;
-//import java.util.Properties;
 
 // Log4j etc.
 
@@ -30,7 +27,8 @@ import org.astrogrid.i18n.*;
  *
  * @author C L Qin
  * @author A C Davenhall
- * @version Iteration 3.
+ * @since Iteration 3.
+ * @version Iteration 5.
  */
 
 public class ServerManager
@@ -62,11 +60,6 @@ public class ServerManager
          logger.debug("  contents: " + contents);
          logger.debug("  newDataHolderFileName: " + newDataHolderFileName);
       }
-
-      System.out.println("ServerManager.upLoadString:-");
-      System.out.println("  contents: " + contents);
-      System.out.println("  newDataHolderFileName: "
-         + newDataHolderFileName);
 
 //
 //   Attempt to write the file from the given string.
@@ -152,6 +145,53 @@ public class ServerManager
 
       return response;
    }
+
+
+// -----------------------------------------------------------------
+
+/**
+ * Read the contents of a file held on a MySpace server and return
+ * them as a String.
+ *
+ * @param contents The string containing the contents to be written
+ *  to the new file.
+ *
+ * @param newDataHolderFileName The name of the file on the server
+ * which is to be read.
+ *
+ * @return The contents of the file.
+ */
+
+   public String retrieveString(String dataHolderFileName)
+   { if (DEBUG)
+      {  logger.debug("ServerManager retrieve.String:-");
+         logger.debug("  dataHolderFileName: " + dataHolderFileName);
+      }
+
+      String contents = null;
+
+//
+//   Attempt to read the file from the given string.
+
+      try
+      {  File dataHolderFile  = new File(dataHolderFileName);
+         contents = MySpaceUtils.readFromFile(dataHolderFile);
+
+         if (contents == null)
+         {  status.addCode(MySpaceStatusCode.AGMSCE01047,
+              MySpaceStatusCode.ERROR,
+              MySpaceStatusCode.LOG, this.getClassName() );
+         }
+      }
+      catch (Exception e)
+      {  status.addCode(MySpaceStatusCode.AGMSCE01047,
+           MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
+      }
+
+      return contents;
+   }
+
 
 // -----------------------------------------------------------------
 
