@@ -1,133 +1,427 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-	<title>IVOA Working Group - Internal Draft</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />  
-	<meta name="Title" content="IVOA WG Internal Draft" />
-	<meta name="Keywords" content="IVOA, International, Virtual, Observatory, Alliance" />
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<meta name="author" content="Paul Harrison, pah@jb.man.ac.uk" />
-	<meta name="maintainedBy" content="Paul Harrison, pah@jb.man.ac.uk" />
-	<link href="/misc/ivoa_a.css" rel="stylesheet" type="text/css" />
-	<link rel="stylesheet" href="/misc/ivoa_wg.css" type="text/css" />
+  <title>IVOA Working Group - Common Exectution Architecture Internal
+Draft</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="Title" content="IVOA WG Internal Draft">
+  <meta name="Keywords"
+ content="IVOA, International, Virtual, Observatory, Alliance">
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="author" content="Paul Harrison, pah@jb.man.ac.uk">
+  <meta name="maintainedBy" content="Paul Harrison, pah@jb.man.ac.uk">
+  <link href="http://www.ivoa.net//misc/ivoa_a.css" rel="stylesheet"
+ type="text/css">
+  <link rel="stylesheet" href="http://www.ivoa.net/misc/ivoa_wg.css"
+ type="text/css">
 </head>
-    	
 <body>
-
 <div class="head">
-<table><tr> <td><a href="http://www.ivoa.net/">
-    <img alt="IVOA" src="/icons/ivoa_logo_small.jpg" border="0"/></a></td> </tr></table>
-
-<h1>Document_Title
-Version n.n</h1>
-<h2>IVOA WG Internal Draft YYYY-MM-DD </h2>
-
+<table>
+  <tbody>
+    <tr>
+      <td><a href="http://www.ivoa.net/"> <img alt="IVOA"
+ src="http://www.ivoa.net/icons/ivoa_logo_small.jpg" border="0"></a></td>
+    </tr>
+  </tbody>
+</table>
+<h1>A Proposal for a Common Execution Architecture
+Version 0.1</h1>
+<h2>IVOA WG Internal Draft 2004-05-19 </h2>
 <dl>
-	<dt>Working Group:</dt>
-		<dd><a href="http://www.ivoa.net/twiki/bin/view/IVOA/Ivoa"> http://www.ivoa.net/twiki/bin/view/IVOA/Ivoa<i>WG_name</i></a></dd>
-	<dt>Author(s):</dt>
-		<dd><a href="http://www.ivoa.net/twiki/bin/view/IVOA/MarcoLeoni">Marco C. Leoni</a><br />
-				<a href="http://www.ivoa.net/twiki/bin/view/IVOA/SomeoneElse">Someone Else</a></dd>
+  <dt>Working Group:</dt>
+  <dd><a href="http://www.ivoa.net/twiki/bin/view/IVOA/Ivoa">http://www.ivoa.net/twiki/bin/view/IVOA/Ivoa<i>WG_name</i></a></dd>
+  <dt>Author(s):</dt>
+  <dd><a href="http://www.ivoa.net/twiki/bin/view/IVOA/PaulHarrison">Paul
+Harrison</a><br>
+  </dd>
 </dl>
 <hr></div>
-
 <h2><a name="abstract" id="abstract">Abstract</a></h2>
-
+<p>This note describes a proposal for a Common Execution Architecture
+(CEA) within the Virtual Observatory. It discusses the general
+motivation behind the design as well as detailed schema and WSDL
+defintions of the architecture. The scope of this document covers areas
+of interest to the Registry and Grid Working Groups as well as the
+Applications Special Interest Group.</p>
 <div class="status">
 <h2><a name="status" id="status">Status of this document</a></h2>
-<p>This is a <b>Working Group <u>Internal Draft</u></b>.</p><br />
-</div><br />
-
+<p>
+<em>This is an IVOA Working Draft for review by IVOA members and other
+interested parties. It is a draft document and may be updated,
+replaced, or obsoleted by other documents at any time. It is
+inappropriate to use IVOA Working Drafts as reference materials or to
+cite them as other than "work in progress." A list of
+<a href="http://www.ivoa.net/Documents/">current IVOA Recommendations
+and
+other technical documents</a> can be found at
+http://www.ivoa.net/Documents/.</em> </p>
+<br>
+</div>
+<br>
 <h2><a name="acknowledgments" id="acknowledgments">Acknowledgments</a></h2>
-
-
 <h2><a id="contents" name="contents">Contents</a></h2>
 <div class="head">
 <ul class="toc">
-<li><a href="#sec1">1. Introduction</a></li>
-	<ul class="toc">
-	  <li><a href="#sec11">1.1 Example</a></li>
-	  <li><a href="#sec12">1.2 ..</a></li>
-	</ul>
-<br/>
-<li><a href="#sec2">2. Second Section</a></li>
-	<ul class="toc">
-	  <li><a href="#sec21">2.1 TwoPointOne ...</a></li>
-	  <li><a href="#sec22">2.2 ..</a></li>
-	  <li><a href="#sec23">2.3 ..</a></li>
-	</ul>
-<br/>
-<li><a href="#appA">Appendix A: ...</a></li>
-<li><a href="#appB">Appendix B: ...</a></li>
-<li><a href="#appC">Appendix C: ...</a></li>
-<br/>
-<li><a href="#references">References</a></li>
+  <li><a href="#sec1">1. Introduction</a></li>
+  <ul class="toc">
+    <li><a href="#sec11">1.1 Example</a></li>
+    <li><a href="#sec12">1.2 ..</a></li>
+  </ul>
+  <br>
+  <li><a href="#sec2">2. Second Section</a></li>
+  <ul class="toc">
+    <li><a href="#sec21">2.1 TwoPointOne ...</a></li>
+    <li><a href="#sec22">2.2 ..</a></li>
+    <li><a href="#sec23">2.3 ..</a></li>
+  </ul>
+  <br>
+  <li><a href="#appA">Appendix A: ...</a></li>
+  <li><a href="#appB">Appendix B: ...</a></li>
+  <li><a href="#appC">Appendix C: ...</a></li>
+  <br>
+  <li><a href="#references">References</a></li>
 </ul>
 </div>
-<hr/>
-
-
-<br/>
+<hr>
+<br>
 <h2><a name="sec1">1. Introduction</a></h2>
-<p>Introduction ...</p>
-
-
-
-<br/>
-<h3><a name="sec11">1.1 Example</a></h3>
-
-<p>A simple example ...:
-<a name="example1"></a>
+<p>The Common Execution Architecture (CEA) is an attempt to create a
+reasonably small set of interfaces and schema to model how to execute a
+typical Astronomical application within the Virtual Observatory (VO).
+In this context an application can be any process that consumes or
+produces data, so in existing terminology could include </p>
+<ul>
+  <li>A unix command line application</li>
+  <li>A database query</li>
+  <li>A web service</li>
+</ul>
+<p>The CEA has been primarily designed to work within a web services
+calling mechanism, although it is possible to have specific language
+bindings using the same interfaces. For example Astrogrid has a java
+implementation of the interfaces that can be called directly from a
+java executable.</p>
+<br>
+<h3><a name="sec11">1.1 Motivation</a></h3>
+<p>The primary requirements motivating the creation of this
+architecture are;</p>
+<ul>
+  <li>To create a uniform interface and model for an application and
+its parameters. This has twin benefits;
+    <ol>
+      <li>It allows VO infrastructure writers a single model of an
+application that that have to code for.</li>
+      <li>Application writers know what they have to implement to be
+compatible with a VO Infrastructure.</li>
+    </ol>
+  </li>
+  <li>To provide a higher level description than WSDL 1.1 can offer.
+    <ul>
+      <li>Restrict the almost limitless possibilities allowed by WSDL
+into a managable subset.</li>
+      <li>Provide specific semantics for some astronomical quantities.</li>
+      <li>Provide extra information not allowed in WSDL - e.g. default
+values, descriptions for use in a GUI etc. </li>
+    </ul>
+  </li>
+  <li>To provide extenstions with the VO Resource schema <a
+ href="http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03#VOResource_a_Resource_Metadata_S">(See
+the IVOA WG)</a> that can describe a general application</li>
+  <li>To provide asynchronous operation of an application - This is
+essential as the call tree that invokes the application cannot be
+expected to be active for extremely long lasting operations - e.g. a
+user from a web browser invokes a data-mining operation that takes days</li>
+  <ul>
+    <li>Provide callback for notification of finishing.</li>
+    <li>Provide polling mechanisms for status.<br>
+    </li>
+  </ul>
+  <li>To allow for the data flow to not necessarily have to follow the
+call tree. In a typical application execution the results are returned
+to the invoking process - In a VO scenario, it can be useful if the
+application can be instructed to pass the results on to a different
+location.<br>
+  </li>
+</ul>
+<h3><a name="sec1_2">1.2 Origins</a></h3>
+<p>The design for this architecture has evolved from the requirements
+fot the Workflow/Job Execution System components within AstroGrid. It
+was desireable for the job execution system to have a single model for
+an application, so that it could deal with the (already complex)
+problems of scheduling, looping, conditional execution etc. without
+needing to have specializations for all the different types of service
+(SIA, Database query, Cone Search, etc.) that it might be required to
+invoke.</p>
+<p>Amongst the VO specifications there was no existing model for
+applications that was defined at the level at which this design
+attempts to address. In the VOResource schema an application is defined
+as a Service with the interface definition. The interface defintion
+either relies on referring to a WSDL definition of the service, or on
+other schema extending the service definition to provide some specific
+detail as in the case of a Simple Image Access service. There is no
+general definition of an application in the resource.<br>
 </p>
-<p>This shows ...</p>
-
-<h3><a name="sec12">1.2 OneTwo</a></h3>
-<p>...</p>
-
-<h4><a name="sec121">1.2.1 OneTwoOne</a></h4>
-<p>Sub-sub-section ...</p>
-
-
-<br/>
-<h2><a name="sec2">2. Two</a></h2>
-<p>Second section</p>
-
- 
-
-<h3><a name="sec21">2.1 TwoOne</a></h3>
-<p>2.1</p>
-
-
-<h3><a name="sec22">2.2 TwoTwo</a></h3>
-<p>2.2 ...</p>
-
-
-
-
-<br/>
+<p>It is clear that the WSDL model of an interface has had a large
+influence on the design of the CEA, but it should be remembered that
+the CEA is intentionally layered on top of WSDL,&nbsp; so that CEA
+controls the scope and semantics of operations. There is only one WSDL
+defintion for all applications, so as far as web services are concerned
+the interface is constant.&nbsp; CEA works by transporting meta
+information about the application interface within this constant WSDL
+interface.<br>
+</p>
+<h3><a name="sect1_3">1.3 Components</a></h3>
+<h3><a name="sect1_3"></a> Application - This is the process that is to
+be executed. It is
+defined as a process that can consume or create data. So this can
+include unix command line tools, database queries, web services etc.</h3>
+<ul>
+  <li>Common Execution Controller - this is the component that
+implements the CommonExecutionConnector interface, and actually
+controls the execution of the application. There can be various
+specialisms of this service, such as the
+CommandLineApplicationContoller, which can be configured to invoke a
+general unix command line tool, a WebServiceApplicationContoller, which
+can be configured to act as a proxy to call a general web service in a
+uniform manner</li>
+  <li>Invoking process</li>
+  <li>Monitoring Service - This is a service that the Common Execution
+Controller can report status to - it can of course be </li>
+  <li>Storage Service - this is the mechanism by which the application
+can return its results. It can encompass a wide variety of mechansims
+e.g.
+    <ul>
+      <li>SOAP messages</li>
+      <li>http get/put</li>
+      <li>SOAP attachments</li>
+      <li>ftp/gridftp</li>
+      <li>MySpace</li>
+      <li>local filestore</li>
+      <li>etc.</li>
+    </ul>
+  </li>
+</ul>
+<br>
+<h2><a name="sec2">2. Formal Definition</a></h2>
+<h3>Interactions</h3>
+<a
+ href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/CEACallSequence.gif?rev=HEAD&amp;content-type=image/gif"><img
+ style="border: 0px solid ; height: 720px; width: 900px;"
+ alt="CEA UML Sequence Diagram"
+ src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/CEACallSequence.gif?rev=HEAD&amp;content-type=image/gif"></a>
+<p>The above sequence diagram illustrates how the various components of
+the CEA system interact when an application is executed.&nbsp; The
+steps are<br>
+</p>
+<p>Some point of note;</p>
+<ul>
+  <li>The monitoring service could equally be the same as the invoking
+service - they are shown as conceptually separate, as the endpoint of
+this service is passed in as an argument to the call</li>
+  <li>The only guaranteed status message that the monitoring service
+will receive is the one informing it that the application has finished
+(or failed). The application might be capable of sending intermediate
+messages whilst it is sill executing, but this is not required. </li>
+  <li>The results of the application running are not returned directly
+to the invoking process. The final destination for the results is
+implicit in the specification of the output parameters, and it is the
+responsibility of the CommonExecutionController to ensure that they get
+there.</li>
+</ul>
+<h3>Interfaces</h3>
+<h5>CommonExecutionConnector</h5>
+<p>This is the main interface that is used to communicate with the
+application. The main methods of are (please note that there are some
+extra methods defined in the WSDL that are defined for experimental
+purposes)</p>
+<p>The WSDL definition of this interface is stored in cvs at <a
+ href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD">http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD</a></p>
+<iframe
+ src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD&amp;content-type=text/plain"
+ width="100%" height="400">this should display
+http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD&amp;amp;amp;amp;amp;amp;amp;amp;amp;content-type=text/plain
+</iframe>
+<h5>JobMonitorService</h5>
+<p>The WSDL definition of this interface is stored in cvs at <a
+ href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD">http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD</a></p>
+<iframe
+ src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD&amp;content-type=text/plain"
+ width="100%" height="400">this should display
+http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD&amp;amp;amp;amp;amp;amp;amp;amp;amp;content-type=text/plain
+</iframe>
+<h3>Objects</h3>
+<h5>Application</h5>
+<p>uml model</p>
+<img
+ src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/ceaApplication.gif?rev=HEAD&amp;content-type=image/gif">
+<p>As this model depicts an application in CEA is really quite a simple
+entity consisting of 1 or more interfaces that consist of 0 or more
+input parameters and 0 or more output parameters.</p>
+<p>The schema representation is shown below, and is essentially a
+representation of the UML model that has been coded to recognise that
+the same parameter can occur in several interfaces.</p>
+<img src="ApplicationBase.png">
+<h5>Parameter</h5>
+<p>The description of the parameters and the parameter values are
+probably the heart of the CEA. It is the model for the parameters that
+allow us to add semantic meaning, and to give the flexibility in how
+the parameters are transported. The implementation is still in its
+infancy, but it is hoped that the parameter definition will be extented
+to encompass any data models that the VO produces.</p>
+<p>The basic parameter definition from the schema is shown below</p>
+<img src="BaseParameterDefintion.png">
+<p>The <a
+ href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/AGParameterDefinition.html#type_parameterValue">parameterValue</a>
+model is simple but powerful the parameterValue element has 3 attributes</p>
+<ul>
+  <li><b>Name</b></li>
+  <li><b>Type</b> this describes the data type of the parameter. It can
+range from simple atomic types such and integer and string to specific
+astronomical types such as right ascension and declination all the way
+to complex structures such as VOTables and FITS files.</li>
+  <li><b>Transport</b> this describes the transport method to obtain or
+return a parameter. For an input parameter the default is for the
+parameter value to be contained within the calling SOAP message,
+however for an output parameter there is no such default and this
+attribute must be given a value. The different sorts of transport
+include
+    <ul>
+      <li>SOAP messages</li>
+      <li>http get/put</li>
+      <li>SOAP attachments</li>
+      <li>ftp/gridftp</li>
+      <li>MySpace</li>
+      <li>local filestore</li>
+    </ul>
+  </li>
+</ul>
+<p>Note that the current implementation has the type and transport
+attributes combined as one - so that there can be a type of
+MySpace_VOTableReference for instance - the full implemnentation will
+have them separated as described above for more flexibility.</p>
+<h3>Schema</h3>
+<p>The schema associated with the CEA fall into two categories</p>
+<ol>
+  <li>The schema used to define the messages within the
+CommonExecutionConnector interface.</li>
+  <li>The schema that is used to define the VOResource extension for
+CEA.</li>
+</ol>
+<p>These schema are strongly interelated (as they are imported in both
+the WSDL and Registry Schema), which aids programming with
+automated object generation tools, as there are many common objects.
+The schema associated with CEA are
+described below with links to their documentation.</p>
+<table>
+  <tbody>
+    <tr>
+      <th>Filename (with cvs link)</th>
+      <th>Description</th>
+      <th>x3sp Documentation</th>
+    </tr>
+    <tr>
+      <td><a
+ href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/schema/AGApplicationBase.xsd?rev=HEAD&amp;content-type=text/plain">AGApplicationBase.xsd</a></td>
+      <td>This schema defines most of the basic CEA objects that are
+imported into both the WSDL and the Registry Schema</td>
+      <td><a
+ href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/AGApplicationBase.html">Documentation</a></td>
+    </tr>
+    <tr>
+      <td><a
+ href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/schema/CEATypes.xsd?rev=HEAD&amp;content-type=text/plain">CEATypes.xsd</a></td>
+      <td>This defines the the message types that are passed in
+queryStatus operations.<br>
+      </td>
+      <td><a
+ href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/CEATypes.html">Documentation</a></td>
+    </tr>
+    <tr>
+    </tr>
+    <tr>
+      <td><a
+ href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/schema/VOCEA.xsd?rev=HEAD&amp;content-type=text/plain">VOCEA.xsd</a></td>
+      <td>This defines the VOResource extensions of CeaApplication and
+CeaService that are used in the registry</td>
+      <td><a
+ href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/VOCEA.html">Documentation</a></td>
+    </tr>
+    <tr>
+      <td><a
+ href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/schema/AGParameterDefinition.xsd?rev=HEAD&amp;content-type=text/plain">AGParameterDefinition.xsd</a></td>
+      <td>Contains the basic parameter definition and parameter value
+elements used in the other schema</td>
+      <td><a
+ href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/AGParameterDefinition.html">Documentation</a></td>
+    </tr>
+    <tr>
+      <td><a
+ href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/schema/Workflow.xsd?rev=HEAD&amp;content-type=text/plain">Workflow.xsd</a></td>
+      <td>This schema actually describes an astrogrid workflow document
+in full, but as part of this is the <a
+ href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/Workflow.html#element_tool">tool</a>
+element that is passed in as a parameter to the execute method in the
+CommonExecutionConnector method. This tool element will be factored out
+into its own CEA specific schema in future</td>
+      <td><a
+ href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/Workflow.html">Documentation</a></td>
+    </tr>
+  </tbody>
+</table>
+<h2>Deployment</h2>
+<h3>Typical Scenario</h3>
+<img width="834" height="459"
+ src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/CEADeployment.gif?rev=HEAD&amp;content-type=image/gif">
+<p>This deployment shows some of the features of using the CEA</p>
+<ul>
+  <li>On the right hand side of the diagram there are command line
+applications that are wrapped by specialized CommonExecutionControllers
+that allow the workflow engine to use the CommonExecutionConnector
+interface to communicate</li>
+  <li>There is a webservices proxy component that can act as an adapter
+between a generic web service and the CommonExecutionConnector interface</li>
+  <li>On the left of the diagram the webservices proxy is localised
+with a web service so that the results returned by the webservice can
+be stored locally thus minimising network traffic</li>
+</ul>
+<br>
+<h3> What it means for an application to be CEA compliant</h3>
+<br>
+<h2>Future Directions</h2>
+<h3>What needs to be done to make this suitable for adoption by the IVOA</h3>
+<ul>
+  <li>Refactor the schema to remove some of the astrogrid specific
+parts - particulary the tool element needs to be removed from workflow
+and placed in AGApplicationBase.xsd schema.</li>
+  <li>The status callback can be defined in the same WSDL as the main
+interface.</li>
+  <li>Renaming of components/files to not include astrogrid references.<br>
+  </li>
+</ul>
+<h3>Extensions</h3>
+<ul>
+  <li>Add an explicit method of returning results</li>
+  <li>WFResource<a
+ href="http://www.ivoa.net/twiki/bin/view/IVOA/AsynchronousActivityProposal">
+AsynchronousActivityProposal</a></li>
+  <li>Including work from the DM workgroup on basic parameter types</li>
+  <li>Think about Capability/ontology stuff</li>
+</ul>
 <h2><a name="appendix">Appendices</a></h2>
-
-<h2><a name="appA">Appendix A:??...</a></h2>
+<h2><a name="appA">Appendix A: WSDL for the Common Execution Connector<br>
+</a></h2>
 <p>Appenx A text</p>
-
-
-<h2><a name="appB">Appendix B:??...</a></h2>
+<h2><a name="appB">Appendix B:WSDL for the Job Monitor Service<br>
+</a></h2>
 <p>Appendix B text</p>
-
-
 <h2><a name="appC">Appendix C:??...</a></h2>
 <p>Appendix C text</p>
-
-
-
-<br/>
+<br>
 <h2><a name="references">References</a></h2>
-
 <p>[1] <i>Author1, [Author2[, ...]], Title</i>
 <a href="http://www.ivoa.net/Documents/templates">http://www.ivoa.net/Documents/templates</a>
 </p>
-
-
-
-</body></html>
+</body>
+</html>
