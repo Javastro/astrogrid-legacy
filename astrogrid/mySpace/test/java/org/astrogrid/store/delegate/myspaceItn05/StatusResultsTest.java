@@ -1,10 +1,10 @@
-package org.astrogrid.myspace.delegate;
+package org.astrogrid.store.delegate.myspaceItn05;
 
 import junit.framework.*;
 import java.util.*;
 
-import org.astrogrid.myspace.delegate.StatusResults;
-import org.astrogrid.myspace.delegate.StatusCodes;
+import org.astrogrid.store.delegate.myspaceItn05.StatusResults;
+import org.astrogrid.store.delegate.myspaceItn05.StatusCodes;
 
 /**
  * Junit tests for the <code>StatusResults</code> class.

@@ -1,9 +1,9 @@
-package org.astrogrid.myspace.delegate;
+package org.astrogrid.store.delegate.myspaceItn05;
 
 import junit.framework.*;
 import java.util.*;
 
-import org.astrogrid.myspace.delegate.EntryRecord;
+import org.astrogrid.store.delegate.myspaceItn05.EntryRecord;
 
 /**
  * Junit tests for the <code>EntryRecord</code> class.

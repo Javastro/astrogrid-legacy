@@ -1,9 +1,9 @@
-package org.astrogrid.myspace.delegate;
+package org.astrogrid.store.delegate.myspaceItn05;
 
 import junit.framework.*;
 import java.util.*;
 
-import org.astrogrid.myspace.delegate.StatusMessage;
+import org.astrogrid.store.delegate.myspaceItn05.StatusMessage;
 
 /**
  * Junit tests for the <code>StatusMessage</code> class.
