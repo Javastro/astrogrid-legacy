@@ -1,4 +1,4 @@
-//package org.astrogrid.mySpace.mySpaceDemo;
+package org.astrogrid.mySpace.mySpaceDemo;
 
 import javax.swing.*;          //This is the final package name.
 //import com.sun.java.swing.*; //Used by JDK 1.2 Beta 4 and all
