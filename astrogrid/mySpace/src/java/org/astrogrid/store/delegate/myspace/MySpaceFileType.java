@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFileType.java,v 1.1 2004/03/04 12:51:31 mch Exp $
+ * $Id: MySpaceFileType.java,v 1.2 2004/04/23 11:38:19 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -24,10 +24,13 @@ public class MySpaceFileType extends TypeSafeEnumerator
 {
    private static Hashtable holdingIdx = new Hashtable();
    
+   public static final MySpaceFileType UNKNOWN = new MySpaceFileType("0", "Unknown");
    public static final MySpaceFileType FOLDER = new MySpaceFileType("1", "Folder");
-   public static final MySpaceFileType WORKFLOW = new MySpaceFileType("0", "Workflow");
-// public static MySpaceFileType QUERY = new MySpaceFileType("1", "Query");
-// public static MySpaceFileType VOTABLE = new MySpaceFileType("2", "Votable");
+   public static final MySpaceFileType VOTABLE = new MySpaceFileType("2", "Folder");
+   public static final MySpaceFileType QUERY = new MySpaceFileType("3", "Folder");
+   public static final MySpaceFileType WORKFLOW = new MySpaceFileType("4", "Workflow");
+   public static final MySpaceFileType XML = new MySpaceFileType("5", "Workflow");
+
    
    private MySpaceFileType(String holdingRef, String userDesc)
    {
@@ -44,6 +47,9 @@ public class MySpaceFileType extends TypeSafeEnumerator
 
 /*
 $Log: MySpaceFileType.java,v $
+Revision 1.2  2004/04/23 11:38:19  mch
+Fixes to return correct AGSL plus change to File model for It05 delegate
+
 Revision 1.1  2004/03/04 12:51:31  mch
 Moved delegate implementations into subpackages
 

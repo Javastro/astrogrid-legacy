@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFile.java,v 1.1 2004/03/04 12:51:31 mch Exp $
+ * $Id: MySpaceFile.java,v 1.2 2004/04/23 11:38:19 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -8,10 +8,10 @@
  */
 
 package org.astrogrid.store.delegate.myspace;
-import org.astrogrid.store.delegate.*;
-
 import java.net.MalformedURLException;
+import java.net.URL;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.StoreFile;
 
 /**
  * Represents a file in vospace.  There is also MySpaceFolder to represent
@@ -27,7 +27,9 @@ import org.astrogrid.store.Agsl;
 
 
 public class MySpaceFile implements StoreFile {
-   String name, owner, created, expires, size, permissions = null;
+   String name
+      , owner, created, expires, size, permissions = null;
+   URL url = null;
    
    MySpaceFileType type = null;
    MySpaceFolder parentFolder = null; //the ordinary parent is not quite right
@@ -47,6 +49,21 @@ public class MySpaceFile implements StoreFile {
       this.permissions = somePermissions;
       this.type = aType;
    }
+
+   /**
+    * constructor taking URL too - for historical purposes - URLs should be deprecated
+    */
+   public MySpaceFile(MySpaceFolder parent, String aFilename, String anOwner, String aCreatedDate, String anExpiryDate, String aSize, String somePermissions, MySpaceFileType aType, URL aUrl) {
+      this(parent, aFilename);
+      
+      this.owner = anOwner;
+      this.created = aCreatedDate;
+      this.expires = anExpiryDate;
+      this.size = aSize;
+      this.permissions = somePermissions;
+      this.type = aType;
+      this.url = aUrl;
+   }
    
    public String getType() {       return type.toString();   }
    
@@ -63,6 +80,8 @@ public class MySpaceFile implements StoreFile {
 
    public String getPermissions() { return permissions; }
 
+   public URL getUrl() { return url; }
+   
    /** Returns the location of this file as an Astrogrid Storepoint Location */
    public Agsl toAgsl()
    {
@@ -112,6 +131,9 @@ public class MySpaceFile implements StoreFile {
 
 /*
  $Log: MySpaceFile.java,v $
+ Revision 1.2  2004/04/23 11:38:19  mch
+ Fixes to return correct AGSL plus change to File model for It05 delegate
+
  Revision 1.1  2004/03/04 12:51:31  mch
  Moved delegate implementations into subpackages
 

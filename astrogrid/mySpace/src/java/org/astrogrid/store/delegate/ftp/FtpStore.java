@@ -1,5 +1,5 @@
 /*
- $Id: FtpStore.java,v 1.3 2004/03/22 10:25:42 mch Exp $
+ $Id: FtpStore.java,v 1.4 2004/04/23 11:38:19 mch Exp $
 
  (c) Copyright...
  */
@@ -230,7 +230,6 @@ public class FtpStore extends StoreDelegate {
    {
       return this.getClass()+" "+server+":"+port;
    }
-
    /**
     * Copies given stream to server; subdir specifies the subdirectory the
     * file will be placed in.  That subdirectory will be created if it does
@@ -365,6 +364,8 @@ public class FtpStore extends StoreDelegate {
       //@todo
    }
 
+
+   
    /**
     * Streaming output - returns a stream that can be used to output to the given
     * location

@@ -1,5 +1,5 @@
 /*
- * $Id: StoreClient.java,v 1.6 2004/03/22 10:25:42 mch Exp $
+ * $Id: StoreClient.java,v 1.7 2004/04/23 11:38:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -88,6 +88,14 @@ public interface StoreClient {
    public URL getUrl(String sourcePath) throws IOException;
 
    /**
+    * Returns the Agsl for the given source path. This should be sufficient
+    * that we can reach the file for writing to as well; if this requires a
+    * delegate, then the agsl should include the delegate endpoint (eg myspace)
+    * rather than a read-only URL
+    */
+   public Agsl getAgsl(String sourcePath) throws IOException;
+   
+   /**
     * Delete a file
     */
    public void delete(String deletePath) throws IOException;
@@ -120,6 +128,9 @@ public interface StoreClient {
 
 /*
 $Log: StoreClient.java,v $
+Revision 1.7  2004/04/23 11:38:19  mch
+Fixes to return correct AGSL plus change to File model for It05 delegate
+
 Revision 1.6  2004/03/22 10:25:42  mch
 Added VoSpaceClient, StoreDelegate, some minor changes to StoreClient interface
 

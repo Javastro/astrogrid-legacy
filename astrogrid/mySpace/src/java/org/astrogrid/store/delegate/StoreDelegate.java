@@ -1,5 +1,5 @@
 /*
- $Id: StoreDelegate.java,v 1.2 2004/03/22 12:10:30 mch Exp $
+ $Id: StoreDelegate.java,v 1.3 2004/04/23 11:38:19 mch Exp $
 
  (c) Copyright...
  */
@@ -118,5 +118,12 @@ public abstract class StoreDelegate implements StoreClient {
       client.delete(source.getPath());
    }
    
+   /**
+    * Returns the Agsl for the given source path
+    */
+   public Agsl getAgsl(String sourcePath) throws IOException {
+      return new Agsl(getEndpoint()+"#"+sourcePath);
+   }
+
    
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFolder.java,v 1.1 2004/03/04 12:51:31 mch Exp $
+ * $Id: MySpaceFolder.java,v 1.2 2004/04/23 11:38:19 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -8,12 +8,13 @@
  */
 
 package org.astrogrid.store.delegate.myspace;
-import org.astrogrid.store.delegate.*;
-
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
+import org.astrogrid.store.delegate.StoreFile;
 
 /**
  * Represents a folder in myspace. Not threadsafe.
@@ -111,11 +112,49 @@ public class MySpaceFolder implements StoreFile {
       }
       return false;
    }
+
+   /**
+    * Returns the folder or file matching the given path in the *children* of
+    * this folder.  So if the path is '/famous/stuff/main/' the returned StoreFile
+    * will be the MySpaceFolder instance representing the 'main' directory
+    * @todo test
+    */
+   public StoreFile findFile(String path) throws FileNotFoundException {
+      
+      //locate file
+      StringTokenizer dirTokens = new StringTokenizer(path, "/");
+      MySpaceFolder folder = this;
+      StoreFile child = null;
+      while (dirTokens.hasMoreTokens())
+      {
+         String token = dirTokens.nextToken();
+         child = folder.getChild(token);
+         if (child == null) {
+            throw new FileNotFoundException("No such token '"+token+"' in path "+path+" from "+this);
+         }
+         else {
+            if (child.isFolder()) {
+               folder = (MySpaceFolder) child;
+            }
+         }
+      }
+      
+      if (dirTokens.hasMoreTokens()) {
+         throw new FileNotFoundException("path "+path+" only partly found from "+this);
+      }
+      
+      return child;
+      
+   }
+   
    
 }
 
 /*
  $Log: MySpaceFolder.java,v $
+ Revision 1.2  2004/04/23 11:38:19  mch
+ Fixes to return correct AGSL plus change to File model for It05 delegate
+
  Revision 1.1  2004/03/04 12:51:31  mch
  Moved delegate implementations into subpackages
 

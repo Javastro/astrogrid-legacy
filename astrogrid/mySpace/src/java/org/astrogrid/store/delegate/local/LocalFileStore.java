@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFileStore.java,v 1.7 2004/04/06 15:40:46 mch Exp $
+ * $Id: LocalFileStore.java,v 1.8 2004/04/23 11:38:19 mch Exp $
  *
  */
 
@@ -28,6 +28,8 @@ import org.astrogrid.store.Agsl;
  */
 
 public class LocalFileStore extends StoreDelegate implements StoreAdminClient {
+   
+   
    
    /** The root directory for this file store instance */
    private File rootDir = null;
@@ -357,6 +359,9 @@ public class LocalFileStore extends StoreDelegate implements StoreAdminClient {
 
 /*
 $Log: LocalFileStore.java,v $
+Revision 1.8  2004/04/23 11:38:19  mch
+Fixes to return correct AGSL plus change to File model for It05 delegate
+
 Revision 1.7  2004/04/06 15:40:46  mch
 Minor change to javadoc
 

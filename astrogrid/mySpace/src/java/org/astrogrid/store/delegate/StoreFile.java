@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFile.java,v 1.5 2004/04/21 13:50:40 mch Exp $
+ * $Id: StoreFile.java,v 1.6 2004/04/23 11:38:19 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -43,7 +43,9 @@ public interface StoreFile {
    /** Returns the path to this file on the server, including the filename */
    public String getPath();
    
-   /** Returns where to find this file using an AStrogrid Store Locator */
+   /** Returns where to find this file using an AStrogrid Store Locator
+    * @deprecated heavily - use StoreClient.getAgsl(), as this store file need not
+    * know where it comes from*/
    public Agsl toAgsl();
    
    /** Returns true if this represents the same file as the given one, within

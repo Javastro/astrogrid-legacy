@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.StringTokenizer;
 import org.astrogrid.community.User;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
@@ -17,6 +18,9 @@ import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreException;
 import org.astrogrid.store.delegate.StoreFile;
+import org.astrogrid.store.delegate.myspace.MySpaceFile;
+import org.astrogrid.store.delegate.myspace.MySpaceFileType;
+import org.astrogrid.store.delegate.myspace.MySpaceFolder;
 
 
 /**
@@ -34,8 +38,8 @@ import org.astrogrid.store.delegate.StoreFile;
 // Note: Throughout this class the acronym `MSS' denotes a MySpace
 // Service and AGSL denotes an AstroGrid Store-point Locator.
 
-public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
-{
+public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
+   
     /**
      * Commons logger
      */
@@ -230,47 +234,101 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
 // ----------------------------------------------------------------------
 
-/**
+   /**
+    * Helper function for converting EntryResults to MySpaceFile/Folder
+    * returns the name (ie last path token) of an EntryResults
+    */
+   public String getName(EntryResults entryResult) {
+      String path = entryResult.getEntryName();
+
+      //remove trailing slash if any - this just tells us that it's a directory,
+      //but not hainvg one doens't mean it isn't a directory, so ignore
+      if (path.endsWith("/")) {
+         path = path.substring(0,path.length()-1);
+      }
+
+      if (path.lastIndexOf("/") == -1) {
+         return path;
+      }
+      
+      return path.substring(0, path.lastIndexOf("/")-1);
+   }
+   
+   /**
+    * Helper function for converting EntryResults to MySpaceFile/Folder
+    * Creates a MySpaceFile/Folder from the given entry result
+    */
+   public StoreFile makeStoreFile(MySpaceFolder parent, EntryResults result) {
+      StoreFile file;
+      if (result.getType() == EntryCodes.CON) {
+         file = new MySpaceFolder(parent, getName(result));
+      }
+      else {
+         file = new MySpaceFile(parent, getName(result),
+                                result.getOwnerId(),
+                                new Date(result.getCreationDate()).toString(),
+                                new Date(result.getExpiryDate()).toString(),
+                               ""+result.getSize(),
+                               result.getPermissionsMask(),
+                               MySpaceFileType.getForHoldingRef(""+result.getType()));
+      }
+      return file;
+   }
+
+   /**
  * Return a tree representation of the files that match the expression
  */
 
    public StoreFile getFiles(String filter) throws IOException
-   {  EntryNode fileRoot = new EntryNode();
-
-      KernelResults results = innerDelegate.getEntriesList(filter,
-        isTest);
-
-//
-//   Assemble an array of any files which matched the query.
-//   Each file is returned as an EntryResults object, which is
-//   converted to the corresponding EntryRecord.
-
-      Object[] fileResults = results.getEntries();
-      int numFiles = Array.getLength(fileResults);
-
-      if (numFiles > 0)
-      {  ArrayList fileList = new ArrayList();
-
-         for(int loop=0; loop<numFiles; loop++)
-         {  EntryResults file =
-              (EntryResults)fileResults[loop];
-            fileList.add(file);
-         }
-
-         if (filter.equals("*") )
-         {  filter = "/*";
-         }
-
-         fileRoot = new EntryNode(filter, fileList);
-
-      }
-
-//
-//   Append and check any status messages.
+   {
+      //returns a list of the files that match the expression
+      KernelResults results = innerDelegate.getEntriesList(filter, isTest);
 
       this.appendAndCheckStatusMessages(results);
 
-      return fileRoot;
+      if (results == null) {
+         return null;
+      }
+      
+      //turn list into a tree of StoreFiles
+      EntryResults[] fileList = (EntryResults[]) results.getEntries();
+
+      MySpaceFolder root = new MySpaceFolder(new Msrl(Msrl.SCHEME+":"+getEndpoint()), "/");
+      
+      //represent entries
+      for (int r=0;r<fileList.length;r++) {
+         
+         EntryResults result = fileList[r];
+         
+         //Work out parent. Assumes parent folders appear in list before the children do.
+         MySpaceFolder parentFolder;
+         //Start with finding parent part of path
+         String path = result.getEntryName();
+         //remove trailing slash if any - this just tells us that it's a directory,
+         //but not hainvg one doens't mean it isn't a directory, so ignore
+         if (path.endsWith("/")) {
+            path = path.substring(0,path.length()-1);
+         }
+         //remove starting slash as we don't care if it has one of those or not
+         if (path.startsWith("/")) {
+            path = path.substring(1);
+         }
+         if (path.indexOf("/")==-1) {
+            //no other slashes - must be a root directory file
+            parentFolder = root;
+         }
+         else {
+            String parentPath = path.substring(0, path.indexOf("/")-1);
+            parentFolder = (MySpaceFolder) root.findFile(parentPath);
+         }
+
+
+                  //work out type & create right instance
+         StoreFile file = makeStoreFile(parentFolder, result);
+         parentFolder.add(file);
+      }
+      
+      return root;
    }
 
 
@@ -288,41 +346,29 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  */
 
    public StoreFile[] listFiles(String filter) throws IOException
-   {  StoreFile[] files = new StoreFile[1];
+   {
+      KernelResults results = innerDelegate.getEntriesList(filter, isTest);
 
-      KernelResults results = innerDelegate.getEntriesList(filter,
-        isTest);
+      this.appendAndCheckStatusMessages(results);
 
+      if (results == null) {
+         return null;
+      }
 //
 //   Assemble an array of any files which matched the query.
 //   Each file is returned as an EntryResults object, which is
 //   converted to the corresponding EntryRecord.
 
-      Object[] fileResults = results.getEntries();
-      if (fileResults == null) {
-         return null;
-      }
-      int numFiles = fileResults.length;
-
-      if (numFiles > 0)
-      {  files = new StoreFile[numFiles];
-
-         for(int loop=0; loop<numFiles; loop++)
-         {  EntryRecord file = new EntryRecord(
-              (EntryResults)fileResults[loop] );
-            files[loop] = file;
-         }
-      }
-      else
-      {  files = null;
+      //copy list into a list of StoreFiles
+      EntryResults[] resultList = (EntryResults[]) results.getEntries();
+      StoreFile[] fileList = new StoreFile[resultList.length];
+      
+      for(int loop=0; loop<resultList.length; loop++)
+      {
+         fileList[loop] = makeStoreFile(null, resultList[loop]);
       }
 
-//
-//   Append and check any status messages.
-
-      this.appendAndCheckStatusMessages(results);
-
-      return files;
+      return fileList;
    }
 
 
@@ -353,11 +399,21 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
          return null;
       }
       else  {
-         return new EntryRecord( (EntryResults) results.getEntries()[0]);
+         return makeStoreFile(null, (EntryResults) results.getEntries()[0]);
       }
    }
 
 
+   /**
+    * Returns the Agsl for the given source path
+    */
+   public Agsl getAgsl(String sourcePath) throws IOException {
+      return new Agsl(Msrl.SCHEME+":"+getEndpoint(), sourcePath);
+   }
+   
+   
+   
+   
 // ----------------------------------------------------------------------
 
 /**
@@ -562,9 +618,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
    public URL getUrl(String sourcePath) throws IOException
    {
-      EntryRecord file = (EntryRecord) this.getFile(sourcePath);
+      MySpaceFile file = (MySpaceFile) this.getFile(sourcePath);
       if (file == null) return null;
-      return new URL(file.getEntryUri());
+      return file.getUrl();
    }
 
 
