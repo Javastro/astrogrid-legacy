@@ -115,9 +115,9 @@ tomcat.password=secret<br />
    </dependency>
 
     <dependency>
-      <groupId>astrogrid-registry</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-client</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -238,15 +238,6 @@ tomcat.password=secret<br />
                 </properties>
         </dependency>
 
-        <!-- myspace -->
-       <dependency>
-        <id>astrogrid-mySpace</id>
-        <groupId>org.astrogrid</groupId>
-        <version>${pom.currentVersion}</version>
-       <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-    </dependency>
 
    <!-- sun's activation jar. we need to include it, as tomcat 5 lacks it -->
    <dependency>
