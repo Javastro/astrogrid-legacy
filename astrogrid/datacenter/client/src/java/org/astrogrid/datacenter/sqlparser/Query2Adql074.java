@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql074.java,v 1.11 2004/09/08 15:40:57 mch Exp $
+ * $Id: Query2Adql074.java,v 1.12 2004/09/08 21:04:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,7 +27,7 @@ public class Query2Adql074  {
    
    private static final String aggregateFuncs=" AVG MIN MAX SUM COUNT ";
    private static final String trigFuncs=" SIN COS TAN COT ASIN ACOS ATAN ATAN2 ";
-   private static final String mathFuncs=" ABS CEILING DEGREES EXP FLOOR LOG PI POWER RADIANS SQRT SQUARE LOG10 RAND ROUND TRUNCATE AVG ";
+   private static final String mathFuncs=" ABS CEILING DEGREES EXP FLOOR LOG PI POWER RADIANS SQRT SQUARE LOG10 RAND ROUND TRUNCATE ";
 
    public static String makeAdql(Query query, String comment) throws IOException {
 
@@ -192,13 +192,14 @@ public class Query2Adql074  {
    /** Writes out the adql for a general numeric function */
    public static void writeFunction(XmlTagPrinter parentTag, String elementName, Function function) throws IOException {
       String type = null;
-      if (aggregateFuncs.toUpperCase().indexOf(" "+function.getName()+" ")>-1) {
+      String name = function.getName().toUpperCase();
+      if (aggregateFuncs.indexOf(" "+name+" ")>-1) {
          type = "xsi:type='aggregateFunctionType'";
       }
-      if (trigFuncs.toUpperCase().indexOf(" "+function.getName()+" ")>-1) {
+      if (trigFuncs.toUpperCase().indexOf(" "+name+" ")>-1) {
          type = "xsi:type='trigonometricFunctionType'";
       }
-      if (mathFuncs.toUpperCase().indexOf(" "+function.getName()+" ")>-1) {
+      if (mathFuncs.toUpperCase().indexOf(" "+name+" ")>-1) {
          type = "xsi:type='mathFunctionType'";
       }
       if (type==null) {
@@ -235,6 +236,9 @@ public class Query2Adql074  {
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.12  2004/09/08 21:04:39  mch
+ fix to case chagne
+
  Revision 1.11  2004/09/08 15:40:57  mch
  Fix for mixed case functions
 
