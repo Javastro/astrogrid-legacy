@@ -15,7 +15,7 @@ This document is an incomplete draft.  Please send comments to acd@roe.ac.uk
                                --- DRAFT ---
 
                         A C Davenhall and J D Taylor
-                         Version 2, 6 January 2004
+                         Version 3, 23 January 2004
 
 
 Purpose and Status of this Document
@@ -191,20 +191,20 @@ To install an AstroGrid MySpace service proceed as follows.
 
      astrogrid/mySpace/xdocs/createregistry_v02.lis
 
-8.  Move the file
+8. Move the file:
 
     $CATALINA_HOME/webapps/astrogrid-mySpace/ASTROGRID_myspacemanagerconfig.xml
 
-    to the directory:
+   to the directory:
 
      $CATALINA_HOME/webapps/astrogrid-mySpace/WEB-INF/classes
      
-     (The file is not automatically placed in this directory so that existing configurations are not lost if you are
-     updating an installation)
+   (The file is not automatically placed in this directory so that
+   existing configurations are not lost if you are updating an installation.)
+   Then edit the copy:
 
-   and then edit file:
-
-     ASTROGRID_myspacemanagerconfig.xml
+     $CATALINA_HOME/webapps/astrogrid-mySpace/WEB-INF/classes/
+                                           ASTROGRID_myspacemanagerconfig.xml
 
    Edit the properties MYSPACEMANAGERURL and MYSPACEMANAGERURLs and set
    both their values to:
@@ -314,6 +314,8 @@ Revision History
 Version 1, 4/1/04:  Original version for Iteration 4.              (ACD, JDT)
 Version 2, 6/1/04:  Minor corrections, added section on building   (ACD, JDT)
                     from source.                                  
+Version 3, 23/1/04: Tweaks to instructions for editing
+                    ASTROGRID_myspacemanagerconfig.xml.            (JDT, ACD)
 
 -----------------------------------------------------------------------------
 AstroGrid Iteration 4 Kit.                                    MySpace service
