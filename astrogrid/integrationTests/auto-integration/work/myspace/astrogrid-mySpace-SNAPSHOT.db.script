@@ -1,7 +1,7 @@
 CREATE TABLE REG(DATAITEMNAME VARCHAR(150),DATAITEMID INTEGER NOT NULL IDENTITY PRIMARY KEY,DATAITEMFILE VARCHAR(15),OWNERID VARCHAR(20),CREATIONDATE DATE,EXPIRYDATE DATE,SIZE INTEGER,TYPE INTEGER,PERMISSIONSMASK VARCHAR(20))
 CREATE TABLE SERVERS(NAME VARCHAR(15),EXPIRYPERIOD INTEGER,URI VARCHAR(50),DIRECTORY VARCHAR(50))
-GRANT ALL ON CLASS "org.hsqldb.Library" TO PUBLIC
 GRANT ALL ON CLASS "java.lang.Math" TO PUBLIC
+GRANT ALL ON CLASS "org.hsqldb.Library" TO PUBLIC
 CREATE USER SA PASSWORD "" ADMIN
 CREATE ALIAS DAYNAME FOR "org.hsqldb.Library.dayname"
 CREATE ALIAS SPACE FOR "org.hsqldb.Library.space"
@@ -71,9 +71,4 @@ CREATE ALIAS RAND FOR "java.lang.Math.random"
 CREATE ALIAS LENGTH FOR "org.hsqldb.Library.length"
 CREATE ALIAS ROUND FOR "org.hsqldb.Library.round"
 CREATE ALIAS REPLACE FOR "org.hsqldb.Library.replace"
-INSERT INTO REG VALUES('/noel@jodrell',0,'none','sysadmin','2004-03-12','2004-03-12',0,1,'permissions')
-INSERT INTO REG VALUES('/noel@jodrell/serv1',1,'none','sysadmin','2004-03-12','2004-03-12',0,1,'permissions')
-INSERT INTO REG VALUES('/noel@jodrell/serv1/query',2,'none','sysadmin','2004-03-12','2004-04-04',0,1,'permissions')
-INSERT INTO REG VALUES('/noel@jodrell/serv1/workflow',3,'none','sysadmin','2004-03-12','2004-04-04',0,1,'permissions')
-INSERT INTO REG VALUES('/noel@jodrell/serv1/votable',4,'none','sysadmin','2004-03-12','2004-04-04',0,1,'permissions')
-INSERT INTO SERVERS VALUES('serv1',23,'http://localhost:8080/myspace-store','/var/lib/tomcat5/webapps/myspace-store')
+INSERT INTO SERVERS VALUES('serv1',30,'@TOMCATROOT@/myspace-store/','@TOMCATLOC@/webapps/myspace-store/')
