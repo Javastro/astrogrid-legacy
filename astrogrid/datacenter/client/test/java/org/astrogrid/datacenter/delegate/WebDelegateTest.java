@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegateTest.java,v 1.7 2004/03/12 20:04:39 mch Exp $
+ * $Id: WebDelegateTest.java,v 1.8 2004/08/02 14:48:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,8 @@ package org.astrogrid.datacenter.delegate;
 
 
 /**
- * Tests DatacenterDelegate - or at least the dummy one
+ * Tests the web delegate.  This is a bit naughty as it's not really a unit
+ * test - it requires a real PAL to connect to
  *
  * @author M Hill
  */
@@ -27,8 +28,8 @@ public class WebDelegateTest extends TestCase
 {
 
    //an astrogrid web service
-   private static String TEST_PAL = "http://vm07.astrogrid.org:8080/pal-SNAPSHOT/services/AxisDataServer";
-   
+   private static String TEST_PAL = "http://twmbarlwm.star.le.ac.uk/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
+
    /**
     * Tests an SQL-pass through query on the dummy
     */
@@ -62,6 +63,9 @@ public class WebDelegateTest extends TestCase
 
 /*
  * $Log: WebDelegateTest.java,v $
+ * Revision 1.8  2004/08/02 14:48:01  mch
+ * Fixed to use twmbarlwm as server to test against
+ *
  * Revision 1.7  2004/03/12 20:04:39  mch
  * It05 Refactor (Client)
  *
