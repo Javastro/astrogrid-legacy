@@ -114,7 +114,9 @@ public class JesAction extends AbstractAction {
     
     public static final String ERROR_MESSAGE_PARAMETER = "ErrorMessage";
     
-    public static final String ACTION_READ_JOB_LIST = "read-job-list",
+    public static final String ACTION_CANCEL_JOB = "cancel-job",
+	                           ACTION_DELETE_JOB = "delete-job",
+                               ACTION_READ_JOB_LIST = "read-job-list",
 	                           ACTION_READ_JOB = "read-job";
         
     public static final String AUTHORIZATION_RESOURCE_JOB = "job" ,
@@ -235,8 +237,13 @@ public class JesAction extends AbstractAction {
                 if( action == null ){
                     debug( "action is null");  
                 }  
-                    
-                if( action.equals( ACTION_READ_JOB_LIST ) ) {
+				else if( action.equals( ACTION_CANCEL_JOB ) ) {
+					this.cancelJob(); 
+				}
+				else if( action.equals( ACTION_DELETE_JOB ) ) {
+					this.deleteJob() ;
+				}                   
+                else if( action.equals( ACTION_READ_JOB_LIST ) ) {
                     this.readJobList(); 
                 }
 				else if( action.equals( ACTION_READ_JOB ) ) {
@@ -381,7 +388,7 @@ public class JesAction extends AbstractAction {
                  this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
             }
             catch( Exception ex ) {
-                
+                ex.printStackTrace() ;                
                 this.request.setAttribute(  ERROR_MESSAGE_PARAMETER, "permission denied" );
                 
             }
@@ -391,7 +398,75 @@ public class JesAction extends AbstractAction {
             }
                     
         } // end of readJobList()   
-        
+
+
+		private void cancelJob() {
+			if( TRACE_ENABLED ) trace( "JesActionImpl.cancelJob() entry" );
+            
+			JobURN jobURN = new JobURN();
+              
+			try 
+			{				
+				String jobURNString = request.getParameter( JOBURN_PARAMETER ) ;
+				
+				if( jobURNString == null ) {
+					debug("jobURN string is null") ;
+					throw new ConsistencyException() ; 
+				}
+				else{
+					jobURN.setContent( jobURNString );		
+					JobExecutionService jes = workflowManager.getJobExecutionService();							
+					jes.cancelJob( jobURN ) ;					
+				}
+			}                 
+								
+			catch( WorkflowInterfaceException wix ) {
+				this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
+			}
+			catch( Exception ex ) {                
+				this.request.setAttribute(  ERROR_MESSAGE_PARAMETER, "permission denied" );                
+			}
+			finally {
+				if( TRACE_ENABLED )
+					trace( "JesActionImpl.cancelJob() exit" );
+			}
+                    
+		} // end of cancelJob()
+
+
+		private void deleteJob() {
+			if( TRACE_ENABLED ) trace( "JesActionImpl.deleteJob() entry" );
+            
+			JobURN jobURN = new JobURN();
+              
+			try {				
+				String jobURNString = request.getParameter( JOBURN_PARAMETER ) ;
+				
+				if( jobURNString == null ) {
+					debug("jobURN string is null") ;
+					throw new ConsistencyException() ; 
+				}
+				else{
+					debug("jobURN: " + jobURNString ) ;
+					jobURN.setContent( jobURNString );		
+					JobExecutionService jes = workflowManager.getJobExecutionService();							
+					jes.deleteJob( jobURN ) ;										
+				}                 
+			}
+							
+			catch( WorkflowInterfaceException wix ) {
+				this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
+			}
+			catch( Exception ex ) {                
+				this.request.setAttribute(  ERROR_MESSAGE_PARAMETER, "permission denied" );                
+			}
+			finally {
+				if( TRACE_ENABLED )
+					trace( "JesActionImpl.deleteJob() exit" );
+			}
+                    
+		} // end of deleteJob()
+
 
 		private void readJob() {
 			if( TRACE_ENABLED ) trace( "JesActionImpl.readJob() entry" );
@@ -410,10 +485,13 @@ public class JesAction extends AbstractAction {
 				else{
                     jobURN.setContent( jobURNString );		
 					JobExecutionService jes = workflowManager.getJobExecutionService();							
-					workflow = jes.readJob( jobURN ) ;
+					workflow = jes.readJob( jobURN ) ;					
 				}                 
 				
 				if (workflow != null ){
+					debug( "name: " + workflow.getName() ) ; 
+					debug( "description: " + workflow.getDescription() ) ;       
+										
 					// Save the workflow in the session object...
 					debug( "about to set workflow session attribute..." ) ;
 					session.setAttribute( HTTP_WORKFLOW_TAG, workflow ) ;
