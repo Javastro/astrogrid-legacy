@@ -3,25 +3,30 @@
 <!--fill in the passwords below-->
 <root>
    <servers>
-      <c>
-        <url>http://vm05.astrogrid.org:8080/manager/</url>
-        <user>tomcat</user>
-        <password>gandalf</password>
-      </c>
       <a>
-        <url>http://vm06.astrogrid.org:8080/manager/</url>
-        <user>tomcat</user>
-        <password>tomcat</password>
+        <url>http://uml01.astrogrid.org:8080/manager/</url>
+        <user>integration</user>
+        <password></password>
       </a>
       <b>
-        <url>http://vm07.astrogrid.org:8080/manager/</url>
-        <user>eca</user>
-        <password>allareas</password>
+        <url>http://uml01.astrogrid.org:8080/manager/</url>
+        <user>integration</user>
+        <password></password>
       </b>
+      <c>
+        <url>http://uml01.astrogrid.org:8080/manager/</url>
+        <user>integration</user>
+        <password></password>
+      </c>
       <d>
-        <url>vm08.astrogrid.org:8080/manager/</url>
-        <user>tomcat</user>
+        <url></url>
+        <user></user>
         <password></password>
       </d>
+      <e>
+        <url>http://grendel12.roe.ac.uk:8080/manager</url>
+        <user>acd</user>
+        <password></password>
+      </e>
    </servers>
 </root>
