@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.14 2004/04/20 12:45:55 KevinBenson Exp $
+ * $Id: VoSpaceResolver.java,v 1.15 2004/04/20 15:26:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,21 +10,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.User;
+import org.astrogrid.community.common.exception.CommunityException;
+import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
-
-
-import org.astrogrid.registry.client.query.RegistryService;
-import org.astrogrid.registry.client.RegistryDelegateFactory;
-import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
-import org.astrogrid.community.common.ivorn.CommunityIvornParser;
 
 /**
  * A VoSpaceResolver is used to resolve actual locations from IVORNs to any
@@ -36,7 +33,7 @@ import org.astrogrid.community.common.ivorn.CommunityIvornParser;
  *
  * It makes use of the registry and commnunity to look up IVORNs
  * --------------------------------------------------------------------
- * 
+ *
  * -------------------------------------------------------------------
  *
  */
@@ -48,46 +45,46 @@ public class VoSpaceResolver {
 
    private static Log log = LogFactory.getLog(VoSpaceResolver.class);
    
-//   private static final String VOSPACE_CLASS_RESOURCE_KEY_LOOKUP = "org.astrogrid.store.myspace.MyspaceMgr";   
-   private static final String VOSPACE_CLASS_RESOURCE_KEY_LOOKUP = "myspace";   
+//   private static final String VOSPACE_CLASS_RESOURCE_KEY_LOOKUP = "org.astrogrid.store.myspace.MyspaceMgr";
+   private static final String VOSPACE_CLASS_RESOURCE_KEY_LOOKUP = "myspace";
    
    /**
     * Given an IVO Resource Name, resolves the AGSL
     */
    public static Agsl resolveAgsl(Ivorn ivorn) throws IOException {
 
-      //NB the implementation is not complete until we have sorted out how this is supposed to work in detail
-      
       //the fragment bit is not relevent to the service lookup - preserve it
-      String fragment = ivorn.getFragment();
+      //String fragment = ivorn.getFragment();
 
+      //used for debug/user info - says somethign about where the ivorn has been looked for
+      String lookedIn = "";
+      
       Agsl agsl = null;
       
       //look up in config first
       String s = SimpleConfig.getSingleton().getString(ivorn.getPath(), null);
+      lookedIn += "Config (key="+ivorn.getPath()+") ";
       if (s != null) {
-         agsl = new Agsl(s);
+         agsl = new Agsl(s, ivorn.getFragment());
+         
       }
 
       if (agsl == null) {
-         try {         
-            agsl = communityResolve(ivorn);
-         }catch(ResolverException re) {
-            //re.printStackTrace();
-            agsl = null;
-         }
+         ivorn = getCommunityMySpace(ivorn);
+         lookedIn += ", Community "+community+ "(->"+ivorn+")";
       }
 
 
       if (agsl == null) {
-         agsl = registryResolve(ivorn);         
+         agsl = resolveUsingRegistry(ivorn);
+         lookedIn += ", Registry "+registry;
       }
       
 
       if (agsl == null) {
-         throw new FileNotFoundException("Cannot resolve "+ivorn);
+         throw new FileNotFoundException("Cannot resolve "+ivorn+" from "+lookedIn);
       }else {
-         System.out.println("the agsl = " + agsl.toString());
+         log.trace("Resolved "+ivorn+" to "+agsl);
       }
 
       return agsl;
@@ -100,6 +97,15 @@ public class VoSpaceResolver {
     */
    public static StoreClient resolveStore(User user, Ivorn ivorn) throws IOException {
       return StoreDelegateFactory.createDelegate(user, resolveAgsl(ivorn));
+   }
+
+   /**
+    * Given an IVO Resource Name, looks it up in the community/registry, and
+    * returns the appropriate StoreAdminClient to administer it. Ignores any fragment
+    * given.  The user is the account attempting to access the store.
+    */
+   public static StoreAdminClient resolveStoreAdmin(User user, Ivorn ivorn) throws IOException {
+      return StoreDelegateFactory.createAdminDelegate(user, resolveAgsl(ivorn));
    }
    
    /**
@@ -118,22 +124,32 @@ public class VoSpaceResolver {
    public static OutputStream resolveOutputStream(User user, Ivorn ivorn) throws IOException {
       return resolveAgsl(ivorn).openOutputStream(user);
    }
-   
-   /** Resolve using Registry
+
+   /**
+    * Given an IVORN, does a straight resolve using the registry delegate
     */
-   public static Agsl registryResolve(Ivorn ivorn) throws IOException {
-      /** This is the deprecated nyspace one; use the one in ivor if you want
-       * real registry resolving *
-       */
-      //lazy load registry delegate - also more robust in case it doesn't instantiate
-      System.out.println("entered registry resolve");
+   private static Agsl resolveUsingRegistry(Ivorn ivorn) throws IOException {
       if (registry == null) {
-         try {
-            makeRegistryDelegate();
-         }
-         catch (Exception e) {
-            log.error("Could not create Registry Delegate: ",e);
-         }
+         makeRegistryDelegate();
+      }
+
+      try {
+         String endPoint = registry.getEndPointByIdentifier(ivorn.getPath());
+         return new Agsl(endPoint, ivorn.getFragment());
+      }
+      catch (RegistryException e) {
+         throw new ResolverException("Failed to find agsl endpoint for '"+ivorn+"' using "+registry);
+      }
+      
+   }
+   
+   /** Resolve IVORN using Registry
+    *
+   private static Agsl registryResolve(Ivorn ivorn) throws IOException {
+      //lazy load registry delegate - also more robust in case it doesn't instantiate
+      log.trace("entered registry resolve");
+      if (registry == null) {
+         makeRegistryDelegate();
       }
       
       if (registry != null) {
@@ -153,9 +169,9 @@ public class VoSpaceResolver {
             }
 
             String ident = ci.getCommunityName() ;
-            if (null != ci.getAccountName())	{
-	           ident = ident + "/" + ci.getAccountName() ;
-	         }
+            if (null != ci.getAccountName()) {
+              ident = ident + "/" + ci.getAccountName() ;
+            }
 
             System.out.println("Lookfor endpoint with ident = " + ident);
             String vospaceEndPoint = registry.getEndPointByIdentifier(ident);
@@ -180,11 +196,8 @@ public class VoSpaceResolver {
    }
    
    /** Resolve using Registry
-    */
-   public static Agsl registryMyspaceResolve(Ivorn ivorn) throws IOException {
-      /** This is the deprecated nyspace one; use the one in ivor if you want
-       * real registry resolving *
-       */
+    *
+   private static Agsl registryMyspaceResolve(Ivorn ivorn) throws IOException {
       //lazy load registry delegate - also more robust in case it doesn't instantiate
       System.out.println("entered registry resolve specefic for Myspace");
       if (registry == null) {
@@ -232,39 +245,53 @@ public class VoSpaceResolver {
    
    /**
     * Lazy registry delegate load
-    *
     */
-   public static synchronized void makeRegistryDelegate() throws IOException {
+   private static synchronized void makeRegistryDelegate() throws IOException {
       if (registry == null) {
          registry = RegistryDelegateFactory.createQuery();
       }
    }
 
-   /** Resolve using Community
+   /**
+    * Returns the ivorn to the myspace for the community specified by the givne ivorn
     */
-   public static Agsl communityResolve(Ivorn ivorn) throws IOException {
-      /**
-       //lazy load delegate - also more robust in case it doesn't instantiate
-        */ 
-      System.out.println("entered communityResolvoe");
+   private static Ivorn getCommunityMySpace(Ivorn communityIvorn) throws IOException {
+      //lazy load delegate - also more robust in case it doesn't instantiate
       if (community == null) {
-         try {
-            makeCommunityDelegate();
-         }
-         catch (Exception e) {
-            log.error("Could not create Community Delegate: ",e);
-         }
+         makeCommunityDelegate();
+      }
+      try {
+         Ivorn commIvo = community.resolve(communityIvorn);
+         return commIvo;
+      }
+      catch (CommunityException e) {
+         throw new ResolverException("Community "+community+" failed to return myspace for community "+communityIvorn);
+      }
+      catch (RegistryException e) {
+         throw new ResolverException("Community "+community+" failed to return myspace for community "+communityIvorn);
+      }
+   }
+   
+   /** Resolve using Community
+    *
+   private static Agsl communityResolve(Ivorn ivorn) throws IOException {
+
+      //lazy load delegate - also more robust in case it doesn't instantiate
+      log.trace("entered communityResolvoe");
+      if (community == null) {
+         makeCommunityDelegate();
       }
       
       Ivorn commIvo = null;
+      Ivorn regIvo = null;
       if (community != null) {
          try {
             commIvo = community.resolve(ivorn);
             CommunityIvornParser ci = new CommunityIvornParser(commIvo);
-            System.out.println("Community resolved = " + commIvo.toString());
-            System.out.println("the commname = " + ci.getCommunityName());
-            System.out.println("the account name = " + ci.getAccountName());
-            System.out.println("the remainder = " + ci.getRemainder());
+            log.info("Resolving "+ivorn+" using community "+ commIvo.toString() +
+                     " (comname = " + ci.getCommunityName() +
+                     ", account name = " + ci.getAccountName() +
+                     ", remainder = " + ci.getRemainder()+")");
 
             String remainder = "" ;
             if (null != ci.getAccountName()) {
@@ -273,15 +300,16 @@ public class VoSpaceResolver {
 
             if(ci.getRemainder() != null && ci.getRemainder().trim().length() > 0) {
                remainder += ci.getRemainder();
-            }                        
+            }
             
-            Ivorn regIvo = new Ivorn(Ivorn.SCHEME + "://" + ci.getCommunityName() + "/" + VOSPACE_CLASS_RESOURCE_KEY_LOOKUP + remainder);                        
+            regIvo = new Ivorn(Ivorn.SCHEME + "://" + ci.getCommunityName() + "/" + VOSPACE_CLASS_RESOURCE_KEY_LOOKUP + remainder);
+
             return registryMyspaceResolve(regIvo);
          }catch(ResolverException re) {
             //okay the community found an ivo, but it was not in the registry
-            throw new ResolverException("Community seems to resolve, but not registry " + ivorn + " commIvo = " + commIvo,re);
+            throw new ResolverException("Community resolved "+ivorn+" to "+commIvo+", but registry failed to resolve resulting " + regIvo,re);
          } catch(Exception e) {
-            throw new ResolverException("Community & Registry failed resolving "+ivorn,e);
+            throw new ResolverException(e+" resolving Ivorn "+ivorn+" (-> commIvo "+commIvo+", regIvo"+regIvo+")",e);
          }
       }
             
@@ -292,7 +320,7 @@ public class VoSpaceResolver {
     * Lazy community delegate load
     *
     */
-   public static synchronized void makeCommunityDelegate() throws IOException {
+   private static synchronized void makeCommunityDelegate() throws IOException {
       
       if (community == null) {
          community = new CommunityAccountSpaceResolver();
@@ -303,6 +331,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.15  2004/04/20 15:26:46  mch
+More complete error reporting and simplified resolving (not as featureful ? as before)
+
 Revision 1.14  2004/04/20 12:45:55  KevinBenson
 commented out the printStackTrace
 
@@ -358,4 +389,5 @@ Revision 1.1  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 
  */
+
 

@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceClient.java,v 1.8 2004/04/20 12:35:32 mch Exp $
+ * $Id: VoSpaceClient.java,v 1.9 2004/04/20 15:26:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -132,8 +132,7 @@ public class VoSpaceClient {
    
    public Ivorn createUser(Ivorn target, Ivorn user) throws IOException, URISyntaxException {
       //Agsl vospaceTarget = VoSpaceResolver.resolveAgsl(target);
-      Agsl vospaceTarget = VoSpaceResolver.registryMyspaceResolve(target);
-      StoreAdminClient client = StoreDelegateFactory.createAdminDelegate(operator, vospaceTarget);
+      StoreAdminClient client = VoSpaceResolver.resolveStoreAdmin(operator, target);
       CommunityIvornParser ci = null;
       try {
          ci = new CommunityIvornParser(user);
@@ -145,10 +144,9 @@ public class VoSpaceClient {
       return new Ivorn(target.toString());
    }
    
-   public void deleteUser(Ivorn target, Ivorn user) throws IOException, URISyntaxException {
+   public void deleteUser(Ivorn target, Ivorn user) throws IOException {
       //Agsl vospaceTarget = VoSpaceResolver.resolveAgsl(target);
-      Agsl vospaceTarget = VoSpaceResolver.registryMyspaceResolve(target);
-      StoreAdminClient client = StoreDelegateFactory.createAdminDelegate(operator, vospaceTarget);
+      StoreAdminClient client = VoSpaceResolver.resolveStoreAdmin(operator, target);
       CommunityIvornParser ci = null;
       try {
          ci = new CommunityIvornParser(user);
@@ -162,6 +160,9 @@ public class VoSpaceClient {
 
 /*
 $Log: VoSpaceClient.java,v $
+Revision 1.9  2004/04/20 15:26:46  mch
+More complete error reporting and simplified resolving (not as featureful ? as before)
+
 Revision 1.8  2004/04/20 12:35:32  mch
 Moved std.out stacktrace to wrapping exception
 
@@ -193,4 +194,5 @@ Revision 1.4  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 
  */
+
 
