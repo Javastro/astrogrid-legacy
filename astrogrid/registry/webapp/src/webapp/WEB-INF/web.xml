@@ -177,6 +177,7 @@
   </mime-mapping>
 
   <welcome-file-list id="WelcomeFileList">
+    <welcome-file>registry_index.html</welcome-file>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>index.jws</welcome-file>
