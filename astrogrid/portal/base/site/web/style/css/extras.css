@@ -12,6 +12,7 @@
 	border-right: ridge 3px #000088;
 	border-bottom: ridge 3px #000088;
 	border-left: ridge 3px #000088;
+  z-index: 1; /* This is needed to ensure help pops up on top of other divs */
 }
 
 .helpButton {
@@ -613,6 +614,15 @@
 	text-decoration: underline;
 }
 
+div.coolishTitleBar {
+ border-style: solid;
+ border-width: 1px 0px 1px 0px;
+ border-color: #000000;
+ background: #EEFFFF;
+ padding: 3px 2px 3px 2px;
+ margin: 8px 0px 0px 0px;  /* To space it off the profile stuff */
+}
+
 .agCoolTitle {
 	font-family: 'Helvetica', arial, sans-serif;
 	font-size: 1.2em;
@@ -630,13 +640,21 @@
 	font-family: helvetica, arial, sans-serif;
 	font-size: 14px;
 	font-weight: bold;
-	color: #000099;
+	color: #000000;
+/*
 	background-color: #FFFFFF;
+*/
+  padding: 1px;
+/*
 	padding-top: 1px;
 	padding-bottom: 1px;
 	padding-right: 1em;
 	padding-left: 1em;
+*/
+/*
 	border: 1px solid #000099;
+*/
+	border: none;
 }
 
 .agSectionTitle {

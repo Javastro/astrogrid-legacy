@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.14 2004/12/07 16:26:04 clq2 Exp $
+    | CVS $Id: sitemap.xmap,v 1.15 2004/12/10 09:50:49 jdt Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -694,8 +694,8 @@
       <!-- Need explicit match for logout because user is still set
       (session not destroyed yet) when header is generated). 
       -->
-     <!-- The myHome page is a special case in the login section - it's the
-        only page where the user is logged in and should see nav etc -->
+     <!-- The myHome and userData* pages are a special case in the login section - 
+        they're the only pages where the user is logged in and should see nav etc -->
       <map:match pattern="main/mount/login/myHome">
         <map:aggregate element="ag-page">
           <map:part element="ag-header" src="cocoon:/test/header_login.html"/>
@@ -703,9 +703,19 @@
           <map:part element="ag-body" src="cocoon:/mount/login/myHome"/>
           <map:part element="ag-footer" src="cocoon:/test/footer.html"/>
         </map:aggregate>
-
         <map:call resource="commonPageGenerator"/>
       </map:match>
+
+      <map:match pattern="main/mount/login/userData**">
+        <map:aggregate element="ag-page">
+          <map:part element="ag-header" src="cocoon:/test/header_login.html"/>
+          <map:part element="ag-profile" src="cocoon:/mount/login/profile.i07"/>
+          <map:part element="ag-body" src="cocoon:/mount/login/userData{1}"/>
+          <map:part element="ag-footer" src="cocoon:/test/footer.html"/>
+        </map:aggregate>
+        <map:call resource="commonPageGenerator"/>
+      </map:match>
+
       <!-- Login pages - no nav, different stylesheet etc  -->
       <map:match pattern="main/mount/login/**">
         <map:aggregate element="ag-page">
@@ -822,6 +832,25 @@
         <map:serialize type="xhtml"/>
       </map:match>      
     
+<!--
+	Introduced by KEA as a workaround for an unneeded title in a home page iframe
+  showing the job list. 
+ -->
+      <map:match pattern="veryBare/**">
+        <map:aggregate element="ag-page">
+          <map:part element="ag-body" src="cocoon:/{1}"/>
+        </map:aggregate>
+        <!-- veryBare strips out the agComponentTitle -->
+        <map:transform src="web/style/xsl/veryBarePortal.xsl">
+        </map:transform>
+	    <map:transform src="web/style/xsl/extras.xsl">
+	      <map:parameter name="ag-css-url" value="/astrogrid-portal/extras.css"/>
+          <map:parameter name="ag-js-url" value="/astrogrid-portal/extras.js"/>
+          <map:parameter name="ag-title" value="Astrogrid Portal"/>
+        </map:transform>
+        <map:serialize type="xhtml"/>
+      </map:match>      
+
     <!--+
         | XML content.
         +-->

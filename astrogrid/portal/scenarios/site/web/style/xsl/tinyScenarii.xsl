@@ -13,7 +13,14 @@
 <xsl:variable name="userID"><xsl:value-of select="//*/userID" /></xsl:variable>
   <xsl:template match="AGScenarios">
   <script language="javascript" src="/astrogrid-portal/extras.js">null;</script>
-<table >
+
+<!-- I would have preferred to leave the div below in the main home page layout,
+but if I do, the height of the contained iframe is excessively large and leaves
+a big blank space in the box. Even like this, we get extra unwanted blank space
+after the div box.  KEA.  -->
+<div class="boxedLayout">
+<h1>Example tasks</h1>
+<table cellpadding="2">
 <!--
 <table width="90%">
 <tr><td align="center">
@@ -29,11 +36,13 @@ Explanation
 -->
        <xsl:apply-templates/>
 </table>
+</div>
   </xsl:template>
 
 <xsl:template match="AGscenario">
 <tr>
-<td><a target="_top" href="{link}?z={$userID}" title="{inBrief}"><div class="agActionButton" ><xsl:value-of select="@name"/></div></a></td>
+<td valign="middle"><a target="_top" href="{link}?z={$userID}" title="{inBrief}" class="strongLink">
+<xsl:value-of select="@name"/></a></td>
 </tr>
 </xsl:template>
 
@@ -80,8 +89,10 @@ Explanation
   <xsl:template match="laconic">
   </xsl:template>
 
+<!--
   <xsl:template match="@*|node()" priority="-2"><xsl:copy><xsl:apply-templates
   select="@*|node()"/></xsl:copy></xsl:template>
   <xsl:template match="text()" priority="-1"><xsl:value-of select="."/></xsl:template>
+-->
 
 </xsl:stylesheet>

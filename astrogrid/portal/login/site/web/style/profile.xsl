@@ -25,10 +25,10 @@ name="agMsgFrame">ag</iframe>
 <xsl:if test="userID != 'nadie'">
 
 <xsl:if test="//*/profile/taskBar/task/fascia != ''">
-<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#aacccc">
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
 <tr>
 <td align="left" height="20px">
-<span class="compact" style="color: #000088"> <xsl:value-of select="userID"/> Tasks: </span>
+<span class="compact" style="color: #000088; padding-left: 5px"> <xsl:value-of select="userID"/> Tasks: </span>
 <xsl:for-each select="//*/profile/taskBar/task">
    <xsl:if test="fascia != ''">
    <span style="padding-left: 3px">

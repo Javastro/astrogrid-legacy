@@ -53,6 +53,11 @@ body
   padding-right:                  0px;
   padding-top:                    0px;
   padding-bottom:                 0px;
+
+  /* Default font, so we get some consistency. */
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: normal;
 }
 
 #ag-body
@@ -326,3 +331,81 @@ a.ag-menu-link:hover
   margin-left:                    28%;
   margin-right:                   20%;
 }
+
+
+/* Added by KEA for new homepage layout */
+div.boxedLayout {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  position: relative;
+  width: auto;
+  height: auto;
+  padding: 0px;
+  margin: 0px 0px 20px 0px;
+  background: #FFFFFF;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #000099;
+}
+div.boxedLayoutFoot {
+  padding: 0px;
+  margin: 0px;
+  background: #FFFFFF;
+  border-style: solid;
+  border-width: 1px 0px 0px 0px;
+  border-color: #000099;
+}
+div.boxedLayout h1 {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  margin: 0px;
+  padding: 2px 2px 2px 5px;
+  background: #000099;
+  color: #FFFFFF;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+  border-color: #000099;
+}
+
+span.frontPageText {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: normal;
+}
+a.strongLink {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  line-height: 14px;
+  color:             #000099;
+  font-weight:       bold;
+  text-decoration:   none;
+}
+a.strongLink:hover {
+  text-decoration:    underline;
+}
+
+/*
+a.boxedLayout:link {
+  color:             #000099;
+  font-weight:       bold;
+  text-decoration:  none;
+}
+
+a.boxedLayout:visited
+{
+  text-decoration:                none;
+}
+
+a.boxedLayout:active
+{
+  text-decoration:                none;
+}
+
+a.boxedLayout:hover
+{
+  text-decoration:                none;
+}
+*/

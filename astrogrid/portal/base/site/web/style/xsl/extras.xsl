@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!-- CVS $Id: extras.xsl,v 1.7 2004/12/08 15:43:04 clq2 Exp $ -->
+<!-- CVS $Id: extras.xsl,v 1.8 2004/12/10 09:50:49 jdt Exp $ -->
 
 <xsl:stylesheet version="1.0"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -41,16 +41,26 @@ onClick="popupBrowser('{$bugURL}',400,700)"/>
 name="bugURL">/astrogrid-portal/bare/mount/help/bugsy.bug?item=<xsl:value-of
 select="."/></xsl:variable>
 
+<!--
 <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#eeffff">
 <tr><td align="left" height="20px">
+-->
+<div class="coolishTitleBar">
 <span class="agCoolishTitle"><xsl:value-of select="."/></span>
+</div>
+
+<!--
   </td>
+-->
   <!--
   <td width="100" align="right">
   <a style="colour: #000000; padding-right: 20px; font-size: 12pt;" href="/astrogrid-portal/main/mount/login/logout">Log out</a>
   </td>
   -->
+<!--
   </tr></table>
+-->
+
 <script language="javascript">
 document.title = '<xsl:value-of select="."/>';
 </script>

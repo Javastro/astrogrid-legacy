@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xsp/login-pass.xsp,v $</cvs:source>
-    | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2004/12/03 21:16:00 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/12/10 09:50:49 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     |
     +-->
 <xsp:page language="java"
@@ -41,7 +41,9 @@
 <xsp-session:set-attribute name="uzer"><xsp:expr>uzi</xsp:expr></xsp-session:set-attribute>
 </xsp:logic>
 
-<agComponentTitle>Welcome to Astrogrid, <xsp:expr><xsp-request:get-attribute name="user"/></xsp:expr></agComponentTitle>
+<agComponentTitle>Welcome to AstroGrid
+<!-- , <xsp:expr><xsp-request:get-attribute name="user"/></xsp:expr> -->
+</agComponentTitle>
             <content>
 <script language="javascript">
 function toggle(yo, was){
@@ -55,106 +57,170 @@ function toggle(yo, was){
 	nofooter();
 }
 </script>
-<center>
-<table class="agSmaller" width="98%" cellspacing="4" cellpadding="4" border="0">
+<table class="agSmaller" width="95%" cellspacing="4" cellpadding="4" border="0">
 <tr valign="top">
-<td width="50%" >
-<table width="100%">
+<td width="280px" >
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr><td>
-<span class="agCompositeTitle">Help:</span>
-<a href="javascript:newWindow('/astrogrid-portal/bare/mount/help/faq.hlp','HELPW')" class="agCompositeTitle">FAQ</a>
-<span class="agCompositeTitle">-</span>
-<a
-href="javascript:newWindow('/astrogrid-portal/bare/mount/help/cookbook.hlp','HELPW')" class="agCompositeTitle">CookBook</a>
-<span class="agCompositeTitle">-</span>
-<a
-href="javascript:newWindow('/astrogrid-portal/bare/mount/help/howTo.hlp','HELPW')" class="agCompositeTitle">How-to</a>
-<break />
-<table border="0" bgcolor="#ffffcc">
-<tr><td>
-<agHint id="test">
-See? We can put any text to guide you in these boxes.<p />
-Click the button again to close this box.
-</agHint>
-</td><td>
-Click on buttons like this for context-related help
-</td></tr>
 
-<tr><td colspan="2" bgcolor="#aaaaaa">
-<img src="/astrogrid-portal/x.gif" width="50" height="1"/>
-</td></tr>
+<div class="boxedLayout">
+<h1>Help</h1>
+<!--
+  <span class="agCompositeTitle">Help:</span>
+  <a href="javascript:newWindow('/astrogrid-portal/bare/mount/help/faq.hlp','HELPW')" class="agCompositeTitle">FAQ</a>
+  <span class="agCompositeTitle">-</span>
+  <a
+  href="javascript:newWindow('/astrogrid-portal/bare/mount/help/cookbook.hlp','HELPW')" class="agCompositeTitle">CookBook</a>
+  <span class="agCompositeTitle">-</span>
+  <a
+  href="javascript:newWindow('/astrogrid-portal/bare/mount/help/howTo.hlp','HELPW')" class="agCompositeTitle">How-to</a>
+  <break />
+-->
+  <table border="0" cellpadding="3">
+  <tr><td valign="top">
+  <a href="javascript:newWindow('/astrogrid-portal/bare/mount/help/faq.hlp','HELPW')" class="strongLink">FAQ</a>
+  </td><td valign="top">
+  <span class="frontPageText">
+  Frequently Asked Questions from new and experienced users.
+  </span>
+  </td></tr>
+  <tr><td valign="top">
+  <a href="javascript:newWindow('/astrogrid-portal/bare/mount/help/cookbook.hlp','HELPW')" class="strongLink">Cook-book</a>
+  </td><td valign="top">
+  <span class="frontPageText">
+  Using the AstroGrid tools:  science-oriented examples.
+  </span>
+  </td></tr>
+  <tr><td valign="top">
+  <a href="javascript:newWindow('/astrogrid-portal/bare/mount/help/howTo.hlp','HELPW')" class="strongLink">How-to</a>
+  </td><td valign="top">
+  <span class="frontPageText">
+  Tips, tricks and tutorials.
+  </span>
+  </td></tr></table>
+
+  <div class="boxedLayoutFoot">
+  <table border="0" cellpadding="2">
+  <tr><td>
+  <agHint id="test">
+  See? We can put any text to guide you in these boxes.<p />
+  Click the button again to close this box.
+  </agHint>
+  </td><td>
+  <span class="frontPageText">
+  <em>Click on buttons like this for context-related help.</em>
+  </span>
+  </td></tr>
+  </table>
+  </div>
 
 <!--
-<tr><td>
-<img src="/astrogrid-portal/SubmitGreen.gif" width="50"
-height="20"/>
-</td><td>
-Green buttons, vertical bars or horizontal bars can be clicked to move
-ahead towards the next step.
-</td></tr>
-
-<tr><td colspan="2" bgcolor="#aaaaaa">
-<img src="/astrogrid-portal/x.gif" width="50" height="1"/>
-</td></tr>
-
-<tr><td>
-<agExplain item="Glossary" />
-</td><td>
-Text highlighted this way is another way for us to give you short
-explanations.
-</td></tr>
-
-<tr><td colspan="2" bgcolor="#aaaaaa">
-<img src="/astrogrid-portal/x.gif" width="50" height="1"/>
-</td></tr>
+  <tr><td colspan="2" bgcolor="#aaaaaa">
+  <img src="/astrogrid-portal/x.gif" width="50" height="1"/>
+  </td></tr>
 -->
-<tr><td>
-<a
-href="javascript:popupBrowser('/astrogrid-portal/bare/mount/help/faq.faq',700, 300)" style="text-decoration: none">FAQ</a> &amp;<br />
-<a
-href="javascript:popupBrowser('/astrogrid-portal/lean/mount/help/cookbook.ckb',700, 300)" style="text-decoration: none" >Cookbook</a>
-</td><td>
-Visit these sections for tutorials, examples and tips.
-</td></tr>
 
+  <!--
+  <tr><td>
+  <img src="/astrogrid-portal/SubmitGreen.gif" width="50"
+  height="20"/>
+  </td><td>
+  Green buttons, vertical bars or horizontal bars can be clicked to move
+  ahead towards the next step.
+  </td></tr>
+
+  <tr><td colspan="2" bgcolor="#aaaaaa">
+  <img src="/astrogrid-portal/x.gif" width="50" height="1"/>
+  </td></tr>
+
+  <tr><td>
+  <agExplain item="Glossary" />
+  </td><td>
+  Text highlighted this way is another way for us to give you short
+  explanations.
+  </td></tr>
+
+  <tr><td colspan="2" bgcolor="#aaaaaa">
+  <img src="/astrogrid-portal/x.gif" width="50" height="1"/>
+  </td></tr>
+  -->
+<!--
+  <tr><td>
+  <a
+  href="javascript:popupBrowser('/astrogrid-portal/bare/mount/help/faq.faq',700, 300)" style="text-decoration: none">FAQ</a> &amp;<br />
+  <a
+  href="javascript:popupBrowser('/astrogrid-portal/lean/mount/help/cookbook.ckb',700, 300)" style="text-decoration: none" >Cookbook</a>
+  </td><td>
+  Visit these sections for tutorials, examples and tips.
+  </td></tr>
+
+  </table>
+-->
+</div>
+
+</td>
+<td width="40px">  </td></tr>
+<tr>
+<td width="280px" valign="top">
+
+<!-- NOTE:  The boxedLayout div for the Example Tasks section below is in the iframe
+ content because having it outside the iframe was inserting lots of blank space. -->
+<!--
+<div class="boxedLayout">
+  <h1>Example Tasks</h1>
+-->
+  <iframe style="border: solid 0px white; background-color: transparent"
+  marginWidth="0px" scrolling="no" hspace="0px" vspace="0px" frameborder="no"
+  allowtransparency="true" 
+  src="/astrogrid-portal/bare/mount/scenarios/tinyScenarii.scn"
+  marginHeight="0px" border="0px" height="100%" width="100%" name="scenariiFrame">ag</iframe>
+<!--
+</div>
+-->
+
+</td>
+<td width="40px">  </td></tr>
+<tr>
+<td width="280px" valign="top">
+<!-- NOTE:  The boxedLayout div for the Administration section below is in the iframe
+ content because having it outside the iframe was inserting lots of blank space. -->
+<!--
+<div class="boxedLayout">
+<h1>Administration</h1>
+-->
+<!--
+  <div class="agSectionTitle">Administration</div><break />
+-->
+  <iframe style="border: solid 0px white; background-color: transparent"
+  marginWidth="0px" scrolling="no" hspace="0px" vspace="0px" frameborder="no"
+  allowtransparency="true"
+  src="/astrogrid-portal/bare/mount/scenarios/admini.scn"
+  marginHeight="0px" border="0px" height="100%" width="100%"
+  name="adminiFrame">ag</iframe>
+<!--
+</div>
+-->
+</td>
+<td width="40px">  </td></tr>
 </table>
 
-</td></tr>
-<tr>
-<td width="50%">
-<div class="agSectionTitle">Focused Tasks</div><break />
-
-<iframe style="border: solid 0px white; background-color: transparent"
-marginWidth="0px" scrolling="yes" hspace="0px" vspace="0px" frameborder="no"
-allowtransparency="true"
-src="/astrogrid-portal/bare/mount/scenarios/tinyScenarii.scn"
-marginHeight="0px" border="0px" height="120px" width="90%"
-name="scenariiFrame">ag</iframe>
 </td>
-</tr>
-<tr>
-<td width="50%">
-<div class="agSectionTitle">Administration</div><break />
-<iframe style="border: solid 0px white; background-color: transparent"
-marginWidth="0px" scrolling="no" hspace="0px" vspace="0px" frameborder="no"
-allowtransparency="true"
-src="/astrogrid-portal/bare/mount/scenarios/admini.scn"
-marginHeight="0px" border="0px" height="100px" width="90%"
-name="adminiFrame">ag</iframe>
-</td>
-</tr>
-</table>
+<td rowspan="3">
 
-</td>
-<td rowspan="3" align="center">
-<div class="agSectionTitle">Job monitor</div>
-
-<iframe style="border: solid 0px white; background-color: transparent"
-marginWidth="0px" scrolling="yes" hspace="0px" vspace="0px" frameborder="no"
-allowtransparency="true"
-src="/astrogrid-portal/bare/mount/workflow/agjobmanager-jes.html?action=read-job-list"
-marginHeight="0px" border="0px" height="400px" width="90%"
-name="jobMonitorFrame">ag</iframe>
+<div class="boxedLayout">
+<h1>Current jobs</h1>
+<!--
+  <div class="agSectionTitle">Job monitor</div>
+-->
+<center>
+  <iframe style="border: solid 0px white; background-color: transparent"
+  marginWidth="0px" scrolling="yes" hspace="0px" vspace="0px" frameborder="no"
+  allowtransparency="true"
+  src="/astrogrid-portal/veryBare/mount/workflow/agjobmanager-jes.html?action=read-job-list"
+  marginHeight="0px" border="0px" height="400px" width="98%"
+  name="jobMonitorFrame">ag</iframe>
+</center>
+</div>  
 </td>
 </tr>
 </table>
@@ -162,7 +228,6 @@ name="jobMonitorFrame">ag</iframe>
 <!--
 src="/astrogrid-portal/bare/mount/scenarios/jobMonitor.scn"
 -->
-</center>
 
 <!--
 <table class="agSmaller" width="98%" cellspacing="4" cellpadding="4" border="0">
@@ -344,6 +409,14 @@ Locate Spectral data
 <!--+
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
+    |   Revision 1.9  2004/12/10 09:50:49  jdt
+    |   merges from POR_KEA_862
+    |
+    |   Revision 1.8.10.1  2004/12/09 20:15:06  kea
+    |   Revamped home page;  included restyling profile and top-level
+    |   title bars as well as home-page content.  Also added default font
+    |   selection in main stylesheet portal.css.
+    |
     |   Revision 1.8  2004/12/03 21:16:00  clq2
     |   pjn3_799, pfo_708_717
     |
