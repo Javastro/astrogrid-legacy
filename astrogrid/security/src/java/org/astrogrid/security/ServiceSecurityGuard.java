@@ -63,6 +63,7 @@ public class ServiceSecurityGuard extends SecurityGuard {
     Subject s
         = (Subject) MessageContext.getCurrentContext().getProperty("Subject");
     if (s == null) {
+	  System.out.println("ServiceSecurityGuard: no JAAS subject; access is anonymous");
       return new ServiceSecurityGuard();
     }
     else {
@@ -80,7 +81,7 @@ public class ServiceSecurityGuard extends SecurityGuard {
    */
   public boolean isAnonymous () {
     Set principals = this.getGridSubject().getPrincipals();
-    return (principals.size() > 0);
+    return (principals.size() == 0);
   }
 
 }
