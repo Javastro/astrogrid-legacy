@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.15 2004/07/07 19:33:59 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.16 2004/08/02 14:59:15 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.util.DomHelper;
@@ -42,9 +43,8 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
     /** Test makes valid SQL from cone earch */
     public void testCone() throws Exception {
        
-       SimpleConfig.getSingleton().setProperty("conesearch.table", "OBJECTS");
-       SimpleConfig.getSingleton().setProperty("conesearch.ra.column", "ra");
-       SimpleConfig.getSingleton().setProperty("conesearch.dec.column", "dec");
+       DummySqlPlugin.initConfig(); //so we have a valid config to build the SQL against
+       
        
        String sql = translator.fromCone(new ConeQuery(20,20,3));
        
@@ -99,6 +99,9 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.16  2004/08/02 14:59:15  mch
+Fix to cone search test to correctly populate config
+
 Revision 1.15  2004/07/07 19:33:59  mch
 Fixes to get Dummy db working and xslt sheets working both for unit tests and deployed
 
