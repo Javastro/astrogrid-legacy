@@ -67,14 +67,18 @@
 
 			<!-- Login page -->
 			<map:match pattern="login-form">
-				<map:generate type="file" src="xml/login-form.xml"/>
-				<map:serialize type="xml"/>
-			</map:match>
-
-			<!-- Login proc -->
-			<map:match pattern="login-proc">
+				<!--+
+					| Call the LoginAction to validate the name and password.
+					+-->
 				<map:act type="astro-login">
+					<!--+
+						| If we are logged in, redirect to the front page.
+						+-->
+					<map:redirect-to uri="/astrogrid-portal/main/test/xml"/>
 				</map:act>
+				<!--+
+					| If we are not logged in, display the login form.
+					+-->
 				<map:generate type="file" src="xml/login-form.xml"/>
 				<map:serialize type="xml"/>
 			</map:match>

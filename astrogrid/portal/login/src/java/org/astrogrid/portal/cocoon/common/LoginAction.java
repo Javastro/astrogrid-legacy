@@ -218,7 +218,7 @@ public class LoginAction extends AbstractAction
 
 			//
 			// Add our display message.
-			request.setParameter(MESSAGE_PARAM, message);
+			request.setAttribute(MESSAGE_PARAM, message);
 
 			}
 
