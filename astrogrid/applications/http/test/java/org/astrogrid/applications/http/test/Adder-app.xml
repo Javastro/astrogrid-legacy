@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1">
         <Identifier>
             <AuthorityID>org.astrogrid.jdt.test</AuthorityID>
             <ResourceKey>Adder</ResourceKey>
