@@ -42,7 +42,7 @@ public class ServerManager {
     		File file = new File(dataHolderPath);   		
     		if  (file == null || !file.exists()){
 				if (DEBUG)  logger.debug("File not exist! can't delete.");
-				MySpaceMessage msMessage = new MySpaceMessage("NULL_FILE_DELETE");
+				//MySpaceMessage msMessage = new MySpaceMessage("NULL_FILE_DELETE");
 				status.addCode(MySpaceStatusCode.AGMSCE01001,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			    response = MSC.FAULT+MySpaceStatusCode.AGMSCE01001;
 				return response;
@@ -54,7 +54,7 @@ public class ServerManager {
 					else response = MSC.FAULT+"File Not Deleted";
 					return response;
 	    		}catch(SecurityException se){
-					MySpaceMessage msMessage = new MySpaceMessage("ERR_SECURITY_DELETE_DATA_HOLDER");
+					//MySpaceMessage msMessage = new MySpaceMessage("ERR_SECURITY_DELETE_DATA_HOLDER");
 					status.addCode(MySpaceStatusCode.AGMSCE01045,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 					response = MSC.FAULT+MySpaceStatusCode.AGMSCE01045;
 					return response;
