@@ -7,9 +7,7 @@ xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
 xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1"
 xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-
-        <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
+	<Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
                 <Identifier>
                         <AuthorityID>@REGAUTHORITY@</AuthorityID>
                         <ResourceKey>CallMakeMPEGFitsImages</ResourceKey>
@@ -42,7 +40,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <Subject>???</Subject>
                 <cea:ApplicationDefinition>
                         <cea:Parameters>
-                                <cea:ParameterDefinition name="InputFiles" type="FITS" minOccurs="1" maxOccurs="unbounded">
+                                <cea:ParameterDefinition name="InputFiles" type="FITS">
                                         <ceapd:DefaultValue>InputFiles</ceapd:DefaultValue>
                                         <ceapd:UI_Description >
                                                 FITS images used to create a solar movie (repeatable parameter)
@@ -58,7 +56,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                         <cea:Interfaces>
                                 <ceab:Interface name="Simple">
                                         <ceab:input>
-                                                <ceab:pref ref="InputFiles"/>
+                                                <ceab:pref ref="InputFiles" maxOccurs="0" minOccurs="1"/>
                                         </ceab:input>
                                         <ceab:output>
                                                 <ceab:pref ref="OutputFile"/>
@@ -127,7 +125,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                         <cea:Interfaces>
                                 <ceab:Interface name="Simple">
                                         <ceab:input>
-                                                <ceab:pref ref="InputFile"/>
+                                                <ceab:pref ref="InputFile" />
                                                 <ceab:pref ref="ArrayName"/>
                                         </ceab:input>
                                         <ceab:output>
