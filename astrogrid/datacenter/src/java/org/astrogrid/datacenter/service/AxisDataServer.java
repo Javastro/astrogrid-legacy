@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.4 2003/08/28 16:19:58 nw Exp $
+ * $Id: AxisDataServer.java,v 1.5 2003/09/05 13:22:31 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -111,7 +111,7 @@ public class AxisDataServer
     */
    public void registerServiceListener(String serviceID, URL listenerUrl)
    {
-      getService(serviceID).registerServiceListener(new ServiceListener(listenerUrl));
+      getService(serviceID).registerServiceListener(new ProxyServiceListener(listenerUrl));
    }
 
 }
