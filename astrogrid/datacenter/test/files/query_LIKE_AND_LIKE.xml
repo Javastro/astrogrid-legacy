@@ -1,0 +1,38 @@
+<?xml version = "1.0" encoding = "UTF8"?>
+<job name = "jl012">
+   <userid>jlusted</userid>
+   <community>leicester</community>
+   <jobstep name="QUERY LIKE AND LIKE" >
+      <query>  
+<!--============================================== 
+    SELECT COLUMN_ONE, COLUMN_TWO, COLUMN_THREE 
+        FROM USNOB
+    WHERE (COLUMN_FOUR LIKE '%star') 
+    AND (COLUMN_FIVE LIKE 'nebula%')
+===============================================--> 
+         <from>         
+            <catalog name="USNOB">         
+               <service name="AGHomeService" url="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent" />
+               <table>USNOB</table>
+            </catalog>
+         </from>
+         <return>
+            <field name="COLUMN_ONE" type="COLUMN"/>
+            <field name="COLUMN_TWO" type="COLUMN"/>
+            <field name="COLUMN_THREE" type="COLUMN"/>
+         </return>
+         <criteria>
+            <operation name="AND">
+               <operation name="LIKE">
+                  <field name="COLUMN_FOUR" type="COLUMN"/>
+                  <field>%star</field>
+               </operation>
+               <operation name="LIKE">
+                  <field name="COLUMN_FIVE" type="COLUMN"/>
+                  <field>nebula%</field>
+               </operation>               
+            </operation>
+         </criteria>
+      </query>
+   </jobstep>
+</job>

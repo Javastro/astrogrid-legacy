@@ -76,6 +76,7 @@ public final class RunJobRequestDD {
 	    OP_NAME_LTE = "LESS_THAN_OR_EQUALS",
 	    OP_NAME_IN = "IN",
 	    OP_NAME_ANY = "ANY",
-	    OP_NAME_ALL = "ALL" ;
+	    OP_NAME_LIKE = "LIKE",
+	    OP_NAME_ALL = "ALL";
 	 
 }

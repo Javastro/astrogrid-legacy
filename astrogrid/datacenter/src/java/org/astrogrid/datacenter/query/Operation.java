@@ -15,12 +15,6 @@ import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
-//import java.text.MessageFormat ;
-
-//import java.util.ArrayList ;
-//import java.util.List ;
-//import java.util.Iterator ;
-
 
 /**
  * The <code>Operation</code> class represents operations within an 
@@ -66,7 +60,8 @@ public abstract class Operation implements Operand {
         LESS_THAN_OR_EQUALS = "LESS_THAN_OR_EQUALS",
         IN = "IN",
         NOT_NULL = "NOT_NULL",
-        BETWEEN = "BETWEEN" ;
+        BETWEEN = "BETWEEN",
+        LIKE = "LIKE" ;
 	
 	private String
 		name = null ;
@@ -133,6 +128,9 @@ public abstract class Operation implements Operand {
 			else if( opName.equals( Operation.BETWEEN ) ) {
 				newOp = new Operation_BETWEEN( opElement, catalog ) ;
 			}
+			else if( opName.equals( Operation.LIKE ) ) {
+				newOp = new Operation_LIKE( opElement, catalog ) ;
+			}	
 			else {
 				Message
 	               message = new Message( ASTROGRIDERROR_UNSUPPORTED_SQL_OPERATION, opName ) ;
