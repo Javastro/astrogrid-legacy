@@ -40,7 +40,7 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
 		logger = Logger.getLogger( MySpaceFactoryImpl.class ) ;
 		
 	private static String
-	    MYSPACECACHE_DIRECTORY = "MYSPACECACHE_DIRECTORY" ;
+	    MYSPACECACHE_DIRECTORY = "MYSPACE.CACHE_DIRECTORY" ;
 		
 	private static String
 		ASTROGRIDERROR_COULD_NOT_CREATE_ALLOCATION = "AGDTCE00100", 
