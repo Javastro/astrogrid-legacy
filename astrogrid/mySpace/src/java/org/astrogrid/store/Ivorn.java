@@ -1,5 +1,5 @@
 /*
- * $Id: Ivorn.java,v 1.1 2004/03/01 16:38:58 mch Exp $
+ * $Id: Ivorn.java,v 1.2 2004/03/02 16:31:30 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -14,12 +14,12 @@ package org.astrogrid.store;
  * IVO Resource Name.  A URI used to name specific IVO resources.
  * I think there's some plugin mechanism to register this wuth URIs but not sure
  * what it is... and anyway in the meantime we want to pass around things that
- * are definitely IVORNs not any other URI.
+ * are definitely Ivorns not any other URI.
  *
- * They act as keys to VO Registries; give the registry an IVORN and it will
- * return some value (that might be another IVORN...)
+ * They act as keys to VO Registries; give the registry an Ivorn and it will
+ * return some value (that might be another Ivorn...)
  *
- * IVORNs are of the form:
+ * Ivorns are of the form:
  *
  * ivo://something/anything/athing/etc#somethingwithmeaningtothiscontext
  *
@@ -50,7 +50,7 @@ package org.astrogrid.store;
  * would resolve to a myspace delegate endpoint and a path to give it - ie
  * it refers to a file in myspace
  *
- * IVORNs are immutable - ie once created, they cannot be changed.  You can
+ * Ivorns are immutable - ie once created, they cannot be changed.  You can
  * make new ones out of old ones.
  *
  *
@@ -68,11 +68,11 @@ public class Ivorn
    private String fragment;
    
    /** Construct from given string */
-   public Ivorn(String ivorn) throws URISyntaxException
+   public Ivorn(String Ivorn) throws URISyntaxException
    {
-      assert ivorn.startsWith(SCHEME+":") : "Scheme should be "+SCHEME+":";
+      assert Ivorn.startsWith(SCHEME+":") : "Scheme should be "+SCHEME+":";
 
-      URI uri = new URI(ivorn);
+      URI uri = new URI(Ivorn);
       
       path = uri.getAuthority()+uri.getPath();
       fragment = uri.getFragment();
@@ -98,33 +98,14 @@ public class Ivorn
       return SCHEME+"://"+path+"#"+getFragment();
    }
 
-   /**
-    * Basic tests
-    */
-   public static void main(String[] args) throws URISyntaxException {
-      
-      String validirn = "ivo://test.astrogrid.org/avodemo/serv1/query/mch-6dF-query.xml";
-      
-      System.out.println(" In: "+validirn);
-      
-      IvoRN irn = new IvoRN(validirn);
-
-      System.out.println("Out: "+irn.toString());
-      
-      assert irn.toString().equals(validirn);
-
-      irn = new IvoRN("test.astrogrid.org", "avodemo", "/serv1/query/mch-6dF-query.xml");
-      
-      System.out.println("Out: "+irn.toString());
-      
-      assert irn.toString().equals(validirn);
-
-   }
    
 }
 
 /*
 $Log: Ivorn.java,v $
+Revision 1.2  2004/03/02 16:31:30  mch
+Fixed case change
+
 Revision 1.1  2004/03/01 16:38:58  mch
 Merged in from datacenter 4.1 and odd cvs/case problems
 
