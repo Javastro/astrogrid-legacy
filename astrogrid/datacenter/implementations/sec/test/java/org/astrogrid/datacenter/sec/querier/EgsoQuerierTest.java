@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierTest.java,v 1.2 2004/07/26 13:50:25 KevinBenson Exp $
+/*$Id: EgsoQuerierTest.java,v 1.3 2004/08/19 17:50:22 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.TargetIndicator;
+import org.astrogrid.datacenter.TargetIndicator;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.RawSqlQuery;
 import org.astrogrid.community.Account;
@@ -75,7 +75,7 @@ public class EgsoQuerierTest extends ServerTestCase {
    public static Test suite() {
          // Reflection is used here to add all the testXXX() methods to the suite.
          return new TestSuite(EgsoQuerierTest.class);
-      }    
+      }
 
    public void testAdql1() throws Exception {
       askAdqlFromFile("sql-querier-test-5.xml");
@@ -116,6 +116,9 @@ public class EgsoQuerierTest extends ServerTestCase {
 
 /*
 $Log: EgsoQuerierTest.java,v $
+Revision 1.3  2004/08/19 17:50:22  mch
+Fix for TargetIndicator move
+
 Revision 1.2  2004/07/26 13:50:25  KevinBenson
 Small test case that goes out and queries sec based on an adql query
 
