@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Project - Workflow Objects</title>
+
+  <body>
+    <menu name="Schema">
+    	<item name="cvs location"  href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/"/>
+    		
+    </menu>
+    <links>
+       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
+       <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
+       <item name="Workflow Objects" href="http://www.astrogrid.org/maven/build/workflow-objects/index.html"/>
+    </links>
+  </body>
+</project>
