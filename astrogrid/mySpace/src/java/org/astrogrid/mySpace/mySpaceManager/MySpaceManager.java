@@ -92,6 +92,7 @@ public class MySpaceManager{
 	private String registryName = " ";
 	private MySpaceActions msA = new MySpaceActions();
 
+
 // Constructor.
 
 /**
@@ -167,8 +168,12 @@ public String upLoad(String jobDetails){
 			dataitem = msA.importDataHolder(
 			    userID, communityID, jobID, newDataHolderName,
 			    mySpaceFileName, fileSize );
-			    
-			checkStatus("UPLOAD");
+			
+			if(DEBUG) logger.debug("UploaderroCode is:" +errCode);
+			if ( errCode!="" )    
+			  errCode = errCode +"," +checkStatus("UPLOADStatusCode");
+			else 
+			  errCode = checkStatus("UPLOAStatusCode");
 			if(DEBUG) logger.debug("UPLOAD CHECKING ATTRIBUTES FOR CREATING DATAITEM:"
 			    + userID +"   "+communityID +"   "+jobID +"   "+newDataHolderName +"   "
 			      +serverFileName +"   "+fileSize +"   " +"   "+mySpaceFileName+"   registryName:"+registryName);
@@ -209,7 +214,10 @@ public String upLoad(String jobDetails){
 			if(dataitem!=null){
 				response = util.buildMySpaceManagerResponse(dataitem, returnStatus, details,"");
 				if (successStatus){
-					response = util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");		    	
+					if (errCode=="")
+					  response = util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");	
+					else
+					  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,""); 	    	
 				}else {
 					v = status.getCodes();
 					for(int i=0;i<=v.size();i++){
@@ -221,7 +229,10 @@ public String upLoad(String jobDetails){
 			} else{
 				status.addCode(MySpaceStatusCode.MS_E_FLCRTDH,MySpaceStatusCode.ERROR);
 				MySpaceMessage message =  new MySpaceMessage("MS_E_FLCRTDH");
-				response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
+				if(errCode=="")
+				  response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");
+				else
+				  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");  
 				return response;
 			}
 			if( DEBUG ) logger.debug("RESPONSE: "+response); 
@@ -229,7 +240,10 @@ public String upLoad(String jobDetails){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.MS_E_UPLOAD,MySpaceStatusCode.ERROR);
 			MySpaceMessage message =  new MySpaceMessage("MS_E_UPLOAD");
-			response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_UPLOAD,"");  
+			if(errCode=="")
+			  response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_UPLOAD,"");
+			else
+			  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,""); 		  
 			return response;
 		}
 		return response;
@@ -259,7 +273,11 @@ public String upLoad(String jobDetails){
 				msA.setRegistryName(registryName);
 				Vector dataItemRecords = msA.lookupDataHoldersDetails(
 				  userID, communityID, jobID, serverFileName);
-				checkStatus("LOOKUPDATAHOLDERDETAILS STATUS LOOKUPDATAHOLDERsDETAILS");
+				
+				if ( errCode!="" )
+				  errCode = errCode +"," +checkStatus("LOOKUPDATAHOLDERDETAILS STATUS LOOKUPDATAHOLDERsDETAILS");
+				else 
+				  errCode = checkStatus("LOOKUPDATAHOLDERDETAILS STATUS LOOKUPDATAHOLDERsDETAILS");
 				if (dataItemRecords != null)
 				{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
 					dataItemID = dataItem.getDataItemID();
@@ -271,7 +289,10 @@ public String upLoad(String jobDetails){
 				//create a instance of DataItemRecord
 				dataitem = msA.lookupDataHolderDetails(
 				userID,communityID, jobID, dataItemID);	
-				checkStatus("LOOKUPDATAHOLDERDETAILS STATUS AFTERCALLING MSA.LOOKUPDATAHOLDERDETAILS ");
+				if ( errCode!="" )
+				  errCode = errCode +"," +checkStatus("LOOKUPDATAHOLDERDETAILS STATUS AFTERCALLING MSA.LOOKUPDATAHOLDERDETAILS ");
+				else
+				  errCode = checkStatus("LOOKUPDATAHOLDERDETAILS STATUS AFTERCALLING MSA.LOOKUPDATAHOLDERDETAILS ");
 
 			}catch(NullPointerException npe){
 				MySpaceMessage message = new MySpaceMessage("NULL_POINTER_GETTING_REQUEST");
@@ -293,7 +314,10 @@ public String upLoad(String jobDetails){
 		//   Format and return the results as XML.
 		if(dataitem!=null){
 			if (successStatus){
-				response = util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");		    	
+				if (errCode=="")
+				  response = util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");	
+				else
+				  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");	    	
 			}else {
 				v = status.getCodes();
 				for(int i=0;i<=v.size();i++){
@@ -305,7 +329,10 @@ public String upLoad(String jobDetails){
 		} else{
 			status.addCode(MySpaceStatusCode.MS_E_FLCRTDH,MySpaceStatusCode.ERROR);
 			MySpaceMessage message =  new MySpaceMessage("MS_E_FLCRTDH");
-			response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
+			if (errCode=="")
+			  response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
+			else
+			  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");
 			return response;
 		}
 			
@@ -315,7 +342,11 @@ public String upLoad(String jobDetails){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.MS_E_LOOKUP_DATAHOLDER,MySpaceStatusCode.ERROR);
 			MySpaceMessage message =  new MySpaceMessage("MS_E_LOOKUP_DATAHOLDER");
-			response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_LOOKUP_DATAHOLDER,""); 
+			if (errCode=="")
+			  response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_LOOKUP_DATAHOLDER,""); 
+			else
+			  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");
+			
 			return response;
 		}
    }
@@ -407,7 +438,11 @@ public String upLoad(String jobDetails){
 					}else{
 						status.addCode(MySpaceStatusCode.MS_E_FLCRTDH,MySpaceStatusCode.ERROR);
 						MySpaceMessage message =  new MySpaceMessage("MS_E_FLCRTDH");
-						response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
+						if (errCode=="")
+						  response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
+						else
+						  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");
+						
 						return response;
 					}				
 			    }
@@ -421,7 +456,10 @@ public String upLoad(String jobDetails){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.MS_E_LOOKUP_DATAHOLDERS,MySpaceStatusCode.ERROR);
 			MySpaceMessage message =  new MySpaceMessage("MS_E_LOOKUP_DATAHOLDERS");
-			response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_LOOKUP_DATAHOLDERS,""); 
+			if (errCode=="")
+			  response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_LOOKUP_DATAHOLDERS,"");   
+			else
+			  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");			
 			return response;
 		}
 		
@@ -454,7 +492,10 @@ public String upLoad(String jobDetails){
 				msA.setRegistryName(registryName);
 				Vector dataItemRecords = msA.lookupDataHoldersDetails(
 				  userID, communityID, jobID, serverFileName);
-				checkStatus("COPYDATAHOLDERS STATUS ");
+				if ( errCode!="" )
+				  errCode = errCode +"," +checkStatus("COPYDATAHOLDERS STATUS ");
+				else
+				  errCode = checkStatus("COPYDATAHOLDERS STATUS ");
 				if (dataItemRecords != null)
 				{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
 				   oldDataItemID = dataItem.getDataItemID();
@@ -465,8 +506,11 @@ public String upLoad(String jobDetails){
 				  
 				//create a instance of DataItemRecord
 				dataitem = msA.copyDataHolder(
-					userID, communityID, jobID, oldDataItemID, newDataItemName);	
-				checkStatus("COPYDATAHOLDERS STATUS AFTERCALLING MSA.COPYDATAHOLDER ");
+					userID, communityID, jobID, oldDataItemID, newDataItemName);
+				if ( errCode!="" )	
+				  errCode = errCode +"," +checkStatus("COPYDATAHOLDERS STATUS AFTERCALLING MSA.COPYDATAHOLDER ");
+				else
+				  errCode = checkStatus("COPYDATAHOLDERS STATUS AFTERCALLING MSA.COPYDATAHOLDER ");
 
 			}catch(NullPointerException npe){
 				MySpaceMessage message = new MySpaceMessage("NULL_POINTER_GETTING_REQUEST");
@@ -490,7 +534,10 @@ public String upLoad(String jobDetails){
 		if(dataitem!=null){
 			response = util.buildMySpaceManagerResponse(dataitem, returnStatus, details,"");
 			if (successStatus){
-				response = util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");		    	
+				if (errCode=="")
+				  response = util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");	
+				else
+				  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");	
 			}else {
 				v = status.getCodes();
 				for(int i=0;i<=v.size();i++){
@@ -502,7 +549,11 @@ public String upLoad(String jobDetails){
 		} else{
 			status.addCode(MySpaceStatusCode.MS_E_FLCRTDH,MySpaceStatusCode.ERROR);
 			MySpaceMessage message =  new MySpaceMessage("MS_E_FLCRTDH");
-			response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
+			if (errCode=="")
+			  response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
+			else
+			  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");			
+			  
 			return response;
 		}
 
@@ -512,7 +563,11 @@ public String upLoad(String jobDetails){
 			logger.error("ERROR ERR_COPY_DATA_HOLDER MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.ERR_COPY_DATA_HOLDER,MySpaceStatusCode.ERROR);
 			MySpaceMessage message =  new MySpaceMessage("ERR_COPY_DATA_HOLDER");
-			response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.ERR_COPY_DATA_HOLDER,""); 
+			if (errCode=="")
+			  response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.ERR_COPY_DATA_HOLDER,"");   
+			else
+			  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");						
+			 
 			return response;
 		}
 
@@ -549,7 +604,10 @@ public String upLoad(String jobDetails){
 				msA.setRegistryName(registryName);
 				Vector dataItemRecords = msA.lookupDataHoldersDetails(
 				  userID, communityID, jobID, serverFileName);
-				checkStatus("moveDATAHOLDERS STATUS ");
+				if ( errCode!="" )
+				  errCode = errCode +"," +checkStatus("moveDATAHOLDERS STATUS ");
+				else
+				  errCode = checkStatus("moveDATAHOLDERS STATUS ");
 				if (dataItemRecords != null){
 					DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
 				    oldDataItemID = dataItem.getDataItemID();
@@ -560,9 +618,11 @@ public String upLoad(String jobDetails){
 				  
 				//create a instance of DataItemRecord
 				dataitem = msA.moveDataHolder(
-					userID, communityID, jobID, oldDataItemID, newDataItemName);	
-				checkStatus("moveDATAHOLDERS STATUS AFTERCALLING MSA.moveDATAHOLDER ");
-				
+					userID, communityID, jobID, oldDataItemID, newDataItemName);
+				if ( errCode!="" )	
+				  errCode = errCode +"," +checkStatus("moveDATAHOLDERS STATUS AFTERCALLING MSA.moveDATAHOLDER ");
+				else
+				  errCode = checkStatus("moveDATAHOLDERS STATUS AFTERCALLING MSA.moveDATAHOLDER ");
 
 			}catch(NullPointerException npe){
 				MySpaceMessage message = new MySpaceMessage("NULL_POINTER_GETTING_REQUEST");
@@ -578,7 +638,10 @@ public String upLoad(String jobDetails){
 	        if( DEBUG ) logger.debug("SUCCESSSTATUS = "+successStatus);
 		//   Format and return the results as XML.
 			if (successStatus){
-				response = util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");		    	
+				if (errCode=="")
+				  response = util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");
+				else
+				  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");					  		    	
 			}else {
 				v = status.getCodes();
 				for(int i=0;i<=v.size();i++){
@@ -595,7 +658,11 @@ public String upLoad(String jobDetails){
 			logger.error("ERROR MOVING MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.MS_E_FLMOVDH,MySpaceStatusCode.ERROR);
 			MySpaceMessage message =  new MySpaceMessage("MS_E_FLMOVDH");
-			response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLMOVDH,""); 
+			if (errCode=="")
+			  response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLMOVDH,"");   
+			else
+			  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");						
+			 
 			return response;
 		} 	
    }
@@ -629,7 +696,11 @@ public String upLoad(String jobDetails){
 				msA.setRegistryName(registryName);
 				Vector dataItemRecords = msA.lookupDataHoldersDetails(
 				  userID, communityID, jobID, serverFileName);
-				checkStatus("EXPORTDATAHOLDER STATUS LOOKUPDATAHOLDERsDETAILS");
+				
+				if ( errCode!="" )
+				  errCode = errCode +"," +checkStatus("EXPORTDATAHOLDER STATUS LOOKUPDATAHOLDERsDETAILS");
+				else
+				  errCode = checkStatus("EXPORTDATAHOLDER STATUS LOOKUPDATAHOLDERsDETAILS");
 				if (dataItemRecords != null)
 				{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
 					dataItemID = dataItem.getDataItemID();
@@ -641,7 +712,10 @@ public String upLoad(String jobDetails){
 				//create a instance of DataItemRecord
 				dataHolderURI = msA.exportDataHolder(
 				userID,communityID, jobID, dataItemID);	
-				checkStatus("EXPORTDATAHOLDER STATUS AFTERCALLING MSA.LOOKUPDATAHOLDERSDETAILS ");
+				if ( errCode!="" )
+				  errCode = errCode +"," +checkStatus("EXPORTDATAHOLDER STATUS AFTERCALLING MSA.LOOKUPDATAHOLDERSDETAILS ");
+				else
+				  errCode = checkStatus("EXPORTDATAHOLDER STATUS AFTERCALLING MSA.LOOKUPDATAHOLDERSDETAILS ");
 				if ( DEBUG ) logger.debug("EXPORT: DATAHOLDERURI = "+dataHolderURI);
 
 			}catch(NullPointerException npe){
@@ -658,7 +732,10 @@ public String upLoad(String jobDetails){
 	
 		//   Format and return the results as XML.
 			if (successStatus){
-				response = util.buildMySpaceManagerResponse(null, SUCCESS, "",dataHolderURI);		    	
+				if (errCode=="")
+				  response = util.buildMySpaceManagerResponse(null, SUCCESS, "",dataHolderURI);
+                else
+				  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");				 		    	
 			}else {
 				v = status.getCodes();
 				for(int i=0;i<=v.size();i++){
@@ -674,7 +751,11 @@ public String upLoad(String jobDetails){
 			logger.error("ERROR EXPORT MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.MS_E_EXPORT,MySpaceStatusCode.ERROR);
 			MySpaceMessage message =  new MySpaceMessage("MS_E_EXPORT");
-			response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_EXPORT,dataHolderURI); 
+			if (errCode=="")
+			  response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_EXPORT,dataHolderURI);    
+			else
+			  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");	
+			
 			return response;
 		} 	
    }
@@ -705,7 +786,10 @@ public String upLoad(String jobDetails){
 				msA.setRegistryName(registryName);
 				dataitem = msA.createContainer(
 				userID, communityID, jobID, newContainerName);		
-				checkStatus("CREATECONTAINER STATUS ");		
+				if ( errCode!="" )
+				  errCode = errCode +"," +checkStatus("CREATECONTAINER STATUS ");	
+				else
+				  errCode = checkStatus("CREATECONTAINER STATUS ");	
 
 			}catch(NullPointerException npe){
 				MySpaceMessage message = new MySpaceMessage("NULL_POINTER_GETTING_REQUEST");
@@ -723,7 +807,10 @@ public String upLoad(String jobDetails){
 		//   Format and return the results as XML.
 		if(dataitem!=null){
 			if (successStatus){
-				response = util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");		    	
+				if (errCode=="")
+				  response = util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");		    	
+				else
+				response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");
 			}else {
 				v = status.getCodes();
 				for(int i=0;i<=v.size();i++){
@@ -744,7 +831,11 @@ public String upLoad(String jobDetails){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.MS_E_FLMOVDH,MySpaceStatusCode.ERROR);
 			MySpaceMessage message =  new MySpaceMessage("MS_E_FLMOVDH");
-			response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLMOVDH,""); 
+			if (errCode=="")
+			  response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLMOVDH,"");    
+			else
+			  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");	
+			
 			return response;
 		} 	
    }
@@ -786,8 +877,11 @@ public String upLoad(String jobDetails){
 					logger.debug("DATAITEMRCORDS = NULL!");
 				}				
 				isDeleted = msA.deleteDataHolder( userID, communityID,
-				jobID, dataItemID);		
-				checkStatus("DELETEDATAHOLDERS STATUS ");
+				jobID, dataItemID);	
+				if ( errCode!="" )	
+				  errCode = errCode +"," +checkStatus("DELETEDATAHOLDERS STATUS ");
+				else
+				  errCode = checkStatus("DELETEDATAHOLDERS STATUS ");
 				
 			}catch(NullPointerException npe){
 				MySpaceMessage message = new MySpaceMessage("NULL_POINTER_GETTING_REQUEST");
@@ -815,7 +909,10 @@ public String upLoad(String jobDetails){
 		if ( DEBUG )  logger.debug("SUCCESSSTATUS = "+successStatus +"ISDELETED IS: " +isDeleted);
 		if(isDeleted){		
 			if (successStatus){
-				response = util.buildMySpaceManagerResponse(null, SUCCESS, "","");		    	
+				if (errCode=="")
+				  response = util.buildMySpaceManagerResponse(null, SUCCESS, "","");	
+				else	
+				  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");    	
 			}else {
 				v = status.getCodes();
 				for(int i=0;i<=v.size();i++){
@@ -827,7 +924,11 @@ public String upLoad(String jobDetails){
 		} else{
 			status.addCode(MySpaceStatusCode.MS_E_FLCRTDH,MySpaceStatusCode.ERROR);
 			MySpaceMessage message =  new MySpaceMessage("MS_E_FLCRTDH");
-			response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
+			if (errCode=="")
+			  response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");   
+			else
+			  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");	
+			 
 			return response;
 		} 
 			if( DEBUG ) logger.debug("RESPONSE: "+response); 
@@ -836,7 +937,11 @@ public String upLoad(String jobDetails){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.ERR_DELETE_DATA_HOLDER,MySpaceStatusCode.ERROR);
 			MySpaceMessage message =  new MySpaceMessage("ERR_DELETE_DATA_HOLDER");
-			response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.ERR_DELETE_DATA_HOLDER,""); 
+			if (errCode=="")
+			  response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.ERR_DELETE_DATA_HOLDER,"");    
+			else
+			  response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");	
+			 
 			return response;
 		} 
 
@@ -872,21 +977,36 @@ private Call createServerManagerCall(){
 			FileInputStream istream = new FileInputStream( regPathTemp );
 		    conProperties.load(istream);
 			istream.close();
-		}
-		catch ( IOException ex ) {
+		}catch ( IOException ex ) {
 			if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ex.getMessage());
-	}
+			}
     }
-    private void checkStatus(String message){
+    
+    private String checkStatus(String message){
 		MySpaceStatus stat1 = new MySpaceStatus();
 		boolean successStat = stat1.getSuccessStatus();
+		String errCodes = "";
+		if ( DEBUG ) logger.debug("inside checkStatus, successStat = " +successStat);
+		if (!successStat){
+			errCodes = getErrorCode(stat1, message);
+		}
+		return errCodes;
+    }
+    
+    private String getErrorCode(MySpaceStatus stat1, String message){
+    	String codeS ="";
 		Vector err = stat1.getCodes();
 		for (int i =0;i<err.size();i++){
 			MySpaceStatusCode code = (MySpaceStatusCode)err.elementAt(i);
-			String codeS = code.getCode();
+			if ( codeS==""){
+				codeS = code.getCode();
+				logger.debug("dddddddddddddddd" +codeS +"dddddd");
+			}else{
+				codeS = codeS +"," +code.getCode();
+				}
 			if (DEBUG)logger.debug("STATUS CODE IS: " +message +"  "+codeS);
-		}
-		if(DEBUG) logger.debug("SATAUES is :" +message +"  "+successStat);
+		}    	
+    	return codeS;
     }
 }
 
