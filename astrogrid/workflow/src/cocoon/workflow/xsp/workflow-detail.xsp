@@ -21,7 +21,7 @@
         	TRACE_ENABLED = true ;
         	
 		public void activityTree ( Activity activity ) throws SAXException {
-        	if( TRACE_ENABLED ) trace( "workflow-details.xsp activityTree() entry") ; 
+        	if( TRACE_ENABLED ) trace( "workflow-details-xsp.activityTree() entry") ; 
         	
         	AttributesImpl xspAttr = new AttributesImpl() ;
         
@@ -42,7 +42,7 @@
        
         	}
         	finally {
-        		if( TRACE_ENABLED ) trace( "workflow-details.xsp activityTree() exit") ;
+        		if( TRACE_ENABLED ) trace( "workflow-details-xsp.activityTree() exit") ;
         	}
           
 		} // end of activityTree() 
@@ -75,38 +75,87 @@
 		} // end of sequence()
 		
 		
-		private void flow( Flow flow, AttributesImpl xspAttr ) {
-        	if( TRACE_ENABLED ) trace( "workflow-details.xsp flow() entry") ; 
+		private void flow( Flow flow, AttributesImpl xspAttr ) throws SAXException {
+        	if( TRACE_ENABLED ) trace( "workflow-details-xsp.flow() entry") ; 
         	
         	try {
         	
-        	
+       		]]>
+	
+			<content>	
+				<xsp:element name="flow">
+					<xsp:attribute name="key"><xsp:expr>flow.getKey()</xsp:expr></xsp:attribute>
+					
+					<xsp:logic>activityContainer( flow, xspAttr ) ;</xsp:logic>
+					
+				</xsp:element>
+			</content>
+		
+
+			<![CDATA[
         	
         	}
         	finally {
-        		if( TRACE_ENABLED ) trace( "workflow-details.xsp flow() exit") ;
+        		if( TRACE_ENABLED ) trace( "workflow-details-xsp.flow() exit") ;
         	}
         			
 		} // end of flow()
 		
 		
-		private void step( Step step, AttributesImpl xspAttr ) {
-        	if( TRACE_ENABLED ) trace( "workflow-details.xsp step() entry") ; 
+		private void step( Step step, AttributesImpl xspAttr ) throws SAXException {
+        	if( TRACE_ENABLED ) trace( "workflow-details-xsp.step() entry") ; 
         	
         	try {
         	
+        		
+      		]]>
+	
+			<content>	
+				<xsp:element name="step">
+					<xsp:attribute name="key"><xsp:expr>step.getKey()</xsp:expr></xsp:attribute>
+					<xsp:element name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:element>
+					<xsp:element name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:element>
+					<xsp:element name="tool"><xsp:expr>step.getTool().getName()</xsp:expr></xsp:element>
+					<xsp:element name="joinCondition">
+						<xsp:attribute name="value">
+							<xsp:expr>new Boolean( step.isJoinCondition() )</xsp:expr>
+						</xsp:attribute>
+					</xsp:element>
+				</xsp:element>
+			</content>
+		
+
+			<![CDATA[        	
         	
         	
         	}
         	finally {
-        		if( TRACE_ENABLED ) trace( "workflow-details.xsp step() exit") ;
+        		if( TRACE_ENABLED ) trace( "workflow-details-xsp.step() exit") ;
         	}
         			
 		} // end of step()
 		
 				
-		private static void activityContainer( ActivityContainer activityContainer, AttributesImpl xspAttr ) {
-		}
+		private void activityContainer( ActivityContainer activityContainer, AttributesImpl xspAttr ) 
+								throws SAXException {
+		    if( TRACE_ENABLED ) trace( "workflow-details_xsp.activityContainer() entry") ; 
+        	
+        	try {
+        	
+        		ActivityIterator
+					iterator = activityContainer.getChildren() ;
+					
+				while( iterator.hasNext() ) {
+					activityTree( (Activity)iterator.next() ) ;
+				}
+        	
+        	}
+        	finally {
+        		if( TRACE_ENABLED ) trace( "workflow-details_xsp.activityContainer() exit") ;
+        	}
+        	
+		} // end of activityContainer()
+		
 		
 		private static void trace( String traceString ) {
 			System.out.println( traceString ) ;
