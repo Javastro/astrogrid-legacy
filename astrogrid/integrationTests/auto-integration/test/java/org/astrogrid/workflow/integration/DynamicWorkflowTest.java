@@ -1,4 +1,4 @@
-/*$Id: DynamicWorkflowTest.java,v 1.2 2004/08/28 09:58:07 nw Exp $
+/*$Id: DynamicWorkflowTest.java,v 1.3 2004/08/28 11:14:50 nw Exp $
  * Created on 27-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,7 +59,10 @@ public class DynamicWorkflowTest extends AbstractTestForWorkflow {
         ParameterValue pval = (ParameterValue)sumTool.findXPathValue("input/parameter[name='parameter-0']");
         pval.setValue("9"); 
         pval.setIndirect(false);
-        // will set parameter-1 by script.
+        // will set parameter-1 by script. - remove it from tool template.
+        pval = (ParameterValue)sumTool.findXPathValue("input/parameter[name='parameter-1']");
+        sumTool.getInput().removeParameter(pval);
+        
         pval = (ParameterValue)sumTool.findXPathValue("output/parameter[name='result']");
         pval.setIndirect(false);       
         
@@ -97,6 +100,9 @@ public class DynamicWorkflowTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: DynamicWorkflowTest.java,v $
+Revision 1.3  2004/08/28 11:14:50  nw
+tweaks
+
 Revision 1.2  2004/08/28 09:58:07  nw
 forgot to add \n's to script.
 
