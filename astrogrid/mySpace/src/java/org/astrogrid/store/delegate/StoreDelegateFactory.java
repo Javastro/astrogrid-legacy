@@ -1,5 +1,5 @@
 /*
- * $Id: StoreDelegateFactory.java,v 1.3 2004/03/01 16:38:58 mch Exp $
+ * $Id: StoreDelegateFactory.java,v 1.4 2004/03/01 22:38:46 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -12,7 +12,7 @@ package org.astrogrid.store.delegate;
 
 import java.io.IOException;
 import java.net.URL;
-import org.astrogrid.community.Account;
+import org.astrogrid.community.User;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
 
@@ -31,19 +31,16 @@ public class StoreDelegateFactory
     * myspace.  We could also add a FTP and GridFTP delegates for services
     * without accounts on MySpace servers.
     */
-   public static StoreClient createDelegate(Account operator, Agsl location) throws IOException
+   public static StoreClient createDelegate(User operator, Agsl location) throws IOException
    {
-      if (location.getMsrl() != null) {
-         Msrl msrl = location.getMsrl();
-
-         return new MySpaceIt04ServerDelegate(operator, msrl.getDelegateEndpoint().toString());
+      if (location.getScheme().startsWith(Agsl.SCHEME+":"+Msrl.SCHEME)) {
+         return new MySpaceIt04ServerDelegate(operator, location.getEndpoint().toString());
       }
-      URL url = location.resolveURL();
-      if (url.getProtocol().equals("ftp")) {
-         return new FtpStore(url);
+      if (location.getScheme().startsWith(Agsl.SCHEME+":ftp")) {
+         return new FtpStore(location);
       }
-      if (url.getProtocol().equals("file")) {
-         return new LocalFileStore();
+      if (location.getScheme().startsWith(Agsl.SCHEME+":file")) {
+         return new LocalFileStore(location);
       }
       
       throw new IllegalArgumentException("Don't know how to create delegate for AGSL '"+location+"'");
@@ -53,6 +50,9 @@ public class StoreDelegateFactory
 
 /*
 $Log: StoreDelegateFactory.java,v $
+Revision 1.4  2004/03/01 22:38:46  mch
+Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
+
 Revision 1.3  2004/03/01 16:38:58  mch
 Merged in from datacenter 4.1 and odd cvs/case problems
 

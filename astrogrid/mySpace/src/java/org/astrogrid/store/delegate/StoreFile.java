@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFile.java,v 1.2 2004/03/01 16:38:58 mch Exp $
+ * $Id: StoreFile.java,v 1.3 2004/03/01 22:38:46 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -16,6 +16,8 @@ import org.astrogrid.store.Agsl;
  * Used to represent a file in 'storespace'.  It is supposed to look rather
  * like 'java.io.File' rather than the container/component design pattern.
  *
+ * Notay very very benay - do not assume that child[0].getParent() == child[1].getParent().
+ * Use equals instead
  * @author mch
  */
 
@@ -43,6 +45,12 @@ public interface StoreFile {
    
    /** Returns where to find this file using an AStrogrid Store Locator */
    public Agsl toAgsl();
+   
+   /** Returns true if this represents the same file as the given one, within
+    * this server.  This
+    * won't check for references from different stores to the same file */
+   public boolean equals(StoreFile anotherFile);
+
 }
 
 /*

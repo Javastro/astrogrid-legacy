@@ -1,5 +1,5 @@
 /*
- $Id: FtpStore.java,v 1.1 2004/03/01 15:15:04 mch Exp $
+ $Id: FtpStore.java,v 1.2 2004/03/01 22:38:46 mch Exp $
 
  (c) Copyright...
  */
@@ -8,13 +8,14 @@ package org.astrogrid.store.delegate;
 
 import java.io.*;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.Vector;
+import org.astrogrid.community.User;
 import org.astrogrid.io.Piper;
+import org.astrogrid.store.Agsl;
 import sun.net.ftp.FtpClient;
 import sun.net.ftp.FtpProtocolException;
-import org.astrogrid.community.Account;
 
 /**
  * An implenentation of myspace using an ordinary FTP server.
@@ -30,8 +31,9 @@ public class FtpStore implements StoreClient
    private String server = null;
    private int port = DEFAULT_PORT;
    private String rootDir = ""; //root directory for this user
-
-   private Account operator = Account.ANONYMOUS;
+   private URL endpoint = null;
+   
+   private User operator = User.ANONYMOUS;
 
    private FullFtpClient ftpConnection = null;
 
@@ -164,15 +166,30 @@ public class FtpStore implements StoreClient
     * Construct myspace client using given endpoint, which is a complete location, eg
     * ftp://ftp.roe.ac.uk/pub/astrogrid
     */
-   public FtpStore(URL endPoint) throws IOException
+   public FtpStore(URL ftpEndPoint) throws IOException
    {
-      server = endPoint.getHost();
-      port = endPoint.getPort();
+      this.endpoint = ftpEndPoint;
+      server = ftpEndPoint.getHost();
+      port = ftpEndPoint.getPort();
       if (port == -1) { port = DEFAULT_PORT; }
       //hmmm @todo rootDir = url.getPath();
    }
 
+   /**
+    * Construct myspace client using given Agsl
+    */
+   public FtpStore(Agsl agsl) throws IOException
+   {
+      this(new URL(agsl.getEndpoint()));
+   }
 
+   /**
+    * Returns the endpoint
+    */
+   public Agsl getEndpoint() {
+      return new Agsl(endpoint);
+   }
+   
    /**
     * Connect to server, get authorised and move to the directory to be used
     * for temporary publications
@@ -184,7 +201,7 @@ public class FtpStore implements StoreClient
       try
       {
          ftpConnection = new FullFtpClient(server, port);
-         ftpConnection.login(operator.getIndividual(), operator.getAstrogridId());
+         ftpConnection.login(operator.getUserId(), operator.getAccount());  //should be id & email
          ftpConnection.binary();
          // ftpConnection.endir("myspace");  //ensure directory myspace exists
          ftpConnection.cd(rootDir);
@@ -366,7 +383,7 @@ public class FtpStore implements StoreClient
    /**
     * Copy a file
     */
-   public void copy(String sourcePath, String targetPath) throws IOException {
+   public void copy(String sourcePath, Agsl targetPath) throws IOException {
       // TODO
       throw new UnsupportedOperationException();
    }
@@ -404,7 +421,7 @@ public class FtpStore implements StoreClient
    /**
     * Returns the user of this delegate - ie the account it is being used by
     */
-   public Account getOperator() {
+   public User getOperator() {
       return operator;
    }
    
@@ -414,6 +431,15 @@ public class FtpStore implements StoreClient
    public URL getUrl(String sourcePath) throws IOException {
       ftpConnection.cdPath(sourcePath);
       return new URL(ftpConnection.getUrl(new File(sourcePath).getName()));
+   }
+
+   /**
+    * Moves/Renames a file
+    */
+   public void move(String sourcePath, Agsl targetPath) throws IOException
+   {
+      copy(sourcePath, targetPath);
+      delete(sourcePath);
    }
    
 }

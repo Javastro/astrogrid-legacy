@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFolder.java,v 1.3 2004/03/01 16:38:58 mch Exp $
+ * $Id: MySpaceFolder.java,v 1.4 2004/03/01 22:38:46 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -102,11 +102,22 @@ public class MySpaceFolder implements StoreFile {
    /** Returns the filename/foldername/tablename/etc */
    public String getName() {        return this.name; }
    
+   /** Returns true if this represents the same file as the given one */
+   public boolean equals(StoreFile anotherFile) {
+      if (anotherFile instanceof MySpaceFolder) {
+         return name.equals( ((MySpaceFolder) anotherFile).name) &&
+               parentFolder.equals(((MySpaceFolder) anotherFile).parentFolder);
+      }
+      return false;
+   }
    
 }
 
 /*
  $Log: MySpaceFolder.java,v $
+ Revision 1.4  2004/03/01 22:38:46  mch
+ Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
+
  Revision 1.3  2004/03/01 16:38:58  mch
  Merged in from datacenter 4.1 and odd cvs/case problems
 

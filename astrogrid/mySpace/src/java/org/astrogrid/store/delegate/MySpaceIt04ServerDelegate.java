@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04ServerDelegate.java,v 1.2 2004/03/01 15:15:04 mch Exp $
+ * $Id: MySpaceIt04ServerDelegate.java,v 1.3 2004/03/01 22:38:46 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -27,12 +27,12 @@ import java.io.StringBufferInputStream;
 import java.net.URL;
 import java.util.StringTokenizer;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.community.Account;
+import org.astrogrid.community.User;
 import org.astrogrid.log.Log;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
+import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -42,9 +42,9 @@ public class MySpaceIt04ServerDelegate implements StoreClient
    private Msrl serverMsrl = null; //location of server
 
    //the person/account using this delegate
-   private Account operator = null;
+   private User operator = null;
 
-   public MySpaceIt04ServerDelegate(Account anOperator, String endPoint) throws IOException
+   public MySpaceIt04ServerDelegate(User anOperator, String endPoint) throws IOException
    {
       operator = anOperator;
       
@@ -59,8 +59,15 @@ public class MySpaceIt04ServerDelegate implements StoreClient
    /**
     * Returns the user of this delegate - ie the account it is being used by
     */
-   public Account getOperator() { return operator; }
+   public User getOperator() { return operator; }
    
+
+   /**
+    * Returns the endpoint
+    */
+   public Agsl getEndpoint() {
+      return new Agsl(serverMsrl.getDelegateEndpoint());
+   }
 
    /**
     * Puts the given string into the given location
@@ -71,9 +78,9 @@ public class MySpaceIt04ServerDelegate implements StoreClient
          String action = MySpaceClient.OVERWRITE;
          if (append) action = MySpaceClient.APPEND;
          
-         Log.trace("saveDataHolding("+operator.getIndividual()+","+operator.getCommunity()+","+operator.getToken()+","+targetPath+","+contents+",not used,"+action);
+         Log.trace("saveDataHolding("+operator.getUserId()+","+operator.getCommunity()+","+operator.getToken()+","+targetPath+","+contents+",not used,"+action);
 
-         depIt04Delegate.saveDataHolding(operator.getIndividual(),
+         depIt04Delegate.saveDataHolding(operator.getUserId(),
                                      operator.getCommunity(),
                                      operator.getToken(),
                                      targetPath,
@@ -102,7 +109,7 @@ public class MySpaceIt04ServerDelegate implements StoreClient
       try {
          
          String entries = depIt04Delegate.getDataHolding(
-                              operator.getIndividual(),
+                              operator.getUserId(),
                               operator.getCommunity(),
                               operator.getToken(),
                               path);
@@ -128,7 +135,7 @@ public class MySpaceIt04ServerDelegate implements StoreClient
          String entries = null;
          
          entries = (String) depIt04Delegate.listDataHoldingsGen(
-                  operator.getIndividual(),
+                  operator.getUserId(),
                   operator.getCommunity(), operator.getToken(),
                   filter).elementAt(0);
             
@@ -196,10 +203,10 @@ public class MySpaceIt04ServerDelegate implements StoreClient
       if (append) action = MySpaceClient.APPEND;
          
       try {
-         Log.trace("saveDataHoldingURL("+operator.getIndividual()+","+operator.getCommunity()+","+operator.getToken()+","+targetPath+","+source+",not used,"+action);
+         Log.trace("saveDataHoldingURL("+operator.getUserId()+","+operator.getCommunity()+","+operator.getToken()+","+targetPath+","+source+",not used,"+action);
 
          depIt04Delegate.saveDataHoldingURL(
-                                     operator.getIndividual(),
+                                     operator.getUserId(),
                                      operator.getCommunity(),
                                      operator.getToken(),
                                      targetPath,
@@ -264,7 +271,7 @@ public class MySpaceIt04ServerDelegate implements StoreClient
    public URL getUrl(String sourcePath) throws StoreException {
 
       try {
-         String source = depIt04Delegate.getDataHoldingUrl(operator.getIndividual(), operator.getCommunity(), operator.getToken(),
+         String source = depIt04Delegate.getDataHoldingUrl(operator.getUserId(), operator.getCommunity(), operator.getToken(),
                                                            sourcePath);
 
          if (source == null)
@@ -285,7 +292,7 @@ public class MySpaceIt04ServerDelegate implements StoreClient
 
       String status;
       try {
-         status = depIt04Delegate.deleteDataHolding(operator.getIndividual(), operator.getCommunity(), operator.getToken(),
+         status = depIt04Delegate.deleteDataHolding(operator.getUserId(), operator.getCommunity(), operator.getToken(),
                                                            "/"+deletePath);
 
       }
@@ -305,14 +312,14 @@ public class MySpaceIt04ServerDelegate implements StoreClient
    /**
     * Copies the given file to the given location
     */
-   public void copy(String originalPath, String copyPath) throws IOException {
+   public void copy(String originalPath, Agsl targetPath) throws IOException {
 
       try {
-         depIt04Delegate.copyDataHolding(operator.getIndividual(), operator.getCommunity(), operator.getToken(),
-                                                           originalPath, copyPath);
+         depIt04Delegate.copyDataHolding(operator.getUserId(), operator.getCommunity(), operator.getToken(),
+                                                           originalPath, targetPath.getPath());
       }
       catch (Exception e) {
-         throw new StoreException("Failed to copy '"+originalPath+"' to '"+copyPath+"'", e);
+         throw new StoreException("Failed to copy '"+originalPath+"' to '"+targetPath.getPath()+"'", e);
       }
    }
    
@@ -321,19 +328,32 @@ public class MySpaceIt04ServerDelegate implements StoreClient
     */
    public void newFolder(String newFolderPath) throws IOException {
       try {
-         depIt04Delegate.createContainer(operator.getIndividual(), operator.getCommunity(), operator.getToken(),
+         depIt04Delegate.createContainer(operator.getUserId(), operator.getCommunity(), operator.getToken(),
                                                            newFolderPath);
       }
       catch (Exception e) {
          throw new StoreException("Failed to create new folder '"+newFolderPath+"'", e);
       }
    }
+
+   /**
+    * Moves/Renames a file
+    */
+   public void move(String sourcePath, Agsl targetPath) throws IOException
+   {
+      copy(sourcePath, targetPath);
+      delete(sourcePath);
+   }
+   
       
    
 }
 
 /*
 $Log: MySpaceIt04ServerDelegate.java,v $
+Revision 1.3  2004/03/01 22:38:46  mch
+Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
+
 Revision 1.2  2004/03/01 15:15:04  mch
 Updates to Store delegates after myspace meeting
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.2 2004/03/01 16:38:58 mch Exp $
+ * $Id: Agsl.java,v 1.3 2004/03/01 22:38:46 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -15,10 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import org.astrogrid.community.Account;
-import org.astrogrid.log.Log;
-import org.astrogrid.store.delegate.StoreClient;
-import org.astrogrid.store.delegate.StoreDelegateFactory;
+import org.astrogrid.community.User;
 
 /**
  * AstroGrid Storepoint Locator.  An astrogrid-specific way of *locating* a
@@ -38,6 +35,8 @@ import org.astrogrid.store.delegate.StoreDelegateFactory;
 
 public class Agsl
 {
+   /** Note that this is not a url to the file - as an ftp reference is split by fragment ftp://server/path#fileonserver
+    */
    private URL url = null;
    private Msrl msrl = null;
    
@@ -53,6 +52,14 @@ public class Agsl
    public Agsl(Msrl aMyspaceResourceLocation)
    {
       this.msrl = aMyspaceResourceLocation;
+   }
+
+   /** Makes a reference from the given endpoint (eg myspace:http://asdfasdf or ftp://)
+    * and filepath
+    */
+   public Agsl(String endpoint, String path) throws MalformedURLException
+   {
+      this(SCHEME+":"+endpoint+"#"+path);
    }
    
    /** Make a reference from the given string representation. Takes agsl forms,
@@ -90,6 +97,14 @@ public class Agsl
          else
          {
             url = new URL(rl);
+            
+            //for some reason picks up # in authority if there's no slashes...
+            if (url.getAuthority().indexOf('#')>-1) {
+               url = new URL(url.getProtocol(),
+                             url.getHost().substring(0,url.getHost().indexOf('#')),
+                             url.getPort(),
+                             "#"+url.getRef());
+            }
          }
       }
    }
@@ -116,21 +131,32 @@ public class Agsl
    }
    
    /** Returns the myspace reference */
-   public Msrl getMsrl() { return msrl; }
+//   public Msrl getMsrl() { return msrl; }
+
+   /** Returns the delegate endpoint */
+   public String getEndpoint() {
+      if (url != null) {
+         return url.getProtocol()+"://"+url.getAuthority()+url.getPath();
+      }
+      else {
+         return msrl.getDelegateEndpoint().toString();
+      }
+   }
    
-   /** Returns the path */
+   /** Returns the path to the file on the server */
    public String getPath() {
       if (url != null) {
-         return url.getPath();
+         return url.getRef();
       }
       else {
          return msrl.getPath();
       }
    }
    
-   /** Opens an inputstream to the file.  Just like url.openStream()....
+   /** Opens an inputstream to the file.  Just like url.openStream().... but
+    * need to give User to authorise/etc
     */
-   public InputStream openStream() throws IOException {
+   public InputStream openStream(User user) throws IOException {
       if (url != null) {
          return url.openStream();
       }
@@ -140,7 +166,7 @@ public class Agsl
    }
    
    /**
-    * Returns a standard URL to the file
+    * Returns a standard URL to the file.
     */
    public URL resolveURL() throws IOException {
       
@@ -152,11 +178,27 @@ public class Agsl
       }
    }
 
+   
+   /**
+    * Returns the full scheme, eg astrogrid:store:myspace, or astrogrid:store:ftp
+    */
+   public String getScheme() {
+      if (url != null) {
+         return SCHEME+":"+url.getProtocol();
+      }
+      else {
+         return SCHEME+":"+Msrl.SCHEME;
+      }
+   }
+   
 
 }
 
 /*
 $Log: Agsl.java,v $
+Revision 1.3  2004/03/01 22:38:46  mch
+Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
+
 Revision 1.2  2004/03/01 16:38:58  mch
 Merged in from datacenter 4.1 and odd cvs/case problems
 

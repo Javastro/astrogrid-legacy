@@ -1,5 +1,5 @@
 /*
- * $Id: Msrl.java,v 1.2 2004/03/01 16:38:58 mch Exp $
+ * $Id: Msrl.java,v 1.3 2004/03/01 22:38:46 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -12,10 +12,8 @@ package org.astrogrid.store;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import org.astrogrid.community.Account;
+import org.astrogrid.community.User;
 import org.astrogrid.log.Log;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
@@ -180,7 +178,7 @@ public class Msrl
     * Returns a standard URL to the file
     */
    public URL resolveURL() throws IOException {
-      StoreClient myspace = StoreDelegateFactory.createDelegate(Account.ANONYMOUS, toAgsl());
+      StoreClient myspace = StoreDelegateFactory.createDelegate(User.ANONYMOUS, toAgsl());
          
       URL url = myspace.getUrl(getPath());
 
@@ -194,6 +192,9 @@ public class Msrl
 
 /*
 $Log: Msrl.java,v $
+Revision 1.3  2004/03/01 22:38:46  mch
+Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
+
 Revision 1.2  2004/03/01 16:38:58  mch
 Merged in from datacenter 4.1 and odd cvs/case problems
 

@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFileStore.java,v 1.1 2004/03/01 15:15:04 mch Exp $
+ * $Id: LocalFileStore.java,v 1.2 2004/03/01 22:38:46 mch Exp $
  *
  */
 
@@ -7,12 +7,14 @@ package org.astrogrid.store.delegate;
 
 import java.io.*;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.community.Account;
+import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.io.Piper;
+import org.astrogrid.store.Agsl;
 
 /**
  * This is ClientStore implementation for reaching local files directly.
@@ -62,11 +64,11 @@ public class LocalFileStore implements StoreClient
     * Sets up the root for this instance determined from the configuration root,
     * or creates one off the system-dependent
     * temporary directory (as the owner will always be able to create one there
-    * even if they can't in the working directory
+    * even if they can't in the working directory)
     */
    public LocalFileStore() throws IOException {
       
-      String root = SimpleConfig.getProperty("LocalFileStoreRoot", null);
+      String root = SimpleConfig.getSingleton().getString("LocalFileStoreRoot", null);
       
       if (root == null) {
          //create file in temporary area, and
@@ -85,7 +87,16 @@ public class LocalFileStore implements StoreClient
       this();
       
       rootDir = new File(rootDir, name);
-      rootDir.mkdir();
+      if (!rootDir.exists()) {
+         rootDir.mkdir();
+      }
+   }
+
+   /** As the named constructor, but uses the given Agsl that defines the name
+    * Could do with better checking that the agsl is correct for this type...
+    */
+   public LocalFileStore(Agsl agsl) throws IOException {
+      this(agsl.getEndpoint().substring(6)); //chop off 'file://'
    }
 
    /** Creates a local file store with the given file as the root
@@ -95,6 +106,19 @@ public class LocalFileStore implements StoreClient
       this.rootDir = givenRoot;
    }
    
+   /**
+    * Returns the endpoint
+    */
+   public Agsl getEndpoint() {
+      String s = Agsl.SCHEME+":file://"+rootDir.getName();
+      try {
+         return new Agsl(s);
+      } catch (MalformedURLException mue) {
+         //shouldn't happen as this is a generated string...
+         throw new RuntimeException("Program error: generating bad url '"+s+"'",mue);
+      }
+   }
+
    /**
     * Puts the given string into the given location
     */
@@ -111,8 +135,8 @@ public class LocalFileStore implements StoreClient
    /**
     * Returns the user of this delegate - ie the account it is being used by
     */
-   public Account getOperator() {
-      return Account.ANONYMOUS;
+   public User getOperator() {
+      return User.ANONYMOUS;
    }
    
    /**
@@ -128,37 +152,61 @@ public class LocalFileStore implements StoreClient
     * Returns a tree representation of the files that match the expression.
     */
    public StoreFile getFiles(String filter) throws IOException {
-
-      throw new UnsupportedOperationException();
+      
+      if (!filter.equals("*")) {
+         //@todo - borrow from somwhere
+         throw new UnsupportedOperationException("Can only filter * for now");
+      }
+      return new LocalFile(this, rootDir);
    }
 
    /**
     * Returns a list of the files in the given directory */
    public StoreFile[] listFiles(String filter) {
 
-      File dir = makeLocalPath(filter);
+      if (!filter.equals("*")) {
+         //@todo - borrow from somwhere
+         throw new UnsupportedOperationException("Can only filter * for now");
+      }
+
+      return new LocalFile(this, rootDir).listFiles();
+   }
+
+   /**
+    * Returns the full path, within the context of this server, to the given
+    * file
+    */
+   public String getServerPath(File file) throws StoreException
+   {
+      if (file.equals(rootDir)) {
+         return null; //not a path
+      }
       
-      File[] children =  dir.listFiles(new CriteriaFilenameFilter(filter));
-      
-      throw new UnsupportedOperationException();
+      String path = "";
+      //navigate up the file until we reach the root
+      while ((file != null) && (!file.equals(rootDir))) {
+         path = "/"+file.getName()+path;
+         file = file.getParentFile();
+      }
+
+      //check it's all OK
+      if (file == null) {
+         throw new StoreException("File "+file+" not in local file store "+this);
+      }
+
+      return path.substring(1); //chop off initial slash
    }
    
    /**
-    * Returns the file representation of that at the given path */
+    * Returns the file representation of that at the given server path */
    public StoreFile getFile(String path) {
 
-      throw new UnsupportedOperationException();
-      /**
-      File dir = makeLocalPath(searchPath);
-
-      new File
-      
-      File[] matchedFiles = dir.listFiles(new CriteriaFilenameFilter(filter));
-      
-      dir.
-      
-      for (int i=0;i<matchedFiles.length;i++) {
-       **/
+      File f = makeLocalPath(path);
+      if (!f.exists()) {
+         return null;
+      } else {
+         return new LocalFile(this, f);
+      }
    }
 
    /**
@@ -187,7 +235,7 @@ public class LocalFileStore implements StoreClient
       File fileToDel = makeLocalPath(deletePath);
       boolean success = fileToDel.delete();
       if (!success) {
-         throw new IOException("Failed to delete "+deletePath);
+         throw new IOException("'"+this+"' failed to delete '"+deletePath+"' (don't know why, possibly file open/locked)");
       }
    }
    
@@ -219,22 +267,30 @@ public class LocalFileStore implements StoreClient
    /**
     * Copy a file
     */
-   public void copy(String sourcePath, String targetPath) throws IOException {
-      File source = makeLocalPath(sourcePath);
-      File target = makeLocalPath(targetPath);
+   public void copy(String sourcePath, Agsl target) throws IOException {
 
-      InputStream in = new FileInputStream(source);
-      OutputStream out = new FileOutputStream(target);
-
+      InputStream in = new FileInputStream(makeLocalPath(sourcePath));
+      OutputStream out = null;
+      
+      if (target.getEndpoint().toLowerCase().equals(Agsl.SCHEME+":file://"+rootDir.getName())) {
+         //same store so make a file
+         out = new FileOutputStream(makeLocalPath(target.getPath()));
+      }
+      else {
+         StoreClient targetStore = StoreDelegateFactory.createDelegate(getOperator(), target);
+         out = targetStore.putStream(target.getPath());
+      }
+      
+      //transfer
       Piper.bufferedPipe(in, out);
-
-      in.close();
       out.close();
+      in.close();
+      
    }
    
 
    /**
-    * Takes the myspace path and returns the representation on the local
+    * Takes the server path and returns the  representation on the local
     * filesystem
     */
    protected File makeLocalPath(String path)
@@ -249,12 +305,28 @@ public class LocalFileStore implements StoreClient
       
       return new File(rootDir, path);
    }
-   
+
+   /**
+    * Moves/Renames a file
+    */
+   public void move(String sourcePath, Agsl targetPath) throws IOException
+   {
+      copy(sourcePath, targetPath);
+      delete(sourcePath);
+   }
+
+   /** USer friendly representation of this store */
+   public String toString() {
+      return "LocalFileStore ["+rootDir.getName()+"]";
+   }
    
 }
 
 /*
 $Log: LocalFileStore.java,v $
+Revision 1.2  2004/03/01 22:38:46  mch
+Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
+
 Revision 1.1  2004/03/01 15:15:04  mch
 Updates to Store delegates after myspace meeting
 
