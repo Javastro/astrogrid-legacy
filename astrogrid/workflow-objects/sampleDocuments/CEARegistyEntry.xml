@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<VODescription xmlns="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.2" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/CEAService/v0.1
+<vr:VODescription xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.2" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/CEAService/v0.1
 \\pahlaptop\work\astrogrid\src\workflow-objects\schema\VOCEA.xsd">
-	<cea:CeaApplication>
+	<vr:Resource xsi:type="java:org.astrogrid.registry.beans.cea.CeaApplication">
 		<!--This is the application to concentrate on for the end of this iteration-->
 		<!--The autorityID has been chosen to be astrogrid.org as I believe that these should be defined at this level - however the registry is probably using this identifier to determine which are "local" registry entries, so there might be something else set as standard. The name of the resource might be better categorised by prepending "cea/" not sure if this is necessary....-->
-		<Identifier>
+		<vr:Identifier>
 			<vr:AuthorityID>astrogrid.org</vr:AuthorityID>
 			<vr:ResourceKey>SExtractor</vr:ResourceKey>
-		</Identifier>
-		<Title>SExtractor Application</Title>
-		<ShortName>SExtractor</ShortName>
-		<Summary>
+		</vr:Identifier>
+		<vr:Title>SExtractor Application</vr:Title>
+		<vr:ShortName>SExtractor</vr:ShortName>
+		<vr:Summary>
 			<vr:Description>Sextractor</vr:Description>
 			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
-		</Summary>
-		<Curation>
+		</vr:Summary>
+		<vr:Curation>
 			<vr:Publisher>
 				<vr:Title>Astrogrid</vr:Title>
 			</vr:Publisher>
 			<vr:Contact>
 				<vr:Name>Paul Harrison</vr:Name>
-				<Email>pah@jb.man.ac.uk</Email>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
 			</vr:Contact>
-		</Curation>
+		</vr:Curation>
 		<cea:ApplicationDefinition>
 			<cea:Parameters>
 				<!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
@@ -62,28 +62,28 @@
 				</ceab:Interface>
 			</cea:Interfaces>
 		</cea:ApplicationDefinition>
-	</cea:CeaApplication>
+	</vr:Resource>
 	<cea:CeaApplication>
 		<!--HyperZ is another tool that will be driven by config files - however this might not be the full set necessary to run this tool.-->
-		<Identifier>
+		<vr:Identifier>
 			<vr:AuthorityID>astrogrid.org</vr:AuthorityID>
 			<vr:ResourceKey>HyperZ</vr:ResourceKey>
-		</Identifier>
-		<Title>HyperZ Application</Title>
-		<ShortName>HyperZ</ShortName>
-		<Summary>
+		</vr:Identifier>
+		<vr:Title>HyperZ Application</vr:Title>
+		<vr:ShortName>HyperZ</vr:ShortName>
+		<vr:Summary>
 			<vr:Description>HyperZ</vr:Description>
 			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
-		</Summary>
-		<Curation>
+		</vr:Summary>
+		<vr:Curation>
 			<vr:Publisher>
 				<vr:Title>Astrogrid</vr:Title>
 			</vr:Publisher>
 			<vr:Contact>
 				<vr:Name>Paul Harrison</vr:Name>
-				<Email>pah@jb.man.ac.uk</Email>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
 			</vr:Contact>
-		</Curation>
+		</vr:Curation>
 		<cea:ApplicationDefinition>
 			<cea:Parameters>
 				<cea:ParameterDefinition name="config_file" type="FileReference">
@@ -115,25 +115,25 @@
 	<cea:CeaApplication>
 		<!--This is Patricio's data federation tool that will be needed for the january demo I believe - It is more complicated than those above in that it has more different types of parameter. Additionally I think that it would be good for the UI to be able to look into the VOTables to give the user a list of columns to chose from - otherwise this would be a very painful process for the user.-->
 		<!-- these parameters are incorrect in the latest verison of the tool -->
-		<Identifier>
+		<vr:Identifier>
 			<vr:AuthorityID>astrogrid.org</vr:AuthorityID>
 			<vr:ResourceKey>CrossMatcher</vr:ResourceKey>
-		</Identifier>
-		<Title>Crossmatcher Application</Title>
-		<ShortName>CrossMatcher</ShortName>
-		<Summary>
+		</vr:Identifier>
+		<vr:Title>Crossmatcher Application</vr:Title>
+		<vr:ShortName>CrossMatcher</vr:ShortName>
+		<vr:Summary>
 			<vr:Description>CrossMatcher</vr:Description>
 			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
-		</Summary>
-		<Curation>
+		</vr:Summary>
+		<vr:Curation>
 			<vr:Publisher>
 				<vr:Title>Astrogrid</vr:Title>
 			</vr:Publisher>
 			<vr:Contact>
 				<vr:Name>Paul Harrison</vr:Name>
-				<Email>pah@jb.man.ac.uk</Email>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
 			</vr:Contact>
-		</Curation>
+		</vr:Curation>
 		<cea:ApplicationDefinition>
 			<cea:Parameters>
 				<cea:ParameterDefinition name="targets" type="MySpace_VOTableReference">
@@ -180,41 +180,41 @@
 		</cea:ApplicationDefinition>
 	</cea:CeaApplication>
 	<cea:CeaService>
-		<Identifier>
-			<AuthorityID>astrogrid.org</AuthorityID>
-			<ResourceKey>CommandLineExecutionController/1</ResourceKey>
-		</Identifier>
-		<Title>CommandLineExecutionController</Title>
-		<ShortName>CLEC1</ShortName>
-		<Summary>
-			<Description>Run command line applications     </Description>
-			<ReferenceURL>http://www.astrogrid.org/maven/build/applications</ReferenceURL>
-		</Summary>
-		<Curation>
-			<Publisher>
-				<Title>Astrogrid</Title>
-			</Publisher>
-			<Contact>
-				<Name>Paul Harrison</Name>
-				<Email>pah@jb.man.ac.uk</Email>
-			</Contact>
-			<Date>2004-02-02</Date>
-			<Creator>
-				<Name>Paul Harrison</Name>
-			</Creator>
-			<Contributor>
-				<Name>Noel Winstanley</Name>
-			</Contributor>
-			<Contributor>
-				<Name>Jeff Lusted</Name>
-			</Contributor>
-		</Curation>
-		<Subject>Common Execution Architecture</Subject>
-		<Interface>
-			<Invocation>WebService</Invocation>
-			<Description>This is the application controller</Description>
-			<AccessURL use="full">http://vm05.astrogrid.org:8080/astrogrid-applications/services/ApplicationControllerService</AccessURL>
-		</Interface>
+		<vr:Identifier>
+			<vr:AuthorityID>astrogrid.org</vr:AuthorityID>
+			<vr:ResourceKey>CommandLineExecutionController/1</vr:ResourceKey>
+		</vr:Identifier>
+		<vr:Title>CommandLineExecutionController</vr:Title>
+		<vr:ShortName>CLEC1</vr:ShortName>
+		<vr:Summary>
+			<vr:Description>Run command line applications     </vr:Description>
+			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications</vr:ReferenceURL>
+		</vr:Summary>
+		<vr:Curation>
+			<vr:Publisher>
+				<vr:Title>Astrogrid</vr:Title>
+			</vr:Publisher>
+			<vr:Contact>
+				<vr:Name>Paul Harrison</vr:Name>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
+			</vr:Contact>
+			<vr:Date>2004-02-02</vr:Date>
+			<vr:Creator>
+				<vr:Name>Paul Harrison</vr:Name>
+			</vr:Creator>
+			<vr:Contributor>
+				<vr:Name>Noel Winstanley</vr:Name>
+			</vr:Contributor>
+			<vr:Contributor>
+				<vr:Name>Jeff Lusted</vr:Name>
+			</vr:Contributor>
+		</vr:Curation>
+		<vr:Subject>Common Execution Architecture</vr:Subject>
+		<vr:Interface>
+			<vr:Invocation>WebService</vr:Invocation>
+			<vr:Description>This is the application controller</vr:Description>
+			<vr:AccessURL use="full">http://vm05.astrogrid.org:8080/astrogrid-applications/services/ApplicationControllerService</vr:AccessURL>
+		</vr:Interface>
 		<cea:ManagedApplications>
 			<cea:ApplicationReference>
 				<vr:AuthorityID>astrogrid.org</vr:AuthorityID>
@@ -227,41 +227,41 @@
 		</cea:ManagedApplications>
 	</cea:CeaService>
 	<cea:CeaService>
-		<Identifier>
-			<AuthorityID>astrogrid.org</AuthorityID>
-			<ResourceKey>CommandLineExecutionController/2</ResourceKey>
-		</Identifier>
-		<Title>CommandLineExecutionController</Title>
-		<ShortName>CLEC2</ShortName>
-		<Summary>
-			<Description>Run command line applications     </Description>
-			<ReferenceURL>http://www.astrogrid.org/maven/build/applications</ReferenceURL>
-		</Summary>
-		<Curation>
-			<Publisher>
-				<Title>Astrogrid</Title>
-			</Publisher>
-			<Contact>
-				<Name>Paul Harrison</Name>
-				<Email>pah@jb.man.ac.uk</Email>
-			</Contact>
-			<Date>2004-02-02</Date>
-			<Creator>
-				<Name>Paul Harrison</Name>
-			</Creator>
-			<Contributor>
-				<Name>Noel Winstanley</Name>
-			</Contributor>
-			<Contributor>
-				<Name>Jeff Lusted</Name>
-			</Contributor>
-		</Curation>
-		<Subject>Common Execution Architecture</Subject>
-		<Interface>
-			<Invocation>WebService</Invocation>
-			<Description>This is the application controller</Description>
-			<AccessURL use="full">http://astrogrid.jb.man.ac.uk:8080/astrogrid-applications/services/ApplicationControllerService</AccessURL>
-		</Interface>
+		<vr:Identifier>
+			<vr:AuthorityID>astrogrid.org</vr:AuthorityID>
+			<vr:ResourceKey>CommandLineExecutionController/2</vr:ResourceKey>
+		</vr:Identifier>
+		<vr:Title>CommandLineExecutionController</vr:Title>
+		<vr:ShortName>CLEC2</vr:ShortName>
+		<vr:Summary>
+			<vr:Description>Run command line applications     </vr:Description>
+			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications</vr:ReferenceURL>
+		</vr:Summary>
+		<vr:Curation>
+			<vr:Publisher>
+				<vr:Title>Astrogrid</vr:Title>
+			</vr:Publisher>
+			<vr:Contact>
+				<vr:Name>Paul Harrison</vr:Name>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
+			</vr:Contact>
+			<vr:Date>2004-02-02</vr:Date>
+			<vr:Creator>
+				<vr:Name>Paul Harrison</vr:Name>
+			</vr:Creator>
+			<vr:Contributor>
+				<vr:Name>Noel Winstanley</vr:Name>
+			</vr:Contributor>
+			<vr:Contributor>
+				<vr:Name>Jeff Lusted</vr:Name>
+			</vr:Contributor>
+		</vr:Curation>
+		<vr:Subject>Common Execution Architecture</vr:Subject>
+		<vr:Interface>
+			<vr:Invocation>WebService</vr:Invocation>
+			<vr:Description>This is the application controller</vr:Description>
+			<vr:AccessURL use="full">http://astrogrid.jb.man.ac.uk:8080/astrogrid-applications/services/ApplicationControllerService</vr:AccessURL>
+		</vr:Interface>
 		<cea:ManagedApplications>
 			<cea:ApplicationReference>
 				<vr:AuthorityID>astrogrid.org</vr:AuthorityID>
@@ -277,4 +277,4 @@
 			</cea:ApplicationReference>
 		</cea:ManagedApplications>
 	</cea:CeaService>
-</VODescription>
+</vr:VODescription>

@@ -1,66 +1,105 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<workflow xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:er="http://www.astrogrid.org/schema/ExecutionRecord/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGWorkflow/v1
-\\pahlaptop\work\astrogrid\src\workflow-objects\schema\Workflow.xsd" name="AVODEMO - sect32s">
+<workflow xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:er="http://www.astrogrid.org/schema/ExecutionRecord/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGWorkflow/v1 \\pahlaptop\work\astrogrid\src\workflow-objects\schema\Workflow.xsd" name="AVODEMO - sect32s">
 	<sequence>
 		<flow>
 			<step name="sextractor - b" joinCondition="any" stepNumber="1" sequenceNumber="1">
 				<tool name="SExtractor" interface="simple">
 					<input>
-						<parameter name="DetectionImage" type="FileReference">/home/applications/data/GOODS/h_sz_sect32_v1.0_drz_img.fits</parameter>
-						<parameter name="PhotoImage" type="FileReference">/home/applications/data/GOODS/h_sb_sect32_v1.0_drz_img.fits</parameter>
-						<parameter name="config_file" type="FileReference">/home/applications/demo/h_goods_sb_r1.0z_phot_sex.txt</parameter>
-						<parameter name="PARAMETERS_NAME" type="FileReference">/home/applications/demo/std.param</parameter>
+						<parameter name="DetectionImage" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/data/GOODS/h_sz_sect32_v1.0_drz_img.fits</value>
+						</parameter>
+						<parameter name="PhotoImage" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/data/GOODS/h_sb_sect32_v1.0_drz_img.fits</value>
+						</parameter>
+						<parameter name="config_file" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/demo/h_goods_sb_r1.0z_phot_sex.txt</value>
+						</parameter>
+						<parameter name="PARAMETERS_NAME" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/demo/std.param</value>
+						</parameter>
 					</input>
 					<output>
-						<parameter name="CATALOG_NAME" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_b</parameter>
+						<parameter name="CATALOG_NAME" type="MySpace_FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_b</value>
+						</parameter>
 					</output>
 				</tool>
 			</step>
 			<step name="sextractor - v" joinCondition="any" stepNumber="2" sequenceNumber="2">
 				<tool name="SExtractor" interface="simple">
 					<input>
-						<parameter name="DetectionImage" type="FileReference">/home/applications/data/GOODS/h_sz_sect32_v1.0_drz_img.fits</parameter>
-						<parameter name="PhotoImage" type="FileReference">/home/applications/data/GOODS/h_sv_sect32_v1.0_drz_img.fits</parameter>
-						<parameter name="config_file" type="FileReference">/home/applications/demo/h_goods_sv_r1.0z_phot_sex.txt</parameter>
-						<parameter name="PARAMETERS_NAME" type="FileReference">/home/applications/demo/std.param</parameter>
+						<parameter name="DetectionImage" type="FileReference">
+							<agpd:value>/home/applications/data/GOODS/h_sz_sect32_v1.0_drz_img.fits</agpd:value>
+						</parameter>
+						<parameter name="PhotoImage" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/data/GOODS/h_sv_sect32_v1.0_drz_img.fits</value>
+						</parameter>
+						<parameter name="config_file" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/demo/h_goods_sv_r1.0z_phot_sex.txt</value>
+						</parameter>
+						<parameter name="PARAMETERS_NAME" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/demo/std.param</value>
+						</parameter>
 					</input>
 					<output>
-						<parameter name="CATALOG_NAME" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_v</parameter>
+						<parameter name="CATALOG_NAME" type="MySpace_FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_v</value>
+						</parameter>
 					</output>
 				</tool>
 			</step>
 			<step name="sextractor - i" joinCondition="any" stepNumber="3" sequenceNumber="3">
 				<tool name="SExtractor" interface="simple">
 					<input>
-						<parameter name="DetectionImage" type="FileReference">/home/applications/data/GOODS/h_sz_sect32_v1.0_drz_img.fits</parameter>
-						<parameter name="PhotoImage" type="FileReference">/home/applications/data/GOODS/h_si_sect32_v1.0_drz_img.fits</parameter>
-						<parameter name="config_file" type="FileReference">/home/applications/demo/h_goods_si_r1.0z_phot_sex.txt</parameter>
-						<parameter name="PARAMETERS_NAME" type="FileReference">/home/applications/demo/std.param</parameter>
+						<parameter name="DetectionImage" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/data/GOODS/h_sz_sect32_v1.0_drz_img.fits</value>
+						</parameter>
+						<parameter name="PhotoImage" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/data/GOODS/h_si_sect32_v1.0_drz_img.fits</value>
+						</parameter>
+						<parameter name="config_file" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/demo/h_goods_si_r1.0z_phot_sex.txt</value>
+						</parameter>
+						<parameter name="PARAMETERS_NAME" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/demo/std.param</value>
+						</parameter>
 					</input>
 					<output>
-						<parameter name="CATALOG_NAME" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_i</parameter>
+						<parameter name="CATALOG_NAME" type="MySpace_FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_i</value>
+						</parameter>
 					</output>
 				</tool>
 			</step>
 			<step name="sextractor - z" joinCondition="any" stepNumber="4" sequenceNumber="4">
 				<tool name="SExtractor" interface="simple">
 					<input>
-						<parameter name="DetectionImage" type="FileReference">/home/applications/data/GOODS/h_sz_sect32_v1.0_drz_img.fits</parameter>
-						<parameter name="PhotoImage" type="FileReference">/home/applications/data/GOODS/h_sz_sect32_v1.0_drz_img.fits</parameter>
-						<parameter name="config_file" type="FileReference">/home/applications/demo/h_goods_sz_r1.0z_phot_sex.txt</parameter>
-						<parameter name="PARAMETERS_NAME" type="FileReference">/home/applications/demo/std.param</parameter>
+						<parameter name="DetectionImage" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/data/GOODS/h_sz_sect32_v1.0_drz_img.fits</value>
+						</parameter>
+						<parameter name="PhotoImage" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/data/GOODS/h_sz_sect32_v1.0_drz_img.fits</value>
+						</parameter>
+						<parameter name="config_file" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/demo/h_goods_sz_r1.0z_phot_sex.txt</value>
+						</parameter>
+						<parameter name="PARAMETERS_NAME" type="FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/demo/std.param</value>
+						</parameter>
 					</input>
 					<output>
-						<parameter name="CATALOG_NAME" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_z</parameter>
+						<parameter name="CATALOG_NAME" type="MySpace_FileReference">
+							<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_z</value>
+						</parameter>
 					</output>
 				</tool>
 			</step>
 			<sequence>
-				<step name="dummy step">
+				<step name="dummy step" joinCondition="any">
 					<tool name="testapp" interface="simple"/>
 				</step>
-				<step name="dummy step2">
+				<step name="dummy step2" joinCondition="any">
 					<tool name="testapp" interface="simple"/>
 				</step>
 			</sequence>
@@ -69,13 +108,23 @@
 			<description>This is patricios dft tool</description>
 			<tool name="CrossMatcher" interface="Simple">
 				<input>
-					<parameter name="targets" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_z</parameter>
-					<parameter name="matches" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_v</parameter>
-					<parameter name="matches" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_i</parameter>
-					<parameter name="matches" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_b</parameter>
+					<parameter name="targets" type="MySpace_FileReference">
+						<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_z</value>
+					</parameter>
+					<parameter name="matches" type="MySpace_FileReference">
+						<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_v</value>
+					</parameter>
+					<parameter name="matches" type="MySpace_FileReference">
+						<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_i</value>
+					</parameter>
+					<parameter name="matches" type="MySpace_FileReference">
+						<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/avodemo@test.astrogrid.org/serv1/sect32s/sexout_b</value>
+					</parameter>
 				</input>
 				<output>
-					<parameter name="merged_output" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/merged</parameter>
+					<parameter name="merged_output" type="MySpace_FileReference">
+						<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/avodemo@test.astrogrid.org/serv1/sect32s/merged</value>
+					</parameter>
 				</output>
 			</tool>
 		</step>
@@ -83,11 +132,17 @@
 			<description>generate the photo z</description>
 			<tool name="HyperZ" interface="Simple">
 				<input>
-					<parameter name="config_file" type="FileReference">/home/applications/demo/hyperz/zphot.param</parameter>
-					<parameter name="input_catalog" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/merged</parameter>
+					<parameter name="config_file" type="FileReference">
+						<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/home/applications/demo/hyperz/zphot.param</value>
+					</parameter>
+					<parameter name="input_catalog" type="MySpace_FileReference">
+						<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/avodemo@test.astrogrid.org/serv1/sect32s/merged</value>
+					</parameter>
 				</input>
 				<output>
-					<parameter name="output_catalog" type="MySpace_FileReference">/avodemo@test.astrogrid.org/serv1/sect32s/hyperzout</parameter>
+					<parameter name="output_catalog" type="MySpace_FileReference">
+						<value xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1">/avodemo@test.astrogrid.org/serv1/sect32s/hyperzout</value>
+					</parameter>
 				</output>
 			</tool>
 		</step>
