@@ -2,10 +2,13 @@
 <!--
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrogrid/portal/mock/myspace/service/Attic/deploy.wsdd,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/09 13:33:33 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/10 10:54:27 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: deploy.wsdd,v $
+    | Revision 1.2  2003/06/10 10:54:27  dave
+    | Fixed bean mapping in MySpace WSDD
+    |
     | Revision 1.1  2003/06/09 13:33:33  dave
     | Fixed bad directory structure
     |
@@ -24,5 +27,6 @@
 	<service name="myspace" style="java:RPC">
 		<parameter name="className"      value="org.astrogrid.portal.mock.myspace.service.MySpaceService"/>
 		<parameter name="allowedMethods" value="doNothing, getItem, findItems"/>
+		<beanMapping qname="myspace:MySpaceItem" xmlns:myspace="urn:MySpaceService" languageSpecificType="java:org.astrogrid.portal.mock.myspace.service.MySpaceItem"/>
 	</service>
 </deployment>
