@@ -1,5 +1,5 @@
 /*
- * $Id: DummySqlPlugin.java,v 1.7 2004/08/05 15:58:19 mch Exp $
+ * $Id: DummySqlPlugin.java,v 1.8 2004/08/06 12:04:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -51,7 +51,7 @@ public class DummySqlPlugin extends JdbcPlugin
       
       SimpleConfig.setProperty(SqlMaker.DB_TRIGFUNCS_IN_RADIANS, "True");
 
-      SimpleConfig.setProperty(SqlMaker.DB_COLS_IN_RADIANS, "False");
+      SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_COL_UNITS_KEY, "deg");
       
       //set up properties so we connect to the db
       SimpleConfig.setProperty(JdbcConnections.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver");
@@ -191,6 +191,12 @@ public class DummySqlPlugin extends JdbcPlugin
 }
    /*
    $Log: DummySqlPlugin.java,v $
+   Revision 1.8  2004/08/06 12:04:19  mch
+   Added unit description to conesearch columns to cope with ESO milliarcseconds (& others in future)
+
+   Revision 1.3.10.1  2004/08/05 17:57:08  mch
+   Merging Itn06 fixes into Itn05
+
    Revision 1.7  2004/08/05 15:58:19  mch
    Added background stars
 

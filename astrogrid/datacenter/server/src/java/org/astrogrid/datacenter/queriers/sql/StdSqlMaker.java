@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.15 2004/08/05 10:56:56 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.16 2004/08/06 12:04:19 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.queriers.sql.deprecated.SqlQuerierSPI;
@@ -87,21 +88,9 @@ public class StdSqlMaker  extends SqlMaker {
       //specified, so we force people to get it right...
       boolean funcsInRads = SimpleConfig.getSingleton().getBoolean(DB_TRIGFUNCS_IN_RADIANS);
 
-      boolean colsInRads = SimpleConfig.getSingleton().getBoolean(DB_COLS_IN_RADIANS);
-      
-      String raColDeg = raCol;
-      String decColDeg = decCol;
-      String raColRad = raCol;
-      String decColRad = decCol;
+      String raColRad = makeColumnRadians(raCol);
+      String decColRad = makeColumnRadians(decCol);
 
-      if (colsInRads) {
-         raColDeg = "DEGREES("+raCol+")";
-         decColDeg = "DEGREES("+decCol+")";
-      } else {
-         raColRad = "RADIANS("+raCol+")";
-         decColRad = "RADIANS("+decCol+")";
-      }
-      
       //start with a square - for quicker searches
 //      String sql = makeSqlBoundsCondition(raCol, decCol, ra, dec, radius);
 
@@ -131,22 +120,46 @@ public class StdSqlMaker  extends SqlMaker {
 
       //'haversine' distance formulae.  The correct one to use...
       if (funcsInRads) {
-         return //sql + " AND "+
-         "("+
-            "(2 * ASIN( SQRT( "+
-                  //surround dec with extra brackets in order to cope with negative decs
-               "POWER( SIN( ("+decColRad+"-("+dec.asRadians()+") )/2 ) ,2) +"+
-                  "COS("+dec.asRadians()+") * COS("+decColRad+") * "+
-                  "POWER( SIN( ("+raColRad+"-"+ra.asRadians()+")/2 ), 2) "+
-            "))) < "+radius.asRadians()+
-         ")";
+         return
+   //       makeSqlBoundsCondition(raCol, decCol, ra, dec, radius) + " AND "+  //not yet correct
+            "("+
+               "(2 * ASIN( SQRT( "+
+                     //surround dec with extra brackets in order to cope with negative decs
+                  "POWER( SIN( ("+decColRad+"-("+dec.asRadians()+") )/2 ) ,2) +"+
+                     "COS("+dec.asRadians()+") * COS("+decColRad+") * "+
+                     "POWER( SIN( ("+raColRad+"-"+ra.asRadians()+")/2 ), 2) "+
+               "))) < "+radius.asRadians()+
+            ")";
       }
       else {
          throw new UnsupportedOperationException("Not done degree funcs yet - do they exist?");
       }
       /**/
    }
+
+   /**
+    * Returns the right SQL to translate a conesearch column to radians
+    */
+   public String makeColumnRadians(String colName) {
+      String colUnits = SimpleConfig.getSingleton().getString(CONE_SEARCH_COL_UNITS_KEY).trim().toLowerCase();
+
+      if (colUnits.equals("rad")) {
+         return colName;
+      }
+      else if (colUnits.equals("deg")) {
+         return "RADIANS("+colName+")";
+      }
+      else if (colUnits.equals("marcsec")) {
+         return "RADIANS("+colName+"*360000)";
+      }
+      else {
+         throw new ConfigException("Unknown units '"+colUnits+"' for conesearch columns, only 'rad', 'deg' or 'marcsec' supported");
+      }
+   }
       
+   
+   
+   
    /** Returns the SQL condition expression for a rectangle <i>in coordinate space</i>.
     * Use this when doing polygon/circle searches on reasonably small areas, to provide
     * some easy-to-check bounds for the db before it has to get on to the trig.
@@ -391,6 +404,12 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.16  2004/08/06 12:04:19  mch
+Added unit description to conesearch columns to cope with ESO milliarcseconds (& others in future)
+
+Revision 1.6.10.1  2004/08/05 17:57:08  mch
+Merging Itn06 fixes into Itn05
+
 Revision 1.15  2004/08/05 10:56:56  mch
 Fix for negative dec
 
