@@ -1,5 +1,5 @@
 /*
- * $Id: Ivorn.java,v 1.4 2004/04/01 14:50:07 mch Exp $
+ * $Id: Ivorn.java,v 1.5 2004/04/01 15:14:45 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -84,15 +84,6 @@ public class Ivorn
       this.fragment =aFragment;
    }
    
-   /** Constructs an IVORN out of a user and an AGSL; ie assumes that
-    * the user has an account on a community server that is resolvable through
-    * a registry
-    */
-   public Ivorn(User user, Agsl agsl) {
-      this.path=user.getCommunity()+"/"+user.getUserId();
-      this.fragment=agsl.getPath();
-   }
-   
    /** Returns identifier scheme */
    public String getScheme() {      return SCHEME;  }
 
@@ -121,6 +112,9 @@ public class Ivorn
 
 /*
 $Log: Ivorn.java,v $
+Revision 1.5  2004/04/01 15:14:45  mch
+Removed User/Agsl constructor as it makes a dependency on Agsl
+
 Revision 1.4  2004/04/01 14:50:07  mch
 added constructor from user & agsl
 
@@ -151,3 +145,4 @@ Revision 1.1  2004/02/16 23:31:47  mch
 IVO Resource Name representation
 
  */
+
