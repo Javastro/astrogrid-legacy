@@ -14,8 +14,17 @@ TIMESTAMP=`date +%Y%m%d-%T`
 
 mv $BUILD_DIR/$LOG_FILE $BUILD_DIR/$TIMESTAMP-$LOG_FILE
 
+
+
+
+PROJECT_HOME=$BUILD_DIR/astrogrid/$PROJECT_NAME
+
+cd $BUILD_DIR
+#echo "[ag-build-$PROJECT_NAME] remove old log" >> $BUILD_DIR/$LOG_FILE 2>&1
+rm $BUILD_DIR/$LOG_FILE
+
 echo >> $BUILD_DIR/$LOG_FILE 2>&1
-echo "AstroGrid Build ($DATE)" >> $BUILD_DIR/$LOG_FILE 2>&1
+echo "AstroGrid Integration Test Build ($TIMESTAMP)" >> $BUILD_DIR/$LOG_FILE 2>&1
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" >> $BUILD_DIR/$LOG_FILE 2>&1
 echo >> $BUILD_DIR/$LOG_FILE 2>&1
 
@@ -24,13 +33,6 @@ echo >> $BUILD_DIR/$LOG_FILE 2>&1
 echo "[ag-build] building $PROJECT_NAME" >> $BUILD_DIR/$LOG_FILE 2>&1
 echo "[ag-build] build log: maven-build-$PROJECT_NAME.log" >> $BUILD_DIR/$LOG_FILE 2>&1
 echo >> $BUILD_DIR/$LOG_FILE 2>&1
-
-
-PROJECT_HOME=$BUILD_DIR/astrogrid/$PROJECT_NAME
-
-cd $BUILD_DIR
-echo "[ag-build-$PROJECT_NAME] remove old log" >> $BUILD_DIR/$LOG_FILE 2>&1
-rm $BUILD_DIR/$LOG_FILE
 
 echo "[ag-build-$PROJECT_NAME] sourcing java" >> $BUILD_DIR/$LOG_FILE 2>&1
 source $HOME/.bash-config/java >> $BUILD_DIR/$LOG_FILE 2>&1
