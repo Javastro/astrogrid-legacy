@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.4 2004/04/25 20:54:22 pah Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.5 2004/04/25 21:10:11 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -129,7 +129,7 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
     */
    protected void configureToolParameters(Tool tool) {
       ParameterValue pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P1']");
-      pval.setValue("20");
+      pval.setValue("1"); // wait one second...
       pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P2']");
       pval.setValue("30.5");
       pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P4']");
@@ -144,7 +144,7 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
 
    }
    
-   public static final long WAIT_TIME = 10 * 1000; 
+   public static final long WAIT_TIME = 15 * 1000; 
     public void testExecutionProgress() throws Exception {
         // loop, polling progress, until seen completed.
         long startTime= System.currentTimeMillis();
@@ -190,6 +190,9 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
 
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.5  2004/04/25 21:10:11  pah
+change timings slightly to give the app time to finish
+
 Revision 1.4  2004/04/25 20:54:22  pah
 make use the local file store rather than myspace
 
