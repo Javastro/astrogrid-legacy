@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<!--This file provides templates for the  CeaApplicationType and CeaServiceType registry entries
+    The CommonExecutionController will use these when it builds the entries that it submits to the registry.
+    
+    It will replace certain of the fields with real information that it obtains from the master CEC configuration file - 
+    these fields are *indicated* below with TemplateEntry - N.B. these do not represent replacement tokens that can be used elsewhere to influence the substitiutions -
+    they are merely placed here to stop the user wasting time filling fields that will be overwritten anyway.
+    
+    The most important entries that will need customization are the AuthorityID entries, which must match a value that the local registry will accept.
+    -->
 <vr:VODescription xmlns="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/CEAService/v0.1
 \\pahlaptop\work\astrogrid\src\workflow-objects\schema\VOCEA.xsd">
 	<vr:Resource xsi:type="java:org.astrogrid.registry.beans.cea.CeaApplicationType">
-		<!--The autorityID has been chosen to be astrogrid.org as I believe that these should be defined at this level - however the registry is probably using this identifier to determine which are "local" registry entries, so there might be something else set as standard. The name of the resource might be better categorised by prepending "cea/" not sure if this is necessary....-->
+		<!--The authorityID has to be chosen here as the registry is  using this identifier to
+		     determine which are "local" registry entries.
+		     
+		     
+		     The name of the resource might be better categorised by prepending "cea/" not sure if this is necessary....-->
 		<vr:Identifier>
-			<vr:AuthorityID>astrogrid.org</vr:AuthorityID>
+			<vr:AuthorityID>org.astrogrid.test.mssl</vr:AuthorityID>
 			<vr:ResourceKey>TemplateEntry</vr:ResourceKey>
 		</vr:Identifier>
 		<vr:Title>TemplateEntry</vr:Title>
@@ -47,7 +60,7 @@
 	<vr:Resource xsi:type="java:org.astrogrid.registry.beans.cea.CeaServiceType">
 		<!--The autorityID has been chosen to be astrogrid.org as I believe that these should be defined at this level - however the registry is probably using this identifier to determine which are "local" registry entries, so there might be something else set as standard. The name of the resource might be better categorised by prepending "cea/" not sure if this is necessary....-->
 		<vr:Identifier>
-			<vr:AuthorityID>astrogrid.org</vr:AuthorityID>
+			<vr:AuthorityID>org.astrogrid.test.mssl</vr:AuthorityID>
 			<vr:ResourceKey>TemplateEntry</vr:ResourceKey>
 		</vr:Identifier>
 		<vr:Title>TemplateEntry</vr:Title>
@@ -88,7 +101,7 @@
 		</vr:Interface>
 		<ManagedApplications>
 			<ApplicationReference>
-				<vr:AuthorityID>astrogrid.org</vr:AuthorityID>
+				<vr:AuthorityID>org.astrogrid.test.mssl</vr:AuthorityID>
 				<vr:ResourceKey>TemplateEntry</vr:ResourceKey>
 			</ApplicationReference>
 		</ManagedApplications>
