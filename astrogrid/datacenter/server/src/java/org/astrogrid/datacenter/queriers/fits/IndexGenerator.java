@@ -172,7 +172,7 @@ public class IndexGenerator
     * Makes a Coverage snippet from the keywords in the given header, depending
     * on the raAxis, decAxis settings */
    private String makeCoverageSnippet(FitsHeader header) {
-      if (header.getNumAxis() >= 2) {
+      if ((header.getNumAxis() >= 2) && (raAxis != -1) && (decAxis != -1)) {
          //return "";
       
          //work out coverage.  This is not a straightforward rectangle, as the
@@ -375,6 +375,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.21  2004/09/08 15:45:33  mch
+Fix for unconfigured ra/dec axis
+
 Revision 1.20  2004/09/07 14:52:10  mch
 Fixes etc for SEC
 
