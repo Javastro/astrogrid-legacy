@@ -32,8 +32,6 @@
          <map:action name="astrogrid-registry-options" src="org.astrogrid.portal.cocoon.registry.RegistryOptionAction"/>     
          <map:action name="astrogrid-registry-harvest" src="org.astrogrid.portal.cocoon.registry.RegistryHarvestAction"/>
          <map:action name="astrogrid-registry-status" src="org.astrogrid.portal.cocoon.registry.RegistryStatusAction"/>
-	     <map:action name="astrogrid-registry-harvest-read" src="org.astrogrid.portal.cocoon.registry.RegistryHarvestReader"/>       
-    	 <map:action name="astrogrid-registry-metadata-read" src="org.astrogrid.portal.cocoon.registry.RegistryMetaDataReader"/>
       </map:actions>
    </map:components>
 
@@ -114,21 +112,7 @@
              </map:act>
             <map:serialize type="html"/>
          </map:match>
-         
-         <map:match pattern="registryharvestread.xml">
-            <map:act type="astrogrid-registry-harvest-read">
-              <map:generate src="web/style/xsp/regharvestread.xsp" type="serverpages"/>
-             </map:act>
-            <map:serialize type="xml"/>
-         </map:match>
-         
-         <map:match pattern="registrymetadata.xml">
-            <map:act type="astrogrid-registry-metadata-read">
-              <map:generate src="web/style/xsp/regmetadata.xsp" type="serverpages"/>
-             </map:act>
-            <map:serialize type="xml"/>
-         </map:match>
-         
+                  
          <map:match pattern="registryupdate.html">
             <map:act type="astrogrid-registry-admin">
                <map:generate src="web/style/xsp/regadmin.xsp" type="serverpages" label="000, 001"/>           
