@@ -125,6 +125,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+  	
     <dependency>
       <artifactId>astrogrid-registry-common</artifactId>
       <groupId>org.astrogrid</groupId>
@@ -144,6 +145,15 @@
          <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+  	
+    <dependency>
+        <artifactId>commons-httpclient</artifactId>
+        <groupId>commons-httpclient</groupId>
+        <version>2.0-beta1</version>
+        <properties>
+            <war.bundle>true</war.bundle>
+        </properties>        	
+    </dependency>  	
 
     <!-- dsa back ends -->
     <!-- again, has a fake artifactId, so we can depend on the jar and zip -->
