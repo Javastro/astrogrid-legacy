@@ -1,4 +1,4 @@
-/*$Id: StoreClientTestHelper.java,v 1.1 2004/03/22 17:23:16 mch Exp $
+/*$Id: StoreClientTestHelper.java,v 1.1 2004/04/15 13:35:38 jdt Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -218,6 +218,10 @@ public abstract class StoreClientTestHelper extends TestCase {
 
 /*
 $Log: StoreClientTestHelper.java,v $
+Revision 1.1  2004/04/15 13:35:38  jdt
+Moved from integrationTests to auto-integration
+They'll break the build momentarily....
+
 Revision 1.1  2004/03/22 17:23:16  mch
 moved from old mixed case package name
 
