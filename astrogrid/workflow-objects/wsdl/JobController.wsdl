@@ -2,7 +2,10 @@
 <wsdl:definitions targetNamespace="urn:jes/jobcontroller/v1"
                   xmlns="urn:jes/jobcontroller/v1"
                   xmlns:intf="urn:jes/jobcontroller/v1"
+                  xmlns:wrapper="urn:jes/jobcontroller-wrapper/v1"
                   xmlns:types="urn:jes/types/v1"
+
+                  xmlns:creds="http://www.astrogrid.org/schema/Credentials/v1"
 
                   xmlns:apachesoap="http://xml.apache.org/xml-soap"
                   xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
@@ -14,54 +17,173 @@
            Interface definition for the controller web service
    </wsdl:documentation>
 
-	<wsdl:import location="../schema/JesTypes.xsd" namespace="urn:jes/types/v1" />
-   <wsdl:types />
+        <wsdl:import location="../schema/JesTypes.xsd" namespace="urn:jes/types/v1" />
+        <wsdl:import location="../schema/Credentials.xsd" namespace="http://www.astrogrid.org/schema/Credentials/v1" />
+   <wsdl:types>
+           <xsd:schema targetNamespace="urn:jes/jobcontroller-wrapper/v1" xmlns="http://www.w3.org/2001/XMLSchema">
+        <xsd:element name="submitWorkflow">
+                <xsd:complexType>
+                        <xsd:sequence>
+                                <xsd:element name="workflow-document" type="types:workflow-string" />
+                        </xsd:sequence>
+                </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="submitWorkflowResponse">
+                <xsd:complexType>
+                        <xsd:sequence>
+                                <xsd:element name="urn" type="types:jobURN" />
+                        </xsd:sequence>
+                </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="cancelJob">
+                <xsd:complexType>
+                        <xsd:sequence>
+                                <xsd:element name="urn" type="types:jobURN" />
+                        </xsd:sequence>
+                </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="deleteJob">
+                <xsd:complexType>
+                        <xsd:sequence>
+                                <xsd:element name="urn" type="types:jobURN" />
+                        </xsd:sequence>
+                </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="readJobList" >
+                <xsd:complexType>
+                        <xsd:sequence>
+                                <xsd:element ref="creds:Account" />
+                        </xsd:sequence>
+                </xsd:complexType>
+        </xsd:element>
+
+        <xsd:element name="readJobListResponse">
+                <xsd:complexType>
+                        <xsd:sequence>
+                                <xsd:element name="item" type="types:workflow-summary" minOccurs="0" maxOccurs="unbounded" />
+                        </xsd:sequence>
+                </xsd:complexType>
+        </xsd:element>
+
+        <xsd:element name="readJob">
+                <xsd:complexType>
+                        <xsd:sequence>
+                                <xsd:element name="urn" type="types:jobURN" />
+                        </xsd:sequence>
+                </xsd:complexType>
+        </xsd:element>
+
+        <xsd:element name="readJobResponse">
+                <xsd:complexType>
+                        <xsd:sequence>
+                                <xsd:element name="workflow-document" type="types:workflow-string" />
+                        </xsd:sequence>
+                </xsd:complexType>
+        </xsd:element>
+
+        </xsd:schema>
+   </wsdl:types>
+
+        <!-- work-around for axis wsdl2java bugs - try to force wrapped style throughout -->
+
+        <wsdl:message name="submitWorkflow">
+                <wsdl:part element="wrapper:submitWorkflow" />
+        </wsdl:message>
+
+        <wsdl:message name="submitWorkflowResponse">
+                <wsdl:part element="wrapper:submitWorkflowResponse" />
+        </wsdl:message>
+
+        <wsdl:message name="cancelJob">
+                <wsdl:part element="wrapper:cancelJob" />
+        </wsdl:message>
+
+        <wsdl:message name="deleteJob">
+                <wsdl:part element="wrapper:deleteJob" />
+        </wsdl:message>
+
+        <wsdl:message name="readJobList">
+                <wsdl:part element="wrapper:readJobList" />
+        </wsdl:message>
+
+        <wsdl:message name="readJobListResponse">
+                <wsdl:part element="wrapper:readJobListResponse" />
+        </wsdl:message>
+
+        <wsdl:message name="readJob">
+                <wsdl:part element="wrapper:readJob" />
+        </wsdl:message>
+
+        <wsdl:message name="readJobResponse">
+                <wsdl:part element="wrapper:readJobResponse" />
+        </wsdl:message>
 
 
-   <wsdl:message name="submitJobRequest">
-           <wsdl:documentation>
-        workflowXML is stringified version of a workflow document, conforming to the workflow schema.
-        </wsdl:documentation>
-      <wsdl:part name="workflowXML" type="xsd:string"/>
-   </wsdl:message>
-
-   <wsdl:message name="submitJobResponse">
-      <wsdl:part name="submitJobReturn" type="types:SubmissionResponse"/>
-   </wsdl:message>
-
-   <wsdl:message name="userJobListRequest">
-      <wsdl:part name="criteria" type="types:ListCriteria"/>
-   </wsdl:message>
-
-   <wsdl:message name="userJobListResponse">
-      <wsdl:part name="userJobListReturn" type="types:WorkflowList"/>
-   </wsdl:message>
+        <wsdl:message name="jesFault">
+                <wsdl:documentation>
+                        generic fault message type for jes
+                </wsdl:documentation>
+                <wsdl:part name="message" type="xsd:string" />
+        </wsdl:message>
 
    <wsdl:portType name="JobController">
-      <wsdl:operation name="submitJob" parameterOrder="workflowXML">
-         <wsdl:input name="submitJobRequest" message="submitJobRequest"/>
-         <wsdl:output name="submitJobResponse" message="submitJobResponse"/>
-         <!-- should return faults here too -->
+      <wsdl:operation name="submitWorkflow" >
+         <wsdl:input name="submitWorkflow" message="submitWorkflow"/>
+         <wsdl:output name="submitWorkflowResponse" message="submitWorkflowResponse"/>
+         <wsdl:fault name="jesFault" message="jesFault"/>
       </wsdl:operation>
-      <wsdl:operation name="readJobList" parameterOrder="criteria">
-         <wsdl:input name="userJobListRequest" message="userJobListRequest"/>
-         <wsdl:output name="userJobListResponse" message="userJobListResponse"/>
-         <!-- faults here too -->
+
+      <wsdl:operation name="cancelJob">
+              <wsdl:input name="cancelJob" message="cancelJob" />
       </wsdl:operation>
+
+      <wsdl:operation name="deleteJob">
+              <wsdl:input name="deleteJob" message="deleteJob" />
+      </wsdl:operation>
+
+      <wsdl:operation name="readJobList" >
+         <wsdl:input name="readJobList" message="readJobList"/>
+         <wsdl:output name="readJobListResponse" message="readJobListResponse"/>
+         <wsdl:fault name="jesFault" message="jesFault" />
+      </wsdl:operation>
+
+      <wsdl:operation name="readJob">
+              <wsdl:input name="readJob" message="readJob" />
+              <wsdl:output name="readJobResponse" message="readJobResponse" />
+              <wsdl:fault name="jesFault" message="jesFault" />
+      </wsdl:operation>
+
    </wsdl:portType>
 
    <wsdl:binding name="JobControllerServiceSoapBinding" type="JobController">
       <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 
-      <wsdl:operation name="submitJob">
-         <wsdlsoap:operation soapAction="submitJob"/>
+      <wsdl:operation name="submitWorkflow">
+         <wsdlsoap:operation soapAction="submitWorkflow"/>
          <wsdl:input>
             <wsdlsoap:body use="literal"/>
          </wsdl:input>
          <wsdl:output>
             <wsdlsoap:body use="literal" />
          </wsdl:output>
+         <wsdl:fault name="jesFault">
+                 <wsdlsoap:fault name="jesFault" use="literal"/>
+         </wsdl:fault>
       </wsdl:operation>
+
+      <wsdl:operation name="cancelJob">
+              <wsdlsoap:operation soapAction="cancelJob" />
+              <wsdl:input>
+                      <wsdlsoap:body use="literal" />
+              </wsdl:input>
+      </wsdl:operation>
+      <wsdl:operation name="deleteJob">
+              <wsdlsoap:operation soapAction="deleteJob"/>
+              <wsdl:input>
+                      <wsdlsoap:body use="literal" />
+              </wsdl:input>
+      </wsdl:operation>
+
       <wsdl:operation name="readJobList">
          <wsdlsoap:operation soapAction="readJobList"/>
          <wsdl:input>
@@ -70,7 +192,24 @@
          <wsdl:output >
             <wsdlsoap:body use="literal"  />
          </wsdl:output>
+         <wsdl:fault name="jesFault">
+                 <wsdlsoap:fault name="jesFault" use="literal"/>
+         </wsdl:fault>
       </wsdl:operation>
+
+      <wsdl:operation name="readJob">
+              <wsdlsoap:operation soapAction="readJob" />
+              <wsdl:input>
+                      <wsdlsoap:body use="literal" />
+              </wsdl:input>
+              <wsdl:output>
+                      <wsdlsoap:body use="literal" />
+              </wsdl:output>
+         <wsdl:fault name="jesFault">
+                 <wsdlsoap:fault  name="jesFault" use="literal"/>
+         </wsdl:fault>
+      </wsdl:operation>
+
    </wsdl:binding>
 
    <wsdl:service name="JobControllerService">

@@ -3,7 +3,8 @@
                   xmlns="urn:jes/jobmonitor/v1"
                   xmlns:intf="urn:jes/jobmonitor/v1"
                   xmlns:impl="urn:jes/jobmonitor/service/v1"
-                xmlns:types="urn:jes/types/v1"
+                xmlns:wrapper="urn:jes/jobmonitor-wrapper/v1"
+                xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1"
 
                   xmlns:apachesoap="http://xml.apache.org/xml-soap"
                   xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
@@ -14,11 +15,23 @@
  <wsdl:documentation>
    Interface definition for the 'monitor' web service - used as a callback endpoint by the application controller.
  </wsdl:documentation>
-         <wsdl:import location="../schema/JesTypes.xsd" namespace="urn:jes/types/v1" />
 
+        <wsdl:import namespace="http://www.astrogrid.org/schema/CEATypes/v1" location="../schema/CEATypes.xsd"/>
+   <wsdl:types>
+           <xsd:schema targetNamespace="urn:jes/jobmonitor-wrapper/v1" xmlns="http://www.w3.org/2001/XMLSchema">
+            <xsd:element name="monitorJob">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element ref="ceat:job-identifier" />
+                            <xsd:element ref="ceat:message" />
+                        </xsd:sequence>
+                    </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+   </wsdl:types>
 
    <wsdl:message name="monitorJobRequest">
-     <wsdl:part element="types:monitorJob" />
+     <wsdl:part element="wrapper:monitorJob" />
    </wsdl:message>
 
    <wsdl:portType name="JobMonitor">
