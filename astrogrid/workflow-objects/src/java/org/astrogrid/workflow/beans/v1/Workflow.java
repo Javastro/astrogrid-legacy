@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Workflow.java,v 1.6 2004/03/03 19:05:19 pah Exp $
+ * $Id: Workflow.java,v 1.7 2004/03/03 19:54:55 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -24,9 +24,12 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * General representation of a workflow
+ * Representation of a workflow document, conforming to the schema
+ *  defined for namespace
+ * http://www.astrogrid.org/schema/AGWorkflow/v1
+ *  
  * 
- * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
+ * @version $Revision: 1.7 $ $Date: 2004/03/03 19:54:55 $
  */
 public class Workflow extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -43,9 +46,9 @@ implements java.io.Serializable
     private java.lang.String _name;
 
     /**
-     * Field _activities
+     * a collection of activities to be performed sequentially
      */
-    private org.astrogrid.workflow.beans.v1.Activities _activities;
+    private org.astrogrid.workflow.beans.v1.Sequence _sequence;
 
     /**
      * Field _description
@@ -75,16 +78,6 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
-
-    /**
-     * Returns the value of field 'activities'.
-     * 
-     * @return the value of field 'activities'.
-     */
-    public org.astrogrid.workflow.beans.v1.Activities getActivities()
-    {
-        return this._activities;
-    } //-- org.astrogrid.workflow.beans.v1.Activities getActivities() 
 
     /**
      * Returns the value of field 'credentials'.
@@ -129,6 +122,18 @@ implements java.io.Serializable
     } //-- java.lang.String getName() 
 
     /**
+     * Returns the value of field 'sequence'. The field 'sequence'
+     * has the following description: a collection of activities to
+     * be performed sequentially
+     * 
+     * @return the value of field 'sequence'.
+     */
+    public org.astrogrid.workflow.beans.v1.Sequence getSequence()
+    {
+        return this._sequence;
+    } //-- org.astrogrid.workflow.beans.v1.Sequence getSequence() 
+
+    /**
      * Method isValid
      */
     public boolean isValid()
@@ -165,16 +170,6 @@ implements java.io.Serializable
         
         Marshaller.marshal(this, handler);
     } //-- void marshal(org.xml.sax.ContentHandler) 
-
-    /**
-     * Sets the value of field 'activities'.
-     * 
-     * @param activities the value of field 'activities'.
-     */
-    public void setActivities(org.astrogrid.workflow.beans.v1.Activities activities)
-    {
-        this._activities = activities;
-    } //-- void setActivities(org.astrogrid.workflow.beans.v1.Activities) 
 
     /**
      * Sets the value of field 'credentials'.
@@ -218,6 +213,18 @@ implements java.io.Serializable
     {
         this._name = name;
     } //-- void setName(java.lang.String) 
+
+    /**
+     * Sets the value of field 'sequence'. The field 'sequence' has
+     * the following description: a collection of activities to be
+     * performed sequentially
+     * 
+     * @param sequence the value of field 'sequence'.
+     */
+    public void setSequence(org.astrogrid.workflow.beans.v1.Sequence sequence)
+    {
+        this._sequence = sequence;
+    } //-- void setSequence(org.astrogrid.workflow.beans.v1.Sequence) 
 
     /**
      * Method unmarshalWorkflow

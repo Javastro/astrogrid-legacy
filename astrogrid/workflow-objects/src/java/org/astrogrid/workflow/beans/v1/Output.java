@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Output.java,v 1.6 2004/03/03 19:05:19 pah Exp $
+ * $Id: Output.java,v 1.7 2004/03/03 19:54:55 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * the list of output paramters
  * 
- * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
+ * @version $Revision: 1.7 $ $Date: 2004/03/03 19:54:55 $
  */
 public class Output extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

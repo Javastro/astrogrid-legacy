@@ -2,10 +2,10 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CommandLineParameterDefinitionDescriptor.java,v 1.7 2004/03/03 19:54:55 nw Exp $
+ * $Id: ExecutionRecordTypeDescriptor.java,v 1.1 2004/03/03 19:54:55 nw Exp $
  */
 
-package org.astrogrid.applications.beans.v1;
+package org.astrogrid.workflow.beans.v1.execution;
 
   //---------------------------------/
  //- Imported classes and packages -/
@@ -17,11 +17,11 @@ import org.exolab.castor.xml.XMLFieldDescriptor;
 import org.exolab.castor.xml.validators.*;
 
 /**
- * Class CommandLineParameterDefinitionDescriptor.
+ * Class ExecutionRecordTypeDescriptor.
  * 
- * @version $Revision: 1.7 $ $Date: 2004/03/03 19:54:55 $
+ * @version $Revision: 1.1 $ $Date: 2004/03/03 19:54:55 $
  */
-public class CommandLineParameterDefinitionDescriptor extends org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinitionDescriptor {
+public class ExecutionRecordTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
 
       //--------------------------/
@@ -53,170 +53,155 @@ public class CommandLineParameterDefinitionDescriptor extends org.astrogrid.appl
      //- Constructors -/
     //----------------/
 
-    public CommandLineParameterDefinitionDescriptor() {
+    public ExecutionRecordTypeDescriptor() {
         super();
-        setExtendsWithoutFlatten(new org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinitionDescriptor());
-        nsURI = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
-        xmlName = "CommandLineParameterDefinition";
+        nsURI = "http://www.astrogrid.org/schema/ExecutionRecord/v1";
+        xmlName = "execution-record-type";
+        
+        //-- set grouping compositor
+        setCompositorAsSequence();
         org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
         org.exolab.castor.xml.XMLFieldHandler              handler        = null;
         org.exolab.castor.xml.FieldValidator               fieldValidator = null;
         //-- initialize attribute descriptors
         
-        //-- _commandSwitch
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_commandSwitch", "commandSwitch", org.exolab.castor.xml.NodeType.Attribute);
-        desc.setImmutable(true);
+        //-- _startTime
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.util.Date.class, "_startTime", "startTime", org.exolab.castor.xml.NodeType.Attribute);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
-                CommandLineParameterDefinition target = (CommandLineParameterDefinition) object;
-                return target.getCommandSwitch();
+                ExecutionRecordType target = (ExecutionRecordType) object;
+                return target.getStartTime();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
-                    CommandLineParameterDefinition target = (CommandLineParameterDefinition) object;
-                    target.setCommandSwitch( (java.lang.String) value);
+                    ExecutionRecordType target = (ExecutionRecordType) object;
+                    target.setStartTime( (java.util.Date) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
+                return new java.util.Date();
             }
         } );
-        desc.setHandler(handler);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _commandSwitch
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        { //-- local scope
-            StringValidator typeValidator = new StringValidator();
-            typeValidator.setWhiteSpace("preserve");
-            fieldValidator.setValidator(typeValidator);
-        }
-        desc.setValidator(fieldValidator);
-        //-- _commandPosition
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.Integer.TYPE, "_commandPosition", "commandPosition", org.exolab.castor.xml.NodeType.Attribute);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                CommandLineParameterDefinition target = (CommandLineParameterDefinition) object;
-                if(!target.hasCommandPosition())
-                    return null;
-                return new Integer(target.getCommandPosition());
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    CommandLineParameterDefinition target = (CommandLineParameterDefinition) object;
-                    // if null, use delete method for optional primitives 
-                    if (value == null) {
-                        target.deleteCommandPosition();
-                        return;
-                    }
-                    target.setCommandPosition( ((Integer)value).intValue());
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
-            }
-        } );
-        desc.setHandler(handler);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _commandPosition
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        { //-- local scope
-            IntegerValidator typeValidator = new IntegerValidator();
-            fieldValidator.setValidator(typeValidator);
-        }
-        desc.setValidator(fieldValidator);
-        //-- _stdio
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.Boolean.TYPE, "_stdio", "stdio", org.exolab.castor.xml.NodeType.Attribute);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                CommandLineParameterDefinition target = (CommandLineParameterDefinition) object;
-                if(!target.hasStdio())
-                    return null;
-                return new Boolean(target.getStdio());
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    CommandLineParameterDefinition target = (CommandLineParameterDefinition) object;
-                    // if null, use delete method for optional primitives 
-                    if (value == null) {
-                        target.deleteStdio();
-                        return;
-                    }
-                    target.setStdio( ((Boolean)value).booleanValue());
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
-            }
-        } );
-        desc.setHandler(handler);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _stdio
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        { //-- local scope
-            BooleanValidator typeValidator = new BooleanValidator();
-            fieldValidator.setValidator(typeValidator);
-        }
-        desc.setValidator(fieldValidator);
-        //-- _switchType
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.types.SwitchTypes.class, "_switchType", "switchType", org.exolab.castor.xml.NodeType.Attribute);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                CommandLineParameterDefinition target = (CommandLineParameterDefinition) object;
-                return target.getSwitchType();
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    CommandLineParameterDefinition target = (CommandLineParameterDefinition) object;
-                    target.setSwitchType( (org.astrogrid.applications.beans.v1.types.SwitchTypes) value);
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
-            }
-        } );
-        desc.setHandler( new org.exolab.castor.xml.handlers.EnumFieldHandler(org.astrogrid.applications.beans.v1.types.SwitchTypes.class, handler));
+        desc.setHandler( new org.exolab.castor.xml.handlers.DateFieldHandler(handler));
         desc.setImmutable(true);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _switchType
+        //-- validation code for: _startTime
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+        //-- _finishTime
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.util.Date.class, "_finishTime", "finishTime", org.exolab.castor.xml.NodeType.Attribute);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                ExecutionRecordType target = (ExecutionRecordType) object;
+                return target.getFinishTime();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    ExecutionRecordType target = (ExecutionRecordType) object;
+                    target.setFinishTime( (java.util.Date) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new java.util.Date();
+            }
+        } );
+        desc.setHandler( new org.exolab.castor.xml.handlers.DateFieldHandler(handler));
+        desc.setImmutable(true);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _finishTime
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+        //-- _status
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.class, "_status", "status", org.exolab.castor.xml.NodeType.Attribute);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                ExecutionRecordType target = (ExecutionRecordType) object;
+                return target.getStatus();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    ExecutionRecordType target = (ExecutionRecordType) object;
+                    target.setStatus( (org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return null;
+            }
+        } );
+        desc.setHandler( new org.exolab.castor.xml.handlers.EnumFieldHandler(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.class, handler));
+        desc.setImmutable(true);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _status
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         { //-- local scope
         }
         desc.setValidator(fieldValidator);
         //-- initialize element descriptors
         
-    } //-- org.astrogrid.applications.beans.v1.CommandLineParameterDefinitionDescriptor()
+        //-- _messageList
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.cea.castor.MessageType.class, "_messageList", "message", org.exolab.castor.xml.NodeType.Element);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                ExecutionRecordType target = (ExecutionRecordType) object;
+                return target.getMessage();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    ExecutionRecordType target = (ExecutionRecordType) object;
+                    target.addMessage( (org.astrogrid.applications.beans.v1.cea.castor.MessageType) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new org.astrogrid.applications.beans.v1.cea.castor.MessageType();
+            }
+        } );
+        desc.setHandler(handler);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CEATypes/v1");
+        desc.setMultivalued(true);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _messageList
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        fieldValidator.setMinOccurs(0);
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+    } //-- org.astrogrid.workflow.beans.v1.execution.ExecutionRecordTypeDescriptor()
 
 
       //-----------/
@@ -236,7 +221,7 @@ public class CommandLineParameterDefinitionDescriptor extends org.astrogrid.appl
      */
     public org.exolab.castor.mapping.ClassDescriptor getExtends()
     {
-        return super.getExtends();
+        return null;
     } //-- org.exolab.castor.mapping.ClassDescriptor getExtends() 
 
     /**
@@ -244,8 +229,6 @@ public class CommandLineParameterDefinitionDescriptor extends org.astrogrid.appl
      */
     public org.exolab.castor.mapping.FieldDescriptor getIdentity()
     {
-        if (identity == null)
-            return super.getIdentity();
         return identity;
     } //-- org.exolab.castor.mapping.FieldDescriptor getIdentity() 
 
@@ -254,7 +237,7 @@ public class CommandLineParameterDefinitionDescriptor extends org.astrogrid.appl
      */
     public java.lang.Class getJavaClass()
     {
-        return org.astrogrid.applications.beans.v1.CommandLineParameterDefinition.class;
+        return org.astrogrid.workflow.beans.v1.execution.ExecutionRecordType.class;
     } //-- java.lang.Class getJavaClass() 
 
     /**

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: StepJoinConditionTypeDescriptor.java,v 1.6 2004/03/03 19:05:19 pah Exp $
+ * $Id: JoinTypeDescriptor.java,v 1.1 2004/03/03 19:54:55 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.types;
@@ -17,11 +17,11 @@ import org.exolab.castor.xml.XMLFieldDescriptor;
 import org.exolab.castor.xml.validators.*;
 
 /**
- * Class StepJoinConditionTypeDescriptor.
+ * Class JoinTypeDescriptor.
  * 
- * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
+ * @version $Revision: 1.1 $ $Date: 2004/03/03 19:54:55 $
  */
-public class StepJoinConditionTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
+public class JoinTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
 
       //--------------------------/
@@ -53,11 +53,11 @@ public class StepJoinConditionTypeDescriptor extends org.exolab.castor.xml.util.
      //- Constructors -/
     //----------------/
 
-    public StepJoinConditionTypeDescriptor() {
+    public JoinTypeDescriptor() {
         super();
         nsURI = "http://www.astrogrid.org/schema/AGWorkflow/v1";
-        xmlName = "StepJoinConditionType";
-    } //-- org.astrogrid.workflow.beans.v1.types.StepJoinConditionTypeDescriptor()
+        xmlName = "join-type";
+    } //-- org.astrogrid.workflow.beans.v1.types.JoinTypeDescriptor()
 
 
       //-----------/
@@ -93,7 +93,7 @@ public class StepJoinConditionTypeDescriptor extends org.exolab.castor.xml.util.
      */
     public java.lang.Class getJavaClass()
     {
-        return org.astrogrid.workflow.beans.v1.types.StepJoinConditionType.class;
+        return org.astrogrid.workflow.beans.v1.types.JoinType.class;
     } //-- java.lang.Class getJavaClass() 
 
     /**

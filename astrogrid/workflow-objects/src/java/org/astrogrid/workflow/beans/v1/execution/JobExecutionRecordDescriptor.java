@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JobExecutionRecordDescriptor.java,v 1.4 2004/03/03 19:05:19 pah Exp $
+ * $Id: JobExecutionRecordDescriptor.java,v 1.5 2004/03/03 19:54:55 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -19,9 +19,9 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class JobExecutionRecordDescriptor.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/03/03 19:05:19 $
+ * @version $Revision: 1.5 $ $Date: 2004/03/03 19:54:55 $
  */
-public class JobExecutionRecordDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
+public class JobExecutionRecordDescriptor extends org.astrogrid.workflow.beans.v1.execution.ExecutionRecordTypeDescriptor {
 
 
       //--------------------------/
@@ -55,6 +55,7 @@ public class JobExecutionRecordDescriptor extends org.exolab.castor.xml.util.XML
 
     public JobExecutionRecordDescriptor() {
         super();
+        setExtendsWithoutFlatten(new org.astrogrid.workflow.beans.v1.execution.ExecutionRecordTypeDescriptor());
         nsURI = "http://www.astrogrid.org/schema/ExecutionRecord/v1";
         xmlName = "job-execution-record";
         
@@ -65,105 +66,6 @@ public class JobExecutionRecordDescriptor extends org.exolab.castor.xml.util.XML
         org.exolab.castor.xml.FieldValidator               fieldValidator = null;
         //-- initialize attribute descriptors
         
-        //-- _startTime
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.util.Date.class, "_startTime", "startTime", org.exolab.castor.xml.NodeType.Attribute);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                JobExecutionRecord target = (JobExecutionRecord) object;
-                return target.getStartTime();
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    JobExecutionRecord target = (JobExecutionRecord) object;
-                    target.setStartTime( (java.util.Date) value);
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new java.util.Date();
-            }
-        } );
-        desc.setHandler( new org.exolab.castor.xml.handlers.DateFieldHandler(handler));
-        desc.setImmutable(true);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _startTime
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        { //-- local scope
-        }
-        desc.setValidator(fieldValidator);
-        //-- _finishTime
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.util.Date.class, "_finishTime", "finishTime", org.exolab.castor.xml.NodeType.Attribute);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                JobExecutionRecord target = (JobExecutionRecord) object;
-                return target.getFinishTime();
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    JobExecutionRecord target = (JobExecutionRecord) object;
-                    target.setFinishTime( (java.util.Date) value);
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new java.util.Date();
-            }
-        } );
-        desc.setHandler( new org.exolab.castor.xml.handlers.DateFieldHandler(handler));
-        desc.setImmutable(true);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _finishTime
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        { //-- local scope
-        }
-        desc.setValidator(fieldValidator);
-        //-- _status
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.class, "_status", "status", org.exolab.castor.xml.NodeType.Attribute);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                JobExecutionRecord target = (JobExecutionRecord) object;
-                return target.getStatus();
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    JobExecutionRecord target = (JobExecutionRecord) object;
-                    target.setStatus( (org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase) value);
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
-            }
-        } );
-        desc.setHandler( new org.exolab.castor.xml.handlers.EnumFieldHandler(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.class, handler));
-        desc.setImmutable(true);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _status
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        { //-- local scope
-        }
-        desc.setValidator(fieldValidator);
         //-- initialize element descriptors
         
         //-- _jobId
@@ -202,41 +104,6 @@ public class JobExecutionRecordDescriptor extends org.exolab.castor.xml.util.XML
         { //-- local scope
         }
         desc.setValidator(fieldValidator);
-        //-- _messageList
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.cea.castor.MessageType.class, "_messageList", "message", org.exolab.castor.xml.NodeType.Element);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                JobExecutionRecord target = (JobExecutionRecord) object;
-                return target.getMessage();
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    JobExecutionRecord target = (JobExecutionRecord) object;
-                    target.addMessage( (org.astrogrid.applications.beans.v1.cea.castor.MessageType) value);
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.astrogrid.applications.beans.v1.cea.castor.MessageType();
-            }
-        } );
-        desc.setHandler(handler);
-        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CEATypes/v1");
-        desc.setMultivalued(true);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _messageList
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        fieldValidator.setMinOccurs(0);
-        { //-- local scope
-        }
-        desc.setValidator(fieldValidator);
     } //-- org.astrogrid.workflow.beans.v1.execution.JobExecutionRecordDescriptor()
 
 
@@ -257,7 +124,7 @@ public class JobExecutionRecordDescriptor extends org.exolab.castor.xml.util.XML
      */
     public org.exolab.castor.mapping.ClassDescriptor getExtends()
     {
-        return null;
+        return super.getExtends();
     } //-- org.exolab.castor.mapping.ClassDescriptor getExtends() 
 
     /**
@@ -265,6 +132,8 @@ public class JobExecutionRecordDescriptor extends org.exolab.castor.xml.util.XML
      */
     public org.exolab.castor.mapping.FieldDescriptor getIdentity()
     {
+        if (identity == null)
+            return super.getIdentity();
         return identity;
     } //-- org.exolab.castor.mapping.FieldDescriptor getIdentity() 
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: BaseParameterDefinition.java,v 1.6 2004/03/03 19:05:19 pah Exp $
+ * $Id: BaseParameterDefinition.java,v 1.7 2004/03/03 19:54:55 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -25,7 +25,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class BaseParameterDefinition.
  * 
- * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
+ * @version $Revision: 1.7 $ $Date: 2004/03/03 19:54:55 $
  */
 public class BaseParameterDefinition extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

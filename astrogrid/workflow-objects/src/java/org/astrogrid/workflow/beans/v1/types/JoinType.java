@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: StepJoinConditionType.java,v 1.6 2004/03/03 19:05:19 pah Exp $
+ * $Id: JoinType.java,v 1.1 2004/03/03 19:54:55 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.types;
@@ -18,11 +18,11 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 
 /**
- * Class StepJoinConditionType.
+ * Class JoinType.
  * 
- * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
+ * @version $Revision: 1.1 $ $Date: 2004/03/03 19:54:55 $
  */
-public class StepJoinConditionType implements java.io.Serializable {
+public class JoinType implements java.io.Serializable {
 
 
       //--------------------------/
@@ -37,7 +37,7 @@ public class StepJoinConditionType implements java.io.Serializable {
     /**
      * The instance of the true type
      */
-    public static final StepJoinConditionType TRUE = new StepJoinConditionType(TRUE_TYPE, "true");
+    public static final JoinType TRUE = new JoinType(TRUE_TYPE, "true");
 
     /**
      * The false type
@@ -47,7 +47,7 @@ public class StepJoinConditionType implements java.io.Serializable {
     /**
      * The instance of the false type
      */
-    public static final StepJoinConditionType FALSE = new StepJoinConditionType(FALSE_TYPE, "false");
+    public static final JoinType FALSE = new JoinType(FALSE_TYPE, "false");
 
     /**
      * The any type
@@ -57,7 +57,7 @@ public class StepJoinConditionType implements java.io.Serializable {
     /**
      * The instance of the any type
      */
-    public static final StepJoinConditionType ANY = new StepJoinConditionType(ANY_TYPE, "any");
+    public static final JoinType ANY = new JoinType(ANY_TYPE, "any");
 
     /**
      * Field _memberTable
@@ -79,11 +79,11 @@ public class StepJoinConditionType implements java.io.Serializable {
      //- Constructors -/
     //----------------/
 
-    private StepJoinConditionType(int type, java.lang.String value) {
+    private JoinType(int type, java.lang.String value) {
         super();
         this.type = type;
         this.stringValue = value;
-    } //-- org.astrogrid.workflow.beans.v1.types.StepJoinConditionType(int, java.lang.String)
+    } //-- org.astrogrid.workflow.beans.v1.types.JoinType(int, java.lang.String)
 
 
       //-----------/
@@ -92,7 +92,7 @@ public class StepJoinConditionType implements java.io.Serializable {
 
     /**
      * Method enumerateReturns an enumeration of all possible
-     * instances of StepJoinConditionType
+     * instances of JoinType
      */
     public static java.util.Enumeration enumerate()
     {
@@ -100,7 +100,7 @@ public class StepJoinConditionType implements java.io.Serializable {
     } //-- java.util.Enumeration enumerate() 
 
     /**
-     * Method getTypeReturns the type of this StepJoinConditionType
+     * Method getTypeReturns the type of this JoinType
      */
     public int getType()
     {
@@ -121,7 +121,7 @@ public class StepJoinConditionType implements java.io.Serializable {
 
     /**
      * Method toStringReturns the String representation of this
-     * StepJoinConditionType
+     * JoinType
      */
     public java.lang.String toString()
     {
@@ -129,20 +129,20 @@ public class StepJoinConditionType implements java.io.Serializable {
     } //-- java.lang.String toString() 
 
     /**
-     * Method valueOfReturns a new StepJoinConditionType based on
-     * the given String value.
+     * Method valueOfReturns a new JoinType based on the given
+     * String value.
      * 
      * @param string
      */
-    public static org.astrogrid.workflow.beans.v1.types.StepJoinConditionType valueOf(java.lang.String string)
+    public static org.astrogrid.workflow.beans.v1.types.JoinType valueOf(java.lang.String string)
     {
         java.lang.Object obj = null;
         if (string != null) obj = _memberTable.get(string);
         if (obj == null) {
-            String err = "'" + string + "' is not a valid StepJoinConditionType";
+            String err = "'" + string + "' is not a valid JoinType";
             throw new IllegalArgumentException(err);
         }
-        return (StepJoinConditionType) obj;
-    } //-- org.astrogrid.workflow.beans.v1.types.StepJoinConditionType valueOf(java.lang.String) 
+        return (JoinType) obj;
+    } //-- org.astrogrid.workflow.beans.v1.types.JoinType valueOf(java.lang.String) 
 
 }

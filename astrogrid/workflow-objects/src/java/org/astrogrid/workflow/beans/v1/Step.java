@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Step.java,v 1.6 2004/03/03 19:05:19 pah Exp $
+ * $Id: Step.java,v 1.7 2004/03/03 19:54:55 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -18,7 +18,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
-import org.astrogrid.workflow.beans.v1.types.StepJoinConditionType;
+import org.astrogrid.workflow.beans.v1.types.JoinType;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -26,9 +26,9 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * an acitity to be performed
+ * an activity to be performed
  * 
- * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
+ * @version $Revision: 1.7 $ $Date: 2004/03/03 19:54:55 $
  */
 public class Step extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable
@@ -47,7 +47,7 @@ implements java.io.Serializable
     /**
      * Field _joinCondition
      */
-    private org.astrogrid.workflow.beans.v1.types.StepJoinConditionType _joinCondition = org.astrogrid.workflow.beans.v1.types.StepJoinConditionType.valueOf("any");
+    private org.astrogrid.workflow.beans.v1.types.JoinType _joinCondition = org.astrogrid.workflow.beans.v1.types.JoinType.valueOf("any");
 
     /**
      * Field _stepNumber
@@ -70,14 +70,14 @@ implements java.io.Serializable
     private boolean _has_sequenceNumber;
 
     /**
-     * the CEA definition of the tool to be run 
-     */
-    private org.astrogrid.workflow.beans.v1.Tool _tool;
-
-    /**
      * Field _description
      */
     private java.lang.String _description;
+
+    /**
+     * the CEA definition of the tool to be run 
+     */
+    private org.astrogrid.workflow.beans.v1.Tool _tool;
 
     /**
      * A record of a single execution of a job step
@@ -91,7 +91,7 @@ implements java.io.Serializable
 
     public Step() {
         super();
-        setJoinCondition(org.astrogrid.workflow.beans.v1.types.StepJoinConditionType.valueOf("any"));
+        setJoinCondition(org.astrogrid.workflow.beans.v1.types.JoinType.valueOf("any"));
         _stepExecutionRecordList = new ArrayList();
     } //-- org.astrogrid.workflow.beans.v1.Step()
 
@@ -170,10 +170,10 @@ implements java.io.Serializable
      * 
      * @return the value of field 'joinCondition'.
      */
-    public org.astrogrid.workflow.beans.v1.types.StepJoinConditionType getJoinCondition()
+    public org.astrogrid.workflow.beans.v1.types.JoinType getJoinCondition()
     {
         return this._joinCondition;
-    } //-- org.astrogrid.workflow.beans.v1.types.StepJoinConditionType getJoinCondition() 
+    } //-- org.astrogrid.workflow.beans.v1.types.JoinType getJoinCondition() 
 
     /**
      * Returns the value of field 'name'.
@@ -334,10 +334,10 @@ implements java.io.Serializable
      * 
      * @param joinCondition the value of field 'joinCondition'.
      */
-    public void setJoinCondition(org.astrogrid.workflow.beans.v1.types.StepJoinConditionType joinCondition)
+    public void setJoinCondition(org.astrogrid.workflow.beans.v1.types.JoinType joinCondition)
     {
         this._joinCondition = joinCondition;
-    } //-- void setJoinCondition(org.astrogrid.workflow.beans.v1.types.StepJoinConditionType) 
+    } //-- void setJoinCondition(org.astrogrid.workflow.beans.v1.types.JoinType) 
 
     /**
      * Sets the value of field 'name'.
