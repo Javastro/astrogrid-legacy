@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.51 2004/03/07 21:04:39 nw Exp $ -->
+<!-- $Id: project.xml,v 1.52 2004/03/07 23:51:46 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -266,24 +266,7 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <dependency>
-            <artifactId>taglibs-input</artifactId>
-            <groupId>jakarta-taglibs</groupId>
-            <version>20040115</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-        <!-- keep out for now - this is a pain with maven/eclpse -->
-        <dependency>
-            <artifactId>taglibs-input-tld</artifactId>
-            <groupId>jakarta-taglibs</groupId>
-            <version>20040115</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-            <type>tld</type>
-        </dependency>
+
 
         <dependency>
             <groupId>hsqldb</groupId>
