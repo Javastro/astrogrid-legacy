@@ -22,6 +22,16 @@
    <xsl:output method="xml" />
 
     <xsl:template match="vr:Resource">
+      <xsl:variable name="dtVar">
+            <xsl:choose>
+               <xsl:when test="@updated">
+                  <xsl:value-of select="@updated"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of select="@created"/>
+               </xsl:otherwise>
+          </xsl:choose>
+      </xsl:variable>
         <xsl:element name="OAIRecord">
          <xsl:element name="oai:record">
             <xsl:element name="oai:header">
@@ -33,11 +43,14 @@
                </xsl:element>
                <xsl:element name="oai:datestamp">
                   <xsl:choose>
-                     <xsl:when test="@updated">
-                        <xsl:value-of select="@updated"/>
+                     <xsl:when test="string-length($dtVar) &gt;= 19">
+                        <xsl:value-of select="concat(substring($dtVar,1,19),'Z')" />
+                     </xsl:when>
+                     <xsl:when test="string-length($dtVar) = 10">
+                        <xsl:value-of select="concat(substring($dtVar,1,10),'T00:00:00Z')" />
                      </xsl:when>
                      <xsl:otherwise>
-                        <xsl:value-of select="@created"/>
+                        <xsl:value-of select="$dtVar" />
                      </xsl:otherwise>
                   </xsl:choose>
                </xsl:element>
@@ -87,18 +100,19 @@
                         <xsl:value-of select="."/>
                      </xsl:element>
                   </xsl:for-each>
-                  <xsl:choose>
-                     <xsl:when test="@updated">
-                        <xsl:element name="dc:date">
-                          <xsl:value-of select="@updated"/>
-                        </xsl:element>
-                     </xsl:when>
-                     <xsl:otherwise>
-                        <xsl:element name="dc:date">
-                          <xsl:value-of select="@created"/>
-                        </xsl:element>
-                     </xsl:otherwise>
-                  </xsl:choose>                  
+                  <xsl:element name="dc:date">
+                     <xsl:choose>
+                        <xsl:when test="string-length($dtVar) &gt;= 19">
+                           <xsl:value-of select="concat(substring($dtVar,1,19),'Z')" />
+                        </xsl:when>
+                        <xsl:when test="string-length($dtVar) = 10">
+                           <xsl:value-of select="concat(substring($dtVar,1,10),'T00:00:00Z')" />
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <xsl:value-of select="$dtVar" />
+                        </xsl:otherwise>
+                     </xsl:choose>
+                  </xsl:element>
                   <xsl:element name="dc:identifier">
                      <xsl:text>ivo_vor://</xsl:text>
                      <xsl:value-of select="./vr:Identifier/vr:AuthorityID"/>
