@@ -3,7 +3,7 @@
 #Paul Harrison
 #This is a small command line test application - it attempts to parse the major types of command line arguments
 # p1 should be an integer which will be a wait time in seconds
-#p2 should be number
+#p2 should be a filename - the parameters will be echoed to that file.
 #p3 should be a filename - the output will be written to that file
 #p4 should be anything
 #test for a large amount of output
@@ -15,8 +15,9 @@ echo "application location = " $0
 # treat the first paramters as positional only
 
 P1=$1
-P2=$2
-
+shift
+P2=$1
+shift
 
 # get the rest of the paramters with switch types
 until [ -z "$1" ]  # Until all parameters used up...
@@ -45,17 +46,22 @@ do
     esac
 done
 
-
-# show the parsed values
+#check that P1 is greater than 0 - throw and error if not
+if [[ $P1 -lt 0 ]]; then
+echo "error the wait time is less than 0" 1>&2 
+exit 1
+fi
 # sleep to simulate a process that takes a long time...
 sleep $P1
 
-echo "parsed parameters.....for $0." >> $P3
+# show the parsed values
+echo $P2
+echo "parsed parameters.....for $0." >> $P2
 
 for i in `seq 1 10`
 do
 
-eval "echo P$i = \$P$i" >> $P3
+eval "echo P$i = \$P$i" >> $P2
 
 done
 
