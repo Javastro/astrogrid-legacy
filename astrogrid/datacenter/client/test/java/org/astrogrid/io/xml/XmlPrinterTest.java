@@ -1,5 +1,5 @@
 /*
- $Id: XmlPrinterTest.java,v 1.4 2004/07/05 14:06:05 mch Exp $
+ $Id: XmlPrinterTest.java,v 1.5 2004/07/06 14:42:52 mch Exp $
 
  (c) Copyright...
  */
@@ -28,14 +28,15 @@ public class XmlPrinterTest extends TestCase {
       StringWriter sw = new StringWriter();
       
       XmlPrinter xOut = new XmlPrinter(sw);
+//      XmlPrinter xOut = new XmlPrinter(System.out);
       
       //test new tag
-      XmlTagPrinter ftag = xOut.newTag("FRUIT","");
+      XmlTagPrinter ftag = xOut.newTag("FRUIT");
       
       //test convenience routine
       ftag.writeTag("DESCRIPTION","Sort of fruity things");
       
-      XmlTagPrinter atag = ftag.newTag("APPLE","");
+      XmlTagPrinter atag = ftag.newTag("APPLE");
       atag.writeTag("SKIN","Rosy");
       atag.writeTag("FLESH","White & Powdery");
       atag.writeTag("STALK","Yes unless it's fallen off");
@@ -48,6 +49,8 @@ public class XmlPrinterTest extends TestCase {
       //         otag.close();
       
       xOut.close();
+      
+      System.out.print(sw.toString());
       
       //check it's valid
       DomHelper.newDocument(sw.toString());
@@ -63,31 +66,38 @@ public class XmlPrinterTest extends TestCase {
       //test new tag
       XmlTagPrinter ftag = xOut.newTag("FRUIT");
  
-      //test can't make another peer
-      try {
-         xOut.newTag("Banana");
-         fail("Should not be allowed to create a new peer Tag");
-      }
-      catch (AssertionError ae) { /* ignore - should happen */ }
+      //test can make peers (auto closes first)
+      XmlTagPrinter aTag = ftag.newTag("Banana");
+      ftag.writeTag("Banana","Bargain");
+      ftag.writeTag("Pineapple","Economy");
 
-      //test can't write a peer tag
-      try {
-         xOut.writeTag("Banana", "Value");
-         fail("Should not be allowed to write a peer Tag");
-      }
-      catch (AssertionError ae) { /* ignore - should happen */ }
-         
-      //write something to ftag and close
-      ftag.writeLine("Some value of fruit");
       ftag.close();
 
-      //test can now create a new tag
-      ftag = xOut.newTag("BAT");
-      ftag.writeLine("Vampires!!");
-
+      //test you can't write to a closed tag
+      try {
+         ftag.writeTag("SomeElement","SomeValue");
+         fail("Should not be able to write to a closed tag");
+      }
+      catch (AssertionError ae) {
+         //ignore - should happen
+      }
+      
+      //test that you can't write more than one tag to root
+      try {
+         ftag = xOut.newTag("BAT");
+      }
+      catch (AssertionError ae) {
+         //ignore - should happen
+      }
       
       //make sure close works all the way up
       xOut.close();
+      
+     System.out.print(sw.toString());
+ 
+      //..and that we get a valid document at the end
+      DomHelper.newDocument(sw.toString());
+      
    }
 
    public static Test suite() {
@@ -106,6 +116,9 @@ public class XmlPrinterTest extends TestCase {
 
 /*
  $Log: XmlPrinterTest.java,v $
+ Revision 1.5  2004/07/06 14:42:52  mch
+ Fixed problems
+
  Revision 1.4  2004/07/05 14:06:05  mch
  More tests
 
