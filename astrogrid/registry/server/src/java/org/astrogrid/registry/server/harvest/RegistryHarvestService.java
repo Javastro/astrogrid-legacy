@@ -154,18 +154,24 @@ public class RegistryHarvestService {
       String collectionName = "";
       QueryDBService qdb = new QueryDBService();
       //instantiate the Admin service that contains the update methods.
-      RegistryAdminService ras = new RegistryAdminService();      
+      RegistryAdminService ras = new RegistryAdminService();
+      Document tempDoc = null;
       try {
+          tempDoc = DomHelper.newDocument();
           if(onlyRegistries) {
              //query for all the Registry types which should be all of them with an xsi:type="RegistryType"
              //xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[@xsi:type='RegistryType']";
              xqlQuery = "//*:Resource[@xsi:type='RegistryType' or @xsi:type='Registry']";
+             System.out.println("hello the xqlQuery = " + xqlQuery);
+             log.info("the xqlQuery = " + xqlQuery);
              harvestDoc = qdb.runQuery(collectionName,xqlQuery);
              //System.out.println("The harvestDoc = " + DomHelper.DocumentToString(harvestDoc));
-             if(harvestDoc != null) {
-                 ras.updateNoCheck(harvestDoc);
+             if(harvestDoc != null && tempDoc != null) {
+                 tempDoc.appendChild(
+                         tempDoc.importNode(harvestDoc.getDocumentElement(),true));
+                 ras.updateNoCheck(tempDoc);
              }               
-             log.info("try just the Resource");
+             //log.info("try just the Resource");
              NodeList nl = harvestDoc.getElementsByTagNameNS("*","Resource");
              log.info("Harvest All found this number of resources = " + nl.getLength());
              for(int i = 0; i < nl.getLength();i++) {
@@ -192,7 +198,9 @@ public class RegistryHarvestService {
              xqlQuery = "//*:Resource[*:/Interface/*:AccessURL]";
              harvestDoc = qdb.runQuery(collectionName,xqlQuery);
              if(harvestDoc != null) {
-                 ras.updateNoCheck(harvestDoc);
+                 tempDoc.appendChild(
+                         tempDoc.importNode(harvestDoc.getDocumentElement(),true));
+                 ras.updateNoCheck(tempDoc);
              }             
              //NodeList nl = DomHelper.getNodeListTags(harvestDoc,"Resource","vr");
              NodeList nl = harvestDoc.getElementsByTagNameNS("*","Resource");
