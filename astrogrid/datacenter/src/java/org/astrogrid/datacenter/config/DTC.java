@@ -19,7 +19,7 @@ import org.astrogrid.Configurator;
  *<p>
  *<b>NW</b> - refactored this class - removed constants to the {@link ConfigurationKeys} interface, and then closed this class down - now package private
  *and on its way to being removed all together. Never much more than a delegate around {@link org.astrogrid.Configurator} and shares the same
- *nasty static-nature. Access to the configuration system is now though the {@link Configuration} and {@link Configurable} classes.
+ *static-nature. Access to the configuration system is now though the {@link Configuration} and {@link Configurable} classes.
  * @author  Jeff Lusted
  * @author Noel Winstanley nw@jb.man.ac.uk
  * @version 2.0 

@@ -1,13 +1,14 @@
 /*
- * $Id: DatasetAgentDelegate.java,v 1.3 2003/08/12 12:37:11 jl99 Exp $
+ * $Id: DatasetAgentDelegate.java,v 1.4 2003/08/22 11:48:34 nw Exp $
  */
 
 package org.astrogrid.datacenter.delegate.datasetAgent;
 
-import java.net.URL ;
-import java.net.MalformedURLException ;
-import java.rmi.RemoteException ;
-import org.astrogrid.datacenter.delegate.DatacenterDelegateException ;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.RemoteException;
+
+import org.astrogrid.datacenter.delegate.DatacenterDelegateException;
 
 /**
  * The <code>DatasetAgentDelegate</code> class.
@@ -61,6 +62,9 @@ public class DatasetAgentDelegate {
 
 /*
 $Log: DatasetAgentDelegate.java,v $
+Revision 1.4  2003/08/22 11:48:34  nw
+improved docs
+
 Revision 1.3  2003/08/12 12:37:11  jl99
 Repair after discovering a lot of refactoring changes had not been picked up.
 

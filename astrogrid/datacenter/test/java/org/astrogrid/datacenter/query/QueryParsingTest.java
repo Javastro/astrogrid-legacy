@@ -1,6 +1,7 @@
 package org.astrogrid.datacenter.query;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -9,7 +10,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.axis.utils.XMLUtils;
-import java.io.*;
 import org.astrogrid.datacenter.impl.QueryFactoryImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,19 +18,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 /** Unit / system testing for the query parser.
  * <p>
- * <B>NW</b> unsure how useful this test class is - specific to one particular implementation of the query factory, surely?
- * anyway, removed all extraneous logging, uncessary try/catch statements, and added correct use of assertions.
- * noticable that each method is virtually identical - only the input file and expected results differ. This would have been better
- * implemented as a dynamic test suite - loads a confugration file detailing inputs and expected results, and then creates a test for each in turn.
- * one nice feature of this would be that any alteratioins to the testing procedure (as in the above) can just be made in one place, rather than
- * in all 30-odd test cases.
- * <p>
- * oh well, we know for next time.
+ * <B>NW</b> wondering if this test is specific to one particular implementation of the query factory / database flavour.
  * <p>
  * Fixed loading of xml files - rather than hard coding file location, or passing in directoy parameter in main (which rules out automated testing),
- * load from the classpath as resources.
- * <p> Moved and renamed - was 'QueryTestSuite' - this doesn't get picked up as a test class in Maven - pattern is *Test.class
- * <p>FUTURE - come back and look at this. leave for now - unsure if the test is broken, or the code its exerxising.
+ * load from the classpath as resources instead.
+ * <p>FUTURE - come back and look at later - not wanting to work at present.
  * @author unknown
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Aug-2003
  *

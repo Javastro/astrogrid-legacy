@@ -61,7 +61,7 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
         
     private final static String SUBCOMPONENT_NAME = Util.getComponentName( JobFactoryImpl.class );
         	
-
+    /** TODO - update thiese to use prepared statements - gives a safer treatment of quote-escaping than this current technique does */
 	public static final String
 	    INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, RUNTIMESTAMP, USERID, COMMUNITY, STATUS, COMMENT ) " +
 	                      "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'', ''{6}'', ''{7}'' )" ,              

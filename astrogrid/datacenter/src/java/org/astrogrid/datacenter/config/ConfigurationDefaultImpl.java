@@ -1,4 +1,4 @@
-/* $Id: ConfigurationDefaultImpl.java,v 1.1 2003/08/21 12:23:00 nw Exp $
+/* $Id: ConfigurationDefaultImpl.java,v 1.2 2003/08/22 11:48:34 nw Exp $
  * Created on 19-Aug-2003
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -11,12 +11,11 @@ import org.astrogrid.AstroGridException;
 /**
  * Default implementation of a System configuration object.
  * <p>
- * A wrapper around a very ugly static configuration system. {@link DTC} which in turn builds upon the 
- * static {@link org.astrogrid.common.Configurator} class. Statics are generall a bad idea - they make a system less modular
+ * A wrapper around the static configuration system - {@link DTC} which in turn builds upon the 
+ * static {@link org.astrogrid.common.Configurator} class. 
+ * <p>Statics are generall a bad idea - they make a system less modular
  * by introducing hidden dependancies; and break locality of data -  any class may access the contents of a static class.
- * <p>
- *  The aim of this class is to hide it all - make sure only accessible though this configuration object.  
- * The mess we're hiding can then be cleaned up later.
+ *  This class tried to hide these statics - the internals can then be cleaned up later.
  
  * @author Noel Winstanley nw@jb.man.ac.uk 20-Aug-2003
  *

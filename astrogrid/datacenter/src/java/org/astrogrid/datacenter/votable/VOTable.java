@@ -16,9 +16,8 @@ import org.astrogrid.datacenter.Util;
 import org.astrogrid.datacenter.myspace.Allocation;
 import org.astrogrid.datacenter.query.Query;
 
-/** needs documenting 
- * 
- * this class is looking increasingly redundant.*/
+/**  
+ * after refactoring, this class is withering.*/
 public class VOTable {
 	
 	private static final boolean 

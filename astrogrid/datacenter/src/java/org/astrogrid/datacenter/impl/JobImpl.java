@@ -40,7 +40,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 /** implementation of Job
- *
+ * TODO - feel there's way too much going on in this class - way is i handline datasources and copnnections for instance.
+ * suggests a separate JobStore class is needed for this.
  */
 
 public class JobImpl extends AbstractJob implements Job {

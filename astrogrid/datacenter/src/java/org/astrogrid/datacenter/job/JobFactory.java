@@ -22,7 +22,10 @@ import org.w3c.dom.Document;
  * this interface. That means inserting, updating, finding and 
  * deleting in, for example, a suitable RDBMS.
  * <p>
- * <B>NW<b> candidate for refactoring?
+ * FUTURE - think this interface (and the associated implementations) is doing too much - could be devided into a JobFactory which
+ * just handles building job instances from XML, and a JobStore, which provides the persistence methods. Can then specify different implementations of each
+ * independently - for example, would be nice to provide a stand-alone JobStore implmented over HSQL. this would simplify the site installation process, as there's
+ * one less thing to configure. splitting interfaces would also simplify implementation classes.
  * @author  Jeff Lusted
  * @version 1.0 08-Jun-2003
  * @see     org.astrogrid.JobFactoryImpl

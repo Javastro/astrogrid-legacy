@@ -18,7 +18,6 @@ import java.text.MessageFormat;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ParameterMode;
 
 import org.apache.axis.client.Call;
@@ -34,14 +33,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 
 /**
- * The <code>Allocation</code> class represents 
- * what?
+ * The <code>Allocation</code> class represents storage space in the MySpace system.
  * <p>
- *  its a monster class, and in a fron-line package
+
  *  FUTURE - consider replacing with an interface and an abstract 'impl' class. Allocations are created by an abstract MySpace factory anyhow,
  * so their internals should be implementation-dependent.
  *
@@ -113,13 +110,11 @@ public class Allocation {
     public void informMySpace( Job job ) throws AllocationException {
 		if( TRACE_ENABLED ) logger.debug( "informMySpace(): entry") ;	
 		
-		String
-		   mySpaceResponse = null ;
+		String  mySpaceResponse = null ;
 		   	
 		try {
 			
-			String
-			   requestTemplate = job.getConfiguration().getProperty( ConfigurationKeys.MYSPACE_REQUEST_TEMPLATE
+			String  requestTemplate = job.getConfiguration().getProperty( ConfigurationKeys.MYSPACE_REQUEST_TEMPLATE
                                                 , ConfigurationKeys.MYSPACE_CATEGORY ) ;
 			Object []
 			   inserts = new Object[4] ;
@@ -157,52 +152,56 @@ public class Allocation {
 		
     } // end of informMySpace()
     
-    
-    private void diagnoseResponse( String responseXML ) throws AllocationException {	
+    /** Inspects the response document to find the return code. determines whetehr the operation
+     * has been a succcess or failure.
+     * <p>
+     * FUTURE - could this be more cleanly implemented using XPATH?
+     * FUTURE - should we return a boolean on iooeration failure - at present is hard to distinguish a parser failure from
+     * an error returned by MySpace.
+     * @param responseXML the response document
+     * @throws AllocationException if the operation was a failure, and also if an XML parser or IO failure occurred
+     * 
+     */
+    protected void diagnoseResponse( String responseXML ) throws AllocationException {	
 		if( TRACE_ENABLED ) logger.debug( "diagnoseResponse() entry") ;
-		
-		Document 
-		   responseDoc = null;
-		DocumentBuilderFactory 
-		   factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder 
-		   builder = null;
+
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	       
 		try { 		
-		   builder = factory.newDocumentBuilder();
+		   DocumentBuilder builder = factory.newDocumentBuilder();
 		   logger.debug( responseXML ) ;		   
-		   InputSource
-			  responseSource = new InputSource( new StringReader( responseXML ) );
-			responseDoc = builder.parse( responseSource );		
+		   InputSource responseSource = new InputSource( new StringReader( responseXML ) );
+		  Document responseDoc = builder.parse( responseSource );		
 			
-		   NodeList
-			  nodeList1 = responseDoc.getChildNodes() ;
+		   NodeList nodeList1 = responseDoc.getChildNodes() ;
 			  
-		   Element
-			   element = null ;
+		   Element element = null ;
 			   
 		   // Focus on the results element...   
 		   for( int i=0 ; i < nodeList1.getLength() ; i++ ) {
-				if( nodeList1.item(i).getNodeType() != Node.ELEMENT_NODE )
+				if( nodeList1.item(i).getNodeType() != Node.ELEMENT_NODE ){
 					continue ;						
+                }
 				element = (Element) nodeList1.item(i) ;				   			
-				if( element.getTagName().equals( MySpaceManagerResponseDD.RESULTS_ELEMENT ) ) 
+				if( element.getTagName().equals( MySpaceManagerResponseDD.RESULTS_ELEMENT ) ){ 
 					break ;
+                }
 		   } // end for	
 
            nodeList1 = element.getChildNodes() ;			
 
 		   // Focus on top level status element...   
 		   for( int i=0 ; i < nodeList1.getLength() ; i++ ) {
-			   if( nodeList1.item(i).getNodeType() != Node.ELEMENT_NODE )
+			   if( nodeList1.item(i).getNodeType() != Node.ELEMENT_NODE ){
 				   continue ;						
+               }
 			   element = (Element) nodeList1.item(i) ;		   				   			
-			   if( element.getTagName().equals( MySpaceManagerResponseDD.STATUS_ELEMENT_01 ) ) 
+			   if( element.getTagName().equals( MySpaceManagerResponseDD.STATUS_ELEMENT_01 ) ){ 
 				   break ;
+               }
 		   } // end for	
 
-		   NodeList
-			  nodeList2 = element.getChildNodes() ;	
+		   NodeList nodeList2 = element.getChildNodes() ;	
 			 
 		   // Focus on second level status element... 
 		   for( int i=0 ; i < nodeList2.getLength() ; i++ ) {
@@ -213,9 +212,7 @@ public class Allocation {
 					break ;
 		   } // end for	
    
-		   String
-		        status = element.getFirstChild().getNodeValue(),  // retrieve the status value
-		        details = null ;
+		   String  status = element.getFirstChild().getNodeValue();  // retrieve the status value
 		   if (status != null)
 		       status.trim() ;
 	        
@@ -223,50 +220,34 @@ public class Allocation {
 		   // (the value of the details element)...
 		   if( !status.equalsIgnoreCase( MYSPACE_SUCCESS ) ) {	   			   	    
 			   for( int i=0 ; i < nodeList2.getLength() ; i++ ) {		   	
-				  if( nodeList2.item(i).getNodeType() != Node.ELEMENT_NODE )
+				  if( nodeList2.item(i).getNodeType() != Node.ELEMENT_NODE ) {
 					  continue ;						
+                  }
 				  element = (Element) nodeList2.item(i) ;				   			
-				  if( element.getTagName().equals( MySpaceManagerResponseDD.DETAILS_ELEMENT_02 ) ) 
+				  if( element.getTagName().equals( MySpaceManagerResponseDD.DETAILS_ELEMENT_02 ) ){ 
 					  break ;
+                  }
 			   } // end for	
 		   
-			   details = element.getFirstChild().getNodeValue() ;
-			   if (details != null)
-			       details = details.trim() ;
+			   String details = element.getFirstChild().getNodeValue() ;
+			   if (details != null) {
+			         details = details.trim() ;
+               }
 		    
-		       AstroGridMessage
-			      message = new AstroGridMessage( ASTROGRIDERROR_MYSPACEMANAGER_RETURNED_AN_ERROR
+		       AstroGridMessage message = new AstroGridMessage( ASTROGRIDERROR_MYSPACEMANAGER_RETURNED_AN_ERROR
                                                 , SUBCOMPONENT_NAME
                                                 , status
                                                 , details ) ; 
 		       logger.error( message.toString() ) ;
-		       throw new AllocationException( message );	
-		      			   
-		   } // end for
-		   
+		       throw new AllocationException( message );			      			   
+		   } // end for		   
 		}
-		catch ( ParserConfigurationException pe ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE
+		catch (Exception pe ) {
+			AstroGridMessage message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE
                                               , SUBCOMPONENT_NAME ) ; 
 			logger.error( message.toString(), pe ) ;
 			throw new AllocationException( message, pe );
-		} 
-		catch ( SAXException se ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE
-                                              , SUBCOMPONENT_NAME ) ; 
-			logger.error( message.toString(), se ) ;
-			throw new AllocationException( message, se );
-		}	
-		catch ( IOException ie ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE 
-                                              , SUBCOMPONENT_NAME ) ; 
-			logger.error( message.toString(), ie ) ;
-			throw new AllocationException( message, ie );
-		}			
-		finally {
+		} finally {
 			if( TRACE_ENABLED ) logger.debug( "diagnoseResponse() exit") ;	
 		}
 
