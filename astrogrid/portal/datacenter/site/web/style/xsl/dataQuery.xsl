@@ -2,6 +2,9 @@
 
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
+	xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.4"
+	xmlns:exist="http://exist.sourceforge.net/NS/exist"
 	xmlns:util="http://apache.org/xsp/util/2.0"
 	xmlns:jpath="http://apache.org/xsp/jpath/1.0" >
 
@@ -420,11 +423,11 @@ if (!document.layers)
 {
     document.write('<style type="text/css">#reldiv {position:relative;background-color:#ffffff;border:1px solid #000099;}<\/style>');
 }
--->
 
 <script type="text/javascript" src="/astrogrid-portal/wz_dragdrop.js">
 var i=0;
 </script>
+-->
 
 <table>
 <tr>
@@ -703,17 +706,22 @@ Cone search<br />
 </div>
 </xsl:if>
 
+<!--
 <script type="text/javascript">
 
 SET_DHTML(CURSOR_MOVE, RESIZABLE, NO_ALT, SCROLL, "scratchArea2", "itchy4", "esemplar", "esemplar2");
 
 </script>
+-->
 
   </xsl:template>
 
   <xsl:template match="agVaribleDisplayFrame">
 
+	<xsl:apply-templates/>
+
 <!--
+  <xsl:template match="vr:Resource">
 <xsl:element name="script">
 <xsl:attribute name="src">/astrogrid-portal/extras.js</xsl:attribute>
 <xsl:attribute name="type">text/javascript</xsl:attribute>
@@ -821,7 +829,7 @@ function defocusit(a){
 <tr>
 <td align="left">FROM:</td>
 <td align="left" colspan="2">
-<xsl:value-of select="DQtableID"/>
+<xsl:value-of select="vs:Name"/>
 <!--
 <input name="none" size="20">
 <xsl:attribute name="value">
@@ -843,13 +851,30 @@ C&amp;P
 </td></tr></table>
 
 <img width="150px" src="/astrogrid-portal/ClickUndPaste.jpg" border="2" />
+<!--
 <xsl:for-each select="fakeRegistry/IVOA_TABLE/Columns/FIELD">
-<input class="AGwideButton" type="button" onClick="xTEK('{@name}\040')" value=" {@name} " onMouseOver="cabc(this, '{@name}', '{@ucd}', '{@Units}', '{Explanation}')" onMouseOut="cvbc(this)"/>
+<xsl:for-each select="*/vr:Resource/vs:Table/vs:Column">
+-->
+<!--
+<xsl:for-each select="child::node()">
+<xsl:value-of select="name"/>
+Hi <br />
+</xsl:for-each>
+<xsl:for-each select="vodescription/Resource/Table/Column">
+Hi! Ho!<br />
+<xsl:for-each select="vs:Table/vs:Column">
+<xsl:for-each select="resultsFromRegistry/exist:result/vr:Resource/vs:Table/vs:Column">
+-->
+<br />
+<xsl:for-each select="//*/vr:Resource/vs:Table/vs:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{Name}\040')" value=" {Name} " onMouseOver="cabc(this, '{Name}', '{vs:UCD}', '{vs:Unit}', '{Description}')" onMouseOut="cvbc(this)"/>
 </xsl:for-each>
 </form>
 </center>
 
+<!--
        <xsl:apply-templates/>
+-->
 </body>
 </xsl:when>
 <xsl:otherwise>
@@ -947,8 +972,36 @@ If you don't know which table to use.
 -->
   </xsl:template>
 
+  <xsl:template match="resultsFromRegistry">
+  </xsl:template>
+
   <xsl:template match="uniqueID">
   </xsl:template>
+
+  <xsl:template match="vodescription">
+<!--
+	<xsl:apply-templates/>
+	<xsl:apply-templates/>
+-->
+  </xsl:template>
+
+<!--
+<xsl:for-each select="./vs:Table/vs:Column">
+HI! <br />
+<input class="AGwideButton" type="button" onClick="xTEK('{Name}\040')" value=" {Name} " onMouseOver="cabc(this, '{Name}', '{vs:UCD}', '{vs:Unit}', '{Description}')" onMouseOut="cvbc(this)"/>
+</xsl:for-each>
+-->
+<!--
+  <xsl:template match="vr:Resource">
+  </xsl:template>
+
+  <xsl:template match="vs:Table">
+	<xsl:apply-templates/>
+  </xsl:template>
+
+  <xsl:template match="vs:Column">
+  </xsl:template>
+-->
 
   <xsl:template match="IVOA_TABLE">
   </xsl:template>
