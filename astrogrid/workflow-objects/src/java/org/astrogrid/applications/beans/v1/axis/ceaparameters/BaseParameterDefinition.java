@@ -11,7 +11,7 @@ public class BaseParameterDefinition  implements java.io.Serializable {
     private java.lang.String UI_Name;
     private org.astrogrid.applications.beans.v1.axis.ceaparameters.XhtmlDocumentation UI_Description;
     private java.lang.String UCD;
-    private java.lang.Object defaultValue;
+    private java.lang.String defaultValue;
     private java.lang.String units;
     private java.lang.String name;  // attribute
     private org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterTypes type;  // attribute
@@ -43,11 +43,11 @@ public class BaseParameterDefinition  implements java.io.Serializable {
         this.UCD = UCD;
     }
 
-    public java.lang.Object getDefaultValue() {
+    public java.lang.String getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue(java.lang.Object defaultValue) {
+    public void setDefaultValue(java.lang.String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
@@ -181,7 +181,7 @@ public class BaseParameterDefinition  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("defaultValue");
         elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "DefaultValue"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setMinOccurs(0);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

@@ -7,18 +7,28 @@
 
 package org.astrogrid.applications.beans.v1.axis.ceaparameters;
 
-public class XhtmlDocumentation  implements java.io.Serializable {
-    private org.apache.axis.message.MessageElement [] _any;
+public class XhtmlDocumentation  implements java.io.Serializable, org.apache.axis.encoding.SimpleType {
+    private java.lang.String value;
 
     public XhtmlDocumentation() {
     }
 
-    public org.apache.axis.message.MessageElement [] get_any() {
-        return _any;
+    // Simple Types must have a String constructor
+    public XhtmlDocumentation(java.lang.String value) {
+        this.value = new java.lang.String(value);
     }
 
-    public void set_any(org.apache.axis.message.MessageElement [] _any) {
-        this._any = _any;
+    // Simple Types must have a toString for serializing the value
+    public java.lang.String toString() {
+        return value == null ? null : value.toString();
+    }
+
+    public java.lang.String getValue() {
+        return value;
+    }
+
+    public void setValue(java.lang.String value) {
+        this.value = value;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -33,9 +43,9 @@ public class XhtmlDocumentation  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            ((this._any==null && other.get_any()==null) || 
-             (this._any!=null &&
-              java.util.Arrays.equals(this._any, other.get_any())));
+            ((this.value==null && other.getValue()==null) || 
+             (this.value!=null &&
+              this.value.equals(other.getValue())));
         __equalsCalc = null;
         return _equals;
     }
@@ -47,16 +57,8 @@ public class XhtmlDocumentation  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        if (get_any() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(get_any());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(get_any(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
+        if (getValue() != null) {
+            _hashCode += getValue().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -68,6 +70,11 @@ public class XhtmlDocumentation  implements java.io.Serializable {
 
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "xhtmlDocumentation"));
+        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("value");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "value"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        typeDesc.addFieldDesc(elemField);
     }
 
     /**
@@ -85,7 +92,7 @@ public class XhtmlDocumentation  implements java.io.Serializable {
            java.lang.Class _javaType,  
            javax.xml.namespace.QName _xmlType) {
         return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
+          new  org.apache.axis.encoding.ser.SimpleSerializer(
             _javaType, _xmlType, typeDesc);
     }
 
@@ -97,7 +104,7 @@ public class XhtmlDocumentation  implements java.io.Serializable {
            java.lang.Class _javaType,  
            javax.xml.namespace.QName _xmlType) {
         return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
+          new  org.apache.axis.encoding.ser.SimpleDeserializer(
             _javaType, _xmlType, typeDesc);
     }
 

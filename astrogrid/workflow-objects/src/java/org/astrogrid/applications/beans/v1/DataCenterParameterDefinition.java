@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: DataCenterParameterDefinition.java,v 1.21 2004/04/22 15:13:37 pah Exp $
+ * $Id: DataCenterParameterDefinition.java,v 1.22 2004/04/30 17:57:41 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * special properties for datacentre parameters
  * 
- * @version $Revision: 1.21 $ $Date: 2004/04/22 15:13:37 $
+ * @version $Revision: 1.22 $ $Date: 2004/04/30 17:57:41 $
  */
 public class DataCenterParameterDefinition extends org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition 
 implements java.io.Serializable

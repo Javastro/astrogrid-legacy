@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: XhtmlDocumentation.java,v 1.21 2004/04/22 15:13:37 pah Exp $
+ * $Id: XhtmlDocumentation.java,v 1.22 2004/04/30 17:57:42 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -27,7 +25,7 @@ import org.xml.sax.ContentHandler;
  * should really reference the XHTML shema, but just did this for
  * convienience
  * 
- * @version $Revision: 1.21 $ $Date: 2004/04/22 15:13:37 $
+ * @version $Revision: 1.22 $ $Date: 2004/04/30 17:57:42 $
  */
 public class XhtmlDocumentation extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -43,11 +41,6 @@ implements java.io.Serializable
      */
     private java.lang.String _content = "";
 
-    /**
-     * Field _anyObject
-     */
-    private java.util.ArrayList _anyObject;
-
 
       //----------------/
      //- Constructors -/
@@ -56,52 +49,12 @@ implements java.io.Serializable
     public XhtmlDocumentation() {
         super();
         setContent("");
-        _anyObject = new ArrayList();
     } //-- org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentation()
 
 
       //-----------/
      //- Methods -/
     //-----------/
-
-    /**
-     * Method addAnyObject
-     * 
-     * @param vAnyObject
-     */
-    public void addAnyObject(java.lang.Object vAnyObject)
-        throws java.lang.IndexOutOfBoundsException
-    {
-        _anyObject.add(vAnyObject);
-    } //-- void addAnyObject(java.lang.Object) 
-
-    /**
-     * Method addAnyObject
-     * 
-     * @param index
-     * @param vAnyObject
-     */
-    public void addAnyObject(int index, java.lang.Object vAnyObject)
-        throws java.lang.IndexOutOfBoundsException
-    {
-        _anyObject.add(index, vAnyObject);
-    } //-- void addAnyObject(int, java.lang.Object) 
-
-    /**
-     * Method clearAnyObject
-     */
-    public void clearAnyObject()
-    {
-        _anyObject.clear();
-    } //-- void clearAnyObject() 
-
-    /**
-     * Method enumerateAnyObject
-     */
-    public java.util.Enumeration enumerateAnyObject()
-    {
-        return new org.exolab.castor.util.IteratorEnumeration(_anyObject.iterator());
-    } //-- java.util.Enumeration enumerateAnyObject() 
 
     /**
      * Note: hashCode() has not been overriden
@@ -126,54 +79,10 @@ implements java.io.Serializable
             }
             else if (temp._content != null)
                 return false;
-            if (this._anyObject != null) {
-                if (temp._anyObject == null) return false;
-                else if (!(this._anyObject.equals(temp._anyObject))) 
-                    return false;
-            }
-            else if (temp._anyObject != null)
-                return false;
             return true;
         }
         return false;
     } //-- boolean equals(java.lang.Object) 
-
-    /**
-     * Method getAnyObject
-     * 
-     * @param index
-     */
-    public java.lang.Object getAnyObject(int index)
-        throws java.lang.IndexOutOfBoundsException
-    {
-        //-- check bounds for index
-        if ((index < 0) || (index > _anyObject.size())) {
-            throw new IndexOutOfBoundsException();
-        }
-        
-        return (java.lang.Object) _anyObject.get(index);
-    } //-- java.lang.Object getAnyObject(int) 
-
-    /**
-     * Method getAnyObject
-     */
-    public java.lang.Object[] getAnyObject()
-    {
-        int size = _anyObject.size();
-        java.lang.Object[] mArray = new java.lang.Object[size];
-        for (int index = 0; index < size; index++) {
-            mArray[index] = (java.lang.Object) _anyObject.get(index);
-        }
-        return mArray;
-    } //-- java.lang.Object[] getAnyObject() 
-
-    /**
-     * Method getAnyObjectCount
-     */
-    public int getAnyObjectCount()
-    {
-        return _anyObject.size();
-    } //-- int getAnyObjectCount() 
 
     /**
      * Returns the value of field 'content'. The field 'content'
@@ -223,47 +132,6 @@ implements java.io.Serializable
         
         Marshaller.marshal(this, handler);
     } //-- void marshal(org.xml.sax.ContentHandler) 
-
-    /**
-     * Method removeAnyObject
-     * 
-     * @param vAnyObject
-     */
-    public boolean removeAnyObject(java.lang.Object vAnyObject)
-    {
-        boolean removed = _anyObject.remove(vAnyObject);
-        return removed;
-    } //-- boolean removeAnyObject(java.lang.Object) 
-
-    /**
-     * Method setAnyObject
-     * 
-     * @param index
-     * @param vAnyObject
-     */
-    public void setAnyObject(int index, java.lang.Object vAnyObject)
-        throws java.lang.IndexOutOfBoundsException
-    {
-        //-- check bounds for index
-        if ((index < 0) || (index > _anyObject.size())) {
-            throw new IndexOutOfBoundsException();
-        }
-        _anyObject.set(index, vAnyObject);
-    } //-- void setAnyObject(int, java.lang.Object) 
-
-    /**
-     * Method setAnyObject
-     * 
-     * @param anyObjectArray
-     */
-    public void setAnyObject(java.lang.Object[] anyObjectArray)
-    {
-        //-- copy array
-        _anyObject.clear();
-        for (int i = 0; i < anyObjectArray.length; i++) {
-            _anyObject.add(anyObjectArray[i]);
-        }
-    } //-- void setAnyObject(java.lang.Object) 
 
     /**
      * Sets the value of field 'content'. The field 'content' has

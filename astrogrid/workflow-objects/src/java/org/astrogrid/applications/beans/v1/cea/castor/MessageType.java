@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: MessageType.java,v 1.19 2004/04/22 15:13:38 pah Exp $
+ * $Id: MessageType.java,v 1.20 2004/04/30 17:57:42 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.cea.castor;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * A log entry recorded during execution
  * 
- * @version $Revision: 1.19 $ $Date: 2004/04/22 15:13:38 $
+ * @version $Revision: 1.20 $ $Date: 2004/04/30 17:57:42 $
  */
 public class MessageType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

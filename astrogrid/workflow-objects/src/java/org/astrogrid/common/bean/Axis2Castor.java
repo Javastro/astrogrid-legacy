@@ -1,5 +1,5 @@
 /*
- * $Id: Axis2Castor.java,v 1.5 2004/04/20 11:43:22 pah Exp $
+ * $Id: Axis2Castor.java,v 1.6 2004/04/30 17:57:42 pah Exp $
  * 
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,13 +14,20 @@
 package org.astrogrid.common.bean;
 
 import org.astrogrid.applications.beans.v1.ApplicationList;
+import org.astrogrid.applications.beans.v1.Interface;
 import org.astrogrid.applications.beans.v1.Parameters;
 import org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase;
 import org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase_Parameters;
+import org.astrogrid.applications.beans.v1.axis.ceabase.Interface_input;
+import org.astrogrid.applications.beans.v1.axis.ceabase.Interface_output;
 import org.astrogrid.applications.beans.v1.axis.ceabase.InterfacesType;
+import org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef;
 import org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList;
+import org.astrogrid.applications.beans.v1.axis.ceabase._interface;
+import org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentation;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.axis._Account;
@@ -36,9 +43,12 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.axis._input;
 import org.astrogrid.workflow.beans.v1.axis._output;
 
+import sun.misc.Regexp;
+
 /**
  * Class of static methods to convert axis beans to castor beans. Copied from the util package in the jes project and put in common.
- * @author Noel Winstanley, Paul Harrison (pah@jb.man.ac.uk) 18-Mar-2004
+ * @author Noel Winstanley
+ * @author Paul Harrison (pah@jb.man.ac.uk) 18-Mar-2004
  * @version $Name:  $
  * @since iteration5
  */
@@ -170,15 +180,111 @@ public class Axis2Castor {
     public static org.astrogrid.applications.beans.v1.ApplicationBase convert(ApplicationBase in)
     {
        
-       Parameters parameters = null;
-       org.astrogrid.applications.beans.v1.InterfacesType interfaces = null;
        org.astrogrid.applications.beans.v1.ApplicationBase result = new org.astrogrid.applications.beans.v1.ApplicationBase();
        result.setName(in.getName().toString());
        InterfacesType ininterfaces = in.getInterfaces();
        ApplicationBase_Parameters inparams = in.getParameters();
-       //FIXME - we need to have the interfaces and parameters
-       result.setInterfaces(interfaces);
-       result.setParameters(parameters);
+       result.setInterfaces(convert(ininterfaces));
+       result.setParameters(convert(inparams));
        return result;
     }
+
+   /**
+    * @param inparams
+    * @return
+    */
+   private static Parameters convert(ApplicationBase_Parameters inparams) {
+      Parameters retval = new Parameters();
+      BaseParameterDefinition[] inp = inparams.getParameter();
+      for (int i = 0; i < inp.length; i++) {
+         retval.addParameter(convert(inp[i]));
+      }
+      
+      return retval;
+   }
+   
+   private static org.astrogrid.applications.beans.v1.InterfacesType convert(InterfacesType interf)
+   {
+      org.astrogrid.applications.beans.v1.InterfacesType retval = new org.astrogrid.applications.beans.v1.InterfacesType();
+      _interface[] in = interf.get_interface();
+      for (int i = 0; i < in.length; i++) {
+         retval.add_interface(convert(in[i]));
+      }
+      return retval;
+   }
+   
+   /**
+    * @param _interface
+    * @return
+    */
+   private static Interface convert(_interface _interface) {
+      Interface result = new Interface();
+      result.setName(_interface.getName());
+      result.setInput(convert(_interface.getInput()));
+      result.setOutput(convert(_interface.getOutput()));
+      
+      return result;
+   }
+
+   /**
+    * @param interface_output
+    * @return
+    */
+   private static org.astrogrid.applications.beans.v1.Output convert(Interface_output interface_output) {
+      org.astrogrid.applications.beans.v1.Output result = new org.astrogrid.applications.beans.v1.Output();
+     ParameterRef[] refs = interface_output.getPref();
+     for (int i = 0; i < refs.length; i++) {
+      result.addPref(convert(refs[i]));
+   }
+     return result;
+   }
+
+   /**
+    * @param ref
+    * @return
+    */
+   private static org.astrogrid.applications.beans.v1.ParameterRef convert(ParameterRef ref) {
+      org.astrogrid.applications.beans.v1.ParameterRef result = new org.astrogrid.applications.beans.v1.ParameterRef();
+      result.setMaxoccurs(ref.getMaxoccurs());
+      result.setMinoccurs(ref.getMinoccurs());
+      result.setRef(ref.getRef());
+      return result;
+   }
+
+   /**
+    * @param interface_input
+    * @return
+    */
+   private static org.astrogrid.applications.beans.v1.Input convert(Interface_input interface_input) {
+      org.astrogrid.applications.beans.v1.Input result = new org.astrogrid.applications.beans.v1.Input();
+     ParameterRef[] refs = interface_input.getPref();
+     for (int i = 0; i < refs.length; i++) {
+      result.addPref(convert(refs[i]));
+   }
+     return result;
+   }
+
+   private static org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition convert(BaseParameterDefinition inpar)
+   {
+      org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition  result=  new org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition();
+      result.setDefaultValue(inpar.getDefaultValue());
+      result.setName(inpar.getName());
+      result.setType(convert(inpar.getType()));
+      result.setUCD(inpar.getUCD());
+      
+      result.setUI_Description(convert(inpar.getUI_Description()));
+      result.setUI_Name(inpar.getUI_Name());
+      result.setUnits(inpar.getUnits());
+      return result;
+   }
+
+   /**
+    * @param documentation
+    * @return
+    */
+   private static XhtmlDocumentation convert(org.astrogrid.applications.beans.v1.axis.ceaparameters.XhtmlDocumentation documentation) {
+      XhtmlDocumentation result = new XhtmlDocumentation();
+      result.setContent(documentation.getValue());
+      return result;
+   }
 }

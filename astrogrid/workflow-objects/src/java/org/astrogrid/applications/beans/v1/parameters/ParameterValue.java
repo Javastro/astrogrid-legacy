@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterValue.java,v 1.21 2004/04/22 15:13:37 pah Exp $
+ * $Id: ParameterValue.java,v 1.22 2004/04/30 17:57:42 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
  * Defines what a parameterValue can contain - for the instance
  * document
  * 
- * @version $Revision: 1.21 $ $Date: 2004/04/22 15:13:37 $
+ * @version $Revision: 1.22 $ $Date: 2004/04/30 17:57:42 $
  */
 public class ParameterValue extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -48,6 +48,16 @@ implements java.io.Serializable
     private org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes _type;
 
     /**
+     * Field _indirect
+     */
+    private boolean _indirect = false;
+
+    /**
+     * keeps track of state for field: _indirect
+     */
+    private boolean _has_indirect;
+
+    /**
      * Field _value
      */
     private java.lang.String _value;
@@ -65,6 +75,14 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Method deleteIndirect
+     */
+    public void deleteIndirect()
+    {
+        this._has_indirect= false;
+    } //-- void deleteIndirect() 
 
     /**
      * Note: hashCode() has not been overriden
@@ -96,6 +114,10 @@ implements java.io.Serializable
             }
             else if (temp._type != null)
                 return false;
+            if (this._indirect != temp._indirect)
+                return false;
+            if (this._has_indirect != temp._has_indirect)
+                return false;
             if (this._value != null) {
                 if (temp._value == null) return false;
                 else if (!(this._value.equals(temp._value))) 
@@ -107,6 +129,16 @@ implements java.io.Serializable
         }
         return false;
     } //-- boolean equals(java.lang.Object) 
+
+    /**
+     * Returns the value of field 'indirect'.
+     * 
+     * @return the value of field 'indirect'.
+     */
+    public boolean getIndirect()
+    {
+        return this._indirect;
+    } //-- boolean getIndirect() 
 
     /**
      * Returns the value of field 'name'.
@@ -137,6 +169,14 @@ implements java.io.Serializable
     {
         return this._value;
     } //-- java.lang.String getValue() 
+
+    /**
+     * Method hasIndirect
+     */
+    public boolean hasIndirect()
+    {
+        return this._has_indirect;
+    } //-- boolean hasIndirect() 
 
     /**
      * Method isValid
@@ -175,6 +215,17 @@ implements java.io.Serializable
         
         Marshaller.marshal(this, handler);
     } //-- void marshal(org.xml.sax.ContentHandler) 
+
+    /**
+     * Sets the value of field 'indirect'.
+     * 
+     * @param indirect the value of field 'indirect'.
+     */
+    public void setIndirect(boolean indirect)
+    {
+        this._indirect = indirect;
+        this._has_indirect = true;
+    } //-- void setIndirect(boolean) 
 
     /**
      * Sets the value of field 'name'.

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CeaApplicationTypeDescriptor.java,v 1.6 2004/04/22 15:13:37 pah Exp $
+ * $Id: CeaApplicationTypeDescriptor.java,v 1.7 2004/04/30 17:57:42 pah Exp $
  */
 
 package org.astrogrid.registry.beans.cea;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class CeaApplicationTypeDescriptor.
  * 
- * @version $Revision: 1.6 $ $Date: 2004/04/22 15:13:37 $
+ * @version $Revision: 1.7 $ $Date: 2004/04/30 17:57:42 $
  */
 public class CeaApplicationTypeDescriptor extends org.astrogrid.registry.beans.resource.ResourceTypeDescriptor {
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: BaseParameterDefinition.java,v 1.21 2004/04/22 15:13:37 pah Exp $
+ * $Id: BaseParameterDefinition.java,v 1.22 2004/04/30 17:57:42 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -25,7 +25,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class BaseParameterDefinition.
  * 
- * @version $Revision: 1.21 $ $Date: 2004/04/22 15:13:37 $
+ * @version $Revision: 1.22 $ $Date: 2004/04/30 17:57:42 $
  */
 public class BaseParameterDefinition extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -64,9 +64,10 @@ implements java.io.Serializable
     private java.lang.String _UCD;
 
     /**
-     * a possible default for this type of parameter
+     * a possible default for this type of parameter - should
+     * probably be xs:any, but castor/axis do not deal with this wel
      */
-    private java.lang.Object _defaultValue;
+    private java.lang.String _defaultValue;
 
     /**
      * This would ideally be an enumeration of all the possible
@@ -161,14 +162,15 @@ implements java.io.Serializable
     /**
      * Returns the value of field 'defaultValue'. The field
      * 'defaultValue' has the following description: a possible
-     * default for this type of parameter
+     * default for this type of parameter - should probably be
+     * xs:any, but castor/axis do not deal with this well
      * 
      * @return the value of field 'defaultValue'.
      */
-    public java.lang.Object getDefaultValue()
+    public java.lang.String getDefaultValue()
     {
         return this._defaultValue;
-    } //-- java.lang.Object getDefaultValue() 
+    } //-- java.lang.String getDefaultValue() 
 
     /**
      * Returns the value of field 'name'.
@@ -280,14 +282,15 @@ implements java.io.Serializable
     /**
      * Sets the value of field 'defaultValue'. The field
      * 'defaultValue' has the following description: a possible
-     * default for this type of parameter
+     * default for this type of parameter - should probably be
+     * xs:any, but castor/axis do not deal with this well
      * 
      * @param defaultValue the value of field 'defaultValue'.
      */
-    public void setDefaultValue(java.lang.Object defaultValue)
+    public void setDefaultValue(java.lang.String defaultValue)
     {
         this._defaultValue = defaultValue;
-    } //-- void setDefaultValue(java.lang.Object) 
+    } //-- void setDefaultValue(java.lang.String) 
 
     /**
      * Sets the value of field 'name'.

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: BaseParameterDefinitionDescriptor.java,v 1.21 2004/04/22 15:13:37 pah Exp $
+ * $Id: BaseParameterDefinitionDescriptor.java,v 1.22 2004/04/30 17:57:42 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class BaseParameterDefinitionDescriptor.
  * 
- * @version $Revision: 1.21 $ $Date: 2004/04/22 15:13:37 $
+ * @version $Revision: 1.22 $ $Date: 2004/04/30 17:57:42 $
  */
 public class BaseParameterDefinitionDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -248,7 +248,8 @@ public class BaseParameterDefinitionDescriptor extends org.exolab.castor.xml.uti
         }
         desc.setValidator(fieldValidator);
         //-- _defaultValue
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.Object.class, "_defaultValue", "DefaultValue", org.exolab.castor.xml.NodeType.Element);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_defaultValue", "DefaultValue", org.exolab.castor.xml.NodeType.Element);
+        desc.setImmutable(true);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -261,14 +262,14 @@ public class BaseParameterDefinitionDescriptor extends org.exolab.castor.xml.uti
             {
                 try {
                     BaseParameterDefinition target = (BaseParameterDefinition) object;
-                    target.setDefaultValue( (java.lang.Object) value);
+                    target.setDefaultValue( (java.lang.String) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new java.lang.Object();
+                return null;
             }
         } );
         desc.setHandler(handler);
@@ -279,6 +280,9 @@ public class BaseParameterDefinitionDescriptor extends org.exolab.castor.xml.uti
         //-- validation code for: _defaultValue
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         { //-- local scope
+            StringValidator typeValidator = new StringValidator();
+            typeValidator.setWhiteSpace("preserve");
+            fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
         //-- _units

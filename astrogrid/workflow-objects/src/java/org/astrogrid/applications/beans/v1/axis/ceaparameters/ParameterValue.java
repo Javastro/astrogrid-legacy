@@ -11,6 +11,7 @@ public class ParameterValue  implements java.io.Serializable {
     private java.lang.String value;
     private java.lang.String name;  // attribute
     private org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterTypes type;  // attribute
+    private boolean indirect;  // attribute
 
     public ParameterValue() {
     }
@@ -39,6 +40,14 @@ public class ParameterValue  implements java.io.Serializable {
         this.type = type;
     }
 
+    public boolean isIndirect() {
+        return indirect;
+    }
+
+    public void setIndirect(boolean indirect) {
+        this.indirect = indirect;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof ParameterValue)) return false;
@@ -59,7 +68,8 @@ public class ParameterValue  implements java.io.Serializable {
               this.name.equals(other.getName()))) &&
             ((this.type==null && other.getType()==null) || 
              (this.type!=null &&
-              this.type.equals(other.getType())));
+              this.type.equals(other.getType()))) &&
+            this.indirect == other.isIndirect();
         __equalsCalc = null;
         return _equals;
     }
@@ -80,6 +90,7 @@ public class ParameterValue  implements java.io.Serializable {
         if (getType() != null) {
             _hashCode += getType().hashCode();
         }
+        _hashCode += new Boolean(isIndirect()).hashCode();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -99,6 +110,11 @@ public class ParameterValue  implements java.io.Serializable {
         attrField.setFieldName("type");
         attrField.setXmlName(new javax.xml.namespace.QName("", "type"));
         attrField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterTypes"));
+        typeDesc.addFieldDesc(attrField);
+        attrField = new org.apache.axis.description.AttributeDesc();
+        attrField.setFieldName("indirect");
+        attrField.setXmlName(new javax.xml.namespace.QName("", "indirect"));
+        attrField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         typeDesc.addFieldDesc(attrField);
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("value");

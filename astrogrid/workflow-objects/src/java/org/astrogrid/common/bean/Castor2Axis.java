@@ -1,5 +1,5 @@
 /*
- * $Id: Castor2Axis.java,v 1.6 2004/04/06 08:57:32 nw Exp $
+ * $Id: Castor2Axis.java,v 1.7 2004/04/30 17:57:42 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -211,7 +211,10 @@ public class Castor2Axis {
     */
    public static org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition convert(BaseParameterDefinition definition) {
       org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition result = new org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition();
+      String nothing="";
+      String val;
       result.setName(definition.getName());
+      
       result.setDefaultValue(definition.getDefaultValue());
       result.setType(convert(definition.getType()));
       result.setUCD(definition.getUCD());
@@ -226,28 +229,31 @@ public class Castor2Axis {
     * convert between the documentation elements. This is very messy just to get between two "any" elements!
     * @param documentation
     * @return
-    * @TODO - this really needs a better implementation.
+    * @TODO FIXME this really needs a better implementation - it does not work - do not really understand how castor/axis deal with any - the schema has been converted to a type derived from string for now to make things easier...
+    * 
     */
    public static org.astrogrid.applications.beans.v1.axis.ceaparameters.XhtmlDocumentation convert(XhtmlDocumentation documentation) {
-      MessageElement[] _an = new MessageElement[1];
-      StringWriter out = new StringWriter();
-      MessageElement el;
-      try {
-         documentation.marshal(out);
-         StringReader in = new StringReader(out.toString());
-         Document doc = XMLUtils.newDocument(new InputSource(in));
-         
-          el = new MessageElement(doc.getDocumentElement());
-        
-      }
-      catch (Exception e) {
-         
-         logger.error("problem with the Xdocumentation element conversion", e);
-         el = new MessageElement();
-       }
-       _an[1] = el;
+//      MessageElement[] _an = new MessageElement[1];
+//      StringWriter out = new StringWriter();
+//      MessageElement el;
+//      try {
+//         documentation.marshal(out);
+//         StringReader in = new StringReader(out.toString());
+//         Document doc = XMLUtils.newDocument(new InputSource(in));
+//         
+//          el = new MessageElement(doc.getDocumentElement());
+//        
+//      }
+//      catch (Exception e) {
+//         
+//         logger.error("problem with the Xdocumentation element conversion", e);
+//         el = new MessageElement();
+//       }
+//       _an[0] = el;
       org.astrogrid.applications.beans.v1.axis.ceaparameters.XhtmlDocumentation result = new org.astrogrid.applications.beans.v1.axis.ceaparameters.XhtmlDocumentation();
-      result.set_any(_an);
+      if (documentation != null) {
+         result.setValue(documentation.getContent());
+      }
       return result;
    }
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: XhtmlDocumentationDescriptor.java,v 1.21 2004/04/22 15:13:37 pah Exp $
+ * $Id: XhtmlDocumentationDescriptor.java,v 1.22 2004/04/30 17:57:42 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class XhtmlDocumentationDescriptor.
  * 
- * @version $Revision: 1.21 $ $Date: 2004/04/22 15:13:37 $
+ * @version $Revision: 1.22 $ $Date: 2004/04/30 17:57:42 $
  */
 public class XhtmlDocumentationDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -57,9 +57,6 @@ public class XhtmlDocumentationDescriptor extends org.exolab.castor.xml.util.XML
         super();
         nsURI = "http://www.astrogrid.org/schema/AGParameterDefinition/v1";
         xmlName = "xhtmlDocumentation";
-        
-        //-- set grouping compositor
-        setCompositorAsSequence();
         org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
         org.exolab.castor.xml.XMLFieldHandler              handler        = null;
         org.exolab.castor.xml.FieldValidator               fieldValidator = null;
@@ -103,38 +100,6 @@ public class XhtmlDocumentationDescriptor extends org.exolab.castor.xml.util.XML
         
         //-- initialize element descriptors
         
-        //-- _anyObject
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.Object.class, "_anyObject", (String)null, org.exolab.castor.xml.NodeType.Element);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                XhtmlDocumentation target = (XhtmlDocumentation) object;
-                return target.getAnyObject();
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    XhtmlDocumentation target = (XhtmlDocumentation) object;
-                    target.addAnyObject(  value );
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
-            }
-        } );
-        desc.setHandler(handler);
-        desc.setMatches("*");
-        desc.setMultivalued(true);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _anyObject
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        desc.setValidator(fieldValidator);
     } //-- org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentationDescriptor()
 
 
