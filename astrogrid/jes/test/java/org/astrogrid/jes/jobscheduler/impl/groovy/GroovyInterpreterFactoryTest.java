@@ -1,4 +1,4 @@
-/*$Id: GroovyInterpreterFactoryTest.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: GroovyInterpreterFactoryTest.java,v 1.3 2004/09/16 21:46:45 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,7 +52,7 @@ public class GroovyInterpreterFactoryTest extends TestCase {
 
     public void testNewInterpreter() throws PickleException {
         // setup up rulestre.
-        String rulesDoc = ((XStreamPickler) fac.pickler).xstream.toXML(interp.ruleStore);
+        String rulesDoc = ((XStreamPickler) fac.pickler).getXstream().toXML(interp.ruleStore);
         GroovyInterpreter interp1 = fac.newInterpreter(rulesDoc,new JesInterface(workflow,new MockDispatcher(),null));
         assertNotNull(interp1.shell.jes);
         assertNotSame(interp,interp1);
@@ -64,6 +64,9 @@ public class GroovyInterpreterFactoryTest extends TestCase {
 
 /* 
 $Log: GroovyInterpreterFactoryTest.java,v $
+Revision 1.3  2004/09/16 21:46:45  nw
+made 3rd-party objects only persist for so many calls. - in case they're space leaking.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

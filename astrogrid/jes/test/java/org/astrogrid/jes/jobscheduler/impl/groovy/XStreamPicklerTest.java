@@ -1,4 +1,4 @@
-/*$Id: XStreamPicklerTest.java,v 1.4 2004/08/09 17:32:02 nw Exp $
+/*$Id: XStreamPicklerTest.java,v 1.5 2004/09/16 21:46:45 nw Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,7 +67,7 @@ public class XStreamPicklerTest extends TestCase {
     public void testRoundTripRuleStore() throws IOException  {
         List rs = interp.ruleStore;
         StringWriter out = new StringWriter();
-        pickler.xstream.toXML(rs,out);
+        pickler.getXstream().toXML(rs,out);
         out.close();
         System.out.println(out.toString());
         StringReader in = new StringReader(out.toString());
@@ -81,6 +81,9 @@ public class XStreamPicklerTest extends TestCase {
 
 /* 
 $Log: XStreamPicklerTest.java,v $
+Revision 1.5  2004/09/16 21:46:45  nw
+made 3rd-party objects only persist for so many calls. - in case they're space leaking.
+
 Revision 1.4  2004/08/09 17:32:02  nw
 updated due to removing RuleStore
 

@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.13 2004/09/06 16:47:04 nw Exp $
+/*$Id: JesShell.java,v 1.14 2004/09/16 21:43:47 nw Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,20 +58,33 @@ public class JesShell {
     /** for efficiencies sake, only ever create a single, static interpreter.
      * this will be ok - as we parse-run all code we pass through it.
      * plus, we know it is being called in a single thread (the scheduler) only.
+     * however, don't know for sure that this isn't memory leaking. so will be more cautious, and create a new one for each new shell
+     * (i.e. for each workflow processed). but this seems really slow. will implement a kind of pool instead - reuse each object 50 times, then get shot of it.
      */
-    protected static final GroovyShell shell = new GroovyShell();
+    private static GroovyShell shell = new GroovyShell();
+    private static int useCount = 0;
+    private static final int USE_LIMIT = 50;
+    protected static GroovyShell getGroovyShell() {
+        if (useCount++ > USE_LIMIT) {
+            useCount = 0;
+            shell = new GroovyShell();
+        }
+        return shell;
+    }
+    
     protected JesInterface jes;
     
     /** evaluate the condition (trigger) of a rule */
-    public boolean evaluateTrigger(Rule r,ActivityStatusStore map) throws CompilationFailedException, IOException {
+    public boolean evaluateTrigger(Rule r,ActivityStatusStore map) throws CompilationFailedException, IOException {        
         Binding triggerBinding = createTriggerBinding(map);
         Script sc = r.getCompiledTrigger();
         if (sc == null) { // not there, compile it up..        
-            sc =  shell.parse(r.getTrigger());
+            sc =  getGroovyShell().parse(r.getTrigger());
             r.setCompiledTrigger(sc);
         }
         sc.setBinding(triggerBinding);
         Boolean result = (Boolean)sc.run();
+        System.gc();
         return result.booleanValue();
     }
     /** execute the body (concequence) of a rule */
@@ -81,11 +94,12 @@ public class JesShell {
         logger.debug(r);    
         Script sc = r.getCompiledBody();
         if (sc == null) { // not there, compile it up..
-            sc = shell.parse(r.getBody());
+            sc = getGroovyShell().parse(r.getBody());
             r.setCompiledBody(sc);
         }
         sc.setBinding(bodyBinding);
         sc.run();
+        System.gc();
     }
     /** execute a script activity */
     public void executeScript(String script,String id, ActivityStatusStore map,List rules, PrintStream errStream, PrintStream outStream) throws CompilationFailedException, IOException {
@@ -94,7 +108,7 @@ public class JesShell {
         Binding scriptBinding = createScriptBinding(map,rules);
         Vars vars= map.getEnv(id);
         vars.addToBinding(scriptBinding);
-        Script sc = shell.parse(script);
+        Script sc = getGroovyShell().parse(script);
         sc.setBinding(scriptBinding);
         PrintStream originalErr = System.err;
         PrintStream originalOut = System.out;
@@ -105,6 +119,7 @@ public class JesShell {
         } finally {
             System.setErr(originalErr);
             System.setOut(originalOut);
+            System.gc();
         }
         logger.debug("Completed Script execution");
         vars.readFromBinding(scriptBinding);
@@ -124,9 +139,10 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
     String gExpr = "x = <<<GSTRING\n" + expr+ "\n" + "GSTRING\n " +
         "(x instanceof GString && x.getValueCount() == 1 && x.getStrings().find{it.size() > 0} == null) ? x.getValue(0) : x"; 
    
-    Script sc = shell.parse(gExpr);
+    Script sc = getGroovyShell().parse(gExpr);
     sc.setBinding(scriptBinding);
      Object result = sc.run();
+     System.gc();
      logger.debug("result: '" + result + "' type: " + result.getClass().getName());
      return result;
     
@@ -211,9 +227,10 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
         copyP.setEncoding(originalP.getEncoding());
         // evaluate value.. -- always to string.
         String expr = "<<<GSTRING\n" + originalP.getValue()  + "\nGSTRING\n";
-        Script sc = shell.parse(expr);
+        Script sc = getGroovyShell().parse(expr);
         sc.setBinding(scriptBinding);
         Object result = sc.run();
+        System.gc();
         copyP.setValue( result.toString());
         return copyP;
     }
@@ -273,6 +290,8 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
     public void setJesInterface(JesInterface jesInterface) {
         this.jes = jesInterface;
     }
+
+
     
     
 }
@@ -280,6 +299,9 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.14  2004/09/16 21:43:47  nw
+made 3rd-party objects only persist for so many calls. - in case they're space leaking.
+
 Revision 1.13  2004/09/06 16:47:04  nw
 javadoc
 

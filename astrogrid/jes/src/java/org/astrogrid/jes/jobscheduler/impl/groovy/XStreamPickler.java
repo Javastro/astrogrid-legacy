@@ -1,4 +1,4 @@
-/*$Id: XStreamPickler.java,v 1.5 2004/09/06 16:47:04 nw Exp $
+/*$Id: XStreamPickler.java,v 1.6 2004/09/16 21:43:47 nw Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,44 +31,64 @@ public class XStreamPickler implements Pickler {
 
     /** made xstream static, for efficiencies sake - don't know how expensive it is to create this object,
      * but only one instance is ever needed, and is only ever called from the scheduler thread.
+     * 
+     * <p>
+     * but then got concerned about keeping a 3rd part object around indefinately- no idea how big it is, or whether it 
+     * leaks. Decided to use a 'pooling' pattern - resuse each instance a few times, and then create a new one.
      */
-    protected final static XStream xstream;
-    static {
-        xstream = new XStream(new PureJavaReflectionProvider(),new DomDriver());
-        xstream.alias("interpreter",GroovyInterpreter.class);
-        xstream.alias("rules",ArrayList.class);
-        xstream.alias("rule",Rule.class);
-        xstream.alias("state",ActivityStatus.class);
-        xstream.alias("states",ActivityStatusStore.class);
-        xstream.alias("vars",Vars.class);        
+    public XStreamPickler() {
+        createXstream();
     }
-
+    private  XStream xstream;
+    // number of times this xstream has been used.
+    private int useCount = 0;
+    // limit on number of uses.
+    private static final int USE_LIMIT = 20;
     /**
      * @see org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreterFactory.Pickler#marshallInterpreter(java.io.Writer, org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreter)
      */
     public void marshallInterpreter(Writer out, GroovyInterpreter interp) {
-        xstream.toXML(interp,out);
+        getXstream().toXML(interp,out);
     }
 
     /**
      * @see org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreterFactory.Pickler#unmarshallInterpreter(java.io.Reader)
      */
     public GroovyInterpreter unmarshallInterpreter(Reader in){
-        return (GroovyInterpreter)xstream.fromXML(in);
+        return (GroovyInterpreter)getXstream().fromXML(in);
     }
 
     /**
      * @see org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreterFactory.Pickler#unmarshallRuleStore(java.io.Reader)
      */
     public List unmarshallRuleStore(Reader reader)  {
-        return (List)xstream.fromXML(reader);
+        return (List)getXstream().fromXML(reader);
     }
 
+    XStream getXstream() {
+        if (useCount++ > USE_LIMIT) {
+            useCount = 0;
+            createXstream();
+        }
+        return xstream;
+    }
+    private void createXstream() {
+        xstream = new XStream(new PureJavaReflectionProvider(),new DomDriver());
+        getXstream().alias("interpreter",GroovyInterpreter.class);
+        getXstream().alias("rules",ArrayList.class);
+        getXstream().alias("rule",Rule.class);
+        getXstream().alias("state",ActivityStatus.class);
+        getXstream().alias("states",ActivityStatusStore.class);
+        getXstream().alias("vars",Vars.class);        
+    }
 }
 
 
 /* 
 $Log: XStreamPickler.java,v $
+Revision 1.6  2004/09/16 21:43:47  nw
+made 3rd-party objects only persist for so many calls. - in case they're space leaking.
+
 Revision 1.5  2004/09/06 16:47:04  nw
 javadoc
 
