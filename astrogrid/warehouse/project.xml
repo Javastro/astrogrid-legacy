@@ -62,18 +62,27 @@
     <dependency>
       <id>astrogrid-common</id>
       <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
   
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
       <artifactId>astrogrid-datacenter-server</artifactId>
       <version>Itn04-2003-12-02</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
       <artifactId>astrogrid-datacenter-client</artifactId>
       <version>Itn04-2003-12-02</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <!-- This is needed for runtime tests because 
@@ -81,60 +90,92 @@
     <dependency>
       <id>astrogrid-mySpace</id>
       <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <!-- more standard deps -->
     <dependency>
       <id>axis</id>
       <version>1.1</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
       <id>wsdl4j</id>
       <version>1.0</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
       <id>saaj</id>
       <version>1.0</version>
       <jar>saaj.jar</jar>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
       <id>commons-logging</id>
       <version>1.0.3</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
       <id>commons-discovery</id>
       <version>20030211.213356</version>
-      <!--<version>SNAPSHOT</version>-->
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
     
     <dependency>
       <id>jaxrpc-api</id>
       <version>1.0.3</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
     
     <dependency>
       <id>xml-apis</id>
       <version>1.0.b2</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
     
     <dependency>
       <id>log4j</id>
       <version>1.2.4</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
       <id>xercesImpl</id>
       <version>2.1.0</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <!-- dependencies from datacenter -->
     <dependency>
       <id>castor</id>
       <version>0.9.5-xml</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
   </dependencies>
@@ -182,7 +223,8 @@
 			<include>wsdd/*.wsdd</include>
 		</includes>
 	</resource>
-    </resources>
+        
+  </resources>
 
   </build>
 
