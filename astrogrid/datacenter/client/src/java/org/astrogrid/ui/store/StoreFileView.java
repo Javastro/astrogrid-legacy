@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFileView.java,v 1.2 2004/05/10 15:06:22 mch Exp $
+ * $Id: StoreFileView.java,v 1.3 2004/11/08 23:15:38 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -51,23 +51,24 @@ public class StoreFileView extends JPanel {
       this.operator = aUser;
    }
    
-   public void setServerEndpoint(String server) throws IOException {
+   /** Reconnectes to the given server URI */
+   public void setServerUri(String serverUri) {
       //if ((!server.equals(MySpaceDummyDelegate.DUMMY)) && (!server.startsWith("ftp")) && (server.indexOf("/services/MySpaceManager") == -1)) {
       //   server = server+"/services/MySpaceManager";
       //}
          
       try
       {
-         if ((server == null) || (server.trim().length() == 0)) {
-            setDelegate(null);
+         if ((serverUri == null) || (serverUri.trim().length() == 0)) {
+            setDelegate(null); //dummy?
          } else {
-            setDelegate(StoreDelegateFactory.createDelegate(getOperator().toUser(), new Agsl(server)));
+            setDelegate(StoreDelegateFactory.createDelegate(getOperator().toUser(), serverUri));
          }
       }
       catch (IOException ioe)
       {
          ioe.printStackTrace();
-         JOptionPane.showMessageDialog(this, "Could not connect to server '"+server+"': "+ioe, "Connection Error", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(this, "Could not connect to server '"+serverUri+"': "+ioe, "Connection Error", JOptionPane.ERROR_MESSAGE);
       }
    }
    
@@ -281,6 +282,9 @@ public class StoreFileView extends JPanel {
 
 /*
  $Log: StoreFileView.java,v $
+ Revision 1.3  2004/11/08 23:15:38  mch
+ Various fixes for SC demo, more store browser, more Vizier stuff
+
  Revision 1.2  2004/05/10 15:06:22  mch
  Fixed toAgsl()
 

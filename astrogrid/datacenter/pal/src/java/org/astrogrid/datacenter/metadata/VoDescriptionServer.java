@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.9 2004/11/03 01:35:18 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.10 2004/11/08 23:15:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -66,13 +66,16 @@ public class VoDescriptionServer {
    public final static SimpleDateFormat REGISTRY_DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
    
-      /**
+   /**
     * Returns the whole metadata file as a DOM document
     */
    public synchronized static Document getVoDescription() throws IOException {
       if (cache == null) {
          try {
             cache = DomHelper.newDocument(makeVoDescription().toString());
+            
+            //check it's OK
+            validate(cache);
          }
          catch (ParserConfigurationException e) {
             throw new RuntimeException("Server not setup properly: "+e,e);
@@ -84,6 +87,38 @@ public class VoDescriptionServer {
       return cache;
    }
    
+   /** Checks that the given document is a valid vodescription, throwing an
+    * exception if not */
+   public static void validate(Document vod) throws MetadataException {
+      Element root = vod.getDocumentElement();
+
+      NodeList children = root.getChildNodes();
+      
+      for (int i = 0; i < children.getLength(); i++) {
+         if (children instanceof Element) {
+            Element resource = (Element) children.item(i);
+            
+            if (!resource.getNodeName().equals("Resource")) {
+               throw new MetadataException("VODescription Child "+i+" ("+resource.getNodeName()+") is not a Resource element");
+            }
+            
+            Element id = DsaDomHelper.getSingleChildByTagName(resource, "Identifier");
+            if (id == null) {
+               //no identifier - could add one but we don't know what resource key to give it
+               throw new MetadataException("Resource "+i+" (xsi:type="+resource.getAttribute("xsi:type")+") has no Identifier");
+            }
+            
+            DsaDomHelper.setElementValue(DsaDomHelper.ensuredGetSingleChild(id, "AuthorityID"), SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY));
+            Element resKey = DsaDomHelper.getSingleChildByTagName(resource, "ResourceKey");
+            if ((resKey == null) || (DomHelper.getValue(resKey).trim().length()==0)) {
+               //no resource key
+               throw new MetadataException("Identifier in Resource "+i+" (xsi:type="+resource.getAttribute("xsi:type")+") has no ResourceKey");
+            }
+         }
+      }
+      
+   }
+
    /** Instantiates the class with the given name.  This is useful for things
     * such as 'plugins', where a class name might be given in a configuration file.
     * Rather messily throws Throwable because anything might have
@@ -257,6 +292,20 @@ public class VoDescriptionServer {
       contact.writeTag("Name", SimpleConfig.getSingleton().getString("datacenter.contact.name",""));
       contact.writeTag("Email", SimpleConfig.getSingleton().getString("datacenter.contact.email",""));
       contact.writeTag("Date", SimpleConfig.getSingleton().getString("datacenter.contact.date",""));
+   }
+
+   /** Checks that the identifier elements are there and set to the local values,
+    * creating and setting if not.  The given resourceKeyEnd is appended to the
+    datacenter's resourceKey to give the appropriate full resource key */
+   public static void ensureIdentifier(Element resource, String resourceKeyEnd) {
+
+      //check that each 'returns' resource has a child <Identifier>, as some early ones didn't and we want to catch them
+      Element voIdTag = DsaDomHelper.ensuredGetSingleChild(resource, "Identifier");
+      
+      String dsaResKey = SimpleConfig.getSingleton().getString(VoDescriptionServer.RESKEY_KEY);
+   
+      DsaDomHelper.setElementValue(DsaDomHelper.ensuredGetSingleChild(voIdTag, "AuthorityID"), SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY));
+      DsaDomHelper.setElementValue(DsaDomHelper.ensuredGetSingleChild(voIdTag, "ResourceKey"), SimpleConfig.getSingleton().getString(VoDescriptionServer.RESKEY_KEY)+resourceKeyEnd);
    }
 
    /** Checks the summary elements are there and set to the local values (creating it if not) */

@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManager.java,v 1.3 2004/11/08 02:58:44 mch Exp $
+/*$Id: DatacenterCEAComponentManager.java,v 1.4 2004/11/08 23:15:38 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,15 +57,18 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
     
     /** key used to lookup in config the name of the datacenter application.  Must
      * equal with the ResourceKey given in the managed applications. */
-    public static final String DS_APP_NAME_KEY = "datacenter.cea.app.name";
+    //public static final String DS_APP_NAME_KEY = "datacenter.cea.app.name";
     /** default value for {@link #DS_APP_NAME} if not set in config */
     //public static final String DS_APP_NAME_DEFAULT = "org.astrogrid.localhost/testdsa";
     
     /** register the datacenter-specific components of this cea server */
     public static void registerDatacenterProvider(MutablePicoContainer pico, Config config) {
         logger.info("Registering Datacenter CEA Provider");
-        final String name= config.getString(DS_APP_NAME_KEY); //crash horribly if it doesn't exist so we know we need to set it properly
-        logger.info(DS_APP_NAME_KEY + ":=" + name);
+       
+       //the application name must match the IVORN of the CeaApplicationType Resource, that is:
+       //<authorityId>/<ResourceKey>/ceaApplication
+       final String name= config.getString("datacenter.authorityId")+"/"+config.getString("datacenter.resourceKey")+"/ceaApplication";
+       logger.info("name =" + name);
         pico.registerComponentInstance(new DatacenterApplicationDescriptionLibrary.DatacenterMetadata() {
             public String getName() {
                 return name;
@@ -82,6 +85,9 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
 
 /*
 $Log: DatacenterCEAComponentManager.java,v $
+Revision 1.4  2004/11/08 23:15:38  mch
+Various fixes for SC demo, more store browser, more Vizier stuff
+
 Revision 1.3  2004/11/08 02:58:44  mch
 Various fixes and better error messages
 

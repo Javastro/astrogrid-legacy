@@ -1,4 +1,4 @@
-/*$Id: VizierResourcePlugin.java,v 1.5 2004/11/08 14:26:56 mch Exp $
+/*$Id: VizierResourcePlugin.java,v 1.6 2004/11/08 23:15:38 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,15 +11,16 @@
 package org.astrogrid.datacenter.impl.cds;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import javax.xml.rpc.ServiceException;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.impl.cds.generated.vizier.VizieR;
 import org.astrogrid.datacenter.impl.cds.generated.vizier.VizieRService;
 import org.astrogrid.datacenter.impl.cds.generated.vizier.VizieRServiceLocator;
 import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.metadata.VoResourcePlugin;
 import org.astrogrid.datacenter.service.ServletHelper;
-import javax.xml.rpc.ServiceException;
-import java.net.MalformedURLException;
 
 /** Returns Registry resources for Vizier proxy service.  Because of the size
  * of Vizier, the resource documents are cached, but only in memory so that
@@ -49,6 +50,10 @@ public class VizierResourcePlugin implements VoResourcePlugin {
    public String getQueryable() throws IOException {
          String resource =
          "<Resource xsi:type='Queryable'>\n"+
+              "<Identifier>"+
+                  "<AuthorityID>"+SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY)+"</AuthorityID>"+
+                  "<ResourceKey>"+SimpleConfig.getSingleton().getString(VoDescriptionServer.RESKEY_KEY)+"/queryable</ResourceKey>"+
+              "</Identifier>"+
               "<ForceFlat>Intersection</ForceFlat>\n"+
               "<Field name='Target' optional='true' datatype='varchar'>"+
                   "<Description>Name of target, eg M31.  Do not specify RA/DEC/CIRCLE if naming the target</Description>"+
@@ -104,6 +109,10 @@ public class VizierResourcePlugin implements VoResourcePlugin {
    public String getRdbmsResource() throws IOException {
          String resource =
             "<Resource xsi:type='RdbmsMetadata'>\n"+
+              "<Identifier>"+
+                  "<AuthorityID>"+SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY)+"</AuthorityID>"+
+                  "<ResourceKey>"+SimpleConfig.getSingleton().getString(VoDescriptionServer.RESKEY_KEY)+"/rdbms</ResourceKey>"+
+              "</Identifier>"+
               "<Table>\n"+
                   "<Name>Vizier</Name>\n"+
                   "<Column>"+
@@ -147,6 +156,9 @@ public class VizierResourcePlugin implements VoResourcePlugin {
 
 /*
  $Log: VizierResourcePlugin.java,v $
+ Revision 1.6  2004/11/08 23:15:38  mch
+ Various fixes for SC demo, more store browser, more Vizier stuff
+
  Revision 1.5  2004/11/08 14:26:56  mch
  Fixed queryable resource
 

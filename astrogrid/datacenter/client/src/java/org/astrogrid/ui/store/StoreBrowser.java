@@ -1,5 +1,5 @@
 /*
- * $Id: StoreBrowser.java,v 1.1 2004/04/15 17:24:31 mch Exp $
+ * $Id: StoreBrowser.java,v 1.2 2004/11/08 23:15:38 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -54,7 +54,8 @@ public class StoreBrowser extends JDialog
    JComboBox filetypePicker = new JComboBox();
    boolean isCancelled = false;
    String browserAction = OPEN_ACTION;
-
+   StoresView storeView = null;
+   
    JButton refreshBtn = null;
    JButton uploadBtn = null;
    JButton uploadUrlBtn = null;
@@ -154,9 +155,6 @@ public class StoreBrowser extends JDialog
       fileView = new StoreFileView(user);
       
       serverPicker.addItem(""); //empty one to start with
-      serverPicker.addItem("myspace:http://vm05.astrogrid.org:8080/astrogrid-mySpace");
-      serverPicker.addItem("myspace:http://grendel12.roe.ac.uk:8080/astrogrid-mySpace");
-      serverPicker.addItem("myspace:http://grendel12.roe.ac.uk:8080/MySpaceManager/services/Manager");
       
       filetypePicker.addItem("All Files");
 
@@ -182,7 +180,7 @@ public class StoreBrowser extends JDialog
       iconBtnPanel.add(copyBtn);
       
       JPanel topPanel = new JPanel(new BorderLayout());
-      topPanel.add(new JLabel("Look In: "), BorderLayout.WEST);
+//      topPanel.add(new JLabel("Look In: "), BorderLayout.WEST);
       topPanel.add(serverPicker, BorderLayout.CENTER);
       topPanel.add(iconBtnPanel, BorderLayout.EAST);
       
@@ -211,11 +209,19 @@ public class StoreBrowser extends JDialog
       fileView.setBorder(BorderFactory.createEmptyBorder(0,5,0,5));
       botPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
       iconBtnPanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
+
+      storeView = new StoresView(user,this);
       
       getContentPane().setLayout(new BorderLayout());
-      getContentPane().add(topPanel, BorderLayout.NORTH);
-      getContentPane().add(fileView, BorderLayout.CENTER);
-      getContentPane().add(botPanel, BorderLayout.SOUTH);
+      JPanel RHS = new JPanel(new BorderLayout());
+      JPanel LHS = new JPanel(new BorderLayout());
+      getContentPane().add(RHS, BorderLayout.CENTER);
+      getContentPane().add(LHS, BorderLayout.WEST);
+      LHS.add(new JLabel("Look in:", JLabel.RIGHT), BorderLayout.NORTH);
+      LHS.add(storeView, BorderLayout.CENTER);
+      RHS.add(topPanel, BorderLayout.NORTH);
+      RHS.add(fileView, BorderLayout.CENTER);
+      RHS.add(botPanel, BorderLayout.SOUTH);
       
       refreshBtn.addActionListener(
          new ActionListener() {
@@ -558,15 +564,14 @@ public class StoreBrowser extends JDialog
     * (manager) service */
    public void updateFromPicker()
    {
-      try {
-          fileView.setServerEndpoint(serverPicker.getSelectedItem().toString());
-      }
-      catch (IOException ioe)
-      {
-         ioe.printStackTrace();
-      }
+      setServer(serverPicker.getSelectedItem().toString());
    }
 
+   /** Sets the store/server to be viewed */
+   public void setServer(String uri) {
+      fileView.setServerUri(uri);
+   }
+   
    /** Set if the window is exited via Cancel/Close. */
    public boolean isCancelled()   {      return isCancelled;   }
    
@@ -664,6 +669,9 @@ public class StoreBrowser extends JDialog
 
 /*
 $Log: StoreBrowser.java,v $
+Revision 1.2  2004/11/08 23:15:38  mch
+Various fixes for SC demo, more store browser, more Vizier stuff
+
 Revision 1.1  2004/04/15 17:24:31  mch
 Moved myspace ui to store ui
 

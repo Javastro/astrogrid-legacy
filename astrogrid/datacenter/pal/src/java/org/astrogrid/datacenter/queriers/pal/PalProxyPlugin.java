@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.9 2004/11/08 14:28:46 mch Exp $
+ * $Id: PalProxyPlugin.java,v 1.10 2004/11/08 23:15:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.Date;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.community.Account;
@@ -127,7 +128,8 @@ public class PalProxyPlugin extends DefaultPlugin implements VoResourcePlugin {
       out.flush();
       out.close();
       
-      querier.setStatus(new QuerierQuerying(querier.getStatus()));
+//done already      querier.setStatus(new QuerierQuerying(querier.getStatus()));
+      querier.getStatus().addDetail("Submitted to target at "+new Date());
       
       InputStream in = connection.getInputStream();
 
@@ -174,6 +176,7 @@ public class PalProxyPlugin extends DefaultPlugin implements VoResourcePlugin {
    
    
 }
+
 
 
 

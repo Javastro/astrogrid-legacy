@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierStatus.java,v 1.8 2004/11/08 15:03:23 mch Exp $
+ * $Id: QuerierStatus.java,v 1.9 2004/11/08 23:15:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -127,7 +127,7 @@ public abstract class QuerierStatus implements TaskStatus
    }
    
    /** Resets the progress message to nothing - ie clears it */
-   public void newProgress() {
+   public void clearProgress() {
       newProgress("", -1);
    }
 
@@ -156,6 +156,9 @@ public abstract class QuerierStatus implements TaskStatus
 
 /*
 $Log: QuerierStatus.java,v $
+Revision 1.9  2004/11/08 23:15:38  mch
+Various fixes for SC demo, more store browser, more Vizier stuff
+
 Revision 1.8  2004/11/08 15:03:23  mch
 Added doc
 
@@ -190,3 +193,4 @@ Revision 1.1  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 
  */
+

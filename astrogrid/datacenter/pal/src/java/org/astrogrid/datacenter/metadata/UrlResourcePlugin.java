@@ -1,5 +1,5 @@
 /*
- * $Id: UrlResourcePlugin.java,v 1.5 2004/11/03 01:35:18 mch Exp $
+ * $Id: UrlResourcePlugin.java,v 1.6 2004/11/08 23:15:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -141,8 +141,7 @@ public class UrlResourcePlugin implements VoResourcePlugin
       }
    }
 
-   
-   /** Checks that a resource is OK for this datacenter */
+   /** Checks that a resource is OK for this datacenter, and sets appropriately if not */
    public void checkResource(Element resource, URLConnection connection) throws MetadataException {
       
       //use file/url date if available, otherwise current time
@@ -194,6 +193,7 @@ public class UrlResourcePlugin implements VoResourcePlugin
          DsaDomHelper.setElementValue(resKeyTag, newValue);
       }
    }
+   
 
 }
 

@@ -120,6 +120,13 @@
 
   </servlet>
 
+  <!-- Store Browser -->
+  <servlet>
+    <servlet-name>StoreBrowser</servlet-name>
+    <description>For Browsing stores (including myspace) </description>
+    <servlet-class>org.astrogrid.store.browser.Servlet</servlet-class>
+  </servlet>
+
   <!-- Query Managing tasks -->
   <servlet-mapping>
     <servlet-name>SubmitQuery</servlet-name>
@@ -213,6 +220,12 @@
         <url-pattern>/cec-http</url-pattern>
   </servlet-mapping>
 
+  <!-- Store Browser -->
+  <servlet-mapping>
+        <servlet-name>StoreBrowser</servlet-name>
+        <url-pattern>/StoreBrowser</url-pattern>
+  </servlet-mapping>
+
     <!-- currently the W3C havent settled on a media type for WSDL;
     http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft
     for now we go with the basic 'it's XML' response -->
@@ -238,7 +251,7 @@
           <url-pattern>/admin/*</url-pattern>
       </web-resource-collection>
       <auth-constraint>
-          <role-name>admin</role-name>
+          <role-name>paladmin</role-name>
       </auth-constraint>
   </security-constraint>
 
@@ -248,7 +261,7 @@
           <url-pattern>/setup/*</url-pattern>
       </web-resource-collection>
       <auth-constraint>
-          <role-name>admin</role-name>
+          <role-name>paladmin</role-name>
       </auth-constraint>
   </security-constraint>
    
@@ -258,7 +271,7 @@
   </login-config>
 
   <security-role>
-     <role-name>manager</role-name>
+     <role-name>paladmin</role-name>
   </security-role>
 
   <!-- causes Tomcat to throw an exception... fix later
