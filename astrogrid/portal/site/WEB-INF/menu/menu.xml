@@ -17,7 +17,7 @@
     <item
         name="myspace"
         display="MySpace">
-      <link>portal?link=link-test.xml</link>
+      <link>default.xml</link>
       <description>Link Test</description>
     </item>
   </menu>
