@@ -169,13 +169,21 @@ Download the sample configuration file <a href="AstroGridConfig.properties">here
 the file location pointed to by the <tt>org.astrogrid.config.url</tt> setting.
 <p/>
 The sample configuration file is commented, and contains sensible default values for parameters. You may wish to alter the settings
-for default myspace server and database querier implementation.
+for default myspace server and  querier plugin.
 </p>
 </subsection>
 
 <subsection name="metadata.xml">
 <p>You need to write a description of the data collection provided by your installation. This document should conform to <b>(what schema?)</b>
-The location of this file can be set in the configuration file.
+The location of this file can be set in the configuration file. The default location is <tt>metadata.xml</tt> on the classpath.
+</p>
+</subsection>
+
+<subsection name="Logging">
+<p>
+The datacenter uses <a href="http://jakarta.apache.org/log4j/docs/">Log4J</a> to log messages. The logging system is configured
+by the file <tt>/WEB-INF/classes/log4j.properties</tt> in the web application. The default file does basic logging -
+refer to the log4j manaual for further options.
 </p>
 </subsection>
 </section>
