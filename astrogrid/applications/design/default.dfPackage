@@ -50,12 +50,11 @@ class __options {
 @__positions 
 
 
-<oigroup:<oiref:design#Class#idi7bkdmemcb5ndmemchqz.diagram:oiref>=176,10,83,118,1:oigroup>
-
-<oigroup:<oiref:design#Class#id10olzdmbyi87cdmbyj2hy.diagram:oiref>=10,10,146,164,1:oigroup>
-<oigroup:<oiref:design#Class#id3q45zdseq8h5sdseyys4q.diagram:oiref>=324,210,119,187,1:oigroup>
-
-<oigroup:<oiref:java#Class#GenerateMapping:oiref>=10,210,152,188,1:oigroup>
+<oigroup:<oiref:design#Class#id10olzdmbyi87cdmbyj2hy.diagram:oiref>=10,10,130,117,1:oigroup>
+<oigroup:<oiref:design#Class#idi7bkdmemcb5ndmemchqz.diagram:oiref>=176,10,83,102,1:oigroup>
+<oigroup:<oiref:design#Class#id3q45zdseq8h5sdseyys4q.diagram:oiref>=324,210,155,282,1:oigroup>
+<oigroup:<oiref:design#Class#id35996dxoxp5d9dxoxpboj.diagram:oiref>=163,134,139,252,1:oigroup>
+<oigroup:<oiref:java#Class#GenerateMapping:oiref>=10,210,140,140,1:oigroup>
 */
 class __positions {
 }
