@@ -1,3 +1,7 @@
+/*
+ * $Id: DatasetAgentDelegate.java,v 1.2 2003/08/06 14:06:29 mch Exp $
+ */
+
 package org.astrogrid.datacenter.delegate.datasetAgent;
 
 import java.net.URL ;
@@ -6,7 +10,7 @@ import java.rmi.RemoteException ;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateException ;
 
 /**
- * The <code>DatasetAgentDelegate</code> class. 
+ * The <code>DatasetAgentDelegate</code> class.
  *
  * @author  Jeff Lusted
  * @version 1.0 02-Aug-2003
@@ -14,7 +18,7 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegateException ;
  */
 public class DatasetAgentDelegate {
     
-    private String 
+    private String
         targetEndPoint = null ;
     private int
         timeout = 60000 ;
@@ -30,23 +34,23 @@ public class DatasetAgentDelegate {
     
     public void runQuery(String req) throws DatacenterDelegateException {
         
-        DatasetAgentSoapBindingStub 
+        DatasetAgentSoapBindingStub
             binding = null ;
             
         try {
             binding = (DatasetAgentSoapBindingStub)
-                          new DatasetAgentServiceLocator().getDatasetAgent( new URL( targetEndPoint ) );                        
-            binding.setTimeout( timeout ) ;    
+                          new DatasetAgentServiceLocator().getDatasetAgent( new URL( targetEndPoint ) );
+            binding.setTimeout( timeout ) ;
             binding.runQuery(req);
         }
         catch( MalformedURLException mex ) {
             throw new DatacenterDelegateException( mex ) ;
         }
         catch( RemoteException rex) {
-            throw new DatacenterDelegateException( rex ) ;            
+            throw new DatacenterDelegateException( rex ) ;
         }
         catch( javax.xml.rpc.ServiceException sex ) {
-            throw new DatacenterDelegateException( sex ) ;    
+            throw new DatacenterDelegateException( sex ) ;
         }
               
         return ;
@@ -54,3 +58,10 @@ public class DatasetAgentDelegate {
     } // end of runQuery()
 
 } // end of class DatasetAgentDelegate
+
+/*
+$Log: DatasetAgentDelegate.java,v $
+Revision 1.2  2003/08/06 14:06:29  mch
+Added CVS Log & ID for change history
+
+ */
