@@ -1,0 +1,169 @@
+<project name="org.astrogrid.ace.webservice.axis" default="classes" 
+			basedir="/home/kea/ksrc/AG">
+		<!--
+			NB!!: CONFIGURE "basedir" ABOVE TO MATCH YOUR LOCAL 
+			INSTALLATION.  (IT SHOULD CONTAIN THE PARENT DIRECTORY
+			OF YOUR org.astrogrid SOURCE TREE).
+		-->
+
+	<description>
+		A sample Ant file translated from a makefile.
+	</description>
+
+<!-- ================== PROPERTIES ================== -->
+  <property name="src" location="${basedir}"/>
+  <property name="dest" location="/data/cass123a/kea/kbuild"/>
+
+  <property name="pkgpath" value="org/astrogrid/ace/webservice/axis"/>
+
+	<!-- DEVELOPMENT TOMCAT ON cass111 -->	
+  <property name="devhost" value="http://cass111.ast.cam.ac.uk:8080"/>
+  <property name="devaxisdest" 
+  		value="/data/cass123a/kea/jakarta-tomcat-4.1.12-LE-jdk14/webapps/axis/WEB-INF/classes"/>
+
+
+	<!-- STABLE TOMCAT ON cass123 -->	
+  <property name="livehost" value="http://astrogrid.ast.cam.ac.uk:8080"/>
+  <property name="liveaxisdest" 
+  		value="/export/home/jakarta-tomcat-4.1.12-LE-jdk14/webapps/axis/WEB-INF/classes"/>
+
+
+<!-- =================== TARGETS =================== -->
+
+	<target name="init">
+		<!-- Sets the DSTAMP, TSTAMP, and TODAY properties 
+		     in the current project - may be useful one day. -->
+		<tstamp/>
+	</target>
+
+
+<!-- =================== SOURCE TARGETS =================== -->
+
+	<target name="ace" depends="init"
+			description="Compile the Ace service java source 
+			where required" >
+
+		<depend srcdir="${src}" destdir="${dest}" 
+			includes="${pkgpath}/Ace*.java ${pkgpath}/ParameterBundle.java" cache="depcache" closure="yes"/>
+
+		<javac listfiles="yes" debug="on" srcdir="${src}" destdir="${dest}" 
+				includes="${pkgpath}/Ace*.java ${pkgpath}/ParameterBundle.java"
+				excludes="**/OLD/*,**/CVS/*,**/WORKING/*,**/tmp/*"/>
+
+		<copy todir="${devaxisdest}/${pkgpath}">
+			<fileset dir="${dest}/${pkgpath}" includes="*.class"/>
+		</copy>
+
+	</target>
+
+	<target name="liveace" depends="init,ace"
+			description="Compile the Ace service java source 
+			where required, and copy it to the stable server on cass123" >
+
+		<copy todir="${liveaxisdest}/${pkgpath}">
+			<fileset dir="${dest}/${pkgpath}" includes="*.class"/>
+		</copy>
+
+	</target>
+
+
+<!-- =================== DEPLOY TARGETS =================== -->
+
+	<target name="dace" depends="init,ace"
+		description="">
+		<java classname="org.apache.axis.client.AdminClient">
+			<arg line=" -l ${devhost}/axis/services/AdminService AceService_deploy.wsdd"/>
+		</java>
+	</target>
+
+	<target name="livedace" depends="init,ace"
+		description="">
+		<java classname="org.apache.axis.client.AdminClient">
+			<arg line=" -l ${livehost}/axis/services/AdminService AceService_deploy.wsdd"/>
+		</java>
+	</target>
+
+
+	<target name="undace" depends="init,ace"
+		description="">
+		<java classname="org.apache.axis.client.AdminClient">
+			<arg line=" -l ${devhost}/axis/services/AdminService AceService_undeploy.wsdd"/>
+		</java>
+	</target>
+
+	<target name="liveundace" depends="init,ace"
+		description="">
+		<java classname="org.apache.axis.client.AdminClient">
+			<arg line=" -l ${livehost}/axis/services/AdminService AceService_undeploy.wsdd"/>
+		</java>
+	</target>
+
+
+
+<!-- =================== TEST TARGETS =================== -->
+<!-- =================== (DEV HOST) =================== -->
+
+	<target name="test" depends="init,ace"
+		description="">
+		<java classname="org.astrogrid.ace.webservice.axis.AceTester">
+			<arg line="/home/kea/ksrc/AG/org/astrogrid/ace/webservice/axis/test.xml"/>
+		</java>
+	</target>
+
+	<target name="tace" depends="init,ace"
+		description="">
+
+		<java classname="org.astrogrid.ace.webservice.axis.AceClientLocal">
+			<!-- <arg line="/data/cass123a/kea/sextractor2.2.2/ace/test.xml"/> -->
+			<arg line="/home/kea/ksrc/AG/org/astrogrid/ace/webservice/axis/test.xml"/>
+		</java>
+	</target>
+
+	<target name="taceFTP" depends="init,ace"
+		description="">
+
+		<java classname="org.astrogrid.ace.webservice.axis.AceClientFtp">
+			<!-- <arg line="/data/cass123a/kea/sextractor2.2.2/ace/test.xml"/> -->
+			<arg
+			line="/home/kea/ksrc/AG/org/astrogrid/ace/webservice/axis/test.xml /home/kea/myTest.fits"/>
+		</java>
+	</target>
+
+	<target name="tgui" depends="init,ace"
+		description="">
+
+		<java classname="org.astrogrid.ace.client.AceDialog">
+		</java>
+	</target>
+
+	<target name="tala" depends="init,ace"
+		description="">
+
+		<java classname="org.astrogrid.ace.aladin.AladinAceClient">
+		</java>
+	</target>
+
+<!-- =================== TEST TARGETS =================== -->
+<!-- =================== (LIVE HOST) =================== -->
+
+
+
+<!-- =================== OTHER TARGETS =================== -->
+
+	<target name="javadoc" description="Make JavaDoc documentation.">
+		<javadoc sourcepath="${src}"
+				destdir="${dest}/javadoc/org.astrogrid.ace.webservice.axis">
+			<fileset dir="${pkgpath}">
+				<include name="*.java"/>
+			</fileset>
+		</javadoc>
+	</target>
+
+
+	<target name="clean" description="Clean up.">
+		<delete>
+			<fileset dir="${dest}/${pkgpath}" includes="*.class"/>
+		</delete>
+	</target>
+
+</project>

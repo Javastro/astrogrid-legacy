@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	NB: The toplevel document element needs to specify the location
+	of the relevant schema in the xsi:schemaLocation attribute, as
+	shown below.
+
+	Local filenames as well as web locations should be acceptable.
+-->
+
+<sex:SExtractorDoc 
+	xmlns:sex="http://www.astrogrid.org/namespace/SExtractor_2_2_2" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.astrogrid.org/namespace/SExtractor_2_2_2
+	http://astrogrid.ast.cam.ac.uk/namespace/SExtractor_2_2_2.xsd">
+
+	<Image1>/home/someUser/myImage1</Image1>
+	<Image2>/home/someUser/myImage2</Image2>
+
+	<ConfigParams>
+
+		<ANALYSIS_THRESH>
+			<arg>1356.8</arg>
+			<arg>-1.8</arg>
+		</ANALYSIS_THRESH>
+
+		<ASSOC_DATA>
+			<arg>0</arg>
+			<arg>2</arg>
+			<arg>4</arg>
+			<arg>5</arg>
+			<arg>8</arg>
+		</ASSOC_DATA>
+
+		<ASSOC_NAME>
+			<arg>/home/someUser/sky.list</arg>
+		</ASSOC_NAME>
+		
+		<ASSOC_PARAMS>
+			<arg>1</arg>
+			<arg>2</arg>
+			<arg>4</arg>
+		</ASSOC_PARAMS>
+
+		<ASSOC_RADIUS>
+			<arg>0.000009</arg>
+		</ASSOC_RADIUS>
+
+		<ASSOC_TYPE>
+			<arg>MAG_SUM</arg>
+		</ASSOC_TYPE>
+
+		<ASSOCSELEC_TYPE>
+			<arg>-MATCHED</arg>
+		</ASSOCSELEC_TYPE>
+
+		<BACK_FILTERSIZE>
+			<arg>1</arg>
+			<arg>10</arg>
+		</BACK_FILTERSIZE>
+
+		<BACK_FILTTHRESH>
+			<arg>636.9</arg>
+		</BACK_FILTTHRESH>
+
+		<BACK_SIZE>
+			<arg>2</arg>
+			<arg>5360</arg>
+		</BACK_SIZE>
+
+		<BACK_TYPE>
+			<arg>MANUAL</arg>
+			<arg>AUTO</arg>
+		</BACK_TYPE>
+
+		<BACK_VALUE>
+			<arg>-2.36589</arg>
+			<arg>5360.2</arg>
+		</BACK_VALUE>
+
+		<BACKPHOTO_THICK>
+			<arg>3</arg>
+		</BACKPHOTO_THICK>
+
+		<BACKPHOTO_TYPE>
+			<arg>GLOBAL</arg>
+		</BACKPHOTO_TYPE>
+
+		<CATALOG_NAME>
+			<arg>MyCatalog.June.2002</arg>
+		</CATALOG_NAME>
+
+		<CATALOG_TYPE>
+			<arg>FITS_LDAC</arg>
+		</CATALOG_TYPE>
+
+		<CHECKIMAGE_NAME>
+			<arg>checkImage1.file</arg>
+			<arg>checkImage2.file</arg>
+			<arg>checkImage3.file</arg>
+			<arg>checkImage4.file</arg>
+			<arg>checkImage5.file</arg>
+			<arg>checkImage6.file</arg>
+		</CHECKIMAGE_NAME>
+
+		<CHECKIMAGE_TYPE>
+			<arg>IDENTICAL</arg>
+			<arg>BACKGROUND</arg>
+			<arg>APERTURES</arg>
+			<arg>MINIBACK_RMS</arg>
+			<arg>NONE</arg>
+			<arg>FILTERED</arg>
+		</CHECKIMAGE_TYPE>
+
+		<CLEAN>
+			<arg>false</arg>
+		</CLEAN>
+
+		<CLEAN_PARAM>
+			<arg>0.5</arg>
+		</CLEAN_PARAM>
+
+		<DEBLEND_MINCONT>
+			<arg>0.2605</arg>
+		</DEBLEND_MINCONT>
+
+		<DEBLEND_NTHRESH>
+			<arg>47</arg>
+		</DEBLEND_NTHRESH>
+
+		<DETECT_MINAREA>
+			<arg>56000</arg>
+		</DETECT_MINAREA>
+
+		<DETECT_THRESH>
+			<arg>-236.2</arg>
+			<arg>5.8E10</arg>
+		</DETECT_THRESH>
+
+		<DETECT_TYPE>
+			<arg>PHOTO</arg>
+		</DETECT_TYPE>
+
+		<FILTER>
+			<arg>true</arg>
+		</FILTER>
+
+		<FILTER_NAME>
+			<arg>MyFilter.filterfile</arg>
+		</FILTER_NAME>
+
+		<FILTER_THRESH>
+			<arg>-236.2</arg>
+			<arg>5.8E10</arg>
+		</FILTER_THRESH>
+
+		<FITS_UNSIGNED>
+			<arg>false</arg>
+		</FITS_UNSIGNED>
+
+		<FLAG_IMAGE>
+			<arg>flagImage1.file</arg>
+			<arg>flagImage2.file</arg>
+			<arg>flagImage3.file</arg>
+		</FLAG_IMAGE>
+
+		<FLAG_TYPE>
+			<arg>MAX</arg>
+		</FLAG_TYPE>
+
+		<GAIN>
+			<arg>3.216E11</arg>
+		</GAIN>
+
+		<INTERP_MAXXLAG>
+			<arg>2</arg>
+			<arg>32</arg>
+		</INTERP_MAXXLAG>
+
+		<INTERP_MAXYLAG>
+			<arg>4</arg>
+			<arg>16</arg>
+		</INTERP_MAXYLAG>
+
+		<INTERP_TYPE>
+			<arg>VAR_ONLY</arg>
+			<arg>NONE</arg>
+		</INTERP_TYPE>
+
+		<MAG_GAMMA>
+			<arg>3.216E-5</arg>
+		</MAG_GAMMA>
+
+		<MAG_ZEROPOINT>
+			<arg>-46.39</arg>
+		</MAG_ZEROPOINT>
+
+		<MAMA_CORFLEX>
+			<arg>-0.4669</arg>
+		</MAMA_CORFLEX>
+
+		<MASK_TYPE>
+			<arg>BLANK</arg>
+		</MASK_TYPE>
+
+		<MEMORY_BUFSIZE>
+			<arg>256</arg>
+		</MEMORY_BUFSIZE>
+
+		<MEMORY_OBJSTACK>
+			<arg>28000</arg>
+		</MEMORY_OBJSTACK>
+
+		<MEMORY_PIXSTACK>
+			<arg>56000</arg>
+		</MEMORY_PIXSTACK>
+
+		<PARAMETERS_NAME>
+			<arg>MyParams.filename</arg>
+		</PARAMETERS_NAME>
+
+		<PHOT_APERTURES>
+			<arg>58.6</arg>
+			<arg>9623.689</arg>
+			<arg>0.63890</arg>
+			<arg>362.4266</arg>
+			<arg>125.3</arg>
+		</PHOT_APERTURES>
+
+		<PHOT_AUTOPARAMS>
+			<arg>0.2364</arg>
+			<arg>6.3606</arg>
+		</PHOT_AUTOPARAMS>
+
+		<PHOT_AUTOAPERS>
+			<arg>4.365E4</arg>
+			<arg>16.036</arg>
+		</PHOT_AUTOAPERS>
+
+		<PHOT_FLUXFRAC>
+			<arg>0.586</arg>
+			<arg>0.09623689</arg>
+			<arg>0.0063890</arg>
+			<arg>0.3624266</arg>
+			<arg>0.001253</arg>
+		</PHOT_FLUXFRAC>
+
+		<PIXEL_SCALE>
+			<arg>13.68</arg>
+		</PIXEL_SCALE>
+
+		<PSF_NAME>
+			<arg>MyPSFName</arg>
+		</PSF_NAME>
+
+		<PSF_NMAX>
+			<arg>8</arg>
+		</PSF_NMAX>
+
+		<PSFDISPLAY_TYPE>
+			<arg>SPLIT</arg>
+		</PSFDISPLAY_TYPE>
+
+		<SATUR_LEVEL>
+			<arg>36.8</arg>
+		</SATUR_LEVEL>
+
+		<SEEING_FWHM>
+			<arg>1.63E-3</arg>
+		</SEEING_FWHM>
+
+		<SOM_NAME>
+			<arg>MySOMName</arg>
+		</SOM_NAME>
+
+		<STARNNW_NAME>
+			<arg>StarNNW.filename</arg>
+		</STARNNW_NAME>
+
+		<THRESH_TYPE>
+			<arg>ABSOLUTE</arg>
+			<arg>RELATIVE</arg>
+		</THRESH_TYPE>
+
+		<VERBOSE_TYPE>
+			<arg>EXTRA_WARNINGS</arg>
+		</VERBOSE_TYPE>
+
+		<WEIGHT_GAIN>
+			<arg>true</arg>
+		</WEIGHT_GAIN>
+
+		<WEIGHT_IMAGE>
+			<arg>detectWI.filename</arg>
+			<arg>measureWI.filename</arg>
+		</WEIGHT_IMAGE>
+
+		<WEIGHT_THRESH>
+			<arg>363.60</arg>
+			<arg>36.362</arg>
+		</WEIGHT_THRESH>
+
+		<WEIGHT_TYPE>
+			<arg>BACKGROUND</arg>
+			<arg>MAP_RMS</arg>
+		</WEIGHT_TYPE>
+
+	</ConfigParams>
+
+	<CatalogParams>
+		<PlainKeywords>
+			<keyword>FLUX_ISO</keyword>
+			<keyword>FLUXERR_ISO</keyword>
+		</PlainKeywords>
+
+		<OneVectorKeywords>
+			<OneVectorKeyword>
+				<keyword>MAG_APER</keyword>
+				<vectorLength>5</vectorLength>
+			</OneVectorKeyword>
+		</OneVectorKeywords>
+
+		<TwoVectorKeywords>
+			<TwoVectorKeyword>
+				<keyword>VIGNET</keyword>
+				<vectorLength>8</vectorLength>
+				<vectorLength>8</vectorLength>
+			</TwoVectorKeyword>
+		</TwoVectorKeywords>
+
+	</CatalogParams>
+
+</sex:SExtractorDoc>

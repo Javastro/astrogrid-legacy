@@ -1,0 +1,103 @@
+<project name="org.astrogrid.ace.utils" default="classes" 
+			basedir="/home/kea/ksrc/AG">
+		<!--
+			NB!!: CONFIGURE "basedir" ABOVE TO MATCH YOUR LOCAL 
+			INSTALLATION.  (IT SHOULD CONTAIN THE PARENT DIRECTORY
+			OF YOUR org.astrogrid SOURCE TREE).
+		-->
+
+
+	<description>
+		A sample Ant file translated from a makefile.
+	</description>
+
+<!-- ================== PROPERTIES ================== -->
+  <property name="src" location="${basedir}"/>
+  <property name="dest" location="/data/cass123a/kea/kbuild"/>
+  <property name="pkgpath" value="org/astrogrid/ace/utils"/>
+
+<!-- =================== TARGETS =================== -->
+
+	<target name="init">
+		<!-- Sets the DSTAMP, TSTAMP, and TODAY properties 
+		     in the current project - may be useful one day. -->
+		<tstamp/>
+	</target>
+
+
+	<target name="classes" depends="init"
+			description="Compile the java source where required" >
+
+		<depend srcdir="${src}" destdir="${dest}" 
+			includes="${pkgpath}/*" cache="depcache" closure="yes"/>
+
+		<javac debug="on" srcdir="${src}" destdir="${dest}" listfiles="true" 
+				includes="${pkgpath}/*"
+				excludes="**/OLD/*,**/CVS/*, **/tmp/*"/>
+	</target>
+
+
+	<target name="test" depends="classes"
+			description="Run a two-way test." >
+
+		<mkdir dir="${src}/tmp"/>
+		<delete>
+			<fileset dir="${src}/tmp" includes="out.*,newdata.xml"/>
+		</delete>
+
+		<java classname="org.astrogrid.ace.utils.Tester">
+			<arg line="xml2native testdata-1_0.xml tmp/out.sex tmp/out.param"/>
+		</java>
+
+		<java classname="org.astrogrid.ace.utils.Tester">
+			<arg line="native2xml tmp/out.sex tmp/out.param tmp/newdata.xml
+					PHOT_MAG"/>
+		</java>
+
+	</target>
+
+	<target name="test1" depends="classes"
+			description="Run a one-way test, XML->native." >
+
+		<mkdir dir="${src}/tmp"/>
+		<delete>
+			<fileset dir="${src}/tmp" includes="out.*,newdata.xml"/>
+		</delete>
+
+		<java classname="org.astrogrid.ace.utils.Tester">
+			<arg line="xml2native testdata-1_0.xml tmp/out.sex tmp/out.param"/>
+		</java>
+
+	</target>
+
+
+	<target name="test2" depends="classes"
+			description="Run a one-way test, native->XML." >
+		<delete>
+			<fileset dir="${src}/tmp" includes="newdata.xml"/>
+		</delete>
+
+		<java classname="org.astrogrid.ace.utils.Tester">
+			<arg line="native2xml tmp/out.sex tmp/out.param tmp/newdata.xml
+					PHOT_MAG"/>
+		</java>
+	</target>
+
+
+	<target name="javadoc" description="Make JavaDoc documentation.">
+		<javadoc sourcepath="${src}"
+				destdir="${dest}/javadoc/org.astrogrid.ace.utils">
+			<fileset dir="${pkgpath}">
+				<include name="*.java"/>
+			</fileset>
+		</javadoc>
+	</target>
+
+
+	<target name="clean" description="Clean up.">
+		<delete>
+			<fileset dir="${dest}/${pkgpath}" includes="*.class"/>
+		</delete>
+	</target>
+
+</project>

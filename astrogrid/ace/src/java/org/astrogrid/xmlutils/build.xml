@@ -1,0 +1,81 @@
+<project name="org.astrogrid.xmlutils" default="classes" 
+		basedir="/home/kea/ksrc">
+	<!--
+		NB!!: CONFIGURE "basedir" ABOVE TO MATCH YOUR LOCAL 
+		INSTALLATION.  (IT SHOULD CONTAIN THE PARENT DIRECTORY
+		OF YOUR org.astrogrid SOURCE TREE).
+	-->
+
+	<description>
+		An Ant file for building and testing the 
+		org.astrogrid.xmlutils package.
+
+		Setting the "basedir" to be the toplevel source 
+		for all of org.astrogrid, and using "include(s)"
+		to select the source subdirectory of the 
+		org.astrogrid.* package of interest, seems 
+		to be the only way to get ant to recognise
+		dependencies properly.  
+		
+		There may be a way around this that I haven't 
+		discovered - but the ant doco does explicitly 
+		state that:
+		
+	  "When the source files are part of a package, the 
+	  directory structure of the source tree should follow 
+	  the package hierarchy."
+
+	</description>
+
+<!-- ================== PROPERTIES ================== -->
+
+  <property name="src" location="${basedir}"/>
+  <property name="dest" location="/data/cass123a/kea/kbuild"/>
+  <property name="pkgpath" value="org/astrogrid/xmlutils"/>
+
+
+<!-- =================== TARGETS =================== -->
+
+	<target name="init">
+		<!-- Sets the DSTAMP, TSTAMP, and TODAY properties 
+			  in the current project - may be useful one day. -->
+      <tstamp/>
+   </target>
+
+
+	<target name="classes" depends="init"
+			description="Compile the java source where required." >
+		<depend srcdir="${src}" destdir="${dest}" 
+			includes="${pkgpath}/*" cache="depcache" closure="yes"/>
+		<javac listfiles="true" srcdir="${src}" destdir="${dest}" 
+				includes="${pkgpath}/*"
+				excludes="**/OLD/*,**/CVS/*,**/WORKING/*"/>
+	</target>
+
+
+	<target name="test" depends="classes" 
+			description="Run a test validation.">
+		<java classname="org.astrogrid.xmlutils.Validate">
+			<arg value="testdata.xml"/>
+		</java>
+
+	</target>
+
+
+	<target name="javadoc" description="Make JavaDoc documentation.">
+		<javadoc sourcepath="${src}"
+				destdir="${dest}/javadoc/org.astrogrid.xmlutils">
+			<fileset dir="${pkgpath}">
+				<include name="*.java"/>
+			</fileset>
+		</javadoc>
+	</target>
+
+
+	<target name="clean" description="Clean up.">
+		<delete>
+			<fileset dir="${dest}/org/astrogrid/xmlutils" includes="*.class"/>
+		</delete>
+	</target>
+
+</project>

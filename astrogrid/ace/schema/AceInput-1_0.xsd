@@ -1,0 +1,1903 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+   targetNamespace="http://www.astrogrid.org/namespace/AceInput-1_0"
+   xmlns="http://www.w3.org/2001/XMLSchema"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:ace="http://www.astrogrid.org/namespace/AceInput-1_0"
+   elementFormDefault="unqualified">
+
+   <annotation>
+      <documentation xml:lang="en">
+            Toplevel schema for Ace SExtractor Service input, intended for
+            AstroGrid Ace demonstrator.  Configured for SExtractor v2.2.2.
+      </documentation>
+   </annotation>
+
+   <!-- THE ROOT ELEMENT OF THE XML DOCUMENT -->
+   <element name="AceInputDoc" type="ace:AceInputDocType"/>
+
+   <!-- TYPE DEFINITIONS FOR THIS SCHEMA FOLLOW -->
+
+   <!-- OVERALL DOCUMENT STRUCTURE -->
+   <!-- NB: TOPLEVEL ELEMENTS UNDER AceInputDocType CAN APPEAR IN ANY ORDER -->
+   <complexType name="AceInputDocType">
+      <all>
+
+<!-- ======================================================================
+     ======================================================================
+      NB: THIS SECTION REPRESENTS SPECIALISED PARAMETERS FOR ACE ITSELF
+     ======================================================================
+     ======================================================================
+-->
+         <element name="Wavelength" minOccurs="1" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="string"
+                        minOccurs="1" maxOccurs="1"/>
+               </sequence>
+            </complexType>
+         </element>
+
+         <element name="Passband" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="string"
+                        minOccurs="1" maxOccurs="6"/>
+               </sequence>
+            </complexType>
+         </element>
+
+<!-- ======================================================================
+     ======================================================================
+      NB: THIS SECTION REPRESENTS COMMAND-LINE PARAMETERS FOR SEXTRACTOR
+     ======================================================================
+     ======================================================================
+-->
+         <!-- REQUIRED INPUT IMAGE FILE NAMES -->
+         <!-- NB: IF IDENTICAL, SExtractor WILL RUN IN "SINGLE-IMAGE" MODE -->
+
+         <element name="ImageToCatalog" minOccurs="1" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="string"
+                        minOccurs="1" maxOccurs="1"/>
+               </sequence>
+            </complexType>
+         </element>
+
+         <element name="ImageToMeasure" minOccurs="1" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="string"
+                        minOccurs="1" maxOccurs="1"/>
+               </sequence>
+            </complexType>
+         </element>
+
+
+<!-- ======================================================================
+     ======================================================================
+      NB: THIS SECTION REPRESENTS PARAMETERS FROM THE SEXTRACTOR
+        CONFIGURATION PARAMETERS FILE (*.sex)
+        These are given in the SExtractor source file "prefs.h".
+
+      THE FOLLOWING SECTION REPRESENTS PARAMETERS FROM THE
+        SEXTRACTOR CATALOG PARAMETERS FILE (*.param).
+        These are given in the SExtractor source file "param.h".
+     ======================================================================
+     ======================================================================
+-->
+
+      <!-- ================================================================
+         { "ANALYSIS_THRESH", P_FLOATLIST, prefs.thresh, 0,0, -BIG, BIG,
+            {""}, 1, 2, &prefs.nthresh}
+      -->
+         <element name="ANALYSIS_THRESH" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="-1.0E30"/>
+                           <maxInclusive value="1.0E30"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"ASSOC_DATA", P_INTLIST, prefs.assoc_data, 0, 1000000,0.0,0.0,
+             {""}, 1,MAXLIST, &prefs.nassoc_data} /*MAXLIST=32*/
+      -->
+         <element name="ASSOC_DATA" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="32">
+                     <simpleType>
+                        <restriction base="nonNegativeInteger">
+                           <maxInclusive value="1000000"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"ASSOC_NAME", P_STRING, prefs.assoc_name}
+      -->
+         <element name="ASSOC_NAME" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="string"
+                     minOccurs="1" maxOccurs="1"/>
+               </sequence>
+            </complexType>
+         </element>
+         
+
+      <!-- ================================================================
+          {"ASSOC_PARAMS", P_INTLIST, prefs.assoc_param, 1, 1000000,0.0,0.0,
+              {""}, 2,3, &prefs.nassoc_param}
+      -->
+         <element name="ASSOC_PARAMS" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="2" maxOccurs="3">
+                     <simpleType>
+                        <restriction base="nonNegativeInteger">
+                           <maxInclusive value="1000000"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"ASSOC_RADIUS", P_FLOAT, &prefs.assoc_radius, 0,0, 1e-10,1e+10},
+      -->
+         <element name="ASSOC_RADIUS" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="1.0E-10"/>
+                           <maxInclusive value="1.0E10"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"ASSOC_TYPE", P_KEY, &prefs.assoc_type, 0,0, 0.0,0.0,
+         {"FIRST", "NEAREST", "MEAN", "MAG_MEAN", "SUM", "MAG_SUM",
+            "MIN", "MAX", ""}}
+      -->
+         <element name="ASSOC_TYPE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="string">
+                           <enumeration value="FIRST"/>
+                           <enumeration value="NEAREST"/>
+                           <enumeration value="MEAN"/>
+                           <enumeration value="MAG_MEAN"/>
+                           <enumeration value="SUM"/>
+                           <enumeration value="MAG_SUM"/>
+                           <enumeration value="MIN"/>
+                           <enumeration value="MAX"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"ASSOCSELEC_TYPE", P_KEY, &prefs.assocselec_type, 0,0, 0.0,0.0,
+         {"ALL","MATCHED","-MATCHED",""}}
+      -->
+         <element name="ASSOCSELEC_TYPE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="string">
+                           <enumeration value="ALL"/>
+                           <enumeration value="MATCHED"/>
+                           <enumeration value="-MATCHED"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"BACK_FILTERSIZE", P_INTLIST, prefs.backfsize, 1,11, 0.0,0.0,
+          {""}, 1,2, &prefs.nbackfsize}
+      -->
+         <element name="BACK_FILTERSIZE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="positiveInteger">
+                           <maxInclusive value="11"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"BACK_FILTTHRESH", P_FLOAT, &prefs.backfthresh, 0,0, 0.0,BIG}
+
+         NB: THIS ONE ISN'T IN THE PRINTED DOCUMENTATION !
+      -->
+         <element name="BACK_FILTTHRESH" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="0.0"/>
+                           <maxInclusive value="1.0E30"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"BACK_SIZE", P_INTLIST, prefs.backsize, 1,2000000000, 0.0,0.0,
+            {""}, 1,2, &prefs.nbacksize}
+      -->
+         <element name="BACK_SIZE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="positiveInteger">
+                           <maxInclusive value="2000000000"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"BACK_TYPE", P_KEYLIST, prefs.back_type, 0,0, 0.0,0.0,
+            {"AUTO","MANUAL",""}
+               1, 2, &prefs.nback_type}
+
+         NB: DIFFERS FROM DOC! "AUTO" is "INTERNAL" in doco!
+      -->
+         <element name="BACK_TYPE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="string">
+                           <enumeration value="AUTO"/>
+                           <enumeration value="MANUAL"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"BACK_VALUE", P_FLOATLIST, prefs.back_val, 0,0, -BIG,BIG,
+            {""}, 1, 2, &prefs.nback_val}
+      -->
+         <element name="BACK_VALUE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="-1.0E30"/>
+                           <maxInclusive value="1.0E30"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+        {"BACKPHOTO_THICK", P_INT, &prefs.pback_size, 1, 256}
+      -->
+         <element name="BACKPHOTO_THICK" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="positiveInteger">
+                           <maxInclusive value="256"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+        {"BACKPHOTO_TYPE", P_KEY, &prefs.pback_type, 0,0, 0.0,0.0,
+           {"GLOBAL","LOCAL",""}}
+      -->
+         <element name="BACKPHOTO_TYPE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="string">
+                           <enumeration value="GLOBAL"/>
+                           <enumeration value="LOCAL"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"CATALOG_NAME", P_STRING, prefs.cat_name}
+
+         This element (output file name) is not needed for Ace
+         (which returns VOTable).
+      -->
+
+      <!-- ================================================================
+         {"CATALOG_TYPE", P_KEY, &prefs.cat_type, 0,0, 0.0,0.0,
+            {"NONE", "ASCII","ASCII_HEAD", "ASCII_SKYCAT", "FITS_LDAC",
+               "FITS_BINIMHEAD","FITS_NOIMHEAD","FITS_1.0",""}}
+         NB: THE LAST 3 KEYWORDS AREN'T IN THE PRINTED DOCO!
+
+         This element (output file type) is not needed for Ace
+         (which returns VOTable).
+      -->
+
+      <!-- ================================================================
+         {"CHECKIMAGE_NAME", P_STRINGLIST, prefs.check_name, 0,0,0.0,0.0,
+            {""}, 0, MAXCHECK, &prefs.ncheck_name} /* MAXCHECK = 32 */
+
+         NB: CONFLICT WITH DOCO - DOCO CLAIMS <=16 NAMES ONLY
+         NB: USING DOCO CONVENTION (<=16)
+         NB: ENSURING AT LEAST ONE ARG. IS PRESENT (IF NOT, OMIT THIS ELT)
+      -->
+         <element name="CHECKIMAGE_NAME" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="string"
+                     minOccurs="1" maxOccurs="16"/>
+               </sequence>
+            </complexType>
+         </element>
+
+      <!-- ================================================================
+         {"CHECKIMAGE_TYPE", P_KEYLIST, prefs.check_type, 0,0, 0.0,0.0,
+            {"NONE", "IDENTICAL",
+               "BACKGROUND", "BACKGROUND_RMS", "MINIBACKGROUND",
+               "MINIBACK_RMS", "-BACKGROUND",
+               "FILTERED", "OBJECTS", "APERTURES", "SEGMENTATION",
+               "ASSOC",
+               "-OBJECTS", "-PSF_PROTOS", "PSF_PROTOS",
+               "-PC_CONVPROTOS", "PC_CONVPROTOS", "PC_PROTOS",
+               ""}, 0, 17, &prefs.ncheck_type}
+
+         NB: CONFLICT WITH DOCO - DOCO CLAIMS <=16 NAMES ONLY.
+         NB: USING DOCO CONVENTION (<=16)
+         NB: ENSURING AT LEAST ONE ARG. IS PRESENT (IF NOT, OMIT THIS ELT)
+
+         NB: THE LAST 6 KEYWORDS BELOW AREN'T IN THE PRINTED DOCO!
+      -->
+         <element name="CHECKIMAGE_TYPE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="16">
+                     <simpleType>
+                        <restriction base="string">
+                           <enumeration value="NONE"/>
+                           <enumeration value="IDENTICAL"/>
+                           <enumeration value="BACKGROUND"/>
+                           <enumeration value="BACKGROUND_RMS"/>
+                           <enumeration value="MINIBACKGROUND"/>
+                           <enumeration value="MINIBACK_RMS"/>
+                           <enumeration value="-BACKGROUND"/>
+                           <enumeration value="FILTERED"/>
+                           <enumeration value="OBJECTS"/>
+                           <enumeration value="-OBJECTS"/>
+                           <enumeration value="APERTURES"/>
+                           <enumeration value="SEGMENTATION"/>
+                           <enumeration value="ASSOC"/>
+                           <enumeration value="-PSF_PROTOS"/>
+                           <enumeration value="PSF_PROTOS"/>
+                           <enumeration value="-PC_CONVPROTOS"/>
+                           <enumeration value="PC_CONVPROTOS"/>
+                           <enumeration value="PC_PROTOS"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+      <!-- ================================================================
+         {"CLEAN", P_BOOL, &prefs.clean_flag}
+      -->
+         <element name="CLEAN" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="boolean"
+                     minOccurs="1" maxOccurs="1">
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"CLEAN_PARAM", P_FLOAT, &prefs.clean_param, 0,0, 0.1,10.0},
+      -->
+         <element name="CLEAN_PARAM" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="0.1"/>
+                           <maxInclusive value="10.0"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"DEBLEND_MINCONT", P_FLOAT, &prefs.deblend_mincont, 0,0, 0.0,1.0}
+      -->
+         <element name="DEBLEND_MINCONT" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="0.0"/>
+                           <maxInclusive value="1.0"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"DEBLEND_NTHRESH", P_INT, &prefs.deblend_nthresh, 1,64}
+      -->
+         <element name="DEBLEND_NTHRESH" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="positiveInteger">
+                           <maxInclusive value="64"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"DETECT_MINAREA", P_INT, &prefs.ext_minarea, 1,1000000}
+      -->
+         <element name="DETECT_MINAREA" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="positiveInteger">
+                           <maxInclusive value="1000000"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"DETECT_THRESH", P_FLOATLIST, prefs.dthresh, 0,0, -BIG, BIG,
+            {""}, 1, 2, &prefs.ndthresh}
+      -->
+         <element name="DETECT_THRESH" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="-1.0E30"/>
+                           <maxInclusive value="1.0E30"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+        {"DETECT_TYPE", P_KEY, &prefs.detect_type, 0,0, 0.0,0.0,
+           {"CCD","PHOTO",""}}
+      -->
+         <element name="DETECT_TYPE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="string">
+                           <enumeration value="CCD"/>
+                           <enumeration value="PHOTO"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"FILTER", P_BOOL, &prefs.filter_flag}
+      -->
+         <element name="FILTER" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="boolean"
+                        minOccurs="1" maxOccurs="1"/>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"FILTER_NAME", P_STRING, prefs.filter_name}
+      -->
+         <element name="FILTER_NAME" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="string"
+                     minOccurs="1" maxOccurs="1"/>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+        {"FILTER_THRESH", P_FLOATLIST, prefs.filter_thresh, 0,0,-BIG,BIG,
+           {""}, 0, 2, &prefs.nfilter_thresh}
+
+         NB: QUERY? DO WE NEED BOTH OF THESE IF PRESENT AT ALL?
+         NB: ENSURING AT LEAST ONE ARG. IS PRESENT (IF NOT, OMIT THIS ELT)
+      -->
+         <element name="FILTER_THRESH" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="-1.0E30"/>
+                           <maxInclusive value="1.0E30"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"FITS_UNSIGNED", P_BOOL, &prefs.fitsunsigned_flag}
+      -->
+         <element name="FITS_UNSIGNED" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="boolean"
+                     minOccurs="1" maxOccurs="1"/>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+        {"FLAG_IMAGE", P_STRINGLIST, prefs.fimage_name, 0,0,0.0,0.0,
+            {""}, 0, MAXFLAG, &prefs.nfimage_name} /*MAXFLAG = 4*/
+
+         NB: ENSURING AT LEAST ONE ARG. IS PRESENT (IF NOT, OMIT THIS ELT)
+      -->
+         <element name="FLAG_IMAGE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="string"
+                     minOccurs="1" maxOccurs="4"/>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"FLAG_TYPE",  P_KEYLIST, prefs.flag_type, 0,0, 0.0,0.0,
+            {"OR","AND","MIN", "MAX", "MOST",""}, 0, MAXFLAG, &idummy}
+      -->
+         <element name="FLAG_TYPE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="string">
+                           <enumeration value="OR"/>
+                           <enumeration value="AND"/>
+                           <enumeration value="MIN"/>
+                           <enumeration value="MAX"/>
+                           <enumeration value="MOST"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"GAIN", P_FLOAT, &prefs.gain, 0,0, 0.0, 1e+30}
+      -->
+         <element name="GAIN" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="0.0"/>
+                           <maxInclusive value="1.0E30"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"INTERP_MAXXLAG", P_INTLIST, prefs.interp_xtimeout, 1,1000000,
+            0.0,0.0, {""}, 1, 2, &prefs.ninterp_xtimeout}
+      -->
+         <element name="INTERP_MAXXLAG" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="nonNegativeInteger">
+                           <maxInclusive value="1000000"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"INTERP_MAXYLAG", P_INTLIST, prefs.interp_ytimeout, 1,1000000,
+            0.0,0.0, {""}, 1, 2, &prefs.ninterp_ytimeout}
+      -->
+         <element name="INTERP_MAXYLAG" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="nonNegativeInteger">
+                           <maxInclusive value="1000000"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"INTERP_TYPE", P_KEYLIST, prefs.interp_type, 0,0, 0.0,0.0,
+            {"NONE","VAR_ONLY","ALL",""}, 1, 2, &prefs.ninterp_type}
+      -->
+         <element name="INTERP_TYPE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="string">
+                           <enumeration value="NONE"/>
+                           <enumeration value="VAR_ONLY"/>
+                           <enumeration value="ALL"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"MAG_GAMMA", P_FLOAT, &prefs.mag_gamma, 0,0, 1e-10,1e+30}
+      -->
+         <element name="MAG_GAMMA" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="1.0E-10"/>
+                           <maxInclusive value="1.0E30"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"MAG_ZEROPOINT", P_FLOAT, &prefs.mag_zeropoint, 0,0, -100.0, 100.0}
+      -->
+         <element name="MAG_ZEROPOINT" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="-100.0"/>
+                           <maxInclusive value="100.0"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"MAMA_CORFLEX", P_FLOAT, &prefs.mama_corflex, 0,0, -1.0,1.0}
+
+         NB: THIS ONE ISN'T IN THE PRINTED DOCUMENTATION !
+      -->
+         <element name="MAMA_CORFLEX" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="-1.0"/>
+                           <maxInclusive value="1.0"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+      <!-- ================================================================
+         {"MASK_TYPE", P_KEY, &prefs.mask_type, 0,0, 0.0,0.0,
+            {"NONE","BLANK","CORRECT",""}}
+      -->
+         <element name="MASK_TYPE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="string">
+                           <enumeration value="NONE"/>
+                           <enumeration value="BLANK"/>
+                           <enumeration value="CORRECT"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"MEMORY_BUFSIZE", P_INT, &prefs.mem_bufsize, 8, 65534}
+      -->
+         <element name="MEMORY_BUFSIZE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="positiveInteger">
+                           <minInclusive value="8"/>
+                           <maxInclusive value="65534"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"MEMORY_OBJSTACK", P_INT, &prefs.clean_stacksize, 16,65536}
+      -->
+         <element name="MEMORY_OBJSTACK" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="positiveInteger">
+                           <minInclusive value="16"/>
+                           <maxInclusive value="65536"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"MEMORY_PIXSTACK", P_INT, &prefs.mem_pixstack, 1000, 10000000}
+      -->
+         <element name="MEMORY_PIXSTACK" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="positiveInteger">
+                           <minInclusive value="1000"/>
+                           <maxInclusive value="10000000"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"PARAMETERS_NAME", P_STRING, prefs.param_name}
+
+         This element is not needed for Ace.
+      -->
+
+
+      <!-- ================================================================
+         {"PHOT_APERTURES", P_FLOATLIST, prefs.apert, 0,0, 0.0,2*MAXPICSIZE,
+            {""}, 1, MAXNAPER, &prefs.naper}
+            /* MAXNAPER = 32, MAXPICSIZE=1048576 */
+      -->
+         <element name="PHOT_APERTURES" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="32">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="0.0"/>
+                           <maxInclusive value="2097152"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"PHOT_AUTOPARAMS", P_FLOATLIST, prefs.autoparam, 0,0, 0.0,10.0,
+            {""}, 2,2, &prefs.nautoparam}
+      -->
+         <element name="PHOT_AUTOPARAMS" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="2" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="0.0"/>
+                           <maxInclusive value="10.0"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"PHOT_AUTOAPERS", P_FLOATLIST, prefs.autoaper, 0,0, 0.0,1e6,
+            {""}, 2,2, &prefs.nautoaper}
+      -->
+         <element name="PHOT_AUTOAPERS" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="2" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="0.0"/>
+                           <maxInclusive value="1.0E6"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"PHOT_FLUXFRAC", P_FLOATLIST, prefs.flux_frac, 0,0, 1e-6, 1.0,
+            {""}, 1, MAXNAPER, &prefs.nflux_frac} /* MAXNAPER=32 */
+      -->
+         <element name="PHOT_FLUXFRAC" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="32">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="1.0E-6"/>
+                           <maxInclusive value="1.0"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"PIXEL_SCALE", P_FLOAT, &prefs.pixel_scale, 0,0, 0.0, 1e+10}
+      -->
+         <element name="PIXEL_SCALE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="0.0"/>
+                           <maxInclusive value="1.0E10"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"PSF_NAME", P_STRING, prefs.psf_name}
+
+         NB: THIS ONE ISN'T IN THE PRINTED DOCUMENTATION !
+      -->
+         <element name="PSF_NAME" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="string"
+                     minOccurs="1" maxOccurs="1"/>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"PSF_NMAX", P_INT, &prefs.psf_npsfmax, 1, PSF_NPSFMAX}
+         /*PSF_NPSFMAX = 11*/
+
+         NB: THIS ONE ISN'T IN THE PRINTED DOCUMENTATION !
+      -->
+         <element name="PSF_NMAX" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="positiveInteger">
+                           <maxInclusive value="11"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"PSFDISPLAY_TYPE", P_KEY, &prefs.psfdisplay_type, 0,0, 0.0,0.0,
+            {"SPLIT","VECTOR",""}}
+
+         NB: THIS ONE ISN'T IN THE PRINTED DOCUMENTATION !
+      -->
+         <element name="PSFDISPLAY_TYPE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="string">
+                           <enumeration value="SPLIT"/>
+                           <enumeration value="VECTOR"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"SATUR_LEVEL", P_FLOAT, &prefs.satur_level, 0,0, -1e+30, 1e+30}
+      -->
+         <element name="SATUR_LEVEL" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="float">
+                           <minInclusive value="-1.0E30"/>
+                           <maxInclusive value="1.0E30"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"SEEING_FWHM", P_FLOAT, &prefs.seeing_fwhm, 0,0, 1e-10, 1e+10}
+      -->
+         <element name="SEEING_FWHM" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="float">
+                           <minInclusive value="1.0E-10"/>
+                           <maxInclusive value="1.0E10"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"SOM_NAME", P_STRING, prefs.som_name}
+
+         NB: THIS ONE ISN'T IN THE PRINTED DOCUMENTATION !
+      -->
+         <element name="SOM_NAME" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="string"
+                     minOccurs="1" maxOccurs="1"/>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"STARNNW_NAME", P_STRING, prefs.nnw_name}
+      -->
+         <element name="STARNNW_NAME" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="string"
+                     minOccurs="1" maxOccurs="1"/>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"THRESH_TYPE", P_KEYLIST, prefs.thresh_type, 0,0, 0.0,0.0,
+            {"RELATIVE","ABSOLUTE"},
+               1, 2, &prefs.nthresh_type}
+      -->
+         <element name="THRESH_TYPE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="string">
+                           <enumeration value="RELATIVE"/>
+                           <enumeration value="ABSOLUTE"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"VERBOSE_TYPE", P_KEY, &prefs.verbose_type, 0,0, 0.0,0.0,
+            {"QUIET","NORMAL", "EXTRA_WARNINGS", "FULL",""}}
+      -->
+         <element name="VERBOSE_TYPE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="1">
+                     <simpleType>
+                        <restriction base="string">
+                           <enumeration value="QUIET"/>
+                           <enumeration value="NORMAL"/>
+                           <enumeration value="EXTRA_WARNINGS"/>
+                           <enumeration value="FULL"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"WEIGHT_GAIN", P_BOOL, &prefs.weightgain_flag}
+      -->
+         <element name="WEIGHT_GAIN" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="boolean"
+                        minOccurs="1" maxOccurs="1"/>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"WEIGHT_IMAGE", P_STRINGLIST, prefs.wimage_name, 0,0,0.0,0.0,
+            {""}, 0, MAXIMAGE, &prefs.nwimage_name} /* MAXIMAGE = 2 */
+
+         NB: QUERY? DO WE NEED BOTH OF THESE IF PRESENT AT ALL?
+         NB: ENSURING AT LEAST ONE ARG. IS PRESENT (IF NOT, OMIT THIS ELT)
+      -->
+         <element name="WEIGHT_IMAGE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" type="string"
+                     minOccurs="1" maxOccurs="2"/>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"WEIGHT_THRESH", P_FLOATLIST, prefs.weight_thresh, 0,0, 0.0, BIG,
+            {""}, 0, 2, &prefs.nweight_thresh
+
+         NB: THIS ONE ISN'T IN THE PRINTED DOCUMENTATION !
+
+         NB: QUERY? DO WE NEED BOTH OF THESE IF PRESENT AT ALL?
+         NB: ENSURING AT LEAST ONE ARG. IS PRESENT (IF NOT, OMIT THIS ELT)
+      -->
+         <element name="WEIGHT_THRESH" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="double">
+                           <minInclusive value="0.0"/>
+                           <maxInclusive value="1.0E30"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+      <!-- ================================================================
+         {"WEIGHT_TYPE", P_KEYLIST, prefs.weight_type, 0,0, 0.0,0.0,
+            {"NONE","BACKGROUND", "MAP_RMS", "MAP_VAR","MAP_WEIGHT", ""},
+               0, MAXIMAGE, &prefs.nweight_type} /*MAXIMAGE=2*/
+
+         NB: QUERY? DO WE NEED BOTH OF THESE IF PRESENT AT ALL?
+         NB: ENSURING AT LEAST ONE ARG. IS PRESENT (IF NOT, OMIT THIS ELT)
+      -->
+         <element name="WEIGHT_TYPE" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="2">
+                     <simpleType>
+                        <restriction base="string">
+                           <enumeration value="NONE"/>
+                           <enumeration value="BACKGROUND"/>
+                           <enumeration value="MAP_RMS"/>
+                           <enumeration value="MAP_VAR"/>
+                           <enumeration value="MAP_WEIGHT"/>
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+
+
+<!-- ======================================================================
+     ======================================================================
+      NB: THIS SECTION REPRESENTS PARAMETERS FROM THE SEXTRACTOR
+        CATALOG PARAMETERS FILE (*.param).
+        These are given in the SExtractor source file "param.h".
+     ======================================================================
+     ======================================================================
+-->
+
+      <!-- ================================================================
+         CATALOG KEYWORDS FOR OUTPUT CATALOG
+      -->
+         <element name="OUTPUT_COLUMNS" minOccurs="0" maxOccurs="1">
+            <complexType>
+               <sequence>
+                  <element name="arg" minOccurs="1" maxOccurs="unbounded">
+                     <simpleType>
+                        <restriction base="string">
+
+                           <!-- =================================== -->
+                           <!-- ZERO-VECTOR KEYWORDS, e.g. FLUX_ISO -->
+                           <!-- =================================== -->
+
+                           <!-- Isophotal flux -->
+                           <enumeration value="FLUX_ISO"/>
+
+                           <!-- RMS error for isophotal flux -->
+                           <enumeration value="FLUXERR_ISO"/>
+
+                           <!-- Isophotal magnitude -->
+                           <enumeration value="MAG_ISO"/>
+
+                           <!-- RMS error for isophotal magnitude -->
+                           <enumeration value="MAGERR_ISO"/>
+
+                           <!-- Corrected isophotal flux -->
+                           <enumeration value="FLUX_ISOCOR"/>
+
+                           <!-- RMS error for corrected isophotal flux -->
+                           <enumeration value="FLUXERR_ISOCOR"/>
+
+                           <!-- Corrected isophotal magnitude -->
+                           <enumeration value="MAG_ISOCOR"/>
+
+                           <!-- RMS error for corrected isophotal magnitude -->
+                           <enumeration value="MAGERR_ISOCOR"/>
+
+                           <!-- Flux within a Kron-like elliptical aperture -->
+                           <enumeration value="FLUX_AUTO"/>
+
+                           <!-- RMS error for AUTO flux -->
+                           <enumeration value="FLUXERR_AUTO"/>
+
+                           <!-- Kron-like elliptical aperture magnitude -->
+                           <enumeration value="MAG_AUTO"/>
+
+                           <!-- RMS error for AUTO magnitude -->
+                           <enumeration value="MAGERR_AUTO"/>
+
+                           <!-- Best of FLUX_AUTO and FLUX_ISOCOR -->
+                           <enumeration value="FLUX_BEST"/>
+
+                           <!-- RMS error for BEST flux -->
+                           <enumeration value="FLUXERR_BEST"/>
+
+                           <!-- Best of MAG_AUTO and MAG_ISOCOR -->
+                           <enumeration value="MAG_BEST"/>
+
+                           <!-- RMS error for MAG_BEST -->
+                           <enumeration value="MAGERR_BEST"/>
+
+                           <!-- Flux weighted by the FILTERed profile -->
+                           <enumeration value="FLUX_PROFILE"/>
+
+                           <!-- RMS error for PROFILE flux -->
+                           <enumeration value="FLUXERR_PROFILE"/>
+
+                           <!-- Magnitude weighted by the FILTERed profile -->
+                           <enumeration value="MAG_PROFILE"/>
+
+                           <!-- RMS error for MAG_PROFILE -->
+                           <enumeration value="MAGERR_PROFILE"/>
+
+                           <!-- Flux derived from SOM fit -->
+                           <enumeration value="FLUX_SOMFIT"/>
+
+                           <!-- RMS error for SOMFIT flux -->
+                           <enumeration value="FLUXERR_SOMFIT"/>
+
+                           <!-- Magnitude derived from SOM fit -->
+                           <enumeration value="MAG_SOMFIT"/>
+
+                           <!-- Magnitude error derived from SOM fit -->
+                           <enumeration value="MAGERR_SOMFIT"/>
+
+                           <!-- Reduced Chi-square error of the SOM fit -->
+                           <enumeration value="ERROR_SOMFIT"/>
+
+                           <!-- Flux derived from the galaxy fit -->
+                           <enumeration value="FLUX_GALFIT"/>
+
+                           <!-- RMS error for GALFIT flux -->
+                           <enumeration value="FLUXERR_GALFIT"/>
+
+                           <!-- Magnitude derived from galaxy fit -->
+                           <enumeration value="MAG_GALFIT"/>
+
+                           <!-- Magnitude error derived from galaxy fit -->
+                           <enumeration value="MAGERR_GALFIT"/>
+
+                           <!-- Reduced Chi-square error of the galaxy fit -->
+                           <enumeration value="ERROR_GALFIT"/>
+
+                           <!-- Galaxy disk position angle from
+                                 the galaxy fit -->
+                           <enumeration value="GALDANG_IMAGE"/>
+
+                           <!-- Galaxy disk-scale from the galaxy fit -->
+                           <enumeration value="GALDSCALE_IMAGE"/>
+
+                           <!-- Galaxy disk aspect ratio from the galaxy fit -->
+                           <enumeration value="GALDASPEC_IMAGE"/>
+
+                           <!-- Galaxy disk ellipticity #1 from
+                                 the galaxy fit -->
+                           <enumeration value="GALDE1_IMAGE"/>
+
+                           <!-- Galaxy disk ellipticity #2 from
+                                 the galaxy fit -->
+                           <enumeration value="GALDE2_IMAGE"/>
+
+                           <!-- Galaxy bulge ratio from
+                                 the galaxy fit -->
+                           <enumeration value="GALBRATIO_IMAGE"/>
+
+                           <!-- Galaxy bulge position angle from
+                                 the galaxy fit -->
+                           <enumeration value="GALBANG_IMAGE"/>
+
+                           <!-- Galaxy bulge-scale from the galaxy fit -->
+                           <enumeration value="GALBSCALE_IMAGE"/>
+
+                           <!-- Galaxy bulge aspect ratio from
+                                 the galaxy fit -->
+                           <enumeration value="GALBASPEC_IMAGE"/>
+
+                           <!-- Kron apertures in units of A or B -->
+                           <enumeration value="KRON_RADIUS"/>
+
+                           <!-- Background at centroid position -->
+                           <enumeration value="BACKGROUND"/>
+
+                           <!-- Detection threshold above background -->
+                           <enumeration value="THRESHOLD"/>
+
+                           <!-- Peak flux above background -->
+                           <enumeration value="FLUX_MAX"/>
+
+                           <!-- Isophotal area above Analysis threshold -->
+                           <enumeration value="ISOAREA_IMAGE"/>
+
+                           <!-- Isophotal area (filtered) above
+                                 Detection threshold -->
+                           <enumeration value="ISOAREAF_IMAGE"/>
+
+                           <!-- Minimum x-coordinate among detected pixels -->
+                           <enumeration value="XMIN_IMAGE"/>
+
+                           <!-- Minimum y-coordinate among detected pixels -->
+                           <enumeration value="YMIN_IMAGE"/>
+
+                           <!-- Maximum x-coordinate among detected pixels -->
+                           <enumeration value="XMAX_IMAGE"/>
+
+                           <!-- Maximum y-coordinate among detected pixels -->
+                           <enumeration value="YMAX_IMAGE"/>
+
+                           <!-- x-coordinate of the brightest pixel -->
+                           <enumeration value="XPEAK_IMAGE"/>
+
+                           <!-- y-coordinate of the brightest pixel -->
+                           <enumeration value="YPEAK_IMAGE"/>
+
+                           <!-- World-x coordinate of the brightest pixel -->
+                           <enumeration value="XPEAK_WORLD"/>
+
+                           <!-- World-y coordinate of the brightest pixel -->
+                           <enumeration value="YPEAK_WORLD"/>
+
+                           <!-- Right ascension of brightest pix (native) -->
+                           <enumeration value="ALPHAPEAK_SKY"/>
+
+                           <!-- Declination of brightest pix (native) -->
+                           <enumeration value="DELTAPEAK_SKY"/>
+
+                           <!-- Right ascension of brightest pix (J2000) -->
+                           <enumeration value="ALPHAPEAK_J2000"/>
+
+                           <!-- Declination of brightest pix (J2000) -->
+                           <enumeration value="DELTAPEAK_J2000"/>
+
+                           <!-- Right ascension of brightest pix (B1950) -->
+                           <enumeration value="ALPHAPEAK_B1950"/>
+
+                           <!-- Declination of brightest pix (B1950) -->
+                           <enumeration value="DELTAPEAK_B1950"/>
+
+                           <!-- Object position along x -->
+                           <enumeration value="X_IMAGE"/>
+
+                           <!-- Object position along y -->
+                           <enumeration value="Y_IMAGE"/>
+
+                           <!-- Object position along x (double precision) -->
+                           <enumeration value="X_IMAGE_DBL"/>
+
+                           <!-- Object position along y (double precision) -->
+                           <enumeration value="Y_IMAGE_DBL"/>
+
+                           <!-- Barycenter position along world x axis -->
+                           <enumeration value="X_WORLD"/>
+
+                           <!-- Barycenter position along world y axis -->
+                           <enumeration value="Y_WORLD"/>
+
+                           <!-- Barycenter position along MAMA x axis -->
+                           <enumeration value="X_MAMA"/>
+
+                           <!-- Barycenter position along MAMA y axis -->
+                           <enumeration value="Y_MAMA"/>
+
+                           <!-- Right ascension of barycenter (native) -->
+                           <enumeration value="ALPHA_SKY"/>
+
+                           <!-- Declination of barycenter (native) -->
+                           <enumeration value="DELTA_SKY"/>
+
+                           <!-- Right ascension of barycenter (J2000) -->
+                           <enumeration value="ALPHA_J2000"/>
+
+                           <!-- Declination of barycenter (J2000) -->
+                           <enumeration value="DELTA_J2000"/>
+
+                           <!-- Right ascension of barycenter (B1950) -->
+                           <enumeration value="ALPHA_B1950"/>
+
+                           <!-- Declination of barycenter (B1950) -->
+                           <enumeration value="DELTA_B1950"/>
+
+                           <!-- Variance along x -->
+                           <enumeration value="X2_IMAGE"/>
+
+                           <!-- Variance along y -->
+                           <enumeration value="Y2_IMAGE"/>
+
+                           <!-- Covariance between x and y -->
+                           <enumeration value="XY_IMAGE"/>
+
+                           <!-- Variance along X-WORLD (alpha) -->
+                           <enumeration value="X2_WORLD"/>
+
+                           <!-- Variance along Y-WORLD (delta) -->
+                           <enumeration value="Y2_WORLD"/>
+
+                           <!-- Covariance between X-WORLD and Y-WORLD -->
+                           <enumeration value="XY_WORLD"/>
+
+                           <!-- Cxx object ellipse parameter -->
+                           <enumeration value="CXX_IMAGE"/>
+
+                           <!-- Cyy object ellipse parameter -->
+                           <enumeration value="CYY_IMAGE"/>
+
+                           <!-- Cxy object ellipse parameter -->
+                           <enumeration value="CXY_IMAGE"/>
+
+                           <!-- Cxx object ellipse parameter (WORLD units) -->
+                           <enumeration value="CXX_WORLD"/>
+
+                           <!-- Cyy object ellipse parameter (WORLD units) -->
+                           <enumeration value="CYY_WORLD"/>
+
+                           <!-- Cxy object ellipse parameter (WORLD units) -->
+                           <enumeration value="CXY_WORLD"/>
+
+                           <!-- Profile RMS along major axis -->
+                           <enumeration value="A_IMAGE"/>
+
+                           <!-- Profile RMS along minor axis -->
+                           <enumeration value="B_IMAGE"/>
+
+                           <!-- Position angle (CCW/x) -->
+                           <enumeration value="THETA_IMAGE"/>
+
+                           <!-- Profile RMS along major axis (world units) -->
+                           <enumeration value="A_WORLD"/>
+
+                           <!-- Profile RMS along minor axis (world units) -->
+                           <enumeration value="B_WORLD"/>
+
+                           <!-- Position angle (CCW/world-x) -->
+                           <enumeration value="THETA_WORLD"/>
+
+                           <!-- Position angle (east of north) (native) -->
+                           <enumeration value="THETA_SKY"/>
+
+                           <!-- Position angle (east of north) (J2000) -->
+                           <enumeration value="THETA_J2000"/>
+
+                           <!-- Position angle (east of north) (B1950) -->
+                           <enumeration value="THETA_B1950"/>
+
+                           <!-- Variance of position along x -->
+                           <enumeration value="ERRX2_IMAGE"/>
+
+                           <!-- Variance of position along y -->
+                           <enumeration value="ERRY2_IMAGE"/>
+
+                           <!-- Covariance of position between x and y -->
+                           <enumeration value="ERRXY_IMAGE"/>
+
+                           <!-- Variance of position along X-WORLD (alpha) -->
+                           <enumeration value="ERRX2_WORLD"/>
+
+                           <!-- Variance of position along Y-WORLD (delta) -->
+                           <enumeration value="ERRY2_WORLD"/>
+
+                           <!-- Covariance of position X-WORLD/Y-WORLD -->
+                           <enumeration value="ERRXY_WORLD"/>
+
+                           <!-- Cxx error ellipse parameter -->
+                           <enumeration value="ERRCXX_IMAGE"/>
+
+                           <!-- Cyy error ellipse parameter -->
+                           <enumeration value="ERRCYY_IMAGE"/>
+
+                           <!-- Cxy error ellipse parameter -->
+                           <enumeration value="ERRCXY_IMAGE"/>
+
+                           <!-- Cxx error ellipse parameter (WORLD units) -->
+                           <enumeration value="ERRCXX_WORLD"/>
+
+                           <!-- Cyy error ellipse parameter (WORLD units) -->
+                           <enumeration value="ERRCYY_WORLD"/>
+
+                           <!-- Cxy error ellipse parameter (WORLD units) -->
+                           <enumeration value="ERRCXY_WORLD"/>
+
+                           <!-- RMS position error along major axis -->
+                           <enumeration value="ERRA_IMAGE"/>
+
+                           <!-- RMS position error along minor axis -->
+                           <enumeration value="ERRB_IMAGE"/>
+
+                           <!-- Error ellipse position angle (CCW/x) -->
+                           <enumeration value="ERRTHETA_IMAGE"/>
+
+                           <!-- World RMS position error along major axis -->
+                           <enumeration value="ERRA_WORLD"/>
+
+                           <!-- World RMS position error along minor axis -->
+                           <enumeration value="ERRB_WORLD"/>
+
+                           <!-- Error ellipse pos. angle (CCW/world-x) -->
+                           <enumeration value="ERRTHETA_WORLD"/>
+
+                           <!-- Native error ellipse pos. angle
+                                 (east of north) -->
+                           <enumeration value="ERRTHETA_SKY"/>
+
+                           <!-- J2000 error ellipse pos. angle
+                                 (east of north) -->
+                           <enumeration value="ERRTHETA_J2000"/>
+
+                           <!-- B1950 error ellipse pos. angle
+                                 (east of north) -->
+                           <enumeration value="ERRTHETA_B1950"/>
+
+                           <!-- Detection threshold above background -->
+                           <enumeration value="MU_THRESHOLD"/>
+
+                           <!-- Peak surface brightness above background -->
+                           <enumeration value="MU_MAX"/>
+
+                           <!-- Isophotal area above Analysis threshold -->
+                           <enumeration value="ISOAREA_WORLD"/>
+
+                           <!-- Isophotal area (filtered) above
+                                 Detection threshold -->
+                           <enumeration value="ISOAREAF_WORLD"/>
+
+                           <!-- Isophotal area at level 0 -->
+                           <enumeration value="ISO0"/>
+
+                           <!-- Isophotal area at level 1 -->
+                           <enumeration value="ISO1"/>
+
+                           <!-- Isophotal area at level 2 -->
+                           <enumeration value="ISO2"/>
+
+                           <!-- Isophotal area at level 3 -->
+                           <enumeration value="ISO3"/>
+
+                           <!-- Isophotal area at level 4 -->
+                           <enumeration value="ISO4"/>
+
+                           <!-- Isophotal area at level 5 -->
+                           <enumeration value="ISO5"/>
+
+                           <!-- Isophotal area at level 6 -->
+                           <enumeration value="ISO6"/>
+
+                           <!-- Isophotal area at level 7 -->
+                           <enumeration value="ISO7"/>
+
+                           <!-- Extraction flags -->
+                           <enumeration value="FLAGS"/>
+
+                           <!-- FLAG-image flags OR'ed over the iso. profile -->
+                           <enumeration value="IMAFLAGS_ISO"/>
+
+                           <!-- Number of flagged pixels entering
+                                 IMAFLAGS_ISO -->
+                           <enumeration value="NIMAFLAGS_ISO"/>
+
+                           <!-- FWHM assuming a gaussian core -->
+                           <enumeration value="FWHM_IMAGE"/>
+
+                           <!-- FWHM assuming a gaussian core -->
+                           <enumeration value="FWHM_WORLD"/>
+
+                           <!-- A_IMAGE/B_IMAGE -->
+                           <enumeration value="ELONGATION"/>
+
+                           <!-- 1 - B_IMAGE/A_IMAGE -->
+                           <enumeration value="ELLIPTICITY"/>
+
+                           <!-- S/G classifier output -->
+                           <enumeration value="CLASS_STAR"/>
+
+                           <!-- Number of ASSOCiated IDs -->
+                           <enumeration value="NUMBER_ASSOC"/>
+
+                           <!-- Maximum threshold possible for detection -->
+                           <enumeration value="THRESHOLDMAX"/>
+
+                           <!-- Step for growth-curves -->
+                           <enumeration value="FLUX_GROWTHSTEP"/>
+
+                           <!-- Cumulated magnitude growth-curve -->
+                           <enumeration value="MAG_GROWTH"/>
+
+                           <!-- Step for growth-curves -->
+                           <enumeration value="MAG_GROWTHSTEP"/>
+
+                           <!-- Fraction-of-light radii -->
+                           <enumeration value="FLUX_RADIUS"/>
+
+                           <!-- X coordinate from PSF-fitting -->
+                           <enumeration value="XPSF_IMAGE"/>
+
+                           <!-- Y coordinate from PSF-fitting -->
+                           <enumeration value="YPSF_IMAGE"/>
+
+                           <!-- PSF position along world x axis -->
+                           <enumeration value="XPSF_WORLD"/>
+
+                           <!-- PSF position along world y axis -->
+                           <enumeration value="YPSF_WORLD"/>
+
+                           <!-- Right ascension of the fitted PSF (native) -->
+                           <enumeration value="ALPHAPSF_SKY"/>
+
+                           <!-- Declination of the fitted PSF (native) -->
+                           <enumeration value="DELTAPSF_SKY"/>
+
+                           <!-- Right ascension of the fitted PSF (J2000) -->
+                           <enumeration value="ALPHAPSF_J2000"/>
+
+                           <!-- Declination of the fitted PSF (J2000) -->
+                           <enumeration value="DELTAPSF_J2000"/>
+
+                           <!-- Right ascension of the fitted PSF (B1950) -->
+                           <enumeration value="ALPHAPSF_B1950"/>
+
+                           <!-- Declination of the fitted PSF (B1950) -->
+                           <enumeration value="DELTAPSF_B1950"/>
+
+                           <!-- Flux from PSF-fitting -->
+                           <enumeration value="FLUX_PSF"/>
+
+                           <!-- RMS flux error for PSF-fitting -->
+                           <enumeration value="FLUXERR_PSF"/>
+
+                           <!-- Magnitude from PSF-fitting -->
+                           <enumeration value="MAG_PSF"/>
+
+                           <!-- RMS magnitude error from PSF-fitting -->
+                           <enumeration value="MAGERR_PSF"/>
+
+                           <!-- Number of iterations for PSF-fitting -->
+                           <enumeration value="NITER_PSF"/>
+
+                           <!-- Reduced chi2 from PSF-fitting -->
+                           <enumeration value="CHI2_PSF"/>
+
+                           <!-- Variance of PSF position along x -->
+                           <enumeration value="ERRX2PSF_IMAGE"/>
+
+                           <!-- Variance of PSF position along y -->
+                           <enumeration value="ERRY2PSF_IMAGE"/>
+
+                           <!-- Covariance of PSF position between x and y -->
+                           <enumeration value="ERRXYPSF_IMAGE"/>
+
+                           <!-- Variance of PSF position along
+                                 X-WORLD (alpha) -->
+                           <enumeration value="ERRX2PSF_WORLD"/>
+
+                           <!-- Variance of PSF position along
+                                 Y-WORLD (delta) -->
+                           <enumeration value="ERRY2PSF_WORLD"/>
+
+                           <!-- Covariance of PSF position X-WORLD/Y-WORLD -->
+                           <enumeration value="ERRXYPSF_WORLD"/>
+
+                           <!-- Cxx PSF error ellipse parameter -->
+                           <enumeration value="ERRCXXPSF_IMAGE"/>
+
+                           <!-- Cyy PSF error ellipse parameter -->
+                           <enumeration value="ERRCYYPSF_IMAGE"/>
+
+                           <!-- Cxy PSF error ellipse parameter -->
+                           <enumeration value="ERRCXYPSF_IMAGE"/>
+
+                           <!-- Cxx PSF error ellipse parameter
+                                 (WORLD units) -->
+                           <enumeration value="ERRCXXPSF_WORLD"/>
+
+                           <!-- Cyy PSF error ellipse parameter
+                                 (WORLD units) -->
+                           <enumeration value="ERRCYYPSF_WORLD"/>
+
+                           <!-- Cxy PSF error ellipse parameter
+                                 (WORLD units) -->
+                           <enumeration value="ERRCXYPSF_WORLD"/>
+
+                           <!-- PSF RMS position error along major axis -->
+                           <enumeration value="ERRAPSF_IMAGE"/>
+
+                           <!-- PSF RMS position error along minor axis -->
+                           <enumeration value="ERRBPSF_IMAGE"/>
+
+                           <!-- PSF error ellipse position angle (CCW/x) -->
+                           <enumeration value="ERRTHTPSF_IMAGE"/>
+
+                           <!-- World PSF RMS position error
+                                 along major axis -->
+                           <enumeration value="ERRAPSF_WORLD"/>
+
+                           <!-- World PSF RMS position error
+                                 along minor axis -->
+                           <enumeration value="ERRBPSF_WORLD"/>
+
+                           <!-- PSF error ellipse pos. angle (CCW/world-x) -->
+                           <enumeration value="ERRTHTPSF_WORLD"/>
+
+                           <!-- Native PSF error ellipse pos. angle
+                                 (east of north) -->
+                           <enumeration value="ERRTHTPSF_SKY"/>
+
+                           <!-- J2000 PSF error ellipse pos. angle
+                                 (east of north) -->
+                           <enumeration value="ERRTHTPSF_J2000"/>
+
+                           <!-- B1950 PSF error ellipse pos. angle
+                                 (east of north) -->
+                           <enumeration value="ERRTHTPSF_B1950"/>
+
+                           <!-- PC variance along x -->
+                           <enumeration value="X2PC_IMAGE"/>
+
+                           <!-- PC variance along y -->
+                           <enumeration value="Y2PC_IMAGE"/>
+
+                           <!-- PC covariance between x and y -->
+                           <enumeration value="XYPC_IMAGE"/>
+
+                           <!-- PC profile RMS along major axis -->
+                           <enumeration value="APC_IMAGE"/>
+
+                           <!-- PC profile RMS along minor axis -->
+                           <enumeration value="BPC_IMAGE"/>
+
+                           <!-- PC position angle (CCW/x) -->
+                           <enumeration value="THETAPC_IMAGE"/>
+
+                           <!-- Principal components -->
+                           <enumeration value="PC"/>
+
+
+                           <!-- ======================================== -->
+                           <!-- ONE-VECTOR KEYWORDS, e.g. FLUX_APER(2) ) -->
+                           <!-- ======================================== -->
+
+                           <!-- Flux vector w/in fixed circular aperture(s) -->
+                           <enumeration value="FLUX_APER"/>
+
+                           <!-- RMS error vector for aperture flux(es) -->
+                           <enumeration value="FLUXERR_APER"/>
+
+                           <!-- Fixed aperture magnitude vector -->
+                           <enumeration value="MAG_APER"/>
+
+                           <!-- RMS error vector for fixed aperture mag. -->
+                           <enumeration value="MAGERR_APER"/>
+
+                           <!-- Position vector of the winning SOM node -->
+                           <enumeration value="VECTOR_SOMFIT"/>
+
+                           <!-- ASSOCiated parameter vector -->
+                           <enumeration value="VECTOR_ASSOC"/>
+
+                           <!-- Cumulated growth-curve -->
+                           <enumeration value="FLUX_GROWTH"/>
+
+
+                           <!-- ======================================= -->
+                           <!-- TWO-VECTOR KEYWORDS, e.g. VIGNET(2,4) ) -->
+                           <!-- ======================================= -->
+
+                           <!-- Pixel data around detection -->
+                           <enumeration value="VIGNET"/>
+
+                           <!-- Pixel data around detection, corrected
+                                 for shift -->
+                           <enumeration value="VIGNET_SHIFT"/>
+
+                        </restriction>
+                     </simpleType>
+                  </element>
+               </sequence>
+            </complexType>
+         </element>
+
+      <!-- ================================================================
+         END OF ALL ELEMENTS
+      -->
+
+      </all>
+   </complexType>
+</schema>
+

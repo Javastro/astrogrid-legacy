@@ -1,0 +1,59 @@
+NOTES
+=====
+
+The makefile included here is now obsoleted by the ant "build.xml"
+file, and will eventually be removed.  Please use ant as your 
+compilation tool ( see http://jakarta.apache.org/ant/ ).
+
+
+STEP 1: WHERE TO PUT THE SOURCE
+-------------------------------
+
+This project directory needs to be installed in an "org/astrogrid" 
+source tree, at org/astrogrid/xmlutils.  This is necessary so that 
+ant can handle source dependencies properly.
+
+
+
+STEP 2: CONFIGURING THE ANT BUILDFILE
+-------------------------------
+
+You will need to edit build.xml to match your installation details.
+The "basedir" attribute in the <project> tag needs to match the 
+directory where your org/astrogrid/ source tree lives.  For example, 
+if your local path to this README file is
+
+  "/home/someuser/AstroGrid/SourceCode/org/astrogrid/xmlutils/README", 
+
+then you'll need the following:
+
+<project name="org.astrogrid.xmlutils" default="classes" 
+                basedir="/home/someuser/AstroGrid/SourceCode">"
+
+
+NB:  If your ant installation has problems with the "depend" target,
+it's safe to comment the following lines out:
+
+    <depend srcdir="${src}" destdir="${dest}" 
+        includes="${pkgpath}/*" cache="depcache" closure="yes"/>
+
+
+
+STEP 3: COMPILATION AND TESTING
+-------------------------------
+
+To compile the classes:
+
+    ant classes
+
+To run a simple test:
+
+    ant test
+
+To run this test at the command line:
+
+    java org.astrogrid.xmlutils.Validate testdata.xml
+
+(Try hacking the XML contained in testdata.xml to explore the effects 
+of invalid XML).
+
