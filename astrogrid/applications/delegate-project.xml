@@ -147,27 +147,15 @@
 			<sourceModification>
 				<className>always.do.this</className>
 				<includes>
-					<include>**/delegate/**/*.java </include>
+					<include>**/delegate/*.java </include>
+					<include>**/delegate/impl/*.java </include>
 				</includes>
 			</sourceModification>
 		</sourceModifications>
 		<!-- no unit testing - done in parent project -->
         <unitTestSourceDirectory />
 
-    <unitTest>
-      <includes>
-        <include>**/*Test.java</include>
-      </includes>
-    </unitTest>
-     <resources>
-    	<resource><!-- config files -->
-		<directory>${basedir}/src/java</directory>
-		<includes>
-			<include>**/*.xml</include>
-			<include>**/*.properties</include>
-		</includes>
-	</resource>
-    </resources>
+    <unitTest />
 
   </build>
 </project>
