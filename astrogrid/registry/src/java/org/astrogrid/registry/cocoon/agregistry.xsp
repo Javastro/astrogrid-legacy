@@ -31,7 +31,7 @@
 
 // (ToDo) Make these constants inherit from Cocoon sitemap (trivial!)
    private static String AXIS = "/axis/services/";
-   private static String SOAP = "/soap/servlet/rpcrouter/";
+   private static String SOAP = "/soap/servlet/rpcrouter";
    private static final String OLDSERVICE = "RegistryInterface";       
    private static final String NEWSERVICE = "RegistryInterface3_0";       
    private static final String RALSERVICE = "AstrogridRegistryQuery";       
