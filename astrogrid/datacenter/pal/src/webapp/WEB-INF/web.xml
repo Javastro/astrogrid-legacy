@@ -11,9 +11,9 @@
     SOAP service that publishes a data set to AstroGrid.
   </description>
   <listener>
-	<listener-class>org.astrogrid.datacenter.servlet.LifecycleListener</listener-class>
-	</listener>
-	
+   <listener-class>org.astrogrid.datacenter.servlet.LifecycleListener</listener-class>
+   </listener>
+   
   <servlet>
     <servlet-name>AxisServlet</servlet-name>
     <display-name>Apache-Axis Servlet</display-name>
@@ -25,7 +25,7 @@
   <servlet>
     <servlet-name>JUnitEETestServlet</servlet-name>
     <description>JUnitEE test runner</description>
-    <servlet-class>org.junitee.servlet.JUnitEEServlet</servlet-class>
+    <servlet-class>org.junitee.servlet.JUnitEEThreadedServlet</servlet-class>
   </servlet>
   
    <!-- Query-managing servlets -->
@@ -90,7 +90,7 @@
       <description>
         a small servlet that helps cea by
     * querying servlet context - find out where it is, set keys in config from this
-    (keys used to generate VODescription for this CEA service)  
+    (keys used to generate VODescription for this CEA service)
     * provides http-get access to some of the cec methods (call by HTTP-GET with no params for usage info)
       </description>
       <servlet-class>org.astrogrid.applications.component.InitServlet</servlet-class>
