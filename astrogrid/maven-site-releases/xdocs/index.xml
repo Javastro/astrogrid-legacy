@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!-- $Id: index.xml,v 1.1 2004/03/04 02:26:21 jdt Exp $ -->
+<document>
+	<properties>
+		<title>Maven</title>
+		<author email="jdt@roe.ac.uk">John Taylor</author>
+	</properties>
+	<body>
+		<section name="Astrogrid Releases">
+			<P> Follow the links to the left for the documentation for the 
+				current releases. This documentation in turn has links to the 
+				binaries and source code. </P>
+			<subsection name="Itn05 Snapshot">
+				<P> The latest build is Itn05. This code is undergoing 
+					development and is built several times daily. </P>
+			</subsection>
+			<subsection name="Itn04_1 Release">
+				<P> The latest release is Itn04_1. Apart from occasional bug 
+					fixing this code is now stable. A demonstration of this 
+					release may be found <a 
+					href="http://vm06.astrogrid.org:8080/astrogrid-portal/main/test.xml">here</a>. 
+					</P>
+			</subsection>
+			<subsection name="Itn04 and previous">
+				<P>Information on previous iterations can be found from the Itn04
+					link on the left. A demonstration of release Itn03 may be 
+					found <a 
+					href="http://uml02.astrogrid.org:8080/cocoon/astrogrid/aglogin.html">here</a>. 
+					</P>
+			</subsection>
+		</section>
+	</body>
+</document>

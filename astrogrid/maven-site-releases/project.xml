@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: project.xml,v 1.1 2004/03/04 02:26:21 jdt Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="maven-project.xsd">
+	<extend>../maven-base/project.xml</extend>
+	<id>astrogrid-releases</id>
+	<name>AstroGrid Releases</name>
+	<shortDescription>AstroGrid Releases</shortDescription>
+	<siteDirectory>/var/www/www/maven/build</siteDirectory>
+	<repository>
+		<connection> 
+			scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/maven-site-releases 
+			</connection>
+		<developerConnection> 
+			scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/maven-site-releases 
+			</developerConnection>
+		<url> http://www.astrogrid.org/viewcvs/astrogrid/maven-site-releases/ 
+			</url>
+	</repository>
+	<dependencies/>
+	<reports/>
+</project>

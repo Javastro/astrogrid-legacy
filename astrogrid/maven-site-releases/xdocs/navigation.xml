@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: navigation.xml,v 1.1 2004/03/04 02:26:21 jdt Exp $ -->
+<project name="AstroGrid">
+
+  <title>AstroGrid Project</title>
+
+  <body>
+    <links>
+       <item name="AstroGrid" href="http://www.astrogrid.org"/>
+       <item name="AstroGrid Wiki" href="http://wiki.astrogrid.org/"/>
+    </links>
+    <menu name="Release Documentation">
+      <item name="Itn05 SNAPSHOT"     href="http://www.astrogrid.org/maven/docs/snapshot/index.html"/>
+      <item name="Itn04_1"     href="http://www.astrogrid.org/maven/docs/releases/index.html"/>
+      <item name="Itn04"     href="http://wiki.astrogrid.org/bin/view/Astrogrid/SoftwareRelease"/>
+    </menu>
+    <menu name="Binaries">
+    	<item name="Itn05 Snapshots" href="http://wiki.astrogrid.org/bin/view/Astrogrid/Itn05Snapshots"/>
+    	<item name="Astrogrid Repository" href="http://www.astrogrid.org/maven/org.astrogrid"/>
+    </menu>
+  </body>
+</project>
