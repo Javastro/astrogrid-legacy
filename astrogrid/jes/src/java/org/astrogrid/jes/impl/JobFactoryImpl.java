@@ -28,8 +28,10 @@ import java.sql.SQLException ;
 import java.sql.Timestamp ;
 import java.text.MessageFormat ;
 // import java.util.Date ;
+import java.util.ArrayList;
 import java.util.HashSet ;
 import java.util.Iterator ;
+import java.util.ListIterator ;
 // import java.lang.Math ;
 
 
@@ -49,7 +51,8 @@ public class JobFactoryImpl implements JobFactory {
 												"VALUES ( ?, ?, ?, ?, ?, ?, ? )" ,	                          
 	    JOB_UPDATE_TEMPLATE = "UPDATE {0} SET STATUS = ''{1}'' WHERE JOBURN = ''{2}''" ,
 	    JOB_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}''" ,
-	    JOB_GENERAL_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE {1}" ,	    
+	    JOB_GENERAL_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE {1}" ,	
+        JOB_SELECT_USERSJOBS_TEMPLATE = "SELECT * FROM {0} WHERE USERID = ''{1}'' AND COMMUNITY = ''{2}'' ORDER BY SUBMITTIMESTAMP",    
 	    JOB_DELETE_TEMPLATE = "DELETE FROM {0} WHERE JOBURN = ''{1}''" ;
 	    
 	private static final int
@@ -388,6 +391,79 @@ public class JobFactoryImpl implements JobFactory {
     } // end of findJob()
 
 
+    public ListIterator findUserJobs( String userid, String community ) throws JobException  {
+        if( TRACE_ENABLED ) logger.debug( "findUserJobs(): entry") ;  
+                    
+        ArrayList
+            list = null  ;
+        Statement   
+           statement = null ;
+        ResultSet
+           rs = null ;
+           
+        try {
+
+            Object []
+               inserts = new Object[3] ;
+            inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOB
+                                        , JES.JOB_CATEGORY ) ;
+            inserts[1] = userid ;
+            inserts[2] = community ;
+
+            String
+               selectString = MessageFormat.format( JOB_SELECT_USERSJOBS_TEMPLATE, inserts ) ; 
+            logger.debug( "JobFactoryImp.findUserJobs() sql : " + selectString ) ;         
+            statement = this.getConnection().createStatement() ;
+            rs = statement.executeQuery( selectString );
+            
+            if( !rs.isBeforeFirst() ) {
+                // No Jobs found...
+       
+            }
+            else {
+                
+                list = new ArrayList() ;
+                
+                while( rs.next() ) {
+                    
+                    JobImpl
+                       job = new JobImpl() ;
+                
+                    job.setId( rs.getString( COL_JOBURN ) ) ;
+                    job.setName( rs.getString( COL_JOBNAME ) ) ;
+                    job.setDate( rs.getTimestamp( COL_SUBMITTIMESTAMP ) ) ;
+                    job.setUserId( rs.getString( COL_USERID ) ) ;
+                    job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
+                    job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
+                    job.setDirty( false ) ;
+                    
+                    findJobSteps( job ) ;
+                    
+                    list.add( job ) ;
+                    
+                } // end while
+                
+            } // end else
+                           
+        }
+        catch( SQLException ex ) {
+            AstroGridMessage
+                message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+                                              , SUBCOMPONENT_NAME ) ;
+            logger.error( message.toString(), ex ) ; 
+            throw new JobException( message, ex ) ;         
+        }
+        finally {
+            if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
+            if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+            if( TRACE_ENABLED ) logger.debug( "findUserJobs(): exit") ;    
+        }       
+        
+        return list.listIterator() ;
+
+    } // end of findUserJobs()
+
+
 	public Iterator findJobsWhere( String criteriaString ) throws NotFoundException, JobException  {
 		if( TRACE_ENABLED ) logger.debug( "findJobsWhere(): entry") ;  
 		 		 	
@@ -624,6 +700,17 @@ public class JobFactoryImpl implements JobFactory {
 				
 	} // end of insertOneJobStep()
 	
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 	
 	public void findJobSteps( Job job ) throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "findJobSteps(): entry") ;  

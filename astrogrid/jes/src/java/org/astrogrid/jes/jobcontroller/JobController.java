@@ -23,6 +23,7 @@ import java.io.StringReader ;
 import java.text.MessageFormat ;
 import java.util.Date ;
 import java.sql.Timestamp ;
+import java.util.ListIterator;
 
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
@@ -95,7 +96,8 @@ public class JobController {
 	    ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER   = "AGJESE00410",
 	    ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE    = "AGJESE00420",
         ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG = "AGJESE00060",
-        ASTROGRIDINFO_JOB_STATUS_MESSAGE            = "AGJESI00070" ;
+        ASTROGRIDINFO_JOB_STATUS_MESSAGE            = "AGJESI00070",
+        ASTROGRIDERROR_ULTIMATE_LISTFAILURE         = "AGJESE00830" ; ;
 		
 	/** Log4J logger for this class. */    			    			
 	private static Logger 
@@ -331,8 +333,82 @@ public class JobController {
 		return response ;
 		
 	} // end of formatResponse()
-	
-	
+
+
+    /**
+      * <p> 
+      * Represents a main service call against the JobController. 
+      * <p>
+      * 
+      * @param jobListXML - The service request XML received as a String.
+      * @return A String containing the list as a reponse document in XML.
+      * 
+      * @see ?Request.xsd in CVS
+      * @see ?Response.xsd in CVS
+      * 
+      **/     
+    public String jobList( String jobListXML ) {
+        if( TRACE_ENABLED ) logger.debug( "jobList() entry") ;
+        
+        String
+            response = null ;
+        JobFactory
+            factory = null ;
+        Document
+            listRequestDocument = null ;
+        ListIterator
+            iterator = null ;
+        String
+            userid = null,
+            community = null ;
+            
+        try { 
+            // If properties file is not loaded, we bail out...
+            // Each JES MUST be properly initialized! 
+            JES.getInstance().checkPropertiesLoaded() ;   
+            
+            // Parse the request... 
+            listRequestDocument = parseRequest( jobListXML ) ;
+            userid = extractUserid( listRequestDocument ) ;
+            community = extractCommunity( listRequestDocument ) ;
+            factory = Job.getFactory() ;
+            iterator = factory.findUserJobs( userid, community ) ;
+            response = formatListResponse( iterator ) ;
+
+        }
+        catch( AstroGridException jex ) {
+            
+            AstroGridMessage
+               detailMessage = jex.getAstroGridMessage() ,  
+               generalMessage = new AstroGridMessage( ASTROGRIDERROR_ULTIMATE_LISTFAILURE
+                                                    , this.getComponentName() ) ;
+            logger.error( generalMessage.toString() ) ;
+                              
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "jobList() exit") ;
+        }
+        
+        return response ;  
+            
+    } // end of jobList()
+    
+    
+    private String extractUserid( Document doc ) {
+        return null ;
+    }
+    
+    
+    private String extractCommunity( Document doc ) {
+        return null ;
+    }
+    
+    
+    private String formatListResponse( ListIterator iterator ) {
+        return null ;
+    }
+    
+    
 	/**
 	  * <p> 
 	  * Invokes the web service for job scheduling.

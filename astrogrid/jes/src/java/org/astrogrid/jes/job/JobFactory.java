@@ -3,6 +3,7 @@ package org.astrogrid.jes.job;
 
 import org.w3c.dom.*;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 public interface JobFactory {
 	
@@ -13,6 +14,7 @@ public interface JobFactory {
 
 	Iterator findJobsWhere( String queryString ) throws JobException ;
 	Job findJob( String jobURN ) throws JobException ;
+    public ListIterator findUserJobs( String userid, String community ) throws JobException  ;
 	
     String deleteJob( Job job ) throws JobException ;
     
