@@ -126,17 +126,23 @@ public class JobController {
 				messageBundleBaseName = getProperty( CONFIG_MESSAGES_BASENAME ), 
 				language = getProperty( CONFIG_MESSAGES_LANGUAGECODE ),
 				country = getProperty( CONFIG_MESSAGES_COUNTRYCODE ) ;
-			
+				
+			logger.debug( "messageBundleBaseName[" + messageBundleBaseName + "]\t" +
+			              "language[" + language + "]\t" +
+			              "country[" + country + "]" ) ;		
+				
 			if( messageBundleBaseName != null ) {
 				     
-				if( (language != null) && (language != "") )  {
+				if( (language != null) && (!language.equals("")) )  {
 			    	
+				   logger.debug( "language..." ) ;
 				   Locale
 					  locale =  new Locale( language, (country != null ? country : "") );
 				   Message.setMessageResource( ResourceBundle.getBundle( messageBundleBaseName, locale ) ) ;	
 				   
 				}
 				else {
+				   logger.debug( "language null..." ) ;
 				   Message.setMessageResource( ResourceBundle.getBundle( messageBundleBaseName ) ) ;	
 				}
 			    
@@ -152,6 +158,7 @@ public class JobController {
 	
 	public static String getProperty( String key ) {
 		if( TRACE_ENABLED ) logger.debug( "getProperty(): entry") ;
+		
 		String
 			retValue ;
 		try {	
@@ -163,7 +170,8 @@ public class JobController {
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "getProperty(): exit") ;			
 		}
-		return retValue ;
+		
+		return ( retValue == null ? "" : retValue.trim() ) ;
 		
 	} // end of getProperty()
 
@@ -251,6 +259,7 @@ public class JobController {
         }
         finally {
 	        // resourceCleanup() ;
+	        logger.debug( response.toString() );
 	        if( TRACE_ENABLED ) logger.debug( "submitJob() exit") ;
         }
     	
