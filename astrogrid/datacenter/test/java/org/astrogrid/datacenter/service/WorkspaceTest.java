@@ -29,7 +29,7 @@ public class WorkspaceTest extends TestCase
       Workspace workspace = new Workspace("Test");
       
       File workspaceFile = workspace.getWorkspace();
-      
+      assertNotNull(workspaceFile);
       assertTrue(workspaceFile.isDirectory());
 
       //check you can't make duplicates
@@ -50,14 +50,16 @@ public class WorkspaceTest extends TestCase
 
       //check there are 5 files in there
       File[] contents = workspaceFile.listFiles();
-      assertTrue("5 files created but not 5 files in workspace",contents.length == 5);
+      assertNotNull(contents);
+      assertEquals("5 files created but not 5 files in workspace",0,contents.lengh);
       
       //empty the workspace
       workspace.empty();
       
       //check there 0 files
       contents = workspaceFile.listFiles();
-      assertTrue("workspace emptied but 0 files in workspace",contents.length == 0);
+      assertNotNull(contents);
+      assertEquals("workspace emptied but 0 files in workspace",0,contents.length);
 
    }
    
@@ -84,6 +86,9 @@ public class WorkspaceTest extends TestCase
 
 /*
 $Log: WorkspaceTest.java,v $
+Revision 1.2  2003/09/04 09:24:32  nw
+added martin's changes
+
 Revision 1.1  2003/08/29 15:27:20  mch
 Renamed TestXxxx to XxxxxTest so Maven runs them
 

@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.1 2003/08/29 15:20:55 mch Exp $
+ * $Id: QuerierTest.java,v 1.2 2003/09/04 09:24:32 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -37,7 +37,7 @@ public class QuerierTest extends TestCase
 
       //and results should produce a valid xml document: this will parse it in
       //into a DOM tree
-      Document doc = results.toVotable();
+      Document doc = results.toVotable(null);
       if ( doc == null)
       {
          throw new RuntimeException("results.toVotable() returns null");

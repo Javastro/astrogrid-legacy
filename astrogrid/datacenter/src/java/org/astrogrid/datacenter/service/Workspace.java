@@ -1,5 +1,5 @@
 /**
- * $Id: Workspace.java,v 1.3 2003/08/28 15:58:01 mch Exp $
+ * $Id: Workspace.java,v 1.4 2003/09/04 09:23:34 nw Exp $
  */
 
 package org.astrogrid.datacenter.service;
@@ -87,6 +87,15 @@ public class Workspace
 //      }
 
       emptyDirectory(workspaceFile);
+   }
+
+   /**
+    * So you need to make a temporary file in the workspace - this returns
+    * a reference to it given a filename
+    */
+   public File makeWorkFile(String filename)
+   {
+      return new File(workspacePath + File.separator + filename);
    }
 
    /**

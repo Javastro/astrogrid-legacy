@@ -10,7 +10,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.config.Configuration;
-import org.astrogrid.datacenter.impl.QueryFactoryImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -29,11 +28,6 @@ import org.xml.sax.SAXException;
  *
  */
 public class QueryParsingTest extends TestCase {
-
-    /** very specific to current implementation
-     *  maybe we could generalize this, so it can exercise any implementation?
-     */
-    public QueryFactoryImpl factory = new QueryFactoryImpl();
 
     /** package name of test resource files */
     //public final static String RESOURCE_PREFIX="org/astrogrid/datacenter/query/inputs/";

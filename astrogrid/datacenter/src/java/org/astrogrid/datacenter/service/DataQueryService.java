@@ -1,5 +1,5 @@
 /*
- * $Id: DataQueryService.java,v 1.4 2003/09/02 14:47:26 nw Exp $
+ * $Id: DataQueryService.java,v 1.5 2003/09/04 09:23:34 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,6 +33,7 @@ public class DataQueryService implements ServiceStatus
 
    private String status = UNKNOWN;
 
+   private Workspace workspace = null;
    /**
     * A handle is used to identify a particular service.  It is also used as the
     * basis for any temporary storage.
@@ -45,6 +46,7 @@ public class DataQueryService implements ServiceStatus
    public DataQueryService()
    {
       handle = generateHandle();
+      workspace = new Workspace(handle);
    }
 
    /**
@@ -84,7 +86,7 @@ public class DataQueryService implements ServiceStatus
 
       QueryResults results = querier.queryDatabase(domContainingQuery);
 
-      return results.toVotable().getDocumentElement();
+      return results.toVotable(workspace).getDocumentElement();
    }
 
    /**
