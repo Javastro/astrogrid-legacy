@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JobExecutionRecord.java,v 1.27 2004/08/28 07:29:31 pah Exp $
+ * $Id: JobExecutionRecord.java,v 1.28 2004/08/30 17:36:48 jdt Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * A record of a single execution of a job
  * 
- * @version $Revision: 1.27 $ $Date: 2004/08/28 07:29:31 $
+ * @version $Revision: 1.28 $ $Date: 2004/08/30 17:36:48 $
  */
 public class JobExecutionRecord extends org.astrogrid.workflow.beans.v1.execution.ExecutionRecordType 
 implements java.io.Serializable

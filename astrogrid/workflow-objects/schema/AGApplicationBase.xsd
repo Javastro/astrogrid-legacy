@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGApplicationBase.xsd,v 1.10 2004/08/27 21:07:38 pah Exp $ -->
+<!-- $Id: AGApplicationBase.xsd,v 1.11 2004/08/30 17:36:48 jdt Exp $ -->
 <!-- This is refactored from the AGParameterDefinition.xsd -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <xs:schema targetNamespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:agab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
@@ -18,6 +18,7 @@
 			<xs:documentation>Base Application Description</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
+			<xs:element name="ApplicationType" type="agab:ApplicationKindType" minOccurs="0"/>
 			<xs:element name="Parameters">
 				<xs:complexType>
 					<xs:sequence>
@@ -44,15 +45,6 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="WebHttpApplication">
-		<xs:complexContent>
-			<xs:extension base="agab:ApplicationBase">
-				<xs:sequence>
-					<xs:element name="URL" type="xs:string"/>
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
 	<xs:complexType name="WebServiceApplication">
 		<xs:annotation>
 			<xs:documentation>Description of a web service application</xs:documentation>
@@ -69,6 +61,61 @@
 			<xs:extension base="agab:ApplicationBase"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<!--
+		
+		Stuff to do with HttpApplications
+		
+		-->
+	<xs:complexType name="WebHttpApplicationSetup">
+		<xs:annotation>
+			<xs:documentation>Description of an HTTP Application</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="URL" type="agab:HttpURLType"/>
+			<xs:element name="PreProcessScript" type="agab:script" minOccurs="0"/>
+			<xs:element name="PostProcessScript" type="agab:script" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+<!--The calling document describing the call to the web service-->
+	<xs:complexType name="WebHttpCall">
+		<xs:annotation>
+			<xs:documentation>Description of an HTTP get or post service</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+				<xs:element name="URL" type="agab:HttpURLType"/>
+				<xs:element name="SimpleParameter" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute type="xs:string" name="name" use="required"/>
+						<xs:attribute type="xs:string" name="value" use="required"/>
+					</xs:complexType>
+				</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="HttpURLType">
+		<xs:annotation>
+			<xs:documentation>The URL for an http get or post service</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute type="agab:HttpMethodType" name="method" default="get"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="HttpMethodType">
+		<xs:annotation>
+			<xs:documentation>http method type: get or post</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="get"/>
+			<xs:enumeration value="post"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--
+	  END Stuff to do with HttpApplications
+	-->
+
+
 	<!--really need to add a description element to the interface, so that the UI can present the user with more infromation than just names -->
 	<xs:complexType name="Interface">
 		<xs:annotation>
@@ -93,6 +140,25 @@
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 	</xs:complexType>
+	<xs:complexType name="script">
+		<xs:annotation>
+			<xs:documentation>a snippet of code to massage the inputs and outputs</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="lang" type="agab:scriptingLanguage"/>
+			<xs:element name="code" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="scriptingLanguage">
+		<xs:annotation>
+			<xs:documentation>Scripting language</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="xslt"/>
+			<xs:enumeration value="javascript"/>
+			<xs:enumeration value="groovy"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<xs:complexType name="parameterRef" mixed="false">
 		<xs:annotation>
 			<xs:documentation>reference to an existing parameter. Used in the interface</xs:documentation>
@@ -278,4 +344,14 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+	<xs:simpleType name="ApplicationKindType">
+		<xs:annotation>
+			<xs:documentation>The type of the underlying application - commandline, http-get etc</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="cmdline"/>
+			<xs:enumeration value="http"/>
+			<xs:enumeration value="javaclass"/>
+		</xs:restriction>
+	</xs:simpleType>
 </xs:schema>

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: RelationshipType.java,v 1.7 2004/08/28 07:29:31 pah Exp $
+ * $Id: RelationshipType.java,v 1.8 2004/08/30 17:36:48 jdt Exp $
  */
 
 package org.astrogrid.registry.beans.resource.types;
@@ -20,7 +20,7 @@ import org.exolab.castor.xml.Unmarshaller;
 /**
  * Class RelationshipType.
  * 
- * @version $Revision: 1.7 $ $Date: 2004/08/28 07:29:31 $
+ * @version $Revision: 1.8 $ $Date: 2004/08/30 17:36:48 $
  */
 public class RelationshipType implements java.io.Serializable {
 

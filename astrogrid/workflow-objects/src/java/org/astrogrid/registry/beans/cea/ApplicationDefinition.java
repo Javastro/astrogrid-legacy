@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ApplicationDefinition.java,v 1.14 2004/08/28 07:29:32 pah Exp $
+ * $Id: ApplicationDefinition.java,v 1.15 2004/08/30 17:36:48 jdt Exp $
  */
 
 package org.astrogrid.registry.beans.cea;
@@ -16,6 +16,7 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
 import org.astrogrid.applications.beans.v1.InterfacesType;
+import org.astrogrid.applications.beans.v1.types.ApplicationKindType;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -25,7 +26,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class ApplicationDefinition.
  * 
- * @version $Revision: 1.14 $ $Date: 2004/08/28 07:29:32 $
+ * @version $Revision: 1.15 $ $Date: 2004/08/30 17:36:48 $
  */
 public class ApplicationDefinition extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -35,6 +36,11 @@ implements java.io.Serializable
       //--------------------------/
      //- Class/Member Variables -/
     //--------------------------/
+
+    /**
+     * Field _applicationKind
+     */
+    private org.astrogrid.applications.beans.v1.types.ApplicationKindType _applicationKind;
 
     /**
      * Field _parameters
@@ -76,6 +82,13 @@ implements java.io.Serializable
         if (obj instanceof ApplicationDefinition) {
         
             ApplicationDefinition temp = (ApplicationDefinition)obj;
+            if (this._applicationKind != null) {
+                if (temp._applicationKind == null) return false;
+                else if (!(this._applicationKind.equals(temp._applicationKind))) 
+                    return false;
+            }
+            else if (temp._applicationKind != null)
+                return false;
             if (this._parameters != null) {
                 if (temp._parameters == null) return false;
                 else if (!(this._parameters.equals(temp._parameters))) 
@@ -94,6 +107,16 @@ implements java.io.Serializable
         }
         return false;
     } //-- boolean equals(java.lang.Object) 
+
+    /**
+     * Returns the value of field 'applicationKind'.
+     * 
+     * @return the value of field 'applicationKind'.
+     */
+    public org.astrogrid.applications.beans.v1.types.ApplicationKindType getApplicationKind()
+    {
+        return this._applicationKind;
+    } //-- org.astrogrid.applications.beans.v1.types.ApplicationKindType getApplicationKind() 
 
     /**
      * Returns the value of field 'interfaces'.
@@ -152,6 +175,16 @@ implements java.io.Serializable
         
         Marshaller.marshal(this, handler);
     } //-- void marshal(org.xml.sax.ContentHandler) 
+
+    /**
+     * Sets the value of field 'applicationKind'.
+     * 
+     * @param applicationKind the value of field 'applicationKind'.
+     */
+    public void setApplicationKind(org.astrogrid.applications.beans.v1.types.ApplicationKindType applicationKind)
+    {
+        this._applicationKind = applicationKind;
+    } //-- void setApplicationKind(org.astrogrid.applications.beans.v1.types.ApplicationKindType) 
 
     /**
      * Sets the value of field 'interfaces'.

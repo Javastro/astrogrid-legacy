@@ -1,5 +1,5 @@
 /*
- * $Id: Axis2Castor.java,v 1.9 2004/08/25 11:38:01 nw Exp $
+ * $Id: Axis2Castor.java,v 1.10 2004/08/30 17:36:48 jdt Exp $
  * 
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -189,8 +189,10 @@ public class Axis2Castor {
 
     public static ParameterValue[] convert(
         org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] axisRs) {
-        ParameterValue[] castorRs = new ParameterValue[axisRs.length]; 
-        for (int i = 0; i < axisRs.length; i++){
+		         
+        final int axisRsLength = (axisRs==null ? 0 : axisRs.length);
+        ParameterValue[] castorRs = new ParameterValue[axisRsLength];
+		for (int i = 0; i < axisRsLength; i++){
             castorRs[i] = convert(axisRs[i]);
         }
         return castorRs;

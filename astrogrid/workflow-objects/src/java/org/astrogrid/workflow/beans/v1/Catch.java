@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Catch.java,v 1.3 2004/08/28 07:29:31 pah Exp $
+ * $Id: Catch.java,v 1.4 2004/08/30 17:36:48 jdt Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
  * the error.
  *  
  * 
- * @version $Revision: 1.3 $ $Date: 2004/08/28 07:29:31 $
+ * @version $Revision: 1.4 $ $Date: 2004/08/30 17:36:48 $
  */
 public class Catch extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

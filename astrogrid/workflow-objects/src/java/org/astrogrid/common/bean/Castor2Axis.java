@@ -1,5 +1,5 @@
 /*
- * $Id: Castor2Axis.java,v 1.9 2004/07/01 10:18:32 nw Exp $
+ * $Id: Castor2Axis.java,v 1.10 2004/08/30 17:36:48 jdt Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,39 +13,13 @@
 
 package org.astrogrid.common.bean;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Calendar;
 
-import javax.xml.namespace.QName;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.axis.message.MessageElement;
-import org.apache.axis.types.Id;
 import org.apache.axis.types.NMToken;
-import org.apache.axis.types.NMTokens;
-import org.apache.axis.utils.XMLUtils;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Text;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import org.astrogrid.applications.beans.v1.ApplicationBase;
-import org.astrogrid.applications.beans.v1.ApplicationList;
-import org.astrogrid.applications.beans.v1.Interface;
-import org.astrogrid.applications.beans.v1.InterfacesType;
-import org.astrogrid.applications.beans.v1.ParameterRef;
-import org.astrogrid.applications.beans.v1.Parameters;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
-import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
-import org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentation;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType;
 import org.astrogrid.jes.types.v1.cea.axis.InputListType;
@@ -121,6 +95,10 @@ public class Castor2Axis {
    
    public static ParameterValue convert(org.astrogrid.applications.beans.v1.parameters.ParameterValue parameterValue)
    {
+	if (logger.isTraceEnabled()) {
+		logger.trace("convert(org.astrogrid.applications.beans.v1.parameters.ParameterValue) - start");
+	}
+
       ParameterValue result = new ParameterValue();
       result.setName(parameterValue.getName());
       if (parameterValue.getEncoding() != null) {

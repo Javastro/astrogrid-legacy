@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: XhtmlDocumentation.java,v 1.29 2004/08/28 07:29:31 pah Exp $
+ * $Id: XhtmlDocumentation.java,v 1.30 2004/08/30 17:36:48 jdt Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -25,7 +25,7 @@ import org.xml.sax.ContentHandler;
  * should really reference the XHTML shema, but just did this for
  * convienience
  * 
- * @version $Revision: 1.29 $ $Date: 2004/08/28 07:29:31 $
+ * @version $Revision: 1.30 $ $Date: 2004/08/30 17:36:48 $
  */
 public class XhtmlDocumentation extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

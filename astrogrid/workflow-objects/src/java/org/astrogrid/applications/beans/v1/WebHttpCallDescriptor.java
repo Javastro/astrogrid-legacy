@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: WebHttpApplicationDescriptor.java,v 1.3 2004/08/28 07:29:31 pah Exp $
+ * $Id: WebHttpCallDescriptor.java,v 1.2 2004/08/30 17:36:47 jdt Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -17,11 +17,11 @@ import org.exolab.castor.xml.XMLFieldDescriptor;
 import org.exolab.castor.xml.validators.*;
 
 /**
- * Class WebHttpApplicationDescriptor.
+ * Class WebHttpCallDescriptor.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/08/28 07:29:31 $
+ * @version $Revision: 1.2 $ $Date: 2004/08/30 17:36:47 $
  */
-public class WebHttpApplicationDescriptor extends org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor {
+public class WebHttpCallDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
 
       //--------------------------/
@@ -53,11 +53,10 @@ public class WebHttpApplicationDescriptor extends org.astrogrid.applications.bea
      //- Constructors -/
     //----------------/
 
-    public WebHttpApplicationDescriptor() {
+    public WebHttpCallDescriptor() {
         super();
-        setExtendsWithoutFlatten(new org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor());
         nsURI = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
-        xmlName = "WebHttpApplication";
+        xmlName = "WebHttpCall";
         
         //-- set grouping compositor
         setCompositorAsSequence();
@@ -69,28 +68,27 @@ public class WebHttpApplicationDescriptor extends org.astrogrid.applications.bea
         //-- initialize element descriptors
         
         //-- _URL
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_URL", "URL", org.exolab.castor.xml.NodeType.Element);
-        desc.setImmutable(true);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.HttpURLType.class, "_URL", "URL", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
-                WebHttpApplication target = (WebHttpApplication) object;
+                WebHttpCall target = (WebHttpCall) object;
                 return target.getURL();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
-                    WebHttpApplication target = (WebHttpApplication) object;
-                    target.setURL( (java.lang.String) value);
+                    WebHttpCall target = (WebHttpCall) object;
+                    target.setURL( (org.astrogrid.applications.beans.v1.HttpURLType) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
+                return new org.astrogrid.applications.beans.v1.HttpURLType();
             }
         } );
         desc.setHandler(handler);
@@ -103,12 +101,44 @@ public class WebHttpApplicationDescriptor extends org.astrogrid.applications.bea
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         fieldValidator.setMinOccurs(1);
         { //-- local scope
-            StringValidator typeValidator = new StringValidator();
-            typeValidator.setWhiteSpace("preserve");
-            fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
-    } //-- org.astrogrid.applications.beans.v1.WebHttpApplicationDescriptor()
+        //-- _simpleParameterList
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.SimpleParameter.class, "_simpleParameterList", "SimpleParameter", org.exolab.castor.xml.NodeType.Element);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                WebHttpCall target = (WebHttpCall) object;
+                return target.getSimpleParameter();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    WebHttpCall target = (WebHttpCall) object;
+                    target.addSimpleParameter( (org.astrogrid.applications.beans.v1.SimpleParameter) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new org.astrogrid.applications.beans.v1.SimpleParameter();
+            }
+        } );
+        desc.setHandler(handler);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1");
+        desc.setMultivalued(true);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _simpleParameterList
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        fieldValidator.setMinOccurs(0);
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+    } //-- org.astrogrid.applications.beans.v1.WebHttpCallDescriptor()
 
 
       //-----------/
@@ -128,7 +158,7 @@ public class WebHttpApplicationDescriptor extends org.astrogrid.applications.bea
      */
     public org.exolab.castor.mapping.ClassDescriptor getExtends()
     {
-        return super.getExtends();
+        return null;
     } //-- org.exolab.castor.mapping.ClassDescriptor getExtends() 
 
     /**
@@ -136,8 +166,6 @@ public class WebHttpApplicationDescriptor extends org.astrogrid.applications.bea
      */
     public org.exolab.castor.mapping.FieldDescriptor getIdentity()
     {
-        if (identity == null)
-            return super.getIdentity();
         return identity;
     } //-- org.exolab.castor.mapping.FieldDescriptor getIdentity() 
 
@@ -146,7 +174,7 @@ public class WebHttpApplicationDescriptor extends org.astrogrid.applications.bea
      */
     public java.lang.Class getJavaClass()
     {
-        return org.astrogrid.applications.beans.v1.WebHttpApplication.class;
+        return org.astrogrid.applications.beans.v1.WebHttpCall.class;
     } //-- java.lang.Class getJavaClass() 
 
     /**

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: SummaryTypeDescriptor.java,v 1.7 2004/08/28 07:29:32 pah Exp $
+ * $Id: SummaryTypeDescriptor.java,v 1.8 2004/08/30 17:36:48 jdt Exp $
  */
 
 package org.astrogrid.registry.beans.resource;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class SummaryTypeDescriptor.
  * 
- * @version $Revision: 1.7 $ $Date: 2004/08/28 07:29:32 $
+ * @version $Revision: 1.8 $ $Date: 2004/08/30 17:36:48 $
  */
 public class SummaryTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ActivityContainerDescriptor.java,v 1.22 2004/08/28 07:29:31 pah Exp $
+ * $Id: ActivityContainerDescriptor.java,v 1.23 2004/08/30 17:36:48 jdt Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ActivityContainerDescriptor.
  * 
- * @version $Revision: 1.22 $ $Date: 2004/08/28 07:29:31 $
+ * @version $Revision: 1.23 $ $Date: 2004/08/30 17:36:48 $
  */
 public class ActivityContainerDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor {
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: OptionListDescriptor.java,v 1.1 2004/08/28 07:29:31 pah Exp $
+ * $Id: OptionListDescriptor.java,v 1.2 2004/08/30 17:36:48 jdt Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class OptionListDescriptor.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/08/28 07:29:31 $
+ * @version $Revision: 1.2 $ $Date: 2004/08/30 17:36:48 $
  */
 public class OptionListDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

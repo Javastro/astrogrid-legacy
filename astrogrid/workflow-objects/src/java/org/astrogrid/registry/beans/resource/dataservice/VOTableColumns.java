@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: VOTableColumns.java,v 1.7 2004/08/28 07:29:31 pah Exp $
+ * $Id: VOTableColumns.java,v 1.8 2004/08/30 17:36:48 jdt Exp $
  */
 
 package org.astrogrid.registry.beans.resource.dataservice;
@@ -31,7 +31,7 @@ import org.xml.sax.ContentHandler;
  *  the Capability element.
  *  
  * 
- * @version $Revision: 1.7 $ $Date: 2004/08/28 07:29:31 $
+ * @version $Revision: 1.8 $ $Date: 2004/08/30 17:36:48 $
  */
 public class VOTableColumns extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: TD.java,v 1.7 2004/08/28 07:29:31 pah Exp $
+ * $Id: TD.java,v 1.8 2004/08/30 17:36:47 jdt Exp $
  */
 
 package org.astrogrid.registry.beans.resource.votable;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class TD.
  * 
- * @version $Revision: 1.7 $ $Date: 2004/08/28 07:29:31 $
+ * @version $Revision: 1.8 $ $Date: 2004/08/30 17:36:47 $
  */
 public class TD extends org.astrogrid.registry.beans.resource.votable.AnyTEXT 
 implements java.io.Serializable

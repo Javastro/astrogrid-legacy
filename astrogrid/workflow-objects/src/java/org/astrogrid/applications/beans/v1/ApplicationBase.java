@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ApplicationBase.java,v 1.19 2004/08/28 07:29:31 pah Exp $
+ * $Id: ApplicationBase.java,v 1.20 2004/08/30 17:36:48 jdt Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import org.astrogrid.applications.beans.v1.types.ApplicationKindType;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -24,7 +25,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Base Application Description
  * 
- * @version $Revision: 1.19 $ $Date: 2004/08/28 07:29:31 $
+ * @version $Revision: 1.20 $ $Date: 2004/08/30 17:36:48 $
  */
 public class ApplicationBase extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -44,6 +45,11 @@ implements java.io.Serializable
      * Field _instanceClass
      */
     private java.lang.String _instanceClass;
+
+    /**
+     * Field _applicationType
+     */
+    private org.astrogrid.applications.beans.v1.types.ApplicationKindType _applicationType;
 
     /**
      * Field _parameters
@@ -99,6 +105,13 @@ implements java.io.Serializable
             }
             else if (temp._instanceClass != null)
                 return false;
+            if (this._applicationType != null) {
+                if (temp._applicationType == null) return false;
+                else if (!(this._applicationType.equals(temp._applicationType))) 
+                    return false;
+            }
+            else if (temp._applicationType != null)
+                return false;
             if (this._parameters != null) {
                 if (temp._parameters == null) return false;
                 else if (!(this._parameters.equals(temp._parameters))) 
@@ -117,6 +130,16 @@ implements java.io.Serializable
         }
         return false;
     } //-- boolean equals(java.lang.Object) 
+
+    /**
+     * Returns the value of field 'applicationType'.
+     * 
+     * @return the value of field 'applicationType'.
+     */
+    public org.astrogrid.applications.beans.v1.types.ApplicationKindType getApplicationType()
+    {
+        return this._applicationType;
+    } //-- org.astrogrid.applications.beans.v1.types.ApplicationKindType getApplicationType() 
 
     /**
      * Returns the value of field 'instanceClass'.
@@ -195,6 +218,16 @@ implements java.io.Serializable
         
         Marshaller.marshal(this, handler);
     } //-- void marshal(org.xml.sax.ContentHandler) 
+
+    /**
+     * Sets the value of field 'applicationType'.
+     * 
+     * @param applicationType the value of field 'applicationType'.
+     */
+    public void setApplicationType(org.astrogrid.applications.beans.v1.types.ApplicationKindType applicationType)
+    {
+        this._applicationType = applicationType;
+    } //-- void setApplicationType(org.astrogrid.applications.beans.v1.types.ApplicationKindType) 
 
     /**
      * Sets the value of field 'instanceClass'.

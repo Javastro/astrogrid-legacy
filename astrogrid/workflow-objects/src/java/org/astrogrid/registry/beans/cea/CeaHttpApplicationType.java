@@ -2,10 +2,10 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: WebHttpApplication.java,v 1.3 2004/08/28 07:29:31 pah Exp $
+ * $Id: CeaHttpApplicationType.java,v 1.2 2004/08/30 17:36:48 jdt Exp $
  */
 
-package org.astrogrid.applications.beans.v1;
+package org.astrogrid.registry.beans.cea;
 
   //---------------------------------/
  //- Imported classes and packages -/
@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import org.astrogrid.applications.beans.v1.WebHttpApplicationSetup;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -22,11 +23,11 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Class WebHttpApplication.
+ * Class CeaHttpApplicationType.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/08/28 07:29:31 $
+ * @version $Revision: 1.2 $ $Date: 2004/08/30 17:36:48 $
  */
-public class WebHttpApplication extends org.astrogrid.applications.beans.v1.ApplicationBase 
+public class CeaHttpApplicationType extends org.astrogrid.registry.beans.cea.CeaApplicationType 
 implements java.io.Serializable
 {
 
@@ -36,18 +37,18 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _URL
+     * Field _ceaHttpAdapterSetup
      */
-    private java.lang.String _URL;
+    private org.astrogrid.applications.beans.v1.WebHttpApplicationSetup _ceaHttpAdapterSetup;
 
 
       //----------------/
      //- Constructors -/
     //----------------/
 
-    public WebHttpApplication() {
+    public CeaHttpApplicationType() {
         super();
-    } //-- org.astrogrid.applications.beans.v1.WebHttpApplication()
+    } //-- org.astrogrid.registry.beans.cea.CeaHttpApplicationType()
 
 
       //-----------/
@@ -67,15 +68,15 @@ implements java.io.Serializable
         if (super.equals(obj)==false)
             return false;
         
-        if (obj instanceof WebHttpApplication) {
+        if (obj instanceof CeaHttpApplicationType) {
         
-            WebHttpApplication temp = (WebHttpApplication)obj;
-            if (this._URL != null) {
-                if (temp._URL == null) return false;
-                else if (!(this._URL.equals(temp._URL))) 
+            CeaHttpApplicationType temp = (CeaHttpApplicationType)obj;
+            if (this._ceaHttpAdapterSetup != null) {
+                if (temp._ceaHttpAdapterSetup == null) return false;
+                else if (!(this._ceaHttpAdapterSetup.equals(temp._ceaHttpAdapterSetup))) 
                     return false;
             }
-            else if (temp._URL != null)
+            else if (temp._ceaHttpAdapterSetup != null)
                 return false;
             return true;
         }
@@ -83,14 +84,14 @@ implements java.io.Serializable
     } //-- boolean equals(java.lang.Object) 
 
     /**
-     * Returns the value of field 'URL'.
+     * Returns the value of field 'ceaHttpAdapterSetup'.
      * 
-     * @return the value of field 'URL'.
+     * @return the value of field 'ceaHttpAdapterSetup'.
      */
-    public java.lang.String getURL()
+    public org.astrogrid.applications.beans.v1.WebHttpApplicationSetup getCeaHttpAdapterSetup()
     {
-        return this._URL;
-    } //-- java.lang.String getURL() 
+        return this._ceaHttpAdapterSetup;
+    } //-- org.astrogrid.applications.beans.v1.WebHttpApplicationSetup getCeaHttpAdapterSetup() 
 
     /**
      * Method isValid
@@ -131,25 +132,26 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'URL'.
+     * Sets the value of field 'ceaHttpAdapterSetup'.
      * 
-     * @param URL the value of field 'URL'.
+     * @param ceaHttpAdapterSetup the value of field
+     * 'ceaHttpAdapterSetup'.
      */
-    public void setURL(java.lang.String URL)
+    public void setCeaHttpAdapterSetup(org.astrogrid.applications.beans.v1.WebHttpApplicationSetup ceaHttpAdapterSetup)
     {
-        this._URL = URL;
-    } //-- void setURL(java.lang.String) 
+        this._ceaHttpAdapterSetup = ceaHttpAdapterSetup;
+    } //-- void setCeaHttpAdapterSetup(org.astrogrid.applications.beans.v1.WebHttpApplicationSetup) 
 
     /**
-     * Method unmarshalWebHttpApplication
+     * Method unmarshalCeaHttpApplicationType
      * 
      * @param reader
      */
-    public static org.astrogrid.applications.beans.v1.WebHttpApplication unmarshalWebHttpApplication(java.io.Reader reader)
+    public static org.astrogrid.registry.beans.cea.CeaHttpApplicationType unmarshalCeaHttpApplicationType(java.io.Reader reader)
         throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
     {
-        return (org.astrogrid.applications.beans.v1.WebHttpApplication) Unmarshaller.unmarshal(org.astrogrid.applications.beans.v1.WebHttpApplication.class, reader);
-    } //-- org.astrogrid.applications.beans.v1.WebHttpApplication unmarshalWebHttpApplication(java.io.Reader) 
+        return (org.astrogrid.registry.beans.cea.CeaHttpApplicationType) Unmarshaller.unmarshal(org.astrogrid.registry.beans.cea.CeaHttpApplicationType.class, reader);
+    } //-- org.astrogrid.registry.beans.cea.CeaHttpApplicationType unmarshalCeaHttpApplicationType(java.io.Reader) 
 
     /**
      * Method validate
