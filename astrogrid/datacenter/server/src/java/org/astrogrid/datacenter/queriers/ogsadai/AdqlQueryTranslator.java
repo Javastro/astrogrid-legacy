@@ -1,4 +1,4 @@
-/*$Id: AdqlQueryTranslator.java,v 1.6 2004/04/05 10:29:42 kea Exp $
+/*$Id: AdqlQueryTranslator.java,v 1.7 2004/04/16 16:42:14 eca Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,9 +57,10 @@ import org.astrogrid.datacenter.adql.generated.ogsadai.UnaryExpr;
 import org.astrogrid.datacenter.adql.generated.ogsadai.UnionSearch;
 import org.astrogrid.datacenter.adql.generated.ogsadai.Where;
 import org.astrogrid.datacenter.adql.generated.ogsadai.XMatch;
-import org.astrogrid.datacenter.queriers.sql.deprecated.QueryTranslator;
+import org.astrogrid.datacenter.queriers.sql.deprecated.ogsadai.QueryTranslator;
 import org.astrogrid.datacenter.queriers.sql.deprecated.TranslationFrame;
 
+import org.w3c.dom.Element;
 
 /** ADQL to Postgres SQL translator.
  * Based on ADQL to Vanilla SQL translator.
@@ -272,6 +273,7 @@ public class AdqlQueryTranslator extends QueryTranslator {
 	  else if(esi.getUnaryExpr() != null){
 	  	   
 		   String expr = translate(esi.getUnaryExpr().getExpr());
+		   QOM testQom = esi.getUnaryExpr().getExpr(); // experimental: ECA 16/04/04
 		   String operator = esi.getUnaryExpr().getOperator().toString();
 		   buff.append(operator + "(" + expr + ")");
 	  } 
@@ -692,6 +694,10 @@ public Class getResultType() {
 
 /*
  $Log: AdqlQueryTranslator.java,v $
+ Revision 1.7  2004/04/16 16:42:14  eca
+ Updated to call ADQLv06Utils - a class specific to ADQL v06. This will only 
+ be called by the Postgres-specific query translator.
+
  Revision 1.6  2004/04/05 10:29:42  kea
  Fixed rogue characters - additional brackets, missing commas.
 

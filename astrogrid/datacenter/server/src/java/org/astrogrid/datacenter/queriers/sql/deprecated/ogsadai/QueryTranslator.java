@@ -1,4 +1,4 @@
-/*$Id: QueryTranslator.java,v 1.2 2004/04/16 16:41:48 eca Exp $
+/*$Id: QueryTranslator.java,v 1.1 2004/04/16 16:41:48 eca Exp $
  * Created on 02-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.queriers.sql.deprecated;
+package org.astrogrid.datacenter.queriers.sql.deprecated.ogsadai;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,10 +16,11 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.adql.ADQLException;
-import org.astrogrid.datacenter.adql.ADQLUtils;
+import org.astrogrid.datacenter.adql.ogsadai.ADQLv06Utils;
 import org.astrogrid.datacenter.adql.DynamicVisitor;
 import org.astrogrid.datacenter.adql.QOM;
 import org.astrogrid.datacenter.queriers.spi.Translator;
+import org.astrogrid.datacenter.queriers.sql.deprecated.TranslationFrame;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Element;
@@ -46,11 +47,9 @@ public abstract  class QueryTranslator implements DynamicVisitor, Translator {
     */
    public Object translate(Element query) throws ADQLException, MarshalException, ValidationException
    {
-       log.debug("translating query");
-       System.out.println("About to translate query with ADQLUtils.unmarshalSelect(query)");
-      QOM qom = ADQLUtils.unmarshalSelect(query);
-	System.out.println("FINISHED  translating query with ADQLUtils.unmarshalSelect(query)");
-      return translate(qom);
+        log.debug("translating query");
+        QOM qom = ADQLv06Utils.unmarshalSelect(query);
+        return translate(qom);
    }
 
    /**
@@ -121,7 +120,7 @@ public abstract  class QueryTranslator implements DynamicVisitor, Translator {
 
 /*
 $Log: QueryTranslator.java,v $
-Revision 1.2  2004/04/16 16:41:48  eca
+Revision 1.1  2004/04/16 16:41:48  eca
 Updated to call ADQLv06Utils - a class specific to ADQL v06. This will only 
 be called by the Postgres-specific query translator.
 

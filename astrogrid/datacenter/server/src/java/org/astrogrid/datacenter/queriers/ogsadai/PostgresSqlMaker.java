@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.6 2004/03/30 16:21:24 eca and mch
+/*$Id: PostgresSqlMaker.java,v 1.9 2004/04/16 16:42:37 eca Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,65 +12,65 @@ package org.astrogrid.datacenter.queriers.ogsadai;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
 import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
-import org.astrogrid.datacenter.adql.generated.ogsadai.Select; 
-import org.w3c.dom.Node;
-import org.exolab.castor.xml.Unmarshaller;
+
 
 /**
  * Produced Postgres-specific SQL
  */
 public class PostgresSqlMaker extends StdSqlMaker {
 
-   private static final Log log = LogFactory.getLog(PostgresSqlMaker.class);
+   private static final Log log = LogFactory.getLog(PostgresSqlMaker2.class);
 
    /**
     * Constructs an SQL statement for the given ADQL
     */
    public String fromAdql(AdqlQuery query) {
       //should use appropriate xslt, but use deprecated stuff for now
-	
+
       try {
         Element queryBody = query.toDom().getDocumentElement();
-        String rootName = query.toDom().getDocumentElement().getNodeName();
-        if (!(rootName.equals("Select"))){
-        	return "Not valid ADQL: root element must be 'Select'.";
-        }
-        //Node node = queryBody.getFirstChild(); 
-        
-		//String rootName = queryBody.getNodeName(); 
-		Select selectQuery = (Select)Unmarshaller.unmarshal(Select.class, queryBody); 
-		
+        Translator trans = new AdqlQueryTranslator();
+        // do the translation
+        Object intermediateRep = null;
 
-		try {  
-		AdqlQueryTranslator visitor = new AdqlQueryTranslator();
-		String sql = visitor.translate(selectQuery);
-		 return sql;
-		}catch (Exception e) { 
-			e.printStackTrace(); 
-			return "PSM ERROR: Caught Exception " + e.getMessage(); 
-		} 
-	
-	  } catch (Exception e) { 
-		return "PSM ERROR: Caught Exception" + e.getMessage(); 
-	  }
-   }
+        Class expectedType = null;
+        try { // don't trust it.
+            intermediateRep = trans.translate(queryBody);
+            expectedType = trans.getResultType();
+            if (! expectedType.isInstance(intermediateRep)) { // checks result is non-null and the right type.
+                throw new DatabaseAccessException("Translation result " + intermediateRep.getClass().getName() + " not of expected type " + expectedType.getName());
+            }
+        } catch (Throwable t) {
+            throw new RuntimeException("Translation phase failed:" + t.getMessage());
+        }
+		return (String) intermediateRep;
+     }
+     catch (QueryException se) {
+        throw new IllegalArgumentException("Bad ADQL/XML"+se);
+     }
+
+   }  
 }
 
 
 /*
 $Log: PostgresSqlMaker.java,v $
-Revision 1.8  2004/04/15 17:05:09  eca
-Added very basic ADQL error handling; checks for root element "Select".
+Revision 1.9  2004/04/16 16:42:37  eca
+Updated to call ADQLv06Utils - a class specific to ADQL v06. This will only 
+be called by the Postgres-specific query translator.
 
-Revision 1.7  2004/04/02 03:12:12  eca
-PostgresSqlMaker now unmarshalls the adql query as a node, using
-ADQLUtils.Unmarshall rather than org.astrogrid.datacenter.adql.generated.Select Unmarshall.
+Revision 1.2  2004/04/02 03:27:49  eca
+Fixed package declaration to include "deprecated".
 
-Also, removed function to convert DEC to DECL - now obsolete as 
-ogsadai.AdqlQueryTranslator should do all necessary conversions.
+Revision 1.1  2004/04/02 03:09:52  eca
+Created "deprecated" folder to hold old version of PostgresSqlMaker. 
+Just in case.
 
 Revision 1.6  2004/03/30 16:21:24  eca
 Updated ogsadai Postgres-optimized query translator, updated class
