@@ -1,4 +1,4 @@
-/*$Id: UCDResolverTest.java,v 1.1 2004/10/05 17:06:53 mch Exp $
+/*$Id: UCDResolverTest.java,v 1.2 2004/10/05 17:08:22 mch Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,10 @@
 package org.astrogrid.datacenter.deployment.vizier.ucdresolver;
 
 import java.rmi.RemoteException;
-
 import javax.xml.rpc.ServiceException;
-
 import junit.framework.TestCase;
+import org.astrogrid.datacenter.impl.cds.ucdresolver.InvalidUcdException;
+import org.astrogrid.datacenter.impl.cds.ucdresolver.UcdResolverDelegate;
 
 /** Test the ucd resolver web service.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Oct-2003
@@ -82,6 +82,9 @@ public class UCDResolverTest extends TestCase {
 
 /*
 $Log: UCDResolverTest.java,v $
+Revision 1.2  2004/10/05 17:08:22  mch
+Fixed package names and imports
+
 Revision 1.1  2004/10/05 17:06:53  mch
 Moved service implementation tests from unit tests to integration tests
 

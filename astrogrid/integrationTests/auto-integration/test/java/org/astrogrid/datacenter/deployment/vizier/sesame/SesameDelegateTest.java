@@ -1,24 +1,22 @@
-/*$Id: SesameDelegateTest.java,v 1.1 2004/10/05 17:06:53 mch Exp $
+/*$Id: SesameDelegateTest.java,v 1.2 2004/10/05 17:08:22 mch Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.cdsdelegate.sesame;
+package org.astrogrid.datacenter.deployment.vizier.sesame;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-
 import javax.xml.parsers.ParserConfigurationException;
-
+import junit.framework.TestCase;
+import org.astrogrid.datacenter.impl.cds.sesame.SesameDelegate;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
-import junit.framework.TestCase;
 
 /** test that exercises methods of sesame delegate
  * just tests that each doesn't return null for now. uncomment println statements to see what the service returns
@@ -63,7 +61,7 @@ public class SesameDelegateTest extends TestCase {
     }
     
     public void testResolveNameXML() throws ParserConfigurationException, SAXException, IOException {
-        Document doc = ses.resolveNameToXML(NAME);        
+        Document doc = ses.resolveNameToXML(NAME);
         assertNotNull(doc);
     }
     
@@ -89,8 +87,11 @@ public class SesameDelegateTest extends TestCase {
 }
 
 
-/* 
+/*
 $Log: SesameDelegateTest.java,v $
+Revision 1.2  2004/10/05 17:08:22  mch
+Fixed package names and imports
+
 Revision 1.1  2004/10/05 17:06:53  mch
 Moved service implementation tests from unit tests to integration tests
 

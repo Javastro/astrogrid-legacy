@@ -1,14 +1,14 @@
-/*$Id: AladinImageTest.java,v 1.1 2004/10/05 17:06:53 mch Exp $
+/*$Id: AladinImageTest.java,v 1.2 2004/10/05 17:08:22 mch Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.cdsdelegate.aladinimage;
+package org.astrogrid.datacenter.deployment.vizier.aladinimage;
 
 import junit.framework.TestCase;
 
@@ -35,8 +35,11 @@ public class AladinImageTest extends TestCase {
 }
 
 
-/* 
+/*
 $Log: AladinImageTest.java,v $
+Revision 1.2  2004/10/05 17:08:22  mch
+Fixed package names and imports
+
 Revision 1.1  2004/10/05 17:06:53  mch
 Moved service implementation tests from unit tests to integration tests
 
