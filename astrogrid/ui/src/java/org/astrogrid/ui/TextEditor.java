@@ -154,7 +154,7 @@ public class TextEditor extends StandardDialog implements ActionListener
          StringBuffer textBuffer = new StringBuffer();
          while ( (c = in.read()) != -1)
          {
-            textBuffer.append(c);
+            textBuffer.append( (char) c);
          }
          editorPane.setText(textBuffer.toString());
          in.close();
