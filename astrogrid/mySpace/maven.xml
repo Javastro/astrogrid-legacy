@@ -10,12 +10,11 @@
 	</preGoal>
 
 	<postGoal name="war:webapp">
-		<echo message="${maven.war.src}"/>
-		<echo message="Copying xml templates and properties across to src directory"/>
-		<copy todir="${maven.build.dest}" overwrite="yes">
+		<j:set var="classes.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('webapp.build.classes')}" />
+		<echo message="Copying xml templates and properties across from ${maven.conf.dir} to ${classes.dir} directory"/>
+		<copy todir="${classes.dir}" overwrite="yes">
 			<fileset dir="${maven.conf.dir}">
-				<!--<exclude name = "ASTROGRID_*config.xml"/>-->
-				<!--temporary, don't exclude this , needs to sit on classpath, so file will get wiped following any redeployment anyway-->
+				<exclude name = "ASTROGRID_*config.xml"/>
 				<!-- exclude this because we don't want to overwrite an edited one-->
 			</fileset>
 		</copy>

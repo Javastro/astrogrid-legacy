@@ -202,19 +202,6 @@
 			</properties>
 		</dependency>
 	</dependencies>
-	<resources>
-		<resource>
-			<directory>${basedir}</directory>
-			<includes>
-				<include>src/webapp/WEB-INF/server-config.wsdd</include>
-				<include>${maven.build.dest}/*.xmltemplate</include>
-				<include>${maven.build.dest}/*.xml</include>
-				<include>${maven.build.dest}/*.properties</include>
-				<include>${maven.build.dest}/*.servers</include>
-				<include>${maven.build.dest}/*.sh</include>
-			</includes>
-		</resource>
-	</resources>
 	<reports>
 		<report>
       maven-changelog-plugin
