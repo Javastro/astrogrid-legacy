@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerier.java,v 1.1 2003/08/26 16:41:46 mch Exp $
+ * $Id: DummyQuerier.java,v 1.2 2003/08/27 16:33:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.datacenter.queriers;
 
 import java.util.Date;
+import org.astrogrid.datacenter.query.Query;
 
 /**
  * DummyQuerier.java
@@ -16,7 +17,7 @@ import java.util.Date;
 
 public class DummyQuerier implements DatabaseQuerier
 {
-   public QueryResults queryDatabase(org.astrogrid.datacenter.query.Query query)
+   public QueryResults queryDatabase(Query query) throws DatabaseAccessException
    {
       Date today = new Date();
       return new DummyQueryResults("Created "+ today.getDate()+"-"+today.getMonth()+"-"+today.getYear()+" "+today.getHours()+":"+today.getMinutes()+":"+today.getSeconds());

@@ -1,5 +1,5 @@
 /*
- * $Id: TestDummies.java,v 1.1 2003/08/26 16:41:46 mch Exp $
+ * $Id: TestDummies.java,v 1.2 2003/08/27 16:34:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,7 +25,7 @@ public class TestDummies extends TestCase
    /**
     * Tests the dummy queriers and results
     */
-   public void testDummies() throws IOException
+   public void testDummies() throws IOException, DatabaseAccessException
    {
       System.out.println("Testing Dummy queriers...");
 
