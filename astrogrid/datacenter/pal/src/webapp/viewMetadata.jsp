@@ -26,13 +26,28 @@
 <div id='bodyColumn'>
 
 <h1>Metadata for <%=DataServer.getDatacenterName() %></h1>
-
-<!--- list tables & columns --->
 <%
    VoDescriptionServer.clearCache(); //force refresh
-   Document metadata = VoDescriptionServer.getVoDescription();
+   //Document voDescription = VoDescriptionServer.getVoDescription();
+%>
+<h2>Authority</h2>
+<%
+   Element authorityResource = VoDescriptionServer.getAuthorityResource();
+   Element identity = (Element) authorityResource.getElementsByTagName("Identity").item(0);
+   if (authorityResource != null) {
+      out.println("Authority ID: "+DomHelper.getValue(identity, "AuthorityID"));
+      out.println("Resource Key: "+DomHelper.getValue(identity, "ResourceKey"));
+   } //end if authority resource
+   
+   Element rdbmsResource = VoDescriptionServer.getResource("RdbmsMetadata");
+   if (rdbmsResource != null) {
+%>
+
+<h2>RDBMS Metadata</h2>
+<!--- list tables & columns --->
+<%
    try {
-      NodeList tables = metadata.getElementsByTagName("Table");
+      NodeList tables = rdbmsResource.getElementsByTagName("Table");
       for (int table=0;table<tables.getLength();table++) {
          Element tableElement = (Element) tables.item(table);
          String tableName = tableElement.getAttribute("name");
@@ -85,7 +100,8 @@
 %>
      (There is no metadata file specified yet for this datacenter: <%= e %>)
 <%
-   }
+   } //end catch
+} // end if rdbmsMetadata exists
 %>
 
 <h2>Raw Metadata</h2>
