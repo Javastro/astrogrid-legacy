@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns:wsdd="http://xml.apache.org/axis/wsdd/" 
+            xmlns:java="http://xml.apache.org/axis/wsdd/providers/java" 
+            xmlns="http://xml.apache.org/axis/wsdd/">
+            
+  <globalConfiguration>
+    <parameter value="admin" name="adminPassword"/>
+    <parameter value="org.apache.axis.attachments.AttachmentsImpl" name="attachments.implementation"/>
+    <parameter value="true" name="sendXsiTypes"/>
+    <parameter value="true" name="sendMultiRefs"/>
+    <parameter value="true" name="axis.development.system"/>
+    <parameter value="true" name="sendXMLDeclaration"/>
+    <parameter value="true" name="axis.sendMinimizedElements"/>
+    <requestFlow>
+      <handler type="java:org.apache.axis.handlers.JWSHandler">
+        <parameter value="session" name="scope"/>
+      </handler>
+      <handler type="java:org.apache.axis.handlers.JWSHandler">
+        <parameter value="request" name="scope"/>
+        <parameter value=".jwr" name="extension"/>
+      </handler>
+    </requestFlow>
+  </globalConfiguration>
+
+  <transport name="http">
+    <requestFlow>
+      <handler type="java:org.apache.axis.handlers.http.URLMapper"/>
+      <handler type="java:org.apache.axis.handlers.http.HTTPAuthHandler"/>
+    </requestFlow>
+  </transport>
+
+  <transport name="local">
+    <responseFlow>
+      <handler type="java:org.apache.axis.transport.local.LocalResponder"/>
+    </responseFlow>
+  </transport>
+
+  <service name="security-sample" provider="java:RPC">
+    <requestFlow>
+      <handler type="java:org.astrogrid.security.ServiceCredentialHandler"/>
+    </requestFlow>
+    <parameter name="className" value="org.astrogrid.security.sample.SampleImpl"/>
+    <parameter name="allowedMethods" value="*"/>
+  </service> 
+
+</deployment>
