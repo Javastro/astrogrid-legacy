@@ -1,4 +1,4 @@
-/*$Id: AdqlQueryTranslator.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+/*$Id: AdqlQueryTranslator.java,v 1.2 2004/04/01 17:17:33 mch Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,9 @@ package org.astrogrid.datacenter.queriers.sql.deprecated;
 
 import org.astrogrid.datacenter.adql.generated.*;
 
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.adql.QOM;
+import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
 
 /** ADQL to Vanilla SQL translator.
  * <p>
@@ -143,13 +145,17 @@ public class AdqlQueryTranslator extends QueryTranslator {
       double searchDec = c.getDec().getValue();
       double searchRad = c.getRadius().getValue();
 
-      String objRA  = "t.RA"; //this isn't right
-      String objDec = "t.DEC"; //this isn't right
+      String table = SimpleConfig.getSingleton().getString(StdSqlMaker.CONE_SEARCH_TABLE_KEY);
+      String alias = table.substring(0,1);
+      
+      //get which columns given RA & DEC for cone searches
+      String raCol  = alias+"."+SimpleConfig.getSingleton().getString(StdSqlMaker.CONE_SEARCH_RA_COL_KEY);
+      String decCol = alias+"."+SimpleConfig.getSingleton().getString(StdSqlMaker.CONE_SEARCH_DEC_COL_KEY);
 
       String gcRadius = "2 * ASIN( SQRT("+
-         "SIN(("+searchDec+"-"+objDec+")/2) * SIN(("+searchDec+"-"+objDec+")/2) +"+    //some sqls won't handle powers so multiply by self
-         "COS("+searchDec+") * COS("+objDec+") * "+
-         "SIN(("+searchRA+"-"+objRA+")/2) * SIN(("+searchRA+"-"+objRA+")/2)  "+ //some sqls won't handle powers so multiply by self
+         "SIN(("+searchDec+"-"+decCol+")/2) * SIN(("+searchDec+"-"+decCol+")/2) +"+    //some sqls won't handle powers so multiply by self
+         "COS("+searchDec+") * COS("+decCol+") * "+
+         "SIN(("+searchRA+"-"+raCol+")/2) * SIN(("+searchRA+"-"+raCol+")/2)  "+ //some sqls won't handle powers so multiply by self
       "))";
       
       stack.top().add(SEARCH,"("+gcRadius+") <"+searchRad);
@@ -359,6 +365,9 @@ public Class getResultType() {
 
 /*
  $Log: AdqlQueryTranslator.java,v $
+ Revision 1.2  2004/04/01 17:17:33  mch
+ Moved configuration-based circle columns from Postgres translator (bug)
+
  Revision 1.1  2004/03/12 04:45:26  mch
  It05 MCH Refactor
 
