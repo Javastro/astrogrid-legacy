@@ -1,4 +1,4 @@
-<%@ page import="org.astrogrid.registry.server.query.*,
+<%@ page import="org.astrogrid.registry.server.query.RegistryService,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
