@@ -12,6 +12,21 @@
 
 	<description><![CDATA[
 	Everything you need to publish a data archive, wrapped up in one big bundle.
+	<p />
+	 The name of the war produced by this project is <tt>astrogrid-datacenter-pal</tt>
+	 To add a dependency on this project to your own project, add the following to your <tt>project.xml</tt>
+	 <source>
+	   &lt;dependencies&gt;
+	   ...
+	  	&lt;dependency&gt;
+		&lt;groupId&gt;astrogrid-datacenter&lt;/groupId&gt;
+		&lt;artifactId&gt;astrogrid-datacenter-pal&lt;/artifactId&gt;
+		&lt;version&gt;SNAPSHOT&lt;/version&gt;
+		&lt;type&gt;war&lt;/type&gt;
+		&lt;/dependency&gt;
+	   ...
+	   &lt;dependencies&gt;
+	 </source>
 	 	]]>
 	</description>
 
@@ -33,13 +48,14 @@
 
   <!-- jar files the project is dependent on -->
   <dependencies>
-  	<!-- dunno if this is going to be useful or not..
+  	<!-- ensure we get run last of all -->
+	<!--
   	<dependency>
 		<groupId>astrogrid-datacenter</groupId>
 		<artifactId>astrogrid-datacenter-implementations</artifactId>
 		<version>SNAPSHOT</version>
 	</dependency>
-	-->
+-->
 	<dependency>
 		<groupId>astrogrid-datacenter</groupId>
 		<artifactId>astrogrid-datacenter-server</artifactId>
@@ -102,6 +118,10 @@
   </dependencies>
 
   <!-- build information for the project -->
-
+   <reports>
+    <report>
+      maven-license-plugin
+    </report>
+  </reports>
 </project>
 

@@ -1,32 +1,80 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
-<!-- location of generated source tree -->
-<property name="generated.src" location="${basedir}/generated/java" />
-<property name="generated.wsdd" location="${basedir}/generated/wsdd" />
+
+
+<property name="server.dir" location="${basedir}/../server" />
+<property name="delegate.dir" location="${basedir}/../client" />
+<property name="implementations.dir" location="${basedir}/../implementations" />
+<property name="webapp.root" location="${basedir}/target/astrogrid-datacenter-pal" />
 
 <!-- hook to add our own things to the mix -->
 <postGoal name="war:webapp">
 	<!-- so, what do I want to do.. -->
 	<attainGoal name="generate-doc" />
 	<attainGoal name="grab-delegate" />
+	<!--
 	<attainGoal name="grab-server" />
+	-->
+	<attainGoal name="grab-server-tests" />
 	<attainGoal name="grab-implementations" />
+	<attainGoal name="configure-webapp" />
 </postGoal>
 
+
 <goal name="generate-doc" description="generate documentation and place in webapp" >
+	<j:set var="maven.docs.dest" value="${webapp.root}" />
+	<j:set var="maven.docs.src" value="${basedir}/site-xdocs" />
+	<attainGoal name="site" />
 </goal>
 
 <goal name="grab-delegate" description="generate source and binary dists of the delegate, place in webapp, along with javadoc">
+	<mkdir dir="${webapp.root}/delegate-dist" />
+	<maven:maven descriptor="${delegate.dir}/project.xml" goals="dist" />
+	<move todir="${webapp.root}/delegate-dist">
+		<fileset dir="${delegate.dir}/target/distributions">
+			<include name="*.zip" />
+		</fileset>
+	</move>
+	<!-- maybe add bundle of the libs it depends on too??? -->
 </goal>
 
-<goal name="grab-server" description="generate source and binary dists of the server. place source dist and javadoc of server in webapp">
+<!-- not sure if we really want this..
+<goal name="grab-server" description="generate site and source dists of the server. place source dist and javadoc of server in webapp">
+	<maven:maven descriptor="${server.dir}/project.xml" goals="clean,site,dist:build-bin" />
+	<mkdir dir="${webapp.root}/server" />
+	<move todir="${webapp.root}/server">
+		<fileset dir="${server.dir}/target/astrogrid-datacenter-server-HEAD/bin/astrogrid-datacenter-server-HEAD/docs" />
+	</move>
+	<mkdir dir="${webapp.root}/server-dist"/>
+	<move todir="${webapp.root}/server-dist">
+		<fileset dir="${server.dir}/target/distributions" />
+	</move>
 </goal>
+-->
 
 <goal name="grab-server-tests" description="build server tests, grab into the webapp, hook jsp-testing front end onto them">
+	<maven:maven descriptor="${server.dir}/project.xml" goals="test:compile" />
+	<move todir="${webapp.root}/WEB-INF/classes">
+		<fileset dir="${server.dir}/target/test-classes" />
+	</move>
+	<!-- now need to set up, maybe -->
 </goal>
 
-<goal name="grab-implementations" description="generate source and binary dists of the implementations, place in webapp">
+<goal name="grab-implementations" description="generate source and binary dists of the implementations, unzip into webapp.">
+	<j:set var="goal" value="dist" />
+	${systemScope.setProperty('goal','dist')}
+	<maven:maven descriptor="${implementations.dir}/project.xml" goals="multiproject:goal" />
+	<mkdir dir="${webapp.root}/implementations" />
+	<unzip dest="${webapp.root}/implementations" >
+		<fileset dir="${implementations.dir}">
+			<include name="**/distributions/*.zip" />
+		</fileset>
+	</unzip>
+</goal>
+
+<goal name="configure-webapp" description="set properties in web.xml, server-config.wsdd, etc">
+	<!-- patch server-config with wsdd file contained in client.jar -->
 </goal>
 
 </project>

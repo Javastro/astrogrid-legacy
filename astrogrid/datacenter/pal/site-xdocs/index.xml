@@ -104,7 +104,7 @@ In </p><tt>${CATALINA_HOME}/conf/<b>server.xml</b></tt><p> add the following XML
 </p><p>
 <div class="nw">specify this location better</div>
 
-<pre>
+<source>
    &lt;DefaultContext&gt;
    	&lt;Resource name="jdbc/dataset-connection"
     		auth="Container"
@@ -132,7 +132,7 @@ In </p><tt>${CATALINA_HOME}/conf/<b>server.xml</b></tt><p> add the following XML
       		&lt;/parameter&gt;
     	&lt;/ResourceParams&gt;
     &lt;/DefaultContext&gt;
-</pre>
+</source>
 
 </p></subsection><subsection name="AstroGridConfig.properties"><p>
 Set the </p><tt>JNDI_SRC</tt><p> property as follows
