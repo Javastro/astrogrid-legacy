@@ -26,9 +26,9 @@
     <target name="checkRegistry">
         <input addProperty="input.astrogrid.registry.endpoint" defaultvalue="http://127.0.0.1:8080/astrogrid-registry-SNAPSHOT/"> Please enter the URL of your registry end-point </input>
     	<property name="astrogrid.registry.endpoint" value="${input.astrogrid.registry.endpoint}"/>
-        <echo>Attempting to contact the registry...</echo>
+        <echo>Attempting to contact the registry query endpoint...</echo>
         <tempfile property="page.check"/>
-        <get src="${astrogrid.registry.endpoint}" dest="${page.check}"/>
+        <get src="${astrogrid.registry.endpoint}${astrogrid.registry.query.offset}" dest="${page.check}"/>
         <echo>...OK</echo>
     </target>
     
@@ -107,7 +107,8 @@
 	
     <target name="updatePortalWar" depends="downloadPortal, input-jes-settings, input-email-settings">
         <filterset id="myfilter">
-            <filter token="CENTRALREGISTRY" value="${astrogrid.registry.endpoint}"/>
+            <filter token="CENTRALREGISTRYQUERY" value="${astrogrid.registry.endpoint}${astrogrid.registry.query.offset}"/>
+        	<filter token="CENTRALREGISTRYUPDATE" value="${astrogrid.registry.endpoint}${astrogrid.registry.update.offset}"/>
             <filter token="JOBENTRYSYSTEM" value="${input.astrogrid.jes.endpoint}" /> 
         	<filter token="SMTPSERVER" value="${input.mail.server}"/>
        		<filter token="SMTPUSER" value="${input.mail.user}"/>

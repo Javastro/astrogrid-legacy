@@ -12,10 +12,10 @@
     <Environment name="astrogrid.portal.admin.email" override="false" type="java.lang.String" value="@ADMINEMAIL@" 
         description="Administrator's address to whom registration requests are sent"/>
         
-    <Environment name="org.astrogrid.registry.query.endpoint" override="false" type="java.lang.String" value="@CENTRALREGISTRY@services/RegistryQuery" 
+    <Environment name="org.astrogrid.registry.query.endpoint" override="false" type="java.lang.String" value="@CENTRALREGISTRYQUERY@" 
         description="Registry Query Service endpoint"/>
         
-    <Environment name="org.astrogrid.registry.admin.endpoint" override="false" type="java.lang.String" value="@CENTRALREGISTRY@services/RegistryUpdate" 
+    <Environment name="org.astrogrid.registry.admin.endpoint" override="false" type="java.lang.String" value="@CENTRALREGISTRYUPDATE@" 
         description="Registry Admin Service endpoint"/>
         
     <!--for workflow/jes-->
