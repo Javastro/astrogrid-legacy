@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+  <body>
+
+  <title>AstroGrid CEA</title>
+
+    <menu name="CEA" >
+        <item name="Design Document" href="design/"/>
+     	<item name="Together Doc" href="http://www.astrogrid.org/maven/design/applications/" />   
+        <!-- would be nice to have a submenu here  - how? -->
+    	<item name="Schema"  href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/"/>
+     	<item name="Schema Documentation"  href="design/schemadoc/"/>
+      
+    </menu> 
+    <menu name="Background Information">
+    	<item name="Description on Wiki" href="http://wiki.astrogrid.org/bin/view/Astrogrid/ApplicationsIntegration" />
+    	<item name="Workflow Objects" href="../astrogrid-workflow-objects" />
+    		
+    </menu>
+    <links>
+       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
+       <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
+       <item name="CEA" href="http://www.astrogrid.org/maven/docs/snapshot/applications/index.html"/>
+       <item name="Workflow objects" href="../sastrogrid-workflow-objects/index.html"/>
+    </links>
+  </body>
+</project>
