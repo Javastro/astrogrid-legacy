@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<xs:schema targetNamespace="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1">
+	<xs:annotation>
+		<xs:appinfo>
+			<vm:SchemaName>VODataService</vm:SchemaName>
+			<vm:schemaPrefix>xs</vm:schemaPrefix>
+			<vm:targetPrefix>vs</vm:targetPrefix>
+		</xs:appinfo>
+		<xs:documentation>
+        An extension to the core resource metadata (VOResource) for 
+      	describing data collections and services.
+      </xs:documentation>
+		<xs:documentation>
+      	Diff 0.2-0.1: Service and subelements moved to VOResource core
+      </xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9" schemaLocation="./externalSchema/VOResource-v0.9.xsd"/>
+	<xs:import namespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" schemaLocation="AGApplicationBase.xsd"/>
+	<xs:import namespace="http://www.ivoa.net/xml/VOTable/v1.0" schemaLocation="./externalSchema/VOTable.xsd"/>
+	<xs:element name="CeaApplication" type="cea:CeaApplicationType" substitutionGroup="vr:Resource"/>
+	<xs:complexType name="CeaApplicationType">
+		<xs:complexContent>
+			<xs:extension base="vr:ResourceType">
+				<xs:sequence>
+					<xs:element name="ApplicationDefinition">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Parameters">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="ParameterDefinition" type="ceapd:BaseParameterDefinition" minOccurs="0" maxOccurs="unbounded"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="Interfaces" type="ceab:InterfacesType"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="CeaService" type="cea:CeaServiceType" substitutionGroup="vr:Resource"/>
+	<xs:complexType name="CeaServiceType">
+		<xs:complexContent>
+			<xs:extension base="vr:ServiceType">
+				<xs:sequence>
+					<xs:element name="ManagedApplications">
+						<xs:annotation>
+							<xs:documentation>Ths list of applications that a Common Execution Controller Manages</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ApplicationReference" type="vr:IdentifierType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>
