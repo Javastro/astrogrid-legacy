@@ -5,13 +5,17 @@ import java.net.URL;
 import java.util.Vector; 
 import javax.xml.parsers.DocumentBuilder; 
 import javax.xml.parsers.DocumentBuilderFactory; 
-import javax.xml.parsers.ParserConfigurationException; 
+import javax.xml.parsers.ParserConfigurationException;
+import java.net.MalformedURLException;
+import javax.xml.rpc.ServiceException;
+import java.rmi.RemoteException; 
 import org.apache.axis.client.Call; 
 import org.apache.axis.client.Service; 
 import org.apache.axis.message.SOAPBodyElement; 
 import org.apache.axis.utils.XMLUtils; 
 import org.w3c.dom.Document; 
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import java.io.Reader;
 import java.io.StringReader;
@@ -71,46 +75,188 @@ public class RegistryHarvestService implements
     * @throws Exception
     * @author Kevin Benson
     */     
-   private Call getCall() throws Exception {
-      Service  service = new Service();
-      Call _call = (Call) service.createCall();
-      _call.setTargetEndpointAddress(new URL(endPoint));
-      _call.setSOAPActionURI("");
-      _call.setOperationStyle(org.apache.axis.enum.Style.MESSAGE);
-      _call.setOperationUse(org.apache.axis.enum.Use.LITERAL);        
-      _call.setEncodingStyle(null);
-      return _call;       
+   private Call getCall() {
+      Call _call = null;
+      try {
+         Service  service = new Service();
+         _call = (Call) service.createCall();
+         _call.setTargetEndpointAddress(new URL(endPoint));
+         _call.setSOAPActionURI("");
+         _call.setOperationStyle(org.apache.axis.enum.Style.MESSAGE);
+         _call.setOperationUse(org.apache.axis.enum.Use.LITERAL);        
+         _call.setEncodingStyle(null);
+      }catch(ServiceException se) {
+         se.printStackTrace();
+         _call = null;            
+      }catch(MalformedURLException mue) {
+         mue.printStackTrace();
+         _call = null;   
+      }finally {
+         return _call;   
+      }       
    }
    
    public Document harvest(Document query) {
+      try {
+         //get a call object operation to the web service.
+         Call call = getCall();
+          
+         DocumentBuilder registryBuilder = null;
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         Document doc = registryBuilder.newDocument();
+         Element root = doc.createElementNS("http://harvest.server.registry.astrogrid.org","harvest");
+         doc.appendChild(root);
+         SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
+         sbeRequest.setName("harvest");
+         sbeRequest.setNamespaceURI("http://harvest.server.registry.astrogrid.org");
+         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+         return sbe.getAsDocument();
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();   
+      }catch(RemoteException re) {
+         re.printStackTrace();   
+      }catch(Exception e) {
+         e.printStackTrace();            
+      }
+      return null;
+   }
+   
+   public Document harvestFrom(Document query) {
+      /*
+       * see if it s a valid document.
+       */
+      try {
+         //get a call object operation to the web service.
+         Call call = getCall();
+          
+         DocumentBuilder registryBuilder = null;
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         Document doc = registryBuilder.newDocument();
+         Element root = doc.createElementNS("http://harvest.server.registry.astrogrid.org","harvestFrom");
+         doc.appendChild(root);
+         Node nd = doc.importNode(query.getDocumentElement(),true);
+         root.appendChild(nd);
+
+         SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
+         sbeRequest.setName("harvestFrom");
+         sbeRequest.setNamespaceURI("http://harvest.server.registry.astrogrid.org");
+         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+
+         System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
+         return sbe.getAsDocument();       
+         
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();   
+      }catch(RemoteException re) {
+         re.printStackTrace();   
+      }catch(Exception e) {
+         e.printStackTrace();            
+      }
       return null;  
    }
    
-   public Document harvestRegistry(Document query) {
-      String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
-      requestQuery = "<harvestRegistry xmlns='http://harvest.server.registry.astrogrid.org'>" + requestQuery + "</harvestRegistry>";
-      System.out.println("the endpoint (url) = " + this.endPoint);
-      Reader reader2 = new StringReader(requestQuery);
-      InputSource inputSource = new InputSource(reader2);
+   public Document harvestAll(Document query) {
       try {
-      //get a call object operation to the web service.
-      Call call = getCall();
-      
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.parse(inputSource);
-      
-      SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());
-      sbeRequest.setName("harvestRegistry");
-      sbeRequest.setNamespaceURI("http://harvest.server.registry.astrogrid.org");
-      
-      System.out.println("sending " + XMLUtils.DocumentToString(doc));
-      //call.invoke((new Object[] {sbeRequest}));
-      call.invokeOneWay((new Object[] {sbeRequest}));
+         //get a call object operation to the web service.
+         Call call = getCall();
+          
+         DocumentBuilder registryBuilder = null;
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         Document doc = registryBuilder.newDocument();
+         Element root = doc.createElementNS("http://harvest.server.registry.astrogrid.org","harvestAll");
+         doc.appendChild(root);
+         if(query != null) { 
+            Node nd = doc.importNode(query.getDocumentElement(),true);
+            root.appendChild(nd);
+         }
+
+         SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
+         sbeRequest.setName("harvestAll");
+         sbeRequest.setNamespaceURI("http://harvest.server.registry.astrogrid.org");
+         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+
+         System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
+         return sbe.getAsDocument();       
+         
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();   
+      }catch(RemoteException re) {
+         re.printStackTrace();   
       }catch(Exception e) {
-         e.printStackTrace();  
+         e.printStackTrace();            
       }
-      return null;         
+      return null;
    }
+   
+   
+   
+   public Document harvestResource(Document query) {
+      try {
+         //get a call object operation to the web service.
+         Call call = getCall();
+          
+         DocumentBuilder registryBuilder = null;
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         Document doc = registryBuilder.newDocument();
+         Element root = doc.createElementNS("http://harvest.server.registry.astrogrid.org","harvestResource");
+         doc.appendChild(root);
+         Node nd = doc.importNode(query.getDocumentElement(),true);
+         root.appendChild(nd);
+
+         SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
+         sbeRequest.setName("harvestResource");
+         sbeRequest.setNamespaceURI("http://harvest.server.registry.astrogrid.org");
+         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+
+         System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
+         return sbe.getAsDocument();       
+         
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();   
+      }catch(RemoteException re) {
+         re.printStackTrace();   
+      }catch(Exception e) {
+         e.printStackTrace();            
+      }
+      return null;
+   }
+   
+   public Document harvestFromResource(Document query) {
+      try {
+         //get a call object operation to the web service.
+         Call call = getCall();
+          
+         DocumentBuilder registryBuilder = null;
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         Document doc = registryBuilder.newDocument();
+         Element root = doc.createElementNS("http://harvest.server.registry.astrogrid.org","harvestFromResource");
+         doc.appendChild(root);
+         Node nd = doc.importNode(query.getDocumentElement(),true);
+         root.appendChild(nd);
+
+         SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
+         sbeRequest.setName("harvestFromResource");
+         sbeRequest.setNamespaceURI("http://harvest.server.registry.astrogrid.org");
+         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+
+         System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
+         return sbe.getAsDocument();       
+         
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();   
+      }catch(RemoteException re) {
+         re.printStackTrace();   
+      }catch(Exception e) {
+         e.printStackTrace();            
+      }
+      return null;
+   }
+   
+   
 
 }

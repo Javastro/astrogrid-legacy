@@ -255,6 +255,7 @@ public class RegistryFileHelper {
       return registryHash;
    }
    
+   /*
    private static synchronized Document createDocument(Object []keys) {
       RegistryConfig.loadConfig();
       IRegistryInfo iri = null;
@@ -269,20 +270,27 @@ public class RegistryFileHelper {
       String key = null;
       Node nd = null;
       String lookupKey = null;
+      final int nodeListLength = nl.getLength();
       for(int j = 0;j < keys.length;j++) {
          lookupKey = (String)keys[j];
          for(int i = (keySet.length - 1);i > 0;i--) {
             key = (String)keySet[i];
             if(lookupKey.equals(key)) {
-               if(i >= (nl.getLength() - 1)) {
+               if(i >= (nodeListLength - 2)) {
                   nd = (Node)regHash.get(key);
+                  //System.out.println("Addnode3 nodelist length = " + nodeListLength + " and i = " + i);
+                  System.out.println("New Node Added = " + XMLUtils.ElementToString((Element)nd));
                   addNode(registryDocument,nd);
                   i = 0;
                }else {
-                  Node oldNode = nl.item(i);
+                  Node oldNode = nl.item(i+1);
                   //registryDocument.getDocumentElement().removeChild(nd);
                   Node newNode = (Node)regHash.get(key);
                   //addNode(registryDocument,nd);
+                  //System.out.println("Lookup Key3 = " + lookupKey + " and key = " + key + " and i = " + i + " keyset length = " + keySet.length);
+                  //System.out.println("nodelist length = " + nodeListLength);
+                  System.out.println("Replacing document oldNode = " + XMLUtils.ElementToString((Element)oldNode));
+                  System.out.println("New Node = " + XMLUtils.ElementToString((Element)newNode));                  
                   replaceNode(registryDocument,newNode,oldNode);
                   i = 0;
                }//else
@@ -291,6 +299,32 @@ public class RegistryFileHelper {
       }//for         
       return registryDocument;   
    }
+   */
+   
+   private static synchronized Document createDocument(Object []keys) {
+      RegistryConfig.loadConfig();
+      IRegistryInfo iri = null;
+      Map regHash = loadRegistryTable();
+      if(regHash == null) {
+         return registryDocument;
+      }
+      iri = RegistryConfig.loadRegistryInfo();
+      Document doc = iri.getDocument();
+      
+      NodeList nl = registryDocument.getDocumentElement().getChildNodes();
+      Set st = regHash.keySet();
+      Object []keySet = st.toArray();
+      String key = null;
+      for(int i = 0;i < keySet.length; i++) {
+         key = (String)keySet[i];
+         addNode(doc,(Node)regHash.get(key));         
+      }
+      registryDocument = null;
+      registryDocument = doc;
+      return registryDocument;   
+   }
+   
+   
    
    /**
     * Writes the current registry file in memory to the original flat file. 
@@ -351,7 +385,7 @@ public class RegistryFileHelper {
       //Now just replace the Nodes
       Node replaceNodeParent = replacedNode.getParentNode();
       Node oldNode = replaceNodeParent.replaceChild(replacingNode, replacedNode);
-      System.out.println("this oldNode was replaced = " + XMLUtils.ElementToString((Element)oldNode));
+      //System.out.println("this oldNode was replaced = " + XMLUtils.ElementToString((Element)oldNode));
       return replacedDocument;
    }
    
@@ -507,7 +541,7 @@ public class RegistryFileHelper {
       }
       
       String subKey = null;
-      
+            
       //Now go through all the AuthorityID's until their are no more.
       while(subFoundNode != null  && fileHash != null) {
          

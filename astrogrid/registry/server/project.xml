@@ -98,7 +98,7 @@
         <!--+
             | The location of our JUnit source code.
             +-->
-        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+        <unitTestSourceDirectory>src/junit2</unitTestSourceDirectory>
         <!--+
             | Our JUnit test classes.
             +-->
@@ -107,21 +107,31 @@
                 | Which tests to include.
                 +-->
             <includes>
-                <include>**/*Test.java</include>
+                <include>**/*Junit.java</include>
             </includes>
             <!--+
                 | Which tests to exclude.
-                +-->
             <excludes>
                 <exclude>**/*Test.frog</exclude>
             </excludes>
+             +-->            
             <!--+
                 | The resources for our tests.
             <resources>
                 <resource>
+                    <directory>target/junit/xml</directory>
+                    <includes>
+                        <include>*.xml</include>
+                    </includes>
+                </resource>
+                <resource>
+                    <directory>target/registry/config</directory>
+                    <includes>
+                        <include>*.xml</include>
+                    </includes>
                 </resource>
             </resources>
-                +-->
+             +-->
         </unitTest>
     </build>
 

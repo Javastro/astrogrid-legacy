@@ -48,6 +48,8 @@ public class RegistryService implements
    
    private boolean dummyMode = false;
    
+   private boolean useCache = false;
+   
      
 
    /**
@@ -55,7 +57,7 @@ public class RegistryService implements
     * @author Kevin Benson
     */
    public RegistryService() {
-      this("http://localhost:8080/axis/services/Registry");
+      this(null);
    }
     
    /**
@@ -67,6 +69,9 @@ public class RegistryService implements
       this.endPoint = endPoint;
       RegistryConfig.loadConfig();
       dummyMode = Boolean.valueOf(RegistryConfig.getProperty("dummy.mode.on","false")).booleanValue();
+      if(this.endPoint == null) {
+         useCache = true;
+      }
    }
     
 
@@ -103,7 +108,7 @@ public class RegistryService implements
       */   
    public Document submitQueryString(String query) throws Exception {
       if(dummyMode) return getDummyDocument();
-      if(this.endPoint == null || this.endPoint.trim().length() <= 0) {
+      if(useCache) {
          throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
       }
       Reader reader2 = new StringReader(query);
@@ -126,7 +131,7 @@ public class RegistryService implements
    */        
    public Document submitQuery(Document query) throws Exception {
       if(dummyMode) return getDummyDocument();
-      if(this.endPoint == null || this.endPoint.trim().length() <= 0) {
+      if(useCache) {
          throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
       }
       String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
@@ -155,7 +160,7 @@ public class RegistryService implements
 
    public Document harvestQuery(String dateSince) throws Exception {
       if(dummyMode) return getDummyDocument();
-      if(this.endPoint == null || this.endPoint.trim().length() <= 0) {
+      if(useCache) {
          throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
       }      
       SimpleDateFormat sdf = null;
@@ -173,7 +178,7 @@ public class RegistryService implements
    
    public Document harvestQuery(Date dateSince) throws Exception {
       if(dummyMode) return getDummyDocument();
-      if(this.endPoint == null || this.endPoint.trim().length() <= 0) {
+      if(useCache) {
          throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
       }      
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -194,7 +199,7 @@ public class RegistryService implements
    
    public Document harvestQuery(Document query) throws Exception {
       if(dummyMode) return getDummyDocument();
-      if(this.endPoint == null || this.endPoint.trim().length() <= 0) {
+      if(useCache) {
          throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
       }      
       String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
@@ -224,7 +229,14 @@ public class RegistryService implements
    
    public Document loadRegistry(Document query) throws Exception {
       if(dummyMode) return getDummyDocument();
-      if(this.endPoint == null || this.endPoint.trim().length() <= 0) {
+      /*
+       * Actually take these next few lines out
+       * It swhould get the value for the default authority id then
+       * lookup if it has a xml file for that autority id as the key.
+       * 
+       */
+       //TODO redo this area.
+      if(useCache) {
          throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
       }
       Call call = getCall();
@@ -257,11 +269,11 @@ public class RegistryService implements
       return hm;      
    }
    
-   public String getResourceByIdentifier(String ident) throws Exception {
-      if(dummyMode) return "dummy";
+   public Document getResourceByIdentifier(String ident) throws Exception {
+      if(dummyMode) return null;
       String returnVal = null;
       boolean checkConfig = true;
-      if(this.endPoint != null || this.endPoint.trim().length() > 0) {
+      if(!useCache) {
          int iTemp = 0;
          iTemp = ident.indexOf("/");
          if(iTemp == -1) iTemp = ident.length();
@@ -275,17 +287,19 @@ public class RegistryService implements
          }
          selectQuery += "</selectionSequence></query>";
          Document doc = submitQueryString(selectQuery);
-         if(doc != null) {
-            returnVal = XMLUtils.DocumentToString(doc);
-            if(returnVal.indexOf("AuthorityID") != -1) {
-               checkConfig = false;
-            }//if
-         }//if
-      }//if
-      if(checkConfig) {
-         returnVal = RegistryConfig.getProperty(ident);   
+         return doc;
+      }else {
+         //okay look up this ident in the config file.
       }
-      return returnVal;
+      return null;
+   }
+   
+   public String getEndPointByIdentifier(String ident) throws Exception {
+      Document doc = getResourceByIdentifier(ident);
+      //check for an AccessURL
+      //if AccessURL is their and it is a web service then get the wsdl
+      //into a DOM object and run an XSL on it to get the endpoint.
+      return XMLUtils.DocumentToString(doc);   
    }
       
    public static Document buildOAIDocument(Document responseDoc,String accessURL, String dateStamp,Map requestVars) {

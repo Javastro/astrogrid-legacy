@@ -44,23 +44,35 @@
 			<br />
 		</xsl:if>		
 		<br />
+		<form method="post" action="registryharvest.html" name="UploadMetaData">
+			<input type="hidden" name="addmetadatafromurl" />
+			Harvest from a URL:
+			<input type="text" name="metadata_url" />
+			<br />
+			<input type="submit" name="Harvest" />			
+		</form>
+		<br />
+		<form method="post" action="registryharvest.html" name="UploadMetaData" enctype="multipart/form-data">>
+			<input type="hidden" name="addmetadatafromfile" />
+			Harvest from a local file:
+			<input type="file" name="metadata_file" />
+			<br />
+			<input type="submit" name="Harvest" />
+			<br />
+			<i>The above approach is limited possible errors because of time situations.</i>
+		</form>
+		<br />
+		Query our Registries to find Registry entries to harvest.
+		<br />
 		<a href="registryquery.html?mainelement=Registry">Query Registries</a>
 		<br />
-		<xsl:if test="$harvestResult != ''" >
-			<i>Raw XML of the Harvest Result:</i> <br />
-			<xsl:value-of select="$harvestResult" />
-		</xsl:if>
-		<xsl:if test="$addregistry != 'true'">
-			<xsl:if test="$errorMessage != ''" >
-				<form method="post" action="registryharvest.html" name="RegistryUpdate">
-					<input type="hidden" name="registryXML">
-						<xsl:attribute name="value"><xsl:value-of select="$registryXML" /></xsl:attribute>
-					</input>
-					<input type="text" name="dateFrom" />
-					<input type="submit" name="harvestSubmit" value="Harvest Try Again" />
-				</form>		
-			</xsl:if>
-		</xsl:if>
+		<form method="post" action="registryharvest.html" name="UploadMetaData">
+			<input type="text" name="registry_identifier" />
+			<br />
+			<input type="text" name="dateFrom" value="1980-02-28" />
+			<br />
+			<input type="submit" name="Harvest" />
+		</form>
 		<br /><br />		
 		<a href="registrystatus.html">Link to Registry Status</a>
 	</xsl:template>

@@ -26,6 +26,10 @@ import org.astrogrid.registry.client.harvest.RegistryHarvestService;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.apache.axis.utils.XMLUtils;
+import org.apache.cocoon.components.request.multipart.FilePart;
+import org.apache.cocoon.components.request.multipart.FilePartFile;
+import java.io.File;
+
 
 
 
@@ -79,135 +83,93 @@ public class RegistryHarvestAction extends AbstractAction
       Session session = request.getSession();
       Map results = new HashMap() ;
 
-      String action = request.getParameter("action");
       String errorMessage = null;
       String message = null;
       //Was this coming from the query page with a huge xml string
       //containing how to call the registry.
-      String registryXML = request.getParameter("registryxml");
-      if(registryXML != null && registryXML.length() > 0 ) {
-         request.setAttribute("registryxml",registryXML);
-      }
-      //Get the date format.
-      String dateSince = request.getParameter("dateFrom");
-      SimpleDateFormat sdf = null;
-      Date dat = null;
       
       RegistryConfig.loadConfig();
       String url = null;
-      //get the access url from the user.
-      String accessURL = request.getParameter("accessurl"); 
+       
       Document harvestDoc = null;
       String harvestResult = "";
-      Document tempDoc = null;
+      url = RegistryConfig.getProperty("registry.harvest.url");
+      Document resultDoc = null;
+      RegistryAdminService ras = null;
       try {
          //get where you putting the harvest results to.
             
-            /*
-            int startTemp = -1;
-            int endTemp = -1;
-               if(registryXML != null &&  registryXML.length() > 0) {
-                  startTemp = registryXML.indexOf("<AccessURL");            
-                  endTemp = registryXML.indexOf("</AccessURL>");
-               }//if
-         
-               if(startTemp != -1 && endTemp != -1) {
-                  startTemp = registryXML.indexOf(">",startTemp) + 1;
-                  System.out.println("the startTemp = " + startTemp + " and endTemp = " + endTemp);
-                  accessURL = registryXML.substring(startTemp,endTemp);
-               }//if
-               System.out.println("the startTemp = " + startTemp + " endTemp = " + endTemp + " and accessurl = " + accessURL);
-               if(accessURL.indexOf("?") == -1) {
-                  accessURL += "?verb=ListRecords&from=" + sdf.format(dat);   
-               }else {
-                  accessURL += "&verb=ListRecords&from=" + sdf.format(dat);                  
-               }
-               System.out.println("the accessurl = " + accessURL);
-               */
                DocumentBuilder registryBuilder = null;
                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                registryBuilder = dbf.newDocumentBuilder();
                
                //Now check are calling updateDocument or addRegistryEntries.
-               if(request.getParameter("addregistries") != null) {
+               //TODO do this portal thing.
+               if(request.getParameter("addmetadatafromurl") != null) {
+                  String accessURL = request.getParameter("metadata_url");
                   if(accessURL == null || accessURL.trim().length() <= 0) {
-                     errorMessage = "A URL was not given for grabbing the Registry metadata entries.";
+                     errorMessage = "A URL was not given for harvesting.";
                   }
                   if(errorMessage == null) {
                      url = RegistryConfig.getProperty("publish.registry.update.url");
                      //instantiate the delegate.
-                     RegistryAdminService ras = new RegistryAdminService(url);
+                     ras = new RegistryAdminService(url);
                      
                      harvestDoc = registryBuilder.parse(accessURL);
-                     ras.addRegistryEntries(harvestDoc);
-                     message = "Call in getting metadata from a URL.  " +
-                               "Only the Registry entries below will be added to the registry.  " +
-                               "No other metadata will be added." +
-                               "This current version relies on the user going through the Query page for harvesting other registries." +
-                               "Please click on the 'Query Registry Page' link provided to harvest one of these registries.";
-                     results.put("addregistry","true");
-                  }
-                  
-               } else {
-                  if(registryXML != null) {
-                     if(dateSince == null || dateSince.length() <= 0) {
-                        errorMessage = "No date given. You must have a proper date given.  Please enter a date in the format of yyyy-mm-dd or yyyy-mm-ddThh:mm:ss";
-                     }else {
-                        try {
-                           if(dateSince.indexOf("T") == -1) {
+                     
+                     //ras.harvestFromUrl(accessURL);
+                     resultDoc = ras.update(harvestDoc);
+                     //Now see if their is a error element in the resultDoc
+                     //ras.addRegistryEntries(harvestDoc);
+                     //message = "A harvest has begun for url = " + accessURL;
+                     //results.put("addregistry","true");
+                  }//if                  
+               } else if(request.getParameter("addmetadatafromfile") != null) {
+                  FilePart filePart = (FilePart) request.get("metadata_file");
+                  File file = ((FilePartFile)filePart).getFile();
+                  url = RegistryConfig.getProperty("publish.registry.update.url");
+                  ras = new RegistryAdminService(url);
+                  harvestDoc = registryBuilder.parse(file);
+                  resultDoc = ras.update(harvestDoc);
+               } else if(request.getParameter("registryXML") != null) {
+                  String registryXML = request.getParameter("registryXML");
+                  String dateSince = request.getParameter("dateFrom");
+                  SimpleDateFormat sdf = null;
+                  Date dat = null;
+                  if(dateSince != null && dateSince.trim().length() > 0) {                  
+                     try {
+                        if(dateSince.indexOf("T") == -1) {
                               sdf = new SimpleDateFormat("yyyy-MM-dd");
                               dat = sdf.parse(dateSince);
                               dateSince = dateSince.trim();
                               dateSince += "T00:00:00";   
-                           }
+                        }
                            sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                            dat = sdf.parse(dateSince);
                            //System.out.println("the date = " + dat.toString());
-                        }catch(ParseException pe) {
+                     }catch(ParseException pe) {
                            pe.printStackTrace();
                            errorMessage = "You must have a proper date given.  Please enter a date in the format of yyyy-mm-dd or yyyy-mm-ddThh:mm:ss";
-                        }         
-                     }
+                     }         
+                  }else {
+                     dateSince = null;
+                  }
                      
-                     Reader reader2 = new StringReader(registryXML);
-                     InputSource inputSource = new InputSource(reader2);
-                     Document regDoc = registryBuilder.parse(inputSource);
-                     NodeList nl = regDoc.getElementsByTagName("vg:Registry");
-                     Node nd  = null;
-                     Node attrNode = null;
-                     RegistryConfig.loadConfig();
-                     IRegistryInfo iri = RegistryConfig.loadRegistryInfo();
-                     Document finalDoc = iri.getDocument();
-                     System.out.println("the nodelist length = " + nl.getLength());
-                     for(int i = 0;i < nl.getLength();i++) {
-                        nd = nl.item(i);
-                        if(nd.hasAttributes()) {
-                           NamedNodeMap nnm = nd.getAttributes();
-                           attrNode = nnm.getNamedItem("updated");
-                           if(attrNode != null) {
-                              System.out.println("Now setting the date = " + sdf.format(dat));
-                              attrNode.setNodeValue(sdf.format(dat));
-                           }else {
-                              errorMessage = "Does not seem to be a correct Registry entry.  Needs an 'updated' attribute is required to do" +                                 "harvesting on this registry";
-                           }//else
-                        }//if
-                        Node replacingNode = 
-                            ((finalDoc).importNode(nd, true)); 
-                        //The import node attaches it to DOM, but you msut still append it as a child to your root element.   
-                        finalDoc.getDocumentElement().appendChild(replacingNode);
-                     }//for
-                     if(errorMessage == null) {
-                        url = RegistryConfig.getProperty("registry.harvest.url");
-                        RegistryHarvestService rhs = new RegistryHarvestService(url);
-                        rhs.harvestRegistry(finalDoc);
-                        message = "Harvesting has begun on the registry. Please see the Registry Status page on events happening to the Registry.";
-                     }//if
-                  } else {
-                     errorMessage = "Incorrect access to this page.";
-                  }//else                     
-               }//else
-               if(harvestDoc != null)
-                  harvestResult = XMLUtils.DocumentToString(harvestDoc);
+                  //change this do it from an identifier and a date on the web service..
+                  Reader reader2 = new StringReader(registryXML);
+                  InputSource inputSource = new InputSource(reader2);
+                  harvestDoc = registryBuilder.parse(inputSource);
+                  if(errorMessage == null) {
+                     url = RegistryConfig.getProperty("registry.harvest.url");
+                     RegistryHarvestService rhs = new RegistryHarvestService(url);
+                     if(dat == null) {
+                        rhs.harvestResource(harvestDoc);
+                     }else {
+                        rhs.harvestResource(harvestDoc);
+                     }
+                     message = "Harvesting has begun on the registry. Please see the Registry Status page on events happening to the Registry.";
+                  }//if
+            }//elseif
       }catch(Exception e) {
          e.printStackTrace();
          errorMessage = e.toString();         
@@ -216,12 +178,8 @@ public class RegistryHarvestAction extends AbstractAction
       //Create a new HashMap for our results.  Will be used to
       //pass to the transformer (xsl page)
       results.put("message",message);
-      results.put("harvestResult",harvestResult);
       results.put("errorMessage",errorMessage);
-      results.put("registryXML",registryXML);
-      results.put("accessURL",accessURL);
-      
-      
+
       return results;
    }
         
