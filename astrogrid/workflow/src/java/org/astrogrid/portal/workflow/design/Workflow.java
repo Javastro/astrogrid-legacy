@@ -556,6 +556,12 @@ public class Workflow extends Activity {
                 cardinality = new Cardinality( WKF.getProperty( WKF.TOOL_INPUT_PARAM_CARDINALITY_MIN + param.getName(), name )
                                              , WKF.getProperty( WKF.TOOL_INPUT_PARAM_CARDINALITY_MAX + param.getName(), name ) ) ;
                 param.setCardinality( cardinality ) ;
+                if( cardinality.getMinimum() > 1 ) {
+                    for( int j = 0; j<cardinality.getMinimum()-1; j++) {
+                        tool.newInputParameter( param ) ;
+                    }
+                }
+                
             }
             
             numberParams = new Integer( WKF.getProperty( WKF.TOOL_OUTPUT_PARAMS_TOTAL, name ) ).intValue() ;
@@ -563,10 +569,15 @@ public class Workflow extends Activity {
             for( int i=0; i<numberParams; i++ ) {
                 param = tool.newOutputParameter( WKF.getProperty( WKF.TOOL_OUTPUT_PARAM_NAME + i, name ) ) ;
                 param.setDocumentation( WKF.getProperty( WKF.TOOL_OUTPUT_PARAM_DOCUMENTATION + param.getName(), name ) ) ;
-            //    param.setType( WKF.getProperty( WKF.TOOL_OUTPUT_PARAM_TYPE + param.getName(), name ) ) ;
+                param.setType( WKF.getProperty( WKF.TOOL_OUTPUT_PARAM_TYPE + param.getName(), name ) ) ;
                 cardinality = new Cardinality( WKF.getProperty( WKF.TOOL_OUTPUT_PARAM_CARDINALITY_MIN + param.getName(), name )
                                              , WKF.getProperty( WKF.TOOL_OUTPUT_PARAM_CARDINALITY_MAX + param.getName(), name ) ) ;
                 param.setCardinality( cardinality ) ;
+                if( cardinality.getMinimum() > 1 ) {
+                    for( int j = 0; j<cardinality.getMinimum()-1; j++) {
+                        tool.newOutputParameter( param ) ;
+                    }
+                }
             }
             
         }

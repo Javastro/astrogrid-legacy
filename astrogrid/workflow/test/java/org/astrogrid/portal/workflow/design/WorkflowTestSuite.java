@@ -12,6 +12,9 @@ import org.astrogrid.portal.workflow.*;
 import org.astrogrid.community.common.util.CommunityMessage;
 import java.util.Date ;
 import org.astrogrid.portal.workflow.design.activity.*; 
+import org.w3c.dom.*;
+import org.xml.sax.InputSource ;
+import java.io.StringReader ; 
 
 public class WorkflowTestSuite extends TestCase {
 	
@@ -49,6 +52,7 @@ public class WorkflowTestSuite extends TestCase {
     
     
     public void testWorkflowActivityNavigation() {
+         logger.info( "---------------------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testWorkflowActivityNavigation()" ); 
         
          final String 
@@ -79,7 +83,7 @@ public class WorkflowTestSuite extends TestCase {
                  logger.info( "stepActivity is null" ) ;
              }  
  
-             logger.info( "Workflow: " + workflow.toXMLString() ) ;
+             logger.info( "Workflow: " + workflow.constructWorkflowXML( communitySnippet() ) ) ;
              assertTrue( true ) ;    
          }
          catch( Exception ex ) {
@@ -96,6 +100,7 @@ public class WorkflowTestSuite extends TestCase {
     
 
     public void testCreateWorkflowFromTemplate_MissingTemplate() {
+        logger.info( "-------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_MissingTemplate()" ); 
         
         final String 
@@ -122,6 +127,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
     public void testCreateWorkflowFromTemplate_OneStepTemplate() {
+        logger.info( "-------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_OneStepTemplate()" ); 
         
         final String 
@@ -136,7 +142,9 @@ public class WorkflowTestSuite extends TestCase {
                                                           , name
                                                           , description
                                                           , templateName ) ;
-            logger.info( "Workflow: " + workflow.toXMLString() ) ;
+                                                          
+            prettyPrint( "Workflow:", workflow.constructWorkflowXML( communitySnippet() ) ) ;
+            
             assertTrue( true ) ;    
         }
         catch( Exception ex ) {
@@ -151,6 +159,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
     public void testSaveWorkflow() {
+         logger.info( "-------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testSaveWorkflow()" ); 
         
         final String 
@@ -169,7 +178,7 @@ public class WorkflowTestSuite extends TestCase {
                                                           , description
                                                           , templateName ) ;
       
-            logger.info( "Workflow: " + workflow.toXMLString() ) ;
+            logger.info( "Workflow: " + workflow.constructWorkflowXML( communitySnippet() ) ) ;
             
             logger.info( "About to save" ) ; 
             rc = Workflow.saveWorkflow( communitySnippet(), workflow ) ;
@@ -192,6 +201,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
     public void testReadWorkflowList() {
+         logger.info( "-----------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadWorkflowList()" ); 
         
          Iterator
@@ -220,6 +230,7 @@ public class WorkflowTestSuite extends TestCase {
  
  
     public void testReadWorkflow() {
+         logger.info( "-------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadWorkflow()" ); 
         
          final String 
@@ -229,9 +240,7 @@ public class WorkflowTestSuite extends TestCase {
             
          try{
              workflow = Workflow.readWorkflow( communitySnippet(), name) ;
-            
-             logger.info( "Workflow: " + workflow.toXMLString() ) ;
- 
+             prettyPrint( "Workflow:", workflow.constructWorkflowXML( communitySnippet() ) ) ;
              assertTrue( true ) ;    
          }
          catch( Exception ex ) {
@@ -251,6 +260,7 @@ public class WorkflowTestSuite extends TestCase {
     
 
     public void testDeleteWorkflow() {
+         logger.info( "---------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testDeleteWorkflow()" ); 
         
         final String 
@@ -281,6 +291,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
     public void testReadQueryList() {
+         logger.info( "--------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadQueryList()" ); 
         
          Iterator
@@ -313,6 +324,7 @@ public class WorkflowTestSuite extends TestCase {
     
     
     public void testReadQuery() {
+         logger.info( "----------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadQuery()" ); 
         
          final String 
@@ -322,9 +334,7 @@ public class WorkflowTestSuite extends TestCase {
             
          try{
              query = Workflow.readQuery( communitySnippet(), name) ;
-            
-             logger.info( "Query looks like: " + query ) ;
- 
+             prettyPrint( "Query looks like:", query ) ;
              assertTrue( true ) ;    
          }
          catch( Exception ex ) {
@@ -340,6 +350,7 @@ public class WorkflowTestSuite extends TestCase {
    
    
     public void testReadToolList() {
+         logger.info( "-------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadToolList()" ); 
         
          Iterator  
@@ -373,6 +384,7 @@ public class WorkflowTestSuite extends TestCase {
      
      
     public void testCreateTool() {
+         logger.info( "-----------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testCreateTool()" ); 
         
          Iterator  
@@ -392,8 +404,8 @@ public class WorkflowTestSuite extends TestCase {
                  logger.info( "Tool name: " + tool.getName() ) ;
                  logger.info( "Tool documenation: " + tool.getDocumentation() ) ;
                  iterator2 = tool.getInputParameters() ;
+                 logger.info( "InputParams... " ) ;
                  while( iterator2.hasNext() ) {
-                     logger.info( "InputParams... " ) ;
                      param = (Parameter)iterator2.next() ;
                      logger.info( param.getName() );
                      logger.info( param.getDocumentation() );
@@ -403,8 +415,8 @@ public class WorkflowTestSuite extends TestCase {
                  }
                 
                  iterator2 = tool.getOutputParameters() ;
+                 logger.info( "OutputParams... " ) ;
                  while( iterator2.hasNext() ) {
-                      logger.info( "OutputParams... " ) ;
                       param = (Parameter)iterator2.next() ;
                       logger.info( param.getName() );
                       logger.info( param.getDocumentation() );
@@ -431,6 +443,7 @@ public class WorkflowTestSuite extends TestCase {
    
    
     public void testSubmitWorkflow() {
+         logger.info( "---------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testSubmitWorkflow()" ); 
         
         final String 
@@ -453,7 +466,35 @@ public class WorkflowTestSuite extends TestCase {
                 
             Tool
                 tool = Workflow.createTool( communitySnippet()
-                                          , "QueryTool" ) ;
+                                          , "sextractor" ) ;
+                                          
+            Iterator
+                it = tool.getInputParameters() ;
+            Parameter
+                p ;
+                
+            while( it.hasNext() ) {
+                p = (Parameter)it.next() ;
+                if( p.getName().equals("image1") ) {
+                    p.setLocation( "myspace://imagefiles/image1_12345") ;
+                }
+                else if( p.getName().equals("config_file") ) {
+                    p.setLocation( "myspace://tools/sextractor_config") ;
+                }
+                else if( p.getName().equals("config_parameters") ) {
+                    p.setLocation( "myspace://tools/sextractor_parameters") ;
+                }
+            }
+            
+            it = tool.getOutputParameters() ;
+            
+            while( it.hasNext() ) {
+                p = (Parameter)it.next() ;
+                if( p.getName().equals("output") ) {
+                    p.setLocation( "myspace://votables/catalog_12345") ;
+                }
+            }
+            
                 
             if( activity instanceof Sequence ) {
                 Sequence
@@ -463,9 +504,9 @@ public class WorkflowTestSuite extends TestCase {
                 step.setTool( tool ) ;    
             }
              
-            logger.info( "Workflow: " + workflow.toXMLString() ) ;
-            
+            prettyPrint( "Workflow:", workflow.constructWorkflowXML( communitySnippet() ) ) ;            
             logger.info( "About to submit" ) ; 
+            prettyPrint( "JES string:", workflow.constructJESXML( communitySnippet() ) ) ;
             rc = Workflow.submitWorkflow( communitySnippet(), workflow ) ;
             logger.info( "JobController says: " + rc ) ;
  
@@ -487,7 +528,8 @@ public class WorkflowTestSuite extends TestCase {
 
 
     public void testCreateQueryAndSubmitWorkflow() {
-          logger.info( "enter: WorkflowTestSuite.testCreateQueryAndSubmitWorkflow()" ); 
+         logger.info( "-----------------------------------------------------------" ); 
+         logger.info( "enter: WorkflowTestSuite.testCreateQueryAndSubmitWorkflow()" ); 
         
          Date
             date = new Date() ;
@@ -539,7 +581,7 @@ public class WorkflowTestSuite extends TestCase {
                  }
              }
              
-             logger.info( "Workflow: " + workflow.toXMLString() ) ;
+             logger.info( "Workflow: " + workflow.constructJESXML( communitySnippet() ) ) ;
             
              logger.info( "About to submit" ) ; 
              rc = Workflow.submitWorkflow( communitySnippet(), workflow ) ;
@@ -591,5 +633,27 @@ public class WorkflowTestSuite extends TestCase {
 	   logger.info("Exit WorkflowTestSuite application.");
 		
     }
+    
+    
+    public static void prettyPrint( String comment, String xmlString ) {
+        
+        try {
+            System.out.println( comment + "\n" ) ;
+            InputSource
+                source = new InputSource( new StringReader( xmlString ) );
+            Document
+                doc = XMLUtils.newDocument( source ) ;
+            XMLUtils.PrettyDocumentToStream( doc, System.out ) ;
+        }
+        catch( Exception sax ) {
+            sax.printStackTrace() ;
+        }
+          
+    }
+    
+    
+    
+    
+    
     
 } // end of class WorkflowTestSuite

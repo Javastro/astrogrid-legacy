@@ -14,7 +14,7 @@ package org.astrogrid.portal.workflow.design;
 import java.net.*; 
 import org.w3c.dom.* ;
 import org.apache.log4j.Logger ;
-
+import java.text.MessageFormat ;
 
 /**
  * The <code>Parameter</code> class represents... 
@@ -138,14 +138,56 @@ public class Parameter {
     
     
     protected String toXMLString() {
-        if( TRACE_ENABLED ) trace( "Tool.toXMLString() entry") ;
-        return null ;
+        if( TRACE_ENABLED ) trace( "Parameter.toXMLString() entry") ;
+          
+      String 
+         response = null ;
+                                     
+      try {
+            
+          Object []
+             inserts = new Object[7] ;
+          inserts[0] = this.getName() ;
+          inserts[1] = this.getType() ;
+          inserts[2] = this.getLocation() ;
+          inserts[3] = new Integer( this.getCardinality().getMinimum() ).toString();
+          inserts[4] = new Integer( this.getCardinality().getMaximum() ).toString(); ;
+          inserts[5] = this.getDocumentation() ;
+          inserts[6] = ( this.getContents() == null ) ? " " :  this.getContents() ;
+
+          response = MessageFormat.format( WorkflowDD.PARAMETER_TEMPLATE, inserts ) ;
+
+      }
+      finally {
+          if( TRACE_ENABLED ) trace( "Parameter.toXMLString() exit") ;    
+      }       
+        
+      return response ;        
     }
     
     
     protected String toJESXMLString() {
-        if( TRACE_ENABLED ) trace( "Tool.toJESXMLString() entry") ;
-        return null ;
+        if( TRACE_ENABLED ) trace( "Parameter.toJESXMLString() entry") ;
+        String 
+         response = null ;
+                                     
+        try {
+            
+            Object []
+                inserts = new Object[4] ;
+            inserts[0] = this.getName() ;
+            inserts[1] = this.getType() ;
+            inserts[2] = ( this.getLocation() == null ) ? " " :  "location=\"" + this.getLocation() + "\"" ;
+            inserts[3] = ( this.getContents() == null ) ? " " :  this.getContents() ;
+
+            response = MessageFormat.format( WorkflowDD.JOBPARAMETER_TEMPLATE, inserts ) ;
+
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Parameter.toJESXMLString() exit") ;    
+        }       
+        
+        return response ;       
     }
     
      

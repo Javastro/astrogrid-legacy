@@ -163,7 +163,7 @@ public class Step extends Activity {
         try {
             
             Object []
-               inserts = new Object[6] ;
+               inserts = new Object[5] ;
             inserts[0] = this.getName() ;
             inserts[1] = this.getJoinCondition() ;
             inserts[2] = new Integer( this.getStepNumber() ) ;

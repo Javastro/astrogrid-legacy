@@ -70,9 +70,10 @@
   
   <!-- TOOLS LIST CATEGORY ========================================================== -->
   <category name="TOOLS_LIST">
-    <property name="TOTAL" value="2" />
+    <property name="TOTAL" value="3" />
     <property name="NAME.0" value="QueryTool" />  
     <property name="NAME.1" value="VOTableMerge" /> 
+    <property name="NAME.2" value="sextractor" /> 
   </category>
   
   <!-- QueryTool CATEGORY ========================================================== -->
@@ -91,7 +92,7 @@
     <property name="OUTPUT_PARAM.CARDINALITY.MAX.result" value="1" />     
   </category>
   
-    <!-- VOTableMerge CATEGORY ========================================================== -->
+  <!-- VOTableMerge CATEGORY ========================================================== -->
   <category name="VOTableMerge">
     <property name="DOCUMENTATION" value="VOTableMerge documentation goes here" />  
     <property name="INPUT_PARAMS.TOTAL" value="1" />
@@ -104,6 +105,40 @@
     <property name="OUTPUT_PARAM.DOCUMENTATION.out" value="Paremeter out documentation goes here" />  
     <property name="OUTPUT_PARAM.CARDINALITY.MIN.out" value="1" />  
     <property name="OUTPUT_PARAM.CARDINALITY.MAX.out" value="1" />     
+  </category>
+  
+  
+  <!-- sextractor CATEGORY ========================================================== -->
+  <category name="sextractor">
+    <property name="DOCUMENTATION" value="sextractor tools documentation goes here." /> 
+     
+    <property name="INPUT_PARAMS.TOTAL" value="3" />
+    
+    <property name="INPUT_PARAM.NAME.0" value="image1" /> 
+    <property name="INPUT_PARAM.TYPE.image1" value="MySpaceFileReference" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.image1" value="Paremeter image1 documentation goes here" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.image1" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.image1" value="1" />         
+
+    <property name="INPUT_PARAM.NAME.1" value="config_file" />  
+    <property name="INPUT_PARAM.TYPE.config_file" value="MySpaceFileReference" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.config_file" value="Paremeter config_file documentation goes here" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.config_file" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.config_file" value="1" />  
+    
+    <property name="INPUT_PARAM.NAME.2" value="config_parameters" /> 
+    <property name="INPUT_PARAM.TYPE.config_parameters" value="MySpaceFileReference" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.config_parameters" value="Paremeter config_parameters documentation goes here" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.config_parameters" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.config_parameters" value="1" />  
+               
+    <property name="OUTPUT_PARAMS.TOTAL" value="1" />
+    
+    <property name="OUTPUT_PARAM.NAME.0" value="output" /> 
+    <property name="OUTPUT_PARAM.TYPE.output" value="MySpaceVOTableReference" />    
+    <property name="OUTPUT_PARAM.DOCUMENTATION.output" value="Paremeter output documentation goes here" />  
+    <property name="OUTPUT_PARAM.CARDINALITY.MIN.output" value="1" />  
+    <property name="OUTPUT_PARAM.CARDINALITY.MAX.output" value="1" />     
   </category>
 
 </properties>

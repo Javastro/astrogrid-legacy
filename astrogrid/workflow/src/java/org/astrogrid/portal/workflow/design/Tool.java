@@ -17,6 +17,7 @@ import java.util.ArrayList ;
 //import java.util.Collections ;
 import org.apache.log4j.Logger ;
 import org.w3c.dom.* ;
+import java.text.MessageFormat ;
 
 /**
  * The <code>Tool</code> class represents... 
@@ -170,7 +171,16 @@ public class Tool {
  
     public Parameter newInputParameter( Parameter param ) {
         if( TRACE_ENABLED ) trace( "Tool.newInputParameter() entry") ;
-        return null ;
+        
+        Parameter
+            p = this.newInputParameter( param.getName() ) ;
+        p.setContents( param.getContents() ) ; 
+        p.setDocumentation( param.getDocumentation() ) ;
+        p.setLocation( param.getLocation()) ;
+        p.setType( param.getType() ) ;
+        p.setCardinality( param.getCardinality() ) ;
+          
+        return p ;
     }
  
     
@@ -186,19 +196,105 @@ public class Tool {
     
     public Parameter newOutputParameter( Parameter param ) {
         if( TRACE_ENABLED ) trace( "Tool.newOutputParameter() entry") ;
-        return null ;
+        
+        Parameter
+            p = this.newOutputParameter( param.getName() ) ;
+        p.setContents( param.getContents() ) ; 
+        p.setDocumentation( param.getDocumentation() ) ;
+        p.setLocation( param.getLocation()) ;
+        p.setType( param.getType() ) ;
+        p.setCardinality( param.getCardinality() ) ;
+          
+        return p ;
      }
     
        
     protected String toXMLString() {
         if( TRACE_ENABLED ) trace( "Tool.toXMLString() entry") ;
-        return null ;
+          
+        String 
+           response = null,
+           inputParams,
+           outputParams ;
+        StringBuffer
+           buffer = null ;
+                                     
+        try {
+            
+            buffer = new StringBuffer(128) ;
+            ListIterator
+                it = inputParameters.listIterator();
+            while( it.hasNext() ) {
+                buffer.append( ((Parameter)it.next()).toXMLString()) ;
+            }
+            inputParams = buffer.toString() ;
+            buffer = new StringBuffer(128) ;
+            it = outputParameters.listIterator();
+            while( it.hasNext() ) {
+                buffer.append( ((Parameter)it.next()).toXMLString()) ;
+            }
+            outputParams = buffer.toString() ;
+            
+            Object []
+               inserts = new Object[4] ;
+            inserts[0] = this.getName() ;
+            inserts[1] = this.getDocumentation() ;
+            inserts[2] = inputParams ;
+            inserts[3] = outputParams ;
+
+            response = MessageFormat.format( WorkflowDD.TOOL_TEMPLATE, inserts ) ;
+
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Tool.toXMLString() exit") ;    
+        }       
+        
+        return response ;        
+        
     }
     
     
     protected String toJESXMLString() {
         if( TRACE_ENABLED ) trace( "Tool.toJESXMLString() entry") ;
-        return null ;
+        
+        String 
+            response = null,
+            inputParams,
+            outputParams ;
+        StringBuffer
+            buffer = null ;
+                                     
+        try {
+            
+            buffer = new StringBuffer(128) ;
+            ListIterator
+                it = inputParameters.listIterator();
+            while( it.hasNext() ) {
+                buffer.append( ((Parameter)it.next()).toJESXMLString()) ;
+            }
+            inputParams = buffer.toString() ;
+            buffer = new StringBuffer(128) ;
+            it = outputParameters.listIterator();
+            while( it.hasNext() ) {
+                buffer.append( ((Parameter)it.next()).toJESXMLString()) ;
+            }
+            outputParams = buffer.toString() ;
+            
+            Object []
+                inserts = new Object[3] ;
+            inserts[0] = this.getName() ;
+            inserts[1] = inputParams ;
+            inserts[2] = outputParams ;
+
+            response = MessageFormat.format( WorkflowDD.JOBTOOL_TEMPLATE, inserts ) ;
+
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Tool.toJESXMLString() exit") ;    
+        }       
+        
+        return response ;      
+
     }
     
      
