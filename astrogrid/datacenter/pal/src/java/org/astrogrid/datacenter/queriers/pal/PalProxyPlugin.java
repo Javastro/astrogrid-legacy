@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.8 2004/11/08 12:04:47 mch Exp $
+ * $Id: PalProxyPlugin.java,v 1.9 2004/11/08 14:28:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,10 +12,14 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.rpc.ServiceException;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.DsaDomHelper;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
+import org.astrogrid.datacenter.metadata.VoResourcePlugin;
 import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.VotableInResults;
@@ -24,7 +28,9 @@ import org.astrogrid.datacenter.query.Adql074Writer;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.slinger.UriTarget;
 import org.astrogrid.util.DomHelper;
-import javax.xml.rpc.ServiceException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * A plugin that passes the query on to a remote PAL installation
@@ -32,7 +38,8 @@ import javax.xml.rpc.ServiceException;
  *  * @author M Hill
  */
 
-public class PalProxyPlugin extends DefaultPlugin {
+public class PalProxyPlugin extends DefaultPlugin implements VoResourcePlugin {
+   
    
    public static final String PAL_TARGET = "datacenter.palproxy.targetstem";
 
@@ -89,7 +96,7 @@ public class PalProxyPlugin extends DefaultPlugin {
       URL targetPal = new URL(SimpleConfig.getSingleton().getUrl(PAL_TARGET)+"/SubmitAdql");
       
       querier.getStatus().addDetail("Proxying to: "+targetPal);
-      log.info("Proxying to: "+targetPal);
+      log.info("Proxying Query to: "+targetPal);
       
       URLConnection connection = targetPal.openConnection();
       
@@ -136,7 +143,37 @@ public class PalProxyPlugin extends DefaultPlugin {
             throw new UnsupportedOperationException("Not done yet");
    }
 
+   /**
+    * Returns the VOResource elements of the remote service.
+    * @deprecated - use UrlResourcePlugin to get the rdbms resource, and CeaResourceServer to
+    * build the righr CEA stuff for *this* service
+    */
+   public String[] getVoResources() throws IOException {
+      URL targetPal = new URL(SimpleConfig.getSingleton().getUrl(PAL_TARGET)+"/GetMetadata");
+      log.info("Proxying VoResources to: "+targetPal);
+      InputStream vodescIn = targetPal.openStream();
+      Document vodescription = null;
+      try {
+            vodescription = DomHelper.newDocument(vodescIn);
+      }
+      catch (ParserConfigurationException e) {
+         throw new RuntimeException("Server not configured correctly: "+e);
+      }
+      catch (SAXException e) {
+         throw new IOException(e+" reading VODescription from "+targetPal);
+      }
+      
+      Element[] resources = DsaDomHelper.getChildrenByTagName(vodescription.getDocumentElement(), "Resource");
+
+      String[] s = new String[resources.length];
+      for (int i = 0; i < resources.length; i++) {
+         s[i] = DomHelper.ElementToString(resources[i]);
+      }
+      return s;
+   }
+   
    
 }
+
 
 
