@@ -1,4 +1,4 @@
-/*$Id: AbstractDelegate.java,v 1.2 2004/03/23 12:51:25 pah Exp $
+/*$Id: AbstractDelegate.java,v 1.3 2004/03/24 07:40:18 pah Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,10 @@
 **/
 package org.astrogrid.applications.delegate.impl;
 
-import org.astrogrid.jes.delegate.Delegate;
 
 import org.apache.commons.logging.Log;
+
+import org.astrogrid.applications.delegate.Delegate;
 
 /**
  * abstract class that captures common functionality of all jes delegates 
@@ -60,6 +61,9 @@ public abstract class  AbstractDelegate implements Delegate {
 }
 /* 
 $Log: AbstractDelegate.java,v $
+Revision 1.3  2004/03/24 07:40:18  pah
+remove jes references
+
 Revision 1.2  2004/03/23 12:51:25  pah
 result of merge of app_pah_147
 
