@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.101 2004/09/13 12:56:23 KevinBenson Exp $ -->
+<!-- $Id: maven.xml,v 1.102 2004/09/13 21:54:47 KevinBenson Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -604,7 +604,7 @@
      path="/astrogrid-registry-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war"/>
   
     <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-     path="/exist" war="file:///${temporary.dir}/astrogrid-exist-${pom.currentVersion}.war"/>
+     path="/exist" war="file:///${temporary.dir}/exist-SNAPSHOT.war"/>
   
 </goal>
 

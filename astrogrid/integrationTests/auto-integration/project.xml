@@ -53,9 +53,9 @@
             <properties/>
         </dependency>
         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-exist</artifactId>
-	        <version>${pom.currentVersion}</version>
+            <groupId>exist</groupId>
+            <artifactId>exist</artifactId>
+	        <version>SNAPSHOT</version>
             <type>war</type>
             <properties/>
         </dependency>
