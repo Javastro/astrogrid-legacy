@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.45 2004/03/15 19:16:12 mch Exp $
+ * $Id: Querier.java,v 1.46 2004/03/16 17:41:14 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -156,7 +156,9 @@ public class Querier implements Runnable {
       }
       catch (Throwable th) {
          log.error("Exception during Asynchronous Run",th);
-         setStatus(new QuerierError(this, "", th));
+         if (!(getStatus() instanceof QuerierError)) {
+            setStatus(new QuerierError(this, "", th));
+         }
       }
       log.info("...Ending asynchronous Query ["+id+"]");
       
@@ -391,6 +393,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.46  2004/03/16 17:41:14  mch
+ set querier error status only if not already set in run
+
  Revision 1.45  2004/03/15 19:16:12  mch
  Lots of fixes to status updates
 
