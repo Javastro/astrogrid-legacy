@@ -176,6 +176,11 @@
               <xsl:attribute name="name">param-value#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>                
               <xsl:attribute name="id"><xsl:value-of select="$agsl-id"/></xsl:attribute>
               <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
+              <xsl:if test="$direction = 'output'">
+                <xsl:attribute name="onFocus">                
+                               javascript:document.getElementById('<xsl:value-of select="$indirect-id"/>').checked = 'true'; 
+                </xsl:attribute> 
+              </xsl:if>             
             </input>                                                                    
             <input type="hidden">
               <xsl:attribute name="name">original-param-value#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
