@@ -51,8 +51,8 @@ public class DeployedManagerTest extends TestCase
 // of operations on the remote Manager.
 
 
-   public void testDeployedManager() throws IOException 
-   { 
+   public void testDeployedManager() throws IOException
+   {
       {
 //
 //      Create the contents which will subsequently be imported as a
@@ -119,7 +119,7 @@ System.out.println(someAgsl);
 //
 //      Move this file.
 
-         someAgsl = new Agsl(new URL("http://blue.nowhere.org/Manager"),
+         someAgsl = new Agsl(new Msrl(endPoint),
            "/testxyz/file3");
 
          middle.move("/testxyz/file1", someAgsl);
