@@ -47,11 +47,22 @@ public class Return {
 	    ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_RETURN = "AGDTCE00250", 
 		ASTROGRIDERROR_UNABLE_TO_MAP_CATALOG_UCD_TO_COLUMN_HEADING = "AGDTCE00250";
 		
+	private static final String	
+		SQL_DELETE_LOWER = "delete",
+		SQL_DELETE = "DELETE",
+		SQL_UPDATE_LOWER = "update",
+		SQL_UPDATE = "UPDATE",
+		SQL_INSERT_LOWER = "insert",
+		SQL_INSERT = "INSERT" ;
+		
     private List
         fields = new ArrayList() ;
         
     private Catalog
         catalog ;
+        
+	private Operation 
+		 operation ;        
         
     public Return( Element returnElement, Catalog catalog ) throws QueryException {
 		if( TRACE_ENABLED ) logger.debug( "Return(Element): entry") ;
@@ -59,7 +70,7 @@ public class Return {
 		try {
 
 			NodeList
-			   nodeList = returnElement.getElementsByTagName( RunJobRequestDD.FIELD_ELEMENT ) ;
+			   nodeList = returnElement.getElementsByTagName( RunJobRequestDD.FIELD_ELEMENT ) ;		   
 			   
 			Element
 				fieldElement ;
@@ -112,15 +123,24 @@ public class Return {
 		    while ( iterator.hasNext() ){
 		    	
 		    	field = (Field)iterator.next() ;
+
+				if ( field.getType().equals(RunJobRequestDD.FIELD_TYPE_PASSTHROUGH ) ) {
+					buffer
+					    .append( " " )
+				        .append( nameParse( field.getName() ) )
+				        .append( " " ) ;
+				}
+				else { 
 		    	
-		    	if ( field.getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
-					buffer.append(getColumnHeading( catalog, field.getName()) );
-		    	}
-		    	else if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
-		    		buffer.append(getColumnHeading( catalog, field.getName()) );
-		    	}
-		        buffer.append(", ");	
-		        		  
+		    	    if ( field.getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
+					    buffer.append(getColumnHeading( catalog, field.getName()) );
+		    	    }
+		    	    else if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
+		    		    buffer.append(getColumnHeading( catalog, field.getName()) );
+		    	    }
+		    	
+		            buffer.append(", ");	
+				 } // end of else		  
 		    } // end of while
 		
 		    buffer.delete(buffer.length()-2,buffer.length());
@@ -143,7 +163,7 @@ public class Return {
 /**
  * Returns a <code>String</code> value of the column heading for a specific catalog, table
  * and UCD (unified content descriptor) combination. The mapping is detailed in the 
- * <code>ASROGRID_datasetconfig.properties</code> file. The frmat of the mapping key is:
+ * <code>ASROGRID_datasetconfig.properties</code> file. The format of the mapping key is:
  * <catalog>.<table>.<UCD> 
  *
  * @see             org.astrogrid.datacenter.ASROGRID_datasetconfig.properties
@@ -151,24 +171,22 @@ public class Return {
  * @param ucd		Universal Column Descriptor
  * @return			<code>String</code> columnHeading 
  */
-	private String getColumnHeading(Catalog catalog, String UCD) {
+	private String getColumnHeading( Catalog catalog, String UCD ) {
 		if( TRACE_ENABLED ) logger.debug( "getColumnHeading(): entry") ;
 		String 
-			columnHeading = "";
+			columnHeading = "" ;
 		StringBuffer
 			buffer = new StringBuffer(64) ; 
-		try {
-				
-//			Table
-//			   tables[] = catalog.getTables();  
+		try { 
 			 
             // If no tables assosciated with catalog assume table name same as catalog... 
-			if ( catalog.getNumberTables() <= 0) {  
-				buffer.append(catalog.getName());
-				buffer.append(".");
-				buffer.append(catalog.getName());
-				buffer.append(".");
-				buffer.append(UCD);
+			if ( catalog.getNumberTables() <= 0 ) {  
+				buffer
+				    .append( catalog.getName() )
+				    .append( "." )
+				    .append( catalog.getName() )
+				    .append( "." )
+				    .append( UCD ) ;
 				logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() );				
 				columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;					
 			}
@@ -181,16 +199,17 @@ public class Return {
 			
 			    while( iterator.hasNext() ) { 
 			       table = (Table)iterator.next() ;
-				   buffer.append(catalog.getName());
-				   buffer.append(".");
-				   buffer.append(table.getName().toUpperCase());
-				   buffer.append(".");
-				   buffer.append(UCD);	
+				   buffer
+				       .append( catalog.getName() )
+				       .append( "." )
+				       .append( table.getName().toUpperCase() )
+				       .append( "." )
+				       .append( UCD );	
 				   logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() );
 				   columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;
-				   if (columnHeading.length() > 0) // break as soon as column heading found
+				   if (columnHeading.length() > 0 ) // break as soon as column heading found
 				      break; 
-				   buffer.delete(0,buffer.length());
+				   buffer.delete( 0,buffer.length() ) ;
 			    } // end of while
 			
 			} // end else
@@ -206,6 +225,31 @@ public class Return {
 		}
 		return (columnHeading=="")?UCD:columnHeading;
 	} // end of getColumnHeading()
+	
+	/**
+	 * Having the field type PASSTHROUGH opens up the Datacenter to the possibility of a 
+	 * user entering valid, but malicious, SQL queries including DELETE, UPDATE and INSERT 
+	 * statements. Although the query builder should prevent this happening nameParse() 
+	 * is included as a cursory check against this happening. If name contains DELETE, UPDATE,
+	 * INSERT an empty string is returned.
+	 * 
+	 * @param name
+	 * @return returnString
+	 */	
+	private String nameParse(String name) {
+		
+		String returnString = name ;
+		
+		if  ( ( name.indexOf( SQL_DELETE ) != -1 ) || ( name.indexOf( SQL_DELETE_LOWER) != -1 ) || 
+			( name.indexOf( SQL_INSERT ) != -1 ) || ( name.indexOf( SQL_INSERT_LOWER ) != -1 ) ||
+			( name.indexOf( SQL_UPDATE ) != -1 ) || ( name.indexOf( SQL_UPDATE_LOWER ) != -1) ) {
+			
+			logger.debug( "Attempt to enter malicious SQL using type PASSTHROUGH in Field" ) ;
+			returnString = "" ;
+		}
+		 
+		return returnString ;
+	} //end of nameParse	
 	
 	public Iterator getFields() { return this.fields.iterator() ; }
 	public boolean addField( Field field ) { return fields.add( field ); }

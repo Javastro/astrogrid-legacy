@@ -29,19 +29,11 @@ public final class RunJobRequestDD {
 	    JOBSTEP_STEPNUMBER_ATTR = "stepNumber";
 	    
 	public static final String    
-	    QUERY_ELEMENT = "query";
-	    
-	public static final String 
-	    FROM_ELEMENT = "from";
-	
-	public static final String 
-		ORDER_ELEMENT = "order";	
-		
-	public static final String 
-		GROUP_ELEMENT = "group";
-		
-	public static final String 
-	    SUBQUERY_ELEMENT = "SUBQUERY";
+	    QUERY_ELEMENT = "query",
+	    FROM_ELEMENT = "from", 
+		ORDER_ELEMENT = "order",
+		GROUP_ELEMENT = "group",
+	    SUBQUERY_ELEMENT = "subquery";
 	    
 	public static final String
 	    CATALOG_ELEMENT = "catalog",
@@ -67,7 +59,8 @@ public final class RunJobRequestDD {
 	    FIELD_NAME_ATTR = "name",
 	    FIELD_TYPE_ATTR = "type",
 	    FIELD_TYPE_UCD = "UCD",
-	    FIELD_TYPE_COLUMN = "COLUMN" ;
+	    FIELD_TYPE_COLUMN = "COLUMN", 
+	    FIELD_TYPE_PASSTHROUGH = "PASSTHROUGH" ;
 	        
 	public static final String
 	    OP_ELEMENT = "operation",

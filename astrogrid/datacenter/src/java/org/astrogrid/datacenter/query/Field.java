@@ -261,6 +261,6 @@ public class Field implements Operand {
 		}
 		 
 		return returnString ;
-	} //end of maliciousParse
+	} //end of nameParse
 	
 } // end of class Field
