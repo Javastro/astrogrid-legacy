@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.14 2004/09/30 10:39:15 pah Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.15 2004/09/30 15:19:53 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,8 +55,9 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        suggestGC();
-        checkMemory("pre:" + this.getClass().getName());
+// don't do this for now - using other monitoring tools   - might speed up general progress slightly....     
+//        suggestGC();
+//        checkMemory("pre:" + this.getClass().getName());
         ag = Astrogrid.getInstance();
         assertNotNull("astrogrid instance is null",ag);
         // credentials object
@@ -78,7 +79,7 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
     }
     
     protected void tearDown() throws Exception {
-        checkMemory("post: " + this.getClass().getName());
+//        checkMemory("post: " + this.getClass().getName());
     }
     
     /** call page on tomcat that produces memory statistics */
@@ -182,6 +183,9 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.15  2004/09/30 15:19:53  pah
+remove the GC force
+
 Revision 1.14  2004/09/30 10:39:15  pah
 get community and authorityid from the config if possible
 
