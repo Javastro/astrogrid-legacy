@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.11 2004/04/06 09:00:46 KevinBenson Exp $
+ * $Id: VoSpaceResolver.java,v 1.12 2004/04/15 17:55:58 dave Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -48,7 +48,8 @@ public class VoSpaceResolver {
 
    private static Log log = LogFactory.getLog(VoSpaceResolver.class);
    
-   private static final String VOSPACE_CLASS_RESOURCE_KEY_LOOKUP = "org.astrogrid.store.myspace.MyspaceMgr";   
+//   private static final String VOSPACE_CLASS_RESOURCE_KEY_LOOKUP = "org.astrogrid.store.myspace.MyspaceMgr";   
+   private static final String VOSPACE_CLASS_RESOURCE_KEY_LOOKUP = "myspace";   
    
    /**
     * Given an IVO Resource Name, resolves the AGSL
@@ -150,8 +151,15 @@ public class VoSpaceResolver {
                   remainder = remainder.substring(1);
                }
             }
-            System.out.println("Lookfor endpoint with ident = " + ci.getCommunityName()+"/"+ci.getAccountName());
-            String vospaceEndPoint = registry.getEndPointByIdentifier(ci.getCommunityName()+"/"+ci.getAccountName());
+
+String ident = ci.getCommunityName() ;
+if (null != ci.getAccountName())
+	{
+	ident = ident + "/" + ci.getAccountName() ;
+	}
+
+            System.out.println("Lookfor endpoint with ident = " + ident);
+            String vospaceEndPoint = registry.getEndPointByIdentifier(ident);
             if(vospaceEndPoint == null) {
                //Okay got a vospaceendpoint back lets check if their was no resource key if so then
                //lets try calling the registry through our known resource key which is the myspace class.
@@ -207,7 +215,13 @@ public class VoSpaceResolver {
             System.out.println("the commname = " + ci.getCommunityName());
             System.out.println("the account name = " + ci.getAccountName());
             System.out.println("the remainder = " + ci.getRemainder());
-            String remainder = "/" + ci.getAccountName();
+
+            String remainder = "" ;
+            if (null != ci.getAccountName())
+                {
+                remainder += "/" + ci.getAccountName();
+                }
+
             if(ci.getRemainder() != null && ci.getRemainder().trim().length() > 0) {
                remainder += ci.getRemainder();
             }                        
@@ -240,6 +254,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.12  2004/04/15 17:55:58  dave
+Fixed ivorn handling
+
 Revision 1.11  2004/04/06 09:00:46  KevinBenson
 changed it around so that it calls community first then registry to figvure out endpoints
 
