@@ -2,12 +2,12 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/server/config/Attic/config.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/10/09 03:47:22 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2003/10/24 11:24:49 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: config.xml,v $
-    |   Revision 1.1  2003/10/09 03:47:22  dave
-    |   Added initial release version
+    |   Revision 1.2  2003/10/24 11:24:49  dave
+    |   Updated the release jars
     |
     |   Revision 1.7  2003/10/09 01:38:30  dave
     |   Added JUnite tests for policy delegates
