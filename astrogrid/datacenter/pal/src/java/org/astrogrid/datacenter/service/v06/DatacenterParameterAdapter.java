@@ -1,4 +1,4 @@
-/*$Id: DatacenterParameterAdapter.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+/*$Id: DatacenterParameterAdapter.java,v 1.2 2004/10/20 08:13:09 pah Exp $
  * Created on 13-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.datacenter.service.v06;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
@@ -31,6 +34,12 @@ import java.io.StringWriter;
  *
  */
 public class DatacenterParameterAdapter extends DefaultParameterAdapter implements ParameterAdapter {
+   /**
+    * Logger for this class
+    */
+   private static final Log logger = LogFactory
+         .getLog(DatacenterParameterAdapter.class);
+
     /** Construct a new DatacenterParameterAdapter
      * @param arg0
      * @param arg1
@@ -45,6 +54,7 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
      */
     public void writeBack(Object arg0) throws CeaException {
         CEATargetIndicator ti = (CEATargetIndicator) arg0;
+        logger.debug("writing back "+ti+" to "+externalVal);
         try {
             if (this.externalVal == null) {
                 StringWriter sw = new StringWriter();
@@ -68,6 +78,9 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
 
 /* 
 $Log: DatacenterParameterAdapter.java,v $
+Revision 1.2  2004/10/20 08:13:09  pah
+added some logging
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 
