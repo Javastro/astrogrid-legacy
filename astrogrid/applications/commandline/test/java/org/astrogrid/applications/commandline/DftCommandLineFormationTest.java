@@ -1,5 +1,5 @@
 /*
- * $Id: DftTest.java,v 1.1 2004/09/23 22:44:23 pah Exp $
+ * $Id: DftCommandLineFormationTest.java,v 1.1 2004/09/24 16:09:50 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -24,10 +24,10 @@ import org.astrogrid.workflow.beans.v1.Tool;
  * @version $Name:  $
  * @since iteration6
  */
-public class DftTest extends AbstractCmdLineRealAppTestCase {
+public class DftCommandLineFormationTest extends AbstractCmdLineRealAppTestCase {
 
     
-    public DftTest(String arg0)
+    public DftCommandLineFormationTest(String arg0)
     {
         super(new TestAppInfo(){
 
@@ -46,7 +46,7 @@ public class DftTest extends AbstractCmdLineRealAppTestCase {
      * @param info
      * @param arg0
      */
-    public DftTest(TestAppInfo info, String arg0) {
+    public DftCommandLineFormationTest(TestAppInfo info, String arg0) {
         super(info, arg0);
     }
 
