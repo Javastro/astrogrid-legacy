@@ -1,5 +1,5 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.3 2003/09/16 12:53:58 mch Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.4 2003/09/16 13:24:27 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -26,6 +26,7 @@ import org.xml.sax.SAXException;
  * client.
  *
  * @author M Hill
+ * @modified Noel Winstanley - made into a bean, so is SOAP-transportable.
  */
 
 public class WebNotifyServiceListener implements DatacenterStatusListener
@@ -42,6 +43,10 @@ public class WebNotifyServiceListener implements DatacenterStatusListener
    public WebNotifyServiceListener(URL aClientListener)
    {
       this.clientListener = aClientListener;
+   }
+   
+   /** default constructor */
+   public WebNotifyServiceListener() {       
    }
 
    /** Called by the service when it has a
@@ -78,10 +83,28 @@ public class WebNotifyServiceListener implements DatacenterStatusListener
 
 
    }
+/**
+ * @return
+ */
+public URL getClientListener() {
+    return clientListener;
+}
+
+/**
+ * @param url
+ */
+public void setClientListener(URL url) {
+    clientListener = url;
+}
+
 }
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.4  2003/09/16 13:24:27  nw
+added default constructor and getter/setter pair - makes
+it sufficiently beanlike to be transported via SOAP
+
 Revision 1.3  2003/09/16 12:53:58  mch
 DocHelper.wrap now throws IllegalArgumentException (runtime error) rather than SAXException, as XML is all softwired
 
