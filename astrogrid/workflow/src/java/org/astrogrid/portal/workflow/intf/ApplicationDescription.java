@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescription.java,v 1.5 2004/07/01 11:23:14 nw Exp $
+/*$Id: ApplicationDescription.java,v 1.6 2004/09/10 18:28:53 pah Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -238,10 +238,14 @@ public class ApplicationDescription  {
                 ParameterValue val = (ParameterValue)results.next();
                 
             }
-            if (occurenceCount < reference.getMinoccurs() || occurenceCount > reference.getMaxoccurs()) {
+           
+            
+            if (occurenceCount < reference.getMinoccurs() || 
+                    (reference.getMaxoccurs() != 0 ?occurenceCount > reference.getMaxoccurs():false)) {
                 throw new ToolValidationException("Parameter " + reference.getRef() + " occurs " + occurenceCount 
-                    + ". Should be between " + reference.getMinoccurs() + " and " + reference.getMaxoccurs());
+                    + ". Should occur between " + reference.getMinoccurs() + " and " + reference.getMaxoccurs() + " times");
             }
+         
         } catch (IllegalArgumentException e) {
             throw new ToolValidationException(e);
         }        
@@ -274,6 +278,9 @@ public class ApplicationDescription  {
 
 /* 
 $Log: ApplicationDescription.java,v $
+Revision 1.6  2004/09/10 18:28:53  pah
+update the cardinality testing to deal with unlimited max properly
+
 Revision 1.5  2004/07/01 11:23:14  nw
 removed 'setType' - as parameterValue nolonger has this atrribute.
 part of cea componentization refactoring

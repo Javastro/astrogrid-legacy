@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionTest.java,v 1.5 2004/07/01 11:23:37 nw Exp $
+/*$Id: ApplicationDescriptionTest.java,v 1.6 2004/09/10 18:28:53 pah Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,6 +91,17 @@ public class ApplicationDescriptionTest extends TestCase {
       
     }
     
+    
+    public void testCardinality() throws Exception 
+    {
+        Tool t = descr.createToolFromDefaultInterface();
+        ParameterValue pv = new ParameterValue();
+        pv.setName("DetectionImage");
+        pv.setValue("silly");
+        t.getInput().addParameter(pv);
+        descr.validate(t);
+    }
+    
     public void testValidate() throws Exception {
         Tool t = descr.createToolFromDefaultInterface();
         descr.validate(t);
@@ -114,6 +125,9 @@ public class ApplicationDescriptionTest extends TestCase {
 
 /* 
 $Log: ApplicationDescriptionTest.java,v $
+Revision 1.6  2004/09/10 18:28:53  pah
+update the cardinality testing to deal with unlimited max properly
+
 Revision 1.5  2004/07/01 11:23:37  nw
 removed 'setType' - as parameterValue nolonger has this atrribute.
 part of cea componentization refactoring
