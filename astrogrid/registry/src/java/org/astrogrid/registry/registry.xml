@@ -75,4 +75,10 @@
             <email>cgp@star.le.ac.uk</email>
         </contact>
     </service>
+	<service>
+		<id>Registry2</id>
+		<title>Martian Registry</title>
+		<creator>Elizabeth Auden</creator>
+		<publisher>Elizabeth Auden</publisher>
+	</service>
 </registry>
