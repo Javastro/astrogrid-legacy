@@ -18,7 +18,8 @@ same time. Just follow the xml examples on setting it up to process your junit
 class.  It does assume everything is in your classpath.  Currently my examples 
 are working with these calculate webservices, I will try to get one that will 
 work with the Registry soon if I got time, but I am thinking somebody else might
-want to do that.
+want to do that. (The calculate webservices can be found on Wiki under 
+SoftwareDevelopment/DevelopmentDocs/WebServices Standard.)
 
 When you run WSTester it will create a txt file called WSTest-<timestamp>.txt 
 which will hold all the various tests it did along with their time in millis.
