@@ -389,7 +389,7 @@ public class Workflow extends Activity {
                                                , CommunityMessage.getGroup( communitySnippet)
                                                , workflow.getName()        // file name
                                                , xmlWorkflow               // file contents
-                                               , "workflow"                // it's a workflow
+                                               , "workflow"    //@TODO JDT according to the myspace api this ought to be WF            // it's a workflow
                                                , "Overwrite" ) ;           // overwrite it if it already exists
          }
                          
