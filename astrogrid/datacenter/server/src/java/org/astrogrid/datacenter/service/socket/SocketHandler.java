@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.1 2003/12/02 19:50:56 mch Exp $
+ * $Id: SocketHandler.java,v 1.2 2003/12/15 14:35:01 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -191,7 +191,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
          }
          catch (SocketException e)
          {
-            Log.logWarning(this, "(assuming fatal & terminating handler)", e);
+            Log.logError(this.toString(), "(assuming fatal & terminating handler)", e);
             fatal = true;
          }
          catch (IOException e)
@@ -253,6 +253,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.2  2003/12/15 14:35:01  mch
+Fix to logging to adjust for new, simpler logger
+
 Revision 1.1  2003/12/02 19:50:56  mch
 Moved snippet and socket-processing stuff into their own packages
 
