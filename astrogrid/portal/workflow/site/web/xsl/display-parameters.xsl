@@ -61,12 +61,14 @@
         </tr>
         <xsl:choose>
           <xsl:when test="./tool/@tool-name != 'null'"> 
-            <form name="parameter_form" id="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" target="workflowOuterFrame">                       
+            <form name="parameter_form" id="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" target="workflowOuterFrame">                                      
               <xsl:for-each select="./tool/inputParam">
-                <xsl:call-template name="parameter">
+                <xsl:sort select="@param-name" type="text" order="descending" /> 
+                <xsl:call-template name="parameter">                                     
                   <xsl:with-param name="direction">input</xsl:with-param>
-                </xsl:call-template>
+                </xsl:call-template>                              
               </xsl:for-each>
+
               <xsl:if test="./tool/outputParam" >              
                 <xsl:for-each select="./tool/outputParam">  <!-- Email tool has no output params, so don't display -->
                   <xsl:call-template name="parameter">
