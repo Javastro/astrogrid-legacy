@@ -1,14 +1,11 @@
 <Context path="/astrogrid-cea-commandline-@VERSION@">
   <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/commandline/store" />
-  <!-- try to do without properties file 
-  <Environment description="properties file" name="org.astrogrid.config.url" override="true" type="java.lang.String" value="@CONFIGPATH@/AstroGridConfig.properties" />
-  -->
   
 <!--optional - picks up a default template from the classpath - can override to set up personalised values in template
 <Environment name="cea.registry.template.url" decription="The template registry entry" type="java.lang.String" value="@CONFIGPATH@/CEARegistryTemplate.xml" />
 -->
 <Environment name="cea.commandline.workingdir.file" description="The working directory where execution environments are created" type="java.lang.String" value="@WORKDIR@/cea/commandline/work" />
-<Environment name="cea.commandline.description.list.url" description="The configuration file for applications" type="java.lang.String" value="file://@WORKDIR@/cea/commandline/config/TestApplicationConfig.xml"/>
+<Environment name="cea.commandline.description.list.url" description="The configuration file for applications" type="java.lang.String" value="@CEACMDCONFIG@"/>
 
 <!-- registry endpoints - these are essential for the proper working of CEA - 
 	it needs to be able to query the registry to do myspace operations and can update the registry with its own configuration 
@@ -16,47 +13,4 @@
 <Environment name="org.astrogrid.registry.admin.endpoint" description="registry update service endpoint URL" type="java.lang.String" value="@CENTRALREGISTRY@Update" />
 <Environment name="org.astrogrid.registry.query.endpoint" description="registry query service endpoint URL" type="java.lang.String" value="@CENTRALREGISTRY@Query"  />
   
-  <!--these are not really used any more I think-->
-  <Resource description="CEA database - defunct..." name="jdbc/AstrogridACDatasource" scope="Shareable" type="javax.sql.DataSource" />
-  <Resource name="mail/AGMailSession" scope="Shareable" type="javax.mail.Session" />
-  <ResourceParams name="jdbc/AstrogridACDatasource">
-    <parameter>
-      <name>factory</name>
-      <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
-    </parameter>
-    <parameter>
-      <name>maxWait</name>
-      <value>5000</value>
-    </parameter>
-    <parameter>
-      <name>maxActive</name>
-      <value>4</value>
-    </parameter>
-    <parameter>
-      <name>password</name>
-      <value></value>
-    </parameter>
-    <parameter>
-      <name>url</name>
-      <value>jdbc:hsqldb:@WORKDIR@/applications/application-db</value>
-    </parameter>
-    <parameter>
-      <name>driverClassName</name>
-      <value>org.hsqldb.jdbcDriver</value>
-    </parameter>
-    <parameter>
-      <name>maxIdle</name>
-      <value>2</value>
-    </parameter>
-    <parameter>
-      <name>username</name>
-      <value>sa</value>
-    </parameter>
-  </ResourceParams>
-  <ResourceParams name="mail/AGMailSession">
-    <parameter>
-      <name>mail.smtp.host</name>
-      <value>localhost</value>
-    </parameter>
-  </ResourceParams>
 </Context>
