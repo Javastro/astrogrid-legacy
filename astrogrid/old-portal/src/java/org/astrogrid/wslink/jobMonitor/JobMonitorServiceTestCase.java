@@ -6,11 +6,21 @@
  */
 
 package org.astrogrid.wslink.jobMonitor;
+import junit.framework.*;
 
 public class JobMonitorServiceTestCase extends junit.framework.TestCase {
     public JobMonitorServiceTestCase(java.lang.String name) {
         super(name);
     }
+    
+	public static void main (String[] args) {		
+		junit.textui.TestRunner.run(suite());
+	}    
+
+	public static Test suite() {
+		return new TestSuite(JobMonitorServiceTestCase.class);
+	}    
+    
     public void test1JobMonitorServiceMonitorJob() throws Exception {
         org.astrogrid.wslink.jobMonitor.JobMonitorServiceSoapBindingStub binding;
         try {
@@ -31,5 +41,4 @@ public class JobMonitorServiceTestCase extends junit.framework.TestCase {
         binding.monitorJob(new java.lang.String());
         // TBD - validate results
     }
-
 }

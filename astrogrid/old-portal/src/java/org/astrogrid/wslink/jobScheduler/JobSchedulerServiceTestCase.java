@@ -6,11 +6,21 @@
  */
 
 package org.astrogrid.wslink.jobScheduler;
+import junit.framework.*;
 
 public class JobSchedulerServiceTestCase extends junit.framework.TestCase {
     public JobSchedulerServiceTestCase(java.lang.String name) {
         super(name);
     }
+    
+	public static void main (String[] args) {		
+		junit.textui.TestRunner.run(suite());
+	}    
+
+	public static Test suite() {
+		return new TestSuite(JobSchedulerServiceTestCase.class);
+	}        
+    
     public void test1JobSchedulerServiceScheduleJob() throws Exception {
         org.astrogrid.wslink.jobScheduler.JobSchedulerServiceSoapBindingStub binding;
         try {

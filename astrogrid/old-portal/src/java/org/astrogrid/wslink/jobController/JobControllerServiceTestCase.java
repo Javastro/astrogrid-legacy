@@ -6,11 +6,17 @@
  */
 
 package org.astrogrid.wslink.jobController;
+import junit.framework.*;
 
 public class JobControllerServiceTestCase extends junit.framework.TestCase {
     public JobControllerServiceTestCase(java.lang.String name) {
         super(name);
     }
+    
+	public static Test suite() {
+		return new TestSuite(JobControllerServiceTestCase.class);
+	}
+    
     public void test1JobControllerServiceSubmitJob() throws Exception {
         org.astrogrid.wslink.jobController.JobControllerServiceSoapBindingStub binding;
         try {
@@ -30,7 +36,15 @@ public class JobControllerServiceTestCase extends junit.framework.TestCase {
         // Test operation
         java.lang.String value = null;
         value = binding.submitJob(new java.lang.String());
+		System.out.println("okay query done the value = " + value);
+		assertNotNull("value of query is", value);
+
         // TBD - validate results
     }
+    
+	public static void main (String[] args) {		
+		junit.textui.TestRunner.run(suite());
+	}
+    
 
 }

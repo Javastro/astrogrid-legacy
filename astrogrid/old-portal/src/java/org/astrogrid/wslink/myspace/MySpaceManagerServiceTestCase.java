@@ -6,11 +6,21 @@
  */
 
 package org.astrogrid.wslink.myspace;
+import junit.framework.*;
 
 public class MySpaceManagerServiceTestCase extends junit.framework.TestCase {
     public MySpaceManagerServiceTestCase(java.lang.String name) {
         super(name);
     }
+    
+	public static void main (String[] args) {		
+		junit.textui.TestRunner.run(suite());
+	}    
+
+	public static Test suite() {
+		return new TestSuite(MySpaceManagerServiceTestCase.class);
+	}      
+    
     public void test1MySpaceManagerUpLoad() throws Exception {
         org.astrogrid.wslink.myspace.MySpaceManagerSoapBindingStub binding;
         try {
@@ -30,6 +40,9 @@ public class MySpaceManagerServiceTestCase extends junit.framework.TestCase {
         // Test operation
         java.lang.String value = null;
         value = binding.upLoad(new java.lang.String());
+		System.out.println("okay query done the value = " + value);
+		assertNotNull("value of query is", value);
+        
         // TBD - validate results
     }
 
@@ -52,6 +65,9 @@ public class MySpaceManagerServiceTestCase extends junit.framework.TestCase {
         // Test operation
         java.lang.String value = null;
         value = binding.lookupDataHolderDetails(new java.lang.String());
+		System.out.println("okay query done the value = " + value);
+		assertNotNull("value of query is", value);
+        
         // TBD - validate results
     }
 
@@ -74,6 +90,9 @@ public class MySpaceManagerServiceTestCase extends junit.framework.TestCase {
         // Test operation
         java.lang.String value = null;
         value = binding.lookupDataHoldersDetails(new java.lang.String());
+		System.out.println("okay query done the value = " + value);
+		assertNotNull("value of query is", value);
+        
         // TBD - validate results
     }
 
@@ -96,6 +115,9 @@ public class MySpaceManagerServiceTestCase extends junit.framework.TestCase {
         // Test operation
         java.lang.String value = null;
         value = binding.copyDataHolder(new java.lang.String());
+		System.out.println("okay query done the value = " + value);
+		assertNotNull("value of query is", value);
+        
         // TBD - validate results
     }
 
@@ -118,6 +140,9 @@ public class MySpaceManagerServiceTestCase extends junit.framework.TestCase {
         // Test operation
         java.lang.String value = null;
         value = binding.moveDataHolder(new java.lang.String());
+		System.out.println("okay query done the value = " + value);
+		assertNotNull("value of query is", value);
+        
         // TBD - validate results
     }
 
@@ -140,6 +165,9 @@ public class MySpaceManagerServiceTestCase extends junit.framework.TestCase {
         // Test operation
         java.lang.String value = null;
         value = binding.exportDataHolder(new java.lang.String());
+		System.out.println("okay query done the value = " + value);
+		assertNotNull("value of query is", value);
+        
         // TBD - validate results
     }
 
@@ -162,6 +190,9 @@ public class MySpaceManagerServiceTestCase extends junit.framework.TestCase {
         // Test operation
         java.lang.String value = null;
         value = binding.createContainer(new java.lang.String());
+		System.out.println("okay query done the value = " + value);
+		assertNotNull("value of query is", value);
+        
         // TBD - validate results
     }
 
@@ -184,6 +215,9 @@ public class MySpaceManagerServiceTestCase extends junit.framework.TestCase {
         // Test operation
         java.lang.String value = null;
         value = binding.deleteDataHolder(new java.lang.String());
+		System.out.println("okay query done the value = " + value);
+		assertNotNull("value of query is", value);
+        
         // TBD - validate results
     }
 

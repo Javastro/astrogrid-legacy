@@ -38,7 +38,7 @@ public class RegistryInterfaceTestCase extends junit.framework.TestCase {
         // Test operation
         java.lang.String value = null;
         value = binding.submitQuery(new java.lang.String());
-        //System.out.println("okay query done the value = " + value);
+        System.out.println("okay query done the value = " + value);
 		assertNotNull("value of query is", value);
         // TBD - validate results
     }
