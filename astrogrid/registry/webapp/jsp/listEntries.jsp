@@ -74,7 +74,7 @@
       }
       
       out.write("</table>");
-   }
+   
 
 %>
 <hr>
@@ -82,7 +82,7 @@ Use your browser's 'view source' to view the XML:
 <pre>
 <%
       DomHelper.DocumentToWriter(entry, out);
-
+    }
 %>
 </pre>
 
