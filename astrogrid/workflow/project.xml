@@ -8,18 +8,7 @@
          Interface into the workflow object model and jes web service for use by the Cocoon GUI
         </description>
         <shortDescription>AstroGrid Workflow Components</shortDescription>
-        <siteDirectory>/var/www/www/maven/build/workflow</siteDirectory>
-        <repository>
-                <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/workflow
-    </connection>
-                <developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/workflow
-    </developerConnection>
-                <url>
-            http://www.astrogrid.org/viewcvs/astrogrid/workflow/
-    </url>
-        </repository>
+
         <packageGroups>
                 <packageGroup>
                         <title>Public Interface</title>
