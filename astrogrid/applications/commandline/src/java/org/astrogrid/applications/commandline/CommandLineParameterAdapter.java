@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineParameterAdapter.java,v 1.1 2004/08/28 07:17:34 pah Exp $
+ * $Id: CommandLineParameterAdapter.java,v 1.2 2004/09/09 10:37:51 pah Exp $
  * 
  * Created on 20-Aug-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -109,79 +109,85 @@ public class CommandLineParameterAdapter implements ParameterAdapter {
      * @see org.astrogrid.applications.parameter.ParameterAdapter#process()
      */
     public Object process() throws CeaException {
+        
+        String CommandLineVal = pval.getValue();
         // don't want to fetch output-only files.
-        try {
+        if (!isOutputOnly) {
+            try {
 
-            if (indirect == null) {
-                if (desc.isFileRef()) // but the commandline app expects a
-                // file
-                {
+                if (indirect == null) {
+                    if (desc.isFileRef()) // but the commandline app expects a
+                    // file
+                    {
 
-                    String value = pval.getValue();
-                    PrintWriter pw = new PrintWriter(new FileWriter(
-                            referenceFile));
-                    pw.println(value);
-                    pw.close();
+                        String value = pval.getValue();
+                        PrintWriter pw = new PrintWriter(new FileWriter(
+                                referenceFile));
+                        pw.println(value);
+                        pw.close();
 
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("process() - " + pval.getName() + "="
-                                + pval.getValue() + " direct, fileref="
-                                + referenceFile.getAbsolutePath());
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("process() - " + pval.getName() + "="
+                                    + pval.getValue() + " direct, fileref="
+                                    + referenceFile.getAbsolutePath());
+                        }
+                        CommandLineVal = referenceFile.getAbsolutePath();
+
                     }
+                    else {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("process() - " + pval.getName() + "="
+                                    + pval.getValue() + " direct");
+                        }
+                        CommandLineVal = pval.getValue();
 
-                    return desc.addCmdlineAdornment(referenceFile
-                            .getAbsolutePath());
+                    }
                 }
                 else {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("process() - " + pval.getName() + "="
-                                + pval.getValue() + " direct");
+                    if (desc.isFileRef()) { //a indirect param/ file ref cmdline 
+                        InputStream is = indirect.read();
+                        OutputStream os = new FileOutputStream(referenceFile);
+                        Piper.bufferedPipe(is, os);
+                        is.close();
+                        os.close();
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("process() - " + pval.getName() + "="
+                                    + pval.getValue() + " indirect, fileref="
+                                    + referenceFile.getAbsolutePath());
+                        }
+                        CommandLineVal = referenceFile.getAbsolutePath();
                     }
+                    else // an indirect param/ direct cmdline
+                    {
+                        //TODO - does this deal with new lines in the way that we might want?
+                        InputStreamReader ir = new InputStreamReader(indirect
+                                .read());
+                        StringWriter sw = new StringWriter();
+                        Piper.pipe(ir, sw);
+                        ir.close();
+                        sw.close();
+                        pval.setValue(sw.toString()); //TODO do we really want to set this - or is just 
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("process() - " + pval.getName() + "="
+                                    + pval.getValue() + " indirect");
+                        }
 
-                    return desc.addCmdlineAdornment(pval.getValue());
+                        CommandLineVal = pval.getValue();
 
+                    }
                 }
             }
-            else {
-                if (desc.isFileRef()) { //a indirect param/ file ref cmdline 
-                    InputStream is = indirect.read();
-                    OutputStream os = new FileOutputStream(referenceFile);
-                    Piper.bufferedPipe(is, os);
-                    is.close();
-                    os.close();
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("process() - " + pval.getName() + "="
-                                + pval.getValue() + " indirect, fileref="
-                                + referenceFile.getAbsolutePath());
-                    }
 
-                    return desc.addCmdlineAdornment(referenceFile
-                            .getAbsolutePath());
-                }
-                else   // an indirect param/ direct cmdline
-                {
-                    //TODO - does this deal with new lines in the way that we might want?
-                    InputStreamReader ir = new InputStreamReader(indirect.read());
-                    StringWriter sw = new StringWriter();
-                    Piper.pipe(ir, sw);
-                    ir.close();
-                    sw.close();
-                    pval.setValue(sw.toString()); //TODO do we really want to set this - or is just 
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("process() - " + pval.getName() + "="
-                                + pval.getValue() + " indirect");
-                    }
-
-                    return desc.addCmdlineAdornment(pval.getValue());                    
-                
-                }
+            catch (IOException e) {
+                throw new ParameterAdapterException(
+                        "Could not process parameter " + pval.getName(), e);
             }
         }
-
-        catch (IOException e) {
-            throw new ParameterAdapterException("Could not process parameter "
-                    + pval.getName(), e);
+        else {
+            /* this is an output parameter - must write to a file*/
+            CommandLineVal = referenceFile.getAbsolutePath();
         }
+        return desc.addCmdlineAdornment(CommandLineVal);
     }
 
     /**
