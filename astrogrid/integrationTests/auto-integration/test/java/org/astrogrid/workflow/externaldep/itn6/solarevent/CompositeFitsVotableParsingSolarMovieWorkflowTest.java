@@ -1,4 +1,4 @@
-/*$Id: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v 1.3 2004/09/20 15:03:53 pah Exp $
+/*$Id: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v 1.4 2004/09/23 10:02:39 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -74,7 +74,7 @@ public class CompositeFitsVotableParsingSolarMovieWorkflowTest extends SimpleFit
                 "nodes = parser.parseText(votable); //parse votable into node tree\n" +
                 "urls = nodes.depthFirst().findAll{it.name() == 'STREAM'}.collect{it.value()}.flatten(); // filter node tree on 'STREAM', project value\n" +
                 "print(urls); // show what we've got\n" + 
-                "concatStep = jes.getSteps().find {it.getName() == 'concat-step'}; // find next step in workflow\n" +
+                "concatStep = jes.getSteps().find {it.getName() == 'CallMakeMPEGFitsImages'}; // find next step in workflow\n" +
                 "inputs = concatStep.getTool().getInput(); // get to set of input parameters\n" +
                 "inputs.clearParameter(); // clear what's there already \n" +
                 "urls.each { p = jes.newParameter(); p.setName('src'); p.setIndirect(true); p.setValue(it); inputs.addParameter(p);} // add a new parameter for each url\n"                
@@ -92,7 +92,6 @@ public class CompositeFitsVotableParsingSolarMovieWorkflowTest extends SimpleFit
         Step sink = new Step();
         sink.setName("CallMakeMPEGFitsImages");
         sink.setTool(solarMovieTool);
-        sink.setResultVar("finalResults"); // don't want, but reduces chance of race conditions in  test.
         wf.getSequence().addActivity(sink);
                         
         
@@ -114,6 +113,10 @@ public class CompositeFitsVotableParsingSolarMovieWorkflowTest extends SimpleFit
 
 /* 
 $Log: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v $
+Revision 1.4  2004/09/23 10:02:39  nw
+fixed script to refer to previously-renamed movie-maker step.
+removed call to return results back to workflow (going to be huge)
+
 Revision 1.3  2004/09/20 15:03:53  pah
 update the output parameter name
 
