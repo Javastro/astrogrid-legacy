@@ -16,40 +16,14 @@ For the most simplest of configurations, use the static methods on the SimpleCon
 These access a single (hidden) instance, and allows programmers to use the
 configuration with a minimum of code, like this:
 <p>
-<b>Initialisation:</b>
-<pre><code>
-SimpleConfig.autoload();
-</pre></code>
-or
-<pre><code>
-SimpleConfig.load("SomeFile.cfg");
-</pre></code>
 <b>Using Properties:</b>
 <pre><code>
 String fruit = SimpleConfig.getProperty("GlobalFruit");
 </pre></code>
 
-<h3>Instance</h3>
-Create using the provided factory if this is really your thing :-)  If you provide
-the factory method with a key object, you can reget the same one. For example:
-<pre><code>
-PropertyConfig config = ConfigFactory.getPropertyConfig("REGISTRY");
-</pre></code>
-returns the same instance as another same call elsewhere in the code:
-<pre><code>
-ConfigFactory.getPropertyConfig("REGISTRY");
-</pre></code>
-
-<h3>Loading</h3>
-You can request a load from urls or files.  The autoload() method will look in JNDI and
-the system environment for urls, and the local directory for a default filename.
-You can load from as many files as you like for the PropertyConfig; only the latest
-will work at the moment for the XML version.
-
-<h3>Accessing XML</h3>
-XPath doesn't seem to have settled yet, so be prepared for this one to break
-occasionally.  In the meantime, it takes the name of an element and does a search
-for all nodes matching that element name.
+<h3>Implementation</h3>
+The SimpleConfig implemenation is FailbackConfig - see the class doc for how it
+works.  To get access to all its features, use SimpleConfig.getSingleton().
 
 </body>
 </html>
