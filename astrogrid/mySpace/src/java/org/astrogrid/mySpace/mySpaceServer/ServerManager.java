@@ -4,39 +4,22 @@ package org.astrogrid.mySpace.mySpaceServer;
 
 //astrogrid
 import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
-import org.astrogrid.mySpace.mySpaceManager.MySpaceManager;
-import org.astrogrid.mySpace.mySpaceManager.UserAccount;
 import org.astrogrid.mySpace.mySpaceStatus.*;
 import org.astrogrid.mySpace.mySpaceUtil.MySpaceUtils;
 
 //java
-import java.util.Vector;
 import java.io.PrintWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.Exception;
-import java.io.IOException;
 import java.lang.SecurityException;
-import java.io.StringReader;
-
-//axis
-import org.apache.axis.AxisFault;
 
 //log4j
 import org.apache.log4j.Logger;
-import javax.xml.namespace.QName;
 
 //xml
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Node;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import org.apache.xerces.parsers.DOMParser;
-import org.xml.sax.InputSource;
 
 /**
  * @WebService
@@ -48,7 +31,10 @@ public class ServerManager {
 	
     private static Logger logger = Logger.getLogger(ServerManager.class);
     private static boolean DEBUG = true;
+	private static MySpaceStatus status = new MySpaceStatus();
     private String response = ""; //this would be a xml response contains info match portal/datacentre xml schema.
+    private static final String SUCCESS = "SUCCESS";
+    private static final String FAULT = "FAULT";
     
     public String processRequest(){
 
@@ -57,51 +43,39 @@ public class ServerManager {
 
     /** userAcc = String usrID + String communityID
      * */
-    public String deleteDataHolder(String dataHolderPath){ //throws Exception{
+    public String deleteDataHolder(String dataHolderPath){
     	if (DEBUG)
-    		logger.debug("MySpace ServerManager.deleteDataHolder...");
-    	
-    	try{
-    		
+    		logger.debug("MySpace ServerManager.deleteDataHolder...");	
+    	try{  		
     		File file = new File(dataHolderPath);   		
     		if  (file == null || !file.exists()){
 				if (DEBUG)  logger.debug("File not exist! can't delete.");
 				MySpaceMessage msMessage = new MySpaceMessage("NULL_FILE_DELETE");
-				response = msMessage.getMessage();
+				status.addCode(MySpaceStatusCode.NULL_FILE_DELETE,MySpaceStatusCode.ERROR);
+			    response = FAULT+MySpaceStatusCode.NULL_FILE_DELETE;
 				return response;
+    		}else{
+	    		try{
+	    			boolean isDeleted = file.delete();
+					if (DEBUG) logger.debug("ServerManager deleteDataHolder "+dataHolderPath);
+					if (isDeleted)  response = SUCCESS+"File Deleted.";
+					else response = FAULT+"File Not Deleted";
+					return response;
+	    		}catch(SecurityException se){
+					MySpaceMessage msMessage = new MySpaceMessage("ERR_SECURITY_DELETE_DATA_HOLDER");
+					status.addCode(MySpaceStatusCode.ERR_SECURITY_DELETE_DATA_HOLDER,MySpaceStatusCode.ERROR);
+					response = FAULT+MySpaceStatusCode.ERR_SECURITY_DELETE_DATA_HOLDER;
+					return response;
+	    		}
     		}
-
-    		try{
-    			boolean isDeleted = file.delete();
-				if (DEBUG) logger.debug("ServerManager deleteDataHolder "+dataHolderPath);
-				if (isDeleted)  response = "File Deleted.";
-				else response = "File Not Deleted";
-				//String r2 = buildXMLResponse();
-				//logger.debug("SERVERMANAGER: r2="+r2);
-				
-    		}catch(SecurityException se){
-    			//to catch the exception and return proper error message
-    		}
-
-    	}/*
-    	catch(AxisFault axf){
-    		QName qname = axf.getFaultCode();
-    		String faultName = qname.toString();
-    		//String faultValue = qname.valueOf(faultName);
-    		//response = axf.getFaultDetails();
-    		if (DEBUG) logger.error("DELETE_DATA_HOLDER AxisFault: " +faultName);
-    		response = faultName;
-    		return response;
-    	}*/
-    	catch(Exception e){
-    		//to catch the exception and return proper error message
-			//MySpaceMessage message = new MySpaceMessage(e.getMessage(),"e");
-			//message should get the message from a propertie			
-    		//if (DEBUG)  logger.error(message.toString());
-    	    //response = message.toString();
     	}
-    	return response; 
-}
+    	catch(Exception e){
+			MySpaceMessage msMessage = new MySpaceMessage("ERR_DELETE_DATA_HOLDER");
+			status.addCode(MySpaceStatusCode.ERR_DELETE_DATA_HOLDER,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERR_DELETE_DATA_HOLDER;
+			return response;
+			}
+    }
 
     public String exportDataHolder(String dataHolderPath, String destinationDataHolderPath) {
 
@@ -109,15 +83,32 @@ public class ServerManager {
     }
 
     public String copyDataHolder(String dataHolderPath, String destinationDataHolderPath) {
-
-        return "";
+		try{
+			File oldFile = new File(dataHolderPath);
+			String content = MySpaceUtils.readFromFile(oldFile);
+			response = SUCCESS +saveDataHolder(content, destinationDataHolderPath)+MySpaceStatusCode.DATA_HOLDER_COPIED;
+			return response;
+		}catch(Exception e){
+			MySpaceMessage message = new MySpaceMessage("ERR_COPY_DATA_HOLDER");
+			status.addCode(MySpaceStatusCode.ERR_COPY_DATA_HOLDER,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERR_COPY_DATA_HOLDER;	
+			return response;
+		}
     }
 
     public String moveDataHolder(String dataHolderPath, String destinationDataHolderPath) {
-    	//only for testing from RequestResponseClient for getRequestAttributes. faking dataHolderPath as input xml request.
-        MySpaceUtils util = new MySpaceUtils();
-        util.getRequestAttributes(dataHolderPath);
-        return dataHolderPath;
+    	try{
+	    	File oldFile = new File(dataHolderPath);
+	    	String content = MySpaceUtils.readFromFile(oldFile);
+			deleteDataHolder(dataHolderPath);
+	    	response = SUCCESS +saveDataHolder(content, destinationDataHolderPath)+MySpaceStatusCode.DATA_HOLDER_MOVED;
+	    	return response;
+    	}catch(Exception e){
+			MySpaceMessage message = new MySpaceMessage("ERR_MOVE_DATA_HOLDER");
+			status.addCode(MySpaceStatusCode.ERR_MOVE_DATA_HOLDER,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERR_MOVE_DATA_HOLDER;	
+    		return response;
+    	}
     }
 
     public String saveDataHolder(String content, String dataHolderPath) {
@@ -131,12 +122,15 @@ public class ServerManager {
 			//write to file
 			printWriter.println(content);
 		    if (DEBUG)  logger.debug("ServerManager.saveDataHolder.content = "+content +", path = " +dataHolderPath +", FilePath =" +dataholder.getAbsolutePath());
-		    response = "File Saved.";
+		    response = SUCCESS +" File Saved.";
 			return response;		    
 				    
 		}catch (Exception e) {//catch unexpected Exception
 			logger.error("FAULT ServerManagetr.saveDataHolder!!! "+e);
-			return e.toString(); //temp code for now, should catch the exception and return proper error message
+			MySpaceMessage message = new MySpaceMessage("ERR_SAVE_DATAHOLDER");
+			status.addCode(MySpaceStatusCode.ERR_SAVE_DATAHOLDER,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERR_SAVE_DATAHOLDER;			
+			return response; //temp code for now, should catch the exception and return proper error message
 		}finally{
 			//close file
 			try{
@@ -169,119 +163,13 @@ public class ServerManager {
 		logger.debug("CREATED MYSPACEUTIL...");
 		//DataItemRecord record = new DataItemRecord();
 		DataItemRecord dataItemRecord = new DataItemRecord();
-		String response = util.buildMySpaceManagerResponse(dataItemRecord,"","");
+		String response = util.buildMySpaceManagerResponse(dataItemRecord,"","","");
 		
 		logger.debug("GOT RESPONSE" +response);
 		
-		/*
-    	String response = "";
-		Node checker;
-		Document document = null;
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = null;
-		try {
-			InputSource source = new InputSource( new StringReader( xml ) );	
-			factory.setValidating( true ) ; 
-			builder = factory.newDocumentBuilder();
-			document = builder.parse( source );
-			
-			//now trying to walk the tree
-			checker=document.getDocumentElement();;
-            logger.debug("FIRST NODE IS :" +checker.getNodeName() +", TYPE OF" +checker.getNodeType());
-			boolean ascending = false;
-			int level = 1;
-				  while (true) {
-					logger.debug("Now trying to walk the dom tree..");
-					if (!ascending) {
-					  indentToLevel(level);
-					  printNodeInfo(checker);
-					}
-														
-					if ((checker.hasChildNodes()) && (!ascending)) {
-					  checker = checker.getFirstChild();
-					  logger.debug("GOING DOWN"+checker.getNodeName() +"NODETYPE="+checker.getNodeType());
-					  if(checker.getNodeType()==1){
-					  	printAttributes((Node)checker);
-					  }
-					  ascending = false;
-					  level++;
-					}
-					
-					else if (checker.getNextSibling() != null) {
-					  checker= checker.getNextSibling();
-					  ascending = false;
-					  logger.debug("GOING RIGHT");
-					}
-					
-					else if (checker.getParentNode() != null) {
-					  checker= checker.getParentNode();
-					  ascending = true;
-					  level--;
-					  logger.debug("GOING UP");
-					}
-					//*** OTHERWISE YOU'VE ASCENDED BACK TO ***
-					//*** THE DOCUMENT ELEMENT, SO YOU'RE DONE ***
-					else {
-					  break;
-					}					
-				  }
-			//response = MySpaceMessage.readFromFile(file);
-			logger.debug("RESPONSE = " +response);
-			
-		}//catch ParserConfigurationException
-		catch(SAXException saxe){
-			logger.error("SAX EXCEPTION");
-		}
-		catch(IllegalArgumentException iae){
-			logger.error("ILLEGALARGUMENTEXCEPTION WHILE PARSING DOCUMENT");
-		}
-		catch(IOException ioe){
-			logger.error("IO EXCEPTION");
-		}
-		catch(Exception e){
-			logger.error("EXCEPTION!!"+e);
-		}
-*/
-    	//parse with xslt   
+		
 		return response;	
     }//end method
-    
-    
-	private void indentToLevel(int level) {
-		for(int n=0; n < level; n++) {
-		  System.out.print("  ");
-		}
-	}
-	
-	private void printNodeInfo(Node thisNode) {
-		if(thisNode.getNodeType()==1){
-		
-			logger.debug("WITHIN PRINTNODEINFO nodeName: "+thisNode.getNodeName() + " nodeType: " + 
-					 thisNode.getNodeType() + " nodeValue: " +thisNode.getNodeValue());
-		}
-		
-		if(thisNode.getNodeType() == Node.ELEMENT_NODE) {
-		  printAttributes(thisNode);
-		}
-		
-	  }
-	  
-	  private void printAttributes(Node thisNode) {
-		  logger.debug("DEBUGING PRINTATTRIBUTES:  (");
-		  NamedNodeMap attribs = thisNode.getAttributes(); 
-		  logger.debug("NAMEDNODEMAP LENGTH: "+attribs.getLength());
-		  int numAttribs = attribs.getLength();
-		  logger.debug("LENGTH: "+numAttribs);
-		  for(int i=0; i < attribs.getLength(); i++){
-			Node attrib = attribs.item(i);
-			if(i>0){System.out.print(",");}
-			logger.debug("NODENAME: "+attrib.getNodeName());
-			logger.debug("=\"");
-			logger.debug("NODEVALUE: "+attrib.getNodeValue());
-			logger.debug("\"");
-		  }
-		  logger.debug(")");
-		}
     
 
     /**

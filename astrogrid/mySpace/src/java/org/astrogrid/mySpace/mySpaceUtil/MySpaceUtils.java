@@ -9,6 +9,9 @@ import java.io.FileInputStream;
 import java.text.MessageFormat;
 import java.io.StringReader ;
 import java.util.HashMap;
+import java.util.Calendar;
+import java.io.PrintWriter;
+import java.io.FileOutputStream;
 
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
@@ -78,8 +81,28 @@ public class MySpaceUtils {
 		}
 	}
 	
+	public static boolean writeToFile( File file, String theString ){
+			PrintWriter printWriter = null;    	
+			try{
+				//open file to write into
+				printWriter = new PrintWriter(new FileOutputStream(file));    	       	    
+				//write to file
+				printWriter.println(theString);		    
+				return true;				    
+			}catch (Exception e) {
+				return false;
+			}finally{
+				//close file
+				try{
+					if(printWriter != null) {
+						printWriter.close();
+					}
+				}catch(Exception e){					
+				}
+			}
+	   }
 	
-    public String buildMySpaceManagerResponse(DataItemRecord record, String status, String details){
+    public String buildMySpaceManagerResponse(DataItemRecord record, String status, String details, String dataHolderURI){
 		//conProperties = new Properties();
 		String response = "";
 		try {
@@ -90,19 +113,20 @@ public class MySpaceUtils {
 			String template = conProperties.getProperty( RESPONSE );
 			if (DEBUG)  logger.debug("buildMySpaceManagerResponse = "+response);
 			
-			Object [] inserts = new Object[11] ;
+			Object [] inserts = new Object[12] ;
 			inserts[0] = status;
 			inserts[1] = details;
 			if(record != null){
-				inserts[2] = "c"; //dataitemrecord.getDataItemName
-				inserts[3] = "d"; //dataitemrecord.getDataItemID
-				inserts[4] = "e"; //dataitemrecord.getDataItemFile
-				inserts[5] = "f"; //dataitemrecord.getOwnerID
-				inserts[6] = "g"; //dataitemrecord.getCreationDate
-				inserts[7] = "h"; //dataitemrecord.getExpiryDate
-				inserts[8] = "i"; //dataitemrecord.getSize
-				inserts[9] = "j"; //dataitemrecord.getType
-				inserts[10] = "k";// dataitemrecord.getPermissionsMask
+				inserts[2] = Calendar.getInstance().getTime();
+				inserts[3] = record.getDataItemName();				
+				inserts[4] = new Integer(record.getDataItemID()).toString();
+				inserts[5] = record.getOwnerID();
+				inserts[6] = record.getCreationDate();
+				inserts[7] = record.getExpiryDate();
+				inserts[8] = new Integer(record.getSize()).toString();
+				inserts[9] = new Integer(record.getType()).toString();
+				inserts[10] = record.getPermissionsMask();
+				inserts[11] = dataHolderURI;
 			}
 					
 			response = MessageFormat.format( template, inserts ) ;
@@ -124,13 +148,8 @@ public class MySpaceUtils {
 			int level = 1;
 			while (true) {
 				logger.debug("Now trying to walk the dom tree..");
-				if (!ascending) {
-					//indentToLevel(level);
-					//printNodeInfo(checker);
-					}
-					logger.debug("XXXXXXXXXXXXX");
+					
 					if (checker!=null && (checker.hasChildNodes()) && (!ascending)) {
-						logger.debug("YYYYYYYYYY");
 						checker = checker.getFirstChild();
 						logger.debug("GOING DOWN"+checker.getNodeName() +"NODETYPE="+checker.getNodeType());
 						if(checker.getNodeType()==1){

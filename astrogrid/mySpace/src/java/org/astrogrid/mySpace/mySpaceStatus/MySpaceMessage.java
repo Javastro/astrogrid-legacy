@@ -49,7 +49,7 @@ public class MySpaceMessage{
     private String errMessage;  // exception message passed in.
     private String message;     // Message.
     private String catalinaHome = AxisProperties.getProperty("catalina.home");
-    private String messageFilePath = catalinaHome+"/conf/astrogrid/mySpace/" +"mySpaceMessage.properties";
+    private String messageFilePath = catalinaHome+"/conf/astrogrid/mySpace/" +"statuscodes.lis";
     private Properties p = new Properties();
 
 /**

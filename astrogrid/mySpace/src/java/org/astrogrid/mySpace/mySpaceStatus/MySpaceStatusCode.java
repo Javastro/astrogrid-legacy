@@ -42,6 +42,40 @@ public class MySpaceStatusCode
    public static final int INFO  = 1;  // Information (ie. nothing amiss).
    public static final int WARN  = 2;  // Warning.
    public static final int ERROR = 3;  // Error.
+   public static final String MS_E_REGDWRT = "MS-E-REGDWRT"; //"Failed to write registry data file."
+   public static final String MS_E_REGDCRT="MS-E-REGDCRT"; //"Registry data file is corrupt."
+   public static final String MS_E_REGDRED="MS-E-REGDRED"; //"Failed to read registry data file."
+   public static final String MS_E_DHNTFND="MS-E-DHNTFND"; //"Requested Data Holder not found."
+   public static final String MS_I_NDHMTCH="MS-I-NDHMTCH"; //"No Data Holders matched query string."
+   public static final String MS_E_FLCRTDH="MS-E-FLCRTDH"; //"Failed to create Data Holder."
+   public static final String MS_E_FCRTDHR="MS-E-FCRTDHR"; //"Failed to create Data Holder (registry update failure)."
+   public static final String MS_E_CPYDHCN="MS-E-CPYDHCN"; //"Attempt to copy a container instead of a Data Holder."
+   public static final String MS_E_FLMOVDH="MS-E-FLMOVDH"; //"Failed to move Data Holder."
+   public static final String MS_E_MOVDHCN="MS-E-MOVDHCN"; //"Attempt to move a container instead of a Data Holder."
+   public static final String MS_E_FACCSDH="MS-E-FACCSDH"; //"Cannot access Data Holder."
+   public static final String MS_E_FNTCNDH="MS-E-FNTCNDH"; //"Item is neither a container nor a Data Holder."
+   public static final String MS_E_FLCRTCN="MS-E-FLCRTCN"; //"Failed to create container."
+   public static final String MS_E_DNEMPCN="MS-E-DNEMPCN"; //"Attempt to delete a container which is not empty."
+   public static final String MS_E_FLDELDH="MS-E-FLDELDH"; //"Failed to delete Data Holder."
+   public static final String MS_E_NTPERDH="MS-E-NTPERDH"; //"User not permitted to delete this Data Holder or container."
+   public static final String MS_E_NPRWPCN="MS-E-NPRWPCN"; //"User not permitted to write to parent container."
+   public static final String MS_E_PCNNTEX="MS-E-PCNNTEX"; //"The parent container does not exist."
+   public static final String MS_E_DHCNAEX="MS-E-DHCNAEX"; //"Data Holder or container already exists."
+   public static final String ULL_FILE_DELETE="ULL_FILE_DELETE"; //There is no file to delete, check your file path and try again.otherwise this fuction is failed!!cat
+   public static final String NULL_FILE_SAVE="NULL_FILE_SAVE"; //There is no file to save, check file path and try again.
+   public static final String ERROR_READING_FILE="ERROR_READING_FILE"; //Error Reading from file.
+   public static final String PARSE_REQUEST_ERROR="PARSE_REQUEST_ERROR"; //Error parsing xmlRequest in MySpaceUtils.parseRequest.
+   public static final String NUMBER_FORMAT_ERROR="NUMBER_FORMAT_ERROR"; //Error Casting from String to int.
+   public static final String ERROR_CALL_SERVER_MANAGER="ERROR_CALL_SERVER_MANAGER"; //Error Calling MySpace ServerManager.
+   public static final String NULL_POINTER_GETTING_REQUEST="NULL_POINTER_GETTING_REQUEST"; //Null pointer getting one or more of the attributes from request string in MySpace.
+   public static final String ERR_SAVE_DATAHOLDER="ERR_SAVE_DATAHOLDER"; //Error Saving DataHolder.
+   public static final String ERR_MOVE_DATA_HOLDER="ERR_MOVE_DATA_HOLDER"; //Error Moving DataHolder.
+   public static final String DATA_HOLDER_MOVED="DATA_HOLDER_MOVED"; //Data Holder Has Been Moved.
+   public static final String ERR_COPY_DATA_HOLDER="ERR_COPY_DATA_HOLDER"; //Error Copying DataHolder.
+   public static final String DATA_HOLDER_COPIED="DATA_HOLDER_COPIED"; //Data Holder Has Been Copied.
+   public static final String NULL_FILE_DELETE="NULL_FILE_DELETE"; //There is no File to Delete!
+   public static final String ERR_SECURITY_DELETE_DATA_HOLDER="ERR_SECURITY_DELETE_DATA_HOLDER"; //Can't delete the data holder because of security issues.
+   public static final String ERR_DELETE_DATA_HOLDER="ERR_DELETE_DATA_HOLDER"; //Unkown Error occourd whild deleting data holder.
 
    private String code;    // Code.
    private int    type;    // Code type code: INFO, WARN or ERROR.
