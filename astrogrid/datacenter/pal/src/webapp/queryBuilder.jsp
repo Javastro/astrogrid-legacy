@@ -81,7 +81,10 @@ Select which columns you will be using to search:
 <%
    Document metadata = MetadataServer.getMetadata();
    NodeList tables = metadata.getElementsByTagName("Table");
-   assert tables.getLength() != 0 : "No <Table> element in metadata";
+   if (tables.getLength() == 0) {
+      //would like to use assert but some Tomcats can't compile it properly
+      throw new RuntimeException("No <Table> element in metadata");
+   }
    for (int t=0;t<tables.getLength();t++) {
       Element tableElement = (Element) tables.item(t);
       String tableName = tableElement.getAttribute("name");
