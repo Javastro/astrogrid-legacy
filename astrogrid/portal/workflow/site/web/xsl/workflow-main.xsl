@@ -170,7 +170,6 @@
             <tr>
                <td>Tools currently available for use:</td>
             </tr>
-            <tr>
             <p />
             <xsl:for-each select="//toolsAvailable">
                <tr>
