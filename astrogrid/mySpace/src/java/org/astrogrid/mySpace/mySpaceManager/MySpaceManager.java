@@ -65,7 +65,7 @@ public class MySpaceManager {
         private static Logger logger = new Logger (true, true, true,
           "./myspace.log");
 
-	private static boolean DEBUG = false;
+	private static boolean DEBUG = true;
 	private static MySpaceStatus status = new MySpaceStatus();
 	
 	private MySpaceUtils util = new MySpaceUtils();
@@ -170,19 +170,29 @@ public class MySpaceManager {
 
 				if (action.equalsIgnoreCase("overwrite"))
 				{  dispatchExisting = msA.OVERWRITE;
-				}
+				}/*
+				else if (action.equalsIgnoreCase("append")){
+					dispatchExisting = msA.APPEND;
+					logger.appendMessage("MYSPACEMAMAGER.APPEND"+dispatchExisting);
+				}*/
 
 				if ( DEBUG ) logger.appendMessage(
 				  "action, dispatchExisting: " + action
 				   + "  " +   dispatchExisting);
 
 				//this need to be considered: when to invoke import when to invoke upload.
-
-				dataitem = msA.upLoadDataHolder(
-					userID, communityID, credential, newDataHolderName,
-					decodedContent, contentsType, dispatchExisting);
+                if (!action.equalsIgnoreCase("append")){ //bug 266
+				   dataitem = msA.upLoadDataHolder(
+					   userID, communityID, credential, newDataHolderName,
+					   decodedContent, contentsType, dispatchExisting);
+                }else{
+					dispatchExisting = msA.APPEND;
+					logger.appendMessage("MYSPACEMAMAGER.APPEND"+dispatchExisting);
+                	dataitem = msA.upLoadDataHolderAppend(userID, communityID, credential, newDataHolderName,
+					  decodedContent, contentsType, dispatchExisting);
+                }
 	
-				if( DEBUG ) logger.appendMessage("UploaderroCode is:" +errCode);
+				if( DEBUG ) logger.appendMessage("UploaderroCode is MySpaceManger.upLoad:" +errCode);
 				if ( errCode!="" )    
 				  errCode = errCode +"," +checkStatus("UPLOADStatusCode");
 				else 
@@ -217,7 +227,7 @@ public class MySpaceManager {
 				}
 				if( DEBUG ) logger.appendMessage("RESPONSE: "+response); 
 			}catch(Exception e){
-				logger.appendMessage("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
+				logger.appendMessage("ERROR UPLOADING MYSPACEMANAGER MySpaceManager.upLoad" +e.toString());
 				status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00216", this.getComponentName()) ;
 				if(errCode=="")
@@ -911,7 +921,7 @@ public class MySpaceManager {
 		//load jConfig file.
 		setUp();
 
-		if ( DEBUG )logger.appendMessage("registryName = "+registryName);
+		if ( DEBUG )logger.appendMessage("Inside MySpaceManager.getValue(), registryName = "+registryName);
 		request = util.getRequestAttributes(jobDetails);
 		try{
 			if(request.get("userID")!=null) userID = request.get("userID").toString();
@@ -921,7 +931,12 @@ public class MySpaceManager {
 			if(request.get("newDataItemName")!=null) newDataItemName = request.get("newDataItemName").toString();
 			if(request.get("newContainerName")!=null) newContainerName = request.get("newContainerName").toString();	
 			if(request.get("serverFileName")!=null) serverFileName = request.get("serverFileName").toString();
-			if(request.get("fileContent")!=null) fileContent = request.get("fileContent").toString();
+			if(request.get("fileContent")!=null) {
+				fileContent = request.get("fileContent").toString();
+				if (DEBUG) logger.appendMessage("FILECONTENT -IS not NULL");
+				}else{
+					if (DEBUG) logger.appendMessage("FILECONTENT = NONE.");
+					fileContent = "foo!";} 
 			if(request.get("category")!=null) category = request.get("category").toString();
 			if(request.get("credential")!=null) credential = request.get("credential").toString();
 			if(request.get("downloadPath")!=null) downloadPath = request.get("downloadPath").toString();
@@ -960,8 +975,8 @@ public class MySpaceManager {
 		if ( request.containsKey("newDataHolderName")){
 			if (request.get("newDataHolderName").toString().trim().length()>0){
 				logger.appendMessage("MySpaceManager.getValue newDataHolderName:"+newDataHolderName);
-				if ( DEBUG ) logger.appendMessage("newdatraholdernema:"+newDataHolderName+"done");
 				newDataHolderName = request.get("newDataHolderName").toString();
+				if ( DEBUG ) logger.appendMessage("newdatraholdernema:"+newDataHolderName+"done");
 				
 			}else{
 				logger.appendMessage("MySpaceManager.getValue serverFileName length:"+serverFileName.length()+", name: "+serverFileName.toString());

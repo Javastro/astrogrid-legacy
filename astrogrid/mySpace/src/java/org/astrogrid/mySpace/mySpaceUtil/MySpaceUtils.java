@@ -9,12 +9,14 @@ import java.util.HashMap;
 import java.util.Calendar;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
 import org.astrogrid.mySpace.mySpaceStatus.*;
@@ -28,7 +30,9 @@ import org.astrogrid.i18n.*;
  */
 
 public class MySpaceUtils {
-    private static Logger logger = Logger.getLogger(MySpaceUtils.class);
+    //private static Logger logger = Logger.getLogger(MySpaceUtils.class);
+	private static Logger logger = new Logger (true, true, true,
+		  "./myspace.log");
     private static boolean DEBUG = true;
 	private static MySpaceStatus msstatus = new MySpaceStatus();
 	private static String response = " ";
@@ -65,7 +69,7 @@ public class MySpaceUtils {
 			//return the data as a String
 			return strbufFileContent.toString();
 		}catch (Exception e) {
-			logger.error("Exception caught while reading from file MySpaceUtils.readFromFile: "+e.toString());
+			logger.appendMessage("Exception caught while reading from file MySpaceUtils.readFromFile: "+e.toString());
 			msstatus.addCode(MySpaceStatusCode.AGMMCE00103,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, new MySpaceUtils().getComponentName());
 			response = MMC.FAULT+MySpaceStatusCode.AGMMCE00103;
 			return response;
@@ -84,7 +88,9 @@ public class MySpaceUtils {
 			PrintWriter printWriter = null;    	
 			try{
 				//open file to write into
-				printWriter = new PrintWriter(new FileOutputStream(file));    	       	    
+				//printWriter = new PrintWriter(new FileOutputStream(file));    
+				printWriter = new PrintWriter(new BufferedWriter( new FileWriter (file, true)));	       	 
+				if ( DEBUG )  logger.appendMessage("MySpaceUtil file is:"+file+";  CONTENTS :"+theString);
 				//write to file
 				printWriter.println(theString);		    
 				return true;				    
@@ -107,9 +113,9 @@ public class MySpaceUtils {
 		try {
 			String requestTemplate = MMC.getProperty( MMC.RESPONSE, MMC.CATLOG) ;//this should get the xml template
 			
-			if ( DEBUG )  logger.debug("testing using jConfig: "+requestTemplate);
+			if ( DEBUG )  logger.appendMessage("testing using jConfig: "+requestTemplate);
 
-			if ( DEBUG )  logger.debug("buildMySpaceManagerResponse = "+requestTemplate);
+			if ( DEBUG )  logger.appendMessage("buildMySpaceManagerResponse = "+requestTemplate);
 			
 			Object [] inserts = new Object[12] ;
 			inserts[0] = status;
@@ -126,13 +132,13 @@ public class MySpaceUtils {
 				inserts[10] = record.getPermissionsMask();				
 			}
 			if (!dataHolderURI.equals(null))  inserts[11] = dataHolderURI;
-			if( DEBUG )  logger.debug("UTIL: DATAHOLDERURI ="+dataHolderURI);		
+			if( DEBUG )  logger.appendMessage("UTIL: DATAHOLDERURI ="+dataHolderURI);		
 		 
 			response = MessageFormat.format( requestTemplate, inserts ) ;
 			return response;
 		}
 		catch ( Exception ex ) {
-			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
+			if (DEBUG)  logger.appendMessage("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00032", this.getComponentName()) ;
 			msstatus.addCode(MySpaceStatusCode.AGMMCE00103,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			response = MMC.FAULT+generalMessage.toString();
@@ -146,12 +152,12 @@ public class MySpaceUtils {
 		try {
 			response = MMC.getProperty( MMC.D_RESPONSE_FOOT, MMC.CATLOG) ;//this should get the xml template
 
-			if ( DEBUG )  logger.debug("buildMySpaceManagerResponse_Footer = "+response);
+			if ( DEBUG )  logger.appendMessage("buildMySpaceManagerResponse_Footer = "+response);
 	
 			return response;
 		}
 		catch ( Exception ex ) {
-			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
+			if (DEBUG)  logger.appendMessage("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00032", this.getComponentName()) ;
 			msstatus.addCode(MySpaceStatusCode.AGMMCE00103,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			response = MMC.FAULT+generalMessage.toString();
@@ -165,7 +171,7 @@ public class MySpaceUtils {
 		try {
 			String requestTemplate = MMC.getProperty( MMC.D_RESPONSE_HEAD, MMC.CATLOG) ;//this should get the xml template
 
-			if ( DEBUG )  logger.debug("buildMySpaceManagerResponse_Header = "+requestTemplate);
+			if ( DEBUG )  logger.appendMessage("buildMySpaceManagerResponse_Header = "+requestTemplate);
 			
 			Object [] inserts = new Object[3] ;
 			inserts[0] = status;
@@ -176,7 +182,7 @@ public class MySpaceUtils {
 			return response;
 		}
 		catch ( Exception ex ) {
-			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
+			if (DEBUG)  logger.appendMessage("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00032", this.getComponentName()) ;
 			msstatus.addCode(MySpaceStatusCode.AGMMCE00103,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			response = MMC.FAULT+generalMessage.toString();
@@ -190,7 +196,7 @@ public class MySpaceUtils {
 		try {
 			String requestTemplate = MMC.getProperty( MMC.D_RESPONSE_ELEMENT, MMC.CATLOG) ;//this should get the xml template
 
-			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Element = "+requestTemplate);
+			if (DEBUG)  logger.appendMessage("buildMySpaceManagerResponse_Element = "+requestTemplate);
 			
 			Object [] inserts = new Object[8] ;
 
@@ -209,7 +215,7 @@ public class MySpaceUtils {
 			return response;
 		}
 		catch ( Exception ex ) {
-			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
+			if (DEBUG)  logger.appendMessage("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00032", this.getComponentName()) ;
 			msstatus.addCode(MySpaceStatusCode.AGMMCE00103,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			response = MMC.FAULT+generalMessage.toString();
@@ -234,21 +240,21 @@ public class MySpaceUtils {
 			boolean ascending = false;
 			int level = 1;
 			while (true) {
-				if( DEBUG )  logger.debug("Now trying to walk the dom tree..");
+				if( DEBUG )  logger.appendMessage("Now trying to walk the dom tree..");
 					
 					if (checker!=null && (checker.hasChildNodes()) && (!ascending)) {
 						checker = checker.getFirstChild();
-						if( DEBUG )  logger.debug("GOING DOWN"+checker.getNodeName() +"NODETYPE="+checker.getNodeType());
+						if( DEBUG )  logger.appendMessage("GOING DOWN"+checker.getNodeName() +"NODETYPE="+checker.getNodeType());
 						if(checker.getNodeType()==1){
 							String text = "";
 							if(checker.getFirstChild()!=null){
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
-									if( DEBUG )  logger.debug("BEFORE.PUT.DOWN" +checker.getNodeName()+" TEXT " +text);
+									if( DEBUG )  logger.appendMessage("BEFORE.PUT.DOWN" +checker.getNodeName()+" TEXT " +text);
 									
 									request.put(checker.getNodeName(), text);
 									
-									if( DEBUG )  logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+									if( DEBUG )  logger.appendMessage("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
 						}
@@ -258,19 +264,19 @@ public class MySpaceUtils {
 						else if (checker!=null && checker.getNextSibling() != null) {
 							checker= checker.getNextSibling();
 							String text = "";
-							if( DEBUG )  logger.debug(	"SIBBLING...");
+							if( DEBUG )  logger.appendMessage(	"SIBBLING...");
 							if(checker.getFirstChild()!=null){
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
-									if(DEBUG)  logger.debug("BEFORE.PUT.SIBLING");
+									if(DEBUG)  logger.appendMessage("BEFORE.PUT.SIBLING");
 									
 									request.put(checker.getNodeName(), text);
 									
-									if(DEBUG)  logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+									if(DEBUG)  logger.appendMessage("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
 							ascending = false;
-							if( DEBUG )  logger.debug("GOING RIGHT");
+							if( DEBUG )  logger.appendMessage("GOING RIGHT");
 							}
 						else if (checker !=null && checker.getParentNode() != null) {
 							checker= checker.getParentNode();
@@ -278,25 +284,25 @@ public class MySpaceUtils {
 							if(checker.getFirstChild()!=null){
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
-									if( DEBUG )  logger.debug("BEFORE.PUT.UP");
+									if( DEBUG )  logger.appendMessage("BEFORE.PUT.UP");
 									
 									request.put(checker.getNodeName(), text);
 									
-									if( DEBUG )  logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+									if( DEBUG )  logger.appendMessage("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
 							ascending = true;
 							level--;
-							if( DEBUG )  logger.debug("GOING UP");
+							if( DEBUG )  logger.appendMessage("GOING UP");
 							}
 							else {
-								if( DEBUG )  logger.debug("BREAK!");
+								if( DEBUG )  logger.appendMessage("BREAK!");
 								break;
 								}
 			}
 		}catch(Exception e){
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00046", this.getComponentName()) ;
-			logger.error("ERROR Walking DOM TREE: "+generalMessage.toString()+e.toString());
+			logger.appendMessage("ERROR Walking DOM TREE: "+generalMessage.toString()+e.toString());
 		}
 		return request;
 	}
@@ -304,7 +310,7 @@ public class MySpaceUtils {
 	
 	
 	private Document parseRequest ( String xmlRequest){
-		if( DEBUG ) logger.debug( "Tring to parse MySpace xmlRequest.." +xmlRequest) ;
+		if( DEBUG ) logger.appendMessage( "Tring to parse MySpace xmlRequest.." +xmlRequest) ;
 		
 		Document doc = null;
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -317,7 +323,7 @@ public class MySpaceUtils {
 		}
 		catch ( Exception ex ) {
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00046", this.getComponentName()) ; 
-			logger.error( generalMessage.toString(), ex ) ;
+			//logger.appendMessage( generalMessage.toString(), ex ) ;
 		} 		
 		return doc ;	
 	}

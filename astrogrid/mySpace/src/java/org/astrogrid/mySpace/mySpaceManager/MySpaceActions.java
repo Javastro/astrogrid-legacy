@@ -24,7 +24,9 @@ public class MySpaceActions
    public static final int APPEND = 3;    // Append the new dataHolder.
 
    private static Configuration config = new Configuration();
-   private static Logger logger = new Logger();
+   //private static Logger logger = new Logger();
+   private static Logger logger = new Logger (true, true, true,
+			 "./myspace.log");
    private static boolean DEBUG = true;
 
    private static String registryName;
@@ -658,8 +660,8 @@ public class MySpaceActions
    public DataItemRecord upLoadDataHolder(String userID, String communityID,
      String credentials, String newDataItemName, String contents,
      String contentsType, int dispatchExisting)
-   {  if (config.getDEBUG() ) logger.appendMessage(
-        "*** invoked MySpaceActions.upLoadDataHolder.");
+   {  //if (config.getDEBUG() ) logger.appendMessage(
+        logger.appendMessage("*** invoked MySpaceActions.upLoadDataHolder."+dispatchExisting);
 
       DataItemRecord returnedDataItem = new DataItemRecord();
       returnedDataItem = null;
@@ -694,7 +696,11 @@ public class MySpaceActions
                {  boolean deleteOk = this.deleteExistingDataHolder(
                     userID, communityID, credentials, newDataItemName,
                     reg);
-               }
+				logger.appendMessage("MYSPACEACTION BUG266."+deleteOk);
+               }//else if(dispatchExisting == APPEND){
+               //	logger.appendMessage("MYSPACEATION.upLoadDataHolder append = true" );
+               	
+               //}
 
 //
 //            Check that the specified dataHolder can be created.
@@ -785,6 +791,160 @@ public class MySpaceActions
       return returnedDataItem;
    }
 
+
+//bug 266
+  public DataItemRecord upLoadDataHolderAppend(String userID, String communityID,
+	String credentials, String newDataItemName, String contents,
+	String contentsType, int dispatchExisting)
+  {  //if (config.getDEBUG() ) logger.appendMessage(
+	   logger.appendMessage("invoked MySpaceActions.upLoadDataHolderAppend."+dispatchExisting);
+
+	 DataItemRecord returnedDataItem = new DataItemRecord();
+	 returnedDataItem = null;
+
+	 MySpaceStatus status = new MySpaceStatus();
+
+	 try
+	 {
+//
+//	   Attempt to open the registry and proceed if ok.
+
+		RegistryManager reg = new RegistryManager(registryName);
+		if (status.getSuccessStatus())
+		{
+
+//
+//		  Assemble the UserAccount from the UserID and CommunityID.
+
+		   UserAccount userAcc = new UserAccount(userID, communityID,
+			 credentials);
+
+//
+//		  Check the user's system authorisation and proceed if ok.
+
+		   if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
+		   {
+//
+//			 If the OVERWRITE option has been specified then delete
+//			 any existing dataHolder of the specified name.
+
+			  if (dispatchExisting == OVERWRITE)
+			  {  boolean deleteOk = this.deleteExistingDataHolder(
+				   userID, communityID, credentials, newDataItemName,
+				   reg);
+			   logger.appendMessage("MYSPACEACTION BUG266."+deleteOk);
+			  }else if(dispatchExisting == APPEND){
+			  	logger.appendMessage("MYSPACEATION.upLoadDataHolder append = true, reg ="+reg +userID+communityID+credentials+" newDataItemNem:"+newDataItemName);
+               	
+			  }
+
+//
+//			 Check that the specified dataHolder can be created.
+              //might neet to take this check out we need to append at the end of file-uncomment else if enable this
+              if(true){
+//			  if(this.checkCanBeCreated(newDataItemName, userAcc,
+//				credentials, reg) == true)
+//			  {
+
+//
+//				Create a DataItemRecord for the new DataHolder.
+
+				 Date creation = new Date();
+
+				 int newdataItemID = -1;
+				 String dataItemFileName = "";
+
+				 int dataItemType =
+				   DataItemRecord.translateType(contentsType);
+				 int dataItemSize = contents.length();
+
+				 //DataItemRecord newDataItem = new DataItemRecord
+				   //(newDataItemName, newdataItemID,
+				//   dataItemFileName, userID, creation, creation,
+				  // dataItemSize, dataItemType, "permissions");
+				Vector existingDataItemVector = 
+		        this.internalLookupDataHoldersDetails(userID, communityID,
+		          credentials, newDataItemName, reg);
+	          //  if (status.getSuccessStatus())
+	          //  {  status.reset();
+	          //  }
+			  DataItemRecord existingDataItem = null;
+			    int existingId = 0;
+	            if (existingDataItemVector != null)
+	            {   existingDataItem =
+	            	(DataItemRecord)existingDataItemVector.firstElement();
+	            	existingId = existingDataItem.getDataItemID();
+	            	logger.appendMessage("MYSPACEACTION EXISTINGDATAITME: "+existingId);
+	            	}
+//
+//				Attempt to add this entry to the registry.
+
+				 
+				 //newDataItem = reg.addDataItemRecord(newDataItem);
+
+				 //System.out.println("new file name: " +
+					//newDataItem.getDataItemFile() );
+
+				 //if (newDataItem != null)
+				 if(true)
+				 {  //newdataItemID = newDataItem.getDataItemID();
+					//dataItemFileName = newDataItem.getDataItemFile();
+
+//
+//				   Attempt to copy the contents of the input string as
+//				   a new file on the server.
+
+					String serverName = existingDataItem.getServer();
+					String serverDirectory =
+					  reg.getServerDirectory(serverName);
+
+					String copyTo = serverDirectory + "f" +existingId;
+					logger.appendMessage("MYSPACEACTION COPYTO: "+copyTo);
+
+					ServerDriver serverDriver = new ServerDriver();
+					if(serverDriver.upLoadString(contents, copyTo) )
+					{
+
+//
+//					  The up-load succeeded.  Copy the DataItemRecord
+//					  for the new DataHolder to the return object.
+
+					   returnedDataItem = existingDataItem;
+					}
+					else
+					{
+
+//
+//					  The actual up-load of the contents failed.
+//					  Delete the new entry from the registry, to bring
+//					  the registry back into line with reality and
+//					  report an error.
+
+					   reg.deleteDataItemRecord(newdataItemID);
+					   status.addCode(MySpaceStatusCode.AGMMCE00202,
+						 MySpaceStatusCode.ERROR,
+						 MySpaceStatusCode.LOG, this.getClassName() );
+					}
+				 }
+				//commented for bug266
+				 else
+				 {  status.addCode(MySpaceStatusCode.AGMMCE00203,
+					  MySpaceStatusCode.ERROR,
+					  MySpaceStatusCode.LOG, this.getClassName() );
+				 }
+			  }
+		   }
+		}
+	 }
+	 catch (Exception all)
+	 {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+		  MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+		  this.getClassName() );
+	 }
+
+	 return returnedDataItem;
+  }
+  //end bug 266
 
 // -----------------------------------------------------------------
 
