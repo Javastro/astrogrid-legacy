@@ -11,6 +11,8 @@ The Web Application Archive (WAR) contains the first Iteration 02 release the As
 
 The WAR is a modified version of the Apache Axis release 1.1rc2 those modifications being the inclusion of the above web services.  The following requirements must be in place before use:
 
+- Tomcat (tested with version 4.1.24-LE-jdk14)
+
 - PostgreSQL (tested with version 7.3.2)
 
 - OpenJMS (tested with version 0.7.5)
