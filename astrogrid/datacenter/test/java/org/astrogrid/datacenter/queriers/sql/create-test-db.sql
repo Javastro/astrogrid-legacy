@@ -1,3 +1,4 @@
+set autocommit true;
 drop table people if exists;
 create table people (
   id INTEGER NOT NULL PRIMARY KEY,
