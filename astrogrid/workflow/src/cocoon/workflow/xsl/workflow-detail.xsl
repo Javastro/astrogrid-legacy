@@ -2,7 +2,6 @@
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-	<xsl:param name="view=source" />
 	<xsl:param name="errormessage" />	
 	
 	<!--+
@@ -34,8 +33,13 @@
 	            <td>
 	                Workflow name:   
 	             </td>
-	             <td>
-	                 <xsl:value-of select="@workflow-name"/>
+	             <td>	                 
+                    <xsl:element name="input">
+                       <xsl:attribute name="name"><xsl:value-of select="workflow-name"/></xsl:attribute> 
+                       <xsl:attribute name="type"><xsl:value-of select="text"/></xsl:attribute>
+                       <xsl:attribute name="size"><xsl:value-of select="30"/></xsl:attribute>
+                       <xsl:attribute name="value"><xsl:value-of select="@workflow-name"/></xsl:attribute>
+                    </xsl:element>
 	             </td>
 	        </tr>
 	        <tr>
@@ -43,7 +47,12 @@
            	        Workflow description:   
            	    </td>
            	    <td>
-           	        <xsl:value-of select="@workflow-description"/>
+                    <xsl:element name="input">
+                       <xsl:attribute name="name"><xsl:value-of select="workflow-description"/></xsl:attribute> 
+                       <xsl:attribute name="type"><xsl:value-of select="text"/></xsl:attribute>
+                       <xsl:attribute name="size"><xsl:value-of select="30"/></xsl:attribute>
+                       <xsl:attribute name="value"><xsl:value-of select="@workflow-description"/></xsl:attribute>
+                    </xsl:element>           	        
            	    </td>
            	</tr>
 	    </table> 
@@ -70,10 +79,12 @@
 		         <td>
 		            <xsl:for-each select="//step">
 		               <xsl:choose>
-		                  <xsl:when test="@step-name = 'StepOne'">
+		                  <xsl:when test="@tool = 'NullTool_instance'">
                              <xsl:call-template name="SelectTemplate"/>
 		                  </xsl:when>
-		                  <xsl:otherwise>Query: <xsl:value-of select="@step-name"/></xsl:otherwise>		            
+		                  <xsl:otherwise>
+		                     Query: <xsl:value-of select="@tool"/>
+		                  </xsl:otherwise>		            
 		               </xsl:choose>
 	                </xsl:for-each>
 	             </td>
@@ -94,16 +105,9 @@
 		         <td>
 		            <xsl:for-each select="//step">
 		               <xsl:choose>
-		                  <xsl:when test="@step-name = 'StepOne'">
+		                  <xsl:when test="@tool = 'NullTool_instance'">
 		                     <tr>
 		                        <td> 
-                                   <xsl:call-template name="SelectTemplate"/>
-                                </td>
-                             </tr>
-		                  </xsl:when>
-		                  <xsl:when test="@step-name = 'StepTwo'">
-                             <tr>
-                                <td>
                                    <xsl:call-template name="SelectTemplate"/>
                                 </td>
                              </tr>
@@ -111,7 +115,7 @@
 		                  <xsl:otherwise>
 		                     <tr>
 		                        <td> 
-		                           Query: <xsl:value-of select="@step-name"/>	            
+		                           Query: <xsl:value-of select="@tool"/>	            
 		                        </td>
 		                     </tr>
 		                  </xsl:otherwise>	
@@ -134,27 +138,20 @@
 		         </td>
 		         <xsl:for-each select="//step">
 		            <xsl:choose>
-		               <xsl:when test="@step-name = 'StepOne'">         
+		               <xsl:when test="@tool = 'NullTool_instance'">         
 		                  <tr>
                              <td>
                                 <xsl:call-template name="SelectTemplate"/>
                              </td>
-                          </tr>           
-		               </xsl:when>
-		               <xsl:when test="@step-name = 'StepTwo'">
-		                  <tr>
-                             <td>
-                                <xsl:call-template name="SelectTemplate"/>
-                             </td>      
-                          </tr>   
-		               </xsl:when>		            
-		               <xsl:otherwise>
+                          </tr>
+                       </xsl:when>
+                       <xsl:otherwise>
 		                  <tr> 
 		                     <td> 
-		                        Query: <xsl:value-of select="@step-name"/>
+		                        Query: <xsl:value-of select="@tool"/>
                              </td>
                           </tr>   
-		               </xsl:otherwise>
+		               </xsl:otherwise>           
 		            </xsl:choose>    
 		         </xsl:for-each>
 		      </tr>
@@ -203,12 +200,12 @@
    	         Select query: 
 	   	     <select name="query-name">
 	   	     <option value="none">-- please choose --</option>
-                <xsl:for-each select="//query/options/name">
+                <xsl:for-each select="//query">
 				   <xsl:element name="option">
                       <xsl:attribute name="value">
-               		     <xsl:value-of select="@val"/>
+               		     <xsl:value-of select="@query-name"/>
 				      </xsl:attribute>
-                	  <xsl:value-of select="@val"/>
+                	  <xsl:value-of select="@query-name"/>
 				   </xsl:element>
 				</xsl:for-each>
 		     </select>

@@ -54,7 +54,10 @@
 		        </xsl:if>
 			    <xsl:if test="$action = 'save-workflow'">
 			      <xsl:call-template name="list_workflow"/>			    
-		        </xsl:if>		        		        		        		        		        		        	        
+		        </xsl:if>
+			    <xsl:if test="$action = 'read-workflow'">
+			      <xsl:call-template name="edit_workflow"/>			    
+		        </xsl:if>		        		        		        		        		        		        		        	        
 			</content>
 		</page>
 	</xsl:template>
@@ -126,6 +129,10 @@
                    Workflows currently strored in your mySpace:
                </td>
            </tr>
+           <tr>
+              <td>
+              </td>
+           </tr>
            <xsl:for-each select="//workflow">
            <tr>
                <td>
@@ -149,6 +156,10 @@
                    Queries currently stored in your mySpace:
                </td>
            </tr>
+           <tr>
+              <td>
+              </td>
+           </tr>           
            <xsl:for-each select="//query">
            <tr>
                <td>
@@ -217,7 +228,7 @@
 	    | Edit workflow
 	    +-->	
 	<xsl:template name="edit_worklow">
-	    <form name="editWorkflow" method="get" action="agjobmonitor.html">
+	    <form name="editWorkflow" method="get" action="agworkflow-administer.html">
           <table cellpadding="2" cellspacing="2" border="0">
             <tbody>
               <tr width="80%" align="center" valign="middle" style="color: rgb(51,51,255); background-color: rgb(204,204,204);">
