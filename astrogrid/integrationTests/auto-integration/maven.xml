@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.85 2004/08/27 11:50:26 KevinBenson Exp $ -->
+<!-- $Id: maven.xml,v 1.86 2004/08/27 16:33:12 pah Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -55,7 +55,7 @@
         <!--filter token="VERSION" value="${version}"/-->
         <filter token="VERSION" value="${astrogrid.iteration}"/>
         <filter token="MAILHOST" value="${mailhost}" />
-        <filter token="TOOLBASEDIR" value="${work.dir}"/> <!--this is the directory that is the root of CEA command line applications set it to the workdir for autointegration purposes-->
+        <filter token="TOOLBASEDIR" value="${work.dir}/cea/commandline/work/"/> <!--this is the directory that is the root of CEA command line applications set it to the workdir for autointegration purposes-->
 
 <!-- setup -->
 <goal name="init" prereqs="tomcat-declare-tasks">
@@ -76,6 +76,7 @@
 
 <goal name="deploy-all" prereqs="init" description="deploy all webapps, setup environment.">
         <echo>*** Deploying all webapps...</echo>
+
         <attainGoal name="common-libs-deploy" />
         <attainGoal name="configuration-deploy" />
         <sleep seconds="2" />
@@ -100,7 +101,7 @@
         <attainGoal name="pal-sec-deploy" />
         <sleep seconds="4" />
 	    <attainGoal name="pal-cds-deploy" />
-    	<sleep seconds="2" />	
+        <sleep seconds="2" />
         <attainGoal name="community-deploy"/>
         <sleep seconds="2" />
         <attainGoal name="portal-deploy" />
@@ -500,14 +501,14 @@
 </goal>
 
 <!-- hand assembled webapps ///////////////////////////////////////-->
-<goal name="configuration-deploy" description="create and install configuration webapp">
+<goal name="configuration-deploy" description="create and install configuration webapp" prereqs="tomcat-declare-tasks,init">
         <copy todir="${temporary.dir}/astrogrid-configuration" filtering="true">
                 <fileset dir="webapps/astrogrid-configuration" />
         </copy>
         <jar destfile="${temporary.dir}/${config.webapp.name}.war" basedir="${temporary.dir}/astrogrid-configuration">
         </jar>
         <j:catch>
-                <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+                <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
                         path="/${config.webapp.name}" war="file:///${temporary.dir}/${config.webapp.name}.war" />
         </j:catch>
 </goal>
@@ -819,7 +820,7 @@
           path="/astrogrid-pal-sec-${pom.currentVersion}" />
   </j:catch>
 </goal>
-	
+
 <goal name="pal-cds-undeploy" >
 	  <j:catch>
 	  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
