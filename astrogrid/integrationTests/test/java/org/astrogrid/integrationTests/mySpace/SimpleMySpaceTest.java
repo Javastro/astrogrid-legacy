@@ -1,4 +1,4 @@
-/* $Id: SimpleMySpaceTest.java,v 1.1 2003/12/31 18:53:36 jdt Exp $
+/* $Id: SimpleMySpaceTest.java,v 1.2 2004/01/15 14:46:11 jdt Exp $
  * Created on 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,24 +85,25 @@ public class SimpleMySpaceTest extends TestCase {
         String credential = "";
         String communityId = "roe";
         String userId = "jdtTesting";
+        boolean ok1=false;
+        boolean ok2=false;
         try {
             log.debug("Attempting to createUser with the following params:");
             log.debug("userID: " + userId);
             log.debug("communityId: " + communityId);
             log.debug("credential: " + credential);
             log.debug("servers: " + servers);
-            boolean ok =
+            ok1 =
                 client.createUser(userId, communityId, credential, servers);
-            log.debug("Result: " + ok);
-            assertTrue("Result from createUser was false", ok);
+            log.debug("Result: " + ok1);
         } catch (Exception e) {
             log.error("Error creating user: " + e);
             fail("Exception creating user: " + e);
         } finally {
             log.debug("Attempting to delete user");
             try {
-                boolean ok = client.deleteUser(userId, communityId, credential);
-                assertTrue("Result from deleteUser was false", ok);
+                ok2 = client.deleteUser(userId, communityId, credential);
+                log.debug("Result: " + ok2);
             } catch (Exception e) {
                 log.error("Error deleting user: " + e);
                 log.error(
@@ -110,5 +111,7 @@ public class SimpleMySpaceTest extends TestCase {
                 fail("Exception deleting user:  " + e);
             }
         }
+        assertTrue("Result from createUser was false", ok1);
+        assertTrue("Result from deleteUser was false", ok2);
     }
 }
