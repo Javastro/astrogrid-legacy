@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.9 2004/09/13 18:14:53 jdt Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.10 2004/09/14 08:32:06 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,9 +27,7 @@ import junit.framework.TestCase;
  *
  */
 public class AbstractTestForIntegration extends IntegrationTestCase {
-
-
-/**
+   /**
      * Constructor for AbstractTestForIntegration.
      * @param arg0
      */
@@ -72,6 +70,7 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
     
     public static final String USERNAME = "frog";
     public static final String COMMUNITY = "org.astrogrid.localhost";
+    public static final String AUTHORITYID = "org.astrogrid.localhost";
     public static final String MYSPACE = COMMUNITY + "/myspace";
     public static final String TESTDSA = COMMUNITY + "/testdsa";
     public static final String TESTAPP = COMMUNITY + "/testapp";
@@ -127,6 +126,9 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.10  2004/09/14 08:32:06  pah
+added an authorityID constant - this is different from to the community in general
+
 Revision 1.9  2004/09/13 18:14:53  jdt
 Added a new cea-http integration test to see if saving xml to
 mySpace is causing any problems.
