@@ -39,23 +39,77 @@ function setIVORNAgsl(newIvorn, newAgsl){
   myspace_agsl.value = newAgsl;
 }
 
+function createIVORN() {
+  result = '';
+  
+	myspace_ivorn = document.getElementById('myspace-ivorn');
+	myspace_item = document.getElementById('myspace-item');
+
+  // Do we have an IVORN set?
+	if(myspace_ivorn && myspace_ivorn.value && myspace_ivorn.value.length > 0) {
+	  result = myspace_ivorn.value;
+	}
+	// Do we have an item name set?
+	else if(myspace_item && myspace_item.value && myspace_item.value.length > 0) {
+	  myspace_endpoint = document.getElementById('myspace-endpoint');
+  	myspace_agsl = document.getElementById('myspace-agsl');
+	  result = myspace_endpoint.value + '#' + myspace_agsl.value;
+	  if(myspace_agsl.value.charAt(myspace_agsl.value.length -1) != "/") {
+	    result = result + "/";
+	  }
+	  result = result + myspace_item.value;
+	}
+
+//  alert('MySpace IVORN: ' + result);
+
+  return result;
+}
+
+function createAGSL() {
+  result = '';
+  
+	myspace_agsl = document.getElementById('myspace-agsl');
+	myspace_item = document.getElementById('myspace-item');
+
+  // Do we have an AGSL set?
+	// Do we have an item name set?
+	if(myspace_item && myspace_item.value && myspace_item.value.length > 0) {
+  	myspace_agsl = document.getElementById('myspace-agsl');
+	  result = myspace_agsl.value;
+	  if(myspace_agsl.value.charAt(myspace_agsl.value.length -1) != "/") {
+	    result = result + "/";
+	  }
+	  result = result + myspace_item.value;
+	}
+	else if(myspace_agsl && myspace_agsl.value && myspace_agsl.value.length > 0) {
+	  result = myspace_agsl.value;
+	}
+
+//  alert('MySpace AGSL: ' + result);
+
+  return result;
+}
+
 function setParentIVORNAgsl(parent_ivorn, parent_agsl){
   parentDoc = window.opener.document;
   
   parent_ivorn = parentDoc.getElementById(parent_ivorn);
   parent_agsl = parentDoc.getElementById(parent_agsl);
   
+  // TODO: comment out
+//  createIVORN();
+//  createAGSL();
+  // TODO: comment out
+  
   if(parent_ivorn) {
-    myspace_ivorn = document.getElementById('myspace-ivorn');
+    myspace_ivorn = createIVORN();
     parent_ivorn.value = myspace_ivorn.value;
   }
 
   if(parent_agsl) {
-    myspace_agsl = document.getElementById('myspace-agsl');
+    myspace_agsl = createAGSL();
     parent_agsl.value = myspace_agsl.value;
   }
-  
-  window.close();
 }
 
 function submitParentForm(form_name, action) {
@@ -67,4 +121,6 @@ function submitParentForm(form_name, action) {
     }
     parent_form.submit();
   }
+  
+  window.close();
 }

@@ -37,16 +37,6 @@
       </properties>
     </dependency>
 
-    <!-- SOAP for Java -->
-    <dependency>
-      <groupId>saaj-api</groupId>
-      <artifactId>saaj-api</artifactId>
-      <version>1.1.1</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
     <!-- Servlet API -->
     <dependency>
       <groupId>servletapi</groupId>
@@ -63,6 +53,150 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+
+      <!-- for VoSpaceResolver -->
+        <dependency>
+            <artifactId>astrogrid-registry-client</artifactId>
+         <groupId>org.astrogrid</groupId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-registry-common</artifactId>
+         <groupId>org.astrogrid</groupId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+    
+    <!-- MYSPACE -->
+        <dependency>
+            <artifactId>astrogrid-common</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        <!-- mch why is this in?! dependency>
+            <artifactId>astrogrid-datacenter-client</artifactId>
+            <groupId>astrogrid-datacenter</groupId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        -->
+        <dependency>
+            <artifactId>commons-discovery</artifactId>
+            <groupId>commons-discovery</groupId>
+            <version>20030211.213356</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>cog-jglobus</artifactId>
+            <groupId>cog-jglobus</groupId>
+            <version>OGSA3.0</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>axis</artifactId>
+            <groupId>axis</groupId>
+            <version>1.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>jax-qname</artifactId>
+            <groupId>jax-qname</groupId>
+            <version>UNKNOWN</version>
+            <jar>jax-qname.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>jaxrpc-api</artifactId>
+            <groupId>jaxrpc-api</groupId>
+            <version>1.0.3</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>jconfig</artifactId>
+            <groupId>jconfig</groupId>
+            <version>2.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>junit</artifactId>
+            <groupId>junit</groupId>
+            <version>3.8</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>log4j</artifactId>
+            <groupId>log4j</groupId>
+            <version>1.2.4</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>saaj-api</artifactId>
+            <groupId>saaj-api</groupId>
+            <version>1.1.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>wsdl4j</artifactId>
+            <groupId>wsdl4j</groupId>
+            <jar>wsdl4j.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>hsqldb</artifactId>
+            <groupId>hsqldb</groupId>
+            <version>1.7.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>junitee</artifactId>
+            <groupId>junitee</groupId>
+            <version>1.8</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+    <!-- MYSPACE -->
 
     <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
     &cocoon-deps;

@@ -38,21 +38,26 @@ public class ContextWrapperImpl implements ContextWrapper {
     this.params= params;
     this.request = request;
     this.session = session;
-
-    // Set the current user.
-    user = UserHelper.getCurrentUser(params, request, session);
     
-    // Set MySpace end point.
-    endPoint = utils.getAnyParameter(
-        ContextWrapper.PARAM_END_POINT,
-        ContextWrapper.DEFAULT_END_POINT,
-        params, request, session);
-    
-    // Set base AstroGrid storage location.
-    agsl = new Agsl(endPoint);
-    
-    // Get the storage client.
-    storeClient = StoreDelegateFactory.createDelegate(user, agsl);
+    try {
+	    // Set the current user.
+	    user = UserHelper.getCurrentUser(params, request, session);
+	    
+	    // Set MySpace end point.
+	    endPoint = utils.getAnyParameter(
+	        ContextWrapper.PARAM_END_POINT,
+	        ContextWrapper.DEFAULT_END_POINT,
+	        params, request, session);
+	    
+	    // Set base AstroGrid storage location.
+	    agsl = new Agsl(endPoint);
+	    
+	    // Get the storage client.
+	    storeClient = StoreDelegateFactory.createDelegate(user, agsl);
+    }
+	  catch(Throwable t) {
+	    // do nothing.
+	  }
   }
   
   public String getParameter(String param) {

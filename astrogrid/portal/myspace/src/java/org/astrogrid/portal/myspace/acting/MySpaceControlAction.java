@@ -57,9 +57,9 @@ public class MySpaceControlAction extends AbstractAction {
           contextProtocol, utils, params, request, session);
       sitemapParams = findAndExecute(context);
     }
-    catch(Exception e) {
+    catch(Throwable t) {
       // Log error.  Sitemap results will be null, indicating failure.
-      logger.error("error processing MySpace action", e);
+      logger.error("error processing MySpace action", t);
     }
     
     return sitemapParams;

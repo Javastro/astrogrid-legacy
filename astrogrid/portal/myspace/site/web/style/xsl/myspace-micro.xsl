@@ -39,6 +39,9 @@
         </script>
         
         <form id="myspace-explorer-form" action=".">
+        	<input name="myspace-endpoint" id="myspace-endpoint" type="hidden">
+        		<xsl:attribute name="value"><xsl:value-of select="/myspace-tree/@endpoint"/></xsl:attribute>
+        	</input>
           <table id="myspace-tree-header">
             <tr>
               <td>IVORN:</td>
@@ -49,6 +52,10 @@
               <td style="width:100%"><input name="myspace-agsl" id="myspace-agsl" type="text" readonly="true" style="width:100%;border-style:none;"/></td>
             </tr>
           </table>
+          
+          <p>
+            Item Name: <input name="myspace-item" id="myspace-item" type="text"/>
+          </p>
           
           <input type="button" value="OK">
             <xsl:attribute name="onclick">
@@ -80,7 +87,7 @@
     
     &#160;
     <span style="cursor:pointer;cursor:hand;">
-      <xsl:attribute name="onclick">setIVORNAgsl('<xsl:value-of select="@ivorn"/>', '<xsl:value-of select="@full-name"/>');</xsl:attribute>
+      <xsl:attribute name="onclick">setIVORNAgsl('', '<xsl:value-of select="@full-name"/>');</xsl:attribute>
       <xsl:value-of select="@item-name"/><br/>
     </span>
 

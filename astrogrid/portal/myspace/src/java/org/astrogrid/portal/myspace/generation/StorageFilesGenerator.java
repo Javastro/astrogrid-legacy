@@ -36,6 +36,7 @@ public class StorageFilesGenerator extends AbstractGenerator {
   private static final String FILTER = "*";
   private static final String MYSPACE_TREE = "myspace-tree";
   private static final String MYSPACE_ITEM = "myspace-item";
+  private static final String MYSPACE_ENDPOINT_ATTR = "endpoint";
   private static final String MYSPACE_FILE_ATTR = "file";
   private static final String MYSPACE_FOLDER_ATTR = "folder";
   
@@ -81,6 +82,9 @@ public class StorageFilesGenerator extends AbstractGenerator {
     
     // Create the root MySpace element (for the user).
     Element rootElement = document.createElement(StorageFilesGenerator.MYSPACE_TREE);
+    rootElement.setAttribute(
+        StorageFilesGenerator.MYSPACE_ENDPOINT_ATTR, 
+        context.getAgsl().toIvorn(context.getUser()).toString());
     document.appendChild(rootElement);
     
     if(userFile != null) {
@@ -185,23 +189,31 @@ public class StorageFilesGenerator extends AbstractGenerator {
     String filePath = storeFile.getPath();
     String safeName = getSafeName(filePath);
     
-    // Get storage location.
-    Agsl agsl = context.getStoreClient().getAgsl(filePath);
-    
     // Create new element.
     Element itemElement = document.createElement(StorageFilesGenerator.MYSPACE_ITEM);
     itemElement.setAttribute("safe-name", safeName);
     itemElement.setAttribute("full-name", filePath);
     itemElement.setAttribute("item-name", fileName);
     itemElement.setAttribute("id", safeName);
-    try {
-      itemElement.setAttribute("url", agsl.resolveURL().toString());
+    
+    if(storeFile.isFile()) {
+      // Get storage location.
+      Agsl agsl = context.getStoreClient().getAgsl(filePath);
       
-      Ivorn ivorn = agsl.toIvorn(context.getUser());
-      itemElement.setAttribute("ivorn", ivorn.toString());
+      try {
+	      itemElement.setAttribute("url", agsl.resolveURL().toString());
+	      
+	      Ivorn ivorn = agsl.toIvorn(context.getUser());
+	      itemElement.setAttribute("ivorn", ivorn.toString());
+
+	      itemElement.setAttribute("folder-path", getFolderPath(filePath, fileName));
+      }
+	    catch(IOException e) {
+	      throw new ProcessingException("could not resolve AstroGrid URL for [" + fileName + "]", e);
+	    }
     }
-    catch(IOException e) {
-      throw new ProcessingException("could not resolve AstroGrid URL for [" + fileName + "]", e);
+    else if(storeFile.isFolder()) {
+      itemElement.setAttribute("folder-path", filePath);
     }
 
     // Add to parent.
@@ -230,5 +242,20 @@ public class StorageFilesGenerator extends AbstractGenerator {
     }
     
     return result.toString();
+  }
+  
+  private String getFolderPath(String filePath, String fileName) {
+    String result = "";
+    
+    if(filePath != null) {
+      if(fileName != null) {
+        result = filePath.substring(0, filePath.length() - fileName.length());
+        if (result.endsWith("/")) {
+          result = result.substring(0, result.length());
+        }
+      }
+    }
+    
+    return result;
   }
 }
