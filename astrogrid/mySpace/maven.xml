@@ -14,8 +14,6 @@
 		<echo message="Copying xml templates and properties across from ${maven.conf.dir} to ${classes.dir} directory"/>
 		<copy todir="${classes.dir}" overwrite="yes">
 			<fileset dir="${maven.conf.dir}">
-				<exclude name = "ASTROGRID_*config.xml"/>
-				<!-- exclude this because we don't want to overwrite an edited one-->
 			</fileset>
 		</copy>
 		<echo message="Copying generated site ${maven.docs.dest} across to webapp ${maven.war.webapp.dir}/maven"/>
@@ -34,11 +32,6 @@
 			<fileset dir="${basedir}/demoData">
 				<include name="*.servers"/>
 				<include name="*.sh"/>
-			</fileset>
-		</copy>
-		<copy todir="${maven.war.webapp.dir}" overwrite="yes">
-			<fileset dir="${maven.conf.dir}">
-				<include name="ASTROGRID_myspace*config.xml"/>
 			</fileset>
 		</copy>
 	</postGoal>
