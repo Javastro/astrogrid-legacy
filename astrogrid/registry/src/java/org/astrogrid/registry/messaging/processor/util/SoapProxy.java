@@ -137,7 +137,7 @@ public class SoapProxy implements MessageListener {
    * @see javax.jms.MessageListener#onMessage(javax.jms.Message)
    */
   public void onMessage(Message message) {
-    assert message instanceof TextMessage;
+    assert (message instanceof TextMessage) : "message received is not a text message";
     
     SOAPBodyElement[] bodyElements = new SOAPBodyElement[0];
     Object result = null;
