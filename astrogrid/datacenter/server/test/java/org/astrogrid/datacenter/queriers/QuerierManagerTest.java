@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.11 2004/09/01 13:19:54 mch Exp $
+/*$Id: QuerierManagerTest.java,v 1.12 2004/09/08 16:12:32 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.datacenter.queriers;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.returns.ReturnTable;
 
@@ -34,6 +35,7 @@ public class QuerierManagerTest extends ServerTestCase {
    
    protected void setUp() throws Exception {
       super.setUp();
+      SampleStarsPlugin.initConfig();
    }
    
    protected void tearDown() throws Exception {
@@ -63,6 +65,9 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /*
  $Log: QuerierManagerTest.java,v $
+ Revision 1.12  2004/09/08 16:12:32  mch
+ Fix tests to use ADQL 0.7.4
+
  Revision 1.11  2004/09/01 13:19:54  mch
  Added sample stars metadata
 

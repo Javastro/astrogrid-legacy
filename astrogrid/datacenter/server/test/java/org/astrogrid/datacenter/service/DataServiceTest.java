@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.12 2004/09/06 20:23:00 mch Exp $
+/*$Id: DataServiceTest.java,v 1.13 2004/09/08 16:12:32 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,11 +49,11 @@ public class DataServiceTest extends ServerTestCase {
 
        server = new DataServer();
        
-       query1 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-1.xml"));
+       query1 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
 
-       query2 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-2.xml"));
+       query2 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
        
-       query3 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-3.xml"));
+//       query3 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
     }
 
     
@@ -127,6 +127,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.13  2004/09/08 16:12:32  mch
+Fix tests to use ADQL 0.7.4
+
 Revision 1.12  2004/09/06 20:23:00  mch
 Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
 

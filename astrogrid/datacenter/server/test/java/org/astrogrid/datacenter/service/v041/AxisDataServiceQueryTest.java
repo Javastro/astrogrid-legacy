@@ -1,4 +1,4 @@
-/*$Id: AxisDataServiceQueryTest.java,v 1.6 2004/09/06 20:23:00 mch Exp $
+/*$Id: AxisDataServiceQueryTest.java,v 1.7 2004/09/08 16:12:32 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,13 +47,13 @@ public class AxisDataServiceQueryTest extends ServerTestCase {
        server = new AxisDataServer_v0_4_1();
        
        query1 = new Query();
-       query1.setQueryBody(DomHelper.newDocument(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-1.xml")).getDocumentElement());
+       query1.setQueryBody(DomHelper.newDocument(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml")).getDocumentElement());
 
        query2 = new Query();
-       query2.setQueryBody(DomHelper.newDocument(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-2.xml")).getDocumentElement());
+       query2.setQueryBody(DomHelper.newDocument(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml")).getDocumentElement());
        
-       query3 = new Query();
-       query3.setQueryBody(DomHelper.newDocument(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-3.xml")).getDocumentElement());
+//       query3 = new Query();
+//       query3.setQueryBody(DomHelper.newDocument(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-3.xml")).getDocumentElement());
     }
 
     public void testDoOneShotQuery() throws Exception {
@@ -168,6 +168,9 @@ public class AxisDataServiceQueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataServiceQueryTest.java,v $
+Revision 1.7  2004/09/08 16:12:32  mch
+Fix tests to use ADQL 0.7.4
+
 Revision 1.6  2004/09/06 20:23:00  mch
 Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
 

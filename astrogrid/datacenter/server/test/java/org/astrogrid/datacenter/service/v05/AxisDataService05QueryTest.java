@@ -1,4 +1,4 @@
-/*$Id: AxisDataService05QueryTest.java,v 1.6 2004/09/06 20:23:00 mch Exp $
+/*$Id: AxisDataService05QueryTest.java,v 1.7 2004/09/08 16:12:32 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,11 +40,11 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
        server = new AxisDataService_v05();
        
-       query1 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-1.xml"));
+       query1 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
 
-       query2 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-2.xml"));
+       query2 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
        
-       query3 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-3.xml"));
+//       query3 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
     }
 
     public void testDoOneShotAdql() throws Exception {
@@ -97,6 +97,9 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataService05QueryTest.java,v $
+Revision 1.7  2004/09/08 16:12:32  mch
+Fix tests to use ADQL 0.7.4
+
 Revision 1.6  2004/09/06 20:23:00  mch
 Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
 
