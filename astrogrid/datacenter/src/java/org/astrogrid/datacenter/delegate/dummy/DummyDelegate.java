@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.2 2003/09/15 15:22:20 mch Exp $
+ * $Id: DummyDelegate.java,v 1.3 2003/09/15 16:11:44 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -35,14 +35,18 @@ import org.xml.sax.SAXException;
 public class DummyDelegate extends DatacenterDelegate
 {
    /** used for generating random results... */
-   protected static java.util.Random random = new java.util.Random();
+   private static java.util.Random random = new java.util.Random();
 
+   /** Status string - initialising/starting */
    public static final String STARTING = "Starting";
+   /** Status string - query submitted, waitinf for response */
    public static final String WAITING = "Waiting for Server";
+   /** Status string - resposne received, being processed */
    public static final String POST_PROCESSING = "Processing Results";
-   public static final String FINISHED = "Processing Results";
+   /** Status string - response dealt with */
+   public static final String FINISHED = "Finished";
 
-
+   /** Pretend service id */
    public static final String SERVICE_ID = "DummyId";
 
    /** Generally speaking don't use this directly - use the factory
@@ -70,9 +74,9 @@ public class DummyDelegate extends DatacenterDelegate
     */
    public Element adqlQuery(Element adql) throws RemoteException
    {
-      fireStatusChanged(STARTING);
+      fireStatusChanged(SERVICE_ID, STARTING);
 
-      fireStatusChanged(WAITING);
+      fireStatusChanged(SERVICE_ID, WAITING);
 
       //we *could* unmarshall the query here but that starts getting all
       //horribly involved with server code, so we just skip it...
@@ -88,7 +92,7 @@ public class DummyDelegate extends DatacenterDelegate
       }
        /**/
 
-      fireStatusChanged(POST_PROCESSING);
+      fireStatusChanged(SERVICE_ID, POST_PROCESSING);
 
       return getSampleResults();
 
@@ -206,6 +210,9 @@ public class DummyDelegate extends DatacenterDelegate
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.3  2003/09/15 16:11:44  mch
+Fixes to handle updates when multiple queries are running through one delegate
+
 Revision 1.2  2003/09/15 15:22:20  mch
 Implemented asynch queries; improved dummy results
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.13 2003/09/15 16:01:21 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.14 2003/09/15 16:11:44 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -152,11 +152,11 @@ public abstract class DatacenterDelegate
 
    /** informs all listeners of the new status change. Not threadsafe...
     */
-   protected void fireStatusChanged(String newStatus)
+   protected void fireStatusChanged(String id, String newStatus)
    {
       for (int i=0;i<statusListeners.size();i++)
       {
-         ((DatacenterStatusListener) statusListeners.get(i)).datacenterStatusChanged(newStatus);
+         ((DatacenterStatusListener) statusListeners.get(i)).datacenterStatusChanged(id, newStatus);
       }
    }
 
@@ -168,6 +168,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.14  2003/09/15 16:11:44  mch
+Fixes to handle updates when multiple queries are running through one delegate
+
 Revision 1.13  2003/09/15 16:01:21  mch
 Fixes to make maven happ(ier)
 

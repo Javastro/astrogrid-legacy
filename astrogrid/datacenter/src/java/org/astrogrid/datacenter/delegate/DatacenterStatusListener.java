@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterStatusListener.java,v 1.8 2003/09/15 16:06:11 mch Exp $
+ * $Id: DatacenterStatusListener.java,v 1.9 2003/09/15 16:11:44 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -18,13 +18,16 @@ package org.astrogrid.datacenter.delegate;
 public interface DatacenterStatusListener
 {
    /** Called by the datacenter delegate when it has been notified of a
-    * status change
+    * status change.  NB a delegate may have several services running at once.
     */
-   public void datacenterStatusChanged(String newStatus);
+   public void datacenterStatusChanged(String serviceId, String newStatus);
 }
 
 /*
 $Log: DatacenterStatusListener.java,v $
+Revision 1.9  2003/09/15 16:11:44  mch
+Fixes to handle updates when multiple queries are running through one delegate
+
 Revision 1.8  2003/09/15 16:06:11  mch
 Fixes to make maven happ(ier)
 
