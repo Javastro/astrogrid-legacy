@@ -203,33 +203,36 @@
 <hr />
 <h2>Plugin Configuration</h2>
 <%
-
-String pluginClass =  SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.QuerierPluginFactory.PLUGIN_KEY);
-String sqlMaker = SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.sql.JdbcPlugin.SQL_TRANSLATOR) ;
+   String pluginClass =  SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.QuerierPluginFactory.PLUGIN_KEY, null);
+   String sqlMaker = SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.sql.JdbcPlugin.SQL_TRANSLATOR, null) ;
 %>
 Plugin Class <%= pluginClass %>
 <%
-if (pluginClass != null) {
-  try {
-    Class plugin = Class.forName(pluginClass);
-    out.println(" - found on classpath");
-
-  } catch (Throwable t) {
-    out.println(" - Could not load plugin class");
-    out.println(t.getMessage());
+   if (pluginClass == null) {
+      out.println(" - No Plugin specified, set key "+org.astrogrid.datacenter.queriers.QuerierPluginFactory.PLUGIN_KEY);
+   }
+   else {
+     try {
+        Class plugin = Class.forName(pluginClass);
+        out.println(" - found on classpath");
+   
+     } catch (Throwable t) {
+        out.println(" - Could not load plugin class");
+        out.println(t.getMessage());
+     }
   }
-}
+
 %>
 <br />
 SQL Translator <%= sqlMaker %>
 <%
 if (sqlMaker != null) {
   try {
-    Class spi = Class.forName(sqlMaker);
-   out.println(" - found on classpath");
+     Class spi = Class.forName(sqlMaker);
+     out.println(" - found on classpath");
   } catch (Throwable t) {
-    out.println(" - Could not load plugin class");
-   out.println(t.getMessage());
+     out.println(" - Could not load plugin class");
+     out.println(t.getMessage());
   }
 }
 %>
