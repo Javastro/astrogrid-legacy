@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractor.java,v 1.6 2004/09/28 16:15:47 pah Exp $
+ * $Id: SExtractor.java,v 1.7 2004/10/05 16:04:45 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,10 +11,20 @@
 
 package org.astrogrid.applications.commandline.sextractor;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.commandline.CommandLineApplication;
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
+import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.commandline.DefaultCommandLineParameterAdapter;
+import org.astrogrid.applications.commandline.MergingParameterAdapter;
+import org.astrogrid.applications.commandline.MergingParameterAdapter.Concentrator;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -22,7 +32,17 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import java.io.IOException;
 
 public class SExtractor extends CommandLineApplication {
+   /**
+    * Logger for this class
+    */
+   private static final Log logger = LogFactory.getLog(SExtractor.class);
 
+
+   /*
+    * The concentrators for the repeated parameters...
+    */
+   private final Concentrator imageConcentrator = new MergingParameterAdapter.Concentrator(
+         ",");
 
  
    /** Construct a new SExtractor
@@ -30,6 +50,7 @@ public class SExtractor extends CommandLineApplication {
      * @param jobStepId
      * @param user
      * @param description
+     * 
      */
     public SExtractor(String id, String jobStepId, User user, Tool tool, ApplicationInterface description, CommandLineApplicationEnvironment env,ProtocolLibrary lib) {
         super(jobStepId,  tool,description, env,lib);
@@ -67,6 +88,22 @@ public class SExtractor extends CommandLineApplication {
    }     
    }
    
-    
+   protected ParameterAdapter instantiateAdapter(ParameterValue pval,
+         ParameterDescription desr, ExternalValue indirectVal) {
+
+      if (desr.getName().equals("DetectionImage") || desr.getName().equals("PhotoImage")) {
+         if (logger.isDebugEnabled()) {
+            logger.debug("creating merging adapter for image parameters");
+         }
+
+         return new MergingParameterAdapter(getApplicationInterface(), pval,
+               (CommandLineParameterDescription)desr, indirectVal,
+               applicationEnvironment, imageConcentrator);
+      }
+     else {
+         return super.instantiateAdapter(pval, desr, indirectVal);
+      }
+   }
+   
 
 }

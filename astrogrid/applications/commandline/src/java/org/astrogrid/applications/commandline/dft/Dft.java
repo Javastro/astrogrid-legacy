@@ -1,5 +1,5 @@
 /*
- * $Id: Dft.java,v 1.6 2004/09/23 22:44:23 pah Exp $
+ * $Id: Dft.java,v 1.7 2004/10/05 16:04:45 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -21,6 +21,8 @@ import org.astrogrid.applications.commandline.CommandLineApplication;
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.commandline.DefaultCommandLineParameterAdapter;
+import org.astrogrid.applications.commandline.MergingParameterAdapter;
+import org.astrogrid.applications.commandline.MergingParameterAdapter.Concentrator;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.ParameterAdapter;
@@ -36,29 +38,42 @@ import java.util.List;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4.1
- * @TODO should not really need this class - better to build adding standard parameters to the interface definition so that the standard commandline application could deal with it
- * @todo doubt this works in its current form. needs to be retested.
- * @todo can't do it this way anymore - have tightened up the adapter interface. rewrite needed.
+ * @TODO should not really need this class - better to build adding standard
+ *       parameters to the interface definition so that the standard commandline
+ *       application could deal with it
  */
 public class Dft extends CommandLineApplication {
-    /**
-     * Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(Dft.class);
+   /**
+    * Logger for this class
+    */
+   private static final Log logger = LogFactory.getLog(Dft.class);
 
+   /*
+    * The concentrators for the repeated parameters...
+    */
+   private final Concentrator matchConcentrator = new MergingParameterAdapter.Concentrator(
+         ",");
 
+   private final Concentrator targetConcentrator = new MergingParameterAdapter.Concentrator(
+         ",");
 
-   /** Construct a new Dft
-     * @param id
-     * @param jobStepId
-     * @param user
-     * @param description
-     */
-    public Dft(String id, String jobStepId, Tool tool,ApplicationInterface interf, CommandLineApplicationEnvironment env, ProtocolLibrary lib) {
-        super(jobStepId, tool,interf,env,lib);
-    }
+   /**
+    * Construct a new Dft
+    * 
+    * @param id
+    * @param jobStepId
+    * @param user
+    * @param description
+    */
+   public Dft(String id, String jobStepId, Tool tool,
+         ApplicationInterface interf, CommandLineApplicationEnvironment env,
+         ProtocolLibrary lib) {
+      super(jobStepId, tool, interf, env, lib);
+   }
 
-    /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see org.astrogrid.applications.commandline.CmdLineApplication#preRunHook()
     */
    protected void preRunHook() {
@@ -67,18 +82,31 @@ public class Dft extends CommandLineApplication {
 
    }
 
-   
-    protected ParameterAdapter instantiateAdapter(ParameterValue pval,
-            ParameterDescription desr, ExternalValue indirectVal) {
-      if (desr.getName().equals("matches")) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("creating merging adapter for parameter matches");
-        }
+   protected ParameterAdapter instantiateAdapter(ParameterValue pval,
+         ParameterDescription desr, ExternalValue indirectVal) {
 
-        return new MergingParameterAdapter(getApplicationInterface(), pval, (CommandLineParameterDescription)desr, indirectVal, applicationEnvironment);
-    }
-    else {
+      if (desr.getName().equals("matches")) {
+         if (logger.isDebugEnabled()) {
+            logger.debug("creating merging adapter for parameter matches");
+         }
+
+         return new MergingParameterAdapter(getApplicationInterface(), pval,
+               (CommandLineParameterDescription)desr, indirectVal,
+               applicationEnvironment, matchConcentrator);
+      }
+      else if (desr.getName().equals("targets"))
+      {
+         if (logger.isDebugEnabled()) {
+            logger.debug("creating merging adapter for parameter targets");
+         }
+
+         return new MergingParameterAdapter(getApplicationInterface(), pval,
+               (CommandLineParameterDescription)desr, indirectVal,
+               applicationEnvironment, targetConcentrator);
+        
+      }
+      else {
          return super.instantiateAdapter(pval, desr, indirectVal);
-    }
-    }
+      }
+   }
 }
