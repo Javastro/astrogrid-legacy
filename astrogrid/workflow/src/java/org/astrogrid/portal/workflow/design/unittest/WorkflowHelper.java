@@ -48,7 +48,7 @@ public class WorkflowHelper {
          
     private static final String jobOne = 
         "<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
-        "<workflow name = \"{0}\" templateName=\"oneStepJob\">" +
+        "<workflow name = \"{0}\" templateName=\"OneStepJob\">" +
         "<userid>{1}</userid>" +
         "<community>{2}</community>" +
         "<description>This is a one step job</description>" +
@@ -160,7 +160,7 @@ public class WorkflowHelper {
        
     private static final String jobTwo = 
         "<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
-        "<workflow name = \"{2}\" templateName=\"oneStepJob\">" +
+        "<workflow name = \"{2}\" templateName=\"OneStepJob\">" +
         "<userid>{1}</userid>" +
         "<community>{3}</community>" +
         "<description>This is a one step job</description>" +
