@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.4 2004/10/06 21:12:17 mch Exp $
+ * $Id: AxisDataService_v06.java,v 1.5 2004/10/08 15:16:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,6 @@ import javax.xml.rpc.ServiceException;
 import javax.xml.rpc.server.ServiceLifecycle;
 import org.apache.axis.AxisFault;
 import org.astrogrid.community.Account;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.v05.QueryStatusSoapyBean;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.AdqlQueryMaker;
@@ -22,9 +21,8 @@ import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.Query2Adql074;
 import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.service.AxisDataServer;
-import org.astrogrid.datacenter.service.DataServer;
-import org.astrogrid.datacenter.service.DataServiceStatus;
 import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.status.ServiceStatus;
 
 /**
  * The implementation of the Datacenter axis web service for end of Itn06
@@ -99,7 +97,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
    /**
     * Ask raw sql for blocking operation - returns the results
-    */
+    *
    public String askSql(String sql, String requestedFormat) throws AxisFault {
       try {
          if (!SimpleConfig.getSingleton().getBoolean(DataServer.SQL_PASSTHROUGH_ENABLED, false)) {
@@ -170,16 +168,35 @@ public class AxisDataService_v06 implements ServiceLifecycle {
    /**
     * Returns the state of the service
     */
-   public DataServiceStatus getServiceStatus() throws AxisFault {
-      return server.getStatus();
+   public ServiceStatus getServiceStatus() throws AxisFault {
+      return server.getStatus().getServiceStatus();
    }
+
+   /**
+    * Returns a simple text string indicating the state of the service
+    */
+   public String getSimpleServiceStatus() throws AxisFault {
+      return server.getStatus().toString();
+   }
+   
    /**
     * Returns the user from the Message Context header
     */
    protected Account getUser() {
       return Account.ANONYMOUS;
    }
+
+   /** Returns the Registry entries for this service.  Same as getMetadata */
+   public String getRegistration() throws RemoteException {
+      try {
+         return server.getMetadata();
+      }
+      catch (IOException ioe) {
+         throw server.makeFault(server.SERVERFAULT, "Error getting metadata", ioe);
+      }
+   }
    
+   /** Returns a document describing the service */
    public String getMetadata() throws RemoteException {
       try {
          return server.getMetadata();
@@ -203,6 +220,9 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
 /*
 $Log: AxisDataService_v06.java,v $
+Revision 1.5  2004/10/08 15:16:04  mch
+More on providing status
+
 Revision 1.4  2004/10/06 21:12:17  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

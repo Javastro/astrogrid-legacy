@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.5 2004/10/06 11:35:35 mch Exp $
+ * $Id: AxisDataServer.java,v 1.6 2004/10/08 15:16:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -42,12 +42,21 @@ public class AxisDataServer extends DataServer {
    protected static String contextUrlStem = null;
    
    
-   /** Returns the url stem for this context, eg http://grendel12.roe.ac.uk/pal-6df  */
+   /** Returns the url stem for this axis context, eg http://grendel12.roe.ac.uk/pal-6df  */
    public static String getUrlStem() {
       if (contextUrlStem != null) {
          return contextUrlStem;
       }
-      //if not set, look in MessageContext (for SOAP calls)
+      String axisStem = getAxisUrlStem();
+      if (axisStem != null) {
+         setUrlStem(axisStem);
+         return contextUrlStem;
+      }
+      return null;
+   }
+   
+   /** Works out the url stem from the Message axis context  */
+   public static String getAxisUrlStem() {
       MessageContext context = MessageContext.getCurrentContext();
       if (context == null) {
          return null;
@@ -123,6 +132,9 @@ public class AxisDataServer extends DataServer {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.6  2004/10/08 15:16:04  mch
+More on providing status
+
 Revision 1.5  2004/10/06 11:35:35  mch
 A bit of tidying up around the web service interfaces.First stage SkyNode implementation
 

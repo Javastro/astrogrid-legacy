@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.7 2004/10/06 22:14:38 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.8 2004/10/08 15:16:04 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
+import java.net.URL;
 import junit.framework.TestCase;
+import net.ivoa.SkyNode.SkyNodeLocator;
+import net.ivoa.SkyNode.SkyNodeSoap;
+import net.ivoa.SkyNode.VOData;
+import net.ivoa.www.xml.ADQL.v0_7_4.SelectType;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
@@ -99,14 +104,37 @@ public class InstallationSelfCheck extends TestCase {
 
    /** Checks that the delegates can connect correctly */
    public void testSoapDelegate() throws Throwable {
+      
+      //this test is called as a servlet, so get url stem from servlet context
+      String endpoint = ServletHelper.getUrlStem()+"/services/AxisDataServer05";
+      
       ConeSearcher searcher = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS,
-                                                                         AxisDataServer.getUrlStem()+"/services/AxisDataServer05",
+                                                                         endpoint,
                                                                          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       InputStream is = searcher.coneSearch(30, 30, 6);
 
       assertNotNull(is);
    }
    
+   /** Checks that the SkyNode interface works OK */
+   public void testSkyNode() throws Throwable {
+      
+      //this test is called as a servlet, so get url stem from servlet context
+      String endpoint = ServletHelper.getUrlStem()+"/services/SkyNode074";
+
+      //construct SOAP client
+      SkyNodeSoap skyNodeClient = new SkyNodeLocator().getSkyNodeSoap(new URL(endpoint));
+
+      //make the query
+      SelectType adql = null;
+      
+      //make call
+      VOData vodata = skyNodeClient.performQuery(adql, "VOTABLE");
+
+      //check results
+      assertNotNull(vodata);
+   }
+
    /** Submits a number of cone searches, starting small and getting larger */
    public void testMiniSoak() throws Throwable
    {
@@ -154,6 +182,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.8  2004/10/08 15:16:04  mch
+ More on providing status
+
  Revision 1.7  2004/10/06 22:14:38  mch
  Added default cone scope
 

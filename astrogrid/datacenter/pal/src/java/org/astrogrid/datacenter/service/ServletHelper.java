@@ -1,18 +1,16 @@
 /*
- * $Id: ServletHelper.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+ * $Id: ServletHelper.java,v 1.3 2004/10/08 15:16:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.util.Date;
+import javax.servlet.GenericServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
@@ -32,6 +30,12 @@ public class ServletHelper
    
    protected static Log log = LogFactory.getLog(ServletHelper.class);
 
+   
+   /** Works out url stem - eg http://grendel12.roe.ac.uk/pal-6df - from the
+    * servlet context */
+   public static String getUrlStem() {
+      return null;
+   }
 
    /**
     * Convenience routine for JSPs; decides where target should be from
