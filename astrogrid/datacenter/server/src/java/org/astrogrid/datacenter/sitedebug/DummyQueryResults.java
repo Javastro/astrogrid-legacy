@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQueryResults.java,v 1.5 2004/03/09 22:59:04 mch Exp $
+ * $Id: DummyQueryResults.java,v 1.6 2004/03/10 02:41:11 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -36,6 +36,11 @@ public class DummyQueryResults implements QueryResults
          throw new RuntimeException("Could not find example votable");
    }
 
+   /** Returns any old number */
+   public int getCount() {
+      return 15;
+   }
+   
    /**
     * Returns InputStream to results raw data.  In this case to the example
     * votable file.
