@@ -1,4 +1,4 @@
-/*$Id: DataCenterFileIndirectExecutionTest.java,v 1.1 2004/07/01 11:43:33 nw Exp $
+/*$Id: DataCenterFileIndirectExecutionTest.java,v 1.2 2004/07/20 01:59:25 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -74,8 +74,8 @@ public class DataCenterFileIndirectExecutionTest extends AbstractRunTestForCEA {
           outputFile = File.createTempFile("DataCenterFileIndirectExecutionTest-output",null);
           inputFile.createNewFile();
           outputFile.createNewFile();
-          inputFile.deleteOnExit();
-          outputFile.deleteOnExit();
+         // inputFile.deleteOnExit();
+         // outputFile.deleteOnExit();
           Writer w = new FileWriter(inputFile);
           Reader r = new InputStreamReader(this.getClass().getResourceAsStream(DataCenterProviderServerInfo.SAMPLE_QUERY_RESOURCE));
           Piper.pipe(r,w);
@@ -89,6 +89,9 @@ public class DataCenterFileIndirectExecutionTest extends AbstractRunTestForCEA {
 
 /* 
 $Log: DataCenterFileIndirectExecutionTest.java,v $
+Revision 1.2  2004/07/20 01:59:25  nw
+testing new datacenter cea
+
 Revision 1.1  2004/07/01 11:43:33  nw
 cea refactor
  
