@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.14 2004/08/09 11:34:20 nw Exp $
+/*$Id: Services.java,v 1.15 2004/11/22 18:26:54 clq2 Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,9 +29,9 @@ import java.util.List;
  * The list of services is loaded from an xml file. This can either loaded from the default location on the classpath,
  * or by specifying a URL.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2004
- *
+ *@deprecated. Will replace these features with registry lookups at some point. Use Toolbox for now.
  */
-public class Services {
+public class Services extends Toolbox {
     /**
      * Commons Logger for this class
      */
@@ -245,6 +245,13 @@ public class Services {
 
 /* 
 $Log: Services.java,v $
+Revision 1.15  2004/11/22 18:26:54  clq2
+scripting-nww-715
+
+Revision 1.14.68.1  2004/11/22 15:54:51  nw
+deprecated existing scripting interface (which includes service lists).
+produced new scripting interface, with more helpler objects.
+
 Revision 1.14  2004/08/09 11:34:20  nw
 improvied behaviour when no service list is found.
 

@@ -5,55 +5,13 @@
         <id>astrogrid-scripting</id>
         <name>Astrogrid Scripting Language Interface</name>
         <description><![CDATA[
-          This project provides a unified interface to the astrogrid webservice delegates and supporting code. This
+          This project defines a container class called '<tt>org.astrogrid.scripting.Toolbox</tt>'
+          which gives convenient access to the astrogrid webservice delegates and supporting code. This
           makes it simple to call astrogrid services from scripting languages.
           <p/>
           This project collects the delegates and dependent jars from the other projects, and adds some front-end classes to tie it
-          all together (see javadocs)
+          all together
           <p />
-          <section name="Scripting Language Bundles">
-          <p>
-                At present, preconfigured tarballs containing a scripting language interpreter and
-                all the necessary astrogrid libraries are available for Javascript and Groovy. Both require you
-                to have a Java Runtime Environment already installed.
-          </p>
-           <!--http://www.astrogrid.org/maven/astrogrid-datacenter/-->
-            <subsection name="Javascript (Basic)"><p>
-                <a href="http://www.mozilla.org/rhino">Rhino</a> is an implementation of javascript in Java.
-                <a href="http://www.astrogrid.org/maven/org.astrogrid/distributions/astrogrid-scripting-rhino-SNAPSHOT.tar.gz">Download</a> the
-                snapshot tarball, unpack, and configure by setting the <tt>JS_HOME</tt> environment variable to
-                the root of the unpackaged code, and adding <tt>${JS_HOME}/bin</tt> to your path.
-                <p />
-                The <tt>bin</tt> directory contains programs to run the javascript interpreter - as a commandline, as a shell, and as a debugger
-                <p />
-                The <tt>examples</tt> directory contains some example programs that use the astrogrid delegates
-                </p></subsection>
-                <subsection name="Groovy (Recommended)"><p>
-                <a href="http://groovy.codehaus.org/">Groovy</a> is
-                <blockquote><i>
-                 a powerful new high level dynamic language for the JVM combining lots of great features from
-                 languages like Python, Ruby and Smalltalk and making them available to the Java developers
-                 using a Java-like syntax.
-                </i></blockquote>
-                Installation is similar to that for Javascript.
-                <a href="http://www.astrogrid.org/maven/org.astrogrid/distributions/astrogrid-scripting-groovy-SNAPSHOT.tar.gz">Download</a> the tarball snapshot, unzip, and configure
-                by setting the <tt>GROOVY_HOME</tt> environment variable to point to the unpackaged code.
-                <p />
-                Again, <tt>bin</tt> contains to run groovy, <tt>examples</tt> has groovy versions of the example programs.
-                </p></subsection>
-                <subsection name="Java"><p>
-                 The assembled set of delegates and supporting libraries is a convenient starting point for writing
-                 java client applications. The set of libraries can be <a href="http://www.astrogrid.org/maven/org.astrogrid/distributions/astrogrid-scripting-SNAPSHOT.tar.gz">downloaded here</a>
-                </p></subsection>
-                <subsection name="Other languages"><p>
-                        Other possible scripting languages targets are
-                        <ul>
-                                <li>TCL - via <a href="http://www.tcl.tk/software/java/">JACL and Tcl-Blend</a></li>
-                                <li>Perl (any idea how?)</li>
-                        </ul>
-                        to attempt this, start by downloading the distribution for java (see above section)
-                </p></subsection>
-          </section>
 
          ]]></description>
         <shortDescription>AstroGrid Scripting</shortDescription>
@@ -86,7 +44,7 @@
         </build>
 
         <dependencies>
-        <!-- used within scripting interface -->
+        <!-- used within deprecated classes only -->
         <dependency>
             <artifactId>commons-digester</artifactId>
             <groupId>commons-digester</groupId>
@@ -103,29 +61,29 @@
        <!-- interface to workflow system -->
         <dependency>
             <artifactId>astrogrid-workflow</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <groupId>org.astrogrid</groupId>
         </dependency>
         <dependency>
             <artifactId>astrogrid-common</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <groupId>org.astrogrid</groupId>
         </dependency>
         <!-- registry -->
         <dependency>
             <artifactId>astrogrid-registry-client-lite</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
             <artifactId>astrogrid-registry-common</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <!-- myspace -->
         <dependency>
             <artifactId>astrogrid-store-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <groupId>org.astrogrid</groupId>
             <type>jar</type>
         </dependency>
@@ -133,40 +91,45 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-jes-delegate</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-workflow-objects</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <!-- datacenter -->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-datacenter-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <!-- applications -->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
+        </dependency>
+        <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-cea-server</artifactId>
+                <version>${pom.currentVersion}</version>
         </dependency>
         <!-- community -->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <!-- Third party dependencies -->
         <!-- axis libs -->
@@ -230,6 +193,14 @@
             <id>xml-apis</id>
             <version>1.0.b2</version>
         </dependency>
+        <!-- helper libraries -->
+        <dependency>
+                <groupId>starlink</groupId>
+                <artifactId>stil</artifactId>
+                <version>2.0-1</version>
+                <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
+        </dependency>
     </dependencies>
+
 
 </project>

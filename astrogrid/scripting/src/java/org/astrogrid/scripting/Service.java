@@ -1,4 +1,4 @@
-/*$Id: Service.java,v 1.12 2004/08/09 11:28:17 nw Exp $
+/*$Id: Service.java,v 1.13 2004/11/22 18:26:54 clq2 Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import javax.xml.rpc.ServiceException;
 
 /**
  * Data object representing a service 
+ * @deprecated don't think things are going to work out this way any more. stay clear. unstable code.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2004
  *
  */ 
@@ -189,6 +190,13 @@ public class Service {
 
 /* 
 $Log: Service.java,v $
+Revision 1.13  2004/11/22 18:26:54  clq2
+scripting-nww-715
+
+Revision 1.12.68.1  2004/11/22 15:54:51  nw
+deprecated existing scripting interface (which includes service lists).
+produced new scripting interface, with more helpler objects.
+
 Revision 1.12  2004/08/09 11:28:17  nw
 improvied behaviour when no service list is found.
 tidied imports.

@@ -40,6 +40,7 @@ import java.net.URL;
  * 
  * @see Services
  * @see Service
+ * @deprecated. Use Toolbox
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2004
  *
  */
@@ -104,51 +105,7 @@ public class Astrogrid extends Services {
    }
    
    private static Astrogrid theInstance;
-    private final WorkflowManagerFactory factory = new WorkflowManagerFactory();
-    private final ObjectBuilder oHelper = new ObjectBuilder();
-    private final XMLHelper xHelper = new XMLHelper();
-      
-    /** access the workflow manager 
-     * @return interface to system for building, saving, submitting and inspecting worflows.
-     * @throws WorkflowInterfaceException*/
-    public WorkflowManager getWorkflowManager() throws WorkflowInterfaceException {
-        return factory.getManager();
-    }
-    
-    /** access helper object for building objects 
-     * @return object that assists in building {@link User} objects, etc.*/
-    public ObjectBuilder getObjectBuilder() {
-        return oHelper;
-    }
-    
-    /** access helper object for working with xml 
-     * @return object that assists with constructing and manipulatingn xml.*/
-    public XMLHelper getXMLHelper() {
-        return xHelper;
-    }
-    
-    /** accces the system configuration object 
-     * @return the system configuration object*/
-    public Config getSystemConfig() {
-        return SimpleConfig.getSingleton();
-    }
-    
-    /** create client to access default registry 
-     * @returna registry client connected to the default registry location
-     * */
-    public RegistryService createRegistryClient() {
-        return RegistryDelegateFactory.createQuery();
-    }
-
-    /** create a client to access vospace 
-     * @param u object representing the user for whom to create the client for
-     * @return a vospace client which has the permissions of user <tt>u</tt>
-     * @see #getObjectBuilder() for how to build a <tt>User</tt> object*/
-    public VoSpaceClient createVoSpaceClient(User u) {
-        return new VoSpaceClient(u);
-    }
-    
-   /* (non-Javadoc)
+    /* (non-Javadoc)
     * @see java.lang.Object#toString()
     */
    public String toString() {
