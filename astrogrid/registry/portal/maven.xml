@@ -206,4 +206,5 @@
             file="${maven.src.dir}/portal/cocoon/menu/registry-menu.xml"
             todir="${webapp.dir}/WEB-INF/menu"/>
     </postGoal>
+     
 </project>

@@ -23,11 +23,11 @@
     <!--+
         | Hook for build script java:compile
         | Calls install-artifact to build and install our SNAPSHOT jars.
-        |  <goal name="java:compile">
-        |     <attainGoal name="clean"/>
-        |     <attainGoal name="install-snapshot"/>
-        |  </goal>
         +-->
+          <preGoal name="java:compile">
+             <attainGoal name="clean"/>
+             <attainGoal name="install-snapshot"/>
+          </preGoal>
 
     <!--+
         | Hook for build script clover:html-report
@@ -171,7 +171,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,portal/project.xml"
+            includes="common/project.xml,client/project.xml,server/project.xml,portal/project.xml"
             goals="clover-report"
             banner="Building clover report : "
             ignoreFailures="false"
