@@ -162,7 +162,7 @@
         <chmod dir="${work.dir}/applications" perm="a+x">
                 <include name="*.sh" />
         </chmod>
-        <!-- initialize database : no need, db contents could be stored as a template really.-->
+        <!-- initialize database : no need, db contents should be stored as a template really.-->
         <sql driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:${work.dir}/applications/application-db"
              classpathref="maven.dependency.classpath"
              userid="sa" password="" print="true"
@@ -170,11 +170,13 @@
         DROP TABLE exestat IF EXISTS ;
         CREATE TABLE exestat
                     (
-                    executionId      INTEGER IDENTITY,
-                    jobstepId    VARCHAR ,
-                    program      VARCHAR ,
-                    starttime        DATETIME DEFAULT 'now',
-                    endtime TIMESTAMP
+    executionId      INTEGER IDENTITY,
+    jobstepId    VARCHAR ,
+    program      VARCHAR ,
+    starttime        DATETIME DEFAULT 'now',
+    params         VARCHAR,
+    endtime TIMESTAMP,
+    status  VARCHAR
             ) ;
            ]]></sql>
 </goal>
