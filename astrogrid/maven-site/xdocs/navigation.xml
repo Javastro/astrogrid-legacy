@@ -9,6 +9,7 @@
        <item name="Projects" href="http://www.astrogrid.org/maven/build/index.html"/>
     </links>
     <menu name="Projects">
+      <item name="Applications Integration"     href="http://www.astrogrid.org/maven/build/applications/index.html"/>
       <item name="Common"           href="http://www.astrogrid.org/maven/build/common/index.html"/>
       <item name="Template Service" href="http://www.astrogrid.org/maven/build/templateservice/index.html"/>
       <item name="Registry"         href="http://www.astrogrid.org/maven/build/registry/index.html"/>
@@ -19,6 +20,7 @@
       <item name="PortalB"          href="http://www.astrogrid.org/maven/build/portalB/index.html"/>
     </menu>
     <menu name="Maven Build Logs">
+      <item name="Appilications Integration"           href="http://www.astrogrid.org/maven/build/log/maven-build-applications.log"/>
       <item name="Common"           href="http://www.astrogrid.org/maven/build/log/maven-build-common.log"/>
       <item name="Template Service" href="http://www.astrogrid.org/maven/build/log/maven-build-templateservice.log"/>
       <item name="Registry"         href="http://www.astrogrid.org/maven/build/log/maven-build-registry.log"/>
