@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.7 2003/12/01 20:58:42 mch Exp $
+/*$Id: AllTests.java,v 1.8 2004/01/15 16:41:44 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,7 +59,6 @@ public class AllTests {
         suite.addTest(org.astrogrid.datacenter.queriers.sql.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.DatacenterTest.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.spi.AllTests.suite());
-        suite.addTest(org.astrogrid.datacenter.queriers.spi.AllTests.suite());
          suite.addTest(org.astrogrid.datacenter.fits.FitsTest.suite());
          suite.addTest(org.astrogrid.datacenter.queriers.fits.FitsQuerierTest.suite());
         return suite;
@@ -69,6 +68,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.8  2004/01/15 16:41:44  nw
+removed duplicate test
+
 Revision 1.7  2003/12/01 20:58:42  mch
 Abstracting coarse-grained plugin
 
