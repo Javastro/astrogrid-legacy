@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionTest.java,v 1.2 2004/03/11 13:53:51 nw Exp $
+/*$Id: ApplicationDescriptionTest.java,v 1.3 2004/03/12 14:53:51 nw Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,10 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.portal.workflow.impl.FileApplicationRegistry;
 import org.astrogrid.portal.workflow.impl.FileApplicationRegistryTest;
 import org.astrogrid.workflow.beans.v1.Tool;
+
+import org.apache.axis.utils.XMLUtils;
+import org.exolab.castor.xml.Marshaller;
+import org.w3c.dom.Document;
 
 import java.net.URL;
 
@@ -42,7 +46,7 @@ public class ApplicationDescriptionTest extends TestCase {
         URL url = FileApplicationRegistryTest.TEST_DOCUMENT_URL; 
         reg = new FileApplicationRegistry(url);
         assertNotNull(reg);
-        descr = reg.getDescriptionFor(reg.listApplications()[0]);
+        descr = reg.getDescriptionFor("SExtractor");
     }
     protected ApplicationRegistry reg;
     protected ApplicationDescription descr;
@@ -61,6 +65,12 @@ public class ApplicationDescriptionTest extends TestCase {
     
     public void testCreateToolFromDescription() throws Exception{
         Tool t = descr.createToolFromDefaultInterface();
+        
+        Document doc = XMLUtils.newDocument();
+        Marshaller.marshal(t,doc);
+        XMLUtils.PrettyDocumentToStream(doc,System.out);
+        
+        //System.out.println(t.toString());
         Interface intf = descr.getInterfaces().get_interface(0);
         assertNotNull(t);
         assertEquals(t.getName(),descr.getName());
@@ -105,6 +115,9 @@ public class ApplicationDescriptionTest extends TestCase {
 
 /* 
 $Log: ApplicationDescriptionTest.java,v $
+Revision 1.3  2004/03/12 14:53:51  nw
+added testing of default values
+
 Revision 1.2  2004/03/11 13:53:51  nw
 merged in branch bz#236 - implementation of interfaces
 
