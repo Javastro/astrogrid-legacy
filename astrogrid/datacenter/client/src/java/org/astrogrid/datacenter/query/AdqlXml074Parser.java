@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlXml074Parser.java,v 1.8 2004/11/11 23:23:29 mch Exp $
+ * $Id: AdqlXml074Parser.java,v 1.9 2004/11/12 15:28:32 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -61,6 +61,10 @@ public class AdqlXml074Parser  {
    /** Constructs a Query from the given ADQL 0.7.4 Select element */
    public Query parseSelect(Element select) {
 
+      if (select.getLocalName() != "Select") {
+         throw new QueryException("ADQL/Select root element is '"+select.getLocalName()+"', not 'Select': "+DomHelper.ElementToString(select));
+      }
+      
       //do froms first so we build alias list
       Element from = DsaDomHelper.getSingleChildByTagName(select, "From");
       if (from != null) {
@@ -70,7 +74,7 @@ public class AdqlXml074Parser  {
       //select list - cols to return
       Element selectList = DsaDomHelper.getSingleChildByTagName(select, "SelectionList");
       if (selectList == null) {
-         throw new QueryException("No SelectionList element in Select");
+         throw new QueryException("No SelectionList element in Select: "+DomHelper.ElementToString(select));
       }
       parseSelectionList( selectList );
       
@@ -81,7 +85,7 @@ public class AdqlXml074Parser  {
          Element rootCondition = DsaDomHelper.getSingleChildByTagName(where, "Condition");
          if (rootCondition == null) {
             //there should be at least one in a where
-            throw new QueryException("No root Condition element in Where");
+            throw new QueryException("No root Condition element in Where: "+DomHelper.ElementToString(select));
          }
          condition = parseCondition( rootCondition);
       }
@@ -333,6 +337,9 @@ public class AdqlXml074Parser  {
 }
 /*
  $Log: AdqlXml074Parser.java,v $
+ Revision 1.9  2004/11/12 15:28:32  mch
+ better error checks & reports
+
  Revision 1.8  2004/11/11 23:23:29  mch
  Prepared framework for SSAP and SIAP
 
