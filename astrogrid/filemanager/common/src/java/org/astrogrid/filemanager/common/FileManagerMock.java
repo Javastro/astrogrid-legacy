@@ -1,8 +1,8 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/02/10 14:17:20 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2005/02/10 14:38:34 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  */
 package org.astrogrid.filemanager.common ;
@@ -2326,8 +2326,8 @@ public class FileManagerMock
             NodeNotFoundException,
             FileManagerServiceException
         {
-        log.debug("");
-        log.debug("FileManagerMock.importData(TransferProperties)");
+        logger.debug("");
+        logger.debug("FileManagerMock.importData(TransferProperties)");
         if (null == request)
             {
             throw new NodeNotFoundException(
@@ -2373,9 +2373,9 @@ public class FileManagerMock
             if (store.hasNode(ident))
                 {
                 FileManagerStoreNode node = store.getNode(ident) ;
-                log.debug("");
-                log.debug("  Node : " + node.getName());
-                log.debug("  Node : " + node.getIdent());
+                logger.debug("");
+                logger.debug("  Node : " + node.getName());
+                logger.debug("  Node : " + node.getIdent());
                 //
                 // Initiate the transfer.
                 return this.importData(
@@ -2404,10 +2404,10 @@ public class FileManagerMock
     protected FileProperty[] importData(FileManagerStoreNode node, TransferProperties request)
         throws FileManagerServiceException, NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerMock.importData(Node, TransferProperties)");
-        log.debug("  Node : " + node.getName());
-        log.debug("  Node : " + node.getIdent());
+        logger.debug("");
+        logger.debug("FileManagerMock.importData(Node, TransferProperties)");
+        logger.debug("  Node : " + node.getName());
+        logger.debug("  Node : " + node.getIdent());
         //
         // Check the node is a data node.
         if (node.isDataNode() != true)
@@ -2462,9 +2462,9 @@ public class FileManagerMock
             }
         catch (FileStoreIdentifierException ouch)
             {
-            log.warn("");
-            log.warn("Unable to parse store location");
-            log.warn(ouch);
+            logger.warn("");
+            logger.warn("Unable to parse store location");
+            logger.warn(ouch);
             throw new FileManagerServiceException(
                 "Unable to parse store location"
                 );
@@ -2480,9 +2480,9 @@ public class FileManagerMock
                 }
             catch (FileManagerIdentifierException ouch)
                 {
-                log.warn("");
-                log.warn("Unable to parse store location");
-                log.warn(ouch);
+                logger.warn("");
+                logger.warn("Unable to parse store location");
+                logger.warn(ouch);
                 throw new FileManagerServiceException(
                     "Unable to parse store location"
                     );
@@ -2512,8 +2512,8 @@ public class FileManagerMock
             }
         catch (Exception ouch)
             {
-            log.debug("Exception thrown by FileStore.importdata()");
-            log.debug("  Exception : " + ouch);
+            logger.debug("Exception thrown by FileStore.importdata()");
+            logger.debug("  Exception : " + ouch);
             throw new FileManagerServiceException(
                 "Error occurred when calling FileStore service"
                 );
