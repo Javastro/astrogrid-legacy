@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<project>
+    <title>
+        AstroGrid FileStore
+    </title>
+    <body>
+        <menu name="Installation">
+            <item name="Service install" collapse="true" href="/service-install.html">
+                <item name="Tomcat deployment"     href="/service-install.html#Tomcat_deploy"/>
+                <item name="Service properties" href="/service-install.html#Service_properties"/>
+                <item name="Service configuration" href="/service-install.html#Service_configuration"/>
+            </item>
+        </menu>
+    </body>
+</project>
