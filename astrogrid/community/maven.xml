@@ -4,10 +4,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/08 17:20:56 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.9  2004/03/08 17:20:56  dave
+    |   Merged changes to the maven goals
+    |
+    |   Revision 1.8.6.2  2004/03/08 16:57:52  dave
+    |   Added deploy-site goal
+    |
+    |   Revision 1.8.6.1  2004/03/08 16:37:41  dave
+    |   Restored site goal
+    |
     |   Revision 1.8  2004/03/08 13:42:33  dave
     |   Updated Maven goals.
     |   Replaced tabs with Spaces.
@@ -304,9 +313,23 @@
         +-->
     <goal name="build-site">
         <!--+
-            | Generate our sub-project sites by calling the multiproject plugin goal.
+            | Generate our project site(s).
             +-->
-        <attainGoal name="multiproject:site"/>
+        <attainGoal name="site"/>
+    </goal>
+
+    <!--+
+        | Build and deploy our project website.
+        +-->
+    <goal name="deploy-site">
+        <!--+
+            | Generate our project site(s).
+            +-->
+        <attainGoal name="site"/>
+        <!--+
+            | Deploy our project site.
+            +-->
+        <attainGoal name="site:fsdeploy"/>
     </goal>
 
     <!--+
@@ -314,7 +337,7 @@
         | This can be called fom outside, or recursively by site:generate.
         | (required as a target goal for the reactor in multiproject:site)
         +-->
-    <goal name="frog">
+    <goal name="site">
         <!--+
             | Check if we have already been called.
             | This target can be called fom outside, or recursively by site:generate.
