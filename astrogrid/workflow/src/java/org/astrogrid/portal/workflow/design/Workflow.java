@@ -1112,7 +1112,8 @@ public class Workflow extends Activity {
       * @param communitySnippet  userid, community, group and security token details.
       * @return the workflow as an xml String.
       **/      
-    protected String constructWorkflowXML( String communitySnippet ) {
+    // had to make this public for a quick fix to avodemo
+    public String constructWorkflowXML( String communitySnippet ) {
         if( TRACE_ENABLED ) trace( "entry: Workflow.constructWorkflowXML()") ;  
           
         String response = null ;
