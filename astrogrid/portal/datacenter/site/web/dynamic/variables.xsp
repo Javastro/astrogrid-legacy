@@ -28,7 +28,7 @@
             Object ob = null;            
 
             ob = session.getAttribute("tableID");
-            if (ob != null) 
+            if (ob != null ) 
             {
               DQtableID = ob.toString();          
               session.removeAttribute("tableID");
@@ -36,7 +36,7 @@
             <DQtableID><xsp:expr>DQtableID</xsp:expr></DQtableID>
             
             ob = session.getAttribute("resultSingleCatalog");
-            if (ob != null)
+            if ((ob != null) &amp;&amp; (ob instanceof Document))
             {              
               <resultsFromRegistry>
                 <util:include-expr>
