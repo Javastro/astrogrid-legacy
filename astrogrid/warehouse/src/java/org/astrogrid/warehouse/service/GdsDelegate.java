@@ -1,35 +1,21 @@
 package org.astrogrid.warehouse.service;
 
-import java.util.Calendar;
-import java.util.TimeZone;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.Properties;
-import org.globus.ogsa.impl.core.service.ServiceLocator;
-import org.globus.ogsa.utils.AnyHelper;
-import org.globus.ogsa.utils.GridServiceFactory;
-import org.globus.ogsa.wsdl.GSR;
-import org.gridforum.ogsi.ExtendedDateTimeType;
-import org.gridforum.ogsi.ExtensibilityType;
-import org.gridforum.ogsi.holders.ExtensibilityTypeHolder;
-import org.gridforum.ogsi.holders.LocatorTypeHolder;
-import org.gridforum.ogsi.holders.TerminationTimeTypeHolder;
-import org.gridforum.ogsi.OGSIServiceGridLocator;
-import org.gridforum.ogsi.TerminationTimeType;
-import org.w3c.dom.Document;
-import uk.org.ogsadai.wsdl.gds.GDSPortType;
-import uk.org.ogsadai.wsdl.gds.GDSServiceGridLocator;
-import uk.org.ogsadai.common.XMLUtilities;
-
-/*
-//Security-specific imports
 import org.apache.axis.client.Stub;
 import org.globus.axis.gsi.GSIConstants;
 import org.globus.ogsa.impl.security.Constants;
 import org.globus.ogsa.impl.security.authorization.NoAuthorization;
+import org.globus.ogsa.utils.AnyHelper;
+import org.globus.ogsa.utils.GridServiceFactory;
+import org.gridforum.ogsi.ExtensibilityType;
+import org.w3c.dom.Document;
+import uk.org.ogsadai.wsdl.gds.GDSPortType;
+import uk.org.ogsadai.wsdl.gds.GDSServiceGridLocator;
+import uk.org.ogsadai.common.XMLUtilities;
 import org.ietf.jgss.GSSCredential;
 import org.gridforum.jgss.ExtendedGSSManager;
-*/
 
 
 /**
@@ -190,16 +176,6 @@ public class GdsDelegate extends GridServiceDelegate {
           "PERFORM_FOOT", DEFAULT_PERFORM_FOOT);
   }
 
-  // ----------------------------------------------------------
-  // Fallback defaults for values that should be configured on a
-  // per-installation basis in the GdsDelegate.properties file.
-  //
-  private final String DEFAULT_HOST_STRING = 
-        "http://astrogrid.ast.cam.ac.uk:4040";
-  private final String DEFAULT_REGISTRY_STRING = 
-        "/ogsa/services/ogsadai/DAIServiceGroupRegistry";
-  private final String DEFAULT_FACTORY_STRING = 
-        "/ogsa/services/ogsadai/GridDataServiceFactory";
 
   private final String DEFAULT_PERFORM_HEAD = 
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
