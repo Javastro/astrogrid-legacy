@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: LogLevel.java,v 1.17 2004/04/05 15:18:00 nw Exp $
+ * $Id: LogLevel.java,v 1.18 2004/04/21 13:42:53 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.cea.castor.types;
@@ -20,7 +20,7 @@ import org.exolab.castor.xml.Unmarshaller;
 /**
  * Enumeration of possible message log levels
  * 
- * @version $Revision: 1.17 $ $Date: 2004/04/05 15:18:00 $
+ * @version $Revision: 1.18 $ $Date: 2004/04/21 13:42:53 $
  */
 public class LogLevel implements java.io.Serializable {
 

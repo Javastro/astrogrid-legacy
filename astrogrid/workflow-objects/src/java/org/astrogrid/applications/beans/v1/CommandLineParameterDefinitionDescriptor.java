@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CommandLineParameterDefinitionDescriptor.java,v 1.19 2004/04/05 15:17:59 nw Exp $
+ * $Id: CommandLineParameterDefinitionDescriptor.java,v 1.20 2004/04/21 13:42:52 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class CommandLineParameterDefinitionDescriptor.
  * 
- * @version $Revision: 1.19 $ $Date: 2004/04/05 15:17:59 $
+ * @version $Revision: 1.20 $ $Date: 2004/04/21 13:42:52 $
  */
 public class CommandLineParameterDefinitionDescriptor extends org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinitionDescriptor {
 

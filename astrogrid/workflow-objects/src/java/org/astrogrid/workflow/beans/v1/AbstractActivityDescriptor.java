@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: AbstractActivityDescriptor.java,v 1.13 2004/04/05 15:17:59 nw Exp $
+ * $Id: AbstractActivityDescriptor.java,v 1.14 2004/04/21 13:42:53 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class AbstractActivityDescriptor.
  * 
- * @version $Revision: 1.13 $ $Date: 2004/04/05 15:17:59 $
+ * @version $Revision: 1.14 $ $Date: 2004/04/21 13:42:53 $
  */
 public class AbstractActivityDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

@@ -163,7 +163,7 @@
 		</vr:Capability>
 		<vr:Interface>
 			<vr:Invocation>WebService</vr:Invocation>
-			<vr:AccessURL use="base">http://uml02.astrogrid.org:8080/astrogrid-datacentre-SNAPSHOT/services/DataCentreService</vr:AccessURL>
+			<vr:AccessURL use="full">http://uml02.astrogrid.org:8080/astrogrid-datacentre-SNAPSHOT/services/DataCentreService</vr:AccessURL>
 		</vr:Interface>
 		<ManagedApplications>
 			<ApplicationReference>
