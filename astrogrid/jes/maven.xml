@@ -28,27 +28,27 @@
         <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/commons-logging.jar"/>
         <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/commons-discovery.jar"/>
     </path>
-    
+
    <!--<property name="maven.war.src" value="${axis.webapp.srcdir}"/> deleted by JDT for quick and dirty war-->
 
 <postGoal name="war:webapp">
 	<j:set var="classes.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('webapp.build.classes')}" />
 	<echo message="Copying xml templates and properties across from ${maven.conf.dir} to ${classes.dir} directory"/>
   	<copy todir="${classes.dir}" overwrite="yes">
-		<fileset dir="${maven.conf.dir}"> 
+		<fileset dir="${maven.conf.dir}">
 			<exclude name = "ASTROGRID_jesconfig.xml"/> <!-- exclude this because we don't want to overwrite an edited one-->
 		</fileset>
 	</copy>
 	<echo message="Copying generated site ${maven.docs.dest} across to webapp ${maven.war.webapp.dir}/maven"/>
 	<copy todir="${maven.war.webapp.dir}/maven" overwrite="yes">
-		<fileset dir="${maven.docs.dest}"/> 
+		<fileset dir="${maven.docs.dest}"/>
 	</copy>
 
 	<copy todir="${maven.war.webapp.dir}" overwrite="yes">
-		<fileset dir="${maven.conf.dir}"> 
+		<fileset dir="${maven.conf.dir}">
 			<include name="ASTROGRID_jesconfig.xml"/>
 		</fileset>
-	    <fileset dir="${basedir}/dbscripts"> 
+	    <fileset dir="${basedir}/dbscripts">
 			<include name="mysql_jes_database.ddl"/>
 		</fileset>
 	</copy>
@@ -69,14 +69,60 @@
 
 <!-- hook to get my own stuff run before xdocs binds the site together-->
   <preGoal name="xdoc">
- <!-- 	
+ <!--
         <attainGoal name="ant" />
   	<attainGoal  name="pal-zip" />
 	<copy file="${maven.build.dir}/pal.zip" tofile="${maven.build.dir}/docs/pal.zip" />
-	 --> 
+	 -->
   </preGoal>
 
 <!-- new goals -->
+<!-- castor object model generation -->
+  <goal name="run-castor" description="generate classes from schema using castor" prereqs="castor-cleanout,castor-generate"/>
+
+  <goal name="castor-cleanout">
+  	<delete>
+		<fileset dir="${generated.src}">
+			<include name="org/astrogrid/workflow/beans/v1/**" />
+			<include name="org/astrogrid/applications/beans/v1/**" />
+		</fileset>
+	</delete>
+  </goal>
+
+  <goal name="castor-generate">
+  	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+		<classpath>
+			<pathelement location="${basedir}/build" />
+			<path refid="maven.dependency.classpath" />
+		</classpath>
+  	  	<arg value="-i"/>
+  	  	<arg file="${basedir}/schema/AGParameterDefinition.xsd" />
+		<arg value="-binding-file" />
+		<arg file="${basedir}/build/castor-binding.xml" />
+  	  	<arg value="-dest" />
+  	  	<arg file="${generated.src}" />
+		<arg value="-verbose" />
+		<arg value="-typesj2"/>
+	</java>
+
+	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+		<classpath>
+			<pathelement location="${basedir}/build" />
+			<path refid="maven.dependency.classpath" />
+		</classpath>
+  	  	<arg value="-i"/>
+  	  	<arg file="${basedir}/schema/Workflow.xsd" />
+		<arg value="-binding-file" />
+		<arg file="${basedir}/build/castor-binding.xml" />
+  	  	<arg value="-dest" />
+  	  	<arg file="${generated.src}" />
+		<arg value="-verbose" />
+		<arg value="-typesj2" />
+	</java>
+  </goal>
+
+
+
 
 
   <goal name="generate-delegate" description="generate classes from wsdl" prereqs="axis-declare-tasks">
@@ -90,8 +136,8 @@
 	</delete>
 	<attainGoal name="JobMontorWsdl2java" />
    </goal>
-   
-     
+
+
    <property name="wsdl.file" value="${generated.dir}/wsdl/${appint.service.name}.wsdl"/>
    <goal name="JobMontorWsdl2java" prereqs="axis-declare-tasks">
    <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
@@ -103,7 +149,7 @@
            <mapping namespace="urn:jobMonitor.delegate.jes.astrogrid.org" package="org.astrogrid.jes.delegate.jobmonitor"/>
            <mapping namespace="urn:jobMonitor.delegate.jes.astrogrid.org"   package="org.astrogrid.jes.delegate.jobmonitor.impl"/>
            <mapping namespace="urn:beans.applications.astrogrid.org"   package="org.astrogrid.jes.delegate.jobmonitor.beans"/>
-		
+
 	</axis-wsdl2java>
 	<!-- generate the server side stuff -->
   	<axis-wsdl2java output="${generated.src}"             verbose="true"
