@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.2 2003/09/11 11:33:06 nw Exp $
+ * $Id: ResponseHelper.java,v 1.3 2003/09/14 21:28:37 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,7 +25,8 @@ public class ResponseHelper
    public final static String QUERY_RESPONSE_TAG = "QueryStarted";
 
    public final static String DATACENTER_RESULTS_TAG = "DatacenterResults";
-   
+
+   public final static String ERROR_TAG = "Error";
    /**
     * Returns an element that indicates the query has started
     *<p>
@@ -87,7 +88,7 @@ public class ResponseHelper
       {
          results = querier.getResults().toVotable().getDocumentElement();
       }
-      
+
       String doc =
           ServiceIdHelper.makeTagWithServiceIdAttr(DATACENTER_RESULTS_TAG, querier.getHandle())+"\n"
          +"   <TIME>"+querier.getQueryTimeTaken()+"</TIME>\n"
@@ -97,7 +98,7 @@ public class ResponseHelper
          +"</"+DATACENTER_RESULTS_TAG+">\n";
 
       return DocHelper.wrap(doc);
- 
+
    }
 
 
