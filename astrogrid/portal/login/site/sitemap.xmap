@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/09 07:37:34 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/01/09 10:07:39 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
+    |   Revision 1.7  2004/01/09 10:07:39  dave
+    |   Fixed reference to login-pass XSP page
+    |
     |   Revision 1.6  2004/01/09 07:37:34  dave
     |   Replaced static XML with XSP pages
     |
@@ -96,7 +99,7 @@
 						| We can't do a redirect, because this page is requested indirectly
 						| via the map:aggregate in the main site map.
 						+-->
-					<map:generate type="serverpages" src="xml/login-pass.xsp"/>
+					<map:generate type="serverpages" src="xsp/login-pass.xsp"/>
 					<map:serialize type="xml"/>
 				</map:act>
 				<!--+

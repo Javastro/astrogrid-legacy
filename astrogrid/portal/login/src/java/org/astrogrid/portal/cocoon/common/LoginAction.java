@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/09 07:54:33 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2004/01/09 10:07:39 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: LoginAction.java,v $
+ *   Revision 1.10  2004/01/09 10:07:39  dave
+ *   Fixed reference to login-pass XSP page
+ *
  *   Revision 1.9  2004/01/09 07:54:33  dave
  *   Added cvs logs
  *
@@ -61,8 +64,8 @@ public class LoginAction extends AbstractAction
 	public static final String LOGIN_FAIL_MESSAGE = "Login rejected" ;
 	public static final String LOGIN_PASS_MESSAGE = "Login accepted" ;
 
-	public static final String POLICY_FAIL_MESSAGE = "Permission revoked" ;
-	public static final String POLICY_PASS_MESSAGE = "Permission granted" ;
+	public static final String POLICY_FAIL_MESSAGE = "Login rejected" ;
+	public static final String POLICY_PASS_MESSAGE = "Login accepted" ;
 
 	/**
 	 * Our action method.
