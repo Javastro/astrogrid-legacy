@@ -246,10 +246,13 @@ jes.dispatchStep('<xsl:value-of select="generate-id()"/>',shell,states,rules);
 
 <rule> 
 	<name>step-end</name>
-	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == FINISH</trigger>
+	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == FINISH
+		<xsl:if test="@result-var"><!-- need to wait for results too, if workflow is going to use them - modelled as a separate sub state-->
+			&amp;&amp; states.getStatus('<xsl:value-of select="generate-id()"/>' + "-results") == FINISHED
+		</xsl:if>
+		</trigger>
 <body>
 states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
-jes.completeStep('<xsl:value-of select="generate-id()"/>');
 </body>
 </rule>
 </xsl:template>

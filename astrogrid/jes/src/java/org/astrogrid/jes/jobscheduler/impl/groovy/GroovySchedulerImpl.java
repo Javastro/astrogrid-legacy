@@ -1,4 +1,4 @@
-/*$Id: GroovySchedulerImpl.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: GroovySchedulerImpl.java,v 1.3 2004/08/04 16:51:46 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.JobFactory;
@@ -132,14 +133,30 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
         super.updateStepStatus(wf, step, status);
         try {
         GroovyInterpreter interp = interpFactory.unpickleFrom(new JesInterface(wf,disp,this));
-        interp.updateStepStatus(step.getId(),status);
+        interp.updateStepStatus(step,status);
         interpFactory.pickleTo(interp,wf);
         } catch (PickleException e) {
             logger.error("Failed to update step status",e);
             recordFatalError(wf,e);
         }
     }
-
+    /**
+     * @see org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl#storeResults(org.astrogrid.workflow.beans.v1.Workflow, org.astrogrid.workflow.beans.v1.Step, org.astrogrid.applications.beans.v1.cea.castor.ResultListType)
+     */
+    protected void storeResults(Workflow wf, Step step, ResultListType results) {
+        // first check that they need to be stored
+        if (step.getResultVar() == null) { // user hasn't specified a var to store them in, so not needed.
+            return;
+        }
+        try {
+            GroovyInterpreter interp = interpFactory.unpickleFrom(new JesInterface(wf,disp,this));
+            interp.storeResults(step,results);
+            interpFactory.pickleTo(interp,wf);
+        } catch (PickleException e) {
+            logger.error("Failed to store results",e);
+            recordFatalError(wf,e);
+        }
+    }
 //---------------------
   /**
    * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
@@ -163,11 +180,16 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
   }
 
 
+
+
 }
 
 
 /* 
 $Log: GroovySchedulerImpl.java,v $
+Revision 1.3  2004/08/04 16:51:46  nw
+added parameter propagation out of cea step call.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

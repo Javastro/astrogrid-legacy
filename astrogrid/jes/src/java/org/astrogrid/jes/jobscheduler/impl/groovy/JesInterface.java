@@ -1,4 +1,4 @@
-/*$Id: JesInterface.java,v 1.4 2004/08/03 16:32:26 nw Exp $
+/*$Id: JesInterface.java,v 1.5 2004/08/04 16:51:46 nw Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -74,7 +74,7 @@ public class  JesInterface {
         } 
         return getWorkflow().findXPathValue("//*[id = '" + id + "']");
     }
-    /** @todo evaluate params before calling tool 
+    /** 
      * dispatach a tool step 
      * @param id - the identifier of the step to execute
      * */ 
@@ -96,11 +96,6 @@ public class  JesInterface {
     }
     
 
-    
-    /** @todo do what we've got to do here..*/
-    public void completeStep(String id) {
-    }
-    
     /**
      * @param t
      * @return
@@ -194,6 +189,9 @@ public class  JesInterface {
 
 /* 
 $Log: JesInterface.java,v $
+Revision 1.5  2004/08/04 16:51:46  nw
+added parameter propagation out of cea step call.
+
 Revision 1.4  2004/08/03 16:32:26  nw
 remove unnecessary envId attrib from rules
 implemented variable propagation into parameter values.

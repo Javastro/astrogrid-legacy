@@ -1,4 +1,4 @@
-/*$Id: GroovyInterpreter.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: GroovyInterpreter.java,v 1.3 2004/08/04 16:51:46 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,16 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.workflow.beans.v1.Step;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /** top level class from python prototype.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
@@ -73,16 +79,32 @@ public class GroovyInterpreter  {
         }
     }
     
-    public void updateStepStatus(String id, ExecutionPhase phase)  {
+    public void updateStepStatus(Step step, ExecutionPhase phase)  {
         if (phase.equals(ExecutionPhase.COMPLETED)) {
-            stateMap.setStatus(id,Status.FINISH);
+            stateMap.setStatus(step.getId(),Status.FINISH);
         } else if (phase.equals(ExecutionPhase.ERROR)) {
-            stateMap.setStatus(id,Status.ERROR);
+            stateMap.setStatus(step.getId(),Status.ERROR);
         } else { // nothing we care about.
             return;
         }
         
     }
+    /**
+     * @param step
+     * @param results
+     */
+    public void storeResults(Step step, ResultListType results) {
+        String id = step.getId();
+        // copy results into a more groovy-friendly datastructure (not to mention xstream)
+        Map resultsMap = new HashMap();
+        for (int i = 0; i < results.getResultCount(); i++) {
+            ParameterValue pval = results.getResult(i);
+            resultsMap.put(pval.getName(),pval.getValue());
+        }
+        
+        stateMap.getEnv(step.getId()).set(step.getResultVar(),resultsMap);
+        stateMap.setStatus(step.getId() + "-results",Status.FINISHED);
+    }    
     
     /**
      * @param jesInterface The jesInterface to set.
@@ -138,11 +160,16 @@ public class GroovyInterpreter  {
         buffer.append("]");
         return buffer.toString();
     }
+
+
 }
 
 
 /* 
 $Log: GroovyInterpreter.java,v $
+Revision 1.3  2004/08/04 16:51:46  nw
+added parameter propagation out of cea step call.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

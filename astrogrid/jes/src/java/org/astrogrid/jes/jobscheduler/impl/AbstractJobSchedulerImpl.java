@@ -1,4 +1,4 @@
-/*$Id: AbstractJobSchedulerImpl.java,v 1.4 2004/07/30 15:42:34 nw Exp $
+/*$Id: AbstractJobSchedulerImpl.java,v 1.5 2004/08/04 16:51:46 nw Exp $
  * Created on 10-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,7 +91,8 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
              
     }
 
-    /** initialize the job / workflow document, ready for execution */
+    /** initialize the job / workflow document, ready for execution 
+     * @see #scheduleNewJob(JobURN)*/
     protected abstract Workflow initializeJob(Workflow job) throws Exception;
 
     /** resume executioin of a job
@@ -122,6 +123,7 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
              StepExecutionRecord er =JesUtil.getLatestOrNewRecord(jobStep);             
              er.addMessage(Axis2Castor.convert(info));
              ExecutionPhase status = Axis2Castor.convert(info.getPhase());
+             // hook into updating status of job.
             updateStepStatus(job,jobStep, status);
               factory.updateJob(job);
                             
@@ -165,6 +167,7 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
         job.getJobExecutionRecord().setStatus(ExecutionPhase.ERROR);
     }
 
+    /** @see #resumeJob(JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.MessageType) */
     protected void updateStepStatus(Workflow wf,Step step, ExecutionPhase status) {
            // only update status if executioin record hasn't already passed this status.        
            StepExecutionRecord er = JesUtil.getLatestOrNewRecord(step); 
@@ -176,7 +179,8 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
              }           
     }   
     /**
-     * update the status of the entire job - involves rescanning tree in someway.
+     * update the status of the entire job - maybe by rescanning tree in someway.
+     * @see #resumeJob(JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.MessageType)
      */
     protected abstract void updateJobStatus(Workflow job);
     
@@ -199,7 +203,86 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
         result.setStatus(ExecutionPhase.INITIALIZING);
         return result;
     }
-        
+
+
+
+    /** Record results of a job step execution
+     * @see org.astrogrid.jes.jobscheduler.JobScheduler#reportResults(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.ResultListType)
+     */
+    public final void reportResults(JobIdentifierType id, ResultListType results) throws Exception {
+        logger.debug("reporting results of " + id.toString());
+        Workflow job = null;
+        try {
+            org.astrogrid.workflow.beans.v1.execution.JobURN urn = null;          
+            try {
+                 urn = JesUtil.extractURN(id);
+               job = factory.findJob(urn ) ;
+            } catch (NotFoundException e) {
+                logger.error("Could not find job for urn" + urn.getContent());
+                return;
+            }
+            String xpath = JesUtil.extractXPath(id);
+            Step jobStep = this.getStepForFragment(job,xpath);
+            if (jobStep == null) {
+                logger.error("Culd not find step " + xpath + " for urn " + urn.getContent());
+                return;
+            } 
+            // ok, found the job step this results are bound for.
+            // going to do two things now - record results as comment in the executionRecord.
+            StepExecutionRecord er =JesUtil.getLatestOrNewRecord(jobStep);       
+            MessageType resultsMessage = buildResultsMessage(results);
+            er.addMessage(resultsMessage);
+                        
+            // and then call the hook for extension classes to do something with the results too.            
+            org.astrogrid.applications.beans.v1.cea.castor.ResultListType castorResults =  Axis2Castor.convert(results);            
+            storeResults(job,jobStep,castorResults);          
+             factory.updateJob(job); // save our changes.
+             
+             // see if anything else can be run now.
+             // now go try run some more steps.
+             scheduleSteps(job);  
+             updateJobStatus(job);
+             factory.updateJob( job ) ;             // Update any changed details to the database
+        } catch (JesException e) {
+            // somthing badly wrong.
+            logger.fatal("report results - jes exception",e);
+        }
+    }
+    
+    /** store / do something with the results of a step
+     *  
+     * @param wf
+     * @param step
+     * @param results
+     * @see #reportResults(JobIdentifierType, ResultListType)
+     */
+    protected abstract void storeResults(Workflow wf,Step step,org.astrogrid.applications.beans.v1.cea.castor.ResultListType results);
+
+    /** build an execution message from the resultslist
+     * @param results
+     * @return
+     */
+    private MessageType buildResultsMessage(ResultListType results) {
+        MessageType resultsMessage = new MessageType();
+        resultsMessage.setLevel(LogLevel.INFO);
+        resultsMessage.setPhase(ExecutionPhase.COMPLETED);
+        resultsMessage.setSource("CEA");
+        resultsMessage.setTimestamp(new Date());   
+        StringWriter content = new StringWriter(); 
+        try {
+            Axis2Castor.convert(results).marshal(content);
+        } catch (CastorException e) { 
+            e.printStackTrace(new PrintWriter(content));
+        }
+
+        resultsMessage.setContent(content.toString());
+        return resultsMessage;
+    }
+    
+    /** do nothing-implementaiton - may be overridden.*/
+    public void notifyJobFinished(Workflow job) {   
+    }
+    
     /**
          * @see org.astrogrid.jes.jobscheduler.JobScheduler#abortJob(org.astrogrid.jes.types.v1.JobURN)
          */
@@ -246,87 +329,15 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
     }
     
 
-
-    /** Record results of a job step execution
-     * @see org.astrogrid.jes.jobscheduler.JobScheduler#reportResults(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.ResultListType)
-     */
-    public final void reportResults(JobIdentifierType id, ResultListType results) throws Exception {
-        logger.debug("reporting results of " + id.toString());
-        Workflow job = null;
-        try {
-            org.astrogrid.workflow.beans.v1.execution.JobURN urn = null;          
-            try {
-                 urn = JesUtil.extractURN(id);
-               job = factory.findJob(urn ) ;
-            } catch (NotFoundException e) {
-                logger.error("Could not find job for urn" + urn.getContent());
-                return;
-            }
-            String xpath = JesUtil.extractXPath(id);
-            Step jobStep = this.getStepForFragment(job,xpath);
-            if (jobStep == null) {
-                logger.error("Culd not find step " + xpath + " for urn " + urn.getContent());
-                return;
-            } 
-            // ok, found the job step this results are bound for.
-            // going to do two things now - record results as comment in the executionRecord.
-            StepExecutionRecord er =JesUtil.getLatestOrNewRecord(jobStep);       
-            MessageType resultsMessage = buildResultsMessage(results);
-            er.addMessage(resultsMessage);
-                        
-
-            // and then set results parameters to values in results message - nice, although some issues for looping, etc - only last set will be recorded.
-            // results shold be placed in the execution record somehow - but that's a todo for when we have loops.                        
-            org.astrogrid.applications.beans.v1.cea.castor.ResultListType castorResults =  Axis2Castor.convert(results);
-            ParameterValue[] resultValues =  results.getResult();
-            for (int i = 0; i < resultValues.length; i++) {
-                if (!resultValues[i].isIndirect()) { // only if its a direct parameter                    
-                    org.astrogrid.applications.beans.v1.parameters.ParameterValue stepParameter 
-                        = (org.astrogrid.applications.beans.v1.parameters.ParameterValue) jobStep.findXPathValue("tool/output/parameter[name='" + resultValues[i].getName() + "']");
-                    if (stepParameter != null && ! stepParameter.getIndirect()) {// only if we found one.., and we agree its indirect.
-                        logger.debug("setting value of " + stepParameter.getName() + " to " + resultValues[i].getValue());
-                        stepParameter.setValue(resultValues[i].getValue());
-                     }
-                } 
-            }
-            // wonder if we want to update step status too?
-             factory.updateJob(job); // save our changes.                                                                         
-        } catch (JesException e) {
-            // somthing badly wrong.
-            logger.fatal("report results - jes exception",e);
-        }
-    }
-
-    /** build an execution message from the resultslist
-     * @param results
-     * @return
-     */
-    private MessageType buildResultsMessage(ResultListType results) {
-        MessageType resultsMessage = new MessageType();
-        resultsMessage.setLevel(LogLevel.INFO);
-        resultsMessage.setPhase(ExecutionPhase.COMPLETED);
-        resultsMessage.setSource("CEA");
-        resultsMessage.setTimestamp(new Date());   
-        StringWriter content = new StringWriter(); 
-        try {
-            Axis2Castor.convert(results).marshal(content);
-        } catch (CastorException e) { 
-            e.printStackTrace(new PrintWriter(content));
-        }
-
-        resultsMessage.setContent(content.toString());
-        return resultsMessage;
-    }
-    
-    /** do nothing-implementaiton - may be overridden.*/
-    public void notifyJobFinished(Workflow job) {   
-    }
     
 }
 
 
 /* 
 $Log: AbstractJobSchedulerImpl.java,v $
+Revision 1.5  2004/08/04 16:51:46  nw
+added parameter propagation out of cea step call.
+
 Revision 1.4  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 
