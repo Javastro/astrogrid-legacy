@@ -14,22 +14,47 @@
 <textarea name="query" rows="20" cols="60">
       
      
-&lt;Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql"&gt;
-   
-     
-&lt;!-- enter query here --&gt;
-   
-     
-&lt;/Select&gt;
-   
+&lt;Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xmlns="http://tempuri.org/adql"&gt;
+   &lt;SelectionAll /&gt;   
+   &lt;TableClause&gt;
+      &lt;FromClause&gt;
+         &lt;TableReference&gt;
+            &lt;Table&gt;
+               &lt;Name&gt;first&lt;/Name&gt;
+               &lt;AliasName&gt;f&lt;/AliasName&gt;
+            &lt;/Table&gt;
+         &lt;/TableReference&gt;
+      &lt;/FromClause&gt;
+      &lt;WhereClause&gt;
+         &lt;PredicateSearch&gt;
+            &lt;ComparisonPred&gt;
+               &lt;FirstExpr xsi:type="ColumnExpr"&gt;
+                  &lt;SingleColumnReference&gt;
+                     &lt;TableName&gt;f&lt;/TableName&gt;
+                     &lt;Name&gt;DECL&lt;/Name&gt;
+                  &lt;/SingleColumnReference&gt;
+               &lt;/FirstExpr&gt;
+               &lt;Compare&gt;&gt;&lt;/Compare&gt;
+               &lt;SecondExpr xsi:type="AtomExpr"&gt;
+                  &lt;Value&gt;
+                     &lt;NumberLiteral&gt;
+                        &lt;ApproxNum&gt;
+                           &lt;Value&gt;59.9&lt;/Value&gt;
+                        &lt;/ApproxNum&gt;
+                     &lt;/NumberLiteral&gt;
+                  &lt;/Value&gt;
+               &lt;/SecondExpr&gt;
+            &lt;/ComparisonPred&gt;
+         &lt;/PredicateSearch&gt;
+      &lt;/WhereClause&gt;
+   &lt/TableClause&gt;
+&lt/Select>
 </textarea>
+<br/>
 <input type="submit" value="Run Query">
 </input>   
 </form>
-
-<p>
-You can cut and paste from a <a href="first.adql>sample query</a>.
-</p>   
 
 </body>
  
