@@ -11,8 +11,6 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-// import org.astrogrid.datacenter.datasetagent.*;
-// import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
 import java.text.MessageFormat ;

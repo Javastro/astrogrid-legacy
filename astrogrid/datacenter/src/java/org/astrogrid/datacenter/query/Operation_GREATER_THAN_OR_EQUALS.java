@@ -11,17 +11,15 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-// import org.astrogrid.datacenter.datasetagent.*;
-// import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
 /**
  * The <code>Operation_GREATER_THAN_OR_EQUALS</code> class represents operations within an 
  * SQL query string.
  * <p>
- * Some example text. For example:
+ * For example:
  * <p><blockquote><pre>
- *     
+ *     >=
  * </pre></blockquote>
  * <p>
  *

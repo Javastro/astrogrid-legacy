@@ -17,9 +17,9 @@ import org.w3c.dom.* ;
  * The <code>Operation_LESS_THAN</code> class represents operations within an 
  * SQL query string.
  * <p>
- * Some example text. For example:
+ * For example:
  * <p><blockquote><pre>
- *     
+ *     <    
  * </pre></blockquote>
  * <p>
  *

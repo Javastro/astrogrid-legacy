@@ -21,14 +21,19 @@ import org.w3c.dom.* ;
  * The <code>Operation_GROUP_BY</code> class represents operations within an 
  * SQL query string.
  * <p>
- * Some example text. For example:
+ * The GROUP BY clause takes a table derived from the <from clause>, and the
+ * <where clause> if specified, and produces a 'grouped' table.
+ * <p>
+ * For example:
  * <p><blockquote><pre>
- *     
+ * SELECT *
+ *     FROM USNOB
+ * GROUP BY COLUMN_ONE, COLUMN_TWO
  * </pre></blockquote>
  * <p>
  *
- * @author  Jeff Lusted
  * @author  Phill Nicolson
+ * @author  Jeff Lusted
  * @version 1.0 27-May-2003
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2
@@ -42,7 +47,7 @@ public class Operation_GROUP_BY extends Operation {
 	private static Logger 
 		logger = Logger.getLogger( Operation_GROUP_BY.class ) ;		
 	
-	// TemplateS for the SQL GROUP BY clause   (JBL Note: crude but effective)
+	// TemplateS for the SQL GROUP BY clause   (PJN Note: crude but effective)
 	public static final String []
 		TEMPLATES   =  { " {0} "
 					   , " {0}, {1} "
@@ -77,7 +82,9 @@ public class Operation_GROUP_BY extends Operation {
 			for( int i = 0; i < operands.size(); i++ ) {
 				inserts[i] = ((Operand)operands.get( i )).toSQLString() ;
 		}
-	retValue = MessageFormat.format( this.getTemplate(), inserts ) ;   
+		
+	    retValue = MessageFormat.format( this.getTemplate(), inserts ) ;   
+	
 	}
 	finally {
 	    if( TRACE_ENABLED ) logger.debug( "Operation_GROUP_BY.toSQLString(): exit") ;         	        

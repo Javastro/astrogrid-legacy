@@ -11,8 +11,6 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-// import org.astrogrid.datacenter.datasetagent.*;
-// import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
 import java.text.MessageFormat ;
@@ -22,9 +20,14 @@ import java.text.MessageFormat ;
  * The <code>Operation_BETWEEN</code> class represents operation within an 
  * SQL query string.
  * <p>
- * Some example text. For example:
+ * The BETWEEN predicate tests if the values of one <b>row value constructor</b>
+ * lie between the values of two other value expressions.
+ * <p>
+ * For example:
  * <p><blockquote><pre>
- *     
+ *         SELECT URA, UDEC, NDETS 
+ *           FROM USNOB 
+ *         WHERE URA BETWEEN 234.56 AND 234.6
  * </pre></blockquote>
  * <p>
  *
@@ -64,7 +67,7 @@ public class Operation_BETWEEN extends Operation {
 		   retValue = null ; 	
 		
 		Object []
-           inserts = new Object[3] ;   // Only three operands are allowed for a cone search
+           inserts = new Object[3] ;   // Only three operands are allowed
         
         try {   
            inserts[0] = fieldSubject.toSQLString() ;

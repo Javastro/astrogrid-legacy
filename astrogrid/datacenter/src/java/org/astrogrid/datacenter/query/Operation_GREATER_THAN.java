@@ -21,7 +21,7 @@ import org.w3c.dom.* ;
  * <p>
  * Some example text. For example:
  * <p><blockquote><pre>
- *     
+ *     >
  * </pre></blockquote>
  * <p>
  *

@@ -11,17 +11,15 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-// import org.astrogrid.datacenter.datasetagent.*;
-// import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
 /**
  * The <code>Operation_EQUALS</code> class represents operations within an 
  * SQL query string.
  * <p>
- * Some example text. For example:
+ * For example:
  * <p><blockquote><pre>
- *     
+ * 
  * </pre></blockquote>
  * <p>
  *
@@ -40,7 +38,7 @@ public class Operation_EQUALS extends Operation_MagnitudeComparison {
 		logger = Logger.getLogger( Operation_EQUALS.class ) ;
 		
 	
-	// Template for the SQL LESS_THAN query   
+	// Template for the SQL EQUALS query   
 	public static final String
 		TEMPLATE = "( {0} = {1} )" ;
 		

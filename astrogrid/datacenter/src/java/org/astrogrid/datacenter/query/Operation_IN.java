@@ -22,9 +22,17 @@ import java.text.MessageFormat ;
  * The <code>Operation_IN</code> class represents operation within an 
  * SQL query string.
  * <p>
- * Some example text. For example:
+ * The IN predicate tests if a row, defined by a <b>row value constructor</b>, exists
+ * in a table defined by a subquery.
+ * <p>
+ * For example:
  * <p><blockquote><pre>
- *     
+ *     SELECT COLUMN_ONE, COLUMN_TWO
+ *       FROM USNOB..USNOB
+ *     WHERE COLUMN_THREE IN
+ *          (SELECT COLUMN_FOUR 
+ *             FROM USNOB..USNOB 
+ *           WHERE COLUMN_FIVE EQUALS COLUMN_SIX)
  * </pre></blockquote>
  * <p>
  *

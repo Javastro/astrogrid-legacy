@@ -113,10 +113,11 @@ public class From {
         	        table = null ;
         	
         		if ( catalog.getNumberTables() <= 0 ) {  // no table specified assume owner and table name are same
-        			buffer.append( catalog.getName() );
-        			buffer.append( DatasetAgent.getProperty( QUERY_FROM_SEPARATOR ) ); //Bug #15
-        			buffer.append( catalog.getName() );
-        			buffer.append( ", " );
+        			buffer
+        			    .append( catalog.getName() )
+        			    .append( DatasetAgent.getProperty( QUERY_FROM_SEPARATOR ) ) //Bug #15
+        			    .append( catalog.getName() )
+        			    .append( ", " ) ;
         		}
         	
         		else {
@@ -128,10 +129,11 @@ public class From {
 			    		
 			    		table = (Table)iterator2.next() ;
 			    		
-					    buffer.append( catalog.getName() );
-				    	buffer.append(  DatasetAgent.getProperty( QUERY_FROM_SEPARATOR ) ); //Bug #15
-				        buffer.append( table.getName() );				
-				        buffer.append( ", " );
+					    buffer
+					        .append( catalog.getName() )
+				    	    .append(  DatasetAgent.getProperty( QUERY_FROM_SEPARATOR ) ) //Bug #15
+				            .append( table.getName() )				
+				            .append( ", " ) ;
 			           		
 					} // end of inner while		
         		}
