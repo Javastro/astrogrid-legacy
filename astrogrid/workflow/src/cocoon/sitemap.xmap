@@ -116,48 +116,33 @@
    		<map:serialize type="html" />
    	   </map:act>
        </map:match>
+       
       
-      <!-- Workflow: List page -->      
-   	  <map:match pattern="agworkflow-list.html" >
-   	  <map:act type="astrogrid-workflow" >
-   	     <map:parameter name="user-param" value="user" />
-   		 <map:generate src="workflow/xml/workflow-list.xml" />
-   		 <map:transform src="workflow/xsl/workflow-list.xsl" >
-   		 	<map:parameter name="user" value="{user}" />
-   		 	<map:parameter name="community" value="{community}" />
+      
+     <!-- Workflow: Job Monitor/ Administer Jobs page -->           
+      <!-- display and call action -->
+   	  <map:match pattern="agjes-administer.html" >
+   	  <map:act type="astrogrid-jes">
+   	    <map:parameter name="user-param" value="user" />
+   	    <map:parameter name="community" value="community" />
+   		<map:generate src="workflow/xsp/job-list.xsp" type="serverpages" />  
+   		<map:transform src="workflow/xsl/job-list.xsl" >   		
    		    <map:parameter name="action" value="{action}" />
-   			<map:parameter name="confirm" value="{confirm}" />
    		 </map:transform>
-   	   <map:serialize type="html" />
-   	   </map:act>
-       </map:match>
-   
-   <!-- Workflow: Detail page -->
-   <map:match pattern="agworkflow-detail.html" >
-   	<map:act type="astrogrid-workflow" >
-   		<map:parameter name="user-param" value="user" />
-   		<map:generate src="workflow/xsp/workflow-detail.xsp" type="serverpages" label="000, 001"/>  
-   		<map:transform src="workflow/xsl/workflow-detail.xsl" label="002">
-   			<map:parameter name="action" value="{action}" />
-   			<map:parameter name="confirm" value="{confirm}" /> 
-   		</map:transform>
         <!-- Wrap the page in our HTML template -->
-        <map:transform src="common/xsl/astrogrid.xsl" label="003">
-           <!-- Add the rest of the page names -->
-               <map:parameter name="current-page"  value="agworkflow-detail.html"/>
-               <map:parameter name="query-page"    value="agdataquery.html"/>
-               <map:parameter name="myspace-page"  value="agmyspace.html"/>
-               <map:parameter name="home-page"     value="agindex.html"/>
-               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
-               <map:parameter name="registry-page" value="agregistry.html"/>
-               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
-               <map:parameter name="tools-page"    value="agtools.html"/>
-               <map:parameter name="logout-page"   value="aglogout.html"/>
+        <map:transform src="common/xsl/astrogrid.xsl" >       
         </map:transform>
        <!-- Serialize as HTML -->   		
    		<map:serialize type="html" />
-   	</map:act> 
-   </map:match>       
+   	   </map:act>
+       </map:match>
+       
+       
+       
+       
+       
+       
+       
  
    
    <!-- ========================= Site images ============================== -->

@@ -54,7 +54,8 @@
 					<xsp:element name="name"><xsp:expr>job.getName()</xsp:expr></xsp:element>
 					<xsp:element name="description"><xsp:expr>job.getDescription()</xsp:expr></xsp:element>
 					<xsp:element name="time"><xsp:expr>job.getTimestamp()</xsp:expr></xsp:element>
-					<xsp:element name="status"><xsp:expr>job.getStatus()</xsp:expr></xsp:element>															
+					<xsp:element name="status"><xsp:expr>job.getStatus()</xsp:expr></xsp:element>	
+					<xsp:element name="jobid"><xsp:expr>job.getJobid()</xsp:expr></xsp:element>															
 				</xsp:element>
 			</content>
 		
