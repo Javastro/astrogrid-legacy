@@ -15,7 +15,7 @@
       <item name="Ask Adql/Sql Query" href="adqls-form.html" />
       <item name="Ask Adql/Xml Query" href="adqlx-form.html" />
       <item name="Ask Adql/Url Query" href="adqls-form.html" />
-      <item name="Translate ADQL/SQL to XML" href="adql-translator.jsp" />
+      <item name="Translate ADQL/SQL to XML" href="translateAdql.jsp" />
       <item name="Examples" href="adql" />
       <item name="XML Schema" href="schema.html" />
    </menu>
