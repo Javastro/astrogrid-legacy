@@ -351,13 +351,7 @@ public class JobFactoryImpl implements JobFactory {
 		Statement   
 		   statement = null ;
 		ResultSet
-		   rs = null ;
-        SimpleDateFormat
-           dateFormat = new SimpleDateFormat( "yyyy-MM-dd hh:mm:ss:SSS" ) ;
-        String
-           stringDate = null ;
-        Date
-           submissionDate = null ;           
+		   rs = null ;       
     	   
 		try {
 
@@ -386,22 +380,8 @@ public class JobFactoryImpl implements JobFactory {
 				
 				job.setId( rs.getString( COL_JOBURN ) ) ;
 				job.setName( rs.getString( COL_JOBNAME ) ) ;
-
-                stringDate = rs.getString( COL_SUBMITTIMESTAMP ) ;
-                if( stringDate != null ) {
-                    try { 
-                        submissionDate = dateFormat.parse( stringDate ); }
-                    catch( ParseException pex ) { 
-                        submissionDate = new Date(); 
-                        logger.error( "Malformed submission date" ) ;
-                    }   
-                }
-                else {
-                    submissionDate = new Date() ;
-                    logger.error( "Missing submission date" ) ;
-                }
-                job.setDate( submissionDate ) ;
-                
+                job.setStatus( rs.getString( COL_STATUS ) ) ;
+                job.setDate( this.formatDate( rs.getString( COL_SUBMITTIMESTAMP ) ) ) ;
 				job.setUserId( rs.getString( COL_USERID ) ) ;
 				job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
 				job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
@@ -463,7 +443,7 @@ public class JobFactoryImpl implements JobFactory {
 
             logger.debug( "communitySnippet: " + communitySnippet ) ;
             
-            this.checkPermissions( AUTHORIZATION_RESOURCE_JOB, AUTHORIZATION_ACTION_EDIT, communitySnippet ) ;
+//            this.checkPermissions( AUTHORIZATION_RESOURCE_JOB, AUTHORIZATION_ACTION_EDIT, communitySnippet ) ;
 
             Object []
                inserts = new Object[3] ;
@@ -493,10 +473,12 @@ public class JobFactoryImpl implements JobFactory {
                 
                     job.setId( rs.getString( COL_JOBURN ) ) ;
                     job.setName( rs.getString( COL_JOBNAME ) ) ;
-                    job.setDate( rs.getTimestamp( COL_SUBMITTIMESTAMP ) ) ;
+                    job.setStatus( rs.getString( COL_STATUS ) ) ;
+                    job.setDate( this.formatDate( rs.getString( COL_SUBMITTIMESTAMP ) ) ) ;
                     job.setUserId( rs.getString( COL_USERID ) ) ;
                     job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
                     job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
+                    job.setDescription( rs.getString( COL_DESCRIPTION ) ) ;
                     job.setDirty( false ) ;
                     
                     findJobSteps( job ) ;
@@ -569,10 +551,12 @@ public class JobFactoryImpl implements JobFactory {
 				
 				    job.setId( rs.getString( COL_JOBURN ) ) ;
 				    job.setName( rs.getString( COL_JOBNAME ) ) ;
-				    job.setDate( rs.getTimestamp( COL_SUBMITTIMESTAMP ) ) ;
+                    job.setStatus( rs.getString( COL_STATUS ) ) ;
+				    job.setDate( this.formatDate( rs.getString( COL_SUBMITTIMESTAMP ) ) ) ;
 				    job.setUserId( rs.getString( COL_USERID ) ) ;
 				    job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
 				    job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
+                    job.setDescription( rs.getString( COL_DESCRIPTION ) ) ;
 				    job.setDirty( false ) ;
 				    
 					findJobSteps( job ) ;
@@ -977,6 +961,7 @@ public class JobFactoryImpl implements JobFactory {
                                                  , SUBCOMPONENT_NAME
 				                                 , jobStep.getParent().getId()
 				                                 , jobStep.getStepNumber() ) ;
+                logger.error( message.toString() ) ;
 				throw new NotFoundException( message ) ;
 			}
 			else {
@@ -996,6 +981,7 @@ public class JobFactoryImpl implements JobFactory {
                                                      , SUBCOMPONENT_NAME
 											         , jobStep.getParent().getId()
                                                      , jobStep.getStepNumber() ) ;
+                    logger.error( message.toString() ) ;
 					throw new DuplicateFoundException( message ) ;
 				}
 
@@ -1479,6 +1465,35 @@ public class JobFactoryImpl implements JobFactory {
         }
              
     } // end of checkPermission()
+    
+    
+    private Date formatDate( String dateString ) {
+        if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.formatDate() entry" ) ;  
+         
+        final SimpleDateFormat
+            dateFormat = new SimpleDateFormat( "yyyy-MM-dd hh:mm:ss.SSS" ) ;
+        Date
+            retDate = null ;           
+           
+        try {         
+            logger.debug( "stringDate: " + dateString ) ;
+            retDate = dateFormat.parse( dateString ); 
+        }
+        catch( ParseException pex ) { 
+            retDate = new Date(); 
+            logger.error( "Malformed date" ) ;
+        } 
+        catch( NullPointerException npex ) {
+            retDate = new Date(); 
+            logger.error( "Missing date" ) ;  
+        }
+        finally {
+             if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.formatDate() exit" ) ;  
+        }        
+        
+        return retDate ;   
+                 
+    } // end of formatDate()
         
                
 } // end of class JobFactoryImpl

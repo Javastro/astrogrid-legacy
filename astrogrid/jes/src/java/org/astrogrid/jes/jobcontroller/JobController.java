@@ -391,7 +391,8 @@ public class JobController {
             AstroGridMessage
                detailMessage = jex.getAstroGridMessage() ,  
                generalMessage = new AstroGridMessage( ASTROGRIDERROR_ULTIMATE_LISTFAILURE
-                                                    , this.getComponentName() ) ;
+                                                    , this.getComponentName()
+                                                    , userid + "@" + community ) ;
             logger.error( generalMessage.toString() ) ;
             response = formatListErrorResponse( userid, community, detailMessage ) ;
                               
@@ -467,10 +468,10 @@ public class JobController {
                 
                 job = (Job)iterator.next() ;
                 inserts[0] = job.getName() ;                 
-                inserts[1] = job.getId() ; //JBL What, no description !!!!!!!!!
+                inserts[1] = job.getDescription() ; 
                 inserts[2] = job.getStatus() ;           
-                inserts[2] = job.getDate() ;
-                inserts[3] = job.getId() ;
+                inserts[3] = job.getDate() ;
+                inserts[4] = job.getId() ;
                 
                 rBuffer.append( MessageFormat.format( JobListResponseDD.JOB_TEMPLATE, inserts ) ) ;
                  
