@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+    "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+    
+<!--
+This file is an enhanced version of the web-application deployment
+descriptor supplied in Globus Toolkit 3.0.2 (GT3.0.2).  It is intended 
+for use with GT3.0.2 and especially in the case where GT3.0.2 is 
+repackaged in a .war file.
+
+The changes from the version supplied with GT3.0.2 are as follows:
+
+ - The DTD declaration is corrected to match Servlet specification
+   2.2: web-app_2.2.dtd is corrected to web-app_2_2.dtd.
+   
+ - The values of the ogsiLocation and schemaContext parameters contain
+   a token for which a value needs to be substituted. The token is
+   @web.app.name@ and should be replaced with the name of the web
+   application; ogsa is the traditional value.  If this substitution
+   is not made, then this file is not valid for use with GT3.
+ 
+ - The OGSI/Globus schema are declared to be inside the web application
+   holding GT3, instead of in the ROOT web application.
+   
+ - MIME mappings are added for WSDL, GWSDL and XSD.
+-->
+
+<web-app>
+  <display-name>OGSI Container Servlet</display-name>
+  
+  <servlet>
+    <servlet-name>OgsiServlet</servlet-name>
+    <display-name>OGSI Container Servlet</display-name>
+    <servlet-class>
+        org.globus.ogsa.server.OgsiServlet
+    </servlet-class>
+    <init-param>
+        <param-name>ogsiLocation</param-name>
+        <param-value>/@web.app.name@/services/</param-value>
+    </init-param>
+        <init-param>
+        <param-name>schemaContext</param-name>
+        <param-value>@web.app.name@</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>AdminServlet</servlet-name>
+    <display-name>Axis Admin Servlet</display-name>
+    <servlet-class>
+        org.apache.axis.transport.http.AdminServlet
+    </servlet-class>
+    <load-on-startup>100</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>OgsiServlet</servlet-name>
+    <url-pattern>/servlet/AxisServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>OgsiServlet</servlet-name>
+    <url-pattern>*.jws</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>OgsiServlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AdminServlet</servlet-name>
+    <url-pattern>/servlet/AdminServlet</url-pattern>
+  </servlet-mapping>
+  
+  <mime-mapping>
+    <extension>wsdl</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+  
+  <mime-mapping>
+    <extension>gwsdl</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+  
+  <mime-mapping>
+    <extension>xsd</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+
+  <welcome-file-list id="WelcomeFileList_1">
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+</web-app>

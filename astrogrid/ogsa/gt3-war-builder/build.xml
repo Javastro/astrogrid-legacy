@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+
+<project name="$product.name" basedir="." default="build">
+  
+  <!-- This file is for local adjustments.  
+       It must set ogsa.home and web.app.name.
+       It may set other properties. -->
+  <property file="build.properties"/>
+   
+  <!-- This file is for semi-stable settings fixed by the 
+       OGSA implementation. -->
+  <property file="${ogsa.home}/ogsa.properties"/>
+  
+  <!-- These are paths within the web-app as assembled
+       in this product's build-tree. -->
+  <property name="web.app.dir"
+            value="build/webapps/${web.app.name}"/>
+  <property name="web.inf.dir"
+            value="build/webapps/${web.app.name}/WEB-INF"/>
+  <property name="schema.dir"
+            value="build/webapps/${web.app.name}/schema"/>
+
+
+
+  <!-- Assemble the parts for the WAR into a file-tree. -->
+  <target name="tree">
+    
+    <mkdir dir="${web.app.dir}"/>
+    <mkdir dir="${web.inf.dir}"/>
+    <mkdir dir="${schema.dir}"/>
+    
+    <copy todir="${schema.dir}">
+      <fileset dir="${ogsa.home}/schema"
+               casesensitive="yes">
+        <exclude name="**/CVS"/>
+      </fileset>
+    </copy>
+    
+    <copy todir="${web.inf.dir}/lib">
+      <fileset dir="${ogsa.home}/lib">
+        <include name="**/*.jar"/>
+        <exclude name="**/servlet.jar"/>
+        <exclude name="**/xalan.jar"/>
+        <include name="**/*.properties"/>
+        <include name="**/*.LICENCE"/>
+      </fileset>
+    </copy>
+    
+    <copy file="${ogsa.home}/server-config.wsdd"
+          todir="${web.inf.dir}"/>
+          
+    <copy todir="${web.inf.dir}/classes">
+      <fileset dir="${ogsa.home}/webapps/ogsa/WEB-INF/classes">
+        <include name="**.*"/>
+      </fileset>
+    </copy>
+    
+    <copy file="${ogsa.home}/webapps/ogsa/index.html"
+          todir="${web.app.dir}"/>
+          
+    <!-- web.xml comes from this product's source-tree, not directly
+         from GT3, because an improved version is needed. web.xml
+         goes to the buikd directory, not to ${web.inf.dir} because
+         ant objects if it goes to the latter place. web.xml is
+         only copied at this stage in order to activate the filterset. -->
+    <copy file="src/web.xml"
+          todir="build">
+      <filterset>
+        <filter token="web.app.name"
+                value="${web.app.name}"/>
+      </filterset>
+    </copy>
+    
+  </target> 
+   
+   
+  <!-- Build a WAR containing GT3. -->
+  <target name="war">
+    <war destfile="build/${web.app.name}.war"
+         basedir="${web.app.dir}"
+         webxml="build/web.xml"
+         update="true"/>
+  </target>
+  
+  
+  <!-- Build this product. -->
+  <target name="build">
+    <antcall target="clean"/>
+    <antcall target="tree"/>
+    <antcall target="war"/>
+  </target>
+  
+  
+  <!-- Remove all files produced in the build.
+       This includes the WAR itself. -->
+  <target name="clean">
+    <delete dir="build" includeEmptyDirs="true"/>
+  </target>
+  
+  
+  <!-- Remove all files that are not part of this product.
+       This includes user-supplied files such as build.properties. -->
+  <target name="distclean">
+    <delete dir="build" includeEmptyDirs="true"/>
+    <delete file="build.properties"/>
+  </target>  
+
+</project>
