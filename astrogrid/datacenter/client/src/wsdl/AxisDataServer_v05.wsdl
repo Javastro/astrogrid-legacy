@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+         targetNamespace="http://astrogrid.org/datacenter/axis/v05/AxisDataServer"
+         xmlns="http://schemas.xmlsoap.org/wsdl/"
+         xmlns:apachesoap="http://xml.apache.org/xml-soap"
+         xmlns:impl="http://astrogrid.org/datacenter/axis/v05/AxisDataServer"
+         xmlns:intf="http://astrogrid.org/datacenter/axis/v05/AxisDataServer"
+         xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:tns1="http://community.astrogrid.org"
+         xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+         xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <wsdl:types>
+      <schema targetNamespace="http://community.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+         <complexType name="QueryStatus">
+            <sequence>
+               <element name="QueryID" nillable="true" type="xsd:string"/>
+               <element name="State" nillable="true" type="xsd:string"/>
+               <element name="individual" nillable="true" type="xsd:string"/>
+               <element name="ivorn" nillable="true" type="xsd:string"/>
+               <element name="token" nillable="true" type="xsd:string"/>
+            </sequence>
+         </complexType>
+      </schema>
+   </wsdl:types>
+
+  <wsdl:message name="getQueryStatusRequest">
+    <wsdl:part name="queryId" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="getQueryStatusResponse">
+    <wsdl:part name="getQueryStatusReturn" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="getMetadataRequest">
+  </wsdl:message>
+  <wsdl:message name="getMetadataResponse">
+    <wsdl:part name="getMetadataReturn" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="askSqlRequest">
+    <wsdl:part name="sql" type="xsd:string"/>
+    <wsdl:part name="requestedFormat" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="askSqlResponse">
+    <wsdl:part name="askSqlReturn" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="submitAdqlQueryRequest">
+    <wsdl:part name="query" type="xsd:string"/>
+    <wsdl:part name="resultsTarget" type="xsd:string"/>
+    <wsdl:part name="requestedFormat" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="submitAdqlQueryResponse">
+    <wsdl:part name="submitAdqlQueryReturn" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="askConeRequest">
+    <wsdl:part name="ra" type="xsd:double"/>
+    <wsdl:part name="dec" type="xsd:double"/>
+    <wsdl:part name="radius" type="xsd:double"/>
+    <wsdl:part name="requestedFormat" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="askConeResponse">
+    <wsdl:part name="askConeReturn" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="throwFaultResponse">
+  </wsdl:message>
+  <wsdl:message name="throwFaultRequest">
+  </wsdl:message>
+
+  <wsdl:message name="abortQueryRequest">
+    <wsdl:part name="queryId" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="abortQueryResponse">
+  </wsdl:message>
+
+  <wsdl:message name="submitQueryRequest">
+    <wsdl:part name="query" type="xsd:anyType"/>
+    <wsdl:part name="resultsTarget" type="xsd:anyType"/>
+    <wsdl:part name="requestedFormat" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="submitQueryResponse">
+    <wsdl:part name="submitQueryReturn" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="askAdqlQueryRequest">
+    <wsdl:part name="query" type="xsd:string"/>
+    <wsdl:part name="requestedFormat" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="askAdqlQueryResponse">
+    <wsdl:part name="askAdqlQueryReturn" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="AxisDataServer_v05">
+    <wsdl:operation name="getMetadata" parameterOrder="ignored">
+      <wsdl:input message="impl:getMetadataRequest" name="getMetadataRequest"/>
+      <wsdl:output message="impl:getMetadataResponse" name="getMetadataResponse"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="askAdqlQuery" parameterOrder="query requestedFormat">
+      <wsdl:input message="impl:askAdqlQueryRequest" name="askAdqlQueryRequest"/>
+      <wsdl:output message="impl:askAdqlQueryResponse" name="askAdqlQueryResponse"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="askSql" parameterOrder="sql requestedFormat">
+      <wsdl:input message="impl:askSqlRequest" name="askSqlRequest"/>
+      <wsdl:output message="impl:askSqlResponse" name="askSqlResponse"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="askCone" parameterOrder="ra dec radius requestedFormat">
+      <wsdl:input message="impl:askConeRequest" name="askConeRequest"/>
+      <wsdl:output message="impl:askConeResponse" name="askConeResponse"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="submitAdqlQuery" parameterOrder="query resultsTarget requestedFormat">
+      <wsdl:input message="impl:submitAdqlQueryRequest" name="submitAdqlQueryRequest"/>
+      <wsdl:output message="impl:submitAdqlQueryResponse" name="submitAdqlQueryResponse"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="abortQuery" parameterOrder="queryId">
+      <wsdl:input message="impl:abortQueryRequest" name="abortQueryRequest"/>
+      <wsdl:output message="impl:abortQueryResponse" name="abortQueryResponse"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="getQueryStatus" parameterOrder="queryId">
+      <wsdl:input message="impl:getQueryStatusRequest" name="getQueryStatusRequest"/>
+      <wsdl:output message="impl:getQueryStatusResponse" name="getQueryStatusResponse"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="submitQuery" parameterOrder="user query resultsTarget requestedFormat listener">
+      <wsdl:input message="impl:submitQueryRequest" name="submitQueryRequest"/>
+      <wsdl:output message="impl:submitQueryResponse" name="submitQueryResponse"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="throwFault">
+      <wsdl:input message="impl:throwFaultRequest" name="throwFaultRequest"/>
+      <wsdl:output message="impl:throwFaultResponse" name="throwFaultResponse"/>
+    </wsdl:operation>
+
+  </wsdl:portType>
+
+  <wsdl:binding name="AxisDataServerV05SoapBinding" type="impl:AxisDataServer_v05">
+    <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+    <wsdl:operation name="getMetadata">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getMetadataRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://v05.service.datacenter.astrogrid.org" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="getMetadataResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/SimpleAxisDataServer.jws" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="askAdqlQuery">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="askAdqlQueryRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://v05.service.datacenter.astrogrid.org" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="askAdqlQueryResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/SimpleAxisDataServer.jws" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="askSql">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="askSqlRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://v05.service.datacenter.astrogrid.org" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="askSqlResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/SimpleAxisDataServer.jws" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="askCone">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="askConeRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://v05.service.datacenter.astrogrid.org" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="askConeResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/SimpleAxisDataServer.jws" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="submitAdqlQuery">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="submitAdqlQueryRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://v05.service.datacenter.astrogrid.org" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="submitAdqlQueryResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/SimpleAxisDataServer.jws" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="abortQuery">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="abortQueryRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://v05.service.datacenter.astrogrid.org" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="abortQueryResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/SimpleAxisDataServer.jws" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getQueryStatus">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getQueryStatusRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://v05.service.datacenter.astrogrid.org" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="getQueryStatusResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/SimpleAxisDataServer.jws" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="submitQuery">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="submitQueryRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://service.datacenter.astrogrid.org" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="submitQueryResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/SimpleAxisDataServer.jws" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="throwFault">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="throwFaultRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://service.datacenter.astrogrid.org" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="throwFaultResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/SimpleAxisDataServer.jws" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+
+  <wsdl:service name="AxisDataServer_v05">
+    <wsdl:port binding="impl:AxisDataServerV05SoapBinding" name="AxisDataServer_v05">
+      <wsdlsoap:address location="http://localhost:8080/axis/AxisDataServer_v05"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
+
