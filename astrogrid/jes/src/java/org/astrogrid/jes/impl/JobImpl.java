@@ -83,7 +83,7 @@ public class JobImpl extends Job {
 	 
 	   
 	public JobImpl( Document submitDoc, String submitXML ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "JobImpl(): entry") ;  
+		if( TRACE_ENABLED ) logger.debug( "JobImpl(Document,String): entry") ;  
 		 	   
 		try {
 			
@@ -91,14 +91,18 @@ public class JobImpl extends Job {
 			date = new Date() ;
 			
 			Element
-			   element = submitDoc.getDocumentElement() ;	
+			   element = submitDoc.getDocumentElement() ;
 			   
 			name = element.getAttribute( SubmissionRequestDD.JOB_NAME_ATTR ) ;
+            logger.debug( "name: " + name ) ;
 			   		   
 			NodeList
 			   nodeList = element.getChildNodes() ; 
+            logger.debug( "nodeList.getLength(): " + nodeList.getLength() ) ;    
+               
 			    		   
-			for( int i=0 ; i < nodeList.getLength() ; i++ ) {			
+			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+                			
 				if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
 					
 					element = (Element) nodeList.item(i) ;
@@ -106,16 +110,22 @@ public class JobImpl extends Job {
 					if ( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {
 //						name = element.getAttribute( SubmissionRequestDD.JOBSTEP_NAME_ATTR ).trim() ;
                         // We must be certain these appear in StepNumber order!
-						jobSteps.add( new JobStep( this, element ) ) ;   
+                        JobStep
+                            jobstep = new JobStep( this, element ) ;
+						jobSteps.add( jobstep ) ;
+                        logger.debug( "JobStep name: " + jobstep.getName() ) ;   
 					}					
 					else if (element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT ) ) {					 	
 						userId = element.getFirstChild().getNodeValue().trim();
+                        logger.debug( "userId: " + userId ) ;
 					}
 					else if (element.getTagName().equals( SubmissionRequestDD.COMMUNITY_ELEMENT ) ) {					 	
 					    community = element.getFirstChild().getNodeValue().trim();
+                        logger.debug( "community: " + community ) ;
 				 	}
                     else if (element.getTagName().equals( SubmissionRequestDD.DESCRIPTION_ELEMENT ) ) {                        
                         description = element.getFirstChild().getNodeValue().trim();
+                        logger.debug( "description: " + description ) ;
                     }
 					
 				} // end if
@@ -134,7 +144,7 @@ public class JobImpl extends Job {
 			}
 		}
 		finally {
-			if( TRACE_ENABLED ) logger.debug( "JobImpl(): exit") ;   	
+			if( TRACE_ENABLED ) logger.debug( "JobImpl(Document,String): exit") ;   	
 		}
 		
 	} // end of JobImpl()

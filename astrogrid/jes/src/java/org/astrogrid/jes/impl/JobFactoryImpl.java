@@ -273,7 +273,7 @@ public class JobFactoryImpl implements JobFactory {
 
             logger.debug( "communitySnippet: " + communitySnippet ) ;
             
-            this.checkPermissions( AUTHORIZATION_RESOURCE_JOB, AUTHORIZATION_ACTION_EDIT, communitySnippet ) ;
+//            this.checkPermissions( AUTHORIZATION_RESOURCE_JOB, AUTHORIZATION_ACTION_EDIT, communitySnippet ) ;
 
 			pStatement = ((JobImpl)job.getImplementation()).getPreparedStatement() ;
 			
@@ -1399,7 +1399,7 @@ public class JobFactoryImpl implements JobFactory {
             credential = null ;
             
         try {
-                
+               
             ps = new PolicyServiceDelegate() ;
             communityAccount =  CommunityMessage.getAccount( snippet ) ;
             credential = CommunityMessage.getGroup( snippet ) ;

@@ -742,7 +742,7 @@ public class JobScheduler {
     } // end of maintainCandidateList()
 	
     
-	protected String getComponentName() { return this.getClass().getName() ; }
+    protected String getComponentName() { return JES.getClassName( this.getClass() ); }
 
 
 } // end of class JobScheduler

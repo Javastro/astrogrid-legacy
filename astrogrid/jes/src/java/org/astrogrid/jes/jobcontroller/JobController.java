@@ -749,7 +749,7 @@ public class JobController {
 	} // end of formatStatusMessage()
 	
 
-	protected String getComponentName() { return this.getClass().getName() ; }
+	protected String getComponentName() { return JES.getClassName( this.getClass() ); }
 
 
 } // end of class JobController
