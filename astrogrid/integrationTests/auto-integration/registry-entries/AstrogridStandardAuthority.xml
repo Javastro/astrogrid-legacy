@@ -19,33 +19,30 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <vr:Resource xsi:type="vg:RegistryType" >
+<vr:Resource  xsi:type="AuthorityType"  updated="2002-11-04T15:34:22" status="active" >
     <Identifier>
-      <AuthorityID>@REGAUTHORITY@</AuthorityID>
-      <ResourceKey>org.astrogrid.registry.RegistryService</ResourceKey>
+      <AuthorityID>org.astrogrid</AuthorityID> <!-- note not the @REGAUTHORITY -->
+      <ResourceKey xsi:nil="true"/>
     </Identifier>
-    <Title>Astrogrid Full Registry</Title>
+    <Title>Astrogrid Standard Authority</Title>
+    <ShortName>AG-NA-ST</ShortName>
+    <Subject>The standard astrogrid naming authority</Subject>
     <Summary>
       <Description>
-         The main Astrogrid publishing registry
+        This authority ID will be used to identify generic resources 
+   related to the Astrogrid consortium
       </Description>
-      <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/registry/index.html</ReferenceURL>
+      <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
     </Summary>
-    <Type>Archive</Type>
     <Curation>
       <Publisher>
          <Title>Astrogrid</Title>
       </Publisher>
-      <Contact>
+       <Contact>
         <Name>Tony Linde</Name>
        <Email>ael@star.le.ac.uk</Email>
       </Contact>
+     <Date>2003-08-30</Date>
     </Curation>
-    <vg:ManagedAuthority>@REGAUTHORITY@</vg:ManagedAuthority>
-	<vg:ManagedAuthority>org.astrogrid</vg:ManagedAuthority>
-    <Interface>
-      <Invocation>WebService</Invocation>
-      <AccessURL use="full">@CENTRALREGISTRY@Query</AccessURL>
-    </Interface>
   </vr:Resource>
   </VODescription>

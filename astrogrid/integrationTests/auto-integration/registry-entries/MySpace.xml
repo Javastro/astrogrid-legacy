@@ -32,6 +32,15 @@
       <ReferenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/myspace</ReferenceURL>
     </Summary>
     <Type>Archive</Type>
+	<vr:RelatedResource>
+		<vr:Relationship>derived-from</vr:Relationship>
+		<vr:RelatedTo>
+			<vr:Identifier>
+				<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
+				<vr:ResourceKey>MySpaceKind</vr:ResourceKey>
+			</vr:Identifier>
+		</vr:RelatedTo>
+	</vr:RelatedResource>
     <Curation>
       <Publisher>
          <Title>Myspace Manager Service</Title>
@@ -53,6 +62,7 @@
         <Name>Clive Davenhall</Name>
       </Contributor>       
     </Curation>
+	
     <Subject>Users VOSpace</Subject>
     <Interface>
       <Invocation>WebService</Invocation>
