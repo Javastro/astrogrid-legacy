@@ -1,4 +1,4 @@
-/* $Id: FactoryManager.java,v 1.1 2003/08/20 14:42:59 nw Exp $
+/* $Id: FactoryManager.java,v 1.2 2003/08/21 12:24:17 nw Exp $
  * Created on 19-Aug-2003
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -68,7 +68,7 @@ public class FactoryManager implements FactoryProvider {
         return defaultQueryFactory;
     }
 
-    public boolean isQueryFactoryLoaded(String catalogName) {
+    public boolean isQueryFactoryAvailable(String catalogName) {
         return queryFactoryMap.containsKey(catalogName);
     }
     /** check that all factories are present 
@@ -84,7 +84,8 @@ public class FactoryManager implements FactoryProvider {
 	/** set the my space factory
 	 * @param factory
 	 */
-	public void setMySpaceFactory(MySpaceFactory factory) {
+	public void setMySpaceFactory(MySpaceFactory factory) throws IllegalArgumentException {
+        if (factory == null) throw new IllegalArgumentException("Factory cannot be null");
 		factory.setConfiguration(conf);
 		mySpaceFactory = factory;
 	}
@@ -93,7 +94,9 @@ public class FactoryManager implements FactoryProvider {
      * @param catalogName the catalog this query factory is intended for
 	 * @param factory the factory for this catalog.
 	 */
-	public void setQueryFactory(String catalogName,QueryFactory factory) {
+	public void setQueryFactory(String catalogName,QueryFactory factory) throws IllegalArgumentException {
+        if (factory == null) throw new IllegalArgumentException("Factory cannot be null");
+        if (catalogName == null) throw new IllegalArgumentException("CatalogName cannot be null");
 		factory.setConfiguration(conf);
 		queryFactoryMap.put(catalogName,factory);
 	}
@@ -101,7 +104,8 @@ public class FactoryManager implements FactoryProvider {
 	/** set the votable factory
 	 * @param factory
 	 */
-	public void setVOTableFactory(VOTableFactory factory) {
+	public void setVOTableFactory(VOTableFactory factory) throws IllegalArgumentException{
+        if (factory == null) throw new IllegalArgumentException("Factory cannot be null");
 		factory.setConfiguration(conf);
 		voTableFactory = factory;
 	}
@@ -109,15 +113,17 @@ public class FactoryManager implements FactoryProvider {
      * set the job factory
      * @param factory
      */
-    public void setJobFactory(JobFactory factory) {
+    public void setJobFactory(JobFactory factory) throws IllegalArgumentException {
+        if (factory == null) throw new IllegalArgumentException("Factory cannot be null");
         factory.setConfiguration(conf);
         jobFactory = factory;
     }
     /** set the default query factory - this is used when no other query factory has been associated with a catalog.
      * @param factory
      */
-    public void setDefaultQueryFactory(QueryFactory factory) {
-        factory.setConfiguration(conf);
+    public void setDefaultQueryFactory(QueryFactory factory) throws IllegalArgumentException {
+        if (factory == null) throw new IllegalArgumentException("Factory cannot be null");
+        factory.setConfiguration(conf);        
         defaultQueryFactory = factory;
     }
     
@@ -150,6 +156,11 @@ public class FactoryManager implements FactoryProvider {
 }
 /*
  * $Log: FactoryManager.java,v $
+ * Revision 1.2  2003/08/21 12:24:17  nw
+ * Added some armour - if methods are passed a null, when they
+ * really can't handle that, they throw an illegalArgumentException
+ * (rather than a null pointer later on).
+ *
  * Revision 1.1  2003/08/20 14:42:59  nw
  * added a configuration package -
  * wraps the existing DTC class, and provides somewhere to
