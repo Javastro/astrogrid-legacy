@@ -1,0 +1,409 @@
+package id4ncrhdraleup4dralg9j9;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node13:oiref><oihard>
+@__modelType reference 
+*/
+class reference14 {
+}/**
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15:oiref><oihard>
+@__modelType reference 
+*/
+class reference16 {
+}/**
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node19:oiref><oihard>
+@__modelType reference 
+*/
+class reference20 {
+}/**
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node38:oiref><oihard>
+@__modelType reference 
+*/
+class reference39 {
+}}/**
+
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node24.link30:oiref>=555,186,555,240:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node17.link:oiref>=273,770,390,730,400,110,480,110:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node35:oiref>=550,560,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node2:oiref>=30,160,199,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node3:oiref>=30,240,221,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node24.link:oiref>=500,186,500,240:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node24.link31:oiref>=577,186,627,240:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node36:oiref>=668,630,80,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node2.link:oiref>=129,183,129,240:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node10.link:oiref>=130,663,130,730:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node33.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node35.link37:oiref>=610,570,720,570,720,630:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node4:oiref>=40,540,54,60,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node:oiref>=20,40,290,790,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node27.link:oiref>=546,300,546,350:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node:oiref>=480,100,169,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node8.link11:oiref>=135,456,135,640:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node17:oiref>=170,770,137,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node6.link9:oiref>=161,349,161,450:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node8.link:oiref>=107,456,67,540:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node6:oiref>=132,329,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node38.link:oiref>=870,433,698,433:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node1.link:oiref>=120,112,120,160:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node32.link:oiref>=555,356,555,410:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node7:oiref>=40,370,80,23,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node10.link:oiref>=140,687,155,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node3.link:oiref>=172,287,117,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node8:oiref>=80,450,110,6,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node12.link:oiref>=130,750,130,840,348,842:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node13:oiref>=348,834,15,15,1:oigroup>
+<oigroup:Composite#label#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node8.link:oiref>=91,498,40,16,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node24:oiref>=490,180,110,6,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node35.link:oiref>=580,580,580,840,363,842:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node6.link:oiref>=111,349,34,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node12.link18:oiref>=160,740,240,740,240,770:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node7.link:oiref>=93,393,93,450:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node25:oiref>=460,240,50,60,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node35.link:oiref>=590,701,34,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node19.link:oiref>=890,111,649,111:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node29.link:oiref>=608,300,608,350:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15:oiref>=450,40,380,620,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node10:oiref>=80,640,133,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node.link:oiref>=545,123,545,180:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node27:oiref>=530,240,50,60,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node38:oiref>=870,420,148,63,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node32:oiref>=490,350,130,6,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node25.link:oiref>=500,300,500,350:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node3.link:oiref>=162,263,162,329:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node12.link:oiref>=195,851,34,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node34.link:oiref>=580,447,580,560:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node12:oiref>=100,730,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node6.link:oiref>=132,339,70,340,70,370:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node29:oiref>=596,240,62,60,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node34:oiref>=470,410,228,37,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node34.link:oiref>=590,486,200,34,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node1:oiref>=114,100,12,12,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node19:oiref>=890,60,196,300,0:oigroup>
+*/
+class __positions {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name DataCenter
+@backgroundColor 200,200,200 
+*/
+class node {
+/**
+@shapeType StartState
+@__modelType node
+@name StartState1 
+*/
+class node1 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node2:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Request comes in for a Query 
+*/
+class node2 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node3:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Take Query and Parse it if needed 
+*/
+class node3 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node6:oiref><oihard>
+@sendClause Has GDW Plug-in? 
+*/
+class link {
+}}/**
+@shapeType Object
+@__modelType node
+@name DB/FITS 
+*/
+class node4 {
+}/**
+@shapeType Decision
+@__modelType node
+@name Decision1 
+*/
+class node6 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node7:oiref><oihard>
+@sendClause Yes 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node8:oiref><oihard> 
+*/
+class link9 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name GDW 
+*/
+class node7 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node8:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType SyncBar
+@__modelType node
+@name SyncBar1 
+*/
+class node8 {
+/**
+@shapeType ObjectFlowLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node4:oiref><oihard>
+@label Query 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node10:oiref><oihard> 
+*/
+class link11 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Results Received 
+*/
+class node10 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node12:oiref><oihard>
+@sendClause Need to be returned now? 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision2 
+*/
+class node12 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node13:oiref><oihard>
+@sendClause Yes 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node17:oiref><oihard> 
+*/
+class link18 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Call Store Handler 
+*/
+class node17 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType EndState
+@__modelType node
+@name EndState1
+@backgroundColor 0,0,0 
+*/
+class node13 {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name Store Handler Delegate
+@backgroundColor 200,200,200 
+*/
+class node15 {
+/**
+@shapeType Activity
+@__modelType node
+@name Store Request Received 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node24:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType SyncBar
+@__modelType node
+@name SyncBar2 
+*/
+class node24 {
+/**
+@shapeType ObjectFlowLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node25:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType ObjectFlowLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node27:oiref><oihard> 
+*/
+class link30 {
+}/**
+@shapeType ObjectFlowLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node29:oiref><oihard> 
+*/
+class link31 {
+}}/**
+@shapeType Object
+@__modelType node
+@name Ftp 
+*/
+class node25 {
+/**
+@shapeType ObjectFlowLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node32:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Object
+@__modelType node
+@name GFtp
+*/
+class node27 {
+/**
+@shapeType ObjectFlowLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node32:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Object
+@__modelType node
+@name Myspace
+*/
+class node29 {
+/**
+@shapeType ObjectFlowLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node32:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType SyncBar
+@__modelType node
+@name SyncBar3 
+*/
+class node32 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node34:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Call the correct Delegate (ftp,gftp,myspace) 
+*/
+class node34 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node35:oiref><oihard>
+@sendClause Are all the results pushed correctly to another location? 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision3 
+*/
+class node35 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node13:oiref><oihard>
+@sendClause Yes 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node36:oiref><oihard> 
+*/
+class link37 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name ? 
+*/
+class node36 {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text A string containing of where to place the results will be passed in known as a AGSL.  It may also have ivo identifiers to be used for calling the registry for an endpoint.  Usually for myspace. Please notice "Delegate" this is located on the same system as the DataCenter In Itn05 no ivo idents will be present except for the location of the myspace mgr.
+*/
+class node19 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note2
+@text see DataCenter to Myspace diagram 
+*/
+class node38 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node34:oiref><oihard> 
+*/
+class link {
+}}
