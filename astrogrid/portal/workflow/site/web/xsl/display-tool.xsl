@@ -83,25 +83,21 @@
                         </tr>
                     </table>                    
                 </form>                
-            </div>
-<!-- temp - until I can get page menus going -->            
-                <form name="activity_container_insert_form1">
+            </div>     
+                <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_sequence_form">
                    <input type="hidden" name="activity_key"/>
                    <input type="hidden" name="activity_index_key"/>
-                   <input type="hidden"  name="action" value="insert-sequence"/>
-                   <input type="submit" value="insert sequence"/>                                      
+                   <input type="hidden"  name="action" value="insert-sequence"/>                           
                 </form>            
-                <form name="activity_container_insert_form2">
+                <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_flow_form">
                    <input type="hidden" name="activity_key"/>
                    <input type="hidden" name="activity_index_key"/>
-                   <input type="hidden"  name="action" value="insert-flow"/>
-                   <input type="submit" value="insert flow"/>                                      
-                </form>
-                <form name="activity_container_insert_form3">
+                   <input type="hidden"  name="action" value="insert-flow"/>                       
+                </form>                
+                <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_step_form">
                    <input type="hidden" name="activity_key"/>
                    <input type="hidden" name="activity_index_key"/>
-                   <input type="hidden"  name="action" value="insert-step"/>
-                   <input type="submit" value="insert step"/>                                      
+                   <input type="hidden"  name="action" value="insert-step"/>            
                 </form>                                
         </xsl:template>
         
