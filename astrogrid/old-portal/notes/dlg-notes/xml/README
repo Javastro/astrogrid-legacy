@@ -1,4 +1,0 @@
-This directory contains 
-- schema - mostly copied from other places and fixed up to be acceptable to XMLSpy and associated tools. These fixes will only be important if/when the xml is properly validated
-- style sheets - to generate HTML to match the mock-up html pages (in ../html) from XML responses
-- xml files containing some test output believed to be correct from other Web Services
