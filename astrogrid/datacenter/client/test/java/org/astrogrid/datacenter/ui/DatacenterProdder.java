@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.1 2004/02/17 03:39:13 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.2 2004/02/17 15:03:44 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -169,7 +169,7 @@ public class DatacenterProdder extends JFrame
       
       new EscEnterListener(this, null, cancelButton, true);
       
-      setUser(new Account("avodemo","test.astrogrid.org","NoGroup","EmptyToken"));
+      setUser(new Account("avodemo","test.astrogrid.org","EmptyToken"));
 
       loadEntries();
    }
@@ -451,6 +451,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.2  2004/02/17 15:03:44  mch
+ Removed Group from Account
+
  Revision 1.1  2004/02/17 03:39:13  mch
  New Datacenter UIs
 
