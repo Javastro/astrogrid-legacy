@@ -112,38 +112,41 @@ public class LoginAction extends AbstractAction
       
       String user = request.getParameter("Username");
       
-      if(user == null || user.trim().length() <= 0) {
-         errorMessage = "User cannot be empty";
-      }else {
-         user = user.trim().toLowerCase();
-      }
       
-      PolicyServiceDelegate psd = new PolicyServiceDelegate();
-      try {
-         boolean authorized = psd.checkPermissions(user,"guest","portalsite","read");
-         if(!authorized) {
-            errorMessage = "You are not authorized to enter the portal site.";  
+      
+      
+      if(LOGIN_ACTION.equals(action)) {
+         if(user == null || user.trim().length() <= 0) {
+            errorMessage = "User cannot be empty";
+         }else {
+            user = user.trim().toLowerCase();
          }
-      }catch(Exception e) {
-         errorMessage = e.toString();
-         e.printStackTrace();  
-      }
-      
-      
-      if(LOGIN_ACTION.equals(action) && errorMessage == null) {
+
+         PolicyServiceDelegate psd = new PolicyServiceDelegate();
+         try {
+            boolean authorized = psd.checkPermissions(user,"guest","portalsite","read");
+            if(!authorized) {
+               errorMessage = "You are not authorized to enter the portal site.";  
+            }
+         }catch(Exception e) {
+            errorMessage = e.toString();
+            e.printStackTrace();  
+         }
          
          //call authenticateLogin()
          //call authorizePortal()
-         session.setAttribute("user",user);
-         session.setAttribute("community_account",user);            
-
-         String index_url = "http://" + request.getServerName() + ":" + nonSecurePort + "/cocoon/astrogrid/agindex.html";
-         session.setAttribute("credential","guest@" + commName);
-         System.out.println("the index_url = " + index_url);
-         try {
-            redirector.redirect(true,index_url);
-         }catch(Exception e) {
-            e.printStackTrace();
+         if(errorMessage == null || errorMessage.trim().length() <= 0) {
+            session.setAttribute("user",user);
+            session.setAttribute("community_account",user);            
+   
+            String index_url = "http://" + request.getServerName() + ":" + nonSecurePort + "/cocoon/astrogrid/agindex.html";
+            session.setAttribute("credential","guest@" + commName);
+            System.out.println("the index_url = " + index_url);
+            try {
+               redirector.redirect(true,index_url);
+            }catch(Exception e) {
+               e.printStackTrace();
+            }
          }
       }
 
