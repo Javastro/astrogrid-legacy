@@ -44,15 +44,15 @@
                     <element name="message" nillable="true" type="xsd:string"/>
                 </sequence>
             </complexType>
-	</xsd:schema>
-	<xsd:schema targetNamespace="http://io.java" xmlns="http://www.w3.org/2001/XMLSchema">
-		<import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
-		<complexType name="IOException">
-			<sequence>
-				<element name="message" nillable="true" type="xsd:string" />
-			</sequence>
-		</complexType>
-	</xsd:schema>
+   </xsd:schema>
+   <xsd:schema targetNamespace="http://io.java" xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <complexType name="IOException">
+         <sequence>
+            <element name="message" nillable="true" type="xsd:string" />
+         </sequence>
+      </complexType>
+   </xsd:schema>
     </wsdl:types>
     <!-- messages -->
     <wsdl:message name="getMetadata">
@@ -63,10 +63,10 @@
     </wsdl:message>
 
     <wsdl:message name="getLanguageInfo">
-    	<wsdl:part element="types:getLanguageInfo" name="parameters" />
+      <wsdl:part element="types:getLanguageInfo" name="parameters" />
     </wsdl:message>
     <wsdl:message name="getLanguageInfoResponse">
-    	<wsdl:part element="types:getLanguageInfoResponse" name="parameters" />
+      <wsdl:part element="types:getLanguageInfoResponse" name="parameters" />
     </wsdl:message>
 
     <wsdl:message name="doQuery">
@@ -81,7 +81,7 @@
     </wsdl:message>
     <wsdl:message name="makeQueryWithId">
         <wsdl:part element="types:makeQueryWithId" name="parameters" />
-    </wsdl:message>    
+    </wsdl:message>
     <wsdl:message name="makeQueryResponse">
         <wsdl:part element="types:makeQueryResponse" name="parameters"/>
     </wsdl:message>
@@ -103,7 +103,7 @@
     </wsdl:message>
     <wsdl:message name="getResultsAndCloseResponse">
         <wsdl:part element="types:getResultsAndCloseResponse" name="parameters"/>
-    </wsdl:message>  
+    </wsdl:message>
         
     <wsdl:message name="abortQuery">
         <wsdl:part element="types:abortQuery" name="parameters" />
@@ -138,7 +138,7 @@
         <wsdl:part name="fault" type="sax:SAXException" />
     </wsdl:message>
     <wsdl:message name="IOException">
-    	<wsdl:part name="fault" type="io:IOException" />
+      <wsdl:part name="fault" type="io:IOException" />
     </wsdl:message>
 
     <!-- the port type -->
@@ -149,17 +149,17 @@
             <wsdl:output message="getMetadataResponse" name="getMetadataResponse" />
         </wsdl:operation>
 
-	<wsdl:operation name="getLanguageInfo">
-		<wsdl:input message="getLanguageInfo" name="getLanguageInfo" />
-		<wsdl:output message="getLanguageInfoResponse" name="getLanguageInfoResponse" />
-	</wsdl:operation>
+   <wsdl:operation name="getLanguageInfo">
+      <wsdl:input message="getLanguageInfo" name="getLanguageInfo" />
+      <wsdl:output message="getLanguageInfoResponse" name="getLanguageInfoResponse" />
+   </wsdl:operation>
 
         <wsdl:operation name="doQuery">
             <wsdl:input message="doQuery" name="doQuery"/>
             <wsdl:output message="doQueryResponse" name="doQueryResponse"/>
             <wsdl:fault message="QueryException" name="QueryException"/>
-            <wsdl:fault message="SAXException" name="SAXException"/>            
-	    <wsdl:fault message="IOException" name="IOException" />
+            <wsdl:fault message="SAXException" name="SAXException"/>
+       <wsdl:fault message="IOException" name="IOException" />
         </wsdl:operation>
 
         <wsdl:operation name="makeQuery">
@@ -167,14 +167,14 @@
             <wsdl:output message="makeQueryResponse" name="makeQueryResponse"/>
             <wsdl:fault message="QueryException" name="QueryException"/>
             <wsdl:fault message="SAXException" name="SAXException"/>
-	    <wsdl:fault message="IOException" name="IOException" />
+       <wsdl:fault message="IOException" name="IOException" />
         </wsdl:operation>
         <wsdl:operation name="makeQueryWithId">
             <wsdl:input message="makeQueryWithId" name="makeQueryWithId" />
             <wsdl:output message="makeQueryResponse" name="makeQueryResponse" />
             <wsdl:fault message="QueryException" name="QueryException"/>
             <wsdl:fault message="SAXException" name="SAXException"/>
-	    <wsdl:fault message="IOException" name="IOException" />
+       <wsdl:fault message="IOException" name="IOException" />
         </wsdl:operation>
 
         <wsdl:operation name="setResultsDestination">
@@ -224,14 +224,14 @@
             </wsdl:output>
         </wsdl:operation>
 
-	<wsdl:operation name="getLanguageInfo">
-		<wsdl:input name="getLanguageInfo">
-			<wsdlsoap:body use="literal" />
-		</wsdl:input>
-		<wsdl:output name="getLanguageInfoResponse">
-			<wsdlsoap:body use="literal" />
-		</wsdl:output>
-	</wsdl:operation>
+   <wsdl:operation name="getLanguageInfo">
+      <wsdl:input name="getLanguageInfo">
+         <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getLanguageInfoResponse">
+         <wsdlsoap:body use="literal" />
+      </wsdl:output>
+   </wsdl:operation>
 
           <wsdl:operation name="doQuery">
             <wsdl:input name="doQuery">
@@ -353,8 +353,8 @@
     </wsdl:binding>
     <!-- the service -->
     <wsdl:service name="AxisDataServerService">
-        <wsdl:port binding="AxisDataServerSoapBinding" name="AxisDataServer">
-            <wsdlsoap:address location="http://localhost:8080/axis/services/AxisDataServer"/>
+        <wsdl:port binding="AxisDataServerSoapBinding" name="AxisDataServerIt4-1">
+            <wsdlsoap:address location="http://localhost:8080/axis/services/AxisDataServerIt4-1"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
