@@ -74,17 +74,8 @@ The Manager returned the following messages:
 %>
 </pre>
 
-<p>
-The new state of account <%=query%> is:
-</p>
 
-<pre>
-<%
-  EntryNode fileRoot = (EntryNode)manager.getFiles(query);
-
-  out.print(fileRoot.toString() );
-%>
-</pre>
+<a href="listFiles.jsp">List Files</a>
 
 <p>
 Return to the <a href="functions.html">MySpace Service Test</a> page.

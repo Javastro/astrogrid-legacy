@@ -1,4 +1,5 @@
 <%@ page import="org.astrogrid.store.delegate.*,
+                 org.astrogrid.store.*,
                  org.astrogrid.store.delegate.myspaceItn05.*,
                  org.astrogrid.community.User,
                  java.net.*,
@@ -33,41 +34,21 @@ The end point for this service is: <%=serviceURL%>
 The following entries satisfied query <code><%=query%></code>:
 </p>
 
+(This is not right yet - only does one layers of directories, needs to recurse)
 <pre>
 <%
   User operator = new User();
-  MySpaceIt05Delegate manager = new MySpaceIt05Delegate(operator,
-     serviceURL.toString());
+  StoreClient client = StoreDelegateFactory.createDelegate(operator, new Agsl(serviceURL));
 
-  manager.setThrow(false);
-  EntryNode fileRoot = (EntryNode)manager.getFiles(query);
+  StoreFile fileRoot = client.getFiles(query);
   out.print(fileRoot.toString() );
+  StoreFile[] files = fileRoot.listFiles();
+  for (int i=0;i<files.length;i++) {
+     out.print(files[i].toString());
+  }
 %>
 </pre>
 
-<p>
-The Manager returned the following messages:
-</p>
-
-<pre>
-<%
-  ArrayList statusList = manager.getStatusList();
-
-  int numMessages = statusList.size();
-
-  if (numMessages > 0)
-  {  for(int loop=0; loop<numMessages; loop++)
-     {  StatusMessage message =
-          (StatusMessage)statusList.get(loop);
-        out.println(message.toString() );
-     }
-  }
-  else
-  {  out.print("No messages returned.");
-  }
-
-%>
-</pre>
 
 <p>
 Return to the <a href="functions.html">MySpace Service Test</a> page.
