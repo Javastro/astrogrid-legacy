@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.1 2004/09/28 18:22:55 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.2 2004/09/28 18:23:29 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,8 @@
  * with this distribution in the LICENSE.txt file.
  *
  **/
-package org.astrogrid.datacenter.queriers.test;
+package org.astrogrid.datacenter.service;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
@@ -132,6 +133,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.2  2004/09/28 18:23:29  mch
+ Fixed package name
+
  Revision 1.1  2004/09/28 18:22:55  mch
  Moved Installation tests to better package
 
