@@ -43,7 +43,7 @@
         </ag-div>
     </xsl:template>
 
-    <xsl:template match="*">   
+    <xsl:template match="*"> 
         <tr>
             <xsl:call-template name="format-cells">
                 <xsl:with-param name="count" select="count(ancestor::*)"/>
@@ -88,7 +88,7 @@
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">step</xsl:attribute>
-                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>'); populate_tool_details('<xsl:value-of select="@name"/>','<xsl:value-of select="@joinCondition"/>','<xsl:value-of select="@key"/>', '<xsl:value-of select="./tool/@name"/>','<xsl:value-of select="./tool/documentation"/>'); show_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');</xsl:attribute>             
+                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>'); populate_tool_details('<xsl:value-of select="@step-name"/>','<xsl:value-of select="@joinCondition"/>','<xsl:value-of select="@step-description"/>','<xsl:value-of select="@key"/>', '<xsl:value-of select="./tool/@tool-name"/>','<xsl:value-of select="./tool/documentation"/>'); show_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');</xsl:attribute>             
                             <xsl:attribute name="onClick">toggle('parameters:<xsl:value-of select="@key"/>');</xsl:attribute>
                         </xsl:element>
                         <td>
@@ -121,7 +121,7 @@
         </tr>
         <tr>
             <xsl:apply-templates select="*"/>
-        </tr>        
+        </tr>                        
     </xsl:template>
 
 
@@ -130,7 +130,7 @@
        +-->
     <xsl:template name="format-cells">
         <xsl:param name="count"/>                         <!-- No. of ancestors for this node = no. columns required prior to displaying it-->
-        <xsl:param name="counter" select="1"/>      <!-- Loop counter (needs to increment so that table can be formatted correctly -->
+        <xsl:param name="counter" select="1"/>            <!-- Loop counter (needs to increment so that table can be formatted correctly -->
             <xsl:if test="$counter != $count">             <!-- Test to see if column should display details -->
                 <td valign="top">              
                     <xsl:for-each select="ancestor::*">    <!-- Display vertical sequence image in relevant column -->

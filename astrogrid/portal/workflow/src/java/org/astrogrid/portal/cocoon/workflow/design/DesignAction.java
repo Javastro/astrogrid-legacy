@@ -140,7 +140,7 @@ public class DesignAction extends AbstractAction {
         WORKFLOW_LIST_PARAMETER = "workflow-list",
         QUERY_LIST_PARAMETER = "query-list",
 	    TOOL_LIST_PARAMETER = "tool-list",
-	    TOOL_NAME_PARAMETER = "tool-name",
+	    TOOL_NAME_PARAMETER = "tool_name",
 		STEP_KEY_PARAMETER = "step-key",
         ERROR_MESSAGE_PARAMETER = "ErrorMessage",
         LOCATION_PARAMETER = "location",
@@ -334,7 +334,7 @@ public class DesignAction extends AbstractAction {
                     debug( "action is null");  
                 }      
                 else if( action.equals( ACTION_CREATE_WORKFLOW ) ) {
-                    this.createWorkflow();
+					this.createWorkflow();					                   
 //					template = request.getParameter( TEMPLATE_PARAM_TAG ); 
 //					if ( template.equals( EMPTY_TEMPLATE ) ) {
 //						this.createWorkflow();
@@ -357,7 +357,7 @@ public class DesignAction extends AbstractAction {
                 }
                 else if( action.equals( ACTION_EDIT_JOINCONDITION ) ) {
                     this.editJoinCondition(); 
-                }
+                } 
                 else if( action.equals( ACTION_READ_TOOL_LIST ) ) {
                     this.readToolList(); 
                 }
@@ -405,6 +405,8 @@ public class DesignAction extends AbstractAction {
                     debug( "unsupported action"); 
                     throw new UnsupportedOperationException( action + " no longer supported");
                 }
+                				
+this.readToolList(); // temp PJN
                 
                 if (workflow != null ){
 	                // Save the workflow in the session object...
@@ -412,7 +414,7 @@ public class DesignAction extends AbstractAction {
         	        session.setAttribute( HTTP_WORKFLOW_TAG, workflow ) ;
             	    debug( session.getAttribute(HTTP_WORKFLOW_TAG).toString() ); 
                 }
-                
+
 //				this.readLists() ; // Ensure request object contains latest Workflow/Query
 
             }
@@ -791,15 +793,15 @@ public class DesignAction extends AbstractAction {
               if( tools == null ) {
                   ApplicationRegistry toolRegistry = workflowManager.getToolRegistry();
                   tools = toolRegistry.listApplications();
-//                  debug( "tools list: " ); 
-//                  if(tools != null){
-//                      for( int i=0; i<tools.length; i++ ){
-//                          debug( tools[i]);
-//                      }
-//                  }
-//                  else {
-//                      debug( "tools list is null" );
-//                  } 
+                  debug( "tools list: " ); 
+                  if(tools != null){
+                      for( int i=0; i<tools.length; i++ ){
+                          debug( tools[i]);
+                      }
+                  }
+                  else {
+                      debug( "tools list is null" );
+                  } 
                   this.session.setAttribute( TOOL_LIST_PARAMETER, tools ) ;   
               }
               this.request.setAttribute( TOOL_LIST_PARAMETER, tools ) ; 
@@ -854,6 +856,8 @@ public class DesignAction extends AbstractAction {
 //				if (toolname == null) {
 //					debug("tool-name is null") ;
 //				}
+                debug("tool name: " + toolname);
+                debug("activity key: " + request.getParameter( ACTIVITY_KEY_PARAMETER ) );
                 
                 step = locateStep( workflow, request.getParameter( ACTIVITY_KEY_PARAMETER ) );     
                 
@@ -1289,6 +1293,7 @@ public class DesignAction extends AbstractAction {
 			}
                     
 		} // end of insertStepName()
+
 
 		private void insertStepDescription() throws ConsistencyException {
 			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertStepDescription() entry" ) ;

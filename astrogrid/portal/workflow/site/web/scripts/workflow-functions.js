@@ -20,27 +20,11 @@
     }
 
 
-    function populate_tool_details(step_name, edit_condition, stepNumber, tool_name, tool_documentation)
-    { 
-        if (step_name == '') 
-        {
-            show_select('step_name_button');
-        }
-        else if (step_name != '')
-        {
-            hide_select('step_name_button');                         
-        }
-        if (tool_name == '') 
-        {
-            document.getElementById('tool_select_dropdown').style.display="";
-        }
-        else if (tool_name != '')
-        {
-            document.getElementById('tool_select_dropdown').style.display="none";
-            document.getElementById('tool_select_button').style.display="none";
-        }                     
+    function populate_tool_details(step_name, edit_condition, step_description, stepNumber, tool_name, tool_documentation)
+    {                      
         document.properties_form.step_name.value = step_name;
         document.properties_form.edit_condition.value = edit_condition; 
+        document.properties_form.step_description.value = step_description;  
         document.properties_form.activity_key.value = stepNumber;  
         document.properties_form.tool_name.value = tool_name;
         document.properties_form.tool_documentation.value = tool_documentation;                    
