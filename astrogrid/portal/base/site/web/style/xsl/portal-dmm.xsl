@@ -14,8 +14,8 @@
       indent="yes"
       omit-xml-declaration="yes"/>
       
-  <xsl:param name="ag-css-url" value="default.css"/>
-  <xsl:param name="ag-title" value="AstroGrid"/>
+  <xsl:param name="ag-css-url" select="'default.css'"/>
+  <xsl:param name="ag-title" select="'AstroGrid'"/>
 
   <xsl:template match="/">
     <html>

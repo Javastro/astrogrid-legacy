@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 
-<!-- CVS $Id: extras.xsl,v 1.2 2004/04/20 14:25:59 pfo Exp $ -->
+<!-- CVS $Id: extras.xsl,v 1.3 2004/05/25 23:56:51 jdt Exp $ -->
 
 <xsl:stylesheet version="1.0"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-    <xsl:param name="ag-css-url" value="default.css"/>
+    <xsl:param name="ag-css-url" select="'default.css'"/>
     <xsl:param name="ag-js-url" />
 
   <xsl:template match="/">

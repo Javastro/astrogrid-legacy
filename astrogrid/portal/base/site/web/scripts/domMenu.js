@@ -462,7 +462,7 @@ function domMenu_activateSubMenu(in_parentElement)
         if (menuTableCell.data.items['numChildren']) {
             element = outerElement.appendChild(document.createElement('div'));
             // {!} depends on which way we are opening {!}
-            element.style.backgroundImage = 'url(/astrogrid-portal/icons/arrow.gif)';
+            element.style.backgroundImage = '';
             element.style.backgroundRepeat = 'no-repeat';
             element.style.backgroundPosition = 'right center';
             // add appropriate padding to fit the arrow
