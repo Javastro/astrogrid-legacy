@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.11 2004/07/12 23:26:51 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.12 2004/07/14 18:04:25 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,10 +66,14 @@ public class StdSqlMaker  extends SqlMaker {
       Angle dec = Angle.fromDegrees(query.getDec());
       Angle radius = Angle.fromDegrees(query.getRadius());
       
-      return "SELECT * FROM "+table+" as "+alias+
+      String sql = "SELECT * FROM "+table+" as "+alias+
          " WHERE "+
          //circle
          makeSqlCircleCondition(raCol, decCol, ra, dec, radius);
+      
+      log.info(query+" -> "+sql);
+      
+      return sql;
    }
       
       
@@ -99,32 +103,47 @@ public class StdSqlMaker  extends SqlMaker {
       }
       
       //start with a square - for quicker searches
-      String sql = makeSqlBoundsCondition(raCol, decCol, ra, dec, radius) + " AND ";
+      String sql = makeSqlBoundsCondition(raCol, decCol, ra, dec, radius);
 
-      //if we are 'some distance' from the poles we can just pythagoros
-      if (radius.asDegrees()<1) {
-         return sql+
-            "( "+
+      //naively, we could use the 'least squares' distance (pythagoros) to see if
+      //the objects are within radius distance. However this doesn't work well
+      //except very near the equator, and is useless over the poles. Left here
+      //for reference.
+      /*
+      return sql+"( "+
             "(POWER("+decCol+" - "+dec.asDegrees()+", 2)"+
             "+"+
             "POWER("+raCol+" - "+ra.asDegrees()+", 2))"+
             " < "+
             "POWER("+radius.asDegrees()+", 2) "+
             ")";
-      }
+       */
+      
+      //simple great-circle distance formulare.  Doesn't work well for... er... don't know
+      //Left here for reference.
+      /*
+      return sql+" AND "+
+         "( "+
+           "( SIN("+decColRad+") * SIN("+dec.asRadians()+") + COS("+decColRad+") * COS("+dec.asRadians()+") * COS("+raColRad+" - "+ra.asRadians()+") )"+
+           " < COS("+radius.asRadians()+")"+
+         " )";
+       /**/
 
+      //'haversine' distance formulae.  The correct one to use...
       if (funcsInRads) {
-         return sql+"("+
-            "ACOS(SIN("+decColRad+") * SIN("+dec.asRadians()+") + COS("+decColRad+") * COS("+dec.asRadians()+") * COS("+raColRad+" - "+ra.asRadians()+"))"+
-            " < "+radius.asRadians()+
-            ")";
+         return //sql + " AND "+
+         "("+
+            "(2 * ASIN( SQRT( "+
+               "POWER( SIN( ("+decColRad+"-"+dec.asRadians()+")/2 ) ,2) +"+
+                  "COS("+dec.asRadians()+") * COS("+decColRad+") * "+
+                  "POWER( SIN( ("+raColRad+"-"+ra.asRadians()+")/2 ), 2) "+
+            "))) < "+radius.asRadians()+
+         ")";
       }
       else {
-         return sql+"("+
-            "ACOS(SIN("+decColDeg+") * SIN("+dec.asDegrees()+") + COS("+decColDeg+") * COS("+dec.asDegrees()+") * COS("+raColDeg+" - "+ra.asDegrees()+"))"+
-            " < "+radius.asDegrees()+
-            ")";
+         throw new UnsupportedOperationException("Not done degree funcs yet - do they exist?");
       }
+      /**/
    }
       
    /** Returns the SQL condition expression for a rectangle <i>in coordinate space</i>.
@@ -369,6 +388,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.12  2004/07/14 18:04:25  mch
+Fixed SQL/Angles
+
 Revision 1.11  2004/07/12 23:26:51  mch
 Fixed (somewhat) SQL for cone searches, added tests to Dummy DB
 
@@ -404,3 +426,4 @@ It05 MCH Refactor
 
  
 */
+
