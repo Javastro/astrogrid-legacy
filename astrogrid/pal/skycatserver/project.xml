@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
     <extend>${basedir}/../../maven-base/project.xml</extend>
-        <id>astrogrid-pal-skyserver</id>
+        <id>astrogrid-pal-skycatserver</id>
         <name>Astrogrid Sky Server WebApp</name>
   <currentVersion>${astrogrid.pal.version}</currentVersion>
   <description>Webapplication for serving sky object catalogues</description>
@@ -106,108 +106,6 @@
             <war.bundle>true</war.bundle>
          </properties>
       </dependency>
-
-
-    <!-- exist db for fits plugin? -->
-  	<!-- XML Database dependencies for running an internal instance of a db -->
-    <dependency>
-        <groupId>org.astrogrid</groupId>
-        <artifactId>astrogrid-xmldb-client</artifactId>
-        <version>${astrogrid.xmldb.version}</version>
-        <type>jar</type>
-        <url>http://www.astrogrid.org/</url>
-        <properties>
-           	<war.bundle>true</war.bundle>
-      	</properties>
-    </dependency>
-	
-    <dependency>
-        <groupId>exist</groupId>
-        <artifactId>exist</artifactId>
-        <version>1.0b2</version>
-        <type>jar</type>
-        <url>http://www.astrogrid.org/</url>
-            <properties>
-               	<war.bundle>true</war.bundle>
-          	</properties>            	
-    </dependency>
-
-	<dependency>
-    	<groupId>exist</groupId>
-        <artifactId>exist-optional</artifactId>
-	    <version>1.0b2</version>
-    	<type>jar</type>
-        <url>http://www.astrogrid.org/</url>
-            <properties>
-               	<war.bundle>true</war.bundle>
-          	</properties>	        	
-	</dependency>
-
-    <dependency>
-	    <groupId>exist</groupId>
-    	<artifactId>jakarta-oro</artifactId>
-        <version>2.0.8</version>
-	    <type>jar</type>
-    	<url>http://www.astrogrid.org/</url>
-            <properties>
-               	<war.bundle>true</war.bundle>
-          	</properties>        		
-    </dependency>
-
-	<dependency>
-    	<groupId>exist</groupId>
-        <artifactId>xml-commons-resolver</artifactId>
-        <version>1.1</version>
-	    <type>jar</type>
-    	<url>http://www.astrogrid.org/</url>
-            <properties>
-               	<war.bundle>true</war.bundle>
-          	</properties>        		
-    </dependency>
-
-    <dependency>
-        <groupId>exist</groupId>
-        <artifactId>commons-pool</artifactId>
-        <version>1.1</version>
-        <type>jar</type>
-        <url>http://www.astrogrid.org/</url>
-            <properties>
-               	<war.bundle>true</war.bundle>
-          	</properties>            	
-    </dependency>
-	
-	<dependency>
-    	<groupId>exist</groupId>
-        <artifactId>antlr</artifactId>
-        <type>jar</type>
-		<jar>antlr.jar</jar>
-    	<url>http://www.astrogrid.org/</url>
-            <properties>
-               	<war.bundle>true</war.bundle>
-          	</properties>        		
-    </dependency>
-
-    <dependency>
-        <groupId>exist</groupId>
-        <artifactId>xmlrpc</artifactId>
-        <version>1.2-patched</version>
-        <type>jar</type>
-        <url>http://www.astrogrid.org/</url>
-            <properties>
-               	<war.bundle>true</war.bundle>
-          	</properties>            	
-    </dependency>
-   	
-	<dependency>
-    	<groupId>exist</groupId>
-        <artifactId>xmldb</artifactId>
-        <type>jar</type>
-		<jar>xmldb.jar</jar>
-    	<url>http://www.astrogrid.org/</url>
-            <properties>
-               	<war.bundle>true</war.bundle>
-          	</properties>        		
-    </dependency>
 
 
 
@@ -403,6 +301,14 @@
     <dependency>
       <id>junit</id>
       <version>3.8</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <id>junitee</id>
+      <version>1.8</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>

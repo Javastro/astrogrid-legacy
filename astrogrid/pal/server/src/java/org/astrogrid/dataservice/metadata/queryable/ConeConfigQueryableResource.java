@@ -1,5 +1,5 @@
 /*
- * $Id: ConeConfigQueryableResource.java,v 1.3 2005/03/10 15:13:48 mch Exp $
+ * $Id: ConeConfigQueryableResource.java,v 1.4 2005/03/10 20:19:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -37,6 +37,7 @@ public class ConeConfigQueryableResource extends TableMetaDocInterpreter {
       String configTable = SimpleConfig.getSingleton().getString(CONE_SEARCH_TABLE_KEY);
       SearchGroup table = new TableInfo();
       table.setId(configTable);
+      table.setName(configTable);
       return new SearchGroup[] { table };
       
    }

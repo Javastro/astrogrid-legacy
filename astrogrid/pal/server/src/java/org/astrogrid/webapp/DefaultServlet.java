@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultServlet.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: DefaultServlet.java,v 1.2 2005/03/10 20:19:21 mch Exp $
  */
 
 package org.astrogrid.webapp;
@@ -32,6 +32,7 @@ public abstract class DefaultServlet extends HttpServlet {
    /** Need to do something better than this... */
    protected void doError(HttpServletResponse response, String title, Throwable th) throws IOException {
       log.error(title, th);
+//    response.sendError(response.SC_INTERNAL_SERVER_ERROR, title);
       try {
          try {
             response.setContentType("text/html");

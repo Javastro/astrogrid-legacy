@@ -8,7 +8,7 @@
        org.astrogrid.util.DomHelper,
        org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator,
        org.astrogrid.dataservice.metadata.*,
-       org.astrogrid.dataservice.metadata.html.*,
+       org.astrogrid.tableserver.metadata.*,
        org.astrogrid.dataservice.service.*"
    isThreadSafe="false"
    session="false"

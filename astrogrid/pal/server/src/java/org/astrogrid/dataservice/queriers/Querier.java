@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: Querier.java,v 1.2 2005/03/10 20:19:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -124,6 +124,7 @@ public class Querier implements Runnable, PluginListener {
    public static Querier makeQuerier(Account forUser, Query query, Object source) throws IOException {
       return makeQuerier(new LoginAccount(forUser.getIndividual()+"@"+forUser.getCommunity(),""), query, source);
    }
+    */
    
    /** Factory method.  Query includes the results definition, and 'source' represents
     * what clas was used to create this querier (optional) */
@@ -406,8 +407,11 @@ public class Querier implements Runnable, PluginListener {
 }
 /*
  $Log: Querier.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/03/10 20:19:21  mch
+ Fixed tests more metadata fixes
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

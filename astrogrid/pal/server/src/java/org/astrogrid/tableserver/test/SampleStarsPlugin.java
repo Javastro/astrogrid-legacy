@@ -1,22 +1,29 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: SampleStarsPlugin.java,v 1.2 2005/03/10 20:19:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.tableserver.test;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.tableserver.jdbc.JdbcConnections;
 import org.astrogrid.tableserver.jdbc.JdbcPlugin;
 import org.astrogrid.tableserver.jdbc.StdSqlMaker;
+import org.astrogrid.tableserver.metadata.RdbmsMetadataResources;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.tableserver.metadata.TabularDbResources;
+import org.astrogrid.tableserver.metadata.TabularSkyServiceResources;
 
 /**
  * This plugin works with a 'fixed' set of values in an HSQL database.  So
@@ -65,7 +72,38 @@ public class SampleStarsPlugin extends JdbcPlugin
       //it's a bit naughty setting this, but it sorts out most tests
       SimpleConfig.setProperty("datacenter.url", SimpleConfig.getProperty("datacenter.url", "http://localhost:8080/pal-Sample/"));
       
-      SampleStarsMetaServer.initConfig();
+      //set where to find the data description meta document
+      //this works OK for unit test, but not deployment...
+      URL url = SampleStarsPlugin.class.getResource("samplestars.metadoc.xml");
+      if (url == null) {
+         //this works OK for deployment, but not unit tests...
+         try {
+            url = Config.resolveFilename("samplestars.metadoc.xml");
+         }
+         catch (IOException e) {
+            throw new RuntimeException(e);
+         }
+      }
+      SimpleConfig.setProperty(TableMetaDocInterpreter.TABLE_METADOC_URL_KEY, url.toString());
+
+      //configure which resources to produce
+      SimpleConfig.getSingleton().setProperties(VoDescriptionServer.RESOURCE_PLUGIN_KEY, new Object[] {
+               TabularSkyServiceResources.class.getName(),
+               RdbmsMetadataResources.class.getName(),
+               TabularDbResources.class.getName(),
+            });
+
+      
+      //set up the properties for the authority bit
+      SimpleConfig.setProperty("datacenter.name", "SampleStars AstroGrid Datacenter");
+      SimpleConfig.setProperty("datacenter.shortname", "PAL-Sample");
+      SimpleConfig.setProperty("datacenter.publisher", "AstroGrid");
+      SimpleConfig.setProperty("datacenter.description", "An unconfigured datacenter; it contains two tables of sample stars and galaxies for testing and demonstration purposes.");
+      SimpleConfig.setProperty("datacenter.contact.name", "Martin Hill");
+      SimpleConfig.setProperty("datacenter.contact.email", "mch@roe.ac.uk");
+
+      SimpleConfig.setProperty("datacenter.authorityId", "astrogrid.org");
+      SimpleConfig.setProperty("datacenter.resourceKey", "pal-sample");
     }
    
     
@@ -227,6 +265,9 @@ public class SampleStarsPlugin extends JdbcPlugin
 }
    /*
    $Log: SampleStarsPlugin.java,v $
+   Revision 1.2  2005/03/10 20:19:21  mch
+   Fixed tests more metadata fixes
+
    Revision 1.1  2005/03/10 16:42:55  mch
    Split fits, sql and xdb
 

@@ -1,5 +1,5 @@
 /*
- * $Id: GetMetadata.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: GetMetadata.java,v 1.2 2005/03/10 20:19:21 mch Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -24,13 +24,18 @@ public class GetMetadata extends DefaultServlet {
       try {
          response.setContentType("text/xml");
 
+         //see if a particular resource type has bee requested
          String resourceType = request.getParameter("Resource");
+         
+         //nothing - all
          if (resourceType == null) {
             response.getWriter().write(VoDescriptionServer.makeVoDescription());
          }
+         //CEA resources
          else if (resourceType.toUpperCase().equals("CEA")) {
             response.getWriter().write(CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry());
          }
+         //look for the one with the same name
          else  {
             //we still need to wrap it in a VoDescription so that it's a valid document
             response.getWriter().write(VoDescriptionServer.VODESCRIPTION_ELEMENT);

@@ -13,6 +13,6 @@
    <goal name="astrogrid-install-snapshot" prereqs="multiproject:install-snapshot"/>
    <goal name="astrogrid-deploy-artifact" prereqs="multiproject:deploy"/>
    <goal name="astrogrid-build-artifact" prereqs="multiproject:artifact"/>
-   <goal name="astrogrid-install-artifact" prereqs="multiproject:install"/>
+   <goal name="astrogrid-install-artifact" prereqs="multiproject:clean,multiproject:install"/>
    
 </project>

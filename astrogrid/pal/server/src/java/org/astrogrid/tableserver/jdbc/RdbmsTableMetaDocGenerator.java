@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsTableMetaDocGenerator.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: RdbmsTableMetaDocGenerator.java,v 1.2 2005/03/10 20:19:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,10 +22,11 @@ import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 import org.astrogrid.io.xml.XmlAsciiWriter;
 import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.webapp.DefaultServlet;
+import org.astrogrid.xml.XmlTypes;
 
 /**
  * Generates the table metadoc that describes a tabular dataset from the metadata
- * provided by the JDBC connection.
+ * provided by the JDBC connection.  Comes in handy servlet form for easy web use.
  */
 
 public class RdbmsTableMetaDocGenerator extends DefaultServlet {
@@ -33,11 +34,11 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
    protected static Log log = LogFactory.getLog(RdbmsTableMetaDocGenerator.class);
    
    //should match the xml schema types
-   public static String INT = "integer";
-   public static String FLOAT = "double";
-   public static String BOOLEAN = "boolean";
-   public static String STRING = "string";
-   public static String DATE = "dateTime";
+   public static String INT = XmlTypes.INT;
+   public static String FLOAT = XmlTypes.FLOAT;
+   public static String BOOLEAN = XmlTypes.BOOLEAN;
+   public static String STRING = XmlTypes.STRING;
+   public static String DATE = XmlTypes.DATE;
    
    /** Convenience routine for finding the value of a column in a result set row,
     * but ignoring
@@ -168,62 +169,6 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
    }
    
    
-   /** Generates the Queryable Resource which describes what can be queried
-    *
-   public void writeQueryableResource(Writer out, DatabaseMetaData metadata ) throws IOException {
-
-      try {
-         XmlAsciiWriter xw = new XmlAsciiWriter(out, false);
-
-         XmlPrinter metaTag = xw.newTag("Resource", new String[] { "xsi:type='Queryable'" });
-
-         String funcs = metadata.getNumericFunctions();
-
-         XmlPrinter funcTag = metaTag.newTag("Functions");
-         StringTokenizer tokenizer = new StringTokenizer(funcs,",");
-         while (tokenizer.hasMoreTokens()) {
-            funcTag.writeTag("Function", tokenizer.nextToken());
-         }
-         if (SimpleConfig.getSingleton().getBoolean("datacenter.implements.circle",false)) {
-            funcTag.writeTag("Function", "CIRCLE");
-         }
-         if (SimpleConfig.getSingleton().getBoolean("datacenter.implements.xmatch",false)) {
-            funcTag.writeTag("Function", "XMATCH");
-         }
-         
-         //get all tables
-         ResultSet tables = metadata.getTables(null, null, "%", null);
-
-         while (tables.next()) {
-            //ignore all tables beginning with 'sys' as these are standard system tables
-            //and we don't want to make these public.  I believe
-            if (!getColumnValue(tables, "TABLE_NAME").startsWith("sys")) {
-               ResultSet columns = metadata.getColumns(null, null, tables.getString("TABLE_NAME"), "%");
-               
-               while (columns.next()) {
-                  int sqlType = Integer.parseInt(getColumnValue(columns, "DATA_TYPE"));
-                  XmlPrinter colTag = metaTag.newTag("Field", new String[] { "indexed='false'" }  );
-                  colTag.writeTag("Name", getColumnValue(tables, "TABLE_NAME")+"."+getColumnValue(columns, "COLUMN_NAME"));
-                  colTag.writeTag("DataType", getVoType(sqlType));  //duplicate of attribute above, which includes width where nec, but
-                  colTag.writeTag("Description", getColumnValue(columns, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
-                  colTag.writeTag("DimEq", " "); //Dimension Equation
-                  colTag.writeTag("Scale", " "); //Scaling Factor for dimension equation
-                  colTag.writeTag("Units", " ");
-                  colTag.writeTag("UCD", " ");
-                  colTag.writeTag("UcdPlus", " ");
-                  colTag.close();
-               }
-            }
-         }
-         metaTag.close();
-         xw.close();
-      }
-      catch (SQLException e) {
-         throw new DatabaseAccessException("Could not get metadata: "+e,e);
-      }
-
-   }
-
    /** Servlet implementation so we can run it nicely from a web interface */
    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 

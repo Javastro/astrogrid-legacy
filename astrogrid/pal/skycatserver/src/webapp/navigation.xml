@@ -7,7 +7,7 @@
          <li><a href="docs/release.jsp">Release Notes</a>
          <li><a href="docs/configure.jsp">Configure</a>
          <li><a href="installChecks.jsp">Installation Checks</a>
-         <li><a href="TestServlet?suite=org.astrogrid.datacenter.service.InstallationSelfCheck">Self Test</a>
+         <li><a href="TestServlet?suite=org.astrogrid.dataservice.service.InstallationSelfCheck">Self Test</a>
          <li><a href="client-dist/astrogrid-datacenter-client-SNAPSHOT.zip">Java client API</a>
       </ul>
    </div>

@@ -43,31 +43,31 @@
   <servlet>
     <servlet-name>SubmitQuery</servlet-name>
     <description>Servlet for submitting (asynchronous) queries via POST or GET</description>
-    <servlet-class>org.astrogrid.dataservice.servlet.SubmitQuery</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.SubmitQuery</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>AskQuery</servlet-name>
     <description>Servlet for asking (synchronous) queries via POST or GET</description>
-    <servlet-class>org.astrogrid.dataservice.servlet.AskQuery</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.AskQuery</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>AskCount</servlet-name>
     <description>Servlet that just gets the number of rows, rather than the rows themselves, for a query</description>
-    <servlet-class>org.astrogrid.dataservice.servlet.AskCount</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.AskCount</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>BrowserAskQuery</servlet-name>
     <description>Servlet for asking (synchronous) queries via POST or GET suitable for browsers</description>
-    <servlet-class>org.astrogrid.dataservice.servlet.BrowserAskQuery</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.BrowserAskQuery</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>AttemptAbort</servlet-name>
     <description>Servlet for attempting to abort a query</description>
-    <servlet-class>org.astrogrid.dataservice.servlet.AttemptAbort</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.AttemptAbort</servlet-class>
   </servlet>
 
   <servlet>
@@ -92,19 +92,19 @@
   <servlet>
     <servlet-name>GetMetadata</servlet-name>
     <description>serves the datacenter's metadata</description>
-    <servlet-class>org.astrogrid.dataservice.servlet.GetMetadata</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.GetMetadata</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>Register</servlet-name>
     <description>(re)Registers the service (sends the metadata to the configured Registries)</description>
-    <servlet-class>org.astrogrid.dataservice.servlet.Register</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.Register</servlet-class>
   </servlet>
 
   <servlet>
-    <servlet-name>RdbmsResourceGenerator</servlet-name>
-    <description>Generates the Metadata Resource(s) for a Relational Database</description>
-    <servlet-class>org.astrogrid.dataservice.queriers.sql.RdbmsResourceGenerator</servlet-class>
+    <servlet-name>MetaDocGenerator</servlet-name>
+    <description>Generates the Metadata Document(s) that describe the data</description>
+    <servlet-class>org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator</servlet-class>
   </servlet>
 
 
@@ -211,8 +211,8 @@
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>RdbmsResourceGenerator</servlet-name>
-    <url-pattern>/admin/GenerateRdbmsResource</url-pattern>
+    <servlet-name>MetaDocGenerator</servlet-name>
+    <url-pattern>/admin/GenerateMetaDoc</url-pattern>
   </servlet-mapping>
 
   <!-- Store Browser -->

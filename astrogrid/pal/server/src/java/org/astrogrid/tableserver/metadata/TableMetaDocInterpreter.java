@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.2 2005/03/10 20:19:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.tableserver.metadata;
 import java.io.IOException;
 import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
+import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
@@ -37,26 +38,37 @@ public class TableMetaDocInterpreter
    Element metadoc;
 // Element[] catalogs; //root list of catalogs
    
-   public final static String TABLE_METADOC_KEY = "datacenter.metadoc.url";
+   public final static String TABLE_METADOC_URL_KEY = "datacenter.metadoc.url";
+   public final static String TABLE_METADOC_FILE_KEY = "datacenter.metadoc.file";
    
    /** Construct to interpret the table metadoc given in the config file */
    public TableMetaDocInterpreter() throws IOException {
-      this(SimpleConfig.getSingleton().getString(TABLE_METADOC_KEY));
+      URL url = SimpleConfig.getSingleton().getUrl(TABLE_METADOC_URL_KEY, null);
+      if (url != null) {
+         loadUrl(url);
+      }
+      else {
+         url = Config.resolveFilename(SimpleConfig.getSingleton().getString(TABLE_METADOC_FILE_KEY));
+         loadUrl(url);
+      }
    }
 
    
    public TableMetaDocInterpreter(String url) throws IOException {
+      loadUrl(new URL(url));
+   }
+   
+   /** Loads metadoc from given URL */
+   private void loadUrl(URL url) throws IOException {
       try {
-         metadoc = DomHelper.newDocument(new URL(url)).getDocumentElement();
-      }
-      catch (ParserConfigurationException e) {
-         throw new RuntimeException(e);
+         metadoc = DomHelper.newDocument(url).getDocumentElement();
       }
       catch (SAXException e) {
          throw new MetadataException("Server's TableMetaDoc at "+url+" is invalid XML: "+e);
       }
-//    catalogs = DomHelper.getChildrenByTagName(metadoc, "Catalog");
    }
+   
+   
 
    /** Returns the element describing the catalog (group of tables, not necessarily
     * a sky catalog) with the given ID/name.
@@ -111,6 +123,7 @@ public class TableMetaDocInterpreter
       
       //assertions
       if (column == null) { throw new IllegalArgumentException("No column specified"); }
+      if (table == null) { throw new IllegalArgumentException("No table specified"); }
 
       Element tableRes = getTableElement(getCatalogElement(catalog), table);
 

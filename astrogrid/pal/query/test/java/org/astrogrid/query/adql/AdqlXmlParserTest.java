@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlXmlParserTest.java,v 1.1 2005/02/28 19:36:39 mch Exp $
+ * $Id: AdqlXmlParserTest.java,v 1.2 2005/03/10 20:19:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,10 @@ package org.astrogrid.query.adql;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.query.Query;
+import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.adql.AdqlXml074Parser;
+import org.astrogrid.slinger.targets.TargetMaker;
 
 
 /**
@@ -18,6 +21,12 @@ import org.astrogrid.query.adql.AdqlXml074Parser;
 
 public class AdqlXmlParserTest extends TestCase   {
 
+   public void testSimple() throws Exception {
+      Query q = SimpleQueryMaker.makeConeQuery(30.0, -80.0, 0.1, TargetMaker.makeTarget("homespace:him@there"), "VOTABLE");
+      String adql = Adql074Writer.makeAdql(q);
+      AdqlXml074Parser.makeQuery( adql);
+   }
+   
    public void testParseNvo1() throws Exception {
       AdqlXml074Parser.makeQuery( new AdqlTestHelper().getNvo1() );
    }
@@ -51,6 +60,9 @@ public class AdqlXmlParserTest extends TestCase   {
 
 /*
  $Log: AdqlXmlParserTest.java,v $
+ Revision 1.2  2005/03/10 20:19:21  mch
+ Fixed tests more metadata fixes
+
  Revision 1.1  2005/02/28 19:36:39  mch
  Fixes to tests
 

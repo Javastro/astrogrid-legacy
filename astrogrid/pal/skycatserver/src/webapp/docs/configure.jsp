@@ -164,7 +164,7 @@ know how to access the data.
 First you will need to describe your data using Virtual Observatory terms and structures.
 You can create a template document from the JDBC, on this page:
 
-<a href='../admin/getRdbmsMetadata.jsp'><p><b>Table MetaDoc Generator</b></a></p>
+<a href='../admin/GenerateMetaDoc'><p><b>Table MetaDoc Generator</b></a></p>
 
 You will need to fill in the UCD and Unit elements at a minimum, but obviously it will help if you can add human-
 readable descriptions too.

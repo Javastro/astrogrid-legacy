@@ -1,5 +1,5 @@
 /*
- * $Id: Adql074Writer.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: Adql074Writer.java,v 1.2 2005/03/10 20:19:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -88,6 +88,7 @@ public class Adql074Writer implements QueryVisitor {
          XmlPrinter save = currentTag;
          currentTag = currentTag.newTag("Where");
       
+         tagName = "Condition";
          query.getCriteria().acceptVisitor(this);
          currentTag =save;
       }
@@ -247,6 +248,8 @@ public class Adql074Writer implements QueryVisitor {
 
    /** Writes out the adql for a circle/cone search */
    public void visitCircle(CircleCondition circleFunc) throws IOException  {
+   
+      assert (tagName != null) : "Null tagname writing circle condition in ADQL 0.7.4";
       
       XmlPrinter tTag = currentTag.newTag(tagName, new String[] { "xsi:type='regionSearchType'" });
       XmlPrinter regionTag = tTag.newTag("Region", new String[] { "xmlns:q1='urn:nvo-region'","xsi:type='q1:circleType'","coord_system_id='"+circleFunc.getEquinox()+"'"});
@@ -270,6 +273,7 @@ public class Adql074Writer implements QueryVisitor {
    
    /** Writes out the adql for a general numeric function */
    public void visitFunction(Function function) throws IOException {
+      
       String type = null;
       String name = function.getName().toUpperCase();
       if (FunctionDefinition.aggregateFuncs.indexOf(" "+name+" ")>-1) {

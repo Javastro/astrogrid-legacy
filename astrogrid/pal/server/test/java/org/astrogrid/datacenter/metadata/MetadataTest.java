@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.6 2005/03/10 16:42:55 mch Exp $
+/*$Id: MetadataTest.java,v 1.7 2005/03/10 20:19:21 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.datacenter.metadata;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
@@ -20,14 +21,15 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.FileResourcePlugin;
 import org.astrogrid.dataservice.metadata.UrlResourcePlugin;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
-import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
+import org.astrogrid.dataservice.metadata.queryable.SearchGroup;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import java.io.IOException;
 
 /**
  * tests the metadata generators, etc
@@ -173,6 +175,14 @@ public class MetadataTest extends TestCase {
    public void testRegistryDates() {
       Calendar ukcal = new GregorianCalendar(Locale.UK);
       Calendar uscal = new GregorianCalendar(Locale.US);
+   }
+   
+   public void testSpatial() throws IOException {
+      ConeConfigQueryableResource conequeryable = new ConeConfigQueryableResource();
+      SearchGroup[] groups = conequeryable.getSpatialGroups();
+      for (int i = 0; i < groups.length; i++) {
+         conequeryable.getSpatialFields(groups[i]);
+      }
    }
    
    public static void main(String[] args) {

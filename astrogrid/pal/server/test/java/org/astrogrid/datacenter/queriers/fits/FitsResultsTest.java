@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+/*$Id: FitsResultsTest.java,v 1.3 2005/03/10 20:19:21 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -15,7 +15,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.account.LoginAccount;
+import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.UrlListResults;
+import org.astrogrid.dataservice.queriers.status.QuerierProcessingResults;
+import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
@@ -28,12 +32,19 @@ public class FitsResultsTest extends TestCase
    String [] exampleUrls = {"http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0500",
                             "http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0600"};
 
-   UrlListResults fixedResults = new UrlListResults(null, exampleUrls);
+   UrlListResults fixedResults;
+   Querier testQuerier = null;
+                            
+   public void setUp() throws IOException {
+       testQuerier = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30, 40, 6), this);
+       testQuerier.setStatus(new QuerierProcessingResults(testQuerier.getStatus()));
+      fixedResults = new UrlListResults(testQuerier, exampleUrls);
+   }
                             
    public void testToVotable() throws IOException, SAXException, ParserConfigurationException
    {
       StringWriter sw = new StringWriter();
-      fixedResults.writeVotable(TargetMaker.makeTarget(sw), null);
+      fixedResults.writeVotable(TargetMaker.makeTarget(sw), (QuerierProcessingResults) testQuerier.getStatus());
       
       //check results
       DomHelper.newDocument(sw.toString());
@@ -44,7 +55,7 @@ public class FitsResultsTest extends TestCase
    public void testToHtml() throws IOException, SAXException, ParserConfigurationException
    {
       StringWriter sw = new StringWriter();
-      fixedResults.writeHtml(TargetMaker.makeTarget(sw), null);
+      fixedResults.writeHtml(TargetMaker.makeTarget(sw), (QuerierProcessingResults) testQuerier.getStatus());
       
       //check results
       DomHelper.newDocument(sw.toString());
@@ -53,7 +64,7 @@ public class FitsResultsTest extends TestCase
    public void testToCSV() throws IOException
    {
       StringWriter sw = new StringWriter();
-      fixedResults.writeCSV(TargetMaker.makeTarget(sw), null);
+      fixedResults.writeCSV(TargetMaker.makeTarget(sw), (QuerierProcessingResults) testQuerier.getStatus());
    }
 
    
@@ -76,6 +87,9 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
+ Revision 1.3  2005/03/10 20:19:21  mch
+ Fixed tests more metadata fixes
+
  Revision 1.2  2005/02/28 18:47:05  mch
  More compile fixes
 

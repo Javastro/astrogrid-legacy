@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsQueryValidator.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: RdbmsQueryValidator.java,v 1.2 2005/03/10 20:19:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -24,9 +24,10 @@ public class RdbmsQueryValidator extends DefaultQueryTraverser {
       this.interpreter = reader;
    }
    
+   /** Assumes only one catalog at the moment, and checks against the first one */
    public void visitScope(String[] scope) {
       for (int i = 0; i < scope.length; i++) {
-         if (interpreter.getTable(null, scope[i]) ==null) {
+         if (interpreter.getTable(interpreter.getCatalogs()[0], scope[i]) ==null) {
             throw new IllegalArgumentException("Table '"+scope[i]+"' is not available in this RDBMS Resource");
          }
       }
@@ -34,7 +35,7 @@ public class RdbmsQueryValidator extends DefaultQueryTraverser {
    
    public void visitColumnReference(ColumnReference expression) {
       try {
-         if (interpreter.getColumn(null,expression.getTableName(), expression.getColName()) == null) {
+         if (interpreter.getColumn(interpreter.getCatalogs()[0],expression.getTableName(), expression.getColName()) == null) {
             throw new IllegalArgumentException(expression+" is not in RDBMS Resource and so cannot be queried");
          }
       } catch (MetadataException me) {
@@ -47,6 +48,9 @@ public class RdbmsQueryValidator extends DefaultQueryTraverser {
 
 /*
  $Log: RdbmsQueryValidator.java,v $
+ Revision 1.2  2005/03/10 20:19:21  mch
+ Fixed tests more metadata fixes
+
  Revision 1.1  2005/03/10 16:42:55  mch
  Split fits, sql and xdb
 
