@@ -1,0 +1,62 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+   <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+   <author email="mch@roe.ac.uk">Martin Hill</author>
+   <title>Connecting to Databases</title>
+</properties>
+<!-- packrat requirments
+1 INSTALL document per component, to include:
+Where and how to download the installation kit
+How to deploy and configure
+How to administer (stop/start/restart)
+How to trouble-shoot
+-->
+<body>
+<section name="Introduction">
+
+<subsection name="A JDBC Database, or other datastore"><p>
+The Datacenter Server connects to a back-end system that contains the data collection to be published.
+The commonest form of back-end system is a relational database - installation instructions for other kinds of back-end system
+are included in the web-application bundle.
+<p/>
+The datacenter server can connect to any RDBMS that provides a
+ <a href="http://java.sun.com/products/jdbc/">JDBC</a> driver; it has been tested with the following
+<ul>
+<li><a href="http://www.mysql.com/">MySQL</a> - the MM-MySQL JDBC Driver
+</li><li><a href="http://hsqldb.sourceforge.net/">HSQL</a> - pure-Java RDBMS. For testing purposes or serving small databases based on textfiles.
+</li><li>Microsoft SQL Server - <i>find driver &amp; details</i>
+</li></ul>
+<p />
+
+Many RDBMS have a user account system, where different accounts may be provided with different acces privileges to the database.
+ If this is the case with your target RDBMS, we recommend that a new user account be created for the datacenter service.
+<p />
+The datacenter account should only have read / query privileges granted. <b>Do not</b> grant permissions to write to
+tables / create tables / delete tables, or to access other databases or tables than those that are to be published -
+these abilities are not needed and present a security risk.
+<p />
+Refer to the documentation for the target RDBMS for details on account creation and access privileges.
+<p />
+You may also wish to consider making a duplicate of the original data collection database, or even running a separate
+RDBMS server on a different machine specifically for access from web-services.
+</p></subsection>
+</section>
+<section name="Install JDBC Driver">
+<p>
+Acquire the jar file containing the JDBC driver for your chosen database and copy it (along with any other jars it depends upon) into the
+<tt>${CATALINA_HOME}/common/lib</tt> directory.
+</p>
+</section>
+
+
+
+<section name="References"><ul>
+<li><a href="http://www.astrogrid.org">Astrogrid Homepage</a>
+</li><li><a href="http://java.sun.com/products/jdbc/">JDBC</a>
+</li><li><a href="http://servlet.java.sun.com/products/jdbc/drivers">List of known JDBC drivers</a>
+</li></ul></section>
+
+
+</body>
+</document>

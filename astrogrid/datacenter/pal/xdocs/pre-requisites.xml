@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+   <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+   <author email="mch@roe.ac.uk">Martin Hill</author>
+   <title>PAL Pre-requisits</title>
+</properties>
+<body>
+<section name="Introduction">
+<p>
+The Astrogrid Datacenter Server, PAL, relies upon the following software components which must be
+installed and configured before installing the Datacenter Server.
+</p>
+</section>
+
+<section name="Java Virtual Machine">
+<p>
+Requires Java (J2SE) version 1.4 or higher. Available from <a href="http://java.sun.com/j2se/downloads.html">http://java.sun.com/j2se/downloads.html</a>
+</p></section>
+
+<section name="Web Service Manager">
+
+PAL requires a web service manager to present itself to the web.  We have used and tested it with
+Tomcat.
+
+<subsection name="Tomcat Server">
+<p>
+Requires version 4.1 or later. Available from <a href="http://jakarta.apache.org/tomcat/">http://jakarta.apache.org/tomcat/</a>;
+Installation instructions <a
+href="http://jakarta.apache.org/tomcat/tomcat-4.1-doc/RUNNING.txt">http://jakarta.apache.org/tomcat/tomcat-4.1-doc/RUNNING.txt</a>.
+Other servlet containers should work, provided they support version 2.2 of the Servlets Spec.
+<p/>
+Set shell variable <tt>CATALINA_HOME</tt> to the root of your tomcat installation, as described in the installation instructions.
+</p>
+</subsection>
+
+<subsection name="Axis">
+<p>
+If your web service manager does not include Axis, you will need to download this from <a href="http://ws.apache.org/axis/releases.html">here</a>, and
+install it as a web application in your manager - instructions are <a href="http://ws.apache.org/axis/java/install.html">here.</a>
+</p>
+</subsection>
+
+</section>
+
+
+<section name="References"><ul>
+<li><a href="http://www.astrogrid.org">Astrogrid Homepage</a>
+</li><li><a href="http://java.sun.com">Java Homepage</a>
+</li><li><a href="http://jakarta.apache.org/tomcat">Jakarta Tomcat Homepage</a>
+</li><li><a href="http://ws.apache.org/axis/">Apache Axis Homepage</a>
+</li></ul>
+</section>
+
+
+</body>
+</document>
