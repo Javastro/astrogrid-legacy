@@ -21,26 +21,25 @@
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
  <vr:Resource xsi:type="ServiceType">
     <Identifier>
-      <AuthorityID>vm05.astrogrid.org</AuthorityID>
-      <ResourceKey>MyspaceManager</ResourceKey>
+      <AuthorityID>vm06.astrogrid.org</AuthorityID>
+      <ResourceKey>PolicyManager/4_1</ResourceKey>
     </Identifier>
-    <Title>Myspace Manager Service Entry</Title>
-    <ShortName>Myspace</ShortName>
+    <Title>Authentication Service</Title>
+    <ShortName>Authenticate</ShortName>
     <Summary>
       <Description>
-         This entry is a Myspace manager entry which is a particular service dealing with a user's VOSpace.
+         Authenticate a particular token and authenticate users.
       </Description>
-      <ReferenceURL>http://www.astrogrid.org/maven/build/myspace</ReferenceURL>
+      <ReferenceURL>http://www.astrogrid.org/maven/build/community</ReferenceURL>
     </Summary>
-    <Type>Archive</Type>
     <RelatedResource>
        <Relationship>related-to</Relationship>
        <RelatedTo>
           <Identifier>
-            <AuthorityID>vm08.astrogrid.org</AuthorityID>
-            <ResourceKey>MyspaceSvr</ResourceKey>
+            <AuthorityID>vm06.astrogrid.org</AuthorityID>
+            <ResourceKey>AuthenticationService/4_1</ResourceKey>
           </Identifier>
-        <Title>Myspace Server</Title>
+        <Title>Authentication SErvice</Title>
        </RelatedTo>
     </RelatedResource>
     <Curation>
@@ -48,8 +47,8 @@
          <Title>Service test publisher</Title>
       </Publisher>    
       <Contact>
-        <Name>Clive Davenhall</Name>
-      	<Email>acd@roe.ac.uk</Email>
+        <Name>Dave Morris</Name>
+      	<Email>dave@ast.cam.ac.uk</Email>
       </Contact>
       <Date>2004-02-02</Date>
       <Creator>
@@ -59,16 +58,19 @@
         <Name>Dave Morris</Name>
       </Contributor>
       <Contributor>
-        <Name>Martin Hill</Name>
+        <Name>Guy Rixon</Name>
+      </Contributor>           
+      <Contributor>
+        <Name>Brian McIlwrath</Name>
       </Contributor>     
       <Contributor>
-        <Name>Clive Davenhall</Name>
+        <Name>Paul Harrison</Name>
       </Contributor>       
     </Curation>
-    <Subject>Users VOSpace</Subject>
+    <Subject>Community Services</Subject>
     <Interface>
       <Invocation>WebService</Invocation>
-      <AccessURL use="base">http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager</AccessURL>
+      <AccessURL use="full">http://vm06.astrogrid.org:8080/astrogrid-community/services/PolicyManager?wsdl</AccessURL>
     </Interface>
   </vr:Resource>
 </VODescription>
