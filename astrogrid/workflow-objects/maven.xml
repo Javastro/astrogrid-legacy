@@ -8,7 +8,7 @@
 <!-- goals for nightly build -->
 <goal name="astrogrid-clean" prereqs="clean"/>
 
-<goal name="astrogrid-deploy-site" prereqs="site,site:fsdeploy" />
+<goal name="astrogrid-deploy-site" prereqs="schemadoc,site,site:fsdeploy" />
 
 <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot"/>
 
@@ -304,6 +304,24 @@
    </goal>
 <!-- end of generation stuff -->
 
+<!-- some documentation generation -->
+  <goal name="schemadoc">
+        <delete  dir="${basedir}/xdocs/schema"/>
+        <mkdir dir="${basedir}/xdocs/schema"/>
+            <!--declare the transformer factory to use -->
+        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+
+        <xslt basedir="${basedir}/schema"
+              includes="**/*.xsd" style="${basedir}/build/xs3p.xsl"
+              destdir="${basedir}/xdocs/schema" extension=".html">
+              <param name="searchIncludedSchemas" expression="true" />
+              <param name="searchImportedSchemas" expression="true" />
+              <param name="linksFile" expression="${basedir}/build/links.xml" />
+             
+        </xslt>
+      
+      
+  </goal>
 
   <goal name="axis-declare-tasks">
      <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
