@@ -1,5 +1,5 @@
 /*
- * $Id: TaskStatus.java,v 1.1 2004/10/01 18:04:59 mch Exp $
+ * $Id: TaskStatus.java,v 1.2 2004/10/05 15:04:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,6 +16,7 @@ import org.astrogrid.community.Account;
 public interface TaskStatus
 {
    public final static String INITIALISED = "Initialised";
+   public final static String QUEUED = "Queued";
    public final static String RUNNING = "Running";
    public final static String COMPLETE = "Complete";
    public final static String ERROR = "Error";
@@ -54,6 +55,9 @@ public interface TaskStatus
 
 /*
 $Log: TaskStatus.java,v $
+Revision 1.2  2004/10/05 15:04:00  mch
+Added Queued
+
 Revision 1.1  2004/10/01 18:04:59  mch
 Some factoring out of status stuff, added monitor page
 
