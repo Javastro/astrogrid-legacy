@@ -221,7 +221,7 @@ public class JobScheduler {
         int
             applicationID = 0;
         ParameterValues
-            parameterValues = null ;
+            parameterValues = new ParameterValues() ;
         boolean
             bSubmit = true ;
         
