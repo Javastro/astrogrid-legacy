@@ -1167,7 +1167,21 @@ public String upLoadURL(String jobDetails){
 		private void setUp()throws Exception{
 			MMC.getInstance().checkPropertiesLoaded();
 			registryName = MMC.getProperty(MMC.REGISTRYCONF, MMC.CATLOG);	
-
+		}
+		
+		public Vector getServerURLs() throws Exception{
+			Vector v = new Vector();
+			try{
+				setUp();
+				StringBuffer URLs = new StringBuffer(MMC.getProperty(MMC.MYSPACEMANAGERURLs, MMC.CATLOG));
+				while ((URLs.length())!=0){
+					v.addElement(URLs.substring(0,URLs.indexOf(",")-1));
+					URLs = URLs.delete(0,URLs.indexOf(","));
+				}
+			}catch(Exception e){
+				logger.error("ERROR GETTING SERVERURLS: "+e.toString());
+			}
+			return v;
 		}
 	protected String getComponentName() { return Configurator.getClassName( MySpaceManager.class) ; }    
 
