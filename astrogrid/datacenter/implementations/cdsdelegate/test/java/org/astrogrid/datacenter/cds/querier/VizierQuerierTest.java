@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierTest.java,v 1.2 2004/03/16 01:32:35 mch Exp $
+/*$Id: VizierQuerierTest.java,v 1.3 2004/08/14 14:38:30 acd Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,15 +11,26 @@
 package org.astrogrid.datacenter.cds.querier;
 
 import java.io.InputStream;
+import java.io.StringWriter;
 
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.community.Account;
+
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
+import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.queriers.spi.TranslatorMap;
+import org.astrogrid.datacenter.queriers.TargetIndicator;
+import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.datacenter.cds.querier.VizierQuerierPlugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.astrogrid.util.DomHelper;
+
 
 import junit.framework.TestCase;
 
@@ -28,6 +39,9 @@ import junit.framework.TestCase;
  *
  */
 public class VizierQuerierTest extends ServerTestCase {
+
+//    protected QuerierSPI spi;
+    protected VizierQuerierPlugin spi;
 
     /**
      * Constructor for VizierQuerierTest.
@@ -38,6 +52,7 @@ public class VizierQuerierTest extends ServerTestCase {
     }
 
     public static void main(String[] args) {
+        System.out.println("hello.");
         junit.textui.TestRunner.run(VizierQuerierTest.class);
     }
 
@@ -46,49 +61,156 @@ public class VizierQuerierTest extends ServerTestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-//        spi = new VizierQuerierPlugin();
-        // should set configuration and workspace here -- however, not needed by this plugin implementaiton.
+
+
     }
-    protected QuerierSPI spi;
 
     /*
      * @see TestCase#tearDown()
      */
     protected void tearDown() throws Exception {
         super.tearDown();
-        spi.close();
     }
 
-    public void testName() {
-        assertNotNull(spi.getPluginInfo());
-    }
-    
-    /** chec;w there is at least one translator in the map */
-    public void testTranslatorMap() {
-        TranslatorMap map = spi.getTranslatorMap();
-        assertTrue(map.list().length > 0);
-    }
-    
-    /** do simplest query possible */
-    public void testDoQuery() throws Exception {
-        InputStream is = this.getClass().getResourceAsStream("meta-all.xml");
-        assertNotNull(is);
-        Document doc = XMLUtils.newDocument(is);
-        assertNotNull(doc);
-        Element adql = doc.getDocumentElement();
-        Translator trans = new AdqlVizierTranslator();
-        QueryResults results = spi.doQuery(trans.translate(adql),trans.getResultType());
-        assertNotNull(results);
-//        Document votable = results.toVotable();
-//        assertNotNull(votable);
-        //assertIsVotable(votable); - don't work - as returns document conforming to votable _schema_ - assertion uses votable DTD.
+
+   /**
+    *  Perform a simple cone-search of a specified Vizier catalogue.
+    */
+
+    public void testDoQuery() throws Exception
+    {  SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, 
+          VizierQuerierPlugin.class.getName());
+
+//
+//    Specify which Vizier catalogue to query.  The value chosen
+//    corresponds to Dixon's Master List of Non-stellar Objects and is
+//    the catalogue used in the examples from CDS.
+
+       SimpleConfig.setProperty(VizierQuerierPlugin.CATALOGUE_NAME,
+         "Dixon");
+
+//
+//    Specify that a catalogue is to be queried rather than just a
+//    metadata query.
+
+       SimpleConfig.setProperty(VizierQuerierPlugin.METADATA,
+         "FALSE");
+
+//
+//    Generate a QuerierManager, generate the query and perform it.
+
+       QuerierManager manager = new QuerierManager("DummyTest");
+
+       StringWriter sw = new StringWriter();
+
+//
+//    The values for the cone query correspond to the RA, Dec of M31,
+//    which is the object used in the examples from CDS.  All the values
+//    are in decimal degrees.  The search radius is equivalent to
+//    10 arcmin.
+
+       Querier q = Querier.makeQuerier(Account.ANONYMOUS, 
+         new ConeQuery(10.684620, 41.269278, 0.166667), 
+         new TargetIndicator(sw), 
+         QueryResults.FORMAT_VOTABLE);
+
+       manager.askQuerier(q);
+
+       Document results = DomHelper.newDocument(sw.toString());
+
+//
+//    The ideal test would be:
+//
+//       assertIsVotable(results);
+//
+//    However, this does not work becuase Vizier returns a document 
+//    conforming to the VOtable _schema_ whereas the assertion uses 
+//    the VOtable DTD.  the following tests are used as a substitute.
+
+       assertNotNull(results);
+       Element rootElement = results.getDocumentElement();
+//       System.out.println("rootElement: " + rootElement.getTagName() );
+       assertEquals(rootElement.getTagName(), "VOTABLE");
+
     }
 
+
+   /**
+    *  Perform a simple cone-search of a specified Vizier catalogue,
+    *  return the metadata rather than executing a genuine query.
+    */
+
+    public void testDoMetaDataQuery() throws Exception
+    {  SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, 
+          VizierQuerierPlugin.class.getName());
+
+//
+//    Specify which Vizier catalogue to query.  The value chosen
+//    corresponds to Dixon's Master List of Non-stellar Objects and is
+//    the catalogue used in the examples from CDS.
+
+       SimpleConfig.setProperty(VizierQuerierPlugin.CATALOGUE_NAME,
+         "Dixon");
+
+//
+//    Specify that a catalogue is to be queried rather than just a
+//    metadata query.
+
+       SimpleConfig.setProperty(VizierQuerierPlugin.METADATA,
+         "TRUE");
+
+//
+//    Generate a QuerierManager, generate the query and perform it.
+
+       QuerierManager manager = new QuerierManager("DummyTest");
+
+       StringWriter sw = new StringWriter();
+
+//
+//    The values for the cone query correspond to the RA, Dec of M31,
+//    which is the object used in the examples from CDS.  All the values
+//    are in decimal degrees.  The search radius is equivalent to
+//    10 arcmin.
+
+       Querier q = Querier.makeQuerier(Account.ANONYMOUS, 
+         new ConeQuery(10.684620, 41.269278, 0.166667), 
+         new TargetIndicator(sw), 
+         QueryResults.FORMAT_VOTABLE);
+
+       manager.askQuerier(q);
+
+       Document results = DomHelper.newDocument(sw.toString());
+
+//
+//    The ideal test would be:
+//
+//       assertIsVotable(results);
+//
+//    However, this does not work becuase Vizier returns a document 
+//    conforming to the VOtable _schema_ whereas the assertion uses 
+//    the VOtable DTD.  the following tests are used as a substitute.
+
+       assertNotNull(results);
+       Element rootElement = results.getDocumentElement();
+//       System.out.println("rootElement: " + rootElement.getTagName() );
+       assertEquals(rootElement.getTagName(), "VOTABLE");
+
+    }
 }
 
 
 /*
 $Log: VizierQuerierTest.java,v $
+Revision 1.3  2004/08/14 14:38:30  acd
+Test for the revised Vizier Proxy cone search.
+
+Revision 1.4  2004/08/13 17:27:00  acd
+Ensured that all the necessary properties were set programmatically
+and added a test to perform a metadata query.
+
+Revision 1.3  2004/08/12 17:25:00  acd
+Refactored, as they say, to execute test correctly.
+
 Revision 1.2  2004/03/16 01:32:35  mch
 Fixed for cahnges to code to work with new plugins
 
