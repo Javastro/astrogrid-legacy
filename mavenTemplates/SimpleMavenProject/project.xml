@@ -14,8 +14,6 @@
 	<!-- a short description of what the project does -->
 	<shortDescription> How to set up Maven. </shortDescription>
 	<!-- Override values in the parent POM-->
-	<!-- Location on Uluru to deploy the site documentation -->
-	<siteDirectory>/var/www/www/maven/build/SimpleMavenProject</siteDirectory>
 	<!-- Connections to CVS -->
 	<repository>
 		<connection> 
