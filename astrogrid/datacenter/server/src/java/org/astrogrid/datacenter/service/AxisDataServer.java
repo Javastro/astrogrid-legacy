@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.19 2003/12/16 11:09:59 mch Exp $
+ * $Id: AxisDataServer.java,v 1.20 2003/12/16 12:20:40 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,13 +14,10 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types._language;
 import org.astrogrid.datacenter.axisdataserver.types._query;
@@ -59,7 +56,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
    
    public static Log log = LogFactory.getLog(AxisDataServer.class);
    
-   public static String CONFIG_URL = "java:comp/env/org.astrogrid.config.url";
+//   public static String CONFIG_URL = SimpleConfig.CONFIG_URL;//"java:comp/env/org.astrogrid.config.url";
    
    /**
     * Initialises the configuration.
@@ -68,11 +65,8 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * @todo MCH another hack to see if the SimpleConfig.loadJndi is now OK
     */
    public AxisDataServer()  throws IOException {
-      boolean loadedconfig = SimpleConfig.loadJndiUrl(CONFIG_URL);
-      
-      if (!loadedconfig) {
-         throw new IOException("Config file url key '"+CONFIG_URL+" not found in JNDI");
-      }
+
+      SimpleConfig.autoLoad();
    }
    
    /**
