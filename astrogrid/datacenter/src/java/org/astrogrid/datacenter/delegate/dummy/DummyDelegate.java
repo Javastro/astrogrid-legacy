@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.6 2003/09/15 22:38:42 mch Exp $
+ * $Id: DummyDelegate.java,v 1.7 2003/09/15 22:56:02 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -113,7 +113,12 @@ public class DummyDelegate extends DatacenterDelegate
 
       try
       {
-         return DocHelper.wrap(QueryIdHelper.makeQueryIdTag(QUERY_ID)).getDocumentElement();
+         String response =
+            "<"+ResponseHelper.QUERY_CREATED_RESP_TAG+">"+
+            QueryIdHelper.makeQueryIdTag(QUERY_ID)+
+            "</"+ResponseHelper.QUERY_CREATED_RESP_TAG+">";
+
+         return DocHelper.wrap(response).getDocumentElement();
       }
       catch (SAXException e)
       {
@@ -130,7 +135,12 @@ public class DummyDelegate extends DatacenterDelegate
 
       try
       {
-         return DocHelper.wrap(QueryIdHelper.makeQueryIdTag(QUERY_ID)).getDocumentElement();
+         String response =
+            "<"+ResponseHelper.QUERY_STARTED_RESP_TAG+">"+
+            QueryIdHelper.makeQueryIdTag(QUERY_ID)+
+            "</"+ResponseHelper.QUERY_STARTED_RESP_TAG+">";
+
+         return DocHelper.wrap(response).getDocumentElement();
       }
       catch (SAXException e)
       {
@@ -247,6 +257,9 @@ public class DummyDelegate extends DatacenterDelegate
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.7  2003/09/15 22:56:02  mch
+Test fixes
+
 Revision 1.6  2003/09/15 22:38:42  mch
 Split spawnQuery into make and start, so we can add listeners in between
 
