@@ -33,7 +33,7 @@
      includes="*/project.xml,implementations/*/project.xml"
      goals="astrogrid-install-snapshot"
      banner="installing snapshots"
-     ignoreFailures="true" />
+     ignoreFailures='true' />
 </goal>
 <goal name="astrogrid-build-snapshot">
    <echo message="Goal not implemented"/>

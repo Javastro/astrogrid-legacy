@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.18 2004/08/19 22:04:42 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.19 2004/08/24 19:06:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -209,72 +209,6 @@ public class HtmlDataServer
              "</HEAD>\n";
    }
 
-   /** Returns an html snippet for including at the top of the <BODY> element
-    * of JSP pages.  Includes banners, logos, etc */
-   public static String getPageHeader() throws IOException {
-      String snippetFile = SimpleConfig.getProperty("datacenter.html.header.filename", null);
-      
-      if (snippetFile == null) {
-         return   "<div id='banner'>\n"+
-                  " <table border='0' width='100%' cellpadding='8' cellspacing='0'><tr>\n"+
-                  " <td>"+
-                  "  <a href='http://www.astrogrid.org'>"+
-                  "   <img border='0' alt='AstroGrid' src='http://www.astrogrid.org/images/AGlogo' align='left'></img>"+
-                  "  </a>\n"+
-                  " </td><td>\n"+
-                  "  <a href='http://www.astrogrid.org/maven/docs/SNAPSHOT/datacenter/index.html' id='projectLogo'>"+
-                  "   <img border='0' alt='Publishers Astrogrid Library' src='http://www.astrogrid.org/images/AGlogo' align='right'></img>"+
-                  "  </a>\n"+
-                  " </td>"+
-                  " </tr></table>"+
-//                  " <div class='clear'><hr></hr></div>\n"+
-                  "</div>\n"+
-                  "<div id='breadcrumbs'>\n"+
-                  "  <div align='left'>Publisher's AstroGrid Library (PAL)</div>\n"+
-                  "  <div align='right'>"+
-                  "    <a href='http://www.astrogrid.org'>AstroGrid</a>"+
-                  "    | <a href='index.html'>"+DataServer.getDatacenterName()+"</a>"+
-                  "    | <a href='http://www.astrogrid.org/maven/docs/SNAPSHOT/datacenter/index.html'>Latest PAL</a>"+
-                  "  </div>\n"+
-//                  "  <div class='clear'><hr></hr></div>\n"+
-//                  "</div>"+
-//                  "<div id='leftColumn'>\n"+
-//                  "  <div id='navcolumn'>\n"+
-                     //could do with parsing the navigation.xml doc and including that here...
-                     //<div id="menuInstall"><h5>Install</h5><ul><li class="none"><a href="INSTALL.html">INSTALL</a></li><li class="none"><a href="RELEASE.html">RELEASE</a></li><li class="none"><a href="WEB-INF/classes/default.properties">Sample Configuration</a></li><li class="none"><a href="self-test.html">Installation Test</a></li></ul></div><div id="menuQuery"><h5>Query</h5><ul><li class="none"><a href="cone-form.html">Cone Search</a></li><li class="none"><a href="querybuilder/qbuilder.jsp">Build Queries</a></li><li class="none"><a href="adqls-form.html">Ask Adql/Sql Query</a></li><li class="none"><a href="adqlx-form.html">Ask Adql/Xml Query</a></li><li class="none"><a href="adqls-form.html">Ask Adql/Url Query</a></li><li class="none"><a href="translateAdql.jsp">Translate ADQL/SQL to XML</a></li><li class="none"><a href="adql">Examples</a></li><li class="none"><a href="schema.html">XML Schema</a></li></ul></div><div id="menuDevelop"><h5>Develop</h5><ul><li class="none"><a href="other-back-end.html">Writing a new back-end</a></li><li class="none"><a href="implementations">Example back-ends</a></li><li class="none"><a href="server/index.html">Server Development Documentation</a></li></ul></div><div id="menuDownload"><h5>Download</h5><ul><li class="none"><a href="client-dist/astrogrid-datacenter-client-SNAPSHOT.zip">Delegate binary dist</a></li></ul></div><div id="menuServer"><h5>Server</h5><ul><li class="none"><a href="serverStatus.jsp">Status</a></li><li class="none"><a href="metadata.jsp">Metadata</a></li></ul></div><div id="menuCEA"><h5>CEA</h5><ul><li class="none"><a href="cea-fingerprint.jsp">Fingerprint</a></li><li class="none"><a href="TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory">Installation Tests</a></li><li class="none"><a href="cec-http?method=returnRegistryEntry">View VODescription</a></li></ul></div><div id="menuProject_Documentation"><h5>Project Documentation</h5><ul><li class="none"><a href="index.html">About Publishers Astrogrid Library</a></li><li class="collapsed"><a href="project-info.html">Project Info</a></li><li class="collapsed"><a href="maven-reports.html">Project Reports</a></li><li class="none"><a href="http://wiki.astrogrid.org/bin/view/Astrogrid/DevelopmentDocs" class="externalLink" title="External Link">Development Process</a></li></ul></div>
-//                  "  <a href='http://www.astrogrid.org' title='Provided by Astrogrid' id='poweredBy'><img alt='Provided by Astrogrid' src='http://www.astrogrid.org/images/AGlogo'></img></a>"+
-//                  "  </div>\n"+
-                  "</div>\n";
-
-      }
-      else {
-         FileReader reader = new FileReader(snippetFile);
-         StringWriter writer = new StringWriter();
-         Piper.pipe(reader, writer);
-         return writer.toString();
-      }
-      
-   }
-
-   /** Returns an html snippet for including at the bottom of the <BODY> element
-    * of JSP pages.  Includes banners, logos, etc */
-   public static String getPageFooter() throws IOException {
-      String snippetFile = SimpleConfig.getProperty("datacenter.html.footer.filename", null);
-      
-      if (snippetFile == null) {
-         return "<div id='footer'><div class='xright'>© 2002-2004, AstroGrid</div><div class='clear'><hr></hr></div></div>";
-      }
-      else {
-         FileReader reader = new FileReader(snippetFile);
-         StringWriter writer = new StringWriter();
-         Piper.pipe(reader, writer);
-         return writer.toString()+"<br/>© 2002-2004, AstroGrid";
-      }
-      
-   }
-    
-
-   
    /**
     * Returns an error as string suitable for display in a browser as an html
     * page

@@ -1,20 +1,28 @@
 <%@ page import="java.io.*,
        org.w3c.dom.*,
        org.astrogrid.io.*,
-       org.astrogrid.config.SimpleConfig,
        org.astrogrid.util.DomHelper,
-       org.apache.commons.logging.LogFactory,
-       org.astrogrid.community.Account,
        org.astrogrid.datacenter.metadata.MetadataServer,
        org.astrogrid.datacenter.service.*"
    isThreadSafe="false"
    session="false"
 %>
 <html>
-<%= HtmlDataServer.getHeadElement("Metadata Viewer") %>
+<head>
+<title>Metadata for <%=DataServer.getDatacenterName() %> </title>
+<style type="text/css" media="all">
+          @import url("./style/maven-base.css");
+          @import url("./style/maven-theme.css");
+</style>
+</title>
+</head>
+
+
 <body>
-<jsp:include page='<%=SimpleConfig.getSingleton().getString("datacenter.header.html", "header.xml") %>' flush='true'>
-<jsp:include page='navigation.xml' flush='true'>
+<%@ include file="header.xml" %>
+<%@ include file="navigation.xml" %>
+
+<div id='bodyColumn'>
 
 <h1>Metadata for <%=DataServer.getDatacenterName() %></h1>
 
@@ -33,8 +41,10 @@
 <th>Column</th>
 <th>Type</th>
 <th>Units</th>
-<th>UCD</th>
+<th>UCD1</th>
+<th>UCD1+</th>
 <th>Error</th>
+<th>Description</th>
 </tr>
 <%
          String[] cols = MetadataServer.getColumns(tables[table]);
@@ -46,6 +56,7 @@
 <td><%=colElement.getAttribute("datatype") %></td>
 <td><%=DomHelper.getValue(colElement, "Units") %></td>
 <td><%=DomHelper.getValue(colElement, "UCD") %></td>
+<td><%=DomHelper.getValue(colElement, "UcdPlus") %></td>
 <td><%=DomHelper.getValue(colElement, "ErrorColumn") %></td>
 <td><%=DomHelper.getValue(colElement, "Description") %></td>
 </tr>
@@ -77,8 +88,9 @@
 
 <p>Download the raw metadata document <a href='metadata.jsp'>here</a></p>
 <p>If you have access to administrator functions, you can download regenerated metadata <a href='admin/generateMetadata.jsp'>here</a></p>
+</div>
 
-<jsp:include page='<%=SimpleConfig.getSingleton().getString("datacenter.footer.html", "footer.xml") %>' flush='true'>
+   <%@ include file="footer.xml" %>
 </body>
 </html>
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql074.java,v 1.2 2004/08/24 17:27:31 mch Exp $
+ * $Id: Query2Adql074.java,v 1.3 2004/08/24 19:06:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -32,7 +32,9 @@ public class Query2Adql074  {
       xw.writeComment(comment);
       
       
-      XmlTagPrinter selectTag = xw.newTag("Select", "xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'");
+      XmlTagPrinter selectTag = xw.newTag("Select", "xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4' "+
+                                                      "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "+
+                                                      "xmlns:xsd='http://www.w3.org/2001/XMLSchema'");
 
       //--- SELECT ---
 
@@ -150,6 +152,9 @@ public class Query2Adql074  {
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.3  2004/08/24 19:06:44  mch
+ Improvements to JSP pages, lots to query building and translating
+
  Revision 1.2  2004/08/24 17:27:31  mch
  Fixed bugs in calls to XmlTagPrinters
 

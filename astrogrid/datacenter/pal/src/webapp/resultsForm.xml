@@ -1,0 +1,18 @@
+<!-- Include this file in forms that require the results to be specified -->
+<div id='resultsSpec'>
+        <p>
+          Results Format
+          <select name='Format'>
+             <option value="VOTABLE">VOTable</option>
+             <option value="CSV">CSV</option>
+          </select>
+          Compression
+          <select name='Compression'>
+             <option value="NONE">None</option>
+          </select>
+          Send them to
+          <input type="text" name="Target"/>
+          <a href="http://wiki.astrogrid.org/bin/view/Support/HelpIdentifyingFiles">(Help)</a>
+        </p>
+</div>
+

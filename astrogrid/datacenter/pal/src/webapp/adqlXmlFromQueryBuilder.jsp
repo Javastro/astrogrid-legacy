@@ -1,0 +1,127 @@
+<%@ page language="java"
+    import="java.util.*, org.astrogrid.config.SimpleConfig, java.io.*, org.astrogrid.datacenter.sqlparser.*, org.astrogrid.datacenter.query.results.*, org.astrogrid.datacenter.query.criteria.*,
+    org.astrogrid.datacenter.metadata.*, org.astrogrid.datacenter.service.HtmlDataServer,
+    org.astrogrid.datacenter.service.DataServer,
+    org.w3c.dom.*, org.astrogrid.util.* " %>
+
+<%-- This page takes the entries from the queryBuilder forms, creates an ADQL/xml
+     query from it, and forwards the user to the ADQL/xml entry form page to
+     submit it --%>
+<%
+   String[] searchCols = request.getParameterValues("searchColumn");
+   if (searchCols == null) { searchCols = new String[0]; }  //don't have to check for nulls
+   String[] resultCols = request.getParameterValues("resultColumn");
+   if (resultCols == null) { resultCols = new String[] {"*"}; }
+   String[] conditionColumns = request.getParameterValues("conditionColumn");
+   if (conditionColumns == null) { conditionColumns = new String[0]; }
+   String[] conditionOperands = request.getParameterValues("conditionOperand");
+   if (conditionOperands == null) { conditionOperands = new String[0]; }
+   String[] conditionValues = request.getParameterValues("conditionValue");
+   if (conditionValues == null) { conditionValues = new String[0]; }
+
+   Condition criteria = null;
+   //create modelled query
+   for (int con=0;con<conditionColumns.length;con++) {
+    
+      String colRef = conditionColumns[con];
+
+      if ((colRef != null) && (colRef.trim().length() >0) && (con<conditionOperands.length) && (con<conditionValues.length)) {
+         String tableName = "";
+         String colName = "";
+         if (colRef.indexOf(".")==-1) {
+            colName = colRef;
+         }
+         else {
+            //split table/column
+            tableName = colRef.substring(0, colRef.indexOf("."));
+            colName = colRef.substring(colRef.indexOf(".")+1);
+         }
+         
+         String operand = "";
+         if (conditionOperands[con].equals("GT")) operand = ">";
+         else if (conditionOperands[con].equals("GTE")) operand = ">=";
+         else if (conditionOperands[con].equals("LT"))  operand = "<";
+         else if (conditionOperands[con].equals("LTE")) operand = "<=";
+         else if (conditionOperands[con].equals("EQ")) operand = "=";
+         else if (conditionOperands[con].equals("LIKE")) operand = "LIKE";
+         
+         Condition newCriteria = new NumericComparison(
+                        new ColumnReference(tableName,colName),
+                        operand,
+                        new LiteralNumber(conditionValues[con])
+                     );
+         
+         if (criteria == null) {
+            criteria = newCriteria;
+         }
+         else {
+            if (request.getParameterValues("combine").equals("Intersection")) {
+               //add as AND to previous
+               criteria = new LogicalExpression(criteria, "AND", newCriteria);
+            }
+            else {
+               //add as OR to previous
+               criteria = new LogicalExpression(criteria, "OR", newCriteria);
+            }
+         }
+      }
+      
+   }
+
+   //build up list of output columns
+   Vector outColRefs = new Vector();
+   for (int i = 0; i < resultCols.length; i++) {
+      String colRef = resultCols[i];
+      if ((colRef != null) && (colRef.length() >0)) {
+         String tableName = "";
+         String colName = "";
+         if (colRef.indexOf(".")==-1) {
+            colName = colRef;
+         }
+         else {
+            //split table/column
+            tableName = colRef.substring(0, colRef.indexOf("."));
+            colName = colRef.substring(colRef.indexOf(".")+1);
+         }
+         outColRefs.add(new ColumnReference(tableName, colName));
+      }
+   }
+   ResultsDefinition resultsDef = null;
+   if (outColRefs.size() > 0) {
+      resultsDef = new TableResultsDefinition(null, (NumericExpression[]) outColRefs.toArray(new NumericExpression[] {}));
+   }
+   else {
+      resultsDef = new TableResultsDefinition(null); //all columns
+   }
+
+   //build up list of search tables
+   Vector searchTables = new Vector();
+   for (int i = 0; i < searchCols.length; i++) {
+      if (searchCols[i].indexOf(".") >-1) {
+         String table = searchCols[i].substring(0, searchCols[i].indexOf("."));
+         if (!searchTables.contains(table)) {
+            searchTables.add(table);
+         }
+      }
+   }
+   
+   Query query = new Query( (String[]) searchTables.toArray(new String[] {}), criteria, resultsDef);
+         
+   String adqlXml = "";
+   String comment = "Generated from queryBuilder '"+request.getRequestURL()+"'"; //doesn't give complete URL... :-(
+   if (request.getParameter("MakeAdql074") != null) {
+      adqlXml = Query2Adql074.makeAdql(query, comment);
+   }
+   else if (request.getParameter("MakeAdql05") != null) {
+      adqlXml = Query2Adql05.makeAdql(query, comment);
+   }
+   else {  //default to makign latest
+      adqlXml = Query2Adql074.makeAdql(query, comment);
+   }
+
+%>
+<jsp:forward page="adqlXmlForm.jsp" >
+   <jsp:param name="AdqlXml" value="<%= adqlXml %>" />
+</jsp:forward>
+
+

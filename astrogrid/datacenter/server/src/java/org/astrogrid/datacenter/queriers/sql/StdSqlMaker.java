@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.17 2004/08/24 12:55:09 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.18 2004/08/24 19:06:44 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -302,10 +302,9 @@ public class StdSqlMaker  extends SqlMaker {
          throw new RuntimeException("No XSLT sheet given for ADQL (namespace '"+namespaceURI+"'); set configuration key '" + key+"'");
       }
 
-      Transformer transformer = null;
       try {
          //find specified sheet on classpath/working directory
-         InputStream xsltIn = new BufferedInputStream(StdSqlMaker.class.getResourceAsStream(xsltDoc));
+         BufferedInputStream xsltIn = new BufferedInputStream(StdSqlMaker.class.getResourceAsStream(xsltDoc));
       
          if (xsltIn == null) {
             throw new QueryException("Could not find/create ADQL->SQL transformer doc "+xsltDoc);
@@ -314,7 +313,6 @@ public class StdSqlMaker  extends SqlMaker {
          //create transformer
          log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at '"+xsltDoc+"'");
          TransformerFactory tFactory = TransformerFactory.newInstance();
-         transformer = tFactory.newTransformer(new StreamSource(xsltIn));
          try {
             tFactory.setAttribute("UseNamespaces", Boolean.FALSE);
          }
@@ -322,6 +320,7 @@ public class StdSqlMaker  extends SqlMaker {
             //ignore - if UseNamepsaces is unsupported, it will chuck an exception, and
             //we don't want to use namespaces anyway so taht's fine
          }
+         Transformer transformer = tFactory.newTransformer(new StreamSource(xsltIn));
          
          //transform
          StringWriter sw = new StringWriter();
@@ -406,6 +405,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.18  2004/08/24 19:06:44  mch
+Improvements to JSP pages, lots to query building and translating
+
 Revision 1.17  2004/08/24 12:55:09  mch
 Minor fixes to xslt translator
 
@@ -462,5 +464,6 @@ It05 MCH Refactor
 
  
 */
+
 
 

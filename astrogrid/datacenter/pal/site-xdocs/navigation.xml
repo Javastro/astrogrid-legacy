@@ -6,29 +6,30 @@
    <menu name="Install">
       <item name="INSTALL" href="INSTALL.html" />
       <item name="RELEASE" href="RELEASE.html" />
-      <item name="Sample Configuration" href="WEB-INF/classes/default.properties" />
+      <!-- <item name="Sample Configuration" href="WEB-INF/classes/default.properties" /> -->
       <item name="Installation Test" href="self-test.html" />
+      <item name="Fingerprint" href="fingerprint.jsp" />
    </menu>
    <menu name="Query">
       <item name="Cone Search" href="cone-form.html" />
-      <item name="Build Query" href="queryBuilder.jsp" />
-      <item name="Ask Adql/Sql Query" href="adqls-form.html" />
-      <item name="Ask Adql/Xml Query" href="adqlx-form.html" />
-      <item name="Translate ADQL/SQL to XML" href="translateAdql.jsp" />
+      <item name="Build Query" href="queryBuilder-1-SelectFrom.jsp" />
+      <item name="Ask Adql/Sql Query" href="adqlSqlForm.jsp" />
+      <item name="Ask Adql/Xml Query" href="adqlXmlForm.jsp" />
+      <!-- <item name="Translate ADQL/SQL to XML" href="translateAdql.jsp" /> -->
       <item name="Examples" href="adql" />
-      <item name="XML Schema" href="schema.html" />
+   </menu>
+   <menu name="Server">
+      <item name="Status" href="serverStatus.jsp" />
+      <item name="Metadata" href="viewMetadata.jsp" />
    </menu>
    <menu name="Develop">
      <item name="Writing a new back-end" href="other-back-end.html" />
      <item name="Example back-ends" href="implementations" />
      <item name="Server Development Documentation" href="server/index.html" />
+      <item name="XML Schema" href="schema.html" />
    </menu>
    <menu name="Download">
      <item name="Delegate binary dist" href="client-dist/astrogrid-datacenter-client-SNAPSHOT.zip" />
-   </menu>
-   <menu name="Server">
-      <item name="Status" href="serverStatus.jsp" />
-      <item name="Metadata" href="viewMetadata.jsp" />
    </menu>
    <menu name="CEA">
         <item name="Fingerprint" href="cea-fingerprint.jsp" />

@@ -1,3 +1,4 @@
+<div id='leftColumn'>
 <div id='navcolumn'>
    <div id='menuInstall'>
       <h5>Install</h5>
@@ -14,9 +15,9 @@
       <ul>
          <li><a href="cone-form.html" >Cone Search</a>
          <li><a  href="queryBuilder.jsp" >Build Query</a>
-         <li><a href="adqls-form.html" >Ask Adql/Sql Query</a>
-         <li><a  href="adqlx-form.html" >Ask Adql/Xml Query</a>
-         <li><a  href="translateAdql.jsp" >Translate ADQL/SQL to XML</a>
+         <li><a href="adqlSqlForm.jsp" >Ask Adql/Sql Query</a>
+         <li><a  href="adqlXmlForm.jsp" >Ask Adql/Xml Query</a>
+         <!-- li><a  href="translateAdql.jsp" >Translate ADQL/SQL to XML</a> -->
          <li><a  href="adql">Examples</a>
       </ul>
    </div>
@@ -28,5 +29,6 @@
          <li><a href="viewMetadata.jsp">Metadata</a>
       </ul>
    </div>
+</div>
 </div>
 
