@@ -87,9 +87,9 @@ public class QueryServiceImpl implements QueryService {
      * @throws XMLDBExceptin exception finding a XPathQueryService
      * @return XPathQueryService
      */
-    private XQueryService getXPathQueryService() throws XMLDBException {
-        XQueryService service =
-            (XQueryService) coll.getService( "XPathQueryService", "1.0" );
+    private XPathQueryService getXPathQueryService() throws XMLDBException {
+        XPathQueryService service =
+            (XPathQueryService) coll.getService( "XPathQueryService", "1.0" );
         service.setProperty( OutputKeys.INDENT, "yes" );
         service.setProperty( OutputKeys.ENCODING, "UTF-8" );
         return service;

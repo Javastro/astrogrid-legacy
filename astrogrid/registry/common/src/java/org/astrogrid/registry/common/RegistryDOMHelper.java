@@ -23,14 +23,12 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * RegistryServerHelper Helper class is one to have it's name changed later.
- * Currently it helps or does some utility work like keep hold of status
- * messages, and the authority id's managed by this registry and other
- * registries.
+ * Class: RegistryDOMHelper
+ * Description: Mainly used as a DOMHelper for grabbing Authority ids, Resource keys, and identifiers.
  * 
  * @author Kevin Benson
  */
-public class RegistryServerHelper {
+public class RegistryDOMHelper {
       
    /**
     * conf - Config variable to access the configuration for the server normally
@@ -42,8 +40,11 @@ public class RegistryServerHelper {
    /**
     * Logging variable for writing information to the logs
     */   
-   private static final Log log = LogFactory.getLog(RegistryServerHelper.class);
+   private static final Log log = LogFactory.getLog(RegistryDOMHelper.class);
 
+   /**
+    * Default versionNumber used in the registry.
+    */
    private static String versionNumber = null;
    
    private static String defaultRoot = null;
@@ -61,46 +62,58 @@ public class RegistryServerHelper {
       }//if
    }
    
+   /**
+    * Method: getDefaultVersionNumber
+    * Description: Get the default version number that the registry supports.  Normally 0.10 at the moment.
+    * @return version number.
+    */
    public static String getDefaultVersionNumber() {
        return versionNumber;
    }
    
    
    /**
-    * Gets the text out of the First authority id element.
-    * Need to use RegistryServerHelper class to get the NodeList. It has
-    * already these common methods  in it.  Once it gets the NodeList
-    * then return the text in the first child. 
+    * Method: getAuthorityID
+    * Description: Gets the text out of the First authority id element.
+    * Once it gets the NodeList then return the text in the first child if there is an AuthorityID elment,
+    * otherwise split apart the identifier.  Identifier ex: ivo://{authorityid}/{resourcekey} 
     * @param doc xml element normally the full DOM root element.
     * @return AuthorityID text
     */
    public static String getAuthorityID(Element doc) {
-      NodeList nl = doc.getElementsByTagNameNS("*","Identifier" );
-      String val = null;
-      if(nl.getLength() == 0) {
-          nl = doc.getElementsByTagNameNS("*","identifier" );
-          if(nl.getLength() == 0)
-              return null;
-      }
-    
-      NodeList authNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","AuthorityID");
-      
-      if(authNodeList.getLength() == 0) {
-          val = nl.item(0).getFirstChild().getNodeValue();
-          int index = val.indexOf("/",7);
-          if( index != -1 && index > 6) 
-              return val.substring(6,index);
-          else
-              return val.substring(6);
-      }
-      return authNodeList.item(0).getFirstChild().getNodeValue();
+       NodeList nl = doc.getElementsByTagNameNS("*","Identifier" );
+       String val = null;
+       if(nl.getLength() == 0) {
+           nl = doc.getElementsByTagNameNS("*","identifier" );
+           if(nl.getLength() == 0)
+               return null;
+       }
+     
+       NodeList authNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","AuthorityID");
+       
+       if(authNodeList.getLength() == 0) {
+           val = nl.item(0).getFirstChild().getNodeValue();
+           int index = val.indexOf("/",7);
+           if( index != -1 && index > 6) {
+               return val.substring(6,index);
+           } else {
+               //small hack for certain registries that are not putting ivo://
+               //in the identifier. Currently only STSCI is doing this.
+               if(val.length() > 6)
+                   return val.substring(6);
+               else
+                   return val;
+           }
+       }
+       return authNodeList.item(0).getFirstChild().getNodeValue();
    }
 
    /**
-    * Gets the text out of the First ResourceKey element.
-    * Need to use RegistryServerHelper class to get the NodeList. It has
-    * already these common methods  in it.  Once it gets the NodeList
-    * then return the text in the first child. 
+    * Method: getResourceKey
+    * Description: Gets the text out of the First ResourceKey element.
+    * Once it gets the NodeList then return the text in the first child if there is a ResourceKey element,
+    * otherwise split apart the identifier elment. Identifier ex: ivo://{authorityid}/{resourcekey}
+    * {resourcekey} is optional.
     * @param doc xml element normally the full DOM root element.
     * @return ResourceKey text
     */  
@@ -127,6 +140,16 @@ public class RegistryServerHelper {
    }
    
    
+   /**
+    * Method: getIdentifier
+    * Description: Return the Identifier element.  Goes about a longer way to support 0.9 version by
+    * getting the AuthorityId and ResourceKey then put it together. 
+    * Identifier ex: ivo://{authorityid}/{resourcekey} where {resourcekey} is optional.
+    * 
+    * @param nd org.w3c.dom.Node containing an Identifier element.
+    * @return String of the identifier.
+    * @throws IOException
+    */
    public static String getIdentifier(Node nd) throws IOException {
       String ident = getAuthorityID((Element)nd);
       String resKey = getResourceKey((Element)nd);
@@ -134,18 +157,24 @@ public class RegistryServerHelper {
       return "ivo://" + ident;
    }
    
-      
+
+   /**
+    * Method: getRegistryVersionFromNode
+    * Description: Look through a Node and any of its parent nodes for a VOResource (vr) namespace, and
+    * extract the version number from that namespace.  If it cannot be found return the default version number.
+    * @param nd org.w3c.dom.Node for processing of searching for the vr namespace.
+    * @return version number from a namespace.
+    */
    public static String getRegistryVersionFromNode(Node nd) {
        if(nd == null || Node.ELEMENT_NODE != nd.getNodeType()) {
            log.info("not a ELEMENT NODE TIME TO JUST DEFAULT IT");
            if(nd != null) {
-               log.info("Node Name = " + nd.getNodeName());
                Node parentNodeTry = nd.getParentNode();
                if(parentNodeTry != null) {
                    return getRegistryVersionFromNode(parentNodeTry);
                }//if
            }
-           return conf.getString("reg.amend.defaultversion",null);
+           return versionNumber;
        }
        
        String version = nd.getNamespaceURI();
@@ -174,7 +203,7 @@ public class RegistryServerHelper {
        }
        //log.error("Could not find a Registry version number on the nodes BAD MEANS NO NAMESPACE DEFINED," +
        //          " defaulting to config.");
-       return conf.getString("reg.amend.defaultversion",null);
+       return versionNumber;
    }
 
 }

@@ -19,41 +19,32 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
-  <vc:Organisation created="2001-12-17T09:30:47-05:00" updated="2001-12-17T09:30:47-05:00" status="active">
+ <vr:Resource xsi:type="vg:RegistryType"  updated="2004-11-20T15:34:22Z" status="active">
     <Identifier>
-      <AuthorityID>rai.ncsa.uiuc.edu</AuthorityID>
-      <ResourceKey>RAITest</ResourceKey>
+      <AuthorityID>org.test</AuthorityID>
+      <ResourceKey>org.astrogrid.registry.RegistryService</ResourceKey>
     </Identifier>
-    <Title>NCSA Radio Astronomy Imaging Testing</Title>
-    <ShortName>NCSA-RAITesting</ShortName>
+    <Title>Astrogrid Full Registry</Title>
     <Summary>
       <Description>
-        A test The Radio Astronomy Imaging Group is focused on applying
-        high-performance computing to astronomical research.  Our
-        projects include the NCSA Astronomy Digital Image Library, 
-        the BIMA Data Archive, the BIMA Image Pipeline, and AIPS++.  
+         The main Astrogrid publishing registry
       </Description>
-      <ReferenceURL>http://rai.ncsa.uiuc.edu/</ReferenceURL>
+      <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/registry/index.html</ReferenceURL>
     </Summary>
-    <Type>Organisation</Type>
+    <Type>Archive</Type>
     <Curation>
       <Publisher>
-         <Title>NCSA Radio Astronomy Imaging</Title>
+         <Title>Astrogrid</Title>
       </Publisher>
       <Contact>
-        <Name>Dr. Raymond Plante</Name>
-	<Email>rplante@ncsa.uiuc.edu</Email>
+        <Name>Tony Linde</Name>
+       <Email>ael@star.le.ac.uk</Email>
       </Contact>
-      <Date>1993-01-01</Date>
-      <Creator>
-        <Name>Dr. Raymond Plante</Name>
-        <Logo>http://rai.ncsa.uiuc.edu/rai.jpg</Logo>
-      </Creator>
     </Curation>
-    <Subject>radio astronomy</Subject>
-    <Subject>data repositories</Subject>
-    <Subject>digital libraries</Subject>
-    <Subject>grid-based processing</Subject>
-    <ContentLevel>Research</ContentLevel>
-  </vc:Organisation>
-</VODescription>
+    <Interface>
+      <Invocation>WebService</Invocation>
+      <AccessURL use="full">http://www.test.com/services/RegistryQuery</AccessURL>
+    </Interface>
+    <vg:ManagedAuthority>org.test</vg:ManagedAuthority>
+  </vr:Resource>
+  </VODescription>

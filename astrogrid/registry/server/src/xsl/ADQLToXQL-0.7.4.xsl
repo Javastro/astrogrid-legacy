@@ -218,7 +218,10 @@
       <xsl:text> </xsl:text>      
       <xsl:choose>
          <xsl:when test="$comp = 'LIKE'">
+           <xsl:text> &amp;= </xsl:text>            
+		   <!--
            <xsl:text> |= </xsl:text>
+			-->
          </xsl:when>
          <xsl:otherwise>
             <xsl:value-of select="$comp"/>
@@ -239,7 +242,10 @@
      -->
    <xsl:template match="*[@xsi:type='likePredType']">
       <xsl:apply-templates select="ad:Arg"/>
-      <xsl:text> |= </xsl:text>
+           <xsl:text> &amp;= </xsl:text>            
+		   <!--
+           <xsl:text> |= </xsl:text>
+			-->
       <xsl:apply-templates select="ad:Pattern/ad:Literal"/>
    </xsl:template>
    <!--

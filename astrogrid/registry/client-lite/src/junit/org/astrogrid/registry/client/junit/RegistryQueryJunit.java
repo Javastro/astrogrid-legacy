@@ -28,6 +28,7 @@ import org.astrogrid.registry.client.query.RegistryService;
 import java.util.*;
 import org.astrogrid.registry.common.WSDLBasicInformation;
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.config.Config;
 
 
 
@@ -41,45 +42,28 @@ public class RegistryQueryJunit extends TestCase{
    
    RegistryService rs = null;
    URL junitEndPoint = null;
+   
+   Config conf = null;
 
    /**
     * Setup our test.
     *
     */
-   public void setUp()
-       throws Exception
-       {
+   public void setUp() throws Exception {
        super.setUp() ;
        if (DEBUG_FLAG) System.out.println("") ;
        if (DEBUG_FLAG) System.out.println("----\"----") ;
        if (DEBUG_FLAG) System.out.println("RegistryQueryJunit:setup()") ;
-       System.out.println("Property for config = " + System.getProperty("org.astrogrid.config.url"));
-       System.out.println("Property for cachedir = " + System.getProperty("org.astrogrid.registry.cache.url"));      
-       String cacheDir = System.getProperty("org.astrogrid.registry.cache.url");
-       String junitDir = System.getProperty("org.astrogrid.registry.junitcache.url");
-       //String queryEndPoint = rs.conf.getString("org.astrogrid.registry.query.junit.endpoint",null);
-       //if(queryEndPoint != null) {
-       //  rs.conf.setProperty("org.astrogrid.registry.query.endpoint",queryEndPoint);
-       //}       
-       //System.out.println("the queryEndPoint = " + queryEndPoint);
-       if(cacheDir == null) {
-          rs = null;
-          return;
-       }
-       junitEndPoint = RegistryDelegateFactory.conf.getUrl("org.astrogrid.registry.query.junit.endpoint",null);
-       if(junitEndPoint != null) {
-          System.out.println("the junitendpoint = " + junitEndPoint.toString());
-          rs = RegistryDelegateFactory.createQuery(junitEndPoint);
-       }
-         
-         
-       RegistryDelegateFactory.conf.setProperty("vm05.astrogrid.org/MyspaceManager",cacheDir+"/Myspace.xml");
-       RegistryDelegateFactory.conf.setProperty("org.astrogrid.registry.junit.authQuery1",junitDir+"/AuthorityQuery1.xml");
-       RegistryDelegateFactory.conf.setProperty("org.astrogrid.registry.junit.basicQuery1",junitDir+"/BasicQuery1.xml");       
-       //junitEndPoint = rs.conf.getUrl("org.astrogrid.registry.admin.junit.endpoint",null);       
-       //assertNotNull(rs);
-       if (DEBUG_FLAG) System.out.println("----\"----") ;
-       }
+       conf = org.astrogrid.config.SimpleConfig.getSingleton();
+       
+             
+       String baseDir = System.getProperty("org.astrogrid.junit.xml.basedir");
+       System.out.println("Property for basedir = " + baseDir);
+       conf.setProperty("org.test.registry.v09/test",baseDir + "ARegistry.xml");
+       conf.setProperty("org.test.registry.v010/test",baseDir + "ARegistryv10.xml");
+       rs = RegistryDelegateFactory.createQuery();
+       if (DEBUG_FLAG) System.out.println("----\"----");
+   }
             
    private void printProperties() {
       Properties pr = System.getProperties();
@@ -87,155 +71,67 @@ public class RegistryQueryJunit extends TestCase{
       while(enum.hasMoreElements()) {
          System.out.println(enum.nextElement());
       }
-                  
    }
    
-   public void testDSAXML() throws Exception {
-      if(DEBUG_FLAG) System.out.println("entered testDSAXML");      
-      if(rs == null) return;      
-      Document doc = rs.getResourceByIdentifier("org.astrogrid.localhost/testdsa");
+   public void testGetResourcev09() throws Exception {
+      if(DEBUG_FLAG) System.out.println("entered tetGetResourcev09");
+      Document doc = rs.getResourceByIdentifier("org.test.registry.v09/test");
       assertNotNull(doc);
       if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
-      System.out.println("exiting testdsaxml");
+      System.out.println("exiting tetGetResourcev09");
    }   
-   
-   public void testLoadRegistry() throws Exception {      
-      //assertNotNull(rs);
-      if (DEBUG_FLAG) System.out.println("entered testLoadRegistry");
-      if(rs == null) return;      
-      //if(rs.conf.getString("vm05.astrogrid.org/MyspaceManager",null) == null) return;            
-      Document doc = rs.loadRegistry();
-      if(doc == null) {
-         System.out.println("the doc was null for some reason");
-      }
-      //assertNotNull(doc);
-      
-      if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
-   }
 
-/*
-   public void testLoadRegistry2() throws Exception {      
-      //assertNotNull(rs);
-      if (DEBUG_FLAG) System.out.println("entered testLoadRegistry2");
-      if(rs == null) return;      
-      //if(rs.conf.getString("vm05.astrogrid.org/MyspaceManager",null) == null) return;            
-      VODescription vodesc = rs.loadRegistry();
-      if(vodesc != null) {
-         System.out.println("Great vodesc is not null");
-         Document test = XMLUtils.newDocument();
-         Marshaller.marshal(vodesc,test);
-         System.out.println("the marshal vodesc in testLoadregistry2 = " + XMLUtils.DocumentToString(test));
-      }else {
-         System.out.println("Darn vodesc is null");
-      }
-      //assertNotNull(doc);
-      //if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
-   }
-*/
-   
-   public void testSecurityManagerEndPoint() throws Exception {
-      //assertNotNull(rs);
-      if(DEBUG_FLAG) System.out.println("entered testSecurityManagerEndPoint");      
-      if(rs == null) return;
-      try {
-         String endPoint = rs.getEndPointByIdentifier("org.astrogrid.localhost/org.astrogrid.community.common.security.service.SecurityService");
-         assertNotNull(endPoint);
-         if(DEBUG_FLAG) System.out.println("endPoint = " + endPoint);         
-      }catch(RegistryException re) {
-         re.printStackTrace();
-      }
-   }
-  
-   
-   public void testCommunityPolicyManagerEndPoint() throws Exception {
-      //assertNotNull(rs);
-      if(DEBUG_FLAG) System.out.println("entered testCommunityPolicyManagerEndPoint");      
-      if(rs == null) return;
-      try {
-         String endPoint = rs.getEndPointByIdentifier("org.astrogrid.localhost/org.astrogrid.community.common.policy.manager.PolicyManager");
-         assertNotNull(endPoint);
-         if(DEBUG_FLAG) System.out.println("endPoint = " + endPoint);         
-      }catch(RegistryException re) {
-         re.printStackTrace();
-      }
-   }
+   public void testGetResourcev10() throws Exception {
+       if(DEBUG_FLAG) System.out.println("entered tetGetResourcev10");      
+       Document doc = rs.getResourceByIdentifier("org.test.registry.v010/test");
+       assertNotNull(doc);
+       if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
+       System.out.println("exiting tetGetResourcev10");
+    }   
 
-   public void testCommunityPolicyManagerEndPointOnCodon() throws Exception {
-      //assertNotNull(rs);
-      if(DEBUG_FLAG) System.out.println("entered testCommunityPolicyManagerEndPointOnCodon");      
-      if(rs == null) return;
-      try {
-         String endPoint = rs.getEndPointByIdentifier("org.astrogrid.localhost/org.astrogrid.community.common.security.service.SecurityService");
-         assertNotNull(endPoint);
-         if(DEBUG_FLAG) System.out.println("endPoint = " + endPoint);         
-      }catch(RegistryException re) {
-         re.printStackTrace();
-      }
-   }
+   public void testGetEndPointv09() throws Exception {
+       if(DEBUG_FLAG) System.out.println("entered tetGetEndPointv09");
+       String url = rs.getEndPointByIdentifier("org.test.registry.v09/test");
+       if(DEBUG_FLAG) System.out.println("url = " + url);
+       System.out.println("exiting tetGetEndPointv09");
+    }   
 
+   public void testGetEndPointv010() throws Exception {
+       if(DEBUG_FLAG) System.out.println("entered tetGetEndPointv09");
+       String url = rs.getEndPointByIdentifier("org.test.registry.v010/test");
+       if(DEBUG_FLAG) System.out.println("url = " + url);
+       System.out.println("exiting tetGetEndPointv09");
+    }
    
-   /*
-   
-   public void testMyspaceGetResourceIdent() throws Exception {      
-      assertNotNull(rs);
-      if (DEBUG_FLAG) System.out.println("entered testGetResourceIdent");
-      if(rs == null) return;      
-      if(rs.conf.getString("vm05.astrogrid.org/MyspaceManager",null) == null) return;            
-      Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/MyspaceManager");
-      assertNotNull(doc);
-      if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
-   }
-   
-   public void testMyspaceGetResourceEndPoint() throws Exception {
-      assertNotNull(rs);
-      if(DEBUG_FLAG) System.out.println("entered testMyspaceGetResourceEndPoint");      
-      if(rs == null) return;
-      if(rs.conf.getString("vm05.astrogrid.org/MyspaceManager",null) == null) return;
-      try {
-         String endPoint = rs.getEndPointByIdentifier("vm05.astrogrid.org/MyspaceManager");
-         assertNotNull(endPoint);
-         if(DEBUG_FLAG) System.out.println("endPoint = " + endPoint);         
-      }catch(RegistryException re) {
-         re.printStackTrace();
-      }
-   }
-   
-   public void testMyspaceGetResourceWSDLBasic() throws Exception {
-      assertNotNull(rs);
-      if(DEBUG_FLAG) System.out.println("entered testMyspaceGetResourceEndPoint");      
-      if(rs == null) return;
-      if(rs.conf.getString("vm05.astrogrid.org/MyspaceManager",null) == null) return;
-      try {
-         WSDLBasicInformation ws  = rs.getBasicWSDLInformation("vm05.astrogrid.org/MyspaceManager");
-         System.out.println("WSDLInfo = " + ws.toString());
-         assertNotNull(ws);      
-      }catch(RegistryException re) {
-         re.printStackTrace();
-      }
-   }   
-   
-   
-   public void testSubmitQueryContainsAuthorityQuery() throws Exception {
-      if (DEBUG_FLAG) System.out.println("Begin testSubmitQueryContainsAuthorityQuery");
-      if(rs == null) return;            
-      //rs = RegistryDelegateFactory.createQuery(rs.conf.getUrl("org.astrogrid.registry.query.junit.endpoint"));
-      if (DEBUG_FLAG) System.out.println("Endpoint = " + rs.conf.getString("org.astrogrid.registry.query.junit.endpoint"));             
-      Document doc = rs.conf.getDom("org.astrogrid.registry.junit.authQuery1");  
-      Document responseDoc = rs.submitQueryDOM(doc);
-      assertNotNull(responseDoc);
-      if (DEBUG_FLAG) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
-   }
+   public void testGetResourceIVOv09() throws Exception {
+       if(DEBUG_FLAG) System.out.println("entered tetGetResourcev09");
+       Document doc = rs.getResourceByIdentifier("ivo://org.test.registry.v09/test");
+       assertNotNull(doc);
+       if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
+       System.out.println("exiting tetGetResourcev09");
+    }   
 
-   public void testSubmitQueryContainsBasicQuery() throws Exception {
-      if (DEBUG_FLAG) System.out.println("Begin testSubmitQueryContainsBasicQuery");
-      if(rs == null) return;      
-      //rs = RegistryDelegateFactory.createQuery(rs.conf.getUrl("org.astrogrid.registry.query.junit.endpoint"));
-      if (DEBUG_FLAG) System.out.println("Endpoint = " + rs.conf.getString("org.astrogrid.registry.query.junit.endpoint"));             
-      Document doc = rs.conf.getDom("org.astrogrid.registry.junit.basicQuery1");  
-      Document responseDoc = rs.submitQueryDOM(doc);
-      assertNotNull(responseDoc);
-      if (DEBUG_FLAG) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
-   }
-   */
+    public void testGetResourceIVOv10() throws Exception {
+        if(DEBUG_FLAG) System.out.println("entered tetGetResourcev10");      
+        Document doc = rs.getResourceByIdentifier("ivo://org.test.registry.v010/test");
+        assertNotNull(doc);
+        if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
+        System.out.println("exiting tetGetResourcev10");
+     }   
+
+    public void testGetEndPointIVOv09() throws Exception {
+        if(DEBUG_FLAG) System.out.println("entered tetGetEndPointv09");
+        String url = rs.getEndPointByIdentifier("ivo://org.test.registry.v09/test");
+        if(DEBUG_FLAG) System.out.println("url = " + url);
+        System.out.println("exiting tetGetEndPointv09");
+     }   
+
+    public void testGetEndPointIVOv010() throws Exception {
+        if(DEBUG_FLAG) System.out.println("entered tetGetEndPointv09");
+        String url = rs.getEndPointByIdentifier("ivo://org.test.registry.v010/test");
+        if(DEBUG_FLAG) System.out.println("url = " + url);
+        System.out.println("exiting tetGetEndPointv09");
+     }   
+   
+   
 } 
-

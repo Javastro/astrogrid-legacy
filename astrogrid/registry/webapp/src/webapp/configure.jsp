@@ -42,7 +42,9 @@ Below you will find various configuration and installation instructions for your
     	            some type of manager interface.</li>
     	        <li>5.) Go to your contexts environment entries in the Administration GUI of your servlet container (hence what was read from the web.xml).  
     	                All that really needs changing is the reg.amend.authorityid to your main AuthorityID used on this registry.  But you may wish to read the Properties section below to customize your installation.
-    	                <i>If your going to be a full registry you will need to change reg.amend.harvest to true.  Also depending on your context path/url you will need to change the reg.amend.oaipublish properties.</i>
+    	                <i>If your going to be a full registry you will need to change reg.amend.harvest to true.  Also depending on your context path/url you will need to change the reg.amend.oaipublish properties.
+    	                
+    	                </i>
     	         </li>
     	        <li>6.) In general the installation of the registry is complete, but read below for the setup.</li>
     	   	</ul>
@@ -103,8 +105,9 @@ Below you will find various configuration and installation instructions for your
 	 		  	<li>That is all be sure you commit your changes on your servlet containers GUI. You might want to read the other property settings below. Espcially if you setup up users and passwords.</li>
 			</ul>
 			<br /><i>There is also a war version of eXist that you might want to use, but I have seen the war version not scaling as well with a servlet container with a lot of webapps.</i>
-			<br /><i>You are currently expected to setup the eXist external instance your self, you may get it from <a href='http://exist.sourceforge.net'>eXist</a> or if you want a preconfigured port such as 9080 you can get it from Astrogrid at
+			<br /><i>You are currently expected to setup the eXist external instance your self, you may get it from <a href='http://exist.sourceforge.net'>eXist</a> or if you want a pre-configured port such as 9080 you can get it from Astrogrid at
 			<a href='http://www.astrogrid.org/maven/exist'>eXist at Astrogrid</a> Go to the zips directory or alterntively the wars directory.</i>
+			<br /><i>If you download it from the eXist website please change the conf.xml to have "match-tagging-elements='no'"; hint: You may change the port number at tools/jetty/etc/jetty.xml</i>
 			<br />
 			</p>
 			<p>

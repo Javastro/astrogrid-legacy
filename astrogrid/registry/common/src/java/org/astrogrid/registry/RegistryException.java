@@ -1,8 +1,9 @@
 package org.astrogrid.registry;
 /**
- * 
- *@todo introduce a fuller tree of registry exception subtypes?
- *@todo remove print stack traces - will just clutter up output - code that catches the (wrapped) exceptioin should decide what to do with it.
+ * Class: RegistryException
+ * Description: Main Exception class for the Registry. 
+ * @todo introduce a fuller tree of registry exception subtypes?
+ *
  */
 public class RegistryException extends Exception {
 
@@ -18,13 +19,13 @@ public class RegistryException extends Exception {
    public RegistryException(Throwable cause) {
       //Need to log here.
       super(cause);
-      cause.printStackTrace();      
+      //cause.printStackTrace();      
    }
 
    public RegistryException(String msg, Throwable cause) {
       //Need to log here.
       super(msg, cause);
-      cause.printStackTrace();      
+      //cause.printStackTrace();      
    }  
    
    /** Constant for makeFault - input from client has caused problem */

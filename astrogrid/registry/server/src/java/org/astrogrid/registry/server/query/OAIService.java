@@ -24,11 +24,21 @@ import org.apache.commons.logging.LogFactory;
 import java.io.*;
 import org.apache.axis.AxisFault;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.server.RegistryServerHelper;
+//import org.astrogrid.registry.server.RegistryServerHelper;
+import org.astrogrid.registry.common.RegistryDOMHelper;
 
 import java.util.ArrayList;
 
-
+/**
+ * Class: OAIService
+ * Description: The OAIService holds the web service interface methods for OAI (the open archives initiative).  OAI
+ * is the standard interface for harvesting.  This method is actually just a wrapper for the OAI calls to the WebBrowser
+ * verison (http).
+ * @see http://www.openarchives.org
+ * 
+ * @author Kevin Benson
+ *
+ */
 public class OAIService {
     
     /**
@@ -54,9 +64,12 @@ public class OAIService {
 
     /**
      * Used by all the OAI required method interfaces to get the OAI
-     * conformed Resources from a URL.  This URL is a servlet to query
+     * conformed Resources from a URL.  This URL by default with Astrogrid is a servlet to query
      * the eXist database and put the XML in a OAI form.  The XML DOM returned
-     * are all the Resources managed by this Registry.
+     * are all the Resources managed by this Registry. Could be set in the properties if they have
+     * another OAI url to use.  It can use any OAI via WebBrowser, again by default it is a
+     * Astrogrid servlet using this 3rd party tool known as OAICat.
+     * 
      * @param oaiServlet a url string 
      * @return OAI conformed DOM object of all the Resourced managed by this Registry.
      * @throws - AxisFault containing exceptions that might have occurred setting up
@@ -77,8 +90,17 @@ public class OAIService {
         }    
     }
     
+    /**
+     * Method: getOAIServletURL
+     * Description: Small method to get the OAI url.  Not actually necessary it is a servlet.  Used to
+     * construct the full http string to the OAI url.
+     * 
+     * @param query actually a DOM holding the soap body from a web service interface method.  Just checks if there
+     * is a vr namespace to it for a version number.
+     * @return a url in a string version to be used for constructing the full OAI url.
+     */
     private String getOAIServletURL(Document query) {
-        String versionNumber = RegistryServerHelper.getRegistryVersionFromNode(query);       
+        String versionNumber = RegistryDOMHelper.getRegistryVersionFromNode(query);       
         return conf.getString("reg.amend.oaipublish." + versionNumber);       
     }
     

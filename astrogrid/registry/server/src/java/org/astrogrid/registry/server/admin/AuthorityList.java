@@ -1,26 +1,49 @@
 package org.astrogrid.registry.server.admin;
 
 /**
- * Class AuthorityList
- * Purpose: Small object class to hold authorityid's and version numbers along with known owners of an authority. Currently
- * used exclusively by RegistryAdminService for storing in Hashtables for management of authority id's. 
+ * Class: AuthorityList
+ * Description: Small object class to hold authorityid's and version numbers along with known owners of an authority. Currently
+ * used exclusively by RegistryAdminService for storing in HashMap for management of authority id's. Normally
+ * the storage is key (versionNumber,authorityid) and value (versionNumber,authorityid, main authorityid owner).
+ *  
  * @author Kevin Benson
  *
  */
 public class AuthorityList {
     
-    //
+    /**
+     * authority id
+     */
     private String authorityID = null;
+    /**
+     * version number
+     */
     private String versionNumber = null;
     
+    /**
+     * owner authority id
+     */
     private String owner = null;
-        
+
+    /**
+     * Constructor: AuthorityList
+     * Description: Constructor for authorityid, versionNumber, owner.
+     * @param authorityID - authority id string.
+     * @param versionNumber - version number of the registry it is holding.
+     * @param owner - owner authority id.
+     */
     public AuthorityList(String authorityID, String versionNumber, String owner) {
         this.authorityID = authorityID.trim();
         this.versionNumber = versionNumber.trim();
         this.owner = owner;        
     }
-    
+
+    /**
+     * Constructor: AuthorityList
+     * Description: Constructor for authorityid, versionNumber, owner.
+     * @param authorityID - authority id string.
+     * @param versionNumber - version number of the registry it is holding.
+     */
     public AuthorityList(String authorityID, String versionNumber) {
         this.authorityID = authorityID.trim();
         this.versionNumber = versionNumber.trim();
@@ -30,7 +53,7 @@ public class AuthorityList {
     
     /**
      * Method: getAuthorityID
-     * Purpose: return the authority id
+     * Description: return the authority id
      * @return String of the authorityid
      */
     public String getAuthorityID() {
@@ -39,7 +62,7 @@ public class AuthorityList {
     
     /**
      * Method: getVersionNumber
-     * Purpose: return the version number of the vr namespace
+     * Description: return the version number of the vr namespace
      * @return String of the version number.
      */    
     public String getVersionNumber() {
@@ -48,7 +71,7 @@ public class AuthorityList {
 
     /**
      * Method: getOwner
-     * Purpose: return the authority id's owner
+     * Description: return the authority id's owner
      * @return String of the authorityid's owner
      */
     public String getOwner() {
@@ -57,7 +80,7 @@ public class AuthorityList {
     
     /**
      * Method: setAuthorityID
-     * Purpose: Set the authority ID
+     * Description: Set the authority ID
      */
     public void setAuthorityID(String authorityID) {
         this.authorityID = authorityID;
@@ -65,7 +88,7 @@ public class AuthorityList {
     
     /**
      * Method: setVersionNumber
-     * Purpose: Set the version number
+     * Description: Set the version number
      */    
     public void setVersionNumber(String versionNumber) {
         this.versionNumber = versionNumber;
@@ -73,7 +96,7 @@ public class AuthorityList {
 
     /**
      * Method: setOwner
-     * Purpose: Set the owner which is the owner/manager of the authority id.
+     * Description: Set the owner which is the owner/manager of the authority id.
      */    
     public void setOwner(String owner) {
         this.owner = owner;
@@ -81,7 +104,7 @@ public class AuthorityList {
     
     /**
      * Mehod: hasOwner
-     * Purpsoe: Does this authority id have a owner
+     * Description: Does this authority id have a owner
      * @return boolean if the authority id has a owning authority id or not.
      */
     public boolean hasOwner(String owner) {
@@ -90,10 +113,9 @@ public class AuthorityList {
     
     /**
      * Method: equals
-     * Purpose: Determine if this AuthorityList object equals another AuthorityList object, used in the Hashtable index type methods a lot.
+     * Description: Determine if this AuthorityList object equals another AuthorityList object, used in the Hashtable index type methods a lot.
      * @return boolean if the AuthorityList equals the given AuthorityList object.
      */
-    //public boolean equals(AuthorityList al) {
     public boolean equals(Object authList) {
         AuthorityList al = null;
         if(authList instanceof AuthorityList)
@@ -111,6 +133,11 @@ public class AuthorityList {
         return false;
     }
     
+    /**
+     * Method: hashCode
+     * Description: Return the hashcode of this object, used for searching and indexing in the HashMap.
+     * @return int hashCode. 
+     */
     public int hashCode() {
         int hashCode = (this.authorityID.hashCode() + this.versionNumber.hashCode());
         if(this.owner != null) 
@@ -128,6 +155,4 @@ public class AuthorityList {
                " VersionNumber: " + this.versionNumber + 
                " Owner: " + this.owner;
     }
-    
-    
 }

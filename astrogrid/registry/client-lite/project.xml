@@ -321,10 +321,6 @@
                     <directory>${basedir}/src/junit</directory>
                     <includes>
                         <include>**/*.xml</include>
-                        <include>**/*.xmltemplate</include>
-                        <include>**/*.properties</include>
-                        <include>**/*.sql</include>
-                        <include>**/*.ddl</include>
                     </includes>
                 </resource>
             </resources>

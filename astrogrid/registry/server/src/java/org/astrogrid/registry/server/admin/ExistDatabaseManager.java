@@ -43,7 +43,7 @@ public class ExistDatabaseManager extends HttpServlet {
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
-         xmldbURI = conf.getString("xmldb.uri");
+         xmldbURI = conf.getString("xmldb.uri","xmldb:exist://");
          dbDriver = conf.getString("xmldb.driver","org.exist.xmldb.DatabaseImpl");
       }
    }

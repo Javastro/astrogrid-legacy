@@ -1,4 +1,4 @@
-/*$Id: RegistrySchemaMap.java,v 1.7 2005/02/22 20:51:25 clq2 Exp $
+/*$Id: RegistrySchemaMap.java,v 1.8 2005/03/31 17:02:55 jdt Exp $
  * Created on 01-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,9 +13,10 @@ package org.astrogrid.registry.common;
 import java.util.HashMap;
 import java.util.Map;
 
-/** static class that provides maps of all namespace - schema locations in this project.
+/**
+ * Class: RegistrySchemaMap
+ * Description: static class that provides maps of all namespace - schema locations in this project.
  * useful to pass to schema-validation methods in {@link org.astrogrid.test.AstrogridAssert}
- * @author Noel Winstanley nw@jb.man.ac.uk 01-Sep-2004
  *@ see org.astrogrid.test.AstrogridAssert
  */
 public class RegistrySchemaMap {
@@ -28,6 +29,9 @@ public class RegistrySchemaMap {
     
     public static final Map ALL; 
     
+    /**
+     * Static area for placing all namespaces.
+     */
     static {
         // populate the map.
         ALL = new HashMap();
@@ -60,6 +64,7 @@ public class RegistrySchemaMap {
         ALL.put("http://www.ivoa.net/xml/VOCommunity/v0.2",RegistrySchemaMap.class.getResource("/schema/registry/VOCommunity-v0.2.xsd"));
         ALL.put("http://www.ivoa.net/xml/VODataService/v0.4",RegistrySchemaMap.class.getResource("/schema/registry/VODataService-v0.4.xsd"));
         ALL.put("http://www.ivoa.net/xml/VODataService/v0.5",RegistrySchemaMap.class.getResource("/schema/registry/VODataService-v0.5.xsd"));
+        ALL.put("urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3",RegistrySchemaMap.class.getResource("/schema/registry/TabularDB.xsd"));
    // VODataServiceCoverage-* omitted - no target namespace declared. doesn't look valid as a stand-alone schema 
         ALL.put("http://www.ivoa.net/xml/VORegistry/v0.2",RegistrySchemaMap.class.getResource("/schema/registry/VORegistry-v0.2.xsd"));
         ALL.put("http://www.ivoa.net/xml/VORegistry/v0.3",RegistrySchemaMap.class.getResource("/schema/registry/VORegistry-v0.3.xsd"));
@@ -81,6 +86,15 @@ public class RegistrySchemaMap {
 
 /* 
 $Log: RegistrySchemaMap.java,v $
+Revision 1.8  2005/03/31 17:02:55  jdt
+Merges from KMB_972
+
+Revision 1.7.6.2  2005/03/29 08:09:11  KevinBenson
+forgot needed to add TabualrDB schema infor validation.
+
+Revision 1.7.6.1  2005/03/26 15:40:08  KevinBenson
+new commenting and class name change
+
 Revision 1.7  2005/02/22 20:51:25  clq2
 merge 889 again.
 

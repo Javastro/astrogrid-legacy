@@ -5,7 +5,17 @@
     "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
 
 <web-app>
-  <display-name>Apache-Axis</display-name>
+  <display-name>Astrogrid Registry</display-name>
+
+    <context-param>
+      <param-name>properties</param-name>
+      <param-value>astrogrid.properties</param-value>
+      <description>
+        The astrogrid.properties file containing
+        datapairs used to initialize the OAI repository software.
+      </description>
+    </context-param>
+
   <servlet>
     <servlet-name>AxisServlet</servlet-name>
     <display-name>Apache-Axis Servlet</display-name>
@@ -91,6 +101,96 @@
          <param-value>0.10</param-value>
       </init-param>
     </servlet>
+
+	<servlet-mapping>
+   		<servlet-name>RegistryHarvest</servlet-name>
+   		<url-pattern>/RegistryHarvest</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+   		<servlet-name>ExistDatabaseManager</servlet-name>
+   		<url-pattern>/ExistDatabaseManager</url-pattern>
+	</servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/servlet/AxisServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>*.jws</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SOAPMonitorService</servlet-name>
+    <url-pattern>/SOAPMonitor</url-pattern>
+  </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>OAIHandlerv0_9</servlet-name>
+      <url-pattern>/OAIHandlerv0_9</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>OAIHandlerv0_9</servlet-name>
+        <url-pattern>/servlet/OAIHandlerv0_9</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>OAIHandlerv0_10</servlet-name>
+      <url-pattern>/OAIHandlerv0_10</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>OAIHandlerv0_10</servlet-name>
+        <url-pattern>/servlet/OAIHandlerv0_10</url-pattern>
+    </servlet-mapping>
+
+    <!-- currently the W3C havent settled on a media type for WSDL;
+    http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft
+    for now we go with the basic 'it's XML' response -->
+  <mime-mapping>
+    <extension>wsdl</extension>
+     <mime-type>text/xml</mime-type>
+  </mime-mapping>
+  
+
+  <mime-mapping>
+    <extension>xsd</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+
+  <welcome-file-list id="WelcomeFileList">
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>registry_index.html</welcome-file>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jws</welcome-file>
+  </welcome-file-list>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name></web-resource-name>
+      <url-pattern>/admin/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>manager</role-name>
+    </auth-constraint>
+  </security-constraint>
+   
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>AstroGrid</realm-name>
+  </login-config>
+
+  <security-role>
+    <role-name>manager</role-name>
+  </security-role>
 
 	<env-entry>
 		<description>The Main Authority ID for this Registry (Authority ID used for the Registry type)</description>
@@ -323,106 +423,5 @@
 		</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
-
-    <context-param>
-      <param-name>properties</param-name>
-      <param-value>astrogrid.properties</param-value>
-      <description>
-        The astrogrid.properties file containing
-        datapairs used to initialize the OAI repository software.
-      </description>
-    </context-param>
-
-	<servlet-mapping>
-   		<servlet-name>RegistryHarvest</servlet-name>
-   		<url-pattern>/RegistryHarvest</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-   		<servlet-name>ExistDatabaseManager</servlet-name>
-   		<url-pattern>/ExistDatabaseManager</url-pattern>
-	</servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>AxisServlet</servlet-name>
-    <url-pattern>/servlet/AxisServlet</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>AxisServlet</servlet-name>
-    <url-pattern>*.jws</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>AxisServlet</servlet-name>
-    <url-pattern>/services/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>SOAPMonitorService</servlet-name>
-    <url-pattern>/SOAPMonitor</url-pattern>
-  </servlet-mapping>
-
-    <servlet-mapping>
-      <servlet-name>OAIHandlerv0_9</servlet-name>
-      <url-pattern>/OAIHandlerv0_9</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>OAIHandlerv0_9</servlet-name>
-        <url-pattern>/servlet/OAIHandlerv0_9</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-      <servlet-name>OAIHandlerv0_10</servlet-name>
-      <url-pattern>/OAIHandlerv0_10</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>OAIHandlerv0_10</servlet-name>
-        <url-pattern>/servlet/OAIHandlerv0_10</url-pattern>
-    </servlet-mapping>
-
-    <!-- currently the W3C havent settled on a media type for WSDL;
-    http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft
-    for now we go with the basic 'it's XML' response -->
-  <mime-mapping>
-    <extension>wsdl</extension>
-     <mime-type>text/xml</mime-type>
-  </mime-mapping>
-  
-
-  <mime-mapping>
-    <extension>xsd</extension>
-    <mime-type>text/xml</mime-type>
-  </mime-mapping>
-
-  <welcome-file-list id="WelcomeFileList">
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>registry_index.html</welcome-file>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.jws</welcome-file>
-  </welcome-file-list>
-
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name></web-resource-name>
-      <url-pattern>/admin/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <role-name>manager</role-name>
-    </auth-constraint>
-  </security-constraint>
-   
-  <login-config>
-    <auth-method>BASIC</auth-method>
-    <realm-name>AstroGrid</realm-name>
-  </login-config>
-
-  <security-role>
-    <role-name>manager</role-name>
-  </security-role>
-
-
 
 </web-app>

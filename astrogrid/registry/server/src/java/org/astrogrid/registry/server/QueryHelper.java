@@ -4,7 +4,15 @@ import org.astrogrid.config.Config;
 import java.util.Map;
 import java.util.HashMap;
 
-
+/**
+ * Class: QueryHelper
+ * Description: QueryHelper is class that reads properties of various queries that are used internally
+ * here in the registry.  The Registry has to use some queries internally for harvesting and other various methods.
+ * Because we allow for the customization of working with other xml databases, these queries are in a properties file
+ * in case they desire to change the queries to work with there xml databases better.
+ * @author Kevin Benson
+ *
+ */
 public class QueryHelper {
     
     /**
@@ -13,47 +21,12 @@ public class QueryHelper {
      * @see org.astrogrid.config.Config
      */      
     public static Config conf = null;
-    
+
+    /**
+     * Small HashMap that has the queries.
+     */
     private static Map queries = new HashMap();
     
-    /*    
-    private static String findResourceWithoutAuthority = 
-        " for $x in //<rootnode> where $x/vr:identifier = '<id>' return $x";
-    
-    private static String findResourceQueryByAuthority = 
-        " for $x in //<rootnode> where $x/vr:identifier &= '*<id>*' return $x";
-
-    private static String findAllResourceWithoutAuthority = 
-        " for $x in //<rootnode> where $x/vr:identifier &= '*<id>*' return $x";
-
-    
-    private static String findResourceWithAuthority = 
-        " for $x in //<rootnode> where $x/vr:Identifier/vr:AuthorityID = '<id>' return $x";
-
-    private static String findResourceWithAuthorityAndResourceKey = 
-        " for $x in //<rootnode> where $x/vr:Identifier/vr:AuthorityID = '<id>' and $x/vr:Identifier/vr:ResourceKey = '<reskey>' return $x";
-
-    private static String findResourcesWithAuthorityAndResourceKey = 
-        " for $x in //<rootnode> where $x/vr:Identifier/vr:AuthorityID &= '*<id>*' or $x/vr:Identifier/vr:ResourceKey &= '*<reskey>*' return $x";    
-    
-    private static String findRegistryQuery = 
-        " for $x in //<rootnode> where $x/@xsi:type &= '*Registry*' return $x";
-    
-    private static String findRegistryQueryWithOutAuthority = 
-        " for $x in //<rootnode> where $x/@xsi:type = 'vg:Registry' and $x/vr:identifier &= '*<id>*' return $x";
-
-    private static String findRegistryQueryWithAuthority = 
-        " for $x in //<rootnode> where  $x/@xsi:type='vg:RegistryType' and $x/vr:Identifier/vr:AuthorityID = '<id>' return $x";
-    
-    private static String findAllRegistryQuery =
-        " //*[@xsi:type &= '*Registry*']";
-    
-    private static String findAll =
-        " for $x in //<rootnode> return $x";
-
-    private static String startQuery  = 
-        " for $x in //<rootnode> where ";
-    */
     
     
     /**
@@ -82,15 +55,34 @@ public class QueryHelper {
        }      
     }
     
+    /**
+     * Method: getXQLDeclarations
+     * Description: get the declare namespaces for a particular version.
+     * @param versionNumber - versionNumber of the registry (from vr namespace).
+     * @return the namespaces.
+     */
     public static String getXQLDeclarations(String versionNumber) {
         return conf.getString("reg.custom.declareNS." + versionNumber,"");
     }    
-    
+
+    /**
+     * Method: queryForRegistries
+     * Description: Query for Registry types in the registry.
+     * @param versionNumber - versionNumber of the registry (from vr namespace).
+     * @return String of the query.
+     */
     public static String queryForRegistries(String versionNumber) {
         return ((String)queries.get("findRegistryQuery")).replaceAll("<rootnode>",
                RegistryServerHelper.getRootNodeName(versionNumber));
     }
-    
+
+    /**
+     * Method: queryForResource
+     * Description: Query for a particular in the resource based on the identifier.
+     * @param identifier - A identifier string.
+     * @param versionNumber - versionNumber of the registry (from vr namespace).
+     * @return String of the query.
+     */
     public static String queryForResource(String identifier, String versionNumber) {
         boolean hasAuthorityID = conf.getBoolean(
                 "reg.custom.identifier.hasauthorityid." + versionNumber,false);
@@ -114,6 +106,13 @@ public class QueryHelper {
         RegistryServerHelper.getRootNodeName(versionNumber));
     }
     
+    /**
+     * Method: queryForAllResource
+     * Description: Query for Resources based on any part of the identifier string.
+     * @param identifier - A identifier String.
+     * @param versionNumber - versionNumber of the registry (from vr namespace).
+     * @return String of the query.
+     */
     public static String queryForAllResource(String identifier, String versionNumber) {
         boolean hasAuthorityID = conf.getBoolean(
                 "reg.custom.identifier.hasauthorityid." + versionNumber,false);
@@ -132,6 +131,13 @@ public class QueryHelper {
         RegistryServerHelper.getRootNodeName(versionNumber));
     }
 
+    /**
+     * Method: queryForMainRegistry
+     * Description: Query for the main registry type.
+     * 
+     * @param versionNumber - versionNumber of the registry (from vr namespace).
+     * @return String of the query.
+     */
     public static String queryForMainRegistry(String versionNumber) {
         boolean hasAuthorityID = conf.getBoolean(
                 "reg.custom.identifier.hasauthorityid." + versionNumber,false);
@@ -147,18 +153,34 @@ public class QueryHelper {
     }
     
 
+    /**
+     * Method: getStartQuery
+     * Description: This is the start part of most queries.  Used mainly for building queries up. 
+     * @param versionNumber - versionNumber of the registry (from vr namespace).
+     * @return String of the query.
+     */
     public static String getStartQuery(String versionNumber) {
         return ((String)queries.get("startQuery")).replaceAll("<rootnode>",
                RegistryServerHelper.getRootNodeName(versionNumber));
     }
     
+    /**
+     * Method: getAllQuery
+     * Description: Query for all Resources.
+     * @param versionNumber - versionNumber of the registry (from vr namespace).
+     * @return String of the query.
+     */
     public static String getAllQuery(String versionNumber) {
         return ((String)queries.get("findAll")).replaceAll("<rootnode>",
         RegistryServerHelper.getRootNodeName(versionNumber));        
     }
     
+    /**
+     * Method: getAllRegistryQuery
+     * Description: Query String for all Registry types.
+     * @return String of the query.
+     */
     public static String getAllRegistryQuery() {
         return ((String)queries.get("findAllRegistryQuery")); 
     }
-    
 }

@@ -24,6 +24,7 @@ import org.astrogrid.util.DomHelper;
  * @todo fix exception handling
  * @todo factor commonality of methods into a private helper method*/
 public class XSLHelper {
+    
     /**
      * Commons Logger for this class
      */
@@ -53,7 +54,8 @@ public class XSLHelper {
    }
    
    /**
-    * Load a Stylesheet from the CLASSPath jars given a particular name.
+    * Method: loadStyleSheet
+    * Description: Load a Stylesheet from the CLASSPath jars given a particular name.
     * @param name A string name of the xsl stylesheet file name. Normally in the classpath or in a jar file.
     * @return A InputStream to a xsl stylesheet.
     */
@@ -63,7 +65,8 @@ public class XSLHelper {
    }
       
    /**
-    * Load a particular known xsl stylesheet for processing xml from the db. Used mainly to go from Castor
+    * Method: loadDBXSL
+    * Description: Load a particular known xsl stylesheet for processing xml from the db. Used mainly to go from Castor
     * to better more undertandable XML.
     * @deprecated - no longer in use, because Castor is no longer in use on the registry side. A client must do
     * Castor itself.
@@ -75,7 +78,8 @@ public class XSLHelper {
    }
 
    /**
-    * Load a particular known xsl stylesheet for processing xml for Castor.
+    * Method loadCastorXSL
+    * Description: Load a particular known xsl stylesheet for processing xml for Castor.
     * @deprecated - no longer in use, because Castor is no longer in use on the registry side. A client must do
     * Castor itself.
     * @return A InputStream to a xsl stylesheet. 
@@ -141,10 +145,10 @@ public class XSLHelper {
        //@todo never return null on error.
        if(resultDoc == null) {
            logger.error("IN tranformResouceToResource resultDoc was null");
-           System.out.println("IN tranformResouceToResource resultDoc was null");
+           //System.out.println("IN tranformResouceToResource resultDoc was null");
        }else {
            logger.info("THE RESULTDOC IN transformResourceToResource = "  + DomHelper.DocumentToString(resultDoc));
-           System.out.println("THE RESULTDOC IN transformResourceToResource = "  + DomHelper.DocumentToString(resultDoc));
+           //System.out.println("THE RESULTDOC IN transformResourceToResource = "  + DomHelper.DocumentToString(resultDoc));
        }
        return resultDoc;
     }

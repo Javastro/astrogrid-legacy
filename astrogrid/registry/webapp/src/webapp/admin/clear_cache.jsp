@@ -8,12 +8,14 @@
 %>
 
 <%
+/*
       RegistryQueryService server = new RegistryQueryService();
       ArrayList al = server.getAstrogridVersions();
       String version = request.getParameter("version");
 	   if(version == null || version.trim().length() <= 0) {
    		version = RegistryServerHelper.getDefaultVersionNumber();
    	}
+*/
       
 %>
 
@@ -41,13 +43,6 @@ Allows you to clear managed authorities, in which the next update will refreash 
 <form method="post">
 <p>
 Clear Managed Authroities for Version:
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
  <br />
  <input type="hidden" name="clear_cache" value="true" />
  <input type="submit" name="button" value="clear cache"/>
@@ -58,13 +53,9 @@ Clear Managed Authroities for Version:
 String clearCache = null;
 clearCache = request.getParameter("clear_cache");
 if(clearCache != null && clearCache.equals("true")) {
-  if(version == null || version.trim().length() == 0) {
-    out.print("<font color='red'>Tried to clear a cache with no version specified.</font>");
-  }else {
   	RegistryAdminService ras = new RegistryAdminService();
-  	ras.clearManagedCache(version);
+  	ras.clearManagedCache();
   	out.print("<font color='blue'>Cleared cache for " + version + "</font>");
-  }
 }
 %>
 

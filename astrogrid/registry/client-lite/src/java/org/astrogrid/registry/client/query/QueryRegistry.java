@@ -34,7 +34,7 @@ import java.net.MalformedURLException;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.common.XSLHelper;
 import org.astrogrid.registry.common.InterfaceType;
-import org.astrogrid.registry.common.RegistryServerHelper;
+import org.astrogrid.registry.common.RegistryDOMHelper;
 
 import org.astrogrid.util.DomHelper;
 
@@ -199,7 +199,7 @@ public class QueryRegistry implements RegistryService {
       Document resultDoc = null;
       Element newRoot = adql.createElementNS(NAMESPACE_URI, "Search");
       String versionNumber = null;
-      versionNumber = RegistryServerHelper.getRegistryVersionFromNode(adql.getDocumentElement());
+      versionNumber = RegistryDOMHelper.getRegistryVersionFromNode(adql.getDocumentElement());
       if(versionNumber == null) {
           versionNumber =  reg_default_version;
       }
@@ -273,7 +273,7 @@ public class QueryRegistry implements RegistryService {
                   //if it is different from the reg_transform_version.
                   String versionNumber = null;
                   if(resultDoc.getDocumentElement().hasChildNodes())
-                      versionNumber = RegistryServerHelper.getRegistryVersionFromNode(resultDoc.getDocumentElement().getFirstChild());
+                      versionNumber = RegistryDOMHelper.getRegistryVersionFromNode(resultDoc.getDocumentElement().getFirstChild());
                   if(versionNumber == null) {
                       System.out.println("Could not find vr namespace from return of a query; SHOULD NOT HAPPEN");
                       versionNumber = reg_default_version;
@@ -488,7 +488,7 @@ public class QueryRegistry implements RegistryService {
        
        if(!Ivorn.isIvorn(ident)) {
            //hmmm okay old code lets put a small hack for and put  a ivo:// in front
-           ident = "ivo://" + ident;
+           ident = Ivorn.SCHEME + "://" + ident;
        }
        
        logger
@@ -551,6 +551,8 @@ public class QueryRegistry implements RegistryService {
        } else {
             logger
                  .info("getResourceByIdentifier(String) - exiting getResourceByIdentifierDOM (used config cache)");
+         if(Ivorn.isIvorn(ident))
+             ident = ident.substring((Ivorn.SCHEME + "://").length());
          return conf.getDom(ident);
        }
    }

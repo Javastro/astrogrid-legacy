@@ -1,0 +1,12 @@
+body {
+   behavior:url("/xhtml/csshover.htc"); 
+   margin: 10px; padding: 10px;
+   background-image: url(../img/bg-main.gif);
+   font-family: Verdana, Helvetica, Arial, sans-serif;
+   font-size: 11px;
+   text-decoration: none;
+}
+
+div#main {
+   width:600px;
+}

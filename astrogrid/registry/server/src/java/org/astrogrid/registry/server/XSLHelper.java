@@ -42,8 +42,8 @@ public class XSLHelper {
    }
    
    /**
-    * Load a Stylesheet from the CLASSPath jars given a particular name.
-    * @param name A string name of the xsl stylesheet file name. Normally in the classpath or in a jar file.
+    * Load a Stylesheet from the ClassLoader (usually from jars) given a particular directory and name.
+    * @param name A string directory & name of the xsl stylesheet file name. Normally in the classpath or in a jar file.
     * @return A InputStream to a xsl stylesheet.
     */
    private InputStream loadStyleSheet(String name) {
@@ -95,7 +95,7 @@ public class XSLHelper {
          }
          
          
-         xqlResult = xqlResult.replaceAll("&gt;", ">").replaceAll("&lt;", "<");
+         xqlResult = xqlResult.replaceAll("&gt;", ">").replaceAll("&lt;", "<").replaceAll("&amp;","&");
          return xqlResult;
          //System.out.println("the resultwriter transform = " + sw.toString());
          //System.out.println("The result of adql to xql = " + DomHelper.DocumentToString(resultDoc));
@@ -113,7 +113,7 @@ public class XSLHelper {
    /**
     * Method: transformToOAI
     * Description: Transforms XML from a given query in the XML database to a OAI GetRecord XML. Used mainly by 
-    * thrid party tool which shows various OAI xml verbs in the correct XML format. Handles multiple versions of
+    * third party tool which shows various OAI xml verbs in the correct XML format. Handles multiple versions of
     * XML from the Registry depending on the version number from the main vr namespace.
     * @param doc XML Root Node of a document from a  query of the given database.
     * @param versionNumber version number from the vr namespace, which is the main Resource namespace defined.
@@ -156,7 +156,7 @@ public class XSLHelper {
    
    /**
     * Method: transformExistResult
-    * Description: When querying eXist XML database (at the moment on Rest style) it will put a known <exist:Result> root
+    * Description: When querying eXist XML database it will put a known <exist:Result> root
     * element around the results of the query (so the xml will be valid xml).  This transforms that XML to simply get rid of
     * that root element and put a different root element around.  Also for convenience a responseElement parameter is used
     * for Web Service methods to wrap the Results with another Element for use in the Soap:body on the response.
@@ -167,6 +167,7 @@ public class XSLHelper {
     */
    public Document transformExistResult(Node doc, String versionNumber, String responseElement) {
       
+      logger.info("THE DOC NODE IN TRANSFORM EXIST = " + doc.getNodeName() + " type = " + doc.getNodeType() + " and localname = " + doc.getLocalName() + " tostring = " + doc.toString() );
       Source xmlSource = new DOMSource(doc);
       Document resultDoc = null;
       
@@ -213,7 +214,7 @@ public class XSLHelper {
     * registries. 
     * This usefullness is best described in some examples:
     * ex 1: 0.9 - used substitution groups hence same xml could be expressed in 2 or 3 ways meaning xql queries very
-    * difficult, so a xsl stylesshet was applied to make the xml the same.
+    * difficult, so a xsl stylesshet was applied to make the xml consistent and be able to query easier.
     * ex 2: 0.10 - no more subtituion groups, but the way the main Resource element was described any number of XML name 
     * with any number of namespaces could be of type Resouce.  So XSL is used to again put it in the way that is 
     * consistent in the db.

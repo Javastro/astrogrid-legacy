@@ -19,7 +19,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.InputSource;
-import org.astrogrid.registry.server.RegistryServerHelper;
+//import org.astrogrid.registry.server.RegistryServerHelper;
+import org.astrogrid.registry.common.RegistryDOMHelper;
 import org.astrogrid.registry.server.QueryHelper;
 import org.astrogrid.registry.server.admin.RegistryAdminService;
 import org.astrogrid.registry.server.query.RegistryQueryService;
@@ -139,16 +140,16 @@ public class RegistryHarvestService {
                      log.info("Harvest All found this number of resources = " + nl.getLength());
                      for(int i = 0; i < nl.getLength();i++) {
                        Element elem = (Element) nl.item(i);
-                       versionNumber = RegistryServerHelper.getRegistryVersionFromNode(elem);
+                       versionNumber = RegistryDOMHelper.getRegistryVersionFromNode(elem);
                    
                        if(useDates) {
                           String dateString = null;
                           try {
                               coll = xdb.openCollection("statv" + versionNumber.replace('.','_'));
-                              tempIdent = RegistryServerHelper.getAuthorityID(elem);
-                              resKey = RegistryServerHelper.getResourceKey(elem);
+                              tempIdent = RegistryDOMHelper.getAuthorityID(elem);
+                              resKey = RegistryDOMHelper.getResourceKey(elem);
                               if(resKey != null && resKey.trim().length() > 0) tempIdent += "/" + resKey;                              
-                              XMLResource xmlr = (XMLResource)xdb.getResource(coll,tempIdent.replaceAll("[^\\w*]","_"));
+                              XMLResource xmlr = (XMLResource)xdb.getResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml");
                               if(xmlr != null) {
                                   Document statDoc = (Document)xmlr.getContentAsDOM();
                                   dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
@@ -175,7 +176,7 @@ public class RegistryHarvestService {
                           }//if
                        }//if
                        try {
-                           ident = RegistryServerHelper.getAuthorityID( elem );                           
+                           ident = RegistryDOMHelper.getAuthorityID( elem );                           
                            if(authorityID.equals(ident)) {
                                log.info("This is our main Registry type do not do a harvest of it");
                            } else {                           
@@ -312,7 +313,8 @@ public class RegistryHarvestService {
 								        accessURL,interfaceMethod);
                */
                String nameSpaceURI = "http://www.ivoa.net/wsdl/RegistryHarvest/v0.1";
-               soapActionURI = "http://www.ivoa.net/wsdl/reginterface.wsdl#" + interfaceMethod;
+               //soapActionURI = "http://www.ivoa.net/wsdl/reginterface.wsdl#" + interfaceMethod;
+               soapActionURI = "http://www.openarchives.org/OAI/2.0/" + interfaceMethod;
                /*
                if(wsdlBasic.getEndPoint().keys().hasMoreElements()) {
                    soapActionURI = wsdlBasic.getSoapActionURI(

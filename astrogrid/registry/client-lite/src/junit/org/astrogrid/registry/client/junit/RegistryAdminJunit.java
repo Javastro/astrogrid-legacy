@@ -44,9 +44,7 @@ public class RegistryAdminJunit extends TestCase {
     * Setup our test.
     *
     */
-   public void setUp()
-       throws Exception
-       {
+   public void setUp() throws Exception {
        super.setUp() ;
        if (DEBUG_FLAG) System.out.println("") ;
        if (DEBUG_FLAG) System.out.println("----\"----") ;

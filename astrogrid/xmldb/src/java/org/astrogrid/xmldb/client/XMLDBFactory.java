@@ -23,7 +23,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-//import org.xmldb.api.modules.XQueryService;
+
+import org.xmldb.api.modules.XQueryService;
+import org.xmldb.api.modules.XPathQueryService;
 import org.xmldb.api.modules.XUpdateQueryService;
 import org.xmldb.api.base.Service;
 
@@ -73,7 +75,7 @@ public class XMLDBFactory {
           conf = org.astrogrid.config.SimpleConfig.getSingleton();
           //obtain the xmldbur from the properties.  This will determine normally if this is an
           //internal or external db as well.
-          xmldbURI = conf.getString("xmldb.uri");
+          xmldbURI = conf.getString("xmldb.uri","xmldb:exist://");
           //database driver for the implenting database. similiar to jdbc driver.
           dbDriver = conf.getString("xmldb.driver","org.exist.xmldb.DatabaseImpl");
           
@@ -298,6 +300,36 @@ public class XMLDBFactory {
     public QueryService getQueryService(Collection coll)  throws XMLDBException {
         return new QueryServiceImpl(coll);
     }
+    
+    /**
+     * Method: getXQueryService
+     * Purpose: get a XQuery Service type from the XMLDB:API.
+     * @throws XMLDBExceptin exception finding a XQueryService
+     * @return XQueryService
+     */
+    public XQueryService getXQueryService(Collection coll)  throws XMLDBException {
+        XQueryService service =
+            (XQueryService) coll.getService( "XQueryService", "1.0" );
+        service.setProperty( OutputKeys.INDENT, "yes" );
+        service.setProperty( OutputKeys.ENCODING, "UTF-8" );
+        return service;
+    }
+    
+    /**
+     * Method: getXPathQueryService
+     * Purpose: get a XPath Query Service type from the XMLDB:API.
+     * @throws XMLDBExceptin exception finding a XPathQueryService
+     * @return XPathQueryService
+     */
+    public XPathQueryService getXPathQueryService(Collection coll)  throws XMLDBException {
+        XPathQueryService service =
+            (XPathQueryService) coll.getService( "XPathQueryService", "1.0" );
+        service.setProperty( OutputKeys.INDENT, "yes" );
+        service.setProperty( OutputKeys.ENCODING, "UTF-8" );
+        return service;
+    }
+    
+
 
     /**
      * Method: getResource

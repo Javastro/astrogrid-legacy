@@ -29,6 +29,7 @@ import org.apache.axis.AxisFault;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.server.harvest.RegistryHarvestService;
 import org.astrogrid.registry.server.RegistryServerHelper;
+import org.astrogrid.registry.common.RegistryDOMHelper;
 import org.astrogrid.registry.server.QueryHelper;
 import org.astrogrid.xmldb.client.QueryService;
 import org.astrogrid.xmldb.client.XMLDBFactory;
@@ -45,11 +46,11 @@ import org.astrogrid.registry.NoResourcesFoundException;
 import org.astrogrid.store.Ivorn;
 
 /**
+ * Class: RegistryQueryService
+ * Description: The main class for all queries to the Registry to go to via Web Service or via internal
+ * calls such as jsp pages or other classes.  The main focus is Web Service Interface methods are here
+ * such as Search, KeywordSearch, and GetResourceByIdentifier.
  *
- *
- *
- * @see org.astrogrid.registry.common.RegistryInterface
- * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
  * @author Kevin Benson
  */
 public class RegistryQueryService {
@@ -84,10 +85,11 @@ public class RegistryQueryService {
    }
    
    /**
-    * Search - Web Service method to take ADQL DOM and perform a query on the
+    * Method: Search
+    * Description: Web Service method to take ADQL DOM and perform a query on the
     * registry.  Takes in a DOM so it can handle multiple versions of ADQL.
     * 
-    * @param query - DOM object containing ADQL.
+    * @param query - DOM object containing ADQL. Which is xsl'ed into XQuery language for the query.
     * @throws - AxisFault containing exceptions that might have occurred setting up
     * or querying the registry.
     * @return - Resource DOM object of the Resources from the query of the registry. 
@@ -118,16 +120,17 @@ public class RegistryQueryService {
 
    
    /**
-    * More of a convenience method to do direct Xqueries on the registry
+    * Method: Query
+    * Description: More of a convenience method to do direct Xqueries on the registry
     * Gets the XQuery out of the XQLString element which is the wrapped method
-    * name in the SOAP body.
+    * name in the SOAP body. Currently Not in Use.
     *  
     * @param query - XQuery string to be used directly on the registry.
     * @throws - AxisFault containing exceptions that might have occurred setting up
     * or querying the registry. 
     * @return - Resource DOM object of the Resources from the query of the registry.
     */
-   public Document Query(Document query) throws AxisFault {
+   public Document XQLQuery(Document query) throws AxisFault {
       log.debug("start Query");
       Document resultDoc = null;
       try {
@@ -144,34 +147,10 @@ public class RegistryQueryService {
       return resultDoc;
    }
 
-   /**
-    * More of a convenience method to do direct Xqueries on the registry
-    * and this method is for when a Web Service style does not wrap a method name
-    * in the soap body.
-
-    * @param query - XQuery string to be used directly on the registry.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry. 
-    * @return - Resource DOM object of the Resources from the query of the registry.
-    */   
-   public Document XQLString(Document query) throws AxisFault {
-      log.debug("start XQLString");
-      Document resultDoc = null;
-      try {
-         String versionNumber = getRegistryVersion(query);
-
-         String xql = DomHelper.getNodeTextValue(query,"XQLString");
-         log.debug("end XQLString");
-         resultDoc = (Document)queryExist(xql,versionNumber);
-      }catch(IOException ioe) {
-         throw new AxisFault("IO problem", ioe);         
-      }
-      return resultDoc;
-      
-   }
    
    /**
-   * submitQuery queries the registry for Resources.  Currently uses
+   * Method: submitQuery 
+   * Description: NOW DEPRECATED AND NOT IN USE; queries the registry for Resources.  Currently uses
    * an older xml query language that Astrogrid came up with, but will
    * soon be rarely used for the ADQL version to be the standard for the
    * IVOA.  Will be deprecated in itn07.
@@ -203,9 +182,10 @@ public class RegistryQueryService {
    }
    
    /**
-    * Queries for the Registry Resource element that is tied to this Registry.
-    * All Astrogrid Registries have one Registry Resource tied to the Registry.
-    * Which defines the AuthorityID's it manages and how to access the Registry.
+    * Method: loadRegistry
+    * Description: Grabs the versionNumber from the DOM if possible and call the
+    * loadMainRegistry method. If versionNumber is not in the DOM then use the default
+    * version number in the properties.  The versionNumber comes from the vr namespace.
     * 
     * @param query actually normally empty/null and is ignored.
     * @throws - AxisFault containing exceptions that might have occurred setting up
@@ -224,7 +204,8 @@ public class RegistryQueryService {
    }
 
    /**
-    * Queries for the Registry Resource element that is tied to this Registry.
+    * Method: loadMainRegistry
+    * Description: Queries for the Registry Resource element that is tied to this Registry.
     * All Astrogrid Registries have one Registry Resource tied to the Registry.
     * Which defines the AuthorityID's it manages and how to access the Registry.
     * 
@@ -251,7 +232,10 @@ public class RegistryQueryService {
    }
    
    /**
-    * Queries the xml database, on the collection of the registry.
+    * Method: queryExist
+    * Description: Queries the xml database, on the collection of the registry. This method
+    * will read from properties a xql expression and fill out the expression then perform the query. This
+    * is a convenience in case of customization for other xml databases.
     * @param xqlString an XQuery to query the database
     * @param collectionName the location in the database to query (sort of like a table)
     * @return xml DOM object returned from the database, which are Resource elements
@@ -267,7 +251,9 @@ public class RegistryQueryService {
           coll = xdb.openCollection(collectionName);
           log.info("Got Collection");
           QueryService xqs = xdb.getQueryService(coll);
-          String returnCount = conf.getString("reg.amend.returncount");
+          //Get the maximum return count.
+          String returnCount = conf.getString("reg.amend.returncount","100");
+          //get the xquery expression.
           String xqlExpression = conf.getString("reg.custom.query.expression"); 
           xqlExpression = xqlExpression.replaceAll("__declareNS__", QueryHelper.getXQLDeclarations(versionNumber));
           //log.info(" the xqlExpression = " + xqlExpression);
@@ -278,12 +264,14 @@ public class RegistryQueryService {
           if(tempIndex == -1) {
               throw AxisFault.makeFault(new RegistryException("XQL Expression has no placement for a Query"));
           }
+          //todo: check into this again, for some reason could not do a replaceAll so currently placing
+          //in the string the hard way.
           String endString = xqlExpression.substring(tempIndex+9);
           xqlExpression = xqlExpression.substring(0,tempIndex);
-          xqlExpression += xqlString + endString;
-          log.info(" the xqlExpression = " + xqlExpression);
+          xqlExpression += xqlString + endString;          
           xqlExpression = xqlExpression.replaceAll("__returnCount__", returnCount);
           log.info("Now querying in colleciton = " + collectionName + " query = " + xqlExpression);
+          //start a time to see how long the query took.
           long beginQ = System.currentTimeMillis(); 
           ResourceSet rs = xqs.query(xqlExpression);
           log.info("Total Query Time = " + (System.currentTimeMillis() - beginQ));
@@ -317,7 +305,8 @@ public class RegistryQueryService {
    }
    
    /**
-    * Does not actually do a query, it opens the main root colleciton /db and finds all the child collections
+    * Method: getAstrogridVersions
+    * Description: Does not actually do a query, it opens the main root colleciton /db and finds all the child collections
     * associated with astrogridv?? (??=version number) and puts them as strings in an array list to be returned.
     * 
     * @return an ArrayList of Strings containging the versions number supported by this registry (or in the xml db).
@@ -345,8 +334,10 @@ public class RegistryQueryService {
    }
 
    /**
-    * A Keyword search web service method.  Gets the keywords from the soap body (also if the keywords are to be 'or' together)
-    * The paths used for comparison with the keywords are obtained from the JNDI/properties file. The keywords seperated by spaces.
+    * Method KeywordSearch
+    * Description: A Keyword search web service method.  Gets the keywords from the soap body (also if the keywords are to be 'or' together)
+    * The paths used for comparison with the keywords are obtained from the JNDI/properties file. The keywords are seperated by spaces.
+    * Once data is obtained called the other keywordQuery method below to perform the query.
     * 
     * @param query - The soap body of the web service call, containing sub elements of keywords.
     * @throws - AxisFault containing exceptions that might have occurred setting up
@@ -369,9 +360,12 @@ public class RegistryQueryService {
    }
    
    /**
-    * A Keyword search baic method called from jsp pages.
-    * The paths used for comparison with the keywords are obtained from the JNDI/properties file.
+    * Method: keywordQuery
+    * Description: A Keyword search basic method called from jsp pages. And queries on the default version of the
+    * registry. The paths used for comparison with the keywords are obtained from the JNDI/properties file.
+    * Deprecate should always pass in a version.
     * 
+    * @deprecated - No longer used, a version Number should always be passed in.
     * @param keywords - A string of keywords seperated by spaces.
     * @param orKeywords - Are the key words to be or'ed together
     * @throws - AxisFault containing exceptions that might have occurred setting up
@@ -379,14 +373,16 @@ public class RegistryQueryService {
     * @return XML docuemnt object representing the result of the query.
     */   
    public Document keywordQuery(String keywords, boolean orKeywords) throws AxisFault {
-       return keywordQuery(keywords,orKeywords,RegistryServerHelper.getDefaultVersionNumber());
+       return keywordQuery(keywords,orKeywords,RegistryDOMHelper.getDefaultVersionNumber());
    }
    
    /**
-    * A Keyword search method. Splits the keywords and forms a xql query for the key word search.
-    * The paths used for comparison with the keywords are obtained from the JNDI/properties file.
+    * Method: keywordQuery
+    * Description: A Keyword search method. Splits the keywords and forms a xql query for the key word search.
+    * The paths used for comparison with the keywords are obtained from the JNDI/properties file they are a comma
+    * seperated xpath form.
     * 
-    * @param query - The soap body of the web service call, containing sub elements of keywords.
+    * @param query - String of keywords seperated by spaces.
     * @param orKeywords - Are the key words to be or'ed together
     * @param version - The version number from vr namespace used to form the collection name and get the xpaths from the properties. 
     * @throws - AxisFault containing exceptions that might have occurred setting up
@@ -396,15 +392,21 @@ public class RegistryQueryService {
    public Document keywordQuery(String keywords, boolean orKeywords, String version) throws AxisFault {
        long beginQ = System.currentTimeMillis();
        if(version == null || version.trim().length() <= 0) {
-           version = RegistryServerHelper.getDefaultVersionNumber();
+           version = RegistryDOMHelper.getDefaultVersionNumber();
        }       
        String versionNumber = version;
+       //split the keywords from there spaces
        String []keyword = keywords.split(" ");
+       //get all the xpaths for the query.
        String xqlPaths = conf.getString("reg.custom.keywordxpaths." + versionNumber);
+       //the xpaths are comma seperated split that as well.
        String []xqlPath = xqlPaths.split(",");
        
-
-       String xqlString = QueryHelper.getStartQuery(versionNumber);       
+       //get the first part of the query which is basically to query on the
+       //Resource element.
+       String xqlString = QueryHelper.getStartQuery(versionNumber);
+       
+       //go through all the xpaths and buildup a keyword string.
        for(int i = 0;i < xqlPath.length;i++) {
            xqlString += " (";
            for(int j = 0;j < keyword.length;j++) {
@@ -436,10 +438,19 @@ public class RegistryQueryService {
                                              versionNumber,"KeywordSearchResponse");
    }
    
+   /**
+    * Method: getAll
+    * Description: Conventient method for the browse all jsp page which queries the entire
+    * collection in the registry based on a version number.
+    * @param versionNumber version number to form the collection(like a table) to query on.
+    * @throws - AxisFault containing exceptions that might have occurred setting up
+    * or querying the registry.
+    * @return XML docuemnt object representing the result of the query.
+    */
    public Document getAll(String versionNumber) throws AxisFault {
        XSLHelper xslHelper = new XSLHelper();
        if(versionNumber == null || versionNumber.trim().length() <= 0) {
-           versionNumber = RegistryServerHelper.getDefaultVersionNumber();
+           versionNumber = RegistryDOMHelper.getDefaultVersionNumber();
        }
        
        String xqlString = QueryHelper.getAllQuery(versionNumber);
@@ -448,6 +459,20 @@ public class RegistryQueryService {
                versionNumber,"GetAllResponse");
    }
    
+   /**
+    * Method: GetResourcesByIdentifier
+    * Description: This is the currently used web service method from client (Iteration 0.9).  But is expected to be
+    * deprecated.  And to use GetResourceByIdentifier, because an identifier can only return one Resource only.  Currently
+    * this method will query for part of the Identifier. From the client perspective it is passing an entire identifier
+    * each time and only receiving one resource, but it could pass in ivo://{authorityid} and get all Resources that
+    * have that AuthorityID.  Reason it is currently used is eXist seems to have a problem in embedded mode where
+    * plainly I have seen it lose some elements.  After getting the identifier call GetResourcesByIdentifier(String,versionNumber).
+    * 
+    * @param query - A Soap body request containing an identifier element holding the identifier to be queries on.
+    * @throws - AxisFault containing exceptions that might have occurred setting up
+    * or querying the registry.
+    * @return XML docuemnt object representing the result of the query.
+    */
    public Document GetResourcesByIdentifier(Document query) throws AxisFault {
        log.debug("start GetResourcesByIdentifier");                   
        String ident = null;
@@ -459,12 +484,26 @@ public class RegistryQueryService {
        }
        String attrVersion = getRegistryVersion(query);
        return getResourcesByIdentifier(ident,attrVersion);
- }
+   }
    
+   /**
+    * Method: GetResourcesByIdentifier
+    * Description: Used by JSP pages and the GetResourcesByIdentifier soap call. Currently
+    * this method will query for part of the Identifier. From the client perspective it is passing an entire identifier
+    * each time and only receiving one resource, but it could pass in ivo://{authorityid} and get all Resources that
+    * have that AuthorityID.  Reason it is currently used is eXist seems to have a problem in embedded mode where
+    * plainly I have seen it lose some elements.
+ 
+    * @param ivorn - Identifier String.
+    * @param versionNumber - version number to query on, if null use the default version number for the registry.
+    * @throws - AxisFault containing exceptions that might have occurred setting up
+    * or querying the registry.
+    * @return XML docuemnt object representing the result of the query.
+    */
    public Document getResourcesByIdentifier(String ivorn, String versionNumber) throws AxisFault {
        XSLHelper xslHelper = new XSLHelper();
        if(versionNumber == null || versionNumber.trim().length() <= 0) {
-           versionNumber = RegistryServerHelper.getDefaultVersionNumber();
+           versionNumber = RegistryDOMHelper.getDefaultVersionNumber();
        }
        if(ivorn == null || ivorn.trim().length() <= 0) {
            throw new AxisFault("Cannot have empty or null identifier");
@@ -479,7 +518,18 @@ public class RegistryQueryService {
        return xslHelper.transformExistResult(resultDoc,
                versionNumber,"GetResourcesByIdentifier");
    }
-   
+
+   /**
+    * Method: GetResourceByIdentifier
+    * Description: Web Service interface method. Gets the identifier from a Soap body and extracts
+    * it out of the xml database based on the primary key or id. (No query is performed). Actually calls the
+    * getResoruceByIdentifier(string,string).
+    * 
+    * @param query - soab body containing a identifier element for the identifier to query on.
+    * @throws - AxisFault containing exceptions that might have occurred setting up
+    * or querying the registry.
+    * @return XML docuemnt object representing the result of the query.
+    */
    public Document GetResourceByIdentifier(Document query) throws AxisFault {
        log.debug("start GetResourcesByIdentifier");                   
        String ident = null;
@@ -494,10 +544,22 @@ public class RegistryQueryService {
    }
    
 
+   /**
+    * Method: GetResourceByIdentifier
+    * Description: Used by JSP's and teh interface method form web service. 
+    * Takes an identifier and the versionNumber of the registry to be queries on. 
+    * (No query is actually performed). Grabs the Resource from the database based on
+    * identifier, this is because the identifier is the primary key (or id) in the db.
+    * 
+    * @param query - soab body containing a identifier element for the identifier to query on.
+    * @throws - AxisFault containing exceptions that might have occurred setting up
+    * or querying the registry.
+    * @return XML docuemnt object representing the result of the query.
+    */
    public Document getResourceByIdentifier(String ivorn, String versionNumber) throws AxisFault {
        XSLHelper xslHelper = new XSLHelper();
        if(versionNumber == null || versionNumber.trim().length() <= 0) {
-           versionNumber = RegistryServerHelper.getDefaultVersionNumber();
+           versionNumber = RegistryDOMHelper.getDefaultVersionNumber();
        }
        if(ivorn == null || ivorn.trim().length() <= 0) {
            throw new AxisFault("Cannot have empty or null identifier");
@@ -530,7 +592,7 @@ public class RegistryQueryService {
    public Document getResourcesByAnyIdentifier(String ivorn, String versionNumber) throws AxisFault {
        XSLHelper xslHelper = new XSLHelper();
        if(versionNumber == null || versionNumber.trim().length() <= 0) {
-           versionNumber = RegistryServerHelper.getDefaultVersionNumber();
+           versionNumber = RegistryDOMHelper.getDefaultVersionNumber();
        }
 
        String xqlString = QueryHelper.queryForAllResource(ivorn,versionNumber);
@@ -541,9 +603,9 @@ public class RegistryQueryService {
       
 
    /**
-    * Queries and returns all the Resources that are Registry type resources.
-    * Used by other registries as a convenience query to discover other
-    * regiestries not known for harvesting.
+    * Method: GetRegistries
+    * Description: Queries and returns all the Resources that are Registry type resources.
+    * Calls teh getRegistriesQuery(String)
     * 
     * @param query normally empty and is ignored, it is required though for the
     * Axis Document style method.  At most it will contain nothing more than the method
@@ -558,31 +620,39 @@ public class RegistryQueryService {
       String versionNumber = getRegistryVersion(query);
       return getRegistriesQuery(versionNumber);
    }
-   
+
+   /**
+    * Method: GetRegistries
+    * Description: Queries and returns all the Resources that are Registry type resources.
+    * Used by the harvester to find Registry types for harvesting.
+    * 
+    * @param versionNumber - String table or collection
+    * @return Resource entries of type Registries.
+    * @throws - AxisFault containing exceptions that might have occurred setting up
+    * or querying the registry.
+    * @see org.astrogrid.registry.server.harvest.RegistryHarvestService
+    */   
    public Document getRegistriesQuery(String versionNumber) throws AxisFault {
        long beginQ = System.currentTimeMillis();
        if(versionNumber == null || versionNumber.trim().length() <= 0) {
-           versionNumber = RegistryServerHelper.getDefaultVersionNumber();
+           versionNumber = RegistryDOMHelper.getDefaultVersionNumber();
        }
        
-       //Should declare namespaces, but it is not required so will leave out for now.
-       String xqlString = QueryHelper.queryForRegistries(versionNumber);
-       log.info("XQL String = " + xqlString);      
+       //Get the Xquery String, from the properties.
+       String xqlString = QueryHelper.queryForRegistries(versionNumber);             
        Node resultDoc = queryExist(xqlString,versionNumber);
        XSLHelper xslHelper = new XSLHelper();
-       log.info("Time taken to complete GetRegistries on server = " +
-       (System.currentTimeMillis() - beginQ));
-       log.debug("end loadRegistry");
-       
        return xslHelper.transformExistResult(resultDoc,
                versionNumber,"GetRegistriesResponse");       
    }
    
    
    /**
-    * Transforms ADQL to XQuery, uses the namespace of ADQL to allow the
+    * Method: getQuery
+    * Description: Transforms ADQL to XQuery, uses the namespace of ADQL to allow the
     * transformations to handle different versions.  Transformations are done
-    * by XSL stylesheets.
+    * by XSL stylesheets. XSL is customizable in case you need to change the XQuery or
+    * some other type of Query for the database.
     * 
     * @param query ADQL DOM object 
     * @return xquery string
@@ -621,27 +691,29 @@ public class RegistryQueryService {
    /**
     * Looks for a registry version number in a DOM object.  By looking at the xmlns 
     * (normally vr) of varoius elements. Because a Resource element may be a few 
-    * elements down it goes through a few child nodes.
+    * elements down it goes through a few child nodes. Calls RegistryDOMHelper which
+    * is the actual process of finding the vr namespace and get the version number.
     * 
-    * @param query XML DOM of Resources
+    * @param query XML DOM hopefully with a vr namespace.  The version 0.10 of Resources
+    * may be a little lower than the Resource element that is why it goes one child lower.
     * @return version number of the Registry.
+    * @see org.astrogrid.registry.common.RegistryDOMHelper.
     */
    private String getRegistryVersion(Document query) {
        log.info("in getRegistryversion");
        //log.info("print in getRegistryVersion" + DomHelper.DocumentToString(query));
        if(query == null) {
-           return RegistryServerHelper.getRegistryVersionFromNode(query);
+           return RegistryDOMHelper.getRegistryVersionFromNode(query);
        }
        Element elem = query.getDocumentElement();
        if(elem == null) {
-           return RegistryServerHelper.getRegistryVersionFromNode(query);
+           return RegistryDOMHelper.getRegistryVersionFromNode(query);
        }
        if(elem.hasChildNodes()) {
-           return RegistryServerHelper.getRegistryVersionFromNode(
+           return RegistryDOMHelper.getRegistryVersionFromNode(
                          query.getDocumentElement().getFirstChild());    
        }
-       return RegistryServerHelper.getRegistryVersionFromNode(
+       return RegistryDOMHelper.getRegistryVersionFromNode(
                                    query.getDocumentElement());    
-   }
-      
+   }      
 }

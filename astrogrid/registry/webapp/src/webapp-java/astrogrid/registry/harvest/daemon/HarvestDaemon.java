@@ -12,24 +12,60 @@ import org.astrogrid.registry.RegistryException;
 //import org.apache.axis.AxisFault;
 
 
+/**
+ * Class: HarvestDaemon
+ * Description: Small servlet class to be placed in the web.xml with a load-on-startup value set.  Used for
+ * automatic harvesting.  By setting up a timer which will kick off automatic harvest at certain intervals.
+ * It can also be used on the web browser to do harvesting, but now there is a seperate jsp page for harvesting,
+ * so this servlet should rarely be used for actually coming in on a web browser.
+ * 
+ * @author Kevin Benson
+ *
+ */
 public class HarvestDaemon extends HttpServlet //implements Runnable
 {
    //Thread myThread;
    int myCounter;
+   
+   /**
+    * harvest interval in hours, read from the property.
+    */
    int harvestInterval;
+   
    Date lastHarvestTime;
    Date servletInitTime;
+   
+   /**
+    * Main harvest service class.
+    */
    RegistryHarvestService rhs;
+   
    boolean harvestOnLoad = false;
    boolean valuesSet = false;
-   public static boolean harvestStarted;
    
+   /**
+    * a static boolean to check that a harvest is currentlygoing. Don't want to have 2 harvests going at the same time.
+    */
+   public static boolean harvestStarted;
+
+   
+   /**
+    * Need to check, I don't believe it is used anymore.
+    */
    private ServletContext context = null;   
 
    public static final String INTERVAL_HOURS_PROPERTY =
        "reg.custom.harvest.interval_hours";
    public static Config conf = null;
+   
+   /**
+    * Timer class for schedulding a harvest from a manual request through the servlet.
+    */
    private Timer timer = null;
+   
+   /**
+    * Timer class for Scheduling the automatic harvesting.
+    */
    private Timer scheduleTimer = null;
 
    static {
@@ -40,6 +76,13 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
    }
    
 
+   /**
+    * Method: destroy
+    * Description: destroy method for the servlet conatiner to call when killing the servlet. Cleans up any
+    * timer information making sure they are cancelled.  Otherwise the timer class may not let the servlet container
+    * shutdown till ti runs.
+    *
+    */
    public void destroy() {
        super.destroy();
        System.out.println("exiting HarvestDaemon; trying to destroy timers");
@@ -51,6 +94,12 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
        }
    }
    
+   /**
+    * Method: init
+    * Description: initalization of the servlet, main purpose is to setup the timers for harvesting.
+    * @param config
+    * @throws ServletException
+    */
    public void init(ServletConfig config)
                 throws ServletException
    {
@@ -58,23 +107,33 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
       
        System.out.println("initialized HarvestDaemon");
        
+       //get the current date and time.
        servletInitTime = new Date();
+       //instantiate teh harvest service.
        rhs = new RegistryHarvestService();
+       
+       //hmmm lets make sure there is no timer going at the moment.
        if(scheduleTimer != null) {
            //hmmm just in case the servlet container decides to re-initialize
            //this servlet.
            scheduleTimer.cancel();
            scheduleTimer = null;
        }
+       //instantiate teh timer class, and see if they are enabling harvesting.
        scheduleTimer = new Timer();
        boolean harvestEnabled = conf.getBoolean("reg.amend.harvest",false);
        if(harvestEnabled) {
+           //check wif we have already setup all the interval time values.
           if(!valuesSet) {
               System.out.println("harvest is enabled");
               valuesSet = true;
+              //okay get the harvest interval time.
               harvestInterval = conf.getInt(INTERVAL_HOURS_PROPERTY);
               //lets not start a harvest off the bat, wait till next cycle.
+              //origianlly this was in the properties file, but it is now just waits
+              //till the next cycle.
               harvestOnLoad = false;
+              //hmmm invalid property set on harvst interval so default it to 2.
               if(harvestInterval <= 0) {
                   System.out.println("ERROR CANNOT HAVE A HARVESTINTERVAL LESS THAN 1; DEFAULTING TO 2");
                   harvestInterval = 2;
@@ -82,6 +141,7 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
           }
           System.out.println("in init of harvestDaemon and starting thread.");
           
+          //schedule the timer class.
           scheduleTimer.scheduleAtFixedRate(new HarvestTimer("HarvestNow"),
                        harvestInterval*3600*1000,
                        harvestInterval*3600*1000);          
@@ -96,6 +156,15 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
    }
    
 
+   /**
+    * Method: doGet
+    * Description: Rarely used anymore because of the jsp pages with the Registry, but this servlet can be used for
+    * doing harvests or replications.
+    * @param req
+    * @param res
+    * @throws IOException
+    * @throws ServletException
+    */
    public void doGet(HttpServletRequest req, HttpServletResponse res)
                 throws IOException, ServletException
    {
@@ -142,6 +211,14 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
                   out.println("</h2></body></html>");
    }
 
+   /**
+    * Class: HarvestTimer
+    * Description: Actual TimerTask class to start the harvesting.
+    * @author Kevin Benson
+    *
+    * TODO To change the template for this generated type comment go to
+    * Window - Preferences - Java - Code Style - Code Templates
+    */
    class HarvestTimer extends TimerTask {
        private String task = null;
        
@@ -149,6 +226,11 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
            task = harvestTask;
        }
        
+       /**
+        * Method: run
+        * Description: Runs the HarvestNow or ReplicateNow, for automatic harvesting which is what this is
+        * normally used for it will always be HarvestNow.
+        */
        public void run() {
 
            try {
