@@ -15,7 +15,7 @@ public class Server {
     // This is the HTTP server.  We start it running (i.e.
     // start up one or more daemon threads and then push
     // the warehouse-service implementation into it.
-    HTTP.startup ("http://localhost:8004/glue");
+    HTTP.startup ("http://localhost:8008/glue");
     Registry.publish ("warehouse", w);
   }
 }

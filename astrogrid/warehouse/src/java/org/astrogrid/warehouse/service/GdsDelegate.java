@@ -21,6 +21,17 @@ import uk.org.ogsadai.wsdl.gds.GDSPortType;
 import uk.org.ogsadai.wsdl.gds.GDSServiceGridLocator;
 import uk.org.ogsadai.common.XMLUtilities;
 
+/*
+//Security-specific imports
+import org.apache.axis.client.Stub;
+import org.globus.axis.gsi.GSIConstants;
+import org.globus.ogsa.impl.security.Constants;
+import org.globus.ogsa.impl.security.authorization.NoAuthorization;
+import org.ietf.jgss.GSSCredential;
+import org.gridforum.jgss.ExtendedGSSManager;
+*/
+
+
 /**
  * A delegate for the Grid Data Service (GDS) of OGSA-DAI.
  * This delegate provides a sub-set of the GDS' functions
@@ -57,7 +68,7 @@ public class GdsDelegate extends GridServiceDelegate {
     // Create and load default properties
     serviceProperties = new Properties();
     try {
-      serviceProperties.load(WarehouseServiceImpl.class.getResourceAsStream(
+      serviceProperties.load(GdsDelegate.class.getResourceAsStream(
           "GdsDelegate.properties"));
     }
     catch (FileNotFoundException e) {
@@ -109,7 +120,6 @@ public class GdsDelegate extends GridServiceDelegate {
     return result;
   }
   
- 
   /**
    * Creates a GDS instance and locates its application port.
    * Records the port in the applicationPort attribute.
@@ -128,6 +138,32 @@ public class GdsDelegate extends GridServiceDelegate {
     System.out.println("GdsDelegate: connected.");
   }
   
+  /**
+   * Imports a credential and attaches it to the service.
+   */
+  /*
+  public void attachGss() throws Exception {
+    GSSCredential cred = null;
+    ExtendedGSSManager manager =
+       (ExtendedGSSManager)ExtendedGSSManager.getInstance();
+    cred = manager.createCredential(GSSCredential.INITIATE_AND_ACCEPT);
+
+    if ( cred == null ) {
+      throw new Exception("Cannot create a GSS Credential "
+                          + "for the Grid Data Service; operation aborted.");
+    }
+
+    ((Stub) this.applicationPort)._setProperty(
+             Constants.GSI_SEC_CONV, Constants.SIGNATURE );
+    ((Stub) this.applicationPort)._setProperty(
+            GSIConstants.GSI_MODE, GSIConstants.GSI_MODE_LIMITED_DELEG );
+    ((Stub) this.applicationPort)._setProperty(
+            Constants.AUTHORIZATION, NoAuthorization.getInstance());
+    ((Stub) this.applicationPort)._setProperty(
+            GSIConstants.GSI_CREDENTIALS, cred );
+   }
+   */
+
 
   /**
    * Converts an SQL string into an XML Perform document for OGSA-DAI.
