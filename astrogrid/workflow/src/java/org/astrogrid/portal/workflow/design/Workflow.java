@@ -50,7 +50,7 @@ import org.astrogrid.portal.workflow.design.unittest.* ;
  * Once a Workflow is instantiated, it forms the root of an arbitrarilly
  * complex tree of Steps, Flows and Sequences.
  * 
- * 
+ * <p><blockquote><pre>
  * Activity ( Abstract )
  * |
  * |
@@ -67,14 +67,14 @@ import org.astrogrid.portal.workflow.design.unittest.* ;
  * |      
  * |      
  * |__Workflow
- * 
+ * </pre></blockquote><p>
  * 
  * Workflow contains some static factory methods for manipulating Workflows
  * on a persistent basis.
- * 
+ * <p>
  * A Workflow instance contains sufficient methods to manipulate its internal 
  * structure (adding and subtracting an Activity, and so on).
- * 
+ * <p>
  * There is one highly significant fact that is critical to navigating around
  * Workflow from the top level. Each instance of an Activity has a unique 
  * key and Workflow maintains a collection that maps key to Activity. If you
@@ -82,11 +82,8 @@ import org.astrogrid.portal.workflow.design.unittest.* ;
  * irrespective of the complexity of the tree. @see getActivity() method. 
  * From an Activity it is relatively trivial to find parent and children in context.  
  * 
- *
  * @author  Jeff Lusted
- * @version 1.0 21-Aug-2003
- * @see     
- * @see     
+ * @version 1.0 21-Aug-2003    
  * @since   AstroGrid 1.3
  */
 public class Workflow extends Activity {
@@ -201,12 +198,13 @@ public class Workflow extends Activity {
       * Static helper method for creating a bare workflow.
       * <p>
       * 
-      * @param communitySnippet - userid, community, group and security token details.
-      * @param name - name of the intended workflow. If the Workflow is finally saved,
-      * name will form the file name within MySpace, so the name should preferably be
-      * unique. However, the name can be set later.
-      * @param description - some meaningful description of the workflow. Description
-      * can be set later.
+      * @param communitySnippet  userid, community, group and security token details.
+      * @param name              name of the intended workflow. 
+      *                          If the Workflow is finally saved, name will form the file name
+      *                          within MySpace, so the name should preferably be unique. 
+      *                          However, the name can be set later.
+      * @param description       some meaningful description of the workflow. 
+      *                          Description can be set later.
       * @return A bare workflow.
       * 
       **/         
@@ -242,23 +240,25 @@ public class Workflow extends Activity {
       * of sequences, flows and steps.
       * <p>
       * The structure is given by passing a template name. There are a limited number
-      * of templates, with the corresponding names. 
+      * of templates, with the corresponding names:
+      * <p><blockquote><pre>
       * (1) OneStepJob, 
       * (2) TwoParallelJobsteps, 
       * (3) TwoSequentialJobsteps, 
       * (4) TwoStepFlowAndMerge,
       * (5) ComplexWorkflow
-      * 
+      * </pre></blockquote><p>
       * Templates are intended as a short-term measure whilst gui development is
       * getting started.
       * 
-      * @param communitySnippet - userid, community, group and security token details.
-      * @param name - name of the intended workflow. If the Workflow is finally saved,
-      * name will form the file name within MySpace, so the name should preferably be
-      * unique. However, the name can be set later.
-      * @param description - some meaningful description of the workflow. Description
-      * can be set later.
-      * @param templateName - the name of the template.
+      * @param communitySnippet  userid, community, group and security token details.
+      * @param name              name of the intended workflow. 
+      *                          If the Workflow is finally saved, name will form the file 
+      *                          name within MySpace, so the name should preferably be
+      *                          unique. However, the name can be set later.
+      * @param description       some meaningful description of the workflow. 
+      *                          Description can be set later.
+      * @param templateName      the name of the template.
       * @return A workflow with the same structure as the template.
       * 
       **/        
@@ -305,10 +305,10 @@ public class Workflow extends Activity {
       * Static helper method for reading a workflow from MySpace.
       * <p>
       * 
-      * @param communitySnippet - userid, community, group and security token details.
-      * @param name - name of the workflow. 
+      * @param communitySnippet  userid, community, group and security token details.
+      * @param name              name of the workflow. 
       * @return A workflow reinstantiated from MySpace. If the requested workflow 
-      * is not found, will return null
+      *         is not found, will return null
       * 
       **/            
     public static Workflow readWorkflow( String communitySnippet
@@ -371,8 +371,8 @@ public class Workflow extends Activity {
       * Static helper method for deleting a workflow from MySpace.
       * <p>
       * 
-      * @param communitySnippet - userid, community, group and security token details.
-      * @param name - name of the workflow. 
+      * @param communitySnippet  userid, community, group and security token details.
+      * @param name              name of the workflow. 
       * @return A boolean indicating success or failure.
       * 
       **/      
@@ -436,8 +436,8 @@ public class Workflow extends Activity {
       * Static helper method for saving a workflow in MySpace.
       * <p>
       * 
-      * @param communitySnippet - userid, community, group and security token details.
-      * @param workflow to be saved. 
+      * @param communitySnippet   userid, community, group and security token details.
+      * @param workflow           the workflow to be saved. 
       * @return A boolean indicating success or failure.
       * 
       **/       
@@ -500,8 +500,8 @@ public class Workflow extends Activity {
       * Static helper method for submitting a workflow to the Job Entry System.
       * <p>
       * 
-      * @param communitySnippet - userid, community, group and security token details.
-      * @param workflow to be submitted. 
+      * @param communitySnippet  userid, community, group and security token details.
+      * @param workflow          the workflow to be submitted. 
       * @return A boolean indicating success or failure.
       * 
       **/         
@@ -546,9 +546,9 @@ public class Workflow extends Activity {
       * At present this returns just an Iterator of string Objects representing the names
       * of the workflow files held by the given user within MySpace.
       * 
-      * @param communitySnippet - userid, community, group and security token details.
-      * @param filter - a filter argument against file name sumitted to MySpace. NB: this 
-      * is not currently used. 
+      * @param communitySnippet  userid, community, group and security token details.
+      * @param filter            a filter argument against file name sumitted to MySpace. 
+      *                          NB: this is not currently used. 
       * @return An iterator of file names. 
       **/  
     public static Iterator readWorkflowList( String communitySnippet
@@ -610,7 +610,7 @@ public class Workflow extends Activity {
       * At present this returns just an Iterator of string Objects representing the names
       * of the tools.
       * 
-      * @param communitySnippet - userid, community, group and security token details.
+      * @param communitySnippet  userid, community, group and security token details.
       * @return An iterator of tool names. 
       **/ 
     public static Iterator readToolList( String communitySnippet ) {
@@ -656,8 +656,8 @@ public class Workflow extends Activity {
       * There is little error checking, so make sure the tool name is correct
       * and that the tool details exist.
       * 
-      * @param communitySnippet - userid, community, group and security token details.
-      * @param name - name of required tool.
+      * @param communitySnippet  userid, community, group and security token details.
+      * @param name              name of required tool.
       * @return An instance of the tool. 
       **/ 
     public static Tool createTool( String communitySnippet
@@ -729,9 +729,9 @@ public class Workflow extends Activity {
       * At present this returns just an Iterator of string Objects representing the names
       * of the query files held by the given user within MySpace.
       * 
-      * @param communitySnippet - userid, community, group and security token details.
-      * @param filter - a filter argument against file name sumitted to MySpace. NB: this 
-      * is not currently used. 
+      * @param communitySnippet  userid, community, group and security token details.
+      * @param filter            a filter argument against file name sumitted to MySpace. 
+      *                          NB: this is not currently used. 
       * @return An iterator of file names. 
       **/      
     public static Iterator readQueryList( String communitySnippet
@@ -794,8 +794,8 @@ public class Workflow extends Activity {
       * Static helper method for reading a query from MySpace.
       * <p>
       * 
-      * @param communitySnippet - userid, community, group and security token details.
-      * @param name - name of the query. 
+      * @param communitySnippet  userid, community, group and security token details.
+      * @param name              name of the query. 
       * @return A query held as an xml String. If the requested query is not found, 
       * will return null.
       * 
@@ -913,12 +913,11 @@ public class Workflow extends Activity {
     /**
       * <p> 
       * Default Workflow constructor.
-      * <p>
-      * 
+      * <p> 
       * The parent is set to null by calling super(null).
       * This is the indication within a tree of activities that the top
       * Activity (ie: the Workflow instance itself) has been reached.
-      * 
+      * <p>
       * We set the dirty flag as this Workflow instance has obviously
       * not been saved yet.
       * 
@@ -937,12 +936,13 @@ public class Workflow extends Activity {
       * The parent is set to null by calling super(null).
       * This is the indication within a tree of activities that the top
       * Activity (ie: the Workflow instance itself) has been reached.
-      * 
+      * <p>
       * We set the dirty flag as this Workflow instance has obviously
       * not been saved yet.
       * 
-      * @param communitySnippet - userid, community, group and security token details.
-      * @param document - Origination could be from MySpace or from a template.
+      * @param communitySnippet  userid, community, group and security token details.
+      * @param document          workflow as xml Document.
+      *                          Its origination could be from MySpace or from a template.
       **/        
     public Workflow( String communitySnippet, Document document ) {
         super(null) ;   // null because no parent 
@@ -996,7 +996,7 @@ public class Workflow extends Activity {
       * In effect, this gets you straight into context.
       * <p>
       * 
-      * @param String key - the key of the activity
+      * @param key - the key of the activity
       **/     
     public Activity getActivity( String key ) {
         if( TRACE_ENABLED ) trace( "entry: Workflow.getActivity()") ; 
@@ -1018,12 +1018,13 @@ public class Workflow extends Activity {
       * <p>
       * If the activity already exists in the collection, the call is ignored.
       * However, this is indicated by a failure return.
+      * <p>
       * NB: The map is simply a navigational aid. The activity must
       * be separately inserted into the Workflow structure itself.
-      * 
+      * <p>
       * JBL Note. Should not have a public access scope.
       * 
-      * @param Activity activity - an activity that has just been newly created.
+      * @param activity  an activity that has just been newly created.
       * @return boolean indicating success or failure.
       **/         
     public boolean putActivity( Activity activity ) {
@@ -1063,7 +1064,7 @@ public class Workflow extends Activity {
       * NB: The map is simply a navigational aid. The activity must
       * be separately removed from the Workflow structure itself.
       * 
-      * @param Activity activity - an activity to be removed.
+      * @param activity  an activity to be removed.
       * @return boolean indicating success or failure.
       **/      
     public boolean removeActivity( Activity activity ) {
@@ -1075,13 +1076,16 @@ public class Workflow extends Activity {
       * <p> 
       * Produces the xml description of this workflow instance.
       * <p>
-      * @see constructJESXML() to which it is strongly related.
-      * The duplication is historical. JES was produced in an earlier iteration
-      * than Workflow and we have yet to systematize the two object models.
-      * @see toXMLString(). This was its original appelation, but change was forced
-      * by the necessity of using the communitySnippet.
+      * @see  org.astrogrid.portal.workflow.design.Workflow#constructJESXML(java.lang.String) 
+      *       to which it is strongly related. The duplication is historical. 
+      *       JES was produced in an earlier iteration than Workflow and we have yet 
+      *       to systematize the two object models.
+      * <p>
+      * @see  org.astrogrid.portal.workflow.design.Workflow#toXMLString(). 
+      *       This was its original appellation, but change was forced
+      *       by the necessity of using the communitySnippet.
       * 
-      * @param communitySnippet - userid, community, group and security token details.
+      * @param communitySnippet  userid, community, group and security token details.
       * @return the workflow as an xml String.
       **/      
     protected String constructWorkflowXML( String communitySnippet ) {
@@ -1115,7 +1119,7 @@ public class Workflow extends Activity {
      * Basically here to satisfy the requirements of inheriting from 
      * the Activity abstract class.
      * 
-     * @see constructWorkflowXML()
+     * @see org.astrogrid.portal.workflow.design.Workflow#constructWorkflowXML(java.lang.String)
      */
     public String toXMLString() {
         return getChild().toXMLString() ;
@@ -1126,11 +1130,12 @@ public class Workflow extends Activity {
       * <p> 
       * Produces the xml job description of this workflow instance.
       * <p>
-      * @see constructWorkflowXML() to which it is strongly related.
-      * The duplication is historical. JES was produced in an earlier iteration
-      * than Workflow and we have yet to systematize the two object models.
+      * org.astrogrid.portal.workflow.design.Workflow#constructWorkflowXML(java.lang.String)
+      * to which it is strongly related. The duplication is historical. 
+      * JES was produced in an earlier iteration than Workflow and we have yet 
+      * to systematize the two object models.
       * 
-      * @param communitySnippet - userid, community, group and security token details.
+      * @param communitySnippet  userid, community, group and security token details.
       * @return the workflow as a JES xml String.
       **/   
     protected String constructJESXML( String communitySnippet ) {
@@ -1164,7 +1169,7 @@ public class Workflow extends Activity {
      * Basically here to satisfy the requirements of inheriting from 
      * the Activity abstract class.
      * 
-     * @see constructJESXML()
+     * @see org.astrogrid.portal.workflow.design.Workflow#constructJESXML(java.lang.String)
      */
     public String toJESXMLString() {
         return getChild().toJESXMLString() ;  
@@ -1200,17 +1205,21 @@ public class Workflow extends Activity {
 		return userid;
 	}
 
-
-    protected static String locateMySpace( String userid, String community ) {
-        if( TRACE_ENABLED ) trace( "Workflow.locateMySpace() entry") ;
-        try {
-            return WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ;
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Workflow.locateMySpace() exit") ;
-        }
-    }
     
+    /**
+      * <p> 
+      * Retrieves a workflow template
+      * <p>
+      * This shows obvious signs of difficulties encountered in retrieving
+      * files on the classpath via the config file setup. Unfortunately
+      * we have hit this problem periodically and sometimes persistently
+      * where Cocoon is concerned, so for the moment the templates have been
+      * hard coded. Hopefully, templates in this form will soon be a thing
+      * of the past.
+      * 
+      * @param templateName  name of the template.
+      * @return the template as an xml String.
+      **/ 
     protected static String retrieveTemplate( String templateName ) { 
         if( TRACE_ENABLED ) trace( "Workflow.retrieveTemplate() entry") ;
         
@@ -1251,17 +1260,32 @@ public class Workflow extends Activity {
         
         return retValue ;
         
-    }
+    } // end of retrieveTemplate()
     
-    
+       
+    /**
+      * <p> 
+      * Extracts the userid portion of a Community account.
+      * <p>
+      * 
+      * @param account  the Community version of account
+      * @return userid.
+      **/ 
     protected static String extractUserid( String account ) {
-        String
-            retVal = account.substring( 0, account.indexOf("@") ) ;
+        String retVal = account.substring( 0, account.indexOf("@") ) ;
         debug( "Userid: " + retVal ) ;
         return retVal; 
     }
     
     
+    /**
+      * <p> 
+      * Extracts the community portion of a Community account.
+      * <p>
+      * 
+      * @param account   the Community version of account
+      * @return community.
+      **/ 
     protected static String extractCommunity( String account ) {
         String
             retVal = account.substring( account.indexOf("@") + 1 ) ;
@@ -1304,24 +1328,27 @@ public class Workflow extends Activity {
 	}
     
     
-    /*
-     * At present this returns just an Iterator of string Objects representing the names
-     * of the files.
-     */
+    /**
+      * <p> 
+      * Static helper method that reads a list of things from MySpace.
+      * <p>
+      * At present this returns just an Iterator of string Objects representing the names
+      * of the files held by the given user within MySpace.
+      * 
+      * @param communitySnippet  userid, community, group and security token details.
+      * @param myspaceLocation   location of MySpace - a url in String format. 
+      * @param myspaceArguments  full path argument to search MySpace
+      * @return An iterator of file names. 
+      **/     
     protected static Iterator readMySpaceList( String communitySnippet
                                              , String myspaceLocation 
                                              , String myspaceArguments ) {
                                                  
-        if( TRACE_ENABLED ) trace( "Workflow.readMySpaceList() entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.readMySpaceList()") ; 
         
-        // JBL: For the moment we are ignoring filter.
-        
-        Iterator
-           iterator = null ;
-        java.util.Vector
-           vector = null ;
-        String
-           account ;
+        Iterator iterator = null ;
+        java.util.Vector vector = null ;
+        String account ;
         
         try {
                
@@ -1353,7 +1380,7 @@ public class Workflow extends Activity {
             ex.printStackTrace() ;
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.readMySpaceList() exit") ; 
+            if( TRACE_ENABLED ) trace( "exit: Workflow.readMySpaceList()") ; 
         }
        
         return iterator ;
@@ -1361,10 +1388,21 @@ public class Workflow extends Activity {
     } // end of readMySpaceList()
     
     
+    /**
+      * <p> 
+      * Static helper method that reads a file from MySpace.
+      * <p>
+      * NB: At present this returns the file contents as a String.
+      * 
+      * @param communitySnippet  userid, community, group and security token details.
+      * @param myspaceLocation   location of MySpace - a url in String format. 
+      * @param myspaceArguments  full path argument to search MySpace
+      * @return  the file contents as a String.  
+      **/     
     protected static String readMySpaceFile( String communitySnippet
                                            , String myspaceLocation
                                            , String arguments ) {
-        if( TRACE_ENABLED ) trace( "Workflow.readMySpaceFile() entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.readMySpaceFile()") ; 
         
         String
             account = null,
@@ -1389,7 +1427,7 @@ public class Workflow extends Activity {
             ex.printStackTrace() ;
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.readMySpaceFile() exit") ; 
+            if( TRACE_ENABLED ) trace( "exit: Workflow.readMySpaceFile()") ; 
         }
        
         return fileString ;
@@ -1399,15 +1437,15 @@ public class Workflow extends Activity {
     
     /**
       * Formats some logical URL for a file in MySpace.
-      * 
+      * <p>
       * This is a guess at present. 
       * 
-      * @param communitySnippet - Account and Group details.
-      * @param logicalDirectoryPath - a logical path to a file within MySpace.
-      *        The path may be a full of parial path.
-      *        Directories should be separated by forward slashes.
-      * @param fileName - just the file name
-      * @see 
+      * @param communitySnippet  Account and Group details.
+      * @param logicalDirectoryPath  a logical path to a file within MySpace.
+      *                              The path may be a full or partial path.
+      *                              Directories should be separated by forward slashes.
+      * @param fileName  just the file name
+      * @return the url within MySpace for the given path and file, as a String
       **/   
     public static String formatMySpaceURL( String communitySnippet
                                          , String logicalDirectoryPath
@@ -1447,17 +1485,32 @@ public class Workflow extends Activity {
     } // formatMySpaceURL()
     
 
+    /**
+      * Inserts a tool into a Step.
+      * <p>
+      * The step is only indentified by its activity key as a String.
+      * This means that we must retrieve the activity from the workflow
+      * activity collection. The collection holds all sorts of things 
+      * which are not necessarilly Step(s), so in retrieving the activity 
+      * we do some type checking before insertion. The process can 
+      * obviously fail if the activity is not found or is not an instance 
+      * of a Step.
+      * <p>
+      * JBL Note. There is no need for this to be static.
+      * 
+      * @param stepActivityKey  the key of the proposed step
+      * @param tool             the tool to be inserted
+      * @param workflow         the relevant workflow.
+      * @return boolean indication success or failure
+      **/   
     public static boolean insertToolIntoStep( String stepActivityKey
                                             , Tool tool
                                             , Workflow workflow ) {
-            if( TRACE_ENABLED ) trace( "Workflow.insertToolIntoStep(String,String, Workflow) entry") ; 
+            if( TRACE_ENABLED ) trace( "entry: Workflow.insertToolIntoStep(stepActivityKey,tool,workflow)") ; 
 
-            boolean
-                retValue = false ;
-            Step
-                step = null ;
-            Activity
-                activity = null ;
+            boolean retValue = false ;
+            Step step = null ;
+            Activity activity = null ;
             
             try {
             
@@ -1480,12 +1533,12 @@ public class Workflow extends Activity {
                     ex.printStackTrace() ;
             }
             finally {
-                    if( TRACE_ENABLED ) trace( "Workflow.insertToolIntoStep(String,String, Workflow) exit") ; 
+                    if( TRACE_ENABLED ) trace( "exit: Workflow.insertToolIntoStep(stepActivityKey,tool,workflow)") ; 
             }
         
             return retValue ;
 
-    } // end of insertToolIntoStep(String,String)    
+    } // end of insertToolIntoStep(stepActivityKey,tool,workflow)    
     
     
     /** 
@@ -1495,15 +1548,26 @@ public class Workflow extends Activity {
       * of this named parameter. That is, if the parameter named
       * "votable" has five occurances and the array position is set to
       * three, then the fourth votable parameter will be deleted.
-      * 
-      * JBL Note: I believe this is too fernickety.
-      * @see deleteParameter based upon value..
-      *  
-      * @param tool - The tool to be executed
-      * @param paramName - the name of the parameter
-      * @param direction - either "input" or "output".
-      * @param arrayPosition - zero based position of parameter
-      * @return - boolean indicating success or failure.
+      * <p>
+      * For the sake of the sanity of the gui developers, you cannot delete
+      * an optional parameter so that there are no instances of the parameter,
+      * which does seem to defeat the idea of it being optional. However, you
+      * can leave an optional parameter empty of value and it will be ignored
+      * at submission time.
+      * <p>
+      * JBL Note:<p> 
+      * (1) I believe this is too fernickety.
+      * @see org.astrogrid.portal.workflow.design.Workflow#deleteParameter(org.astrogrid.portal.workflow.design.Tool,java.lang.String,java.lang.String,java.lang.String)      
+      * which is based upon value rather than position.<p> 
+      * (2) I do not like the direction argument, which I believe shows up a weakness of having 
+      * input and output parameters rather than having "direction" as an attribute of a parameter.
+      * But in any case, a better type-safe approach is desirable.
+      * @deprecated
+      * @param tool           the tool that owns the relevant parameter
+      * @param paramName      the name of the parameter
+      * @param direction      either "input" or "output".
+      * @param arrayPosition  zero based position of parameter
+      * @return boolean indicating success or failure.
       * 
       **/   
     public static boolean deleteParameter( Tool tool
@@ -1511,7 +1575,7 @@ public class Workflow extends Activity {
                                          , String direction
                                          , int arrayPosition ) {
     
-        if( TRACE_ENABLED ) trace( "Workflow.deleteParameter() entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.deleteParameter(tool,paramName,direction,arrayPosition)") ; 
         
             // It is possible we will not delete a parameter, so the default is false...
             boolean retValue = false ;
@@ -1578,12 +1642,12 @@ public class Workflow extends Activity {
             }
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.deleteParameter() exit") ; 
+            if( TRACE_ENABLED ) trace( "exit: Workflow.deleteParameter(tool,paramName,direction,arrayPosition)") ; 
         }
         
         return retValue ;
                                                           
-    } // end of Workflow.deleteParameter()
+    } // end of Workflow.deleteParameter(tool,paramName,direction,arrayPosition)
     
 
     /**> 
@@ -1591,16 +1655,17 @@ public class Workflow extends Activity {
       * The parameter value is used to identify the parameter as target. 
       * Can be used to delete redundant empty parameters by setting the value
       * to null or the empty string.
-      * 
-      * This is by far the easiest way of deleting parameters!
+      * <p>
+      * This is by far the easiest way of deleting parameters! We simply locate
+      * the parameter with the given name and given value, and delete it.
       *  
-      * @param tool - The tool to be executed
-      * @param paramName - the name of the parameter
-      * @param value - the value used to identify the target parameter.
-      * Can be null or the empty string, in which case the first empty 
-      * candidate will be used.
-      * @param direction - either "input" or "output".
-      * @return - boolean indicating success or failure.
+      * @param tool       the tool that owns the relevant parameter
+      * @param paramName  the name of the parameter
+      * @param value      the value used to identify the target parameter.
+      *                   Can be null or the empty string, in which case the first empty 
+      *                   candidate will be used. 
+      * @param direction  either "input" or "output".
+      * @return boolean indicating success or failure.
       * 
       **/      
     public static boolean deleteParameter( Tool tool
@@ -1608,7 +1673,7 @@ public class Workflow extends Activity {
                                          , String value
                                          , String direction ) {
     
-        if( TRACE_ENABLED ) trace( "Workflow.deleteParameter(tool,paramName,value,direction) entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.deleteParameter(tool,paramName,value,direction)") ; 
         
             boolean retValue = false ;
             ListIterator iterator = null ;
@@ -1648,7 +1713,7 @@ public class Workflow extends Activity {
             } // end while 
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.deleteParameter(tool,paramName,value,direction) exit") ; 
+            if( TRACE_ENABLED ) trace( "exit: Workflow.deleteParameter(tool,paramName,value,direction)") ; 
         }
         
         return retValue ;
@@ -1665,17 +1730,19 @@ public class Workflow extends Activity {
       * of this named parameter. That is, if the parameter named
       * "votable" has five occurances and the array position is set to
       * three, then the fourth votable parameter will have its value set.
-      * 
+      * <p>
       * JBL Note: I believe this is too fernickety.
-      * @see insertParameterValue where the arrayPosition is not included.
+      * @see org.astrogrid.portal.workflow.design.Workflow#insertParameterValue(org.astrogrid.portal.workflow.design.Tool,java.lang.String,java.lang.String,java.lang.String,java.lang.String)      
+      * which is based upon old value rather than position.<p> 
       *  
-      * @param tool - The tool to be executed
-      * @param paramName - the name of the parameter
-      * @param paramValue - the value to be inserted. Can be an instream
-      * value or contents. This is detected by introspection.
-      * @param direction - either "input" or "output".
-      * @param arrayPosition - zero based position of parameter
-      * @return - boolean indicating success or failure.
+      * @deprecated
+      * @param tool           the owning tool
+      * @param paramName      the name of the parameter
+      * @param paramValue     the value to be inserted. Can be an instream
+      *                       value or contents. This is detected by introspection.
+      * @param direction      either "input" or "output".
+      * @param arrayPosition  zero based position of parameter
+      * @return  boolean indicating success or failure.
       * 
       **/      
     public static boolean insertParameterValue( Tool tool
@@ -1684,7 +1751,7 @@ public class Workflow extends Activity {
                                               , String direction
                                               , int arrayPosition ) {
     
-        if( TRACE_ENABLED ) trace( "Workflow.insertParameterValue() entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.insertParameterValue()") ; 
         
             boolean retValue = false ;
             ListIterator iterator = null ;
@@ -1716,7 +1783,7 @@ public class Workflow extends Activity {
             }
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.insertParameterValue() exit") ; 
+            if( TRACE_ENABLED ) trace( "exit: Workflow.insertParameterValue()") ; 
         }
         
         return retValue ;
@@ -1724,30 +1791,30 @@ public class Workflow extends Activity {
     } // end of Workflow.insertParameterValue()
     
     
-    /**> 
+    /** 
       * A helper method that inserts a value into a parameter for
       * a given tool. The old parameter value is used to identify the 
       * suitable parameter as target. This can also be used to establish
       * new values in a virgin set of new, empty parameters by setting 
       * the old value to null or the empty string.
-      * 
+      * <p>
       * This is by far the easiest way of setting parameter values!
-      * 
+      * <p>
       * Note. If the value to be inserted is a parameter with no upper cardinality  
       * and it is not a replacement for an old value (ie: it is a new insert), then
-      * as a convenience to the gui, we examine how many empty ones are still
+      * as a convenience to gui development, we examine how many empty ones are still
       * left, and insert a new empty parameter if none are found.
       *  
-      * @param tool - The tool to be executed
-      * @param paramName - the name of the parameter
-      * @param oldValue - the value used to identify the target parameter.
-      * Can be null or the empty string, in which case the first empty 
-      * candidate will be used.
-      * @param newValue - the value to be inserted. Can be an instream
-      * value or contents. This is detected by introspection of the parameter
-      * type. 
-      * @param direction - either "input" or "output".
-      * @return - boolean indicating success or failure.
+      * @param tool       the owning tool
+      * @param paramName  the name of the parameter
+      * @param oldValue   the value used to identify the target parameter.
+      *                   Can be null or the empty string, in which case the first empty 
+      *                   candidate will be used.
+      * @param newValue   the value to be inserted. Can be an instream
+      *                   value or contents. This is detected by introspection of the parameter
+      *                   type. 
+      * @param direction  either "input" or "output".
+      * @return  boolean indicating success or failure.
       * 
       **/      
     public static boolean insertParameterValue( Tool tool
@@ -1844,18 +1911,21 @@ public class Workflow extends Activity {
                                                
     /**
      * 
-     * <p>Tries to second-guess whether a MySpace logical path is a
+     * Tries to second-guess whether a MySpace logical path is a
      * full or partial path. This is somewhat rough-and-ready and so is a 
      * prime candidate for change as MySpace evolves.
-     * 
+     * <p>
      * Some examples. The path may be presented as a full path...
+     * <p><blockquote><pre>
      *     /jl99@star.le.ac.uk/serv1/datafederation/votables
+     * </blockquote></pre><p>
      * or a simple partial path...
+     * <p><blockquote><pre>
      *     datafederation/votables
-     * This method returns true if the full path is detected.
+     * </blockquote></pre><p>
      * 
-     * @param path - the MySpace logical path
-     * @return boolean - true if the full path is detected.
+     * @param path  the MySpace logical path
+     * @return boolean indicating true if the full path is detected.
      */
     private static boolean pathContainsAccountDetails( String path ) {
         if( TRACE_ENABLED ) trace( "entry: Workflow.pathContainsAccountDetails()") ;
