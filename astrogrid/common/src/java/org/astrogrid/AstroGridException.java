@@ -12,29 +12,52 @@ package org.astrogrid ;
 
 import org.astrogrid.i18n.AstroGridMessage;
 
-
+/**
+ * Generic astrogrid exception
+ * @author unknown
+ *
+ */
 public class AstroGridException extends Exception {
-	
+	/**
+   * embedded message
+	 */
 	private AstroGridMessage
 	    message = null ;
 	    
-	public AstroGridException( AstroGridMessage message ) {
+	/**
+   * ctor
+   * @param message message to wrap
+   */
+  public AstroGridException( final AstroGridMessage message ) {
 		this.message = message ;
 	}
 
 
-	public AstroGridException( AstroGridMessage message, Throwable throwable ) {
+	/**
+   * ctor
+   * @param message to wrap
+   * @param throwable underlying exception
+   */
+  public AstroGridException( final AstroGridMessage message, final Throwable throwable ) {
 		super( throwable ) ;
 		this.message = message ;
 	}
     
     
-    public AstroGridException( Throwable throwable ) {
+    /**
+     * ctor
+     * @param throwable underlying exception
+     */
+    public AstroGridException( final Throwable throwable ) {
         super( throwable ) ;
     }
 
 
-    public AstroGridMessage getAstroGridMessage() {
+    /**
+     * getter
+     * @return wrapped message
+     */
+    public final AstroGridMessage getAstroGridMessage() {
     	return message ;
     }
     
