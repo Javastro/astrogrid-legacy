@@ -1,4 +1,4 @@
-/*$Id: DummyDelegateTest.java,v 1.2 2003/12/03 17:39:25 mch Exp $
+/*$Id: DummyDelegateTest.java,v 1.3 2004/01/23 15:22:27 jdt Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.mySpace.delegate;
 
 import java.io.IOException;
 import java.net.URL;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -21,6 +22,11 @@ import junit.framework.TestSuite;
  *
  */
 public class DummyDelegateTest extends TestCase {
+  /**
+   * Commons-logging logger
+   */
+  private static org.apache.commons.logging.Log log =
+    org.apache.commons.logging.LogFactory.getLog(DummyDelegateTest.class);
 
    private static final String USER = "Me";
    private static final String COMMUNITY ="Us";
@@ -38,16 +44,18 @@ public class DummyDelegateTest extends TestCase {
       myspace1.saveDataHolding(USER, COMMUNITY, CERTIFIED, "testSameness",
                                "This is just a test file for DummyDelegateTest",
                                "test",
-                               myspace1.OVERWRITE);
+                               MySpaceClient.OVERWRITE);
 
       //see if you can get it
       URL url1 = new URL(myspace1.getDataHoldingUrl(USER, COMMUNITY, CERTIFIED, "testSameness"));
       assertNotNull(url1);
+      log.debug("URL1: "+url1);
       assertNotNull(url1.openStream());
 
       //in both
       URL url2 = new URL(myspace2.getDataHoldingUrl(USER, COMMUNITY, CERTIFIED, "testSameness"));
       assertNotNull(url2);
+      log.debug("URL2: "+url2);
       assertNotNull(url2.openStream());
 
       assertEquals(url1, url2);
@@ -68,7 +76,7 @@ public class DummyDelegateTest extends TestCase {
       myspace.saveDataHolding(USER, COMMUNITY, CERTIFIED, "testFileOps",
                                "This should have been deleted",
                                "test",
-                               myspace.OVERWRITE);
+                               MySpaceClient.OVERWRITE);
 
       URL url = new URL(myspace.getDataHoldingUrl(USER, COMMUNITY, CERTIFIED, "testFileOps"));
       assertNotNull(url);
@@ -134,6 +142,9 @@ public class DummyDelegateTest extends TestCase {
 
 /*
 $Log: DummyDelegateTest.java,v $
+Revision 1.3  2004/01/23 15:22:27  jdt
+added logging
+
 Revision 1.2  2003/12/03 17:39:25  mch
 New factory/interface based myspace delegates
 
