@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.20 2004/08/19 10:50:54 clq2 Exp $ 
+# $Id: autorun.sh,v 1.21 2004/08/24 10:29:34 clq2 Exp $ 
 # Script to run the integration tests/AGINAB
 OLDDIR=$PWD
 
@@ -52,6 +52,9 @@ echo "Starting Tomcat" >> $LOGFILE
 $CATALINA_HOME/bin/startup.sh >> $LOGFILE 2>&1
 
 echo "Deploying new apps..." >> $LOGFILE
+
+#delete the olds from working dir
+rm -rf /home/integration/working/*
 
 if maven $MY_OPTS deploy-all >> $LOGFILE 2>&1
 then
