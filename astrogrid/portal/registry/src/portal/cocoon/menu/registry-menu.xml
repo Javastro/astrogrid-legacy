@@ -1,1 +1,34 @@
-<hello>world</hello>
+<?xml version="1.0"?>
+<agp:menu-def
+    name="registry-menu"
+    xmlns:agp="http://www.astrogrid.org/portal">
+  <agp:menu
+      contents="Registry"
+      contents-hover="Registry"
+      uri=""
+      icon="/astrogrid-portal/icons/Bomb.png"
+      target="_self"
+      status-text="Registry...">
+    <agp:item
+        contents="Fill"
+        contents-hover="Fill"
+        uri="http://www.astrogrid.org/viewcvs/astrogrid/portal/registry/src/portal/cocoon/menu/"
+        icon="/astrogrid-portal/icons/FingerUp.png"
+        target="_self"
+        status-text="CVS"/>
+    <agp:item
+        contents="Me"
+        contents-hover="Me"
+        uri="http://www.theonion.com/"
+        icon="/astrogrid-portal/icons/Inform.png"
+        target="_self"
+        status-text="Onion"/>
+    <agp:item
+        contents="In"
+        contents-hover="In"
+        uri="http://www.tower.org/library/the_mother_tongue.html"
+        icon="/astrogrid-portal/icons/Favorite.png"
+        target="_self"
+        status-text="Tongue"/>
+  </agp:menu>
+</agp:menu-def>
