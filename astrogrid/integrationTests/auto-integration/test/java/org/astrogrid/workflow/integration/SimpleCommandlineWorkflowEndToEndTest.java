@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.14 2004/09/02 17:12:03 pah Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.15 2004/09/22 00:42:26 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,12 +65,15 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForSimple
         assertStepCompleted(s);
         ResultListType res = getResultOfStep(s);
         softAssertEquals("there should be 2 results",2,res.getResultCount());
-        String value =((ParameterValue)res.findXPathIterator("result[name='P3']")).getValue();
+        String value =((ParameterValue)res.findXPathValue("result[name='P3']")).getValue();
         softAssertTrue("result doesn't contain expected value",value.indexOf(CommandLineProviderServerInfo.TEST_CONTENTS) != -1);
     }
 }
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.15  2004/09/22 00:42:26  nw
+fixed paul's bug.
+
 Revision 1.14  2004/09/02 17:12:03  pah
 update for new test application which does more
 
