@@ -40,19 +40,18 @@
                                         <ceapd:DefaultValue>VOTABLE</ceapd:DefaultValue>
                                         <ceapd:UI_Description>How the results are to be returned.  VOTABLE or CSV for now</ceapd:UI_Description>
                                 </ParameterDefinition>
-                                <ParameterDefinition name="Target" type="anyURI">
-                                        <ceapd:DefaultValue>Results Target</ceapd:DefaultValue>
+                                <ParameterDefinition name="Result" type="anyURI">
                                         <ceapd:UI_Description>Where the results will be sent to; eg, use IVORN (eg IVO://community/individual#path)</ceapd:UI_Description>
                                 </ParameterDefinition>
                         </Parameters>
                         <Interfaces>
-                                <ceab:Interface name="Simple">
+                                <ceab:Interface name="adql">
                                         <ceab:input>
                                                 <ceab:pref ref="Query"/>
                                                 <ceab:pref ref="Format"/>
                                         </ceab:input>
                                         <ceab:output>
-                                                <ceab:pref ref="Target"/>
+                                                <ceab:pref ref="Result"/>
                                         </ceab:output>
                                 </ceab:Interface>
                         </Interfaces>
