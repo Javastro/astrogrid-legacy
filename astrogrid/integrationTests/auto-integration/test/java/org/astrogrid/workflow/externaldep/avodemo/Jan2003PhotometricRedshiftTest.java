@@ -1,5 +1,5 @@
 /*
- * $Id: Jan2003PhotometricRedshiftTest.java,v 1.1 2004/09/08 20:44:04 pah Exp $
+ * $Id: Jan2003PhotometricRedshiftTest.java,v 1.2 2004/09/23 08:59:57 pah Exp $
  * 
  * Created on 08-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -66,8 +66,8 @@ public class Jan2003PhotometricRedshiftTest extends AbstractTestForWorkflow {
 
     protected void buildWorkflow() throws Exception {
       avo = new AVODemoRunner();
-      avo.setHemi("S");
-      avo.setSector("23");
+      avo.setHemi("s");
+      avo.setSector("sect23");
       avo.setUsername(user.getUserId());
       avo.createWorkflow();
       String workflowivorn = avo.getWorkflowIvorn();
