@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import org.astrogrid.jes.i18n.*;
 import org.astrogrid.jes.jobcontroller.*;
 import java.util.Date ;
-import org.w3c.dom.* ;
 
 /**
  * @persistent
@@ -89,8 +88,8 @@ public abstract class Job {
 	
 	public abstract Iterator getJobSteps() ;
 	
-	public abstract void setDocument( Document submitDoc ) ; 
-	public abstract Document getDocument() ;
+	public abstract void setDocumentXML( String docXML ) ; 
+	public abstract String getDocumentXML() ;
 	
 	public abstract void setStatus(String status) ;
 	public abstract String getStatus() ;

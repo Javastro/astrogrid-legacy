@@ -10,17 +10,11 @@ import org.astrogrid.jes.job.Job ;
 import org.astrogrid.jes.job.JobStep ;
 import org.astrogrid.jes.job.JobDocDescriptor ;
 import org.astrogrid.jes.job.JobException ;
-import org.astrogrid.jes.jobcontroller.*;
 import org.astrogrid.jes.i18n.*;
 import org.apache.log4j.Logger;
 
 import org.w3c.dom.* ;
 import java.util.Date ;
-import java.sql.Connection ;
-import java.sql.PreparedStatement ;
-import java.sql.ResultSet ;
-import java.sql.SQLException ;
-import java.text.MessageFormat ;
 import java.util.Set;
 import java.util.HashSet ;
 import java.util.Iterator ;
@@ -35,26 +29,16 @@ public class JobImpl extends Job {
 		logger = Logger.getLogger( JobImpl.class ) ;
 		
 	private static String
-	    ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGJESE00160" ,  
 	    ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT = "AGJESE00180" ;
 	  
 	private JobFactoryImpl
 	   factoryImpl = null ;
 	   
-	private Connection
-		connection = null ;
-	private PreparedStatement 
-		preparedStatement = null ;  
-	private ResultSet 
-		resultSet = null ;	   
-			
 	private boolean
 	   dirty = false ;
 	   
-	private Document
-	   submitDoc = null ;
-	
 	private String
+	   documentXML = null,
 	   jobURN = "",
 	   name = "",
 	   community = "",
@@ -71,12 +55,12 @@ public class JobImpl extends Job {
 	public JobImpl() {}
 	 
 	   
-	public JobImpl( Document submitDoc ) throws JobException {
+	public JobImpl( Document submitDoc, String submitXML ) throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "JobImpl(): entry") ;  
 		 	   
 		try {
 			
-			this.submitDoc = submitDoc ;
+			this.documentXML = submitXML ;
 			date = new Date() ;
 			
 			Element
@@ -136,7 +120,7 @@ public class JobImpl extends Job {
 		
 	} // end of JobImpl()
 
-
+/*
 	public PreparedStatement getPreparedStatement() throws JobException, SQLException {
 		if( TRACE_ENABLED ) logger.debug( "getPreparedStatement(): entry") ; 
 		
@@ -159,7 +143,7 @@ public class JobImpl extends Job {
 		return preparedStatement ;
 		
 	}// end of getPreparedStatement()
-
+*/
 
 
 	/* (non-Javadoc)
@@ -190,8 +174,8 @@ public class JobImpl extends Job {
 	public void setFactoryImpl(JobFactoryImpl factoryImpl) { this.factoryImpl = factoryImpl ; }
 	public JobFactoryImpl getFactoryImpl() { return factoryImpl ; }
 
-	public void setDocument( Document submitDoc ) { this.submitDoc = submitDoc; }
-	public Document getDocument() { return submitDoc; }
+	public void setDocumentXML( String submitDoc ) { this.documentXML = submitDoc ; }
+	public String getDocumentXML() { return documentXML ; }
 
 	public void setStatus(String status) { this.status = status; }
 	public String getStatus() {	return status; }

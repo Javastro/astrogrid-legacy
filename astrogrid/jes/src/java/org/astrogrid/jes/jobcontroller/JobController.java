@@ -18,10 +18,25 @@ import java.util.Locale ;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader ; 
+import java.text.MessageFormat ;
 
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
+
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import org.apache.axis.message.SOAPBodyElement;
+import org.apache.axis.utils.Options;
+import org.apache.axis.utils.XMLUtils;
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.net.URL;
+import java.util.Vector;
 
 
 /**
@@ -38,33 +53,6 @@ import org.xml.sax.InputSource ;
  */
 public class JobController {
 	
-	private static final String
-		submitStubResponse_success = 
-		 
-	"<?xml version = '1.0' encoding = 'UTF8'?>" +
-	"<response>" +
-	   "<job>" +
-	      "<userid>jlusted</userid>" +
-	      "<community>leicester</community>" +
-	      "<time>28 May 2003 10.07</time>" +
-	      "<jobid>jlusted:leicester:000001</jobid>" +
-	   "</job>" +
-	 "</response>" ;
-	 
-	private static final String
-		submitStubResponse_failure = 
-		 
-	"<?xml version = '1.0' encoding = 'UTF8'?>" +
-	"<response>" +
-	   "<job>" +
-		  "<userid>jlusted</userid>" +
-		  "<community>leicester</community>" +
-		  "<time>28 May 2003 10.07</time>" +
-		  "<jobid>jlusted:leicester:000001</jobid>" +
-	   "</job>" +
-	   "<message>Job Submmision failed. Reason?</message>" +
-	 "</response>" ;
-	
 	private static final boolean 
 		TRACE_ENABLED = true ;
 			
@@ -78,10 +66,18 @@ public class JobController {
 		ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGJESZ00001:JobController: Could not read my configuration file",
 		ASTROGRIDERROR_JES_NOT_INITIALIZED          = "AGJESZ00002:JobController: Not initialized. Perhaps my configuration file is missing.",
 		ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00030",
-		ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE       = "AGJESE00040";
+		ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE       = "AGJESE00040",
+		ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE    = "AGJESE00400",
+	    ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER   = "AGJESE00410" ;
 	    			
 	private static final String
 	    PARSER_VALIDATION = "PARSER.VALIDATION" ;
+	    
+	private static final String 
+		SUBMIT_JOB_RESPONSE_TEMPLATE = "SUBMIT_JOB_RESPONSE.TEMPLATE" ;
+		
+    private static final String 
+	    SCHEDULER_URL = "SCHEDULER.URL" ;
 	    			
 	private static Logger 
 		logger = Logger.getLogger( JobController.class ) ;
@@ -229,11 +225,11 @@ public class JobController {
         String
 	        response = null ;
 		JobFactory
-		   factory = null ;
+		    factory = null ;
         Job
 	        job = null ;
 	    boolean
-	        bCommit = false ; // We assume things go wrong! 
+	        bCleanCommit = false ;    // We assume things go badly wrong! 
 			
         try { 
 	        // If properties file is not loaded, we bail out...
@@ -248,15 +244,18 @@ public class JobController {
 			// This involves persistence, so we bracket the transaction before creating...
 	        factory = Job.getFactory() ;
 	        factory.begin() ;
-	        job = factory.createJob( submitDoc ) ;
+	        job = factory.createJob( submitDoc, jobXML ) ;
+                    		
+			bCleanCommit = factory.end ( true ) ;   // Commit and cleanup
                     			
 	        // Inform JobScheduler (within JES) that job requires scheduling...
 	        informJobScheduler( job ) ;
 
             response = formatGoodResponse( job ) ;
-			bCommit = true ;  // Successful completion!!!
+
         }
         catch( JesException jex ) {
+        	
 	        Message
 		       detailMessage = jex.getAstroGridMessage() ,  
 		       generalMessage = new Message( ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE ) ;
@@ -268,7 +267,9 @@ public class JobController {
 	        
         }
         finally {
-			factory.end ( bCommit ) ;   // Commit or rollback as appropriate
+        	if( bCleanCommit == false ) {
+				try{ factory.end ( false ) ; } catch( JesException jex ) {;}   // Rollback and cleanup
+        	}
 	        logger.debug( response.toString() );
 	        if( TRACE_ENABLED ) logger.debug( "submitJob() exit") ;
         }
@@ -279,18 +280,92 @@ public class JobController {
     
     
     private String formatGoodResponse( Job job ) {
-        return new String() ;
+        return formatResponse( job, "" ) ;
     }
   
     
 	private String formatBadResponse( Job job, Message errorMessage ) {
-		return new String() ;
+		return formatResponse( job, errorMessage.toString() ) ;
 	}   
+
 	
-	
-	private void informJobScheduler( Job job ) throws JesException { 
+	private String formatResponse( Job job, String aMessage ) {
+		if( TRACE_ENABLED ) logger.debug( "formatResponse() exit") ;
 		
-	}
+		String 
+		   response = getProperty( SUBMIT_JOB_RESPONSE_TEMPLATE ) ;
+		
+		try {
+			
+			Object []
+			   inserts = new Object[5] ;
+			inserts[0] = job.getUserId() ;
+			inserts[1] = job.getCommunity() ;
+			inserts[2] = job.getDate() ;
+			inserts[3] = job.getId() ;
+			inserts[4] = aMessage ;
+			
+			response = MessageFormat.format( response, inserts ) ;
+
+		}
+		catch ( Exception ex ) {
+			Message
+				message = new Message( ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE ) ; 
+			logger.error( message.toString(), ex ) ;
+		} 
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "formatResponse() exit") ;	
+		}		
+		
+		return response ;
+		
+	} // end of formatBadResponse()
+	
+	  	
+	private void informJobScheduler( Job job ) throws JesException { 
+		if( TRACE_ENABLED ) logger.debug( "informJobScheduler() exit") ;
+		
+		try {
+			
+			  Call
+			     call = new Service().createCall() ;
+
+			  call.setTargetEndpointAddress( new URL( getProperty( SCHEDULER_URL ) ) );
+			  
+			  SOAPBodyElement[] 
+			     input = new SOAPBodyElement[1];
+
+			  DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			  Document doc            = builder.newDocument();   
+//			  Element cdataElem       = doc.createElementNS("urn:foo", "e3");
+//			  CDATASection cdata      = doc.createCDATASection("Text with\n\tImportant  <b>  whitespace </b> and tags! ");	    
+//			  cdataElem.appendChild(cdata) ;
+		
+			  input[0] = new SOAPBodyElement( doc ) ;
+        
+			  Vector
+			     elems = (Vector) call.invoke( input ) ;
+			  SOAPBodyElement 
+			     elem = null ;
+			  Element         
+			     e = null ;
+
+			  elem = (SOAPBodyElement) elems.get(0) ;
+			  e    = elem.getAsDOM() ;
+
+			  String str = "Res elem[0]=" + XMLUtils.ElementToString(e) ;
+
+		}
+		catch ( Exception ex ) {
+			Message
+				message = new Message( ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER ) ; 
+			logger.error( message.toString(), ex ) ;
+		} 
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "informJobScheduler() exit") ;	
+		}					
+		
+	} // end informJobScheduler()
 	
 	
 } // end of class JobController

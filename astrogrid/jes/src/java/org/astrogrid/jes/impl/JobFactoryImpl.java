@@ -34,14 +34,13 @@ public class JobFactoryImpl implements JobFactory {
 		JOB_TABLENAME = "JOB.TABLENAME",
 	    JOBSTEP_TABLENAME = "JOBSTEP.TABLENAME",
 	    QUERY_TABLENAME = "QUERY.TABLENAME",
-	    FROM_TABLENAME = "FROM.TABLENAME",
 	    CATALOG_TABLENAME = "CATALOG.TABLENAME",
 	    TABLE_TABLENAME = "TABLE.TABLENAME",
 	    SERVICE_TABLENAME = "SERVICE.TABLENAME",
 	    JES_ID = "JES.ID" ;
 		
 	public static final String
-	    JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, RUNTIMESTAMP, USERID, COMMUNITY ) " +
+	    JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, JOBXML ) " +
 	                          "VALUES ( '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}' )" ,
 	    JOB_UPDATE_TEMPLATE = "UPDATE {0} SET RUNTIMESTAMP = ?, STATUS = ?, COMMENT = ? WHERE JOBURN = ?" ,
 	    JOB_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1}" ,
@@ -50,16 +49,19 @@ public class JobFactoryImpl implements JobFactory {
 	private static final int
 	    COL_JOBURN = 1,
 	    COL_JOBNAME = 2,
-	    COL_RUNTIMESTAMP = 3,
-	    COL_USERID = 4,
-	    COL_COMMUNITY = 5,
-	    COL_STATUS = 6,
-	    COL_COMMENT = 7 ;
+	    COL_STATUS = 3,
+	    COL_SUBMITTIMESTAMP = 4,
+	    COL_USERID = 5,
+	    COL_COMMUNITY = 6,
+	    COL_JOBXML = 7 ;
 	    
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_DATASOURCE            = "AGDTCE00150",
-		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGDTCE00160",
-	    ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT = "AGDTCE00170"  ;
+		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_DATASOURCE            = "AGJESE00150",
+		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGJESE00160",
+	    ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT = "AGJESE00170",
+	    ASTROGRIDERROR_FAILED_TO_COMMIT                           = "AGJESE00300",
+	    ASTROGRIDERROR_FAILED_TO_ROLLBACK                         = "AGJESE00310",
+	    ASTROGRIDERROR_FAILED_TO_CLOSE_CONNECTION                 = "AGJESE00320" ;
 	    
 	private static DataSource
 		datasource = null ;
@@ -84,7 +86,7 @@ public class JobFactoryImpl implements JobFactory {
     	
     	return retValue ;
     	
-    }
+    } // end of generateUniqueInt()
 
 
 	public static DataSource getDataSource() throws JobException {
@@ -148,7 +150,7 @@ public class JobFactoryImpl implements JobFactory {
 	} // end of getConnection()
 
 	
-    public Job createJob( Document jobDoc ) throws JobException  {
+    public Job createJob( Document jobDoc, String jobXML ) throws JobException  {
 		if( TRACE_ENABLED ) logger.debug( "createJob(): entry") ;  
 		 	
     	JobImpl
@@ -158,18 +160,21 @@ public class JobFactoryImpl implements JobFactory {
     	   
     	try {
 
-			job = new JobImpl( jobDoc ) ;
+			job = new JobImpl( jobDoc, jobXML ) ;
 		    job.setFactoryImpl( this ) ;
 			job.setId( generateUniqueJobURN( job ) ) ;
+			job.setStatus( Job.STATUS_INITIALIZED ) ;
 			
 			Object []
-			   inserts = new Object[6] ;
+			   inserts = new Object[8] ;
 			inserts[0] = JobController.getProperty( JOB_TABLENAME ) ;
 			inserts[1] = job.getId() ;
 			inserts[2] = job.getName() ;
-			inserts[3] = new Timestamp( job.getDate().getTime() ).toString(); //JBL Note: this may give us grief
-			inserts[4] = job.getUserId() ;
-			inserts[5] = job.getCommunity() ;
+			inserts[3] = job.getStatus() ;
+			inserts[4] = new Timestamp( job.getDate().getTime() ).toString(); //JBL Note: this may give us grief
+			inserts[5] = job.getUserId() ;
+			inserts[6] = job.getCommunity() ;
+			inserts[7] = job.getDocumentXML() ;
 
 			String
 			   updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 			
@@ -198,7 +203,7 @@ public class JobFactoryImpl implements JobFactory {
 		if( TRACE_ENABLED ) logger.debug( "updateJob(): entry") ;  
 		  	   
 		try {
-			
+/*			
 	        PreparedStatement
 	           pStatement = ((JobImpl)job.getImplementation()).getPreparedStatement() ;
 	           
@@ -207,6 +212,7 @@ public class JobFactoryImpl implements JobFactory {
 			pStatement.executeUpdate();
 			
 			( (JobImpl) job.getImplementation() ).setDirty( false ) ;
+*/
 		}
 		catch( Exception ex ) {
 			Message
@@ -231,7 +237,7 @@ public class JobFactoryImpl implements JobFactory {
 		   rs = null ;
     	   
 		try {
-
+/*
 			Object []
 			   inserts = new Object[2] ;
 			inserts[0] = DatasetAgent.getProperty( JOB_TABLENAME ) ;
@@ -254,8 +260,9 @@ public class JobFactoryImpl implements JobFactory {
 				job.setComment( rs.getString( COL_COMMENT ) ) ;
 				
 				job.setDirty( false ) ;
+
 			}
-			   
+*/			   
 		}
 		catch( Exception ex ) {
 			Message
@@ -292,12 +299,12 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[2] ;
-			inserts[0] = DatasetAgent.getProperty( JOB_TABLENAME ) ;
+			inserts[0] = JobController.getProperty( JOB_TABLENAME ) ;
 			inserts[1] = job.getId() ;
 
 			String
-			   deleteString = MessageFormat.format( DELETE_TEMPLATE, inserts ) ; 			
-			statement = ((JobImpl)job.getImplementation()).getConnection().createStatement() ;
+			   deleteString = MessageFormat.format( JOB_DELETE_TEMPLATE, inserts ) ; 			
+			statement = getConnection().createStatement() ;
 			statement.executeUpdate( deleteString );
 			   
 		}
@@ -321,9 +328,50 @@ public class JobFactoryImpl implements JobFactory {
 	}
 	
 	
-	public void end( boolean bCommit ) {
-	 
-	}
+	public boolean end( boolean bCommit ) throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "end(): enter") ;   
+		
+		boolean retVal = false ;
+		
+		try {		
+			if( connection != null ) {
+				
+				if(	bCommit )
+				    connection.commit() ;
+				else
+				    connection.rollback()  ;  
+				
+			} // end if
+			retVal = true ;
+		}
+		catch( SQLException sex ) { 
+			
+			Message
+				message ;
+			if( bCommit ) {
+				message = new Message( ASTROGRIDERROR_FAILED_TO_COMMIT, sex ) ;
+			}
+			else{
+				message = new Message( ASTROGRIDERROR_FAILED_TO_ROLLBACK, sex ) ;
+			}
+			logger.error( message.toString() ) ; 
+			throw new JobException( message ) ;	
+		}
+		finally {
+			
+			try { 
+				if( connection != null ) connection.close() ; 
+			} 
+			catch( SQLException e ) { 
+				logger.error( new Message( ASTROGRIDERROR_FAILED_TO_CLOSE_CONNECTION ) ) ; 
+			}
+			connection = null ;
+			if( TRACE_ENABLED ) logger.debug( "end(): exit") ;   	
+		}
+		
+		return retVal ;
+ 
+	} // end of end()
 	
 	
 	private void createJobSteps( Job job ) throws JobException {
