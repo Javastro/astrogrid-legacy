@@ -16,11 +16,13 @@ import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.QOM;
 import org.astrogrid.datacenter.common.DocMessageHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.JobNotifyServiceListener;
 import org.astrogrid.datacenter.service.WebNotifyServiceListener;
-import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.Workspace;
 import org.astrogrid.log.Log;
+import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
+import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManager;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -68,7 +70,7 @@ public abstract class DatabaseQuerier implements Runnable
    /**
     * userid and communityid for using myspace
     */
-   private String userid, communityid = null;
+   private String userid, communityid, credentials = null;
 
    /**
     * Where the result should be sent on completion.  Probably a myspace
@@ -212,8 +214,8 @@ public abstract class DatabaseQuerier implements Runnable
       catch (Exception e)
       {
          Log.logError("Myspace raised an undescriptive exception",e);
-   setErrorStatus(e);
-   }
+         setErrorStatus(e);
+      }
    }
 
 
@@ -232,9 +234,15 @@ public abstract class DatabaseQuerier implements Runnable
                  "No Result target (eg myspace) given in config file (key "+DatabaseQuerierManager.RESULTS_TARGET_KEY+"), "+
                  "and no key "+DocMessageHelper.RESULTS_TARGET_TAG+" in given DOM ");
 
-      MySpaceManagerDelegate myspace = new MySpaceManagerDelegate(resultsDestination);
+      MySpaceManagerDelegate myspace = null;
+      
+      if (resultsDestination.equals(MySpaceDummyDelegate.DUMMY)) {
+         myspace = new MySpaceDummyDelegate(resultsDestination);
+      } else {
+         myspace = new MySpaceManagerDelegate(resultsDestination);
+      }
 
-      myspace.saveDataHolding(userid, communityid, "testFile",
+      myspace.saveDataHolding(userid, communityid, credentials, "testFile",
                               "This is a test file to make sure we can create a file in myspace, so our query results are not lost",
                               "test",
                               "Overwrite"); // this interface needs refactoring. constants would be a start.
@@ -250,7 +258,13 @@ public abstract class DatabaseQuerier implements Runnable
    {
       Log.affirm(results != null, "No results to send");
 
-      MySpaceManagerDelegate myspace = new MySpaceManagerDelegate(resultsDestination);
+      MySpaceManagerDelegate myspace = null;
+      
+      if (resultsDestination.equals(MySpaceDummyDelegate.DUMMY)) {
+         myspace = new MySpaceDummyDelegate(resultsDestination);
+      } else {
+         myspace = new MySpaceManagerDelegate(resultsDestination);
+      }
 
       String myspaceFilename = getHandle()+"_results";
 
@@ -262,12 +276,12 @@ public abstract class DatabaseQuerier implements Runnable
          results.toVotable(ba);
          ba.close();
 
-         myspace.saveDataHolding(userid, communityid, myspaceFilename,
+         myspace.saveDataHolding(userid, communityid, credentials, myspaceFilename,
                               ba.toString(),
                               "VOTable",
                               "Overwrite");
 
-         resultsLoc = myspace.getDataHolding(userid, communityid, myspaceFilename);
+         resultsLoc = myspace.getDataHolding(userid, communityid, credentials, myspaceFilename);
       }
       catch (SAXException se)
       {
@@ -466,6 +480,9 @@ public abstract class DatabaseQuerier implements Runnable
 }
 /*
 $Log: DatabaseQuerier.java,v $
+Revision 1.37  2003/11/06 22:06:00  mch
+Reintroduced credentials (removed them due to out of date myspace delegate)
+
 Revision 1.36  2003/11/06 11:38:48  mch
 Introducing SOAPy Beans
 
