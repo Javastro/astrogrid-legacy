@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.10 2004/04/27 10:51:00 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.11 2004/05/19 13:48:59 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -192,7 +192,7 @@
   <map:resources>
     <map:resource name="myspace-action-submit">
       <map:act type="myspace-action">
-        <map:parameter name="user" value="anonymous"/>
+        <map:parameter name="user" value="ivo://org.astrogrid.localhost/anonymous"/>
         <map:parameter name="community_account" value="roe.ac.uk"/>
         <map:parameter name="token" value="mytoken"/>
       </map:act>
@@ -375,7 +375,7 @@
       <map:match pattern="myspace-micro">
 
         <map:generate type="myspace-holding-gen">
-          <map:parameter name="user" value="anonymous"/>
+          <map:parameter name="user" value="ivo://org.astrogrid.localhost/anonymous"/>
           <map:parameter name="community_account" value="roe.ac.uk"/>
           <map:parameter name="token" value="mytoken"/>
         </map:generate>
@@ -391,7 +391,7 @@
         <map:call resource="myspace-action-submit"/>
         
         <map:generate type="myspace-holding-gen">
-          <map:parameter name="user" value="anonymous"/>
+          <map:parameter name="user" value="ivo://org.astrogrid.localhost/anonymous"/>
           <map:parameter name="community_account" value="roe.ac.uk"/>
           <map:parameter name="token" value="mytoken"/>
         </map:generate>
