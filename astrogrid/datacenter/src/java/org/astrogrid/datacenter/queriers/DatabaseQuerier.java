@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.30 2003/09/26 11:00:56 nw Exp $
+ * $Id: DatabaseQuerier.java,v 1.31 2003/09/26 11:38:00 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,10 +14,8 @@ import java.util.Vector;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
-import org.astrogrid.datacenter.common.DocHelper;
 import org.astrogrid.datacenter.common.DocMessageHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
-import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.delegate.JobNotifyServiceListener;
 import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
 import org.astrogrid.datacenter.query.QueryException;
@@ -37,14 +35,6 @@ import org.w3c.dom.NodeList;
  * <p>
  * This class provides factory methods for both blocking and non-blocking
  * queries, hopefully completely hiding the two-way translation process
- *
- * @todo not happy with the handling of the initial dom, and all the instance
- * variables used to keep bits of it. And the places they are extracted are
- * split between the factory method and the constructor (as the constructor
- * can't throw catchable Exceptions easily as the factory method uses
- * introspection to get at it)
- *
- *@todo - a candidate for refactoring? there's a mix of factory, container, blocking query and non-blocking query behaviour here.
  *
  * @see doQueryGetVotable()
  * @see spawnQuery

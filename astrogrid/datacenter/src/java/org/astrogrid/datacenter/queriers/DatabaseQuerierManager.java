@@ -1,4 +1,4 @@
-/*$Id: DatabaseQuerierManager.java,v 1.2 2003/09/25 01:23:28 nw Exp $
+/*$Id: DatabaseQuerierManager.java,v 1.3 2003/09/26 11:38:00 nw Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.datacenter.queriers;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
@@ -22,7 +21,6 @@ import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.common.CommunityHelper;
 import org.astrogrid.datacenter.common.DocHelper;
 import org.astrogrid.datacenter.common.DocMessageHelper;
-import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.Workspace;
@@ -197,6 +195,9 @@ public class DatabaseQuerierManager {
 
 /* 
 $Log: DatabaseQuerierManager.java,v $
+Revision 1.3  2003/09/26 11:38:00  nw
+improved documentation, fixed imports
+
 Revision 1.2  2003/09/25 01:23:28  nw
 altered visibility on generateHandle() so it can be used within DummyQuerier
 

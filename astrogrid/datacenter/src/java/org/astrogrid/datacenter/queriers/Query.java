@@ -14,7 +14,6 @@ import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -112,6 +111,9 @@ public class Query
 
 /*
 $Log: Query.java,v $
+Revision 1.6  2003/09/26 11:38:00  nw
+improved documentation, fixed imports
+
 Revision 1.5  2003/09/22 16:51:24  mch
 Now posts results to dummy myspace
 

@@ -1,4 +1,4 @@
-/*$Id: TranslationFrame.java,v 1.3 2003/09/17 14:51:30 nw Exp $
+/*$Id: TranslationFrame.java,v 1.4 2003/09/26 11:38:00 nw Exp $
  * Created on 01-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,64 +15,44 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/** class to maintain a set of translations 
+/** Maintain an environment of translations
+ * 
+ * a mapping between keys and objects. 
  * 
  * <h3>Description</h3>
- * <pre>
- * > What's TranslatorFrame for?  How would you use it?
->
 
-Its part of the translator code, which really should be better documented.
+This class is used within the translation process to keep track of intermediate results. Necessary because the visitor
+pattern doesn't provide a nice way of propagating results from child nodes.
 
 Here's how it developed...
-
+<h3>History</h3>
 I original tried to write a translator by hand, explicitly coding the 
 traversal down the tree, accessing results, etc.
-
+<p>
 However, I quickly found this was becoming a nightmare - castor, based on the 
 ADQL schema - has generated a lot of classes that are containers for the real 
 data, and just take up space in the object tree. These seem to appear 
 whenever there's a 'choice' type in the schema.
-
-I'm not explaining this very well, but the upshot is that traversing the tree 
+<p>
+In short, traversing the tree 
 is cumbersome, and you also need to check for null at each stage (as null 
 means the element isn't present). So I was writing code that was very 
 specific to the current schema and hints provided to castor.
-
-I'd have like to use my already-implemented visitor to traverse the tree, and 
+<p>
+I'd have liked to use my already-implemented visitor to traverse the tree, and 
 separate the translation logic (hand-coded, static) from the traversal code 
 (reflection, prone to change). However, this doesn't work by itself, as the 
 visitor pattern doesn't provide a nice way of passing results of evaluating 
 child nodes up to the evaluation of parent nodes. You need to provide 
 something within the visitor object itself to keep track of intermediate 
 results. 
-
-That's what the translatorframe is - it manages the accumulation of 
+<p>
+That's what this class - it manages the accumulation of 
 intermediate translations , and makes these available to the translations of 
 parent nodes.
 
-The base translator class - org.astrogrid.datacenter.queriers.DatabaseQuerier 
-- provides the machinery to traverse the object tree (using the dynamic 
-visitor pattern) and maintains a stack of these translatorFrames.
-
-Then you get a subclass of DatabaseQuerier for each dialect of SQL you're 
-translating - look at mysql.MySqlQuerier. This contains, in essence, a rule 
-for each node of interest in the query model. This makes it easy to override 
-the few rules that differ between different SQL dialects.
-
-For each rule, its result is stored back in the current translator frame. 
-Other rules can retreive these results by key. This makes the translation 
-process much more independent of changes to the underlying structure of the 
-object model, and also handles the (very common) case of some nodes not being 
-present - no need to check for null, the translatorFrame just returns an 
-empty string.
-
-Because of the reflection, this design is less efficient than a hand-coded 
-approach. But I figure that can be provided once the schema is settled upon - 
-until then, these rule-based translators are much easier to keep up-to-date.
- * </pre>
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Sep-2003
- *@todo tody this documentation
+
  */
 public class TranslationFrame {
     protected Map m;    
@@ -330,6 +310,9 @@ public class TranslationFrame {
 
 /* 
 $Log: TranslationFrame.java,v $
+Revision 1.4  2003/09/26 11:38:00  nw
+improved documentation, fixed imports
+
 Revision 1.3  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 

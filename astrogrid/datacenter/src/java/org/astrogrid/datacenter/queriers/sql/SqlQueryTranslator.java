@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslator.java,v 1.3 2003/09/26 11:04:42 nw Exp $
+/*$Id: SqlQueryTranslator.java,v 1.4 2003/09/26 11:38:00 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,8 +50,7 @@ import org.astrogrid.datacenter.queriers.TranslationFrame;
 /** Translator that maps ADQL to 'Standard' SQL.
  * used as a base-class for db-specific translations.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Sep-2003
- ** @todo improve parenthesizing of complex expressions
-* @todo read ADQL spec and check all is correct.
+
  */
 public class SqlQueryTranslator extends QueryTranslator {
 
@@ -364,6 +363,9 @@ public class SqlQueryTranslator extends QueryTranslator {
 
 /* 
 $Log: SqlQueryTranslator.java,v $
+Revision 1.4  2003/09/26 11:38:00  nw
+improved documentation, fixed imports
+
 Revision 1.3  2003/09/26 11:04:42  nw
 fixed a few minor translation errors (spacing,parens, etc) raised by new test.
 

@@ -1,4 +1,4 @@
-/*$Id: SybaseQuerier.java,v 1.9 2003/09/24 21:03:19 nw Exp $
+/*$Id: SybaseQuerier.java,v 1.10 2003/09/26 11:38:00 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,34 +32,6 @@ public class SybaseQuerier extends SqlQuerier
         super();
    }
 
-   /**
-    * Also starts Sybase jdbc driver... hardcoded, don't like this!
-    * @todo - check reason for hardcoded driver - MCH
-    *
-   public void startDrivers() throws DatabaseAccessException
-   {
-      //new com.sybase.jdbc2.jdbc.SybDriver(); //compile-time check
-      try
-      {
-            Class.forName("com.sybase.jdbc2.jdbc.SybDriver").newInstance();
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new DatabaseAccessException(e,"JDBC Driver error: " + e.toString());
-      }
-      catch (InstantiationException e)
-      {
-         throw new DatabaseAccessException(e, "JDBC Driver error: " + e.toString());
-      }
-      catch (ClassNotFoundException e)
-      {
-         throw new DatabaseAccessException(e, "JDBC Driver error: " + e.toString());
-      }
-
-      //start usual config ones
-      super.startDrivers();
-   }
-    /**/
 
     /* (non-Javadoc)
      * @see org.astrogrid.datacenter.queriers.sql.SqlQuerier#createQueryTranslator()
@@ -73,6 +45,9 @@ public class SybaseQuerier extends SqlQuerier
 
 /*
 $Log: SybaseQuerier.java,v $
+Revision 1.10  2003/09/26 11:38:00  nw
+improved documentation, fixed imports
+
 Revision 1.9  2003/09/24 21:03:19  nw
 altered querier constructors.
 
