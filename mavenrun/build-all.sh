@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: build-all.sh,v 1.6 2005/02/01 17:53:08 jdt Exp $ 
+# $Id: build-all.sh,v 1.7 2005/02/15 16:41:03 jdt Exp $ 
 ##################################################
 #
 #  Build all the astrogrid components
@@ -13,6 +13,7 @@
 OLDDIR=$PWD
 
 build-component.sh common $1
+build-component.sh xmldb $1
 build-component.sh ui $1
 build-component.sh workflow-objects $1
 build-component.sh eXist $1
