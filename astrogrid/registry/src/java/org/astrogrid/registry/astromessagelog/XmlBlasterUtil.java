@@ -62,7 +62,7 @@ public class XmlBlasterUtil {
     return xmlBlasterAccess.disconnect(disconnectQos);
   }
   
-  public void publishString(String content) throws XmlBlasterException {
+  public PublishReturnQos publishString(String content) throws XmlBlasterException {
     // Quality of service request.
     PublishQos publishQos = new PublishQos(global);
     publishQos.setPriority(PriorityEnum.NORM_PRIORITY);
@@ -75,7 +75,7 @@ public class XmlBlasterUtil {
     PublishKey publishKey = new PublishKey(global);
     publishKey.setClientTags(XmlBlasterUtil.CONTENT_TAGS);
     
-    publishString(publishKey, content, publishQos);
+    return publishString(publishKey, content, publishQos);
   }
   
   public MsgUnit[] getMessages(String key) throws XmlBlasterException {
