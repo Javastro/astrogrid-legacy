@@ -1,19 +1,14 @@
 /*
- * $Id: ServiceIdHelper.java,v 1.3 2003/09/15 15:19:42 mch Exp $
+ * $Id: ServiceIdHelper.java,v 1.4 2003/09/15 15:44:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.common;
 
-import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
-import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import org.astrogrid.log.Log;
 
 /**
  * A helper class for constructing and extracting service id tags and
@@ -70,4 +65,5 @@ public class ServiceIdHelper
       return "<"+tagName+"  "+SERVICE_ID_ATT+"='"+id+"'>";
    }
 }
+
 

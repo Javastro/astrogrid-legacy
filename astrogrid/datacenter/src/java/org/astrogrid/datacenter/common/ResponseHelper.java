@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.5 2003/09/15 15:19:42 mch Exp $
+ * $Id: ResponseHelper.java,v 1.6 2003/09/15 15:44:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,8 +8,8 @@ package org.astrogrid.datacenter.common;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.w3c.dom.Element;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
@@ -22,11 +22,15 @@ import org.xml.sax.SAXException;
 
 public class ResponseHelper
 {
-   public final static String QUERY_RESPONSE_TAG = "QueryStarted";
+   /** Root tag used when acknowledging a query request, that a query has started */
+   public static final String QUERY_RESPONSE_TAG = "QueryStarted";
 
-   public final static String DATACENTER_RESULTS_TAG = "DatacenterResults";
+   /** Root tag used for documents containing the results */
+   public static final String DATACENTER_RESULTS_TAG = "DatacenterResults";
 
-   public final static String ERROR_TAG = "Error";
+   /** Tag used to describe an error */
+   public static final String ERROR_TAG = "Error";
+
    /**
     * Returns an element that indicates the query has started
     *<p>
