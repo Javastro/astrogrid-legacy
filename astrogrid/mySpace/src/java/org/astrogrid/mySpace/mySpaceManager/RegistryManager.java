@@ -58,6 +58,10 @@ import org.apache.log4j.Logger;
  * 
  * @author A C Davenhall (Edinburgh)
  * @version Iteration 4.
+ * @TODO Rationalise the logging.  Remove loggin dependent on a flag - easier to do this via log4j.properties
+ * @TODO Access the logger via commons-logging rather than directly to log4j
+ * 
+ * 
  */
 
 public class RegistryManager
@@ -83,7 +87,9 @@ public class RegistryManager
  */
 
    public RegistryManager(String registryName)
-   {  this.registryName = registryName;
+   {  
+   	  assert registryName!=null;
+   	  this.registryName = registryName;
       registryDBName = "jdbc:hsqldb:" + registryName + ".db";
    }
 
@@ -99,8 +105,8 @@ public class RegistryManager
  */
 
    public RegistryManager(String registryName, Vector servers)
-   {  this.registryName = registryName;
-      registryDBName = "jdbc:hsqldb:" + registryName + ".db";
+   {  
+	  this(registryName);
 
       try
       {
@@ -180,15 +186,6 @@ public class RegistryManager
    }
 
 // -------------------------------------------------------------------
-
-/**
- * Dummy constructor with no arguments.
- */
-
-//   private RegistryManager()
-//   {  registryName = null;
-//      registryDBName = null;
-//   }
 
 //
 // -- Methods --------------------------------------------------------
