@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerier.java,v 1.12 2003/09/10 09:59:14 nw Exp $
+ * $Id: MySqlQuerier.java,v 1.13 2003/09/15 11:34:32 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,11 +23,11 @@ public class MySqlQuerier extends SqlQuerier
    {
       super();
    }
- 
+
    /**
     * Also starts Sybase jdbc driver... hardcoded, don't like this!
     * @todo - check reason for hardcoded driver - MCH
-    */
+    *
    public void startDrivers() throws DatabaseAccessException
    {
       //new com.sybase.jdbc2.jdbc.SybDriver(); //compile-time check
@@ -51,6 +51,7 @@ public class MySqlQuerier extends SqlQuerier
       //start usual config ones
       super.startDrivers();
    }
+    /**/
 
    protected QueryTranslator createQueryTranslator()
    {

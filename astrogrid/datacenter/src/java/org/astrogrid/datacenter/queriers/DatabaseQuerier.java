@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.19 2003/09/11 09:28:20 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.20 2003/09/15 11:34:32 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -176,8 +176,8 @@ public abstract class DatabaseQuerier implements Runnable
         // safe equivalent
          Constructor constr= qClass.getConstructor(new Class[]{});
          DatabaseQuerier querier = (DatabaseQuerier)constr.newInstance(new Object[]{});
-         querier.setQuery(domContainingQuery);
 
+         querier.setQuery(domContainingQuery);
          querier.registerWebListeners(domContainingQuery); //looks through dom for web listeners
 
          return querier;

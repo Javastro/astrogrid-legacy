@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.13 2003/09/11 17:40:54 mch Exp $
+ * $Id: SqlQuerier.java,v 1.14 2003/09/15 11:34:32 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,6 +8,8 @@ package org.astrogrid.datacenter.queriers.sql;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -25,6 +27,7 @@ import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.log.Log;
+import sun.security.krb5.internal.crypto.e;
 
 /**
  * A general purpose SQL Querier that will (hopefully) produce bog standard
@@ -68,8 +71,6 @@ public class SqlQuerier extends DatabaseQuerier
     */
    public SqlQuerier() throws DatabaseAccessException, IOException
    {
-      startDrivers();
-      
       String userId = Configuration.getProperty(USER_KEY);
       String password = Configuration.getProperty(PASSWORD_KEY);
 
@@ -146,14 +147,14 @@ public class SqlQuerier extends DatabaseQuerier
                   throw new DatabaseAccessException(se,"Failed to connect to '"+jdbcURL+"'");
                }
             }
-            
+
          }
          else
          {
             throw new DatabaseAccessException("No information on how to connect to JDBC - no '"+JNDI_DATASOURCE_KEY+"' or '"+JDBC_URL_KEY+"' keys in configuration file");
          }
       }
-      
+
       Log.affirm(jdbcConnection != null, "jcbdConnection not set during construction");
    }
 
@@ -172,12 +173,12 @@ public class SqlQuerier extends DatabaseQuerier
     * method to set it.
     * <p>
     * @todo this is really a call-once-on-startup method rather than an instance method, so needs
-    * to reflect that.  Not sure where to put it yet.
+    * to reflect that.  Not sure where to put it yet.  It didn't like being put
+    * in the constructor as exceptions in the driver constructor below were looping
+    * horribly.
     */
-   protected void startDrivers() throws DatabaseAccessException
+   public static void startDrivers() throws DatabaseAccessException
    {
-      try
-      {
          //read value
          String drivers = Configuration.getProperty(JDBC_DRIVERS_KEY);
          if (drivers != null)
@@ -187,10 +188,32 @@ public class SqlQuerier extends DatabaseQuerier
             while (tokenizer.hasMoreTokens())
             {
                String driver = tokenizer.nextToken().trim();
-               Log.trace("Starting JDBC driver '"+driver+"'...");
-               Class.forName(driver).newInstance();
+               startDriver(driver);
             }
          }
+   }
+
+   /**
+    * Starts a single driver, specified by the given string
+    * (eg  "org.gjt.mm.mysql.Driver")
+    * Seperate from startDrivers() above so that subclasses can easily start
+    * particular drivers
+    */
+   public static void startDriver(String driverClassName) throws DatabaseAccessException
+   {
+      try
+      {
+          Log.trace("Starting JDBC driver '"+driverClassName+"'...");
+          Constructor constr= Class.forName(driverClassName).getConstructor(new Class[]{});
+          constr.newInstance(new Object[]{});
+      }
+      catch (NoSuchMethodException e)
+      {
+         throw new DatabaseAccessException(e,"JDBC Driver error: " + e.toString());
+      }
+      catch (InvocationTargetException e)
+      {
+         throw new DatabaseAccessException(e,"JDBC Driver error: " + e.toString());
       }
       catch (IllegalAccessException e)
       {
@@ -204,8 +227,8 @@ public class SqlQuerier extends DatabaseQuerier
       {
          throw new DatabaseAccessException(e, "JDBC Driver error: " + e.toString());
       }
-   }
 
+   }
    /**
     * sets up a JDBC connection using a URL
     * @param url jdbc url to connect to
@@ -241,7 +264,7 @@ public class SqlQuerier extends DatabaseQuerier
 
    }
     /**/
-   
+
    /** factory method to create query translator
     *  - overridable by extending classes
     * @return query translator appropriate for this daabase flavour

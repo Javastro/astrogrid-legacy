@@ -1,4 +1,4 @@
-/*$Id: HsqlQuerier.java,v 1.4 2003/09/08 19:15:46 mch Exp $
+/*$Id: HsqlQuerier.java,v 1.5 2003/09/15 11:34:32 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,14 +24,14 @@ import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 public class HsqlQuerier extends SqlQuerier {
 
     public HsqlQuerier() throws DatabaseAccessException, IOException
-   {
+    {
         super();
     }
 
    /**
     * Also starts Hypersonic jdbc driver... hardcoded, don't like this!
     * @todo - check reason for hardcoded driver - MCH
-    */
+    *
    public void startDrivers() throws DatabaseAccessException
    {
       //new com.sybase.jdbc2.jdbc.SybDriver(); //compile-time check
@@ -55,11 +55,15 @@ public class HsqlQuerier extends SqlQuerier {
       //start usual config ones
       super.startDrivers();
    }
+     /**/
 }
 
 
 /*
 $Log: HsqlQuerier.java,v $
+Revision 1.5  2003/09/15 11:34:32  mch
+made startDrivers() static, now must be called from application layer
+
 Revision 1.4  2003/09/08 19:15:46  mch
 Workspace constructor now throws IOException
 
