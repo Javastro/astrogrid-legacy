@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.7 2004/02/15 18:22:18 jdt Exp $
+    | CVS $Id: sitemap.xmap,v 1.8 2004/03/19 15:11:04 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -119,14 +119,6 @@
           name="load-adql"
           logger="sitemap.action.load-adql"
           src="org.astrogrid.portal.datacenter.acting.MySpaceLoadAction"/>
-          
-      <!--
-        Submit ADQL from a form to a Datacenter end-point.
-        -->
-      <map:action
-          name="test-adql"
-          logger="sitemap.action.test-adql"
-          src="org.astrogrid.portal.datacenter.acting.TestAction"/>
     </map:actions>
 
   <!--+
@@ -283,29 +275,6 @@
               <map:parameter name="myspace-name" value="myspace-name"/>
               <map:parameter name="adql-query" value="query"/>
               
-              <map:call resource="test-results"/>
-            </map:act>
-          </map:when>
-          
-          <map:when test="Test">
-            <map:act type="test-adql">
-<!--
-              <map:parameter name="datacenter-delegate-service" value="NVO Cone Service"/>
--->
-              <map:parameter name="datacenter-delegate-service" value="Dummy"/>
-              <map:parameter name="datacenter-end-point" value="http://virtualsky.org/servlet/cover?CAT=messier&amp;"/>
-              <map:parameter name="username" value="Anon"/>
-              <map:parameter name="community-id" value="gps@star.le.ac.uk"/>
-              <map:parameter name="password" value="None"/>
-              <map:parameter name="adql-query" value="query"/>
-              
-<!--
-              <map:generate type="request">
-                <map:parameter name="generate-attributes" value="true"/>
-              </map:generate>
-              
-              <map:serialize type="xml"/>
--->
               <map:call resource="test-results"/>
             </map:act>
           </map:when>
