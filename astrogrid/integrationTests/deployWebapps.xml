@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: deployWebapps.xml,v 1.17 2004/03/13 01:11:21 jdt Exp $ --><!--
+<!-- $Id: deployWebapps.xml,v 1.18 2004/03/26 18:14:03 jdt Exp $ --><!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
 
@@ -15,8 +15,8 @@
 
 <!--==================================================================================-->
 
-	<target depends="RedeployMySpace" name="RedeployTheLot"/>
-	<target depends="DeployMySpace" name="DeployTheLot"/>
+	<target depends="RedeployMySpace,Redeployportal" name="RedeployTheLot"/>
+	<target depends="DeployMySpace,Deployportal" name="DeployTheLot"/>
 
 <!--==================================================================================-->
 
@@ -66,8 +66,8 @@
     <property name="community.host.user" value="${servers.b.user}"/>
     <property name="community.host.password" value="${servers.b.password}"/>
     
-    <property name="portal.path" value="/intTest-portal"/>   
-    <property name="portal.war.url" value="${mavenURL}/org.astrogrid/wars/astrogrid-portal-wrapper-SNAPSHOT.war"/> <!--not sure if this is the correct jar-->
+    <property name="portal.path" value="/astrogrid-portal-lo3"/>   
+    <property name="portal.war.url" value="${mavenURL}/org.astrogrid/wars/astrogrid-portal-SNAPSHOT.war"/> 
     <property name="portal.host.url" value="${servers.b.url}"/>
     <property name="portal.host.user" value="${servers.b.user}"/>
     <property name="portal.host.password" value="${servers.b.password}"/>     
