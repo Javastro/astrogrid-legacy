@@ -76,7 +76,7 @@ public class MySpaceManagerDelegate {
 		return (String)value;
 	}		
 	
-	public String createUser(String jobDetails) throws Exception {
+	public String createUser(String userID) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -89,7 +89,7 @@ public class MySpaceManagerDelegate {
 		}
 
 
-		String value = binding.createUser(jobDetails);
+		String value = binding.createUser(userID);
 		return (String)value;
 	}		
 	
@@ -110,7 +110,7 @@ public class MySpaceManagerDelegate {
 		return (String)value;
 	}	
 	
-	public String deleteUser(String jobDetails) throws Exception {
+	public String deleteUser(String userID) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -123,7 +123,7 @@ public class MySpaceManagerDelegate {
 		}
 
 
-		String value = binding.deleteUser(jobDetails);
+		String value = binding.deleteUser(userID);
 		return (String)value;
 	}	
 	
