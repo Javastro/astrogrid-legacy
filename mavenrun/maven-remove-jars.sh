@@ -5,7 +5,7 @@ MAVEN_PUBLIC_REPO=/var/www/www/maven
 PROJECT_NAME=$1
 
 # Change to Maven repository directory for project.
-cd $MAVEN_PUBLIC_REPO/astrogrid-$PROJECT_NAME/jars
+cd $MAVEN_PUBLIC_REPO/astrogrid-$PROJECT_NAME/
 
 # Ensure snapshot is not deleted.
 SNAPSHOT_VERSION=`cat astrogrid-$PROJECT_NAME-snapshot-version`

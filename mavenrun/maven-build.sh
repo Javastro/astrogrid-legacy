@@ -10,9 +10,10 @@ echo "[ag-build] build log: maven-build-$PROJECT_NAME.log"
 echo
 
 BUILD_HOME=/home/maven/build
+SCRIPTHOME=/home/maven/mavenrun
 PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
 LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
-
+cd $BUILD_HOME
 echo "[ag-build-$PROJECT_NAME] remove old log"
 rm $LOG_FILE
 
@@ -29,7 +30,7 @@ echo "[ag-build-$PROJECT_NAME] build home: $BUILD_HOME"
 cd $BUILD_HOME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] remove old SNAPSHOTS"
-sh ./maven-remove-jars.sh $PROJECT_NAME >> $LOG_FILE 2>&1
+sh $SCRIPTHOME/maven-remove-jars.sh $PROJECT_NAME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] removing $PROJECT_HOME"
 rm -fr $PROJECT_HOME >> $LOG_FILE 2>&1
