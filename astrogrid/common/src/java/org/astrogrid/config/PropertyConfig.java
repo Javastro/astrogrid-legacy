@@ -1,5 +1,5 @@
 /*
- * $Id: PropertyConfig.java,v 1.1 2003/10/07 16:42:36 mch Exp $
+ * $Id: PropertyConfig.java,v 1.2 2003/10/07 22:21:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.config;
 
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -44,15 +45,19 @@ public class PropertyConfig extends Config
     */
    public void autoLoad() {
 
-      loadJndiUrl(JNDI);
-
-      loadSysEnvUrl(SYS_ENV);
-  
       try {
+         loadJndiUrl(JNDI);
+
+         loadSysEnvUrl(SYS_ENV);
+         
          loadFile(DEFAULT_FILENAME);
       }
+      catch (FileNotFoundException fnfe) {
+         //not a problem if the default file is not found
+         log.debug(fnfe);
+      }
       catch (IOException ioe) {
-            log.error("Load failed from default file '"+DEFAULT_FILENAME,ioe);
+         log.warn(ioe);
       }
    }
 

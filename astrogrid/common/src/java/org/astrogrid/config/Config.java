@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.1 2003/10/07 16:42:36 mch Exp $
+ * $Id: Config.java,v 1.2 2003/10/07 22:21:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -34,7 +34,7 @@ public abstract class Config
    /**
     * loads the properties from the url specified in Jndi by the given Jndi name
     */
-   public void loadJndiUrl(String jndiName) {
+   public void loadJndiUrl(String jndiName) throws IOException {
       
       URL configUrl = null;
       
@@ -45,9 +45,13 @@ public abstract class Config
       }
       catch (NamingException e) {
          //ignore - just means it wasn't found
+         log.debug(e);
       }
       catch (IOException ioe) {
-         log.error("Load failed from jndi '"+jndiName+"' -> '"+configUrl+"'",ioe);
+         //rethrow with more info
+         IOException nioe = new IOException(ioe+": Load failed from jndi '"+jndiName+"' -> '"+configUrl+"'");
+         nioe.setStackTrace(ioe.getStackTrace());
+         throw nioe;
       }
    }
 
@@ -55,7 +59,7 @@ public abstract class Config
     * loads the properties from the url specified in the system environment
     * variable of the given name
     */
-   public void loadSysEnvUrl(String sysEnv) {
+   public void loadSysEnvUrl(String sysEnv) throws IOException {
       
       URL configUrl = null;
 
@@ -72,7 +76,10 @@ public abstract class Config
             throw new RuntimeException("System Variable '"+sysEnv+"' returned '"+sysVar+"', not a valid URL");
          }
          catch (IOException ioe) {
-            log.error("Load failed from system environment variable '"+sysEnv+"' -> '"+sysVar+"' -> '"+configUrl+"'",ioe);
+            //rethrow with more info
+            IOException nioe = new IOException(ioe+": Load failed from system environment variable '"+sysEnv+"' -> '"+sysVar+"' -> '"+configUrl+"'");
+            nioe.setStackTrace(ioe.getStackTrace());
+            throw nioe;
          }
       }
    }
@@ -103,6 +110,8 @@ public abstract class Config
     */
    protected abstract void loadStream(InputStream in) throws IOException;
 
+   
+   
    /**
     * Returns the location of the configuration file - useful when reporting
     * errors that things can't be found or are incorrect, so the user really

@@ -1,5 +1,5 @@
 /*
- * $Id: XmlConfig.java,v 1.1 2003/10/07 16:42:36 mch Exp $
+ * $Id: XmlConfig.java,v 1.2 2003/10/07 22:21:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,15 +7,15 @@
 package org.astrogrid.config;
 
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.w3c.dom.xpath.*;
 
 /**
  * An XML configuration file accessor
@@ -51,17 +51,20 @@ public class XmlConfig extends Config
     * then the classpath, then the local (working) directory
     */
    public void autoLoad() {
-      
-      loadJndiUrl(JNDI);
 
-      loadSysEnvUrl(SYS_ENV);
-  
       try {
+         loadJndiUrl(JNDI);
+
+         loadSysEnvUrl(SYS_ENV);
          
          loadFile(DEFAULT_FILENAME);
       }
+      catch (FileNotFoundException fnfe) {
+         //not a problem if the default file is not found
+         log.debug(fnfe);
+      }
       catch (IOException ioe) {
-            log.error("Load failed from default file '"+DEFAULT_FILENAME,ioe);
+         log.warn(ioe);
       }
    }
    
@@ -87,31 +90,76 @@ public class XmlConfig extends Config
    /**
     * Returns the list of nodes that match the given xpath. See class javadoc
     * about XPath comments
+    * @todo get the right xpath stuff.  At the moment just retuns a list of
+    * those nodes with elements that match the given 'xpath' name
     */
-   public static Node[] getProperty(String xpath)
+   public  Node[] getProperties(String xpath)
    {
+      NodeList set = xmlProperties.getElementsByTagName(xpath);
+      
+      /*
       try {
-         XPathEvaluator evaluator = (XPathEvaluator) metadataDom; //Document should implement XPathEvaluator
-         XPathResult results = evaluator.evaluate(xpath, metadataDom,
+         XPathEvaluator evaluator = (XPathEvaluator) xmlProperties; //Document should implement XPathEvaluator
+         XPathResult results = evaluator.evaluate(xpath, xmlProperties,
                null, XPathResult.NODE_SET_TYPE, null);
 
          XPathSetSnapshot set = results.getSetSnapshot(false);
          
-         Node[] nodes = new Node[set.getLength()];
+      }
+      catch (XPathException e) {
+         throw new IllegalArgumentException(xpath + " is not a correct XPath expression: "+e);
+      }
+      catch (DOMException e) {
+         throw new RuntimeException("Error in configuration DOM", e);
+      }
+       */
+
+      Node[] nodes = new Node[set.getLength()];
          
          for (int i=0;i<nodes.length;i++) {
             nodes[i] = set.item(i);
          }
          return nodes;
-      }
-      catch (XPathException e) {
-         throw new IllegalArgumentException(xpath + " is not a correct XPath expression",e);
-      }
-      catch (DOMException e) {
-         throw new RuntimeException("Error in configuration DOM", e);
-      }
+      
    }
 
+   /**
+    * Convenience routine for getting a single property, along with checks
+    * that there is only the one property
+    */
+   public Node getProperty(String xpath)
+   {
+      Node[] properties = getProperties(xpath);
+      
+      if (properties.length == 0) {
+         return null;
+      }
 
+      assert (properties.length == 1) : "More than one property in XmlConfig matches xpath "+xpath;
+      
+      return properties[0];
+   }
+
+   /**
+    * Convenience routine for getting a single property that is a string, ignoring
+    * whitespace & lines
+    * @todo do proper check for whitespace elements
+    */
+   public String getPropertyValue(String xpath)
+   {
+      Node propertyNode = getProperty(xpath);
+
+      if (propertyNode.getFirstChild() == null) {
+         //no children - value of this node is the value we need
+         return propertyNode.getNodeValue();
+      
+      }
+      
+      //children - usually happens when the value is written on a new line with
+      //the tags above and below.  Whitespace is normally stripped so ignore it
+      return propertyNode.getFirstChild().getNodeValue();
+   }
+    /**/
+   
 }
 

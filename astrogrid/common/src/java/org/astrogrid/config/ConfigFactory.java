@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigFactory.java,v 1.2 2003/10/07 21:34:34 mch Exp $
+ * $Id: ConfigFactory.java,v 1.3 2003/10/07 22:21:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -49,12 +49,12 @@ public class ConfigFactory
     * configuration
     * @param id specifies a particular instance
     */
-   public static synchronized PropertyConfig getXmlConfig(Object id)
+   public static synchronized XmlConfig getXmlConfig(Object id)
    {
-      PropertyConfig config = (PropertyConfig) xmlConfigs.get(id);
+      XmlConfig config = (XmlConfig) xmlConfigs.get(id);
    
       if (config == null) {
-         config = new PropertyConfig();
+         config = new XmlConfig();
          xmlConfigs.put(id, config);
       }
 
