@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql074.java,v 1.10 2004/09/07 11:17:25 mch Exp $
+ * $Id: Query2Adql074.java,v 1.11 2004/09/08 15:40:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -192,13 +192,13 @@ public class Query2Adql074  {
    /** Writes out the adql for a general numeric function */
    public static void writeFunction(XmlTagPrinter parentTag, String elementName, Function function) throws IOException {
       String type = null;
-      if (aggregateFuncs.indexOf(" "+function.getName()+" ")>-1) {
+      if (aggregateFuncs.toUpperCase().indexOf(" "+function.getName()+" ")>-1) {
          type = "xsi:type='aggregateFunctionType'";
       }
-      if (trigFuncs.indexOf(" "+function.getName()+" ")>-1) {
+      if (trigFuncs.toUpperCase().indexOf(" "+function.getName()+" ")>-1) {
          type = "xsi:type='trigonometricFunctionType'";
       }
-      if (mathFuncs.indexOf(" "+function.getName()+" ")>-1) {
+      if (mathFuncs.toUpperCase().indexOf(" "+function.getName()+" ")>-1) {
          type = "xsi:type='mathFunctionType'";
       }
       if (type==null) {
@@ -235,6 +235,9 @@ public class Query2Adql074  {
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.11  2004/09/08 15:40:57  mch
+ Fix for mixed case functions
+
  Revision 1.10  2004/09/07 11:17:25  mch
  Removed old 0.5 adql
 
