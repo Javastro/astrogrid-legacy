@@ -31,10 +31,11 @@ public class JobStep {
 		query = null ;
 		
 	private String
-	    status ;
+	    status = null,
+	    comment = null ;
 		
 	private Job
-	    parent ;
+	    parent = null ;
 		
 		
 	public JobStep( Job parent, Element element ) throws JobException {
@@ -86,6 +87,9 @@ public class JobStep {
 
 	public void setStatus(String status) { this.status = status; }
 	public String getStatus() {	return status; }
+
+	public void setComment(String comment) { this.comment = comment; }
+	public String getComment() { return comment; }
 
     
 } // end of class JobStep 

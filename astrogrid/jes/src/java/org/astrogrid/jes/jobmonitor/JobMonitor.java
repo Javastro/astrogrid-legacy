@@ -24,6 +24,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader ; 
 import java.text.MessageFormat ;
+import java.sql.Timestamp ;
+import java.util.Date ;
 
 import java.util.Iterator ;
 
@@ -35,7 +37,8 @@ import org.apache.axis.client.Service;
 import org.apache.axis.client.Call;
 import org.apache.axis.encoding.XMLType;
 import javax.xml.rpc.ParameterMode;
-// import org.apache.axis.utils.XMLUtils;
+import org.apache.axis.message.SOAPBodyElement ;
+import org.apache.axis.utils.XMLUtils ;
 
 import java.net.URL;
 
@@ -78,10 +81,13 @@ public class JobMonitor {
 	private static final String 
 	    SCHEDULE_JOB_REQUEST_TEMPLATE = "SCHEDULE_JOB_REQUEST.TEMPLATE",
 		MONITOR_JOB_RESPONSE_TEMPLATE = "MONITOR_JOB_RESPONSE.TEMPLATE",
-	    MONITOR_JOB_REQUEST_TEMPLATE = "MONITOR_JOB_REQUEST.TEMPLATE" ;
+	    MONITOR_JOB_REQUEST_TEMPLATE  = "MONITOR_JOB_REQUEST.TEMPLATE",
+	    MESSAGE_LOG_REQUEST_TEMPLATE  = "ASTROGRID_MESSAGE_LOG_REQUEST.TEMPLATE" ;
 	    
 	private static final String
-        SCHEDULER_URL = "SCHEDULER.URL" ;
+        SCHEDULER_URL   = "SCHEDULER.URL",
+	    MESSAGE_LOG_URL = "ASTROGRID_MESSAGE_LOG.URL",
+	    MONITOR_URL = "MONITOR.URL" ;
 	    			
 	private static Logger 
 		logger = Logger.getLogger( JobMonitor.class ) ;
@@ -232,6 +238,8 @@ public class JobMonitor {
 		    factory = null ;
         Job
 	        job = null ;
+	    JobStep
+	        jobStep = null ;
 	    boolean
 	        bCleanCommit = false ;    // We assume things go badly wrong! 
 			
@@ -246,21 +254,16 @@ public class JobMonitor {
 	           
 			// Create the necessary Job structures.
 			// This involves persistence, so we bracket the transaction 
-			// before finding and updating the JobStep status...
+			// before finding and updating the JobStep status and comment...
+			// (The comment comes from MySpace)
 	        factory = Job.getFactory() ;
 	        factory.begin() ;
 	        job = factory.findJob( this.extractJobURN( monitorJobDocument ) ) ;
-	        updateJobStepStatus( job, monitorJobDocument ) ;
-	        
-	        
-	        // Now we inform the AstroGrid Message Log.
-	        // 
-	        
-	        
+	        jobStep = updateJobStepStatus( job, monitorJobDocument ) ;
 	        
 			// If not all job steps are finished, prod the scheduler into life...
 			// (This is where the job itself can be marked as finished)
-			if( jobFinished( job ) == false ) {
+			if( interrogateAndSetJobFinished( job ) == false ) {
 				scheduleJob( job ) ;
 			}
                     		
@@ -280,6 +283,8 @@ public class JobMonitor {
         	if( bCleanCommit == false ) {
 				try{ factory.end ( false ) ; } catch( JesException jex ) {;}   // Rollback and cleanup
         	}
+        	// And finally, inform the message log of the MySpace details concerning this JobStep...
+        	informAstroGridMessageLog( jobStep ) ;
 	        logger.debug( response.toString() );
 	        if( TRACE_ENABLED ) logger.debug( "monitorJob() exit") ;
         } 
@@ -287,8 +292,8 @@ public class JobMonitor {
     } // end of monitorJob()
 	
 	
-	private boolean jobFinished( Job job ) {
-		if( TRACE_ENABLED ) logger.debug( "jobFinished(): entry") ;
+	private boolean interrogateAndSetJobFinished( Job job ) {
+		if( TRACE_ENABLED ) logger.debug( "interrogateAndSetJobFinished(): entry") ;
 		
 		// JBL Note: Does a JobStep in error mean a Job is in error?
 		// i.e. Does a JobStep in error mean a Job has stopped (finished)?
@@ -322,15 +327,15 @@ public class JobMonitor {
 			
 		}
 		finally {
-			if( TRACE_ENABLED ) logger.debug( "jobFinished(): exit") ;		
+			if( TRACE_ENABLED ) logger.debug( "interrogateAndSetJobFinished(): exit") ;		
 		}
 		
 		return bJobFinished ;
 			
-	} // end of jobFinished()
+	} // end of interrogateAndSetJobFinished()
 	
 	
-	private void updateJobStepStatus( Job job, Document monitorJobDocument ) {
+	private JobStep updateJobStepStatus( Job job, Document monitorJobDocument ) {
 		if( TRACE_ENABLED ) logger.debug( "updateJobStepStatus(): entry") ;
 		
 		NodeList
@@ -363,21 +368,32 @@ public class JobMonitor {
 			} // end for
 			
 		    while( iterator.hasNext() ) {
-				
 			    jobStep = (JobStep)iterator.next() ;
-			    	
-			    if( jobStep.getStepNumber().equals( Integer.valueOf( stepNumber ) ) ) {
-				   jobStep.setStatus( status ) ;
+			    if( jobStep.getStepNumber().equals( Integer.valueOf( stepNumber ) ) ) 
 				   break ;
-			    }
-				
 		    } // end while  
+		    
+			jobStep.setStatus( status ) ;
+		    
+			nodeList = element.getChildNodes() ;  			
+			   
+			for( int i=0 ; i < nodeList.getLength() ; i++ ) {						
+				if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
+					continue ;				
+				element = (Element) nodeList.item(i) ;
+				if( element.getTagName().equals( MonitorRequestDD.COMMENT_ELEMENT ) )
+					break ;
+			} // end for
+			
+			jobStep.setComment( element.getNodeValue().trim() ) ; 
 		    
 	    }
 	    finally {
 	    	
 			if( TRACE_ENABLED ) logger.debug( "updateJobStepStatus(): exit") ;
 	    }
+	    
+	    return jobStep ;
 		
 	} // end of updateJobStepStatus()
 	  	
@@ -454,6 +470,54 @@ public class JobMonitor {
 		if( TRACE_ENABLED ) logger.debug( "extractJobURN(): exit") ;	
 		return retval ;
 	} // end of extractJobURN()
+	
+	
+	private void informAstroGridMessageLog( JobStep jobStep ) {
+		if( TRACE_ENABLED ) logger.debug( "informAstroGridMessageLog(): entry") ;
+		
+		try {
+			
+			Call 
+			   call = (Call) new Service().createCall() ;
+			   
+			call.setTargetEndpointAddress( new URL( JobMonitor.getProperty( MESSAGE_LOG_URL ) ) ) ;
+      
+			SOAPBodyElement[] 
+			   bodyElement = new SOAPBodyElement[1];
+			   
+			String
+			    requestString = JobMonitor.getProperty( MESSAGE_LOG_REQUEST_TEMPLATE ) ;
+			Object []
+			    inserts = new Object[ 5 ] ;
+			inserts[0] = JobMonitor.getProperty( MONITOR_URL ) ;            // source
+			//JBL Note: what should this be...
+			inserts[1] = JobMonitor.getProperty( MONITOR_URL ) ;            // destination
+			inserts[2] = new Timestamp( new Date().getTime() ).toString() ; // timestamp
+			inserts[3] = "JobStep Completion" ;                             // subject
+			
+			//JBL Note: this requires elucidation...
+			inserts[4] = jobStep.getParent().getId() + " " + jobStep.getComment() ; // message
+			 
+			InputSource
+				requestSource = new InputSource( new StringReader( MessageFormat.format( requestString, inserts ) ) ) ;
+			bodyElement[0] = new SOAPBodyElement( XMLUtils.newDocument( requestSource ).getDocumentElement() ) ;
+    
+			logger.debug( "[call] url: " + JobMonitor.getProperty( MESSAGE_LOG_URL ) ) ;
+			logger.debug( "[call] msg: " + bodyElement[0] ) ;
+      
+			Object 
+			   result = call.invoke(bodyElement);
+
+			logger.debug( "[call] res: " + result ) ;
+    
+		}
+		catch( Exception ex ) {
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "informAstroGridMessageLog(): exit") ;	
+		}
+					
+	} // end of informAstroGridMessageLog()
 	
 
 } // end of class JobMonitor

@@ -1,17 +1,16 @@
 /*
  * @(#)MonitorRequestDD.java   1.0
  *
- * AstroGrid Copyright notice.
- * 
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
  */
 package org.astrogrid.jes.jobmonitor;
 
-/**
- * @author jl99
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 public final class MonitorRequestDD {
 	
 	public static final String
@@ -27,5 +26,8 @@ public final class MonitorRequestDD {
 	    JOBSTEP_NAME_ATTR = "name",
 	    JOBSTEP_NUMBER_ATTR = "stepNumber",
 	    JOBSTEP_STATUS_ATTR = "status" ;
+	    
+	public static final String
+	    COMMENT_ELEMENT = "comment" ;
 	 
 }
