@@ -32,7 +32,7 @@
         <Subject>???</Subject>
         <cea:ApplicationDefinition>
             <cea:Parameters>
-                <cea:ParameterDefinition name="DetectionImage" type="FileReference">
+                <cea:ParameterDefinition name="DetectionImage" type="binary">
                     <ns1:UI_Name
                         xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Detection Image</ns1:UI_Name>
                     <ns2:UI_Description
@@ -41,21 +41,21 @@
                         position,                 shape and size
                         informtaion is derived from this image</ns2:UI_Description>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="PhotoImage" type="FileReference">
+                <cea:ParameterDefinition name="PhotoImage" type="binary">
                     <ns3:UI_Name
                         xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Measurement Image</ns3:UI_Name>
                     <ns4:UI_Description
                         xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
                         Image that is used to measure photometric parameters</ns4:UI_Description>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="config_file" type="FileReference">
+                <cea:ParameterDefinition name="config_file" type="text">
                     <ns5:UI_Name
                         xmlns:ns5="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Configuration File</ns5:UI_Name>
                     <ns6:UI_Description
                         xmlns:ns6="http://www.astrogrid.org/schema/AGParameterDefinition/v1">File
                         containing the main configuration parameters for SExtractor</ns6:UI_Description>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="PARAMETERS_NAME" type="FileReference">
+                <cea:ParameterDefinition name="PARAMETERS_NAME" type="text">
                     <ns7:UI_Name
                         xmlns:ns7="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Parameter File</ns7:UI_Name>
                     <ns8:UI_Description
@@ -63,7 +63,7 @@
                         File containing the list of catalogue paramters
                         that                 should be computed</ns8:UI_Description>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="CATALOG_NAME" type="MySpace_FileReference">
+                <cea:ParameterDefinition name="CATALOG_NAME" type="text">
                     <ns9:UI_Name
                         xmlns:ns9="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Derived
                         output catalogue</ns9:UI_Name>
@@ -119,21 +119,21 @@
         <Subject>???</Subject>
         <cea:ApplicationDefinition>
             <cea:Parameters>
-                <cea:ParameterDefinition name="config_file" type="FileReference">
+                <cea:ParameterDefinition name="config_file" type="text">
                     <ns12:UI_Name
                         xmlns:ns12="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Configuration File</ns12:UI_Name>
                     <ns13:UI_Description
                         xmlns:ns13="http://www.astrogrid.org/schema/AGParameterDefinition/v1">A
                         HyperZ configuration file</ns13:UI_Description>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="input_catalog" type="MySpace_FileReference">
+                <cea:ParameterDefinition name="input_catalog" type="text">
                     <ns14:UI_Name
                         xmlns:ns14="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Magnitude Catalogue</ns14:UI_Name>
                     <ns15:UI_Description
                         xmlns:ns15="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
                         input catalogue of measured magnitude</ns15:UI_Description>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="output_catalog" type="MySpace_FileReference">
+                <cea:ParameterDefinition name="output_catalog" type="text">
                     <ns16:UI_Name
                         xmlns:ns16="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Redshift Catalogue</ns16:UI_Name>
                     <ns17:UI_Description
@@ -186,21 +186,21 @@
         <Subject>???</Subject>
         <cea:ApplicationDefinition>
             <cea:Parameters>
-                <cea:ParameterDefinition name="targets" type="MySpace_VOTableReference">
+                <cea:ParameterDefinition name="targets" type="VOTable">
                     <ns19:UI_Name
                         xmlns:ns19="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Target votable</ns19:UI_Name>
                     <ns20:UI_Description
                         xmlns:ns20="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
                         VOTable file containing the target sources</ns20:UI_Description>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="matches" type="MySpace_VOTableReference">
+                <cea:ParameterDefinition name="matches" type="VOTable">
                     <ns21:UI_Name
                         xmlns:ns21="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Match VOTable</ns21:UI_Name>
                     <ns22:UI_Description
                         xmlns:ns22="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
                         VOTable file containing the sources to match</ns22:UI_Description>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="merged_output" type="MySpace_VOTableReference">
+                <cea:ParameterDefinition name="merged_output" type="VOTable">
                     <ns23:UI_Name
                         xmlns:ns23="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Resulting VOTable</ns23:UI_Name>
                     <ns24:UI_Description
@@ -218,7 +218,7 @@
                         search radius</ns27:UI_Name>
                     <ns28:UI_Description xmlns:ns28="http://www.astrogrid.org/schema/AGParameterDefinition/v1">??</ns28:UI_Description>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="output" type="string">
+                <cea:ParameterDefinition name="output" type="text">
                     <ns29:UI_Name
                         xmlns:ns29="http://www.astrogrid.org/schema/AGParameterDefinition/v1">output type</ns29:UI_Name>
                     <ns30:UI_Description

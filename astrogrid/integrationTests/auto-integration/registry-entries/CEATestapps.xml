@@ -54,19 +54,19 @@
                     <agpd:DefaultValue xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Text</agpd:DefaultValue>
                     <ns8:Units xmlns:ns8="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns8:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P3" type="MySpace_FileReference">
+                <cea:ParameterDefinition name="P3" type="text">
                     <ns9:UI_Name xmlns:ns9="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns9:UI_Name>
                     <ns10:UI_Description xmlns:ns10="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P3d" type="FileReference">
+                <cea:ParameterDefinition name="P3d" type="text">
                     <ns11:UI_Name xmlns:ns11="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns11:UI_Name>
                     <ns12:UI_Description xmlns:ns12="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P4" type="string">
+                <cea:ParameterDefinition name="P4" type="text">
                     <ns13:UI_Name xmlns:ns13="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns13:UI_Name>
                     <ns14:UI_Description xmlns:ns14="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P5" type="MySpace_VOTableReference">
+                <cea:ParameterDefinition name="P5" type="VOTable">
                     <ns15:UI_Name xmlns:ns15="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns15:UI_Name>
                     <ns16:UI_Description xmlns:ns16="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
                 </cea:ParameterDefinition>
@@ -82,13 +82,13 @@
                     <ns21:UI_Name xmlns:ns21="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns21:UI_Name>
                     <ns22:UI_Description xmlns:ns22="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P9" type="MySpace_FileReference">
+                <cea:ParameterDefinition name="P9" type="text">
                     <ns23:UI_Name xmlns:ns23="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns23:UI_Name>
                     <ns24:UI_Description
                         xmlns:ns24="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
                         contents of this file will be copied to the output</ns24:UI_Description>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P9d" type="FileReference">
+                <cea:ParameterDefinition name="P9d" type="text">
                     <ns25:UI_Name xmlns:ns25="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns25:UI_Name>
                     <ns26:UI_Description
                         xmlns:ns26="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
@@ -96,7 +96,7 @@
                 </cea:ParameterDefinition>
                 <cea:ParameterDefinition name="P10" type="boolean"/>
                 <cea:ParameterDefinition name="P11" type="anyURI"/>
-                <cea:ParameterDefinition name="P12" type="FileReference">
+                <cea:ParameterDefinition name="P12" type="text">
                     <ns27:UI_Name xmlns:ns27="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns27:UI_Name>
                     <ns28:UI_Description xmlns:ns28="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
                 </cea:ParameterDefinition>
@@ -189,19 +189,19 @@
                     <agpd:DefaultValue xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Text</agpd:DefaultValue>
                     <ns39:Units xmlns:ns39="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns39:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P3" type="FileReference">
+                <cea:ParameterDefinition name="P3" type="text">
                     <ns40:UI_Name xmlns:ns40="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns40:UI_Name>
                     <ns41:UI_Description xmlns:ns41="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P3d" type="FileReference">
+                <cea:ParameterDefinition name="P3d" type="text">
                     <ns42:UI_Name xmlns:ns42="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns42:UI_Name>
                     <ns43:UI_Description xmlns:ns43="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P4" type="string">
+                <cea:ParameterDefinition name="P4" type="text">
                     <ns44:UI_Name xmlns:ns44="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns44:UI_Name>
                     <ns45:UI_Description xmlns:ns45="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P5" type="MySpace_VOTableReference">
+                <cea:ParameterDefinition name="P5" type="VOTable">
                     <ns46:UI_Name xmlns:ns46="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns46:UI_Name>
                     <ns47:UI_Description xmlns:ns47="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
                 </cea:ParameterDefinition>
@@ -217,13 +217,13 @@
                     <ns52:UI_Name xmlns:ns52="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns52:UI_Name>
                     <ns53:UI_Description xmlns:ns53="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P9" type="FileReference">
+                <cea:ParameterDefinition name="P9" type="text">
                     <ns54:UI_Name xmlns:ns54="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns54:UI_Name>
                     <ns55:UI_Description
                         xmlns:ns55="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
                         contents of this file will be copied to the output</ns55:UI_Description>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P9d" type="FileReference">
+                <cea:ParameterDefinition name="P9d" type="text">
                     <ns56:UI_Name xmlns:ns56="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns56:UI_Name>
                     <ns57:UI_Description
                         xmlns:ns57="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
@@ -231,7 +231,7 @@
                 </cea:ParameterDefinition>
                 <cea:ParameterDefinition name="P10" type="boolean"/>
                 <cea:ParameterDefinition name="P11" type="anyURI"/>
-                <cea:ParameterDefinition name="P12" type="FileReference">
+                <cea:ParameterDefinition name="P12" type="text">
                     <ns58:UI_Name xmlns:ns58="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns58:UI_Name>
                     <ns59:UI_Description xmlns:ns59="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
                 </cea:ParameterDefinition>
@@ -370,7 +370,7 @@
         </Capability>
         <Interface>
             <Invocation>WebService</Invocation>
-            <AccessURL use="base">@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService</AccessURL>
+            <AccessURL use="base">@TOMCATROOT@/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</AccessURL>
         </Interface>
         <cea:ManagedApplications>
             <cea:ApplicationReference>

@@ -36,13 +36,13 @@
                                         <ceapd:DefaultValue>Query</ceapd:DefaultValue>
                                         <ceapd:UI_Description>Astronomy Data Query Language that defines the search criteria</ceapd:UI_Description>
                                 </ParameterDefinition>
-                                <ParameterDefinition name="Format" type="string">
+                                <ParameterDefinition name="Format" type="text">
                                         <ceapd:DefaultValue>VOTABLE</ceapd:DefaultValue>
                                         <ceapd:UI_Description>How the results are to be returned.  VOTABLE or CSV for now</ceapd:UI_Description>
                                 </ParameterDefinition>
-                                <ParameterDefinition name="Target" type="IVORN">
+                                <ParameterDefinition name="Target" type="anyURI">
                                         <ceapd:DefaultValue>Results Target</ceapd:DefaultValue>
-                                        <ceapd:UI_Description>Where the results will be sent to; use IVORN (eg IVO://community/individual#path)</ceapd:UI_Description>
+                                        <ceapd:UI_Description>Where the results will be sent to; eg, use IVORN (eg IVO://community/individual#path)</ceapd:UI_Description>
                                 </ParameterDefinition>
                         </Parameters>
                         <Interfaces>
