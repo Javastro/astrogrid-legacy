@@ -1,0 +1,18 @@
+<?xml version="1.0"?> 
+<!-- AstroGrid MessageLog Request Template -->
+<agr:message 
+  xmlns:agr="http://www.astrogrid.org/registry" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.astrogrid.org/registry astrogrid-messaging.xsd"> 
+  <agr:log> 
+    <agr:sourceAddress>{0}</agr:sourceAddress> 
+    <agr:destinationAddress>{1}</agr:destinationAddress> 
+    <agr:timestamp>{2}</agr:timestamp> 
+    <agr:subject>{3}</agr:subject> 
+    <agr:content> 
+      <agr:paragraph> 
+         {4} 
+      </agr:paragraph> 
+    </agr:content> 
+  </agr:log> 
+</agr:message>
