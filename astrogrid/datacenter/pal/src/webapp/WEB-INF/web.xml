@@ -10,6 +10,10 @@
   <description>
     SOAP service that publishes a data set to AstroGrid.
   </description>
+  <listener>
+	<listener-class>org.astrogrid.datacenter.servlet.LifecycleListener</listener-class>
+	</listener>
+	
   <servlet>
     <servlet-name>AxisServlet</servlet-name>
     <display-name>Apache-Axis Servlet</display-name>
@@ -23,7 +27,7 @@
     <description>JUnitEE test runner</description>
     <servlet-class>org.junitee.servlet.JUnitEEServlet</servlet-class>
   </servlet>
-
+  
    <!-- Query-managing servlets -->
   <servlet>
     <servlet-name>SubmitCone</servlet-name>
@@ -86,19 +90,11 @@
       <description>
         a small servlet that helps cea by
     * querying servlet context - find out where it is, set keys in config from this
-    (keys used to generate VODescription for this CEA service)
-    * if 'boot.cea' set to 'true' will invoke .startup() on the pico container on context deploy
-        (otherwise cea will boot at first request)
-        - sometimes good - e.g. when services want to auto-register on startup.
-        - however, was causing problems with auto-integration (race conditions between webapps), so disabled by default
+    (keys used to generate VODescription for this CEA service)  
     * provides http-get access to some of the cec methods (call by HTTP-GET with no params for usage info)
       </description>
       <servlet-class>org.astrogrid.applications.component.InitServlet</servlet-class>
-      <init-param>
-        <param-name>boot.cea</param-name>
-        <param-value>false</param-value>
-      </init-param>
-      <load-on-startup>200</load-on-startup>
+
   </servlet>
 
   <!-- Query Managing tasks -->
