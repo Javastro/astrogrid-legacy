@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.4 2004/08/05 09:59:46 nw Exp $
+/*$Id: AllTests.java,v 1.5 2004/08/05 10:57:03 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,12 +57,18 @@ public class AllTests {
         suite.addTestSuite(IfThenFalseFeatureTest.class);
         suite.addTestSuite(IfThenElseTrueFeatureTest.class);
         suite.addTestSuite(IfThenElseFalseFeatureTest.class);
+        suite.addTestSuite(WhileOnceFeatureTest.class);
+        suite.addTestSuite(WhileNeverFeatureTest.class);
+        suite.addTestSuite(WhileManyFeatureTest.class);
         //$JUnit-END$
         return suite;
     }
 }
 /* 
  $Log: AllTests.java,v $
+ Revision 1.5  2004/08/05 10:57:03  nw
+ tests for while construct
+
  Revision 1.4  2004/08/05 09:59:46  nw
  tests for if construct
 
