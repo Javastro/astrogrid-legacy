@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <classpath>
-  <classpathentry excluding="" kind="src" path="src/java">
-  </classpathentry>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-scripting-0.7.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-scripting-0.8-b000s.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-cea-server-0.7.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-cea-server-0.8-b000a.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/starlink/jars/stil-2.0-1.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-workflow-0.7.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-workflow-0.8-b000w.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-jes-delegate-0.7.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-jes-delegate-0.8-b000j.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-workflow-objects-0.7.0.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-cea-client-0.7.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-cea-client-0.8-b000a.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/commons-jxpath/jars/commons-jxpath-1.1-patched.jar">
   </classpathentry>
@@ -27,19 +25,19 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-common-0.7.0.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-store-client-0.8-b000h.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-store-client-0.8-b001m.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-filestore-client-0.8-b000g.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-filestore-client-0.8-b001fs.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-community-common-0.7.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-community-common-0.8-b000ct.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-community-client-0.7.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-community-client-0.8-b000ct.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-community-resolver-0.7.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-community-resolver-0.8-b000ct.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-registry-common-0.7.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-registry-common-0.8-b000r.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-registry-client-lite-0.7.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-registry-client-lite-0.8-b000r.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xerces-2.4.0-patched.jar">
   </classpathentry>

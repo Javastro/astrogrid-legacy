@@ -46,7 +46,7 @@
     </dependencies>
 	 <build>
 
-        <sourceDirectory>src/java</sourceDirectory>
+        <sourceDirectory/>
 
         <unitTestSourceDirectory/>
 
