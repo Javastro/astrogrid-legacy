@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.23 2004/09/07 13:22:26 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.24 2004/09/08 21:55:14 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,36 +46,38 @@ public class StdSqlMaker  extends SqlMaker {
     */
    public String fromCone(ConeQuery query) {
       if (SimpleConfig.getSingleton().getString(CONE_SEARCH_HTM_KEY, null) != null) {
-         return getHtmSql(query);
+         throw new UnsupportedOperationException("Don't yet support HTM based cone searches");
       } else {
-         return getRaDecSql(query);
+         // Work out SQL suitable for doing a cone query on RA & DEC values
+         String table = SimpleConfig.getSingleton().getString(CONE_SEARCH_TABLE_KEY);
+         
+         Angle ra  = Angle.fromDegrees(query.getRa());
+         Angle dec = Angle.fromDegrees(query.getDec());
+         Angle radius = Angle.fromDegrees(query.getRadius());
+         
+         String sql = "SELECT * FROM "+table+" as "+table+
+            " WHERE "+
+            //circle
+            makeSqlCircleCondition(ra, dec, radius);
+         
+         log.info(query+" -> "+sql);
+         
+         return sql;
       }
    }
-   
-   /** Returns the SQL suitable for doing a cone query on RA & DEC values */
-   public String getRaDecSql(ConeQuery query) {
-
+      
+   /** Returns the SQL condition for a circle based on the columns in the
+    * configuration file
+    */
+   public String makeSqlCircleCondition(Angle ra, Angle dec, Angle radius) {
       String table = SimpleConfig.getSingleton().getString(CONE_SEARCH_TABLE_KEY);
-      String alias = table.substring(0,1);
       
       //get which columns given RA & DEC for cone searches
-      String raCol  = alias+"."+SimpleConfig.getSingleton().getString(CONE_SEARCH_RA_COL_KEY);
-      String decCol = alias+"."+SimpleConfig.getSingleton().getString(CONE_SEARCH_DEC_COL_KEY);
-      
-      Angle ra  = Angle.fromDegrees(query.getRa());
-      Angle dec = Angle.fromDegrees(query.getDec());
-      Angle radius = Angle.fromDegrees(query.getRadius());
-      
-      String sql = "SELECT * FROM "+table+" as "+alias+
-         " WHERE "+
-         //circle
-         makeSqlCircleCondition(raCol, decCol, ra, dec, radius);
-      
-      log.info(query+" -> "+sql);
-      
-      return sql;
+      String raCol  = table+"."+SimpleConfig.getSingleton().getString(CONE_SEARCH_RA_COL_KEY);
+      String decCol = table+"."+SimpleConfig.getSingleton().getString(CONE_SEARCH_DEC_COL_KEY);
+
+      return makeSqlCircleCondition(raCol, decCol, ra, dec, radius);
    }
-      
       
    /** Returns the SQL condition expression for a circle.  This circle is
     * 'flat' on the sphere, when vieweing the sphere from the center.  ie, the
@@ -204,10 +206,6 @@ public class StdSqlMaker  extends SqlMaker {
     /**/
    
    
-   /** Returns the SQL suitable for doing a cone query on HTM-indexed catalogue */
-   public String getHtmSql(ConeQuery query) {
-      throw new UnsupportedOperationException();
-   }
    
    /**
     * Constructs an SQL statement for the given ADQL
@@ -363,12 +361,12 @@ public class StdSqlMaker  extends SqlMaker {
          //parse out arguments
          String type = s.nextToken();
          if (type.equals("j2000")) {
-            double ra = Double.parseDouble(s.nextToken());
-            double dec = Double.parseDouble(s.nextToken());
-            double radius = Double.parseDouble(s.nextToken());
+            Angle ra = Angle.fromDegrees(Double.parseDouble(s.nextToken()));
+            Angle dec = Angle.fromDegrees(Double.parseDouble(s.nextToken()));
+            Angle radius = Angle.fromDegrees(Double.parseDouble(s.nextToken()));
             
             return sql.substring(0,start-1)+
-                     fromCone(new ConeQuery(ra, dec, radius))+
+                     makeSqlCircleCondition(ra, dec, radius)+
                      sql.substring(end);
             
          }
@@ -389,6 +387,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.24  2004/09/08 21:55:14  mch
+Uncommented SQL/ADQL tests
+
 Revision 1.23  2004/09/07 13:22:26  mch
 Throws better error if ADQL 0.5 is submitted
 

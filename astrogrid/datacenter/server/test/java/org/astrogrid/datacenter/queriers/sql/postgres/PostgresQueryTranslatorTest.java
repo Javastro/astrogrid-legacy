@@ -1,4 +1,4 @@
-/*$Id: PostgresQueryTranslatorTest.java,v 1.5 2004/09/08 21:22:14 mch Exp $
+/*$Id: PostgresQueryTranslatorTest.java,v 1.6 2004/09/08 21:55:14 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,10 +57,10 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
     }
 
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    public void test1Adql073() throws Exception { doFromFile("adql0.7.3", 1); }
+    //public void test1Adql073() throws Exception { doFromFile("adql0.7.3", 1); }
     public void test1Adql074() throws Exception { doFromFile("adql0.7.4", 1); }
     
-    public void test2Adql073() throws Exception { doFromFile("adql0.7.3", 2); }
+    //public void test2Adql073() throws Exception { doFromFile("adql0.7.3", 2); }
     public void test2Adql074() throws Exception { doFromFile("adql0.7.4", 2); }
 
     //testing cones is very hard.  Test results not the translator
@@ -96,6 +96,9 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: PostgresQueryTranslatorTest.java,v $
+Revision 1.6  2004/09/08 21:55:14  mch
+Uncommented SQL/ADQL tests
+
 Revision 1.5  2004/09/08 21:22:14  mch
 Updated tests
 

@@ -7,8 +7,8 @@
       <Item xsi:type='columnReferenceType' Table='Bob' Name='d' ></Item>
    </SelectionList>
    <From>
-      <Table xsi:type='tableType' Name='Tab' Alias='Tab' ></table>
-      <Table xsi:type='tableType' Name='Bob' Alias='Bob' ></table>
+      <Table xsi:type='tableType' Name='Tab' Alias='Tab' ></Table>
+      <Table xsi:type='tableType' Name='Bob' Alias='Bob' ></Table>
    </From>
    <Where>
       <Condition xsi:type='comparisonPredType' Comparison='&lt;>' >
@@ -16,5 +16,5 @@
          <Arg xsi:type='columnReferenceType'  Table='Bob'  Name='b' ></Arg>
       </Condition>
    </Where>
-</select>
+</Select>
 

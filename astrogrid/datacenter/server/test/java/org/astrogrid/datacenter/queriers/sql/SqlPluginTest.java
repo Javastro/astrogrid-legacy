@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.18 2004/09/08 21:22:14 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.19 2004/09/08 21:55:14 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -97,24 +97,16 @@ public class SqlPluginTest extends ServerTestCase {
 
    public void testAdql1() throws Exception {
       
-      askAdqlFromFile("sample-adql0.7.4-1.xml");
+      askAdqlFromFile("dummydb-adql-simple.xml");
    }
    
    public void testAdql2() throws Exception {
       
-      askAdqlFromFile("sample-adql0.7.4-2.xml");
-   }
-
-   public void testAdql3() throws Exception {
-      askAdqlFromFile("sample-adql0.7.4-3.xml");
-   }
-
-   public void testAdql4() throws Exception {
-      askAdqlFromFile("sample-adql0.7.4-4.xml");
+      askAdqlFromFile("dummydb-adql-circle.xml");
    }
 
    public void testPleidies() throws Exception {
-      askAdqlFromFile("dummy-pleidies-adql.xml");
+      askAdqlFromFile("dummydb-adql-pleidies.xml");
    }
    
    /** Read ADQL input document, run query on dummy SQL plugin, and return VOTable document
@@ -223,6 +215,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.19  2004/09/08 21:55:14  mch
+ Uncommented SQL/ADQL tests
+
  Revision 1.18  2004/09/08 21:22:14  mch
  Updated tests
 
