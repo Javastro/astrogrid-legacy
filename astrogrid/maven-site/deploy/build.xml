@@ -1,4 +1,4 @@
-<!-- $Id: build.xml,v 1.3 2003/12/10 16:35:13 jdt Exp $ -->
+<!-- $Id: build.xml,v 1.4 2003/12/29 00:34:05 jdt Exp $ -->
 <!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
@@ -22,18 +22,18 @@
   <!-- Configure properties to access the Manager applications -->
   
   <!--Deployment machines see http://wiki.astrogrid.org/bin/view/Astrogrid/Itn04IREnvironment -->
-  <property name="url1"      value="http://astrogrid1.jb.man.ac.uk:8080/manager"/>
+  <property name="url1"      value="vm05.astrogrid.org:8080/manager"/>
   <property name="username1" value="tomcat"/>
-  <property name="password1" value="tomcat"/>
+  <property name="password1" value="secret"/><!--fill this in (can't be stored in CVS for security reasons)-->
   <property name="url2"      value="http://astrogrid2.jb.man.ac.uk:8080/manager"/>
-  <property name="username2" value="tomcat"/>
-  <property name="password2" value="tomcat"/>
+  <property name="username2" value=""/>
+  <property name="password2" value=""/><!--fill this in (can't be stored in CVS for security reasons)-->
   <property name="url3"      value="http://astrogrid3.jb.man.ac.uk:8080/manager"/>
-  <property name="username3" value="tomcat"/>
-  <property name="password3" value="tomcat"/>
+  <property name="username3" value=""/>
+  <property name="password3" value=""/><!--fill this in (can't be stored in CVS for security reasons)-->
   <property name="url4"      value="http://astrogrid4.jb.man.ac.uk:8080/manager"/>
-  <property name="username4" value="tomcat"/>
-  <property name="password4" value="tomcat"/>
+  <property name="username4" value=""/>
+  <property name="password4" value=""/><!--fill this in (can't be stored in CVS for security reasons)-->
 
   <!-- Configure the custom Ant tasks for the Manager application -->
   <taskdef name="deploy"    classname="org.apache.catalina.ant.DeployTask"/>
