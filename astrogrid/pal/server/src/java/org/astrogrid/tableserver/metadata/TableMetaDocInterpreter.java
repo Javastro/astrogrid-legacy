@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.8 2005/03/31 12:10:28 mch Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.9 2005/03/31 16:09:40 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -75,10 +75,16 @@ public class TableMetaDocInterpreter
     * Looks through all the elements so that it can check case insensitively.
     */
    public Element getCatalogElement(String catalogName) {
-      //assertions
-      if (catalogName == null) { throw new IllegalArgumentException("No table specified"); }
-      
+
       Element[] cats = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+
+      //assertions
+      if (catalogName == null) {
+         //for now, if no catalog name is given we just take the first one...
+         log.warn("Catalog name is null, assuming first one");
+         return cats[0];
+      }
+      
       for (int i = 0; i < cats.length; i++) {
          String catId = cats[i].getAttribute("ID");
          if ((catId == null) || (catId.length()==0)) { //no ID, use name

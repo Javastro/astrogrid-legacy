@@ -1,5 +1,5 @@
 /*
- * $Id: SearchField.java,v 1.4 2005/03/30 16:07:00 mch Exp $
+ * $Id: SearchField.java,v 1.5 2005/03/31 16:09:40 mch Exp $
  */
 package org.astrogrid.dataservice.metadata.queryable;
 
@@ -77,7 +77,12 @@ public class SearchField {
     * Sets Ucd with the given version
     */
    public void setUcd(String ucd, String version) {
-      ucds.put(version, ucd);
+      if (ucd == null) {
+         ucds.remove(version);
+      }
+      else {
+         ucds.put(version, ucd);
+      }
    }
    
    /**

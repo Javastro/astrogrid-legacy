@@ -1,5 +1,5 @@
 /*
- * $Id: StdSqlWriter.java,v 1.4 2005/03/31 15:06:16 mch Exp $
+ * $Id: StdSqlWriter.java,v 1.5 2005/03/31 16:09:40 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -209,7 +209,7 @@ public class StdSqlWriter implements QueryVisitor {
 
    public void visitMath(MathExpression math)   throws IOException {
          math.getLHS().acceptVisitor(this);
-         current.append( " ("+math.getOperator()+") ");
+         current.append( " "+math.getOperator()+" ");
          math.getRHS().acceptVisitor(this);
    }
    
@@ -406,7 +406,8 @@ public class StdSqlWriter implements QueryVisitor {
     * Easy test/debug
     */
    public static void main(String[] args) throws IOException, IOException, ParserConfigurationException, SAXException {
-      
+
+      /*
       String sql =
          "SELECT CrossNeighboursEDR.sdssID, ReliableStars.objID, \n"+
          "       ReliableStars.ra, ReliableStars.dec, \n"+
@@ -425,6 +426,9 @@ public class StdSqlWriter implements QueryVisitor {
          "      (ReliableStars.sCorMagR2 > -99) AND \n"+
          "      (ReliableStars.sCorMagI > -99) AND \n"+
          "      (POWER(muAcosD,2) + POWER(muD,2) > 4 * \nSQRT(POWER(muAcosD * sigMuAcosD,2) + POWER(muD * sigMuD,2)))   \n";
+       */
+      
+      String sql = "select t1.decdeg from dqc as t1 where t1.decdeg > 60.0";
       
       Query q = SqlParser.makeQuery(sql);
       
@@ -450,6 +454,9 @@ public class StdSqlWriter implements QueryVisitor {
 
 /*
  $Log: StdSqlWriter.java,v $
+ Revision 1.5  2005/03/31 16:09:40  mch
+ Fixes and workarounds for null values, misisng metadoc columns
+
  Revision 1.4  2005/03/31 15:06:16  mch
  Fixes and workarounds for null values, misisng metadoc columns
 
