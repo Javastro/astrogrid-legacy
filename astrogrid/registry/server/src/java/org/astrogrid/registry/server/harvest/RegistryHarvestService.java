@@ -15,17 +15,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
-import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.astrogrid.registry.server.RegistryFileHelper;
-import org.astrogrid.registry.server.QueryParser3_0;
 import org.astrogrid.registry.server.query.RegistryService;
 import java.net.URL;
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Date;
@@ -36,8 +31,8 @@ import java.util.Vector;
 import org.apache.axis.client.Call; 
 import org.apache.axis.client.Service; 
 import org.apache.axis.message.SOAPBodyElement;
-import javax.xml.rpc.ServiceException; 
-import org.astrogrid.util.DomLoader;
+import javax.xml.rpc.ServiceException;
+import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
 import org.exolab.castor.xml.*;
 import org.astrogrid.registry.beans.resource.*;
@@ -47,10 +42,6 @@ import org.astrogrid.registry.RegistryException;
 
 import org.astrogrid.registry.common.WSDLInformation;
 import org.astrogrid.registry.common.WSDLBasicInformation;
-
-
-
-
 
 /**
  * 
@@ -80,11 +71,11 @@ public class RegistryHarvestService implements
   /**
     * Queries it's own registry for all the Registry entries and performs a harvest on those registries.
     * 
-    * @param query XML document object representing the query language used on the registry.
+    * @param registry This parameter is normally null.  Kicks off returning everything manged by this registry.
     * @return XML docuemnt object representing the result of the query. Used internally.
     * @author Kevin Benson 
     */  
-   public Document harvest(Document query) {
+   public Document harvest(Document registry) {
       try {
          RegistryService rs = new RegistryService();         
          Document registryDoc = rs.loadRegistry(null);
@@ -120,15 +111,15 @@ public class RegistryHarvestService implements
   /**
     * Queries it's own registry for all the Registry entries and performs a harvest on those registries.
     * 
-    * @param query XML document object representing the query language used on the registry.
+    * @param dateDom XML document object representing the query language used on the registry.
     * @return XML docuemnt object representing the result of the query. Used internally.
     * @author Kevin Benson 
     */  
-   public Document harvestFrom(Document query) {
+   public Document harvestFrom(Document dateDom) {
       try {
-         NodeList nl = query.getElementsByTagName("date_since");
+         NodeList nl = dateDom.getElementsByTagName("date_since");
          if(nl.getLength() == 0) {
-            return harvest(query);   
+            return harvest(dateDom);   
          }
          String updateVal = nl.item(0).getFirstChild().getNodeValue();
          
@@ -172,35 +163,71 @@ public class RegistryHarvestService implements
     * @return XML docuemnt object representing the result of the query.
     * @author Kevin Benson 
     */  
-   public Document harvestResource(Document query) throws RegistryException{
+   public Document harvestResource(Document resources) throws RegistryException{
 
       //This next statement will go away with Castor.
+      ArrayList al = new ArrayList();
       try {
-         VODescription vodesc = (VODescription)Unmarshaller.unmarshal(VODescription.class,query);
+         System.out.println("what was passed in at harvestResoruce = " + DomHelper.DocumentToString(resources));
+         VODescription vodesc = (VODescription)Unmarshaller.unmarshal(VODescription.class,resources);
          HashMap auths = RegistryFileHelper.getManagedAuthorities();
          int count = vodesc.getResourceCount();
-         ArrayList al = new ArrayList();
-         
+
+         DocumentBuilder registryBuilder = null;
+         Document doc = null;
+         Document resultDoc = null;
          for(int i = 0;i < count;i++) {
             ResourceType rtTemp = vodesc.getResource(i);
             if(rtTemp instanceof ServiceType) {            
                if(rtTemp instanceof RegistryType) {
-                  al.add(rtTemp);                        
+                  al.add(rtTemp);
+                  registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                  doc = registryBuilder.newDocument();
+                  try {                                       
+                     Marshaller.marshal(rtTemp,doc);
+                     System.out.println("updating the ResourceType document from the marshaller doc = " + DomHelper.DocumentToString(doc));
+                     resultDoc = RegistryFileHelper.updateDocument(doc,true,false);
+                     if(resultDoc != null) 
+                        System.out.println("after updating the ResourceType document = " + DomHelper.DocumentToString(resultDoc));
+                  }catch(ValidationException ve) {
+                     ve.printStackTrace();
+                  }catch(MarshalException me) {
+                     me.printStackTrace();
+                  }
                }else {
                   if(auths != null && auths.containsKey(rtTemp.getIdentifier().getAuthorityID())) {
                      al.add(rtTemp);
+                     registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                     doc = registryBuilder.newDocument();
+                     try {
+                        Marshaller.marshal(rtTemp,doc);
+                        resultDoc = RegistryFileHelper.updateDocument(doc,true,false);
+                        System.out.println("after updating the ResourceType document = " + DomHelper.DocumentToString(resultDoc));
+                     }catch(ValidationException ve) {
+                        ve.printStackTrace();
+                     }catch(MarshalException me) {
+                        me.printStackTrace();
+                     }
                   }//if
                }//else
             }//if
          }//for
-         for(int i = 0;i < al.size();i++) {
-            beginHarvest(null,(ServiceType)al.get(i));
-         }
       }catch(MarshalException me) {
          throw new RegistryException(me);
       }catch(ValidationException ve) {
          throw new RegistryException(ve);
+      }catch(ParserConfigurationException pce) {
+         throw new RegistryException(pce);   
       }
+      
+      for(int i = 0;i < al.size();i++) {
+         try {
+            beginHarvest(null,(ServiceType)al.get(i));
+         }catch(RegistryException re) {
+            re.printStackTrace();   
+         }
+      }
+      
       
       /*
        * 
@@ -225,10 +252,10 @@ public class RegistryHarvestService implements
      * @return XML docuemnt object representing the result of the query.
      * @author Kevin Benson 
      */  
-   public Document harvestFromResource(Document query) throws RegistryException {
+   public Document harvestFromResource(Document resource) throws RegistryException {
       try {
           //Now get the dateFrom element value as well.
-          NodeList nl = query.getElementsByTagName("VODescription");
+          NodeList nl = resource.getElementsByTagName("VODescription");
           if(nl.getLength() > 0) {
              VODescription vodesc = (VODescription)Unmarshaller.unmarshal(VODescription.class,nl.item(0));
              HashMap auths = RegistryFileHelper.getManagedAuthorities();
@@ -265,16 +292,16 @@ public class RegistryHarvestService implements
        * Grabs Registry entries from a DOM object and performs harvests on those registries. Normally the DOM
        * object will only have 1 registry entry, but may contain more. Used externally by clients.
        * 
-       * @param query XML document object representing the query language used on the registry.
+       * @param resources XML document object representing the query language used on the registry.
        * @return XML docuemnt object representing the result of the query.
        * @author Kevin Benson 
        */  
-      public Document harvestAll(Document query) throws RegistryException {
+      public Document harvestAll(Document resources) throws RegistryException {
          Document harvestedDoc = null;
          //This next statement will go away with Castor.            
          //NodeList nl = query.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","Identifier");
-         if(query != null && query.getElementsByTagName("VODescription").getLength() > 0) {
-            return harvestResource(query);   
+         if(resources != null && resources.getElementsByTagName("VODescription").getLength() > 0) {
+            return harvestResource(resources);   
          }else {
             return harvestResource(harvest(null));   
          }
@@ -306,16 +333,19 @@ public class RegistryHarvestService implements
    
    private void beginHarvest(Date dt, ServiceType st) throws RegistryException {
       String accessURL = st.getInterface().getAccessURL().getContent();
+      System.out.println("accessURL = " + accessURL);
       Document doc = null;
       if(InvocationType.WEBSERVICE_TYPE == st.getInterface().getInvocation().getType()) {
          //call the service
          //remeber to look at the date
-         WSDLBasicInformation wsdlBasic = WSDLInformation.getBasicInformationFromURL(accessURL);
+         WSDLBasicInformation wsdlBasic = WSDLInformation.getBasicInformationFromURL(accessURL);         
          if(wsdlBasic == null) {
             Call callObj = getCall((String)wsdlBasic.getEndPoint().values().iterator().next());
             DocumentBuilder registryBuilder = null;
             try {
-               registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+               DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+               dbf.setNamespaceAware(true);
+               registryBuilder = dbf.newDocumentBuilder();
                doc = registryBuilder.newDocument();
                Element root = null;
                String interfaceMethod = null;
@@ -334,7 +364,8 @@ public class RegistryHarvestService implements
                   sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
                   Vector result = (Vector) callObj.invoke (new Object[] {sbeRequest});
                   SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-                  RegistryFileHelper.updateDocument(sbe.getAsDocument(),true,false);
+                  RegistryFileHelper.updateResources(sbe.getAsDocument(),true,false);
+                  RegistryFileHelper.writeRegistryFile();
                }
             }catch(RemoteException re) {
               //log error
@@ -351,8 +382,11 @@ public class RegistryHarvestService implements
       }else if(InvocationType.WEBBROWSER_TYPE == st.getInterface().getInvocation().getType()) {
          try {
             //might need to put some oai date stuff on the end.  This is unknown.
-            doc = DomLoader.readDocument(new URL(st.getInterface().getAccessURL().getContent()));
-            RegistryFileHelper.updateDocument(doc,true,false);
+            System.out.println("inside the web broser");
+            doc = DomHelper.newDocument(new URL(st.getInterface().getAccessURL().getContent()));
+            System.out.println("Okay got this far to reading the url doc = " + DomHelper.DocumentToString(doc));
+            RegistryFileHelper.updateResources(doc,true,false);
+            RegistryFileHelper.writeRegistryFile();
          }catch(ParserConfigurationException pce) {
             pce.printStackTrace();
          }catch(SAXException sax) {

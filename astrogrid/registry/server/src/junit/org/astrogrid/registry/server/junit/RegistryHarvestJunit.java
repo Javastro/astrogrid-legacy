@@ -66,11 +66,22 @@ public class RegistryHarvestJunit extends TestCase{
        rhs.conf.setProperty("registry.junit.test/RegistryTest",junitDir+"/RegistryTest.xml");
        rhs.conf.setProperty("registry.junit.test/TabularSkyServiceTest",junitDir+"/TabularSkyServiceTest.xml");
        rhs.conf.setProperty("registry.junit.test/Combo1Test",junitDir+"/ResourcesCombo1.xml");
+       rhs.conf.setProperty("registry.junit.test/HarvestVizier",junitDir+"/HarvestVizierTest.xml");       
        assertNotNull(rhs);
        if (DEBUG_FLAG) System.out.println("----\"----") ;
    }
    
+   public void testHarvestResource() throws Exception {
+      if (DEBUG_FLAG) System.out.println("Begin testHarvestResource");
+      Document doc = rhs.conf.getDom("registry.junit.test/HarvestVizier");  
+      Document responseDoc = rhs.harvestResource(doc);
+      //TODO put assert statements here.
+      if(responseDoc != null)      
+         if (DEBUG_FLAG) System.out.println("harvestResource returned = " + XMLUtils.DocumentToString(responseDoc));
+   }      
    
+   
+   /*   
    public void testHarvestAll() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testHarvestAll");
       Document doc = rhs.harvest(null);
@@ -78,7 +89,7 @@ public class RegistryHarvestJunit extends TestCase{
       if(doc != null)      
          if (DEBUG_FLAG) System.out.println("harvest (all) returned = " + XMLUtils.DocumentToString(doc));
    }      
-/*   
+   
    public void testSubmitQueryEqualsOrganisationQuery() throws Exception {
       Document doc = rs.conf.getDom("org.astrogrid.registry.junit.orgQuery1");  
       Document responseDoc = rs.submitQuery(doc);

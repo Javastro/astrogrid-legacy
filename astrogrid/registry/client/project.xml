@@ -164,7 +164,7 @@
         </dependency>
         
         <dependency>
-            <groupId>astrogrid-common</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
             <version>SNAPSHOT</version>
             <type>jar</type>

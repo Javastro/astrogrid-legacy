@@ -21,15 +21,14 @@
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
  <Resource xsi:type="java:org.astrogrid.registry.beans.resource.registry.RegistryType">
     <Identifier>
-      <AuthorityID>astrogrid</AuthorityID>
+      <AuthorityID>vizier</AuthorityID>
       <ResourceKey>RegistryTest</ResourceKey>
     </Identifier>
-    <Title>NCSA Astronomy Digital Image Library Query Form</Title>
+    <Title>This is the vizier registry test entry.</Title>
     <ShortName>ADIL</ShortName>
     <Summary>
       <Description>
-        This Web page allows users to interactively search the contents
-        of the ADIL.
+      	This is a registry test entry for harvesting vizier.
       </Description>
       <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
     </Summary>
@@ -63,10 +62,9 @@
     <ContentLevel>University</ContentLevel>
     <ContentLevel>Community College</ContentLevel>
     <vg:ManagedAuthority>astrogrid</vg:ManagedAuthority>
-    <vg:ManagedAuthority>vm05.astrogrid.org</vg:ManagedAuthority>    
     <Interface>
       <Invocation>WebBrowser</Invocation>
-      <AccessURL use="dir">http://adil.ncsa.uiuc.edu/QueryPage.html</AccessURL>
+      <AccessURL use="dir">http://vizier.u-strasbg.fr/cgi-bin/registry/vizier/oai.pl?metadataPrefix=ivo_vr&amp;verb=ListRecords</AccessURL>
     </Interface>
   </Resource>
-  </VODescription>
+ </VODescription>

@@ -34,8 +34,7 @@ import java.util.Iterator;
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
  * @author Kevin Benson
  */
-public class RegistryHarvestService implements
-                    org.astrogrid.registry.common.RegistryHarvestInterface { 
+public class RegistryHarvestService { 
  
    /**
     * target end point  is the location of the webservice. 
@@ -149,7 +148,7 @@ public class RegistryHarvestService implements
       return null;  
    }
    
-   public Document harvestAll(Document query) {
+   public void harvestAll(Document query) {
       try {
          //get a call object operation to the web service.
          Call call = getCall();
@@ -167,25 +166,18 @@ public class RegistryHarvestService implements
          SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
          sbeRequest.setName("harvestAll");
          sbeRequest.setNamespaceURI(NAMESPACE_URI);
-         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+         call.invokeOneWay(new Object[] {sbeRequest});
 
-         System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
-         return sbe.getAsDocument();       
-         
       }catch(ParserConfigurationException pce) {
          pce.printStackTrace();   
-      }catch(RemoteException re) {
-         re.printStackTrace();   
       }catch(Exception e) {
          e.printStackTrace();            
       }
-      return null;
    }
    
    
    
-   public Document harvestResource(Document query) {
+   public void harvestResource(Document query) {
       try {
          //get a call object operation to the web service.
          Call call = getCall();
@@ -201,23 +193,15 @@ public class RegistryHarvestService implements
          SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
          sbeRequest.setName("harvestResource");
          sbeRequest.setNamespaceURI(NAMESPACE_URI);
-         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-
-         System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
-         return sbe.getAsDocument();       
-         
+         call.invokeOneWay (new Object[] {sbeRequest});
       }catch(ParserConfigurationException pce) {
          pce.printStackTrace();   
-      }catch(RemoteException re) {
-         re.printStackTrace();   
       }catch(Exception e) {
          e.printStackTrace();            
       }
-      return null;
    }
    
-   public Document harvestFromResource(Document query) {
+   public void harvestFromResource(Document query) {
       try {
          //get a call object operation to the web service.
          Call call = getCall();
@@ -233,22 +217,12 @@ public class RegistryHarvestService implements
          SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
          sbeRequest.setName("harvestFromResource");
          sbeRequest.setNamespaceURI(NAMESPACE_URI);
-         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-
-         System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
-         return sbe.getAsDocument();       
-         
+         call.invokeOneWay (new Object[] {sbeRequest});
       }catch(ParserConfigurationException pce) {
          pce.printStackTrace();   
-      }catch(RemoteException re) {
-         re.printStackTrace();   
       }catch(Exception e) {
          e.printStackTrace();            
       }
-      return null;
    }
-   
-   
 
 }

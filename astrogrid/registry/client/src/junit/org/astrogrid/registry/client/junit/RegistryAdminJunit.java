@@ -107,7 +107,7 @@ public class RegistryAdminJunit extends TestCase {
       if (DEBUG_FLAG) System.out.println("Begin testGetStatus");
       if(junitEndPoint == null) return;
       rs = RegistryDelegateFactory.createAdmin(junitEndPoint);
-      String result = rs.getStatus();
+      String result = rs.getCurrentStatus();
       assertNotNull(result);
       if (DEBUG_FLAG) System.out.println("received " + result);         
    }

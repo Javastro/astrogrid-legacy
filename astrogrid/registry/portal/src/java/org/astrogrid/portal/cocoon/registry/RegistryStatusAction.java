@@ -55,7 +55,7 @@ public class RegistryStatusAction extends AbstractAction
       Session session = request.getSession();
 
       RegistryAdminService ras = RegistryDelegateFactory.createAdmin();
-      String status = ras.getStatus();
+      String status = ras.getCurrentStatus();
       request.setAttribute(PARAM_STATUS,status);
 
       //

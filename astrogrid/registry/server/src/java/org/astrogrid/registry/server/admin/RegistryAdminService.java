@@ -46,12 +46,12 @@ public class RegistryAdminService implements
     * Main Pieces: Organisation, Authority, Registry, Resource, Service, SkyService, TabularSkyService, 
     * DataCollection 
     * 
-    * @param query Document a XML document dom object to be updated on the registry.
+    * @param update Document a XML document dom object to be updated on the registry.
     * @return the document updated on the registry is returned.
     * @author Kevin Benson
     * 
     */   
-  public Document update(Document query) throws ValidationException {
+  public Document update(Document update) throws ValidationException {
     Document doc = null;
     Document newDoc = null;
     /*
@@ -73,7 +73,7 @@ public class RegistryAdminService implements
     //call updateDocument method to go through the document objects
     //and look for the primary key (resourcekey,AuthorityID) and do an update
     //doc = RegistryFileHelper.updateDocument(newDoc.getDocumentElement(),false, true);
-    doc = RegistryFileHelper.updateDocument(query.getDocumentElement(),true, true);
+    doc = RegistryFileHelper.updateDocument(update.getDocumentElement(),true, true);
     return doc;
   }
 
@@ -86,12 +86,12 @@ public class RegistryAdminService implements
    * Main Pieces: Organisation, Authority, Registry, Resource, Service, SkyService, TabularSkyService, 
    * DataCollection 
    * 
-   * @param query Document a XML document dom object to be updated on the registry.
+   * @param add Document a XML document dom object to be updated on the registry.
    * @return the document updated on the registry is returned.
    * @author Kevin Benson
    * 
    */   
-   public Document add(Document query) throws ValidationException {
+   public Document add(Document add) throws ValidationException {
       Document doc = null;
       Document newDoc = null;
       /*
@@ -113,7 +113,7 @@ public class RegistryAdminService implements
       //and look for the primary key (resourcekey,AuthorityID) and determine
       //an update or an add.
       //doc = RegistryFileHelper.addDocument(newDoc.getDocumentElement(), true);
-      doc = RegistryFileHelper.addDocument(query.getDocumentElement(), true);
+      doc = RegistryFileHelper.addDocument(add.getDocumentElement(), true);
       //query to see if this is an authority type.
       /*      
       NodeList nl = query.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","Authority");
@@ -134,12 +134,12 @@ public class RegistryAdminService implements
    * Main Pieces: Organisation, Authority, Registry, Resource, Service, SkyService, TabularSkyService, 
    * DataCollection 
    * 
-   * @param query Document a XML document dom object to be updated on the registry.
+   * @param status This DOM object really should be null each time.
    * @return the document updated on the registry is returned.
    * @author Kevin Benson
    * 
    */   
- public Document getStatus(Document query) {
+ public Document getStatus(Document status) {
    Document doc = null;
    try {
          DocumentBuilder registryBuilder = null;

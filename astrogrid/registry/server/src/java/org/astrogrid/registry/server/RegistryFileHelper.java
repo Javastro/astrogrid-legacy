@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.LinkedList;
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.astrogrid.registry.server.query.RegistryService;
 import org.astrogrid.registry.common.versionNS.IRegistryInfo;
 
@@ -218,8 +220,28 @@ public class RegistryFileHelper {
          return registryDocument;  
       }
       //Don't have it so find the registry file from our configuration.
-      registryDocument = conf.getDom(REGISTRY_FILE_DOM_PROPERTY);
-      doManageAuthorities();
+      try {
+         DocumentBuilder registryBuilder = null;
+         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+         dbf.setNamespaceAware(true);
+         registryBuilder = dbf.newDocumentBuilder();
+         registryDocument = registryBuilder.parse(conf.getUrl(REGISTRY_FILE_DOM_PROPERTY).openStream());
+      }catch(ParserConfigurationException pce) {
+         registryDocument = null;
+         pce.printStackTrace();   
+      }catch(SAXException sax) {
+         registryDocument = null;
+         sax.printStackTrace();   
+      }catch(IOException ioe) {
+         registryDocument = null;
+         ioe.printStackTrace();   
+      }
+      
+      //doc = registryBuilder.parse(inputSource);      
+      //registryDocument = conf.getDom(REGISTRY_FILE_DOM_PROPERTY);
+      if(registryDocument != null) {
+         doManageAuthorities();
+      }      
       return registryDocument;
    }
    
@@ -332,7 +354,12 @@ public class RegistryFileHelper {
     */
    public static synchronized void writeRegistryFile() {
       //Don't have it so find the registry file from our configuration.
-      File registryFile = new File(conf.getString(REGISTRY_FILE_DOM_PROPERTY));
+      String path = conf.getString(REGISTRY_FILE_DOM_PROPERTY);
+      File registryFile = null;
+      if(path.indexOf(":///") != -1) {
+         path = path.substring(path.indexOf(":///") + 4);
+      }
+      registryFile = new File(path);
       try {
          FileOutputStream fos = new FileOutputStream(registryFile,false);
          XMLUtils.DocumentToStream(loadRegistryFile(),fos);                  
@@ -512,6 +539,45 @@ public class RegistryFileHelper {
       }//for
       return matchingNode;
    }
+   
+   public static synchronized Document updateResources(Document resources,boolean createEntries, boolean checkAuth) {
+      Map fileHash = loadRegistryTable();      
+      //First get the root elements of both documents.
+      //Element fileRoot = fileDocument.getDocumentElement();
+      //Element subRoot = subDocument.getDocumentElement();
+      //Now find the first AuthorityID.
+      NodeList resourceList = resources.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","Resource");
+      System.out.println("the resourcelist size = " + resourceList.getLength());
+      Node fileFoundNode = null;
+      String subAuthorityVal = null;
+      String subResourceVal = null;
+      String subParentName = null;
+      Node removalNode = null;
+      Node siblNode = null;
+      String errorMessage = "";
+      Document doc = null;
+      DocumentBuilder regBuilder = null;
+      boolean keyContains = false;
+      ArrayList keyList = new ArrayList();
+      if(fileHash == null) {
+         errorMessage = "Could not load the Registry.";
+      }//if
+      
+      for(int i = 0;i < resourceList.getLength();i++) {
+         Node subRoot = resourceList.item(i);
+         Document resultDoc = updateDocument(subRoot,createEntries,checkAuth);
+         if(resultDoc != null) {
+            if(doc == null) {
+               doc = regBuilder.newDocument();
+               Element elem = doc.createElement("ErrorOnUpdate");               
+               doc.appendChild(elem);               
+            }
+            addNode(doc,resultDoc.getDocumentElement());
+         }//if
+               
+      }//for
+      return doc;
+   }
 
    
    /**
@@ -524,7 +590,7 @@ public class RegistryFileHelper {
     * @author Kevin Benson
     */
    public static synchronized Document updateDocument(Node subRoot,boolean createEntries, boolean checkAuth) {
-      Map fileHash = loadRegistryTable();
+      Map fileHash = loadRegistryTable();      
       //First get the root elements of both documents.
       //Element fileRoot = fileDocument.getDocumentElement();
       //Element subRoot = subDocument.getDocumentElement();

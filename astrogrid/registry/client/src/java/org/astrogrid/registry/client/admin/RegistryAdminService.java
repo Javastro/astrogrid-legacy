@@ -28,7 +28,7 @@ import org.astrogrid.registry.RegistryException;
 
 import java.io.File;
 import java.io.IOException;
-import org.astrogrid.util.DomLoader;
+import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
 
 
@@ -145,14 +145,14 @@ public class RegistryAdminService {
     * @author Kevin Benson
     * 
     */   
-   public Document update(Document query) throws RegistryException {
+   public Document update(Document update) throws RegistryException {
 
       DocumentBuilder registryBuilder = null;
       Document doc = null;
       Document resultDoc = null;
       if(!validated) {
          try {
-            VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,query);
+            VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,update);
          }catch(MarshalException me) {
             throw new RegistryException(me);   
          }catch(ValidationException ve) {
@@ -164,7 +164,7 @@ public class RegistryAdminService {
          doc = registryBuilder.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI,"update");
          doc.appendChild(root);
-         Node nd = doc.importNode(query.getDocumentElement(),true);
+         Node nd = doc.importNode(update.getDocumentElement(),true);
          root.appendChild(nd);
       }catch(ParserConfigurationException pce){
          doc = null;
@@ -203,7 +203,7 @@ public class RegistryAdminService {
    
    public Document updateFromFile(File fi) throws RegistryException {
       try {
-         return update(DomLoader.readDocument(fi));
+         return update(DomHelper.newDocument(fi));
       }catch(IOException ioe) {         
          throw new RegistryException(ioe);      
       }catch(SAXException sax) {
@@ -215,7 +215,7 @@ public class RegistryAdminService {
    
    public Document updateFromURL(URL location) throws RegistryException {
       try {
-         return update(DomLoader.readDocument(location));
+         return update(DomHelper.newDocument(location));
       }catch(IOException ioe) {         
          throw new RegistryException(ioe);      
       }catch(SAXException sax) {
@@ -234,7 +234,7 @@ public class RegistryAdminService {
     * @author Kevin Benson
     * 
     */   
-   public Document add(Document query) {
+   public Document add(Document add) {
       
       DocumentBuilder registryBuilder = null;
       Document doc = null;
@@ -244,7 +244,7 @@ public class RegistryAdminService {
          doc = registryBuilder.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI,"add");
          doc.appendChild(root);
-         Node nd = doc.importNode(query.getDocumentElement(),true);
+         Node nd = doc.importNode(add.getDocumentElement(),true);
          root.appendChild(nd);
       }catch(ParserConfigurationException pce){
          doc = null;
@@ -280,10 +280,10 @@ public class RegistryAdminService {
       }
    }
    
-   public String getStatus() {
+   public String getCurrentStatus() {
       String status = "";
       try {
-         Document doc = getStatus(null);
+         Document doc = getStatus();
          NodeList nl = doc.getElementsByTagName("status");
          for(int i = 0;i < nl.getLength();i++) {
             Node nd = nl.item(i);
@@ -297,7 +297,7 @@ public class RegistryAdminService {
       return status;
    }
    
-   public Document getStatus(Document query) {
+   public Document getStatus() {
       Document doc = null;
       Document resultDoc = null;
       try {

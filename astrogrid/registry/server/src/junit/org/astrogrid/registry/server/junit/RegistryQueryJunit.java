@@ -62,6 +62,7 @@ public class RegistryQueryJunit extends TestCase{
        rs.conf.setProperty("org.astrogrid.registry.junit.authQuery1",junitDir+"/AuthorityQuery1.xml");
        rs.conf.setProperty("org.astrogrid.registry.junit.orgQuery1",junitDir+"/OrganisationQuery1.xml");
        rs.conf.setProperty("org.astrogrid.registry.junit.orgQuery2",junitDir+"/OrganisationQuery2.xml");
+       rs.conf.setProperty("org.astrogrid.registry.junit.vizQuery1",junitDir+"/VizierQuery1.xml");
               
        assertNotNull(rs);
        if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -73,6 +74,16 @@ public class RegistryQueryJunit extends TestCase{
       Document doc = rs.loadRegistry(null);
       if (DEBUG_FLAG) System.out.println("loadRegistry returned = " + XMLUtils.DocumentToString(doc));
    }
+   
+   public void testSubmitQueryContainsVizQuery() throws Exception {
+      if (DEBUG_FLAG) System.out.println("Begin testSubmitQueryContainsVizQuery");      
+      Document doc = rs.conf.getDom("org.astrogrid.registry.junit.vizQuery1");  
+      Document responseDoc = rs.submitQuery(doc);
+      assertNotNull(responseDoc);
+      if (DEBUG_FLAG) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
+   }
+   
+   
 /*   
    public void testSubmitQueryEqualsOrganisationQuery() throws Exception {
       Document doc = rs.conf.getDom("org.astrogrid.registry.junit.orgQuery1");  

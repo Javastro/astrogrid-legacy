@@ -61,6 +61,7 @@ public class RegistryAdminJunit extends TestCase{
        ras.conf.setProperty("org.astrogrid.registry.file",junitBuildDir+"/registry.xml");
        ras.conf.setProperty("registry.junit.test/ServiceTest",junitDir+"/ServiceTest.xml");
        ras.conf.setProperty("registry.junit.test/OrganisationTest",junitDir+"/OrganisationTest.xml");
+       ras.conf.setProperty("registry.junit.test/HarvestVizier",junitDir+"/HarvestVizierTest.xml");       
        ras.conf.setProperty("registry.junit.test/DataCollectionTest",junitDir+"/DataCollectionTest.xml");
        ras.conf.setProperty("registry.junit.test/AuthorityTest",junitDir+"/AuthorityTest.xml");
        ras.conf.setProperty("registry.junit.test/RegistryTest",junitDir+"/RegistryTest.xml");
@@ -70,6 +71,16 @@ public class RegistryAdminJunit extends TestCase{
        if (DEBUG_FLAG) System.out.println("----\"----") ;
    }
    
+
+   public void testGetStatus() throws Exception {
+       if (DEBUG_FLAG) System.out.println("Begin testGetStatus");
+       Document doc = ras.getStatus(null);
+       
+       //TODO put assert statements here.      
+       if(doc != null)      
+          if (DEBUG_FLAG) System.out.println("getStatus returned = " + XMLUtils.DocumentToString(doc));
+    }
+      
    
    public void testUpdateService() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testUpdateService");
@@ -78,6 +89,16 @@ public class RegistryAdminJunit extends TestCase{
       if(doc != null)      
          if (DEBUG_FLAG) System.out.println("loadRegistry returned = " + XMLUtils.DocumentToString(doc));
    }
+   
+   public void testUpdateVizerEntry() throws Exception {
+      if (DEBUG_FLAG) System.out.println("Begin testUpdateService");
+      Document doc = ras.update(ras.conf.getDom("registry.junit.test/HarvestVizier"));
+      //TODO put assert statements here.      
+      if(doc != null)      
+         if (DEBUG_FLAG) System.out.println("harvestvizier returned = " + XMLUtils.DocumentToString(doc));
+   }
+   
+   
    
    public void testUpdateOrganisation() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testUpdateOrganisation");

@@ -46,6 +46,7 @@ import org.astrogrid.registry.common.WSDLBasicInformation;
 import javax.wsdl.factory.WSDLFactory;
 
 import org.astrogrid.config.Config;
+import org.astrogrid.store.Ivorn;
 
 
 /**
@@ -255,11 +256,9 @@ public class RegistryService  {
       }finally {
          return vo;
       }
-
-      
    }
    
-   public Document loadRegistryDOM(Document query)  throws RegistryException  {
+   public Document loadRegistryDOM()  throws RegistryException  {
       Document doc = null;
       Document resultDoc = null;
       try {
@@ -290,9 +289,9 @@ public class RegistryService  {
       }  
    }
    
-   public VODescription loadRegistry(Document query)  throws RegistryException {
+   public VODescription loadRegistry()  throws RegistryException {
       VODescription vo = null;
-      Document resultDoc = loadRegistryDOM(null);     
+      Document resultDoc = loadRegistryDOM();     
       try {            
          vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,resultDoc);
       }catch (Exception e) {
@@ -305,7 +304,7 @@ public class RegistryService  {
    
    public HashMap managedAuthorities() throws RegistryException {
       HashMap hm = null;
-      Document doc = loadRegistryDOM(null);      
+      Document doc = loadRegistryDOM();      
       if(doc != null) {
          NodeList nl = doc.getElementsByTagName("ManagedAuthority");
          hm = new HashMap();
@@ -314,6 +313,10 @@ public class RegistryService  {
          }
       }
       return hm;      
+   }
+   
+   public Document getResourceByIdentifierDOM(Ivorn ident) throws RegistryException {
+      return getResourceByIdentifierDOM(ident.getPath());   
    }
    
    public Document getResourceByIdentifierDOM(String ident)  throws RegistryException {
@@ -353,6 +356,14 @@ public class RegistryService  {
       }
    }
    
+   public VODescription getResourceByIdentifier(Ivorn ident) throws RegistryException {
+      return getResourceByIdentifier(ident.getPath());   
+   }
+   
+   public String getEndPointByIdentifier(Ivorn ident) throws RegistryException {
+      return getEndPointByIdentifier(ident.getPath());   
+   }
+   
    public String getEndPointByIdentifier(String ident) throws RegistryException {
       //check for an AccessURL
       //if AccessURL is their and it is a web service then get the wsdl
@@ -370,7 +381,11 @@ public class RegistryService  {
       }
       return null;   
    }
-   
+
+   public WSDLBasicInformation getBasicWSDLInformation(Ivorn ident) throws RegistryException {
+      return getBasicWSDLInformation(ident.getPath());   
+   }
+      
    
    public WSDLBasicInformation getBasicWSDLInformation(String ident) throws RegistryException {
       VODescription vodesc = getResourceByIdentifier(ident);
@@ -387,9 +402,9 @@ public class RegistryService  {
          if(InvocationType.WEBSERVICE_TYPE == st.getInterface().getInvocation().getType()) {
             try {
                WSDLFactory wf = WSDLFactory.newInstance();
-               WSDLReader wr = wf.newWSDLReader();
-               wsdlBasic = new WSDLBasicInformation();               
+               WSDLReader wr = wf.newWSDLReader();               
                Definition def = wr.readWSDL(accessURL);
+               wsdlBasic = new WSDLBasicInformation();
                wsdlBasic.setTargetNameSpace(def.getTargetNamespace());
                Map mp = def.getServices();               
                Set serviceSet = mp.keySet();
