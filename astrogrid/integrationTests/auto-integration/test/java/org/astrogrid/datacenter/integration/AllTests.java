@@ -1,12 +1,12 @@
-/* $Id: AllTests.java,v 1.16 2004/10/12 23:05:16 mch Exp $
+/* $Id: AllTests.java,v 1.17 2004/11/03 00:31:03 mch Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
  *
  */
 package org.astrogrid.datacenter.integration;
-import org.astrogrid.datacenter.deployment.vizier.*;
-import org.astrogrid.datacenter.deployment.egso.*;
+import org.astrogrid.datacenter.deployed.vizier.*;
+import org.astrogrid.datacenter.deployed.egso.*;
 import org.astrogrid.datacenter.integration.clientside.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -27,8 +27,6 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(RdbmsTest.class));
         suite.addTest(new TestSuite(FitsTest.class));
-        suite.addTest(new TestSuite(SecTest.class));
-        suite.addTest(new TestSuite(VizierTest.class));
         suite.addTest(new TestSuite(MetadataTest.class));
         suite.addTest(new TestSuite(Query2MySpaceTest.class));
         //$JUnit-END$
@@ -37,6 +35,9 @@ public class AllTests {
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.17  2004/11/03 00:31:03  mch
+ *  PAL_MCH Candidate 2 merge
+ *
  *  Revision 1.16  2004/10/12 23:05:16  mch
  *  Seperated tests properly
  *
