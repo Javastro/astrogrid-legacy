@@ -101,6 +101,8 @@ class Console extends ConsoleSupport {
            }
         }
      */
+     //try this.
+     System.setSecurityManager(null);
      // doesn't work either - but looks right. pity.
      protectionDomain = this.getClass().getProtectionDomain()
      println(protectionDomain)
