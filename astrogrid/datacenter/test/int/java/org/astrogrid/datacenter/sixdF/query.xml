@@ -6,8 +6,8 @@
       <FromClause>
          <TableReference>
             <Table>
-               <Name>merlinCatalog</Name>
-               <AliasName>cat</AliasName>
+               <Name>SUPERCOS</Name>
+               <AliasName>sc</AliasName>
             </Table>
          </TableReference>
       </FromClause>
@@ -16,8 +16,8 @@
         <ComparisonPred>
           <FirstExpr xsi:type="ColumnExpr">
                 <SingleColumnReference>
-                  <TableName>cat</TableName>
-                  <Name>DataNo</Name>
+                  <TableName>sc</TableName>
+                  <Name>TARGETID</Name>
                 </SingleColumnReference>
           </FirstExpr>
           <Compare>=</Compare>
@@ -25,7 +25,7 @@
             <Value>
               <NumberLiteral>
                 <IntNum>
-                  <Value>657037</Value>
+                  <Value>20</Value>
                 </IntNum>
               </NumberLiteral>
             </Value>
