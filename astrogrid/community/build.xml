@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/10/09 01:38:30 $</cvs:date>
-    | <cvs:version>$Revision: 1.44 $</cvs:version>
+    | <cvs:date>$Date: 2003/10/09 03:40:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.45 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.45  2003/10/09 03:40:45  dave
+    |   Added loadConfig() to the policy delegates
+    |
     |   Revision 1.44  2003/10/09 01:38:30  dave
     |   Added JUnite tests for policy delegates
     |
@@ -154,9 +157,6 @@
 	<property name="project.name"    value="ast-policy"/>
 	<property name="project.version" value="1.0"/>
 	<property name="testdir" value="${basedir}/test"></property>
-<!--
-	<property name="installkitdir" value="${basedir}/install"></property>
--->
 	<!--+
 		| User preferences.
 		| This is where to put local properties eg.tomcat installation path.

@@ -34,6 +34,13 @@ public class AdministrationDelegate {
     *  service variable to our PolicyManager.
     */
    PolicyManager service = null;
+
+	//
+	// Load our community config.
+	static
+		{
+		CommunityConfig.loadConfig() ;
+		}
    
    /**
     * Public constructor deals with getting our service (link) to the webservice.
