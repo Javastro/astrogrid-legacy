@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceBrowser.java,v 1.1 2004/02/17 16:04:06 mch Exp $
+ * $Id: MySpaceBrowser.java,v 1.2 2004/02/24 11:30:41 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -27,7 +27,6 @@ import org.astrogrid.ui.EscEnterListener;
 import org.astrogrid.ui.GridBagHelper;
 import org.astrogrid.ui.IconButtonHelper;
 import org.astrogrid.ui.JHistoryComboBox;
-import org.astrogrid.ui.myspace.MySpaceBrowser;
 import org.astrogrid.vospace.IvoRN;
 import org.astrogrid.vospace.VospaceRL;
 import org.astrogrid.vospace.delegate.MySpaceEntry;
@@ -667,6 +666,9 @@ public class MySpaceBrowser extends JDialog
 
 /*
 $Log: MySpaceBrowser.java,v $
+Revision 1.2  2004/02/24 11:30:41  mch
+Removed self import
+
 Revision 1.1  2004/02/17 16:04:06  mch
 New Desktop GUI
 
