@@ -38,6 +38,19 @@
       <id>jl99</id>
       <email>jl99@star.le.ac.uk</email>
     </developer>
+
+    <developer>
+    	<name>Martin Hill</name>
+    	<id>mch</id>
+    	<email>mch@roe.ac.uk</email>
+    </developer>
+
+    <developer>
+    	<name>Peter Shillan</name>
+    	<id>gps</id>
+    	<email>gps@roe.ac.uk<email>
+    </developer>
+
     <developer>
     	<name>Noel Winstanley</name>
     	<id>nw</id>
