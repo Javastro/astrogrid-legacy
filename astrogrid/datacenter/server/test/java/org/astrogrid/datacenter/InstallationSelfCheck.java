@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.5 2004/01/13 00:33:14 nw Exp $
+/*$Id: InstallationSelfCheck.java,v 1.6 2004/02/15 23:20:25 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,9 +12,7 @@ package org.astrogrid.datacenter;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-
 import junit.framework.TestCase;
-
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
@@ -22,8 +20,8 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.datacenter.service.AxisDataServer;
-import org.astrogrid.mySpace.delegate.MySpaceClient;
-import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
+import org.astrogrid.vospace.delegate.VoSpaceClient;
+import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
 import org.astrogrid.util.Workspace;
 
 /** Unit test for checking an installation - checks location of config files, etc.
@@ -113,18 +111,9 @@ public class InstallationSelfCheck extends TestCase {
          return;
       }
 
-      MySpaceClient myspace = MySpaceDelegateFactory.createDelegate(defaultTarget);
+      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(User.ANONYMOUS, defaultTarget);
       
-      myspace.saveDataHolding(User.ANONYMOUS.getAccount(), User.ANONYMOUS.getGroup(), User.ANONYMOUS.getToken(),
-                              "testFile",
-                              "This is a test file to make sure we can create a file in myspace, so our query results are not lost",
-                              "",
-                              myspace.OVERWRITE); // this interface needs refactoring. constants would be a start.
-      
-      try {
-      } catch (Exception e) {
-         fail("Could not connect to myspace");
-      }
+      myspace.getEntries(User.ANONYMOUS, "*");
    }
    
    
@@ -133,6 +122,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.6  2004/02/15 23:20:25  mch
+ Fixes to use It04.1 myspaces
+
  Revision 1.5  2004/01/13 00:33:14  nw
  Merged in branch providing
  * sql pass-through
