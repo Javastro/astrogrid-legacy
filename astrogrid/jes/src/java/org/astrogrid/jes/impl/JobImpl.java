@@ -124,31 +124,6 @@ public class JobImpl extends Job {
 		
 	} // end of JobImpl()
 
-/*
-	public PreparedStatement getPreparedStatement() throws JobException, SQLException {
-		if( TRACE_ENABLED ) logger.debug( "getPreparedStatement(): entry") ; 
-		
-		try { 			   
-		
-			if( preparedStatement == null ) {			
-			   Object[]
-				  inserts = new Object[1] ;
-			   inserts[0] = JobController.getProperty( JobFactoryImpl.JOB_TABLENAME ) ;
-			   String
-				  updateString = MessageFormat.format( JobFactoryImpl.UPDATE_TEMPLATE, inserts ) ; 
-			   preparedStatement = factoryImpl.getConnection().prepareStatement( updateString ) ;		
-			}
-		    
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "getPreparedStatement(): exit") ; 	
-		}
-		
-		return preparedStatement ;
-		
-	}// end of getPreparedStatement()
-*/
-
 
 	public String getId() {	return jobURN ;	}
 	public void setId( String jobURN ) { this.jobURN = jobURN ;}

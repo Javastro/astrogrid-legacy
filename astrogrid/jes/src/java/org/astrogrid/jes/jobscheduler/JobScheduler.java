@@ -260,7 +260,8 @@ public class JobScheduler {
 	        
 			// Prod the datacenter into life...
 			startJob( datacenterLocation, job ) ;
-                    		
+
+			factory.updateJob( job ) ;              // Update any changed details to the database                           		
 			bCleanCommit = factory.end ( true ) ;   // Commit and cleanup
 
         }

@@ -53,7 +53,7 @@ public class JobFactoryImpl implements JobFactory {
 	public static final String
 	    JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, JOBXML ) " +
 	                          "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'', ''{6}'', ''{7}'' )" ,
-	    JOB_UPDATE_TEMPLATE = "UPDATE {0} SET STATUS = ? WHERE JOBURN = ?" ,
+	    JOB_UPDATE_TEMPLATE = "UPDATE {0} SET STATUS = {1} WHERE JOBURN = {2}" ,
 	    JOB_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1}" ,
 	    JOB_GENERAL_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE {1}" ,	    
 	    JOB_DELETE_TEMPLATE = "DELETE FROM {0} WHERE JOBURN = {1}" ;
@@ -70,8 +70,9 @@ public class JobFactoryImpl implements JobFactory {
 	public static final String
 		JOBSTEP_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, STEPNAME, STATUS, COMMENT ) " +
 							  "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'' )" ,
-        JOBSTEP_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1}" ; 
-        
+        JOBSTEP_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1}",
+        JOBSTEP_UPDATE_TEMPLATE = "UPDATE {0} SET ( STATUS, COMMENT ) = ( {1}, {2} ) WHERE JOBURN = {3} AND STEPNUMBER = {4}"  ; 
+
 	private static final int
 		COL_JOBSTEP_JOBURN = 1,
 		COL_JOBSTEP_STEPNUMBER = 2,
@@ -132,8 +133,9 @@ public class JobFactoryImpl implements JobFactory {
         ASTROGRIDERROR_QUERY_NOT_FOUND                            = "AGJESE00750",
         ASTROGRIDERROR_CATALOG_NOT_FOUND                          = "AGJESE00760",
         ASTROGRIDERROR_TABLE_NOT_FOUND                            = "AGJESE00770",
-        ASTROGRIDERROR_SERVICE_NOT_FOUND                          = "AGJESE00780";       
-        
+        ASTROGRIDERROR_SERVICE_NOT_FOUND                          = "AGJESE00780",       
+        ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST            = "AGJESE00790", 
+        ASTROGRIDERROR_UNABLE_TO_COMPLETE_UPDATE_REQUEST          = "AGJESE00800" ;
 	    
 	private static DataSource
 		datasource = null ;
@@ -274,22 +276,26 @@ public class JobFactoryImpl implements JobFactory {
 
     public void updateJob( Job job ) {
 		if( TRACE_ENABLED ) logger.debug( "updateJob(): entry") ;  
+		 
+		Statement   
+		   statement = null ;
 		  	   
 		try {
-/*			
-	        PreparedStatement
-	           pStatement = ((JobImpl)job.getImplementation()).getPreparedStatement() ;
-	           
-	        job.setDate( new Date() ) ;
-	        pStatement.setTimestamp( 1, new Timestamp( job.getDate().getTime() ) ) ;        
-			pStatement.executeUpdate();
-			
-			( (JobImpl) job.getImplementation() ).setDirty( false ) ;
-*/
+			Object []
+			   inserts = new Object[3] ;
+			inserts[0] = JobController.getProperty( JOB_TABLENAME ) ;
+			inserts[1] = job.getStatus() ;
+			inserts[2] = job.getId() ;
+
+			String
+			   updateString = MessageFormat.format( JOB_UPDATE_TEMPLATE, inserts ) ; 			
+			statement = this.getConnection().createStatement() ;
+			statement.executeQuery( updateString );
+			updateJobSteps( job ) ;
 		}
 		catch( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_UPDATE_REQUEST ) ;
 			logger.error( message.toString(), ex ) ;   		
 		}
 		finally {
@@ -352,7 +358,7 @@ public class JobFactoryImpl implements JobFactory {
 		}
 		catch( SQLException ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex ) ;   		
 		}
@@ -423,7 +429,7 @@ public class JobFactoryImpl implements JobFactory {
 		}
 		catch( SQLException ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
 			logger.error( message.toString(), ex ) ; 
 			throw new JobException( message, ex ) ;  		
 		}
@@ -635,7 +641,7 @@ public class JobFactoryImpl implements JobFactory {
 		}
 		catch( SQLException ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex ) ;   		
 		}
@@ -647,7 +653,71 @@ public class JobFactoryImpl implements JobFactory {
 		  
 	} // end of findJobSteps()
 	
+	
+	
+	private void updateJobSteps( Job job ) throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "updateJobSteps(): exit") ;   
+					
+		try {
+			
+			int
+			   count = 0 ;
+			Iterator
+			   iterator = job.getJobSteps() ;
+			JobStep
+			   jobStep = null ;
+		   
+			while ( iterator.hasNext() ) {
+				updateOneJobStep( (JobStep)iterator.next() ) ;			
+			} 
+
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "updateJobSteps(): exit") ;   	
+		}
+			
+	} // end of updateJobSteps(Job)
   
+  
+	private void updateOneJobStep ( JobStep jobStep ) throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "updateOneJobStep(): entry") ;   
+			
+		Statement   
+		   statement = null ;
+					
+		try {
+			
+			// "UPDATE {0} SET ( STATUS, COMMENT ) = ( {1}, {2} ) WHERE JOBURN = {3} AND STEPNUMBER = {4}" 
+
+			Object []
+			   inserts = new Object[5] ;
+			inserts[0] = JobController.getProperty( JOBSTEP_TABLENAME ) ;
+			inserts[1] = jobStep.getStatus() ;
+			inserts[2] = jobStep.getComment() ;
+			inserts[3] = jobStep.getParent().getId() ;
+			inserts[4] = jobStep.getStepNumber().toString() ;      
+
+			String
+			   updateString = MessageFormat.format( JOBSTEP_UPDATE_TEMPLATE, inserts ) ; 
+			logger.debug( "Update JobStep: " + updateString ) ;			
+			statement = getConnection().createStatement() ;
+			statement.executeUpdate( updateString );
+			createQuery( jobStep.getQuery() ) ;
+		}
+		catch( SQLException sex ) {
+			Message
+				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_UPDATE_REQUEST ) ;
+			logger.error( message.toString(), sex ) ;
+			throw new JobException( message, sex );    		
+		}
+		finally {
+			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+			if( TRACE_ENABLED ) logger.debug( "updateOneJobStep(): exit") ;   	
+		}
+				
+	} // end of updateOneJobStep()
+	
+	 
 	public void createQuery( Query query ) throws JobException  {
 		 if( TRACE_ENABLED ) logger.debug( "createQuery(): entry") ;  
 		 	
@@ -681,7 +751,7 @@ public class JobFactoryImpl implements JobFactory {
 			 if( TRACE_ENABLED ) logger.debug( "createQuery(): exit") ;   	
 		 }
 		
-	 } // end of createJob() 
+	 } // end of createQuery() 
 
 
 	public void findQuery( JobStep jobStep ) throws JobException {
@@ -703,7 +773,8 @@ public class JobFactoryImpl implements JobFactory {
 			inserts[2] = jobStep.getStepNumber() ;
 
 			String
-			   selectString = MessageFormat.format( QUERY_SELECT_TEMPLATE, inserts ) ; 			
+			   selectString = MessageFormat.format( QUERY_SELECT_TEMPLATE, inserts ) ; 	
+			logger.debug( "findQuery: " + selectString ) ;		
 			statement = this.getConnection().createStatement() ;
 			rs = statement.executeQuery( selectString );
 			
@@ -740,7 +811,7 @@ public class JobFactoryImpl implements JobFactory {
 		}
 		catch( SQLException ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex ) ;   		
 		}
@@ -861,7 +932,7 @@ public class JobFactoryImpl implements JobFactory {
 		}
 		catch( SQLException ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex ) ;   		
 		}
@@ -1055,7 +1126,7 @@ public class JobFactoryImpl implements JobFactory {
 		}
 		catch( SQLException ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex ) ;   		
 		}
@@ -1117,7 +1188,7 @@ public class JobFactoryImpl implements JobFactory {
 		}
 		catch( SQLException ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex ) ;   		
 		}

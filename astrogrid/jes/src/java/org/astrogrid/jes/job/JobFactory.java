@@ -15,5 +15,7 @@ public interface JobFactory {
 	Job findJob( String jobURN ) throws JobException ;
 	
     String deleteJob( Job job ) throws JobException ;
+    
+    void updateJob( Job job ) throws JobException ;
 
 }
