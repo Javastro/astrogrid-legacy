@@ -58,25 +58,32 @@
     
 </section>
 <section name="Formal Definition">
-    <subsection name="Interactions"></subsection>
+    <subsection name="Interactions">
+        
+        <img src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/CEACallSequence.gif?rev=HEAD&amp;content-type=image/gif"></img>
+    </subsection>
     <subsection name="Interfaces">
          <subsubsection name="CommonExecutionConnector">
              <p>This is the main interface that is used to communicate</p>
              <p>The WSDL definition of this interface is stored in cvs at <a href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD">http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD</a></p>
-             <iframe src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD&content-type=text/plain" width="100%" height="400">
+             <iframe src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD&amp;content-type=text/plain" width="100%" height="400">
 this should display http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD&amp;content-type=text/plain
 </iframe>
              
          </subsubsection>
          <subsubsection name="JobMonitorService"></subsubsection>
              <p>The WSDL definition of this interface is stored in cvs at <a href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD">http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD</a></p>
-             <iframe src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD&content-type=text/plain" width="100%" height="400">
+             <iframe src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD&amp;content-type=text/plain" width="100%" height="400">
 this should display http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD&amp;content-type=text/plain
 </iframe>
         
     </subsection>
     <subsection name="Objects">
         <subsubsection name="Application"></subsubsection>
+        <p>uml model</p>
+                <img src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/ceaApplication.gif?rev=HEAD&amp;content-type=image/gif"/>
+        <p>schema representation</p>
+             <img src="ApplicationBase.png"></img>
         
         <subsubsection name="Parameter"></subsubsection>
         <p>Parameter Descriptions</p>
