@@ -8,8 +8,9 @@ is different.  It is generated automatically from a template file and a
 properties file which contains a list of the error codes in the mySpace
 system.  The corresponding files are:
 
-  template file:                      MySpaceStatusCode.template
-  properties file with error codes:   statuscodes.properties
+  template file:                                 ./MySpaceStatusCode.template
+  properties file with error codes:
+    ../../../../../../configFiles/ASTROGRID_myspacemanagermessages.properties
 
 To change MySpaceStatusCode.java edit the template file rather than the
 java file.  (Note that the template file can itself be compiled with a
@@ -29,15 +30,15 @@ the conventional way.
 Introducing a new error code into the mySpace system
 ----------------------------------------------------
 
-To introduce a new error code into the mySpace system edit it into
-statuscodes.properties.  Then regenerate MySpaceStatusCode.java as
-described above.  Note that:
+To introduce a new error code into the mySpace system edit it into:
 
-* The error codes are turned into a java variables and hence should
-  conform to the naming conventions for java variables (for example,
-  they should not contain embedded `-' characters).  Also, the error
-  codes are forced to be unique; the resulting java class will not
-  compile if there are duplicates.
+  .../ASTROGRID_myspacemanagermessages.properties
+
+Then regenerate MySpaceStatusCode.java as described above.  Note that:
+
+* The error codes should conform to the AstroGrid conventions.  The
+  error codes are forced to be unique; the resulting java class will
+  not compile if there are duplicates.
      
 * The description should be enclosed in double-quotes (").
      
@@ -48,4 +49,5 @@ described above.  Note that:
 
 
 A C Davenhall,
-4/7/03.
+original:            4/7/03,
+most recent update:  1/10/03.

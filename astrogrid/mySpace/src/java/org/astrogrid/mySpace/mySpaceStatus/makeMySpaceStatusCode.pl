@@ -27,6 +27,13 @@
 #       // ++-- Codes tag --
 #       // ++-- getCode tag --
 #       // ++-- getCodeMessage tag --
+#
+#     There is also a disclaimer tag:
+#
+#       // ++-- Disclaimer tag --
+#
+#     Which is substituted with a disclaimer to the effect that the
+#     code has been automatically generated.
 #     
 #     Note that the format of these tags is such that the template can be
 #     compiled by a java compiler.  This feature is provided as a
@@ -77,6 +84,8 @@
 #     4/7/03  (ACD): First stable version.
 #     30/7/03 (ACD): Modified to make double-quotes around the message
 #        optional.
+#     1/10/03 (ACD): Changed the location of the properties file and
+#        added the disclaimer tag.
 #-
 
 #
@@ -94,9 +103,10 @@
     $status = &ReadAndDecodeProperties();
 
 #
-#  Generate the list of integer codes, the getCode method and the.
-#  getCodeMessage method.
+#  Generate the disclaimer, the list of integer codes, the getCode method
+#  and the getCodeMessage method.
 
+    $status = &GenerateDisclaimer();
     $status = &GenerateCodes();
     $status = &GenerateGetCode();
     $status = &GenerateGetCodeMessage();
@@ -154,7 +164,10 @@ sub ReadAndDecodeProperties
 #
 #    Attempt to open the properties file and proceed if ok.
 
-      $openStatus = open (PROP, "statuscodes.properties");
+      $statusCodesPropertiesFile = 
+ "../../../../../../configFiles/ASTROGRID_myspacemanagermessages.properties";
+      $openStatus = open (PROP, $statusCodesPropertiesFile);
+
       if ($openStatus != 0)
       {
 
@@ -230,6 +243,25 @@ sub ReadAndDecodeProperties
    }
    $status;
 }
+
+#
+# -----------------------------------------------------------------------
+#
+# GenerateDisclaimer
+#
+# Generate the disclaimer.
+
+sub GenerateDisclaimer
+{  if ($status == 0)
+   {  $disclaimerJava =
+     "// Note that this class was generated automatically from a template\n" .
+     "// file and the list of status codes in the MySpace Manager\n" .
+     "// properties file."
+   }
+
+   $status;
+}
+
 
 #
 # -----------------------------------------------------------------------
@@ -365,7 +397,8 @@ sub GenerateMySpaceStatusCode
          @java = @template;
 
          for ($loop = 0; $loop < $#java; $loop++)
-         {  $java[$loop] =~ s/\/\/ \+\+-- Codes tag --/$codesJava/;
+         {  $java[$loop] =~ s/\/\/ \+\+-- Disclaimer tag --/$disclaimerJava/;
+            $java[$loop] =~ s/\/\/ \+\+-- Codes tag --/$codesJava/;
             $java[$loop] =~ s/\/\/ \+\+-- getCode tag --/$getCodeJava/;
             $java[$loop] =~
               s/\/\/ \+\+-- getCodeMessage tag --/$getCodeMessageJava/;

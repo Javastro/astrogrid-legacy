@@ -33,6 +33,10 @@ package org.astrogrid.mySpace.mySpaceStatus;
  * @version Iteration 3.
  */
 
+// Note that this class was generated automatically from a template
+// file and the list of status codes in the MySpace Manager
+// properties file.
+
 public class MySpaceStatusCode
 {
 
@@ -65,51 +69,52 @@ public class MySpaceStatusCode
    public static final int AGMMCE00104 = 13;
    public static final int AGMMCE00105 = 14;
    public static final int AGMMCE00106 = 15;
-   public static final int AGMMCW00150 = 16;
-   public static final int AGMMCW00151 = 17;
-   public static final int AGMMCW00152 = 18;
-   public static final int AGMMCW00153 = 19;
-   public static final int AGMMCW00154 = 20;
-   public static final int AGMMCE00201 = 21;
-   public static final int AGMMCE00202 = 22;
-   public static final int AGMMCE00203 = 23;
-   public static final int AGMMCE00204 = 24;
-   public static final int AGMMCE00205 = 25;
-   public static final int AGMMCE00206 = 26;
-   public static final int AGMMCE00207 = 27;
-   public static final int AGMMCE00208 = 28;
-   public static final int AGMMCE00209 = 29;
-   public static final int AGMMCE00210 = 30;
-   public static final int AGMMCE00211 = 31;
-   public static final int AGMMCE00212 = 32;
-   public static final int AGMMCE00213 = 33;
-   public static final int AGMMCE00214 = 34;
-   public static final int AGMMCE00215 = 35;
-   public static final int AGMMCE00216 = 36;
-   public static final int AGMMCE00217 = 37;
-   public static final int AGMMCE00218 = 38;
-   public static final int AGMMCE00219 = 39;
-   public static final int AGMMCE00220 = 40;
-   public static final int AGMMCE00221 = 41;
-   public static final int AGMMCI00250 = 42;
-   public static final int AGMMCE00300 = 43;
-   public static final int AGMMCE00301 = 44;
-   public static final int AGMSCE01000 = 45;
-   public static final int AGMSCE01001 = 46;
-   public static final int AGMSCE01002 = 47;
-   public static final int AGMSCE01003 = 48;
-   public static final int AGMSCE01004 = 49;
-   public static final int AGMSCE01005 = 50;
-   public static final int AGMSCE01006 = 51;
-   public static final int AGMSCE01040 = 52;
-   public static final int AGMSCE01041 = 53;
-   public static final int AGMSCE01042 = 54;
-   public static final int AGMSCE01043 = 55;
-   public static final int AGMSCE01044 = 56;
-   public static final int AGMSCE01045 = 57;
-   public static final int AGMSCE01046 = 58;
-   public static final int AGMSCE01047 = 59;
-   public static final int AGMSCE01048 = 60;
+   public static final int AGMMCE00107 = 16;
+   public static final int AGMMCW00150 = 17;
+   public static final int AGMMCW00151 = 18;
+   public static final int AGMMCW00152 = 19;
+   public static final int AGMMCW00153 = 20;
+   public static final int AGMMCW00154 = 21;
+   public static final int AGMMCE00201 = 22;
+   public static final int AGMMCE00202 = 23;
+   public static final int AGMMCE00203 = 24;
+   public static final int AGMMCE00204 = 25;
+   public static final int AGMMCE00205 = 26;
+   public static final int AGMMCE00206 = 27;
+   public static final int AGMMCE00207 = 28;
+   public static final int AGMMCE00208 = 29;
+   public static final int AGMMCE00209 = 30;
+   public static final int AGMMCE00210 = 31;
+   public static final int AGMMCE00211 = 32;
+   public static final int AGMMCE00212 = 33;
+   public static final int AGMMCE00213 = 34;
+   public static final int AGMMCE00214 = 35;
+   public static final int AGMMCE00215 = 36;
+   public static final int AGMMCE00216 = 37;
+   public static final int AGMMCE00217 = 38;
+   public static final int AGMMCE00218 = 39;
+   public static final int AGMMCE00219 = 40;
+   public static final int AGMMCE00220 = 41;
+   public static final int AGMMCE00221 = 42;
+   public static final int AGMMCI00250 = 43;
+   public static final int AGMMCE00300 = 44;
+   public static final int AGMMCE00301 = 45;
+   public static final int AGMSCE01000 = 46;
+   public static final int AGMSCE01001 = 47;
+   public static final int AGMSCE01002 = 48;
+   public static final int AGMSCE01003 = 49;
+   public static final int AGMSCE01004 = 50;
+   public static final int AGMSCE01005 = 51;
+   public static final int AGMSCE01006 = 52;
+   public static final int AGMSCE01040 = 53;
+   public static final int AGMSCE01041 = 54;
+   public static final int AGMSCE01042 = 55;
+   public static final int AGMSCE01043 = 56;
+   public static final int AGMSCE01044 = 57;
+   public static final int AGMSCE01045 = 58;
+   public static final int AGMSCE01046 = 59;
+   public static final int AGMSCE01047 = 60;
+   public static final int AGMSCE01048 = 61;
 
 
    private int code;    // Code.
@@ -188,6 +193,9 @@ public class MySpaceStatusCode
       }
       else if (code == MySpaceStatusCode.AGMMCE00106)
       {  codeString = "AGMMCE00106";
+      }
+      else if (code == MySpaceStatusCode.AGMMCE00107)
+      {  codeString = "AGMMCE00107";
       }
       else if (code == MySpaceStatusCode.AGMMCW00150)
       {  codeString = "AGMMCW00150";
@@ -385,13 +393,16 @@ public class MySpaceStatusCode
       {  message = "({0}) Failed to read registry data file.";
       }
       else if (code == MySpaceStatusCode.AGMMCE00104)
-      {  message = "({0})  No servers specified in the registry configuration file.";
+      {  message = "({0}) No servers specified in the registry configuration file.";
       }
       else if (code == MySpaceStatusCode.AGMMCE00105)
       {  message = "({0}) Failed to read the registry configuration file.";
       }
       else if (code == MySpaceStatusCode.AGMMCE00106)
       {  message = "({0}) Failed to access item in registry.";
+      }
+      else if (code == MySpaceStatusCode.AGMMCE00107)
+      {  message = "({0}) Failed to access server details.";
       }
       else if (code == MySpaceStatusCode.AGMMCW00150)
       {  message = "({0}) Invalid expiry period in the registry configuration file.";
@@ -403,7 +414,7 @@ public class MySpaceStatusCode
       {  message = "({0}) Expiry period not set; default adopted.";
       }
       else if (code == MySpaceStatusCode.AGMMCW00153)
-      {  message = "({0}) Registry configuration file contains an illegal expiry period.";
+      {  message = "({0}) Illegal expiry period in registry configuration file.";
       }
       else if (code == MySpaceStatusCode.AGMMCW00154)
       {  message = "({0}) Registry configuration contains an invalid server entry.";

@@ -33,6 +33,8 @@ package org.astrogrid.mySpace.mySpaceStatus;
  * @version Iteration 3.
  */
 
+// ++-- Disclaimer tag --
+
 public class MySpaceStatusCode
 {
 
