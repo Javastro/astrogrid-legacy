@@ -1,5 +1,5 @@
 /*
- * $Id: DataQueryService.java,v 1.2 2003/08/28 13:25:19 mch Exp $
+ * $Id: DataQueryService.java,v 1.3 2003/08/28 17:28:10 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -80,7 +80,7 @@ public class DataQueryService implements ServiceStatus
       fireStatusChanged(STARTING);
       Query query = new Query(domContainingQuery);
 
-      DatabaseQuerier querier = DatabaseQuerier.createQuerier();
+      DatabaseQuerier querier = DatabaseQuerier.createQuerier(query);
 
       QueryResults results = querier.queryDatabase(query);
 
