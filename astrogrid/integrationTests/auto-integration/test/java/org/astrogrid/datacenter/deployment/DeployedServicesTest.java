@@ -1,4 +1,4 @@
-/*$Id: DeployedServicesTest.java,v 1.2 2004/09/09 12:31:56 mch Exp $
+/*$Id: DeployedServicesTest.java,v 1.3 2004/09/29 16:58:34 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,30 @@ public class DeployedServicesTest extends TestCase {
       DomHelper.newDocument(is);
    }
    
+   /** Runs a cone search on SEC proxy on grendel12 */
+   public void testGrendelSecProxy() throws IOException, SAXException, IOException, ParserConfigurationException  {
+     ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(
+         Account.ANONYMOUS,
+         "http://grendel12.roe.ac.uk:8080/pal-sec/services/AxisDataService05",
+         DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+
+      InputStream is = delegate.coneSearch(10,10,2);
+      assertNotNull(is);
+      DomHelper.newDocument(is);
+   }
+
+   /** Runs a cone search on Vizier proxy on grendel12 */
+   public void testGrendelVizierProxy() throws IOException, SAXException, IOException, ParserConfigurationException  {
+     ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(
+         Account.ANONYMOUS,
+         "http://grendel12.roe.ac.uk:8080/pal-vizier/services/AxisDataService05",
+         DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+
+      InputStream is = delegate.coneSearch(10,10,2);
+      assertNotNull(is);
+      DomHelper.newDocument(is);
+   }
+
    /** Runs a cone search on SSA */
    public void testSsa() throws IOException, SAXException, IOException, ParserConfigurationException  {
      ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(
@@ -74,6 +98,9 @@ public class DeployedServicesTest extends TestCase {
 
 /*
 $Log: DeployedServicesTest.java,v $
+Revision 1.3  2004/09/29 16:58:34  mch
+Added SEC & Vizier grendel12 proxy tests
+
 Revision 1.2  2004/09/09 12:31:56  mch
 Switched to using correct port
 
