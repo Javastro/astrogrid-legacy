@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.22 2004/05/19 16:24:33 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.23 2004/05/25 16:24:10 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -338,7 +338,7 @@ public class VoSpaceResolver {
       }
    }
    
-   /** Resolve using Community
+   /* Resolve using Community
     *
    private static Agsl communityResolve(Ivorn ivorn) throws IOException {
 
@@ -397,6 +397,10 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.23  2004/05/25 16:24:10  jdt
+Using javadoc comments to comment methods out really stuffs
+up the javadoc.
+
 Revision 1.22  2004/05/19 16:24:33  mch
 Properly typed Agsl creation, some fixes to tests
 
