@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.17 2004/08/13 08:52:24 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.18 2004/08/13 08:57:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -247,7 +247,7 @@ public class JdbcPlugin extends QuerierPlugin  {
          while (tables.next()) {
             //ignore all tables beginning with 'sys' as these are standard system tables
             //and we don't want to make these public.  I believe
-            if (getColumnValue(tables, "TABLE_NAME").startsWith("sys")) {
+            if (!getColumnValue(tables, "TABLE_NAME").startsWith("sys")) {
                XmlTagPrinter tableTag = metaTag.newTag("Table", "name='"+getColumnValue(tables, "TABLE_NAME")+"'");
                tableTag.writeTag("Description", getColumnValue(tables, "REMARKS"));
                tableTag.writeComment("schema='"+getColumnValue(tables, "TABLE_SCHEM")+"'");
