@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.4 2003/09/10 17:57:52 mch Exp $
+ * $Id: DelegateTest.java,v 1.5 2003/09/15 17:00:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,6 +15,7 @@ package org.astrogrid.datacenter.delegate;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.net.URL;
 import java.util.Vector;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,7 +24,11 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.ServiceIdHelper;
+import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.StatusHelper;
+import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -31,6 +36,27 @@ import org.xml.sax.SAXException;
 public class DelegateTest extends TestCase implements DatacenterStatusListener
 {
    Vector statusChangedList = new Vector();
+
+   /**
+    * Test created delegate types
+    */
+   public void testDelegateTypes() throws MalformedURLException, IOException, ServiceException
+   {
+      DummyDelegate dummy = (DummyDelegate) DatacenterDelegate.makeDelegate(null);
+
+      //these will throw exceptions, but will at least test creation code
+      try
+      {
+         SocketDelegate socket = (SocketDelegate) DatacenterDelegate.makeDelegate("socket://wibble:20");
+      }
+      catch (UnknownHostException se)   {  } //expect to not connect
+
+      try
+      {
+         WebDelegate web = (WebDelegate) DatacenterDelegate.makeDelegate("http://wibble");
+      }
+      catch (IOException se)     { } // expect to not connect
+   }
 
    /**
     * Creates a delegate, passes it a query and checks the return values
@@ -45,16 +71,24 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
       URL url = getClass().getResource("testQuery.xml");
       Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
 
-      //'submit' query to dummy service
+      //'submit' query to dummy service for count results
       int count = delegate.adqlCountDatacenter(adqlQuery);
 
-      Element votable = delegate.adqlQuery(adqlQuery);
+      //submit query for votable results
+      Element results = delegate.adqlQuery(adqlQuery);
+
+      //check results look ok
+      assertEquals(ResponseHelper.DATACENTER_RESULTS_TAG, results.getNodeName());
+      assertEquals(DummyDelegate.SERVICE_ID, ServiceIdHelper.getServiceId(results));
+      assertEquals(ServiceStatus.FINISHED, StatusHelper.getServiceStatus(results));
 
       //check that some statuses are returned
       assertTrue("Status's not been returned", statusChangedList.size() != 0);
 
       //check the votable is valid
-      //errr somehow
+      assertTrue(results.getElementsByTagName("VOTABLE").getLength() >0);
+
+      //errr some more
 
    }
 
@@ -76,6 +110,8 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
 
       //check status
       String id = ServiceIdHelper.getServiceId(response);
+      assertNotNull(id);
+
       response = delegate.getResults(id);
 
 
@@ -95,7 +131,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
    /** 'Callback' method called by Delegate when its status changes.  Stores
     * the status returned so that the tests above can examine them
     */
-   public void datacenterStatusChanged(String newStatus)
+   public void datacenterStatusChanged(String id, String newStatus)
    {
       statusChangedList.add(newStatus);
    }

@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.7 2003/09/15 16:06:11 mch Exp $
+ * $Id: SocketDelegate.java,v 1.8 2003/09/15 16:59:53 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.datacenter.delegate;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -69,10 +70,11 @@ public class SocketDelegate extends DatacenterDelegate
    public SocketDelegate(String endPoint) throws IOException
    {
       //parse string to extract address & port
-      endPoint = endPoint.substring(9); //remove 'socket://'
-      int colon = endPoint.indexOf(":");
-      String address = endPoint.substring(0,colon);
-      int port = Integer.parseInt(endPoint.substring(colon+1));
+      String host = endPoint.substring(9); //remove 'socket://'
+      int colon = host.indexOf(":");
+      if (colon == -1) { throw new MalformedURLException("Socket 'url' invalid: '"+endPoint+"', no server port given"); }
+      String address = host.substring(0,colon);
+      int port = Integer.parseInt(host.substring(colon+1));
       setSocket(new Socket(address, port));
    }
 
@@ -224,6 +226,9 @@ public class SocketDelegate extends DatacenterDelegate
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.8  2003/09/15 16:59:53  mch
+Added better test coverage and error recovery
+
 Revision 1.7  2003/09/15 16:06:11  mch
 Fixes to make maven happ(ier)
 
