@@ -4,10 +4,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
-    <id>astrogrid-security-sample-service</id>
+    <id>astrogrid-security-sample</id>
     <groupId>org.astrogrid</groupId>
 
-    <name>AstroGrid security sample service</name>
+    <name>AstroGrid security sample service and client</name>
 
     <package>org.astrogrid.security.sampleservice</package>
 
