@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationTest.java,v 1.3 2004/07/27 13:48:33 nw Exp $
+/*$Id: DatacenterApplicationTest.java,v 1.4 2004/09/17 01:27:06 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,8 @@ package org.astrogrid.datacenter.service.v06;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
+
+import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
@@ -75,7 +77,7 @@ public class DatacenterApplicationTest extends ServerTestCase {
         ds = new DataServer();
         SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY,PrecannedPlugin.class.getName());
         env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultProtocolLibrary());
-        appDesc = new DatacenterApplicationDescription("test",ds,env);
+        appDesc = new DatacenterApplicationDescription("test",ds,env,new DirectExecutor());
         user = new User();
         tool = new Tool();
         populateTool(tool);
@@ -223,6 +225,9 @@ public class DatacenterApplicationTest extends ServerTestCase {
 
 /* 
 $Log: DatacenterApplicationTest.java,v $
+Revision 1.4  2004/09/17 01:27:06  nw
+added thread management.
+
 Revision 1.3  2004/07/27 13:48:33  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

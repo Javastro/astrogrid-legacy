@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionLibrary.java,v 1.2 2004/07/20 02:14:48 nw Exp $
+/*$Id: DatacenterApplicationDescriptionLibrary.java,v 1.3 2004/09/17 01:27:21 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,8 @@ package org.astrogrid.datacenter.service.v06;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.datacenter.service.DataServer;
+
+import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
 
 /** Application description library for datacenters - initialized with a single instance of a {@link DatacenterApplicationDescription}
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Jul-2004
@@ -32,9 +34,9 @@ public class DatacenterApplicationDescriptionLibrary extends BaseApplicationDesc
     /** Construct a new DatacenterApplicationDescriptionLibrary
      * 
      */       
-    public DatacenterApplicationDescriptionLibrary(DatacenterMetadata md,DataServer ds,ApplicationDescriptionEnvironment env) {
+    public DatacenterApplicationDescriptionLibrary(DatacenterMetadata md,DataServer ds,ApplicationDescriptionEnvironment env,QueuedExecutor qe) {
         super();       
-        addApplicationDescription(new DatacenterApplicationDescription(md.getName(), ds,env));
+        addApplicationDescription(new DatacenterApplicationDescription(md.getName(), ds,env,qe));
     }
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
@@ -48,6 +50,9 @@ public class DatacenterApplicationDescriptionLibrary extends BaseApplicationDesc
 
 /* 
 $Log: DatacenterApplicationDescriptionLibrary.java,v $
+Revision 1.3  2004/09/17 01:27:21  nw
+added thread management.
+
 Revision 1.2  2004/07/20 02:14:48  nw
 final implementaiton of itn06 Datacenter CEA interface
 

@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManager.java,v 1.2 2004/07/20 02:14:48 nw Exp $
+/*$Id: DatacenterCEAComponentManager.java,v 1.3 2004/09/17 01:27:21 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,8 @@ import org.astrogrid.datacenter.service.DataServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.picocontainer.MutablePicoContainer;
+
+import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
 
 /** Component manager implementation that assembles a CEA server which provides a single {@link DatacetnerApplicationDescription} for the 
  * datacenter application 
@@ -66,6 +68,7 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
         });
         pico.registerComponentImplementation(DatacenterApplicationDescriptionLibrary.class,DatacenterApplicationDescriptionLibrary.class);
         pico.registerComponentImplementation(DataServer.class,DataServer.class);
+        pico.registerComponentImplementation(QueuedExecutor.class,CeaQueuedExecutor.class);
         
         
     }
@@ -74,6 +77,9 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
 
 /* 
 $Log: DatacenterCEAComponentManager.java,v $
+Revision 1.3  2004/09/17 01:27:21  nw
+added thread management.
+
 Revision 1.2  2004/07/20 02:14:48  nw
 final implementaiton of itn06 Datacenter CEA interface
 

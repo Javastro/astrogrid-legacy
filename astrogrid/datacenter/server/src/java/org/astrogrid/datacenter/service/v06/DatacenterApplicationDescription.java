@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescription.java,v 1.2 2004/07/20 02:14:48 nw Exp $
+/*$Id: DatacenterApplicationDescription.java,v 1.3 2004/09/17 01:27:21 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,8 @@ import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import EDU.oswego.cs.dl.util.concurrent.Executor;
 
 /** Descrption object for the datacenter 'application'.
  * Supports two interfaces - a cone search interface, and a full ADQL.
@@ -56,9 +58,10 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
     /** Construct a new DatacenterApplicationDescription
      * @param arg0
      */
-    public DatacenterApplicationDescription(String name,DataServer ds,ApplicationDescriptionEnvironment arg0) {
+    public DatacenterApplicationDescription(String name,DataServer ds,ApplicationDescriptionEnvironment arg0, Executor exec) {
         super(arg0);
         this.ds = ds;        
+        this.exec = exec;
             try {
                 this.createMetadata(name);
             }
@@ -135,6 +138,7 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
     }
     
     protected final DataServer ds;
+    protected final Executor exec;
     /**
      * @see org.astrogrid.applications.description.ApplicationDescription#initializeApplication(java.lang.String, org.astrogrid.community.User, org.astrogrid.workflow.beans.v1.Tool)
      */
@@ -143,7 +147,7 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
         logger.debug("Initializing new datacenter application " + newID + " " + id);        
         final DefaultIDs ids = new DefaultIDs(id,newID,user);
         ApplicationInterface interf = this.getInterface(tool.getInterface());    
-        return new DatacenterApplication(ids,tool,interf,env.getProtocolLib(),ds);
+        return new DatacenterApplication(ids,tool,interf,env.getProtocolLib(),ds,exec);
     }
     
 }
@@ -151,6 +155,9 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
 
 /* 
 $Log: DatacenterApplicationDescription.java,v $
+Revision 1.3  2004/09/17 01:27:21  nw
+added thread management.
+
 Revision 1.2  2004/07/20 02:14:48  nw
 final implementaiton of itn06 Datacenter CEA interface
 

@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionTest.java,v 1.3 2004/07/27 13:48:33 nw Exp $
+/*$Id: DatacenterApplicationDescriptionTest.java,v 1.4 2004/09/17 01:27:06 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,8 @@ import org.astrogrid.applications.description.exception.ParameterNotInInterfaceE
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.datacenter.service.DataServer;
+
+import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
 
 import junit.framework.TestCase;
 
@@ -39,7 +41,7 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
         super.setUp();
         ds = new DataServer();
         env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultProtocolLibrary());
-        appDesc = new DatacenterApplicationDescription("testdss",ds,env);
+        appDesc = new DatacenterApplicationDescription("testdss",ds,env,new DirectExecutor());
     }
     protected ApplicationDescription appDesc;
     protected DataServer ds;
@@ -65,6 +67,9 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
 
 /* 
 $Log: DatacenterApplicationDescriptionTest.java,v $
+Revision 1.4  2004/09/17 01:27:06  nw
+added thread management.
+
 Revision 1.3  2004/07/27 13:48:33  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.7 2004/09/06 15:20:47 mch Exp $
+/*$Id: DatacenterApplication.java,v 1.8 2004/09/17 01:27:21 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,6 +34,8 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import EDU.oswego.cs.dl.util.concurrent.Executor;
+
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -57,15 +59,18 @@ public class DatacenterApplication extends AbstractApplication implements Querie
      * @param arg2
      * @param arg3
      */
-    public DatacenterApplication(IDs ids, Tool tool, ApplicationInterface interf, ProtocolLibrary arg3,DataServer serv) {
+    public DatacenterApplication(IDs ids, Tool tool, ApplicationInterface interf, ProtocolLibrary arg3,DataServer serv,Executor exec) {
         super(ids, tool,interf, arg3);
         this.serv = serv;
+        this.exec = exec;
         this.acc = new Account(ids.getUser().getUserId(),ids.getUser().getCommunity(),ids.getUser().getToken());
 
     }
     protected final Account acc;
     /** the datacenter system object - a static, which provides access to the datacenter query framework */
     protected final DataServer serv;
+    /** the executor for background tasks */
+    Executor exec;
 
     /** id allocated by datacenter to this querier */
     protected String querierID;
@@ -155,7 +160,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
            final ParameterAdapter result = (ParameterAdapter)outputParameterAdapters().next();
            //necessary to perform write-back in separate thread - as we don't know what thread is calling this callback
            // and it mustn't be the same one as is going to write out the output - otherwise we'll deadlock on the pipe.
-           Thread worker = new Thread() {
+           Runnable worker = new Runnable() {
                public void run() {
                     try {
                         CEATargetIndicator ti = (CEATargetIndicator)querier.getResultsTarget();
@@ -166,7 +171,12 @@ public class DatacenterApplication extends AbstractApplication implements Querie
                     }
                 }
            };
-           worker.start();
+           try {
+               exec.execute(worker);
+           }catch (InterruptedException e) {
+               reportMessage("couldn't start worker thread to read results");
+           }
+               
        } else if (state.equals(QueryState.ABORTED)) {
            this.reportMessage(qs.toString());
             this.setStatus(Status.ERROR); // this is the convention.
@@ -216,6 +226,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
 $Log: DatacenterApplication.java,v $
+Revision 1.8  2004/09/17 01:27:21  nw
+added thread management.
+
 Revision 1.7  2004/09/06 15:20:47  mch
 Added logger message for execute()
 

@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.3 2004/07/27 13:48:33 nw Exp $
+/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.4 2004/09/17 01:27:06 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
                 return "testdsa";
             }
         };
-        lib = new DatacenterApplicationDescriptionLibrary(md,dataServer,env);
+        lib = new DatacenterApplicationDescriptionLibrary(md,dataServer,env,new CeaQueuedExecutor());
     }
     protected ApplicationDescriptionLibrary lib;
     protected DataServer dataServer;
@@ -60,6 +60,9 @@ public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
 }
 /* 
 $Log: DatacenterApplicationDescriptionLibraryTest.java,v $
+Revision 1.4  2004/09/17 01:27:06  nw
+added thread management.
+
 Revision 1.3  2004/07/27 13:48:33  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package
