@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <properties>
+    <title>Installing the AstroGrid Security-Sample Service</title>
+    <author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+  </properties>
+  
+  <body>
+  
+    <section name="Building the WAR">
+  
+      <p>
+      The security-sample service is not built in AstroGrid's scheduled
+      build. You will need to build the service as a web-application in
+      a WAR before you deploy it.
+      </p>
+      
+      <p>
+      Check out from AstroGrid's CVS-repository the module astrogrid/security/sample.
+      Change directory to the sample directory; it should contain the Maven files
+      project.xml, project.properties etc. Build the WAR with the Maven command
+      </p>
+      <pre>
+        maven war:install-snapshot
+      </pre>
+      <p>
+      This will leave the WAR in the subdirectory
+      </p>
+      <pre>
+        .maven/repository/wars/astrogrid-security-sample-SNAPSHOT.war
+      </pre>
+      <p>
+      of your home directory.
+      </p>
+      
+    </section>
+    
+    <section name="Configuring Tomcat">
+    
+      <p>
+      Find the AstroGrid properties-file in the copy of Jakarta-Tomcat where you will 
+      install the service. It should be in the conf subdirectory of $CATALINA_HOME.
+      The file name varies; it may be astrogrid.properties, AstroGrid.properties,
+      astrogrid.cfg or some close variant. If you find such a file, then there are
+      existing AstroGrid components in that Tomcat; in this case you <em>must</em>
+      add your configuration to the existing file.  If you don't find the file, then
+      yours is the first service to be deployed in that Tomcat; in that case, create
+      astrogrid.properties for yourself.
+      </p>
+      <p>
+      Only one configuration item is needed: the endpoint URL for the registry service
+      (used by the community resolvers to find the community service), e.g.:
+      </p>
+      <pre>
+      org.astrogrid.registry.query.endpoint=http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-registry-webapp/services/Registry
+      </pre>
+      <p>
+      You can fill in the URL for your preferred registry.
+      </p>
+    
+    </section>
+    
+    <section name="Deploying the WAR">
+    
+      <p>
+      You can
+      </p>
+      <ul>
+      <li>deploy the WAR using Tomcat's manager interface from a web browser;</li>
+      <li>copy the WAR into Tomcat's webapp directory and restart Tomcat;</li>
+      <li>deploy using Tomcat's manager ant-task.</li>
+      </ul>
+      <p>
+      I find the web-browser methods to be easiest.  In each case, deployment
+      creates the web-application at the context path /astrogrid-security-sample-SNAPSHOT.
+      If you browse this web-application with a web-browser you can check the Axis installation
+      and list the WSDL for the sample service.
+      </p>
+      
+    </section>
+
+  </body>
+  
+</document>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid security samples</title>
+  <body>
+    <menu name="Security facade">
+        <item name="Security samples home page" href="index.html"/>
+	<item name="Installation guide" href="INSTALL.html" />
+    </menu>
+
+    <links>
+       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
+       <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
+    </links>
+  </body>
+</project>
