@@ -2,10 +2,13 @@
 <!--
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/11 10:23:42 $</cvs:author>
-    | <cvs:version>$Revision: 1.14 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/11 10:43:20 $</cvs:author>
+    | <cvs:version>$Revision: 1.15 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.15  2003/06/11 10:43:20  dave
+    | Added findItems() test(s) to mock MySpaceService
+    |
     | Revision 1.14  2003/06/11 10:23:42  dave
     | Fixed accented character in cvs log
     |
@@ -1115,7 +1118,9 @@
 	</target>
 
 	<!-- Install our mock MySpace client -->
-	<target name="myspace.client.BUILD" depends="">
+	<target name="myspace.client.TEST" depends="">
+		<!-- Delete any existing client code -->
+		<antcall target="myspace.client.delete"/>
 		<!-- Build the client side stubs -->
 		<antcall target="myspace.client.wsdl2java"/>
 		<!-- Compile the client side java -->

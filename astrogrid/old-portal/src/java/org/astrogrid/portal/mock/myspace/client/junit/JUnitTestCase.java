@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrogrid/portal/mock/myspace/client/junit/Attic/JUnitTestCase.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/11 10:23:42 $</cvs:author>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/11 10:43:20 $</cvs:author>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  * $Log: JUnitTestCase.java,v $
+ * Revision 1.4  2003/06/11 10:43:20  dave
+ * Added findItems() test(s) to mock MySpaceService
+ *
  * Revision 1.3  2003/06/11 10:23:42  dave
  * Fixed accented character in cvs log
  *
@@ -189,7 +192,7 @@ public class JUnitTestCase
 		// Check that we get the right path.
 		String path = item.getPath() ;
 		assertNotNull("Null path", path) ;
-		assertEquals("Wrong path", path, "/var/data/2003/04/") ;
+		assertEquals("Wrong path", path, "/var/data/2003/05/") ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -207,9 +210,14 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("testFindItems") ;
 
 		//
-		// Check we can create a local MySpaceService.
-		MySpaceService service = new MySpaceService() ;
+		// Create a ServiceLocator.
+		MySpaceServiceService locator = new MySpaceServiceServiceLocator() ;
+		assertNotNull("Null service locator", locator) ;
+		//
+		// Locate a reference to our service.
+		MySpaceService service = locator.getmyspace() ;
 		assertNotNull("Null service", service) ;
+
 		//
 		// Check we can find some items.
 		Object[] array = service.findItems("/var/data/2003") ;
@@ -234,9 +242,14 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("testFindItemValues") ;
 
 		//
-		// Check we can create a local MySpaceService.
-		MySpaceService service = new MySpaceService() ;
+		// Create a ServiceLocator.
+		MySpaceServiceService locator = new MySpaceServiceServiceLocator() ;
+		assertNotNull("Null service locator", locator) ;
+		//
+		// Locate a reference to our service.
+		MySpaceService service = locator.getmyspace() ;
 		assertNotNull("Null service", service) ;
+
 		//
 		// Check we can find some items.
 		Object[] array = service.findItems("/var/data/2003") ;
