@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.1 2004/05/21 09:51:22 pah Exp $ -->
+<!-- $Id: project.xml,v 1.2 2004/07/27 11:57:11 jdt Exp $ -->
 <project>
   <extend>../maven-base/project.xml</extend>
   <id>astrogrid-deployment</id>
   <name>AstroGrid Deployment</name>
   <shortDescription>This project contains tools to assist in the deployment of AstroGrid components</shortDescription>
-  <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/</siteDirectory>
+  <siteDirectory>${maven.site.central.directory}/${pom.currentVersion}/</siteDirectory>
   
   <dependencies/>
   

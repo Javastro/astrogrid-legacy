@@ -3,25 +3,17 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../build/project-base.xml</extend>
-  <pomVersion>3</pomVersion>
+
   <id>astrogrid-ogsadai-app</id>
-  <groupId>org.astrogrid</groupId>
+
   <name>AstroGrid Data Warehouse OGSA-DAI connection</name>
 
-  <currentVersion>SNAPSHOT</currentVersion>
-  
-  <organization>
-    <name>AstroGrid</name>
-    <url>http://www.astrogrid.org</url>
-    <logo>http://www.astrogrid.org/images/AGlogo</logo>
-  </organization>
 
-  <inceptionYear>2002</inceptionYear>
-  <package>org.astrogrid</package> <logo>http://www.astrogrid.org/images/AGlogo</logo> 
-  <shortDescription>AstroGrid Warehouse OGSA-DAI Components</shortDescription>
+
+  <inceptionYear>2002</inceptionYear>  <shortDescription>AstroGrid Warehouse OGSA-DAI Components</shortDescription>
 
   
-  <siteDirectory>${astrogrid.docs}/${astrogrid.iteration}/warehouse/ogsadai</siteDirectory>
+  <siteDirectory>${astrogrid.docs}/${pom.currentVersion}/warehouse/ogsadai</siteDirectory>
 
   <repository>
     <connection>
@@ -32,31 +24,6 @@
     </developerConnection>
   </repository>
 
-  <developers>
-    <developer>
-      <name>Kona Andrews</name>
-      <id>kea</id>
-      <email>kea@ast.cam.ac.uk</email>
-    </developer>
-
-    <developer>
-      <name>Elizabeth Auden</name>
-      <id>eca</id>
-      <email>eca@mssl.ucl.ac.uk</email>
-    </developer>
-
-    <developer>
-      <name>Clive Page</name>
-      <id>cgp</id>
-      <email>cgp@star.le.ac.uk</email>
-    </developer>
-
-    <developer>
-      <name>Guy Rixon</name>
-      <id>gtr</id>
-      <email>gtr@ast.cam.ac.uk</email>
-    </developer>
-  </developers>
 
   <dependencies>
   
@@ -210,51 +177,5 @@
 
   </build>
 
-  <reports>
-    <report>
-      maven-changelog-plugin
-    </report>
-    <report>
-      maven-changes-plugin
-    </report>
-    <report>
-      maven-checkstyle-plugin
-    </report>
-    <report>
-      maven-clover-plugin
-    </report>
-    <report>
-      maven-developer-activity-plugin
-    </report>
-    <report>
-      maven-file-activity-plugin
-    </report>
-    <report>
-      maven-javadoc-plugin
-    </report>
-    <report>
-      maven-jdepend-plugin
-    </report>
-    <report>
-      maven-junit-report-plugin
-    </report>
-    <report>
-      maven-jxr-plugin
-    </report>
-    <report>
-      maven-license-plugin
-    </report>
-    <report>
-      maven-linkcheck-plugin
-    </report>
-    <report>
-      maven-pmd-plugin
-    </report>
-    <report>
-      maven-tasklist-plugin
-    </report>
-    <report>
-      maven-simian-plugin
-    </report>
-  </reports>
+
 </project>

@@ -388,9 +388,9 @@
 	<goal name="community-wait">
 		<echo message="Waiting for Community webapp .."/>
 		<echo 
-			message="  URL : ${tomcat.url}/astrogrid-community-${astrogrid.iteration}/happyaxis.jsp"/>
+			message="  URL : ${tomcat.url}/astrogrid-community-${pom.currentVersion}/happyaxis.jsp"/>
 		<waitfor maxwait="10" maxwaitunit="second" checkevery="500">
-			<http url="${tomcat.url}/astrogrid-community-${astrogrid.iteration}"/>
+			<http url="${tomcat.url}/astrogrid-community-${pom.currentVersion}"/>
 		</waitfor>
 	</goal>
 	<!--+
