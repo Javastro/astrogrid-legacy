@@ -9,7 +9,7 @@
        +-->
     <xsl:template name="script-details">
       <p /> 
-      <div style="visibility: hidden" id="script_details">
+      <div style="display: none" id="script_details">
         <form name="script_form" id="script_form">
           <table width="10%"  border="2" cellspacing="0" cellpadding="0">
             <tr>

@@ -15,7 +15,7 @@
        +-->
     <xsl:template name="tool-details">
     <p />
-        <div style="visibility: hidden" id="step_tool_details">
+        <div style="display: none" id="step_tool_details">
             <form name="properties_form" id="properties_form">
                 <table width="50%"  border="2" cellspacing="0" cellpadding="0">
                     <tr>

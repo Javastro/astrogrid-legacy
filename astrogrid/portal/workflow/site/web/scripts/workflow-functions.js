@@ -85,16 +85,16 @@
         if (document.getElementById)
         {
             if ( document.getElementById(object) != null)
-                node = document.getElementById(object).style.visibility='visible';
+                node = document.getElementById(object).style.display = "";
         }
         else if (document.layers)
         {
             if (document.layers[object] != null)
-                document.layers[object].visibility = 'visible';
+                document.layers[object].style.display = "";
         }
         else if (document.all)
         {
-            document.all[object].style.visibility = 'visible';
+            document.all[object].style.display = "";
         }
     }
                
@@ -122,15 +122,15 @@
         if (document.getElementById)
         {
             if (document.getElementById(object) != null)
-                node = document.getElementById(object).style.visibility='hidden';
+                node = document.getElementById(object).style.display = "none";
         }     
         else if (document.layers)
         {
             if (document.layers[object] != null)
-                document.layers[object].visibility = 'hidden';
+                document.layers[object].style.display =  "none";
         }
         else if (document.all)
-            document.all[object].style.visibility = 'hidden';
+            document.all[object].style.display = "none";
     }
                    
                                    
