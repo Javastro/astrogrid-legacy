@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseResults.java,v 1.10 2004/03/25 17:20:47 kea Exp $
+ * $Id: WarehouseResults.java,v 1.11 2004/04/05 11:29:32 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -65,7 +65,7 @@ public class WarehouseResults extends QueryResults
       out.write(cbuf,0,c);
     }
     in.close();
-    out.close();
+    // DON'T CLOSE OUT!!
   }
   
   /**
@@ -81,6 +81,9 @@ public class WarehouseResults extends QueryResults
 
 /*
  $Log: WarehouseResults.java,v $
+ Revision 1.11  2004/04/05 11:29:32  kea
+ Don't close output stream
+
  Revision 1.10  2004/03/25 17:20:47  kea
  Adding javadocs.
 
