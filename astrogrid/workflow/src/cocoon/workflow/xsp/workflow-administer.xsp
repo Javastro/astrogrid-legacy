@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java" 
+		  create-session="true"
+		  xmlns:xsp="http://apache.org/xsp"
+		  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+  		  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+
+<xsp:structure>
+	<xsp:include>org.astrogrid.portal.cocoon.workflow.design.DesignAction</xsp:include>
+	<xsp:include>org.astrogrid.portal.workflow.design.*</xsp:include>
+	<xsp:include>org.astrogrid.portal.workflow.design.activity.*</xsp:include>
+</xsp:structure>
+
+
+<workflow>
+
+<page>
+   
+    
+</page>
+
+</workflow>
+
+</xsp:page>
