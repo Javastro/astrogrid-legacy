@@ -29,6 +29,8 @@ import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 
 import junit.framework.Test;
@@ -113,7 +115,17 @@ public class JobScheduler implements org.astrogrid.jes.comm.JobScheduler, Compon
                     } catch (Throwable t) { // absolutely anything
                         logger.info("Step execution failed:",t);                 
                          MessageType message = new MessageType();
-                         message.setContent( "Failed: " + t.getClass().getName() + "\n " + t.getMessage());
+                         StringBuffer buff = new StringBuffer();
+                        buff.append("Failed: ")
+                            .append( t.getClass().getName())
+                            .append('\n')
+                            .append( t.getMessage())
+                            .append('\n');
+                         StringWriter writer = new StringWriter();                            
+                            t.printStackTrace(new PrintWriter(writer));
+                          buff.append(writer.toString());
+                          
+                         message.setContent(buff.toString());
                          message.setLevel(LogLevel.ERROR);
                          message.setSource("Dispatcher");
                          message.setPhase(ExecutionPhase.ERROR);
