@@ -1,4 +1,4 @@
-/*$Id: LinearPolicy.java,v 1.3 2004/03/10 14:37:21 nw Exp $
+/*$Id: LinearPolicy.java,v 1.4 2004/03/15 01:30:45 nw Exp $
  * Created on 04-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.jes.jobscheduler.policy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -102,6 +102,9 @@ public class LinearPolicy extends AbstractPolicy implements Policy , ComponentDe
 
 /* 
 $Log: LinearPolicy.java,v $
+Revision 1.4  2004/03/15 01:30:45  nw
+factored component descriptor out into separate package
+
 Revision 1.3  2004/03/10 14:37:21  nw
 fixed to retrun 'completed' immediately when it sees an empty workflow
 

@@ -1,4 +1,4 @@
-/*$Id: ConstantToolLocator.java,v 1.3 2004/03/07 21:04:38 nw Exp $
+/*$Id: ConstantToolLocator.java,v 1.4 2004/03/15 01:30:45 nw Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.jes.jobscheduler.locator;
 
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.workflow.beans.v1.Step;
 
@@ -72,6 +72,9 @@ public class ConstantToolLocator implements Locator , ComponentDescriptor{
 
 /* 
 $Log: ConstantToolLocator.java,v $
+Revision 1.4  2004/03/15 01:30:45  nw
+factored component descriptor out into separate package
+
 Revision 1.3  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 

@@ -1,4 +1,4 @@
-/*$Id: MockPolicy.java,v 1.6 2004/03/07 21:04:38 nw Exp $
+/*$Id: MockPolicy.java,v 1.7 2004/03/15 01:29:13 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.jes.jobscheduler.policy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -70,6 +70,9 @@ public class MockPolicy extends AbstractPolicy implements Policy, ComponentDescr
 
 /* 
 $Log: MockPolicy.java,v $
+Revision 1.7  2004/03/15 01:29:13  nw
+factored component descriptor out into separate package
+
 Revision 1.6  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 

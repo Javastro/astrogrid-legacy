@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.6 2004/03/12 15:32:14 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.7 2004/03/15 01:30:45 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.applications.delegate.beans.ParameterValues;
 import org.astrogrid.applications.delegate.beans.User;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobMonitor;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
@@ -170,6 +170,9 @@ public class ApplicationControllerDispatcher implements Dispatcher , ComponentDe
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.7  2004/03/15 01:30:45  nw
+factored component descriptor out into separate package
+
 Revision 1.6  2004/03/12 15:32:14  nw
 improved logging
 

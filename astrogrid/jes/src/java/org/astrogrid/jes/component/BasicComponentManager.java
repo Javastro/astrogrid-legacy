@@ -1,4 +1,4 @@
-/*$Id: BasicComponentManager.java,v 1.4 2004/03/15 00:30:19 nw Exp $
+/*$Id: BasicComponentManager.java,v 1.5 2004/03/15 01:30:06 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.jes.component;
 
+import org.astrogrid.jes.component.descriptor.*;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
@@ -94,6 +95,9 @@ public class BasicComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: BasicComponentManager.java,v $
+Revision 1.5  2004/03/15 01:30:06  nw
+factored component descriptor out into separate package
+
 Revision 1.4  2004/03/15 00:30:19  nw
 updaed to refer to moved classes
 

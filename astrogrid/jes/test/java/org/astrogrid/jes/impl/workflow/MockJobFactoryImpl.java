@@ -1,4 +1,4 @@
-/*$Id: MockJobFactoryImpl.java,v 1.5 2004/03/07 21:04:38 nw Exp $
+/*$Id: MockJobFactoryImpl.java,v 1.6 2004/03/15 01:29:13 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.jes.impl.workflow;
 
 import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
@@ -122,6 +122,9 @@ public class MockJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
 
 /* 
 $Log: MockJobFactoryImpl.java,v $
+Revision 1.6  2004/03/15 01:29:13  nw
+factored component descriptor out into separate package
+
 Revision 1.5  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 

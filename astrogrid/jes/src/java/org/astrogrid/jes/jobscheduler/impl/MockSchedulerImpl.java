@@ -1,4 +1,4 @@
-/*$Id: MockSchedulerImpl.java,v 1.1 2004/03/15 00:30:54 nw Exp $
+/*$Id: MockSchedulerImpl.java,v 1.2 2004/03/15 01:30:45 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl;
 
-import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -80,6 +80,9 @@ public class MockSchedulerImpl implements JobScheduler , ComponentDescriptor{
 
 /* 
 $Log: MockSchedulerImpl.java,v $
+Revision 1.2  2004/03/15 01:30:45  nw
+factored component descriptor out into separate package
+
 Revision 1.1  2004/03/15 00:30:54  nw
 factored implemetation of scheduler out of parent package.
 

@@ -1,4 +1,4 @@
-/*$Id: ProductionComponentManager.java,v 1.5 2004/03/15 00:30:19 nw Exp $
+/*$Id: ProductionComponentManager.java,v 1.6 2004/03/15 01:30:06 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,10 @@ package org.astrogrid.jes.component.production;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.component.ComponentManagerException;
 import org.astrogrid.jes.component.EmptyComponentManager;
-import org.astrogrid.jes.component.SimpleComponentDescriptor;
+import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
+import org.astrogrid.jes.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
@@ -177,6 +177,9 @@ public final class ProductionComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: ProductionComponentManager.java,v $
+Revision 1.6  2004/03/15 01:30:06  nw
+factored component descriptor out into separate package
+
 Revision 1.5  2004/03/15 00:30:19  nw
 updaed to refer to moved classes
 

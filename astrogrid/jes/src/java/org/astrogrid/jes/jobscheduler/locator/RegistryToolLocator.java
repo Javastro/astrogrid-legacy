@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.3 2004/03/15 00:06:57 nw Exp $
+/*$Id: RegistryToolLocator.java,v 1.4 2004/03/15 01:30:45 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.jes.jobscheduler.locator;
 
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
@@ -80,6 +80,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.4  2004/03/15 01:30:45  nw
+factored component descriptor out into separate package
+
 Revision 1.3  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 

@@ -1,4 +1,4 @@
-/*$Id: SimpleComponentDescriptor.java,v 1.2 2004/03/07 21:04:38 nw Exp $
+/*$Id: SimpleComponentDescriptor.java,v 1.1 2004/03/15 01:30:06 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.jes.component;
+package org.astrogrid.jes.component.descriptor;
 
 import junit.framework.Test;
 
@@ -57,6 +57,9 @@ public class SimpleComponentDescriptor implements ComponentDescriptor {
 
 /* 
 $Log: SimpleComponentDescriptor.java,v $
+Revision 1.1  2004/03/15 01:30:06  nw
+factored component descriptor out into separate package
+
 Revision 1.2  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 
