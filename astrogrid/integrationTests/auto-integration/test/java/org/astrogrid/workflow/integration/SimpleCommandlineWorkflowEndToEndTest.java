@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.9 2004/05/17 17:06:03 nw Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.10 2004/05/19 14:09:35 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,10 +18,12 @@ import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.integration.AbstractTestForIntegration;
+import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.portal.workflow.intf.JobExecutionService;
+import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.portal.workflow.intf.WorkflowManager;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -153,10 +155,15 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
         // loop, polling progress, until seen completed.
         long startTime= System.currentTimeMillis();
         while(System.currentTimeMillis() < startTime + WAIT_TIME) {
-            Workflow w1 = jes.readJob(urn);
-            if (w1.getJobExecutionRecord() != null && w1.getJobExecutionRecord().getStatus().getType() >= ExecutionPhase.COMPLETED_TYPE) {
-                return;
-            }
+            try {
+                Workflow w1 = jes.readJob(urn);
+                if (w1.getJobExecutionRecord() != null && w1.getJobExecutionRecord().getStatus().getType() >= ExecutionPhase.COMPLETED_TYPE) {
+                    return;
+                }        
+                Thread.sleep(1000); // have a little breather.     
+            } catch (WorkflowInterfaceException e) {
+                // doesn't matter - we'll get it next time round.
+            }            
         }
         fail("Job failed to complete in expected time");
     }
@@ -200,6 +207,9 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
 
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.10  2004/05/19 14:09:35  nw
+calmed this test down a bit - stress tested a bit.
+
 Revision 1.9  2004/05/17 17:06:03  nw
 got this one working.
 
