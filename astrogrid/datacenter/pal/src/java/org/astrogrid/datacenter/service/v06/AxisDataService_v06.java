@@ -1,32 +1,30 @@
 /*
- * $Id: AxisDataService_v05.java,v 1.3 2004/10/05 14:56:45 mch Exp $
+ * $Id: AxisDataService_v06.java,v 1.1 2004/10/05 14:56:45 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.datacenter.service.v05;
+package org.astrogrid.datacenter.service.v06;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import org.apache.axis.AxisFault;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.v05.AxisDataServer_v05_Port;
 import org.astrogrid.datacenter.axisdataserver.v05.QueryStatusSoapyBean;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.RawSqlQuery;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.datacenter.service.DataServer;
+import org.astrogrid.datacenter.service.DataServiceStatus;
 
 /**
- * The implementation of the Datacenter web service for It4.1.
+ * The implementation of the Datacenter axis web service for end of Itn06
  * <p>
  * When Axis receives a SOAP message from the client it is routed to this class for processing.
  * It is a singleton; state comes from the Queriers.
@@ -35,20 +33,31 @@ import org.astrogrid.datacenter.service.DataServer;
  *
  */
 
-public class AxisDataService_v05 implements AxisDataServer_v05_Port  {
+public class AxisDataService_v06  {
    
    AxisDataServer server = new AxisDataServer();
    
    /**
-    * Ask adql query for blocking operation - returns the results
+    * Ask adql query (blocking request).  Returns results.
     */
    public String askAdqlQuery(String query, String requestedFormat) throws AxisFault {
       try {
-         
-         
          StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), new AdqlQuery(query), new ReturnTable(new TargetIndicator(sw), requestedFormat));
+         server.askQuery(getUser(), new AdqlQuery(query), new ReturnTable(TargetIndicator.makeIndicator(sw), requestedFormat));
          return sw.toString();
+      }
+      catch (Throwable e) {
+         throw server.makeFault(server.SERVERFAULT, "Error asking Query("+query+", "+requestedFormat+")", e);
+      }
+   }
+
+   /**
+    * Ask adql query (blocking request) sending results to given target
+    */
+   public String askAdqlQuery(String query, String requestedFormat, String target) throws AxisFault {
+      try {
+         server.askQuery(getUser(), new AdqlQuery(query), new ReturnTable(TargetIndicator.makeIndicator(target), requestedFormat));
+         return target.toString();
       }
       catch (Throwable e) {
          throw server.makeFault(server.SERVERFAULT, "Error asking Query("+query+", "+requestedFormat+")", e);
@@ -74,31 +83,14 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port  {
    }
 
    /**
-    * Ask raw sql for blocking operation - returns the results
-    */
-   public String askCone(double ra, double dec, double radius, String requestedFormat) throws AxisFault {
-      try {
-         StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), new ConeQuery(ra, dec, radius), new ReturnTable(new TargetIndicator(sw), requestedFormat));
-         return sw.toString();
-      }
-      catch (Throwable e) {
-         throw server.makeFault(server.SERVERFAULT, "Error asking Query("+ra+", "+dec+", "+radius+", "+requestedFormat+")", e);
-      }
-   }
-   
-   /**
     * Submit query for asynchronous operation - returns id of query
     */
-   public String submitAdqlQuery(String query, String resultsTarget, String requestedFormat) throws AxisFault {
+   public String submitAdqlQuery(String query, String requestedFormat, String resultsTarget) throws AxisFault {
       try {
          return server.submitQuery(getUser(), new AdqlQuery(query), new ReturnTable(TargetIndicator.makeIndicator(resultsTarget), requestedFormat));
       }
       catch (MalformedURLException mue) {
          throw server.makeFault(server.CLIENTFAULT, "malformed resultsTarget", mue);
-      }
-      catch (URISyntaxException use) {
-         throw server.makeFault(server.CLIENTFAULT, "malformed resultsTarget", use);
       }
       catch (Throwable th) {
          throw server.makeFault(server.SERVERFAULT, "Error submitting Adql Query", th);
@@ -137,6 +129,12 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port  {
    }
    
    /**
+    * Returns the state of the service
+    */
+   public DataServiceStatus getServiceStatus() throws AxisFault {
+      return server.getStatus();
+   }
+   /**
     * Returns the user from the Message Context header
     */
    protected Account getUser() {
@@ -165,8 +163,8 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port  {
 }
 
 /*
-$Log: AxisDataService_v05.java,v $
-Revision 1.3  2004/10/05 14:56:45  mch
+$Log: AxisDataService_v06.java,v $
+Revision 1.1  2004/10/05 14:56:45  mch
 Added new web interface and partial skynode
 
 Revision 1.2  2004/10/01 18:04:59  mch

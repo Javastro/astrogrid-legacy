@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.2 2004/10/01 18:04:59 mch Exp $
+ * $Id: AxisDataServer.java,v 1.3 2004/10/05 14:56:45 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -40,41 +40,32 @@ import org.astrogrid.util.DomHelper;
  *
  */
 
-public abstract class AxisDataServer implements ServiceLifecycle {
-   
-   protected Log log = LogFactory.getLog(AxisDataServer.class);
-
-   protected DataServer server = new DataServer();
+public class AxisDataServer extends DataServer {
    
    /** Constant for makeFault - input from client has caused problem */
-   protected final static boolean CLIENTFAULT = true;
+   public final static boolean CLIENTFAULT = true;
    /** Constant for makeFault - problem with server (or unknown) */
-   protected final static boolean SERVERFAULT = false;
+   public final static boolean SERVERFAULT = false;
 
    /** set during init to the url stem for this context, eg http://grendel12.roe.ac.uk/pal-6df  */
    protected static String contextUrlStem = null;
    
-   /** Called when the context is instantiated? */
-   public void init(Object context) throws ServiceException {
-      if (context instanceof ServletEndpointContext) {
-         ServletEndpointContext endpointcontext = (ServletEndpointContext) context;
-         log.info("Initialising AxisDataServer with context "+endpointcontext.getServletContext().getServletContextName());
-      }
-      else {
-         log.info("Initialising AxisDataServer with unknown context type "+context.getClass()+": "+context.toString());
-      }
-   }
-   
-   /** When endpoint instance is finished, this gets called */
-   public void destroy() {
-         log.info("Destroying AxisDataServer");
-   }
    
    /** Returns the url stem for this context, eg http://grendel12.roe.ac.uk/pal-6df  */
    public static String getUrlStem() {
       return contextUrlStem;
    }
    
+   public String getContext() {
+      try {
+         AxisEngine engine = AxisServer.getServer(null);
+         return engine.getApplicationSession().toString();
+      } catch (AxisFault af) {
+         log.error("Getting application context",af);
+         return null;
+      }
+   }
+
    /**
     * Axis provides an AxisFault for reporting errors through SOAP.  This method
     * creates a fault from a message and a cause, and includes in the detail
@@ -82,7 +73,7 @@ public abstract class AxisDataServer implements ServiceLifecycle {
     * @blameClient - true if the error is known to be caused by an input parameter - such as an
     * invalid query ID.
     */
-   protected AxisFault makeFault(boolean blameClient, String message, Throwable cause)  {
+   public AxisFault makeFault(boolean blameClient, String message, Throwable cause)  {
       
       log.error("AxisFault being generated: 'Throwing' exception "+cause+" to client, message="+message, cause);
 
@@ -107,97 +98,17 @@ public abstract class AxisDataServer implements ServiceLifecycle {
    /**
     * Convenience method to generate server error
     */
-   protected AxisFault makeFault(String message) {
+   public AxisFault makeFault(String message) {
       return makeFault(SERVERFAULT, message, null);
-   }
-   
-   /**
-    * Useful mechanism for testing that clients can receive and process faults.
-    * The useful bit of stack trace will be limited to this method but ho hum
-    */
-   public void throwFault() throws AxisFault {
-      throw makeFault(CLIENTFAULT, "Client asked for this", new IOException("Client deliberately threw test fault "));
-   }
-   
-   /**
-    * Returns the metadata file as a string
-    */
-   public String getMetadata() throws AxisFault {
-      try  {
-         return DomHelper.DocumentToString(VoDescriptionServer.getVoDescription());
-      }
-      catch (Throwable e)  {
-         throw makeFault(SERVERFAULT, "Could not access metadata", e);
-     }
-   }
-   
-   /**
-    * Submits given query
-    */
-   public String submitQuery(Account user, Query query, TargetIndicator resultsTarget, String requestedFormat, QuerierListener listener) throws AxisFault {
-      try  {
-         Querier querier = Querier.makeQuerier(user, query, resultsTarget, requestedFormat);
-         if (listener != null) { querier.addListener(listener); }
-         server.querierManager.submitQuerier(querier);
-         return querier.getId();
-      }
-      catch (Throwable e)  {
-         throw makeFault(SERVERFAULT, "Submitting "+query+" for user "+user, e);
-     }
-   }
-   
-   
-   /**
-    * Aborts the query specified by the given id.  Returns
-    * nothing - if the server can't stop it it's a server-end problem.
-    */
-   public void abortQuery(Account user, String queryId) throws AxisFault {
-      try {
-         server.abortQuery(user, queryId);
-      }
-      catch (Throwable e) {
-         throw makeFault(SERVERFAULT, "Error aborting Query", e);
-      }
-   }
-   
-   /**
-    * Returns the state of the query with the given id
-    */
-   public QuerierStatus getQueryStatus(Account user, String queryId) throws AxisFault {
-      try {
-         return server.getQueryStatus(user, queryId);
-      }
-      catch (Throwable e) {
-         throw makeFault(SERVERFAULT, "Error aborting Query", e);
-      }
-   }
-   
-   /**
-    * Returns the state of the server
-    *
-   public DataServer.ServiceStatus getServerStatus(String queryId) throws AxisFault {
-      try {
-         return server.getServerStatus();
-      }
-      catch (Throwable e) {
-         throw makeFault(SERVERFAULT, "Error aborting Query", e);
-      }
-   }
-    /**/
-   public String getContext() {
-      try {
-         AxisEngine engine = AxisServer.getServer(null);
-         return engine.getApplicationSession().toString();
-      } catch (AxisFault af) {
-         log.error("Getting application context",af);
-         return null;
-      }
    }
    
 }
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.3  2004/10/05 14:56:45  mch
+Added new web interface and partial skynode
+
 Revision 1.2  2004/10/01 18:04:59  mch
 Some factoring out of status stuff, added monitor page
 

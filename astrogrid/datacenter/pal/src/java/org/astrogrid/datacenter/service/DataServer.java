@@ -1,17 +1,17 @@
 /*
- * $Id: DataServer.java,v 1.3 2004/10/01 18:04:59 mch Exp $
+ * $Id: DataServer.java,v 1.4 2004/10/05 14:56:45 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
 import java.io.IOException;
-import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
@@ -19,7 +19,7 @@ import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.RawSqlQuery;
 import org.astrogrid.datacenter.returns.ReturnSpec;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.util.DomHelper;
 
 /**
  * Framework for managing a datacenter.
@@ -187,9 +187,12 @@ public class DataServer
       return querier.abort();
    }
    
- 
-   
-   
+   /**
+    * Returns the metadata file as a string
+    */
+   public String getMetadata() throws IOException {
+      return DomHelper.DocumentToString(VoDescriptionServer.getVoDescription());
+   }
    
 }
 
