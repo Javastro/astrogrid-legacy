@@ -43,7 +43,7 @@ public class DTC extends org.astrogrid.Configurator {
 	public static final String         
 	/** Monitor category within the component's configuration */  
 		MONITOR_CATEGORY = "MONITOR" ,	
-	/** Key within component's configuration signifying the xml request template for 
+    /** Key within component's configuration signifying the xml request template for 
      *  input to the JobMonitor */
 		MONITOR_REQUEST_TEMPLATE = "TEMPLATE.REQUEST" ;	
         
@@ -92,6 +92,10 @@ public class DTC extends org.astrogrid.Configurator {
     public static final String         
     /** UCD category within the component's configuration */  
         UCD_CATEGORY = "UCD" ; 
+        
+    public static final String
+    /** Key within component's configuration identifying separator between database and table */
+		DATABASE_TABLE_SEPARATOR = "DATABASE.TABLE.SEPARATOR" ;
         
     private static DTC
         singletonDTC = new DTC() ;
