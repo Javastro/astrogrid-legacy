@@ -30,10 +30,9 @@
 		</menu>
 		<menu name="Clients">
 			<!-- nasty, but only way to have img and text at same time -->
-			<item name="Web Start" img="/images/new.png" href="/jnlp/index.html" collapse="true">
 				<item name="Web Start" href="/jnlp/index.html"  />		
-				<item name="Client Development Kit" href="/cdk.html"  />			
-			</item>
+				<item name="Install" href="client-install.html" />
+				<item name="Client Development Kits" href="/cdk.html"  />						
         </menu>
 		<menu name="Users and Installers">
 			<item name="Installing AstroGrid software" href="/userdocs/index.html" collapse="true">
