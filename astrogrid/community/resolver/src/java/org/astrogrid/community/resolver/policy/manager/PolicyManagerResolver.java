@@ -1,13 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/policy/manager/PolicyManagerResolver.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/02 22:53:37 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2004/11/04 18:00:02 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerResolver.java,v $
- *   Revision 1.9  2004/11/02 22:53:37  jdt
- *   Rolled back merged changes to BLLatest
+ *   Revision 1.10  2004/11/04 18:00:02  jdt
+ *   Restored following fixes to auto-integration
+ *   Merged in Reg_KMB_546 and Reg_KMB_603 and Comm_KMB_583
+ *
+ *   Revision 1.8  2004/11/02 21:47:39  jdt
+ *   Merge of Comm_KMB_583
+ *
+ *   Revision 1.7.20.1  2004/10/26 06:10:39  KevinBenson
+ *   sprucing up admin interface and getting it where it grabs communities and accounts from external communities
  *
  *   Revision 1.7  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
@@ -44,6 +51,7 @@ import org.astrogrid.community.common.policy.manager.PolicyManager ;
 import org.astrogrid.community.client.policy.manager.PolicyManagerDelegate ;
 import org.astrogrid.community.client.policy.manager.PolicyManagerMockDelegate ;
 import org.astrogrid.community.client.policy.manager.PolicyManagerSoapDelegate ;
+import org.astrogrid.registry.client.query.ServiceData ;
 
 import org.astrogrid.community.resolver.CommunityEndpointResolver ;
 
@@ -125,6 +133,42 @@ public class PolicyManagerResolver
             new CommunityIvornParser(ivorn)
             ) ;
         }
+    
+    /*
+    public URL[] resolve()
+       throws RegistryException, CommunityIdentifierException, CommunityResolverException {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyManagerResolverImpl.resolve()") ;
+        
+        log.debug("Resolving endpoint URLs.") ;
+        //
+        // Lookup the endpoint in the registry.
+        URL endpoints[] = resolver.resolve() ;
+        PolicyManagerDelegate []pmd = new PolicyManagerDelegate[endpoints.length];
+        
+        log.debug("PASS : Got endpoint urls number = " + endpoints.length) ;
+        for(int i = 0;i < endpoints.length; i++) {
+            log.debug("  URL : " + endpoints[i]) ;
+            log.debug("Creating SOAP delegate.") ;
+            pmd[i] = this.resolve(endpoints[i]);            
+        }
+        //
+        // Return the delegates
+        return pmd;
+    }
+    */
+    
+    public ServiceData[] resolve()
+    throws RegistryException, CommunityIdentifierException, CommunityResolverException {
+     log.debug("") ;
+     log.debug("----\"----") ;
+     log.debug("PolicyManagerResolverImpl.resolve()") ;
+     //
+     // Lookup the endpoint in the registry.
+     return resolver.resolve() ;
+    }
+    
 
     /**
      * Resolve data from a CommunityIvornParser into a PolicyManagerDelegate.
@@ -142,7 +186,7 @@ public class PolicyManagerResolver
         {
         log.debug("") ;
         log.debug("----\"----") ;
-        log.debug("PolicyManagerResolverImpl.resolve()") ;
+        log.debug("PolicyManagerResolverImpl.resolve(parser)") ;
         log.debug("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
         //
         // Check for null parser.

@@ -275,15 +275,15 @@
                 <include name="**/*.wsdd"/>
             </fileset>
         </ant:copy>
-				
+			
+    	<!--
         <ant:mkdir dir="${axisDir}/WEB-INF/classes"/>
         <ant:copy verbose="false"
          file="${basedir}/log4j.properties"
          todir="${axisDir}/WEB-INF/classes"
          overwrite="true"
          />
-        
-        
+        -->
         <!--+
             | Initialise our classpaths.
             +-->

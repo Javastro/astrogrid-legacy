@@ -3,12 +3,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/registry/Attic/service.entry.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/02 22:53:37 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/11/04 18:00:02 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: service.entry.xml,v $
-    |   Revision 1.6  2004/11/02 22:53:37  jdt
-    |   Rolled back merged changes to BLLatest
+    |   Revision 1.7  2004/11/04 18:00:02  jdt
+    |   Restored following fixes to auto-integration
+    |   Merged in Reg_KMB_546 and Reg_KMB_603 and Comm_KMB_583
+    |
+    |   Revision 1.5  2004/11/02 21:47:39  jdt
+    |   Merge of Comm_KMB_583
+    |
+    |   Revision 1.4.102.1  2004/10/26 21:50:58  KevinBenson
+    |   added the relationships
     |
     |   Revision 1.4  2004/06/18 13:45:20  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
@@ -51,6 +58,15 @@
       <ReferenceURL>http://www.astrogrid.org</ReferenceURL>
     </Summary>
     <Type>Test service</Type>
+		<vr:RelatedResource>
+			<vr:Relationship>derived-from</vr:Relationship>
+			<vr:RelatedTo>
+				<vr:Identifier>
+					<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
+					<vr:ResourceKey>CommunityServerKind</vr:ResourceKey>
+				</vr:Identifier>
+			</vr:RelatedTo>
+		</vr:RelatedResource>
     <Curation>
       <Publisher>
          <Title>Test service</Title>
