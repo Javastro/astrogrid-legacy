@@ -1,5 +1,5 @@
 /*
- * $Id: StreamPiper.java,v 1.3 2005/04/01 01:29:54 mch Exp $
+ * $Id: StreamPiper.java,v 1.4 2005/04/03 22:29:15 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -63,7 +63,9 @@ public class StreamPiper
          out.write(block,0, read);
          read = in.read(block);
          total += read;
-         listener.blockPiped(total);
+         if (listener != null) {
+            listener.blockPiped(total);
+         }
       }
    }
 
@@ -115,9 +117,12 @@ public class StreamPiper
 }
 
 /* $Log: StreamPiper.java,v $
- * Revision 1.3  2005/04/01 01:29:54  mch
- * Extended pipe listeners, and added new extensions for guessing mime types
+ * Revision 1.4  2005/04/03 22:29:15  mch
+ * check for null listener
  *
+/* Revision 1.3  2005/04/01 01:29:54  mch
+/* Extended pipe listeners, and added new extensions for guessing mime types
+/*
 /* Revision 1.2  2005/03/28 01:48:09  mch
 /* Added socket source/target, and makeFile instead of outputChild
 /*
