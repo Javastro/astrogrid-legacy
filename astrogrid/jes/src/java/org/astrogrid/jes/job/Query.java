@@ -139,17 +139,17 @@ public class Query {
             Catalog
                 catalog = new Catalog( this ) ;
                 
-            catalog.setName( "Catalog" ) ;
+            catalog.setName( Catalog.CATALOG_FOR_ADQL_BASED_DATACENTER ) ;
             
             Service
                 service = new Service( catalog ) ;
-            service.setName( "Service") ;
+            service.setName( Service.SERVICE_FOR_ADQL_BASED_DATACENTER ) ;
             service.setUrl( target ) ;
             catalog.addService( service ) ;
             
             Table
                 table = new Table( catalog ) ;
-            table.setName( "Table") ;
+            table.setName( Table.TABLE_FOR_ADQL_BASED_DATACENTER ) ;
             catalog.addTable( table ) ;
             
             this.catalogs.add( catalog ) ;

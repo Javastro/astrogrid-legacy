@@ -43,7 +43,10 @@ public class Service {
 		
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE = "AGJESE00630" ;
-	
+
+    public static final String
+        SERVICE_FOR_ADQL_BASED_DATACENTER = "ServiceForADQLBasedDatacenter_Iteration3" ;
+
 	private String 
 	   name,
 	   url ;
