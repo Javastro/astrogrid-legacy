@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.8 2004/05/11 12:27:26 pah Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.9 2004/05/17 17:06:03 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -82,10 +82,13 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
     public void testSubmitWorkflow() throws Exception {
        outfile = File.createTempFile("scworkout", ".tmp");
        assertNotNull(outfile);
+       outfile.delete(); // important, otherwise can't be created by cea process.
+       outfile.deleteOnExit(); // tidy up.
        OUTFILENAME = outfile.getAbsolutePath();
        System.out.println("output file is "+OUTFILENAME);
        infile =File.createTempFile("scworkin", ".tmp");
        assertNotNull(infile);
+       infile.deleteOnExit();       
        INFILENAME = infile.getAbsolutePath();
        PrintWriter pw = new PrintWriter(new FileOutputStream(infile));
        assertNotNull(pw);
@@ -162,10 +165,12 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
     public void testCheckExecutionResults() throws Exception {
         wf = jes.readJob(urn);
         assertNotNull("null workflow returned",wf);  
+        /* not really relevant
         System.out.println("worklow completion message");
         MessageType[] messages = wf.getJobExecutionRecord().getMessage();
         MessageType lastMessage = messages[messages.length -1];
         System.out.println(lastMessage.getContent());
+        */
        assertEquals("Workflow not completed",ExecutionPhase.COMPLETED,wf.getJobExecutionRecord().getStatus()); // i.e. its not in error              
     }
     
@@ -195,6 +200,9 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
 
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.9  2004/05/17 17:06:03  nw
+got this one working.
+
 Revision 1.8  2004/05/11 12:27:26  pah
 print the last message to stdout on completion...
 
