@@ -367,6 +367,7 @@ public class MySpaceManagerDelegate {
 	 */
 	public String createUser(String userID, Vector servers) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+		boolean isUserCreated = false;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
 						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
@@ -378,11 +379,11 @@ public class MySpaceManagerDelegate {
 		try{
 			String userid = userID.substring(0,userID.indexOf("@"));
 			String communityid = userID.substring(userID.indexOf("@")+1, userID.length());
-			value = binding.createUser(userid, communityid, servers);
+			isUserCreated = binding.createUser(userid, communityid, servers);
 		}catch(java.rmi.RemoteException re) {
 				re.printStackTrace();
 			}
-		return (String)value;
+		return isUserCreated;
 	}	
 	
 	/**
@@ -394,8 +395,9 @@ public class MySpaceManagerDelegate {
 	 */
 	//need to delete the second argument and rebuild the delegate supporting classes.
 	
-	public String deleteUser(String userID) throws Exception {
+	public boolean deleteUser(String userID) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+		boolean isUserDeleted = false;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
 						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
@@ -408,17 +410,17 @@ public class MySpaceManagerDelegate {
 		try{
 			String userid = userID.substring(0,userID.indexOf("@"));
 			String communityid = userID.substring(userID.indexOf("@")+1, userID.length());
-			value = binding.deleteUser(userid, communityid);
+			isUserDeleted = binding.deleteUser(userid, communityid);
 		}catch(java.rmi.RemoteException re) {
 				re.printStackTrace();
 			}
-		return (String)value;
+		return isUserDeleted;
 	}		
 	
 	/**
 	 * 
-	 * @param oldID: userID changing from
-	 * @param newID: userID changing to
+	 * @param dataHolderName: file working on
+	 * @param newOwnerID: userID changing to
 	 * @return
 	 * @throws Exception
 	 */
