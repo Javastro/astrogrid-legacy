@@ -1,4 +1,4 @@
-/*$Id: FileNodeStore.java,v 1.2 2005/03/11 13:37:05 clq2 Exp $
+/*$Id: FileNodeStore.java,v 1.3 2005/03/31 16:01:11 dave Exp $
  * Created on 24-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -276,7 +276,7 @@ public class FileNodeStore implements NodeStore {
      * @see org.astrogrid.filemanager.nodestore.NodeStore#getAccount(org.astrogrid.filemanager.common.AccountIdent)
      */
     public Node getAccount(AccountIdent ident) throws NodeNotFoundFault, FileManagerFault {
-        if (this.hasAccount(ident)) {
+        if (false == this.hasAccount(ident)) {
             throw new NodeNotFoundFault(ident.toString());
         }
         Reader in = null;
@@ -463,6 +463,12 @@ public class FileNodeStore implements NodeStore {
 
 /* 
 $Log: FileNodeStore.java,v $
+Revision 1.3  2005/03/31 16:01:11  dave
+Fixed inverted if(xx) to if(false == xx)
+
+Revision 1.2.10.1  2005/03/30 09:02:41  dave
+Fixed NullPointerException in nodestore ...
+
 Revision 1.2  2005/03/11 13:37:05  clq2
 new filemanager merged with filemanager-nww-jdt-903-943
 
