@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/15 18:08:16 $</cvs:date>
-    | <cvs:version>$Revision: 1.48 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/16 12:46:43 $</cvs:date>
+    | <cvs:version>$Revision: 1.49 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.49  2003/12/16 12:46:43  dave
+    |   Fixed the web.xml dtd
+    |
     |   Revision 1.48  2003/12/15 18:08:16  dave
     |   Extending build to produce war file.
     |
@@ -3197,6 +3200,15 @@ To repeat
             file="src/config/astrogrid-community-config.xml"
             toFile="release/webapp/config/${project.name}-config-${project.version}.xml"/>
 
+        <!-- Copy our ant deploy script -->
+        <copy verbose="false" overwrite="true"
+            file="src/ant/deploy.xml"
+            toFile="release/webapp/deploy.xml"/>
+
+        <!-- Copy our webapp jndi transform -->
+        <copy verbose="false" overwrite="true"
+            file="src/xsl/build/config/webapp.xsl"
+            toFile="release/webapp/config/webapp.xsl"/>
 
     </target>
 

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/xsl/build/config/Attic/webapp.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/16 12:46:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: webapp.xsl,v $
+    |   Revision 1.4  2003/12/16 12:46:00  dave
+    |   Fixed the web.xml dtd
+    |
     |   Revision 1.3  2003/11/06 15:35:26  dave
     |   Replaced tabs with spaces
     |
@@ -26,8 +29,14 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     >
     <!-- Set the output document type -->
+    <!-- It looks like Sun have changed the location of the DTD (this used to resolve ok, but started to fail).
     <xsl:output
         doctype-system="http://java.sun.com/j2ee/dtds/web-app_2.2.dtd"
+        doctype-public="-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+        />
+    -->
+    <xsl:output
+        doctype-system="http://java.sun.com/j2ee/dtds/web-app_2_2.dtd"
         doctype-public="-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
         />
 

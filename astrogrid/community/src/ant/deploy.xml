@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/ant/Attic/deploy.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/15 18:08:16 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/16 12:46:35 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: deploy.xml,v $
+    |   Revision 1.2  2003/12/16 12:46:35  dave
+    |   Fixed the web.xml dtd
+    |
     |   Revision 1.1  2003/12/15 18:08:16  dave
     |   Extending build to produce war file.
     |
@@ -30,6 +33,14 @@
         | The project build directory.
         +-->
     <property name="project.home"    value="${basedir}"/>
+
+    <!--+
+        | Config properties.
+        +-->
+    <property name="config.base"        value="/etc/astrogrid"/>
+    <property name="config.home"        value="/etc/astrogrid/community"/>
+    <property name="client.config.home" value="/etc/astrogrid/community/client"/>
+    <property name="server.config.home" value="/etc/astrogrid/community/server"/>
 
     <!-- ================ Tomcat tasks ================ -->
     <!--+
@@ -140,16 +151,54 @@
 
     <!-- ================ Webapp tasks ================ -->
     <!--+
+        | Webapp properties.
+        +-->
+    <property name="webapp.home" value="${tomcat.home}/webapps/${project.name}"/>
+
+    <!--+
         | Deploy our webapp into Tomcat (offline).
         +-->
     <target name="webapp.deploy.offline" depends="">
         <!-- Delete any existing war file -->
-        <delete failonerror="false" file="${tomcat.home}/webapps/${project.name}.war"/>
+        <delete verbose="true" failonerror="false" file="${tomcat.home}/webapps/${project.name}.war"/>
         <!-- Delete any existing webapp -->
-        <delete failonerror="false" includeEmptyDirs="true" dir="${tomcat.home}/webapps/${project.name}"/>
+        <delete verbose="true" failonerror="false" includeEmptyDirs="true" dir="${tomcat.home}/webapps/${project.name}"/>
         <!-- Deploy our war file into Tomcat -->
-        <copy file="${project.name}.war" toFile="${tomcat.home}/webapps/${project.name}.war"
+        <copy verbose="true" file="${project.home}/war/${project.name}-${project.version}.war" toFile="${tomcat.home}/webapps/${project.name}.war"/>
     </target>
+
+    <!--+
+        | Deploy our config files.
+        +-->
+    <target name="webapp.deploy.config" depends="">
+        <mkdir dir="${server.config.home}"/>
+        <copy verbose="true" file="${project.home}/config/${project.name}-config-${project.version}.xml"   toFile="${server.config.home}/${project.name}-config.xml"/>
+        <copy verbose="true" file="${project.home}/config/${project.name}-database-${project.version}.xml" toFile="${server.config.home}/${project.name}-database.xml"/>
+        <copy verbose="true" file="${project.home}/config/${project.name}-mapping-${project.version}.xml"  toFile="${server.config.home}/${project.name}-mapping.xml"/>
+    </target>
+
+    <!--+
+        | Edit the webapp JNDI property.
+        +-->
+    <target name="webapp.update.config" depends="">
+        <!-- Copy the existing web.xml to a backup file -->
+        <copy file="${webapp.home}/WEB-INF/web.xml" tofile="${webapp.home}/WEB-INF/web.xml.old" overwrite="true" failonerror="false"/>
+        <!-- Patch the web.xml to fix the DTD -->
+        <replace file="${webapp.home}/WEB-INF/web.xml" token="web-app_2.2.dtd" value="web-app_2_2.dtd"/>
+        <!-- Transform the target web.xml, adding our JNDI property -->
+        <xslt style="${project.home}/config/webapp.xsl"
+              in="${webapp.home}/WEB-INF/web.xml"
+              out="${webapp.home}/WEB-INF/web.xml.new">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <!-- Set the XSL params -->
+            <param name="property.name"  expression="org.astrogrid.community.config"/>
+            <param name="property.value" expression="${server.config.home}/${project.name}-config.xml"/>
+        </xslt>
+        <!-- Replace the existing web.xml with the new one -->
+        <move file="${webapp.home}/WEB-INF/web.xml.new" tofile="${webapp.home}/WEB-INF/web.xml" overwrite="true" failonerror="false"/>
+    </target>
+
 
 </project>
 
