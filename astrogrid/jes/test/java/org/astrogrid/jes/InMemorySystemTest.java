@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.15 2004/03/18 16:47:03 pah Exp $
+/*$Id: InMemorySystemTest.java,v 1.16 2004/07/01 11:19:57 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,6 @@ import org.exolab.castor.xml.ValidationException;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.defaults.CachingComponentAdapter;
 import org.picocontainer.defaults.DefaultComponentAdapterFactory;
-import org.picocontainer.defaults.ImplementationHidingComponentAdapter;
 import org.w3c.dom.Document;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
@@ -56,6 +55,8 @@ import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
  * tests behaviour. communication between components via direct method call - so no SOAP being tested here.
  * <p/>
  * tests that workflows fed into the system to get processed, and checks that all jobs in a workflow are executed.
+ * @todo - this container 'ties the knot' - introduces a cyclic dependency. this used to work in an earlier version of picocontainer, 
+ * which provided 'ImplementationHidingComponentAdapter'. However, this has gone away in the 1.0 release of pico. need to watch, and see what the replacement is.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Feb-2004
  *
  */
@@ -83,12 +84,12 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
             pico.unregisterComponent(SCHEDULER_ENGINE);
             DefaultComponentAdapterFactory fac = new DefaultComponentAdapterFactory();
             pico.registerComponent(
-                new ImplementationHidingComponentAdapter(
+                //new ImplementationHidingComponentAdapter(
                     new CachingComponentAdapter(
                         fac.createComponentAdapter(SCHEDULER_ENGINE,ObservableJobScheduler.class,null)
                         //new DefaultComponentAdapterFactory(JobScheduler.class,ObservableJobScheduler.class)
                     )
-                  )
+                  //)
                 );
             
             pico.registerComponentInstance(barrier);
@@ -193,6 +194,9 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.16  2004/07/01 11:19:57  nw
+fix for change in picocontainer
+
 Revision 1.15  2004/03/18 16:47:03  pah
 fixed cvs confic induced errors (I think!)
 
