@@ -11,16 +11,20 @@
 package org.astrogrid.datacenter.votable;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.*;
-import org.astrogrid.datacenter.i18n.*;
-import org.astrogrid.datacenter.myspace.*;
+import org.astrogrid.Configurator ;
+import org.astrogrid.datacenter.DTC;
+import org.astrogrid.datacenter.myspace.Allocation;
 import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.i18n.AstroGridMessage;
 
 
 public class VOTable {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
+        
+    private static final String
+        SUBCOMPONENT_NAME = Configurator.getClassName( VOTable.class ) ;  
 	
 	private static Logger 
 		logger = Logger.getLogger( VOTable.class ) ;
@@ -47,7 +51,8 @@ public class VOTable {
 		if( TRACE_ENABLED ) logger.debug( "getFactory(): entry") ;   	
     	
 		String
-			implementationFactoryName = DatasetAgent.getProperty( VOTABLEFACTORY_KEY ) ;
+			implementationFactoryName = DTC.getProperty( DTC.VOTABLE_FACTORY
+                                                       , DTC.VOTABLE_CATEGORY ) ;
     	
 		try{
 			// Note the double lock strategy				
@@ -62,8 +67,10 @@ public class VOTable {
 			}
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_VOTABLEFACTORY_IMPL, implementationFactoryName ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_VOTABLEFACTORY_IMPL
+                                              , SUBCOMPONENT_NAME
+                                              , implementationFactoryName ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new VOTableException( message, ex );
 		}

@@ -10,15 +10,16 @@
  */
 package org.astrogrid.datacenter.job;
 
-import org.astrogrid.datacenter.i18n.*;
+import org.astrogrid.datacenter.DatacenterException;
+import org.astrogrid.i18n.AstroGridMessage;
 
 public class JobException extends DatacenterException {
 
-    public JobException( Message message ) {
+    public JobException( AstroGridMessage message ) {
 		super( message ) ;
     }
 
-    public JobException( Message message, Exception exception ) {
+    public JobException( AstroGridMessage message, Exception exception ) {
 		super( message, exception ) ;
     }
     

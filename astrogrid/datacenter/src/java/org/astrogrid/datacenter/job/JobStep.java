@@ -10,11 +10,15 @@
  */
 package org.astrogrid.datacenter.job;
 
-import org.w3c.dom.* ;
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.*;
-import org.astrogrid.datacenter.query.*;
-// import org.astrogrid.datacenter.i18n.*;
+import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.Configurator ;
+import org.astrogrid.datacenter.DTC ;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 public class JobStep {
@@ -24,9 +28,9 @@ public class JobStep {
 	
 	private static Logger 
 		logger = Logger.getLogger( JobStep.class ) ;
-	
-	private static final String
-	    QUERYFACTORY_KEY_SUFFIX = ".QUERYFACTORY" ;
+        
+    private final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( JobStep.class ) ;        
 	
 	private String
 	    name = null,
@@ -68,7 +72,8 @@ public class JobStep {
 		   }	
 		
 		   String
-		       keyToFactory = catalogChild.getAttribute( RunJobRequestDD.CATALOG_NAME_ATTR ) + Query.QUERYFACTORY_KEY_SUFFIX ;		
+		       keyToFactory = catalogChild.getAttribute( RunJobRequestDD.CATALOG_NAME_ATTR ) 
+                            + DTC.CATALOG_DEFAULT_QUERYFACTORY ;		
 		 
 		   query = Query.getFactory( keyToFactory ).createQuery( queryChild ) ;
 		   

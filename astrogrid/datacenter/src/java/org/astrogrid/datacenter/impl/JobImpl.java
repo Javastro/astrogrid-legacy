@@ -7,32 +7,34 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- */
+ */ 
 package org.astrogrid.datacenter.impl;
 
-import org.astrogrid.datacenter.datasetagent.DatasetAgent;
-import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
-import org.astrogrid.datacenter.i18n.*;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.Date;
+
+import javax.sql.DataSource;
+import javax.xml.rpc.ParameterMode;
+
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import org.apache.axis.encoding.XMLType;
 import org.apache.log4j.Logger;
+import org.astrogrid.Configurator;
+import org.astrogrid.datacenter.DTC;
+import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.datacenter.job.JobException;
 import org.astrogrid.datacenter.job.JobStep;
-import org.w3c.dom.* ;
-import java.util.Date ;
-import java.sql.Connection ;
-import java.sql.PreparedStatement ;
-import java.sql.ResultSet ;
-import java.sql.SQLException ;
-import java.text.MessageFormat ;
-
-import javax.sql.DataSource ;
-
-import org.apache.axis.client.Service;
-import org.apache.axis.client.Call;
-import org.apache.axis.encoding.XMLType;
-import javax.xml.rpc.ParameterMode;
-// import org.apache.axis.utils.XMLUtils;
-import java.net.URL;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 public class JobImpl extends Job {
@@ -42,18 +44,21 @@ public class JobImpl extends Job {
 	
 	private static Logger 
 		logger = Logger.getLogger( JobImpl.class ) ;
+        
+    private final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( JobImpl.class ) ;                
 		
 	private static final String
 	    ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGDTCE00160" ,  
 	    ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT = "AGDTCE00180" ,
         ASTROGRIDERROR_AXIS_FAULT_WHEN_INVOKING_JOBMONITOR        = "AGDTCE00185" ;
-	    
-	private static final String
-        JOB_MONITOR_REQUEST_TEMPLATE = "JOB.MONITOR.REQUEST_TEMPLATE" ;
 	  
 	private static JobFactoryImpl
 	   factoryImpl = null ;
 	   
+    private final String
+        subsystemAcronym ;
+        
 	private Connection
 		connection = null ;
 	private PreparedStatement 
@@ -80,11 +85,15 @@ public class JobImpl extends Job {
 	   jobStep ;
 
 	  
-	public JobImpl() {}
+	public JobImpl() {
+        subsystemAcronym = "DTC" ;
+    }
 	 
 	   
 	public JobImpl( Element jobElement ) throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "JobImpl(): entry") ;  
+        
+        subsystemAcronym = "DTC" ;
 		 	   
 		try {
 
@@ -125,8 +134,9 @@ public class JobImpl extends Job {
 			
 		}
 		catch( Exception ex ) {		
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+                                              , SUBCOMPONENT_NAME ) ;
 			this.setComment( message.toString() ) ;
 			this.setStatus( Job.STATUS_IN_ERROR ) ;	
 			logger.error( message.toString(), ex ) ;
@@ -150,7 +160,8 @@ public class JobImpl extends Job {
 		
 		try {
 			String
-			   requestTemplate = DatasetAgent.getProperty( JOB_MONITOR_REQUEST_TEMPLATE ) ;
+			   requestTemplate = DTC.getProperty( DTC.MONITOR_REQUEST_TEMPLATE
+                                                , DTC.MONITOR_CATEGORY ) ;
 			Object []
 			   inserts = new Object[8] ;
 			inserts[0] = this.getName() ;
@@ -176,8 +187,9 @@ public class JobImpl extends Job {
 
 		}
 		catch ( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_AXIS_FAULT_WHEN_INVOKING_JOBMONITOR, ex ) ; 
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_AXIS_FAULT_WHEN_INVOKING_JOBMONITOR
+                                              , SUBCOMPONENT_NAME ) ; 
 			logger.error( message.toString(), ex ) ;
 		} 
 		finally {
@@ -208,8 +220,9 @@ public class JobImpl extends Job {
 			}
 		}
 		catch( SQLException e ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), e ) ;
 			throw new JobException( message, e );
 		}
@@ -230,7 +243,8 @@ public class JobImpl extends Job {
 			if( preparedStatement == null ) {			
 			   Object[]
 				  inserts = new Object[1] ;
-			   inserts[0] = DatasetAgent.getProperty( JobFactoryImpl.JOB_TABLENAME ) ;
+			   inserts[0] = DTC.getProperty( DTC.JOB_TABLENAME
+                                           , DTC.JOB_CATEGORY ) ;
 			   String
 				  updateString = MessageFormat.format( JobFactoryImpl.UPDATE_TEMPLATE, inserts ) ; 
 			   preparedStatement = getConnection().prepareStatement( updateString ) ;		

@@ -7,27 +7,30 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- */
+ */ 
 package org.astrogrid.datacenter.impl ;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.util.Date;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.DatasetAgent;
-import org.astrogrid.datacenter.i18n.*;
+import org.astrogrid.Configurator ;
+import org.astrogrid.datacenter.DTC;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.datacenter.job.JobException;
 import org.astrogrid.datacenter.job.JobFactory;
-
-import org.w3c.dom.* ;
-
-import javax.sql.DataSource ;
-import javax.naming.*; 
-import java.sql.Statement ;
-import java.sql.PreparedStatement ;
-import java.sql.ResultSet ;
-import java.sql.SQLException ;
-import java.sql.Timestamp ;
-import java.text.MessageFormat ;
-import java.util.Date ;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**
@@ -57,13 +60,10 @@ public class JobFactoryImpl implements JobFactory {
 	/** Log4J logger for this class. */    				
 	private static Logger 
 		logger = Logger.getLogger( JobFactoryImpl.class ) ;
-	    
-	public static final String
-	/** Property file key for the job database JNDI location */    			
-		JOB_DATASOURCE_LOCATION = "JOB.DATASOURCE",
-	/** Property file key for the job table name */ 
-		JOB_TABLENAME = "JOB.TABLENAME" ;
-	
+        
+    private final static String 
+        SUBCOMPONENT_NAME = Configurator.getClassName( JobFactoryImpl.class );
+        	
 	/**  The job database, or - in JDBC terms - its DataSource */ 	
 	private static DataSource
 		datasource = null ;
@@ -125,7 +125,8 @@ public class JobFactoryImpl implements JobFactory {
 					      initialContext = new InitialContext() ;
 					   logger.debug( "acquired InitialContext!" ) ;
 					   logger.debug( "about to acquire datasource name/location..." ) ;
-					   datasourceName = DatasetAgent.getProperty( JOB_DATASOURCE_LOCATION ) ;
+					   datasourceName = DTC.getProperty( DTC.JOB_DATASOURCE_LOCATION
+					                                   , DTC.JOB_CATEGORY ) ;
 					   logger.debug( "datasource name/location = " + datasourceName ) ;
 					   logger.debug( "about to do lookup..." ) ;
 					   datasource = (DataSource) initialContext.lookup( datasourceName ) ;
@@ -140,9 +141,10 @@ public class JobFactoryImpl implements JobFactory {
 			
 		}
 		catch( NamingException ne ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_DATASOURCE
-									 , (datasourceName != null ? datasourceName : "") ) ;			                     
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_DATASOURCE
+                                              , SUBCOMPONENT_NAME 
+									          , (datasourceName != null ? datasourceName : "") ) ;			                     
 			logger.error( message.toString(), ne ) ;
 			throw new JobException( message, ne );
 		}
@@ -195,7 +197,7 @@ public class JobFactoryImpl implements JobFactory {
 			
 			Object []
 			   inserts = new Object[8] ;
-			inserts[0] = DatasetAgent.getProperty( JOB_TABLENAME ) ;
+			inserts[0] = DTC.getProperty( DTC.JOB_TABLENAME, DTC.JOB_CATEGORY ) ;
 			inserts[1] = job.getId() ;
 			inserts[2] = job.getName() ;
 			inserts[3] = new Timestamp( job.getDate().getTime() ).toString(); //JBL Note: this may give us grief
@@ -216,8 +218,9 @@ public class JobFactoryImpl implements JobFactory {
     	catch( SQLException sex ) {
     		// JBL Note: This is not good enough. We should also return a separate 
     		// and more specialized DuplicateJobFound exception.
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), sex ) ;
 			throw new JobException( message, sex );    		
     	}
@@ -266,8 +269,10 @@ public class JobFactoryImpl implements JobFactory {
 			( (JobImpl) job.getImplementation() ).setDirty( false ) ;
 		}
 		catch( SQLException ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_UPDATE_JOB, job.getId() ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_UPDATE_JOB
+                                              , SUBCOMPONENT_NAME
+                                              , job.getId() ) ;
 			logger.error( message.toString(), ex ) ;  
 			throw new JobException( message, ex ) ; 		
 		}
@@ -305,7 +310,7 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[2] ;
-			inserts[0] = DatasetAgent.getProperty( JOB_TABLENAME ) ;
+			inserts[0] = DTC.getProperty( DTC.JOB_TABLENAME, DTC.JOB_CATEGORY ) ;
 			inserts[1] = job.getId() ;
 
 			String
@@ -314,8 +319,10 @@ public class JobFactoryImpl implements JobFactory {
 			rs = statement.executeQuery( selectString );
 			if( !rs.first() ){
 				//Job not found...
-				Message
-					message = new Message( ASTROGRIDERROR_UNABLE_TO_FIND_JOB_GIVEN_JOBID, jobURN ) ;
+				AstroGridMessage
+					message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_FIND_JOB_GIVEN_JOBID
+                                                  , SUBCOMPONENT_NAME
+                                                  , jobURN ) ;
 				logger.error( message.toString() ) ;   	
 				throw new JobException( message ) ;	
 			}
@@ -336,8 +343,10 @@ public class JobFactoryImpl implements JobFactory {
 			}
 		}
 		catch( SQLException ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_FIND_JOB_GIVEN_JOBID, jobURN ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_FIND_JOB_GIVEN_JOBID
+                                              , SUBCOMPONENT_NAME
+                                              , jobURN ) ;
 			logger.error( message.toString(), ex ) ;   	
 			throw new JobException( message, ex ) ;	
 		}
@@ -372,7 +381,7 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[2] ;
-			inserts[0] = DatasetAgent.getProperty( JOB_TABLENAME ) ;
+			inserts[0] = DTC.getProperty( DTC.JOB_TABLENAME, DTC.JOB_CATEGORY ) ;
 			inserts[1] = job.getId() ;
 
 			String
@@ -382,8 +391,10 @@ public class JobFactoryImpl implements JobFactory {
 			   
 		}
 		catch( SQLException ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_DELETE_JOB, job.getId() ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_DELETE_JOB
+                                              , SUBCOMPONENT_NAME
+                                              , job.getId() ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex ) ;	
 		}

@@ -10,7 +10,7 @@
  */
 package org.astrogrid.datacenter.job;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
 
 /**
  * <code>JobFactory</code> is the interface that all implementations

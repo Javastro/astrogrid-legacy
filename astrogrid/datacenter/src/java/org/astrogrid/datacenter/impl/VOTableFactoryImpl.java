@@ -10,17 +10,18 @@
  */
 package org.astrogrid.datacenter.impl;
 
+import java.io.PrintStream;
+ 
 import org.apache.log4j.Logger;
-
-import org.astrogrid.datacenter.i18n.*;
 import org.astrogrid.datacenter.myspace.Allocation;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.votable.VOTable;
 import org.astrogrid.datacenter.votable.VOTableException;
 import org.astrogrid.datacenter.votable.VOTableFactory;
-
-import java.io.PrintStream;
-import org.objectwiz.votable.*;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.Configurator ;
+import org.objectwiz.votable.ResultSetConverter;
+import org.objectwiz.votable.ResultSetToSimpleVOTable;
 
 public class VOTableFactoryImpl implements VOTableFactory {
 	
@@ -29,7 +30,10 @@ public class VOTableFactoryImpl implements VOTableFactory {
 	
 	private static Logger 
 		logger = Logger.getLogger( VOTableFactoryImpl.class ) ;
-		
+        
+    private final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( VOTableFactoryImpl.class ) ;
+     	
     //
     // JBL Note: For the moment do not know where these settings should be coming from...
     // (However, these may produce a suitable default pattern for a locale)
@@ -71,8 +75,9 @@ public class VOTableFactoryImpl implements VOTableFactory {
 			converter.serialize( queryFactoryImpl.getResultSet(), out ) ;        
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_VOTABLE_CONVERSION_EXCEPTION ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_VOTABLE_CONVERSION_EXCEPTION 
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new VOTableException( message, ex );			
 		}

@@ -10,7 +10,7 @@
  */
 package org.astrogrid.datacenter.votable ;
 
-import org.astrogrid.datacenter.myspace.Allocation ;
+import org.astrogrid.datacenter.myspace.Allocation;
 import org.astrogrid.datacenter.query.Query;
 
 public interface VOTableFactory {

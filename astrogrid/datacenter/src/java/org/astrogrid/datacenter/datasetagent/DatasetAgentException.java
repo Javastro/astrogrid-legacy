@@ -7,18 +7,19 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- */
+ */ 
 package org.astrogrid.datacenter.datasetagent;
 
-import org.astrogrid.datacenter.i18n.* ;
+import org.astrogrid.datacenter.DatacenterException;
+import org.astrogrid.i18n.AstroGridMessage;
 
 public class DatasetAgentException extends DatacenterException {
 
-    public DatasetAgentException( Message message ) {
+    public DatasetAgentException( AstroGridMessage message ) {
     	super( message ) ;
     }
 
-    public DatasetAgentException( Message message, Exception exception ) {
+    public DatasetAgentException( AstroGridMessage message, Exception exception ) {
     	super( message, exception ) ;
     }
      

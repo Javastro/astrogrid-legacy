@@ -10,25 +10,31 @@
  */
 package org.astrogrid.datacenter.myspace;
 
-import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.* ;
-import org.astrogrid.datacenter.job.* ;
-import org.astrogrid.datacenter.i18n.* ;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.MessageFormat ;
-import javax.xml.parsers.*;
-import org.w3c.dom.*;
-import org.xml.sax.InputSource ;
-import org.xml.sax.SAXException;
-import java.io.StringReader ;
-
-import org.apache.axis.client.Service;
-import org.apache.axis.client.Call;
-import org.apache.axis.encoding.XMLType;
-import javax.xml.rpc.ParameterMode;
-// import org.apache.axis.utils.XMLUtils;
+import java.io.StringReader;
 import java.net.URL;
+import java.text.MessageFormat;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.rpc.ParameterMode;
+
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import org.apache.axis.encoding.XMLType;
+import org.apache.log4j.Logger;
+import org.astrogrid.Configurator ;
+import org.astrogrid.datacenter.DTC;
+import org.astrogrid.datacenter.job.Job;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -46,6 +52,9 @@ public class Allocation {
 	
 	private static Logger 
 		logger = Logger.getLogger( Allocation.class ) ;
+        
+    public final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( Allocation.class ) ;   
 		
 	private static String
 		ASTROGRIDERROR_COULD_NOT_CREATE_MYSPACEFACTORY_IMPL = "AGDTCE00090",
@@ -55,11 +64,6 @@ public class Allocation {
 	    
 	private static String
 	    MYSPACE_SUCCESS = "success" ;
-	    
-	private static String
-		MYSPACEFACTORY_KEY = "MYSPACE.FACTORY_KEY",
-	    MYSPACE_URL = "MYSPACE.MANAGER.URL",
-	    MYSPACE_MANAGER_REQUEST_TEMPLATE = "MYSPACE.MANAGER.REQUEST_TEMPLATE" ;
 	
 	public static MySpaceFactory
 	    factory ;
@@ -74,7 +78,8 @@ public class Allocation {
 		if( TRACE_ENABLED ) logger.debug( "getFactory(): entry") ;   	
     	
 		String
-			implementationFactoryName = DatasetAgent.getProperty( MYSPACEFACTORY_KEY ) ;
+			implementationFactoryName = DTC.getProperty( DTC.MYSPACE_FACTORY
+                                                       , DTC.MYSPACE_CATEGORY ) ;
     	
 		try{
 			// Note the double lock strategy				
@@ -89,8 +94,10 @@ public class Allocation {
 			}
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_MYSPACEFACTORY_IMPL, implementationFactoryName ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_MYSPACEFACTORY_IMPL
+                                              , SUBCOMPONENT_NAME
+                                              , implementationFactoryName ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new AllocationException( message, ex );
 		}
@@ -145,7 +152,8 @@ public class Allocation {
 		try {
 			
 			String
-			   requestTemplate = DatasetAgent.getProperty( MYSPACE_MANAGER_REQUEST_TEMPLATE ) ;
+			   requestTemplate = DTC.getProperty( DTC.MYSPACE_REQUEST_TEMPLATE
+                                                , DTC.MYSPACE_CATEGORY ) ;
 			Object []
 			   inserts = new Object[4] ;
 			inserts[0] = job.getUserId() ;
@@ -159,7 +167,8 @@ public class Allocation {
 			Call 
 			   call = (Call) new Service().createCall() ;
 			   			  
-			call.setTargetEndpointAddress( new URL( DatasetAgent.getProperty( MYSPACE_URL ) ) ) ;
+			call.setTargetEndpointAddress( new URL( DTC.getProperty( DTC.MYSPACE_URL
+                                                                   , DTC.MYSPACE_CATEGORY ) ) ) ;
 			call.setOperationName( "upLoad" ) ;  // Set method to invoke		
 			call.addParameter("jobDetails", XMLType.XSD_STRING,ParameterMode.IN);
 			call.setReturnType(XMLType.XSD_STRING);
@@ -168,8 +177,9 @@ public class Allocation {
 
 		}
 		catch ( Exception af ) {
-			Message
-				message = new Message( ASTROGRIDERROR_AXIS_FAULT_WHEN_INVOKING_MYSPACEMANAGER, af ) ; 
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_AXIS_FAULT_WHEN_INVOKING_MYSPACEMANAGER
+                                              , SUBCOMPONENT_NAME ) ; 
 			logger.error( message.toString(), af ) ;
 			throw new AllocationException( message , af ) ;
 		} 
@@ -257,8 +267,11 @@ public class Allocation {
 			   if (details != null)
 			       details = details.trim() ;
 		    
-		       Message
-			      message = new Message( ASTROGRIDERROR_MYSPACEMANAGER_RETURNED_AN_ERROR, status, details ) ; 
+		       AstroGridMessage
+			      message = new AstroGridMessage( ASTROGRIDERROR_MYSPACEMANAGER_RETURNED_AN_ERROR
+                                                , SUBCOMPONENT_NAME
+                                                , status
+                                                , details ) ; 
 		       logger.error( message.toString() ) ;
 		       throw new AllocationException( message );	
 		      			   
@@ -266,20 +279,23 @@ public class Allocation {
 		   
 		}
 		catch ( ParserConfigurationException pe ) {
-			Message
-				message = new Message( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE ) ; 
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE
+                                              , SUBCOMPONENT_NAME ) ; 
 			logger.error( message.toString(), pe ) ;
 			throw new AllocationException( message, pe );
 		} 
 		catch ( SAXException se ) {
-			Message
-				message = new Message( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE ) ; 
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE
+                                              , SUBCOMPONENT_NAME ) ; 
 			logger.error( message.toString(), se ) ;
 			throw new AllocationException( message, se );
 		}	
 		catch ( IOException ie ) {
-			Message
-				message = new Message( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE ) ; 
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE 
+                                              , SUBCOMPONENT_NAME ) ; 
 			logger.error( message.toString(), ie ) ;
 			throw new AllocationException( message, ie );
 		}			

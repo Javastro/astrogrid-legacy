@@ -10,10 +10,12 @@
  */
 package org.astrogrid.datacenter.job;
 
+import java.util.Date;
+
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.*;
-import org.astrogrid.datacenter.i18n.*;
-import java.util.Date ;
+import org.astrogrid.Configurator ;
+import org.astrogrid.datacenter.DTC;
+import org.astrogrid.i18n.AstroGridMessage;
 
 public abstract class Job {
 	
@@ -22,12 +24,12 @@ public abstract class Job {
 	
 	private static Logger 
 		logger = Logger.getLogger( Job.class ) ;
+        
+    private final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( Job.class ) ;
 		
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_JOBFACTORY_IMPL = "AGDTCE00140" ;
-        
-	private static final String
-		JOBFACTORY_KEY = "JOB.FACTORY" ; 
 	
 	private static JobFactory 
 	   factory ;
@@ -43,7 +45,8 @@ public abstract class Job {
 		if( TRACE_ENABLED ) logger.debug( "getFactory(): entry") ;   	
     	
 		String
-			implementationFactoryName = DatasetAgent.getProperty( JOBFACTORY_KEY ) ;
+			implementationFactoryName = DTC.getProperty( DTC.JOB_FACTORY
+                                                       , DTC.JOB_CATEGORY ) ;
     	
 		try{
 			// Note the double lock strategy				
@@ -58,8 +61,10 @@ public abstract class Job {
 			}
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_JOBFACTORY_IMPL, implementationFactoryName ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_JOBFACTORY_IMPL
+                                              , SUBCOMPONENT_NAME
+                                              , implementationFactoryName ) ;
 		    System.out.println( message.toString() ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex );

@@ -10,16 +10,17 @@
  */
 package org.astrogrid.datacenter.votable;
 
-import org.astrogrid.datacenter.i18n.*;
+import org.astrogrid.datacenter.DatacenterException;
+import org.astrogrid.i18n.AstroGridMessage;
 
 public class VOTableException extends DatacenterException {
 	 
 
-    public VOTableException( Message message ) {
+    public VOTableException( AstroGridMessage message ) {
     	super( message ) ;
     }
 
-    public VOTableException( Message message, Exception exception ) {
+    public VOTableException( AstroGridMessage message, Exception exception ) {
     	super( message, exception ) ;
     }
     

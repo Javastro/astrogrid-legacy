@@ -10,16 +10,17 @@
  */
 package org.astrogrid.datacenter.myspace;
 
-import org.astrogrid.datacenter.i18n.*;
+import org.astrogrid.datacenter.DatacenterException;
+import org.astrogrid.i18n.AstroGridMessage;
 
 public class AllocationException extends DatacenterException{
 	
 
-    public AllocationException( Message message) {
+    public AllocationException( AstroGridMessage message) {
     	super( message ) ;
     }
 
-    public AllocationException( Message message, Exception exception ) {
+    public AllocationException( AstroGridMessage message, Exception exception ) {
 		super( message, exception ) ;
     }
     

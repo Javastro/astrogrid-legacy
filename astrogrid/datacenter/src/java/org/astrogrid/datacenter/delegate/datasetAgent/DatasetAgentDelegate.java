@@ -1,5 +1,5 @@
 /*
- * $Id: DatasetAgentDelegate.java,v 1.2 2003/08/06 14:06:29 mch Exp $
+ * $Id: DatasetAgentDelegate.java,v 1.3 2003/08/12 12:37:11 jl99 Exp $
  */
 
 package org.astrogrid.datacenter.delegate.datasetAgent;
@@ -31,7 +31,7 @@ public class DatasetAgentDelegate {
       this.targetEndPoint = targetEndPoint ;
       this.timeout = timeout ;
     }
-    
+     
     public void runQuery(String req) throws DatacenterDelegateException {
         
         DatasetAgentSoapBindingStub
@@ -61,6 +61,9 @@ public class DatasetAgentDelegate {
 
 /*
 $Log: DatasetAgentDelegate.java,v $
+Revision 1.3  2003/08/12 12:37:11  jl99
+Repair after discovering a lot of refactoring changes had not been picked up.
+
 Revision 1.2  2003/08/06 14:06:29  mch
 Added CVS Log & ID for change history
 
