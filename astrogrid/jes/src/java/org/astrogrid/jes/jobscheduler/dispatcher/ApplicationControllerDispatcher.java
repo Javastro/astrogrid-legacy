@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.13 2004/07/01 21:15:00 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.14 2004/07/02 09:07:58 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -94,8 +94,8 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
          //String applicationID =
          //   appController.execute(js.getTool(), id, monitorURL.toString());
          String applicationId = appController.init(js.getTool(),id);
+         appController.registerResultsListener(applicationId,resultListenerURI);         
          appController.registerProgressListener(applicationId,monitorURI);
-         appController.registerResultsListener(applicationId,resultListenerURI);
          appController.execute(applicationId);
 
       }
@@ -158,6 +158,9 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.14  2004/07/02 09:07:58  nw
+added in results listener
+
 Revision 1.13  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 
