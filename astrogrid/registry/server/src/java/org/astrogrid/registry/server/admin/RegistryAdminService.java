@@ -139,16 +139,25 @@ public class RegistryAdminService implements
                      //update new managed authority.
                      RegistryService rs = new RegistryService();
                      Document loadedRegistry = rs.loadRegistry(null);
+                     //System.out.println("the load registry = " + DomHelper.DocumentToString(loadedRegistry));
                      Node manageNode = getManagedAuthorityID(loadedRegistry);
                      if(manageNode != null) {
-                        Node addManageNode = manageNode.cloneNode(false);
-                        addManageNode.appendChild(loadedRegistry.createTextNode(ident));
-                        loadedRegistry.insertBefore(addManageNode,manageNode);
+                        System.out.println("creating new manage element for authorityid = " + ident);
+                        Element newManage = loadedRegistry.createElementNS(manageNode.getNamespaceURI(),manageNode.getNodeName());                        
+                        newManage.appendChild(loadedRegistry.createTextNode(ident));
+                        //System.out.println("inserting the new node new manage node = " + newManage.getNodeName() + " text to it = " + newManage.getFirstChild().getNodeValue());
+                        loadedRegistry.getDocumentElement().getFirstChild().appendChild(newManage);
+                        //System.out.println("firstchild of loadedRegistry = " + loadedRegistry.getDocumentElement().getFirstChild().getNodeName());
+                        //loadedRegistry.insertBefore(newManage,manageNode);
+                        //addManageNode.appendChild(loadedRegistry.createTextNode(ident));
+                        //loadedRegistry.insertBefore(addManageNode,manageNode);
+                        System.out.println("forming xql query and loadedRegistry = " + DomHelper.DocumentToString(loadedRegistry));
                         xql = formUpdateXQLQuery(currentResource,ident,resKey);
                         df = xsDoc.createDocumentFragment();
                         root = xsDoc.getDocumentElement().cloneNode(false);
                         root.appendChild(currentResource);
                         df.appendChild(root);
+                        System.out.println("running query with new authorityentry = " + xql);
                         resultDoc = XQueryExecution.runQuery(xql,df);
                         System.out.println("the resultDoc to find an id = " + DomHelper.DocumentToString(resultDoc));
 
@@ -157,6 +166,7 @@ public class RegistryAdminService implements
                         xql = formUpdateXQLQuery(loadedRegistry.getDocumentElement(),ident,resKey);
                         resultDoc = XQueryExecution.runQuery(xql,loadedRegistry);
                         System.out.println("the resultDoc to find an id = " + DomHelper.DocumentToString(resultDoc));
+                        manageAuths = RegistryFileHelper.doManageAuthorities();
                      }//if                           
                   }//if      
                }//if   
@@ -235,6 +245,9 @@ public class RegistryAdminService implements
       if(nl.getLength() == 0) {
          nl = doc.getElementsByTagName("vg:ManagedAuthority" );
       }
+      if(nl.getLength() == 0) {
+         nl = doc.getElementsByTagName("ManagedAuthority" );
+      }      
       if(nl.getLength() > 0)
          return nl.item(0);
       return null;
