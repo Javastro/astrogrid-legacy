@@ -1,0 +1,184 @@
+
+<!--+
+    |
+    | Sub sitemap for Astrogrid services.
+    |
+    ! Version 1.1
+    !
+    ! Authors: Brian McIlwrath (bkm@star.rl.ac.uk)
+    !          Kevin Benson    (kmb@mssl.ucl.ac.uk)
+    !          Dave Morris     (dave@cam.as.ac.uk)
+    ! Date: 14th August 2003
+    +-->
+
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+
+<!-- ======================== Components ================================ -->
+
+   <map:components>
+      <map:generators default="file"/>
+      <map:transformers default="xslt"/>
+      <map:serializers default="html"/>
+      <map:selectors default="browser"/>
+      
+       <map:selector name="parameter"
+            logger="sitemap.selector.parameter"
+            src="org.apache.cocoon.selection.ParameterSelector"/>
+            
+      <map:matchers default="wildcard"/>
+      <map:actions>
+         <map:action name="astrogrid-registry-admin" src="org.astrogrid.portal.cocoon.registry.RegistryAdminAction"/>
+         <map:action name="astrogrid-registry-query" src="org.astrogrid.portal.cocoon.registry.RegistryQueryAction"/>
+         <map:action name="astrogrid-registry-options" src="org.astrogrid.portal.cocoon.registry.RegistryOptionAction"/>     
+         <map:action name="astrogrid-registry-harvest" src="org.astrogrid.portal.cocoon.registry.RegistryHarvestAction"/>
+         <map:action name="astrogrid-registry-status" src="org.astrogrid.portal.cocoon.registry.RegistryStatusAction"/>
+	     <map:action name="astrogrid-registry-harvest-read" src="org.astrogrid.portal.cocoon.registry.RegistryHarvestReader"/>       
+    	 <map:action name="astrogrid-registry-metadata-read" src="org.astrogrid.portal.cocoon.registry.RegistryMetaDataReader"/>
+      </map:actions>
+   </map:components>
+
+<!-- =========================== Views =================================== -->
+
+   <!-- Views for MySpace Explorer -->
+   <map:views>
+      <!-- Original XML displayed as XML -->
+      <map:view name="000" from-label="000">
+         <map:serialize type="xml"/>
+      </map:view>
+      <!-- Original XML, displayed as XML/HTML -->
+      <map:view name="001" from-label="001">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="web/style/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+      <!-- XML processed into a page, displayed as XML/HTML -->
+      <map:view name="002" from-label="002">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="web/style/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+      <!-- Page wrapped in our template, displayed as XML/HTML -->
+      <map:view name="003" from-label="003">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="web/style/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+   </map:views>
+
+<!-- ========================== Resources ================================= -->
+
+   <map:resources>
+   </map:resources>
+
+<!-- ========================== Pipelines ================================= -->
+
+   <map:pipelines>
+      <map:pipeline>
+
+         <!-- Registry browser and admin pages -->
+         <map:match pattern="registry">
+            <map:redirect-to uri="agregistry.html"/>
+         </map:match>
+
+         <map:match pattern="registry.html">
+            <map:act type="astrogrid-registry-options">
+               <map:generate src="web/style/xsp/regoptions.xsp" type="serverpages" label="000, 001"/>           
+              <map:transform src="web/style/xsl/regoptions.xsl" label="002">
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+              </map:transform>
+             </map:act>
+            <map:serialize type="html"/>
+         </map:match>
+         
+         <map:match pattern="registryquery.html">
+            <map:act type="astrogrid-registry-query">
+              <map:generate src="web/style/xsp/regquery.xsp" type="serverpages" label="000, 001"/>  
+              <map:transform src="web/style/xsl/regquery.xsl" label="002">
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+                  <map:parameter name="criteria_number" value="{criteria_number}" />
+                  <map:parameter name="mainelement" value="{mainelement}" />
+                  <map:parameter name="publishregistryname" value="{publishregistryname}" />
+                  <map:parameter name="searchregistryname" value="{searchregistryname}" />
+                  <map:parameter name="queryresult" value="{queryresult}" />
+              </map:transform>
+             </map:act>
+            <map:serialize type="html"/>
+         </map:match>         
+         
+         <map:match pattern="registrystatus.html">
+            <map:act type="astrogrid-registry-status">
+               <map:generate src="web/style/xsp/regstatus.xsp" type="serverpages" label="000, 001"/>              
+              <map:transform src="web/style/xsl/regstatus.xsl" label="002">
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+              </map:transform>
+             </map:act>
+            <map:serialize type="html"/>
+         </map:match>
+         
+         <map:match pattern="registryharvestread.xml">
+            <map:act type="astrogrid-registry-harvest-read">
+              <map:generate src="web/style/xsp/regharvestread.xsp" type="serverpages"/>
+             </map:act>
+            <map:serialize type="xml"/>
+         </map:match>
+         
+         <map:match pattern="registrymetadata.xml">
+            <map:act type="astrogrid-registry-metadata-read">
+              <map:generate src="web/style/xsp/regmetadata.xsp" type="serverpages"/>
+             </map:act>
+            <map:serialize type="xml"/>
+         </map:match>
+         
+         <map:match pattern="registryupdate.html">
+            <map:act type="astrogrid-registry-admin">
+               <map:generate src="web/style/xsp/regadmin.xsp" type="serverpages" label="000, 001"/>           
+              <map:transform src="web/style/xsl/regadmin.xsl" label="002">
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+                  <map:parameter name="mainelement" value="{mainelement}" />                    
+                  <map:parameter name="authID" value="{authID}" />                    
+                  <map:parameter name="resKey" value="{resKey}" />                    
+                  <map:parameter name="action" value="{action}" />
+                  <map:parameter name="message" value="{message}" />
+              </map:transform>
+             </map:act>
+            <map:serialize type="html"/>
+         </map:match>
+
+         <map:match pattern="registryharvest.html">
+            <map:act type="astrogrid-registry-harvest">
+               <map:generate src="web/style/xsp/regharvest.xsp" type="serverpages" label="000, 001"/>          
+                    <map:transform src="web/style/xsl/regharvest.xsl" label="002">
+                        <map:parameter name="errorMessage" value="{errorMessage}"/>
+                        <map:parameter name="harvestResult" value="{harvestResult}"/>                        
+                        <map:parameter name="registryXML" value="{registryXML}"/>                                                
+                        <map:parameter name="action" value="{action}" />
+                        <map:parameter name="message" value="{message}" />
+                        <map:parameter name="addregistry" value="{addregistry}" />
+                    </map:transform>
+            </map:act>
+             <map:serialize type="html"/>
+         </map:match>
+         
+      <!-- xsp -->
+      <map:match pattern="**.xsp">
+        <map:generate type="serverpages" src="web/style/xsp/{1}.xsp"/>
+        <map:transform src="cocoon://xml2html.xsl"/>
+        <map:serialize type="xml"/>
+      </map:match>         
+         
+   <!-- XSLT stylesheets -->
+      <map:match pattern="*.xsl">
+        <map:generate type="file" src="web/style/xsl/xsl/{1}.xsl"/>
+        <map:serialize type="xml"/>
+      </map:match>         
+      
+    <!-- xml -->
+      <map:match pattern="**.xml">
+        <map:generate type="file" src="web/static/{1}.xml"/>
+        <map:transform src="cocoon://xml2html.xsl"/>
+        <map:serialize type="xml"/>
+      </map:match>      
+                  
+      </map:pipeline>
+   </map:pipelines>
+</map:sitemap>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsp:page language="java"
+		create-session="true"
+		xmlns:xsp="http://apache.org/xsp"
+		xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+		
+			<!--+
+	    | Import any java classes here.
+	    +-->
+
+	<xsp:structure>
+		<xsp:include>java.util.Iterator</xsp:include>
+		<xsp:include>java.util.Map</xsp:include>		
+		<xsp:include>java.util.ArrayList</xsp:include>		
+		<xsp:include>java.util.Set</xsp:include>
+	</xsp:structure>	    
+	
+	<registryquery>		
+		<regitems>
+			<xsp:logic>
+			<![CDATA[
+				Map regList = (Map)session.getAttribute("regitems");
+				Set st = regList.keySet();
+				Iterator iter = null;
+				String actionType = (String)request.getAttribute("action");
+				String keepVals = (String)request.getAttribute("keepvals");
+				String regKey = null;
+				String regVal = null;
+				String regLabel = "";
+				String tempSplit = null;				
+				if(regList != null && regList.size() > 0 ) {
+				iter = st.iterator();				
+				while (iter.hasNext()) {
+					regKey = (String)iter.next();
+					regVal = (String)regList.get(regKey);
+					regLabel = "";
+					tempSplit = null;
+					if(!"true".equals(keepVals)) {
+						regVal = "";
+					}
+					String []split = regKey.split("\\/");
+					if(split.length >= 1) {
+						for(int i = 1;i < split.length;i++) {
+							tempSplit = split[i];
+					         if(Character.isDigit(tempSplit.charAt(tempSplit.length()-1)))
+					            tempSplit = tempSplit.substring(0,tempSplit.length()-1);
+					         if(Character.isDigit(tempSplit.charAt(tempSplit.length()-1)))
+					            tempSplit = tempSplit.substring(0,tempSplit.length()-1);
+					         if(Character.isDigit(tempSplit.charAt(tempSplit.length()-1)))
+					            tempSplit = tempSplit.substring(0,tempSplit.length()-1);
+					         tempSplit = tempSplit.replaceAll(".*:","");
+					        regLabel += tempSplit + " ";							
+						}//for
+					}//if
+			]]>
+					<xsp:element name="regitem">
+						<xsp:attribute name="name"><xsp:expr>regKey</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>regVal</xsp:expr></xsp:attribute>
+						<xsp:attribute name="label"><xsp:expr>regLabel</xsp:expr></xsp:attribute>						
+					</xsp:element>
+			<![CDATA[
+				}
+					}
+			]]>
+			</xsp:logic>
+		</regitems>
+	</registryquery>
+</xsp:page>

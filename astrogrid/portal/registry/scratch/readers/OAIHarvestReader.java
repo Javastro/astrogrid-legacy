@@ -30,7 +30,7 @@ import java.net.URL;
 
 import org.w3c.dom.Document;
 import org.astrogrid.registry.client.query.RegistryService;
-import org.astrogrid.registry.RegistryConfig;
+import org.astrogrid.registry.common.RegistryConfig;
 import org.apache.axis.utils.XMLUtils;
 
 
