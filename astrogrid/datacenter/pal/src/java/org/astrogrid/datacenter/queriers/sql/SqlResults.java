@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.4 2004/10/06 21:51:53 mch Exp $
+ * $Id: SqlResults.java,v 1.5 2004/10/08 09:42:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,11 +33,11 @@ public class SqlResults extends QueryResults
    protected ResultSet sqlResults;
    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(SqlResults.class);
    
-   /** Key used to find maximum number of rows allowed - defaults to 200, -1 = any */
-   public final static String MAX_RETURN_ROWS_KEY = "datacenter.sql.maxreturn";
-
    public final static int DEFAULT_MAX_RETURN_ROWS = -1;
    
+   /** Key used to define maximum number of rows allowed - defaults to 200, -1 = any */
+   public final static String MAX_RETURN_ROWS_KEY = "datacenter.sql.maxreturn";
+
    /**
     * Construct this wrapper around the given JDBC/SQL ResultSet.  We don't
     * know how big this result set will be, so it's likely we'll need a workspace
@@ -73,6 +73,9 @@ public class SqlResults extends QueryResults
       assert (out != null);
       
       long maxAllowed = SimpleConfig.getSingleton().getInt(MAX_RETURN_ROWS_KEY, DEFAULT_MAX_RETURN_ROWS);
+      
+      //if the user has asked for a limit (and it's less than the datacenter-configured limit) then set to that
+      if (querier.getQuery().getLimit()<maxAllowed) { maxAllowed=querier.getQuery().getLimit(); }
       
       try
       {
@@ -312,6 +315,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.5  2004/10/08 09:42:58  mch
+ Added limit checks
+
  Revision 1.4  2004/10/06 21:51:53  mch
  Fixed too many commas in header
 

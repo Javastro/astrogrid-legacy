@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.3 2004/10/06 21:12:17 mch Exp $
+ * $Id: QueryResults.java,v 1.4 2004/10/08 09:42:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -46,7 +46,7 @@ public abstract class QueryResults
 
    Log log = LogFactory.getLog(QueryResults.class);
    
-   Querier querier = null;
+   protected Querier querier = null;
    
    /** Construct with a link to the Querier that spawned these results, so we
     * can include info from it if need be */
