@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.90 2004/09/02 17:02:02 dave Exp $ -->
+<!-- $Id: maven.xml,v 1.91 2004/09/03 10:39:26 clq2 Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -267,7 +267,7 @@
                 <j:set var="collpath" value="${temporary.dir}/exist-entries"/>
         <j:forEach var="entry" items="${entryList}">
           <echo>${entry}</echo>
-          <j:catch>
+          
                         <util:file name="${entry}"  var="xmlentry" />
                         <jxml:parse xml="${xmlentry}" var="xmlbody" />
 
@@ -282,7 +282,7 @@
                 </http:body>
                         </http:put>
                 <echo>${xmlexist.statusCode}</echo>
-          </j:catch>
+          
         </j:forEach>
         <echo>Finsihed setting up eXist</echo>
 
@@ -303,23 +303,23 @@
                 </path>
         </pathconvert>
             <util:tokenize var="entryListr" delim=" ">${entriesr}</util:tokenize>
-          <j:catch>
+          
             <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
             <ant target="register" antfile="register.xml" >
         `       <property name="registry.entry" value="${temporary.dir}/registry-entries/ARegistry.xml"/>
             </ant>
-          </j:catch>
+          
                 <waitfor maxwait="10" maxwaitunit="second" checkevery="500">
                 <http url="${tomcat.url}/exist/xmldb/db/?xpath=%2F%2F*%3AResource%5B*%3AIdentifier%2F*%3AResourceKey%2Ftext%28%29+%3D+%27org.astrogrid.registry.RegistryService%27%5D"/>
                 </waitfor>
 
         <j:forEach var="entryr" items="${entryListr}">
-          <j:catch>
+          
             <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
             <ant target="register" antfile="register.xml" >
         `       <property name="registry.entry" value="${entryr}"/>
             </ant>
-          </j:catch>
+          
         </j:forEach>
 </goal>
 <!--+
@@ -422,13 +422,13 @@
     <!--+
         | Register our service.
         +-->
-    <j:catch>
+    
 	    <ant
 	        target="service.register"
 	        dir="${temporary.dir}/community/toolkit"
 	        antfile="${temporary.dir}/community/toolkit/install.xml"
 	        />
-    </j:catch>
+    
 </goal>
 <!--+
     | Wait for the Community service to respond.
@@ -509,10 +509,10 @@
         </copy>
         <jar destfile="${temporary.dir}/${config.webapp.name}.war" basedir="${temporary.dir}/astrogrid-configuration">
         </jar>
-        <j:catch>
+        
                 <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
                         path="/${config.webapp.name}" war="file:///${temporary.dir}/${config.webapp.name}.war" />
-        </j:catch>
+        
 </goal>
 
 <!-- context- driven webapps ////////////////////////////////-->
@@ -523,10 +523,10 @@
         <war update="true" destfile="${temporary.dir}/astrogrid-jes-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/jes"/>
         </war>
-   <j:catch>
+   
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-jes-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-jes-${pom.currentVersion}.war"/>
-  </j:catch>
+  
 </goal>
 
 <goal name="cea-server-deploy"  prereqs="tomcat-declare-tasks,init" >
@@ -536,10 +536,10 @@
         <war update="true" destfile="${temporary.dir}/astrogrid-cea-server-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/cea-server"/>
         </war>
-   <j:catch>
+   
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-cea-server-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-cea-server-${pom.currentVersion}.war"/>
-   </j:catch>
+   
 </goal>
 
 <goal name="cea-commandline-deploy"  prereqs="tomcat-declare-tasks,init" >
@@ -549,10 +549,10 @@
         <war update="true" destfile="${temporary.dir}/astrogrid-cea-commandline-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/cea-commandline"/>
         </war>
-   <j:catch>
+   
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-cea-commandline-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-cea-commandline-${pom.currentVersion}.war"/>
-   </j:catch>
+   
 </goal>
 
 <goal name="cea-http-deploy"  prereqs="tomcat-declare-tasks,init" >
@@ -562,10 +562,10 @@
         <war update="true" destfile="${temporary.dir}/astrogrid-cea-http-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/cea-http"/>
         </war>
-   <j:catch>
+   
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-cea-http-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-cea-http-${pom.currentVersion}.war"/>
-   </j:catch>
+   
 </goal>
 
 
@@ -576,14 +576,14 @@
         <war update="true" destfile="${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/registry"/>
         </war>
-  <j:catch>
+  
           <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-registry-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war"/>
-  </j:catch>
-  <j:catch>
+  
+  
           <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/exist" war="file:///${temporary.dir}/astrogrid-exist-${pom.currentVersion}.war"/>
-  </j:catch>
+  
 </goal>
 
 <goal name="myspace-deploy" >
@@ -593,10 +593,10 @@
         <war update="true" destfile="${temporary.dir}/astrogrid-mySpace-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/myspace"/>
         </war>
-  <j:catch>
+  
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-mySpace-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-mySpace-${pom.currentVersion}.war"/>
-  </j:catch>
+  
 </goal>
 
 <goal name="filestore-deploy">
@@ -658,10 +658,10 @@
         <war update="true" destfile="${temporary.dir}/pal-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/pal"/>
         </war>
-  <j:catch>
+  
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-pal-${pom.currentVersion}" war="file:///${temporary.dir}/pal-${pom.currentVersion}.war"/>
-  </j:catch>
+  
 </goal>
 
 <goal name="pal-fits-deploy" >
@@ -673,10 +673,10 @@
         <war update="true" destfile="${temporary.dir}/pal-fits-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/pal_fits"/>
         </war>
-  <j:catch>
+  
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-pal-fits-${pom.currentVersion}" war="file:///${temporary.dir}/pal-fits-${pom.currentVersion}.war"/>
-  </j:catch>
+  
 </goal>
 
 <goal name="pal-sec-deploy" >
@@ -688,10 +688,10 @@
         <war update="true" destfile="${temporary.dir}/pal-sec-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/pal_sec"/>
         </war>
-  <j:catch>
+  
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-pal-sec-${pom.currentVersion}" war="file:///${temporary.dir}/pal-sec-${pom.currentVersion}.war"/>
-  </j:catch>
+  
 </goal>
 
         <goal name="pal-cds-deploy" >
@@ -703,10 +703,10 @@
                 <war update="true" destfile="${temporary.dir}/pal-cds-${pom.currentVersion}.war">
                         <metainf dir="${temporary.dir}/pal_cds"/>
                 </war>
-          <j:catch>
+          
           <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
                   path="/astrogrid-pal-cds-${pom.currentVersion}" war="file:///${temporary.dir}/pal-cds-${pom.currentVersion}.war"/>
-          </j:catch>
+          
         </goal>
 
 
@@ -717,10 +717,10 @@
         <war update="true" destfile="${temporary.dir}/astrogrid-portal-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/portal" />
         </war>
-   <j:catch>
+   
         <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
                 path="/astrogrid-portal" war="file:///${temporary.dir}/astrogrid-portal-${pom.currentVersion}.war" />
-   </j:catch>
+   
 </goal>
 
 
@@ -742,21 +742,21 @@
 
 <!-- undeploy ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <goal name="reg-undeploy" >
-  <j:catch>
+  
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-registry-${pom.currentVersion}" />
-  </j:catch>
-  <j:catch>
+  
+  
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/exist" />
-  </j:catch>
+  
 </goal>
 
 <goal name="myspace-undeploy" >
-  <j:catch>
+  
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-mySpace-${pom.currentVersion}" />
-  </j:catch>
+  
 </goal>
 
 <goal name="filestore-undeploy" >
@@ -790,81 +790,81 @@
 </goal>
 
 <goal name="cea-server-undeploy" >
-  <j:catch>
+  
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-cea-server-${pom.currentVersion}" />
-  </j:catch>
+  
 </goal>
 <goal name="cea-commandline-undeploy" >
-  <j:catch>
+  
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-cea-commandline-${pom.currentVersion}" />
-  </j:catch>
+  
 </goal>
 <goal name="cea-http-undeploy" >
-  <j:catch>
+  
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-cea-http-${pom.currentVersion}" />
-  </j:catch>
+  
 </goal>
 <goal name="jes-undeploy" >
-  <j:catch>
+  
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-jes-${pom.currentVersion}" />
-  </j:catch>
+  
 </goal>
 
 
 <goal name="pal-undeploy" >
-  <j:catch>
+  
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-pal-${pom.currentVersion}" />
-  </j:catch>
+  
 </goal>
 
 <goal name="pal-fits-undeploy" >
-  <j:catch>
+  
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-pal-fits-${pom.currentVersion}" />
-  </j:catch>
+  
 </goal>
 
 <goal name="pal-sec-undeploy" >
-  <j:catch>
+  
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-pal-sec-${pom.currentVersion}" />
-  </j:catch>
+  
 </goal>
 
 <goal name="pal-cds-undeploy" >
-          <j:catch>
+          
           <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
                   path="/astrogrid-pal-cds-${pom.currentVersion}" />
-          </j:catch>
+          
 </goal>
 
 <goal name="configuration-undeploy" >
-  <j:catch>
+  
         <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
                 path="/astrogrid-autoconfiguration" />
-  </j:catch>
+  
 </goal>
 
 <goal name="portal-undeploy">
-  <j:catch>
+  
         <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
                 path="/astrogrid-portal" />
-  </j:catch>
+  
 </goal>
 
 <goal name="community-undeploy" >
-  <j:catch>
+  
     <tomcat-remove
         url="${tomcat.manager.url}"
         username="${tomcat.manager.username}"
         password="${tomcat.manager.password}"
         path="/astrogrid-community-${pom.currentVersion}" />
-  </j:catch>
+  
 </goal>
 
 <goal name="CLEANTOMCAT" description="run this to clean out tomcat directories if tomcat not running">
@@ -911,12 +911,12 @@
         </style>
 
       <!-- now the workflow documents-->
-      <j:catch>
+      
       <style basedir="${basedir}/target/docs/junit-full" destdir="${basedir}/target/docs/junit-full"
         style="${basedir}/build/workflow.xsl">
                 <include name="**/*-workflow.xml" />
         </style>
-        </j:catch>
+        
 
 </goal>
 
