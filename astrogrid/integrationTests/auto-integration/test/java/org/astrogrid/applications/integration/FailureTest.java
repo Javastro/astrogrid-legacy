@@ -1,5 +1,5 @@
 /*
- * $Id: FailureTest.java,v 1.1 2004/09/20 15:01:38 pah Exp $
+ * $Id: FailureTest.java,v 1.2 2004/09/21 08:53:29 pah Exp $
  * 
  * Created on 10-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
- * Tests whether known faults are passed back. 
+ * Tests whether known tool faults are passed back to the client from CEC.
  * @author Paul Harrison (pah@jb.man.ac.uk) 10-Sep-2004
  * @version $Name:  $
  * @since iteration6
@@ -86,5 +86,21 @@ public FailureTest(String arg0)
             e.printStackTrace();
         }
     }
-    
+  
+    public void testMissingParameter()
+    {
+        
+        ParameterValue pv = tool.getOutput().getParameter(0);
+        tool.getOutput().removeParameter(pv);
+        try {
+            String exid = delegate.init(tool, jobid);
+            delegate.execute(exid);
+            fail("a MandatoryParameterNotPassed exception should have occured");
+        }
+        catch (CEADelegateException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
 }
