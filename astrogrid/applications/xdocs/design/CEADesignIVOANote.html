@@ -75,7 +75,7 @@ http://www.ivoa.net/Documents/.</em> </p>
 <br />
 </div>
 <br />
-<h2><a name="acknowledgments" id="acknowledgments">Acknowledgments</a></h2>
+<h2><a name="acknowledgements" id="acknowledgements">Acknowledgements</a></h2>
 <h2><a id="contents" name="contents">Contents</a></h2>
 <div class="head">
 <ul class="toc">
@@ -147,13 +147,13 @@ compatible with a VO Infrastructure.</li>
   <li>To provide a higher level description than WSDL 1.1 can offer.
     <ul>
       <li>Restrict the almost limitless possibilities allowed by WSDL
-into a managable subset.</li>
+into a manageable subset.</li>
       <li>Provide specific semantics for some astronomical quantities.</li>
       <li>Provide extra information not allowed in WSDL - e.g. default
 values, descriptions for use in a GUI etc. </li>
     </ul>
   </li>
-  <li>To provide extenstions with the VO Resource schema <a
+  <li>To provide extensions with the VO Resource schema <a
  href="http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03#VOResource_a_Resource_Metadata_S">(See
 the IVOA WG)</a> that can describe a general application</li>
   <li>To provide asynchronous operation of an application - This is
@@ -174,7 +174,7 @@ location.<br />
 </ul>
 <h3><a name="sec1_2" id="sec1_2">1.2 Origins</a></h3>
 <p>The design for this architecture has evolved from the requirements
-fot the Workflow/Job Execution System components within AstroGrid. It
+for the Workflow/Job Execution System components within AstroGrid. It
 was desireable for the job execution system to have a single model for
 an application, so that it could deal with the (already complex)
 problems of scheduling, looping, conditional execution etc. without
@@ -210,15 +210,15 @@ include unix command line tools, database queries, web services etc.</li>
 implements the CommonExecutionConnector interface, and actually
 controls the execution of the application. There can be various
 specialisms of this service, such as the
-CommandLineApplicationContoller, which can be configured to invoke a
-general unix command line tool, a WebServiceApplicationContoller, which
+CommandLineApplicationController, which can be configured to invoke a
+general unix command line tool, a WebServiceApplicationController, which
 can be configured to act as a proxy to call a general web service in a
 uniform manner</li>
   <li>Invoking process</li>
   <li>Monitoring Service - This is a service that the Common Execution
 Controller can report status to - it can of course be </li>
   <li>Storage Service - this is the mechanism by which the application
-can return its results. It can encompass a wide variety of mechansims
+can return its results. It can encompass a wide variety of mechanisms
 e.g.
     <ul>
       <li>SOAP messages</li>
@@ -243,7 +243,7 @@ the CEA system interact when an application is executed.&nbsp; The
 steps are</p>
 <ol>
   <li>The invoking process calls the execute method of the CommonExecutionConnector
-    interface, which is implemented by the component known as the CommonExectionController.
+    interface, which is implemented by the component known as the CommonExecutionController.
     This will cause asynchronous execution of the application and will return
     immediately
     with
@@ -256,14 +256,14 @@ steps are</p>
     particular execution instance. The parameters to this call are
     <ul>
       <li>A Tool object - This is described in more <a href="#Tool">detail below</a>.</li>
-      <li>JobIdtentifier - this is the identifier by which the <em>invoking process
+      <li>JobIdentifier - this is the identifier by which the <em>invoking process
         uses to keep track </em>of this particular execution instance.</li>
       <li>Monitor endpoint URL - this is the endpoint of the service that implements
         the Job Monitor interface that the CommonExecutionController can call
         to inform the monitoring process of the status of the execution instance.</li>
     </ul>
   </li>
-  <li>The CommonExecutionConfroller will then start the application.</li>
+  <li>The CommonExecutionController will then start the application.</li>
   <li>The application can then optionally return status information to the CommonExecutionController
     which will then pass this on to the Monitor Service.</li>
   <li>When the application completes it will inform the CommonExecutionController
@@ -308,7 +308,7 @@ purposes in the interaction with the registry - This interaction will be finalis
   <li>Those used to describe the application in the registry
     <ul>
       <li><em>Application</em> the overall application, which has a series of</li>
-      <li><em>Parameter </em>which are the detailed desciptions of the parameters
+      <li><em>Parameter </em>which are the detailed descriptions of the parameters
         and their types.</li>
     </ul>
   </li>
@@ -344,7 +344,7 @@ the same parameter can occur in several interfaces.</p>
 probably the heart of the CEA. It is the model for the parameters that
 allow us to add semantic meaning, and to give the flexibility in how
 the parameters are transported. The implementation is still in its
-infancy, but it is hoped that the parameter definition will be extented
+infancy, but it is hoped that the parameter definition will be extended
 to encompass any data models that the VO produces.</p>
 <p>The basic parameter definition from the schema is shown below</p>
 <p><img src="BaseParameterDefintion.png" />
@@ -457,10 +457,10 @@ into its own CEA specific schema in future.</td>
 </table>
 <h4>2.5.1 Discussion of the VOResource Extension </h4>
 <p>It is a valid question to ask whether there needed to be a specific VOResource
-  extension to accomodate the CEA. The standard <span class="element">Service
-  </span>element exepects the interface to the service to be described in WSDL,
+  extension to accommodate the CEA. The standard <span class="element">Service
+  </span>element expects the interface to the service to be described in WSDL,
   so given that CEA has <em>constant</em> WSDL definitions for <em>different</em> applications
-  therre needs to be a way of expressing the fact that a particular <span class="element">CeaService</span>  can
+  there needs to be a way of expressing the fact that a particular <span class="element">CeaService</span>  can
   run a particular set of applications. The method that was chosen was to extend
   <span class="element">Service</span> with an element that is just an aggregation
   of pointers to the actual application defintions defined in <span class="element">CeaApplication</span>  which
@@ -469,7 +469,7 @@ into its own CEA specific schema in future.</td>
 <p><img height="331" src="RegistryDomain.gif" width="641" /></p>
 <p>For a particular application there should  be only one CeaApplication entry
   in the registry. This entry will define everything that is necessary to run
-  the application excepf for the endpoint of the service. This implies that to
+  the application except for the endpoint of the service. This implies that to
   find a particular instance of a particular application is a two stage registry
   query. </p>
 <ol>
@@ -482,7 +482,7 @@ into its own CEA specific schema in future.</td>
     the point that one <span class="element">CeaService</span> may
     run several <span class="element">CeaApplication</span>s
     and that a particular <span class="element">CeaApplication</span> can be
-    run by serveral <span class="element">CeaService</span>s.</p>
+    run by several <span class="element">CeaService</span>s.</p>
 <h2><a name="Deployment" id="Deployment"></a>3 Deployment</h2>
 <h3>3.1 Typical Scenario</h3>
 <a href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/CEADeployment.gif?rev=HEAD&content-type=image/gif" target="umldiagram"><img alt="UML Deployment" border="0" height="459"
@@ -493,7 +493,7 @@ into its own CEA specific schema in future.</td>
 applications that are wrapped by specialized CommonExecutionControllers
 that allow the workflow engine to use the CommonExecutionConnector
 interface to communicate</li>
-  <li>There is a webservices proxy component that can act as an adapter
+  <li>There is a webservices proxy component that can act as an adaptor
 between a generic web service and the CommonExecutionConnector interface</li>
   <li>On the left of the diagram the webservices proxy is localised
 with a web service so that the results returned by the webservice can
@@ -529,7 +529,7 @@ be stored locally thus minimising network traffic</li>
 <h3>4.1 What needs to be done to make this suitable for adoption by the IVOA</h3>
 <ul>
   <li>Refactor the schema to remove some of the astrogrid specific
-parts - particulary the tool element needs to be removed from workflow
+parts - particularly the tool element needs to be removed from workflow
 and placed in AGApplicationBase.xsd schema.</li>
   <li>The status callback can be defined in the same WSDL as the main
 interface.</li>
