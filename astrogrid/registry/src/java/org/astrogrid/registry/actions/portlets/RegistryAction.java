@@ -355,10 +355,4 @@ public class RegistryAction extends JspPortletAction
     return output;
   }
 
-  private void outstring ( StringBuffer sbuf, int indent, boolean brk,
-                           String s ) {
-    if ( brk ) sbuf = sbuf.append( "<br/>" );
-    for ( int i = 0; i < indent; i++ ) sbuf = sbuf.append( ' ' );
-    sbuf = sbuf.append( "<strong>" + s + ": </strong>" );
-  }
 }
