@@ -4,25 +4,30 @@
 */
 import org.apache.axis.utils.XMLUtils
 import org.apache.commons.cli.*
+import org.exolab.castor.xml.Marshaller
+import org.astrogrid.workflow.beans.v1.Tool
 
 import org.astrogrid.ui.script.*;
 
 class Apps {
 // setup commandline options
 Options o = new Options()
+OptionGroup og = new OptionGroup()
 Apps() {
-o.addOption("l","list",false,"List names of registered applications")
+o.addOption("l","list",false,"List names of registered applications (default)")
  .addOption("L","fullList",false,"List info of each registered application")
  .addOption("Q","reg",true,"Return full registry entry for an application")
  .addOption("q","query",true,"Return information for an application")
+ .addOption("t","tool",true,"Return a template tool document for an application")
+ .addOption("i","interface",true,"Specify interface of the application to work with (optional, only valid with 't', falls back to default)")
+ .addOption("v","validate",true,"Validate a tool document (on stdin ) against an application description")
  .addOption("h","help",false,"Display this help.")
 
   .addOption("u","user",true,"username (optional)")
  .addOption("p","password",true,"password (optional)")
  .addOption("c","community",true,"community (optional)")
 
-og = new OptionGroup()
-['l','L','q','Q','h'].each{og.addOption(o.getOption it)}
+['l','L','q','Q','t','h',"v"].each{og.addOption(o.getOption it)}
 o.addOptionGroup og
 }
 
@@ -45,7 +50,7 @@ reg = astrogrid.workflowManager.toolRegistry
 
 
 
-if (line.hasOption "l") {
+if (line.hasOption("l") || og.selected == null) {
         reg.listApplications().each { println(it) }
 }
 
@@ -57,6 +62,40 @@ else if (line.hasOption "L") {
 else if (line.hasOption "Q") {
         descr = reg.getDescriptionFor(line.getOptionValue "Q")
         XMLUtils.PrettyElementToStream(descr.originalVODescription,System.out)
+}
+
+else if (line.hasOption "t") {
+    appName = line.getOptionValue "t"
+	descr = reg.getDescriptionFor(appName)
+	tool = null;
+	if (line.hasOption "i") {
+	 toolName = line.getOptionValue "i"	
+	 iface = descr.interfaces.get_interface().find{it.name == toolName}
+	 if (iface == null) {
+	  throw new IllegalArgumentException("Cannot find interface named " + toolName + " in application " + appName)
+	 }
+	 tool = descr.createToolFromInterface(iface)
+	} else {
+	  tool = descr.createToolFromDefaultInterface()
+	}
+    doc = XMLUtils.newDocument()
+    Marshaller.marshal(tool,doc)
+    XMLUtils.DocumentToStream(doc,System.out)	
+    println ""
+}
+
+else if (line.hasOption "v") {
+  appName = line.getOptionValue "v"
+  descr = reg.getDescriptionFor appName
+  input = System.in.newReader()
+  tool = Tool.unmarshalTool input
+  try {
+	  descr.validate(tool)
+  } catch (Exception e) {
+	  println("Validation failed: ")
+	  println(e.getMessage())
+	  System.exit(-1)
+	  }
 }
 
 else if (line.hasOption "q") {
@@ -91,6 +130,9 @@ else if (line.hasOption "q") {
         }
        }
 }
+
+
+
 
 else {
         displayHelp()
