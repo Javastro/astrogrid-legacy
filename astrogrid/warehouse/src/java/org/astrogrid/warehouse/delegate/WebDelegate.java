@@ -1,4 +1,4 @@
-/* * $Id: WebDelegate.java,v 1.2 2003/10/08 15:25:35 kea Exp $
+/* * $Id: WebDelegate.java,v 1.3 2003/10/23 17:19:45 kea Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -71,7 +71,7 @@ public class WebDelegate implements WarehouseDelegateIfc
     catch (Exception e) {
       // TOFIX - Temporary error handling!
       // What about internationalisation of message etc?
-      throw new WarehouseException("Couldn't set result destination",e);
+      throw new WarehouseException("Couldn't make query",e);
     }
   };
 
@@ -101,7 +101,7 @@ public class WebDelegate implements WarehouseDelegateIfc
     catch (Exception e) {
       // TOFIX - Temporary error handling!
       // What about internationalisation of message etc?
-      throw new WarehouseException("Couldn't set result destination",e);
+      throw new WarehouseException("Couldn't start query",e);
     }
   }
 
@@ -115,7 +115,7 @@ public class WebDelegate implements WarehouseDelegateIfc
     catch (Exception e) {
       // TOFIX - Temporary error handling!
       // What about internationalisation of message etc?
-      throw new WarehouseException("Couldn't set result destination",e);
+      throw new WarehouseException("Couldn't abort query",e);
     }
   }
 
@@ -129,7 +129,7 @@ public class WebDelegate implements WarehouseDelegateIfc
     catch (Exception e) {
       // TOFIX - Temporary error handling!
       // What about internationalisation of message etc?
-      throw new WarehouseException("Couldn't set result destination",e);
+      throw new WarehouseException("Couldn't get query status",e);
     }
   }
 
@@ -145,7 +145,18 @@ public class WebDelegate implements WarehouseDelegateIfc
 
     try {
       WebDelegate delegate = new WebDelegate(new URL(args[0]));
-      System.out.print(delegate.makeQuery(null,"dummy"));
+
+      System.out.print("Making dummy query...  ");
+      String queryID = delegate.makeQuery(null,"dummy");
+      System.out.println("done: query ID is "+ queryID);
+
+      System.out.print("Setting destination...  ");
+      delegate.setResultsDestination(queryID,"OGSA_TEST_OUTPUT");
+      System.out.println("done...  ");
+
+      System.out.print("Starting query...  ");
+      delegate.startQuery(queryID);
+      System.out.println("done...  ");
     }
     catch (WarehouseException e) {
       e.printStackTrace();
@@ -155,6 +166,12 @@ public class WebDelegate implements WarehouseDelegateIfc
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.3  2003/10/23 17:19:45  kea
+Starting to add OGSA-DAI functionality to webservice implementation,
+to allow webservice to perform queries on OGSA-DAI database.
+Mostly commented out at the moment because tomcat is giving me big
+heap trouble.
+
 Revision 1.2  2003/10/08 15:25:35  kea
 Finalised interface classes required for end IT4 wk 2:
     org.astrogrid.warehouse.delegate.WarehouseDelegateIfc
