@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.10 2004/03/07 21:15:07 mch Exp $
+ * $Id: DelegateTest.java,v 1.11 2004/03/08 15:55:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,6 +30,7 @@ import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -138,7 +139,7 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
    {
       FullSearcher delegate = DatacenterDelegateFactory.makeFullSearcher(null);
 
-      Metadata meta = delegate.getMetadata();
+      Document meta = delegate.getMetadata();
       
       assertNotNull(meta);
    }
@@ -170,6 +171,9 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
 
 /*
  * $Log: DelegateTest.java,v $
+ * Revision 1.11  2004/03/08 15:55:48  mch
+ * More specific endpoints in prep for new versioned datacenters
+ *
  * Revision 1.10  2004/03/07 21:15:07  mch
  * Changed apache XMLUtils to implementation-independent DomHelper
  *
