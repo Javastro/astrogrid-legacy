@@ -1,5 +1,5 @@
 /*
- * $Id: Status.java,v 1.3 2004/07/02 09:11:13 nw Exp $
+ * $Id: Status.java,v 1.4 2004/07/23 10:37:28 nw Exp $
  * 
  * Created on 02-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,7 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The status values that the application can have. Follows a typesafe enum pattern.
+ * The status values that the application can have. 
+ * <p>Follows a typesafe enum pattern.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
@@ -44,6 +45,10 @@ public class Status {
      return value;
    }
    
+   /** convert from the cea enumeration type to the associated value in the JES enumeration type
+    * @todo harmonize these
+    * @return the equivalent execution phase
+    */
    public ExecutionPhase toExecutionPhase() {
        return (ExecutionPhase)phaseMap.get(this);
        
@@ -54,6 +59,9 @@ public class Status {
        return this.value.equals(other.value);
    }
    
+   /** parse a string as a status 
+    * @param val the strng status
+    * @return equivalent enumeration object, or null*/
    public static Status valueOf(String val)
    {
       Status retval;
@@ -61,12 +69,19 @@ public class Status {
       return retval;
    }
    
+   /** applications are in this state when first constructed */
    public static final Status NEW = new Status("New");
+   /** applications are in this state after the {@link org.astrogrid.applications.Application#execute()} method has returned */
    public static final Status INITIALIZED = new Status("Initialized");
+   /** applications are in this state while executing */
    public static final Status RUNNING = new Status("Running");
+   /** the application has completed execution */
    public static final Status COMPLETED = new Status("Completed");
+   /** the framework is writing back the results of the application execution */
    public static final Status WRITINGBACK = new Status("writing parameters back");
+   /** somethings gone wrong */
    public static final Status ERROR = new Status("Error");
+   /** something has gone really wrong */
    public static final Status UNKNOWN = new Status("Unknown");
    
    static {

@@ -1,5 +1,5 @@
 /*
- * $Id: Application.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: Application.java,v 1.3 2004/07/23 10:37:28 nw Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -23,41 +23,80 @@ import java.util.Observer;
 
 
 /**
- * The basic definition of an application instnace - the combination of an application description and a set of parameters.
- * @author Paul Harrison (pah@jb.man.ac.uk) 20-Apr-2004
- * @stereotype entity
- * @robustness Entity 
+ A single execution of an application
+  <p />
+This interface represents the application of a {@link org.astrogrid.workflow.beans.v1.Tool} to an {@link org.astrogrid.applications.description.ApplicationDescription} - 
+and models a single application execution / invocation / call.
+<p />
+This is the core interface to be implemented by CEA provider back-ends.
+The functionality splits into the following sections.
+<h2>Static info</h2>
+The {@link #getInputParameters()}, {@link #getID()}, {@link #getUser()}, {@link #getJobStepID()}, {@link #getApplicationDescription()}, {@link #getApplicationInterface()}
+ methods return information provided when the application was created. This data does not change though the life of the application.
+
+<h2>State Changers</h2>
+{@link #execute()} starts the application running. (The application is initialized on creation of an instance of this class)<br>
+{@link #attemptAbort()} will attempt to abort the application. Not all providers are expected to support this.
+
+<h2>Dynamic Info</h2>
+{@link #getResult()} will access the results (so far computed) of the application execution.
+{@link #getStatus()} will return the current current state of the application execution.
+
+<h2>Callback Interface</h2>
+This interface follows the {@link java.util.Observable} pattern - interested parties can register as observers {@link #addObserver(Observer)} and then 
+receive notifications when the execution state changes, messages are produced, or results ready.
+
+The {@link #createTemplateMessage()} shoud be overridden by implementors to return a custom <tt>MessageType</tt> object, with fields pre-populated. This is used by the system
+as the basis for messages sent to the observers of the application.
+
+@author Paul Harrison
+@author Noel Winstanley
+@see org.astrogrid.applications.AbstractApplication
+@see java.util.Observer
+@see org.astrogrid.workflow.beans.v1.Tool
+@see org.astrogrid.applications.beans.v1.cea.castor.MessageType
+@see org.astrogrid.applications.beans.v1.parameters.ParameterValue
+@see org.astrogrid.applications.beans.v1.cea.castor.ResultListType
+@see org.astrogrid.applications.Status
  */
-public interface Application {
+public interface Application  {
    /**
-    * Execute an application. This is the main entry point for the application, and will cause asynchronous execution once the parameter values have been set up for the application.
+    * Start the execution of an application.<p> 
+    * This is the main entry point for the application, and is expected to return quickly, with the application continuing execution in another thread if needed.
     * @return true if the application has successfully been started executing.
     * @throws CeaException
     */
    boolean execute() throws CeaException;
-  /** get the results of the application execution */
+  /** @return results of the application execution- will be empty / semipopulated if the application has not yet completed. */
    public ResultListType getResult();
-   /** get the input parameters to this application execution */
+   /** get the input parameters to this application execution 
+    * @return the inputs to this execution*/
     public ParameterValue[] getInputParameters();
 
-    /** access the cea-id for this application. will be unique on this server, possibly worldwide */
+    /** access the cea-id for this application. will be unique on this server, possibly worldwide 
+     * @return unique cea-id*/
     public String getID();
-    /** access the user this application is running for */
+    /** access the user this application is running for 
+     * @return the user*/
    public User getUser() ;
-   /** access the particular interface of the application description that this application conforms to */
+   /** access the particular interface of the application description that this application conforms to
+    * @return an interface object belonging to {@link #getApplicationDescription()} */
    public ApplicationInterface getApplicationInterface() ;
-   /** the description of this application */
+   /** @return the description of this application */
    public ApplicationDescription getApplicationDescription() ;
-   /** access the user-assigned if for this application */
+   /** @return the user-assigned if for this application */
    public String getJobStepID();
-   /** access the current status of the application */
+   /** @return the current status of the application 
+    * @see Status for the expected sequence of statuses.
+    * */
    public Status getStatus();
-   /** try to abort / cancel execution of the application */
+   /** try to abort / cancel execution of the application 
+    * @return true if the attempt was successful*/
    public boolean attemptAbort();
    
    /** create  a template message, prepopulated as much as possible - this is used for reporting
-    * back to listeners  to the application progress
-    * @return
+    * back to listeners on the application progress
+    * @return a pre-populated message object
     */
    public MessageType createTemplateMessage();
    
@@ -68,8 +107,8 @@ public interface Application {
     * <ul>
     * <li>The application changes state (i.e. the value of {@link getStatus()} changes
     * <li> When an execution error occurs
-    * <li>Other application-defined things of interest happen
-    * 
+    * <li>Other application-defined things of interest happen - arbitrary messages
+    * @todo document types passed into observer.
     * @param obs
     */
    public void addObserver(Observer obs);

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.3 2004/07/22 16:32:15 nw Exp $
+ * $Id: AbstractApplication.java,v 1.4 2004/07/23 10:37:28 nw Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -41,16 +41,40 @@ import java.util.List;
 import java.util.Observable;
 
 /**
- * Basic application functionality. This is extended for custom providers.
+ * Basic implementation of {@link org.astrogrid.applications.Application}
  * <p />
- * extends {@link java.util.Observable} as this provides a nice prepackaged way to manage 
- * event listeners, notifications of changes of state, etc.
- * <p />
- * Implements the {@link Application} interface, which is the public interface. Also provides a bunch of protected-visibiliy methods,
- * to simplify implementing new providers.
+ * This is an abstract class that CEA providers must extend. 
+ * 
+ * <I>This class provides a lot of protected-visibility helper methods, private fields, final methods, etc - it tries to 
+ * impose some structure on the form the extension takes. This may mean that it'd be better to split this class into a framework class, and a plugin class. But we'll see</i>
+ * <h2>Abstract Methods</h2>
+ * Extenders must implement the {@link #execute()} method.
+ * <h2>Overridable Methods</h2>
+ * The {@link #instantiateAdapter(ParameterValue, ParameterDescription, IndirectParameterValue)} method may be overridden to return instances of a custom {@link org.astrogrid.applications.parameter.ParameterAdapter} if needed<br/>
+ * The default implementaiton of {@link #attemptAbort()} does nothing. Providers may extend this if suitable.<br />
+ * The {@link #createTemplateMessage()} method can also be overridden to return more application-specific information, similarly {@link #toString()} if desired.<br/>
+ * 
+ * <h2>Helper Methods</h2>
+ * This class provides helper methods for working with parameters, parameter adapters, and for progress reporting.
+*  <h3>Parameters</h3>
+*    There's methods to iterate through input parameters, output parameters, and all parameters, and to find input / output / either by name
+*  <h3>Parameter Adapters</h3>
+*    There's methods to iterate through input parameterAdapters, output parameterAdapters, and all parameterAdapters - ant to find input / output / eitther kind of adapter by parameter name.
+*    All these methods have {@link #createAdapters()} as a precondition - this initializes the adapter sets.
+*  <h3>Progress Reporting</h3>
+* There's a set of methods that hide the details of notifying observers<p>
+*  Calls to {@link #setStatus(Status)} update the status field of the application, and also send a change notification to all observers registered to this application. The 
+* {@link #reportMessage(String)} method will send a message to each observer, as well as adding it to the log. Similarly with {@link #reportWarning}. Finally {@link #reportError}
+* will send a message <b>and</b> set the status of this application to {@link org.astrogrid.applications.Status#ERROR}. The overridable method {@link #createTemplateMessage()} 
+* is used to create the template messages for this methods.
+*  @author Noel Winstanley
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4.1
+ * @see org.astrogrid.applications.javaclass.JavaClassApplication as an example extension
+ * @see org.astrogrid.applications.Application
+ * @see org.astrogrid.applications.description.ApplicationDescription
+ * @see org.astrogrid.applications.parameter.ParameterAdapter
  */
 public abstract class AbstractApplication extends Observable implements Application {
    /** interface to the set of identifiers for an application */
@@ -59,7 +83,7 @@ public abstract class AbstractApplication extends Observable implements Applicat
        public String getId();
        /** the user-assigned id for this application execution
         * @todo rename to something less jes-specific
-        * @return
+        * @return id for this execution
         */
        public String getJobStepId();
        /** identifier for the user who own this application execution */
@@ -91,13 +115,10 @@ public abstract class AbstractApplication extends Observable implements Applicat
    /** tool object defines the parameters, etc to the application */
    private final Tool tool;
    
-   /** construct a new abstract application - a repreentation of an exection of an application actually.
-    *  Construct a new AbstractApplication
+   /** construct a new application execution
     * @param ids identifiers for this application execution
-    * @param user the user the execution belongs to
-    * @param tool the parameters to the execution
-    * @param description the descrption of this application
-    * @param interface the descrptioni interface this application conforms to.
+    * @param tool defines the parameters of this exeuction, and which application / interface is to be called.
+    * @param applicationInterface the descrptioni interface this application conforms to.
     * @param lib library of indirection handlers - used to read remote parameters using various protocols
     */
    public AbstractApplication(IDs ids,Tool tool, ApplicationInterface applicationInterface,IndirectionProtocolLibrary lib)
@@ -115,17 +136,16 @@ public abstract class AbstractApplication extends Observable implements Applicat
 
     /** hook that specialized subclasses can overried - to return a custom adapter  
      * used in {@link #createAdapters}
-     * @return a {@link DefaultParameterAdapterFactory}
+     * @return a {@link DefaultParameterAdapter}
      */
     protected ParameterAdapter instantiateAdapter(ParameterValue pval, ParameterDescription descr,IndirectParameterValue indirectVal) {
         return new DefaultParameterAdapter(pval,descr,indirectVal);
     }
     /** sets up the list of input and output parameter adapters
-     * 
+     * must be called before any of the methods that access / query parameter adapters.
      * @throws ParameterDescriptionNotFoundException
      * @throws ParameterAdapterException
-     * @see #inputAdapters
-     * @see #outputAdapters
+     * @see #createAdapters() for customization.
      */
     protected final void createAdapters() throws ParameterDescriptionNotFoundException, ParameterAdapterException {
         inputAdapters.clear();
@@ -155,6 +175,25 @@ public abstract class AbstractApplication extends Observable implements Applicat
        return mt;
    }
 
+   /** to be implemented - should start the application running, and then return
+    * <p>
+    * Usual pattern.
+    * <ol>
+    * <li>(optional) inspect / adjust parameter values
+    * <li> call {@link #createAdapters()} to create parameterAdapters 
+    * <li>iterate through input parameter adapters, calling {@link ParameterAdapter#process()} on each, collecting returned parameter values
+    * <li>set application state to {@link Status#INITIALIZED}
+    * <li>before returning, start background thread which
+    * <ol>
+    *   <li>sets application state to {@link Status#RUNNING}
+    *   <li>performs applicatioin execution in some way, passing in parameter values
+    *   <li>reports progress via {@link #reportMessage(String)}, etc.
+    *   <li> on application complettion, set application state to {@link Status#WRITINGBACK}
+    *   <li>iterate through output parameter adapters, calling {@link ParameterAdapter#writeBack(Object)} on each.
+    *   <li>set application state to {@link Status#COMPLETED}
+    * </ol>
+    *</ol>
+  */
    public abstract boolean execute() throws CeaException;
    
    /** subclassing helper - find a parameter by name in the tool inputs */
@@ -189,10 +228,6 @@ public abstract class AbstractApplication extends Observable implements Applicat
       }      
       return null;      
   }
-
-// end of public interface.
-
-
   
     /** subclassing helper - find a parameter by name in the tool inputs or tool outputs */
    protected final ParameterValue findParameter(String name)   {
@@ -207,11 +242,12 @@ public abstract class AbstractApplication extends Observable implements Applicat
       return a;
   }
 
+  /** access the description associated with this application */
    public final ApplicationDescription getApplicationDescription() {
       return applicationInterface.getApplicationDescription();
    }
  
-
+/** access the interface of {@link #getApplicationDescription()} that is to be executed */
    public final ApplicationInterface getApplicationInterface()  {
        return applicationInterface;
    }
@@ -223,15 +259,11 @@ public abstract class AbstractApplication extends Observable implements Applicat
        return tool.getInput().getParameter();
    }
 
-   /**
-    * @return
-    */
    public final String getJobStepID() {
       return ids.getJobStepId();
    }
 
-    
-
+   
    public final ResultListType getResult() {
        return results;
    }
@@ -260,12 +292,15 @@ public abstract class AbstractApplication extends Observable implements Applicat
        return tool.findXPathIterator("input/parameter | output/parameter");
    }
    
+   /** iterator over all input parameter adapters */
    protected final Iterator inputParameterAdapters() {
        return inputAdapters.iterator();
    } 
+   /** iterator over all output parameter adapters */
    protected final Iterator outputParameterAdapters() {
        return outputAdapters.iterator();
    }
+   /** iterator over all input and output parameter adapters */
    protected final Iterator parameterAdapters() {
        IteratorChain i = new IteratorChain();
        i.addIterator(inputAdapters.iterator());
@@ -273,7 +308,10 @@ public abstract class AbstractApplication extends Observable implements Applicat
        return i;
    }
 
-    /** report an error message - to the log, and to all observers */
+    /** report an error message - to the log, and to all observers 
+     * sets status to {@link Status#ERROR}
+     * @see #setStatus(Status)
+     * */
     protected final void reportError(String msg) {
         logger.error(msg); 
         MessageType mt = createTemplateMessage();
@@ -283,7 +321,10 @@ public abstract class AbstractApplication extends Observable implements Applicat
         notifyObservers(mt);
         setStatus(Status.ERROR);        
     }
-    /** report an exception - to the log, and to all observers */
+    /** report an exception - to the log, and to all observers 
+     * sets status to {@link Status#ERROR}
+     * @see #setStatus(Status)
+     * */
     protected final void reportError(String msg, Throwable e) {
         logger.error(msg,e); 
         MessageType mt = createTemplateMessage();
@@ -300,6 +341,39 @@ public abstract class AbstractApplication extends Observable implements Applicat
         setStatus(Status.ERROR);
         
     }
+    /** report a warning - to the log and all observers.
+     * does not change status of application
+     * @param msg
+     */
+    protected final void reportWarning(String msg) {
+        logger.warn(msg);
+        MessageType mt = createTemplateMessage();
+        mt.setContent(msg);
+        mt.setLevel(LogLevel.WARN);
+        setChanged();
+        notifyObservers(mt);
+    }
+    
+    /** report a warning - to the log and all observers
+     * does not change status of applicaiton
+     * @param msg
+     * @param e
+     */
+    protected final void reportWarning(String msg,Throwable e) {
+        logger.warn(msg,e);
+        MessageType  mt = createTemplateMessage();
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        pw.println(msg);
+        pw.println(e.getMessage());
+        e.printStackTrace(pw);
+        pw.close();
+        mt.setContent(sw.toString());
+        mt.setLevel(LogLevel.WARN);
+        setChanged();
+        notifyObservers(mt);
+    }
+    
     /** report an arbitrary message - to the log, and also to all observers */
     protected final void reportMessage(String msg) {
         logger.info(msg); 
@@ -311,8 +385,7 @@ public abstract class AbstractApplication extends Observable implements Applicat
     }
 
    /**
-    * change the status of this application
-    * <p /> causes all registered observers to be notified of this change 
+    * change the status of this application and notify all observers 
     * @param status
     */
    public final void setStatus(Status status) {
