@@ -265,41 +265,33 @@ public class DesignAction extends AbstractAction {
                 this.consistencyCheck() ;
                     
                 if( action == null ){
-				    this.readLists() ; // PJN note: this is obviously wrong - need to set action in sitemap
                     debug( "action is null") ;  
                 }      
                 if( action.equals( ACTION_CREATE_WORKFLOW ) ) {
 					template = request.getParameter( TEMPLATE_PARAM_TAG ) ; 
 					if ( template.equals( EMPTY_TEMPLATE ) ) {
-						this.readQueryList() ;
 						this.createWorkflow() ;
 					}
                     else {
-                    	this.readQueryList() ;
 						this.createWorkflowFromTemplate( template ) ; 
                     }
                 }
                 else if( action.equals( ACTION_SAVE_WORKFLOW ) ) { 
                     this.saveWorkflow() ;
-					this.readLists() ;
                 }
                 else if( action.equals( ACTION_READ_WORKFLOW ) ) {
                     this.readWorkflow() ; 
                 }
                 else if( action.equals( ACTION_DELETE_WORKFLOW ) ) {
-                    this.deleteWorkflow() ;
-					this.readLists() ; 
+                    this.deleteWorkflow() ; 
                 }
                 else if( action.equals( ACTION_SUBMIT_WORKFLOW ) ) {
-                    this.submitWorkflow() ;
-					this.readLists() ; 
+                    this.submitWorkflow() ; 
                 }
                 else if( action.equals( ACTION_CHOOSE_QUERY ) ) {
-					this.readQueryList() ;
                     this.chooseQuery() ; 
                 }
                 else if( action.equals( ACTION_EDIT_JOINCONDITION ) ) {
-					this.readQueryList() ;
                     this.editJoinCondition() ; 
                 }
                 else if( action.equals( ACTION_READ_WORKFLOW_LIST ) ) {
@@ -315,7 +307,6 @@ public class DesignAction extends AbstractAction {
 					this.insertQueryIntoStep() ;                     								
                 }
                 else {
-                	this.readWorkflowList() ; // PJN note: need to move this
                     debug( "unsupported action") ; 
                 }
                 
@@ -325,6 +316,8 @@ public class DesignAction extends AbstractAction {
         	        session.setAttribute( HTTP_WORKFLOW_TAG, workflow ) ;
             	    debug( session.getAttribute(HTTP_WORKFLOW_TAG).toString() ) ;
                 }
+                
+				this.readLists() ; // Ensure request object contains latest Workflow/Query
             }
             catch( ConsistencyException cex ) {
                 debug( "ConsistencyException occurred");
