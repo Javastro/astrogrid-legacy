@@ -12,22 +12,45 @@ package org.astrogrid.datacenter.service;
  * @author M Hill
  */
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.query.QueryException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 public class TestServer extends TestCase
 {
 
    /**
     * Tests the query service by itself
-    *
-   public void testQueryService()
-   {
-   }
     */
+   public void testQueryService() throws IOException, QueryException,
+                                          DatabaseAccessException,
+                                          SAXException, ParserConfigurationException
+   {
+      //make sure database querier to be used is the dummy one - only available
+      //in the test suite
+      Configuration.setProperty(DatabaseQuerier.DATABASE_QUERIER, "org.astrogrid.datacenter.queriers.DummyQuerier");
+
+      //create the server
+      AxisDataServer server = new AxisDataServer();
+
+      //load test query file
+      URL url = getClass().getResource("testQuery.xml");
+      Document fileDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
+
+      //submit query
+      Element votable = server.runQuery(fileDoc.getDocumentElement());
+   }
 
    /**
     * Tests the data server as if this was an axis server
@@ -59,6 +82,9 @@ public class TestServer extends TestCase
 
 /*
 $Log: TestServer.java,v $
+Revision 1.2  2003/08/28 17:29:25  mch
+Added test based on dummyQuerier
+
 Revision 1.1  2003/08/28 13:21:20  mch
 Added service test
 
