@@ -28,8 +28,8 @@
                                     <td width="30%">Name:</td>
                                     <td width="70%">
                                         <input type="text" name="step_name" size="34"></input>
-                                        <a style="visibility: hidden" id="step_name_button">
-                                            <input type="submit" name="action" value="add-step-name" onClick="hide_select('tool_name_button');"/>
+                                        <a id="step_name_button">
+                                            <input type="submit" name="action" value="add-step-name"/>
                                             <input type="hidden" name="activity_key"/>                                            
                                         </a>                                     
                                         </td>
@@ -56,15 +56,18 @@
                                      <div class="agWorkflow_table_header">Tool</div>
                                         <td width="30%">Name:</td>
                                         <td width="70%"><input type="text" name="tool_name" size="34"></input>
-                                        <div style="display:none" id="tool_select_button"><input type="submit" value="Insert tool " action="insert-tool-into-step"  onclick="document.getElementById('tool_select_button').style.display='none';"/></div></td>
-                                    </tr>
+                                        <a>
+                                            <input type="submit" name="action" value="insert-tool-into-step"/>
+                                        </a>
+                                        </td>
+                                    </tr>                                                                      
                                     <tr>
                                         <td></td>
                                         <td>
-                                          <div style="display:none" id="tool_select_dropdown">                                                
-                                            <select name="tool_list" size="1" id="select_list" onClick="document.getElementById('tool_select_dropdown').style.display='none'; document.getElementById('tool_select_button').style.display=''; document.properties_form.tool_name.value = document.properties_form.select_list.value;">
+                                          <div id="tool_select_dropdown">                                                
+                                            <select name="tool_list" size="1" id="select_list" onClick=" document.properties_form.tool_name.value = document.properties_form.select_list.value;">
 	                                          <option value="none">-- Select tool --</option>
-                                                <xsl:for-each select="//toolsAvailable">
+                                                <xsl:for-each select="toolsAvailable">
                                                   <xsl:element name="option">
                                                     <xsl:attribute name="value"><xsl:value-of select="@tool-name"/></xsl:attribute>
 				                                    <xsl:value-of select="@tool-name"/>

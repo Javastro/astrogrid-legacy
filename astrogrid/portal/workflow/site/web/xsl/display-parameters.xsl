@@ -14,7 +14,7 @@
             <tr>
                 <td align="center" colspan="5">
                     <div class="agWorkflow_table_header">
-                        Parameters for <xsl:value-of select="@name"/>
+                        Parameters for step: <xsl:value-of select="@step-name"/>; tool: <xsl:value-of select="./tool/@tool-name"/>
                     </div>
                 </td>
             </tr>
