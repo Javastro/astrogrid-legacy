@@ -219,16 +219,20 @@ public class QueryRegistry implements RegistryService {
       try {
           return callService(adql,"Search","Search");
       } catch (RemoteException re) {
-         QueryRegistry qr = new QueryRegistry(conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null));
-         try {
-             return qr.callService(adql,"Search","Search");
-         }catch(RemoteException re2) {
-             throw new RegistryException(re2);    
-         }catch(ServiceException se2) {
-             throw new RegistryException(se2);
-         }catch(Exception e2) {
-             throw new RegistryException(e2);
-         }
+         URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
+         if(backupEndpoint != null) {
+             QueryRegistry qr = new QueryRegistry(backupEndpoint);
+             try {
+                 return qr.callService(adql,"Search","Search");
+             }catch(RemoteException re2) {
+                 throw new RegistryException(re2);    
+             }catch(ServiceException se2) {
+                 throw new RegistryException(se2);
+             }catch(Exception e2) {
+                 throw new RegistryException(e2);
+             }
+         }//if
+         throw new RegistryException(re);
       } catch(ServiceException se) {
           throw new RegistryException(se);
       } catch(Exception e) {
@@ -258,7 +262,7 @@ public class QueryRegistry implements RegistryService {
               sbe = (SOAPBodyElement)result.get(0);
               resultDoc = sbe.getAsDocument();
               logger.info("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(resultDoc));
-              System.out.println("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(resultDoc));
+              //System.out.println("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(resultDoc));
               if(!reg_default_version.equals(reg_transform_version)) {
                   //hmmm more of a hack for auto-integration than anything else.
                   //lets grab the registry version from the result and only transform
@@ -363,16 +367,20 @@ public class QueryRegistry implements RegistryService {
       try {
          return callService(doc,"submitQuery","submitQuery");
       } catch (RemoteException re) {
-          QueryRegistry qr = new QueryRegistry(conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null));
-          try {
-              return qr.callService(doc,"submitQuery","submitQuery");
-          }catch(RemoteException re2) {
-              throw new RegistryException(re2);    
-          }catch(ServiceException se2) {
-              throw new RegistryException(se2);
-          }catch(Exception e2) {
-              throw new RegistryException(e2);
+          URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
+          if(backupEndpoint != null) {
+              QueryRegistry qr = new QueryRegistry(backupEndpoint);
+              try {
+                  return qr.callService(doc,"submitQuery","submitQuery");
+              }catch(RemoteException re2) {
+                  throw new RegistryException(re2);    
+              }catch(ServiceException se2) {
+                  throw new RegistryException(se2);
+              }catch(Exception e2) {
+                  throw new RegistryException(e2);
+              }
           }
+          throw new RegistryException(re);
        } catch(ServiceException se) {
            throw new RegistryException(se);
        } catch(Exception e) {
@@ -507,16 +515,20 @@ public class QueryRegistry implements RegistryService {
               resultDoc =  callService(doc,"GetResourcesByIdentifier","GetResourcesByIdentifier");
               //System.out.println("resultDoc = " + DomHelper.DocumentToString(resultDoc));
           } catch (RemoteException re) {
-              QueryRegistry qr = new QueryRegistry(conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null));
-              try {
-                  resultDoc = qr.callService(doc,"GetResourcesByIdentifier","GetResourcesByIdentifier");
-              }catch(RemoteException re2) {
-                  throw new RegistryException(re2);    
-              }catch(ServiceException se2) {
-                  throw new RegistryException(se2);
-              }catch(Exception e2) {
-                  throw new RegistryException(e2);
+              URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
+              if(backupEndpoint != null) {
+                  QueryRegistry qr = new QueryRegistry(backupEndpoint);              
+                  try {
+                      resultDoc = qr.callService(doc,"GetResourcesByIdentifier","GetResourcesByIdentifier");
+                  }catch(RemoteException re2) {
+                      throw new RegistryException(re2);    
+                  }catch(ServiceException se2) {
+                      throw new RegistryException(se2);
+                  }catch(Exception e2) {
+                      throw new RegistryException(e2);
+                  }
               }
+              throw new RegistryException(re);
           } catch (ServiceException se) {
              throw new RegistryException(se);
           } catch (Exception e) {
