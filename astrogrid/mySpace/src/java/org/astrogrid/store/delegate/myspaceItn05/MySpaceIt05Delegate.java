@@ -550,7 +550,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
    public URL getUrl(String sourcePath) throws IOException
    {
-      EntryRecord file = (EntryRecord)this.getFile(sourcePath);
+      EntryRecord file = (EntryRecord) this.getFile(sourcePath);
+      if (file == null) return null;
       return new URL(file.getEntryUri());
    }
 
@@ -661,16 +662,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 //
 //   Append and check any status messages.
 
-      //ignore messages where folder already exists...
-      //@todo better still we want a way of noting this but not failing...?
-      try {
-         this.appendAndCheckStatusMessages(results);
-      }
-      catch (StoreException e) {
-         if (e.getMessage().indexOf("AGMMCE00215")==-1) {
-            throw e;
-         }
-      }
+      this.appendAndCheckStatusMessages(results);
    }
 
 
