@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.14 2005/02/18 12:08:08 clq2 Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.15 2005/02/22 20:57:28 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,8 +13,9 @@ import org.apache.commons.logging.LogFactory;
 import java.io.IOException;
 
 import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.registry.client.query.OAIService;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
-import org.astrogrid.registry.client.harvest.RegistryHarvestService;
+
 
 
 import java.net.URL;
@@ -37,9 +38,9 @@ public class RegistryDelegateFactory {
    public static Config conf = null;
    
    public static final String QUERY_URL_PROPERTY = "org.astrogrid.registry.query.endpoint";
+   public static final String OAI_URL_PROPERTY = "org.astrogrid.registry.oai.query.endpoint";
    public static final String ALTQUERY_URL_PROPERTY = "org.astrogrid.registry.query.altendpoint";
-   public static final String ADMIN_URL_PROPERTY = "org.astrogrid.registry.admin.endpoint";
-   public static final String HARVEST_URL_PROPERTY = "org.astrogrid.registry.harvest.endpoint";   
+   public static final String ADMIN_URL_PROPERTY = "org.astrogrid.registry.admin.endpoint";   
    /**
     * @todo - why is a static reference to the config necessary? wouldn't it be simpler to call config directly each timie
     */
@@ -91,8 +92,8 @@ public class RegistryDelegateFactory {
     * 
     * @return
     */
-   public static synchronized RegistryHarvestService createHarvest() {
-      return createHarvest(conf.getUrl(HARVEST_URL_PROPERTY,null));      
+   public static synchronized OAIService createOAI() {
+      return createOAI(conf.getUrl(OAI_URL_PROPERTY,null));      
    }
 
    /**
@@ -100,8 +101,8 @@ public class RegistryDelegateFactory {
     * @param endPoint
     * @return
     */
-   public static synchronized RegistryHarvestService createHarvest(URL endPoint) {
-      return new org.astrogrid.registry.client.harvest.RegistryHarvestService(endPoint);
+   public static synchronized OAIService createOAI(URL endPoint) {
+      return new org.astrogrid.registry.client.query.OAIRegistry(endPoint);
    }
 
 }

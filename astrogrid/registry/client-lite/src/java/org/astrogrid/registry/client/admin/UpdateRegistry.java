@@ -53,7 +53,7 @@ public class UpdateRegistry implements RegistryAdminService {
     /**
      * Commons Logger for this class
      */
-    private static final Log logger = LogFactory.getLog(UpdateRegistry.class); 
+   private static final Log logger = LogFactory.getLog(UpdateRegistry.class); 
 
 
    private static final String NAMESPACE_URI =  "http://www.ivoa.net/schemas/services/UpdateRegistry/wsdl";
@@ -121,33 +121,6 @@ public class UpdateRegistry implements RegistryAdminService {
       }       
     }
     
-/*   
-   public boolean validateDocument(Document validDocument) {
-      boolean valid = false;
-      try {
-         XSLHelper xs = new XSLHelper();
-         Document resultDoc = xs.transformDatabaseProcess((Node)validDocument);
-         Document castorXS = xs.transformCastorProcess((Node)resultDoc);            
-         VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,castorXS);
-         valid = true;
-      }catch(MarshalException me) {
-         me.printStackTrace();
-         valid = false;   
-      }catch(ValidationException ve) {
-         ve.printStackTrace();
-         valid = false;   
-      }finally {
-         System.out.println("tried validating and results = " + valid);
-         return valid;   
-      }
-   }
-*/
-   
-   public void harvestResource(Document harvestDoc) throws RegistryException {
-       
-       throw new RegistryException("Not implemented yet");
-   }
-
    /**
     * Takes an XML Document to send to the update server side web service call.  Establishes
     * a service and a call to the web service and call it's update method, using an Axis-Message
@@ -217,6 +190,13 @@ public class UpdateRegistry implements RegistryAdminService {
       return resultDoc;
    }
    
+   /**
+    * Method: updateFromFile
+    * Purpose: Update from a File object a local XML file on the system.  Mainly makes a Document DOM object and calls
+    * update.
+    * @param fi - java.io.File object.
+    * @return the document updated on the registry is returned. 
+    */
    public Document updateFromFile(File fi) throws RegistryException {
       try {
          return update(DomHelper.newDocument(fi));
@@ -228,7 +208,14 @@ public class UpdateRegistry implements RegistryAdminService {
          throw new RegistryException(pce);
       }
    }
-   
+
+   /**
+    * Method: updateFromURL
+    * Purpose: Update from a URL consisting of XML for updating the Registry.  Mainly makes a Document DOM object and calls
+    * update.
+    * @param location - java.net.URL
+    * @return the document updated on the registry is returned. 
+    */   
    public Document updateFromURL(URL location) throws RegistryException {
       try {
          return update(DomHelper.newDocument(location));
@@ -240,7 +227,14 @@ public class UpdateRegistry implements RegistryAdminService {
          throw new RegistryException(pce);
       }
    }  
-   
+
+   /**
+    * Method: updateFromString
+    * Purpose: Update from a String of a XML.  Mainly makes a Document DOM object and calls
+    * update.
+    * @param voresources - a String of XML.
+    * @return the document updated on the registry is returned. 
+    */   
    public Document updateFromString(String voresources) throws RegistryException {
       try {
          return update(DomHelper.newDocument(voresources));
@@ -251,68 +245,13 @@ public class UpdateRegistry implements RegistryAdminService {
       }catch(ParserConfigurationException pce) {
          throw new RegistryException(pce);
       }      
-   }    
-      
+   }   
+   
    public String getCurrentStatus() {
-      String status = "";
-      try {
-         Document doc = getStatus();
-         NodeList nl = doc.getElementsByTagName("status");
-         for(int i = 0;i < nl.getLength();i++) {
-            Node nd = nl.item(i);
-            if(nd.hasChildNodes()) {
-               status += nd.getFirstChild().getNodeValue();   
-            }   
-         }//for
-      }catch(Exception e) {
-        logger.error("getCurrentStatus()", e);
-        //@todo should this throw again now? status can't be meaningful to return, can it.
-      }   
-      return status;
+       return "";
    }
    
    public Document getStatus() {
-      Document doc = null;
-      Document resultDoc = null;
-      try {
-         
-         DocumentBuilder registryBuilder = null;
-         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-         doc = registryBuilder.newDocument();
-         Element root = doc.createElementNS(NAMESPACE_URI,"getStatus");
-         doc.appendChild(root);
-      }catch(ParserConfigurationException pce){
-         doc = null;
-        logger.error("getStatus()", pce);
-        //@todo not much point continuing is there?
-      }
-      
-      if(doc == null) {
-          //@todo don't return null - throw a sensible exception instead.
-         return null;   
-      }
-
-      Call call = getCall();
-      SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());
-      sbeRequest.setName("getStatus");
-      sbeRequest.setNamespaceURI(NAMESPACE_URI);
-      
-      try {            
-         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-         SOAPBodyElement sbe = null;
-         if(result.size() > 0) {         
-            sbe = (SOAPBodyElement) result.get(0);
-            resultDoc = sbe.getAsDocument();
-         }
-      }catch(RemoteException re) {
-         resultDoc = null;
-        logger.error("getStatus()", re);
-      }catch (Exception e) {
-         resultDoc = null;
-        logger.error("getStatus()", e);
-      }finally {
-          //@todo why return a null -just allow the previously caught exception to propagate upwards instead.
-         return resultDoc;
-      }
+       return null;
    }
-} 
+}

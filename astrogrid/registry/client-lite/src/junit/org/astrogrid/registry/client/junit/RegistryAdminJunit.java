@@ -123,12 +123,5 @@ public class RegistryAdminJunit extends TestCase {
       //if (DEBUG_FLAG) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
       if (responseDoc != null) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));
    }
-   
-   public void testGetStatus() throws Exception {
-      if (DEBUG_FLAG) System.out.println("Begin testGetStatus");
-      if(rs == null) return;
-      String result = rs.getCurrentStatus();
-      assertNotNull(result);
-      if (DEBUG_FLAG) System.out.println("received " + result);         
-   }  
+  
 }

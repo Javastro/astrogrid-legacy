@@ -59,11 +59,10 @@ public interface RegistryAdminService {
    
    public Document updateFromFile(File fi) throws RegistryException;
    
-   public Document updateFromURL(URL location) throws RegistryException;   
+   public Document updateFromURL(URL location) throws RegistryException;
    
    public String getCurrentStatus();
    
    public Document getStatus();
    
-   public void harvestResource(Document harvestDoc) throws RegistryException;
 } 
