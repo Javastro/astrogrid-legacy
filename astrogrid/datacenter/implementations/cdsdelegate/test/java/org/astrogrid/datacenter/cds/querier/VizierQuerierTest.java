@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierTest.java,v 1.6 2004/09/02 12:44:35 mch Exp $
+/*$Id: VizierQuerierTest.java,v 1.7 2004/09/29 18:45:55 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,10 +15,10 @@ import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.cds.querier.VizierQuerierPlugin;
+import org.astrogrid.datacenter.metadata.VoResourcePlugin;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
-import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.returns.TargetIndicator;
@@ -81,12 +81,6 @@ public class VizierQuerierTest extends ServerTestCase {
        SimpleConfig.setProperty(VizierQuerierPlugin.CATALOGUE_NAME,
          "Dixon");
 
-//
-//    Specify that a catalogue is to be queried rather than just a
-//    metadata query.
-
-       SimpleConfig.setProperty(VizierQuerierPlugin.METADATA,
-         "FALSE");
 
 //
 //    Generate a QuerierManager, generate the query and perform it.
@@ -144,21 +138,6 @@ public class VizierQuerierTest extends ServerTestCase {
        SimpleConfig.setProperty(VizierQuerierPlugin.CATALOGUE_NAME,
          "Dixon");
 
-//
-//    Specify that a catalogue is to be queried rather than just a
-//    metadata query.
-
-       SimpleConfig.setProperty(VizierQuerierPlugin.METADATA,
-         "TRUE");
-
-//
-//    Generate a QuerierManager, generate the query and perform it.
-
-       QuerierManager manager = new QuerierManager("DummyTest");
-
-       StringWriter sw = new StringWriter();
-
-//
 //    The values for the cone query correspond to the RA, Dec of M31,
 //    which is the object used in the examples from CDS.  All the values
 //    are in decimal degrees.  The search radius is equivalent to
@@ -166,12 +145,12 @@ public class VizierQuerierTest extends ServerTestCase {
 
        Querier q = Querier.makeQuerier(Account.ANONYMOUS,
          new ConeQuery(10.684620, 41.269278, 0.166667),
-         new TargetIndicator(sw),
+         new TargetIndicator(new StringWriter()),
          ReturnTable.VOTABLE);
 
-       manager.askQuerier(q);
-
-       Document results = DomHelper.newDocument(sw.toString());
+      VoResourcePlugin resourcePlugin = new VizierQuerierPlugin(q);
+          
+       Document results = DomHelper.newDocument(resourcePlugin.getVoResource());
 
 //
 //    The ideal test would be:
@@ -193,6 +172,9 @@ public class VizierQuerierTest extends ServerTestCase {
 
 /*
 $Log: VizierQuerierTest.java,v $
+Revision 1.7  2004/09/29 18:45:55  mch
+Bringing Vizier into line with new(er) metadata stuff
+
 Revision 1.6  2004/09/02 12:44:35  mch
 Fixed FORMAT_VOTABLEs
 

@@ -1,4 +1,4 @@
-/*$Id: VizierQueryMaker.java,v 1.4 2004/09/28 15:05:27 mch Exp $
+/*$Id: VizierQueryMaker.java,v 1.5 2004/09/29 18:45:55 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,10 +46,11 @@ public class VizierQueryMaker  {
     * Constructs a Vizier Query from the given cone query
     */
    public VizierQuery fromCone(ConeQuery cone) {
-      VizierQuery viz = new VizierQuery();
+      VizierQuery viz = new VizierQuery(
+         new DecimalDegreesTarget(cone.getRa(), cone.getDec()),
+         cone.getRadius()
+      );
 
-      viz.setRadius(cone.getRadius());
-      viz.setTarget(new DecimalDegreesTarget(cone.getRa(), cone.getDec()));
       viz.setUnit(Unit.DEG);
       
       return viz;
@@ -70,6 +71,9 @@ public class VizierQueryMaker  {
 
 /*
 $Log: VizierQueryMaker.java,v $
+Revision 1.5  2004/09/29 18:45:55  mch
+Bringing Vizier into line with new(er) metadata stuff
+
 Revision 1.4  2004/09/28 15:05:27  mch
 Temporary compile-only fix for removing obsolete ADQL 0.5
 
