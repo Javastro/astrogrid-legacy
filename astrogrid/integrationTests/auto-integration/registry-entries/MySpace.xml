@@ -29,7 +29,7 @@
       <Description>
          This entry is a Myspace manager entry which is a particular service dealing with a user's VOSpace.
       </Description>
-      <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/myspace</ReferenceURL>
+      <ReferenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/myspace</ReferenceURL>
     </Summary>
     <Type>Archive</Type>
     <Curation>
@@ -56,7 +56,7 @@
     <Subject>Users VOSpace</Subject>
     <Interface>
       <Invocation>WebService</Invocation>
-      <AccessURL use="base">@TOMCATROOT@/astrogrid-mySpace-SNAPSHOT/services/Manager?wsdl</AccessURL>
+      <AccessURL use="base">@TOMCATROOT@/astrogrid-mySpace-@VERSION@/services/Manager?wsdl</AccessURL>
     </Interface>
   </vr:Resource>
 </VODescription>

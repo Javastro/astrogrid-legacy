@@ -10,7 +10,7 @@
                 <vr:ShortName>TemplateEntry</vr:ShortName>
                 <vr:Summary>
                         <vr:Description>This is part of the astrogrid CEA.</vr:Description>
-                        <vr:ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</vr:ReferenceURL>
+                        <vr:ReferenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</vr:ReferenceURL>
                 </vr:Summary>
                 <vr:Type>Other</vr:Type>
                 <vr:Curation>
@@ -32,7 +32,7 @@
                 </vr:Curation>
                 <vr:Subject>???</vr:Subject>
                 <vr:Capability>
-                        <vr:StandardURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</vr:StandardURL>
+                        <vr:StandardURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</vr:StandardURL>
                         <vr:StandardID>
                                 <vr:AuthorityID>astrogrid.org</vr:AuthorityID>
                                 <vr:ResourceKey>CommonExecutionArchitucture</vr:ResourceKey>
@@ -40,7 +40,7 @@
                 </vr:Capability>
                 <vr:Interface>
                         <vr:Invocation>WebService</vr:Invocation>
-                        <vr:AccessURL use="base">@TOMCATROOT@/astrogrid-pal-sec-SNAPSHOT/services/CommonExecutionConnectorService</vr:AccessURL>
+                        <vr:AccessURL use="base">@TOMCATROOT@/astrogrid-pal-sec-@VERSION@/services/CommonExecutionConnectorService</vr:AccessURL>
                 </vr:Interface>
                 <ManagedApplications>
                         <ApplicationReference>

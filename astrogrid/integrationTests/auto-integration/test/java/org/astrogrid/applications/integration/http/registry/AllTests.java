@@ -1,5 +1,4 @@
 /*$Id: AllTests.java,v 1.2 2004/09/02 11:18:09 jdt Exp $
- * Created on 29-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -8,13 +7,14 @@
  * with this distribution in the LICENSE.txt file.  
  *
  **/
-package org.astrogrid.applications.integration.http;
+package org.astrogrid.applications.integration.http.registry;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 29-Jun-2004
+ * A suite of all the tests in this package
+ * @author jdt
  *
  */
 public class AllTests {
@@ -24,7 +24,7 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for HTTP CEA Provider");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(HttpServerInstallationTest.class);
+		suite.addTestSuite(RegistryQuerierImplTest.class);
 		//$JUnit-END$
 		return suite;
 	}
@@ -35,10 +35,7 @@ public class AllTests {
  Revision 1.2  2004/09/02 11:18:09  jdt
  Merges from case 3 branch for SIAP.
 
- Revision 1.1.22.1  2004/08/20 00:36:19  jdt
- moved HelloWorld tests
+ Revision 1.1.2.2  2004/08/23 13:18:02  jdt
+ More tests, and some package info.
 
- Revision 1.1  2004/07/01 11:43:33  nw
- cea refactor
- 
  */

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractTestForCEA.java,v 1.1 2004/07/01 11:43:33 nw Exp $
+ * $Id: AbstractTestForCEA.java,v 1.2 2004/09/02 11:18:09 jdt Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -12,6 +12,8 @@
  */ 
 
 package org.astrogrid.applications.integration;
+
+import org.apache.log4j.Logger;
 
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.integration.AbstractTestForIntegration;
@@ -26,6 +28,11 @@ import java.util.List;
  * @since iteration5
  */
 public abstract class AbstractTestForCEA extends AbstractTestForIntegration {
+	/**
+	 * Logger for this class
+	 */
+	private static final Logger logger = Logger
+			.getLogger(AbstractTestForCEA.class);
 
    /**
     * @param arg0
@@ -52,8 +59,10 @@ public abstract class AbstractTestForCEA extends AbstractTestForIntegration {
         }
         if (serv == null) {
             fail("failed to find service matching '" + searchString + "'");
-        }      
+        }    
+		logger.debug("setUp() - Creating delegate for server with end point:"+serv.getEndpoint());
         delegate = (CommonExecutionConnectorClient)serv.createDelegate();
+        
     }
 
    protected Service serv;

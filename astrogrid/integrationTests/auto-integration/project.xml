@@ -1,5 +1,5 @@
 <project>
-    <pomVersion>1</pomVersion>
+    <pomVersion>3</pomVersion>
     <artifactId>auto-integration</artifactId>
     <name>Automated Integration Testing</name>
     <groupId>auto-integration</groupId>
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-exist</artifactId>
-                <version>${pom.currentVersion}</version>
+	        <version>${pom.currentVersion}</version>
             <type>war</type>
             <properties/>
         </dependency>
@@ -132,7 +132,7 @@
             <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
             <properties/>
         </dependency>
-                <dependency>
+		<dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly-tags-http</artifactId>
             <version>SNAPSHOT</version>

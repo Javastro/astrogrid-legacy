@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.28 2004/08/27 13:17:10 nw Exp $ -->
+<!-- $Id: tests-project.xml,v 1.29 2004/09/02 11:18:09 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <id>auto-integration-tests</id>
-        <currentVersion>${astrogrid.iteration}</currentVersion>
+	<currentVersion>${astrogrid.iteration}</currentVersion>
     <name>Tests for Automated Integration.</name>
     <description> This project document defines the tests to execute against
         the installed local astorgrid setup. In a separate project, so that the
@@ -33,7 +33,7 @@
             <includes>
                 <include>${astrogrid.inttest.includes}</include>
             </includes>
-                    <excludes>
+		    <excludes>
                 <exclude>${astrogrid.inttest.excludes}</exclude>
             </excludes>
             <resources>
@@ -126,6 +126,14 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-client</artifactId>
+            <version>${pom.currentVersion}</version>
+        </dependency>
+		<!--This dependency is so I can test the ReqistryQuerier
+			which is not available through the cea-client, but
+			has to be tested in an integration environment -->
+		<dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-cea-http</artifactId>
             <version>${pom.currentVersion}</version>
         </dependency>
         <!-- community -->

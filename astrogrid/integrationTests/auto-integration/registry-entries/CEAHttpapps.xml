@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VODescription xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:agab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+        <Identifier>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
+            <ResourceKey>HelloWorldHttpApp</ResourceKey>
+        </Identifier>
+        <Title>An http-get HelloWorld App</Title>
+        <ShortName>HelloWorldHttpApp</ShortName>
+        <Summary>
+            <Description>This is part of the astrogrid CEA.</Description>
+            <ReferenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</ReferenceURL>
+        </Summary>
+        <Type>Other</Type>
+        <Curation>
+            <Publisher>
+                <Title>Astrogrid</Title>
+                <Description>blah blab</Description>
+                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
+            </Publisher>
+            <Contact>
+                <Name>John Taylor</Name>
+                <Email>jdt@roe.ac.uk</Email>
+            </Contact>
+            <Date role="representative">2004-03-26</Date>
+            <Creator>
+                <Name>Astrogrid</Name>
+                <Logo>??</Logo>
+            </Creator>
+            <Version>Iteration 6</Version>
+        </Curation>
+        <Subject>???</Subject>
+        <cea:ApplicationDefinition>
+			<cea:ApplicationKind>http</cea:ApplicationKind>
+            <cea:Parameters>
+                <cea:ParameterDefinition name="message" type="text">
+                    <ns1:UI_Name
+                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Greeting</ns1:UI_Name>
+                    <ns2:UI_Description
+                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">This is the message returned from the app</ns2:UI_Description>
+                    <ns4:Units xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns4:Units>
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ns29:Interface name="I1" xmlns:ns29="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+                    <ns29:input/>
+                    <ns29:output>
+                        <ns29:pref ref="message"/>
+                    </ns29:output>
+                </ns29:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+		<cea:CeaHttpAdapterSetup>
+			<URL>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</URL>
+		</cea:CeaHttpAdapterSetup>
+    </Resource>
+    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+        <Identifier>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
+            <ResourceKey>AdderHttpApp</ResourceKey>
+        </Identifier>
+        <Title>An http-get Adder App</Title>
+        <ShortName>AdderHttpApp</ShortName>
+        <Summary>
+            <Description>This is part of the astrogrid CEA.   A simple jsp that adds two numbers, x and y, and returns the result</Description>
+            <ReferenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</ReferenceURL>
+        </Summary>
+        <Type>Other</Type>
+        <Curation>
+            <Publisher>
+                <Title>Astrogrid</Title>
+                <Description>blah blab</Description>
+                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
+            </Publisher>
+            <Contact>
+                <Name>John Taylor</Name>
+                <Email>jdt@roe.ac.uk</Email>
+            </Contact>
+            <Date role="representative">2004-03-26</Date>
+            <Creator>
+                <Name>Astrogrid</Name>
+                <Logo>??</Logo>
+            </Creator>
+            <Version>Iteration 6</Version>
+        </Curation>
+        <Subject>???</Subject>
+        <cea:ApplicationDefinition>
+			<cea:ApplicationKind>http</cea:ApplicationKind>
+            <cea:Parameters>
+                <cea:ParameterDefinition name="x" type="text">
+                    <ns1:UI_Name
+                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">op1</ns1:UI_Name>
+                    <ns2:UI_Description
+                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">First operand</ns2:UI_Description>
+                    <ns4:Units xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns4:Units>
+                </cea:ParameterDefinition>				
+                <cea:ParameterDefinition name="y" type="text">
+                    <ns1:UI_Name
+                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">op2</ns1:UI_Name>
+                    <ns2:UI_Description
+                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Second operand</ns2:UI_Description>
+                    <ns4:Units xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns4:Units>
+                </cea:ParameterDefinition>				
+                <cea:ParameterDefinition name="dummy" type="text">
+                    <ns1:UI_Name
+                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Dummy</ns1:UI_Name>
+                    <ns2:UI_Description
+                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">A dummy parameter that isn't actually used</ns2:UI_Description>
+                    <ns4:Units xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns4:Units>
+                </cea:ParameterDefinition>				
+                <cea:ParameterDefinition name="sum" type="text">
+                    <ns1:UI_Name
+                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Sum</ns1:UI_Name>
+                    <ns2:UI_Description
+                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The sum of the two operands</ns2:UI_Description>
+                    <ns4:Units xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns4:Units>
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ns29:Interface name="Iunique" xmlns:ns29="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+                    <ns29:input>
+                        <ns29:pref ref="x"/>
+                        <ns29:pref ref="y"/>
+					</ns29:input>
+                    <ns29:output>
+                        <ns29:pref ref="sum"/>
+                    </ns29:output>
+                </ns29:Interface>
+				<ns29:Interface name="Idontuseme" xmlns:ns29="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+                    <ns29:input>
+                        <ns29:pref ref="x"/>
+                        <ns29:pref ref="y"/>
+                        <ns29:pref ref="dummy"/>
+					</ns29:input>		
+                    <ns29:output>
+                        <ns29:pref ref="sum"/>
+                    </ns29:output>
+                </ns29:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+		<cea:CeaHttpAdapterSetup>
+			<URL method="get">@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/adder.jsp</URL>
+		</cea:CeaHttpAdapterSetup>
+    </Resource>
+	<!--A Genuine SIAP service - Guy's recently announced INT WFS service at Cambridge-->
+    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+        <Identifier>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
+            <ResourceKey>INTWideFieldSurveySIAP</ResourceKey>
+        </Identifier>
+        <Title>Guy's INT Wide Field Survey SIAP service</Title>
+        <ShortName>INT WFS SIAP</ShortName>
+        <Summary>
+            <Description>This is part of the astrogrid CEA.  It offers a CEA service to the INT WFS SIAP server at Cambridge</Description>
+            <ReferenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</ReferenceURL>
+        </Summary>
+        <Type>Other</Type>
+        <Curation>
+            <Publisher>
+                <Title>Astrogrid</Title>
+                <Description>blah blab</Description>
+                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
+            </Publisher>
+            <Contact>
+                <Name>John Taylor</Name>
+                <Email>jdt@roe.ac.uk</Email>
+            </Contact>
+            <Date role="representative">2004-03-26</Date>
+            <Creator>
+                <Name>Astrogrid</Name>
+                <Logo>??</Logo>
+            </Creator>
+            <Version>Iteration 6</Version>
+        </Curation>
+        <Subject>???</Subject>
+        <cea:ApplicationDefinition>
+			<cea:ApplicationKind>http</cea:ApplicationKind>
+            <cea:Parameters>
+                <cea:ParameterDefinition name="POS" type="text">
+                    <ns1:UI_Name
+                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Position</ns1:UI_Name>
+                    <ns2:UI_Description
+                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Comma separated position of centre of field RA,DEC in decimal degrees</ns2:UI_Description>
+                    <ns4:Units xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns4:Units> <!--???? maybe degrees?-->
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="SIZE" type="text">
+                    <ns1:UI_Name
+                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Size</ns1:UI_Name>
+                    <ns2:UI_Description
+                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Comma separated size of field RA,DEC in decimal degrees</ns2:UI_Description>
+                    <ns4:Units xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns4:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="FORMAT" type="text">
+                    <ns1:UI_Name
+                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Format</ns1:UI_Name>
+                    <ns2:UI_Description
+                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">e.g. image/fits - see SIAP definition</ns2:UI_Description>
+                    <ns4:Units xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns4:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="IMAGES" type="text"> <!--actually a VOTABLE-->
+                    <ns1:UI_Name
+                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">ImagesTable</ns1:UI_Name>
+                    <ns2:UI_Description
+                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">A VOTable of images</ns2:UI_Description>
+                    <ns4:Units xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns4:Units>
+                </cea:ParameterDefinition>												
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ns29:Interface name="Standard" xmlns:ns29="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+                    <ns29:input>
+						<ns29:pref ref="POS"/>
+						<ns29:pref ref="SIZE"/>
+    					<ns29:pref ref="FORMAT"/>
+					</ns29:input>
+                    <ns29:output>
+                        <ns29:pref ref="IMAGES"/>
+                    </ns29:output>
+                </ns29:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+		<cea:CeaHttpAdapterSetup>
+			<URL>http://archive.ast.cam.ac.uk/cgi-bin/wfs-siap/queryImage</URL>
+		</cea:CeaHttpAdapterSetup>
+    </Resource>
+    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+        <Identifier>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
+            <ResourceKey>InvalidHttpApp</ResourceKey>
+        </Identifier>
+        <Title>An application with the wrong ApplicationType</Title>
+        <ShortName>InvalidHttpApp</ShortName>
+        <Summary>
+            <Description>This is part of the astrogrid CEA.</Description>
+            <ReferenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</ReferenceURL>
+        </Summary>
+        <Type>Other</Type>
+        <Curation>
+            <Publisher>
+                <Title>Astrogrid</Title>
+                <Description>blah blab</Description>
+                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
+            </Publisher>
+            <Contact>
+                <Name>John Taylor</Name>
+                <Email>jdt@roe.ac.uk</Email>
+            </Contact>
+            <Date role="representative">2004-03-26</Date>
+            <Creator>
+                <Name>Astrogrid</Name>
+                <Logo>??</Logo>
+            </Creator>
+            <Version>Iteration 6</Version>
+        </Curation>
+        <Subject>???</Subject>
+        <cea:ApplicationDefinition>
+			<cea:ApplicationKind>cmdline</cea:ApplicationKind>
+            <cea:Parameters>
+                <cea:ParameterDefinition name="message" type="text">
+                    <ns1:UI_Name
+                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Greeting</ns1:UI_Name>
+                    <ns2:UI_Description
+                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">This is the message returned from the app</ns2:UI_Description>
+                    <ns4:Units xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns4:Units>
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ns29:Interface name="I1" xmlns:ns29="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+                    <ns29:input/>
+                    <ns29:output>
+                        <ns29:pref ref="message"/>
+                    </ns29:output>
+                </ns29:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+		<cea:CeaHttpAdapterSetup>
+			<URL>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</URL>
+		</cea:CeaHttpAdapterSetup>
+    </Resource>
+	<!--The point of the next entry is make sure that a single duff entry doesn't screw up the entire application server-->
+    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+        <Identifier>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
+            <ResourceKey>AnotherInvalidHttpApp</ResourceKey>
+        </Identifier>
+        <Title>An http app whose ApplicationType doesn't even satisfy the schema</Title>
+        <ShortName>AnotherInvalidHttpApp</ShortName>
+        <Summary>
+            <Description>This is part of the astrogrid CEA.</Description>
+            <ReferenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</ReferenceURL>
+        </Summary>
+        <Type>Other</Type>
+        <Curation>
+            <Publisher>
+                <Title>Astrogrid</Title>
+                <Description>blah blab</Description>
+                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
+            </Publisher>
+            <Contact>
+                <Name>John Taylor</Name>
+                <Email>jdt@roe.ac.uk</Email>
+            </Contact>
+            <Date role="representative">2004-03-26</Date>
+            <Creator>
+                <Name>Astrogrid</Name>
+                <Logo>??</Logo>
+            </Creator>
+            <Version>Iteration 6</Version>
+        </Curation>
+        <Subject>???</Subject>
+        <cea:ApplicationDefinition>
+			<cea:ApplicationKind>stupidapplication</cea:ApplicationKind>
+            <cea:Parameters>
+                <cea:ParameterDefinition name="message" type="text">
+                    <ns1:UI_Name
+                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Greeting</ns1:UI_Name>
+                    <ns2:UI_Description
+                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">This is the message returned from the app</ns2:UI_Description>
+                    <ns4:Units xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns4:Units>
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ns29:Interface name="I1" xmlns:ns29="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+                    <ns29:input/>
+                    <ns29:output>
+                        <ns29:pref ref="message"/>
+                    </ns29:output>
+                </ns29:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+		<cea:CeaHttpAdapterSetup>
+			<URL>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</URL>
+		</cea:CeaHttpAdapterSetup>
+    </Resource>	
+	<Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType" status="active">
+        <Identifier>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
+            <ResourceKey>TestHttpCEC</ResourceKey>
+        </Identifier>
+        <Title>TestHttpCEC</Title>
+        <ShortName>TemplateEntry</ShortName>
+        <Summary>
+            <Description>This is part of the astrogrid CEA.</Description>
+            <ReferenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</ReferenceURL>
+        </Summary>
+        <Type>Other</Type>
+        <Curation>
+            <Publisher>
+                <Title>Astrogrid</Title>
+                <Description>blah blab</Description>
+                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
+            </Publisher>
+            <Contact>
+                <Name>John Taylor</Name>
+                <Email>jdt@roe.ac.uk</Email>
+            </Contact>
+            <Date role="representative">2004-03-26</Date>
+            <Creator>
+                <Name>Astrogrid</Name>
+                <Logo>??</Logo>
+            </Creator>
+            <Version>Iteration 6</Version>
+        </Curation>
+        <Subject>???</Subject>
+        <Capability>
+            <StandardURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</StandardURL>
+            <StandardID>
+                <AuthorityID>astrogrid.og</AuthorityID>
+                <ResourceKey>CommonExecutionArchitucture</ResourceKey>
+            </StandardID>
+        </Capability>
+        <Interface>
+            <Invocation>WebService</Invocation>
+            <AccessURL use="base">@TOMCATROOT@/astrogrid-cea-http-@VERSION@/services/CommonExecutionConnectorService</AccessURL>
+        </Interface>
+        <cea:ManagedApplications>
+            <cea:ApplicationReference>
+                <AuthorityID>@REGAUTHORITY@</AuthorityID>
+                <ResourceKey>HelloWorldHttpApp</ResourceKey>
+            </cea:ApplicationReference>
+            <cea:ApplicationReference>
+                <AuthorityID>@REGAUTHORITY@</AuthorityID>
+                <ResourceKey>AdderHttpApp</ResourceKey>
+            </cea:ApplicationReference>			
+         </cea:ManagedApplications>
+    </Resource>
+</VODescription>

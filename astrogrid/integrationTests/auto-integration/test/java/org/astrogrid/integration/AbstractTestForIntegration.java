@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.6 2004/08/31 23:45:17 nw Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.7 2004/09/02 11:18:09 jdt Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,7 +42,7 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
         ag = Astrogrid.getInstance();
         assertNotNull("astrogrid instance is null",ag);
         // credentials object
-        assertNotNull("oject builder is null",ag.getObjectBuilder());
+        assertNotNull("object builder is null",ag.getObjectBuilder());
         acc = ag.getObjectBuilder().createAccount(USERNAME,COMMUNITY); // will want to change this to a standard user later.
         group = ag.getObjectBuilder().createGroup("devel",COMMUNITY);
         creds = ag.getObjectBuilder().createCredendtials(acc,group);
@@ -77,6 +77,10 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
     public static final String HELLO_WORLD = COMMUNITY + "/helloWorld";
     public static final String HELLO_YOU = COMMUNITY + "/helloYou";
     public static final String SUM = COMMUNITY + "/sum";
+    //New Http-based apps
+    public static final String HTTP_HELLO_WORLD=COMMUNITY+"/HelloWorldHttpApp";
+    public static final String HTTP_ADDER = COMMUNITY+"/AdderHttpApp";
+    public static final String HTTP_INVALID = COMMUNITY+"/InvalidHttpApp";
     
    protected Ivorn createIVORN(String path)
    {
@@ -88,6 +92,9 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.7  2004/09/02 11:18:09  jdt
+Merges from case 3 branch for SIAP.
+
 Revision 1.6  2004/08/31 23:45:17  nw
 added sanity checking assertions
 
