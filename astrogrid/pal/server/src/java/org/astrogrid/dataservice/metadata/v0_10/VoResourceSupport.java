@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.6 2005/03/11 14:50:59 KevinBenson Exp $
+ * $Id: VoResourceSupport.java,v 1.7 2005/03/11 15:09:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -97,8 +97,6 @@ public class VoResourceSupport {
          }
          catch (SAXException e) {
             throw new MetadataException(e+" parsing Core Resource/Metadata document at "+coreFile,e);
-         } catch (javax.xml.parsers.ParserConfigurationException e) {
-             throw new MetadataException(e+" parser configuration error at "+coreFile,e);
          }
 
       }
