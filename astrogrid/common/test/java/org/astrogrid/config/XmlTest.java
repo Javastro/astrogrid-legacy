@@ -113,7 +113,7 @@ public class XmlTest extends TestCase
      */
     public static Test suite() {
         // Reflection is used here to add all the testXXX() methods to the suite.
-        return new TestSuite(SimpleTest.class);
+        return new TestSuite(XmlTest.class);
     }
 
     /**

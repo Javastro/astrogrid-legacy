@@ -4,19 +4,16 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.AstroGridException;
  
 public class ConfiguratorTestSuite extends TestCase {
 	
-	private static Logger 
-		logger = Logger.getLogger( ConfiguratorTestSuite.class ) ;
+	private static Log 
+		logger = LogFactory.getLog( ConfiguratorTestSuite.class ) ;
 		
-	private static final String
-	    log4jproperties = "/home/jl99/development/workspace/datacenter/test/files/log4j.properties" ;
-		
+
 		
 	/**
 	 * Sets up the test fixture.
@@ -70,16 +67,12 @@ public class ConfiguratorTestSuite extends TestCase {
     } // end of testMalformedXMLFile()
 
 
-    public void testMisnamedCategory() {
+    public void testMisnamedCategory() throws AstroGridException {
         logger.info( "enter: ConfiguratorTestSuite.testMisnamedCategory()" ); 
         
         try{
             SubConfigurator_CCC.getInstance().checkPropertiesLoaded() ;
-            assertTrue( true ) ;
             SubConfigurator_CCC.getProperty( "DATASETAGENT", "VALIDATION" ) ;
-        }
-        catch( AstroGridException ex ) {
-            assertTrue( false ) ;
         }
         finally {
             logger.info( "exit: ConfiguratorTestSuite.testMisnamedCategory()" );  
@@ -127,7 +120,7 @@ public class ConfiguratorTestSuite extends TestCase {
      */
     public static void main( String args[] )  {
 
-	   PropertyConfigurator.configure( log4jproperties ) ;
+
 	   logger.info("Entering Configurator test application.");	
 	   junit.textui.TestRunner.run( suite() ) ;
 	   logger.info("Exit Configurator test application.");

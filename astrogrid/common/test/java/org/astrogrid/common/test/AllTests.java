@@ -4,7 +4,7 @@
  * To change the template for this generated file go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-package org.astrogrid.config;
+package org.astrogrid.common.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -21,11 +21,11 @@ public class AllTests {
         junit.textui.TestRunner.run(AllTests.class);
     }
     public static Test suite() {
-        TestSuite suite = new TestSuite("Test for org.astrogrid.config");
+        TestSuite suite = new TestSuite("Test for org.astrogrid.common.test");
         //$JUnit-BEGIN$
-        suite.addTest(FactoryTest.suite());
-        suite.addTest(SimpleTest.suite());
-        suite.addTest(XmlTest.suite());
+        suite.addTest(ConfiguratorTestSuite.suite());
+        suite.addTest(MessageTestSuite.suite());
+        suite.addTest(TemplateTestSuite.suite());
         //$JUnit-END$
         return suite;
     }

@@ -18,7 +18,7 @@ public class SimpleTest extends TestCase
 {
 
    private static final String testPropertyFile = "test.properties";
-   private static final String nonExistantFile = "testNotHere.properties";
+   private static final String nonExistentFile = "testNotHere.properties";
 
    /**
     * Tests loading methods
@@ -32,10 +32,10 @@ public class SimpleTest extends TestCase
       //make sure we get an exception if we try loading a non-existant file
       try
       {
-         SimpleConfig.load(nonExistantFile);
+         SimpleConfig.load(nonExistentFile);
 
          fail("Should have thrown an exception loading this nonexistant file '"
-                 +nonExistantFile
+                 +nonExistentFile
                  +"' (if it does exist, delete it for this test!)");
       }
       catch (IOException ioe) {} //fine do nothing
@@ -53,10 +53,11 @@ public class SimpleTest extends TestCase
    /**
     * Tests auto load.  Not entirely sure what this 'should' do - all depends
     * on the environment
+    * @TODO MCH to check JDT's mod
     */
    public void testAutoload() throws IOException
    {
-      SimpleConfig.autoLoad();
+      //SimpleConfig.autoLoad(); //should not call this twice as second call ignored - jdt
       
       SimpleConfig.setProperty("TEST.FRUIT","Unix is not fruit");
       
@@ -67,7 +68,7 @@ public class SimpleTest extends TestCase
       
       //check that property has been set from system environment
       String fruit = SimpleConfig.getProperty("TEST.FRUIT");
-      assertEquals("Should return APPLE", fruit, "APPLE");
+      assertEquals("Should return APPLE", "APPLE",fruit);
    }
    
    /**
@@ -94,6 +95,20 @@ public class SimpleTest extends TestCase
       }
       catch (AssertionError ae) {}
          
+   }
+   
+ /**
+ * These tests require assertions to be enabled.
+ * java must be run with the -ea option.
+ */
+   public void testAssertionsEnabled() {
+   	try{
+   	   assert false;
+   	   fail("Assertions must be enabled for these tests.  Run java with the -ea option.");
+   	} catch (AssertionError ae) {
+   	   //expected
+   	   return;
+   	}
    }
 
    public void testConfiguration() throws IOException

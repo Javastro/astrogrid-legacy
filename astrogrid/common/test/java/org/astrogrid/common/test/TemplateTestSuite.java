@@ -4,17 +4,15 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.astrogrid.TemplateManager ;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.TemplateManager;
  
 public class TemplateTestSuite extends TestCase {
 	
-	private static Logger 
-		logger = Logger.getLogger( TemplateTestSuite.class ) ;
+	private static Log 
+		logger = LogFactory.getLog( TemplateTestSuite.class ) ;
 		
-	private static final String
-	    log4jproperties = "/home/jl99/development/workspace/datacenter/test/files/log4j.properties" ;
 		
 		
 	/**
@@ -41,18 +39,15 @@ public class TemplateTestSuite extends TestCase {
 		// This is what should be returned... 
 		final String
 			correctTemplateString = "<?xml version=\"1.0\" encoding=\"UTF8\"?> <!-- JobScheduler Request Template -->" +
-            "<job name=\"{0}\" userid=\"{1}\" community=\"{2}\" time=\"{3}\" jobURN=\"{4}\" />" ,
-			fileName = "JobSchedulerRequestTemplate.xml" ;
+            "<job name=\"{0}\" time=\"{1}\" jobURN=\"{2}\" >{3}</job>" ,
+			fileName = "JobSchedulerRequest.xmltemplate" ;
 		String
 			loadedTemplateString = "" ;
 			
 		try{
             loadedTemplateString = TemplateManager.getInstance().getTemplate( "DTC", fileName ) ;
 			logger.info( "loadedTemplateString: " + loadedTemplateString ) ;
-			assertTrue( loadedTemplateString.equals( correctTemplateString ) ) ;	
-		}
-		catch( Exception ex ) {
-			assertTrue( false ) ;
+			assertEquals( correctTemplateString,loadedTemplateString ) ;	
 		}
 		finally {
 			logger.info( "exit: TemplateTestSuite.testCorrectLoading()" );	
@@ -101,7 +96,7 @@ public class TemplateTestSuite extends TestCase {
      */
     public static void main( String args[] )  {
 
-	   PropertyConfigurator.configure( log4jproperties ) ;
+
 	   logger.info("Entering TemplateTest application.");	
 	   junit.textui.TestRunner.run( suite() ) ;
 	   logger.info("Exit TemplateTest application.");
