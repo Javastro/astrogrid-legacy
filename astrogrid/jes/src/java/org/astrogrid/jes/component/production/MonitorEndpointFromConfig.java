@@ -1,4 +1,4 @@
-/*$Id: MonitorEndpointFromConfig.java,v 1.4 2004/03/15 23:45:07 nw Exp $
+/*$Id: MonitorEndpointFromConfig.java,v 1.5 2004/03/17 00:26:09 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,22 +14,51 @@ import org.astrogrid.config.Config;
 import org.astrogrid.jes.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher.MonitorEndpoint;
 
+import org.apache.axis.AxisFault;
+import org.apache.axis.ConfigurationException;
+import org.apache.axis.MessageContext;
+import org.apache.axis.description.ServiceDesc;
+import org.apache.axis.server.AxisServer;
+
+import com.sun.corba.se.connection.GetEndPointInfoAgainException;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /** Configuration object for {@link org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher}
+ * <p>
+ * looks in configuration for a key, otherwise guesses job monitor service by examing axis engine configuration.
+ * @todo which doesn't seem to work at the moment  - need to fix
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
  *
-        @todo implement in a more intelligent way - try getting a servlet context, etc. axis context even.
  */
 public class MonitorEndpointFromConfig extends SimpleComponentDescriptor implements MonitorEndpoint {
     /** key to look in config for  job monitor endpoint */
     public static final String MONITOR_ENDPOINT_KEY = "jes.monitor.endpoint.url";
-    /** default value for {@link #MONITOR_ENDPOINT_KEY} */
-    public static final String DEFAULT_URL = "http://localhost:8080/astrogrid-jes/services/JobMonitor";
-
+    /** absolute fallback endpoint - if no value specified in config, and we can't calculate value by querying axis message endpoint */
+    public static final String MONITOR_DEFAULT_ENDPOINT ="http://localhost:8080/jes/services/JobMonitorService" ;
     public MonitorEndpointFromConfig(Config conf) throws MalformedURLException {
-        url = conf.getUrl(MONITOR_ENDPOINT_KEY,new URL(DEFAULT_URL));
+        URL defaultURL = new URL(MONITOR_DEFAULT_ENDPOINT);
+        try {
+        Iterator i = MessageContext.getCurrentContext().getAxisEngine().getConfig().getDeployedServices();
+        // instead try
+        //Iterator i = AxisServer.getServer(new HashMap()).getConfig().getDeployedServices();
+        while (i.hasNext()) {
+            ServiceDesc sDesc = (ServiceDesc)i.next();
+            if (sDesc.getName().equals("JobMonitorService") && sDesc.getEndpointURL() != null) {
+                    defaultURL = new URL(sDesc.getEndpointURL());               
+            }            
+        }      
+        } catch (ConfigurationException e ) {
+            // oh well.
+        } catch (NullPointerException e) {
+            // oh well
+        }
+
+         url = conf.getUrl(MONITOR_ENDPOINT_KEY,defaultURL);
+   
         name = "ApplicationControllerDispatcher - Monitor Endpoint configuration";
              description = "Loads job-monitor endpoint (used by callback from application controller) from Config\n" +
                  "key :" + MONITOR_ENDPOINT_KEY
@@ -48,6 +77,9 @@ public class MonitorEndpointFromConfig extends SimpleComponentDescriptor impleme
 
 /* 
 $Log: MonitorEndpointFromConfig.java,v $
+Revision 1.5  2004/03/17 00:26:09  nw
+attempt at determining monitor endpoint by querying axis engine
+
 Revision 1.4  2004/03/15 23:45:07  nw
 improved javadoc
 
