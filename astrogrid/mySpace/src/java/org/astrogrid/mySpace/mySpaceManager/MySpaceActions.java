@@ -226,6 +226,7 @@ public class MySpaceActions
                         newDataItem = reg.addDataItemRecord(newDataItem);
                         if (newDataItem != null)
                         {  newdataItemID = newDataItem.getDataItemID();
+                           dataItemFileName = newDataItem.getDataItemFile();
 
 //
 //                        Attempt to copy the DataHolder.
@@ -430,29 +431,23 @@ public class MySpaceActions
                         cal.add(Calendar.DATE, expiryPeriod);
                         Date expiry = cal.getTime();
 
-                        int newdataItemID = -1;
                         String dataItemFileName = 
                           oldDataItem.getDataItemFile();
                         int dataItemType = oldDataItem.getType();
                         int dataItemSize = oldDataItem.getSize();
+                        String permissionsMask =
+                          oldDataItem.getPermissionsMask();
 
                         DataItemRecord newDataItem = new DataItemRecord
-                          (newDataItemName, newdataItemID,
+                          (newDataItemName, oldDataItemID,
                           dataItemFileName, userID, creation, expiry,
-                          dataItemSize, dataItemType, "permissions");
+                          dataItemSize, dataItemType, permissionsMask);
 
 //
 //                     Attempt to add this entry to the registry.
 
-                        newDataItem = reg.addDataItemRecord(newDataItem);
-                        if (newDataItem != null )
+                        if (reg.updateDataItemRecord(newDataItem) )
                         {
-
-//
-//                        Delete the original entry from the registry.
-
-                           reg.deleteDataItemRecord(oldDataItemID);
-
 //
 //                        Set the return argument to the new dataItem.
 
@@ -560,7 +555,8 @@ public class MySpaceActions
 
                   newDataItem = reg.addDataItemRecord(newDataItem);
                   if (newDataItem != null )
-                  {
+                  {  newdataItemID = newDataItem.getDataItemID();
+                     dataItemFileName = newDataItem.getDataItemFile();
 //
 //                  Attempt to copy the contents of the input string as
 //                  a new file on the server.
@@ -683,8 +679,13 @@ public class MySpaceActions
 //               Attempt to add this entry to the registry.
 
                   newDataItem = reg.addDataItemRecord(newDataItem);
+
+                  System.out.println("new file name: " +
+                     newDataItem.getDataItemFile() );
+
                   if (newDataItem != null)
-                  {
+                  {  newdataItemID = newDataItem.getDataItemID();
+                     dataItemFileName = newDataItem.getDataItemFile();
 
 //
 //                  Attempt to copy the contents of the input string as

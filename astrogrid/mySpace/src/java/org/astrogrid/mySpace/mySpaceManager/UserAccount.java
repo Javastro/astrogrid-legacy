@@ -209,47 +209,54 @@ public class UserAccount
   public boolean checkSystemAuthorisation(int opCode)
   {  boolean authorised = true;
 
-     String oper = null;
+//
+//  Check that the MySpace manager is configured to check user
+//  privileges.
+
+     Configuration config = new Configuration();
+     if (config.getCHECKPERMISSIONS() )
+     {  String oper = null;
 
 //
-//  Translate the operation codes into the form required by the
-//  permissions manager.
+//     Translate the operation codes into the form required by the
+//     permissions manager.
 
-     if (opCode == UserAccount.READ)
-     {  oper = "read";
-     }
-     else if (opCode == UserAccount.WRITE)
-     {  oper = "write";
-     }
-     else
-     {  authorised = false;
+        if (opCode == UserAccount.READ)
+        {  oper = "read";
+        }
+        else if (opCode == UserAccount.WRITE)
+        {  oper = "write";
+        }
+        else
+        {  authorised = false;
 
-        MySpaceStatus status  = new MySpaceStatus(
-           MySpaceStatusCode.AGMMCE00050, MySpaceStatusCode.ERROR,
-           MySpaceStatusCode.NOLOG, this.getClassName() );
-     }
+           MySpaceStatus status  = new MySpaceStatus(
+             MySpaceStatusCode.AGMMCE00050, MySpaceStatusCode.ERROR,
+             MySpaceStatusCode.NOLOG, this.getClassName() );
+        }
 
 //
-//  If ok then create a permissions manager delegate and check whether
-//  the user is authorised for this type of operation.
+//     If ok then create a permissions manager delegate and check whether
+//     the user is authorised for this type of operation.
 
-//     if (authorised)
-//     {  PolicyServiceDelegate psd = new PolicyServiceDelegate();
+//      if (authorised)
+//      {  PolicyServiceDelegate psd = new PolicyServiceDelegate();
 
-//        try
-//        {  String agUserId = this.getUserAGrId();
+//         try
+//         {  String agUserId = this.getUserAGrId();
 
-//           authorised = psd.checkPermissions(agUserId, credentials,
-//             "myspace", oper);
-//        }
-//        catch (Exception e)
-//        {  authorised = false;
+//            authorised = psd.checkPermissions(agUserId, credentials,
+//              "myspace", oper);
+//         }
+//         catch (Exception e)
+//         {  authorised = false;
 
-//           MySpaceStatus status  = new MySpaceStatus(
+//            MySpaceStatus status  = new MySpaceStatus(
 //              MySpaceStatusCode.AGMMCE00050, MySpaceStatusCode.ERROR,
 //              MySpaceStatusCode.NOLOG, this.getClassName() );
-//        }
-//     }
+//         }
+//      }
+     }
 
      return authorised;
   }

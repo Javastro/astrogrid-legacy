@@ -35,7 +35,7 @@ import org.astrogrid.i18n.*;
 
 public class ServerManager
 {  private static Logger logger = Logger.getLogger(ServerManager.class);
-   private static boolean DEBUG = true;
+   private static boolean DEBUG = false;
    private static MySpaceStatus status = new MySpaceStatus();
 
    private String response = ""; // Response returned by all the methods.
@@ -63,6 +63,11 @@ public class ServerManager
          logger.debug("  newDataHolderFileName: " + newDataHolderFileName);
       }
 
+      System.out.println("ServerManager.upLoadString:-");
+      System.out.println("  contents: " + contents);
+      System.out.println("  newDataHolderFileName: "
+         + newDataHolderFileName);
+
 //
 //   Attempt to write the file from the given string.
 
@@ -70,6 +75,9 @@ public class ServerManager
       {  File newDataHolderFile  = new File(newDataHolderFileName);
          boolean isOk = MySpaceUtils.writeToFile(newDataHolderFile,
            contents);
+
+         System.out.println("  isOk: " + isOk);
+
          if (isOk)
          {  response = MSC.SUCCESS + " File up-loaded.";
          }

@@ -6,6 +6,7 @@ import javax.xml.rpc.ParameterMode;
 import javax.xml.rpc.encoding.XMLType;
 
 import org.astrogrid.mySpace.mySpaceStatus.*;
+import org.astrogrid.mySpace.mySpaceServer.ServerManager;
 
 import org.apache.log4j.Logger;
 
@@ -21,13 +22,12 @@ import org.apache.log4j.Logger;
  *
  * @author C L Qin
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 3.
+ * @version Iteration 4.
  */
 
 public class ServerDriver
 {  
    private static Logger logger = Logger.getLogger(MySpaceActions.class);
-   private static boolean DEBUG = true;	
    Call call = null;
 
 //
@@ -60,20 +60,34 @@ public class ServerDriver
      String newDataHolderFileName)
    {  boolean successStatus = true;
 
-      try
-      {  call = createServerCall();
-         call.setOperationName( "upLoadString" );		
-         call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
-         call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
-		
-         call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
-         String serverResponse = (String)call.invoke( new Object[]
-           {contents,newDataHolderFileName} );
+      Configuration config = new Configuration();
 
-         if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: " + serverResponse);
+      try
+      {  if (!config.getINTERNALSERVER() )
+         {  call = createServerCall();
+            call.setOperationName( "upLoadString" );		
+            call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
+            call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
+		
+            call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
+            String serverResponse = (String)call.invoke( new Object[]
+              {contents,newDataHolderFileName} );
+
+            if (config.getDEBUG() )
+            {  logger.debug("GOT SERVERRESPONSE: " + serverResponse);
+            }
+         }
+         else
+         {  ServerManager server = new ServerManager();
+            server.upLoadString(contents, newDataHolderFileName);
+         }
       }
       catch(Exception e)
       {  successStatus = false;
+
+         if (config.getDEBUG() )
+         {  e.printStackTrace();
+         }
       }
 
       return successStatus;
@@ -99,20 +113,34 @@ public class ServerDriver
      String newDataHolderFileName)
    {  boolean successStatus = true;
 
-      try
-      {  call = createServerCall();
-         call.setOperationName( "importDataHolder" );
-         call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
-         call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
-	
-         call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
-         String serverResponse = (String)call.invoke( new Object[]
-           {importURI,newDataHolderFileName} );
+      Configuration config = new Configuration();
 
-         if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: " + serverResponse);
+      try
+      {  if (!config.getINTERNALSERVER() )
+         {  call = createServerCall();
+            call.setOperationName( "importDataHolder" );
+            call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
+            call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
+	
+            call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
+            String serverResponse = (String)call.invoke( new Object[]
+              {importURI,newDataHolderFileName} );
+
+            if (config.getDEBUG() )
+            {  logger.debug("GOT SERVERRESPONSE: " + serverResponse);
+            }
+         }
+         else
+         {  ServerManager server = new ServerManager();
+            server.importDataHolder(importURI, newDataHolderFileName);
+         }
       }
       catch(Exception e)
       {  successStatus = false;
+
+         if (config.getDEBUG() )
+         {  e.printStackTrace();
+         }
       }
 
       return successStatus;
@@ -138,20 +166,35 @@ public class ServerDriver
      String newDataHolderFileName)
    {  boolean successStatus = true;
 
-      try
-      {  call = createServerCall();
-         call.setOperationName( "copyDataHolder" );		
-         call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
-         call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
-		
-         call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
-         String serverResponse = (String)call.invoke( new Object[]
-           {oldDataHolderFileName,newDataHolderFileName} );
+      Configuration config = new Configuration();
 
-         if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: " + serverResponse);
+      try
+      {  if (!config.getINTERNALSERVER() )
+         {  call = createServerCall();
+            call.setOperationName( "copyDataHolder" );		
+            call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
+            call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
+		
+            call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
+            String serverResponse = (String)call.invoke( new Object[]
+              {oldDataHolderFileName,newDataHolderFileName} );
+
+            if (config.getDEBUG() )
+            {  logger.debug("GOT SERVERRESPONSE: " + serverResponse);
+            }
+         }
+         else
+         {  ServerManager server = new ServerManager();
+            server.copyDataHolder(oldDataHolderFileName,
+              newDataHolderFileName);
+         }
       }
       catch(Exception e)
       {  successStatus = false;
+
+         if (config.getDEBUG() )
+         {  e.printStackTrace();
+         }
       }
 
       return successStatus;
@@ -171,19 +214,33 @@ public class ServerDriver
    public boolean deleteDataHolder(String dataHolderFileName)
    {  boolean successStatus = true;
 
-      try
-      {  call = createServerCall();
-         call.setOperationName( "deleteDataHolder" );			
-         call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
-		
-         call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
-	 String serverResponse = (String)call.invoke( new Object[]
-           {dataHolderFileName} );
+      Configuration config = new Configuration();
 
-         if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
+      try
+      {  if (!config.getINTERNALSERVER() )
+         {  call = createServerCall();
+            call.setOperationName( "deleteDataHolder" );
+            call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
+		
+            call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
+	    String serverResponse = (String)call.invoke( new Object[]
+              {dataHolderFileName} );
+
+            if (config.getDEBUG() )
+            {  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
+            }
+         }
+         else
+         {  ServerManager server = new ServerManager();
+            server.deleteDataHolder(dataHolderFileName);
+         }
       }
       catch(Exception e)
       {  successStatus = false;
+
+         if (config.getDEBUG() )
+         {  e.printStackTrace();
+         }
       }
 
       return successStatus;
