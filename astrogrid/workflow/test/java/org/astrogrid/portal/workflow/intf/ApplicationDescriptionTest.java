@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionTest.java,v 1.3 2004/03/12 14:53:51 nw Exp $
+/*$Id: ApplicationDescriptionTest.java,v 1.4 2004/03/17 00:32:36 nw Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,7 +84,7 @@ public class ApplicationDescriptionTest extends TestCase {
         for (int i = 0; i < params.length; i++) {
             ParameterValue paramVal = params[i];
             assertNotNull(paramVal.getName());
-            assertNotNull(paramVal.getContent());
+            assertNotNull(paramVal.getValue());
             assertNotNull(paramVal.getType());
             // check we can resolve each paramVal.
             BaseParameterDefinition def = descr.getDefinitionForValue(paramVal,intf);
@@ -115,6 +115,9 @@ public class ApplicationDescriptionTest extends TestCase {
 
 /* 
 $Log: ApplicationDescriptionTest.java,v $
+Revision 1.4  2004/03/17 00:32:36  nw
+updated to fit with altererd parameter object model
+
 Revision 1.3  2004/03/12 14:53:51  nw
 added testing of default values
 
