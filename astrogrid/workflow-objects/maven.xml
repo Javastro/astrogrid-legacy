@@ -6,17 +6,11 @@
 <property name="generated.dir" location="${basedir}/src" />
 
 <!-- goals for nightly build -->
-<goal name="astrogrid-clean">
-	<attainGoal name="clean" />
-</goal>
+<goal name="astrogrid-clean" prereqs="clean"/>
 
-<goal name="astrogrid-deploy-site">
-	<attainGoal name="site:fsdeploy" />
-</goal>
+<goal name="astrogrid-deploy-site" prereqs="site,site:fsdeploy" />
 
-<goal name="astrogrid-deploy-snapshot">
-	<attainGoal name="jar:deploy-snapshot" />
-</goal>
+<goal name="astrogrid-deploy-snapshot" prerequs="jar:deploy-snapshot"/>
 
 
 <!-- hooks into existing goals -->
