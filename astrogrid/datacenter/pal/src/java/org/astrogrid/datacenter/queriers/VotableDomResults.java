@@ -1,4 +1,4 @@
-/*$Id: VotableDomResults.java,v 1.4 2004/11/03 05:14:33 mch Exp $
+/*$Id: VotableDomResults.java,v 1.5 2004/11/08 03:00:14 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,7 +41,7 @@ public class VotableDomResults extends QueryResults {
      */
     public VotableDomResults(Querier querier, String doc) throws SAXException, IOException, ParserConfigurationException {
       super(querier);
-       assert doc != null : "Can't make a VoTable from a null string";
+       if (doc == null) throw new IllegalArgumentException("Can't make a VoTable from a null string");
       this.doc = DomHelper.newDocument(doc);
     }
     
@@ -82,6 +82,9 @@ public class VotableDomResults extends QueryResults {
 
 /*
 $Log: VotableDomResults.java,v $
+Revision 1.5  2004/11/08 03:00:14  mch
+Removed assert and replaced with proper if
+
 Revision 1.4  2004/11/03 05:14:33  mch
 Bringing Vizier back online
 
