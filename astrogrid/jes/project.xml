@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by John Taylor (ROE) -->
-<!-- $Id: project.xml,v 1.26 2003/12/05 20:15:34 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.27 2003/12/08 10:18:42 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
 	<pomVersion>3</pomVersion>
 	<id>astrogrid-jes</id>
@@ -91,9 +91,9 @@
 			</properties>
 		</dependency>
 		<dependency>
-			<artifactId>astrogrid-applications</artifactId>
+			<artifactId>ApplicationControllerDelegate</artifactId>
 			<groupId>astrogrid-applications</groupId>
-			<version>SNAPSHOT</version>
+			<version>Itn04_CodeFreeze</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
