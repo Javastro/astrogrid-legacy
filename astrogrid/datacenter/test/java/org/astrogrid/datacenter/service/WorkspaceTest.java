@@ -23,6 +23,10 @@ import junit.framework.TestSuite;
 
 public class WorkspaceTest extends TestCase
 {
+    public WorkspaceTest(String s) {
+        super(s);
+    }
+    
     /** sets up a working directory */    
     protected void setUp() throws IOException {
         tmpDir = File.createTempFile("workspace-test","dir");
@@ -170,6 +174,9 @@ public class WorkspaceTest extends TestCase
 
 /*
 $Log: WorkspaceTest.java,v $
+Revision 1.5  2003/09/05 13:24:53  nw
+added forgotten constructor (is this still needed for unit tests?)
+
 Revision 1.4  2003/09/05 01:03:01  nw
 extended to test workspace thoroughly
 
