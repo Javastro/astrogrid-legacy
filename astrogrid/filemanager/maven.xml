@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/12/18 02:38:35 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.3  2004/12/18 02:38:35  jdt
+    |   local site deploy breaks the builds on twmbarlwm.
+    |
     |   Revision 1.2  2004/11/25 00:20:29  jdt
     |   Merge from dave-dev-200410061224-200411221626
     |
@@ -164,9 +167,6 @@
         <!--+
             | Deploy our project site.
             +-->
-        <echo message="About to do local site deploy"/>
-        <attainGoal name="deploy-local-site"/>
-        <echo message="Finished local site deploy"/>
         <attainGoal name="site:sshdeploy"/>
         <echo message="Finished   site deploy"/>
     </goal>
