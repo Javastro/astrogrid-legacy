@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+    "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+
+<web-app>
+    <servlet>
+        <servlet-name>
+            SampleServlet
+        </servlet-name>
+        <servlet-class>
+            SampleServlet
+        </servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>Browser</servlet-name>
+        <servlet-class>Browser</servlet-class>
+    </servlet>
+
+</web-app>
