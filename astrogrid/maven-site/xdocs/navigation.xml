@@ -19,7 +19,7 @@
       <item name="mySpace"          href="http://www.astrogrid.org/maven/build/mySpace/index.html"/>
       <item name="DataCenter"       href="http://www.astrogrid.org/maven/build/datacenter/index.html"/>
       <item name="Warehouse"        href="http://www.astrogrid.org/maven/build/warehouse/index.html"/>
-      <item name="PortalB"          href="http://www.astrogrid.org/maven/build/portalB/index.html"/>
+      <item name="Portal"          href="http://www.astrogrid.org/maven/build/portal/index.html"/>
       <item name="Workflow"          href="http://www.astrogrid.org/maven/build/workflow/index.html"/>
     </menu>
     <menu name="Integration and Logs">
@@ -35,7 +35,7 @@
        <item name="mySpace"          href="http://www.astrogrid.org/maven/build/log/maven-build-mySpace.log" />
        <item name="DataCenter"       href="http://www.astrogrid.org/maven/build/log/maven-build-datacenter.log" />
        <item name="Warehouse"        href="http://www.astrogrid.org/maven/build/log/maven-build-warehouse.log" />
-       <item name="PortalB"          href="http://www.astrogrid.org/maven/build/log/maven-build-portalB.log" />
+       <item name="Portal"          href="http://www.astrogrid.org/maven/build/log/maven-build-portal.log" />
        <item name="Workflow"         href="http://www.astrogrid.org/maven/build/log/maven-build-workflow.log" />
        <item name="Integration Tests" href="http://www.astrogrid.org/maven/build/log/maven-build-integrationTests.log" />
       </item>
