@@ -1,4 +1,4 @@
-/*$Id: StoreClientTestHelper.java,v 1.4 2004/04/16 16:12:14 mch Exp $
+/*$Id: StoreClientTestHelper.java,v 1.5 2004/04/22 08:58:35 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -104,11 +104,13 @@ public abstract class StoreClientTestHelper extends TestCase {
       //create file in new folder
       store.putString("This is just a test file for "+this.getClass(), "NewFolder/NewFile.txt", false);
       
+      //make sure the file has been uploaded OK
       StoreFile f = store.getFile(path+"NewFolder/NewFile.txt");
       assertNotNull(f);
       assertEquals("NewFile.txt", f.getName());
       assertEquals("NewFolder", f.getParent().getName());
-      if (path.length() == 0) { assertNull(f.getParent().getParent()); }
+      
+//i think this is implementation specific... mch      if (path.length() == 0) { assertNull(f.getParent().getParent()); }
       assertEquals(path+"NewFolder/NewFile.txt", f.getPath());
       
       store.delete(path+"NewFolder/NewFile.txt");
@@ -226,6 +228,9 @@ public abstract class StoreClientTestHelper extends TestCase {
 
 /*
 $Log: StoreClientTestHelper.java,v $
+Revision 1.5  2004/04/22 08:58:35  mch
+Fixes to tests etc
+
 Revision 1.4  2004/04/16 16:12:14  mch
 Ignore newFolder if it already exists (eg broken previous test)
 

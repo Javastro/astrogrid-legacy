@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolverTest.java,v 1.5 2004/04/21 10:35:29 mch Exp $
+ * $Id: VoSpaceResolverTest.java,v 1.6 2004/04/22 08:58:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,12 +33,14 @@ import org.astrogrid.store.delegate.local.LocalFileStore;
 public class VoSpaceResolverTest extends TestCase {
 
    public static final String ACCOUNT_FILE_KEY = "roe.ac.uk/mch";
-
    public static final String ACCOUNT_FILE_IVORN = "ivo://"+ACCOUNT_FILE_KEY+"#mch@roe.ac.uk/famous/data/file.txt";
-
+   
    public static final String ACCOUNT_STOREPOINT_AGSL = "astrogrid:store:myspace:http://grendel12.roe.ac.uk/something";
    public static final String ACCOUNT_FILE_AGSL = ACCOUNT_STOREPOINT_AGSL+"#mch@roe.ac.uk/famous/data/file.txt";
-   public static final String LOCAL_MS_KEY = "localmyspace/file.txt";
+
+   public static final String LOCALSTORE_KEY = "localmyspace";
+   public static final String LOCALSTORE_ROOT = "resolverTestStore";
+   public static final String LOCALSTORE_AGSL = "astrogrid:store:file://"+LOCALSTORE_ROOT;
    
                                              
    /** Tests that the shortcut works - ie that the local configuration can be used
@@ -74,14 +76,14 @@ public class VoSpaceResolverTest extends TestCase {
       String testContents = "A bit of text to make sure it gets created on the "+new Date();
       String filename = "resolverTestfile.txt";
       
-      LocalFileStore store = new LocalFileStore();
+      LocalFileStore store = new LocalFileStore(LOCALSTORE_ROOT);
       
       store.putString(testContents, filename, false);
 
       //add AGSL file location to configuration
-      SimpleConfig.getSingleton().setProperty(LOCAL_MS_KEY, "astrogrid:store:file://"+filename);
+      SimpleConfig.getSingleton().setProperty(LOCALSTORE_KEY, LOCALSTORE_AGSL);
       
-      Reader reader = new InputStreamReader(VoSpaceResolver.resolveInputStream(Account.ANONYMOUS.toUser(), new Ivorn("ivo://"+LOCAL_MS_KEY)));
+      Reader reader = new InputStreamReader(VoSpaceResolver.resolveInputStream(Account.ANONYMOUS.toUser(), new Ivorn("ivo://"+LOCALSTORE_KEY+"#"+filename)));
       StringWriter writer = new StringWriter();
       Piper.pipe(reader, writer);
 
@@ -113,6 +115,9 @@ public class VoSpaceResolverTest extends TestCase {
 
 /*
  $Log: VoSpaceResolverTest.java,v $
+ Revision 1.6  2004/04/22 08:58:35  mch
+ Fixes to tests etc
+
  Revision 1.5  2004/04/21 10:35:29  mch
  Fixes to ivorn/fragment resolving
 

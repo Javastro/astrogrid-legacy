@@ -1,5 +1,5 @@
 /*
- * $Id: MsrlTest.java,v 1.3 2004/03/14 13:44:51 mch Exp $
+ * $Id: MsrlTest.java,v 1.4 2004/04/22 08:58:35 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -50,7 +50,7 @@ public class MsrlTest extends TestCase
          validMsrl = validMsrl +"!"+SERVER;
          msrl = new Msrl(validMsrl);
          assertEquals(NAME, msrl.getFilename());
-         assertEquals(Msrl.SCHEME+":"+DELEGATE, msrl.getManagerMsrl());
+         assertEquals(Msrl.SCHEME+":"+DELEGATE, msrl.getManagerMsrl().toString());
       }
       catch (MalformedURLException mue) {
          fail("Could not cope with valid msrl '"+validMsrl+"'");
@@ -93,6 +93,9 @@ public class MsrlTest extends TestCase
 
 /*
 $Log: MsrlTest.java,v $
+Revision 1.4  2004/04/22 08:58:35  mch
+Fixes to tests etc
+
 Revision 1.3  2004/03/14 13:44:51  mch
 Increased coverage
 
