@@ -45,7 +45,7 @@ public class MySpaceHelper{
 			
 			request.append("<jobID>");
 			request.append("UPLOAD");
-			request.append("<jobID>");
+			request.append("</jobID>");
 
 			request.append("<fileContent>") ;
 			request.append(fileContent) ;
@@ -82,7 +82,7 @@ public class MySpaceHelper{
 			
 			request.append("<jobID>");
 			request.append("UPLOAD");
-			request.append("<jobID>");
+			request.append("</jobID>");
 
 			request.append("<importURL>") ;
 			request.append(importURL) ;
@@ -118,7 +118,7 @@ public class MySpaceHelper{
 			
 			request.append("<jobID>");
 			request.append("DOWNLOAD");
-			request.append("<jobID>");
+			request.append("</jobID>");
 
 			request.append("<serverFileName>") ;
 			request.append(fullFileName) ;
@@ -148,7 +148,7 @@ public class MySpaceHelper{
 				
 			request.append("<jobID>");
 			request.append("LOOKUPDATAHOLDERsDETAILS");
-			request.append("<jobID>");
+			request.append("</jobID>");
 	
 			request.append("<query>") ;
 			request.append(criteria) ;
@@ -179,7 +179,7 @@ public class MySpaceHelper{
 				
 			request.append("<jobID>");
 			request.append("LOOKUPDATAHOLDERDETAILS");
-			request.append("<jobID>");
+			request.append("</jobID>");
 	
 			request.append("<serverFileName>") ;
 			request.append(serverFileName) ;
@@ -210,7 +210,7 @@ public class MySpaceHelper{
 				
 			request.append("<jobID>");
 			request.append("COPY");
-			request.append("<jobID>");
+			request.append("</jobID>");
 	
 			request.append("<serverFileName>") ;
 			request.append(serverFileName) ;
@@ -245,7 +245,7 @@ public class MySpaceHelper{
 				
 			request.append("<jobID>");
 			request.append("DELETE");
-			request.append("<jobID>");
+			request.append("</jobID>");
 	
 			request.append("<serverFileName>") ;
 			request.append(serverFileName) ;
@@ -276,7 +276,7 @@ public class MySpaceHelper{
 				
 			request.append("<jobID>");
 			request.append("RENAME");
-			request.append("<jobID>");
+			request.append("</jobID>");
 	
 			request.append("<serverFileName>") ;
 			request.append(serverFileName) ;
@@ -311,7 +311,7 @@ public class MySpaceHelper{
 				
 			request.append("<jobID>");
 			request.append("EXTENDLEASE");
-			request.append("<jobID>");
+			request.append("</jobID>");
 	
 			request.append("<serverFileName>") ;
 			request.append(serverFileName) ;
@@ -343,6 +343,9 @@ public class MySpaceHelper{
 			request.append("<communityID>") ;
 			request.append(communityid);
 			request.append("</communityID>");
+			request.append("<jobID>");
+			request.append("BUILDCONTAINER");
+			request.append("</jobID>");
 	
 			request.append("<newContainerName>") ;
 			request.append(newContainerName) ;
@@ -378,6 +381,7 @@ public class MySpaceHelper{
 									text = checker.getFirstChild().getNodeValue();
 									if( DEBUG )  System.out.println("BEFORE.PUT.DOWN" +checker.getNodeName()+" TEXT " +text);
 									if (checker.getNodeName().equalsIgnoreCase("dataItemName")){
+										text = text.substring(text.lastIndexOf('/')+1,text.trim().length());
 									    request.add(text);
 									}								
 									if( DEBUG )  System.out.println("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
@@ -395,6 +399,7 @@ public class MySpaceHelper{
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
 									if (checker.getNodeName().equalsIgnoreCase("dataItemName")){
+										text = text.substring(text.lastIndexOf('/')+1,text.trim().length());
 										request.add(text);
 									}
 																
@@ -410,6 +415,7 @@ public class MySpaceHelper{
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
 									if (checker.getNodeName().equalsIgnoreCase("dataItemName")){
+										text = text.substring(text.lastIndexOf('/')+1,text.trim().length());
 										request.add(text);
 									}								
 									
@@ -428,6 +434,7 @@ public class MySpaceHelper{
 		}
 		return request;
 	}
+	
 	private Document parseRequest ( String xmlRequest){		
 		Document doc = null;
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
