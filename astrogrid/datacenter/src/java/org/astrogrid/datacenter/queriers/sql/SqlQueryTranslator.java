@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslator.java,v 1.1 2003/09/03 13:47:30 nw Exp $
+/*$Id: SqlQueryTranslator.java,v 1.2 2003/09/17 14:51:30 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,41 @@
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
-import org.astrogrid.datacenter.queriers.QueryTranslator;
-
 import org.astrogrid.datacenter.adql.QOM;
-import org.astrogrid.datacenter.adql.generated.*;
+import org.astrogrid.datacenter.adql.generated.AllColumnReference;
+import org.astrogrid.datacenter.adql.generated.AllExpressionsFunction;
+import org.astrogrid.datacenter.adql.generated.ApproxNum;
+import org.astrogrid.datacenter.adql.generated.ArchiveTable;
+import org.astrogrid.datacenter.adql.generated.ArrayOfString;
+import org.astrogrid.datacenter.adql.generated.BetweenPred;
+import org.astrogrid.datacenter.adql.generated.BinaryExpr;
+import org.astrogrid.datacenter.adql.generated.Circle;
+import org.astrogrid.datacenter.adql.generated.ComparisonPred;
+import org.astrogrid.datacenter.adql.generated.DistinctColumnFunction;
+import org.astrogrid.datacenter.adql.generated.ExpressionFunction;
+import org.astrogrid.datacenter.adql.generated.From;
+import org.astrogrid.datacenter.adql.generated.GroupBy;
+import org.astrogrid.datacenter.adql.generated.Having;
+import org.astrogrid.datacenter.adql.generated.IntNum;
+import org.astrogrid.datacenter.adql.generated.IntersectionSearch;
+import org.astrogrid.datacenter.adql.generated.InverseSearch;
+import org.astrogrid.datacenter.adql.generated.LikePred;
+import org.astrogrid.datacenter.adql.generated.MutipleColumnsFunction;
+import org.astrogrid.datacenter.adql.generated.Order;
+import org.astrogrid.datacenter.adql.generated.OrderExpression;
+import org.astrogrid.datacenter.adql.generated.OrderOption;
+import org.astrogrid.datacenter.adql.generated.Predicate;
+import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.adql.generated.SelectionAll;
+import org.astrogrid.datacenter.adql.generated.SelectionOption;
+import org.astrogrid.datacenter.adql.generated.SingleColumnReference;
+import org.astrogrid.datacenter.adql.generated.StringLiteral;
+import org.astrogrid.datacenter.adql.generated.Table;
+import org.astrogrid.datacenter.adql.generated.TableExpression;
+import org.astrogrid.datacenter.adql.generated.UnaryExpr;
+import org.astrogrid.datacenter.adql.generated.UnionSearch;
+import org.astrogrid.datacenter.adql.generated.Where;
+import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.datacenter.queriers.TranslationFrame;
 
 /** Translator that maps ADQL to 'Standard' SQL.
@@ -333,6 +364,9 @@ public class SqlQueryTranslator extends QueryTranslator {
 
 /* 
 $Log: SqlQueryTranslator.java,v $
+Revision 1.2  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.1  2003/09/03 13:47:30  nw
 improved documentaiton.
 split existing MySQLQueryTranslator into a vanilla-SQL

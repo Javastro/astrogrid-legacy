@@ -1,4 +1,4 @@
-/*$Id: ADQLUtils.java,v 1.2 2003/09/02 14:44:31 nw Exp $
+/*$Id: ADQLUtils.java,v 1.3 2003/09/17 14:51:30 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,12 +9,17 @@
  *
 **/
 package org.astrogrid.datacenter.adql;
-import org.astrogrid.datacenter.adql.generated.*;
-import org.astrogrid.datacenter.adql.generated.types.*;
-import org.exolab.castor.xml.*;
-import org.w3c.dom.Node;
+import java.io.IOException;
+import java.io.StringWriter;
 
-import java.io.*;
+import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.adql.generated.SelectChoice;
+import org.astrogrid.datacenter.adql.generated.SelectionAll;
+import org.exolab.castor.xml.CastorException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.Node;
 
 /** some static helper methods for working with ADQL object trees.
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Aug-2003
@@ -52,6 +57,9 @@ public class ADQLUtils {
 
 /* 
 $Log: ADQLUtils.java,v $
+Revision 1.3  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.2  2003/09/02 14:44:31  nw
 added method to unmarshall ADQL object model from xml Node
 

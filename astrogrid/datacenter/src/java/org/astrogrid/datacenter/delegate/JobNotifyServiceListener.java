@@ -1,16 +1,16 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.4 2003/09/16 15:23:16 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.5 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate;
 
-import org.astrogrid.datacenter.queriers.*;
-
 import java.net.URL;
+
 import javax.xml.rpc.ParameterMode;
 import javax.xml.rpc.ServiceException;
+
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
@@ -20,7 +20,6 @@ import org.astrogrid.datacenter.common.StatusHelper;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * Very much like the WebNotifyServiceListener, this one creates a special
@@ -92,6 +91,9 @@ public class JobNotifyServiceListener extends WebNotifyServiceListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.5  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.4  2003/09/16 15:23:16  mch
 Listener fixes and rationalisation
 

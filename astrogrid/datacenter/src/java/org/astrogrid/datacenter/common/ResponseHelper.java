@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.10 2003/09/16 17:35:35 mch Exp $
+ * $Id: ResponseHelper.java,v 1.11 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,7 +10,6 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * A set of methods to help build documents that will contain results

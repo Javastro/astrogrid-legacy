@@ -1,5 +1,5 @@
 /*
- * $Id: Configuration.java,v 1.7 2003/09/15 15:47:59 mch Exp $
+ * $Id: Configuration.java,v 1.8 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
+
 import org.astrogrid.log.Log;
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.8 2003/09/16 12:53:40 mch Exp $
+ * $Id: DummyDelegate.java,v 1.9 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,15 +9,16 @@ package org.astrogrid.datacenter.delegate.dummy;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.DocHelper;
-import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.QueryIdHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
-import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -243,6 +244,9 @@ public class DummyDelegate extends DatacenterDelegate
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.9  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.8  2003/09/16 12:53:40  mch
 DocHelper.wrap now throws IllegalArgumentException (runtime error) rather than SAXException, as XML is all softwired
 

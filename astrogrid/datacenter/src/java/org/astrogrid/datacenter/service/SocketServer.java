@@ -1,5 +1,5 @@
 /*
- * $Id: SocketServer.java,v 1.5 2003/09/15 16:42:03 mch Exp $
+ * $Id: SocketServer.java,v 1.6 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,6 +8,7 @@ package org.astrogrid.datacenter.service;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.log.Log;
 

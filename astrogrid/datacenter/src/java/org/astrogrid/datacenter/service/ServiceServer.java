@@ -1,14 +1,15 @@
 /*
- * $Id: ServiceServer.java,v 1.10 2003/09/15 22:38:42 mch Exp $
+ * $Id: ServiceServer.java,v 1.11 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
-import org.astrogrid.datacenter.queriers.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.axis.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
 import org.astrogrid.datacenter.common.ResponseHelper;
@@ -50,14 +51,27 @@ public abstract class ServiceServer
    /**
     * Returns the whole metadata file as a DOM document
     * @todo implement
+    * 
     */
    public Element getMetadata()
    {
       try
       {
-         File metaFile = new File(Configuration.getProperty(METADATA_FILE_LOC_KEY, "metadata.xml"));
+        // File metaFile = new File(Configuration.getProperty(METADATA_FILE_LOC_KEY, "metadata.xml"));
+        // search for file, then for resource on classpath - fits better with appservers / servlet containers
+        String location = Configuration.getProperty(METADATA_FILE_LOC_KEY,"datacenter-metadata.xml");
+        File metaFile = new File(location);
+        InputStream is = null;
+        if (metaFile.exists() && metaFile.isFile()) {
+            is = new FileInputStream(metaFile);            
+        } else {
+            is = this.getClass().getResourceAsStream(location);
+            if (is == null) { // try making the resource absolute.
+                is = this.getClass().getResourceAsStream("/" + location);
+            }
+        }
 
-         return XMLUtils.newDocument(new FileInputStream(metaFile)).getDocumentElement();
+         return XMLUtils.newDocument(is).getDocumentElement();
       }
       catch (javax.xml.parsers.ParserConfigurationException e)
       {

@@ -1,5 +1,5 @@
 /*
- * $Id: SocketXmlOutputStream.java,v 1.5 2003/09/16 15:30:01 mch Exp $
+ * $Id: SocketXmlOutputStream.java,v 1.6 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,9 +9,10 @@ package org.astrogrid.datacenter.io;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
 import org.apache.axis.utils.XMLUtils;
-import org.w3c.dom.Element;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Adds some convenience routines for socket streams writing XML documents

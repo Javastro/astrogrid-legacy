@@ -1,4 +1,4 @@
-/*$Id: MySqlQueryTranslator.java,v 1.3 2003/09/10 09:59:14 nw Exp $
+/*$Id: MySqlQueryTranslator.java,v 1.4 2003/09/17 14:51:30 nw Exp $
  * Created on 29-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,8 @@
 **/
 package org.astrogrid.datacenter.queriers.mysql;
 
-import org.astrogrid.datacenter.adql.QOM;
-import org.astrogrid.datacenter.adql.generated.*;
+import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator;
-import org.astrogrid.datacenter.queriers.TranslationFrame;
 /** ADQL Translator for MySQL dialect SQL
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Aug-2003
  */
@@ -35,6 +33,9 @@ public class MySqlQueryTranslator extends SqlQueryTranslator {
 
 /* 
 $Log: MySqlQueryTranslator.java,v $
+Revision 1.4  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.3  2003/09/10 09:59:14  nw
 added bits to the query translators
 

@@ -1,5 +1,5 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.5 2003/09/16 15:23:16 mch Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.6 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,8 +7,10 @@
 package org.astrogrid.datacenter.delegate;
 
 import java.net.URL;
+
 import javax.xml.rpc.ParameterMode;
 import javax.xml.rpc.ServiceException;
+
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
@@ -18,7 +20,6 @@ import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.common.StatusHelper;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * This is an implementation of a listener design for remote listeners (ie service
@@ -101,6 +102,9 @@ public void setClientListener(URL url) {
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.6  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.5  2003/09/16 15:23:16  mch
 Listener fixes and rationalisation
 

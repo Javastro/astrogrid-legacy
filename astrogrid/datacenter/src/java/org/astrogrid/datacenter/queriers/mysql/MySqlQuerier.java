@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerier.java,v 1.13 2003/09/15 11:34:32 mch Exp $
+ * $Id: MySqlQuerier.java,v 1.14 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.datacenter.queriers.mysql;
 
 import java.io.IOException;
+
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;

@@ -12,12 +12,12 @@ package org.astrogrid.datacenter.query;
 
 import java.util.Iterator;
 
-import org.astrogrid.log.Log;
+import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.astrogrid.datacenter.config.Configuration;
 
 /**
  * The <code>Field</code> class represents a field within an SQL Query.

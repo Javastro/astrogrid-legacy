@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.astrogrid.log.Log;
-
 import org.w3c.dom.Element;
 
 

@@ -14,10 +14,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.astrogrid.log.Log;
-
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

@@ -1,15 +1,16 @@
 /*
- * $Id: WebDelegate.java,v 1.10 2003/09/16 12:54:45 mch Exp $
+ * $Id: WebDelegate.java,v 1.11 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
+
 import javax.xml.rpc.ServiceException;
+
 import org.astrogrid.datacenter.common.DocHelper;
 import org.astrogrid.datacenter.common.QueryIdHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
@@ -190,6 +191,9 @@ public class WebDelegate extends DatacenterDelegate
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.11  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.10  2003/09/16 12:54:45  mch
 Fixes to connect properly to binding service
 

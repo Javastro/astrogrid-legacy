@@ -13,7 +13,6 @@ package org.astrogrid.datacenter.query;
 import java.text.MessageFormat;
 
 import org.astrogrid.log.Log;
-
 import org.w3c.dom.Element;
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.14 2003/09/16 17:36:13 mch Exp $
+ * $Id: SocketDelegate.java,v 1.15 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.Hashtable;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.DocHelper;
 import org.astrogrid.datacenter.common.QueryIdHelper;
@@ -343,6 +344,9 @@ public class SocketDelegate extends DatacenterDelegate
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.15  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.14  2003/09/16 17:36:13  mch
 Added checks for null query ids
 

@@ -1,4 +1,4 @@
-/*$Id: TranslationFrame.java,v 1.2 2003/09/03 13:47:30 nw Exp $
+/*$Id: TranslationFrame.java,v 1.3 2003/09/17 14:51:30 nw Exp $
  * Created on 01-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,11 @@
  *
 **/
 package org.astrogrid.datacenter.queriers;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /** class to maintain a set of translations 
  * 
@@ -326,6 +330,9 @@ public class TranslationFrame {
 
 /* 
 $Log: TranslationFrame.java,v $
+Revision 1.3  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.2  2003/09/03 13:47:30  nw
 improved documentaiton.
 split existing MySQLQueryTranslator into a vanilla-SQL

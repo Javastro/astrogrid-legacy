@@ -1,14 +1,15 @@
 /*
- * $Id: AxisDataServer.java,v 1.19 2003/09/16 15:23:16 mch Exp $
+ * $Id: AxisDataServer.java,v 1.20 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
 import java.io.IOException;
-import org.astrogrid.datacenter.common.ResponseHelper;
+
 import org.astrogrid.datacenter.common.QueryIdHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
@@ -18,7 +19,7 @@ import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-/**
+/** 
  * This class is the public web interface, called by Axis
  * when Axis receives the SOAP message from the client. It is a singleton
  * - all state depends on the DataService instances, one of

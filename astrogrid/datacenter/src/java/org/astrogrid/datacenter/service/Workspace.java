@@ -1,11 +1,12 @@
 /**
- * $Id: Workspace.java,v 1.12 2003/09/15 18:01:21 mch Exp $
+ * $Id: Workspace.java,v 1.13 2003/09/17 14:51:30 nw Exp $
  */
 
 package org.astrogrid.datacenter.service;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.log.Log;
 

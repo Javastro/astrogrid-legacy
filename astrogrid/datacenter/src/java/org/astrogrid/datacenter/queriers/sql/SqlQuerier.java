@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.15 2003/09/15 16:28:19 mch Exp $
+ * $Id: SqlQuerier.java,v 1.16 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,9 +17,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import java.util.StringTokenizer;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
@@ -27,7 +29,6 @@ import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.log.Log;
-import sun.security.krb5.internal.crypto.e;
 
 /**
  * A general purpose SQL Querier that will (hopefully) produce bog standard

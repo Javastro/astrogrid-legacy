@@ -10,9 +10,8 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.astrogrid.log.Log;
-
 import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 
 /**

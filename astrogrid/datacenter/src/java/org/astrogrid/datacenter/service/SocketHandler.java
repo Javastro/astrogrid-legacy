@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.13 2003/09/16 17:36:46 mch Exp $
+ * $Id: SocketHandler.java,v 1.14 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.QueryIdHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
@@ -237,6 +238,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.14  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.13  2003/09/16 17:36:46  mch
 Added checks for null/missing query ids
 

@@ -1,4 +1,4 @@
-/*$Id: QueryTranslator.java,v 1.4 2003/09/08 09:35:34 nw Exp $
+/*$Id: QueryTranslator.java,v 1.5 2003/09/17 14:51:30 nw Exp $
  * Created on 02-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,15 @@
 **/
 package org.astrogrid.datacenter.queriers;
 
-import org.astrogrid.datacenter.adql.*;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.astrogrid.datacenter.adql.ADQLException;
+import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.DynamicVisitor;
+import org.astrogrid.datacenter.adql.QOM;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
-
-import java.util.*;
 import org.w3c.dom.Element;
 
 /** Abstract class that provides mechanism for traversing a ADQL tree, and maintaining a stack of translations.
@@ -110,6 +113,9 @@ public abstract  class QueryTranslator implements DynamicVisitor {
 
 /*
 $Log: QueryTranslator.java,v $
+Revision 1.5  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.4  2003/09/08 09:35:34  nw
 now returns more descriptive exception types
 

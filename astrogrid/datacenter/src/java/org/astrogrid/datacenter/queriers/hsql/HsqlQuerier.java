@@ -1,4 +1,4 @@
-/*$Id: HsqlQuerier.java,v 1.5 2003/09/15 11:34:32 mch Exp $
+/*$Id: HsqlQuerier.java,v 1.6 2003/09/17 14:51:30 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.datacenter.queriers.hsql;
 
 import java.io.IOException;
+
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 
@@ -61,6 +62,9 @@ public class HsqlQuerier extends SqlQuerier {
 
 /*
 $Log: HsqlQuerier.java,v $
+Revision 1.6  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.5  2003/09/15 11:34:32  mch
 made startDrivers() static, now must be called from application layer
 

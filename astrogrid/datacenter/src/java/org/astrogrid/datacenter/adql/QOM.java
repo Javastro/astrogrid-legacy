@@ -1,4 +1,4 @@
-/*$Id: QOM.java,v 1.3 2003/09/08 09:34:56 nw Exp $
+/*$Id: QOM.java,v 1.4 2003/09/17 14:51:30 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,6 @@ import java.io.Writer;
 
 import org.exolab.castor.xml.CastorException;
 import org.xml.sax.ContentHandler;
-import org.exolab.castor.mapping.*;
 /** interface that describes commonality between all classes in the  Query Object Model.
  * <p>
  * Defines the marshalling / unmarshalling to XML routines. - 
@@ -87,6 +86,9 @@ public interface QOM {
 
 /* 
 $Log: QOM.java,v $
+Revision 1.4  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.3  2003/09/08 09:34:56  nw
 Improved exception handling
 

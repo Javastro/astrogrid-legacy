@@ -1,5 +1,5 @@
 /*
- * $Id: SocketXmlInputStream.java,v 1.4 2003/09/16 13:23:21 mch Exp $
+ * $Id: SocketXmlInputStream.java,v 1.5 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,7 +10,9 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;

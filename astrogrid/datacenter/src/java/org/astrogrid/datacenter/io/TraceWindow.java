@@ -1,6 +1,12 @@
 package org.astrogrid.datacenter.io;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
 
 /**
  * This is the window used to display data coming through a TraceInput/OutputStream.

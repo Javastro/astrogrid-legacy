@@ -15,10 +15,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import org.astrogrid.log.Log;
 
 /**
  * The <code>Catalog</code> class represents operations within an

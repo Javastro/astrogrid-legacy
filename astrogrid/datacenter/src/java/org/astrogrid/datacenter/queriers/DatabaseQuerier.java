@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.25 2003/09/16 15:23:16 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.26 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,13 +15,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import org.astrogrid.datacenter.common.DocMessageHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.config.Configuration;
-import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.delegate.JobNotifyServiceListener;
-import org.astrogrid.datacenter.queriers.QueryListener;
 import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
+import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.Workspace;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;

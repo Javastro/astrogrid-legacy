@@ -1,4 +1,4 @@
-/*$Id: AbstractQOM.java,v 1.5 2003/09/08 09:34:56 nw Exp $
+/*$Id: AbstractQOM.java,v 1.6 2003/09/17 14:51:30 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,14 +9,20 @@
  *
 **/
 package org.astrogrid.datacenter.adql;
-import org.exolab.castor.mapping.*;
-import org.exolab.castor.xml.*;
-import org.exolab.castor.xml.util.ClassDescriptorResolverImpl;
-import org.exolab.castor.mapping.loader.CollectionHandlers;
-import java.lang.reflect.*;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
+
+import org.exolab.castor.mapping.CollectionHandler;
+import org.exolab.castor.mapping.FieldDescriptor;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.mapping.loader.CollectionHandlers;
+import org.exolab.castor.xml.ClassDescriptorResolver;
+import org.exolab.castor.xml.XMLClassDescriptor;
+import org.exolab.castor.xml.XMLFieldDescriptor;
+import org.exolab.castor.xml.util.ClassDescriptorResolverImpl;
 /** abstract implementation of the query object model classes.
  *  - necessary work around for castor, so we can get all generated classes implementing the QOM interface.
 
@@ -131,6 +137,9 @@ public abstract class AbstractQOM implements QOM {
 
 /* 
 $Log: AbstractQOM.java,v $
+Revision 1.6  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.5  2003/09/08 09:34:56  nw
 Improved exception handling
 

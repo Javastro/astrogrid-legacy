@@ -5,7 +5,6 @@ package org.astrogrid.datacenter.io;
  * Creation date: (18/01/00 13:56:10)
  * @author:
  */
-import java.awt.event.*;
 
 public class TraceOutputStream extends java.io.FilterOutputStream  {
    private TraceWindow traceWindow = null;

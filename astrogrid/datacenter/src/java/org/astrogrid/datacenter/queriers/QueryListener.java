@@ -1,12 +1,11 @@
 /*
- * $Id: QueryListener.java,v 1.1 2003/09/15 21:27:15 mch Exp $
+ * $Id: QueryListener.java,v 1.2 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 
 
 /**
@@ -26,6 +25,9 @@ public interface QueryListener
 
 /*
 $Log: QueryListener.java,v $
+Revision 1.2  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.1  2003/09/15 21:27:15  mch
 Listener/state refactoring.
 

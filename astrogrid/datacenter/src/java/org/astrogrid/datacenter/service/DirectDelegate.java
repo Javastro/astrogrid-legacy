@@ -1,5 +1,5 @@
 /*
- * $Id: DirectDelegate.java,v 1.4 2003/09/15 22:38:42 mch Exp $
+ * $Id: DirectDelegate.java,v 1.5 2003/09/17 14:51:30 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -8,6 +8,7 @@ package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
@@ -111,6 +112,9 @@ public class DirectDelegate extends DatacenterDelegate
 
 /*
 $Log: DirectDelegate.java,v $
+Revision 1.5  2003/09/17 14:51:30  nw
+tidied imports - will stop maven build whinging
+
 Revision 1.4  2003/09/15 22:38:42  mch
 Split spawnQuery into make and start, so we can add listeners in between
 
