@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/09 10:57:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.4  2003/09/09 10:57:47  dave
+ *   Added corresponding SINGLE Group to addAccount and delAccount.
+ *
  *   Revision 1.3  2003/09/08 20:28:50  dave
  *   Added CommunityIdent, with isLocal() and isValid()
  *
@@ -610,7 +613,10 @@ public class GroupManagerImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.delGroup()") ;
 		if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
-
+//
+// TODO
+// Prevent the client from deleting an Account Group if the Account still exists.
+//
 		//
 		// Create a CommunityIdent for our Group.
 		CommunityIdent ident = new CommunityIdent(name) ;

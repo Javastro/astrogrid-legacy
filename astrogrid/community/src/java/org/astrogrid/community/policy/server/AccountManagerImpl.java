@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/09 10:57:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.3  2003/09/09 10:57:47  dave
+ *   Added corresponding SINGLE Group to addAccount and delAccount.
+ *
  *   Revision 1.2  2003/09/08 20:28:50  dave
  *   Added CommunityIdent, with isLocal() and isValid()
  *
@@ -33,6 +36,7 @@ import org.exolab.castor.jdo.TransactionNotInProgressException ;
 import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 
 import org.astrogrid.community.policy.data.ServiceData ;
+import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.AccountData ;
 import org.astrogrid.community.policy.data.CommunityIdent ;
 import org.astrogrid.community.policy.data.CommunityConfig ;
@@ -90,6 +94,7 @@ public class AccountManagerImpl
 		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.addAccount()") ;
 		if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
 
+		GroupData group = null ;
 		AccountData account = null ;
 		//
 		// Create a CommunityIdent for our Account.
@@ -107,6 +112,10 @@ public class AccountManagerImpl
 				// Create our new Account object.
 				account = new AccountData(ident.toString()) ;
 				//
+				// Create the corresponding Group object.
+				group = new GroupData(ident.toString()) ;
+				group.setType(GroupData.SINGLE_TYPE) ;
+				//
 				// Try performing our transaction.
 				try {
 					//
@@ -115,6 +124,9 @@ public class AccountManagerImpl
 					//
 					// Try creating the account in the database.
 					database.create(account);
+					//
+					// Try creating the group in the database.
+					database.create(group);
 					}
 				//
 				// If we already have an object with that ident.
@@ -126,6 +138,7 @@ public class AccountManagerImpl
 
 					//
 					// Set the response to null.
+					group   = null ;
 					account = null ;
 
 					if (DEBUG_FLAG) System.out.println("  ----") ;
@@ -141,6 +154,7 @@ public class AccountManagerImpl
 
 					//
 					// Set the response to null.
+					group   = null ;
 					account = null ;
 
 					if (DEBUG_FLAG) System.out.println("  ----") ;
@@ -167,6 +181,7 @@ public class AccountManagerImpl
 
 						//
 						// Set the response to null.
+						group   = null ;
 						account = null ;
 
 						if (DEBUG_FLAG) System.out.println("  ----") ;
@@ -179,6 +194,7 @@ public class AccountManagerImpl
 			else {
 				//
 				// Set the response to null.
+				group   = null ;
 				account = null ;
 				}
 			}
@@ -187,6 +203,7 @@ public class AccountManagerImpl
 		else {
 			//
 			// Set the response to null.
+			group   = null ;
 			account = null ;
 			}
 
@@ -536,17 +553,24 @@ public class AccountManagerImpl
 				{
 				//
 				// Try update the database.
+				GroupData   group   = null ;
 				AccountData account = null ;
 				try {
 					//
 					// Begin a new database transaction.
 					database.begin();
 					//
-					// Load the Account from the database.
+					// Load the Account and Group from the database.
 					account = (AccountData) database.load(AccountData.class, ident.toString()) ;
+					group   = (GroupData)   database.load(GroupData.class,   ident.toString()) ;
 					//
-					// Delete the account.
+					// Delete the Account and Group together.
 					database.remove(account) ;
+					database.remove(group)   ;
+//
+// TODO
+// Should remove the Account even if the Group does not exist.
+//
 					}
 				//
 				// If we couldn't find the object.
@@ -558,6 +582,7 @@ public class AccountManagerImpl
 
 					//
 					// Set the response to null.
+					group   = null ;
 					account = null ;
 
 					if (DEBUG_FLAG) System.out.println("  ----") ;
@@ -573,6 +598,7 @@ public class AccountManagerImpl
 
 					//
 					// Set the response to null.
+					group   = null ;
 					account = null ;
 
 					if (DEBUG_FLAG) System.out.println("  ----") ;
@@ -599,6 +625,7 @@ public class AccountManagerImpl
 
 						//
 						// Set the response to null.
+						group   = null ;
 						account = null ;
 
 						if (DEBUG_FLAG) System.out.println("  ----") ;

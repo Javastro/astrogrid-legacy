@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/09 10:57:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.7  2003/09/09 10:57:47  dave
+ *   Added corresponding SINGLE Group to addAccount and delAccount.
+ *
  *   Revision 1.6  2003/09/08 20:28:50  dave
  *   Added CommunityIdent, with isLocal() and isValid()
  *
@@ -240,16 +243,15 @@ public class PolicyManagerImpl
 		return groupManager.getGroupList() ;
 		}
 
-      /**
-       * Request a list of Groups.
-       *
-       */
-      public Object[] getAccountGroupList(String account)
-         throws RemoteException
-      {
-         return groupManager.getAccountGroupList(account) ;
-      }
-
+	/**
+	* Request a list of Groups.
+	*
+	*/
+	public Object[] getAccountGroupList(String account)
+		throws RemoteException
+		{
+		return groupManager.getAccountGroupList(account) ;
+		}
 
 	/**
 	 * Create a new Community.
@@ -300,9 +302,6 @@ public class PolicyManagerImpl
 		{
 		return communityManager.getCommunityList() ;
 		}
-
-
-
 	}
 
 
