@@ -7,6 +7,7 @@
        org.astrogrid.community.Account,
        org.astrogrid.datacenter.adql.ADQLUtils,
        org.astrogrid.datacenter.service.DataServer,
+       org.astrogrid.datacenter.queriers.query.AdqlQuery,
        org.astrogrid.util.DomHelper,
        org.astrogrid.io.*"
    isThreadSafe="false"
@@ -22,7 +23,7 @@
    Document adqlDom = DomHelper.newDocument(new StringBufferInputStream(adqlXml));
    
    try {
-     server.askAdql(Account.ANONYMOUS, ADQLUtils.unmarshalSelect(adqlDom), out);
+     server.askQuery(Account.ANONYMOUS, new AdqlQuery(ADQLUtils.unmarshalSelect(adqlDom)), out);
    }
    catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);

@@ -193,7 +193,7 @@
 <h2>Plugin Configuration</h2>
 <%
 
-String pluginClass =  SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.QuerierManager.DATABASE_QUERIER_KEY);
+String pluginClass =  SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.QuerierPluginFactory.DATABASE_QUERIER_KEY);
 String spiClass = SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.spi.PluginQuerier.QUERIER_SPI_KEY) ;
 %>
 Plugin Class <%= pluginClass %>

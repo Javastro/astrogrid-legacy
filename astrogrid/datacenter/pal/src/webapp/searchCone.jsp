@@ -3,6 +3,7 @@
        org.astrogrid.io.*,
        org.apache.commons.logging.LogFactory,
        org.astrogrid.community.Account,
+       org.astrogrid.datacenter.queriers.query.ConeQuery,
        org.astrogrid.datacenter.service.DataServer"
    isThreadSafe="false"
    session="false"
@@ -18,7 +19,7 @@
    double sr = Double.parseDouble(request.getParameter("SR"));
 
    try {
-      out.write(server.searchCone(Account.ANONYMOUS, ra, dec, sr));
+      server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), out);
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
       out.write(server.exceptionAsHtml("Searching Cone (RA="+ra+", DEC="+dec+", SR="+sr, th));
