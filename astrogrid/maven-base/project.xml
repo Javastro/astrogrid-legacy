@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.33 2005/02/10 17:31:01 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.34 2005/02/15 10:51:32 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xsd/maven-project.xsd">
     <pomVersion>3</pomVersion>
     <name>Astrogrid Master Maven POM</name>
@@ -206,6 +206,7 @@
         <report>maven-changelog-plugin</report>
         <report>maven-changes-plugin</report>
         <report>maven-checkstyle-plugin</report>
+        <report>maven-clover-plugin</report>
         <report>maven-developer-activity-plugin</report>
         <report>maven-file-activity-plugin</report>
         <report>maven-javadoc-plugin</report>
