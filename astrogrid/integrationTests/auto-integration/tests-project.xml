@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.36 2004/10/29 09:45:18 nw Exp $ -->
+<!-- $Id: tests-project.xml,v 1.37 2004/11/23 11:05:07 clq2 Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <id>auto-integration-tests</id>
@@ -151,6 +151,11 @@
 			<artifactId>astrogrid-cea-client</artifactId>
 			<version>${pom.currentVersion}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.astrogrid</groupId>
+			<artifactId>astrogrid-cea-server</artifactId>
+			<version>${pom.currentVersion}</version>
+		</dependency>		
 		<!--This dependency is so I can test the ReqistryQuerier
 			which is not available through the cea-client, but
 			has to be tested in an integration environment -->
