@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoaderTest.java,v 1.5 2004/08/27 19:40:37 pah Exp $
+ * $Id: CommandLineDescriptionsLoaderTest.java,v 1.6 2004/09/10 12:13:37 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -99,7 +99,7 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
 
     final public void testLoadDescription()
             throws ApplicationDescriptionNotLoadedException,
-            ParameterNotInInterfaceException {
+            ParameterNotInInterfaceException, ParameterDescriptionNotFoundException {
 
         try {
             assertEquals("there should be 3 apps defined", 3, dl
@@ -143,6 +143,7 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
             assertEquals("P1 commandposition", 1, clpd.getCommandPosition());
             assertEquals("P1 ui name unexpected", "Pause Time", clpd
                     .getDisplayName());
+            assertEquals("P1 should not be a fileRef parameter",false, clpd.isFileRef());
             assertTrue("P1 description missing", clpd.getDisplayDescription()
                     .length() > 0);
             assertEquals("ucd", "UCD", clpd.getUcd());
@@ -150,6 +151,10 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
             assertEquals("UNITS value", "UNITS",clpd.getUnits());
             System.out.println("name:" + p1.getName());
             System.out.println("desc:" + p1.getDisplayDescription());
+            
+            clpd = (CommandLineParameterDescription)ad.getParameterDescription("P3");
+            assertEquals("P3 should be a fileRef parameter",true, clpd.isFileRef());
+                       
             ApplicationInterface intf = null;
             try {
                 intf = ad.getInterface("I1");
