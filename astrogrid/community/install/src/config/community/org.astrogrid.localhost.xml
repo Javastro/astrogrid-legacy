@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/org.astrogrid.localhost.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2004/09/10 11:02:45 $</cvs:date>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:date>$Date: 2004/09/20 14:59:34 $</cvs:date>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     |   $Log: org.astrogrid.localhost.xml,v $
+    |   Revision 1.11  2004/09/20 14:59:34  clq2
+    |   added David Barnes
+    |
     |   Revision 1.10  2004/09/10 11:02:45  clq2
     |   added guyrixon and sallyhales to ag test account
     |
@@ -93,6 +96,11 @@
             <description>Astrogrid demonstrator</description>
             <email>guyrixon@mail.astrogrid.org</email>
         </account>
+		<account ident="ivo://org.astrogrid.localhost/sallyhales">
+            <display>David Barnes</display>
+            <description>Astrogrid demonstrator</description>
+            <email>davidbarnes@mail.astrogrid.org</email>
+        </account>
     </accounts>
     <!--+
         | The community Groups.
@@ -135,6 +143,7 @@
         <password account="ivo://org.astrogrid.localhost/nic"    password="qwerty"/>
 		<password account="ivo://org.astrogrid.localhost/sallyhales"    password="sallyhales"/>
 		<password account="ivo://org.astrogrid.localhost/guyrixon"    password="qwerty"/>
+		<password account="ivo://org.astrogrid.localhost/davidbarnes"    password="davidbarnes"/>
     </passwords>
 
 </community>
