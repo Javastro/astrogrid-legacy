@@ -21,6 +21,7 @@ import org.astrogrid.AstroGridException ;
 
 import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
 import org.astrogrid.community.policy.data.PolicyPermission ;
+import org.astrogrid.community.service.authentication.data.SecurityToken;
 
 // import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.astrogrid.portal.workflow.*;
@@ -74,7 +75,7 @@ public class DesignAction extends AbstractAction {
 	 * Cocoon param for the user param in the session.
 	 *
 	 */
-	public static final String COMMUNITY_PARAM_TAG = "community" ;
+	public static final String COMMUNITY_PARAM_TAG = "community_account" ;
 
 	/**
 	 * Http request param for the action.
@@ -98,9 +99,10 @@ public class DesignAction extends AbstractAction {
     
     public static final String
         HTTP_WORKFLOW_TAG = "workflow-tag" ,
-        COMMUNITY_ACCOUNT_TAG = "community-account" ,
+        COMMUNITY_ACCOUNT_TAG = "community_account" ,
+        COMMUNITY_NAME_TAG = "community_name" ,
         CREDENTIAL_TAG = "credential",
-        COMMUNITY_TOKEN_TAG = "community-token" ;
+        COMMUNITY_TOKEN_TAG = "token" ;
         
     public static final String
         WORKFLOW_NAME_PARAMETER = "workflow-name",  
@@ -259,6 +261,7 @@ public class DesignAction extends AbstractAction {
                 this.consistencyCheck() ;
                     
                 if( action == null ){
+				    this.readLists() ; // PJN note: this is obviously wrong - need to set action in sitemap
                     debug( "action is null") ;  
                 }      
                 if( action.equals( ACTION_CREATE_WORKFLOW ) ) {
@@ -272,15 +275,18 @@ public class DesignAction extends AbstractAction {
                 }
                 else if( action.equals( ACTION_SAVE_WORKFLOW ) ) { 
                     this.saveWorkflow() ;
+					this.readLists() ;
                 }
                 else if( action.equals( ACTION_READ_WORKFLOW ) ) {
                     this.readWorkflow() ; 
                 }
                 else if( action.equals( ACTION_DELETE_WORKFLOW ) ) {
-                    this.deleteWorkflow() ; 
+                    this.deleteWorkflow() ;
+					this.readLists() ; 
                 }
                 else if( action.equals( ACTION_SUBMIT_WORKFLOW ) ) {
-                    this.submitWorkflow() ; 
+                    this.submitWorkflow() ;
+					this.readLists() ; 
                 }
                 else if( action.equals( ACTION_CHOOSE_QUERY ) ) {
                     this.chooseQuery() ; 
@@ -295,12 +301,13 @@ public class DesignAction extends AbstractAction {
                     this.readQueryList() ; 
                 }
 				else if( action.equals( ACTION_READ_LISTS ) ) {
-						this.readLists() ; 
+					this.readLists() ; 
 				}			
 				else if( action.equals( ACTION_INSERT_QUERY_INTO_STEP ) ) {
 					this.insertQueryIntoStep() ;                     								
                 }
                 else {
+                	this.readWorkflowList() ; // PJN note: need to move this
                     debug( "unsupported action") ; 
                 }
                 
@@ -345,12 +352,23 @@ public class DesignAction extends AbstractAction {
             try {
         
                 // JL Note: Iteration 3 way of doing things...
-                useridCommunity = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ) ;
-                ampersandIndex = useridCommunity.indexOf( USERID_COMMUNITY_SEPARATOR ) ;
-                this.userid = useridCommunity.substring(  0, ampersandIndex ) ;
-                this.community = useridCommunity.substring( ampersandIndex + 1 ); 
-                this.group = (String)session.getAttribute( CREDENTIAL_TAG ) ;
-                this.token = (String)session.getAttribute( COMMUNITY_TOKEN_TAG ) ;
+                // PJN note: alterred slightly, also not sure if LoginAction intends to put security token into session?
+              
+                this.userid = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ) ;               
+                this.community = (String)session.getAttribute( COMMUNITY_NAME_TAG ) ;              
+				this.group = (String)session.getAttribute( CREDENTIAL_TAG ) ;
+				SecurityToken secToken = (SecurityToken)session.getAttribute( COMMUNITY_TOKEN_TAG ) ;				
+				this.token = secToken.getToken() ;
+
+                
+//                useridCommunity = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ) ;                
+//                ampersandIndex = useridCommunity.indexOf( USERID_COMMUNITY_SEPARATOR ) ;               
+//                this.userid = useridCommunity.substring(  0, ampersandIndex ) ;               
+//                this.community = useridCommunity.substring( ampersandIndex + 1 );
+ 
+                 
+                
+                 
                 
                 if( this.workflow != null ) {
 //                  workflow.setUserid( userid ) ;

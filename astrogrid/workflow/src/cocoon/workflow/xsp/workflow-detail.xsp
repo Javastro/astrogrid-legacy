@@ -113,16 +113,19 @@
       		]]>
 	
 			<content>	
-				<xsp:element name="step">
+<!--				<xsp:element name="step">
 					<xsp:attribute name="key"><xsp:expr>step.getKey()</xsp:expr></xsp:attribute>
 					<xsp:element name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:element>
 					<xsp:element name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:element>
 					<xsp:element name="tool"><xsp:expr>step.getTool().getName()</xsp:expr></xsp:element>
-					<xsp:element name="joinCondition">
-						<xsp:attribute name="value">
-							<xsp:expr>step.getJoinCondition()</xsp:expr>
-						</xsp:attribute>
-					</xsp:element>
+					<xsp:element name="joinCondition"><xsp:attribute name="value"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute></xsp:element>
+				</xsp:element>
+-->				<xsp:element name="step">
+					<xsp:attribute name="key"><xsp:expr>step.getKey()</xsp:expr></xsp:attribute>
+					<xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
+					<xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
+					<xsp:element name="tool"><xsp:expr>step.getTool().getName()</xsp:expr></xsp:element>
+					<xsp:element name="joinCondition"><xsp:attribute name="value"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute></xsp:element>
 				</xsp:element>
 			</content>
 		
@@ -185,15 +188,9 @@
 		//================================================================================
 		]]>
 	
-		<xsp:attribute name="template-name">
-			<xsp:expr>workflow.getTemplateName()</xsp:expr>
-		</xsp:attribute>
-		<xsp:attribute name="workflow-name">
-			<xsp:expr>workflow.getName()</xsp:expr>
-		</xsp:attribute> 
-		<xsp:attribute name="workflow-description">
-			<xsp:expr>workflow.getDescription()</xsp:expr>
-		</xsp:attribute> 
+		<xsp:attribute name="template-name"><xsp:expr>workflow.getTemplateName()</xsp:expr></xsp:attribute>
+		<xsp:attribute name="workflow-name"><xsp:expr>workflow.getName()</xsp:expr></xsp:attribute> 
+		<xsp:attribute name="workflow-description"><xsp:expr>workflow.getDescription()</xsp:expr></xsp:attribute> 
 		
 		<xsp:logic>
 			<![CDATA[

@@ -620,7 +620,7 @@ public class WorkflowHelper {
                                       , String community
                                       , String communitySnippet
                                       , String filter ) {
-        if( TRACE_ENABLED ) trace( "WorkflowHelper.readQuery() entry") ; 
+        if( TRACE_ENABLED ) trace( "WorkflowHelper.readQueryList() entry") ; 
         
         // JBL: For the moment we are ignoring filter.
         
@@ -640,7 +640,7 @@ public class WorkflowHelper {
              ex.printStackTrace() ;
          }
          finally {
-             if( TRACE_ENABLED ) trace( "WorkflowHelper.readWorkflowList() exit") ; 
+             if( TRACE_ENABLED ) trace( "WorkflowHelper.readQueryList() exit") ; 
          }
        
          return vector ;
