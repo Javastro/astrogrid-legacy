@@ -72,24 +72,24 @@ for(var i = 0;i < dsColArray[sIndex].length;i++) {
 		<td style="vertical-align: top;">
 			<jsp:include page="DataQueryMenu.html" />
 		</td>
-        <td style="vertical-align: top;" rowspan="2">
+        <td align="left" width="100%" style="vertical-align: top;" rowspan="2">
         	<table cellpadding="2" cellspacing="2" border="0" style="width: 100%; margin-left: auto; margin-right: auto;">
         		<tbody>
                 	<tr align="center" valign="middle" bgcolor="#000000">
-                    	<td width="0" height="0" colspan="0" rowspan="0" 
-                           	 style="color: white; font-family: arial, helvetica, sans-serif; 
-                           	 font-size-adjust: +2; font-weight: bold; height: 30px; width: 200px; ">
+                    	<td  width="0" height="0" rowspan="0" colspan="0"
+                    	     style="color: white; font-family: arial, helvetica, sans-serif; 
+                           	 font-size-adjust: -2; font-weight: bold; height: 30px; width: 200px; ">
                                  Data Query
                         </td>
-                        <td width="0" height="0" colspan="0" rowspan="0" 
-                        	style="color: white; font-family: arial, helvetica, sans-serif; 
-                           	font-size-adjust: +2; font-weight: bold; height: 30px; width: 200px; ">
+                        <td width="0" height="0" rowspan="0" colspan="0"
+                            style="color: white; font-family: arial, helvetica, sans-serif; 
+                           	font-size-adjust: -2; font-weight: bold; height: 30px; width: 200px; ">
                             <a href="agdataqueryhelp.html" style="color: #FFFFFF; ">Help</a>
                         </td>
-                        <td>&nbsp;</td>
+                        <td width="70%">&nbsp;</td>
                     </tr>
                     <tr align="left" valign="top">
-                    	<td style="rowspan="1" colspan="3">
+                    	<td rowspan="1" colspan="3">
 							<%
 								String errorMessage = (String)session.getAttribute("ErrorMessage");
 								if (errorMessage != null) {
@@ -212,11 +212,7 @@ for(var i = 0;i < dsColArray[sIndex].length;i++) {
                </table>
             </td>
          </tr> 
-         <tr valign="top">
-         	<td align="center" valign="top" style="color: #FF9900; font-size-adjust: -2; width: 140px;">
-				&nbsp;
-          	</td>
-            <td>&nbsp;</td>
-         </tr>
+        </tbody>
+       </table>
 	</body>
 </html>
