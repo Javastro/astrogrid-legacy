@@ -1,4 +1,4 @@
-/*$Id: DynamicFactoryManager.java,v 1.1 2003/08/20 14:45:39 nw Exp $
+/*$Id: DynamicFactoryManager.java,v 1.2 2003/08/21 12:26:26 nw Exp $
  * Created on 19-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,7 +65,7 @@ public class DynamicFactoryManager extends FactoryManager {
  */
     public QueryFactory getQueryFactory(String catalogName)
         throws QueryException {
-        if (isQueryFactoryLoaded(catalogName)) {
+        if (super.isQueryFactoryAvailable(catalogName)) { // use the original implementation, as just looks in the hash map.
             return super.getQueryFactory(catalogName);
         }
         String implementationFactoryName = conf.getProperty(
@@ -89,6 +89,15 @@ public class DynamicFactoryManager extends FactoryManager {
             throw new QueryException(message, ex);
         }
     }
+    /** overridden implementation - checks  the configuration file, to see if there is 
+     * an entry for this catalog in it, and the internal cache.
+     */
+    public boolean isQueryFactoryAvailable(String catalogName) {
+        String className = conf.getProperty(catalogName + ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY
+                                        , ConfigurationKeys.CATALOG_CATEGORY) ;
+        return className != null || super.isQueryFactoryAvailable(catalogName);            
+    }
+    
     /** implementation method to load the default query factory into the factory manager, 
      * based on settings in the configuration.
      * @throws QueryException if an error occurs while loading
@@ -185,6 +194,10 @@ public class DynamicFactoryManager extends FactoryManager {
 }
 /*
 $Log: DynamicFactoryManager.java,v $
+Revision 1.2  2003/08/21 12:26:26  nw
+fixed a but raised by testing - behaviour of isQueryFactoryAvailable
+should depend on config object, rather than internal cache
+
 Revision 1.1  2003/08/20 14:45:39  nw
 altered the datasetAgent to use the new configuration sysem
 in the config package. Provided a factory manager that
