@@ -217,7 +217,6 @@ public class LoginAction extends AbstractAction
 
 			}
 
-		Map results = new HashMap() ;
 		return results;
 		}
 
@@ -275,6 +274,9 @@ public class LoginAction extends AbstractAction
       
       String secure_url = null;
 
+	/*
+	 *
+
       if(HTTPS_CONNECTION.equals(secureConn)) {
          
          if(!request.isSecure()) {
@@ -290,7 +292,10 @@ public class LoginAction extends AbstractAction
             }
          }
       }
-      
+
+	 *
+	 */
+
       String admin = CommunityConfig.getAdministrator();
       String adminEmail = CommunityConfig.getAdministratorEmail();
       
