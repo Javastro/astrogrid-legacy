@@ -55,7 +55,10 @@ public final class Query implements Tool {
         queryElement = null ;
         
         
-    public static Query readQuery( String userid, String community, String name ) {
+    public static Query readQuery( String userid
+                                 , String community
+                                 , String communitySnippet
+                                 , String name ) {
         if( TRACE_ENABLED ) trace( "Query.readQuery() entry") ; 
         
         Query
@@ -104,7 +107,10 @@ public final class Query implements Tool {
     } // end of readQuery()
     
     
-    public static Iterator readQueryList( String userid, String community, String name ) {
+    public static Iterator readQueryList( String userid
+                                        , String community
+                                        , String communitySnippet
+                                        , String name ) {
         if( TRACE_ENABLED ) trace( "Query.readQuery() entry") ; 
         
         // JBL: For the moment we are ignoring filter.

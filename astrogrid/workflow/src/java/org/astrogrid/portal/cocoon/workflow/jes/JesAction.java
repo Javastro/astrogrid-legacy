@@ -24,6 +24,7 @@ import org.astrogrid.portal.workflow.jes.*;
 
 import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
 import org.astrogrid.community.policy.data.PolicyPermission ;
+import org.astrogrid.community.common.util.CommunityMessage;
 
 import java.io.File;
 
@@ -326,10 +327,12 @@ public class JesAction extends AbstractAction {
                 this.checkPermissions( AUTHORIZATION_RESOURCE_JOB
                                      , AUTHORIZATION_ACTION_EDIT ) ;
                 
-                
                 //NB: The filter argument is ignored at present (Sept 2003).
                 Iterator
-                    iterator =  Job.readJobList( userid, community, "*" ) ;
+                    iterator =  Job.readJobList( userid
+                                               , community
+                                               , communitySnippet()
+                                               , "*" ) ;
                 this.request.setAttribute( HTTP_JOBLIST_TAG, iterator ) ;               
             }
             catch( WorkflowException wfex ) {
@@ -411,6 +414,16 @@ public class JesAction extends AbstractAction {
             }
              
         } // end of checkPermission() 
+        
+        
+        private String communitySnippet() {
+        
+            return CommunityMessage.getMessage(
+                    (String)session.getAttribute( CREDENTIAL_TAG ),
+                    (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ),
+                    (String)session.getAttribute( CREDENTIAL_TAG ) );
+                    
+        }
    
    
     } // end of inner class JesActionImpl

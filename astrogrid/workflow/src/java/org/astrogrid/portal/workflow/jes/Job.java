@@ -139,7 +139,10 @@ public class Job {
     /*
      * 
      */
-    public static ListIterator readJobList( String userid, String community, String filter ) {
+    public static ListIterator readJobList( String userid
+                                          , String community
+                                          , String communitySnippet
+                                          , String filter ) {
         if( TRACE_ENABLED ) trace( "Job.readJobList() entry") ; 
                 
         ListIterator
@@ -154,7 +157,10 @@ public class Job {
         try {
             jesLocation = WKF.getProperty( WKF.JES_URL, WKF.JES_CATEGORY ) ;
             jobController = new JobControllerDelegate( jesLocation ) ;
-            response = jobController.readJobList( userid, community, filter ) ; 
+            response = jobController.readJobList( userid
+                                                , community
+                                                , communitySnippet
+                                                , filter ) ; 
             iterator = Job.decodeListResponse( response ) ;               
         }
         catch ( Exception ex ) {

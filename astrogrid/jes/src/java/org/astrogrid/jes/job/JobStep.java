@@ -109,8 +109,7 @@ public class JobStep {
 		   NodeList
 			  nodeList = element.getChildNodes() ;
 		   Element
-			  queryChild = null,
-			  catalogChild = null ;
+			  queryChild = null ;
 			   
 		   for( int i=0 ; i < nodeList.getLength() ; i++ ) {
 		   				

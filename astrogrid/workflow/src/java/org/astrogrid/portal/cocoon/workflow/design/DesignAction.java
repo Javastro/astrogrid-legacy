@@ -490,13 +490,13 @@ public class DesignAction extends AbstractAction {
                 }
                 
                 if( workflow == null ) {
-                    workflow = Workflow.readWorkflow( userid, community, name ) ; 
+                    workflow = Workflow.readWorkflow( userid, community, communitySnippet(), name ) ; 
                 }
                 else if( workflow.isDirty() == false ) {
-                    workflow = Workflow.readWorkflow( userid, community, name ) ; 
+                    workflow = Workflow.readWorkflow( userid, community, communitySnippet(), name ) ; 
                 }
                 else if( bConfirm == true ) {
-                    workflow = Workflow.readWorkflow( userid, community, name ) ;
+                    workflow = Workflow.readWorkflow( userid, community, communitySnippet(), name ) ;
                 }        
                 debug( "userid: " + workflow.getUserid() ) ;
                 debug( "community: " + workflow.getCommunity() ) ;
@@ -525,13 +525,13 @@ public class DesignAction extends AbstractAction {
                 }
                 
                 if( workflow == null ) {
-                    Workflow.deleteWorkflow( userid, community, name ) ; 
+                    Workflow.deleteWorkflow( userid, community, communitySnippet(), name ) ; 
                 }
                 else if( workflow.isDirty() == false ) {
-                    Workflow.deleteWorkflow( userid, community, name ) ;  ; 
+                    Workflow.deleteWorkflow( userid, community, communitySnippet(), name ) ;  ; 
                 }
                 else if( bConfirm == true ) {
-                    Workflow.deleteWorkflow( userid, community, name ) ;  ;
+                    Workflow.deleteWorkflow( userid, community, communitySnippet(), name ) ;  ;
                 }                              
             }
             finally {
@@ -710,7 +710,10 @@ public class DesignAction extends AbstractAction {
                                
                 //NB: The filter argument is ignored at present (Sept 2003).
                 Iterator
-                    iterator =  Workflow.readWorkflowList( userid, community, "*" ) ;
+                    iterator =  Workflow.readWorkflowList( userid
+                                                         , community
+                                                         , "*"
+                                                         , communitySnippet() ) ;
                 this.request.setAttribute( WORKFLOW_LIST_PARAMETER, iterator ) ;               
             }
             catch( WorkflowException wfex ) {
@@ -731,7 +734,7 @@ public class DesignAction extends AbstractAction {
             try {
 //              NB: The filter argument is ignored at present (Sept 2003).
                 Iterator
-                    iterator =  Query.readQueryList( userid, community, "*" ) ;
+                    iterator =  Query.readQueryList( userid, community, communitySnippet(), "*" ) ;
                 this.request.setAttribute( QUERY_LIST_PARAMETER, iterator ) ;               
             }
             finally {
@@ -845,10 +848,20 @@ public class DesignAction extends AbstractAction {
              
         } // end of checkPermission()
   		
+        
+        private String communitySnippet() {
+        
+            return CommunityMessage.getMessage(
+                    (String)session.getAttribute( CREDENTIAL_TAG ),
+                    (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ),
+                    (String)session.getAttribute( CREDENTIAL_TAG ) );
+                    
+        }
+        
                       
     } // end of inner class DesignActionImpl
-        
     
+ 
     private class ConsistencyException extends Exception {
     }
     

@@ -10,6 +10,8 @@
  */
 package org.astrogrid.jes.impl;
 
+import org.astrogrid.jes.jobcontroller.SubmissionRequestDD ;
+
 import org.apache.log4j.Logger; 
 import org.astrogrid.i18n.*;
 import org.astrogrid.jes.job.* ;
@@ -33,6 +35,11 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.ListIterator ;
 // import java.lang.Math ;
+
+import org.apache.axis.utils.XMLUtils ;
+import org.astrogrid.community.common.util.CommunityMessage;
+import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
+import org.astrogrid.community.policy.data.PolicyPermission;;
 
 
 public class JobFactoryImpl implements JobFactory {
@@ -145,7 +152,13 @@ public class JobFactoryImpl implements JobFactory {
         ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST            = "AGJESE00790", 
         ASTROGRIDERROR_UNABLE_TO_COMPLETE_UPDATE_REQUEST          = "AGJESE00800",
         ASTROGRIDERROR_JOBID_SINGLETON_ROW_FAULT                  = "AGJESE00810",
-        ASTROGRIDERROR_UNEXPECTED_SQL_ERROR_ON_TABLE              = "AGJESE00820" ;
+        ASTROGRIDERROR_UNEXPECTED_SQL_ERROR_ON_TABLE              = "AGJESE00820",
+        ASTROGRIDERROR_JES_PERMISSION_DENIED                      = "AGJESE01000",
+        ASTROGRIDERROR_PASSTHRU                                   = "AGJESE01010";
+        
+    private static final String
+        AUTHORIZATION_RESOURCE = "job",
+        AUTHORIZATION_ACTION = "edit" ;
     
 	private static DataSource
 		datasource = null ;
@@ -244,6 +257,8 @@ public class JobFactoryImpl implements JobFactory {
     	   job = null ;
 		PreparedStatement
 			pStatement = null ;
+        String
+            communitySnippet = null ;
     	   
     	try {
 
@@ -251,6 +266,17 @@ public class JobFactoryImpl implements JobFactory {
 		    job.setFactoryImpl( this ) ;
 			job.setId( generateUniqueJobURN( job ) ) ;
 			job.setStatus( Job.STATUS_INITIALIZED ) ;
+            
+            //
+            // JL: this is probably the place to check authorization...
+            //
+            communitySnippet = jobXML.substring( jobXML.indexOf( SubmissionRequestDD.COMMUNITY_TAG )
+                                               + SubmissionRequestDD.COMMUNITY_TAG.length()
+                                               , jobXML.indexOf( SubmissionRequestDD.COMMUNITY_ENDTAG ) ) ;
+
+            logger.debug( "communitySnippet: " + communitySnippet ) ;
+            
+            this.checkPermissions( AUTHORIZATION_RESOURCE, AUTHORIZATION_ACTION, communitySnippet ) ;
 
 			pStatement = ((JobImpl)job.getImplementation()).getPreparedStatement() ;
 			
@@ -1351,6 +1377,75 @@ public class JobFactoryImpl implements JobFactory {
 		}  	
 		  
 	} // end of findServices()
-  
-  
+    
+    
+    private void checkPermissions ( String someResource, String anAction, String snippet ) throws JobException {
+        if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.checkPermission() entry" ) ;
+                        
+        PolicyServiceDelegate 
+            ps = null ;
+        String
+            communityAccount = null,
+            credential = null ;
+            
+        try {
+                
+            ps = new PolicyServiceDelegate() ;
+            communityAccount =  CommunityMessage.getAccount( snippet ) ;
+            credential = CommunityMessage.getGroup( snippet ) ;
+            boolean 
+                authorized = ps.checkPermissions( communityAccount
+                                                , credential
+                                                , someResource
+                                                , anAction ) ;             
+               
+            if( !authorized ) {
+                    
+                PolicyPermission pp = ps.getPolicyPermission();
+                    
+                String
+                    reason = pp.getReason() ;
+                        
+                AstroGridMessage
+                    message = new AstroGridMessage( ASTROGRIDERROR_PASSTHRU
+                                                  , "Community"
+                                                  , reason ) ;
+                     
+                throw new JobException( message ) ;
+                        
+            }
+               
+        }
+        catch( JobException jex ) {
+                
+            AstroGridMessage 
+                message = new AstroGridMessage( ASTROGRIDERROR_JES_PERMISSION_DENIED
+                                              , JES.getClassName( this.getClass() )
+                                              , jex.getAstroGridMessage().toString() ) ;
+                     
+            throw new JobException( message, (Exception)jex ) ;
+                
+        }
+        catch( Exception ex ) {
+                
+            if( TRACE_ENABLED) ex.printStackTrace();  
+               
+            String
+                localizedMessage = ex.getLocalizedMessage() ;    
+               
+           AstroGridMessage
+               message = new AstroGridMessage( ASTROGRIDERROR_JES_PERMISSION_DENIED
+                                             , JES.getClassName( this.getClass() )
+                                             , (localizedMessage == null) ? "" : localizedMessage ) ;
+                     
+           throw new JobException( message, ex ) ;
+               
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.checkPermission() exit" ) ;  
+        }
+             
+    } // end of checkPermission()
+        
+               
 } // end of class JobFactoryImpl

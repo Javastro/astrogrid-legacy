@@ -229,7 +229,10 @@ public class Workflow extends Activity {
     
     
     
-    public static Workflow readWorkflow( String userid, String community, String name ) {
+    public static Workflow readWorkflow( String userid
+                                       , String community
+                                       , String communitySnippet
+                                       , String name ) {
         if( TRACE_ENABLED ) trace( "Workflow.readWorkflow() entry") ; 
         
         Workflow
@@ -278,7 +281,10 @@ public class Workflow extends Activity {
     } // end of readWorkflow() 
     
     
-    public static boolean deleteWorkflow( String userid, String community, String name  ) {
+    public static boolean deleteWorkflow( String userid
+                                        , String community
+                                        , String communitySnippet
+                                        , String name  ) {
         if( TRACE_ENABLED ) trace( "Workflow.deleteWorkflow() entry") ; 
         
         boolean
@@ -294,8 +300,8 @@ public class Workflow extends Activity {
            pathBuffer
                .append( "/")
                .append( userid )
-//               .append( "/")
-//               .append( workflow.getCommunity() )
+               .append( "@")
+               .append( community )
                .append( "/")
                .append( "serv1")
                .append( "/")               
@@ -335,11 +341,11 @@ public class Workflow extends Activity {
             mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
             
         mySpace.saveDataHolding( workflow.getUserid()
-                                , workflow.getCommunity()
-                                , workflow.getName()        // file name
-                                , workflow.toXMLString()    // file contents
-                                , "WF"                      // it's a workflow
-                                , "Overwrite" ) ;           // overwrite it if it already exists
+                               , workflow.getCommunity()
+                               , workflow.getName()        // file name
+                               , workflow.toXMLString()    // file contents
+                               , "WF"                      // it's a workflow
+                               , "Overwrite" ) ;           // overwrite it if it already exists
                         
      }
      catch( Exception ex ) {
@@ -415,9 +421,15 @@ public class Workflow extends Activity {
                 debug( "activity not a Step") ;
             }
             else {
+                String
+                    communitySnippet 
+                        = CommunityMessage.getMessage( workflow.getToken() 
+                                                     , workflow.getUserid() + "@" + workflow.getCommunity()
+                                                     , workflow.getGroup() ) ;
                 step = (Step)activity ;
                 query = Query.readQuery( workflow.getUserid()
                                        , workflow.getCommunity()
+                                       , communitySnippet
                                        , queryName ) ;
                 step.setTool( query ) ;
                 retValue = true ;
@@ -440,7 +452,10 @@ public class Workflow extends Activity {
      * At present this returns just an Iterator of string Objects representing the names
      * of the files.
      */
-    public static Iterator readWorkflowList( String userid, String community, String filter ) {
+    public static Iterator readWorkflowList( String userid
+                                           , String community
+                                           , String communitySnippet
+                                           , String filter ) {
         if( TRACE_ENABLED ) trace( "Workflow.readWorkflowList() entry") ; 
         
         // JBL: For the moment we are ignoring filter.

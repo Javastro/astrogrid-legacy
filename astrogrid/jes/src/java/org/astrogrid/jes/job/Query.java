@@ -20,6 +20,8 @@ import java.util.Set ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 
+import org.apache.axis.utils.XMLUtils ;
+
 public class Query {
 	
 	private static final boolean 
@@ -65,8 +67,13 @@ public class Query {
 				    element = (Element) nodeList.item(i) ;
 				
                     if( element.getTagName().equals( SubmissionRequestDD.FROM_ELEMENT ) ) {
-	                     fixupCatalogs( element ) ;
+	                    fixupCatalogs( element ) ;
+                        break ;
 				    }
+                    else if( element.getTagName().equals( SubmissionRequestDD.ADQL_SELECT_ELEMENT ) ) {
+                        fixupCatalogsForADQL( element ) ;
+                        break ;
+                    }
 				
 				}
 				
@@ -117,6 +124,46 @@ public class Query {
 		}
 		
 	} // end of fixupCatalog()
+
+
+    private void fixupCatalogsForADQL( Element fromElement ) throws JobException {
+        if( TRACE_ENABLED ) logger.debug( "fixupCatalogsForADQL: entry") ;
+        
+        try {
+
+            String
+                xmlString = XMLUtils.ElementToString( fromElement ),
+                serviceURL 
+                    = xmlString.substring( xmlString.indexOf(SubmissionRequestDD.ADQL_TS_TAG) 
+                                         + SubmissionRequestDD.ADQL_TS_TAG.length()
+                                         , xmlString.indexOf( SubmissionRequestDD.ADQL_TS_ENDTAG ) ).trim() ;
+         
+            logger.debug( "serviceURL: " + serviceURL ) ;
+            
+            Catalog
+                catalog = new Catalog( this ) ;
+                
+            catalog.setName( "Catalog" ) ;
+            
+            Service
+                service = new Service( catalog ) ;
+            service.setName( "Service") ;
+            service.setUrl( serviceURL ) ;
+            catalog.addService( service ) ;
+            
+            Table
+                table = new Table( catalog ) ;
+            table.setName( "Table") ;
+            catalog.addTable( table ) ;
+            
+            this.catalogs.add( catalog ) ;
+            
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "fixupCatalogsForADQL: exit") ;       
+        }
+        
+    } // end of fixupCatalogsForADQL()
 
 
 	public void setParent(JobStep parent) {	this.parent = parent; }

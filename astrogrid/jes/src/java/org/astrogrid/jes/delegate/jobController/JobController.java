@@ -9,4 +9,5 @@ package org.astrogrid.jes.delegate.jobController;
 
 public interface JobController extends java.rmi.Remote {
     public java.lang.String submitJob(java.lang.String jobXML) throws java.rmi.RemoteException;
+    public java.lang.String readJobList(java.lang.String jobListXML) throws java.rmi.RemoteException;
 }

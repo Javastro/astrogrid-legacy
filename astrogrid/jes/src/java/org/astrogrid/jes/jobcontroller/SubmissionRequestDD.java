@@ -80,5 +80,16 @@ public final class SubmissionRequestDD {
 	    OP_NAME_IN = "IN",
 	    OP_NAME_ANY = "ANY",
 	    OP_NAME_ALL = "ALL" ;
+        
+    public static final String
+        ADQL_SELECT_ELEMENT = "Select",
+        ADQL_TARGETSERVICE_ELEMENT = "Service",
+        ADQL_TS_TAG = "<" + ADQL_TARGETSERVICE_ELEMENT + ">",
+        ADQL_TS_ENDTAG = "</" + ADQL_TARGETSERVICE_ELEMENT + ">" ;
+        
+    public static final String
+        COMMUNITY_SNIPPET_ELEMENT = "community",
+        COMMUNITY_TAG = "<" + COMMUNITY_SNIPPET_ELEMENT + ">",
+        COMMUNITY_ENDTAG = "</" + COMMUNITY_SNIPPET_ELEMENT  + ">" ;
 	 
 }
