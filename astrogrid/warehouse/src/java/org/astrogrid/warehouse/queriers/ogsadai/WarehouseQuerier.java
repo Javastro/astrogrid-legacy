@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.11 2003/12/12 14:42:03 gtr Exp $
+ * $Id: WarehouseQuerier.java,v 1.12 2003/12/15 15:45:35 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -345,7 +345,7 @@ public class WarehouseQuerier extends Querier
     String registry = serviceProperties.getProperty("OgsaDaiRegistryString");
     if (registry == null) {
       String errorMessage = 
-        "Fatal error: Property 'OgsaDaiHostString' not found in file " +
+        "Fatal error: Property 'OgsaDaiRegistryString' not found in file " +
         "'WarehouseQuerier.properties'";
       log.error(errorMessage);
       throw new DatabaseAccessException(errorMessage);
@@ -469,6 +469,9 @@ public class WarehouseQuerier extends Querier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.12  2003/12/15 15:45:35  kea
+Correcting misleading error message.
+
 Revision 1.11  2003/12/12 14:42:03  gtr
 Unused import statements were removed.
 
