@@ -81,6 +81,11 @@ public class MySpaceManager {
 	private String content = " "; //content of the file from datacentre
 	private String serverFileName = " "; //file location in user's machine
 	private String newDataHolderName = " ";
+	private String contentsType=" ";
+	private String importURI=" ";
+	private String fileContent = " ";
+	private String category = " ";
+	private String action = " ";
 	private int fileSize = 1;
 	private String errCode="";
 	private Vector v = new Vector();
@@ -123,16 +128,13 @@ public String upLoad(String jobDetails){
 			msA.setRegistryName(registryName);
 			RegistryManager reg = new RegistryManager(registryName);
 			String mySpaceFileName = "f" + reg.getNextDataItemID();
-			String contentsType="";
-			String importURI="";
+
 			//this need to be considered when to invoke import when to invoke upload.
 			reg.rewriteRegistryFile();
 			dataitem = msA.upLoadDataHolder(
 				userID, communityID, jobID, newDataHolderName,
 				mySpaceFileName, contentsType );
-			dataitem = msA.importDataHolder(userID, communityID,
-				 jobID, importURI, newDataItemName,
-				 contentsType);
+
 			if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"jobid"+jobID+"newDataHN"+newDataHolderName+"filenm:"+mySpaceFileName
 								   +"fileSize"+fileSize);
 			if( DEBUG ) logger.debug("UploaderroCode is:" +errCode);
@@ -167,10 +169,102 @@ public String upLoad(String jobDetails){
 				return response;
 			}
 	
-		//   Get other stuff which can usefully be returned.
-		//   (Note that the current date needs to be returned to facilitate
-		//   comparisons with the expiry date; the MySpace system might be in
-		//   a different time-zone to the Explorer or portal.)
+			boolean successStatus = status.getSuccessStatus();
+			boolean warningStatus = status.getWarningStatus();
+	
+			Date currentMySpaceDate = new Date();
+	
+		//   Format and return the results as XML.
+			if(dataitem!=null){
+				response = util.buildMySpaceManagerResponse(dataitem, returnStatus, details,"");
+				if (successStatus){
+					if (errCode=="")
+					  response = util.buildMySpaceManagerResponse(dataitem, MMC.SUCCESS, "","");	
+					else
+					  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode,""); 	    	
+				}else {
+					response = getErrorCode();
+						    	
+				}	
+			} else{
+				status.addCode(MySpaceStatusCode.AGMMCE00202,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00202", this.getComponentName()) ;
+				if(errCode=="")
+				  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
+				else
+				  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),"");  
+				return response;
+			}
+			if( DEBUG ) logger.debug("RESPONSE: "+response); 
+		}catch(Exception e){
+			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
+			status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00216", this.getComponentName()) ;
+			if(errCode=="")
+			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
+			else
+			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),""); 		  
+			return response;
+		}
+		return response;
+	
+}
+
+/**
+ * Upload/save dataholder.
+ */
+public String upLoadURL(String jobDetails){
+	if ( DEBUG )  logger.debug("MySpaceManager.upLoad");
+	DataItemRecord dataitem = null;
+	Call call = null;
+	
+		try{
+			response = getValues(jobDetails);
+
+			if ( DEBUG ) logger.debug("About to invoke myspaceaction.importdataholder");  
+			msA.setRegistryName(registryName);
+			RegistryManager reg = new RegistryManager(registryName);
+			String mySpaceFileName = "f" + reg.getNextDataItemID();
+
+			//this need to be considered when to invoke import when to invoke upload.
+			reg.rewriteRegistryFile();
+			dataitem = msA.importDataHolder(
+				userID, communityID, jobID, importURI,
+				mySpaceFileName, contentsType );
+
+			if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"jobid"+jobID+"newDataHN"+newDataHolderName+"filenm:"+mySpaceFileName
+								   +"fileSize"+fileSize);
+			if( DEBUG ) logger.debug("UploaderroCode is:" +errCode);
+			if ( errCode!="" )    
+			  errCode = errCode +"," +checkStatus("UPLOADStatusCode");
+			else 
+			  errCode = checkStatus("UPLOAStatusCode");
+			if(DEBUG) logger.debug("UPLOAD CHECKING ATTRIBUTES FOR CREATING DATAITEM: userid:"
+				+ userID +"comID"+communityID +"jobID"+jobID +"newDHName"+newDataHolderName
+				+"serverFileName"+serverFileName +"filesize"+fileSize 
+				+"mySpaceFileName"+mySpaceFileName+"registryName:"+registryName);
+			
+			//commented out for testing transfer large files
+			//content = MySpaceUtils.readFromFile(new File(serverFileName));
+			String contentPath = serverFileName;
+			if (DEBUG)  logger.debug("ServerFileName = " +serverFileName);
+			call = createServerManagerCall();
+			call.setOperationName( "saveDataHolder" );			
+			call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
+			call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
+			call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
+			String serverResponse = (String)call.invoke( new Object[] {contentPath,mySpaceFileName} );
+			if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
+			
+			//use serverResponse to build returnStatus and details for datacentre/portal
+			if(serverResponse.startsWith(MMC.SUCCESS)){
+				returnStatus = MMC.SUCCESS;
+			}else if(serverResponse.startsWith(MMC.FAULT)){
+				int len = serverResponse.length()-1;
+				details = serverResponse.trim().substring(5,len);
+				response = util.buildMySpaceManagerResponse(null,MMC.FAULT,details,"");
+				return response;
+			}
 	
 			boolean successStatus = status.getSuccessStatus();
 			boolean warningStatus = status.getWarningStatus();
@@ -824,6 +918,7 @@ public String upLoad(String jobDetails){
 			if(request.get("newDataItemName")!=null) newDataItemName = request.get("newDataItemName").toString();
 			if(request.get("newContainerName")!=null) newContainerName = request.get("newContainerName").toString();	
 			if(request.get("serverFileName")!=null) serverFileName = request.get("serverFileName").toString();
+			if(request.get("fileContent")!=null) fileContent = request.get("fileContent").toString();
 
 			try{
 				if(request.get("fileSize")!=null) fileSize = Integer.parseInt(request.get("fileSize").toString());

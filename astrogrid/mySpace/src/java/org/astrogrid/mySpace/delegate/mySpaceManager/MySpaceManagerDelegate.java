@@ -166,7 +166,7 @@ public class MySpaceManagerDelegate {
 		return (String)value;
 	}	
 	
-	/* saveDataHolding(upLoad),this function will save workflow/query into MySpace system.
+	/** saveDataHolding(upLoad),this function will save workflow/query into MySpace system.
 	* @param: userid: userid
 	* @param: communityid
 	* @param: fileName: unique file name for Workflow or Query you want to store.
@@ -176,7 +176,8 @@ public class MySpaceManagerDelegate {
 	* @return: boolean true if file successfully stored in MySapce false otherwise.
 	*/
 	
-	public boolean saveDataHolding(String userid, String communityid, String fileName, String fileContent, String category, String action) throws Exception {
+	public boolean saveDataHolding(String userid, String communityid, String fileName, String fileContent, 
+	                               String category, String action) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		boolean isSaved = false;
 		try {
@@ -194,6 +195,45 @@ public class MySpaceManagerDelegate {
 			MySpaceHelper helper = new MySpaceHelper();
 			String jobDetails = helper.buildSave(userid, communityid, fileName, fileContent, category, action);
 			binding.upLoad(jobDetails);
+			isSaved = true;
+		}catch(java.rmi.RemoteException re) {
+			isSaved = false;
+			re.printStackTrace();
+		}
+		return isSaved;
+	}
+	
+	/**
+	 * saveDataHoldingURL is different from saveDataHolding since it is taking a URL where MySpace will pull the file from. 
+	 * @param userid
+	 * @param communityid
+	 * @param fileName
+	 * @param importURI - url that save the dataholding from
+	 * @param category
+	 * @param action
+	 * @return
+	 * @throws Exception
+	 */
+	
+	public boolean saveDataHoldingURL(String userid, String communityid, String fileName, String importURL, 
+								   String category, String action) throws Exception {
+		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+		boolean isSaved = false;
+		try {
+			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+					  new org.astrogrid.mySpace.delegate.mySpaceManager.
+							 MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
+		}
+		catch (javax.xml.rpc.ServiceException jre) {
+			isSaved = false;
+			if(jre.getLinkedCause()!=null){
+				jre.getLinkedCause().printStackTrace();
+			}
+		}
+		try{
+			MySpaceHelper helper = new MySpaceHelper();
+			String jobDetails = helper.buildSaveURL(userid, communityid, fileName, importURL, category, action);
+			binding.upLoadURL(jobDetails);
 			isSaved = true;
 		}catch(java.rmi.RemoteException re) {
 			isSaved = false;

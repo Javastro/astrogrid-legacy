@@ -10,6 +10,7 @@ package org.astrogrid.mySpace.delegate.mySpaceManager;
 public interface MySpaceManager extends java.rmi.Remote {
     public java.lang.String publish(java.lang.String jobDetails) throws java.rmi.RemoteException;
     public java.lang.String upLoad(java.lang.String jobDetails) throws java.rmi.RemoteException;
+    public java.lang.String upLoadURL(java.lang.String jobDetails) throws java.rmi.RemoteException;
     public java.lang.String lookupDataHolderDetails(java.lang.String jobDetails) throws java.rmi.RemoteException;
     public java.lang.String lookupDataHoldersDetails(java.lang.String jobDetails) throws java.rmi.RemoteException;
     public java.lang.String copyDataHolder(java.lang.String jobDetails) throws java.rmi.RemoteException;

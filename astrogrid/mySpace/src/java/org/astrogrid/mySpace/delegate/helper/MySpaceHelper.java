@@ -67,6 +67,43 @@ public class MySpaceHelper{
 		return request.toString();
 	}
 	
+	public String buildSaveURL(String userid, String communityid, String fileName, String importURL, String category, String action){
+		String fileFullName = "/"+userid.trim()+"/"+communityid.trim()+"/serv1/"+category.toLowerCase().trim()+"/"+fileName.trim();
+		StringBuffer request = new StringBuffer() ;
+		try {		
+			request.append("<request>") ;
+			request.append("<userID>") ;
+			request.append(userid);
+			request.append("</userID>");
+
+			request.append("<communityID>") ;
+			request.append(communityid);
+			request.append("</communityID>");
+			
+			request.append("<jobID>");
+			request.append("UPLOAD");
+			request.append("<jobID>");
+
+			request.append("<importURL>") ;
+			request.append(importURL) ;
+			request.append("</importURL>") ;
+			
+			request.append("<newDataHolderName>") ;
+			request.append(fileFullName) ;
+			request.append("</newDataHolderName>") ;
+			
+			request.append("<action>");
+			request.append(action);
+			request.append("</action>");
+			request.append("</request>") ;					
+		}
+		catch ( Exception ex ) {
+			System.out.println("MySpaceHelper.buildSave exception: "+ex.toString());
+			ex.printStackTrace();
+		}
+		return request.toString();
+	}
+	
 	public String buildDownload(String userid, String communityid, String fullFileName){
 		StringBuffer request = new StringBuffer() ;
 		try {		
