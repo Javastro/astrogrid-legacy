@@ -44,6 +44,41 @@
 
   <!-- jar files the project is dependent on -->
   <dependencies>
+	<!-- required for the NVO cone search delegate -->
+	    <dependency>
+        <id>astrogrid-mySpace</id>
+        <version>SNAPSHOT</version>
+	    <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency>
+      <id>breezetk</id>
+      <version>UNKNOWN</version>
+      <jar>breezetk.jar</jar>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency>
+      <id>objectwiz-votable</id>
+      <version>UNKNOWN</version>
+      <jar>objectwiz-votable.jar</jar>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency>
+      <id>VOTableUtil</id>
+      <version>UNKNOWN</version>
+      <jar>VOTableUtil.jar</jar>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
 
 
 	<!-- used as part of build - no need to deploy with final app.-->
@@ -53,6 +88,7 @@
 		<artifactId>axis-ant</artifactId>
 		<version>1.1</version>
 	</dependency>
+
 
   </dependencies>
 
@@ -75,7 +111,7 @@
 				<directory>${basedir}/src/java</directory>
 				<includes>
 					<include>**/*.properties</include>
-					<include>**/*.xml</include>					
+					<include>**/*.xml</include>
 				</includes>
 			</resource>
 		</resources>

@@ -36,8 +36,20 @@ Requires:
 * build/xslt/generate-wsdd.xsl - transformation for wsdd.
 * build/patch/* - patches to apply
 	]]></description>
-	<!-- ensure the directories exist -->
-	<mkdir dir="${generated.src}" />
+	<!-- ensure the directories exist, remove previously generated products -->
+	<attainGoal name="clean-out" />
+	<!-- generate java sources from wsdl -->
+	<attainGoal name="wsdl2java" />
+	<!-- delete the ones we don't want -->
+	<attainGoal name="delete-surplus" />
+	<!-- now call castor to generate ADQL object model -->
+	<attainGoal name="generate-adql" />
+	<!-- mangle the sources -->
+	<attainGoal name="munge-files" />
+   </goal>
+
+   <goal name="clean-out">
+   	<mkdir dir="${generated.src}" />
 	<mkdir dir="${generate.wsdd}" />
   	<delete><!-- clean out all generated products-->
 		<fileset dir="${generated.src}" >
@@ -49,18 +61,6 @@ Requires:
 			<include name="*.wsdd" />
 		</fileset>
 	</delete>
-	<!-- generate java sources from wsdl -->
-	<attainGoal name="wsdl2java" />
-	<!-- delete the ones we don't want -->
-	<attainGoal name="delete-surplus" />
-	<!-- now call castor to generate ADQL object model -->
-	<attainGoal name="generate-adql" />	
-	<!-- transform the generated wsdd -->
-	<attainGoal name="transform-wsdd" />
-	<!-- mangle the stub source -->
-	<attainGoal name="munge-stub" />
-	<!-- mangle the generated test -->
-	<attainGoal name="munge-test" />
    </goal>
 
    <goal name="wsdl2java" prereqs="axis-declare-tasks">
@@ -77,35 +77,15 @@ Requires:
 	       		namespace="http://tempuri.org/adql"
 	       		package="org.astrogrid.datacenter.adql.generated" />
 	</axis-wsdl2java>
-	<!-- now generate stuff for server side - into a different package.-->
-	<!-- don't think we want this..
-	<axis-wsdl2java output="${generated.src}" verbose="true"
-		url="${basedir}/src/wsdl/AxisDataServer.wsdl"
-		deployscope="Application" serverside="true" skeletondeploy="true">
-		<mapping
-			namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1"
-			package="org.astrogrid.datacenter.server.axisdataserver" />
-		<mapping
-			namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
-			package="org.astrogrid.datacenter.server.axisdataserver.types" />
-		<mapping
-	       		namespace="http://tempuri.org/adql"
-	       		package="org.astrogrid.datacenter.adql.generated" />
-	</axis-wsdl2java>
-	-->
+
   </goal>
- 
+
  <!-- wsdl2java dengerates too much - now have overlapping classes. delete the offenders -->
  <goal name="delete-surplus">
 	<delete>
 		<fileset dir="${generated.src}">
-		   <!-- stuff that is already defined -->
-		    <include name="org/xml/sax/**" />
-		    <include name="java/**" />
-		    <include name="**/AstroGridException.java" />
-		    <include name="**/QueryException.java" />
-		    <!-- want to use castor for these classes -->
-		    <include name="org/astrogrid/datacenter/adql/generated/*.java" />
+			<include name="**/*.java" />
+			<exclude name="org/astrogrid/datacenter/axisdataserver/*.java" />
 		</fileset>
 	</delete>
    </goal>
@@ -117,23 +97,54 @@ Requires:
   		<path refid="maven.dependency.classpath" />
   	</path>
     	<delete quiet="true">
-   		<fileset dir="${basedir}/src/java/org/astrogrid/datacenter/adql/generated">
-  	 		<include name="**/*.java" />
-   			<include name="**/*.class" />
+   		<fileset dir="${basedir}/generated/java/org/astrogrid/datacenter">
+  	 		<include name="adql/generated/**/*.java" />
+			<include name="axisdataserver/types/*.java" />
    		</fileset>
    	</delete>
+	<!-- generate adql object model -->
   	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="castor.class.path">
   	  	<arg value="-i"/>
   	  	<arg file="${basedir}/src/xsd/ADQLschema.xsd" />
-  	  	<arg value="-package" />
-  	  	<arg value="org.astrogrid.datacenter.adql.generated" />
+		<arg value="-binding-file" />
+		<arg file="${basedir}/build/castor-binding.xml" />
   	  	<arg value="-dest" />
   	  	<arg file="${generated.src}" />
-  	  	<!--<arg value="-verbose" />-->
+		<arg arg="-verbose" />
+	</java>
+	<!-- generate axis dataserver types -->
+  	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="castor.class.path">
+  	  	<arg value="-i"/>
+		<arg file="${basedir}/src/xsd/AxisDataServer.xsd" />
+		<arg value="-binding-file" />
+		<arg file="${basedir}/build/castor-binding.xml" />
+  	  	<arg value="-dest" />
+  	  	<arg file="${generated.src}" />
+		<arg arg="-verbose" />
  	  </java>
  	  <!-- now do some patching of the output - hope to do away with this in time. -->
  	  <patch patchfile="${basedir}/build/patch/groupByChoiceItem.patch" originalfile="${generated.src}/org/astrogrid/datacenter/adql/generated/GroupByChoiceItem.java"/>
  	  <patch patchfile="${basedir}/build/patch/selectionListChoiceItem.patch" originalfile="${generated.src}/org/astrogrid/datacenter/adql/generated/SelectionListChoiceItem.java"/>
+	  <!-- now add 'extends AbstractQOM' to the generated classes  - only to those classes that don't already extend something else-->
+	  <replaceregexp 	flags="s"
+	  	match="(public class [^ ]+) (implements java.io.Serializable)"
+		replace="\1 extends org.astrogrid.datacenter.adql.AbstractQOM \2">
+		<fileset dir="${generated.src}/org/astrogrid/datacenter/adql/generated">
+			<include name="*.java" />
+		</fileset>
+	  </replaceregexp>
+
+  </goal>
+
+ <goal name="munge-files" description="do all the search and replace work">
+	<replace summary="true" replacefilterfile="${basedir}/build/subst.properties"
+		 dir="${generated.src}/org/astrogrid/datacenter/axisdataserver/">
+			<include name="*.java" />
+			<include name="*.wsdd" />
+	</replace>
+	<attainGoal name="transform-wsdd" />
+	<attainGoal name="munge-stub" />
+	<attainGoal name="munge-test" />
   </goal>
 
    <goal name="transform-wsdd">
@@ -143,7 +154,7 @@ Requires:
 	      includes="*.wsdd" style="${basedir}/build/xslt/generate-wsdd.xsl"
 	      destdir="${generated.wsdd}" extension=".wsdd" />
 	<!-- now a search and replace on class names -->
-	<replace summary="true" file="${generated.wsdd}/deploy.wsdd">
+	<replace summary="true" file="${generated.wsdd}/deploy.wsdd" >
 			<replacefilter
 			token='org.astrogrid.datacenter.adql.generated.Comparison"'
 			value='org.astrogrid.datacenter.adql.generated.types.Comparison"' />
@@ -161,7 +172,7 @@ Requires:
 			value="org.astrogrid.datacenter.adql.generated.types.UnaryOperator" />
 		<replacefilter
 			token="org.astrogrid.datacenter.adql.generated.AllOrDistinct"
-			value="org.astrogrid.datacenter.adql.generated.types.AllOrDistinct" />	
+			value="org.astrogrid.datacenter.adql.generated.types.AllOrDistinct" />
 	</replace>
 	<!-- transform once more to create test version here.. -->
 	<xslt style="${basedir}/build/xslt/generate-test-wsdd.xsl" in="${generated.wsdd}/deploy.wsdd" out="${generated.wsdd}/test-deploy.wsdd" />
@@ -190,7 +201,7 @@ Requires:
 			value="org.astrogrid.datacenter.adql.generated.types.UnaryOperator.class" />
 		<replacefilter
 			token="org.astrogrid.datacenter.adql.generated.AllOrDistinct.class"
-			value="org.astrogrid.datacenter.adql.generated.types.AllOrDistinct.class" />		
+			value="org.astrogrid.datacenter.adql.generated.types.AllOrDistinct.class" />
 			<!-- add declarations of castor serializers -->
 		<replacefilter
 			token="javax.xml.namespace.QName qName;"
@@ -207,10 +218,21 @@ Requires:
 			cachedDeserFactories.add(castordf);
 
 			"/>
+	<!-- do the same for the web service types too -->
+	<replaceregexp 	file="${stub.file}" flags="sg"
+		match="(cls = org\.astrogrid\.datacenter\.axisdataserver\.types\.[^\n]+\n)([^\n]+\n)([^\n]+\n)([^\n]+\n)"
+		replace="\1\2
+			cachedSerFactories.add(castorsf);
+			cachedDeserFactories.add(castordf);
+
+			"/>
+
 	<!-- fix axis-wsdl bug - sometimes introduces spurious &gt; at start of strings -->
 	<replaceregexp file="${stub.file}" flags="sg"
 		match='"&gt;([^"]+)"'
 		replace='"\1"' />
+	<!-- adjust class names -->
+
   </goal>
 
 	<!-- alter where the test class looks for a running server -->
@@ -230,6 +252,10 @@ Requires:
 		    <replacefilter
 		    	token="new org.astrogrid.datacenter.adql.generated.Select()"
 		    	value="org.astrogrid.datacenter.adql.ADQLUtils.buildMinimalQuery()" />
+			<!-- do same for query object -->
+		    <replacefilter
+		    	token="new org.astrogrid.datacenter.axisdataserver.types.Query()"
+			value="org.astrogrid.datacenter.common.QueryHelper.buildMinimalQuery()" />
 		</replace>
 	</goal>
 
@@ -239,5 +265,6 @@ boilerplate below here
   <goal name="axis-declare-tasks">
       <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
   </goal>
+
 
 </project>
