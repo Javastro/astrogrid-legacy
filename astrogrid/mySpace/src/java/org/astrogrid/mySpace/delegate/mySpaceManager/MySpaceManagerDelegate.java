@@ -18,7 +18,7 @@ public class MySpaceManagerDelegate {
 	}    
 	
 	/**
-	* lookupDataHoldings(modified lookupDataHolders(jobDetails) which returns a list of workflows.
+	* lookupDataHoldings(modified lookupDataHolders(jobDetails) which returns a list of workflows names.
 	* @param: userid: userid
 	* @param: communityid
 	* @param: criteria: eg./userid/communityid/workflows/A*
@@ -46,6 +46,39 @@ public class MySpaceManagerDelegate {
 					re.printStackTrace();
 		}
 		return vector;
+	}		
+	
+	/**
+	 * listDataHoldingsGen is the genaric method which returns a String of xml respons which holds the full
+     * file path as well as other info such as expired date etc.
+	 * @param userid
+	 * @param communityid
+	 * @param criteria
+	 * @return
+	 * @throws Exception
+	 */
+	
+	public String listDataHoldingsGen(String userid, String communityid, String criteria)throws Exception {
+		String response = " ";
+		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+		try {
+			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
+		}
+		catch (javax.xml.rpc.ServiceException jre) {
+			if(jre.getLinkedCause()!=null)
+				jre.getLinkedCause().printStackTrace();
+		}
+		try{
+			MySpaceHelper helper = new MySpaceHelper();
+			String jobDetails = helper.buildListDataHoldings(userid, communityid, criteria);
+			response = binding.lookupDataHoldersDetails(jobDetails);
+			//should invoke one of the helper functions to build the returned response to include searchs to all cache servers as well as community server
+			
+		}catch(java.rmi.RemoteException re) {
+					re.printStackTrace();
+		}
+		return response;
 	}		
 	
 	/**
