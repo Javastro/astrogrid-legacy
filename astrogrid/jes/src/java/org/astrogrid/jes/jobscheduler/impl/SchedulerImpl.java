@@ -262,6 +262,7 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
                          message.setTimestamp(new Date());
                          er.addMessage(message);
                          er.setStatus(ExecutionPhase.ERROR);
+                         er.setFinishTime(new Date());
                     }               
                     step = policy.nextExecutableStep(job);        
                 } // end while
