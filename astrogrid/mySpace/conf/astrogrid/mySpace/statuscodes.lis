@@ -1,5 +1,9 @@
+#qin.star.le.ac.uk:
 REGISTRYCONF=/home/clq2/develop/MSRegistryTestDir/example
-TEMPPATHTO=/tmp/mySpaceTest
+TEMPPATHTO=/tmp/mySpaceTest/
+#hydra:
+#REGISTRYCONF=/usr/local/jakarta-tomcat-4.1.24/conf/astrogrid/mySpace
+#TEMPPATHTO=/tmp/mySpaceTest/
 MS-E-REGDWRT="Failed to write registry data file."
 MS-E-REGDCRT="Registry data file is corrupt."
 MS-E-REGDRED="Failed to read registry data file."
