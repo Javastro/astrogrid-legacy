@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.3 2003/09/11 17:41:33 mch Exp $
+ * $Id: SocketDelegate.java,v 1.4 2003/09/14 22:07:55 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -14,11 +14,12 @@ import java.net.Socket;
 import java.rmi.RemoteException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.log.Log;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import sun.security.krb5.internal.crypto.e;
 
 /**
  * A socket AstroGrid datacenter delegate implementation.  Talks directly
@@ -38,7 +39,7 @@ public class SocketDelegate extends DatacenterDelegate
 {
    /** The socket connection - opened when the instance is constructed */
    private Socket socket = null;
-   
+
    /** Output stream to the socket connection */
    private DataOutputStream out = null;
 
@@ -47,7 +48,7 @@ public class SocketDelegate extends DatacenterDelegate
 
    /** String used to request registry metadata */
    public final static String REQ_REG_METADATA_TAG = "RequestRegistryMetata";
-   
+
    /** String used to request metadata */
    public final static String REQ_METADATA_TAG = "RequestMetata";
 
@@ -161,15 +162,25 @@ public class SocketDelegate extends DatacenterDelegate
    public synchronized Element getRegistryMetadata() throws IOException
    {
       Log.trace("SocketDelegate: Writing Request Metadata tag");
-      out.writeChars(
-         "<?xml version='1.0' encoding='UTF-8'?>\n"+
-         "<"+REQ_REG_METADATA_TAG+"/>\n"
-      );
-      
+
+      writeDoc("<"+REQ_REG_METADATA_TAG+"/>\n");
+
       try
       {
          Log.trace("SocketDelegate: Waiting for metadata...");
-         XMLUtils.newDocument(in);
+         Document response =  XMLUtils.newDocument(in);
+
+         if (response.getElementsByTagName(ResponseHelper.ERROR_TAG).getLength() >0)
+         {
+            //response was an error
+            Log.logError("Server error getting metadata: "+
+                        response.getElementsByTagName(ResponseHelper.ERROR_TAG).item(0).getNodeValue()
+                        );
+            return null;
+         }
+
+         Log.trace("Received metadata "+response.getDocumentElement().getNodeName());
+         return response.getDocumentElement();
       }
       catch (ParserConfigurationException e)
       {
@@ -179,9 +190,6 @@ public class SocketDelegate extends DatacenterDelegate
       {
          throw new IOException("Response from server not XML: "+e);
       }
-         
-      
-      throw new UnsupportedOperationException();
    }
 
    /**
@@ -190,6 +198,19 @@ public class SocketDelegate extends DatacenterDelegate
    public synchronized ServiceStatus getServiceStatus(String id)
    {
       return ServiceStatus.UNKNOWN;
+   }
+
+   /**
+    * writes given string as a full document to the output stream, ie
+    * appends an EOF marker, and writes as a bytestream (not chars)
+    */
+   private void writeDoc(String doc) throws IOException
+   {
+      doc = "<?xml version='1.0' encoding='UTF-8'?>\n"+
+            doc +
+            "\u001b";
+
+      out.write(doc.getBytes());
    }
 
    /**
@@ -206,6 +227,9 @@ public class SocketDelegate extends DatacenterDelegate
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.4  2003/09/14 22:07:55  mch
+Added Socket stream
+
 Revision 1.3  2003/09/11 17:41:33  mch
 Fixes to socket-based client/server
 
