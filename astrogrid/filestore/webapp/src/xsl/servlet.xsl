@@ -2,10 +2,18 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/webapp/src/xsl/servlet.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2004/09/17 16:46:14 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: servlet.xsl,v $
+    |   Revision 1.4  2004/09/17 16:46:14  dave
+    |   Fixed servlet deployment in FileStore ...
+    |   Changed tabs to spaces in source code ...
+    |
+    |   Revision 1.3.4.1  2004/09/17 15:10:32  dave
+    |   Uncommented the call to servlet deploy in the build script.
+    |   Replaced tabs with spaces in source code.
+    |
     |   Revision 1.3  2004/09/17 06:57:10  dave
     |   Added commons logging to FileStore.
     |   Updated logging properties in Community.
@@ -32,10 +40,10 @@
     version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     >
-	<xsl:output
-		doctype-public="-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
-		doctype-system="http://java.sun.com/j2ee/dtds/web-app_2_2.dtd"
-		/>
+    <xsl:output
+        doctype-public="-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+        doctype-system="http://java.sun.com/j2ee/dtds/web-app_2_2.dtd"
+        />
 
     <!--+
         | Params from the Ant build.

@@ -3,10 +3,18 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/09/17 16:46:14 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.6  2004/09/17 16:46:14  dave
+    |   Fixed servlet deployment in FileStore ...
+    |   Changed tabs to spaces in source code ...
+    |
+    |   Revision 1.5.4.1  2004/09/17 15:10:32  dave
+    |   Uncommented the call to servlet deploy in the build script.
+    |   Replaced tabs with spaces in source code.
+    |
     |   Revision 1.5  2004/09/17 06:57:10  dave
     |   Added commons logging to FileStore.
     |   Updated logging properties in Community.
@@ -270,8 +278,8 @@
         <filestore:service.deploy service.name="FileStore"/>
         <!--+
             | Deploy our servlet.
-        <attainGoal name="servlet-deploy"/>
             +-->
+        <attainGoal name="servlet-deploy"/>
         <!--+
             | Copy our log4j configuration file into WEB-INF/classes.
             +-->
@@ -320,7 +328,7 @@
         <!--+
             | Validate the existing web.xml
             +-->
-		<ant:xmlvalidate file="${axisDir}/WEB-INF/web.xml"/>
+        <ant:xmlvalidate file="${axisDir}/WEB-INF/web.xml"/>
         <!--+
             | Update the webapp web.xml
             +-->
@@ -338,7 +346,7 @@
         <!--+
             | Validate the modified web.xml
             +-->
-		<ant:xmlvalidate file="${axisDir}/WEB-INF/mod.xml"/>
+        <ant:xmlvalidate file="${axisDir}/WEB-INF/mod.xml"/>
         <!--+
             | Move the new web.xml over the old one.
             +-->

@@ -2,10 +2,18 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryContainer.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/17 16:46:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryContainer.java,v $
+ *   Revision 1.6  2004/09/17 16:46:14  dave
+ *   Fixed servlet deployment in FileStore ...
+ *   Changed tabs to spaces in source code ...
+ *
+ *   Revision 1.5.24.1  2004/09/17 15:10:32  dave
+ *   Uncommented the call to servlet deploy in the build script.
+ *   Replaced tabs with spaces in source code.
+ *
  *   Revision 1.5  2004/08/27 22:43:15  dave
  *   Updated filestore and myspace to report file size correctly.
  *
@@ -91,82 +99,82 @@ public interface RepositoryContainer
 	 * @throws FileStoreServiceException If unable to complete the action.
 	 *
 	 */
-	public byte[] exportBytes()
-		throws FileStoreServiceException, FileStoreNotFoundException ;
+    public byte[] exportBytes()
+        throws FileStoreServiceException, FileStoreNotFoundException ;
 
-	/**
-	 * Append an array of bytes.
-	 * @param bytes The array of bytes to append to the container.
-	 * @throws FileStoreNotFoundException If unable to locate the file.
-	 * @throws FileStoreServiceException If unable to complete the action.
-	 *
-	 */
-	public void appendBytes(byte[] bytes)
-		throws FileStoreServiceException, FileStoreNotFoundException ;
+    /**
+     * Append an array of bytes.
+     * @param bytes The array of bytes to append to the container.
+     * @throws FileStoreNotFoundException If unable to locate the file.
+     * @throws FileStoreServiceException If unable to complete the action.
+     *
+     */
+    public void appendBytes(byte[] bytes)
+        throws FileStoreServiceException, FileStoreNotFoundException ;
 
-	/**
-	 * Delete the contents of the container.
-	 * @throws FileStoreNotFoundException If unable to locate the file.
-	 * @throws FileStoreServiceException If unable to complete the action.
-	 *
-	 */
-	public void delete()
-		throws FileStoreServiceException, FileStoreNotFoundException ;
+    /**
+     * Delete the contents of the container.
+     * @throws FileStoreNotFoundException If unable to locate the file.
+     * @throws FileStoreServiceException If unable to complete the action.
+     *
+     */
+    public void delete()
+        throws FileStoreServiceException, FileStoreNotFoundException ;
 
-	/**
-	 * Get an input stream to the container contents.
-	 * @throws FileStoreNotFoundException If unable to locate the file.
-	 * @throws FileStoreServiceException If unable to open the file.
-	 *
-	 */
-	public InputStream getDataInputStream()
-		throws FileStoreServiceException, FileStoreNotFoundException ;
+    /**
+     * Get an input stream to the container contents.
+     * @throws FileStoreNotFoundException If unable to locate the file.
+     * @throws FileStoreServiceException If unable to open the file.
+     *
+     */
+    public InputStream getDataInputStream()
+        throws FileStoreServiceException, FileStoreNotFoundException ;
 
-	/**
-	 * Get an output stream to the container contents.
-	 * @throws FileStoreServiceException If unable to open the local file.
-	 *
-	 */
-	public OutputStream getDataOutputStream()
-		throws FileStoreServiceException ;
+    /**
+     * Get an output stream to the container contents.
+     * @throws FileStoreServiceException If unable to open the local file.
+     *
+     */
+    public OutputStream getDataOutputStream()
+        throws FileStoreServiceException ;
 
-	/**
-	 * Import our data from a URL.
-	 * @param url The URL to import the data from.
-	 * @throws FileStoreTransferException If unable to complete the action.
-	 * @throws FileStoreServiceException If unable to open the local file.
-	 *
-	 */
-	public void importData(URL url)
-		throws FileStoreTransferException, FileStoreServiceException ;
+    /**
+     * Import our data from a URL.
+     * @param url The URL to import the data from.
+     * @throws FileStoreTransferException If unable to complete the action.
+     * @throws FileStoreServiceException If unable to open the local file.
+     *
+     */
+    public void importData(URL url)
+        throws FileStoreTransferException, FileStoreServiceException ;
 
-	/**
-	 * Import our data from an InputStream.
-	 * @param stream The input stream to import the data from.
-	 * @throws FileStoreTransferException If unable to complete the action.
-	 * @throws FileStoreServiceException If unable to open the local file.
-	 *
-	 */
-	public void importData(InputStream stream)
-		throws FileStoreTransferException, FileStoreServiceException ;
+    /**
+     * Import our data from an InputStream.
+     * @param stream The input stream to import the data from.
+     * @throws FileStoreTransferException If unable to complete the action.
+     * @throws FileStoreServiceException If unable to open the local file.
+     *
+     */
+    public void importData(InputStream stream)
+        throws FileStoreTransferException, FileStoreServiceException ;
 
-	/**
-	 * Export our data to an OutputStream.
-	 * @param stream The output stream to export the data to.
-	 * @throws FileStoreTransferException If unable to complete the action.
-	 * @throws FileStoreServiceException If unable to open the local file.
-	 *
-	 */
-	public void exportData(OutputStream stream)
-		throws FileStoreServiceException, FileStoreNotFoundException, FileStoreTransferException ;
+    /**
+     * Export our data to an OutputStream.
+     * @param stream The output stream to export the data to.
+     * @throws FileStoreTransferException If unable to complete the action.
+     * @throws FileStoreServiceException If unable to open the local file.
+     *
+     */
+    public void exportData(OutputStream stream)
+        throws FileStoreServiceException, FileStoreNotFoundException, FileStoreTransferException ;
 
-	/**
-	 * Update the container properties.
-	 * Note - if you change the underlying data file you must update the properties.
-	 *
-	 */
-	public void update()
-		throws FileStoreServiceException ;
+    /**
+     * Update the container properties.
+     * Note - if you change the underlying data file you must update the properties.
+     *
+     */
+    public void update()
+        throws FileStoreServiceException ;
 
-	}
+    }
 
