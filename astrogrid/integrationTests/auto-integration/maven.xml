@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.120 2004/09/30 13:58:20 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.121 2004/10/01 13:03:34 pah Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -681,7 +681,7 @@
         <copy todir="${temporary.dir}/myspace" filtering="true">
                 <fileset dir="contexts/myspace" />
         </copy>
-        <ag:maybe-enable-cougaar webapp="myspace" />
+        <ag:maybe-enable-cougaar webapp="mySpace" />
         <war update="true" destfile="${temporary.dir}/astrogrid-mySpace-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/myspace"/>
         </war>
