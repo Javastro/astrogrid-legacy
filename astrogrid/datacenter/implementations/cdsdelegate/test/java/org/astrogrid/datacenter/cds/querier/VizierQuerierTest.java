@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierTest.java,v 1.8 2004/10/01 18:04:58 mch Exp $
+/*$Id: VizierQuerierTest.java,v 1.9 2004/10/04 11:31:42 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,6 +85,8 @@ public class VizierQuerierTest extends ServerTestCase {
 //
 //    Generate a QuerierManager, generate the query and perform it.
 
+       fail("Repair test");
+       /* COmment out until we get proper pal dependency
        QuerierManager manager = QuerierManager.getManager("DummyTest");
 
        StringWriter sw = new StringWriter();
@@ -117,7 +119,7 @@ public class VizierQuerierTest extends ServerTestCase {
        Element rootElement = results.getDocumentElement();
 //       System.out.println("rootElement: " + rootElement.getTagName() );
        assertEquals(rootElement.getTagName(), "VOTABLE");
-
+        */
     }
 
 
@@ -172,6 +174,9 @@ public class VizierQuerierTest extends ServerTestCase {
 
 /*
 $Log: VizierQuerierTest.java,v $
+Revision 1.9  2004/10/04 11:31:42  mch
+removed test that breaks compile
+
 Revision 1.8  2004/10/01 18:04:58  mch
 Some factoring out of status stuff, added monitor page
 
