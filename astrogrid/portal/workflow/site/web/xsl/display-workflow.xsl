@@ -142,8 +142,13 @@
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">flow</xsl:attribute>
-                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');populate_script_details('<xsl:value-of select="@step-description"/>', '<xsl:value-of select="@step-body"/>', '<xsl:value-of select="@key"/>');hide_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>','<xsl:value-of select="name()"/>');show_select('script_details');</xsl:attribute>
-                        </xsl:element>                                                                                        
+                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');populate_script_details('<xsl:value-of select="@script-desc"/>', '<xsl:value-of select="@script-body"/>', '<xsl:value-of select="@key"/>');hide_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>','<xsl:value-of select="name()"/>');show_select('script_details');</xsl:attribute>
+                        </xsl:element>
+                        <xsl:if test="@key = $activity_key">
+                            <ag-onload>
+                                <xsl:attribute name="function">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');populate_script_details('<xsl:value-of select="@script-desc"/>', '<xsl:value-of select="@script-body"/>', '<xsl:value-of select="@key"/>');hide_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>','<xsl:value-of select="name()"/>');show_select('script_details');</xsl:attribute>
+                            </ag-onload>
+                        </xsl:if>                                                                                                                
                     </xsl:when>                    
                             
                     <xsl:when test="name() = 'step'">  <!-- STEP -->                   
