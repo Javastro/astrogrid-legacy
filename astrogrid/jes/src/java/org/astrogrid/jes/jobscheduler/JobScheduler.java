@@ -376,7 +376,7 @@ public class JobScheduler {
 	
 	  	
 	private void startJob( String datacenterLocation, Job job ) throws JesException { 
-		if( TRACE_ENABLED ) logger.debug( "startJob() exit") ;
+		if( TRACE_ENABLED ) logger.debug( "startJob() entry") ;
 		
 		try {
 			
@@ -407,7 +407,7 @@ public class JobScheduler {
 	
 	
 	private String formatRunRequest( Job job ) {
-		if( TRACE_ENABLED ) logger.debug( "formatRunRequest() exit") ;
+		if( TRACE_ENABLED ) logger.debug( "formatRunRequest() entry") ;
 		
 		String
 		    request = null ;
@@ -473,7 +473,7 @@ public class JobScheduler {
 	} 
 	
 	private String enquireOfRegistry( Catalog catalog ) throws JesException { 
-		if( TRACE_ENABLED ) logger.debug( "enquireOfRegistry() exit") ;
+		if( TRACE_ENABLED ) logger.debug( "enquireOfRegistry() entry") ;
 		
 		String
 		    datacenterLocation  = null ;
