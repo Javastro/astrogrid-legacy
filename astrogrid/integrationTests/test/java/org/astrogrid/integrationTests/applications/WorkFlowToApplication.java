@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowToApplication.java,v 1.2 2004/01/10 00:36:15 pah Exp $
+ * $Id: WorkFlowToApplication.java,v 1.3 2004/01/13 10:24:07 pah Exp $
  * 
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -41,6 +41,7 @@ import org.astrogrid.portal.workflow.design.Workflow;
  * @since iteration4
  */
 public class WorkFlowToApplication extends TestCase {
+   private static final String TESTCONTAINER = "testdata";
    private boolean rc;
 
    private String outFilename;
@@ -93,20 +94,21 @@ public class WorkFlowToApplication extends TestCase {
          String communityId = user.getCommunity();
          String credential = user.getToken();
          mySpaceManager.createUser(userId, communityId, credential, servers);
-         String containerref = MySpaceHelper.formatMyspaceContainerReference(user, "serv1", "testdata");
+         String containerref = MySpaceHelper.formatMyspaceContainerReference(user, "serv1", TESTCONTAINER);
          mySpaceManager.createContainer(userId, communityId, credential, containerref);
          infileName =
-            MySpaceHelper.formatMyspaceReference(user, "serv1",  "testdata", "testInfile");
+            MySpaceHelper.formatMyspaceReference(user, "serv1",  TESTCONTAINER, "testInfile");
          outFilename =
-         MySpaceHelper.formatMyspaceReference(user, "serv1",  "testdata", "testOutfile");
+         MySpaceHelper.formatMyspaceReference(user, "serv1",  TESTCONTAINER, "testOutfile");
          mySpaceManager.saveDataHolding(
             userId,
             communityId,
             credential,
             infileName,
             "This is some test contents for myspace",
-            "data",
+            TESTCONTAINER, // this should not be the container, but a "type" referece
             mySpaceManager.OVERWRITE);
+            mySpaceManager.deleteDataHolding(userId, communityId, credential, outFilename);
       }
       catch (IOException e) {
          // TODO Auto-generated catch block
