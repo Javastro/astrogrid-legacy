@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryBaseTestCase.java,v 1.1 2004/05/07 15:32:36 pah Exp $
+ * $Id: RegistryBaseTestCase.java,v 1.2 2004/08/05 12:08:08 KevinBenson Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,6 +15,7 @@ package org.astrogrid.registry.integration;
 
 import java.util.List;
 
+import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.scripting.Astrogrid;
@@ -37,14 +38,24 @@ public abstract class RegistryBaseTestCase extends TestCase {
    protected RegistryAdminService adminDelegate;
 
    /**
+    * Our Registry delegate factory.
+    *
+    */
+   private static RegistryDelegateFactory factory = new RegistryDelegateFactory() ;
+   
+   protected RegistryService rs = null;
+   
+
+   /**
     * @param arg0
     */
    public RegistryBaseTestCase(String arg0) {
       super(arg0);
-
+      rs = factory.createQuery();
    }
 
    protected void setUp() throws Exception {
+      
       Astrogrid ag = Astrogrid.getInstance();
       List regList = ag.getRegistries();
       assertNotNull(regList);
@@ -59,7 +70,10 @@ public abstract class RegistryBaseTestCase extends TestCase {
       service = (Service)regList.get(0);
       adminDelegate = (RegistryAdminService)service.createDelegate();
       assertNotNull(adminDelegate);
-
+   }
+   
+   public void testBase() {
+      
    }
 
 }

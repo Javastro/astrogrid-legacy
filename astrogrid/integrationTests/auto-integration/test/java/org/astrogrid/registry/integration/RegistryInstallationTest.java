@@ -1,4 +1,4 @@
-/*$Id: RegistryInstallationTest.java,v 1.7 2004/08/03 13:41:29 KevinBenson Exp $
+/*$Id: RegistryInstallationTest.java,v 1.8 2004/08/05 12:08:08 KevinBenson Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -68,6 +68,12 @@ public class RegistryInstallationTest extends RegistryBaseTestCase {
 
 /* 
 $Log: RegistryInstallationTest.java,v $
+Revision 1.8  2004/08/05 12:08:08  KevinBenson
+small changes to extend the regsitrybasetestcase
+
+Revision 1.6.6.1  2004/08/03 20:50:05  KevinBenson
+Small changes to use the new interface look to the registry
+
 Revision 1.7  2004/08/03 13:41:29  KevinBenson
 result of a merge with Itn06_case3 to change to using registry-client-lite and add some more int-test for fits and sec datacenter
 
