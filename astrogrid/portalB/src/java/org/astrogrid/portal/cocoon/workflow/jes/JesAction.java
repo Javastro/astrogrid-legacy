@@ -272,9 +272,9 @@ public class JesAction extends AbstractAction {
                 this.group =
                    (String)session.getAttribute( CREDENTIAL_TAG );
 			debug( "group: " + this.group ); 
-                SecurityToken secToken =
-                   (SecurityToken)session.getAttribute( COMMUNITY_TOKEN_TAG );
-                this.token = secToken.getToken();
+//                SecurityToken secToken =
+//                   (SecurityToken)session.getAttribute( COMMUNITY_TOKEN_TAG );
+//                this.token = secToken.getToken();
 			debug( "token: " + this.token ); 
                 
 /*               
