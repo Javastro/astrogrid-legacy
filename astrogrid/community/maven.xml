@@ -1,42 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
-    | Maven build tasks for the AstroGrid community component.
+    | Maven build tasks for the AstroGrid community components.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/11/16 18:24:34 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/01/07 10:45:37 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
-    |   Revision 1.2  2003/11/16 18:24:34  dave
-    |   Merged dev branch back into HEAD
+    |   Revision 1.3  2004/01/07 10:45:37  dave
+    |   Merged development branch, dave-dev-20031224, back into HEAD
     |
-    |   Revision 1.1.2.9  2003/11/16 14:08:54  dave
-    |   Replaced tabs with spaces
+    |   Revision 1.2.4.11  2004/01/07 07:01:06  dave
+    |   Tried to fix war file name
     |
-    |   Revision 1.1.2.8  2003/11/14 13:16:20  dave
-    |   Experimening with  Jelly code
+    |   Revision 1.2.4.10  2004/01/07 06:43:39  dave
+    |   Fixed remove command for jar:deploy-snapshot post goal
     |
-    |   Revision 1.1.2.7  2003/11/13 10:41:54  dave
-    |   Version number or SNAPSHOT in release files
+    |   Revision 1.2.4.9  2004/01/07 06:41:27  dave
+    |   Fixed remove command for jar:deploy-snapshot post goal
     |
-    |   Revision 1.1.2.6  2003/11/11 15:20:56  dave
-    |   Added depends chain to the tasks
+    |   Revision 1.2.4.8  2004/01/07 06:31:07  dave
+    |   Fixed snapshot version in jar:deploy-snapshot
     |
-    |   Revision 1.1.2.5  2003/11/10 05:14:08  dave
-    |   Added JTA dependency for Castor tools.
+    |   Revision 1.2.4.7  2004/01/07 06:06:53  dave
+    |   Added tidy up for jar_deploy-snapshot
     |
-    |   Revision 1.1.2.4  2003/11/10 04:29:07  dave
-    |   Fixed problems with jar versions
+    |   Revision 1.2.4.6  2004/01/07 05:04:52  dave
+    |   Fixed jar:deploy problem
     |
-    |   Revision 1.1.2.3  2003/11/09 21:12:52  dave
-    |   Got the main build process to work
+    |   Revision 1.2.4.5  2004/01/07 04:29:15  dave
+    |   Moved properties into shared files and tested deployment goals
     |
-    |   Revision 1.1.2.2  2003/11/07 23:20:53  dave
-    |   Got the main libraries and classpaths done
+    |   Revision 1.2.4.4  2004/01/05 04:11:05  dave
+    |   Fixed the maven.xml import
+    |   Changed the primary goal to install-artifact
     |
-    |   Revision 1.1.2.1  2003/11/07 12:45:05  dave
-    |   Added initial Maven scripts
+    |   Revision 1.2.4.3  2004/01/01 01:43:34  dave
+    |   Moved common code into parent maven.xml script
     |
     | </cvs:log>
     +-->
@@ -50,162 +51,224 @@
     xmlns:deploy="deploy"
     >
 
-
-    <!-- ================ Quick fix tasks ================ -->
     <!--+
-        | Quick fix tasks, these just call the Ant tasks in our orginal build.xml
+        | Current build script goals.
+        | These are hooks to catch the goals called by the current build script.
+        | The build script goals like java:compile don't really apply in the context of the multiproject build.
         +-->
 
     <!--+
-        | Call the axis.webapp.unwar task in our Ant build file.
-        | This assumes that Maven has already downloaded the Axis war file from the remote repository.
+        | Hook for build script java:compile
+        | Calls install-artifact to build and install our SNAPSHOT jars.
         +-->
-    <target name="axis.SETUP" depends="">
-        <ant antfile="build.xml" target="axis.webapp.unwar"/>
-    </target>
+    <goal name="java:compile">
+        <attainGoal name="clean"/>
+        <attainGoal name="install-snapshot"/>
+    </goal>
 
     <!--+
-        | Call the project.BUILD task in our Ant build file.
-        | This will build the policy and authentication jar files.
-        | TODO - fix the config files.
+        | Hook for build script clover:html-report
+        | Calls clover-report on the relevant sub-projects.
         +-->
-    <target name="project.BUILD" depends="axis.SETUP">
-        <!-- Fix the broken jaxp properties in Maven -->
-        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-        <!-- Call the Ant task in our build.xml -->
-        <ant antfile="build.xml" target="project.BUILD">
-            <property name="project.version" value="${pom.currentVersion}"/>
-        </ant>
-    </target>
+    <goal name="clover:html-report">
+        <attainGoal name="clover-report"/>
+    </goal>
 
     <!--+
-        | Call the project.release task in our Ant build file.
-        | This will build the policy and authentication jar files and transfer them into the release directory.
-        | TODO - fix the config files.
+        | Hook for build script site:site
+        | Calls 'site' on the relevant sub-projects.
         +-->
-    <target name="project.RELEASE" depends="axis.SETUP">
-        <!-- Fix the broken jaxp properties in Maven -->
-        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-        <!-- Call the Ant task in our build.xml -->
-        <ant antfile="build.xml" target="project.release">
-            <property name="project.version" value="${pom.currentVersion}"/>
-        </ant>
-    </target>
+    <goal name="site:site">
+        <attainGoal name="site"/>
+    </goal>
 
     <!--+
-        | Call the project.release task in our Ant build file.
-        | This will build the policy and authentication jar files and transfer them into the release directory.
-        | TODO - fix the config files.
+        | Hook for build script site:fsdeploy
         +-->
-    <target name="project.SNAPSHOT" depends="axis.SETUP">
-        <!-- Fix the broken jaxp properties in Maven -->
-        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-        <!-- Call the Ant task in our build.xml -->
-        <ant antfile="build.xml" target="project.release">
-            <property name="project.version" value="SNAPSHOT"/>
-        </ant>
-    </target>
-
-    <!-- ================ Community tasks ================ -->
-    <!--+
-        | These are the beginnings of the Community build tasks.
-        +-->
-
-
-    <!-- ================ Experimental tasks ================ -->
-    <!--+
-        | These are experimental tasks while I'm learning how to use Maven and Jelly.
-        +-->
+    <preGoal name="site:fsdeploy">
+        <ant:echo message="${pom.artifactId} - site:fsdeploy"/>
+        <ant:echo message=" build  location : ${maven.docs.dest}"/>
+        <ant:echo message=" deploy location : ${site.deploy.directory}"/>
+		<!--+
+			| Fix to check if we have defined an alternative location in our build.properties.
+			+-->
+		<core:set var="deployLocation" value="${site.deploy.directory}"/>
+		<core:if test="${!empty(deployLocation)}">
+	        <core:expr value="${pom.setSiteDirectory(deployLocation)}"/>
+		</core:if>
+    </preGoal>
 
     <!--+
-        | Test task to collect the jars for our Axis webapp.
-        | Looks for dependencies in our project.xml, with the 'axis.war' property set to 'true'.
+        | Hook for build script jar:deploy-snapshot
+        | Calls 'deploy-snapshot' on the relevant sub-projects.
+        | I can't make this a goal, because it breaks the real call to
+        | 'jar:deploy-snapshot' in the sub-project tasks.
         +-->
-    <target name="axis-jars">
-        <ant:mkdir dir="axis-jars"/>
+    <preGoal name="jar:deploy-snapshot">
+        <attainGoal name="deploy-snapshot"/>
+    </preGoal>
+
+    <!--+
+        | Hook for build script jar:deploy-snapshot
+        | Delete the extra jar file.
+        +-->
+    <postGoal name="jar:deploy-snapshot">
+		<ant:echo message=""/>
+		<ant:echo message="Post processing jar:deploy-snapshot"/>
+		<core:set var="snapshotVersion" value="${pom.getPluginContext('maven-jar-plugin').getVariable('snapshotVersion')}"/>
+		<core:set var="snapshotRemove"  value="cd ${maven.repo.central.directory}/${pom.artifactDirectory}/jars ; rm astrogrid-community-SNAPSHOT.jar ; rm astrogrid-community-${snapshotVersion}.jar"/>
+		<ant:echo message="  Command  : ${maven.ssh.executable}"/>
+		<ant:echo message="  Username : ${maven.username}"/>
+		<ant:echo message="  Server   : ${maven.repo.central}"/>
+		<ant:echo message="  Command  : ${snapshotRemove}"/>
+		<ant:exec dir="." executable="${maven.ssh.executable}">
+			<ant:arg line="-l ${maven.username} ${maven.repo.central} '${snapshotRemove}'"/>
+		</ant:exec>
+    </postGoal>
+
+    <!--+
+        | Hook for build script war:deploy-snapshot
+        | Does nothing, 'deploy-snapshot' will have been called by 'jar:deploy-snapshot'.
+        +-->
+    <goal name="war:deploy-snapshot">
+        <ant:echo message="Skipping war:deploy-snapshot, already done by jar:deploy-snapshot"/>
+    </goal>
+
+    <!--+
+        | Primary goals are :
+        |     clean
+        |     install-artifact
+        |     install-snapshot
+        |     site
+        +-->
+
+    <!--+
+        | Debug info ....
+        +-->
+    <goal name="info">
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+    </goal>
+
+    <!--+
+        | Clean out all of the build targets.
+        +-->
+    <goal name="clean">
         <!--+
-            | Iterate the list of artifacts.
+            | Clean our sub-projects.
             +-->
-        <core:forEach var="lib" items="${pom.artifacts}">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            goals="clean"
+            banner="Cleaning build targets : "
+            ignoreFailures="false"
+            />
+        <!--+
+            | Clean this project target.
+            +-->
+        <attainGoal name="clean:clean"/>
+    </goal>
+
+    <!--+
+        | Build and install our component artifacts.
+        +-->
+    <goal name="install-artifact">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            goals="install-artifact"
+            banner="Building component artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
+
+    <!--+
+        | Build and install our snapshot artifacts.
+        +-->
+    <goal name="install-snapshot">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            goals="install-snapshot"
+            banner="Building snapshot artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
+
+    <!--+
+        | Generate a clover report for our sub-projects.
+        | Needs to have install-snapshot called first.
+        +-->
+    <goal name="clover-report">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="common/project.xml,client/project.xml,server/project.xml"
+            goals="clover-report"
+            banner="Building clover report : "
+            ignoreFailures="false"
+            />
+    </goal>
+
+    <!--+
+        | Build our project website.
+        | This can be called fom outside, or recursively by site:generate.
+        | (required as a target goal for the reactor in multiproject:site)
+        +-->
+    <goal name="site">
+        <!--+
+            | Check if we have already been called.
+            | This target can be called fom outside, or recursively by site:generate.
+            +-->
+        <ant:echo message="${pom.artifactId} - site"/>
+        <ant:echo message="  recursionTest : ${recursionTest}"/>
+        <core:switch on="${recursionTest}">
             <!--+
-                | Check if we want to include this jar.
+                | If we have already been called for this project.
                 +-->
-            <core:if test="${lib.dependency.getProperty('axis.war')=='true'}">
-                <ant:echo message=""/>
-                <ant:echo message="Found a jar to include"/>
-                <ant:echo message="Name  : ${lib.dependency.artifactId}"/>
-                <ant:echo message="Group : ${lib.dependency.groupId}"/>
-                <ant:echo message="Type  : ${lib.dependency.type}"/>
-                <ant:echo message="Base  : ${lib.file.parent}"/>
-                <ant:echo message="File  : ${lib.file.name}"/>
-                <ant:echo message="Path  : ${lib.path}"/>
+            <core:case value="${pom.artifactId}">
                 <!--+
-                    | Copy the jar to our target directory.
+                    | Generate the project site by calling the site plugin goal.
                     +-->
-                <ant:copy todir="webapp-jars" file="${lib.path}"/>
-            </core:if>
-        </core:forEach>
-    </target>
+                <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+                <ant:echo message="Build version   : ${pom.currentVersion}"/>
+                <ant:echo message="Build directory : ${maven.build.dir}"/>
+                <ant:echo message="Building sub-project site : "/>
+                <attainGoal name="site:generate"/>
+            </core:case>
+            <!--+
+                | If this is the first time we have been called.
+                +-->
+            <core:default>
+                <!--+
+                    | Set our recursion check.
+                    +-->
+                <core:set var="recursionTest" value="${pom.artifactId}"/>
+                <!--+
+                    | Generate our sub-project sites by calling the multiproject plugin goal.
+                    +-->
+                <attainGoal name="multiproject:site"/>
+            </core:default>
+        </core:switch>
+    </goal>
 
     <!--+
-        | Task to unpack all the plugin jars.
+        | Deploy our snapshot artifacts.
         +-->
-    <target name="plugin-list">
-
-        <!--+
-            | Set the name of the directory we want to unpack the jars to.
-            +-->
-        <core:set var="unpackdir" value="/var/projects/mumble/plugins"/>
-        <!--+
-            | Set the name of the directory we want to copy the jelly files to.
-            +-->
-        <core:set var="jellydir" value="/var/projects/mumble/jelly"/>
-
-        <!--+
-            | Create our directories.
-            +-->
-        <ant:mkdir dir="${unpackdir}"/>
-        <ant:mkdir dir="${jellydir}"/>
-
-        <!--+
-            | Use an Ant fileScanner to create a list of plugins jars.
-            +-->
-        <ant:fileScanner var="pluginjars">
-            <ant:fileset dir="${maven.home}/plugins" includes="*.jar"/>
-        </ant:fileScanner>
-        <!--+
-            | Iterate our list of files.
-            +-->
-        <core:forEach var="pluginjar" items="${pluginjars.iterator()}">
-            <ant:echo message=""/>
-            <ant:echo message="Base  : ${pluginjar.parent}"/>
-            <ant:echo message="File  : ${pluginjar.name}"/>
-            <ant:echo message="Path  : ${pluginjar.path}"/>
-            <!--+
-                | Get the plugin name from the jar name.
-                | Plugin jars all follow the same format maven-{name}-plugin-{version}.jar
-                +-->
-            <core:set var="pluginname" value="${pluginjar.name.substring(6, pluginjar.name.lastIndexOf('-plugin'))}"/>
-            <ant:echo message="Name  : ${pluginname}"/>
-            <!--+
-                | Create a directory for the jar contents.
-                +-->
-            <ant:mkdir dir="${unpackdir}/${pluginname}"/>
-            <!--+
-                | Unpack the jar file into our target directory.
-                +-->
-            <ant:unzip src="${pluginjar.path}" dest="${unpackdir}/${pluginname}"/>
-            <!--+
-                | Copy the plugin.jelly file to our jelly directory.
-                +-->
-            <ant:copy vebose="true" file="${unpackdir}/${pluginname}/plugin.jelly" tofile="${jellydir}/${pluginname}.jelly"/>
-
-        </core:forEach>
-    </target>
-
-    <target name="frog">
-        <ant:echo message="Version  : ${pom.currentVersion}"/>
-    </target>
-
+    <goal name="deploy-snapshot">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            goals="deploy-snapshot"
+            banner="Deploying snapshot artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
 
 </project>

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven build tasks for the AstroGrid community webapp.
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/01/07 10:45:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: maven.xml,v $
+    |   Revision 1.2  2004/01/07 10:45:45  dave
+    |   Merged development branch, dave-dev-20031224, back into HEAD
+    |
+    |   Revision 1.1.2.12  2004/01/07 08:01:43  dave
+    |   Fixed remote ln command
+    |
+    |   Revision 1.1.2.11  2004/01/07 07:48:02  dave
+    |   Replaced war:deploy-snapshot with hacked version of jar:deploy-snapshot
+    |
+    |   Revision 1.1.2.10  2004/01/07 07:22:08  dave
+    |   Fixed XML namespace
+    |
+    |   Revision 1.1.2.9  2004/01/07 07:20:13  dave
+    |   Fixed XML namespace
+    |
+    |   Revision 1.1.2.8  2004/01/07 07:18:08  dave
+    |   Tried replacing war:deploy-snapshot with jar:deploy-snapshot
+    |
+    |   Revision 1.1.2.7  2004/01/07 07:01:06  dave
+    |   Tried to fix war file name
+    |
+    |   Revision 1.1.2.6  2004/01/07 06:06:53  dave
+    |   Added tidy up for jar_deploy-snapshot
+    |
+    |   Revision 1.1.2.5  2004/01/07 04:29:15  dave
+    |   Moved properties into shared files and tested deployment goals
+    |
+    |   Revision 1.1.2.4  2004/01/05 04:45:34  dave
+    |   Removed the maven.xml import ... seems to work without it ?
+    |
+    |   Revision 1.1.2.3  2004/01/05 04:11:05  dave
+    |   Fixed the maven.xml import
+    |   Changed the primary goal to install-artifact
+    |
+    |   Revision 1.1.2.2  2004/01/01 01:44:29  dave
+    |   Moved common code into parent maven.xml script
+    |
+    | </cvs:log>
+    |
+    +-->
+<project
+    xmlns:core="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:log="jelly:log"
+    xmlns:define="jelly:define"
+    xmlns:deploy="deploy"
+    >
+
+    <!--+
+        | Primary goals are :
+        |     clean
+        |     install-artifact
+        |     install-snapshot
+        |     site
+        +-->
+
+    <!--+
+        | Debug info ....
+        +-->
+    <goal name="info">
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+    </goal>
+
+    <!--+
+        | Import our plugin goals from our parent project.
+        | Looks like this gets included anyway ...
+        | Possibly because our project inherits from ../maven.project.xml ?
+        | Maven : Any more unexpected suprises !?
+    <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
+        +-->
+
+    <!--+
+        | Reactor goals.
+        | These are just placeholder targets for the reactor to call.
+        +-->
+
+    <!--+
+        | Clean our build target.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="clean">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Cleaning build target ...."/>
+        <attainGoal name="clean:clean"/>
+    </goal>
+
+    <!--+
+        | Build and install our component war.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="install-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Building component artifact ...."/>
+        <attainGoal name="war:install"/>
+    </goal>
+
+    <!--+
+        | Build and install our snapshot war.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="install-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Building snapshot artifact ...."/>
+        <attainGoal name="war:install-snapshot"/>
+    </goal>
+
+    <!--+
+        | Deploy our snapshot war.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="deploy-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Deploying snapshot artifact ...."/>
+	    <!--+
+		<attainGoal name="war:deploy-snapshot"/>
+	        | Replaced with code from jar:deploy-snapshot with jar crossed out and war written in in crayon.
+	        +-->
+		<attainGoal name="war:war"/>
+
+		<maven:snapshot project="${pom}"/>
+
+		<core:set var="artifactFile" value="${pom.groupId}.war"/>
+		<core:set var="snapshotFile" value="${pom.groupId}-${snapshotVersion}.war"/>
+
+		<ant:move file="${maven.build.dir}/${artifactFile}" toFile="${maven.build.dir}/${snapshotFile}"/>
+		<!--
+		<core:set var="maven.final.name" value="${snapshotSignature}"/>
+        <core:set var="maven.war.final.name" value="${pom.groupId}.war"/>
+		-->
+		<maven:user-check user="${maven.username}"/>
+		<ant:property name="maven.war.to.deploy" value="${snapshotFile}"/>
+		<ant:property name="dir" value="${maven.repo.central.directory}/${pom.artifactDirectory}/wars"/>
+		<util:replace var="warToDeploy" oldChar="\" newChar="/">${maven.build.dir}/${maven.war.to.deploy}</util:replace>
+		<util:replace var="forwardSlashBaseDir" oldChar="\" newChar="/" value="${basedir}"/>
+		<core:if test="${!forwardSlashBaseDir.endsWith('/')}">
+			<core:set var="base" value="${forwardSlashBaseDir}/" />
+		</core:if>
+		<core:set var="relativePath">${warToDeploy.substring(base.length())}</core:set>
+		<deploy:artifact
+			artifact="${relativePath}"
+			type="wars"
+			assureDirectoryCommand="mkdir -p"
+			siteCommand="cd @deployDirectory@; chmod g+w ${maven.war.to.deploy}; chgrp ${maven.remote.group} ${maven.war.to.deploy}; ln -sf ${maven.war.to.deploy} ${pom.groupId}-SNAPSHOT.war; echo ${snapshotVersion} > ${pom.groupId}-snapshot-version"
+		/>
+    </goal>
+
+    <!--+
+        | Build our project website.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="site">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Building project site ...."/>
+        <attainGoal name="site:generate"/>
+    </goal>
+
+    <!--+
+        | Project goals.
+        | These are the main project goals.
+        +-->
+
+    <!--+
+        | Initialise the webapp files.
+        +-->
+    <preGoal name="war:webapp">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Pre-processing for webapp task"/>
+        <!--+
+            | Initialise the Axis webapp.
+            +-->
+        <attainGoal name="init.axis"/>
+        <!--+
+            | Modify the war:webapp property to use our Axis webapp instead.
+            +-->
+        <ant:echo message="Modifying war:webapp location"/>
+        <ant:echo message="  Before : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+        <core:expr value="${pom.getPluginContext('maven-war-plugin').setVariable('maven.war.webapp.dir', axisDir)}"/>
+        <ant:echo message="  After  : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+    </preGoal>
+
+    <!--+
+        | Post-process our webapp.
+        +-->
+    <postGoal name="war:webapp">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Post-processing for webapp task"/>
+        <!--+
+            | Initialise our paths.
+            +-->
+        <attainGoal name="init.paths"/>
+        <!--+
+            | Locate our community server jar.
+            +-->
+        <core:forEach var="artifact" items="${pom.getArtifacts()}">
+            <core:if test="${artifact.getDependency().getId().equals('astrogrid-community:astrogrid-community-server')}">
+                <ant:echo message="Found community server jar"/>
+                <ant:echo message="Name     : ${artifact.getName()}"/>
+                <ant:echo message="Path     : ${artifact.getPath()}"/>
+                <core:set var="serverJarPath" value="${artifact.getPath()}"/>
+            </core:if>
+        </core:forEach>
+        <!--+
+            | Unpack our service WSDD files.
+            +-->
+        <ant:unzip
+            src="${serverJarPath}"
+            dest="${tempDir}">
+            <patternset>
+                <include name="META-INF/wsdd/*.wsdd"/>
+            </patternset>
+        </ant:unzip>
+        <ant:copy toDir="${wsddDir}" flatten="true">
+            <fileset dir="${tempDir}">
+                <include name="**/*.wsdd"/>
+            </fileset>
+        </ant:copy>
+        <!--+
+            | Initialise our classpaths.
+            +-->
+        <attainGoal name="init.classpath"/>
+        <!--+
+            | Deploy our PolicyManger service.
+            +-->
+        <ant:echo message="Deploying PolicyManager WebService"/>
+        <ant:java classname="org.apache.axis.utils.Admin"
+            dir="${axisDir}/WEB-INF"
+            classpathref="maven.dependency.classpath"
+            fork="true"
+            >
+            <arg value="server"/>
+            <arg value="${wsddDir}/PolicyManager.wsdd"/>
+        </ant:java>
+        <!--+
+            | Deploy our PolicyService service.
+            +-->
+        <ant:echo message="Deploying PolicyService WebService"/>
+        <ant:java classname="org.apache.axis.utils.Admin"
+            dir="${axisDir}/WEB-INF"
+            classpathref="maven.dependency.classpath"
+            fork="true"
+            >
+            <arg value="server"/>
+            <arg value="${wsddDir}/PolicyService.wsdd"/>
+        </ant:java>
+    </postGoal>
+
+    <!--+
+        | Prepare for the war war task
+        | Modify the war file name to use just our group name.
+        | This don't work ....
+        +-->
+    <preGoal name="war:war">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Modifying war file name"/>
+        <ant:echo message="  Before : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.final.name')}"/>
+        <core:set var="warName" value="${pom.groupId}.war"/>
+        <core:expr value="${pom.getPluginContext('maven-war-plugin').setVariable('maven.war.final.name', warName)}"/>
+        <ant:echo message="  After  : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.final.name')}"/>
+        <core:set var="maven.war.final.name" value="${pom.groupId}.war"/>
+    </preGoal>
+
+</project>

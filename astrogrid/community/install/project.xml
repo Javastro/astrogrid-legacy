@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven project description for the AstroGrid community webapp.
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/01/07 10:45:39 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: project.xml,v $
+    |   Revision 1.2  2004/01/07 10:45:39  dave
+    |   Merged development branch, dave-dev-20031224, back into HEAD
+    |
+    |   Revision 1.1.2.2  2004/01/07 04:29:15  dave
+    |   Moved properties into shared files and tested deployment goals
+    |
+    |   Revision 1.1.2.1  2004/01/05 06:47:18  dave
+    |   Moved policy data classes into policy.data package
+    |
+    |   Revision 1.1.2.2  2004/01/01 01:44:29  dave
+    |   Moved common code into parent maven.xml script
+    |
+    | </cvs:log>
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | Extend the common project descriptor.
+        +-->
+    <extend>../maven/project.xml</extend>
+
+    <!--+
+        | The current version of the Maven project descriptor.
+        +-->
+    <pomVersion>3</pomVersion>
+
+    <!--+
+        | The short name of the project.
+        | This is used when naming jars and distribution files.
+        +-->
+    <id>astrogrid-community-install</id>
+
+    <!--+
+        | The full name of the project.
+        | This is used when generating JavaDoc titles.
+        +-->
+    <name>AstroGrid community install toolkit</name>
+
+    <!--+
+        | A short description of the project.
+        | The short description should be limited to a single line.
+        +-->
+    <shortDescription>
+        Short description of the project ....
+    </shortDescription>
+
+    <!--+
+        | A detailed description of the project.
+        | This is used to generate the front page of the projects web site. 
+        +-->
+    <description>
+        <![CDATA[
+            Long description of the project, including <i>HTML</i> tags ....
+        ]]>
+    </description>
+
+    <!--+
+        | Our cvs repository location.
+        +-->
+    <repository>
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/community/install
+        </connection>
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community/install
+        </developerConnection>
+    </repository>
+
+    <!--+
+        | The external libraries required to build our component.
+        +-->
+    <dependencies>
+        <!--+
+            | The Community common components.
+            +-->
+        <dependency>
+            <groupId>astrogrid-community</groupId>
+            <artifactId>astrogrid-community</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!--+
+            | The Community client components.
+            +-->
+        <dependency>
+            <groupId>astrogrid-community</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!--+
+            | The Community webapp.
+            +-->
+        <dependency>
+            <groupId>astrogrid-community</groupId>
+            <artifactId>astrogrid-community</artifactId>
+            <version>SNAPSHOT</version>
+            <type>war</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!--+
+            | The Hsqldb jars.
+            +-->
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.7.1</version>
+            <type>jar</type>
+            <url>http://www.hsqldb.org/</url>
+        </dependency>
+    </dependencies>
+
+    <!--+
+        | The build properties for our project.
+        +-->
+    <build>
+        <!--+
+            | The location of our Java source code.
+            +-->
+        <sourceDirectory>src/java</sourceDirectory>
+        <!--+
+            | The location of our JUnit source code.
+            +-->
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+        <!--+
+            | Our JUnit test classes.
+            +-->
+        <unitTest>
+            <!--+
+                | Which tests to include.
+                +-->
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+            <!--+
+                | Which tests to exclude.
+                +-->
+            <excludes>
+                <exclude>**/*Test.frog</exclude>
+            </excludes>
+            <!--+
+                | The resources for our tests.
+            <resources>
+                <resource>
+                </resource>
+            </resources>
+                +-->
+        </unitTest>
+    </build>
+</project>
+
+
+
+
+
+

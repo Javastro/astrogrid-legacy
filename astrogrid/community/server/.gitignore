@@ -1,8 +1,5 @@
 .project
 .classpath
-bin
-logs
-build
 target
 build.properties
 maven.log

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven project description for the AstroGrid community portal.
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/portal/Attic/project.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/01/07 10:45:40 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: project.xml,v $
+    |   Revision 1.2  2004/01/07 10:45:40  dave
+    |   Merged development branch, dave-dev-20031224, back into HEAD
+    |
+    |   Revision 1.1.2.2  2004/01/07 04:29:15  dave
+    |   Moved properties into shared files and tested deployment goals
+    |
+    |   Revision 1.1.2.1  2004/01/06 14:21:43  dave
+    |   Tidied up directory tree ....
+    |
+    | </cvs:log>
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | Extend the common project descriptor.
+        +-->
+    <extend>../maven/project.xml</extend>
+
+    <!--+
+        | The current version of the Maven project descriptor.
+        +-->
+    <pomVersion>3</pomVersion>
+
+    <!--+
+        | The short name of the project.
+        | This is used when naming jars and distribution files.
+        +-->
+    <id>astrogrid-community-portal</id>
+
+    <!--+
+        | The full name of the project.
+        | This is used when generating JavaDoc titles.
+        +-->
+    <name>AstroGrid community portal components</name>
+
+    <!--+
+        | A short description of the project.
+        | The short description should be limited to a single line.
+        +-->
+    <shortDescription>
+        Short description of the project ....
+    </shortDescription>
+
+    <!--+
+        | A detailed description of the project.
+        | This is used to generate the front page of the projects web site. 
+        +-->
+    <description>
+        <![CDATA[
+            Long description of the project, including <i>HTML</i> tags ....
+        ]]>
+    </description>
+
+    <!--+
+        | The cvs repository location.
+        +-->
+    <repository>
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/community/portal
+        </connection>
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community/portal
+        </developerConnection>
+    </repository>
+
+    <!--+
+        | The external libraries required to build our component.
+        +-->
+    <dependencies>
+        <!--+
+            | The Community common components.
+            +-->
+        <dependency>
+            <groupId>astrogrid-community</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!--+
+            | The Community client components.
+            +-->
+        <dependency>
+            <groupId>astrogrid-community</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!--+
+            | The Cocoon jars.
+            +-->
+        <dependency>
+            <groupId>cocoon</groupId>
+            <artifactId>cocoon</artifactId>
+            <version>2.1.2</version>
+            <type>jar</type>
+            <url>http://cocoon.apache.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>avalon</groupId>
+            <artifactId>avalon-framework</artifactId>
+            <version>4.1.4</version>
+            <type>jar</type>
+            <url>http://avalon.apache.org/</url>
+        </dependency>
+    </dependencies>
+
+    <!--+
+        | The build properties for this project.
+        +-->
+    <build>
+        <!--+
+            | The location of our java source code.
+            +-->
+        <sourceDirectory>src/java</sourceDirectory>
+        <!--+
+            | The location of our junit tests.
+            +-->
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+        <!--+
+            | The unit tests for this project.
+            +-->
+        <unitTest>
+            <!--+
+                | Which tests to include.
+                +-->
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+            <!--+
+                | Which tests to exclude.
+                +-->
+            <excludes>
+                <exclude>**/*Test.frog</exclude>
+            </excludes>
+            <!--+
+                | The resources to include ... in our tests ? 
+            <resources>
+            </resources>
+                +-->
+        </unitTest>
+    </build>
+</project>
+
+
+
+
+
+
