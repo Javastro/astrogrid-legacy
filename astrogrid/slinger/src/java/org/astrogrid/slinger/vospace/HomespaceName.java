@@ -1,5 +1,5 @@
 /*
- * $Id: HomespaceName.java,v 1.4 2005/01/26 17:41:48 mch Exp $
+ * $Id: HomespaceName.java,v 1.5 2005/01/27 18:53:16 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -98,7 +98,7 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
 
    /** Resolves the location */
    public String toLocation(Principal user) throws IOException {
-      return null;//@todo    return resolveIvosrn().resolveSrl().toURI();
+      return ((SRL) resolveIvosrn().resolveTarget()).toURI();
    }
    
    /** Returns true if the given string is likely to be a homespace - ie if it
@@ -251,6 +251,9 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
 
 /*
 $Log: HomespaceName.java,v $
+Revision 1.5  2005/01/27 18:53:16  mch
+did toLocation
+
 Revision 1.4  2005/01/26 17:41:48  mch
 fix to compile until resolving is properly handled
 
