@@ -106,7 +106,7 @@
 </goal>
 
 <goal name="astrogrid-deploy-site" description="Deploy the site docs for the test project" prereqs="astrogrid-build-site">
-        <echo message="Haven't worked out how to deploy the site docs remotely yet....can't use fsdeploy" />
+        <maven:maven descriptor="${basedir}/tests-project.xml" goals="site:fsdeploy" />
 </goal>
 
 <goal name="ui-int-test"  description="run integration tests in ui runner">
@@ -210,7 +210,6 @@
           </j:catch>
         </j:forEach>
 </goal>
-
 <!--+
     | Unpack our Community install toolkit.
     +-->
@@ -231,7 +230,7 @@
         </propertyfile>
 </goal>
 
-<!--+
+        <!--+
     | Initialise our Community database.
     +-->
 <goal name="community-database">
