@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.11 2003/12/07 01:09:48 pah Exp $
+ * $Id: ApplicationController.java,v 1.12 2003/12/10 00:18:48 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.astrogrid.community.User;
  * @author pah 
  * @since Iteration 4
  * @version $Name:  $
+ * @TODO This interface is not that good at signallying error conditions - could do with improvement.
  * 
  */
 public interface ApplicationController {

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.10 2003/12/09 23:01:15 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.11 2003/12/10 00:18:48 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.astrogrid.applications.common.config.ApplicationControllerConfig;
 import org.astrogrid.applications.description.ApplicationDescriptions;
 import org.astrogrid.applications.description.DescriptionLoader;
 import org.astrogrid.applications.description.SimpleApplicationDescription;
+import org.astrogrid.applications.description.SimpleDescriptionLoader;
 
 abstract public class AbstractApplicationController implements ApplicationController {
    /**
@@ -53,6 +54,16 @@ abstract public class AbstractApplicationController implements ApplicationContro
       else
       {
          logger.error("application descriptions were not loaded properly");
+      }
+      
+      //now the simple descriptions (really just not parsing the input XML as much - this is a bit of a cheat, perhaps there should be a serializer for the ApplicationDescription objects.
+      SimpleDescriptionLoader sdl = new SimpleDescriptionLoader(this);
+      if (sdl.loadDescription(config.getApplicationConfigFile())) {
+         logger.info("loaded simple descriptions");
+      }
+      else
+      {
+         logger.error("simple application descriptions were not loaded properly");
       }
       
      

@@ -1,5 +1,5 @@
 /**
- * ApplicationControllerServiceSoapBindingImpl.java
+ * $Id: ApplicationControllerServiceSoapBindingImpl.java,v 1.7 2003/12/10 00:18:48 pah Exp $
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis WSDL2Java emitter.
@@ -16,10 +16,21 @@ import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.applications.manager.CommandLineApplicationController;
 import org.astrogrid.community.User;
 
+/**
+ * The soap binding that calls the reall ApplicationController.
+ * @TODO needs to work with different application controllers (e.g. datacentre)
+ * @TODO needs better error handling
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration4
+ */
 public class ApplicationControllerServiceSoapBindingImpl
    implements org.astrogrid.applications.service.ApplicationController {
 
    static CommandLineApplicationController applicationController = null;
+   static private org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(
+         ApplicationControllerServiceSoapBindingImpl.class);
 
    public ApplicationControllerServiceSoapBindingImpl() {
       // do we do anything special to check that  only one application controller is created?
@@ -27,15 +38,13 @@ public class ApplicationControllerServiceSoapBindingImpl
    }
 
    private synchronized void setupAppController() {
-      
-      
+
       if (applicationController == null) {
          applicationController = new CommandLineApplicationController();
       }
    }
-   
-   public java.lang.String[] listApplications()
-      throws java.rmi.RemoteException {
+
+   public java.lang.String[] listApplications() throws java.rmi.RemoteException {
       return applicationController.listApplications();
    }
 
@@ -47,31 +56,33 @@ public class ApplicationControllerServiceSoapBindingImpl
       .SimpleApplicationDescription getApplicationDescription(
          java.lang.String applicationID)
       throws java.rmi.RemoteException {
+         org.astrogrid.applications.delegate.beans.SimpleApplicationDescription outdesc =
+            new org.astrogrid.applications.delegate.beans.SimpleApplicationDescription();
       SimpleApplicationDescription desc =
          applicationController.getApplicationDescription(applicationID);
-      org
-         .astrogrid
-         .applications
-         .delegate
-         .beans
-         .SimpleApplicationDescription outdesc =
-         new org
-            .astrogrid
-            .applications
-            .delegate
-            .beans
-            .SimpleApplicationDescription();
-      try {
-         BeanUtils.copyProperties(desc, outdesc);
+         
+      if (desc != null) {
+         try {
+            BeanUtils.copyProperties(outdesc, desc);
+         }
+         catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+         catch (InvocationTargetException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
       }
-      catch (IllegalAccessException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+      else
+      {
+         logger.warn("request for information about unknown application " + applicationID);
+         outdesc.setName("unknown");
+         outdesc.setXmlDescriptor("not found");
       }
-      catch (InvocationTargetException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+
+      
+      
       return outdesc;
    }
 
@@ -106,8 +117,7 @@ public class ApplicationControllerServiceSoapBindingImpl
          outvals);
    }
 
-   public boolean executeApplication(int executionId)
-      throws java.rmi.RemoteException {
+   public boolean executeApplication(int executionId) throws java.rmi.RemoteException {
       return applicationController.executeApplication(executionId);
    }
 
@@ -116,8 +126,7 @@ public class ApplicationControllerServiceSoapBindingImpl
       return applicationController.queryApplicationExecutionStatus(executionId);
    }
 
-   public java.lang.String returnRegistryEntry()
-      throws java.rmi.RemoteException {
+   public java.lang.String returnRegistryEntry() throws java.rmi.RemoteException {
       return applicationController.returnRegistryEntry();
    }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.7 2003/12/08 23:01:53 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.8 2003/12/10 00:18:48 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,6 +19,7 @@ import org.astrogrid.applications.ParameterValues;
 import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.common.config.BaseDBTestCase;
 import org.astrogrid.applications.description.ApplicationDescriptionConstants;
+import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.applications.description.TestAppConst;
 import org.astrogrid.community.User;
 
@@ -76,26 +77,27 @@ public class CommandLineApplicationControllerTest extends BaseDBTestCase {
       
    }
 
-//   final public void testGetApplicationDescription() {
-//      //TODO Implement getApplicationDescription().
-//   }
-//
-//   final public void testListApplications() {
-//      String[] apps = controller.listApplications();
-//      assertNotNull(apps);
-//      assertEquals("there are 2 test applications", 2, apps.length);
-//      // perhaps should test names also
-//   }
-//
-//   final public void testQueryApplicationExecutionStatus() {
-//      //TODO Implement queryApplicationExecutionStatus().
-//   }
-//
-//   final public void testReturnRegistryEntry() {
-//      String reg  = controller.returnRegistryEntry();
-//      assertNotNull(reg);
-//      assertEquals("this is not implemented yet", reg); // need to change when implemented!
-//   }
+   final public void testGetApplicationDescription() {
+      SimpleApplicationDescription desc = controller.getApplicationDescription(applicationid);
+      assertNotNull("application description",desc);
+   }
+
+   final public void testListApplications() {
+      String[] apps = controller.listApplications();
+      assertNotNull(apps);
+      assertEquals("there are 2 test applications", 2, apps.length);
+      // perhaps should test names also
+   }
+
+   final public void testQueryApplicationExecutionStatus() {
+      //TODO Implement queryApplicationExecutionStatus().
+   }
+
+   final public void testReturnRegistryEntry() {
+      String reg  = controller.returnRegistryEntry();
+      assertNotNull(reg);
+      assertEquals("this is not implemented yet", reg); // need to change when implemented!
+   }
 
    final public void testInitializeApplication() {
       

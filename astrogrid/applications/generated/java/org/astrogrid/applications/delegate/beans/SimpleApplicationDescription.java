@@ -117,5 +117,14 @@ public class SimpleApplicationDescription  implements java.io.Serializable {
           new  org.apache.axis.encoding.ser.BeanDeserializer(
             _javaType, _xmlType, typeDesc);
     }
+    
+    
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#toString()
+    */
+   public String toString() {
+      return this.getClass().getName()+" name="+name+" descrip="+xmlDescriptor;
+   }
 
 }
