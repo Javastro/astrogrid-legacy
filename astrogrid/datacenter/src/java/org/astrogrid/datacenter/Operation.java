@@ -50,22 +50,24 @@ public class Operation {
 		if( TRACE_ENABLED ) logger.debug( "Operation(Element): entry") ;  
 		 		
 		try {
-
+			
 			setName(operationElement.getAttribute( JobDocDescriptor.OP_NAME_ATTR )) ;
 			
 			NodeList
 			   nodeList = operationElement.getElementsByTagName( JobDocDescriptor.OP_ELEMENT ) ;
+
 			   
 			Element
 				opElement,
 				fieldElement ;
 				
 		    subservientOperations = new Operation[ nodeList.getLength() ];
+
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
-				opElement = (Element) nodeList.item(i) ;
+				opElement = (Element) nodeList.item(i) ;				
 				if( opElement.getTagName().equals( JobDocDescriptor.OP_ELEMENT ) ) {
-					subservientOperations[i] = new Operation( operationElement ) ;
+					subservientOperations[i] = new Operation( opElement ) ;
 				}
 				else  {
 					; // JBL Note: What do I do here?
@@ -79,7 +81,7 @@ public class Operation {
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				fieldElement = (Element) nodeList.item(i) ;
 				if( fieldElement.getTagName().equals( JobDocDescriptor.FIELD_ELEMENT ) ) {
-					fields[i] = new Field( fieldElement ) ;
+					fields[i] = new Field( fieldElement ) ;						
 				}
 				else  {
 					; // JBL Note: What do I do here?
