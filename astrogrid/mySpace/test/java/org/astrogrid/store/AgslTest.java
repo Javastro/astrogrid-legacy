@@ -1,5 +1,5 @@
 /*
- * $Id: AgslTest.java,v 1.1 2004/03/01 22:35:08 mch Exp $
+ * $Id: AgslTest.java,v 1.2 2004/03/09 23:18:09 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -69,8 +69,13 @@ public class AgslTest extends TestCase
       String validVorl = "vospace://http.vm05.astrogrid.org:8080/astrogrid-mySpace#test.astrogrid.org/avodemo/serv1/votable/ProdderResults6dF.vot";
 
       try {
+         Vorl vorl = new Vorl(validVorl);
+         assertEquals(validVorl, vorl.toString());
+         
          Agsl agsl = new Agsl(validVorl);
-         assertEquals(agsl.toString(), "astrogrid:store:myspace:http://vm05.astrogrid.org:8080/astrogrid-mySpace#test.astrogrid.org/avodemo/serv1/votable/ProdderResults6dF.vot");
+         String s = agsl.toString();
+         assertEquals("astrogrid:store:myspace:http://vm05.astrogrid.org:8080/astrogrid-mySpace#avodemo@test.astrogrid.org/serv1/votable/ProdderResults6dF.vot",
+                        agsl.toString());
       }
       catch (MalformedURLException mue) {
          fail("Could not cope with valid vorl '"+validVorl+"'");
@@ -98,6 +103,9 @@ public class AgslTest extends TestCase
 
 /*
 $Log: AgslTest.java,v $
+Revision 1.2  2004/03/09 23:18:09  mch
+Added Vorl tests
+
 Revision 1.1  2004/03/01 22:35:08  mch
 Tests for StoreClient
 
