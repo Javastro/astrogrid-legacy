@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.72 2004/08/11 17:46:16 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.73 2004/08/16 12:26:23 pah Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -54,6 +54,8 @@
         <filter token="TOMCATPORT" value="${tomcat.port}"/>
 		<filter token="VERSION" value="${version}"/>
 		<filter token="MAILHOST" value="${mailhost}" />
+	    <filter token="TOOLBASEDIR" value="${work.dir}"/> <!--this is the directory that is the root of CEA command line applications set it to the workdir for autointegration purposes-->
+		
 
 <!-- setup -->
 <goal name="init" prereqs="tomcat-declare-tasks">
