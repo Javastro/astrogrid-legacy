@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: project.xml,v 1.1 2004/11/16 18:53:57 nw Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <extend>../maven-base/project.xml</extend>
+  <id>aggregate</id>
+  <name>Astrogrid Packaging Project</name>
+  <description>This is an umbrella project for a range of packaging projects. These don't contain
+  any new code - they just assemble already-existing artifacts into handy packages - war files, zips,
+  webstart applications, etc.
+  </description>
+  <shortDescription>Packaging of SDK and 3rd Party Applications</shortDescription>
+  <build />
+  <reports>
+          <report>maven-changelog-plugin</report>
+  </reports>
+</project>
