@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForSOAPService.java,v 1.6 2004/07/09 09:32:12 nw Exp $
+/*$Id: AbstractTestForSOAPService.java,v 1.7 2004/09/16 21:45:10 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
 import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 
 import org.picocontainer.MutablePicoContainer;
 
@@ -59,6 +60,7 @@ public class AbstractTestForSOAPService extends TestCase {
     }
     /** scheduler notifier that releases barrier when finished */
     protected static class MyMockJobScheduler extends MockSchedulerImpl {
+
         public MyMockJobScheduler(Sync barrier) throws InterruptedException {
             this.barrier = barrier;
             barrier.acquire();
@@ -74,12 +76,24 @@ public class AbstractTestForSOAPService extends TestCase {
                 barrier.release();
             }
         }
+      public void reportResults(JobIdentifierType id, ResultListType results) throws Exception {
+      try {
+          assertNotNull(id);
+          assertNotNull(results);          
+         super.reportResults(id, results);
+      } finally {
+          barrier.release();
+      }
+    }       
     }
 }
 
 
 /* 
 $Log: AbstractTestForSOAPService.java,v $
+Revision 1.7  2004/09/16 21:45:10  nw
+added test for result listener
+
 Revision 1.6  2004/07/09 09:32:12  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions
