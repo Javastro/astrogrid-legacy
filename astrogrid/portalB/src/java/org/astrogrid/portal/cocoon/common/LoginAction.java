@@ -150,7 +150,7 @@ public class LoginAction extends AbstractAction
          if(errorMessage == null || errorMessage.trim().length() <= 0) {         
             PolicyServiceDelegate psd = new PolicyServiceDelegate();
             try {
-               boolean authorized = psd.checkPermissions(user,"guest","portalsite","read");
+               boolean authorized = psd.checkPermissions(user,"guest","portal.site","read");
                if(!authorized) {
                   errorMessage = "You are not authorized to enter the portal site.";  
                }
