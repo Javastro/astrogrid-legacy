@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) International Business Machines Corporation, 2002, 2003. (c) University of Edinburgh 2002, 2003.-->
+<!-- See OGSA-DAI-Licence.txt for licencing information.-->
+
+<DatabaseRoles>
+    <Database name="jdbc:mysql://localhost:3306/first">
+        <User dn="No Certificate Provided" userid="ogsadai" password="ogsadai" />
+    </Database>
+</DatabaseRoles>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) International Business Machines Corporation, 2002, 2003. (c) University of Edinburgh 2002, 2003.-->
+<!-- See OGSA-DAI-Licence.txt for licencing information.-->
+
+<dataResourceConfig
+     xmlns="http://ogsadai.org.uk/namespaces/2003/07/gdsf/config" 
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://ogsadai.org.uk/namespaces/2003/07/gdsf/config
+     ../../schema/ogsadai/xsd/data_resource_config.xsd">
+                                    
+  <documentation>
+    This is an sample data resource configuration file for a relational
+    data resource.
+
+    This section maps the activity implementations to their
+    corresponding schema definitions. 
+    
+    Note that the name attribute of activityMap element 
+    does not specify the element name to use a perform 
+    document. The element name to use in a perform documents 
+    is specified in the schema that is referenced by the 
+    schemaFileName attribute of each activityMap element.
+  
+    Activity mappings for the following activities are 
+    defined in this file:
+
+         Relational Type Activities:
+       
+            - sqlQueryStatement
+            - sqlUpdateStatement
+            - sqlStoredProcedure
+            - relationalResourceManagement
+
+         Delivery Activities:
+
+            - deliverToResponse
+            - deliverFromURL
+            - deliverToURL
+            - deliverFromGDT
+            - deliverToGDT
+            - deliverFromGFTP
+            - deliverToGFTP
+            - inputStream
+            - outputStream
+
+         Transform Activities:
+       
+            - xslTransform
+            - gzipCompression
+            - zipArchive
+         
+  </documentation>
+
+   <!-- Relational DBMS specific activities -->
+
+   <activityMap name="sqlQueryStatement"
+                     implementation="uk.org.ogsadai.porttype.gds.activity.sql.SQLQueryStatementActivity"
+                     schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/sql_query_statement.xsd">
+      <description>
+              Can add a human readable description to each
+                        activity. If present this SHOULD be associated
+                        with the SDE in the GDSF exposing the
+                        activities it supports.
+           </description>
+   </activityMap>
+
+   <activityMap name="sqlUpdateStatement"
+                implementation="uk.org.ogsadai.porttype.gds.activity.sql.SQLUpdateStatementActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/sql_update_statement.xsd"/>
+   <activityMap name="sqlStoredProcedure"
+                implementation="uk.org.ogsadai.porttype.gds.activity.sql.SQLStoredProcedureActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/sql_stored_procedure.xsd"/>
+   <activityMap name="sqlBulkLoadRowSet"
+                implementation="uk.org.ogsadai.porttype.gds.activity.sql.SQLBulkLoadRowSetActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/sql_bulk_load_rowset.xsd"/>
+   <activityMap name="relationalResourceManagement"
+                implementation="uk.org.ogsadai.porttype.gds.activity.sql.RelationalResourceManagementActivity"
+               schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/relational_resource_management.xsd"/>
+   <activityMap name="dataStore"
+                implementation="uk.org.ogsadai.porttype.gds.engine.DataStoreActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/data_store.xsd"/>
+
+   <!-- Delivery activities -->
+   <activityMap name="deliverFromURL"
+                implementation="uk.org.ogsadai.porttype.gds.activity.delivery.DeliverFromURLActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/deliver_from_url.xsd"/>
+   <activityMap name="deliverToURL"
+                implementation="uk.org.ogsadai.porttype.gds.activity.delivery.DeliverToURLActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/deliver_to_url.xsd"/>
+   <activityMap name="deliverFromGDT"
+                implementation="uk.org.ogsadai.porttype.gds.activity.delivery.DeliverFromGDTActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/deliver_from_gdt.xsd"/>
+   <activityMap name="deliverToGDT"
+                implementation="uk.org.ogsadai.porttype.gds.activity.delivery.DeliverToGDTActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/deliver_to_gdt.xsd"/>
+   <activityMap name="deliverFromGFTP"
+                implementation="uk.org.ogsadai.porttype.gds.activity.delivery.DeliverFromGFTPActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/deliver_from_gftp.xsd"/>
+   <activityMap name="deliverToGFTP"
+                implementation="uk.org.ogsadai.porttype.gds.activity.delivery.DeliverToGFTPActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/deliver_to_gftp.xsd"/>
+   <activityMap name="deliverToStream"
+                implementation="uk.org.ogsadai.porttype.gds.activity.delivery.DeliverToStreamActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/deliver_to_stream.xsd"/>
+   <activityMap name="inputStream"
+                implementation="uk.org.ogsadai.porttype.gds.activity.delivery.InputStreamActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/input_stream.xsd"/>
+   <activityMap name="outputStream"
+                implementation="uk.org.ogsadai.porttype.gds.activity.delivery.OutputStreamActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/output_stream.xsd"/>
+
+   <!-- Transform activities -->
+   <activityMap name="xslTransform" 
+                implementation="uk.org.ogsadai.porttype.gds.activity.transform.XSLTransformActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/xsl_transform.xsd" />
+
+   <activityMap name="gzipCompression" 
+                implementation="uk.org.ogsadai.porttype.gds.activity.transform.GZIPCompressionActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/gzip_compression.xsd" />
+
+   <activityMap name="zipArchive" 
+                implementation="uk.org.ogsadai.porttype.gds.activity.transform.ZIPArchiveActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/zip_archive.xsd" />
+
+   <activityMap name="stringTokenizer" 
+                implementation="uk.org.ogsadai.porttype.gds.activity.transform.StringTokenizerActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/string_tokenizer.xsd" />
+
+   <activityMap name="blockAggregator" 
+                implementation="uk.org.ogsadai.porttype.gds.activity.transform.BlockAggregatorActivity"
+                schemaFileName="http://localhost:@web.service.port@/@web.app.name@/schema/ogsadai/xsd/activities/block_aggregator.xsd" />
+
+   <!-- Metadata about the data resource -->
+   <dataResourceMetaData>
+      <!-- This element and its contents are optional. -->
+      <productInfo>
+         <productName>MySQL</productName>
+         <productVersion>4</productVersion>
+         <vendorName>MySQL</vendorName>
+      </productInfo>
+      <relationalMetaData>
+         <databaseSchema callback="uk.org.ogsadai.porttype.gds.dataresource.SimpleJDBCMetaDataExtractor"/>
+      </relationalMetaData>
+   </dataResourceMetaData>
+
+   <!-- information on how to map from Grid credentials to database roles -->
+   <roleMap name="Name" implementation="uk.org.ogsadai.common.rolemap.SimpleFileRoleMapper"
+                 configuration="@tomcat.home@/webapps/@web.app.name@/WEB-INF/etc/DatabaseRoles.xml"/>
+
+   <!-- container that manages the connection to the DBMS -->
+   <driverManager
+      driverManagerImplementation="uk.org.ogsadai.porttype.gds.dataresource.SimpleJDBCDataResourceImplementation">
+      <driver>
+         <driverImplementation>org.gjt.mm.mysql.Driver</driverImplementation>
+         <driverURI>jdbc:mysql://localhost:3306/first</driverURI>
+      </driver>
+   </driverManager>
+
+</dataResourceConfig>

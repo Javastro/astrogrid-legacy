@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) International Business Machines Corporation, 2002, 2003. (c) University of Edinburgh 2002, 2003.-->
+<!-- See OGSA-DAI-Licence.txt for licencing information.-->
+
+<gdsf:gdsfRegistrationList 
+  xmlns="http://ogsadai.org.uk/namespaces/2003/07/gdsf" 
+  xmlns:gdsf="http://ogsadai.org.uk/namespaces/2003/07/gdsf" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://ogsadai.org.uk/namespaces/2003/07/gdsf 
+                     ../../src/xsd/registration_map.xsd">
+
+  <gdsf:gdsfRegistration name="defaultRegistration" 
+      gsh="http://localhost:@web.service.port@/@web.app.name@/services/ogsadai/DAIServiceGroupRegistry"/>
+
+</gdsf:gdsfRegistrationList>
+
