@@ -20,17 +20,18 @@
       <p />          
          <table border="2" cellpadding="0" cellspacing="0">
             <tr>
-               <td style="color: blue; background-color: lightblue; text-align: center;">Name</td>
-               <td style="color: blue; background-color: lightblue; text-align: center;">Description</td>
-               <td style="color: blue; background-color: lightblue; text-align: center;">Time submitted</td>
-               <td style="color: blue; background-color: lightblue; text-align: center;">Status</td>
-               <td style="color: blue; background-color: lightblue; text-align: center;">
+               <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">Name</td>
+               <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">Description</td>
+               <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">Time submitted</td>
+               <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">Status</td>
+               <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">
                   <div class="jobIdColumn" style="display: none;">
                      <xsl:attribute name="id">full_column_heading</xsl:attribute>               
                      <xsl:element name="a">  
                         <xsl:attribute name="onClick">toggleColumn('jobIdColumn');</xsl:attribute>                
                         <xsl:attribute name="href">javascript:void(0);</xsl:attribute> 
                         <xsl:attribute name="class">jobIdColumn</xsl:attribute>
+                        <xsl:attribute name="NOWRAP">true</xsl:attribute>
                      </xsl:element>
                      <font>
                         <small><b>[less]</b></small>
@@ -43,6 +44,7 @@
                         <xsl:attribute name="onClick">toggleColumn('jobIdColumn');</xsl:attribute>                
                         <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
                         <xsl:attribute name="class">jobIdColumn</xsl:attribute>
+                        <xsl:attribute name="NOWRAP">true</xsl:attribute>
                      </xsl:element>
                      <font>
                         <small><b>[more]</b></small>
@@ -55,11 +57,11 @@
             </tr>
             <xsl:for-each select="//job">
                <tr>    
-                  <td><xsl:value-of select="@name"/></td>
-                  <td><xsl:value-of select="@description"/></td>
-                  <td><xsl:value-of select="@time"/></td>
-                  <td><xsl:value-of select="@status"/></td>
-                  <td>
+                  <td nowrap="true"><xsl:value-of select="@name"/></td>
+                  <td nowrap="true"><xsl:value-of select="@description"/></td>
+                  <td nowrap="true"><xsl:value-of select="@time"/></td>
+                  <td nowrap="true"><xsl:value-of select="@status"/></td>
+                  <td nowrap="true">
                      <xsl:choose> 
                         <xsl:when test="@status = 'n/a'">  <!--  EMPLTY LIST -->
                            n/a
