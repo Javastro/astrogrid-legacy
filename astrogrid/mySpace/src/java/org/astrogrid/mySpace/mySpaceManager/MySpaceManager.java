@@ -138,20 +138,12 @@ public String upLoad(String jobDetails){
 				userID, communityID, credential, newDataHolderName,
 			fileContent, contentsType );
 
-			if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"jobid"+jobID+"newDataHN"+newDataHolderName+"filenm:"+mySpaceFileName
-								   +"fileSize"+fileSize);
 			if( DEBUG ) logger.debug("UploaderroCode is:" +errCode);
 			if ( errCode!="" )    
 			  errCode = errCode +"," +checkStatus("UPLOADStatusCode");
 			else 
 			  errCode = checkStatus("UPLOAStatusCode");
-			if(DEBUG) logger.debug("UPLOAD CHECKING ATTRIBUTES FOR CREATING DATAITEM: userid:"
-				+ userID +"comID"+communityID +"jobID"+jobID +"newDHName"+newDataHolderName
-				+"serverFileName"+serverFileName +"filesize"+fileSize 
-				+"mySpaceFileName"+mySpaceFileName+"registryName:"+registryName);
-			
-			//commented out for testing transfer large files
-			//content = MySpaceUtils.readFromFile(new File(serverFileName));
+
 			String contentPath = serverFileName;
 			if (DEBUG)  logger.debug("ServerFileName = " +serverFileName);
 			call = createServerManagerCall();
@@ -243,22 +235,18 @@ public String upLoadURL(String jobDetails){
 			  errCode = errCode +"," +checkStatus("UPLOADStatusCode");
 			else 
 			  errCode = checkStatus("UPLOAStatusCode");
-			if(DEBUG) logger.debug("UPLOAD CHECKING ATTRIBUTES FOR CREATING DATAITEM: userid:"
-				+ userID +"comID"+communityID +"jobID"+jobID +"newDHName"+newDataHolderName
-				+"serverFileName"+serverFileName +"filesize"+fileSize 
-				+"mySpaceFileName"+mySpaceFileName+"registryName:"+registryName);
-			
-			//commented out for testing transfer large files
-			//content = MySpaceUtils.readFromFile(new File(serverFileName));
-			String contentPath = serverFileName;
-			if (DEBUG)  logger.debug("ServerFileName = " +serverFileName);
+
 			call = createServerManagerCall();
-			call.setOperationName( "saveDataHolder" );			
+			call.setOperationName( "importDataHolder" );			
 			call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
 			call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
 			call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
-			String serverResponse = (String)call.invoke( new Object[] {contentPath,mySpaceFileName} );
-			if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
+			String serverResponse = (String)call.invoke( new Object[] {importURI,mySpaceFileName} );
+			
+			if ( DEBUG ) { 
+				logger.debug("GOT SERVERRESPONSE: "+serverResponse); 
+				logger.debug("importURI = "+importURI+" mySpaceFileName: "+mySpaceFileName);
+				} 
 			
 			//use serverResponse to build returnStatus and details for datacentre/portal
 			if(serverResponse.startsWith(MMC.SUCCESS)){
@@ -1081,7 +1069,12 @@ public String upLoadURL(String jobDetails){
 		}		
 		
 	public boolean createUser(String userid, String communityid, Vector servers){
-		if ( DEBUG )  logger.debug("MySpaceManager.createUser");  
+		if ( DEBUG ) { 
+			logger.debug("MySpaceManager.createUser"); 
+		    for (int i=0;i<servers.size();i++){
+		    	logger.debug("MySpaceManager.createUser servers: " +servers.elementAt(i));
+		    }
+		}  
 		boolean isUserCreated = false;
 			try{			
 				setUp();		
