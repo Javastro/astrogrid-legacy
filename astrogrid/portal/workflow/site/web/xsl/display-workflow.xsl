@@ -2,12 +2,22 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
     <xsl:param name="image_path">/astrogrid-portal/mount/workflow/</xsl:param>  <!-- path to images -->
+    <xsl:param name="activity_key" />
+    <xsl:param name="display_parameter_values" />
+    <xsl:param name="display_tool_values" />
     
     <xsl:template match="workflow">
     <ag-div>
        <agComponentTitle>Workflow</agComponentTitle>        
         <ag-script type="text/javascript" src="/astrogrid-portal/mount/workflow/workflow-functions.js"/>
-        <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/workflow/workflow.css"/>           
+        <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/workflow/workflow.css"/>               
+        <xsl:if test="$activity_key != ''">
+          <xsl:if test="$display_parameter_values = 'true'">
+            <ag-onload>
+              <xsl:attribute name="function">toggle('parameters:<xsl:value-of select="$activity_key"/>');</xsl:attribute>
+            </ag-onload>
+          </xsl:if>
+        </xsl:if>
             <table border="1">
                 <tr>
                   <td colspan="2">
@@ -90,7 +100,7 @@
                         </xsl:element>                                                                                        
                     </xsl:when>
                             
-                    <xsl:when test="name() = 'step'">  <!-- STEP -->
+                    <xsl:when test="name() = 'step'">  <!-- STEP -->                   
                         <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed - not req'd with step -->
                         </xsl:attribute>                    
                         <xsl:element name="img">
@@ -102,7 +112,7 @@
                             <xsl:attribute name="alt">step</xsl:attribute>
                             <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>'); populate_tool_details('<xsl:value-of select="@step-name"/>','<xsl:value-of select="@joinCondition"/>','<xsl:value-of select="@step-description"/>','<xsl:value-of select="@key"/>', '<xsl:value-of select="./tool/@tool-name"/>','<xsl:value-of select="./tool/@tool-documentation"/>'); show_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');</xsl:attribute>             
                             <xsl:attribute name="onClick">toggle('parameters:<xsl:value-of select="@key"/>');</xsl:attribute>
-                        </xsl:element>
+                        </xsl:element>                       
                         <td>
                             <xsl:attribute name="colspan">20</xsl:attribute>
                         </td>
