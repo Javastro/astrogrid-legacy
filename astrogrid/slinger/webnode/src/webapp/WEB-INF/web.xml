@@ -11,6 +11,27 @@
     Servlets and pages for resolving and routing data
   </description>
 
+   <env-entry>
+      <description>Primary Registry to use for resolving IVO resource names</description>
+      <env-entry-name>org.astrogrid.registry.query.endpoint</env-entry-name>
+      <env-entry-value>http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery</env-entry-value>
+      <env-entry-type>java.lang.String</env-entry-type>
+   </env-entry>
+
+   <env-entry>
+      <description>Email Server</description>
+      <env-entry-name>emailserver.address</env-entry-name>
+      <env-entry-value>smtp.roe.ac.uk</env-entry-value>
+      <env-entry-type>java.lang.String</env-entry-type>
+   </env-entry>
+
+   <env-entry>
+      <description>From address for emails generated at this webnode</description>
+      <env-entry-name>emailserver.from</env-entry-name>
+      <env-entry-value>SlingerWebNode@roe.ac.uk</env-entry-value>
+      <env-entry-type>java.lang.String</env-entry-type>
+   </env-entry>
+
   <servlet>
     <servlet-name>Resolver</servlet-name>
     <description>Resolves source IDs to streams</description>
