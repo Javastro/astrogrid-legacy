@@ -19,6 +19,7 @@
       <item name="Warehouse"        href="http://www.astrogrid.org/maven/build/warehouse/index.html"/>
       <item name="Portal"          href="http://www.astrogrid.org/maven/build/portal/index.html"/>
       <item name="Workflow"          href="http://www.astrogrid.org/maven/build/workflow/index.html"/>
+      <item name="Scripting"		href="http://www.astrogrid.org/maven/build/scripting/index.html" />
     </menu>
     <menu name="Integration and Logs">
       <item name="Integration Testing" href="http://www.astrogrid.org/maven/build/integrationTests/index.html"/>
@@ -34,6 +35,7 @@
        <item name="Warehouse"        href="http://www.astrogrid.org/maven/build/log/maven-build-warehouse.log" />
        <item name="Portal"          href="http://www.astrogrid.org/maven/build/log/maven-build-portal.log" />
        <item name="Workflow"         href="http://www.astrogrid.org/maven/build/log/maven-build-workflow.log" />
+       <item name="Scripting"			href="http://www.astrogrid.org/maven/build/log/maven-build-scripting.log" />
        <item name="Integration Tests" href="http://www.astrogrid.org/maven/build/log/maven-build-integrationTests.log" />
       </item>
     </menu>
