@@ -11,6 +11,9 @@
   <xsl:param name="ivorn" select="myspace-ivorn"/>
   <xsl:param name="agsl" select="myspace-agsl"/>
 
+  <xsl:param name="form_name" select="form_name"/>
+  <xsl:param name="form_action" select="form_action"/>
+
   <xsl:template match="/">
     <html>
       <head>
@@ -48,7 +51,10 @@
           </table>
           
           <input type="button" value="OK">
-            <xsl:attribute name="onclick">setParentIVORNAgsl('<xsl:value-of select="$ivorn"/>', '<xsl:value-of select="$agsl"/>');</xsl:attribute>
+            <xsl:attribute name="onclick">
+              setParentIVORNAgsl('<xsl:value-of select="$ivorn"/>', '<xsl:value-of select="$agsl"/>');
+              submitParentForm('<xsl:value-of select="$form_name"/>', '<xsl:value-of select="$form_action"/>');
+            </xsl:attribute>
           </input>
           
           <input type="button" value="Cancel" onclick="window.close();"/>

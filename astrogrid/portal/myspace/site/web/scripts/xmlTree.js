@@ -45,16 +45,26 @@ function setParentIVORNAgsl(parent_ivorn, parent_agsl){
   parent_ivorn = parentDoc.getElementById(parent_ivorn);
   parent_agsl = parentDoc.getElementById(parent_agsl);
   
-  if(parent_ivorn && parent_agsl) {
+  if(parent_ivorn) {
     myspace_ivorn = document.getElementById('myspace-ivorn');
     parent_ivorn.value = myspace_ivorn.value;
-    
+  }
+
+  if(parent_agsl) {
     myspace_agsl = document.getElementById('myspace-agsl');
     parent_agsl.value = myspace_agsl.value;
   }
-  else {
-    alert('No parent IVORN/Agsl to set');
-  }
   
   window.close();
+}
+
+function submitParentForm(form_name, action) {
+  parentDoc = window.opener.document;
+  parent_form = parentDoc.getElementById(form_name);
+  if(parent_form) {
+    if(action && action.length() > 0) {
+      parent_form.action = action;
+    }
+    parent_form.submit();
+  }
 }
