@@ -1,11 +1,11 @@
-/*$Id: AdqlQueryTranslatorTest.java,v 1.3 2004/03/12 04:54:06 mch Exp $
+/*$Id: AdqlQueryTranslatorTest.java,v 1.4 2004/03/26 15:55:52 eca Exp $
  * Created on 29-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid
- * Software License version 1.2, a copy of which has been included
- * with this distribution in the LICENSE.txt file.
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
  *
 **/
 package org.astrogrid.datacenter.queriers.ogsadai;
@@ -13,9 +13,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Properties;
+
 import junit.framework.TestCase;
-import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.queriers.sql.deprecated.QueryTranslator;
+
+import org.astrogrid.datacenter.adql.generated.ogsadai.Select;
+import org.astrogrid.datacenter.queriers.QueryTranslator;
 /** test the query translator - maybe n the wrong package, but convenient to have it here for now.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Aug-2003
  * * @todo add wider range of tests.
@@ -33,13 +35,16 @@ public class AdqlQueryTranslatorTest extends TestCase {
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AdqlQueryTranslatorTest.class);
     }
+    
+    
     public void test1() throws Exception {
         processFile("sample1.xml");
     }
-
+    
     public void test2() throws Exception {
-        processFile("sample2.xml");
+		processFile("sample2.xml");
     }
+
 
     public void test3() throws Exception {
         processFile("sample3.xml");
@@ -49,12 +54,50 @@ public class AdqlQueryTranslatorTest extends TestCase {
         processFile("sample4.xml");
     }
     
+    
     public void test5() throws Exception {
         processFile("sample5.xml");
     }
+    
+    
     public void test6() throws Exception {
         processFile("sample6.xml");
     }
+    
+
+    /* 
+     * Test overlapping circles.
+     */
+     
+	public void test7() throws Exception {	
+		processFile("overlappingcircles.xml");
+	}
+	
+	 
+	/*
+	 * Test overlapping geometrical regions (boxes).
+	 */
+	
+	public void test8() throws Exception {	
+		processFile("geometricalregion.xml");
+	}
+	
+	/* 
+	 * Test cone search.
+	 */
+	
+	public void test9() throws Exception {	
+		processFile("conesearch.xml");
+	}
+	
+	/* 
+	 * Test cross match.
+	 */
+	
+	public void test10() throws Exception {		
+		processFile("crossmatch.xml");
+	}
+	
     protected void processFile(String path) throws Exception {
           InputStream is = this.getClass().getResourceAsStream(path);
           assertNotNull(is);
@@ -62,13 +105,12 @@ public class AdqlQueryTranslatorTest extends TestCase {
           Select query = Select.unmarshalSelect(reader);
           assertNotNull(query);
           assertTrue(query.isValid());
-
           Properties results = new Properties();
-          InputStream propsStream  = this.getClass().getResourceAsStream("mysql-translations.properties");
+          InputStream propsStream  = this.getClass().getResourceAsStream("postgres-translations.properties");
           results.load(propsStream);
           assertFalse(results.isEmpty());
             try {
-            QueryTranslator visitor = new PostgresAdqlQueryTranslator();
+            QueryTranslator visitor = new AdqlQueryTranslator();
             String sql = visitor.translate(query);
             assertNotNull(sql);
              System.out.println(sql);
@@ -87,10 +129,26 @@ public class AdqlQueryTranslatorTest extends TestCase {
 }
 
 
-/*
+/* 
 $Log: AdqlQueryTranslatorTest.java,v $
-Revision 1.3  2004/03/12 04:54:06  mch
-It05 MCH Refactor
+Revision 1.4  2004/03/26 15:55:52  eca
+datacenter.queriers.ogsadai.AdqlQueryTranslatorTest now updated 
+to perform 10 tests (*.xml tests included in folder) against 
+datacenter.queriers.ogsadai.AdqlQueryTranslator.
+
+All *.xml tests conform to ADQLSchemav06.xsd.
+
+25/03/04 Elizabeth Auden
+
+Revision 1.2.4.2  2004/03/08 02:47:02  eca
+Added 4 further Postgres-optimized ADQL test files.
+
+ElizabethAuden
+
+Revision 1.2.4.1  2004/03/04 00:31:05  eca
+Adding extra ADQL tests to translator unit test.
+
+ElizabethAuden
 
 Revision 1.2  2004/02/25 00:33:25  eca
 *** empty log message ***

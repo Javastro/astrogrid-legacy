@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- XML equivalent
+SELECT DISTINCT f.ra, x.* FROM first AS f, xmm1 AS x WHERE NOT (-(MAX(x.M1_FLUX ) ) < 4.56 ) GROUP BY f.ra HAVING x.M1_FILTER LIKE 'Thic%' OR x.M1_FLUX BETWEEN 0.01 AND 500.0 ORDER BY x.M1_FLUX DESC
+-->
+<Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
+    <OptionalAllOrDistinct>
+        <Option>DISTINCT</Option>
+    </OptionalAllOrDistinct>
+    <Selection>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <SingleColumnReference>
+                    <TableName>f</TableName>
+                    <Name>ra</Name>
+                </SingleColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <AllColumnReference>
+                    <TableName>x</TableName>
+                </AllColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+    </Selection>
+    <TableClause>
+        <FromClause>
+            <TableReference>
+                <Table>
+                    <Name>first</Name>
+                    <AliasName>f</AliasName>
+                </Table>
+                <Table>
+                    <Name>xmm1</Name>
+                    <AliasName>x</AliasName>
+                </Table>
+            </TableReference>
+        </FromClause>
+        <WhereClause>
+            <InverseSearch>
+                <Condition xsi:type="PredicateSearch">
+                    <ComparisonPred>
+                        <FirstExpr xsi:type="UnaryExpr">
+                            <Operator>-</Operator>
+                            <Expr xsi:type="FunctionExpr">
+                                <ExpressionFunction>
+                                    <AggregateFunction>MAX</AggregateFunction>
+                                    <Expr xsi:type="ColumnExpr">
+                                        <SingleColumnReference>
+                                            <TableName>x</TableName>
+                                            <Name>M1_FLUX</Name>
+                                        </SingleColumnReference>
+                                    </Expr>
+                                </ExpressionFunction>
+                            </Expr>
+                        </FirstExpr>
+                        <Compare>&lt;</Compare>
+                        <SecondExpr xsi:type="AtomExpr">
+                            <Value>
+                                <NumberLiteral>
+                                    <ApproxNum>
+                                        <Value>4.56</Value>
+                                    </ApproxNum>
+                                </NumberLiteral>
+                            </Value>
+                        </SecondExpr>
+                    </ComparisonPred>
+                </Condition>
+            </InverseSearch>
+        </WhereClause>
+        <GroupByClause>
+            <SingleColumnReference>
+                <TableName>f</TableName>
+                <Name>ra</Name>
+            </SingleColumnReference>
+        </GroupByClause>
+        <HavingClause>
+            <UnionSearch>
+                <FirstCondition xsi:type="PredicateSearch">
+                    <LikePred>
+                        <Expr xsi:type="ColumnExpr">
+                            <SingleColumnReference>
+                                <TableName>x</TableName>
+                                <Name>M1_FILTER</Name>
+                            </SingleColumnReference>
+                        </Expr>
+                        <Negate>false</Negate>
+                        <Value>
+                            <StringLiteral>
+                                <Value>
+                                    <string>Thic%</string>
+                                </Value>
+                            </StringLiteral>
+                        </Value>
+                    </LikePred>
+                </FirstCondition>
+                <SecondCondition xsi:type="PredicateSearch">
+                    <BetweenPred>
+                        <Expr xsi:type="ColumnExpr">
+                            <SingleColumnReference>
+                                <TableName>x</TableName>
+                                <Name>M1_FLUX</Name>
+                            </SingleColumnReference>
+                        </Expr>
+                        <Negate>false</Negate>
+                        <FirstExpr xsi:type="AtomExpr">
+                            <Value>
+                                <NumberLiteral>
+                                    <ApproxNum>
+                                        <Value>0.01</Value>
+                                    </ApproxNum>
+                                </NumberLiteral>
+                            </Value>
+                        </FirstExpr>
+                        <SecondExpr xsi:type="AtomExpr">
+                            <Value>
+                                <NumberLiteral>
+                                    <ApproxNum>
+                                        <Value>500.0</Value>
+                                    </ApproxNum>
+                                </NumberLiteral>
+                            </Value>
+                        </SecondExpr>
+                    </BetweenPred>
+                </SecondCondition>
+            </UnionSearch>
+        </HavingClause>
+    </TableClause>
+    <OrderBy>
+        <OrderList>
+            <Order>
+                <Expr xsi:type="ColumnExpr">
+                    <SingleColumnReference>
+                        <TableName>x</TableName>
+                        <Name>M1_FLUX</Name>
+                    </SingleColumnReference>
+                </Expr>
+                <Option>
+                    <Direction>DESC</Direction>
+                </Option>
+            </Order>
+        </OrderList>
+    </OrderBy>
+</Select>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SQL equivalent
+SELECT f.ra, x.decl FROM first AS f, xmm1 AS x WHERE f.ra > x.ra AND f.decl < x.decl ORDER BY f.phot_flux_peak , x.M1_FLUX
+-->
+<Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
+    <Selection>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <SingleColumnReference>
+                    <TableName>f</TableName>
+                    <Name>ra</Name>
+                </SingleColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <SingleColumnReference>
+                    <TableName>x</TableName>
+                    <Name>decl</Name>
+                </SingleColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+    </Selection>
+    <TableClause>
+        <FromClause>
+            <TableReference>
+                <Table>
+                    <Name>first</Name>
+                    <AliasName>f</AliasName>
+                </Table>
+                <Table>
+                    <Name>xmm1</Name>
+                    <AliasName>x</AliasName>
+                </Table>
+            </TableReference>
+        </FromClause>
+        <WhereClause>
+            <IntersectionSearch>
+                <FirstCondition xsi:type="PredicateSearch">
+                    <ComparisonPred>
+                        <FirstExpr xsi:type="ColumnExpr">
+                            <SingleColumnReference>
+                                <TableName>f</TableName>
+                                <Name>ra</Name>
+                            </SingleColumnReference>
+                        </FirstExpr>
+                        <Compare>&gt;</Compare>
+                        <SecondExpr xsi:type="ColumnExpr">
+                            <SingleColumnReference>
+                                <TableName>x</TableName>
+                                <Name>ra</Name>
+                            </SingleColumnReference>
+                        </SecondExpr>
+                    </ComparisonPred>
+                </FirstCondition>
+                <SecondCondition xsi:type="PredicateSearch">
+                    <ComparisonPred>
+                        <FirstExpr xsi:type="ColumnExpr">
+                            <SingleColumnReference>
+                                <TableName>f</TableName>
+                                <Name>decl</Name>
+                            </SingleColumnReference>
+                        </FirstExpr>
+                        <Compare>&lt;</Compare>
+                        <SecondExpr xsi:type="ColumnExpr">
+                            <SingleColumnReference>
+                                <TableName>x</TableName>
+                                <Name>decl</Name>
+                            </SingleColumnReference>
+                        </SecondExpr>
+                    </ComparisonPred>
+                </SecondCondition>
+            </IntersectionSearch>
+        </WhereClause>
+    </TableClause>
+    <OrderBy>
+        <OrderList>
+            <Order>
+                <Expr xsi:type="ColumnExpr">
+                    <SingleColumnReference>
+                        <TableName>f</TableName>
+                        <Name>phot_flux_peak</Name>
+                    </SingleColumnReference>
+                </Expr>
+            </Order>
+            <Order>
+                <Expr xsi:type="ColumnExpr">
+                    <SingleColumnReference>
+                        <TableName>x</TableName>
+                        <Name>M1_FLUX</Name>
+                    </SingleColumnReference>
+                </Expr>
+            </Order>
+        </OrderList>
+    </OrderBy>
+</Select>

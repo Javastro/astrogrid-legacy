@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SQL equivalent: OVERLAPPING CIRCLES
+SELECT f.ra, f.decl, x.ra, x.decl FROM first AS f, xmm1 AS x WHERE f.errbox 
+&& x.errbox AND DEGREES(7200 * ASIN( SQRT(POW(SIN(RADIANS((f.decl-x.decl)/2)), 2)
+ + COS(RADIANS(x.decl)) * COS(RADIANS(f.decl)) * POW(SIN(RADIANS((x.ra-f.ra)/2),2)
+ ))) <0.01
+
+-->
+<Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
+    <Selection>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <SingleColumnReference>
+                    <TableName>f</TableName>
+                    <Name>ra</Name>
+                </SingleColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <SingleColumnReference>
+                    <TableName>f</TableName>
+                    <Name>decl</Name>
+                </SingleColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <SingleColumnReference>
+                    <TableName>x</TableName>
+                    <Name>ra</Name>
+                </SingleColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <SingleColumnReference>
+                    <TableName>x</TableName>
+                    <Name>decl</Name>
+                </SingleColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+    </Selection>
+    <TableClause>
+        <FromClause>
+            <TableReference>
+                <Table>
+                    <Name>first</Name>
+                    <AliasName>f</AliasName>
+                </Table>
+                <Table>
+                    <Name>xmm1</Name>
+                    <AliasName>x</AliasName>
+                </Table>
+            </TableReference>
+        </FromClause>
+        <WhereClause>
+            <IntersectionSearch>
+                <FirstCondition xsi:type="PredicateSearch">
+                    <ComparisonPred>
+                        <FirstExpr xsi:type="ColumnExpr">
+                            <SingleColumnReference>
+                                <TableName>f</TableName>
+                                <Name>errbox</Name>
+                            </SingleColumnReference>
+                        </FirstExpr>
+                        <Compare>&lt;&gt;</Compare>
+                        <SecondExpr xsi:type="ColumnExpr">
+                            <SingleColumnReference>
+                                <TableName>x</TableName>
+                                <Name>errbox</Name>
+                            </SingleColumnReference>
+                        </SecondExpr>
+                    </ComparisonPred>
+                </FirstCondition>
+                <SecondCondition xsi:type="XMatch">
+                    <Args>
+                        <Alias>
+                            <Negate>true</Negate>
+                            <Name>f.ra</Name>
+                        </Alias>
+                        <Alias>
+                            <Negate>true</Negate>
+                            <Name>f.decl</Name>
+                        </Alias>
+                        <Alias>
+                            <Negate>true</Negate>
+                            <Name>x.ra</Name>
+                        </Alias>
+                        <Alias>
+                            <Negate>true</Negate>
+                            <Name>x.decl</Name>
+                        </Alias>
+                    </Args>
+                    <Compare>&lt;</Compare>
+                    <ApproxNum>
+                        <Value>0.01</Value>
+                    </ApproxNum>
+                </SecondCondition>
+            </IntersectionSearch>
+        </WhereClause>
+    </TableClause>
+</Select>
