@@ -62,18 +62,39 @@
                 <tr>
                     <td>name<xsl:value-of select="@param-name"/></td>
                     <td>type<xsl:value-of select="@param-type"/></td>
+<!--
                     <xsl:choose>
                         <xsl:when test="@param-value = '' ">
-                            <td><input type="text" name="param-value" size="30"></input></td>
+-->
+                            <td>
+                                <xsl:element name="input">
+                                  <xsl:attribute name="id"><xsl:value-of select="../../@key"/><xsl:value-of select="count(preceding-sibling::*)"/>myspace-agsl</xsl:attribute>
+                                  <xsl:attribute name="type">text</xsl:attribute>
+                                  <xsl:attribute name="name">param-value</xsl:attribute>
+                                  <xsl:attribute name="size">30</xsl:attribute>
+                                  <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
+                                </xsl:element>
+                                <xsl:element name="input">
+                                  <xsl:attribute name="type">hidden</xsl:attribute>
+                                  <xsl:attribute name="name">original-param-value</xsl:attribute>
+                                  <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
+                                </xsl:element>                                
+                                <xsl:element name="input">
+                                  <xsl:attribute name="id"><xsl:value-of select="../../@key"/><xsl:value-of select="count(preceding-sibling::*)"/>myspace-ivorn</xsl:attribute>
+                                  <xsl:attribute name="type">hidden</xsl:attribute>
+                                  <xsl:attribute name="name">ivorn-value</xsl:attribute>
+                                </xsl:element>
+                            </td>
                             <td><input type="submit" value="submit" /></td>
-                            <td><input name="Input" type="button" value="... " onClick="popUpWindow('myspace_blank.html',200,200,200,200);"/></td>
-                        </xsl:when>
+                            <td><input name="myspace-name" type="button" value="Browse..." onclick="javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'))"/></td>    
+<!--                        </xsl:when>
                         <xsl:otherwise>
                             <td><xsl:value-of select="@param-value" /></td>
                             <td></td>
                             <td></td>
                         </xsl:otherwise>
                     </xsl:choose>                                       
+-->
                 </tr>
                 <input type="hidden" name="action" value="insert-parameter-value" />
                 <input type="hidden" name="param-name"><xsl:attribute name="value"><xsl:value-of select="@param-name"/></xsl:attribute></input>
