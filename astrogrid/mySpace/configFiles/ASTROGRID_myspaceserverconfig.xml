@@ -24,7 +24,7 @@
    ASTROGRID_myspaceservermessages_en_US.properties  // US specific English language messages
   -->
   <category name="MESSAGES">
-    <property name="INSTALLATION.BASENAME" value="ASTROGRID_myspaceservermessages" />
+    <property name="INSTALLATION.BASENAME" value="ASTROGRID_myspacemanagermessages" />
     <property name="INSTALLATION.LANGUAGECODE" value="" />
     <property name="INSTALLATION.COUNTRYCODE" value="" />    
   </category>
@@ -33,14 +33,9 @@
   <!-- MYSPACEMANAGER CATEGORY ===================================================== -->  
   <category name="MYSPACESERVER">
     <property name="PARSER.VALIDATION" value="false" />
- 
-    <!-- URL
-        This is the URL for the MySpace Server facility for the installed 
-        instance of MySpaceServer -->
-    <property name="MYSPACESERVERURL" value="http://hydra.star.le.ac.uk:8080/axis/services/ServerManager" /> 
 
     <!-- Where the dataholders are stored. Please remember to add a "/" at the end of the path -->
-    <property name="DATAHOLDERFOLDER" value="/usr/local/jakarta-tomcat-4.1.24/webapps/mySpace/dataholders/" />  
+    <property name="DATAHOLDERFOLDER" value="/usr/local/astroGrid/jakarta-tomcat-4.1.24/webapps/mySpace/dataholders/" />  
 
     <!-- COPY COMMAND
         This is the copy command performed by the opration system where MySpaceServer is installed
