@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+	<title>Datacenter query form</title>
+</properties>
+
+<body>
+<section name="Submit an ADQL Query">
+<p>
+<b>Enter your ADQL query here:</b><br />
+<form action="process-form.jsp" method="POST">
+<textarea name="query" rows="20" cols="60"><![CDATA[
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
+<!-- enter query here -->
+</Select>]]></textarea>
+  <p/>
+  <input type="submit" value="Run Query" />
+</form>
+</p>
+</section>
+
+</body>
+</document>
