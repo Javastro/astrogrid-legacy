@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.4 2004/04/20 11:41:57 pah Exp $
+ * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.5 2004/04/21 13:44:47 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -22,6 +22,8 @@ import javax.xml.rpc.ServiceException;
 
 import org.astrogrid.applications.beans.v1.ApplicationList;
 import org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList;
+import org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterTypes;
+import org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorDelegate;
@@ -40,6 +42,8 @@ import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.common.bean.Castor2Axis;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.axis._input;
+import org.astrogrid.workflow.beans.v1.axis._output;
 import org.astrogrid.workflow.beans.v1.axis._tool;
 
 /**
@@ -82,7 +86,9 @@ public class CommonExecutionConnectorDelegateImpl
       String result;
       CommonExecutionConnector cec = getBinding();
       try {
+         
          _tool atool = Castor2Axis.convert(tool);
+         
          result = cec.execute(atool, jobstepID, jobMonitorURL);
       }
       catch (RemoteException e) {
@@ -113,15 +119,16 @@ public class CommonExecutionConnectorDelegateImpl
    public ApplicationList listApplications() throws CEADelegateException {
       ApplicationList result = null;
       CommonExecutionConnector cec = getBinding();
+      throw new UnsupportedOperationException("this is not supported yet");
      
-         try {
-            _ApplicationList _result = cec.listApplications();
-            result = Axis2Castor.convert(_result);
-         }
-         catch (RemoteException e) {
-           throw new CEADelegateException("list app", e);
-         }
-         return result;
+//         try {
+//            _ApplicationList _result = cec.listApplications();
+//            result = Axis2Castor.convert(_result);
+//         }
+//         catch (RemoteException e) {
+//           throw new CEADelegateException("list app", e);
+//         }
+//         return result;
       
       
    }
