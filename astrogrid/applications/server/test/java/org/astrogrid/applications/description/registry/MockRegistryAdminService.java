@@ -1,4 +1,4 @@
-/*$Id: MockRegistryAdminService.java,v 1.3 2004/08/25 21:12:40 KevinBenson Exp $
+/*$Id: MockRegistryAdminService.java,v 1.4 2004/08/28 07:13:42 pah Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
 
 public class MockRegistryAdminService extends UpdateRegistry {
     public int callCount = 0;
-    public Document update(VODescription desc) throws RegistryException{
+    public Document update(Document doc) throws RegistryException{
         callCount++;
         try {
             return XMLUtils.newDocument();
@@ -32,8 +32,8 @@ public class MockRegistryAdminService extends UpdateRegistry {
 
 /* 
 $Log: MockRegistryAdminService.java,v $
-Revision 1.3  2004/08/25 21:12:40  KevinBenson
-Needed to use the new class, RegistryAdminService is now an interface in the client-lite
+Revision 1.4  2004/08/28 07:13:42  pah
+change the update override to the dom version
 
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
