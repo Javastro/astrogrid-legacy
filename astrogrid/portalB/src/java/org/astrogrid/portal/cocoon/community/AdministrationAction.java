@@ -179,6 +179,10 @@ public class AdministrationAction extends AbstractAction
       AdministrationDelegate adminDelegate = new AdministrationDelegate();
 
       String ident = (String)request.getParameter(IDENT);
+      if(ident != null && ident.trim().length() > 0 ) {
+         ident = ident.trim();
+         ident = ident.toLowerCase();  
+      }
       boolean isAdmin = false;
       LinkedHashMap actionTable = new LinkedHashMap();
       String comm_account = (String)session.getAttribute("community_account");
@@ -283,7 +287,6 @@ public class AdministrationAction extends AbstractAction
        }      
       
       if(ACTION_INSERT_GROUP.equals(processAction)) {
-         System.out.println("Entering INSERT Group ident val = " + ident);
          if(ident != null && ident.length() > 0) {
             
             try {
@@ -303,7 +306,7 @@ public class AdministrationAction extends AbstractAction
       else if(ACTION_REMOVE_GROUP.equals(processAction)) {
          
          if(ident != null && ident.length() > 0) {
-            if(ident.indexOf("Admin") != -1 || ident.indexOf("Guest") != -1) {
+            if(ident.indexOf("admin") != -1 || ident.indexOf("guest") != -1) {
                errorMessage = "You cannot delete Admin or Guest group";
             }else {
                try {
@@ -397,8 +400,15 @@ public class AdministrationAction extends AbstractAction
                System.out.println("entered insertpermission = " + ident);
                String permGroup = request.getParameter("group");
                String permAction = request.getParameter("policy");
-               adminDelegate.addPermission(ident,permGroup,permAction);
-               message = "Permission inserted";
+               if(permGroup == null || permGroup.trim().length() <= 0 ||
+                  permAction == null || permAction.trim().length() <= 0) {
+                  errorMessage = "both the group and action must be filled in.";
+               }else {
+                  permGroup = permGroup.trim().toLowerCase();
+                  permAction = permAction.trim().toLowerCase();
+                  adminDelegate.addPermission(ident,permGroup,permAction);
+                  message = "Permission inserted";
+               }
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();
@@ -411,8 +421,16 @@ public class AdministrationAction extends AbstractAction
             try {
                String permGroup = request.getParameter("group");
                String permAction = request.getParameter("policy");
-               adminDelegate.delPermission(ident,permGroup,permAction);
-               message = "Permission removed";
+               if(permGroup == null || permGroup.trim().length() <= 0 ||
+                  permAction == null || permAction.trim().length() <= 0) {
+                  errorMessage = "both the group and action must be filled in.";
+               }else {
+                  permGroup = permGroup.trim().toLowerCase();
+                  permAction = permAction.trim().toLowerCase();                  
+                  adminDelegate.delPermission(ident,permGroup,permAction);
+                  message = "Permission removed";                  
+               }               
+               
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();
