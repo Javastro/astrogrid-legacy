@@ -1,0 +1,59 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 10pt;  }
+#f2 { font-family: "SansSerif"; font-size: 8pt;  }
+#f3 { font-family: "SansSerif"; font-size: 14pt; font-style: italic; font-weight: bold; color: #FFFFFF;  }
+#f4 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold; color: #FFFFFF;  }
+#f5 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f6 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f7 { font-family: "SansSerif"; font-size: 8pt; font-weight: bold;  }
+#f8 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; font-weight: bold;  }
+#f9 { font-family: "SansSerif"; font-size: 11pt; font-style: italic; font-weight: bold;  }
+#f10 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f11 { font-family: "SansSerif"; font-size: 10pt; font-weight: bold;  }
+#f12 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f13 { font-family: "monospace"; font-size: 9pt;  }
+#f14 { font-family: "SansSerif"; font-size: 8pt; font-style: italic;  }
+#f15 { font-family: "SansSerif"; font-size: 9pt;  }
+#f16 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold;  }
+#f17 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold; color: #800080;  }
+#f18 { font-family: "SansSerif"; font-size: 8pt; font-style: italic; font-weight: bold;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV STYLE="margin-left:2pt;margin-top:6pt;"><IMG SRC="doc-images/ClassDiagram.png"> <FONT ID="f6">Class Diagram</FONT> <FONT ID="f5"><U>tool-description</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:4pt;"><FONT ID="f2">package:</FONT> <FONT ID="f7"><A HREF="Package.html">patterns.cea</A></FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><IMG SRC="doc-images/tool-description_ClassDiagram.gif" USEMAP="#M1"><MAP NAME="M1"></MAP></DIV>
+<DIV STYLE="margin-top:11pt;margin-left:2pt;"><FONT ID="f2"><h2>Static representation of an application in CEA</h2> 
+<p> 
+The classes shown here run inside a CEA-compliant service. 
+</p> 
+<p> 
+In CEA, Application is an interface to an object that wraps some business logic. The logic may be a local Java class, an executable to run in a sub-process, or an on-line service; the implementation of Application handles the details. The parameters for the business logic are set when the Application is created, so the Application represents a job-step rather than a reusable tool.  
+<p> 
+Job-steps in CEA are executed asynchronously. The execute() method on Application starts the job-step and returns immediately. To find out whether the step completed or failed, the caller must set an Observer-pattern object to watch the job-step; the addObserver method on Application supports this. 
+Because
+the parameters of the job-step are part of the Application's state, the Application has a simple execute() method, without parameters, to start the job-step. 
+</p> 
+<p> 
+Services using CEA have an ApplicationDescriptionLibrary of possible applications, each described by an ApplicationDescription which contains one or more ApplicationInterfaces. The ApplicationDescriptions are factories for the Applications. Once a Service has got an Application out of an ApplicationDescription, it can invoke it trivially, since the details of the job-step are part of the application's state. 
+</p> 
+<p> 
+All the CEA parts here are interfaces that must be implemented. Application is the primary interface that must be implemented in a sub-system. 
+</p></FONT></DIV>
+<DIV STYLE="margin-top:19pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Shortcuts to Elements</FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s6.png"> <FONT ID="f14">of</FONT> <FONT ID="f18">ClassDiagram</FONT> <FONT ID="f14"><U>applications</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>org.astrogrid.applications.Application</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s3.png"> <FONT ID="f14">of</FONT> <FONT ID="f18">ClassDiagram</FONT> <FONT ID="f14"><U>cea</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-class.png"> <FONT ID="f7">Class </FONT><FONT ID="f2"><U>patterns.cea.Service</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s7.png"> <FONT ID="f14">of</FONT> <FONT ID="f18">ClassDiagram</FONT> <FONT ID="f14"><U>description</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>org.astrogrid.applications.description.ApplicationDescription</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s7.png"> <FONT ID="f14">of</FONT> <FONT ID="f18">ClassDiagram</FONT> <FONT ID="f14"><U>description</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>org.astrogrid.applications.description.ApplicationDescriptionLibrary</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s7.png"> <FONT ID="f14">of</FONT> <FONT ID="f18">ClassDiagram</FONT> <FONT ID="f14"><U>description</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>org.astrogrid.applications.description.ApplicationInterface</U></FONT></DIV>
+</BODY>
+</HTML>
