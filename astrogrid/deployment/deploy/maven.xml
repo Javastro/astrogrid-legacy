@@ -266,7 +266,7 @@
 		<echo>Configuring Applications</echo>
 		<!-- registry -->
 		<copy todir="${temporary.dir}/registry-entries" filtering="true" overwrite="true">
-			<fileset dir="${work.dir}/cea/config/">
+			<fileset dir="${work.dir}/cea/commandline/config/">
 				<include name="**/CeaRegistry.xml" />
 			</fileset>
 		</copy>
