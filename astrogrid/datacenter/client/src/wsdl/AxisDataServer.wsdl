@@ -353,8 +353,8 @@
     </wsdl:binding>
     <!-- the service -->
     <wsdl:service name="AxisDataServerService">
-        <wsdl:port binding="AxisDataServerSoapBinding" name="AxisDataServerIt4-1">
-            <wsdlsoap:address location="http://localhost:8080/axis/services/AxisDataServerIt4-1"/>
+        <wsdl:port binding="AxisDataServerSoapBinding" name="AxisDataServer">
+            <wsdlsoap:address location="http://localhost:8080/axis/services/AxisDataServer"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
