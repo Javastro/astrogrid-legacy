@@ -142,4 +142,67 @@ public class SecurityGuard {
     return this.subject;
   }
 
+
+
+  /**
+   * Sets the account name for single sign on.
+   * This account name is used when the user first
+   * signs on to the grid. It may be different to the
+   * account name used in authenticating to services
+   * within the grid.
+   *
+   * @Todo store this name in a separate SSO Subject.
+   *
+   * @param name the account name
+   */
+  public void setSsoUsername (String name) {
+    this.setUsername(name);
+  }
+
+  /**
+   * Retrieves the account name for single sign on.
+   * This account name is used when the user first
+   * signs on to the grid. It may be different to the
+   * account name used in authenticating to services
+   * within the grid.
+   *
+   * @Todo store this name in a separate SSO Subject.
+   *
+   * @return the account name
+   */
+  public String getSsoUsername () {
+    return this.getUsername();
+  }
+
+
+  /**
+   * Sets the password for single sign on.
+   * This password is used when the user first
+   * signs on to the grid. It may be different to the
+   * account name used in authenticating to services
+   * within the grid.
+   *
+   * @Todo store this password in a separate SSO Subject.
+   *
+   * @param word the password
+   */
+  public void setSsoPassword (Password word) {
+    this.setPassword(word);
+  }
+
+  /**
+   * Retrieves the password for single sign on.
+   * This password is used when the user first
+   * signs on to the grid. It may be different to the
+   * account name used in authenticating to services
+   * within the grid.
+   *
+   * @Todo store this name in a separate SSO Subject.
+   *
+   * @return the password
+   */
+  public Password getSsoPassword () {
+    return this.getPassword();
+  }
+
 }
