@@ -1,5 +1,5 @@
 /*
- * $Id: TableResults.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+ * $Id: TableResults.java,v 1.3 2005/03/29 16:34:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -120,6 +120,7 @@ public abstract class TableResults implements QueryResults
          throw new IllegalArgumentException("Unknown results format in return spec "+returns+" given");
       }
       
+      log.debug("Returning table results, type "+tableWriter.getMimeType());
       target.setMimeType(tableWriter.getMimeType(), querier.getUser());
       
       //add  a filteredtablewriters if any
