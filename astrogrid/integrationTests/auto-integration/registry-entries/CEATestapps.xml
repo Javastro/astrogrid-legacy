@@ -362,7 +362,7 @@
                         <ceab:pref ref="P1" minoccurs="1" maxoccurs="1"/>
 
                         <ceab:pref ref="P6" minoccurs="0" maxoccurs="1"/>
-                        <ceab:pref ref="P9" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P9" minoccurs="1" maxoccurs="0"/>
                         <ceab:pref ref="P4" minoccurs="1" maxoccurs="1"/>
                     </ceab:input>
                     <ceab:output>
