@@ -39,8 +39,10 @@ Requires:
    <attainGoal name="clean-out" />
    <!-- generate java sources from wsdl -->
    <attainGoal name="wsdl2java" />
+   <!-- generate java sources from wsdl -->
+   <attainGoal name="AixIt05wsdl2java" />
    <!-- generate other java sources from wsdl -->
-   <attainGoal name="mchwsdl2java" />
+   <attainGoal name="SkyNodeWsdl2java" />
    <!-- delete the ones we don't want -->
    <attainGoal name="delete-surplus" />
    <!-- now call castor to generate ADQL object model -->
@@ -64,6 +66,7 @@ Requires:
    </delete>
    </goal>
 
+   <!--- generates classes for It04.1 axis web interface --->
    <goal name="wsdl2java" prereqs="axis-declare-tasks">
       <axis-wsdl2java output="${generated.src}" verbose="true" testcase="true"
          url="${basedir}/src/wsdl/AxisDataServer.wsdl"
@@ -81,8 +84,17 @@ Requires:
       
    </goal>
 
+   <!--- generates classes for It05 axis web interface --->
+   <goal name="AxisIt05wsdl2java" prereqs="axis-declare-tasks">
+      <axis-wsdl2java output="${generated.src}" verbose="true" testcase="true"
+         url="${basedir}/src/wsdl/AxisDataServer_v05.wsdl"
+         deployscope="Application" serverside="true" skeletondeploy="true">
+      </axis-wsdl2java>
+      
+   </goal>
+
    <!--- mch: added this to do other generations.  Don't know if it will break or whether it needs seperate goals... -->
-   <goal name="mchwsdl2java" prereqs="axis-declare-tasks">
+   <goal name="SkyNodeWsdl2java" prereqs="axis-declare-tasks">
 
       <axis-wsdl2java output="${generated.src}" verbose="true" testcase="true"
          url="${basedir}/src/wsdl/SkyNode0.7.wsdl"
