@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrogrid/portal/mock/myspace/service/Attic/MySpaceService.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/09 13:33:33 $</cvs:author>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/09 23:37:56 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log: MySpaceService.java,v $
+ * Revision 1.2  2003/06/09 23:37:56  dave
+ * Added type binding to mock MySpace and updated build file to remove hard coded localhost
+ *
  * Revision 1.1  2003/06/09 13:33:33  dave
  * Fixed bad directory structure
  *
@@ -49,6 +52,7 @@ public class MySpaceService
 	 */
 	public void doNothing()
 		{
+		System.out.println("MySpaceService : doNothing()") ;
 		}
 
 	/**

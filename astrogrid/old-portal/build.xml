@@ -2,10 +2,13 @@
 <!--
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/09 10:20:50 $</cvs:author>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/09 23:37:56 $</cvs:author>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.9  2003/06/09 23:37:56  dave
+    | Added type binding to mock MySpace and updated build file to remove hard coded localhost
+    |
     | Revision 1.8  2003/06/09 10:20:50  dave
     | Added Axis integration tests
     |
@@ -116,24 +119,29 @@
 	<property name="junit.home" value="/usr/java/libraries/junit/junit-3.8.1"/>
 
 	<!-- Tomcat installation path (default if not in ant.properties) -->
-	<property name="tomcat.home"     value="/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14"/>
-	<property name="tomcat.home.url" value="http://localhost:8080/"/>
+	<property name="tomcat.home"    value="/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14"/>
+	<property name="tomcat.host"    value="localhost"/>
+	<property name="tomcat.port"    value="8080"/>
+	<property name="tomcat.server"  value="${tomcat.host}:${tomcat.port}"/>
+	<property name="tomcat.url"     value="http://${tomcat.server}"/>
+	<property name="tomcat.timeout" value="60"/>
 
 	<!-- Tomcat manager properties (need to update with name and password from tomcat_users -->
-	<property name="tomcat.manager.url"      value="http://localhost:8080/manager"/>
-	<property name="tomcat.manager.wait"     value="60"/>
+	<property name="tomcat.manager.url"      value="${tomcat.url}/manager"/>
 	<property name="tomcat.manager.username" value="astrogrid"/>
 	<property name="tomcat.manager.password" value="please"/>
 
 	<!-- Axis properties -->
-	<property name="axis.src"    value="depends/axis/axis-1_1rc2.tar.gz"/>
-	<property name="axis.build"  value="${basedir}/build/axis"/>
-	<property name="axis.home"   value="${basedir}/build/axis/axis-1_1RC2"/>
-	<property name="axis.base"   value="/axis"/>
-	<property name="axis.webapp" value="${basedir}/build/axis/axis-1_1RC2/webapps/axis"/>
+	<property name="axis.src"     value="depends/axis/axis-1_1rc2.tar.gz"/>
+	<property name="axis.build"   value="${basedir}/build/axis"/>
+	<property name="axis.home"    value="${basedir}/build/axis/axis-1_1RC2"/>
+	<property name="axis.servlet" value="axis"/>
+	<property name="axis.webapp"  value="${basedir}/build/axis/axis-1_1RC2/webapps/axis"/>
 
 	<property name="axis.host"   value="localhost"/>
 	<property name="axis.port"   value="8080"/>
+	<property name="axis.server" value="${axis.host}:${axis.port}"/>
+	<property name="axis.url"    value="http://${axis.server}/${axis.servlet}"/>
 
 	<!-- JAF properties -->
 	<property name="jaf.zip"   value="depends/jaf/jaf-1.0.2.zip"/>
@@ -163,10 +171,21 @@
 		<!-- Build name -->
 		<property name="build.name" value="${project.name}-${project.version}"/>
 
+		<!-- Axis libraries -->
+		<path id="axis.classpath">
+			<pathelement location="${axis.home}/lib/axis.jar"/>
+			<pathelement location="${axis.home}/lib/axis-ant.jar"/>
+			<pathelement location="${axis.home}/lib/commons-discovery.jar"/>
+			<pathelement location="${axis.home}/lib/commons-logging.jar"/>
+			<pathelement location="${axis.home}/lib/jaxrpc.jar"/>
+			<pathelement location="${axis.home}/lib/saaj.jar"/>
+			<pathelement location="${axis.home}/lib/wsdl4j.jar"/>
+		</path>
+
 		<!-- Project build classpath -->
 		<path id="build.classpath">
 			<!-- Our own classes -->
-			<pathelement path="build/classes"/>
+			<pathelement path="build/portal/classes"/>
 			<!-- The JUnit libraries -->
 			<pathelement path="${junit.classpath}"/>
 		</path>
@@ -242,6 +261,8 @@
 
 	<!-- Start Tomcat in a separate VM -->
 	<target name="tomcat.start" depends="">
+		<echo message=""/>
+		<echo message="Starting Tomcat ...."/>
 		<!-- Call a target in the tomcat.xml ant file -->
 		<ant antfile="${project.home}/src/ant/tomcat.xml" target="tomcat.start"/>
 	</target>
@@ -252,14 +273,38 @@
 		<ant antfile="${project.home}/src/ant/tomcat.xml" target="tomcat.stop"/>
 	</target>
 
+	<!-- Wait for Tomcat to respond -->
+	<target name="tomcat.wait" depends="">
+		<echo message=""/>
+		<echo message="Waiting for Tomcat ...."/>
+		<echo message="URL : ${tomcat.url}/"/>
+		<waitfor maxwait="60" maxwaitunit="second" checkevery="500">
+			<http url="${tomcat.url}/"/>
+		</waitfor>
+	</target>
+
+	<!-- Wait for Tomcat manager to respond -->
+	<target name="tomcat.manager.wait" depends="">
+		<echo message=""/>
+		<echo message="Waiting for Tomcat manager ...."/>
+		<echo message="URL : ${tomcat.manager.url}/"/>
+		<waitfor maxwait="${tomcat.timeout}" maxwaitunit="second" checkevery="500">
+			<http url="${tomcat.manager.url}/"/>
+		</waitfor>
+	</target>
+
 	<!-- Delete the Tomcat working files -->
 	<target name="tomcat.clean" depends="">
+		<echo message=""/>
+		<echo message="Cleaning Tomcat temp files ...."/>
 		<delete includeEmptyDirs="true" failonerror="false">
 			<fileset dir="${tomcat.home}/work" includes="**"/>
+		</delete>
+		<echo message="Cleaning Tomcat log files ...."/>
+		<delete failonerror="false">
 			<fileset dir="${tomcat.home}/logs" includes="*"/>
 		</delete>
 	</target>
-
 
 	<!-- ================ Cocoon tasks ================ -->
 	<!-- Checkout a specific version of the Cocoon source from cvs --> 
@@ -297,19 +342,17 @@
 	<!-- Install our Cocoon web-app -->
 	<target name="cocoon.webapp.install" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
-		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
-			<http url="${tomcat.manager.url}"/>
-		</waitfor>
+		<antcall target="tomcat.manager.wait"/>
 		<!-- Install our web-app -->
+		<echo message=""/>
+		<echo message="Installing Cocoon ...."/>
 		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon" war="file://${basedir}/${cocoon.webapp}"/>
 	</target>
 
 	<!-- Start the Cocoon web-app -->
 	<target name="cocoon.webapp.start" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
-		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
-			<http url="${tomcat.manager.url}"/>
-		</waitfor>
+		<antcall target="tomcat.manager.wait"/>
 		<!-- Start our web-app -->
 		<tomcat.start username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon"/>
 	</target>
@@ -317,9 +360,7 @@
 	<!-- Stop the Cocoon web-app -->
 	<target name="cocoon.webapp.stop" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
-		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
-			<http url="${tomcat.manager.url}"/>
-		</waitfor>
+		<antcall target="tomcat.manager.wait"/>
 		<!-- Stop our web-app -->
 		<tomcat.stop username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon"/>
 	</target>
@@ -327,9 +368,7 @@
 	<!-- Reload the Cocoon web-app -->
 	<target name="cocoon.webapp.reload" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
-		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
-			<http url="${tomcat.manager.url}"/>
-		</waitfor>
+		<antcall target="tomcat.manager.wait"/>
 		<!-- Reload our web-app -->
 		<tomcat.reload username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon"/>
 	</target>
@@ -337,9 +376,7 @@
 	<!-- Remove the Cocoon web-app -->
 	<target name="cocoon.webapp.remove" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
-		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
-			<http url="${tomcat.manager.url}"/>
-		</waitfor>
+		<antcall target="tomcat.manager.wait"/>
 		<!-- Remove our web-app -->
 		<tomcat.remove username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon"/>
 	</target>
@@ -366,6 +403,24 @@
 			<!-- Pass in the location of the astrogrid sitemap -->
 			<param name="sitemap" expression="${site.build}/sitemap.xmap"/>
 		</xslt>
+	</target>
+
+	<!-- Wait for Cocoon to respond -->
+	<target name="cocoon.wait" depends="">
+		<echo message="Waiting for Cocoon ...."/>
+		<echo message="URL : ${tomcat.url}/cocoon/"/>
+		<waitfor maxwait="${tomcat.timeout}" maxwaitunit="second" checkevery="500">
+			<http url="${tomcat.url}/cocoon/"/>
+		</waitfor>
+	</target>
+
+	<!-- Clean the Cocoon logs -->
+	<target name="cocoon.clean" depends="">
+		<echo message=""/>
+		<echo message="Cleaning Cocoon log files ...."/>
+		<delete failonerror="false">
+			<fileset dir="${cocoon.webapp}/WEB-INF/logs" includes="*"/>
+		</delete>
 	</target>
 
 	<!-- Build our Cocoon webapp from clean -->
@@ -413,18 +468,9 @@
 	<!-- ================ Axis tasks ================ -->
 
 	<!-- Define the Axis manager tasks -->
-	<target name="axis.tasks" depends="">
-		<path id="axis.tasks.classpath">
-			<pathelement location="${axis.home}/lib/axis.jar"/>
-			<pathelement location="${axis.home}/lib/axis-ant.jar"/>
-			<pathelement location="${axis.home}/lib/commons-discovery.jar"/>
-			<pathelement location="${axis.home}/lib/commons-logging.jar"/>
-			<pathelement location="${axis.home}/lib/jaxrpc.jar"/>
-			<pathelement location="${axis.home}/lib/saaj.jar"/>
-			<pathelement location="${axis.home}/lib/wsdl4j.jar"/>
-		</path>
-		<taskdef name="axis.admin"     classpathref="axis.tasks.classpath" classname="org.apache.axis.tools.ant.axis.AdminClientTask"/>
-		<taskdef name="axis.wsdl2java" classpathref="axis.tasks.classpath" classname="org.apache.axis.tools.ant.wsdl.Wsdl2javaAntTask"/>
+	<target name="axis.tasks" depends="init">
+		<taskdef name="axis.admin"     classpathref="axis.classpath" classname="org.apache.axis.tools.ant.axis.AdminClientTask"/>
+		<taskdef name="axis.wsdl2java" classpathref="axis.classpath" classname="org.apache.axis.tools.ant.wsdl.Wsdl2javaAntTask"/>
 	</target>
 
 	<!-- Delete the Axis build -->
@@ -441,51 +487,43 @@
 	<!-- Install our Axis web-app -->
 	<target name="axis.webapp.install" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
-		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
-			<http url="${tomcat.manager.url}"/>
-		</waitfor>
+		<antcall target="tomcat.manager.wait"/>
 		<!-- Install our web-app -->
-		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.base}" war="file://${axis.webapp}"/>
+		<echo message=""/>
+		<echo message="Installing Axis webapp ...."/>
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${axis.servlet}" war="file://${axis.webapp}"/>
 	</target>
 
 	<!-- Start the Axis web-app -->
 	<target name="axis.webapp.start" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
-		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
-			<http url="${tomcat.manager.url}"/>
-		</waitfor>
+		<antcall target="tomcat.manager.wait"/>
 		<!-- Start our web-app -->
-		<tomcat.start username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.base}"/>
+		<tomcat.start username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${axis.servlet}"/>
 	</target>
 
 	<!-- Stop the Axis web-app -->
 	<target name="axis.webapp.stop" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
-		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
-			<http url="${tomcat.manager.url}"/>
-		</waitfor>
+		<antcall target="tomcat.manager.wait"/>
 		<!-- Stop our web-app -->
-		<tomcat.stop username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.base}"/>
+		<tomcat.stop username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${axis.servlet}"/>
 	</target>
 
 	<!-- Reload the Axis web-app -->
 	<target name="axis.webapp.reload" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
-		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
-			<http url="${tomcat.manager.url}"/>
-		</waitfor>
+		<antcall target="tomcat.manager.wait"/>
 		<!-- Reload our web-app -->
-		<tomcat.reload username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.base}"/>
+		<tomcat.reload username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${axis.servlet}"/>
 	</target>
 
 	<!-- Remove the Axis web-app -->
 	<target name="axis.webapp.remove" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
-		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
-			<http url="${tomcat.manager.url}"/>
-		</waitfor>
+		<antcall target="tomcat.manager.wait"/>
 		<!-- Remove our web-app -->
-		<tomcat.remove username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.base}"/>
+		<tomcat.remove username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${axis.servlet}"/>
 	</target>
 
 	<!-- Build our Axis webapp from clean -->
@@ -500,12 +538,12 @@
 
 	<!-- Install the Axis docs as a webapp -->
 	<target name="axis.docs.install" depends="tomcat.tasks">
+		<echo message=""/>
+		<echo message="Installing Axis documentation ...."/>
 		<!-- Copy the dummy web.xml file -->
 		<copy file="src/docs/axis/WEB-INF/web.xml" todir="${axis.home}/docs/WEB-INF"/>
 		<!-- Wait for the Tomcat manager -->
-		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
-			<http url="${tomcat.manager.url}"/>
-		</waitfor>
+		<antcall target="tomcat.manager.wait"/>
 		<!-- Install our web-app -->
 		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/axis-docs" war="file://${axis.home}/docs"/>
 	</target>
@@ -513,11 +551,19 @@
 	<!-- Remove the Axis docs webapp -->
 	<target name="axis.docs.remove" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
-		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
-			<http url="${tomcat.manager.url}"/>
-		</waitfor>
+		<antcall target="tomcat.manager.wait"/>
 		<!-- Remove our web-app -->
 		<tomcat.remove username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/axis-docs"/>
+	</target>
+
+	<!-- Wait for Axis to respond -->
+	<target name="axis.wait" depends="">
+		<echo message=""/>
+		<echo message="Waiting for Axis webapp ...."/>
+		<echo message="URL : ${axis.url}/happyaxis.jsp"/>
+		<waitfor maxwait="${tomcat.timeout}" maxwaitunit="second" checkevery="500">
+			<http url="${axis.url}/happyaxis.jsp"/>
+		</waitfor>
 	</target>
 
 	<!-- Deploy the axis calculator example --> 
@@ -530,7 +576,7 @@
 		<axis.admin
 			port="${axis.port}"
 			hostname="${axis.host}"
-			servletpath="${axis.base}/services/AdminService"
+			servletpath="/${axis.servlet}/services/AdminService"
 			debug="true"
 			xmlfile="${axis.home}/samples/message/deploy.wsdd"
 			/>
@@ -538,8 +584,8 @@
 
 	<!-- Deploy our JWS test services --> 
 	<target name="axis.service.install.test.jws" depends="">
-		<copy file="src/java/org/astrorgid/portal/test/axis/jws/TestJwsService.java"       tofile="${axis.webapp}/TestJwsService.jws"/>
-		<copy file="src/java/org/astrorgid/portal/test/axis/jws/TestJwsPersonService.java" tofile="${axis.webapp}/TestJwsPersonService.jws"/>
+		<copy file="src/java/org/astrogrid/portal/test/axis/jws/TestJwsService.java"       tofile="${axis.webapp}/TestJwsService.jws"/>
+		<copy file="src/java/org/astrogrid/portal/test/axis/jws/TestJwsPersonService.java" tofile="${axis.webapp}/TestJwsPersonService.jws"/>
 	</target>
 
 	<!-- Remove our JWS test services --> 
@@ -555,7 +601,7 @@
 	<target name="axis.service.install.test.rpc" depends="java.compile, axis.tasks">
 		<!-- Copy the classes into the Axis WEB-INF/classes directory -->
 		<copy verbose="true" todir="${axis.webapp}/WEB-INF/classes">
-			<fileset dir="build/classes">
+			<fileset dir="build/portal/classes">
 				<include name="**/test/axis/rpc/*.class"/>
 			</fileset>
 		</copy>
@@ -563,9 +609,9 @@
 		<axis.admin
 			port="${axis.port}"
 			hostname="${axis.host}"
-			servletpath="${axis.base}/services/AdminService"
+			servletpath="/${axis.servlet}/services/AdminService"
 			debug="true"
-			xmlfile="src/java/org/astrorgid/portal/test/axis/rpc/deploy.wsdd"
+			xmlfile="src/java/org/astrogrid/portal/test/axis/rpc/deploy.wsdd"
 			/>
 	</target>
 
@@ -575,9 +621,9 @@
 		<axis.admin
 			port="${axis.port}"
 			hostname="${axis.host}"
-			servletpath="${axis.base}/services/AdminService"
+			servletpath="/${axis.servlet}/services/AdminService"
 			debug="true"
-			xmlfile="src/java/org/astrorgid/portal/test/axis/rpc/undeploy.wsdd"
+			xmlfile="src/java/org/astrogrid/portal/test/axis/rpc/undeploy.wsdd"
 			/>
 		<!-- Tidy up any class files -->
 		<delete failonerror="false">
@@ -591,7 +637,7 @@
 	<target name="axis.service.install.test.doc" depends="java.compile, axis.tasks">
 		<!-- Copy the classes into the Axis WEB-INF/classes directory -->
 		<copy verbose="true" todir="${axis.webapp}/WEB-INF/classes">
-			<fileset dir="build/classes">
+			<fileset dir="build/portal/classes">
 				<include name="**/test/axis/doc/*.class"/>
 			</fileset>
 		</copy>
@@ -599,9 +645,9 @@
 		<axis.admin
 			port="${axis.port}"
 			hostname="${axis.host}"
-			servletpath="${axis.base}/services/AdminService"
+			servletpath="/${axis.servlet}/services/AdminService"
 			debug="true"
-			xmlfile="src/java/org/astrorgid/portal/test/axis/doc/deploy.wsdd"
+			xmlfile="src/java/org/astrogrid/portal/test/axis/doc/deploy.wsdd"
 			/>
 	</target>
 
@@ -611,9 +657,9 @@
 		<axis.admin
 			port="${axis.port}"
 			hostname="${axis.host}"
-			servletpath="${axis.base}/services/AdminService"
+			servletpath="/${axis.servlet}/services/AdminService"
 			debug="true"
-			xmlfile="src/java/org/astrorgid/portal/test/axis/doc/undeploy.wsdd"
+			xmlfile="src/java/org/astrogrid/portal/test/axis/doc/undeploy.wsdd"
 			/>
 		<!-- Tidy up any class files -->
 		<delete failonerror="false">
@@ -625,6 +671,8 @@
 
 	<!-- Deploy our axis example services --> 
 	<target name="axis.service.install" depends="">
+		<echo message=""/>
+		<echo message="Installing Axis services ...."/>
 		<antcall target="axis.service.install.examples.calculator"/>
 		<antcall target="axis.service.install.examples.message"/>
 		<antcall target="axis.service.install.test.jws"/>
@@ -648,6 +696,15 @@
 		<delete dir="${site.build}" failonerror="false"/>
 	</target>
 
+	<!-- Wait for our site to respond -->
+	<target name="site.wait" depends="">
+		<echo message="Waiting for portal Site ...."/>
+		<echo message="URL : ${tomcat.url}/cocoon/astrogrid/"/>
+		<waitfor maxwait="${tomcat.timeout}" maxwaitunit="second" checkevery="500">
+			<http url="${tomcat.url}/cocoon/astrogrid/"/>
+		</waitfor>
+	</target>
+
 	<!-- Rebuild our project site -->
 	<target name="site.REBUILD" depends="init">
 		<!-- Delete our project site -->
@@ -666,10 +723,20 @@
 
 	<!-- Compile our source code -->
 	<target name="java.compile" depends="init" description="Compile our Java classes">
-		<mkdir dir="build/classes"/>
-		<javac srcdir="src/java"
+		<!-- Create our java source directory -->
+		<mkdir dir="build/portal/java"/>
+		<!-- Copy our java source code -->
+		<copy toDir="build/portal/java">
+			<fileset dir="src/java">
+				<exclude name="**/mock/myspace/client/**"/>
+			</fileset>
+		</copy>
+		<!-- Create our java classes directory -->
+		<mkdir dir="build/portal/classes"/>
+		<!-- Compile our java classes -->
+		<javac srcdir="build/portal/java"
 		       classpathref="build.classpath"
-		       destdir="build/classes"
+		       destdir="build/portal/classes"
 		       debug="on"
 		       deprecation="on"
 		       optimize="on"
@@ -693,20 +760,20 @@
 
 	<!-- Build our project jar -->
 	<target name="java.jar" depends="init, java.compile" description="Build our jar file">
-		<mkdir dir="build/lib"/>
-		<jar jarfile="build/lib/${project.name}-${project.version}.jar">
+		<mkdir dir="build/portal/lib"/>
+		<jar jarfile="build/portal/lib/${project.name}-${project.version}.jar">
 			<!-- Need to check if this is there ...
 			<zipfileset prefix="doc" dir="build/doc"/>
 			-->
-			<zipfileset prefix=""    dir="build/classes"/>
+			<zipfileset prefix=""    dir="build/portal/classes"/>
 		</jar>
 	</target>
 
 	<!-- Deploy our project jar -->
 	<target name="java.deploy" depends="init, java.jar" description="Deploy our jar file">
 		<!-- Copy our jar files into the Cocoon webapp directory -->
-		<copy verbose="true" toDir="${cocoon.webapp}/WEB-INF/lib">
-			<fileset dir="build/lib">
+		<copy verbose="false" toDir="${cocoon.webapp}/WEB-INF/lib">
+			<fileset dir="build/portal/lib">
 				<include name="**.jar"/>
 			</fileset>
 		</copy>
@@ -715,7 +782,7 @@
 	<!-- Run our JUnit tests -->
 	<target name="java.test.junit" depends="init, java.compile" description="Run our JUnit tests">
 		<!-- Create the reports directory -->
-		<mkdir dir="build/log"/>
+		<mkdir dir="build/portal/junit"/>
 		<!-- Run the JUnit tests -->
 		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
 			<!-- Use the test classpath -->
@@ -723,8 +790,8 @@
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
 			<!-- Run our JUnit tests -->
-			<batchtest todir="build/log">
-				<fileset dir="build/classes">
+			<batchtest todir="build/portal/junit">
+				<fileset dir="build/portal/classes">
 					<include name="**/junit/**/JUnit*.class" />
 				</fileset>
 			</batchtest>
@@ -746,7 +813,9 @@
 	    +-->
 	<target name="project.REBUILD" depends="init">
 		<!-- Build the Cocoon webapp (build from source) -->
+<!--
 		<antcall target="cocoon.REBUILD"/>
+-->
 		<!-- Build the Axis webapp (unpack binary tar) -->
 		<antcall target="axis.REBUILD"/>
 		<!-- Build our project site -->
@@ -756,14 +825,9 @@
 	</target>
 
 	<!--+
-	    | Experimental task to install and run our project ....
-	    | Assumes Tomcat is NOT running.
-	    | Assumes Cocoon and Axis have been installed (see cocoon.webapp.build and axis.untar) .
-	    | This task runs Tomcat in a separate JVM, initiated from a separate thread.
-	    | This task will not finish until Tomcat is stopped, either by Ctrl^C, or by running tomcat.stop task from a separate shell.
+	    | Build the project site and Java source.
 	    +-->
-	<target name="project.RUN" depends="init, tomcat.tasks">
-
+	<target name="project.BUILD" depends="init">
 		<!-- Clean our site build -->
 		<antcall target="site.clean"/>
 		<!-- Deploy our site build -->
@@ -773,92 +837,81 @@
 		<antcall target="java.clean"/>
 		<!-- Deploy our java components -->
 		<antcall target="java.deploy"/>
+	</target>
+
+	<!--+
+	    | Experimental task to install our project components ....
+	    | Assumes Tomcat IS running.
+	    +-->
+	<target name="project.INSTALL" depends="init, tomcat.tasks">
+		<!-- Wait for tomcat to startup -->
+		<antcall target="tomcat.wait"/>
+		<!-- Install our cocoon web-app -->
+		<antcall target="cocoon.webapp.install"/>
+		<!-- Wait for cocoon to startup -->
+		<antcall target="cocoon.wait"/>
+		<!-- Wait for our portal to startup -->
+		<antcall target="site.wait"/>
+
+		<!--+
+		    | We don't need Axis to run the Portal itself.
+		    | However, we do need it to test the WebServices calls.
+		    +-->
+		<!-- Install the Axis web-app -->
+		<antcall target="axis.webapp.install"/>
+
+		<!--+
+		    | All this tests for is the jsp responds, not the content.
+		    | It would be nice to check the content of the response to make sure Axis really is happy.
+		    +-->
+		<!-- Wait for Axis to startup -->
+		<antcall target="axis.wait"/>
+
+		<!-- Install the Axis services -->
+		<antcall target="axis.service.install"/>
+		<echo message=""/>
+
+		<!-- Install the Axis documentation -->
+		<antcall target="axis.docs.install"/>
+		<echo message=""/>
+
+		<echo message="Ok ... Astrogrid portal is running."/>
+	</target>
+
+	<!--+
+	    | Experimental task to install and run our project ....
+	    | Assumes Tomcat is NOT running.
+	    | This task runs Tomcat in a separate JVM, initiated from a separate thread.
+	    | This task will not finish until Tomcat is stopped, either by Ctrl^C, or by running tomcat.stop task from a separate shell.
+	    +-->
+	<target name="project.RUN" depends="init">
+
+		<!-- Build our site and java components -->
+		<antcall target="project.BUILD"/>
 
 		<parallel>
 			<!-- Start tomcat in a separate JVM -->
 			<sequential>
 				<!-- Clean the Tomcat working directories -->
-				<echo message=""/>
-				<echo message="Cleaning Tomcat ...."/>
 				<antcall target="tomcat.clean"/>
 				<!-- Start tomcat in a separate JVM -->
-				<echo message=""/>
-				<echo message="Starting Tomcat ...."/>
 				<antcall target="tomcat.start"/>
 			</sequential>
 
-			<!-- Install and run our project -->
+			<!-- Install our project services -->
 			<sequential>
-
-				<!-- Wait for tomcat to startup -->
-				<echo message=""/>
-				<echo message="Waiting for Tomcat ...."/>
-				<waitfor maxwait="60" maxwaitunit="second" checkevery="500">
-					<http url="${tomcat.home.url}"/>
-				</waitfor>
-
-				<!-- Install our cocoon web-app -->
-				<echo message=""/>
-				<echo message="Installing Cocoon ...."/>
-				<antcall target="cocoon.webapp.install"/>
-
-				<!-- Wait for cocoon to startup -->
-				<waitfor maxwait="60" maxwaitunit="second" checkevery="500">
-					<http url="${tomcat.home.url}/cocoon/"/>
-				</waitfor>
-				<echo message=""/>
-				<echo message="Cocoon installed"/>
-
-				<!-- Wait for our portal to startup -->
-				<echo message=""/>
-				<echo message="Waiting for Portal ...."/>
-				<waitfor maxwait="60" maxwaitunit="second" checkevery="500">
-					<http url="${tomcat.home.url}/cocoon/astrogrid/"/>
-				</waitfor>
-				<echo message=""/>
-				<echo message="Portal ready"/>
-
-				<!--+
-				    | We don't need Axis to run the Portal itself.
-				    | However, we do need it to test the WebServices calls.
-				    +-->
-				<!-- Install the Axis web-app -->
-				<echo message=""/>
-				<echo message="Installing Axis webapp ...."/>
-				<antcall target="axis.webapp.install"/>
-
-				<!--+
-				    | All this tests for is the jsp responds, not the content.
-				    | It would be nice to check the content of the response to make sure Axis really is happy.
-				    +-->
-				<!-- Wait for Axis to startup -->
-				<echo message=""/>
-				<echo message="Waiting for Axis webapp ...."/>
-				<waitfor maxwait="60" maxwaitunit="second" checkevery="500">
-					<http url="${tomcat.home.url}/axis/happyaxis.jsp"/>
-				</waitfor>
-				<echo message=""/>
-				<echo message="Axis happy"/>
-
-				<!-- Install the Axis services -->
-				<echo message=""/>
-				<echo message="Installing Axis services ...."/>
-				<antcall target="axis.service.install"/>
-				<echo message=""/>
-
-				<!-- Install the Axis documentation -->
-				<echo message=""/>
-				<echo message="Installing Axis documentation ...."/>
-				<antcall target="axis.docs.install"/>
-				<echo message=""/>
-
-				<echo message="Ok ... Astrogrid portal is running."/>
-
+				<!-- Build our site and java components -->
+				<antcall target="project.INSTALL"/>
 			</sequential>
 		</parallel>
 	</target>
 
 	<!-- ================ MySpace tasks ================ -->
+	<!-- Delete the server code for our mock MySpace service -->
+	<target name="myspace.server.delete" depends="">
+		<delete failonerror="false" dir="build/myspace/server"/>
+	</target>
+
 	<!-- Build the server side Java for the mock MySpace service -->
 	<target name="myspace.service.java.compile" depends="init" description="Compile our MySpace service">
 		<!-- Create our build directories -->
@@ -881,9 +934,9 @@
 	</target>
 
 	<!-- Test the server side Java for the mock MySpace service -->
-	<target name="myspace.service.local.junit" depends="init, myspace.service.java.compile" description="Run our MySpace JUnit tests">
+	<target name="myspace.service.test.junit" depends="init, myspace.service.java.compile" description="Run our MySpace JUnit tests">
 		<!-- Create the reports directory -->
-		<mkdir dir="build/myspace/service/log"/>
+		<mkdir dir="build/myspace/service/junit"/>
 		<!-- Run the JUnit tests -->
 		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
 			<!-- Use our local classes -->
@@ -899,7 +952,7 @@
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
 			<!-- Run our JUnit tests -->
-			<batchtest todir="build/myspace/log">
+			<batchtest todir="build/myspace/service/junit">
 				<fileset dir="build/myspace/service/classes">
 					<include name="**/junit/**/JUnit*.class" />
 				</fileset>
@@ -913,7 +966,7 @@
 		<mkdir dir="build/myspace/service/wsdd"/>
 		<!-- Copy our deployment descriptors -->
 		<copy verbose="false" todir="build/myspace/service/wsdd">
-			<fileset dir="src/java/org/astrorgid/portal/mock/myspace/service">
+			<fileset dir="src/java/org/astrogrid/portal/mock/myspace/service">
 				<include name="*.wsdd" />
 			</fileset>
 		</copy>
@@ -927,19 +980,19 @@
 		<axis.admin
 			port="${axis.port}"
 			hostname="${axis.host}"
-			servletpath="${axis.base}/services/AdminService"
+			servletpath="/${axis.servlet}/services/AdminService"
 			debug="true"
 			xmlfile="build/myspace/service/wsdd/deploy.wsdd"
 			/>
 	</target>
 
-	<!-- Remove our RCP test services --> 
+	<!-- Remove our mock MySpace test services --> 
 	<target name="myspace.service.remove" depends="axis.tasks">
 		<!-- Remove our WebService -->
 		<axis.admin
 			port="${axis.port}"
 			hostname="${axis.host}"
-			servletpath="${axis.base}/services/AdminService"
+			servletpath="/${axis.servlet}/services/AdminService"
 			debug="true"
 			xmlfile="build/myspace/service/wsdd/undeploy.wsdd"
 			/>
@@ -951,21 +1004,108 @@
 		</delete>
 	</target>
 
-	<!-- Generate the client stubs for the mock MySpace service -->
-	<target name="myspace.service.wsdl2java" depends="axis.tasks">
-		<!-- Create our stubs directory -->
-		<mkdir dir="build/myspace/client/stubs"/>
-		<!-- Generate the client stubs -->
+	<!-- Delete the client code for our mock MySpace service -->
+	<target name="myspace.client.delete" depends="">
+		<delete failonerror="false" dir="build/myspace/client"/>
+	</target>
+
+	<!-- Generate the client stubs for our mock MySpace service -->
+	<target name="myspace.client.wsdl2java" depends="axis.tasks">
+		<!-- Create our client directory -->
+		<mkdir dir="build/myspace/client/java"/>
+		<!-- Generate our client stubs -->
 		<axis.wsdl2java
 			verbose="true"
-			output="build/myspace/client/stubs"
-			url="http://localhost:8080/axis/services/myspace?wsdl"
+			output="build/myspace/client/java"
+			url="${axis.url}/services/myspace?wsdl"
 			>
+			<mapping namespace="${axis.url}/axis/services/myspace" package="org.astrogrid.portal.mock.myspace.client"/>
+			<mapping namespace="http://service.myspace.mock.portal.astrogrid.org" package="org.astrogrid.portal.mock.myspace.client"/>
 		</axis.wsdl2java>
 	</target>
 
-	<!-- Build the client side Java for the mock MySpace service -->
+	<!-- Build the client side Java for our mock MySpace service -->
+	<target name="myspace.client.build.java" depends="init">
+		<!-- Create our classes directory -->
+		<mkdir dir="build/myspace/client/classes"/>
+		<!-- Copy our client java code -->
+		<copy verbose="true" todir="build/myspace/client/java">
+			<fileset dir="src/java">
+				<include name="**/mock/myspace/client/**/*.*"/>
+			</fileset>
+		</copy>
+		<!-- Compile our client code -->
+		<javac srcdir="build/myspace/client/java"
+		       destdir="build/myspace/client/classes"
+		       debug="on"
+		       deprecation="on"
+		       optimize="on"
+		       >
+			<classpath>
+				<path refid="axis.classpath"/>
+			</classpath>
+		</javac>
+	</target>
 
+	<!-- Run the client side JUnit tests for our mock MySpace service -->
+	<target name="myspace.client.test.junit" depends="init, myspace.client.build.java">
+		<!-- Create the reports directory -->
+		<mkdir dir="build/myspace/client/junit"/>
+		<!-- Run the JUnit tests -->
+		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
+			<!-- Use our local classes -->
+			<classpath>
+				<!-- Our own classes -->
+				<pathelement path="build/myspace/client/classes"/>
+				<!-- The Axis libraries -->
+				<path refid="axis.classpath"/>
+				<!-- The JUnit libraries -->
+				<pathelement path="${junit.classpath}"/>
+				<!-- FIXME (required since JDK 1.4.2) -->
+				<pathelement path="${ant.home}/lib/ant.jar"/>
+				<pathelement path="${ant.home}/lib/optional.jar"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Run our JUnit tests -->
+			<batchtest todir="build/myspace/client/junit">
+				<fileset dir="build/myspace/client/classes">
+					<include name="**/junit/**/JUnit*.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!-- Remove our mock MySpace service -->
+	<target name="myspace.delete" depends="">
+		<!-- Remove our mock MySpace service -->
+		<antcall target="myspace.service.remove"/>
+		<!-- Remove the server build files -->
+		<antcall target="myspace.server.delete"/>
+		<!-- Remove the client build files -->
+		<antcall target="myspace.client.delete"/>
+	</target>
+
+	<!-- Rebuild our mock MySpace service -->
+	<target name="myspace.REBUILD" depends="">
+		<!-- Remove our mock MySpace service -->
+		<antcall target="myspace.delete"/>
+
+		<!-- Compile the server side code -->
+		<antcall target="myspace.service.java.compile"/>
+		<!-- Test the server side code (offline) -->
+		<antcall target="myspace.service.test.junit"/>
+		<!-- Install the server side code -->
+		<antcall target="myspace.service.install"/>
+
+		<!-- Build the client side stubs -->
+		<antcall target="myspace.client.wsdl2java"/>
+		<!-- Compile the client side java -->
+		<antcall target="myspace.client.build.java"/>
+		<!-- Test the client side code (online) -->
+		<antcall target="myspace.client.test.junit"/>
+
+	</target>
 
 </project>
 
