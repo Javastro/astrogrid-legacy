@@ -189,7 +189,7 @@
 
 	<env-entry>
 		<description>The url to the oai publishing url for 0.9, default is set to astrogrid servlet, but is not required to use.</description>
-		<env-entry-name>reg.oaipublish.0.9</env-entry-name>
+		<env-entry-name>reg.amend.oaipublish.0.9</env-entry-name>
 		<env-entry-value>http://localhost:8080/astrogrid-registry/OAIHandlerv0_9</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
@@ -319,7 +319,7 @@
 		<description>(Advanced) Declare the namespaces used on the registry, based on registry versions.</description>
 		<env-entry-name>reg.custom.declareNS.0.10</env-entry-name>
 		<env-entry-value>
-			declare namespace vr = "http://www.ivoa.net/xml/VOResource/v0.10"; declare namespace vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"; declare namespace vs = "http://www.ivoa.net/xml/VODataService/v0.5"; declare namespace cs = "http://www.ivoa.net/xml/ConeSearch/v0.3"; declare namespace sia = "http://www.ivoa.net/xml/SIA/v0.7"; declare namespace vg = "http://www.ivoa.net/xml/VORegistry/v0.3"; declare namespace vc = "http://www.ivoa.net/xml/VORegistry/v0.3"; declare namespace cea="http://www.ivoa.net/xml/CEAService/v0.2"; declare namespace ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"; declare namespace ag="http://www.astrogrid.org/schema/AstrogridDataService/v0.2"; declare namespace xsi="http://www.w3.org/2001/XMLSchema-instance"; 
+			declare namespace vr = "http://www.ivoa.net/xml/VOResource/v0.10"; declare namespace vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"; declare namespace vs = "http://www.ivoa.net/xml/VODataService/v0.5"; declare namespace cs = "http://www.ivoa.net/xml/ConeSearch/v0.3"; declare namespace sia = "http://www.ivoa.net/xml/SIA/v0.7"; declare namespace vg = "http://www.ivoa.net/xml/VORegistry/v0.3"; declare namespace vc = "http://www.ivoa.net/xml/VORegistry/v0.3"; declare namespace cea="http://www.ivoa.net/xml/CEAService/v0.2"; declare namespace ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"; declare namespace ag="http://www.astrogrid.org/schema/AstrogridDataService/v0.2"; declare namespace tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3"; declare namespace xsi="http://www.w3.org/2001/XMLSchema-instance"; 
 		</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>

@@ -79,7 +79,7 @@ public class OAIService {
     
     private String getOAIServletURL(Document query) {
         String versionNumber = RegistryServerHelper.getRegistryVersionFromNode(query);       
-        return conf.getString("reg.oaipublish." + versionNumber);       
+        return conf.getString("reg.amend.oaipublish." + versionNumber);       
     }
     
     /**

@@ -82,7 +82,8 @@
                        xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"                
                        xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" 
                        xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" 
-                       xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" 
+                       xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
+                       xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" 
                        xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2"
                        xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" 
                        xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7">

@@ -712,19 +712,6 @@ public class RegistryAdminService {
              log.info("the ident in updateNoCheck = " + tempIdent);
              
              //root = update.createElement("AstrogridResource");
-             root = xsDoc.createElement("AstrogridResource");
-             root.appendChild(currentResource);
-             //RegistryServerHelper.addStatusMessage("Entering new entry: " + tempIdent);
-             try {
-                 coll = xdb.openAdminCollection(collectionName);
-                 xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);
-              } finally {
-                  try {
-                      xdb.closeCollection(coll);
-                  }catch(XMLDBException xmldb) {
-                      log.error(xmldb);
-                  }                
-              }
              if(currentResource.hasAttributes()) {                 
                  Node typeAttribute = currentResource.getAttributes().getNamedItem("xsi:type");
                  String nodeVal = null;
@@ -777,6 +764,18 @@ public class RegistryAdminService {
                            
                      }//if
                  }//if
+                 root = xsDoc.createElement("AstrogridResource");
+                 root.appendChild(currentResource);
+                 try {
+                     coll = xdb.openAdminCollection(collectionName);
+                     xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);
+                 } finally {
+                     try {
+                         xdb.closeCollection(coll);
+                     }catch(XMLDBException xmldb) {
+                         log.error(xmldb);
+                     }//try
+                 }//try&finally             
          }//else
       }//for
       log.debug("end updateNoCheck");

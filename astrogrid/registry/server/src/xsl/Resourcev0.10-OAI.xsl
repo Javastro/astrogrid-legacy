@@ -139,6 +139,7 @@
    xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1" 
    xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" 
    xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" 
+   xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3"
    xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"  
    xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"   
    xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7">

@@ -22,7 +22,7 @@
   <type>Archive</type>
  </content>
     <interface xsi:type="WebService">
-      <accessURL use="full"><%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery</accessURL>
+      <accessURL use="full"><%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryHarvest</accessURL>
     </interface> 
    <vg:managedAuthority><%= request.getParameter("AuthorityID") %></vg:managedAuthority>
 </vor:Resource>

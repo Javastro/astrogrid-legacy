@@ -141,18 +141,22 @@
      -  Intersection Search:  a AND b
      -->
    <xsl:template match="*[@xsi:type='intersectionSearchType']">
+	  <xsl:text>(</xsl:text>
       <xsl:apply-templates select="*[1]"/>
       <xsl:text> and </xsl:text>
       <xsl:apply-templates select="*[2]"/>
+ 	  <xsl:text>)</xsl:text>
    </xsl:template>
 
    <!--
      -  Union: a OR b
      -->
    <xsl:template match="*[@xsi:type='unionSearchType']">
+	 <xsl:text>(</xsl:text>
       <xsl:apply-templates select="*[1]"/>
       <xsl:text> or </xsl:text>
       <xsl:apply-templates select="*[2]"/>
+	 <xsl:text>)</xsl:text>
    </xsl:template>
 
    <!--
@@ -214,7 +218,7 @@
       <xsl:text> </xsl:text>      
       <xsl:choose>
          <xsl:when test="$comp = 'LIKE'">
-           <xsl:text>|=</xsl:text>
+           <xsl:text> |= </xsl:text>
          </xsl:when>
          <xsl:otherwise>
             <xsl:value-of select="$comp"/>

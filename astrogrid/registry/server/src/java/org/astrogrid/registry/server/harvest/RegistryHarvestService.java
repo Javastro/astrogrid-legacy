@@ -275,9 +275,8 @@ public class RegistryHarvestService {
 //    invocationType = DomHelper.getNodeTextValue((Element)resourceList.item(i),"Invocation","vr");
       log.info("The access URL = " + accessURL + " invocationType = " + invocationType);
 //    System.out.println("The access URL = " + accessURL + " invocationType = " + invocationType);
-
-
-      if("WebService".endsWith(invocationType)) {
+      
+      if(invocationType != null && invocationType.endsWith("WebService")) {
          //call the service
          //remember to look at the date
          Element childElem = null;
@@ -403,8 +402,11 @@ public class RegistryHarvestService {
                 e.printStackTrace();
                 log.error(e);
             }
-  //       }
-      }else if("WebBrowser".endsWith(invocationType) || "Extended".endsWith(invocationType)) {
+      }else if(invocationType != null && 
+               (invocationType.endsWith("WebBrowser") || 
+                invocationType.endsWith("Extended") ||
+                invocationType.endsWith("ParamHTTP"))
+               ) {
          //its a web browser so assume for oai.
          try {
             String ending = "";

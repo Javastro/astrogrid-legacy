@@ -17,7 +17,7 @@
                 xmlns:cea2="http://www.ivoa.net/xml/CEAService/v0.2"
                 xmlns:cs2="http://www.ivoa.net/xml/ConeSearch/v0.3" 
                 xmlns:sia2="http://www.ivoa.net/xml/SIA/v0.7" 
-                xmlns:tb2="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3"
+                xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
                 xmlns:xs="http://www.w3.org/2001/XMLSchema" 
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
@@ -538,7 +538,7 @@
    </xsl:template>
 
    <xsl:template match="*[@xsi:type='TabularDB' or 
-                          @xsi:type='tb2:TabularDB']">
+                          @xsi:type='tdb:TabularDB']">
       <xsl:call-template name="doindent">
          <xsl:with-param name="nlev" select="1"/>
       </xsl:call-template>
@@ -550,12 +550,18 @@
          <xsl:apply-templates select="vs2:facility"/>
          <xsl:apply-templates select="vs2:instrument"/>
          <xsl:call-template name="doCoverage"/>
-         <xsl:apply-templates select="vs2:table"/>
+         <xsl:apply-templates select="tdb:db/tdb:table"/>
          <xsl:call-template name="doindent">
             <xsl:with-param name="nlev" select="1"/>
          </xsl:call-template>
       </vr:Resource>
    </xsl:template>
+
+   <xsl:template match="tdb:db">
+		<xsl:apply-templates select="@*|node()"/>
+   </xsl:template>
+
+
 
 
    <xsl:template match="*[@xsi:type='DataCollection' or 
@@ -1435,6 +1441,21 @@
       </Table>
       <xsl:value-of select="$cr"/>
    </xsl:template>
+
+   <xsl:template match="tdb:table">
+      <xsl:call-template name="doindent"/>
+      <Table xmlns="http://www.ivoa.net/xml/VODataService/v0.4">
+         <xsl:if test="@role">
+            <xsl:attribute name="role"><xsl:value-of select="@role"/></xsl:attribute>
+         </xsl:if>
+
+         <xsl:value-of select="$cr"/>
+         <xsl:call-template name="convertTable"/>
+         <xsl:call-template name="doindent"/>
+      </Table>
+      <xsl:value-of select="$cr"/>
+   </xsl:template>
+
 
    <xsl:template match="vs2:column">
       <xsl:call-template name="doindent">

@@ -41,7 +41,9 @@ Below you will find various configuration and installation instructions for your
     	        <li>4.) Deploy the registry war file into your servlet container normally by dropping them into the webapps directory or through
     	            some type of manager interface.</li>
     	        <li>5.) Go to your contexts environment entries in the Administration GUI of your servlet container (hence what was read from the web.xml).  
-    	                All that really needs changing is the reg.amend.authorityid to your main AuthorityID used on this registry.  But you may wish to read the Properties section below to customize your installation.</li>
+    	                All that really needs changing is the reg.amend.authorityid to your main AuthorityID used on this registry.  But you may wish to read the Properties section below to customize your installation.
+    	                <i>If your going to be a full registry you will need to change reg.amend.harvest to true.  Also depending on your context path/url you will need to change the reg.amend.oaipublish properties.</i>
+    	         </li>
     	        <li>6.) In general the installation of the registry is complete, but read below for the setup.</li>
     	   	</ul>
     	    Steps involved for Setup of Registry:

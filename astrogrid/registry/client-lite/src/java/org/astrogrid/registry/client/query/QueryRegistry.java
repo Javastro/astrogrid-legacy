@@ -263,6 +263,10 @@ public class QueryRegistry implements RegistryService {
               resultDoc = sbe.getAsDocument();
               logger.info("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(resultDoc));
               //System.out.println("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(resultDoc));
+              //NodeList nl = resultDoc.getDocumentElement().getElementsByTagNameNS("*","table");
+              //if(nl.getLength() > 0) {
+                  //System.out.println("the namespaceuri of table = " + nl.item(0).getNamespaceURI());                  
+              //}
               if(!reg_default_version.equals(reg_transform_version)) {
                   //hmmm more of a hack for auto-integration than anything else.
                   //lets grab the registry version from the result and only transform

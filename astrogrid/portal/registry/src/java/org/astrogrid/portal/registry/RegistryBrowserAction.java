@@ -431,18 +431,9 @@ public class RegistryBrowserAction extends AbstractAction
 		 query += "\n<selectionOp op='$and$'/>";
        String sqlQuery = "Select * from Registry where ";
 		 if ( CATALOG_SEARCH.equals( main ) ) {
-            /*
-				query += "\n<selectionSequence>\n";
-				query += "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>";
-				query += "\n</selectionSequence>";
-            */
              sqlQuery += "vr:content/vr:type='Catalog' ";
 		 }
 		 else if ( TOOL_SEARCH.equals( main ) ) {
-           /*
-			 query += "\n<selection item='@xsi:type' itemOp='EQ'";
-			 query += " value='CeaApplicationType'/>";
-             */
              sqlQuery += "@xsi:type='cea:CeaApplicationType' ";
 //		Following removed as there seems to be a confusion over id or key and the value of
 //		authid was getting included as part of the search string in the form:
@@ -451,86 +442,36 @@ public class RegistryBrowserAction extends AbstractAction
 //			 key = null;       
 			}
 		 else if ( TABLE_SEARCH.equals( main ) ) {
-          /*
-			 query += "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>";
-          */
           sqlQuery += "vr:content/vr:type='Catalog' ";
 		 }
 
 		 // Now lets check for other filters.
 		 if ( id != null ) {
-          /*
-			 query += "\n<selectionOp op='AND'/>";
-			 query += "<selection item='vr:Identifier/vr:AuthorityID' itemOp='CONTAINS'";
-			 query += " value='" + id + "'/>";
-          */
           sqlQuery += " and vr:identifier like '%" + id +"%' ";
 		 }
 		 if ( key != null ) {
-          /*
-			 query += "\n<selectionOp op='AND'/>";
-			 query += "<selection item='vr:Identifier/vr:ResourceKey' itemOp='CONTAINS'";
-			 query += " value='" + key + "'/>";
-          */
           sqlQuery += " and vr:identifier like '%" + key +"%' ";
 		 }
 
 		 if ( title != null ) {
-          /*
-			 query += "\n<selectionOp op='AND'/>";
-			 query += "<selection item='vr:Title' itemOp='CONTAINS' value='"
-									+ title + "'/>";
-          */
           sqlQuery += " and vr:title like '%" + title +"%' ";             
 		 }
 		 if ( tabname != null ) {
-          /*
-			 query += "\n<selectionOp op='AND'/>";
-			 query += "<selection item='*:Table/vr:Name' "
-								+ "itemOp='EQ' value='" + tabname + "'/>";
-          */
-          sqlQuery += " and vs:table/vs:name = '" + tabname + "'";
+          sqlQuery += " and (vs:table/vs:name = '" + tabname + "' or tdb:table/vs:name = '" + tabname + "') ";
 		 }
 		 if ( colname != null ) {
-          /*
-			 query += "\n<selectionOp op='AND'/>";
-			 query += "<selection item='*:Table/*:Column/vr:Name' "
-								+ "itemOp='EQ' value='" + colname + "'/>";
-          */
-          sqlQuery += " and vs:table/vs:column/vs:name = '" + colname + "'";             
+          sqlQuery += " and (vs:table/vs:column/vs:name = '" + colname + "' or tdb:table/vs:column/vs:name = '" + colname + "') ";             
           
 		 }
 		 if ( ucd != null ) {
-          /*
-			 query += "\n<selectionOp op='AND'/>";
-			 query += "<selection item='*:Table/*:Column/*:UCD' "
-								+ "itemOp='EQ' value='" + ucd + "'/>";
-          */
-          sqlQuery += " and vs:table/vs:column/vs:ucd = '" + ucd + "'";
+          sqlQuery += " and (vs:table/vs:column/vs:ucd = '" + ucd + "' or tdb:table/vs:column/vs:ucd = '" + ucd + "') ";
 		 }
 		 if ( units != null ) {
-          /*
-			 query += "\n<selectionOp op='AND'/>";
-			 query += "<selection item='*:Table/*:Column/*:Unit' "
-								+ "itemOp='EQ' value='" + units + "'/>";
-          */
-          sqlQuery += " and vs:table/vs:column/vs:unit = '" + units + "'";
+          sqlQuery += " and (vs:table/vs:column/vs:unit = '" + units + "' or tdb:table/vs:column/vs:unit = '" + units + "') ";
 		 }
 		 if ( desc != null ) {
-          /*
-			 query += "\n<selectionOp op='AND'/>";
-			 query += "<selection item='*:Table/*:Column/vr:Description' "
-								+ "itemOp='CN' value='" + desc + "'/>";
-          */
-          sqlQuery += " and vs:table/vs:column/vs:description = '" + desc + "'";             
+          sqlQuery += " and (vs:table/vs:column/vs:description like '%" + desc + "%' or tdb:table/vs:column/vs:description like '%" + desc + "%') ";             
 		 }
-
-		 // End of Query.
-       /*
-		 query += "\n</selectionSequence></query>";
-
-		 return query;
-       */
        return sqlQuery;
 	 }
 

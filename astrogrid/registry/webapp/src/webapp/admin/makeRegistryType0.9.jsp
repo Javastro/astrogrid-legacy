@@ -30,7 +30,7 @@
     </Curation>
     <Interface>
       <Invocation>WebService</Invocation>
-      <AccessURL use="full"><%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery</AccessURL>
+      <AccessURL use="full"><%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryHarvest</AccessURL>
     </Interface>
     <vg:ManagedAuthority><%= request.getParameter("AuthorityID") %></vg:ManagedAuthority>    
   </vr:Resource>

@@ -38,8 +38,8 @@ import org.astrogrid.store.Ivorn;
 
 /**
  * @author Phil Nicolson (pjn3@star.le.ac.uk) Jan 05
- * @version $Name:  $Revision: 1.7 $Date:
- * @version $Name:  $Revision: 1.7 $Date:
+ * @version $Name:  $Revision: 1.8 $Date:
+ * @version $Name:  $Revision: 1.8 $Date:
  */
 public class ResourceAction extends AbstractAction {
 
@@ -592,7 +592,8 @@ public class ResourceAction extends AbstractAction {
      * @return ArrayList of relevant the String XML results.
      */
     private ArrayList createList( Document doc ) {
-       NodeList nodes = doc.getDocumentElement().getChildNodes();
+       //NodeList nodes = doc.getDocumentElement().getChildNodes();
+       NodeList nodes = doc.getDocumentElement().getElementsByTagNameNS("*","Resource");
        return listNodes( nodes );
     }
     private ArrayList listNodes( NodeList nl ) {
