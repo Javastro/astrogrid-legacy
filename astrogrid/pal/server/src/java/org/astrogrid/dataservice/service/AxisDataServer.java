@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: AxisDataServer.java,v 1.2 2005/03/11 15:17:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -108,12 +108,14 @@ public class AxisDataServer extends DataServer {
 
       AxisFault fault = new AxisFault(message);
 
+      /* these fault codes are deprecated
       if (blameClient) {
          fault.setFaultCode("Client");
       } else {
          fault.setFaultCode("Server");
       }
-   
+       */
+      
       fault.clearFaultDetails();
       while (cause != null) {
          StringWriter writer = new StringWriter();
@@ -136,8 +138,11 @@ public class AxisDataServer extends DataServer {
 
 /*
 $Log: AxisDataServer.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/03/11 15:17:52  mch
+removed calls to deprecated setFault
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:24  mch
 Initial checkin
