@@ -1,10 +1,10 @@
 package org.astrogrid.mySpace.delegate.mySpaceManager;
 
-import junit.framework.*;
-import java.util.*;
-import java.net.*;
-
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
+import java.net.URL;
+import java.util.Vector;
+import junit.framework.Assert;
+import junit.framework.TestCase;
+import org.astrogrid.mySpace.delegate.MySpaceManagerDelegate;
 
 /**
  * Junit tests for the <code>MySpaceManagerDelegate</code> class.
@@ -45,7 +45,7 @@ public class MySpaceManagerDelegateTest extends TestCase
 
          Vector allMssUrls = delegate.getAllMssUrl();
          delegate.setQueryMssUrl(allMssUrls);
-         
+
          if (allMssUrls.size() == 2)
          {  String firstUrl = (String)allMssUrls.elementAt(0);
 //            System.out.println("firstUrl: " + firstUrl);
@@ -570,7 +570,7 @@ public class MySpaceManagerDelegateTest extends TestCase
  */
 
    public static void main (String argv[])
-   {  
+   {
 
 //
 //   If the URL of a MySpace system was supplied as the first argument
