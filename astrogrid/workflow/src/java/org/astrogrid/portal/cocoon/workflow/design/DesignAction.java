@@ -53,7 +53,7 @@ public class DesignAction extends AbstractAction {
         TRACE_ENABLED = true ;
         
     private static Logger 
-        logger = Logger.getLogger( Workflow.class ) ; 
+        logger = Logger.getLogger( DesignAction.class ) ; 
         
     private static final String
         ASTROGRIDERROR_SOMEMESSAGE = "AGWKFE00050" ; // none so far 
