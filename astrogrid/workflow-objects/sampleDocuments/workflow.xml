@@ -2,7 +2,7 @@
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <workflow xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:er="http://www.astrogrid.org/schema/ExecutionRecord/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGWorkflow/v1
 \\pahlaptop\work\astrogrid\src\workflow-objects\schema\Workflow.xsd" name="AVODEMO - sect32s">
-	<Activities>
+	<sequence>
 		<flow>
 			<step name="sextractor - b" joinCondition="any" stepNumber="1" sequenceNumber="1">
 				<tool name="SExtractor" interface="simple">
@@ -91,7 +91,7 @@
 			</tool>
 			<description>generate the photo z</description>
 		</step>
-	</Activities>
+	</sequence>
 	<description>Workflow involving multi-band sextractor run followed by a data federation and hyperz run</description>
 	<Credentials>
 		<agcred:Account>
