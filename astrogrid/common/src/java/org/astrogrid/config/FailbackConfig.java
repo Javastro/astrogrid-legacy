@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.11 2004/03/05 00:33:02 mch Exp $
+ * $Id: FailbackConfig.java,v 1.12 2004/03/05 12:32:29 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -398,7 +398,7 @@ public class FailbackConfig extends Config {
          Enumeration c = cache.keys();
          while (c.hasMoreElements()) {
             Object key = c.nextElement();
-            out.println("  "+key+" = "+cache.get(key));
+            out.println(formKeyValue(key, cache.get(key)));
          }
       }
       
@@ -412,18 +412,19 @@ public class FailbackConfig extends Config {
             Enumeration j = env.keys();
             while (j.hasMoreElements()) {
                Object key = j.nextElement();
-               out.println("  "+key+" = "+env.get(key));
+               out.println(formKeyValue(key, env.get(key)));
             }
             out.println("JNDI Names:");
             Enumeration n = jndiContext.list(jndiPrefix);
 
             while (n.hasMoreElements()) {
                Object key = n.nextElement();
-               out.print("  "+key+" = ");
+               String value = "??Failed lookup";
                //not sure how all this works, so for now will ignore naming exceptions
                try {
-                  out.println(jndiContext.lookup(key.toString()));
-               } catch (NamingException ne) { out.println("??Failed Lookup"); }
+                  value = jndiContext.lookup(key.toString()).toString();
+               } catch (NamingException ne) { } //ignore - print fail value
+               out.println(formKeyValue(key, value));
             }
             
          }
@@ -443,7 +444,7 @@ public class FailbackConfig extends Config {
          Enumeration p = properties.keys();
          while (p.hasMoreElements()) {
             Object key = p.nextElement();
-            out.println("  "+key+" = "+properties.get(key));
+            out.println(formKeyValue(key, properties.getProperty(key.toString())));
          }
       }
       else {
@@ -456,10 +457,22 @@ public class FailbackConfig extends Config {
       Enumeration s = System.getProperties().keys();
       while (s.hasMoreElements()) {
          Object key = s.nextElement();
-         out.println("  "+key+" = "+System.getProperty(key.toString()));
+         out.println(formKeyValue(key, System.getProperty(key.toString())));
       }
 
       out.flush();
+   }
+   
+   /**
+    * Formats a key/value pair for printing.  Used by dumpConfig.  Does noddy
+    * check for 'password' in the key string and hides value if present
+    */
+   public String formKeyValue(Object key, Object value) {
+      if (key.toString().toLowerCase().indexOf("password") > -1) {
+         return "  "+key+" = <hidden>";
+      } else {
+         return "  "+key+" = "+value;
+      }
    }
    
    /**
@@ -476,6 +489,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.12  2004/03/05 12:32:29  mch
+Hides values for keys that include the word 'password'
+
 Revision 1.11  2004/03/05 00:33:02  mch
 Added exception name to errors
 
