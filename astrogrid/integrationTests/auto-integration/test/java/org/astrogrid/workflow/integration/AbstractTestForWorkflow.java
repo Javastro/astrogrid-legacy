@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.13 2004/08/22 01:31:15 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.14 2004/08/22 01:32:30 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -117,7 +117,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
             catch (WorkflowInterfaceException e1) {
                 // doesn't matter - we'll get it next time round.
             }
-            Thread.sleep(1000); // have a little breather.   
+            Thread.sleep(10 * 1000); // have a little breather - standoff for 10 seconds.   
         }
         softAssertTrue("Job failed to complete in expected time",completed);
         // check results.        
@@ -251,6 +251,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.14  2004/08/22 01:32:30  nw
+increased standoff time too
+
 Revision 1.13  2004/08/22 01:31:15  nw
 increased timeout for tests - give them more chance to finish
 
