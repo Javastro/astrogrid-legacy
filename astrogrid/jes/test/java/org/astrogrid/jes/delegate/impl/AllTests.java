@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/02/09 11:41:44 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/03/05 16:16:55 nw Exp $
  * Created on 09-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,10 +9,8 @@
  *
 **/
 package org.astrogrid.jes.delegate.impl;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Feb-2004
  *
@@ -25,14 +23,19 @@ public class AllTests {
         TestSuite suite = new TestSuite("Test for org.astrogrid.jes.delegate.impl");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(AbstractDelegateTest.class));
+        suite.addTest(new TestSuite(SOAPJobMonitorTest.class));
+        suite.addTest(new TestSuite(SOAPJobControllerTest.class));
         //$JUnit-END$
         return suite;
     }
 }
-
-
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.2  2004/02/09 11:41:44  nw
 merged in branch nww-it05-bz#85
 

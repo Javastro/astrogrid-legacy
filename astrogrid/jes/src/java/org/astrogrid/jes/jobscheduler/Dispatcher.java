@@ -1,4 +1,4 @@
-/*$Id: Dispatcher.java,v 1.3 2004/03/04 01:57:35 nw Exp $
+/*$Id: Dispatcher.java,v 1.4 2004/03/05 16:16:23 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,9 @@
 **/
 package org.astrogrid.jes.jobscheduler;
 
-import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.JobURN;
 /** Interface to a component that dispatches (executes) a job step.
  * This may be done by communicating to an application controller, to by other means. 
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Feb-2004
@@ -34,6 +31,11 @@ public interface Dispatcher {
 
 /* 
 $Log: Dispatcher.java,v $
+Revision 1.4  2004/03/05 16:16:23  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.3  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

@@ -1,4 +1,4 @@
-/*$Id: SubmitNewJobNotifierFailsTest.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: SubmitNewJobNotifierFailsTest.java,v 1.5 2004/03/05 16:16:55 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,11 +11,15 @@
 package org.astrogrid.jes.jobscheduler;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.jobscheduler.dispatcher.*;
+import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
+import org.astrogrid.jes.util.JesFunctions;
 import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
+
+import java.util.Iterator;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Feb-2004
@@ -47,8 +51,14 @@ public class SubmitNewJobNotifierFailsTest extends AbstractTestForJobScheduler{
         //
         Workflow job = fac.findJob(JesUtil.axis2castor(urn));
         assertNotNull(job);
-        assertEquals(ExecutionPhase.ERROR,job.getJobExecutionRecord().getStatus());
-        // should probably check for step error codes too...
+        // all steps should be in an error state.
+        job.addFunctions(JesFunctions.FUNCTIONS);
+        Iterator i = job.findXPathIterator("//*[jes:isStep()]");
+        while (i.hasNext()) {
+            Step s = (Step)i.next();
+            assertEquals(ExecutionPhase.ERROR,JesUtil.getLatestOrNewRecord(s).getStatus());
+        }
+        
     }
     /**set up dispatcher to fail.
      * @see org.astrogrid.jes.jobscheduler.AbstractTestForJobScheduler#createDispatcher()
@@ -62,6 +72,11 @@ public class SubmitNewJobNotifierFailsTest extends AbstractTestForJobScheduler{
 
 /* 
 $Log: SubmitNewJobNotifierFailsTest.java,v $
+Revision 1.5  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

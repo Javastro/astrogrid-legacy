@@ -1,4 +1,4 @@
-/*$Id: ComponentManager.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: ComponentManager.java,v 1.4 2004/03/05 16:16:23 nw Exp $
  * Created on 16-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.jes.component;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.comm.MemoryQueueSchedulerNotifier;
 import org.astrogrid.jes.comm.SchedulerNotifier;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
@@ -24,7 +25,6 @@ import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
 import org.astrogrid.jes.impl.workflow.SqlCommands;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
-import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.jobscheduler.MockJobScheduler;
 import org.astrogrid.jes.jobscheduler.Policy;
@@ -32,7 +32,7 @@ import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher
 import org.astrogrid.jes.jobscheduler.locator.ConstantToolLocator;
 import org.astrogrid.jes.jobscheduler.locator.MapLocator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
-import org.astrogrid.jes.jobscheduler.policy.RoughPolicy;
+import org.astrogrid.jes.jobscheduler.policy.LinearPolicy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
@@ -89,7 +88,7 @@ public class ComponentManager {
     
 
    /** build a scheduler notifier, possibly using  the previously-constructed scheduler */     
- protected SchedulerNotifier buildNotifier(org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler scheduler) {
+ protected SchedulerNotifier buildNotifier(JobScheduler scheduler) {
         return  new MemoryQueueSchedulerNotifier(scheduler);
 }
 
@@ -105,12 +104,12 @@ public static final String CONSTANT_TOOL_LOCATOR_ENDPOINT = "constant.tool.locat
 public static final String CONSTANT_TOOL_LOCATOR_INTERFACE = "constant.tool.locator.interface";
 
 /** build a job scheduler */
-    protected org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler buildScheduler() {
+    protected JobScheduler buildScheduler() {
         try {
             Locator locator = buildLocator();  
              Policy policy = buildPolicy();
              Dispatcher dispatcher = buildDispatcher(locator);
-             return  new JobScheduler(facade,dispatcher,policy);
+             return  new org.astrogrid.jes.jobscheduler.JobScheduler(facade,dispatcher,policy);
         } catch (MalformedURLException e) {
             log.fatal("Cannot initialize dispatcher",e);
             return buildFallbackScheduler();
@@ -118,14 +117,14 @@ public static final String CONSTANT_TOOL_LOCATOR_INTERFACE = "constant.tool.loca
     }
 
 
-protected org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler buildFallbackScheduler() {
+protected JobScheduler buildFallbackScheduler() {
     log.fatal("Building mock scheduler - nothings going to work now");
     return new MockJobScheduler();
 }
 
 
 protected Policy buildPolicy() {
-    return new RoughPolicy();
+    return new LinearPolicy();
 }
 
 public static final String RELATIVE_MONITOR_URL="dispatcher.relative.monitor.url";
@@ -240,7 +239,7 @@ protected AbstractJobFactoryImpl buildFallbackFactory() {
     
     protected  BeanFacade facade;
     protected SchedulerNotifier notifier;    
-    protected org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler scheduler;
+    protected JobScheduler scheduler;
     
     /** get the instnace.
      * lazily initialized - parses configuration and creates components on first call
@@ -279,7 +278,7 @@ protected AbstractJobFactoryImpl buildFallbackFactory() {
     /**
      * @return
      */
-    public org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler getScheduler() {
+    public JobScheduler getScheduler() {
         return scheduler;
     }
     

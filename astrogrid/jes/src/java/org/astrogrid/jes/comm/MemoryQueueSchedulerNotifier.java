@@ -1,4 +1,4 @@
-/*$Id: MemoryQueueSchedulerNotifier.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: MemoryQueueSchedulerNotifier.java,v 1.4 2004/03/05 16:16:23 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.jes.comm;
 
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
-import org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler;
+import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import org.apache.commons.logging.Log;
@@ -20,8 +20,6 @@ import org.apache.commons.logging.LogFactory;
 
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
-
-import java.rmi.RemoteException;
 
 /** Notifier that maintains a queue, adds notifications to it, where they are consumed by a scheduler running in a different thread.
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
@@ -83,9 +81,8 @@ public class MemoryQueueSchedulerNotifier implements SchedulerNotifier {
             return new Runnable() {
                 public void run() {
                     try {
-                        org.astrogrid.jes.types.v1.JobURN convertedURN = new org.astrogrid.jes.types.v1.JobURN(urn.toString());
-                    js.scheduleNewJob(convertedURN);
-                    } catch (RemoteException e) {
+                    js.scheduleNewJob(JesUtil.castor2axis(urn));
+                    } catch (Exception e) {
                         logger.warn("schedule new job",e);
                     }
                 }                
@@ -97,7 +94,7 @@ public class MemoryQueueSchedulerNotifier implements SchedulerNotifier {
                 public void run() {
                     try {
                     js.resumeJob(ji,msg);
-                    } catch (RemoteException e) {
+                    } catch (Exception e) {
                         logger.warn("resume job",e);
                     }
                 }
@@ -111,6 +108,11 @@ public class MemoryQueueSchedulerNotifier implements SchedulerNotifier {
 
 /* 
 $Log: MemoryQueueSchedulerNotifier.java,v $
+Revision 1.4  2004/03/05 16:16:23  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

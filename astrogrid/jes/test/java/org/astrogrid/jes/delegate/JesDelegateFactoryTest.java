@@ -1,4 +1,4 @@
-/*$Id: JesDelegateFactoryTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: JesDelegateFactoryTest.java,v 1.3 2004/03/05 16:16:55 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,8 @@ package org.astrogrid.jes.delegate;
 
 import org.astrogrid.jes.delegate.impl.JobControllerDelegateImpl;
 import org.astrogrid.jes.delegate.impl.JobMonitorDelegateImpl;
-import org.astrogrid.jes.delegate.impl.JobSchedulerDelegateImpl;
 import org.astrogrid.jes.delegate.impl.TestJobControllerDelegateImpl;
 import org.astrogrid.jes.delegate.impl.TestJobMonitorDelegateImpl;
-import org.astrogrid.jes.delegate.impl.TestJobSchedulerDelegateImpl;
 
 import junit.framework.TestCase;
 
@@ -50,15 +48,7 @@ public class JesDelegateFactoryTest extends TestCase {
         assertEquals(Delegate.TEST_URI,del.getTargetEndPoint());
         assertTrue(del instanceof TestJobMonitorDelegateImpl);        
     }
-    /*
-     * Test for JobScheduler createJobScheduler(String)
-     */
-    public void testCreateJobSchedulerTest() {
-        Delegate del = JesDelegateFactory.createJobScheduler(Delegate.TEST_URI,0);
-        assertNotNull(del);
-        assertEquals(Delegate.TEST_URI,del.getTargetEndPoint());
-        assertTrue(del instanceof TestJobSchedulerDelegateImpl);        
-    }
+
 
     /*
      * Test for JobController createJobController(String)
@@ -78,20 +68,17 @@ public class JesDelegateFactoryTest extends TestCase {
         assertEquals(DUMMY_ENDPOINT,del.getTargetEndPoint());
         assertTrue(del instanceof JobMonitorDelegateImpl);        
     }
-    /*
-     * Test for JobScheduler createJobScheduler(String)
-     */
-    public void testCreateJobScheduler() {
-        Delegate del = JesDelegateFactory.createJobScheduler(DUMMY_ENDPOINT);
-        assertNotNull(del);
-        assertEquals(DUMMY_ENDPOINT,del.getTargetEndPoint());
-        assertTrue(del instanceof JobSchedulerDelegateImpl);        
-    }    
+   
 }
 
 
 /* 
 $Log: JesDelegateFactoryTest.java,v $
+Revision 1.3  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

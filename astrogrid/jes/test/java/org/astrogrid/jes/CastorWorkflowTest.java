@@ -1,4 +1,4 @@
-/*$Id: CastorWorkflowTest.java,v 1.2 2004/03/04 01:57:35 nw Exp $
+/*$Id: CastorWorkflowTest.java,v 1.3 2004/03/05 16:16:55 nw Exp $
  * Created on 03-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,11 +71,30 @@ public class CastorWorkflowTest extends TestCase {
         sw.close();
         System.out.println(sw.toString());
     }
+    
+    /** check whether origin is 0 or 1 */
+    public void testOriginOfCollections() {
+        Sequence seq = new Sequence();
+        assertEquals(0,seq.getActivityCount());
+        Step s = new Step();
+        seq.addActivity(s);
+        assertEquals(1,seq.getActivityCount());
+        assertEquals(1,seq.getActivity().length);
+        
+        Step s1 = (Step)seq.getActivity(0);
+        assertNotNull(s1);
+        assertEquals(s,s1);
+    }
 }
 
 
 /* 
 $Log: CastorWorkflowTest.java,v $
+Revision 1.3  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.2  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

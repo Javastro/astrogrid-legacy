@@ -1,4 +1,4 @@
-/*$Id: SubmitNewJobSuccessTest.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: SubmitNewJobSuccessTest.java,v 1.5 2004/03/05 16:16:55 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.jes.jobscheduler;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.jobscheduler.dispatcher.*;
+import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
 import org.astrogrid.jes.util.JesUtil;
@@ -52,6 +52,11 @@ public class SubmitNewJobSuccessTest extends AbstractTestForJobScheduler {
 
 /* 
 $Log: SubmitNewJobSuccessTest.java,v $
+Revision 1.5  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

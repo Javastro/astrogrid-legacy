@@ -1,4 +1,4 @@
-/*$Id: PropertiesConfig.java,v 1.1 2004/03/03 01:13:42 nw Exp $
+/*$Id: PropertiesConfig.java,v 1.2 2004/03/05 16:16:55 nw Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.config.Config;
 import org.astrogrid.config.PropertyNotFoundException;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.net.URL;
 import java.util.Properties;
 
@@ -52,11 +53,21 @@ public class PropertiesConfig extends Config {
     public void loadFromUrl(URL arg0) throws IOException {
         props.load(arg0.openStream());
     }
+    /**
+     * @see org.astrogrid.config.Config#dumpConfig(java.io.Writer)
+     */
+    public void dumpConfig(Writer arg0) {
+    }
 }
 
 
 /* 
 $Log: PropertiesConfig.java,v $
+Revision 1.2  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.1  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
  

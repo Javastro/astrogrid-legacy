@@ -1,4 +1,4 @@
-/*$Id: JesDelegateFactory.java,v 1.3 2004/02/27 00:46:03 nw Exp $
+/*$Id: JesDelegateFactory.java,v 1.4 2004/03/05 16:16:23 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.jes.delegate;
 
 import org.astrogrid.jes.delegate.impl.JobControllerDelegate;
 import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
-import org.astrogrid.jes.delegate.impl.JobSchedulerDelegate;
 
 /** Factory / facade class that draws all the different delegate factories together.
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Feb-2004
@@ -31,17 +30,17 @@ public class JesDelegateFactory {
     public static JobMonitor createJobMonitor(String url, int timeout) {
         return JobMonitorDelegate.buildDelegate(url,timeout);
     }
-    public static JobScheduler createJobScheduler(String url) {
-        return JobSchedulerDelegate.buildDelegate(url);
-    }
-    public static JobScheduler createJobScheduler(String url, int timeout) {
-        return JobSchedulerDelegate.buildDelegate(url,timeout);
-    }
+
 }
 
 
 /* 
 $Log: JesDelegateFactory.java,v $
+Revision 1.4  2004/03/05 16:16:23  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.3  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

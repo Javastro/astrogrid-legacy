@@ -14,7 +14,6 @@ package org.astrogrid.jes.delegate.impl;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitorServiceLocator;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitorServiceSoapBindingStub;
-
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 

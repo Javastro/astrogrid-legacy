@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.7 2004/03/04 02:14:27 nw Exp $
+/*$Id: AllTests.java,v 1.8 2004/03/05 16:16:55 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ public class AllTests {
         suite.addTest(new TestSuite(InMemorySystemTest.class));
         suite.addTest(new TestSuite(LocalSOAPSystemTest.class));
         //$JUnit-END$
+        suite.addTest(org.astrogrid.jes.util.AllTests.suite());
         suite.addTest(org.astrogrid.jes.delegate.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobcontroller.AllTests.suite());
         suite.addTest(org.astrogrid.jes.delegate.impl.AllTests.suite());
@@ -34,11 +35,17 @@ public class AllTests {
         suite.addTest(org.astrogrid.jes.jobscheduler.AllTests.suite());
         suite.addTest(org.astrogrid.jes.comm.AllTests.suite());
         suite.addTest(org.astrogrid.jes.component.AllTests.suite());
+        suite.addTest(org.astrogrid.jes.jobscheduler.policy.AllTests.suite());
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.8  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.7  2004/03/04 02:14:27  nw
 removed jes configurator. using config now instead
 

@@ -1,4 +1,4 @@
-/*$Id: MockJobScheduler.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: MockJobScheduler.java,v 1.4 2004/03/05 16:16:23 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.jes.jobscheduler;
 
-import org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler;
+import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
@@ -60,6 +60,11 @@ public class MockJobScheduler implements JobScheduler {
 
 /* 
 $Log: MockJobScheduler.java,v $
+Revision 1.4  2004/03/05 16:16:23  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

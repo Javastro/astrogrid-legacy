@@ -1,4 +1,4 @@
-/*$Id: ResumeJobSuccessTest.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: ResumeJobSuccessTest.java,v 1.5 2004/03/05 16:16:55 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,22 +43,25 @@ public class ResumeJobSuccessTest extends AbstractTestForJobScheduler {
         Workflow j = fac.findJob(JesUtil.axis2castor(urn));
         assertNotNull(j);
         Step step = (Step)JesUtil.getJobSteps(j).next(); // got to have at least one job step
+        // shouldn't have been executed yet.
+        assertEquals(0,step.getStepExecutionRecordCount());
         //use this job step to build an info object
         MessageType info = new MessageType();   
-             
-        /***** fill this in **.
-         * 
-         */
-        String xpath = null;
+  
+        String xpath = j.getXPathFor(step);
+        assertNotNull(xpath);
+        assertEquals(step,j.findXPathValue(xpath));
         JobIdentifierType id = JesUtil.createJobId(JesUtil.axis2castor(urn),xpath);       
-        info.setValue("TEST COMMENT");
+        info.setContent("TEST COMMENT");
         info.setPhase(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.COMPLETED);
         
         // could take copy of job here from store (need to clone, as using in-memory store). then compare it to result after scheduling.
         js.resumeJob(id,info);
         //now check behaviour is as expected.
         //as we're using in-memory job store, changes happen to objects directly.
-        StepExecutionRecord exRec = JesUtil.getLatestRecord(step);
+        // should now have an execution record.
+        assertEquals(1,step.getStepExecutionRecordCount());
+        StepExecutionRecord exRec = JesUtil.getLatestOrNewRecord(step);
         int count = exRec.getMessageCount();
         assertEquals(1,count);
         
@@ -72,6 +75,11 @@ public class ResumeJobSuccessTest extends AbstractTestForJobScheduler {
 
 /* 
 $Log: ResumeJobSuccessTest.java,v $
+Revision 1.5  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

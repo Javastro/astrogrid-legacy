@@ -1,4 +1,4 @@
-/*$Id: JobController.java,v 1.3 2004/02/27 00:46:03 nw Exp $
+/*$Id: JobController.java,v 1.4 2004/03/05 16:16:23 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.jes.delegate;
 
-import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 /** Interface to a job controller.
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Feb-2004
@@ -23,6 +23,11 @@ public interface JobController extends Delegate {
 }
 /* 
 $Log: JobController.java,v $
+Revision 1.4  2004/03/05 16:16:23  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.3  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

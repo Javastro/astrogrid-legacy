@@ -3,11 +3,11 @@ package org.astrogrid.jes.delegate.impl;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobControllerServiceLocator;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobControllerServiceSoapBindingStub;
-import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.ListCriteria;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
 import org.astrogrid.jes.types.v1.WorkflowList;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import org.exolab.castor.xml.CastorException;
 
@@ -44,7 +44,9 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
             if( ! response.isSubmissionSuccessful()) {
                 throw new JesDelegateException(response.getMessage() ) ;
             }
-            return response.getJobURN();
+            JobURN result = new JobURN();
+            result.setContent(response.getJobURN().toString()); 
+            return result;
         }
         catch( IOException rex) {
             rex.printStackTrace() ;

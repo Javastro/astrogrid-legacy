@@ -13,9 +13,6 @@ package org.astrogrid.jes.jobscheduler;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
-import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.community.beans.v1.Credentials;
-import org.astrogrid.community.common.util.CommunityMessage;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobFactory;
@@ -25,18 +22,18 @@ import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.Date;
-import java.util.Iterator;
 
 /**Scheduling framework. Composes together a set of different objects - this means that different behaviours can be gained by 
  * composing a scheduler using different objects.
  */
-public class JobScheduler implements org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler {
+public class JobScheduler implements org.astrogrid.jes.comm.JobScheduler {
 	
     /** Construct a scheduler
      *  Construct a new JobScheduler
@@ -62,11 +59,20 @@ public class JobScheduler implements org.astrogrid.jes.delegate.v1.jobscheduler.
         try {
 	        JobFactory factory = facade.getJobFactory() ;
 	        factory.begin() ;
-	        Workflow job = factory.findJob( JesUtil.axis2castor(jobURN)) ; 
+	        Workflow job;
+            try {
+                job = factory.findJob( JesUtil.axis2castor(jobURN)) ;
+            } catch (NotFoundException e) {
+                logger.error("Could not find job for urn:" + jobURN.getValue());
+                return;
+            } 
             
+            job.getJobExecutionRecord().setStartTime(new Date());
+            job.getJobExecutionRecord().setStatus(ExecutionPhase.INITIALIZING);
+            factory.updateJob(job);            
             // Schedule one or more job steps....
             scheduleSteps( job ) ;
-
+            updateJobStatus(job);
 			factory.updateJob( job ) ;              // Update any changed details to the database                           		
 			factory.end ( true ) ;   // Commit and cleanup
         } catch (JesException e) {
@@ -76,79 +82,113 @@ public class JobScheduler implements org.astrogrid.jes.delegate.v1.jobscheduler.
          	 
     } // end of scheduleJob()
     
+    /** create a new execution record, pre-populated */
+    protected StepExecutionRecord newStepExecutionRecord() {
+        StepExecutionRecord result = new StepExecutionRecord();
+        result.setStartTime(new Date());
+        result.setStatus(ExecutionPhase.INITIALIZING);
+        return result;
+    }
+    
     /** 
-     * Dispatch a series of steps. 
-     * @modified NWW I've changed type of this - does not throw exceptions now. instead will record any problems as comments in the job step 
-     * @todo add creation of account object.*/
+    use policy to determine one or more steps that can be executed.
+    <p>
+    update status (and record any errors) for each step execution
+    when no more steps can be executed, update status of job.
+    */
     protected void scheduleSteps( Workflow job ) {
-
-            Iterator i  = policy.calculateDispatchableCandidates(job);
-            Step step = null;
-            StepExecutionRecord er = new StepExecutionRecord();
-            try {
-                while( i.hasNext() ) {
-                        step = (Step)i.next() ;
-                        step.addStepExecutionRecord(er);
-                        er.setStartTime(new Date());
+                Step step = policy.nextExecutableStep(job);
+                while( step != null   ) {
+                   StepExecutionRecord er = newStepExecutionRecord();
+                   step.addStepExecutionRecord(er);
+                    try{
                         dispatcher.dispatchStep( job, step ) ;
                         er.setStatus(ExecutionPhase.RUNNING);
-                }            
-                job.getJobExecutionRecord().setStatus( ExecutionPhase.RUNNING ) ;   
-            } catch (Throwable t) { //catch everything
-                logger.info("Step execution failed:",t);
-                if (step != null) {                    
-                    MessageType message = new MessageType();
-                    message.setContent( "Failed: " + t.getClass().getName() + "\n " + t.getMessage());
-                    message.setLevel(LogLevel.ERROR);
-                    message.setSource("Job Controller");
-                    message.setPhase(ExecutionPhase.ERROR);
-                    message.setTimestamp(new Date());
-
-                    job.getJobExecutionRecord().setStatus(ExecutionPhase.ERROR);
-                    notifyJobFinished(job);
-                }
-            }             
-        
+                    } catch (Throwable t) { // absolutely anything
+                        logger.info("Step execution failed:",t);                 
+                         MessageType message = new MessageType();
+                         message.setContent( "Failed: " + t.getClass().getName() + "\n " + t.getMessage());
+                         message.setLevel(LogLevel.ERROR);
+                         message.setSource("Dispatcher");
+                         message.setPhase(ExecutionPhase.ERROR);
+                         message.setTimestamp(new Date());
+                         er.addMessage(message);
+                         er.setStatus(ExecutionPhase.ERROR);
+                    }               
+                    step = policy.nextExecutableStep(job);        
+                } // end while
+                // no more runnable jobs at the moment.
     } // end of scheduleSteps()
 
+    /** use policy to calculate status of job. if policy decides job is finished, record finish date, notify that job is finished. */
+    protected void updateJobStatus(Workflow job) {
+        ExecutionPhase status = policy.currentJobStatus(job);
+        job.getJobExecutionRecord().setStatus(status);
+        if (status.getType() >= ExecutionPhase.COMPLETED_TYPE) { // finished or in error
+            job.getJobExecutionRecord().setFinishTime(new Date());
+            this.notifyJobFinished(job);
+        }      
+    }
 
 
-//  stuff copied from job monitor
-    /** @todo implement xpath location part */
 	public void resumeJob(JobIdentifierType id,org.astrogrid.jes.types.v1.cea.axis.MessageType info) {
-        Workflow job = null;      
-        try { 
-
-             JobFactory factory = facade.getJobFactory() ;
-             factory.begin() ;             
-             job = factory.findJob(JesUtil.extractURN(id) ) ; // todo - match types.
+        Workflow job = null;  
+        JobFactory factory = null;  
+        try {
+             factory = facade.getJobFactory() ;
+             factory.begin() ;
+            org.astrogrid.workflow.beans.v1.execution.JobURN urn = null;          
+             try {
+                  urn = JesUtil.extractURN(id);
+                job = factory.findJob(urn ) ;
+             } catch (NotFoundException e) {
+                 logger.error("Could not find job for urn" + urn.getContent());
+                 return;
+             }        
+                  
              // compute by applying xpath to workflow. has to wait until we remove job.
              String xpath = JesUtil.extractXPath(id);
              Step jobStep = (Step)job.findXPathValue(xpath);
-             // need to handle case of not finding job step here...
-                
-              // should have an execution record already..
-             StepExecutionRecord er =JesUtil.getLatestRecord(jobStep);
+             if (jobStep == null) {
+                 logger.error("Culd not find step " + xpath + " for urn " + urn.getContent());
+                 return;
+             }              
+             // update status of step.       
+             StepExecutionRecord er =JesUtil.getLatestOrNewRecord(jobStep);             
              er.addMessage(JesUtil.axis2castor(info));
-
-               
-             ExecutionPhase status = policy.calculateJobStatus(job);
-             job.getJobExecutionRecord().setStatus(status);
-                
+             ExecutionPhase status = JesUtil.axis2castor(info.getPhase());
+             er.setStatus(status);
+             if (status.getType() >= ExecutionPhase.COMPLETED_TYPE) { // finished or error
+                 er.setFinishTime(new Date()); 
+             }
+              factory.updateJob(job);
+                            
+             // now go try run some more steps.
+             scheduleSteps(job);  
+             updateJobStatus(job);
              factory.updateJob( job ) ;             // Update any changed details to the database
-             if( status.equals(ExecutionPhase.RUNNING) ) {
-                scheduleSteps(job);
-            } else {
-                notifyJobFinished(job);
-             }                  
-            factory.updateJob(job); // save any further changes.
              factory.end( true ) ;   // Commit and cleanup
-    
-         } catch( Exception jex ) {
-             logger.error(jex);
-             logger.info("Encountered error - notifying job has finished");
-             this.notifyJobFinished(job);
-         }
+        } catch (JesException e) {
+            // basically, somethings gone wrong with the job store, rather than with steps. its a fatal.
+            logger.fatal("System error",e);
+            // could try saving the error in the job itself.
+            if (job != null) {
+                MessageType mt = new MessageType();
+                mt.setPhase(ExecutionPhase.ERROR);
+                mt.setLevel(LogLevel.ERROR);
+                mt.setSource("Jes System");
+                mt.setTimestamp(new Date());               
+                mt.setContent("System Error " + e.getClass().getName() + " " + e.getMessage());
+                job.getJobExecutionRecord().addMessage(mt);
+                job.getJobExecutionRecord().setStatus(ExecutionPhase.ERROR);
+                try {
+                    factory.updateJob(job);
+                } catch (JesException jex) {
+                    logger.fatal("can't save error report into workflow",jex);
+                }
+            } 
+        }
+
     }     
           
     /**
@@ -157,21 +197,11 @@ public class JobScheduler implements org.astrogrid.jes.delegate.v1.jobscheduler.
      * empty for now - extend as needed.
      */
     public void notifyJobFinished(Workflow job) {
+        JobExecutionRecord er = job.getJobExecutionRecord();
+        logger.info("Job " + er.getJobId().getContent() + " finished with status " + er.getStatus());
     }
 
 
-    /** @todo refactor away into object model 
-     * @todo make more efficient*/
-    /*
-     protected JobStep findJobStep( Job job,  info )  throws NotFoundException{
-             for(Iterator iterator = job.getJobSteps(); iterator.hasNext(); ) {
-                  JobStep jobStep = (JobStep)iterator.next() ;
-                 if( jobStep.getStepNumber() == info.getStepNumber() ) {
-                     return jobStep;
-                 }
-             }
-             throw new NotFoundException("Could not find job step " + info.getStepNumber() + " in job " + job.getId());   
-     } // end of updateJobStepStatus()
-*/
+
 
 } // end of class JobScheduler

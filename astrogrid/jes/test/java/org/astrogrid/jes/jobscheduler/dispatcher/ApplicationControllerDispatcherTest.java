@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcherTest.java,v 1.3 2004/03/04 01:57:35 nw Exp $
+/*$Id: ApplicationControllerDispatcherTest.java,v 1.4 2004/03/05 16:16:55 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,12 +11,9 @@
 package org.astrogrid.jes.jobscheduler.dispatcher;
 
 import org.astrogrid.applications.delegate.beans.ParameterValues;
-import org.astrogrid.applications.delegate.beans.User;
 import org.astrogrid.jes.AbstractTestWorkflowInputs;
-import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.jobscheduler.locator.MockLocator;
-import org.astrogrid.jes.testutils.io.FileResourceLoader;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -26,8 +23,6 @@ import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-
-import junit.framework.TestCase;
 
 /** Unit test for the application controller dispatcher.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Feb-2004
@@ -81,6 +76,11 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
 
 /* 
 $Log: ApplicationControllerDispatcherTest.java,v $
+Revision 1.4  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.3  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForJobScheduler.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: AbstractTestForJobScheduler.java,v 1.3 2004/03/05 16:16:55 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.jes.jobscheduler;
 
 import org.astrogrid.jes.jobcontroller.AbstractTestForJobController;
-import org.astrogrid.jes.jobscheduler.dispatcher.*;
+import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
 import org.astrogrid.jes.jobscheduler.policy.MockPolicy;
 
 /** Base class that creates framework for testing the scheduler. 
@@ -55,6 +55,11 @@ public abstract class AbstractTestForJobScheduler extends AbstractTestForJobCont
 
 /* 
 $Log: AbstractTestForJobScheduler.java,v $
+Revision 1.3  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

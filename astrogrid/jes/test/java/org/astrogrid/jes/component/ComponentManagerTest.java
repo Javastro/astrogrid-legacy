@@ -1,4 +1,4 @@
-/*$Id: ComponentManagerTest.java,v 1.1 2004/03/03 01:13:42 nw Exp $
+/*$Id: ComponentManagerTest.java,v 1.2 2004/03/05 16:16:55 nw Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.jes.component;
 
 import org.astrogrid.config.Config;
 import org.astrogrid.config.PropertyNotFoundException;
-import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
 import org.astrogrid.jes.impl.workflow.FileJobFactoryImpl;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobFactory;
@@ -118,6 +117,11 @@ public void testBuildFileFacade() throws Exception {
 
 /* 
 $Log: ComponentManagerTest.java,v $
+Revision 1.2  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.1  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
  

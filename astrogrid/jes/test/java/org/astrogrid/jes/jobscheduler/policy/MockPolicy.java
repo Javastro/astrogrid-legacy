@@ -1,4 +1,4 @@
-/*$Id: MockPolicy.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: MockPolicy.java,v 1.5 2004/03/05 16:16:55 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,52 +12,45 @@ package org.astrogrid.jes.jobscheduler.policy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.jobscheduler.Policy;
-import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /** Mock policy - will retun all jobs that aren;'t marked as completed.
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
  *
  */
-public class MockPolicy implements Policy {
+public class MockPolicy extends AbstractPolicy implements Policy {
     /** Construct a new MockPolicy
      * 
      */
     public MockPolicy() {
         super();
+        logger.info("Creating Mock Policy - job is always RUNNING, schedules every pending step");
     }
+
     /**
-     * @see org.astrogrid.jes.policy.SchedulingPolicy#calculateJobStatus(org.astrogrid.jes.job.Job)
+     * @see org.astrogrid.jes.jobscheduler.Policy#currentJobStatus(org.astrogrid.workflow.beans.v1.Workflow)
      */
-    public ExecutionPhase calculateJobStatus(Workflow job) {
+    public ExecutionPhase currentJobStatus(Workflow job) {
         return ExecutionPhase.RUNNING;
     }
     /**
-     * @see org.astrogrid.jes.policy.SchedulingPolicy#calculateDispatchableCandidates(org.astrogrid.jes.job.Job)
+     * @see org.astrogrid.jes.jobscheduler.Policy#nextExecutableStep(org.astrogrid.workflow.beans.v1.Workflow)
      */
-    public Iterator calculateDispatchableCandidates(Workflow job) {
-        List result = new ArrayList();
-        for (Iterator i = JesUtil.getJobSteps(job); i.hasNext(); ) {
-            Step js = (Step)i.next();
-            ExecutionPhase status = JesUtil.getLatestRecord(js).getStatus();
-            if (ExecutionPhase.UNKNOWN.equals(status)) {
-                result.add(js);
-            }
-        }
-        //System.out.println("*** candidates length :" + result.size());
-        return result.iterator();
-        
+    public Step nextExecutableStep(Workflow job) {
+        registerFunctions(job);
+        return (Step)job.findXPathValue("//*[jes:isStep() and jes:latestStatus() = '" + ExecutionPhase.PENDING + "']");
     }
 }
 
 
 /* 
 $Log: MockPolicy.java,v $
+Revision 1.5  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

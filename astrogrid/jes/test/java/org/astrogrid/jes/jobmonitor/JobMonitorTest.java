@@ -1,4 +1,4 @@
-/*$Id: JobMonitorTest.java,v 1.4 2004/03/03 01:13:42 nw Exp $
+/*$Id: JobMonitorTest.java,v 1.5 2004/03/05 16:16:55 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.jes.jobmonitor;
 
 import org.astrogrid.jes.comm.MockSchedulerNotifier;
-import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
@@ -72,6 +71,11 @@ public class JobMonitorTest extends TestCase {
 
 /* 
 $Log: JobMonitorTest.java,v $
+Revision 1.5  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.4  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

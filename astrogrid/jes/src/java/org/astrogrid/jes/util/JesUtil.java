@@ -1,4 +1,4 @@
-/*$Id: JesUtil.java,v 1.1 2004/03/04 01:57:35 nw Exp $
+/*$Id: JesUtil.java,v 1.2 2004/03/05 16:16:23 nw Exp $
  * Created on 03-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,17 +15,12 @@ import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.LogLevel;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
-import org.astrogrid.workflow.beans.v1.AbstractActivity;
-import org.astrogrid.workflow.beans.v1.ActivityContainer;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
-import java.lang.ref.PhantomReference;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
-import java.util.List;
 
 /** class of static helper methods.
  * <p>
@@ -46,6 +41,9 @@ public class JesUtil {
      * @see org.astrogrid.jes.job.BeanFacade#axis2castor(org.astrogrid.jes.types.v1.JobURN)
      */
     public static org.astrogrid.workflow.beans.v1.execution.JobURN axis2castor(JobURN jobURN) {
+        if (jobURN == null ) {
+            return null;
+        }
         org.astrogrid.workflow.beans.v1.execution.JobURN result = new org.astrogrid.workflow.beans.v1.execution.JobURN();
         result.setContent(jobURN.toString());
         return result;
@@ -55,59 +53,94 @@ public class JesUtil {
      * @see org.astrogrid.jes.job.BeanFacade#castor2axis(org.astrogrid.workflow.beans.v1.execution.JobURN)
      */
     public static JobURN castor2axis(org.astrogrid.workflow.beans.v1.execution.JobURN jobURN) {
+        if (jobURN == null) {
+            return null;
+        }
         return new JobURN(jobURN.getContent());
     }  
-    /** @todo test */
+
     public static org.astrogrid.workflow.beans.v1.execution.JobURN extractURN(JobIdentifierType id) {
+        if (id == null) {
+            return null;
+        }
         int pos = id.getValue().lastIndexOf('#');
         org.astrogrid.workflow.beans.v1.execution.JobURN result = new org.astrogrid.workflow.beans.v1.execution.JobURN();
         result.setContent(id.getValue().substring(0,pos));
         return result;
     }
-    /** @todo test */
+
     public static String extractXPath(JobIdentifierType id) {
+        if (id == null) {
+            return null;
+        }
         int pos = id.getValue().lastIndexOf('#');
         return id.getValue().substring(pos + 1);
     }
     
-    /** @todo test this is correct */
+
     public static JobIdentifierType createJobId(org.astrogrid.workflow.beans.v1.execution.JobURN urn, String xpath) {
         JobIdentifierType id = new JobIdentifierType();
         id.setValue(urn.getContent() + "#" + xpath);
         return id;
     }
-    /** @todo test this is correct */
-    public static StepExecutionRecord getLatestRecord(Step s) {
-        int last = s.getStepExecutionRecordCount();
-        return s.getStepExecutionRecord(last-1);
+    
+    /** gets most recent record step. if none present, will insert one */
+    public static StepExecutionRecord getLatestOrNewRecord(Step s) {
+        int count = s.getStepExecutionRecordCount();
+        if (count ==0) {
+            StepExecutionRecord rec = new StepExecutionRecord();
+            s.addStepExecutionRecord(rec);
+            return rec;            
+        } else {
+            return s.getStepExecutionRecord(count-1);
+        }
     }
     
     
     public static org.astrogrid.applications.beans.v1.cea.castor.MessageType axis2castor(MessageType mt) {
+        if (mt == null) {
+            return null;
+        }
         org.astrogrid.applications.beans.v1.cea.castor.MessageType result = new org.astrogrid.applications.beans.v1.cea.castor.MessageType();
-        result.setContent(mt.getValue());
+        result.setContent(mt.getContent());
         result.setPhase(axis2castor(mt.getPhase()));
         result.setLevel(axis2castor(mt.getLevel()));
         result.setSource(mt.getSource());
-        result.setTimestamp(mt.getTimestamp().getTime());
+        Calendar cal =  mt.getTimestamp();
+        if (cal != null) {
+            result.setTimestamp(cal.getTime());
+        }
         return result;
     }
 
     public static org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel axis2castor(LogLevel level) {
-        return org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel.valueOf(level.getValue());
+        if (level == null) {
+            return null;
+        } else {
+            return org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel.valueOf(level.getValue());
+        }
     }
     
     public static org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase axis2castor(ExecutionPhase phase) {
-        return org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.valueOf(phase.getValue());
+        if (phase == null) {
+            return null;
+        } else {
+            return org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.valueOf(phase.getValue());
+        }
     }
     
     /*-----*/
     /** at moment this is a replication of the current duff jes behaviour - all job steps are stripped out, no matter the inner structure of the document
      *recursion can be quite inefficient, but don't care as this is only temporary behaviour. 
-     *@todo update this so that workflow has meaning.
      *@return a list of Step objects
+     *@todo replace with jxpath version.
      */
     
+    public static Iterator getJobSteps(Workflow wf) {
+        wf.addFunctions(JesFunctions.FUNCTIONS);
+        return wf.findXPathIterator("//*[jes:isStep()]");
+    }
+    /*
     public static Iterator getJobSteps(Workflow wf) {
         return listAllJobSteps(wf.getSequence().getActivity()).iterator();
     }
@@ -124,12 +157,17 @@ public class JesUtil {
         }
         return result;
     }
-    
+    */
 }
 
 
 /* 
 $Log: JesUtil.java,v $
+Revision 1.2  2004/03/05 16:16:23  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.1  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

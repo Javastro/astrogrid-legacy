@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.5 2004/03/05 16:16:55 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,35 +11,33 @@
 package org.astrogrid.jes;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.comm.MemoryQueueSchedulerNotifier;
-import org.astrogrid.jes.comm.SchedulerNotifier;
+import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.component.ComponentManager;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
-import org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
-import org.astrogrid.jes.impl.workflow.CastorBeanFacade;
-import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
-import org.astrogrid.jes.jobscheduler.policy.RoughPolicy;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
-import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
+import org.apache.axis.utils.XMLUtils;
+import org.exolab.castor.xml.Marshaller;
+import org.w3c.dom.Document;
+
 import EDU.oswego.cs.dl.util.concurrent.Mutex;
 import EDU.oswego.cs.dl.util.concurrent.Sync;
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.MalformedURLException;
+import java.io.OutputStream;
 import java.util.Iterator;
 
 /** Test that builds entire system (out of in-memory components), and feeds workflow documents into it.
@@ -71,7 +69,7 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         }        
 
         /** build a job scheduler */
-            protected org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler buildScheduler() {
+            protected JobScheduler buildScheduler() {
                     Locator locator = buildLocator();  
                      Policy policy = buildPolicy();
                      disp = new MockDispatcher();
@@ -95,6 +93,8 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         disp.setMonitor(jm);
     }
     
+    protected static int WAIT_SECONDS = 5;
+    
     /**
      * @see org.astrogrid.jes.AbstractTestWorkflowInputs#testIt(java.io.InputStream, int)
      */
@@ -106,25 +106,27 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         assertNotNull(resp);
         assertTrue(resp.isSubmissionSuccessful());
         // now wait for notification that the system has finished processing.
-        barrier.attempt(Sync.ONE_SECOND * 3); // will block for up to three seconds waiting for notification.
-        // need to wait until message queue is empty - i.e. need some sort of call back from scheduler.
-        // anyhoo, get finished document from store, output it.
+        boolean didSynchronize = barrier.attempt(Sync.ONE_SECOND * WAIT_SECONDS);
+        assertTrue("timed out waiting for the scheduler to complete",didSynchronize); // if this is false, meanst that we timed out - need to increase the duration?
+
         Workflow job = factory.findJob(JesUtil.axis2castor(resp.getJobURN()));
         assertNotNull(job);
         
-        StringWriter sw = new StringWriter();
-        job.marshal(sw);
-        sw.close();
-        System.out.println(sw.toString());
+        Document doc = XMLUtils.newDocument();
+        Marshaller.marshal(job,doc);
+        OutputStream outS = new FileOutputStream("workflow-output-" + resourceNum + ".xml");
+        XMLUtils.PrettyDocumentToStream(doc,outS);
+        outS.close();
         
-        assertEquals(ExecutionPhase.COMPLETED,job.getJobExecutionRecord().getStatus());
         // verify that all steps have been run
         for (Iterator i = JesUtil.getJobSteps(job); i.hasNext(); ) {
             Step step = (Step)i.next();
-            StepExecutionRecord exRec = JesUtil.getLatestRecord(step);
+            StepExecutionRecord exRec = JesUtil.getLatestOrNewRecord(step);
             assertEquals(1,exRec.getMessageCount());
             assertEquals(ExecutionPhase.COMPLETED,exRec.getStatus());
         }
+
+        assertEquals(ExecutionPhase.COMPLETED,job.getJobExecutionRecord().getStatus());
          
     }
     /** extended job scheduler that will notify us when tasks are complete. 
@@ -150,16 +152,10 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         /**
          * @see org.astrogrid.jes.jobscheduler.JobScheduler#notifyJobFinished(org.astrogrid.jes.job.Job)
          */
-        public void notifyJobFinished(Workflow job) {
+        public void notifyJobFinished(Workflow job) {            
             barrier.release();
         }
-        /**
-         * @see org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler#scheduleNewJob(org.astrogrid.jes.types.v1.JobURN)
-         */
-        public void scheduleNewJob(JobURN jobURN) {
 
-            super.scheduleNewJob(jobURN);
-        }
 
     }
 }
@@ -167,6 +163,11 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.5  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

@@ -42,33 +42,27 @@ public class JobMonitor implements org.astrogrid.jes.delegate.v1.jobmonitor.JobM
     /** do a load of validity checks, then pass on to schedulerr 
      * @todo add validity checks*/
     public void monitorJob(JobIdentifierType id,MessageType info ) {
-
-        if (info == null) {
-            logger.info("Null info object encountered");
-            return;
-        }
         if (id == null) {
             logger.info("Null id object encountered");
             return;
         }
+        if (info == null) {
+            logger.info("Null info object encountered");
+            return;
+        }
+
 
 
 		try {	
             nudger.resumeJob(id,info);
         } catch (Exception e) {
             logger.error("Could not pass on notification",e);
+
         }
+    }
         
    
          	
     } 
     
  
-
-
- 
-	
-	  
-
-
-} // end of class JobMonitorG

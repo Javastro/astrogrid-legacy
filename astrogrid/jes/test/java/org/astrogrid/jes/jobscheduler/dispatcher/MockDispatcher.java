@@ -1,4 +1,4 @@
-/*$Id: MockDispatcher.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: MockDispatcher.java,v 1.5 2004/03/05 16:16:55 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,13 +15,14 @@ import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.LogLevel;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
-import java.lang.ref.PhantomReference;
 import java.rmi.RemoteException;
+import java.util.Calendar;
 
 
 /** Mock implementation of a dispatcher.
@@ -60,9 +61,10 @@ public class MockDispatcher implements Dispatcher {
     }
     /**
      * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(java.lang.String, org.astrogrid.jes.job.JobStep)
-     * @todo fix xpath
+
      */
     public void dispatchStep(Workflow job, Step js) throws JesException {
+        
         callCount ++;
         if (monitor == null) {
             if (!willSucceed) {
@@ -73,13 +75,17 @@ public class MockDispatcher implements Dispatcher {
             MessageType info = new MessageType();
             String xpath = job.getXPathFor(js) ;
             JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(),xpath);
-            
+
+            info.setSource("application");
+            info.setTimestamp(Calendar.getInstance());            
             if (willSucceed) {
-                info.setValue("OK");
+                info.setContent("OK");
                 info.setPhase(ExecutionPhase.COMPLETED);
+                info.setLevel(LogLevel.info);
             } else {
-                info.setValue("You wanted me to fail");
+                info.setContent("You wanted me to fail");
                 info.setPhase(ExecutionPhase.ERROR);
+                info.setLevel(LogLevel.error);
             }
             try {
                 monitor.monitorJob(id,info);
@@ -93,6 +99,11 @@ public class MockDispatcher implements Dispatcher {
 
 /* 
 $Log: MockDispatcher.java,v $
+Revision 1.5  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

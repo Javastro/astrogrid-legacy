@@ -1,4 +1,4 @@
-/*$Id: ConfigSqlCommands.java,v 1.3 2004/03/03 01:13:41 nw Exp $
+/*$Id: ConfigSqlCommands.java,v 1.4 2004/03/05 16:16:23 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.jes.impl.workflow;
 
 import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
 
 /**
  * Implementation of SqlCommands that loads sql commands to execute from a configuration 
@@ -39,6 +38,11 @@ public class ConfigSqlCommands extends DefaultSqlCommands implements SqlCommands
 
 /* 
 $Log: ConfigSqlCommands.java,v $
+Revision 1.4  2004/03/05 16:16:23  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.3  2004/03/03 01:13:41  nw
 updated jes to work with regenerated workflow object model
 

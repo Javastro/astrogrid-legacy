@@ -1,4 +1,4 @@
-/*$Id: SchedulerNotifier.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: SchedulerNotifier.java,v 1.4 2004/03/05 16:16:23 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,6 @@ import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 /** Component used to notify the scheduler that a job is on its way.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Feb-2004
- * @todo merge with JobScheduler interface - its the same, bar the exception types.
  *
  */
 public interface SchedulerNotifier {
@@ -27,6 +26,11 @@ public interface SchedulerNotifier {
 
 /* 
 $Log: SchedulerNotifier.java,v $
+Revision 1.4  2004/03/05 16:16:23  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

@@ -2,8 +2,8 @@ package org.astrogrid.jes.delegate.impl;
 
 import org.astrogrid.jes.delegate.Delegate;
 import org.astrogrid.jes.delegate.JesDelegateException;
-import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 /**
  * Test implementation of a job controller delegate - performs no communication, returns dummy data.
@@ -21,7 +21,9 @@ public class TestJobControllerDelegateImpl extends JobControllerDelegate {
     
     public JobURN submitJob(Workflow j) throws JesDelegateException {
         log.info("Test Job Controller: submitting " + j.toString());
-        return(new JobURN("jes:job:dummy"));
+        JobURN result = new JobURN();
+        result.setContent("jes:job:dummy");
+        return result;
     }
 
 

@@ -1,4 +1,4 @@
-/*$Id: XMLFileLocatorTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: XMLFileLocatorTest.java,v 1.3 2004/03/05 16:16:55 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,6 @@
  *
 **/
 package org.astrogrid.jes.jobscheduler.locator;
-
-import org.astrogrid.jes.jobscheduler.Locator;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -63,6 +61,11 @@ public class XMLFileLocatorTest extends TestCase {
 
 /* 
 $Log: XMLFileLocatorTest.java,v $
+Revision 1.3  2004/03/05 16:16:55  nw
+worked now object model through jes.
+implemented basic scheduling policy
+removed internal facade
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 
