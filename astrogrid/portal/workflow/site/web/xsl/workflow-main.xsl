@@ -151,60 +151,79 @@
           | Display workflows currently stored in MySpace
           +-->   
       <xsl:template name="list_workflow">
-         <table>
-            <tr>
-               <td>Workflows currently stored in your mySpace:</td>
-            </tr>
-            <p />
-            <xsl:for-each select="//workflow">
-               <tr>
-                  <xsl:if test="@workflow-name != 'null'">
-                     <td><xsl:value-of select="@workflow-name"/></td>
-                     <td><xsl:value-of select="@workflow-description"/></td>
-                  </xsl:if>
-               </tr>
-            </xsl:for-each>
-         </table>
-         <p /> 
+      <table>
+         <tr>
+            <td>Workflows currently stored in your mySpace:</td>
+         </tr>
+         <p />
+         <tr>
+            <td>    
+               <select name="tool-name" size="5">
+                  <xsl:for-each select="//workflow">
+                     <xsl:if test="@workflow-name != 'null'">
+                        <xsl:element name="option">
+                           <xsl:attribute name="value"><xsl:value-of select="@workflow-name"/></xsl:attribute>
+                           <xsl:value-of select="@workflow-name"/>
+     	                </xsl:element>
+                     </xsl:if>
+                  </xsl:for-each>
+               </select>
+            </td>
+         </tr>
+         <p />		 
+      </table>
       </xsl:template> 
       
       <!--+
           | Display queries currently stored in MySpace
           +-->   
       <xsl:template name="list_query">          
-         <table>
+         <table>          
             <tr>
                <td>Queries currently stored in your mySpace:</td>
             </tr>
             <p />
-            <xsl:for-each select="//query">
-               <tr>
-                  <xsl:if test="@query-name != 'null'">
-                     <td><xsl:value-of select="@query-name"/></td>
-                     <td><xsl:value-of select="@query-description"/></td>
-                  </xsl:if>
-               </tr>
-            </xsl:for-each>
-         </table>
-         <p /> 
+            <tr>
+               <td>            
+                  <select name="tool-name" size="5">
+                     <xsl:for-each select="//query">
+                        <xsl:if test="@query-name != 'null'">
+                           <xsl:element name="option">
+                              <xsl:attribute name="value"><xsl:value-of select="@query-name"/></xsl:attribute>
+                              <xsl:value-of select="@query-name"/>
+		                  </xsl:element>
+        		       </xsl:if>
+                    </xsl:for-each>
+		         </select>
+              </td>
+           </tr>
+           <p />		 
+        </table>		 
       </xsl:template>
 
       <!--+
           | Display tools currently available
           +-->   
       <xsl:template name="list_tools">          
-         <tr>
-            <td>Tools currently available for use:</td>
-         </tr>
-         <p />      
-         <select name="tool-name" size="5">
-            <xsl:for-each select="//toolsAvailable">
-               <xsl:element name="option">
-                  <xsl:attribute name="value"><xsl:value-of select="@tool-name"/></xsl:attribute>
-                  <xsl:value-of select="@tool-name"/>
-		       </xsl:element>
-            </xsl:for-each>
-		 </select>
+         <table>          
+            <tr>
+               <td>Tools currently available for use:</td>
+            </tr>
+            <p />
+            <tr>
+               <td>               
+                  <select name="tool-name" size="5">
+                     <xsl:for-each select="//toolsAvailable">
+                        <xsl:element name="option">
+                           <xsl:attribute name="value"><xsl:value-of select="@tool-name"/></xsl:attribute>
+                           <xsl:value-of select="@tool-name"/>
+		                </xsl:element>
+                     </xsl:for-each>
+		          </select>
+               </td>
+             </tr>
+             <p />		 
+          </table>		 
       </xsl:template>
     
       <!--+
@@ -396,6 +415,14 @@
                      </xsl:for-each><!-- end of each step -->
                   </table>
                </td>
+            </tr>
+            <tr>
+               <td>
+                  <form name="clear_form">
+                     <input type="hidden" name="action"  value="remove-workflow-from-session" />
+                     <input type="submit" value="OK" />
+                  </form>
+               </td>             
             </tr>
          </table> 
       </xsl:template>
