@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/sql/hsqldb/Attic/create.sql,v $</cvs:source>
  * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 11:01:35 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/09 16:42:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: create.sql,v $
+ *   Revision 1.6  2003/09/09 16:42:25  KevinBenson
+ *   added password field to accounts and type field to group
+ *
  *   Revision 1.5  2003/09/08 11:01:35  KevinBenson
  *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
  *   along with an AdministrationDelegate
@@ -34,6 +37,7 @@ DROP TABLE accounts IF EXISTS ;
 CREATE TABLE accounts
     (
     ident       VARCHAR NOT NULL,
+    password  VARCHAR NULL,
     description VARCHAR NULL,
     PRIMARY KEY ( ident )
     ) ;
@@ -49,7 +53,7 @@ CREATE TABLE groups
     (
     ident       VARCHAR NOT NULL,
     description VARCHAR NULL,
-    type        VARCHAR NOT NULL,
+    type        VARCHAR NULL,
     PRIMARY KEY ( ident )
     ) ;
 
