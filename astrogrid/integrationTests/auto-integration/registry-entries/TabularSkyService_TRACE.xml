@@ -63,8 +63,8 @@
         <vs:Waveband>UV</vs:Waveband>
       </vs:Spectral>
     </vs:Coverage>
-    <Table role="out" xmlns="http://www.ivoa.net/xml/VODataService/v0.4">
-       <Table>sgas_event</Table>
+    <Table xmlns="http://www.ivoa.net/xml/VODataService/v0.4">
+       <vr:Name>sgas_event</vr:Name>
        <Column>
           <vr:Name>time_start</vr:Name>
           <vr:Description>Start time of the solar event.</vr:Description>
