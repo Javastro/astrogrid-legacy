@@ -7,10 +7,6 @@
 #p3 should be a filename - the output will be written to that file
 #p4 should be anything
 #test for a large amount of output
-for (( i = 1; i < 40 ; i++ )) ;do
-echo "test on stdout" 
-echo "test on stderr" 1>&2 
-done
 
 # parse the parameter values
 # input raw
@@ -19,9 +15,7 @@ echo "application location = " $0
 # treat the first paramters as positional only
 
 P1=$1
-shift
-P2=$1
-shift
+P2=$2
 
 
 # get the rest of the paramters with switch types
@@ -30,25 +24,25 @@ do
    echo "parameter found " $1
     case $1 in
       -P3)
-         P3=$2 
+         P3=$2
          shift 2
-         
+
         ;;
       -P9)
-         P9=$2 
+         P9=$2
          shift 2
-         
+
         ;;
       Parameter4=*)
          P4=`expr match "$1" '.*[0-9]+*="*\([^"]*\)"*'`
          shift
-         
+
         ;;
          *)
         echo "unrecognised parameter " $1
        shift
-      
-    esac 
+
+    esac
 done
 
 
