@@ -1,55 +1,6 @@
-
-  
-
-  
-  
-
-  
-  
-
-  
-
-  
-  
-
-  
-  
-
-  
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-  
-  
-      
-  
-
-      
-      
-      
-      
-      
-      
-        
-         
-      
-      
-
-      
-      
 <%@ page import="org.astrogrid.mySpace.mySpaceManager.MMC,
 				 org.astrogrid.mySpace.mySpaceServer.MSC,
+				 org.astrogrid.AstroGridException,
                  java.io.PrintWriter,
                  javax.naming.Context,
                  javax.naming.spi.NamingManager,
@@ -63,6 +14,28 @@
 //and MSC
 %>	 
 
+<%
+//First check the properties file has been found and where from:
+boolean loadedConfig = false;
+boolean loadedConfigFromURL = false;
+String message;
+String jndiName = MMC.getInstance().getJNDIName();
+try {
+  MMC.getInstance().checkPropertiesLoaded();
+	loadedConfig = true;
+	// Obtain our environment naming context
+	Context initCtx = new InitialContext();
+	Context envCtx = (Context) initCtx.lookup("java:comp/env");   
+  String url = (String) initCtx.lookup(jndiName);
+	loadedConfigFromURL = true;
+	message="Configuration file located at URL <BR>" + url;
+} catch (NamingException ne) {
+	message="No URL bound in the JNDI naming service under " + jndiName + 
+				  ".  If you expected one, please check the installation instructions.   However, a config file " + MMC.getInstance().getConfigFileName() + " was found on your classpath, so all is well.<BR>";
+} catch (AstroGridException e) {
+	message="<span style='color: #ff0066;'>Failed to locate the configuration file.  Please refer to the installation instructions on how to configure mySpace.  <BR></span>";
+}
+%>
     
     
       
@@ -107,8 +80,8 @@
 
       <body class="composite">
 
-        <div id="banner">
-          <table border="0" width="100%" cellpadding="8" cellspacing="0">
+        <div id="banner" >
+          <table border="0" width="100%" cellpadding="8" cellspacing="0" >
             <tr>
               
               <td>
@@ -237,19 +210,11 @@
       
       
     <P>
-      
+<!----------------------------------------------------------------------------->
+<!----------------The Guts of the page go here--------------------------------->
+<!----------------------------------------------------------------------------->      
      
-<%
-//First check the properties file has been found:
-try {
-  MMC.getInstance().checkPropertiesLoaded();
-  %>MySpaceManager Configuration file located<%
-  } catch (Exception e) {
-  %>Exception locating MySpaceManager configuration file:
-<p><%
-  e.printStackTrace(new PrintWriter(out));
-  }
-%></p>
+<%=message%>
 
 <form action="configuration.jsp" method="post">Version: <input
 type="text" name="version" value=
@@ -257,13 +222,13 @@ type="text" name="version" value=
  size="15"><br>
 MySpaceManagerURL: <input type="text" name="msm_url" value=
 "<%=MMC.getProperty(MMC.mySpaceManagerLoc,MMC.CATLOG)%>" size=
-"70"><br>
+"100"><br>
 MySpaceServerURL: <input type="text" name="mss_url" value=
 "<%=MMC.getProperty(MMC.serverManagerLoc,MMC.CATLOG)%>" size=
-"70"><br>
+"100"><br>
 MySpaceServerURLs: <input type="text" name="msss_url" value=
 "<%=MMC.getProperty(MMC.MYSPACEMANAGERURLs,MMC.CATLOG)%>" size=
-"70"><br>
+"100"><br>
 <button type="submit">Change</button></form>
 (button is a dummy at the moment - these props are readonly....) 
 <!--
@@ -276,7 +241,8 @@ MySpaceServerURLs :<%=MMC.getProperty(MMC.MYSPACEMANAGERURLs,MMC.CATLOG)%><P>
    
      
 	
-   
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->     
     </P>
    
     </div>
@@ -322,7 +288,7 @@ Not currently required.
                   
                     
                     
-                      © 2002-2004, AstroGrid
+                      ï¿½ 2002-2004, AstroGrid
                     
                   
                   
