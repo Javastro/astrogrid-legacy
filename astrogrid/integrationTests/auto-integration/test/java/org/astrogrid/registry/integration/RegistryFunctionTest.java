@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryFunctionTest.java,v 1.15 2004/09/03 07:47:41 KevinBenson Exp $
+ * $Id: RegistryFunctionTest.java,v 1.16 2004/09/03 09:50:52 nw Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,6 +24,7 @@ import org.w3c.dom.NodeList;
 import org.astrogrid.registry.RegistryException;
 //import org.astrogrid.registry.beans.resource.VODescription;
 import org.astrogrid.store.Ivorn;
+import org.astrogrid.test.AstrogridAssert;
 
 import junit.framework.TestCase;
 
@@ -66,6 +67,7 @@ public class RegistryFunctionTest extends RegistryBaseTest {
       assertNotNull("did not return the resource as DOM", dom);
       Element doc = dom.getDocumentElement();
       XMLUtils.PrettyElementToStream(doc, System.out);
+      assertVODescription(dom);
       assertTrue("did not find the resource  - returned a null document - should have an error message before now",doc.hasChildNodes());
       //VODescription val = rs.getResourceByIdentifier(ivorn);
       //assertNotNull("did not return the resource as Castor Object",val);
@@ -78,6 +80,7 @@ public class RegistryFunctionTest extends RegistryBaseTest {
       Document doc = rs.getResourceByIdentifier(new Ivorn("ivo://"+AUTHORITY_ID+"/"+"testapp"));
       assertNotNull("failed to retrieve a known registry entry",doc);
       XMLUtils.DocumentToStream(doc,System.out);
+      assertVODescription(doc);
       NodeList nodelst = doc.getElementsByTagNameNS( "*", "Resource");
       assertEquals("There should be exactly one entry returned for getResourceByIdentifierDOM",1, nodelst.getLength());
    }
