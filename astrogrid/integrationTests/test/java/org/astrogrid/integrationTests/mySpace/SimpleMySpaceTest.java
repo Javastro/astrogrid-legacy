@@ -1,4 +1,4 @@
-/* $Id: SimpleMySpaceTest.java,v 1.3 2004/01/19 15:02:49 jdt Exp $
+/* $Id: SimpleMySpaceTest.java,v 1.4 2004/01/19 16:44:38 jdt Exp $
  * Created on 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,8 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import org.astrogrid.integrationTests.common.ConfStrings;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 /**
@@ -40,15 +42,7 @@ public class SimpleMySpaceTest extends TestCase {
         junit.textui.TestRunner.run(SimpleMySpaceTest.class);
     }
     private static Log log = LogFactory.getLog(SimpleMySpaceTest.class);
-    /**
-     * Name of properties file
-     */
-    public final String WEBSERVICES_PROPS = "/webservices.properties";
-    /**
-     * Name of key in property file for endpoint
-     * 
-     */
-    public final String MYSPACE_ENDPOINT = "mySpaceEndPoint";
+
     /**
      * Location of MySpace webservice property file
      */
@@ -59,12 +53,12 @@ public class SimpleMySpaceTest extends TestCase {
     public final void setUp() throws IOException {
         //load properties
         Properties props = new Properties();
-        log.debug("Attempting to load " + WEBSERVICES_PROPS);
+        log.debug("Attempting to load " + ConfStrings.WEBSERVICES_PROPS);
         InputStream inputStream =
-            this.getClass().getResourceAsStream(WEBSERVICES_PROPS);
+            this.getClass().getResourceAsStream(ConfStrings.WEBSERVICES_PROPS);
         assert inputStream != null : "No file found";
         props.load(inputStream);
-        mySpaceEndPoint = props.getProperty(MYSPACE_ENDPOINT);
+        mySpaceEndPoint = props.getProperty(ConfStrings.MYSPACE_ENDPOINT);
         log.debug("Web service end-point: " + mySpaceEndPoint);
         assert(mySpaceEndPoint != null);
     }

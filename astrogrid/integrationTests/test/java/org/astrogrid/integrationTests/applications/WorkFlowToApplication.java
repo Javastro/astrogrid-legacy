@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowToApplication.java,v 1.3 2004/01/13 10:24:07 pah Exp $
+ * $Id: WorkFlowToApplication.java,v 1.4 2004/01/19 16:44:38 jdt Exp $
  * 
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.Vector;
 
 import junit.framework.TestCase;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.applications.common.config.ApplicationControllerConfig;
 import org.astrogrid.applications.common.config.ConfigLoader;
@@ -34,6 +36,10 @@ import org.astrogrid.portal.workflow.design.Sequence;
 import org.astrogrid.portal.workflow.design.Step;
 import org.astrogrid.portal.workflow.design.Tool;
 import org.astrogrid.portal.workflow.design.Workflow;
+
+import java.io.InputStream;
+import org.astrogrid.integrationTests.common.*;
+import java.util.*;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
@@ -55,6 +61,8 @@ public class WorkFlowToApplication extends TestCase {
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(WorkFlowToApplication.class);
    private final Date runDate = new Date();
+   
+   private static Log log = LogFactory.getLog(WorkFlowToApplication.class);
 
    /**
     * Constructor for WorkFlowToApplication.
@@ -87,8 +95,18 @@ public class WorkFlowToApplication extends TestCase {
       try {
          
 
-         //TODO get a better way of getting the mySpaceManager than this....
-         mySpaceManager = MySpaceDelegateFactory.createDelegate("http://localhost:8080/astrogrid-mySpace/services/MySpaceManager");
+         //load properties
+         Properties props = new Properties();
+         log.debug("Attempting to load " + ConfStrings.WEBSERVICES_PROPS);
+         InputStream inputStream =
+              this.getClass().getResourceAsStream(ConfStrings.WEBSERVICES_PROPS);
+         assert inputStream != null : "No file found";
+         props.load(inputStream);
+         final String mySpaceEndPoint = props.getProperty(ConfStrings.MYSPACE_ENDPOINT);
+         log.debug("Web service end-point: " + mySpaceEndPoint);
+         assert(mySpaceEndPoint != null);
+
+         mySpaceManager = MySpaceDelegateFactory.createDelegate(mySpaceEndPoint);
          user = new User();
          String userId = user.getUserId();
          String communityId = user.getCommunity();
