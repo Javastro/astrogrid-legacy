@@ -21,7 +21,7 @@
          <table border="2" cellpadding="0" cellspacing="0">
             <tr>
                <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">Name</td>
-               <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">Description</td>
+               <td style="color: blue; background-color: lightblue; text-align: center;">Description</td>
                <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">Time submitted</td>
                <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">Status</td>
                <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">
@@ -58,7 +58,7 @@
             <xsl:for-each select="//job">
                <tr>    
                   <td nowrap="true"><xsl:value-of select="@name"/></td>
-                  <td nowrap="true"><xsl:value-of select="@description"/></td>
+                  <td><xsl:value-of select="@description"/></td>
                   <td nowrap="true"><xsl:value-of select="@time"/></td>
                   <td nowrap="true"><xsl:value-of select="@status"/></td>
                   <td nowrap="true">
