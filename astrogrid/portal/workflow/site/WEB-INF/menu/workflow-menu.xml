@@ -19,7 +19,7 @@
     <agp:item
         contents="Job Monitor"
         contents-hover="Job Monitor"
-        uri="/astrogrid-portal/main/workflow/agjobmanager-jes.html"
+        uri="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html"
         icon=""
         target="_self"
         status-text="Astrogrid Portal Workflow: Job Monitor..."/>
