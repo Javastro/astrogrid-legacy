@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.1 2004/01/08 22:57:17 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.2 2004/03/19 12:36:26 jdt Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -591,13 +591,13 @@
 
     <!-- welcome page -->
       <map:match pattern="">
-        <map:redirect-to uri="main/test.xml"/>
+        <map:redirect-to uri="main/mount/login/login-form"/>
       </map:match>
 
       <map:match pattern="main/**">
         <map:aggregate element="ag-page">
           <map:part element="ag-header" src="cocoon:/test/header.html"/>
-          <map:part element="ag-menu" src="cocoon:/menu.xml" strip-root="yes"/>
+          <!--map:part element="ag-menu" src="cocoon:/menu.xml" strip-root="yes"/-->
           <map:part element="ag-body" src="cocoon:/{1}"/>
           <map:part element="ag-footer" src="cocoon:/test/footer.html"/>
         </map:aggregate>

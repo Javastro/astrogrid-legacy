@@ -1,0 +1,6 @@
+.project
+target
+.checkstyle
+.classpath
+maven.log
+
