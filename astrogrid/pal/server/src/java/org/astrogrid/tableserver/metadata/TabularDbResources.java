@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.5 2005/03/24 17:50:48 mch Exp $
+ * $Id: TabularDbResources.java,v 1.6 2005/03/24 18:36:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,7 +30,6 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
 
       StringBuffer tabularDb = new StringBuffer(
          makeVoResourceElement("tdb:TabularDB",
-                                 "xmlns='http://www.ivoa.net/xml/VODataService/v0.5' "+ //default namnespace
                                  "xmlns:vod='http://www.ivoa.net/xml/VODataService/v0.5' "+
                                  "xmlns:tdb ='urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3' ")+
          makeCore("TDB")+
@@ -47,7 +46,7 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
       TableInfo[] tables = reader.getTables(catalog);
       for (int t = 0; t < tables.length; t++) {
          tabularDb.append(
-            "<tdb:table>"+
+            "<tdb:table xmlns='http://www.ivoa.net/xml/VODataService/v0.5' >"+ //default namnespace for table descriptions
                "<name>"+tables[t].getName()+"</name>"+
                "<description>"+XmlPrinter.transformSpecials(tables[t].getDescription())+"</description>"
          );
