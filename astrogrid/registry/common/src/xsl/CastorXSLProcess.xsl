@@ -97,22 +97,22 @@
 	    	</xsl:when>	    	
 	    	<xsl:when test=". = 'CeaApplicationType'">
     			<xsl:attribute name="xsi:type">
-	    			<xsl:text>java:org.astrogrid.registry.beans.resource.cea.CeaApplicationType</xsl:text>
+	    			<xsl:text>java:org.astrogrid.registry.beans.cea.CeaApplicationType</xsl:text>
 			    </xsl:attribute>
 	    	</xsl:when>	    	
 	    	<xsl:when test=". = 'CeaServiceType'">
     			<xsl:attribute name="xsi:type">
-	    			<xsl:text>java:org.astrogrid.registry.beans.resource.cea.CeaServiceType</xsl:text>
+	    			<xsl:text>java:org.astrogrid.registry.beans.cea.CeaServiceType</xsl:text>
 			    </xsl:attribute>
 	    	</xsl:when>
 	    	<xsl:when test=". = 'DataCenterParameterDefinition'">
     			<xsl:attribute name="xsi:type">
-	    			<xsl:text>java:org.astrogrid.registry.beans.cea.base.DataCenterParameterDefinition</xsl:text>
+	    			<xsl:text>java:org.astrogrid.applications.beans.v1.DataCenterParameterDefinition</xsl:text>
 			    </xsl:attribute>
 	    	</xsl:when>	    	
 	    	<xsl:when test=". = 'WebServiceParameterDefinition'">
     			<xsl:attribute name="xsi:type">
-	    			<xsl:text>java:org.astrogrid.registry.beans.cea.base.WebServiceParameterDefinition</xsl:text>
+	    			<xsl:text>java:org.astrogrid.applications.beans.v1.WebServiceParameterDefinition</xsl:text>
 			    </xsl:attribute>
 	    	</xsl:when>
 	    	<xsl:otherwise>
@@ -128,7 +128,7 @@
     
     <xsl:template match="ceab:CmdLineParameterDefn">
 		<xsl:attribute name="xsi:type">
-   			<xsl:text>java:org.astrogrid.registry.beans.cea.base.CmdLineParameterDefn</xsl:text>
+   			<xsl:text>java:org.astrogrid.applications.beans.v1.CmdLineParameterDefn</xsl:text>
 	    </xsl:attribute>
     </xsl:template>
 
