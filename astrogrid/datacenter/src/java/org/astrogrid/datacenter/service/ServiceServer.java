@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.6 2003/09/11 13:59:47 mch Exp $
+ * $Id: ServiceServer.java,v 1.7 2003/09/15 16:42:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,6 @@ package org.astrogrid.datacenter.service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
 import org.astrogrid.datacenter.common.ResponseHelper;
@@ -55,7 +54,7 @@ public abstract class ServiceServer
    {
       try
       {
-         File metaFile = new File(Configuration.getProperty(METADATA_FILE_LOC_KEY, "Metadata.xml"));
+         File metaFile = new File(Configuration.getProperty(METADATA_FILE_LOC_KEY, "metadata.xml"));
 
          return XMLUtils.newDocument(new FileInputStream(metaFile)).getDocumentElement();
       }

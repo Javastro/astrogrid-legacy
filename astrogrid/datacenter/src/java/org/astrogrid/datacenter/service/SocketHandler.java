@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.7 2003/09/15 11:15:01 mch Exp $
+ * $Id: SocketHandler.java,v 1.8 2003/09/15 16:42:03 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,17 +10,16 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.datacenter.common.StatusHelper;
 import org.astrogrid.datacenter.delegate.SocketDelegate;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.service.ServiceListener;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
 import org.astrogrid.datacenter.io.TraceInputStream;
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.service.ServiceListener;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -33,10 +32,16 @@ import org.xml.sax.SAXException;
 
 public class SocketHandler extends ServiceServer implements Runnable, ServiceListener
 {
+   /** Socket connection */
    private Socket socket = null;
+   /** XML helper stream wrapped around socket output stream */
    private SocketXmlOutputStream out = null;
+   /** XML helper stream wrapped around socket input stream */
    private SocketXmlInputStream in = null;
 
+   /** Constructor sets up streams and starts thread to run this
+    * handler
+    */
    public SocketHandler(Socket givenSocket) throws IOException
    {
       this.socket = givenSocket;
@@ -67,8 +72,6 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
       }
 
    }
-
-
 
 
    /**
@@ -160,6 +163,9 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.8  2003/09/15 16:42:03  mch
+Fixes to make maven happy(er)
+
 Revision 1.7  2003/09/15 11:15:01  mch
 Fixes to make it work... document reading/writing problems
 

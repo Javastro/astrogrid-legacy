@@ -1,5 +1,5 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.5 2003/09/15 11:17:14 mch Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.6 2003/09/15 16:42:03 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -33,6 +33,8 @@ import org.xml.sax.SAXException;
 
 public class WebNotifyServiceListener implements ServiceListener
 {
+   /** URL of client listener - this is a web service that will receive
+    * a document containing the new status */
    private URL clientListener = null;
 
    /**
@@ -88,6 +90,9 @@ public class WebNotifyServiceListener implements ServiceListener
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.6  2003/09/15 16:42:03  mch
+Fixes to make maven happy(er)
+
 Revision 1.5  2003/09/15 11:17:14  mch
 StatusHelper.makeStatusTag now takes typesafe status
 

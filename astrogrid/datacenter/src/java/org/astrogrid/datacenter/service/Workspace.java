@@ -1,5 +1,5 @@
 /**
- * $Id: Workspace.java,v 1.10 2003/09/09 17:52:29 mch Exp $
+ * $Id: Workspace.java,v 1.11 2003/09/15 16:42:03 mch Exp $
  */
 
 package org.astrogrid.datacenter.service;
@@ -24,9 +24,8 @@ import org.astrogrid.log.Log;
 
 public class Workspace
 {
-   public static final String WORKSPACE_DIRECTORY = "WorkspaceDirectory";
-
-   private static final String ERR_WORKSPACE_ALREADY_IN_USE = "Workspace Already In Use";
+   /** Key to workspace directory specified in configuration file */
+   public static final String WORKSPACE_DIRECTORY_KEY = "WorkspaceDirectory";
 
    /** public marker as to whether workspace should tidy up when closed -
     * for debugging purposes it is sometimes useful to leave temporary files
@@ -35,7 +34,7 @@ public class Workspace
    public static boolean PERSIST = false;
 
    /** File representation of this workspace instance */
-   protected File workspaceFile = null;
+   private File workspaceFile = null;
 
    /**
     * Creates a temporary directory using File.createTempFile()
@@ -44,7 +43,7 @@ public class Workspace
    public Workspace() throws IOException
    {
       //see if a working root has been specified
-      String workRoot = Configuration.getProperty( WORKSPACE_DIRECTORY  );
+      String workRoot = Configuration.getProperty( WORKSPACE_DIRECTORY_KEY  );
 
       if (workRoot != null)
       {
@@ -74,7 +73,7 @@ public class Workspace
    public Workspace(String workspaceId) throws IOException
    {
       //see if a working root has been specified
-      String workRoot = Configuration.getProperty( WORKSPACE_DIRECTORY  );
+      String workRoot = Configuration.getProperty( WORKSPACE_DIRECTORY_KEY  );
 
       if (workRoot == null)
       {
@@ -89,14 +88,18 @@ public class Workspace
       {
          //if a working root path has been given, create the workspace from that
          File workDir = new File(workRoot);
-         Log.affirm(workDir.isDirectory(), "Working root '"+workRoot+"' given by configuration key '"+WORKSPACE_DIRECTORY+"' is not a directory");
+         Log.affirm(workDir.isDirectory(),
+                    "Working root '"+workRoot
+                       +"' given by configuration key '"
+                       +WORKSPACE_DIRECTORY_KEY+"' is not a directory"
+                   );
 
          workspaceFile = new File(workRoot + File.separator + workspaceId);
       }
 
       if (workspaceFile.exists())
       {
-         throw new IllegalArgumentException(ERR_WORKSPACE_ALREADY_IN_USE);
+         throw new IllegalArgumentException("Workspace '"+workspaceId+"' already in use");
       }
 
       workspaceFile.mkdir();
@@ -115,15 +118,15 @@ public class Workspace
     */
    public synchronized void close() throws IOException
    {
-      if (isClosed()) throw new IllegalStateException("Trying to close a closed workspace");
+      if (isClosed()) { throw new IllegalStateException("Trying to close a closed workspace"); }
 
-      if (!PERSIST) empty();
+      if (!PERSIST) { empty(); }
 
       //attempt at threadsafetying but haven't thought about it properly - MCH
       File tempFile = workspaceFile;
       workspaceFile = null;
 
-      if (!PERSIST) tempFile.delete();
+      if (!PERSIST) { tempFile.delete(); }
    }
 
    /** Returns true if the workspace has been closed down - ie should not
@@ -159,7 +162,7 @@ public class Workspace
     */
    public void empty() throws IOException
    {
-      if (isClosed()) throw new IllegalStateException("Trying to empty a closed workspace");
+      if (isClosed()) { throw new IllegalStateException("Trying to empty a closed workspace"); }
 
       emptyDirectory(workspaceFile);
    }
@@ -170,7 +173,7 @@ public class Workspace
     */
    public File makeWorkFile(String filename) throws IOException
    {
-      if (isClosed()) throw new IllegalStateException("Trying to create a new file in a closed workspace");
+      if (isClosed()) { throw new IllegalStateException("Trying to create a new file in a closed workspace"); }
 
       File file = new File(workspaceFile.getAbsolutePath() + File.separator + filename);
       if (file.createNewFile() == false)

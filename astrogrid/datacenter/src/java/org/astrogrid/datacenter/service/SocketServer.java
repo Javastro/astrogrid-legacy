@@ -1,5 +1,5 @@
 /*
- * $Id: SocketServer.java,v 1.4 2003/09/15 11:15:42 mch Exp $
+ * $Id: SocketServer.java,v 1.5 2003/09/15 16:42:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,8 +8,6 @@ package org.astrogrid.datacenter.service;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import org.astrogrid.datacenter.service.ServiceServer;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.log.Log;
 
@@ -24,7 +22,8 @@ import org.astrogrid.log.Log;
 
 public class SocketServer implements Runnable
 {
-   ServerSocket serverSocket = null;
+   /** Listening socket tied to a port that clients will connect to*/
+   private ServerSocket serverSocket = null;
 
    /** Publically available standard AstroGrid datacenter server socket, so
     * that other code (eg test!) can reach it */
@@ -39,15 +38,20 @@ public class SocketServer implements Runnable
       this(Integer.parseInt(Configuration.getProperty("SocketServerPort", ""+DEFAULT_PORT)));
    }
 
-   /** Constructs a server socket on the given port and
-    * starts to listen on it
+   /** Constructs a server socket on the given port.  To start listening, use
+    * the run() method
     */
    public SocketServer(int port) throws IOException
    {
       serverSocket = new ServerSocket(port);
    }
 
-
+   /**
+    * Threads can be used to run this instance.
+    * Continuously listens out on server socket,
+    * spawning SocketHandler instances when a connection is made to handle
+    * that particular connection
+    */
    public void run()
    {
       while (true)
@@ -68,6 +72,9 @@ public class SocketServer implements Runnable
       }
    }
 
+   /**
+    * Application starting point - run this class to start your Socket Server
+    */
    public static void main(String args[]) throws IOException
    {
       SocketServer server = new SocketServer();
