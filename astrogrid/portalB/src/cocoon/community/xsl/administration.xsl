@@ -236,6 +236,23 @@
 				<br />
 				<input type="submit" name="insertpermission" value="Insert Permission" />
 			</form>
+			<br />
+			<form method="get" name="AddRemoteGroups">
+				<input type="hidden" name="action" value="insertpermission" />
+				<strong>Add Remote Groups from another community:</strong>
+				<select name="community">
+					<xsl:for-each select="//admin/options/communities/community">
+							<xsl:element name="option">
+								<xsl:attribute name="value">
+									<xsl:value-of select="@val"/>
+								</xsl:attribute>
+								<xsl:value-of select="@name"/>
+							</xsl:element>
+					</xsl:for-each>
+				</select>
+				<br />
+				<input type="submit" name="addremote" value="Add Remote Groups" />			
+			</form>
 		</xsl:if>			
 		<xsl:if test="$action = 'removepermission'">			
 			<form method="get" name="RemovePermission">
