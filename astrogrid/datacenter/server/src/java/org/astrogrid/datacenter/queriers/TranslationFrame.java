@@ -1,4 +1,4 @@
-/*$Id: TranslationFrame.java,v 1.2 2003/11/28 16:10:30 nw Exp $
+/*$Id: TranslationFrame.java,v 1.3 2004/01/14 17:57:32 nw Exp $
  * Created on 01-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,8 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/** Maintain an environment of translations
- * 
+/** Used with {@link QueryTranslator} - maintains an environment of translations
+ * <p>
  * a mapping between keys and objects. 
  * 
  * <h3>Description</h3>
@@ -52,7 +52,7 @@ intermediate translations , and makes these available to the translations of
 parent nodes.
 
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Sep-2003
-
+@todo move out of the querier package and into somewhere more sensible.
  */
 public class TranslationFrame {
     protected Map m;    
@@ -271,6 +271,9 @@ public class TranslationFrame {
 
 /* 
 $Log: TranslationFrame.java,v $
+Revision 1.3  2004/01/14 17:57:32  nw
+improved documentation
+
 Revision 1.2  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

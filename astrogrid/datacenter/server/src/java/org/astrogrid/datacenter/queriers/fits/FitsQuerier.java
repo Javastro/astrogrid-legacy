@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerier.java,v 1.12 2004/01/13 00:33:14 nw Exp $
+ * $Id: FitsQuerier.java,v 1.13 2004/01/14 17:57:32 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,7 +20,7 @@ import java.util.Hashtable;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
-import org.astrogrid.datacenter.adql.ADQLUtils;
+import org.astrogrid.datacenter.adql.ADQLUtils; 
 import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
@@ -232,6 +232,9 @@ public class FitsQuerier extends Querier
 
 /*
  $Log: FitsQuerier.java,v $
+ Revision 1.13  2004/01/14 17:57:32  nw
+ improved documentation
+
  Revision 1.12  2004/01/13 00:33:14  nw
  Merged in branch providing
  * sql pass-through

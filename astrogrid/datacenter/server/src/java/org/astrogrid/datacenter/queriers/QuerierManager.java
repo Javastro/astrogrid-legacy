@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.10 2004/01/13 00:33:14 nw Exp $
+/*$Id: QuerierManager.java,v 1.11 2004/01/14 17:57:32 nw Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,11 +22,12 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 
-/** Manages the construction and initialization of Queriers,
- * and maintains a  collection of current Queriers
- * - composed of the static methods factored out of DatabaseQuerier - trying to simplify that class.
+/** Manages the construction and initialization of Queriers, and maintains a collection of current Queriers
+ * 
+ * <p>
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Sep-2003
- *  @later - move from a static container to an object - can then have multiple containers if needed.
+ * @see Querier
+ *  @todo - move from a static container to an object - can then have multiple containers if needed.
  *
  */
 public class QuerierManager {
@@ -120,7 +121,7 @@ public class QuerierManager {
     /**/
     
    /**
-    * Creates an adql querier with a generated (unique-to-this-service) handle
+    * Creates a querier with a generated (unique-to-this-service) handle
     */
    public static Querier createQuerier(Query q) throws DatabaseAccessException {
       return QuerierManager.createQuerier(q, generateQueryId());
@@ -272,6 +273,9 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.11  2004/01/14 17:57:32  nw
+ improved documentation
+
  Revision 1.10  2004/01/13 00:33:14  nw
  Merged in branch providing
  * sql pass-through

@@ -1,4 +1,4 @@
-/*$Id: QueryTranslator.java,v 1.3 2003/11/27 00:52:58 nw Exp $
+/*$Id: QueryTranslator.java,v 1.4 2004/01/14 17:57:32 nw Exp $
  * Created on 02-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ import org.w3c.dom.Element;
  * Extend this class to implement DynamicVisitor to provide a concrete translator.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2003
  * @todo  optimize translation frame creation.
+ * @todo move into another package, with rest of adql-specifics. Doesn't belong in the querier package anymore.
  * @see org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator 
  * @see TranslationFrame
  */
@@ -118,6 +119,9 @@ public abstract  class QueryTranslator implements DynamicVisitor, Translator {
 
 /*
 $Log: QueryTranslator.java,v $
+Revision 1.4  2004/01/14 17:57:32  nw
+improved documentation
+
 Revision 1.3  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

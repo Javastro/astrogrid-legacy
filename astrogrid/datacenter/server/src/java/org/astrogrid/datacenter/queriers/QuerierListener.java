@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierListener.java,v 1.2 2003/11/25 14:17:24 mch Exp $
+ * $Id: QuerierListener.java,v 1.3 2004/01/14 17:57:32 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,10 +9,11 @@ package org.astrogrid.datacenter.queriers;
 
 
 /**
- * This is an interface for any classes that want to listen to status changes
- * on the query service
+ * An interface to listen to status changes
+ * on a running querier
  *
  * @author M Hill
+ * @see Querier
  */
 
 public interface QuerierListener
@@ -25,6 +26,9 @@ public interface QuerierListener
 
 /*
 $Log: QuerierListener.java,v $
+Revision 1.3  2004/01/14 17:57:32  nw
+improved documentation
+
 Revision 1.2  2003/11/25 14:17:24  mch
 Extracting Querier from DatabaseQuerier to handle non-database backends
 

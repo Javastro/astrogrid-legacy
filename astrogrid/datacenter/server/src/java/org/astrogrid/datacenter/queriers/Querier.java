@@ -29,11 +29,14 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * The Querier classes represent single individual queries.   If two queries
- * will be made on a database, two Querier instances
- * will be required.  it is a very abstract class meant to help administer
- * the queries - see DatabaseQuerierA 'database' here is a database management system; eg
- * MySQL, Microsoft's SQL server, etc.  Such
+ * Represents a single running query.   
+ * 
+ * <p>
+ * If two queries will be made on a database, two Querier instances
+ * will be required.  
+ * <p>
+ * It is a very abstract class meant to help administer
+ * the queries - concrete subclasses take care of the details of performing the query.
  * <p>
  * @see package documentation
  * <p>
@@ -427,6 +430,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.14  2004/01/14 17:57:32  nw
+ improved documentation
+
  Revision 1.13  2004/01/13 00:33:14  nw
  Merged in branch providing
  * sql pass-through
