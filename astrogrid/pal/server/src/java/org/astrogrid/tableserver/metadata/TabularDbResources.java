@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.3 2005/03/21 18:45:55 mch Exp $
+ * $Id: TabularDbResources.java,v 1.4 2005/03/23 17:24:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,7 +29,9 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
       TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
 
       StringBuffer tabularDb = new StringBuffer(
-         makeVoResourceElement("tdb:TabularDB")+
+         makeVoResourceElement("tdb:TabularDB",
+                                 "xmlns:vod='http://www.ivoa.net/xml/VODataService/v0.5' "+
+                                 "xmlns:tdb ='urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3' ")+
          makeCore("TDB")+
          "<tdb:db>"
       );
@@ -59,12 +61,12 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
                   "<datatype>"+VoTypes.getVoType(columns[c].getJavaType())+"</datatype>"
             );
          
-            if (columns[c].getUcd("1") != null) {
+            if ((columns[c].getUcd("1") != null) && (columns[c].getUcd("1").trim().length()>0)) {
                tabularDb.append(
                   "<ucd>"+columns[c].getUcd("1")+"</ucd>"
                );
             }
-            if (columns[c].getUcd("1") != null) {
+            if ((columns[c].getUnits() != null) && (columns[c].getUnits().toString().trim().length()>0)) {
                tabularDb.append(
                   "<unit>"+columns[c].getUnits()+"</unit>"
                );

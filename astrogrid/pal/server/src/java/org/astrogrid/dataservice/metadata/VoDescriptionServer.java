@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.8 2005/03/22 12:57:37 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.9 2005/03/23 17:24:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -47,11 +47,7 @@ public class VoDescriptionServer {
    
    public final static String VODESCRIPTION_ELEMENT =
                "<VOResources  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "+
-                              "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.2' "+
-                              "xmlns:ceapd='http://www.astrogrid.org/schema/AGParameterDefinition/v1' "+
-                              "xmlns:ceab='http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1' "+
                               "xmlns:vor='http://www.ivoa.net/xml/VOResource/v0.10' "+
-                              "xmlns:tdb ='urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3' "+
                               "xmlns='http://www.ivoa.net/xml/VOResource/v0.10' "+  //default namespace
                     ">";
    public final static String VODESCRIPTION_ELEMENT_END ="</VOResources>";

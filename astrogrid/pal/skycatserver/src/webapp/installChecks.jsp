@@ -54,8 +54,7 @@ the SQL you would like to run instead.
 <p>
 <ul>
 
-<li><a href="TestServlet?suite=org.astrogrid.datacenter.service.InstallationSelfCheck">Run</a> the PAL installation
-self-tests</li>
+<li>Run the PAL installation self-tests (see link on left)</li>
 <li>Take a <a href="fingerprint.jsp">fingerprint</a> of the datacenter installation</li>
 </ul>
 </p>
