@@ -98,7 +98,7 @@ public class DesignAction extends AbstractAction {
     
     public static final String
         HTTP_WORKFLOW_TAG = "workflow-tag" ,
-        COMMUNITY_ACCOUNT_TAG = "community-account" ,
+        COMMUNITY_ACCOUNT_TAG = "community_account" ,
         CREDENTIAL_TAG = "credential",
         COMMUNITY_TOKEN_TAG = "community-token" ;
         
