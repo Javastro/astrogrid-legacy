@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.1 2004/09/06 20:23:00 mch Exp $
+/*$Id: MetadataTest.java,v 1.2 2004/09/08 15:03:02 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,8 +52,7 @@ public class MetadataTest extends TestCase {
    }
    
    public void testJdbc() throws Exception {
-      setUp();
-      
+     
       SimpleConfig.setProperty("datacenter.metadata.plugin", JdbcPlugin.class.getName());
       
       //generate metadata
@@ -63,6 +62,16 @@ public class MetadataTest extends TestCase {
       DomHelper.DocumentToStream(metaDoc, System.out);
       
       assertHasRdbmsResource(metaDoc);
+   }
+
+   public void testGetResouce() throws Exception {
+      SimpleConfig.setProperty("datacenter.metadata.plugin", JdbcPlugin.class.getName());
+      
+      Element auth = VoDescriptionServer.getAuthorityResource();
+      assertNotNull(auth);
+
+      Element rdbms = VoDescriptionServer.getResource("RdbmsMetadata");
+      assertNotNull(auth);
    }
    
    public void testMetatdataFileServer() throws Throwable{
@@ -99,6 +108,9 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
+ Revision 1.2  2004/09/08 15:03:02  mch
+ Added tests
+
  Revision 1.1  2004/09/06 20:23:00  mch
  Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
 
