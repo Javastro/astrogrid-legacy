@@ -1,5 +1,5 @@
 /*
- * $Id: SocketServer.java,v 1.3 2003/09/11 17:41:33 mch Exp $
+ * $Id: SocketServer.java,v 1.4 2003/09/15 11:15:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,7 +29,7 @@ public class SocketServer implements Runnable
    /** Publically available standard AstroGrid datacenter server socket, so
     * that other code (eg test!) can reach it */
    public static final int DEFAULT_PORT = 2901;
-   
+
    /**
     * Constructs a server socket on the standard/configured port and starts
     * to listen on it
@@ -58,7 +58,7 @@ public class SocketServer implements Runnable
             //wait for connection - when you get one create
             //new socket handler to manage it
             Socket socket = serverSocket.accept();
-            Log.trace("...socket connection made! Spawning handler...");
+            Log.trace("...socket connection made! Spawning handler for "+socket.getInetAddress()+":"+socket.getPort()+"...");
             SocketHandler handler = new SocketHandler(socket);
          }
          catch (IOException ioe)
