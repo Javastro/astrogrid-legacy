@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParser.java,v 1.2 2004/08/13 09:47:57 mch Exp $
+ * $Id: SqlParser.java,v 1.3 2004/08/18 09:17:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,13 +17,17 @@ import org.astrogrid.datacenter.query.results.TableResultsDefinition;
 /**
  * A string parser that separates out the SELECT, FROM and WHERE parts of a SQL
  * statement and sends them off to the relevent parser
+ * Much of this has been taken from the Kameleon reports program, a bespoke
+ * OO reporting system written far too long ago (by mch) but included search
+ * condition parsing and evaluation, including substituting Xpath-like access
+ * to an OO database.
  */
 
 public class SqlParser  {
    
    Hashtable colAlias = new Hashtable();
    
-   BooleanExpression whereClause = null;
+   Condition whereClause = null;
    
    ResultsDefinition resultsDef = null;
    
@@ -36,68 +40,184 @@ public class SqlParser  {
       whereClause = parseBoolean(expression);
    }
    
-   public BooleanExpression getWhere() { return whereClause; }
+   public Condition getWhere() { return whereClause; }
    public ResultsDefinition getResultsDef() { return resultsDef; }
    public String[] getScope() { return (String[]) scope.toArray( new String[] {} ); }
+
+   //contains results of a breakExpression call
+   private class BrokenExpression {
+      String left;
+      String right;
+      String operand;
+      boolean brackets = false;
+      
+      public BrokenExpression(String givenLHS, String givenOp, String givenRHS) {
+         this.left = givenLHS.trim();
+         this.operand = givenOp.trim();
+         this.right = givenRHS.trim();
+      }
+      
+   }
+   
+   /** Locates an operand in the given expression from the list of
+    * given operands.  This is done by going through the string from
+    * start to end, counting brackets & quotes on the way, so that we find
+    * the operand closest to the 'top' of the brackets and outside the
+    * quotes.
+    * The operands will be searched for in order - this is important if some
+    * operands are substrings of other ones.  Have the longer ones (eg '>='
+    * before '>') */
+   //lifted and converted directly from report.pas splitStatement
+   private BrokenExpression breakExpression(String expression, String[] operands) {
+
+      assert (operands != null) && (operands.length >0) : "No operands given";
+      
+      int bracketDepth = 0;  //BCount
+      int pos = 0;   //P
+      boolean inDQuotes = false; // {marker for being in quotes mode}
+      boolean inSQuotes = false; // {marker for being in single quotes }
+
+      expression = expression.trim();
+
+      //find operand
+      while (pos<expression.length()) //&& (broken.operand.length()==0))
+      {
+
+         char C = expression.charAt(pos); //{shorthand}
+   
+         //{-- check if reached operand ---}
+         if (!inDQuotes && !inSQuotes && (bracketDepth==0)) { // {take quotes as literal and split with brackets}
+
+            for (int i = 0; i < operands.length; i++) {
+               if ((pos+operands[i].length() < expression.length()) && //is there room for it?
+                     (expression.substring(pos,pos+operands[i].length()).toUpperCase().equals(operands[i]))) {
+                  
+                  BrokenExpression broken = new BrokenExpression(
+                     expression.substring(0,pos),
+                     operands[i],
+                     expression.substring(pos+operands[i].length())
+                  );
+
+                  if (((broken.left.length()==0) || (broken.right.length()==0))) {
+                     throw new IllegalArgumentException("Hanging Operand (Missing argument) "+broken.operand+" in "+expression);
+                  }
+                  return broken;
+
+               }
+            }
+         }
+   
+         //{check "mode"}
+         switch (C) {
+            case '"' : inDQuotes = !inDQuotes; break;
+            case '\'' : inSQuotes = !inSQuotes; break;
+            case '(' : bracketDepth++; break;
+            case ')' : if (bracketDepth==0) {
+                           throw new IllegalArgumentException("Brackets inconsistent - too many closing ones at "+pos+" in '"+expression+"'");
+                        }
+                        bracketDepth--;
+         }
+         pos++; //next character
+      } //end while
+
+      //no operand found - could be superflous brackets or an atomic expression
+      // (eg colref or number) or syntax errors...
+
+      //reached the end
+      if (bracketDepth>0) {
+         throw new IllegalArgumentException("Too many opening brackets in "+expression);
+      }
+      
+      if (inDQuotes) {
+         throw new IllegalArgumentException("No closing double quotes in "+expression);
+      }
+      
+      if (inSQuotes) {
+         throw new IllegalArgumentException("No closing single quotes in "+expression);
+      }
+
+      //see if surrounding bracket, and remove - can do this safely now that
+      //we know there's no operand found, but can only remove one pair between
+      //breaking expressions, so that
+      // ((A=B) AND (C=D)) doens't become 'A=B) AND (C=D'
+      if (expression.startsWith("(") && expression.endsWith(")")) {
+         expression = expression.substring(1, expression.length()-1);
+         BrokenExpression broken = breakExpression(expression, operands);
+         broken.brackets = true;
+         return broken;
+      }
+
+      //if there are no spaces, it's some atomic expression
+      if (expression.indexOf(' ')==-1) {
+         return new BrokenExpression(expression, "", "");
+      }
+
+      //the caller might not care if the operands aren't found - might try
+      //with other operands.
+      //String opList = operands[0];
+      //for (int i = 1; i < operands.length; i++) { opList = ", "+opList; }
+      
+      //throw new IllegalArgumentException("Syntax error? Could not find Operands "+opList+" in expression "+expression);
+      return new BrokenExpression(expression, "", "");
+
+   }
+   
    
    /** Parses an expression that *results* in a boolean true/false answer */
-   private BooleanExpression parseBoolean(String expression) {
-      
-      expression = expression.trim();
-      
-      int andIndex = expression.toUpperCase().indexOf(" AND "); //surround by spaces so we don't find it in other words
-      
-      if (andIndex > -1) {
-         //found an AND
-         BooleanExpression lhs = parseBoolean(expression.substring(0,andIndex).trim());
-         BooleanExpression rhs = parseBoolean(expression.substring(andIndex+4).trim());
-         return new LogicalExpression(lhs, "AND", rhs);
+   private Condition parseBoolean(String expression) {
+
+      BrokenExpression broken = breakExpression(expression.trim(), new String[] {" AND ", " OR " }  );
+      if (broken.operand.length() == 0) {
+         broken = breakExpression(expression.trim(), new String[] { ">=", "<=", "=", "<", ">"} );
       }
       
-      int orIndex = expression.toUpperCase().indexOf(" OR "); //surround by spaces so we don't find it in other words
-      
-      if (orIndex > -1) {
-         //found an AND
-         BooleanExpression lhs = parseBoolean(expression.substring(0,orIndex).trim());
-         BooleanExpression rhs = parseBoolean(expression.substring(orIndex+3).trim());
-         return new LogicalExpression(lhs, "OR", rhs);
+      if (broken.operand.length() == 0) {
+         throw new IllegalArgumentException("'"+expression+"' is not a boolean expression (no space-separated logical/comparison operator AND, OR, <, > or =)");
       }
       
-      int opIndex = expression.indexOf(">");
-      if (opIndex == -1) {
-         opIndex =  expression.indexOf("<");
+      if (broken.operand.trim().equals("AND") || broken.operand.trim().equals("OR")) {
+         return new LogicalExpression(
+            parseBoolean(broken.left),
+            broken.operand,
+            parseBoolean(broken.right) );
       }
-      if (opIndex == -1) {
-         opIndex =  expression.indexOf("=");
-      }
-      int opIndexEnd = opIndex+1;
-      if (expression.charAt(opIndexEnd) == '=') { opIndexEnd ++; } //add one if it's <= or >=
-      
-      
-      if (opIndex > -1) {
-         //found an operator
-         NumericExpression lhs = parseNumeric(expression.substring(0,opIndex).trim());
-         NumericExpression rhs = parseNumeric(expression.substring(opIndexEnd).trim());
-         return new ComparisonExpression(lhs, expression.substring(opIndex,opIndexEnd).trim(), rhs);
+      else
+      {
+         return new NumericComparison(
+            parseNumeric(broken.left),
+            broken.operand,
+            parseNumeric(broken.right) );
       }
       
-      throw new IllegalArgumentException("'"+expression+"' is not a boolean expression (no space-separated logical/comparison operator AND, OR, <, > or =)");
    }
    
    /** Parses an expression that gives a numeric result at evaluation time - eg
     * a column reference or a number.
-    * @todo Only handles integers or columns at the moment. Not really numeric - could be a string...
     */
    private NumericExpression parseNumeric(String expression) {
-      try {
-         int value = Integer.parseInt(expression.trim());
-         
-         return new Constant(""+value);
+
+      BrokenExpression broken = breakExpression(expression.trim(), new String[] {" - ", " + ", " / ", " * "} );
+
+      if (broken.operand.length() == 0) {
+         //atomic expression
+      
+         try {
+            Double.parseDouble(expression.trim());
+            
+            return new LiteralNumber(expression);
+         }
+         catch (NumberFormatException nfe) {
+            
+            //wasn't a number, must be a column reference
+            return parseColumnRef(expression);
+         }
       }
-      catch (NumberFormatException nfe) {
-         //wasn't a number, must be a column reference
-         return parseColumnRef(expression);
-         
+      else {
+         return new MathExpression(
+            parseNumeric(broken.left),
+            broken.operand,
+            parseNumeric(broken.right)
+         );
       }
    }
    
@@ -130,21 +250,25 @@ public class SqlParser  {
     */
    private NumericExpression[] parseSelectList(String list) {
       
-      //go through list separated by spaces
-      StringTokenizer tokenizer = new StringTokenizer(list, " ");
+      //go through list separated by commas
+      StringTokenizer tokenizer = new StringTokenizer(list, ",");
       
       Vector cols = new Vector();
       
       while (tokenizer.hasMoreTokens()) {
-         //assume each token is just a reference to a column
-         String colRef = tokenizer.nextToken();
-         if (colRef.endsWith(",")) {
-            colRef = colRef.substring(0,colRef.length()-1);
+         //each token is a column definition for the results
+         String colDef = tokenizer.nextToken().trim();
+
+         /*
+         if (colRef.indexOf(" ")>-1) {
+            throw new UnsupportedOperationException(
+               "Give only comma-separated column references in the SELECT statement; "+
+               "Token '"+colRef+"' is not a single column reference");
          }
+          */
          
-         NumericExpression colDef = parseColumnRef((colRef));
+         cols.add(parseNumeric((colDef)));
          
-         cols.add(colDef);
       }
       
       return (NumericExpression[]) cols.toArray(new NumericExpression[] {} );
@@ -166,34 +290,48 @@ public class SqlParser  {
    }
    
    /**
-    * Creates the list of aliases from the FROM statement
+    * Creates the list of aliases from the FROM statement which should be
+    * comma separated
     */
    private void parseFrom(String from) {
-      //trim and remove commas
-      from = from.toUpperCase().replace(',', ' ').trim();
+      //go through list separated by commas
+      StringTokenizer tokenizer = new StringTokenizer(from.toUpperCase(), ",");
 
-      while (from.trim().length() >0) {
+      while (tokenizer.hasMoreTokens()) {
+         //assume each token is just a reference to a column
+         String token = tokenizer.nextToken().trim();
+         String origToken = token; //for errors
+         
          //chop out first word
          String tableName = "";
-         if (from.indexOf(' ') == -1) {
-            tableName = from;
-            from = "";
+         if (token.indexOf(' ') == -1) {
+            tableName = token;
+            token = "";
          }
          else {
-            tableName = from.substring(0,from.indexOf(' ')).trim();
-            from = from.substring(tableName.length()).trim();
+            tableName = token.substring(0,token.indexOf(' ')).trim();
+            token = token.substring(tableName.length()).trim();
          }
    
          scope.add(tableName);
    
-         if (from.startsWith("AS")) {
+         if (token.startsWith("AS")) {
             //find alias - chop out AS
-            from = from.substring(2).trim()+' ';
-            int space=from.indexOf(' ');
-            String tableAlias = from.substring(0, space).trim();
-            from = from.substring(tableAlias.length()).trim();
+            String tableAlias = token.substring(2).trim();
+            if (tableAlias.indexOf(' ')>-1) {
+               throw new IllegalArgumentException(
+                  "FROM statement should consist of comma separated <table>[ as <alias], " +
+                  "Alias '"+tableAlias+"' has spaces in, in token '"+origToken+"' in '"+from+"'");
+            }
             addAlias(tableName, tableAlias);
          }
+         else
+         if (token.trim().length() >0) {
+            throw new IllegalArgumentException(
+               "FROM statement should consist of comma separated <table>[ as <alias], " +
+               "Invalid comma-separated token '"+origToken+"' in '"+from+"'");
+         }
+            
       }
    }
    
@@ -203,6 +341,9 @@ public class SqlParser  {
     * SELECT part and a BooleanExpression from the WHERE part
     */
    public void parseStatement(String sql) {
+
+      scope = new Vector(); //clear scope
+      
       sql = sql.trim().toUpperCase();
       
       if (!sql.startsWith("SELECT")) {
@@ -259,7 +400,7 @@ public class SqlParser  {
       parser.addAlias("GALAXY", "G");
       
       //test select
-      String s = "S.RA    T.WIBBLE UNDIE.PANTS, ETC.ETC";
+      String s = "S.RA,    T.WIBBLE , UNDIE.PANTS, ETC.ETC";
       
       parser.parseSelect(s);
       
@@ -273,12 +414,19 @@ public class SqlParser  {
       System.out.println(parser.whereClause);
       
       //-- from --
-      s = "STARS AS S, WIBBLES AS WI GALAXIES as g";
+      s = "STARS AS S, WIBBLES AS WI ,GALAXIES as g";
       parser.parseFrom(s);
       System.out.println(parser.scope);
       
       //-- proper SQL --
-      s = "SELECT S.RA    T.WIBBLE UNDIE.PANTS, ETC.ETC FROM A, B  CHARLIE AS C WHERE C.X > 3 AND C.Y < 4 OR A.RA > B.RA";
+      s = "SELECT S.RA  ,  T.WIBBLE, UNDIE.PANTS, ETC.ETC FROM A, B,  CHARLIE AS C WHERE C.X > 3 AND C.Y < 4 OR A.RA > B.RA - C.A";
+
+      parser.parseStatement(s);
+  
+      System.out.println(parser);
+
+      //-- proper SQL --
+      s = "SELECT S.RA  ,  T.WIBBLE, UNDIE.PANTS * 4, ETC.ETC FROM A, B,  CHARLIE AS C WHERE C.X > 3 AND C.Y < 4 OR A.RA > B.RA";
       
       parser.parseStatement(s);
   
@@ -289,6 +437,9 @@ public class SqlParser  {
 
 /*
  $Log: SqlParser.java,v $
+ Revision 1.3  2004/08/18 09:17:36  mch
+ Improvement: split literals to strings vs numerics, added functions, better class/interface structure, brackets, etc
+
  Revision 1.2  2004/08/13 09:47:57  mch
  Extended parser/builder to handle more WHERE conditins
 
@@ -299,4 +450,5 @@ public class SqlParser  {
  Added skeleton to recursive parser
 
  */
+
 

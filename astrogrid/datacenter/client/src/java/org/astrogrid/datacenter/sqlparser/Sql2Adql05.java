@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql05.java,v 1.2 2004/08/13 09:47:57 mch Exp $
+ * $Id: Sql2Adql05.java,v 1.3 2004/08/18 09:17:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,7 +7,7 @@
 package org.astrogrid.datacenter.sqlparser;
 import java.io.IOException;
 import java.io.StringWriter;
-import org.astrogrid.datacenter.query.criteria.BooleanExpression;
+import org.astrogrid.datacenter.query.criteria.Condition;
 import org.astrogrid.datacenter.query.criteria.ColumnReference;
 import org.astrogrid.datacenter.query.results.TableResultsDefinition;
 import org.astrogrid.io.xml.XmlPrinter;
@@ -26,7 +26,7 @@ public class Sql2Adql05  {
       parser.parseStatement(sql);
 
       TableResultsDefinition resultsDef = (TableResultsDefinition) parser.getResultsDef();
-      BooleanExpression whereClause = parser.getWhere();
+      Condition whereClause = parser.getWhere();
       String[] scope = parser.getScope();
       
       
@@ -99,7 +99,7 @@ public class Sql2Adql05  {
          System.out.println(adql);
          
          //-- proper SQL --
-         s = "SELECT S.RA    T.WIBBLE UNDIE.PANTS, ETC.ETC FROM A, B  CHARLIE AS C WHERE C.X > 3 AND C.Y < 4 OR A.RA > B.RA";
+         s = "SELECT S.RA,    T.WIBBLE, UNDIE.PANTS, ETC.ETC FROM A, B,  CHARLIE AS C WHERE C.X > 3 AND C.Y < 4 OR A.RA > B.RA";
          
          adql = Sql2Adql05.translate(s);
      
@@ -110,6 +110,9 @@ public class Sql2Adql05  {
 
 /*
  $Log: Sql2Adql05.java,v $
+ Revision 1.3  2004/08/18 09:17:36  mch
+ Improvement: split literals to strings vs numerics, added functions, better class/interface structure, brackets, etc
+
  Revision 1.2  2004/08/13 09:47:57  mch
  Extended parser/builder to handle more WHERE conditins
 
@@ -120,4 +123,5 @@ public class Sql2Adql05  {
  Added skeleton to recursive parser
 
  */
+
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql074.java,v 1.2 2004/08/13 09:47:57 mch Exp $
+ * $Id: Sql2Adql074.java,v 1.3 2004/08/18 09:17:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,7 +26,7 @@ public class Sql2Adql074  {
       parser.parseStatement(sql);
 
       TableResultsDefinition resultsDef = (TableResultsDefinition) parser.getResultsDef();
-      BooleanExpression whereClause = parser.getWhere();
+      Condition whereClause = parser.getWhere();
       String[] scope = parser.getScope();
       
       
@@ -72,7 +72,7 @@ public class Sql2Adql074  {
    }
    
 
-   public static void translateWhere(XmlTagPrinter tag, BooleanExpression expression) throws IOException {
+   public static void translateWhere(XmlTagPrinter tag, Condition expression) throws IOException {
       if (expression instanceof LogicalExpression) {
          if (((LogicalExpression) expression).getOperator().equals("AND")) {
             XmlTagPrinter intersectionTag = tag.newTag("Condition", "xsi:type='intersectionSearchType'");
@@ -85,19 +85,19 @@ public class Sql2Adql074  {
             translateWhere(intersectionTag, ((LogicalExpression) expression).getRHS());
             return;
          } else {
-            throw new UnsupportedOperationException("Unknown Logical Expression Operand: "+
-                                 ((LogicalExpression) expression).getOperator());
+            throw new UnsupportedOperationException("Unknown Logical Expression Operand: '"+
+                                 ((LogicalExpression) expression).getOperator()+"'");
          }
       }
-      else if (expression instanceof ComparisonExpression) {
-         String operator = ((ComparisonExpression) expression).getOperator();
+      else if (expression instanceof NumericComparison) {
+         String operator = ((NumericComparison) expression).getOperator().toString();
 
          if (operator.startsWith(">")) { operator = "&gt;"+operator.substring(1); }
          if (operator.startsWith("<")) { operator = "&lt;"+operator.substring(1); }
          
          XmlTagPrinter comparisonTag = tag.newTag("Condition", "xsi:type='comparisonPredType' Comparison='"+operator+"'");
-         translateNumeric(comparisonTag, ((ComparisonExpression) expression).getLHS());
-         translateNumeric(comparisonTag, ((ComparisonExpression) expression).getRHS());
+         translateNumeric(comparisonTag, ((NumericComparison) expression).getLHS());
+         translateNumeric(comparisonTag, ((NumericComparison) expression).getRHS());
       }
       else {
          throw new UnsupportedOperationException("Unknown BooleanExpression type "+expression.getClass());
@@ -105,26 +105,31 @@ public class Sql2Adql074  {
    }
 
    public static void translateNumeric(XmlTagPrinter tag, NumericExpression expression) throws IOException {
-      if (expression instanceof Constant) {
+      if (expression instanceof LiteralNumber) {
          XmlTagPrinter argTag=tag.newTag("Arg", "xsi:type='atomType'");
          
-         int type = ((Constant) expression).getType();
+         int type = ((LiteralNumber) expression).getType();
          String xsiType = "";
          switch (type) {
-            case Constant.REAL    : xsiType = "realType"; break;
-            case Constant.INTEGER : xsiType = "integerType"; break;
-            case Constant.STRING  : xsiType = "stringType"; break;
+            case LiteralNumber.REAL    : xsiType = "realType"; break;
+            case LiteralNumber.INTEGER : xsiType = "integerType"; break;
             default :
                throw new IllegalStateException("Unknown type "+type+" of Constant "+expression);
          }
          
-         argTag.writeTag("Literal", "xsi:type='"+xsiType+"' Value='"+((Constant) expression).getValue()+"'");
+         argTag.writeTag("Literal", "xsi:type='"+xsiType+"' Value='"+((LiteralNumber) expression).getValue()+"'");
       }
       else if (expression instanceof ColumnReference) {
          
          tag.writeTag("Arg", "xsi:type='columnReferenceType' "+
                              "Table='"+((ColumnReference) expression).getTableName()+"' "+
                              "Name='"+((ColumnReference) expression).getColName()+"'");
+      }
+      else if (expression instanceof MathExpression) {
+         
+         XmlTagPrinter argTag = tag.newTag("Arg", "xsi:type='closedExprType'").newTag("Arg", "xsi:type='binaryExprType' Oper='"+((MathExpression) expression).getOperator().toString()+"'");
+         translateNumeric(argTag, ((MathExpression) expression).getLHS());
+         translateNumeric(argTag, ((MathExpression) expression).getRHS());
       }
       else {
          throw new UnsupportedOperationException("Unknown expression type "+
@@ -159,7 +164,7 @@ public class Sql2Adql074  {
          System.out.println(adql);
          
          //-- proper SQL --
-         s = "SELECT S.RA    T.WIBBLE UNDIE.PANTS, ETC.ETC FROM A, B  CHARLIE AS C WHERE C.X > 3 AND C.Y < 4 OR A.RA > B.RA";
+         s = "SELECT S.RA  ,  T.WIBBLE ,UNDIE.PANTS, ETC.ETC FROM A, B , CHARLIE AS C WHERE C.X > 3 AND C.Y < 4 OR A.RA > B.RA";
          
          adql = Sql2Adql074.translate(s);
      
@@ -171,6 +176,9 @@ public class Sql2Adql074  {
 
 /*
  $Log: Sql2Adql074.java,v $
+ Revision 1.3  2004/08/18 09:17:36  mch
+ Improvement: split literals to strings vs numerics, added functions, better class/interface structure, brackets, etc
+
  Revision 1.2  2004/08/13 09:47:57  mch
  Extended parser/builder to handle more WHERE conditins
 
@@ -181,5 +189,6 @@ public class Sql2Adql074  {
  Added skeleton to recursive parser
 
  */
+
 
 

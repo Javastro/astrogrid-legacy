@@ -1,5 +1,5 @@
 /*
- * $Id: LogicalExpression.java,v 1.1 2004/08/13 08:52:23 mch Exp $
+ * $Id: LogicalExpression.java,v 1.2 2004/08/18 09:17:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,7 @@ package org.astrogrid.datacenter.query.criteria;
  * side and a right hand side) rather than being a Union/Intersection approach
  */
 
-public class LogicalExpression extends BooleanExpression  {
+public class LogicalExpression implements Condition  {
 
    /**
    public static final Operator AND = new Operator("AND");
@@ -30,22 +30,22 @@ public class LogicalExpression extends BooleanExpression  {
    }
     */
 
-   private BooleanExpression lhs = null; //left hand side of expression
-   private BooleanExpression rhs = null;
+   private Condition lhs = null; //left hand side of expression
+   private Condition rhs = null;
    
    private String operator = null;  //AND or OR
    
    
-   public LogicalExpression( BooleanExpression givenLHS, String givenOperator, BooleanExpression givenRHS) {
+   public LogicalExpression( Condition givenLHS, String givenOperator, Condition givenRHS) {
    
       this.lhs = givenLHS;
       this.rhs = givenRHS;
       this.operator = givenOperator;
    }
 
-   public BooleanExpression getLHS()   {     return lhs; }
+   public Condition getLHS()   {     return lhs; }
    
-   public BooleanExpression getRHS()   {     return rhs; }
+   public Condition getRHS()   {     return rhs; }
    
    public String getOperator()         {     return operator; }
 
@@ -57,11 +57,11 @@ public class LogicalExpression extends BooleanExpression  {
 
 /*
 $Log: LogicalExpression.java,v $
+Revision 1.2  2004/08/18 09:17:36  mch
+Improvement: split literals to strings vs numerics, added functions, better class/interface structure, brackets, etc
+
 Revision 1.1  2004/08/13 08:52:23  mch
 Added SQL Parser and suitable JSP pages
-
-Revision 1.1  2004/07/07 15:42:39  mch
-Added skeleton to recursive parser
 
  */
 
