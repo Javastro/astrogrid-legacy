@@ -51,6 +51,7 @@ public class ServiceCredentialAxisHandler extends BasicHandler {
    * @throws AxisFault if the JAX-RPC handler throws an exception
    */
   public void invoke (MessageContext mc) throws AxisFault {
+    System.out.println("Entering ServiceCredentialAxisHandler.invoke()");
     try {
 
       // Don't handle response messages.
@@ -63,9 +64,36 @@ public class ServiceCredentialAxisHandler extends BasicHandler {
       }
     }
     catch (Exception e) {
-      throw new AxisFault("Failed to parse credentials in a request message",
-                          e);
+      System.out.println("ServiceCredentialAxisHandler.invoke() caught an exception");
+      throw this.makeFault("Failed to parse credentials in a request message",
+                           e);
     }
+  }
+
+
+  /**
+   * Makes an AxisFault that retains the ful ldetail of the cause.
+   * Axis itself retains only the first of a chain of exceptions
+   * given as the cause.  This method compacts all the messages in
+   * the chain into the message of the exception at its head.
+   *
+   * @param contextMessage the primary text of the AxisFault
+   * @e0 the exception at the head of the chain of causes
+   * @return the created fault
+   */
+  private AxisFault makeFault (String contextMessage, Exception e0) {
+    System.out.println(e0.toString());
+    StringBuffer causeMessage = new StringBuffer(e0.getMessage());
+    Throwable eLast = e0;
+    Throwable eNext = e0.getCause();
+    while (eNext != null) {
+      causeMessage.append("\nCaused by:\n");
+      causeMessage.append(eNext.getMessage());
+      eLast = eNext;
+      eNext = eLast.getCause();
+    }
+    Throwable e1 = new Throwable(causeMessage.toString());
+    return new AxisFault(contextMessage, e1);
   }
 
 }
