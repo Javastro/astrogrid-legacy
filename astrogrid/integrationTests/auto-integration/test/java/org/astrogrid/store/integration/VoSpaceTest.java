@@ -1,4 +1,4 @@
-/*$Id: VoSpaceTest.java,v 1.7 2004/05/11 08:07:40 pah Exp $
+/*$Id: VoSpaceTest.java,v 1.8 2004/05/11 11:23:00 pah Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,17 @@
 **/
 package org.astrogrid.store.integration;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.community.User;
+import org.astrogrid.integration.AbstractTestForIntegration;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
@@ -28,8 +33,17 @@ import org.astrogrid.store.delegate.VoSpaceResolver;
  * @author mch
  */
 
-public class VoSpaceTest extends TestCase {
+public class VoSpaceTest extends AbstractTestForIntegration {
 
+   /**
+    * @param arg0
+    */
+   public VoSpaceTest(String arg0) {
+      super(arg0);
+      // TODO Auto-generated constructor stub
+   }
+
+   private String TESTCONTENTS ="this is the contents of the test file";
    private static User testUser;
    private static Ivorn MYSPACEIVO;
    private static Ivorn HOMESPACETARGETIVO;
@@ -37,7 +51,8 @@ public class VoSpaceTest extends TestCase {
    private static VoSpaceClient client;
    private static String root;
    
-   public void setUp() throws IOException, URISyntaxException {
+   public void setUp() throws Exception {
+      super.setUp();
       
       MYSPACEIVO = new Ivorn("ivo://org.astrogrid.localhost/myspace");
       HOMESPACETARGETIVO = new Ivorn("ivo://org.astrogrid.localhost/myspace");
@@ -199,6 +214,36 @@ public class VoSpaceTest extends TestCase {
    }
 
    
+   /**
+    * tests simply storing a file in vospace for the frog user who should pre-exist
+    */
+   public void testFrogStoreFile() throws IOException
+   {
+    VoSpaceClient voclient = new VoSpaceClient(user);
+    assertNotNull(voclient);
+      
+    Ivorn inputIvorn = createIVORN("/vospaceFile");   
+    assertNotNull(inputIvorn);
+    byte[] bytes = TESTCONTENTS.getBytes();
+    voclient.putBytes(bytes, 0, bytes.length, inputIvorn, false); 
+    InputStream st = voclient.getStream(inputIvorn);
+    assertNotNull(st);
+    
+    BufferedReader br = new BufferedReader(new InputStreamReader(st));
+    String instr;
+    StringBuffer sb = new StringBuffer();
+    while ((instr = br.readLine()) != null) {
+      sb.append(instr);
+   }
+   assertTrue("the contents of the saved file are not the same", TESTCONTENTS.contentEquals(sb));
+    
+    //TODO add some more tests...  
+    
+        
+
+      
+   }
+   
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
       * of this class.
@@ -215,12 +260,17 @@ public class VoSpaceTest extends TestCase {
     {
        junit.textui.TestRunner.run(suite());
     }
+    
+    
 
 }
 
 
 /*
 $Log: VoSpaceTest.java,v $
+Revision 1.8  2004/05/11 11:23:00  pah
+*** empty log message ***
+
 Revision 1.7  2004/05/11 08:07:40  pah
 corrected the creation of the user object
 
