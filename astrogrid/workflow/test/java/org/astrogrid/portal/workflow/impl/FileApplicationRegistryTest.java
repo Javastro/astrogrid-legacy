@@ -1,4 +1,4 @@
-/*$Id: FileApplicationRegistryTest.java,v 1.2 2004/03/11 13:53:51 nw Exp $
+/*$Id: FileApplicationRegistryTest.java,v 1.3 2004/11/08 18:05:15 jdt Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,6 +49,7 @@ public class FileApplicationRegistryTest extends TestCase {
             ApplicationDescription descr = reg.getDescriptionFor(names[i]);
             assertNotNull(descr);
             assertEquals(names[i],descr.getName());
+            assertNull(descr.getOriginalVODescription()); // expect this to be null, as hasn't come rom the registry.
         }
     }
 }
@@ -56,6 +57,13 @@ public class FileApplicationRegistryTest extends TestCase {
 
 /* 
 $Log: FileApplicationRegistryTest.java,v $
+Revision 1.3  2004/11/08 18:05:15  jdt
+Merges from branch nww-bz#590
+
+Revision 1.2.110.1  2004/10/28 14:53:50  nw
+added method getOriginalVODescription() to ApplicationDescription,
+adjusted RegistryApplicationRegistry to populate this field.
+
 Revision 1.2  2004/03/11 13:53:51  nw
 merged in branch bz#236 - implementation of interfaces
 

@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescription.java,v 1.6 2004/09/10 18:28:53 pah Exp $
+/*$Id: ApplicationDescription.java,v 1.7 2004/11/08 18:05:15 jdt Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.exolab.castor.types.AnyNode;
 import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.Element;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,6 +58,7 @@ import java.util.Map;
 * <p>
 * Finally, a Tool object can be checked that it conforms to the application description by calling the {@link #validate} method
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Mar-2004
+ * @modified Noel Winstanley - add method and constructor to access original DOM.
  *
  */
 public class ApplicationDescription  {
@@ -64,11 +66,24 @@ public class ApplicationDescription  {
      * 
      */
     public ApplicationDescription(ApplicationBase app) {
+        this(app,null);
+
+    }
+    
+    /**
+     *  Construct a new ApplicationDescription
+     * @param app the application base object
+     * @param voDesc the defining registry entry - i.e. a vodescrption.
+     */
+    public ApplicationDescription(ApplicationBase app, Element voDesc) {
         this.app = app;
         this.paramMap = populateParamMap(app);
+        this.voDesc = voDesc;
     }
+    
     private final ApplicationBase app;
     private final Map paramMap;
+    private final Element voDesc;
     
     private final Map populateParamMap(ApplicationBase app){
         Map m = new HashMap();
@@ -272,12 +287,29 @@ public class ApplicationDescription  {
     public Parameters getParameters() {
         return app.getParameters();
     }
+    
+    /** access the xml of the original registry entry that defines this Application  
+     * @return dom of registry entry. may be null; if not, root element will be <tt>&lt;VODescription&gt;</tt>
+     * 
+     * @author Noel Winstanley nw@jb.man.ac.uk 28-Oct-2004
+     *
+     */
+    public Element getOriginalVODescription() {
+        return voDesc;
+    }
 
 }
 
 
 /* 
 $Log: ApplicationDescription.java,v $
+Revision 1.7  2004/11/08 18:05:15  jdt
+Merges from branch nww-bz#590
+
+Revision 1.6.20.1  2004/10/28 14:53:50  nw
+added method getOriginalVODescription() to ApplicationDescription,
+adjusted RegistryApplicationRegistry to populate this field.
+
 Revision 1.6  2004/09/10 18:28:53  pah
 update the cardinality testing to deal with unlimited max properly
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistry.java,v 1.7 2004/10/12 11:24:21 pah Exp $
+/*$Id: RegistryApplicationRegistry.java,v 1.8 2004/11/08 18:05:15 jdt Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -102,6 +102,7 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
     
     /**
      * @see org.astrogrid.portal.workflow.intf.ApplicationRegistry#getDescriptionFor(java.lang.String)
+     * @todo make namespace aware.
      */
     public ApplicationDescription getDescriptionFor(String applicationName) throws WorkflowInterfaceException {
         try {
@@ -124,7 +125,15 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
             Parameters params = new Parameters();
            appBase.setParameters(params);
            params.setParameter(paramdef);
-            return new ApplicationDescription(appBase);   
+           // quickly find the vodescription..
+           nl = doc.getElementsByTagNameNS("*","VODescription");
+           Element voDesc = null;
+           if (nl.getLength() > 0) {
+               voDesc = (Element)nl.item(0);
+           } else {
+               logger.warn("Odd - can't seem to find a VODescription for " + applicationName + " setting to null");
+           }
+            return new ApplicationDescription(appBase,voDesc);   
         } catch (CastorException e) {
             logger.error("getDescriptionFor " + applicationName + " - castor failed to parse result",e);
             throw new WorkflowInterfaceException(e);         
@@ -139,6 +148,13 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
 
 /* 
 $Log: RegistryApplicationRegistry.java,v $
+Revision 1.8  2004/11/08 18:05:15  jdt
+Merges from branch nww-bz#590
+
+Revision 1.7.2.1  2004/10/28 14:53:50  nw
+added method getOriginalVODescription() to ApplicationDescription,
+adjusted RegistryApplicationRegistry to populate this field.
+
 Revision 1.7  2004/10/12 11:24:21  pah
 used explicit namespaces in query for 200x speedup!
 

@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionTest.java,v 1.6 2004/09/10 18:28:53 pah Exp $
+/*$Id: ApplicationDescriptionTest.java,v 1.7 2004/11/08 18:05:15 jdt Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,6 +63,11 @@ public class ApplicationDescriptionTest extends TestCase {
         assertNotNull(descr.getParameters());
     }
     
+    public void testGetOriginalVODescription() {
+        // will be null, as we're running from a file application registry.
+        assertNull(descr.getOriginalVODescription());
+    }
+    
     public void testCreateToolFromDescription() throws Exception{
         Tool t = descr.createToolFromDefaultInterface();
         
@@ -125,6 +130,13 @@ public class ApplicationDescriptionTest extends TestCase {
 
 /* 
 $Log: ApplicationDescriptionTest.java,v $
+Revision 1.7  2004/11/08 18:05:15  jdt
+Merges from branch nww-bz#590
+
+Revision 1.6.20.1  2004/10/28 14:53:50  nw
+added method getOriginalVODescription() to ApplicationDescription,
+adjusted RegistryApplicationRegistry to populate this field.
+
 Revision 1.6  2004/09/10 18:28:53  pah
 update the cardinality testing to deal with unlimited max properly
 
