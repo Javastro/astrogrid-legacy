@@ -4,8 +4,8 @@
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
   <pomVersion>3</pomVersion>
-  <id>astrogrid-datawarehouse</id>
-  <name>AstroGrid Data Warehouse</name>
+  <id>astrogrid-datawarehouse-ogsadai</id>
+  <name>AstroGrid Data Warehouse OGSA-DAI connection</name>
 
   <currentVersion>HEAD</currentVersion>
   
@@ -17,16 +17,17 @@
 
   <inceptionYear>2002</inceptionYear>
   <package>org.astrogrid</package> <logo>http://www.astrogrid.org/images/AGlogo</logo> 
-  <shortDescription>AstroGrid Warehouse Components</shortDescription>
+  <shortDescription>AstroGrid Warehouse OGSA-DAI Components</shortDescription>
 
-  <siteDirectory>/var/www/www/maven/build/warehouse</siteDirectory>
+  
+<siteDirectory>/var/www/www/maven/build/warehouse/ogsadai</siteDirectory>
 
   <repository>
     <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/warehouse
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/warehouse/ogsadai
     </connection>
     <developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/warehouse
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/warehouse/ogsadai
     </developerConnection>
   </repository>
 
@@ -38,21 +39,21 @@
     </developer>
 
     <developer>
-    	<name>Elizabeth Auden</name>
-    	<id>eca</id>
-    	<email>eca@mssl.ucl.ac.uk</email>
+      <name>Elizabeth Auden</name>
+      <id>eca</id>
+      <email>eca@mssl.ucl.ac.uk</email>
     </developer>
 
     <developer>
-    	<name>Clive Page</name>
-    	<id>cgp</id>
-    	<email>cgp@star.le.ac.uk</email>
+      <name>Clive Page</name>
+      <id>cgp</id>
+      <email>cgp@star.le.ac.uk</email>
     </developer>
 
     <developer>
-    	<name>Guy Rixon</name>
-    	<id>gtr</id>
-    	<email>gtr@ast.cam.ac.uk</email>
+      <name>Guy Rixon</name>
+      <id>gtr</id>
+      <email>gtr@ast.cam.ac.uk</email>
     </developer>
   </developers>
 
@@ -184,13 +185,6 @@
 		<includes>
 			<include>schema/*.xsd</include>
 			<include>schema/*.dtd</include>
-		</includes>
-	</resource>
-	<resource> <!-- webservice related files -->
-		<directory>${basedir}</directory>
-		<includes>
-			<include>wsdl/*.wsdl</include>
-			<include>wsdd/*.wsdd</include>
 		</includes>
 	</resource>
     </resources>
