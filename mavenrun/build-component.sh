@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: build-component.sh,v 1.2 2004/12/01 22:18:01 jdt Exp $ 
+# $Id: build-component.sh,v 1.3 2004/12/13 00:46:02 jdt Exp $ 
 ####################################################################
 # Build a component into the local repository.
 # First argument (required) cvs name of component _under_ astrogrid
@@ -58,7 +58,7 @@ maven astrogrid-echo-versions
 echo
 
 echo "Building and installing artifacts"
-if maven $MY_MAVEN_OPTS astrogrid-install-artifact
+if maven $MY_MAVEN_OPTS -Dmaven.test.skip=true astrogrid-install-artifact
 then
     echo "OK"
 else
