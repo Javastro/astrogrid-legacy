@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.query;
 
 import java.util.Iterator;
 
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
@@ -147,7 +147,7 @@ public class GroupBy extends SQLComponent {
                    .append( "." )
                    .append( UCD ) ;
                Log.logDebug("Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() ) ;
-               columnHeading = Configuration.getProperty( buffer.toString());
+               columnHeading = SimpleConfig.getProperty( buffer.toString());
             }
             else {
 
@@ -165,7 +165,7 @@ public class GroupBy extends SQLComponent {
                       .append( "." )
                       .append( UCD ) ;
                   Log.logDebug("Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() );
-                  columnHeading = Configuration.getProperty( buffer.toString()) ;
+                  columnHeading = SimpleConfig.getProperty( buffer.toString()) ;
                   if (columnHeading.length() > 0 ) // break as soon as column heading found
                      break;
                   buffer.delete( 0,buffer.length() ) ;
