@@ -1,141 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<VODescription xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
-    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
-        <Identifier>
-            <AuthorityID>@REGAUTHORITY@</AuthorityID>
-            <ResourceKey>testapp</ResourceKey>
-        </Identifier>
-        <Title>TemplateEntry</Title>
-        <ShortName>TemplateEntry</ShortName>
-        <Summary>
-            <Description>This is part of the astrogrid CEA.</Description>
-            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
-        </Summary>
-        <Type>Other</Type>
-        <Curation>
-            <Publisher>
-                <Title>Astrogrid</Title>
-                <Description>blah blab</Description>
-                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
-            </Publisher>
-            <Contact>
-                <Name>Paul Harrison</Name>
-                <Email>pah@jb.man.ac.uk</Email>
-            </Contact>
-            <Date role="representative">2004-03-26</Date>
-            <Creator>
-                <Name>Astrogrid</Name>
-                <Logo>??</Logo>
-            </Creator>
-            <Version>Iteration 5</Version>
-        </Curation>
-        <Subject>???</Subject>
-        <cea:ApplicationDefinition>
-            <cea:Parameters>
-                <cea:ParameterDefinition name="P1" type="integer">
-                    <ns1:UI_Name
-                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Pause Time</ns1:UI_Name>
-                    <ns2:UI_Description
-                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Text
-                        this is the time tha the application will pause
-                        in                 seconds before continuing to
-                        give the appearance of                 doing
-                        something...     </ns2:UI_Description>
-                    <ns3:UCD xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1">AAD</ns3:UCD>
-                    <agpd:DefaultValue xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">1.0</agpd:DefaultValue>
-                    <ns4:Units xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns4:Units>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P2" type="double">
-                    <ns5:UI_Name xmlns:ns5="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns5:UI_Name>
-                    <ns6:UI_Description
-                        xmlns:ns6="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Text
-                        This can be anything     </ns6:UI_Description>
-                    <ns7:UCD xmlns:ns7="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns7:UCD>
-                    <agpd:DefaultValue xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Text</agpd:DefaultValue>
-                    <ns8:Units xmlns:ns8="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns8:Units>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P3" type="text">
-                    <ns9:UI_Name xmlns:ns9="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns9:UI_Name>
-                    <ns10:UI_Description xmlns:ns10="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P3d" type="text">
-                    <ns11:UI_Name xmlns:ns11="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns11:UI_Name>
-                    <ns12:UI_Description xmlns:ns12="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P4" type="text">
-                    <ns13:UI_Name xmlns:ns13="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns13:UI_Name>
-                    <ns14:UI_Description xmlns:ns14="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P5" type="VOTable">
-                    <ns15:UI_Name xmlns:ns15="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns15:UI_Name>
-                    <ns16:UI_Description xmlns:ns16="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P6" type="RA">
-                    <ns17:UI_Name xmlns:ns17="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns17:UI_Name>
-                    <ns18:UI_Description xmlns:ns18="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P7" type="Dec">
-                    <ns19:UI_Name xmlns:ns19="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns19:UI_Name>
-                    <ns20:UI_Description xmlns:ns20="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P8" type="ADQL">
-                    <ns21:UI_Name xmlns:ns21="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns21:UI_Name>
-                    <ns22:UI_Description xmlns:ns22="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P9" type="text">
-                    <ns23:UI_Name xmlns:ns23="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns23:UI_Name>
-                    <ns24:UI_Description
-                        xmlns:ns24="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
-                        contents of this file will be copied to the output</ns24:UI_Description>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P9d" type="text">
-                    <ns25:UI_Name xmlns:ns25="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns25:UI_Name>
-                    <ns26:UI_Description
-                        xmlns:ns26="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
-                        contents of this file will be copied to the output</ns26:UI_Description>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P10" type="boolean"/>
-                <cea:ParameterDefinition name="P11" type="anyURI"/>
-                <cea:ParameterDefinition name="P12" type="text">
-                    <ns27:UI_Name xmlns:ns27="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns27:UI_Name>
-                    <ns28:UI_Description xmlns:ns28="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
-                </cea:ParameterDefinition>
-            </cea:Parameters>
-            <cea:Interfaces>
-                <ns29:Interface name="I1" xmlns:ns29="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
-                    <ns29:input>
-                        <ns29:pref ref="P1"/>
-                        <ns29:pref ref="P2"/>
-                        <ns29:pref ref="P4"/>
-                        <ns29:pref ref="P9"/>
-                    </ns29:input>
-                    <ns29:output>
-                        <ns29:pref ref="P3"/>
-                    </ns29:output>
-                </ns29:Interface>
-                <ns30:Interface name="Ilocal" xmlns:ns30="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
-                    <ns30:input>
-                        <ns30:pref ref="P1"/>
-                        <ns30:pref ref="P2"/>
-                        <ns30:pref ref="P4"/>
-                        <ns30:pref ref="P9d"/>
-                    </ns30:input>
-                    <ns30:output>
-                        <ns30:pref ref="P3d"/>
-                    </ns30:output>
-                </ns30:Interface>
-                <ns31:Interface name="I2" xmlns:ns31="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
-                    <ns31:input>
-                        <ns31:pref ref="P9"/>
-                    </ns31:input>
-                    <ns31:output>
-                        <ns31:pref ref="P3"/>
-                    </ns31:output>
-                </ns31:Interface>
-            </cea:Interfaces>
-        </cea:ApplicationDefinition>
-    </Resource>
-    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
+<VODescription xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1"
+    xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
+    xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
+    <Resource status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <Identifier>
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>testap2</ResourceKey>
@@ -144,7 +11,7 @@
         <ShortName>TemplateEntry</ShortName>
         <Summary>
             <Description>This is part of the astrogrid CEA.</Description>
-            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
+            <ReferenceURL>http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
         </Summary>
         <Type>Other</Type>
         <Curation>
@@ -167,110 +34,325 @@
         <Subject>???</Subject>
         <cea:ApplicationDefinition>
             <cea:Parameters>
-                <cea:ParameterDefinition name="P1" type="integer">
-                    <ns32:UI_Name
-                        xmlns:ns32="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Pause Time</ns32:UI_Name>
-                    <ns33:UI_Description
-                        xmlns:ns33="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Text
-                        this is the time tha the application will pause
-                        in                 seconds before continuing to
-                        give the appearance of                 doing
-                        something...     </ns33:UI_Description>
-                    <ns34:UCD xmlns:ns34="http://www.astrogrid.org/schema/AGParameterDefinition/v1">AAD</ns34:UCD>
-                    <agpd:DefaultValue xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">1.0</agpd:DefaultValue>
-                    <ns35:Units xmlns:ns35="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns35:Units>
+                <cea:ParameterDefinition name="P9d" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P2" type="double">
-                    <ns36:UI_Name xmlns:ns36="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns36:UI_Name>
-                    <ns37:UI_Description
-                        xmlns:ns37="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Text
-                        This can be anything     </ns37:UI_Description>
-                    <ns38:UCD xmlns:ns38="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns38:UCD>
-                    <agpd:DefaultValue xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Text</agpd:DefaultValue>
-                    <ns39:Units xmlns:ns39="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns39:Units>
+                <cea:ParameterDefinition name="P10" type="boolean"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P3" type="text">
-                    <ns40:UI_Name xmlns:ns40="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns40:UI_Name>
-                    <ns41:UI_Description xmlns:ns41="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                <cea:ParameterDefinition name="P6" type="RA"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P3d" type="text">
-                    <ns42:UI_Name xmlns:ns42="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns42:UI_Name>
-                    <ns43:UI_Description xmlns:ns43="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                <cea:ParameterDefinition name="P4" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P4" type="text">
-                    <ns44:UI_Name xmlns:ns44="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns44:UI_Name>
-                    <ns45:UI_Description xmlns:ns45="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                <cea:ParameterDefinition name="P7" type="Dec"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P5" type="VOTable">
-                    <ns46:UI_Name xmlns:ns46="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns46:UI_Name>
-                    <ns47:UI_Description xmlns:ns47="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                <cea:ParameterDefinition name="P12" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P6" type="RA">
-                    <ns48:UI_Name xmlns:ns48="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns48:UI_Name>
-                    <ns49:UI_Description xmlns:ns49="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                <cea:ParameterDefinition name="P1" type="integer"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P7" type="Dec">
-                    <ns50:UI_Name xmlns:ns50="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns50:UI_Name>
-                    <ns51:UI_Description xmlns:ns51="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                <cea:ParameterDefinition name="P8" type="ADQL"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P8" type="ADQL">
-                    <ns52:UI_Name xmlns:ns52="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns52:UI_Name>
-                    <ns53:UI_Description xmlns:ns53="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                <cea:ParameterDefinition name="P9" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P9" type="text">
-                    <ns54:UI_Name xmlns:ns54="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns54:UI_Name>
-                    <ns55:UI_Description
-                        xmlns:ns55="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
-                        contents of this file will be copied to the output</ns55:UI_Description>
+                <cea:ParameterDefinition name="P2" type="double"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P9d" type="text">
-                    <ns56:UI_Name xmlns:ns56="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns56:UI_Name>
-                    <ns57:UI_Description
-                        xmlns:ns57="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
-                        contents of this file will be copied to the output</ns57:UI_Description>
+                <cea:ParameterDefinition name="P11" type="anyURI"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="P10" type="boolean"/>
-                <cea:ParameterDefinition name="P11" type="anyURI"/>
-                <cea:ParameterDefinition name="P12" type="text">
-                    <ns58:UI_Name xmlns:ns58="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns58:UI_Name>
-                    <ns59:UI_Description xmlns:ns59="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                <cea:ParameterDefinition name="P3d" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P5" type="VOTable"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P3" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
             </cea:Parameters>
             <cea:Interfaces>
-                <ns60:Interface name="I1" xmlns:ns60="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
-                    <ns60:input>
-                        <ns60:pref ref="P1"/>
-                        <ns60:pref ref="P2"/>
-                        <ns60:pref ref="P4"/>
-                        <ns60:pref ref="P9"/>
-                    </ns60:input>
-                    <ns60:output>
-                        <ns60:pref ref="P3"/>
-                    </ns60:output>
-                </ns60:Interface>
-                <ns61:Interface name="Ilocal" xmlns:ns61="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
-                    <ns61:input>
-                        <ns61:pref ref="P1"/>
-                        <ns61:pref ref="P2"/>
-                        <ns61:pref ref="P4"/>
-                        <ns61:pref ref="P9d"/>
-                    </ns61:input>
-                    <ns61:output>
-                        <ns61:pref ref="P3d"/>
-                    </ns61:output>
-                </ns61:Interface>
-                <ns62:Interface name="I2" xmlns:ns62="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
-                    <ns62:input>
-                        <ns62:pref ref="P9"/>
-                    </ns62:input>
-                    <ns62:output>
-                        <ns62:pref ref="P3"/>
-                    </ns62:output>
-                </ns62:Interface>
+                <ceab:Interface name="I1">
+                    <ceab:input>
+                        <ceab:pref ref="P1" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P9" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P4" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P2" minoccurs="1" maxoccurs="1"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
+                <ceab:Interface name="I2">
+                    <ceab:input>
+                        <ceab:pref ref="P9" minoccurs="1" maxoccurs="1"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
+                <ceab:Interface name="Ilocal">
+                    <ceab:input>
+                        <ceab:pref ref="P9d" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P1" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P4" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P2" minoccurs="1" maxoccurs="1"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="P3d" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
             </cea:Interfaces>
         </cea:ApplicationDefinition>
     </Resource>
-    <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType" status="active">
+    <Resource status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <Identifier>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
+            <ResourceKey>testapp</ResourceKey>
+        </Identifier>
+        <Title>TemplateEntry</Title>
+        <ShortName>TemplateEntry</ShortName>
+        <Summary>
+            <Description>This is part of the astrogrid CEA.</Description>
+            <ReferenceURL>http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
+        </Summary>
+        <Type>Other</Type>
+        <Curation>
+            <Publisher>
+                <Title>Astrogrid</Title>
+                <Description>blah blab</Description>
+                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
+            </Publisher>
+            <Contact>
+                <Name>Paul Harrison</Name>
+                <Email>pah@jb.man.ac.uk</Email>
+            </Contact>
+            <Date role="representative">2004-03-26</Date>
+            <Creator>
+                <Name>Astrogrid</Name>
+                <Logo>??</Logo>
+            </Creator>
+            <Version>Iteration 5</Version>
+        </Curation>
+        <Subject>???</Subject>
+        <cea:ApplicationDefinition>
+            <cea:Parameters>
+                <cea:ParameterDefinition name="P10" type="boolean"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P6" type="RA"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P4" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P7" type="Dec"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P12" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P1" type="integer"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P13" type="double"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P8" type="ADQL"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P9" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P2" type="binary"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P11" type="anyURI"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P5" type="VOTable"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P3" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ceab:Interface name="I1">
+                    <ceab:input>
+                        <ceab:pref ref="P1" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P6" minoccurs="0" maxoccurs="1"/>
+                        <ceab:pref ref="P9" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P4" minoccurs="1" maxoccurs="1"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="P2" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
+                <ceab:Interface name="I2">
+                    <ceab:input>
+                        <ceab:pref ref="P9" minoccurs="1" maxoccurs="1"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
+                <ceab:Interface name="Ilocal">
+                    <ceab:input>
+                        <ceab:pref ref="P1" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P4" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P2" minoccurs="1" maxoccurs="1"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+    </Resource>
+    <Resource status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <Identifier>
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>testap3</ResourceKey>
@@ -279,7 +361,7 @@
         <ShortName>TemplateEntry</ShortName>
         <Summary>
             <Description>This is part of the astrogrid CEA.</Description>
-            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
+            <ReferenceURL>http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
         </Summary>
         <Type>Other</Type>
         <Curation>
@@ -302,45 +384,45 @@
         <Subject>???</Subject>
         <cea:ApplicationDefinition>
             <cea:Parameters>
-                <cea:ParameterDefinition name="p1" type="integer">
-                    <ns63:UI_Name xmlns:ns63="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns63:UI_Name>
-                    <ns64:UI_Description
-                        xmlns:ns64="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Text     </ns64:UI_Description>
-                    <ns65:UCD xmlns:ns65="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns65:UCD>
-                    <agpd:DefaultValue xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Text</agpd:DefaultValue>
-                    <ns66:Units xmlns:ns66="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns66:Units>
+                <cea:ParameterDefinition name="p1" type="integer"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="p2" type="integer">
-                    <ns67:UI_Name xmlns:ns67="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns67:UI_Name>
-                    <ns68:UI_Description
-                        xmlns:ns68="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Text     </ns68:UI_Description>
-                    <ns69:UCD xmlns:ns69="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns69:UCD>
-                    <agpd:DefaultValue xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Text</agpd:DefaultValue>
-                    <ns70:Units xmlns:ns70="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns70:Units>
+                <cea:ParameterDefinition name="p2" type="integer"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
             </cea:Parameters>
             <cea:Interfaces>
-                <ns71:Interface name="ID000001" xmlns:ns71="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
-                    <ns71:input>
-                        <ns71:pref ref="p2"/>
-                    </ns71:input>
-                    <ns71:output>
-                        <ns71:pref ref="p1"/>
-                    </ns71:output>
-                </ns71:Interface>
+                <ceab:Interface name="ID000001">
+                    <ceab:input>
+                        <ceab:pref ref="p2" minoccurs="1" maxoccurs="1"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="p1" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
             </cea:Interfaces>
         </cea:ApplicationDefinition>
     </Resource>
-    <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType" status="active">
+    <Resource status="active" xsi:type="cea:CeaServiceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <Identifier>
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
-            <ResourceKey>TestCEC</ResourceKey>
+            <ResourceKey>TemplateEntry</ResourceKey>
         </Identifier>
-        <Title>TestCEC</Title>
+        <Title>TemplateEntry</Title>
         <ShortName>TemplateEntry</ShortName>
         <Summary>
             <Description>This is part of the astrogrid CEA.</Description>
-            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
+            <ReferenceURL>http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
         </Summary>
         <Type>Other</Type>
         <Curation>
@@ -362,7 +444,7 @@
         </Curation>
         <Subject>???</Subject>
         <Capability>
-            <StandardURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</StandardURL>
+            <StandardURL>http://www.astrogrid.org/maven/build/applications/</StandardURL>
             <StandardID>
                 <AuthorityID>astrogrid.og</AuthorityID>
                 <ResourceKey>CommonExecutionArchitucture</ResourceKey>
@@ -374,15 +456,15 @@
         </Interface>
         <cea:ManagedApplications>
             <cea:ApplicationReference>
-                <AuthorityID>org.astrogrid.localhost</AuthorityID>
-                <ResourceKey>testapp</ResourceKey>
-            </cea:ApplicationReference>
-            <cea:ApplicationReference>
-                <AuthorityID>org.astrogrid.localhost</AuthorityID>
+                <AuthorityID>@REGAUTHORITY@</AuthorityID>
                 <ResourceKey>testap2</ResourceKey>
             </cea:ApplicationReference>
             <cea:ApplicationReference>
-                <AuthorityID>org.astrogrid.localhost</AuthorityID>
+                <AuthorityID>@REGAUTHORITY@</AuthorityID>
+                <ResourceKey>testapp</ResourceKey>
+            </cea:ApplicationReference>
+            <cea:ApplicationReference>
+                <AuthorityID>@REGAUTHORITY@</AuthorityID>
                 <ResourceKey>testap3</ResourceKey>
             </cea:ApplicationReference>
         </cea:ManagedApplications>
