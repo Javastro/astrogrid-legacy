@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
-	    <extend>../maven-base/project.xml</extend>
-        <pomVersion>3</pomVersion>
-          <groupId>org.astrogrid</groupId>
+
+    <extend>../maven-base/project.xml</extend>
         <id>astrogrid-scripting</id>
         <name>Astrogrid Scripting Language Interface</name>
-        <currentVersion>${astrogrid.iteration}</currentVersion>
-        <organization>
-                <name>AstroGrid</name>
-                <url>http://www.astrogrid.org</url>
-                <logo>http://www.astrogrid.org/images/AGlogo</logo>
-        </organization>
-        <inceptionYear>2002</inceptionYear>
         <description><![CDATA[
           This project provides a unified interface to the astrogrid webservice delegates and supporting code. This is
           intended to make it simple to call astrogrid services from scripting languages.
@@ -69,10 +61,6 @@
 
          ]]></description>
         <shortDescription>AstroGrid Scripting</shortDescription>
-        <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/scripting</siteDirectory>
-        <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
-        <package>org.astrogrid</package>
-        <logo>http://www.astrogrid.org/images/AGlogo</logo>
         <build>
                 <sourceDirectory>src/java</sourceDirectory>
                 <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
@@ -100,226 +88,152 @@
                         </resource>
                 </resources>
         </build>
-        <developers>
-                <developer>
-                        <name>Paul Harrison</name>
-                        <id>pah</id>
-                        <email>pah@jb.man.ac.uk</email>
-                </developer>
-                <developer>
-                        <name>Noel Winstanley</name>
-                        <id>nw</id>
-                        <email>nw@jb.man.ac.uk</email>
-                        <organization>Jodrell Bank</organization>
-                </developer>
-        </developers>
-        <repository>
-                <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:/astrogrid/scripting
-    </connection>
-                <developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:/astrogrid/scripting
-    </developerConnection>
-                <url>http://www.astrogrid.org/viewcvs/astrogrid/scripting/</url>
-        </repository>
+
         <dependencies>
-                <!-- used within scripting interface -->
-                <dependency>
-                        <artifactId>commons-digester</artifactId>
-                        <groupId>commons-digester</groupId>
-                        <version>1.5</version>
-                </dependency>
-            <dependency>
-                    <id>commons-beanutils</id>
-                        <version>1.6</version>
-            </dependency>
-            <dependency>
-                    <id>commons-collections</id>
-                    <version>3.0</version>
-            </dependency>
-                <!-- delegates, and dependent libs -->
-                <dependency>
-                        <artifactId>astrogrid-store-client</artifactId>
-                        <groupId>org.astrogrid</groupId>
-                        <version>${pom.currentVersion}</version>
-                </dependency>
-                <dependency>
-           <groupId>org.astrogrid</groupId>
-           <artifactId>astrogrid-jes-delegate</artifactId>
-           <version>${pom.currentVersion}</version>
-            </dependency>
+        <!-- used within scripting interface -->
         <dependency>
-           <groupId>org.astrogrid</groupId>
-           <artifactId>astrogrid-common</artifactId>
-           <version>${pom.currentVersion}</version>
+            <artifactId>commons-digester</artifactId>
+            <groupId>commons-digester</groupId>
+            <version>1.5</version>
         </dependency>
         <dependency>
-           <groupId>org.astrogrid</groupId>
-           <artifactId>astrogrid-workflow-objects</artifactId>
-           <version>${pom.currentVersion}</version>
+            <id>commons-beanutils</id>
+            <version>1.6</version>
         </dependency>
         <dependency>
-           <groupId>org.astrogrid</groupId>
-           <artifactId>astrogrid-cea-client</artifactId>
-           <version>${pom.currentVersion}</version>
+            <id>commons-collections</id>
+            <version>3.0</version>
+        </dependency>
+       <!-- interface to workflow system -->
+        <dependency>
+            <artifactId>astrogrid-workflow</artifactId>
+            <version>SNAPSHOT</version>
+            <groupId>org.astrogrid</groupId>
         </dependency>
         <dependency>
-        	<groupId>org.astrogrid</groupId>
-        	<artifactId>astrogrid-workflow</artifactId>
-        	<version>${pom.currentVersion}</version>
+            <artifactId>astrogrid-common</artifactId>
+            <version>SNAPSHOT</version>
+            <groupId>org.astrogrid</groupId>
         </dependency>
-		<dependency>
-			<groupId>org.astrogrid</groupId>
-			<artifactId>astrogrid-registry-client</artifactId>
-			<version>${pom.currentVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.astrogrid</groupId>
-			<artifactId>astrogrid-registry-common</artifactId>
-			<version>${pom.currentVersion}</version>
-		</dependency>
-    <!-- stuff for datacenter -->
-    <dependency>
+        <!-- registry -->
+        <dependency>
+            <artifactId>astrogrid-registry-client</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>SNAPSHOT</version>
+        </dependency>
+        <!-- myspace -->
+        <dependency>
+            <artifactId>astrogrid-store-client</artifactId>
+            <version>SNAPSHOT</version>
+            <groupId>org.astrogrid</groupId>
+            <type>jar</type>
+        </dependency>
+        <!-- jes -->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-jes-delegate</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-workflow-objects</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>
+        <!-- datacenter -->
+        <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-datacenter-client</artifactId>
-            <version>${pom.currentVersion}</version>
-    </dependency>
-    <dependency><!-- think this is neded -->
-      <id>breezetk</id>
-      <version>UNKNOWN</version>
-      <jar>breezetk.jar</jar>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-    </dependency>
+            <version>SNAPSHOT</version>
+        </dependency>
+        <!-- applications -->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-cea-client</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>
+        <!-- community -->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>
+        <!-- Third party dependencies -->
+        <!-- axis libs -->
+        <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <artifactId>commons-discovery</artifactId>
+            <groupId>commons-discovery</groupId>
+            <version>20030211.213356</version>
+        </dependency>
+        <dependency>
+            <id>wsdl4j</id>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <artifactId>jaxrpc</artifactId>
+            <groupId>jaxrpc</groupId>
+            <version>UNKNOWN</version>
+            <jar>jaxrpc.jar</jar>
+        </dependency>
+        <dependency>
+            <artifactId>saaj</artifactId>
+            <groupId>saaj</groupId>
+            <version>UNKNOWN</version>
+            <jar>saaj.jar</jar>
+        </dependency>
+        <dependency>
+            <artifactId>axis</artifactId>
+            <groupId>axis</groupId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <id>log4j</id>
+            <version>1.2.8</version>
+        </dependency>
+        <!-- helper for object models -->
+        <dependency>
+            <artifactId>commons-jxpath</artifactId>
+            <groupId>commons-jxpath</groupId>
+            <version>1.1</version>
+        </dependency>
+        <!-- required by castor -->
+        <dependency>
+            <artifactId>castor</artifactId>
+            <groupId>castor</groupId>
+            <version>0.9.5-xml</version>
+        </dependency>
+        <dependency>
+            <artifactId>jakarta-regexp</artifactId>
+            <groupId>jakarta-regexp</groupId>
+            <version>1.3</version>
+        </dependency>
+        <dependency>
+            <id>xerces</id>
+            <version>2.4.0</version>
+        </dependency>
+        <dependency>
+            <id>xml-apis</id>
+            <version>1.0.b2</version>
+        </dependency>
+    </dependencies>
 
-    <dependency><!-- think this is needed -->
-      <id>VOTableUtil</id>
-      <version>UNKNOWN</version>
-      <jar>VOTableUtil.jar</jar>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-    </dependency>
-
-    <dependency>
-      <id>xml-apis</id>
-      <version>1.0.b2</version>
-    </dependency>
-
-    <!-- castor, and what it needs -->
-    <dependency>
-      <id>castor</id>
-      <version>0.9.5</version>
-      <jar>castor-0.9.5-xml.jar</jar>
-    </dependency>
-
-    <dependency>
-        <id>xerces</id>
-        <version>2.4.0</version>
-    </dependency>
-    <!-- end of stuff for datacenter -->
-
-                <dependency>
-                        <artifactId>jconfig</artifactId>
-                        <groupId>jconfig</groupId>
-                        <version>2.1</version>
-                </dependency>
-                <dependency>
-                        <artifactId>junit</artifactId>
-                        <groupId>junit</groupId>
-                        <version>3.8</version>
-                </dependency>
-                <dependency>
-                        <artifactId>log4j</artifactId>
-                        <groupId>log4j</groupId>
-                        <version>1.2.4</version>
-                </dependency>
-                <dependency>
-                        <artifactId>commons-logging</artifactId>
-                        <groupId>commons-logging</groupId>
-                        <version>1.0.3</version>
-                </dependency>
-                <dependency>
-                        <artifactId>commons-discovery</artifactId>
-                        <groupId>commons-discovery</groupId>
-                        <version>20030211.213356</version>
-                        <properties>
-                                <war.bundle>true</war.bundle>
-                        </properties>
-                </dependency>
-                <!--find out which of these are actually necessary-->
-                <dependency>
-                        <artifactId>cog-jglobus</artifactId>
-                        <groupId>cog-jglobus</groupId>
-                        <version>OGSA3.0</version>
-                </dependency>
-                <dependency>
-                        <artifactId>axis</artifactId>
-                        <groupId>axis</groupId>
-                        <version>1.1</version>
-                </dependency>
-                <dependency>
-                        <artifactId>jax-qname</artifactId>
-                        <groupId>jax-qname</groupId>
-                        <version>UNKNOWN</version>
-                        <jar>jax-qname.jar</jar>
-                </dependency>
-                <dependency>
-                        <artifactId>jaxrpc-api</artifactId>
-                        <groupId>jaxrpc-api</groupId>
-                        <version>1.0.3</version>
-                </dependency>
-                <dependency>
-                        <artifactId>saaj-api</artifactId>
-                        <groupId>saaj-api</groupId>
-                        <version>1.1.1</version>
-                </dependency>
-                <dependency>
-                        <artifactId>wsdl4j</artifactId>
-                        <groupId>wsdl4j</groupId>
-                        <version>1.0</version>
-                </dependency>
-        </dependencies>
-        <reports>
-    <report>
-      maven-changelog-plugin
-    </report>
-    <report>
-      maven-changes-plugin
-    </report>
-    <report>
-      maven-checkstyle-plugin
-    </report>
-    <report>
-      maven-clover-plugin
-    </report>
-    <report>
-      maven-developer-activity-plugin
-    </report>
-    <report>
-      maven-file-activity-plugin
-    </report>
-    <report>
-      maven-javadoc-plugin
-    </report>
-    <report>
-      maven-junit-report-plugin
-    </report>
-    <report>
-      maven-jxr-plugin
-    </report>
-    <report>
-      maven-license-plugin
-    </report>
-    <report>
-      maven-pmd-plugin
-    </report>
-    <report>
-      maven-tasklist-plugin
-    </report>
-    <report>
-      maven-simian-plugin
-    </report>
-  </reports>
 </project>

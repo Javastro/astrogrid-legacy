@@ -7,11 +7,20 @@
         <build />
 
         <dependencies>
+                <!-- this dep must always be first in the list -->
+                <dependency>
+                        <artifactId>groovy</artifactId>
+                        <groupId>groovy</groupId>
+                        <version>1.0-beta-5</version>
+                        <jar>groovy-1.0-beta-5.tar.gz</jar>
+                        <type>distribution</type>
+                </dependency>
                 <dependency>
                         <artifactId>astrogrid-scripting</artifactId>
                         <groupId>org.astrogrid</groupId>
                         <version>SNAPSHOT</version>
                 </dependency>
+
         </dependencies>
 
         <reports />

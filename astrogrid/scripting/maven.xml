@@ -5,14 +5,15 @@
 
 <!-- astrogrid standard goals -->
 
-<goal name="astrogrid-clean" prereqs="clean"/>
+<goal name="astrogrid-clean" prereqs="multiproject:clean" />
 
-<goal name="astrogrid-build-site">
-        <attainGoal name="site" />
-</goal>
+<goal name="astrogrid-build-site" prereqs="site"/>
+<goal name="astrogrid-install-site" prereqs="astrogrid-build-site" />
+<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site,site:deploy"/>
 
 <goal name="astrogrid-build-artifact">
-        <attainGoal name="dist:build-bin" />
+        <attainGoal name="jar" />
+        <attainGoal name="dist:build-bin" /><!-- warning - these won't pick up latest build jar - as not installed -->
         <maven:maven descriptor="${basedir}/groovy/project.xml" goals="dist:build-bin"/>
         <maven:maven descriptor="${basedir}/rhino/project.xml" goals="dist:build-bin" />
         <maven:maven descriptor="${basedir}/jython/project.xml" goals="dist:build-bin" />
@@ -22,26 +23,27 @@
         <attainGoal name="jar:snapshot" />
 </goal>
 
-<goal name="astrogrid-install-site" prereqs="astrogrid-build-site" />
-
-<goal name="astrogrid-install-artifact">
-        <attainGoal name="jar:install" />
-</goal>
 
 <goal name="astrogrid-install-snapshot">
         <attainGoal name="jar:install-snapshot" />
 </goal>
 
-<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
-        <attainGoal name="site:deploy" />
+
+<goal name="astrogrid-install-artifact">
+        <attainGoal name="jar:install" />
 </goal>
+
 
 <goal name="astrogrid-deploy-snapshot">
         <attainGoal name="jar:deploy-snapshot" />
+        <attainGoal name="dist:deploy-snapshot" />
+        <maven:maven descriptor="${basedir}/groovy/project.xml" goals="dist:deploy-snapshot" />
+        <maven:maven descriptor="${basedir}/rhino/project.xml" goals="dist:deploy-snapshot" />
+        <maven:maven descriptor="${basedir}/jython/project.xml" goals="dist:deploy-snapshot" />
 </goal>
 
-
 <goal name="astrogrid-deploy-artifact">
+        <attainGoal name="jar:deploy" />
         <attainGoal name="dist:deploy-bin"/>
         <maven:maven descriptor="${basedir}/groovy/project.xml" goals="dist:deploy-bin"/>
         <maven:maven descriptor="${basedir}/rhino/project.xml" goals="dist:deploy-bin" />
@@ -53,8 +55,12 @@
 
 <!-- want all dependent libs in my dist -->
 <postGoal name="dist:prepare-bin-filesystem">
-        <deploy:copy-deps todir="${maven.dist.bin.assembly.dir}/lib" />
-</postGoal>
+        <attainGoal name="packageit" />
 
+</postGoal>
+<!-- inheritance breaking trick again.. -->
+<goal name="packageit">
+        <deploy:copy-deps todir="${maven.dist.bin.assembly.dir}/lib" />
+</goal>
 
 </project>
