@@ -56,7 +56,9 @@ public class WKF extends org.astrogrid.Configurator {
     /** Key within component's configuration identifying the MySpace URL. */  
         MYSPACE_URL = "URL" ,      
     /** Key within component's configuration identifying the MySpace cache directory. */  
-        MYSPACE_CACHE_DIRECTORY = "/tmp" ;          
+        MYSPACE_CACHE_DIRECTORY = "/tmp" ,
+    /** Key within component's configuration identifying the template for making a MySpace request. */     
+        MYSPACE_REQUEST_TEMPLATE = "TEMPLATE.REQUEST" ;        
     
     private static WKF
         singletonWKF = new WKF() ;

@@ -22,12 +22,14 @@ import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.design.activity.*;
 import org.w3c.dom.Document ;
 
+import java.io.File ;
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream ;
+import java.text.MessageFormat ;
 /**
  * The <code>MySpace</code> class represents... 
  * <p>
@@ -61,32 +63,96 @@ public class MySpace {
     public MySpace() {
     }
     
+    
+    
     public boolean saveWorkflow( Workflow workflow ) {
         if( TRACE_ENABLED ) trace( "MySpace.saveWorkflow() entry") ; 
+        
+        PrintStream
+            pStream = null ;
         
         try {
             
             String
                 xmlWorkflow = workflow.toXMLString(),
-                fileName = this.generateFileName( workflow ) ;
+                filePath = this.generateFileName( workflow ) ;
+ 
+/*JBL note. Not so sure about files that may already exist...
+               
+            File
+                file = new File( fileName ) ;
+                
+            if( file.exists() ) {
+                file.delete() ;
+            }
+*/
+            
+            // Write the xml workflow file to a local cache directory...
             OutputStream 
-                out = new BufferedOutputStream( new FileOutputStream( fileName ) ) ;
-            PrintStream
-                pStream = new PrintStream( out ) ;
+                out = new BufferedOutputStream( new FileOutputStream( filePath ) ) ;           
+            pStream = new PrintStream( out ) ;
             pStream.print( xmlWorkflow ) ;
             pStream.flush() ;
             pStream.close() ;
+            
+            MySpaceManagerDelegate
+                mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
+              
+            // Format the MySpace request...
+            String
+               requestTemplate = WKF.getProperty( WKF.MYSPACE_REQUEST_TEMPLATE
+                                                , WKF.MYSPACE_CATEGORY ) ;
+                                                
+            Object []
+               inserts = new Object[4] ;
+            inserts[0] = workflow.getUserid() ;
+            inserts[1] = workflow.getCommunity() ;
+            inserts[2] = this.generateFileName( workflow ) ;
+            inserts[3] = filePath ;
+            
+            String
+               xmlRequest = MessageFormat.format( requestTemplate, inserts );
+            
+            // Get the MySpaceManager to pick up the file...
+            String
+                responseXML = mySpace.upLoad( xmlRequest ) ;
         }
-        catch( FileNotFoundException fnfex ) {
+//        catch( FileNotFoundException fnfex ) {
+//            ;
+//        }
+        catch( Exception ex ) {
             ;
         }
         finally {
+            pStream.close() ;
             if( TRACE_ENABLED ) trace( "MySpace.saveWorkflow() exit") ; 
         }
         
         return true ;
            
-    }
+    } // end of saveWorkflow()
+    
+    
+    private String generateFullyQualifiedPathName( Workflow workflow ) {
+        if( TRACE_ENABLED ) trace( "MySpace.generateFullyQualifiedPathName() entry") ; 
+        
+        StringBuffer
+            nameBuffer = new StringBuffer( 64 );
+        try {
+            
+            nameBuffer
+                .append( WKF.getProperty( WKF.MYSPACE_CACHE_DIRECTORY
+                                        , WKF.MYSPACE_CATEGORY ) )  
+                .append( System.getProperty( "file.separator" ) )
+                .append( this.generateFileName( workflow ) ) ;           
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "MySpace.generateFullyQualifiedPathName() exit") ; 
+        }
+         
+        return nameBuffer.toString() ;
+        
+    } // end of generateFullyQualifiedPathName()
     
     
     private String generateFileName( Workflow workflow ) {
@@ -97,9 +163,6 @@ public class MySpace {
         try {
             
             nameBuffer
-                .append( WKF.getProperty( WKF.MYSPACE_CACHE_DIRECTORY
-                                        , WKF.MYSPACE_CATEGORY ) )  
-                .append( System.getProperty( "file.separator" ) )
                 .append( "workflow_")
                 .append( workflow.getUserid() )
                 .append( "_" )
@@ -115,7 +178,7 @@ public class MySpace {
          
         return nameBuffer.toString() ;
         
-    }
+    } // end of generateFileName()   
     
     
     private static void trace( String traceString ) {
