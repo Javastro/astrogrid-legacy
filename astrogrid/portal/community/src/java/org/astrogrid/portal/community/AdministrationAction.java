@@ -479,7 +479,7 @@ public class AdministrationAction extends AbstractAction
                   ad.setHomeSpace(homeSpace);
                   ad.setDisplayName(displayName);
                   //ad.setIdent(ident);
-                  ad.setIdent(userIvo.getPath());
+                  ad.setIdent(userIvo.toString());
                   pmd.addAccount(ad);
                   smd.setPassword(ad.getIdent(),pass);
                   message = "Account inserted.";
