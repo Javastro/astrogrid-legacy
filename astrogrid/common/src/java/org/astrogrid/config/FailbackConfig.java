@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.12 2004/03/05 12:32:29 mch Exp $
+ * $Id: FailbackConfig.java,v 1.13 2004/03/06 14:54:26 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -193,8 +193,14 @@ public class FailbackConfig extends Config {
                //if filename given, locate
                if (filename != null) {
                   File propertyFile = new File(filename);
-                  fileUrl = propertyFile.toURL();
-                  keyUsed = jndiFileKey;
+                  //if it's relative, locate from the classpath/working directory
+                  if (!propertyFile.isAbsolute()) {
+                     lookForFile(filename);
+                  } else {
+                     //otherwise get the url and carry on
+                     fileUrl = propertyFile.toURL();
+                     keyUsed = jndiFileKey;
+                  }
                }
 
                if (fileUrl != null) {
@@ -244,38 +250,6 @@ public class FailbackConfig extends Config {
             }
          }
          
-         //look for file in classpath.
-         //see http://www.javaworld.com/javaworld/javaqa/2003-08/01-qa-0808-property.html
-         log.debug("Looking for '"+configFilename+"' on classpath");
-         URL configUrl = ClassLoader.getSystemResource(configFilename);
-         if (configUrl != null) {
-            try {
-               loadFromUrl(configUrl);
-               
-               log.info("Configuration file loaded from '"+configUrl+"' (found in classpath)");
-               
-               return;
-               
-            } catch (IOException ioe) {
-               throw new ConfigException(ioe+" loading property file at '"+configUrl+"' (from classpath)", ioe);
-            }
-         }
-         
-         
-         //look for it in the working directory
-         log.debug("Looking for '"+configFilename+"' in working directory");
-         File f = new File(configFilename);
-         if (f.exists()) {
-            try {
-               loadFromUrl(f.toURL());
-               log.info("Configuration file loaded from working directory '"+f.getAbsolutePath()+"'");
-               return;
-            }
-            catch (IOException ioe) {
-               throw new ConfigException(ioe+" loading property file at '"+f.getAbsolutePath()+"' (ie in working directory)", ioe);
-            }
-         }
-         
          //well we haven't found one anywhere - this may not be an error (as none may be desired) but
          //it should be reported...
          log.warn("No configuration file found; if you need one, "+
@@ -284,6 +258,47 @@ public class FailbackConfig extends Config {
                      "or set the JNDI key "+propertyKey+" to it's file location");
       }
    }
+
+   /**
+    * Looks for given filename in classpath and working directory, and loads
+    * it if found.  Returns false if not found.
+    */
+   private boolean lookForFile(String filename)  {
+         //look for file in classpath.
+         //see http://www.javaworld.com/javaworld/javaqa/2003-08/01-qa-0808-property.html
+         log.debug("Looking for '"+filename+"' on classpath");
+         URL configUrl = ClassLoader.getSystemResource(filename);
+         if (configUrl != null) {
+            try {
+               loadFromUrl(configUrl);
+               
+               log.info("Configuration file loaded from '"+configUrl+"' (found in classpath)");
+               
+               return true;
+               
+            } catch (IOException ioe) {
+               throw new ConfigException(ioe+" loading property file at '"+configUrl+"' (from classpath)", ioe);
+            }
+         }
+         
+         
+         //look for it in the working directory
+         log.debug("Looking for '"+filename+"' in working directory");
+         File f = new File(configFilename);
+         if (f.exists()) {
+            try {
+               loadFromUrl(f.toURL());
+               log.info("Configuration file loaded from working directory '"+f.getAbsolutePath()+"'");
+               return true;
+            }
+            catch (IOException ioe) {
+               throw new ConfigException(ioe+" loading property file at '"+f.getAbsolutePath()+"' (ie in working directory)", ioe);
+            }
+         }
+         
+         return false;
+      }
+  
    
    /**
     * Loads the properties from the given stream.  While this should only be
@@ -489,6 +504,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.13  2004/03/06 14:54:26  mch
+Better file lookup
+
 Revision 1.12  2004/03/05 12:32:29  mch
 Hides values for keys that include the word 'password'
 
