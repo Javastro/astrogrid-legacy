@@ -1,4 +1,4 @@
-/*$Id: DescriptionUtils.java,v 1.5 2004/08/17 15:08:26 nw Exp $
+/*$Id: DescriptionUtils.java,v 1.6 2004/09/09 13:21:09 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -109,7 +109,7 @@ public class DescriptionUtils {
           paramDef.setSubType(paramDesc.getSubType());
           paramDef.setDefaultValue(paramDesc.getDefaultValue());
           paramDef.setUnits(paramDesc.getUnits());
-          paramDef.setAcceptEncodings(paramDesc.getAcceptEncodings().split(" "));
+          paramDef.setAcceptEncodings(paramDesc.getAcceptEncodings());
          parameters.addParameter(paramDef);
       }
     
@@ -122,6 +122,9 @@ public class DescriptionUtils {
 
 /* 
 $Log: DescriptionUtils.java,v $
+Revision 1.6  2004/09/09 13:21:09  pah
+schema change
+
 Revision 1.5  2004/08/17 15:08:26  nw
 fixed but I introduced previously.
 
