@@ -5,6 +5,7 @@
 
 package org.astrogrid.datacenter.queriers;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 
 
@@ -30,12 +31,7 @@ public class DatabaseAccessException extends RemoteException
     */
    public DatabaseAccessException(Throwable cause, String message)
    {
-      super(message);
-      if (cause != null)
-      {
-         initCause(cause);
-         setStackTrace(cause.getStackTrace());
-      }
+      super(message, cause);
    }
 
    /**
@@ -55,10 +51,19 @@ public class DatabaseAccessException extends RemoteException
    {
       this(null, message);
    }
+   
+   public static void main(String args[]) throws DatabaseAccessException
+   {
+      throw new DatabaseAccessException(new IOException("IOE"), "DAE Message");
+   }
+   
 }
 
 /*
 $Log: DatabaseAccessException.java,v $
+Revision 1.3  2003/12/03 17:58:25  mch
+Fixed initCause error
+
 Revision 1.2  2003/12/03 16:05:46  mch
 Now extends RemoteException which should give better error reporting at the web client
 
