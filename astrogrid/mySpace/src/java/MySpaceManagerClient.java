@@ -14,7 +14,6 @@
 ///home/clq2/develop/MSRegistryTestDir/originalsReg
 
 
-package java;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import javax.xml.rpc.ParameterMode;
@@ -76,7 +75,7 @@ public class MySpaceManagerClient
 					"<newContainerName</newContainerName>" +
 					"<query></query>" +
 					"<newDataHolderName>/clq/serv2/tablexx</newDataHolderName>" + //Mandatory
-					"<serverFileName>/tmp/test</serverFileName>" + //Mandatory
+					"<serverFileName>/tmp/test</serverFileName>" + //Mandatory //this is the file datacentre will upload
 					"<fileSize>1</fileSize>" + //Mandatory
 				"</elements>" +
 			"</request>"; 
