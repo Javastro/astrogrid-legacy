@@ -14,12 +14,14 @@ import java.net.URL;
 import java.util.Hashtable;
 
 import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.spi.NamingManager;
 
+import org.apache.commons.logging.LogFactory;
 import org.jconfig.*;
 import org.jconfig.handler.*;
-import org.astrogrid.log.Log;
+//import org.astrogrid.log.Log;
 import org.astrogrid.i18n.AstroGridMessage;
 
 /**
@@ -200,7 +202,7 @@ public abstract class Configurator {
         if (jndiName != null) {
           //  Try Obtaining the config file from a URL stored in JNDI
           try {
-            Context ic = NamingManager.getInitialContext(null);
+            Context ic = new InitialContext();
             String url = (String) ic.lookup(jndiName);
             URLHandler urlHandler = new URLHandler();
             assert url != null;
@@ -234,7 +236,6 @@ public abstract class Configurator {
     } finally {
       Log.trace("Configurator.getConfig(): exit");
     }
-    assert configuration!=null;
     return configuration;
 
   } // end of getConfig()
@@ -248,3 +249,57 @@ public abstract class Configurator {
   }
 
 } // end of class Configuration
+
+/**
+ * Delegates to commons logging
+ * This class used to use org.astrogrid.log.Log
+ * 
+ * @author jdt
+ */
+final class Log {
+  /**
+   * Do nothing ctor
+   *
+   */
+  private Log() {}
+  /**
+   * Logger for this class
+   */
+  private static org.apache.commons.logging.Log log = LogFactory.getLog(Configurator.class);
+  /**
+   * delegates to commons logging
+   * @param string message
+   */
+  public static void trace(final String string) {
+    log.trace(string);
+  }
+
+  /**
+   * * delegates to commons logging
+   * @param string message
+   * @param cme exception
+   */
+  public static void logError(final String string, final Throwable cme) {
+    log.error(string, cme); 
+  }
+
+  /**
+   * * delegates to commons logging
+   * @param string message
+   * @param ne exception
+   */
+  public static void logDebug(final String string, final Throwable ne) {
+    log.debug(string, ne);
+    
+  }
+
+  /**
+   * * delegates to commons logging
+   * @param string message
+   */
+  public static void logError(final String string) {
+    log.error(string);
+  }
+  
+  
+}
