@@ -2,11 +2,14 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/12/23 12:47:56 $</cvs:date>
-    | <cvs:version>$Revision: 1.16 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/02/27 23:37:57 $</cvs:date>
+    | <cvs:version>$Revision: 1.17 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.17  2005/02/27 23:37:57  clq2
+    |   comment out linkcheck report
+    |
     |   Revision 1.16  2004/12/23 12:47:56  jdt
     |   A few simplifications to the pom
     |
@@ -74,7 +77,7 @@
         <report> maven-changelog-plugin </report>
         <report> maven-developer-activity-plugin </report>
         <report> maven-file-activity-plugin </report>
-        <report> maven-linkcheck-plugin </report>
+        <!--report> maven-linkcheck-plugin </report-->
     </reports>
 
 </project>

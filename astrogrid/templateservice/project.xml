@@ -106,9 +106,9 @@
     <report>
       maven-license-plugin
     </report>
-    <report>
+    <!--report>
       maven-linkcheck-plugin
-    </report>
+    </report-->
     <report>
       maven-pmd-plugin
     </report>
