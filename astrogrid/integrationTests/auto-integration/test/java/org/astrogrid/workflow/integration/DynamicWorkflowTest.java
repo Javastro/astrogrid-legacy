@@ -1,4 +1,4 @@
-/*$Id: DynamicWorkflowTest.java,v 1.1 2004/08/27 13:51:41 nw Exp $
+/*$Id: DynamicWorkflowTest.java,v 1.2 2004/08/28 09:58:07 nw Exp $
  * Created on 27-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,14 +40,14 @@ public class DynamicWorkflowTest extends AbstractTestForWorkflow {
         wf.setName(this.getClass().getName());
         Script sc = new Script();
         sc.setBody(
-                "sumStep = jes.getSteps().find{it.getName() == 'sumStep'}; // find next step" +
-                "inputs = sumStep.getTool().getInput(); // get set of inputs. " +
-                "inputs.getParameter(0).setValue('11'); // zap value of existing parameter." +
-                "p = jes.newParameter();" +
-                "p.setName('parameter-1');" +
-                "p.setIndirect(false);" +
-                "p.setValue('4');" +
-                "inputs.addParameter(p);//add new parameter"                
+                "sumStep = jes.getSteps().find{it.getName() == 'sumStep'}; // find next step\n" +
+                "inputs = sumStep.getTool().getInput(); // get set of inputs.\n " +
+                "inputs.getParameter(0).setValue('11'); // zap value of existing parameter.\n" +
+                "p = jes.newParameter();\n" +
+                "p.setName('parameter-1');\n" +
+                "p.setIndirect(false);\n" +
+                "p.setValue('4');\n" +
+                "inputs.addParameter(p);//add new parameter\n"                
                 );
         
         wf.getSequence().addActivity(sc);
@@ -97,6 +97,9 @@ public class DynamicWorkflowTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: DynamicWorkflowTest.java,v $
+Revision 1.2  2004/08/28 09:58:07  nw
+forgot to add \n's to script.
+
 Revision 1.1  2004/08/27 13:51:41  nw
 added test that checks operation of dynamically-modified workflows.
  
