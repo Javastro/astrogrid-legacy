@@ -7,6 +7,58 @@
 </properties>
 
 <body>
+  <section name="Submit an ADQL/sql Query">
+    <p>
+      <form action="submitAdqlSql.jsp" method="POST">
+       <p>
+         ADQL/sql <textarea name="AdqlSql" rows='1' cols='100%'/><br />
+       </p>
+       <p>
+          Results Format
+          <select name='Format'>
+             <option value="VOTABLE">VOTable</option>
+             <option value="CSV">CSV</option>
+          </select>
+          Compression
+          <select name='Compression'>
+             <option value="NONE">None</option>
+          </select>
+          Send them to
+          <input type="text" name="Target"/>
+          <input type="submit" value="Submit ADQL" />
+       </p>
+
+      </form>
+    </p>
+  </section>
+
+  <section name="Submit an ADQL/xml Query">
+    <p>
+      <b>Enter your ADQL/xml query here:</b>
+      (<a href="http://skyservice.pha.jhu.edu/devel/AdqlTranslator/Convertor.aspx">Translate from SQL</a>)
+      (<a href="adql">Sample queries</a> <i>Note that some browsers will modify viewed XML, so check for DEFANGED, case changes, etc</i>)
+      <br />
+      <form action="submitAdqlXml.jsp" method="POST">
+        <textarea name="AdqlXml" rows="20" cols="100%"></textarea>
+        <p/>
+        <p>
+          Results Format
+          <select name='Format'>
+             <option value="VOTABLE">VOTable</option>
+             <option value="CSV">CSV</option>
+          </select>
+          Compression
+          <select name='Compression'>
+             <option value="NONE">None</option>
+          </select>
+          Send them to
+          <input type="text" name="Target"/>
+          <input type="submit" value="Submit ADQL" />
+       </p>
+      </form>
+    </p>
+  </section>
+
   <section name="Submit a Region Query">
     <p>
       <form action="submitCone.jsp" method="POST">
@@ -32,5 +84,18 @@
      </form>
    </p>
   </section>
+
+<!--
+  <section name="Submit SQL">
+    <p>
+      <form action="askRawSql.jsp" method="POST">
+       <p>
+         SQL <textarea name="RawSql" rows='1' cols='100%'/><br />
+       </p>
+       <input type="submit" value="Submit SQL" />
+      </form>
+    </p>
+  </section>
+-->
 </body>
 </document>
