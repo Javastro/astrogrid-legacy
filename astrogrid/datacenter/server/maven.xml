@@ -1,13 +1,59 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" xmlns:artifact="artifact" default="jar:jar">
+ <!-- override the default astrogrid goals with our own
+         - builds a jar, and a dist zip too.
+         - dist.zip used in the pal build
+-->
+ <goal name="astrogrid-build-artifact" prereqs="jar" />
+  <goal name="astrogrid-install-artifact" prereqs="jar:install,dist:build-bin">
+        <artifact:install
+                artifact="${maven.dist.dir}/${maven.final.name}.zip"
+                type="zip"
+                project="${pom}"
+        />
+  </goal>
+  <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,dist:build-bin">
+        <artifact:install-snapshot
+                artifact="${maven.dist.dir}/${maven.final.name}.zip"
+                type="zip"
+                project="${pom}"
+        />
+  </goal>
+  <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot" />
+  <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,dist:build-bin">
+        <!-- can't use dist:deploy-bin-snapshot - puts it in different / wrong / inaccessible part of repository -->
+        <artifact:deploy-snapshot
+                artifact="${maven.dist.dir}/${maven.final.name}.zip"
+                type="zip"
+                project="${pom}"
+        />
+  </goal>
+  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:build-bin" >
+        <artifact:deploy
+                artifact="${maven.dist.dir}/${maven.final.name}.zip"
+                type="zip"
+                project="${pom}"
+        />
+  </goal>
 
-<!--we want to package tests up along with classes in the jar -->
+<!--we want to package tests up along with classes in the jar
+
+ - which means that we need to compile the test classes, even if we're not testing.
+ -->
 <preGoal name="jar:jar">
-	<echo>Server: Copying test classes into jar from ${maven.build.dir}/test-classes into ${maven.build.dest}</echo>
-	<copy todir="${maven.build.dest}">
-		<fileset dir="${maven.build.dir}/test-classes" />
-	</copy>
+        <j:if test="${maven.test.skip}">
+                <echo>Building test classes, although we're skipping the tests</echo>
+                <j:set var="maven.test.skip" value="false" />
+                <attainGoal name="test:compile" />
+                <j:set var="maven.test.skip" value="true" />
+        </j:if>
+        <echo>Server: Copying test classes into jar from ${maven.build.dir}/test-classes into ${maven.build.dest}</echo>
+        <copy todir="${maven.build.dest}">
+                <fileset dir="${maven.build.dir}/test-classes">
+                        <exclude name="log4j.properties" /> <!-- as webapp provides its own -->
+                </fileset>
+        </copy>
 </preGoal>
 
 

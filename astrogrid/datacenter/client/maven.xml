@@ -1,10 +1,45 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core" xmlns:ant="jelly:ant"   xmlns:doc="doc" xmlns:util="jelly:util" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<project xmlns:j="jelly:core" xmlns:ant="jelly:ant"  xmlns:artifact="artifact" xmlns:doc="doc" xmlns:util="jelly:util" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
 
 <!-- location of generated source tree -->
 <property name="generated.src" location="${basedir}/generated/java" />
 <property name="generated.wsdd" location="${basedir}/generated/wsdd" />
+ <!-- override the default astrogrid goals with our own
+         - builds a jar, and a dist zip too.
+         - dist.zip used in the pal build
+-->
+ <goal name="astrogrid-build-artifact" prereqs="jar" />
+  <goal name="astrogrid-install-artifact" prereqs="jar:install,dist:build-bin">
+        <artifact:install
+                artifact="${maven.dist.dir}/${maven.final.name}.zip"
+                type="zip"
+                project="${pom}"
+        />
+  </goal>
+  <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,dist:build-bin">
+        <artifact:install-snapshot
+                artifact="${maven.dist.dir}/${maven.final.name}.zip"
+                type="zip"
+                project="${pom}"
+        />
+  </goal>
+  <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot" />
+  <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,dist:build-bin">
+        <!-- can't use dist:deploy-bin-snapshot - puts it in different / wrong / inaccessible part of repository -->
+        <artifact:deploy-snapshot
+                artifact="${maven.dist.dir}/${maven.final.name}.zip"
+                type="zip"
+                project="${pom}"
+        />
+  </goal>
+  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:build-bin" >
+        <artifact:deploy
+                artifact="${maven.dist.dir}/${maven.final.name}.zip"
+                type="zip"
+                project="${pom}"
+        />
+  </goal>
 
 <!-- hook to add in generated sources -->
 <preGoal name="java:compile">
@@ -40,7 +75,7 @@ Requires:
    <!-- generate java sources from wsdl -->
    <attainGoal name="wsdl2java" />
    <!-- generate java sources from wsdl -->
-   <attainGoal name="AixIt05wsdl2java" />
+   <attainGoal name="AxisIt05wsdl2java" />
    <!-- generate other java sources from wsdl -->
    <attainGoal name="SkyNodeWsdl2java" />
    <!-- delete the ones we don't want -->
@@ -81,7 +116,7 @@ Requires:
             namespace="http://tempuri.org/adql"
             package="org.astrogrid.datacenter.adql.generated" />
       </axis-wsdl2java>
-      
+
    </goal>
 
    <!-- generates classes for It05 axis web interface -->
@@ -90,7 +125,7 @@ Requires:
          url="${basedir}/src/wsdl/AxisDataServer_v05.wsdl"
          deployscope="Application" serverside="true" skeletondeploy="true">
       </axis-wsdl2java>
-      
+
    </goal>
 
    <!-- mch: added this to do other generations.  Don't know if it will break or whether it needs seperate goals... -->
@@ -196,7 +231,9 @@ Requires:
       </replace>
    </goal>
 
-<!-- documentation related tasks -->
+<!--**************************
+    documentation related tasks
+    **************************-->
 
 <!-- copy schemas into site documentation directory -->
 <postGoal name="xdoc:copy-resources">

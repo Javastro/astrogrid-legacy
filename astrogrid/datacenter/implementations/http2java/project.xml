@@ -13,9 +13,9 @@
 
 
   <description>
-	Adapater library that wraps a legacy web application
-	converts between java method calls and HTTP-POST / HTTP-GET to
-	CGI scripts. Can be used as the back end for a SOAP server that wraps a legacy web application.
+        Adapater library that wraps a legacy web application
+        converts between java method calls and HTTP-POST / HTTP-GET to
+        CGI scripts. Can be used as the back end for a SOAP server that wraps a legacy web application.
   </description>
   <!-- a short description of what the project does -->
   <shortDescription>
@@ -37,36 +37,35 @@
   </repository>
 
 
-
   <!-- jar files the project is dependent on -->
   <dependencies>
     <dependency>
-    	<id>bsf</id>
-	<version>2.2</version>
+        <id>bsf</id>
+        <version>2.2</version>
     </dependency>
     <dependency>
-    	<groupId>rhino</groupId>
-    	<artifactId>js</artifactId>
-    	<version>1.5R4.1</version>
+        <groupId>rhino</groupId>
+        <artifactId>js</artifactId>
+        <version>1.5R4.1</version>
     </dependency>
 
 
     <dependency>
-    	<id>commons-httpclient</id>
-	<version>2.0-beta1</version>
+        <id>commons-httpclient</id>
+        <version>2.0-beta1</version>
     </dependency>
     <!-- digester and things it relies upon -->
     <dependency>
-    	<id>commons-digester</id>
-	<version>1.5</version>
+        <id>commons-digester</id>
+        <version>1.5</version>
     </dependency>
     <dependency>
-    	<id>commons-beanutils</id>
-	<version>1.6</version>
+        <id>commons-beanutils</id>
+        <version>1.6</version>
     </dependency>
     <dependency>
-    	<id>commons-collections</id>
-	<version>2.1</version>
+        <id>commons-collections</id>
+        <version>2.1</version>
     </dependency>
 
   </dependencies>

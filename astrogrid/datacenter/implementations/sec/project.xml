@@ -3,7 +3,7 @@
   <extend>${basedir}/../../build/project-base.xml</extend>
   <!-- the version of maven's project object model -->
   <pomVersion>3</pomVersion>
-  
+
   <!-- a unique name for this project -->
   <id>secdelegate</id>
   <name>AstroGrid DataCenter Solar Event Catalogue (SEC) Delegate</name>
@@ -19,17 +19,6 @@
    </ul>
   ]]></description>
 
-  <shortDescription>Astrogrid wrapper around SEC</shortDescription>
-  <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/datacenter/implementations/secdelegate</siteDirectory>
-
-  <repository>
-    <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/datacenter/implementations/secdelegate
-    </connection>
-    <developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/datacenter/implementations/secdelegate
-    </developerConnection>
-  </repository>
 
   <!-- jar files the project is dependent on -->
   <dependencies>
@@ -52,7 +41,7 @@
       <version>${pom.currentVersion}</version>
    </dependency>
 
-	<dependency>
+        <dependency>
       <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-store-client</artifactId>
         <version>${pom.currentVersion}</version>
@@ -60,7 +49,7 @@
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
-    
+
     <dependency>
       <id>JavaMail</id>
       <version>UNKNOWN</version>
@@ -69,8 +58,8 @@
       </properties>
       <jar>JavaMail.jar</jar>
     </dependency>
-    
-    
+
+
   </dependencies>
 
 </project>

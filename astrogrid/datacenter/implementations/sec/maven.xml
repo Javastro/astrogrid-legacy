@@ -1,24 +1,56 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar"    xmlns:doc="doc" xmlns:util="jelly:util"  xmlns:ant="jelly:ant">
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" xmlns:artifact="artifact" default="jar:jar"    xmlns:doc="doc" xmlns:util="jelly:util"  xmlns:ant="jelly:ant">
+ <!-- NWW: modified standard goals to produce souorce dist too - these are then used when assembling PAL -->
+  <goal name="astrogrid-build-artifact" prereqs="jar" />
+  <goal name="astrogrid-install-artifact" prereqs="jar:install,dist:build-src">
+        <artifact:install
+                artifact="${maven.dist.dir}/src-${maven.final.name}-src.zip"
+                type="zip"
+                project="${pom}"
+        />
+
+  </goal>
+  <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,dist:build-src">
+        <artifact:install-snapshot
+                artifact="${maven.dist.dir}/${maven.final.name}-src.zip"
+                type="zip"
+                project="${pom}"
+        />
+  </goal>
+  <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot" />
+  <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,dist:build-src">
+        <artifact:deploy-snapshot
+                artifact="${maven.dist.dir}/${maven.final.name}-src.zip"
+                type="zip"
+                project="${pom}"
+        />
+  </goal>
+  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:build-src">
+        <artifact:deploy
+                artifact="${maven.dist.dir}/${maven.final.name}-src.zip"
+                type="zip"
+                project="${pom}"
+        />
+  </goal>
 
 <!-- location of generated source tree -->
 <property name="generated.src" location="${basedir}/generated/java" />
 
 <!-- hook to add in generated sources -->
 <preGoal name="java:compile">
-	<mkdir dir="${generated.src}" />
-	<!--
-	<attainGoal name="generate-delegates" />
-	-->
-	<path id="generated.src.path" location="${generated.src}" />
-	<maven:addPath id="maven.compile.src.set" refid="generated.src.path" />
+        <mkdir dir="${generated.src}" />
+        <!--
+        <attainGoal name="generate-delegates" />
+        -->
+        <path id="generated.src.path" location="${generated.src}" />
+        <maven:addPath id="maven.compile.src.set" refid="generated.src.path" />
 </preGoal>
 
 
 <!-- removes previously generated javadocs, and does javadoc again including generated sources too -->
 <postGoal name="maven-javadoc-plugin:report">
-	<attainGoal name="xdoc:init" />
+        <attainGoal name="xdoc:init" />
 <!-- lifted from the javadoc plugin code -->
       <!-- Get the year to display in the Javadocs -->
       <ant:tstamp>
@@ -75,13 +107,13 @@
         use="${maven.javadoc.use}"
         windowtitle="${pom.name} ${pom.currentVersion} API"
         doctitle="${pom.name} ${pom.currentVersion} API"
-		sourcepath="${basedir}/src/java:${generated.src}"
+                sourcepath="${basedir}/src/java:${generated.src}"
         bottom="${copyright}">
-		<!--
+                <!--
         stylesheetfile="${maven.javadoc.stylesheet}"
         additionalparam="${maven.javadoc.additionalparam}"
         useexternalfile="${maven.javadoc.useexternalfile}"
-		-->
+                -->
         <j:if test="${context.getVariable('maven.javadoc.source') != null}">
           <ant:setProperty name="source" value="${maven.javadoc.source}" />
         </j:if>
@@ -170,24 +202,24 @@ new goals
 -->
 
   <goal name="generate-delegates" description="generate classes from wsdl" prereqs="axis-declare-tasks">
-  	<description><![CDATA[
-	generated client classes from wsdl from sec.
-	]]></description>
-  	<delete><!-- clean out to start with -->
-		<fileset dir="${generated.src}" >
-			<include name="**/*.java" />
-			<include name="**/*.class" />
-		</fileset>
-	</delete>
-	<attainGoal name="SEC" />
+        <description><![CDATA[
+        generated client classes from wsdl from sec.
+        ]]></description>
+        <delete><!-- clean out to start with -->
+                <fileset dir="${generated.src}" >
+                        <include name="**/*.java" />
+                        <include name="**/*.class" />
+                </fileset>
+        </delete>
+        <attainGoal name="SEC" />
    </goal>
 
 <goal name="SEC">
-	<axis-wsdl2java output="${generated.src}" verbose="true"
-	  url="${basedir}/src/wsdl/SEC.wsdl">
-	  <mapping namespace="urn:org.egso.sec/wsdl"
-	  	package="org.astrogrid.datacenter.sec.secdelegate.egso" />
-	  </axis-wsdl2java>
+        <axis-wsdl2java output="${generated.src}" verbose="true"
+          url="${basedir}/src/wsdl/SEC.wsdl">
+          <mapping namespace="urn:org.egso.sec/wsdl"
+                package="org.astrogrid.datacenter.sec.secdelegate.egso" />
+          </axis-wsdl2java>
 </goal>
 
 

@@ -10,10 +10,10 @@
   <!-- a short but descriptive name for the project -->
   <name>Datacenter Installation Checker</name>
 
- 
+
 
   <description>
-	Tool that connects to a datacenter and exercises its methods - checks the server is available, etc.
+        Tool that connects to a datacenter and exercises its methods - checks the server is available, etc.
   </description>
   <!-- a short description of what the project does -->
   <shortDescription>
@@ -38,22 +38,22 @@
   <!-- jar files the project is dependent on -->
   <dependencies>
 
-	<dependency>
-		<groupId>org.astrogrid</groupId>
-		<artifactId>astrogrid-datacenter-client</artifactId>
-		<version>${pom.currentVersion}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.astrogrid</groupId>
-		<artifactId>astrogrid-datacenter-server</artifactId>
-		<version>${pom.currentVersion}</version>
-	</dependency>
-	    <dependency>
-	    <groupId>org.astrogrid</groupId>
+        <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-datacenter-client</artifactId>
+                <version>${pom.currentVersion}</version>
+        </dependency>
+        <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-datacenter-server</artifactId>
+                <version>${pom.currentVersion}</version>
+        </dependency>
+            <dependency>
+            <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-store-client</artifactId>
-		
+
         <version>${pom.currentVersion}</version>
-	    <properties>
+            <properties>
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>

@@ -70,7 +70,6 @@
       <war.bundle>true</war.bundle>
     </properties>
    </dependency>
-   <!-- are the registry and community libs needed here for the store client? -->
    <dependency>
         <artifactId>astrogrid-store-client</artifactId>
         <groupId>org.astrogrid</groupId>

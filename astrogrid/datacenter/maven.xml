@@ -4,22 +4,15 @@
 <!-- hooks to farm out everything to subprojects -->
 
 <!-- Astrogrid custom goals -->
-<!-- Only install the minimum for the autobuild for now
-    see http://www.astrogrid.org/maven/build/SimpleMavenProject/goalsSummary.html -->
 <goal name="astrogrid-deploy-snapshot">
    <echo message="Master Project: astrogrid-deploy-snapshot"/>
    <maven:reactor
      basedir="${basedir}"
      postProcessing="false"
      includes="*/project.xml,implementations/*/project.xml"
-     excludes="pal/**,implementations/http2java/**"
-     goals="jar:deploy-snapshot,dist"
+     goals="astrogrid-deploy-snapshot"
      banner="Deploying snapshots"
      ignoreFailures="true" />
-    <maven:maven descriptor="${basedir}/pal/project.xml"
-      goals="webapp-site,war:deploy-snapshot"
-      ignoreFailures="true" />
-
 </goal>
 <goal name="astrogrid-deploy-artifact">
    <echo message="Master Project: astrogrid-deploy-artifact"/>
@@ -27,14 +20,9 @@
      basedir="${basedir}"
      postProcessing="false"
      includes="*/project.xml,implementations/*/project.xml"
-     excludes="pal/**,implementations/http2java/**"
-     goals="jar:deploy,dist"
+     goals="astrogrid-deploy-artifact"
      banner="Deploying snapshots"
      ignoreFailures="true" />
-    <maven:maven descriptor="${basedir}/pal/project.xml"
-      goals="webapp-site,war:deploy"
-      ignoreFailures="true" />
-
 </goal>
 
 <goal name="astrogrid-install-snapshot">
@@ -43,13 +31,9 @@
      basedir="${basedir}"
      postProcessing="false"
      includes="*/project.xml,implementations/*/project.xml"
-     excludes="pal/**"
-     goals="jar:install-snapshot,dist"
+     goals="astrogrid-install-snapshot"
      banner="installing snapshots"
      ignoreFailures="true" />
-    <maven:maven descriptor="${basedir}/pal/project.xml"
-      goals="webapp-site,war:install-snapshot"
-      ignoreFailures="true" />
 </goal>
 <goal name="astrogrid-install-artifact">
    <echo message="Master Project: astrogrid-install-artifact"/>
@@ -57,30 +41,22 @@
      basedir="${basedir}"
      postProcessing="false"
      includes="*/project.xml,implementations/*/project.xml"
-     excludes="pal/**"
-     goals="jar:install,dist"
+     goals="astrogrid-install-artifact"
      banner="installing artifact"
      ignoreFailures="true" />
-    <maven:maven descriptor="${basedir}/pal/project.xml"
-      goals="webapp-site,war:install"
-      ignoreFailures="true" />
 </goal>
-	<goal name="astrogrid-build-site">
+<goal name="astrogrid-build-site">
    <echo message="Master Project: astrogrid-build-site"/>
    <attainGoal name="multiproject:site" />
 </goal>
 <goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
    <echo message="Master Project: astrogrid-deploy-site"/>
-   <attainGoal name="site:sshdeploy" />
+   <attainGoal name="site:fsdeploy" />
 </goal>
 <goal name="astrogrid-clean">
    <echo message="Master Project: astrogrid-clean"/>
    <attainGoal name="multiproject:clean" />
 </goal>
-
-<!--
-stand - alone goals - development helpers, not additions to main build
--->
 
 
 </project>
