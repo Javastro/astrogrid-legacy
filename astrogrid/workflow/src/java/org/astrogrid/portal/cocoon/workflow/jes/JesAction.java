@@ -92,7 +92,8 @@ public class JesAction extends AbstractAction {
     public static final String
         HTTP_JOBLIST_TAG = "job-list-tag" ,
         COMMUNITY_ACCOUNT_TAG = "community_account" ,
-        CREDENTIAL_TAG = "credential" ;
+        CREDENTIAL_TAG = "credential" ,
+        COMMUNITY_TOKEN_TAG = "community-token" ;
     
     public static final String
         ERROR_MESSAGE_PARAMETER = "ErrorMessage";
@@ -101,10 +102,11 @@ public class JesAction extends AbstractAction {
         ACTION_READ_JOB_LIST = "read-job-list" ;
         
     public static final String
-        AUTHORIZATION_RESOURCE_WORKFLOW = "workflow" ,
+        AUTHORIZATION_RESOURCE_JOB = "job" ,
         AUTHORIZATION_ACTION_EDIT = "edit" ;
 
-        
+    public static final String 
+        USERID_COMMUNITY_SEPARATOR = "@" ;     
         
 
     /**
@@ -259,16 +261,31 @@ public class JesAction extends AbstractAction {
             if( TRACE_ENABLED ) trace( "JesActionImpl.retrieveUserDetails() entry" ) ;   
                      
             String 
-                tag  = null ;
+                tag  = null ,
+                useridCommunity = null ;
+         int
+             ampersandIndex ;
 
             try {
+                
+                // JL Note: Iteration 3 way of doing things...
+                useridCommunity = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ) ;
+                ampersandIndex = useridCommunity.indexOf( USERID_COMMUNITY_SEPARATOR ) ;
+                this.userid = useridCommunity.substring(  0, ampersandIndex ) ;
+                this.community = useridCommunity.substring( ampersandIndex + 1 );   
+                
+/*               
+                JL Note: This is PortalB Iteration 2 way of doing things,...
+                
                 tag = params.getParameter( USER_PARAM_NAME ) ;
                 this.userid = (String) session.getAttribute( tag ) ;
 				tag = params.getParameter( COMMUNITY_PARAM_TAG ) ;
 				this.community = (String) session.getAttribute( tag ) ;
+
             }
             catch( ParameterException pex ) {
                 ; // some logging here
+*/
             }
             finally {
                 if( TRACE_ENABLED ) trace( "JesActionImpl.retrieveUserDetails() exit" ) ;  
@@ -306,7 +323,7 @@ public class JesAction extends AbstractAction {
             try {
                 // For the moment this is where we have placed the door.
                 // If users cannot see a list, then they cannot do anything...
-                this.checkPermissions( AUTHORIZATION_RESOURCE_WORKFLOW
+                this.checkPermissions( AUTHORIZATION_RESOURCE_JOB
                                      , AUTHORIZATION_ACTION_EDIT ) ;
                 
                 
