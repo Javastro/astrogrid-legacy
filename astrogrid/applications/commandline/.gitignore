@@ -2,3 +2,4 @@ target
 .classpath
 .project
 tests.log
+velocity.log
