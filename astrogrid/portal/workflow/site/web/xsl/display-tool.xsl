@@ -59,13 +59,16 @@
                                     <tr>
                                         <td></td>
                                         <td>
-                                            <div style="display:none" id="tool_select_dropdown">
-                                                <select name="tool_list" size="1" id="select_list" onClick="document.getElementById('tool_select_dropdown').style.display='none'; document.getElementById('tool_select_button').style.display=''; document.properties_form.tool_name.value = document.properties_form.select_list.value;">
-                                                    <option value="6Df">6Df</option>
-                                                    <option value="Data Federation">Data Federation</option>
-                                                    <option value="Sextractor">Sextractor</option>
-                                                    <option value="HyperZ">HyperZ</option>
-                                                </select>
+                                          <div style="display:none" id="tool_select_dropdown">                                                
+                                            <select name="tool_list" size="1" id="select_list" onClick="document.getElementById('tool_select_dropdown').style.display='none'; document.getElementById('tool_select_button').style.display=''; document.properties_form.tool_name.value = document.properties_form.select_list.value;">
+	                                          <option value="none">-- Select tool --</option>
+                                                <xsl:for-each select="//toolsAvailable">
+                                                  <xsl:element name="option">
+                                                    <xsl:attribute name="value"><xsl:value-of select="@tool-name"/></xsl:attribute>
+				                                    <xsl:value-of select="@tool-name"/>
+				                                  </xsl:element>
+                                                </xsl:for-each>
+		                                      </select>                                                                                                                                                
                                             </div>                                         
                                         </td>
                                     </tr>
