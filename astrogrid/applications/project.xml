@@ -35,7 +35,7 @@ This functionality is provided with the ApplicationController service, of which 
 
   <shortDescription>AstroGrid Applications Integration Components</shortDescription>
 
-  <siteDirectory>${astrogrid.docs}/${astrogrid.iteration}/applications</siteDirectory>
+  <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/applications</siteDirectory>
   <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
   <repository>
     <connection>
