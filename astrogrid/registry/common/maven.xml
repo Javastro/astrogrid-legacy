@@ -83,19 +83,14 @@
         <ant:echo message="Building snapshot artifact ...."/>
         <attainGoal name="jar:install-snapshot"/>
     </goal>
-    
-    <preGoal name="jar:jar">
-      <!--+
-            | Copy our XSL Files.
-            +-->
-        <ant:copy verbose="false" todir="${maven.build.dest}">
-            <ant:fileset dir="src/xsl">
-                <include name="CastorXSLProcess.xsl"/>
-                <include name="XSLDBProcess.xsl"/>
-            </ant:fileset>
-        </ant:copy>    
-    </preGoal>
 
+      <!--+    
+    <preGoal name="java:compile">
+
+            | Copy our XSL Files.
+           
+    </preGoal>
+ +-->
     <!--+
         | Deploy our snapshot jar.
         | (required as a target goal for the reactor)
@@ -141,8 +136,13 @@
 	<preGoal name="java:compile">
 
 	     <mkdir dir="${basedir}/target/classes" />  
+        <ant:copy verbose="false" todir="${maven.build.dest}">
+            <ant:fileset dir="src/xsl">
+                <include name="CastorXSLProcess.xsl"/>
+                <include name="XSLDBProcess.xsl"/>
+            </ant:fileset>
+        </ant:copy>    
 		<attainGoal name="run-castor" />
-
 	</preGoal>    
 
 	
