@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.8 2003/09/02 14:41:39 nw Exp $
+/*$Id: AllTests.java,v 1.9 2003/09/05 01:06:09 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,12 +38,11 @@ public class AllTests {
         suite.addTest(org.astrogrid.datacenter.datasetagent.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.impl.abstr.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.query.QueryParsingTest.suite());
-        suite.addTest(org.astrogrid.datacenter.queriers.QuerierTest.suite());
-        suite.addTest(org.astrogrid.datacenter.queriers.QueryTranslatorTest.suite());
-        suite.addTest(org.astrogrid.datacenter.service.WorkspaceTest.suite());
-        suite.addTest(org.astrogrid.datacenter.service.ServerTest.suite());
+        suite.addTest(org.astrogrid.datacenter.queriers.AllTests.suite());
+        suite.addTest(org.astrogrid.datacenter.service.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.delegate.DelegateTest.suite());
         suite.addTest(org.astrogrid.datacenter.adql.AllTests.suite());
+        suite.addTest(org.astrogrid.datacenter.queriers.sql.AllTests.suite());
         return suite;
     }
 }
@@ -51,6 +50,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.9  2003/09/05 01:06:09  nw
+linked in new tests
+
 Revision 1.8  2003/09/02 14:41:39  nw
 added test
 
