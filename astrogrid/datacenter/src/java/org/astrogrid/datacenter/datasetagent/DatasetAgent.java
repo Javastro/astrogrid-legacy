@@ -20,6 +20,7 @@ import org.astrogrid.AstroGridException;
 import org.astrogrid.datacenter.Util;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.config.ConfigurationKeys;
+import org.astrogrid.datacenter.config.ConfigurationDefaultImpl;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.datacenter.myspace.Allocation;
 import org.astrogrid.datacenter.query.Query;
@@ -90,10 +91,10 @@ public class DatasetAgent {
 	  **/       	
 	public DatasetAgent() {
 		if( TRACE_ENABLED ) logger.debug( "DatasetAgent(): entry") ;
-		config = new Configuration();
+		config = new ConfigurationDefaultImpl();
 		fac = new DynamicFactoryManager(config);
 	}
-	protected final Configuration config;
+	protected final ConfigurationDefaultImpl config;
 	protected final DynamicFactoryManager fac;
 	/** verify that all configuration files are present,
 	 * load factories from config file if not already loaded.
