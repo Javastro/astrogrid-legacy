@@ -5,7 +5,6 @@
     xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
     xmlns:apachesoap="http://xml.apache.org/xml-soap"
     xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1"
-    xmlns:impl="urn:cea/resultslistener/service/v1"
     xmlns:intf="urn:cea/resultslistener/v1"
     xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
     xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
@@ -20,8 +19,8 @@
             xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
             xmlns:apachesoap="http://xml.apache.org/xml-soap"
             xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1"
-            xmlns:impl="urn:cea/resultslistener/service/v1"
             xmlns:intf="urn:cea/resultslistener/v1"
+            xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
             xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
             xmlns:wrapper="urn:cea/resultslistener-wrapper/v1"
             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
@@ -35,7 +34,7 @@
                     <xsd:sequence>
                         <xsd:element maxOccurs="unbounded" name="Result" type="agpd:parameterValue">
                             <xsd:annotation>
-                                <xsd:documentation>perhaps this should just be the simple name list</xsd:documentation>
+                                <xsd:documentation>this is the parameter values</xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
                     </xsd:sequence>
@@ -59,9 +58,9 @@
             style="document"
             transport="http://schemas.xmlsoap.org/soap/http"/>
         <wsdl:operation name="putResults">
-            <wsdlsoap:operation/>
+            <wsdlsoap:operation soapAction="putResults"/>
             <wsdl:input>
-                <mime:multipartRelated> </mime:multipartRelated>
+                <wsdlsoap:body use="literal"/>
             </wsdl:input>
             <wsdl:output>       </wsdl:output>
         </wsdl:operation>
