@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.16 2004/02/27 01:03:27 nw Exp $
+ * $Id: CmdLineApplication.java,v 1.17 2004/03/04 01:36:59 nw Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,8 +33,11 @@ import org.astrogrid.community.User;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobMonitor;
-import org.astrogrid.jes.types.v1.JobInfo;
 import org.astrogrid.jes.types.v1.JobURN;
+import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.LogLevel;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 /**
  * A generic model for a command line application. This generally assumes that the application can be run from a command line obtaining all of its parameters from commandline arguments and possibly standard in. 
  * The application can interact with the filesystem.
@@ -142,11 +146,15 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
          JobMonitor delegate = JesDelegateFactory.createJobMonitor(jobMonitorURL);
 
          try {
-             JobInfo info = new JobInfo();
-             info.setComment("comment");
-             info.setJobURN(new JobURN(jobStepID));
-             info.setStatus(org.astrogrid.jes.types.v1.Status.COMPLETED);             
-             delegate.monitorJob(info);
+             MessageType ack = new MessageType();
+             ack.setValue("comment");
+             ack.setLevel(LogLevel.info);
+             ack.setPhase(ExecutionPhase.COMPLETED);
+             ack.setSource("CmdLineApplication");
+             ack.setTimestamp(Calendar.getInstance());
+             
+             JobIdentifierType id = new JobIdentifierType(jobStepID);           
+             delegate.monitorJob(id,ack);
             //delegate.monitorJob(jobStepID, delegate.STATUS_COMPLETED, "comment");
             // NWW end update
          }
