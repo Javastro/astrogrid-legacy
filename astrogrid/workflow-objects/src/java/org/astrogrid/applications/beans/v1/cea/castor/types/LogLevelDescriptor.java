@@ -2,10 +2,10 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: StatusDescriptor.java,v 1.2 2004/03/02 14:09:49 pah Exp $
+ * $Id: LogLevelDescriptor.java,v 1.1 2004/03/02 16:50:20 nw Exp $
  */
 
-package org.astrogrid.workflow.beans.v1.types;
+package org.astrogrid.applications.beans.v1.cea.castor.types;
 
   //---------------------------------/
  //- Imported classes and packages -/
@@ -17,11 +17,11 @@ import org.exolab.castor.xml.XMLFieldDescriptor;
 import org.exolab.castor.xml.validators.*;
 
 /**
- * Class StatusDescriptor.
+ * Class LogLevelDescriptor.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
+ * @version $Revision: 1.1 $ $Date: 2004/03/02 16:50:20 $
  */
-public class StatusDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
+public class LogLevelDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
 
       //--------------------------/
@@ -53,11 +53,11 @@ public class StatusDescriptor extends org.exolab.castor.xml.util.XMLClassDescrip
      //- Constructors -/
     //----------------/
 
-    public StatusDescriptor() {
+    public LogLevelDescriptor() {
         super();
-        nsURI = "http://www.astrogrid.org/schema/AGWorkflow/v1";
-        xmlName = "status";
-    } //-- org.astrogrid.workflow.beans.v1.types.StatusDescriptor()
+        nsURI = "http://www.astrogrid.org/schema/CEATypes/v1";
+        xmlName = "log-level";
+    } //-- org.astrogrid.applications.beans.v1.cea.castor.types.LogLevelDescriptor()
 
 
       //-----------/
@@ -93,7 +93,7 @@ public class StatusDescriptor extends org.exolab.castor.xml.util.XMLClassDescrip
      */
     public java.lang.Class getJavaClass()
     {
-        return org.astrogrid.workflow.beans.v1.types.Status.class;
+        return org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel.class;
     } //-- java.lang.Class getJavaClass() 
 
     /**

@@ -19,33 +19,42 @@
       <parameter name="className" value="org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitorServiceSoapBindingImpl"/>
       <parameter name="wsdlPortType" value="JobMonitor"/>
       <operation name="monitorJob" qname="monitorJob" >
-        <parameter name="jobInfo" type="tns:JobInfo" xmlns:tns="urn:jes/types/v1"/>
+        <parameter name="id" type="tns:job-identifier-type" xmlns:tns="http://www.astrogrid.org/schema/CEATypes/v1"/>
+        <parameter name="feedback" type="tns:message-type" xmlns:tns="http://www.astrogrid.org/schema/CEATypes/v1"/>
       </operation>
       <parameter name="allowedMethods" value="monitorJob"/>
       <parameter name="scope" value="Application"/>
 
       <typeMapping
-        xmlns:ns="urn:jes/types/v1"
-        qname="ns:JobInfo"
-        type="java:org.astrogrid.jes.types.v1.JobInfo"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle=""
-      />
-      <typeMapping
-        xmlns:ns="urn:jes/types/v1"
-        qname="ns:jobURN"
-        type="java:org.astrogrid.jes.types.v1.JobURN"
+        xmlns:ns="http://www.astrogrid.org/schema/CEATypes/v1"
+        qname="ns:job-identifier-type"
+        type="java:org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType"
         serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
         encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="urn:jes/types/v1"
-        qname="ns:status"
-        type="java:org.astrogrid.jes.types.v1.Status"
+        xmlns:ns="http://www.astrogrid.org/schema/CEATypes/v1"
+        qname="ns:execution-phase"
+        type="java:org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase"
         serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://www.astrogrid.org/schema/CEATypes/v1"
+        qname="ns:log-level"
+        type="java:org.astrogrid.jes.types.v1.cea.axis.LogLevel"
+        serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://www.astrogrid.org/schema/CEATypes/v1"
+        qname="ns:message-type"
+        type="java:org.astrogrid.jes.types.v1.cea.axis.MessageType"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
         encodingStyle=""
       />
   </service>

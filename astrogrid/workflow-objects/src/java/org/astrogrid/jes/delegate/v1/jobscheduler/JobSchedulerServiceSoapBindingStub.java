@@ -28,7 +28,8 @@ public class JobSchedulerServiceSoapBindingStub extends org.apache.axis.client.S
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("resumeJob");
-        oper.addParameter(new javax.xml.namespace.QName("", "jobInfo"), new javax.xml.namespace.QName("urn:jes/types/v1", "JobInfo"), org.astrogrid.jes.types.v1.JobInfo.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("", "id"), new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier-type"), org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("", "feedback"), new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "message-type"), org.astrogrid.jes.types.v1.cea.axis.MessageType.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
         oper.setStyle(org.apache.axis.enum.Style.DOCUMENT);
         oper.setUse(org.apache.axis.enum.Use.LITERAL);
@@ -61,19 +62,33 @@ public class JobSchedulerServiceSoapBindingStub extends org.apache.axis.client.S
             java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
             java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
-            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "status");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "message-type");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.Status.class;
+            cls = org.astrogrid.jes.types.v1.cea.axis.MessageType.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(simplesf);
+            cachedDeserFactories.add(simpledf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier-type");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(simplesf);
+            cachedDeserFactories.add(simpledf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "log-level");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.cea.axis.LogLevel.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(enumsf);
             cachedDeserFactories.add(enumdf);
 
-            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "JobInfo");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "execution-phase");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.JobInfo.class;
+            cls = org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.class;
             cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
+            cachedSerFactories.add(enumsf);
+            cachedDeserFactories.add(enumdf);
 
             qName = new javax.xml.namespace.QName("urn:jes/types/v1", "jobURN");
             cachedSerQNames.add(qName);
@@ -159,7 +174,7 @@ public class JobSchedulerServiceSoapBindingStub extends org.apache.axis.client.S
 
     }
 
-    public void resumeJob(org.astrogrid.jes.types.v1.JobInfo jobInfo) throws java.rmi.RemoteException {
+    public void resumeJob(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType id, org.astrogrid.jes.types.v1.cea.axis.MessageType feedback) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -175,7 +190,7 @@ public class JobSchedulerServiceSoapBindingStub extends org.apache.axis.client.S
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        _call.invokeOneWay(new java.lang.Object[] {jobInfo});
+        _call.invokeOneWay(new java.lang.Object[] {id, feedback});
 
     }
 

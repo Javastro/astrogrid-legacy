@@ -1,39 +1,41 @@
 /**
- * Status.java
+ * ExecutionPhase.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.jes.types.v1;
+package org.astrogrid.jes.types.v1.cea.axis;
 
-public class Status implements java.io.Serializable {
+public class ExecutionPhase implements java.io.Serializable {
     private java.lang.String _value_;
     private static java.util.HashMap _table_ = new java.util.HashMap();
 
     // Constructor
-    protected Status(java.lang.String value) {
+    protected ExecutionPhase(java.lang.String value) {
         _value_ = value;
         _table_.put(_value_,this);
     }
 
-    public static final java.lang.String _INITIALIZED = "INITIALIZED";
+    public static final java.lang.String _UNKNOWN = "UNKNOWN";
+    public static final java.lang.String _INITIALIZING = "INITIALIZING";
     public static final java.lang.String _RUNNING = "RUNNING";
     public static final java.lang.String _COMPLETED = "COMPLETED";
     public static final java.lang.String _ERROR = "ERROR";
-    public static final Status INITIALIZED = new Status(_INITIALIZED);
-    public static final Status RUNNING = new Status(_RUNNING);
-    public static final Status COMPLETED = new Status(_COMPLETED);
-    public static final Status ERROR = new Status(_ERROR);
+    public static final ExecutionPhase UNKNOWN = new ExecutionPhase(_UNKNOWN);
+    public static final ExecutionPhase INITIALIZING = new ExecutionPhase(_INITIALIZING);
+    public static final ExecutionPhase RUNNING = new ExecutionPhase(_RUNNING);
+    public static final ExecutionPhase COMPLETED = new ExecutionPhase(_COMPLETED);
+    public static final ExecutionPhase ERROR = new ExecutionPhase(_ERROR);
     public java.lang.String getValue() { return _value_;}
-    public static Status fromValue(java.lang.String value)
+    public static ExecutionPhase fromValue(java.lang.String value)
           throws java.lang.IllegalStateException {
-        Status enum = (Status)
+        ExecutionPhase enum = (ExecutionPhase)
             _table_.get(value);
         if (enum==null) throw new java.lang.IllegalStateException();
         return enum;
     }
-    public static Status fromString(java.lang.String value)
+    public static ExecutionPhase fromString(java.lang.String value)
           throws java.lang.IllegalStateException {
         return fromValue(value);
     }

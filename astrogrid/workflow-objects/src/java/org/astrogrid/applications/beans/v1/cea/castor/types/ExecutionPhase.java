@@ -2,10 +2,10 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Status.java,v 1.2 2004/03/02 14:09:49 pah Exp $
+ * $Id: ExecutionPhase.java,v 1.1 2004/03/02 16:50:20 nw Exp $
  */
 
-package org.astrogrid.workflow.beans.v1.types;
+package org.astrogrid.applications.beans.v1.cea.castor.types;
 
   //---------------------------------/
  //- Imported classes and packages -/
@@ -18,11 +18,11 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 
 /**
- * Class Status.
+ * Enumeration of possible phases of job execution
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
+ * @version $Revision: 1.1 $ $Date: 2004/03/02 16:50:20 $
  */
-public class Status implements java.io.Serializable {
+public class ExecutionPhase implements java.io.Serializable {
 
 
       //--------------------------/
@@ -30,44 +30,54 @@ public class Status implements java.io.Serializable {
     //--------------------------/
 
     /**
-     * The INITIALIZED type
+     * The UNKNOWN type
      */
-    public static final int INITIALIZED_TYPE = 0;
+    public static final int UNKNOWN_TYPE = 0;
 
     /**
-     * The instance of the INITIALIZED type
+     * The instance of the UNKNOWN type
      */
-    public static final Status INITIALIZED = new Status(INITIALIZED_TYPE, "INITIALIZED");
+    public static final ExecutionPhase UNKNOWN = new ExecutionPhase(UNKNOWN_TYPE, "UNKNOWN");
+
+    /**
+     * The INITIALIZING type
+     */
+    public static final int INITIALIZING_TYPE = 1;
+
+    /**
+     * The instance of the INITIALIZING type
+     */
+    public static final ExecutionPhase INITIALIZING = new ExecutionPhase(INITIALIZING_TYPE, "INITIALIZING");
 
     /**
      * The RUNNING type
      */
-    public static final int RUNNING_TYPE = 1;
+    public static final int RUNNING_TYPE = 2;
 
     /**
      * The instance of the RUNNING type
      */
-    public static final Status RUNNING = new Status(RUNNING_TYPE, "RUNNING");
+    public static final ExecutionPhase RUNNING = new ExecutionPhase(RUNNING_TYPE, "RUNNING");
 
     /**
      * The COMPLETED type
      */
-    public static final int COMPLETED_TYPE = 2;
+    public static final int COMPLETED_TYPE = 3;
 
     /**
      * The instance of the COMPLETED type
      */
-    public static final Status COMPLETED = new Status(COMPLETED_TYPE, "COMPLETED");
+    public static final ExecutionPhase COMPLETED = new ExecutionPhase(COMPLETED_TYPE, "COMPLETED");
 
     /**
      * The ERROR type
      */
-    public static final int ERROR_TYPE = 3;
+    public static final int ERROR_TYPE = 4;
 
     /**
      * The instance of the ERROR type
      */
-    public static final Status ERROR = new Status(ERROR_TYPE, "ERROR");
+    public static final ExecutionPhase ERROR = new ExecutionPhase(ERROR_TYPE, "ERROR");
 
     /**
      * Field _memberTable
@@ -89,11 +99,11 @@ public class Status implements java.io.Serializable {
      //- Constructors -/
     //----------------/
 
-    private Status(int type, java.lang.String value) {
+    private ExecutionPhase(int type, java.lang.String value) {
         super();
         this.type = type;
         this.stringValue = value;
-    } //-- org.astrogrid.workflow.beans.v1.types.Status(int, java.lang.String)
+    } //-- org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase(int, java.lang.String)
 
 
       //-----------/
@@ -102,7 +112,7 @@ public class Status implements java.io.Serializable {
 
     /**
      * Method enumerateReturns an enumeration of all possible
-     * instances of Status
+     * instances of ExecutionPhase
      */
     public static java.util.Enumeration enumerate()
     {
@@ -110,7 +120,7 @@ public class Status implements java.io.Serializable {
     } //-- java.util.Enumeration enumerate() 
 
     /**
-     * Method getTypeReturns the type of this Status
+     * Method getTypeReturns the type of this ExecutionPhase
      */
     public int getType()
     {
@@ -123,7 +133,8 @@ public class Status implements java.io.Serializable {
     private static java.util.Hashtable init()
     {
         Hashtable members = new Hashtable();
-        members.put("INITIALIZED", INITIALIZED);
+        members.put("UNKNOWN", UNKNOWN);
+        members.put("INITIALIZING", INITIALIZING);
         members.put("RUNNING", RUNNING);
         members.put("COMPLETED", COMPLETED);
         members.put("ERROR", ERROR);
@@ -132,7 +143,7 @@ public class Status implements java.io.Serializable {
 
     /**
      * Method toStringReturns the String representation of this
-     * Status
+     * ExecutionPhase
      */
     public java.lang.String toString()
     {
@@ -140,20 +151,20 @@ public class Status implements java.io.Serializable {
     } //-- java.lang.String toString() 
 
     /**
-     * Method valueOfReturns a new Status based on the given String
-     * value.
+     * Method valueOfReturns a new ExecutionPhase based on the
+     * given String value.
      * 
      * @param string
      */
-    public static org.astrogrid.workflow.beans.v1.types.Status valueOf(java.lang.String string)
+    public static org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase valueOf(java.lang.String string)
     {
         java.lang.Object obj = null;
         if (string != null) obj = _memberTable.get(string);
         if (obj == null) {
-            String err = "'" + string + "' is not a valid Status";
+            String err = "'" + string + "' is not a valid ExecutionPhase";
             throw new IllegalArgumentException(err);
         }
-        return (Status) obj;
-    } //-- org.astrogrid.workflow.beans.v1.types.Status valueOf(java.lang.String) 
+        return (ExecutionPhase) obj;
+    } //-- org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase valueOf(java.lang.String) 
 
 }

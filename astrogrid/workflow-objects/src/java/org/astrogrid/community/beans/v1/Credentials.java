@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Credentials.java,v 1.2 2004/03/02 14:09:49 pah Exp $
+ * $Id: Credentials.java,v 1.3 2004/03/02 16:50:20 nw Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * The full authorization and authentication credentials
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/02 16:50:20 $
  */
 public class Credentials extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

@@ -14,5 +14,5 @@ public interface JobScheduler extends java.rmi.Remote {
 
     // call to resume execution of a job, after tool completes.
     // 
-    public void resumeJob(org.astrogrid.jes.types.v1.JobInfo jobInfo) throws java.rmi.RemoteException;
+    public void resumeJob(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType id, org.astrogrid.jes.types.v1.cea.axis.MessageType feedback) throws java.rmi.RemoteException;
 }

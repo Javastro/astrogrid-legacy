@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Step.java,v 1.2 2004/03/02 14:09:49 pah Exp $
+ * $Id: Step.java,v 1.3 2004/03/02 16:50:20 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -15,8 +15,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
-import java.util.Date;
-import org.astrogrid.workflow.beans.v1.types.Status;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 import org.astrogrid.workflow.beans.v1.types.StepJoinConditionType;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
@@ -27,7 +28,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class Step.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/02 16:50:20 $
  */
 public class Step extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -49,24 +50,9 @@ implements java.io.Serializable
     private org.astrogrid.workflow.beans.v1.types.StepJoinConditionType _joinCondition = org.astrogrid.workflow.beans.v1.types.StepJoinConditionType.valueOf("any");
 
     /**
-     * Field _startDate
-     */
-    private java.util.Date _startDate;
-
-    /**
-     * Field _completeDate
-     */
-    private java.util.Date _completeDate;
-
-    /**
-     * Field _status
-     */
-    private org.astrogrid.workflow.beans.v1.types.Status _status = org.astrogrid.workflow.beans.v1.types.Status.valueOf("INITIALIZED");
-
-    /**
      * Field _stepNumber
      */
-    private short _stepNumber;
+    private int _stepNumber;
 
     /**
      * keeps track of state for field: _stepNumber
@@ -76,7 +62,7 @@ implements java.io.Serializable
     /**
      * Field _sequenceNumber
      */
-    private short _sequenceNumber;
+    private int _sequenceNumber;
 
     /**
      * keeps track of state for field: _sequenceNumber
@@ -94,9 +80,9 @@ implements java.io.Serializable
     private java.lang.String _description;
 
     /**
-     * Field _comment
+     * A record of a single execution of a job step
      */
-    private java.lang.String _comment;
+    private java.util.ArrayList _stepExecutionRecordList;
 
 
       //----------------/
@@ -106,7 +92,7 @@ implements java.io.Serializable
     public Step() {
         super();
         setJoinCondition(org.astrogrid.workflow.beans.v1.types.StepJoinConditionType.valueOf("any"));
-        setStatus(org.astrogrid.workflow.beans.v1.types.Status.valueOf("INITIALIZED"));
+        _stepExecutionRecordList = new ArrayList();
     } //-- org.astrogrid.workflow.beans.v1.Step()
 
 
@@ -115,24 +101,59 @@ implements java.io.Serializable
     //-----------/
 
     /**
-     * Returns the value of field 'comment'.
+     * Method addStepExecutionRecord
      * 
-     * @return the value of field 'comment'.
+     * @param vStepExecutionRecord
      */
-    public java.lang.String getComment()
+    public void addStepExecutionRecord(org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord vStepExecutionRecord)
+        throws java.lang.IndexOutOfBoundsException
     {
-        return this._comment;
-    } //-- java.lang.String getComment() 
+        _stepExecutionRecordList.add(vStepExecutionRecord);
+    } //-- void addStepExecutionRecord(org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord) 
 
     /**
-     * Returns the value of field 'completeDate'.
+     * Method addStepExecutionRecord
      * 
-     * @return the value of field 'completeDate'.
+     * @param index
+     * @param vStepExecutionRecord
      */
-    public java.util.Date getCompleteDate()
+    public void addStepExecutionRecord(int index, org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord vStepExecutionRecord)
+        throws java.lang.IndexOutOfBoundsException
     {
-        return this._completeDate;
-    } //-- java.util.Date getCompleteDate() 
+        _stepExecutionRecordList.add(index, vStepExecutionRecord);
+    } //-- void addStepExecutionRecord(int, org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord) 
+
+    /**
+     * Method clearStepExecutionRecord
+     */
+    public void clearStepExecutionRecord()
+    {
+        _stepExecutionRecordList.clear();
+    } //-- void clearStepExecutionRecord() 
+
+    /**
+     * Method deleteSequenceNumber
+     */
+    public void deleteSequenceNumber()
+    {
+        this._has_sequenceNumber= false;
+    } //-- void deleteSequenceNumber() 
+
+    /**
+     * Method deleteStepNumber
+     */
+    public void deleteStepNumber()
+    {
+        this._has_stepNumber= false;
+    } //-- void deleteStepNumber() 
+
+    /**
+     * Method enumerateStepExecutionRecord
+     */
+    public java.util.Enumeration enumerateStepExecutionRecord()
+    {
+        return new org.exolab.castor.util.IteratorEnumeration(_stepExecutionRecordList.iterator());
+    } //-- java.util.Enumeration enumerateStepExecutionRecord() 
 
     /**
      * Returns the value of field 'description'.
@@ -169,40 +190,57 @@ implements java.io.Serializable
      * 
      * @return the value of field 'sequenceNumber'.
      */
-    public short getSequenceNumber()
+    public int getSequenceNumber()
     {
         return this._sequenceNumber;
-    } //-- short getSequenceNumber() 
+    } //-- int getSequenceNumber() 
 
     /**
-     * Returns the value of field 'startDate'.
+     * Method getStepExecutionRecord
      * 
-     * @return the value of field 'startDate'.
+     * @param index
      */
-    public java.util.Date getStartDate()
+    public org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord getStepExecutionRecord(int index)
+        throws java.lang.IndexOutOfBoundsException
     {
-        return this._startDate;
-    } //-- java.util.Date getStartDate() 
+        //-- check bounds for index
+        if ((index < 0) || (index > _stepExecutionRecordList.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        
+        return (org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord) _stepExecutionRecordList.get(index);
+    } //-- org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord getStepExecutionRecord(int) 
 
     /**
-     * Returns the value of field 'status'.
-     * 
-     * @return the value of field 'status'.
+     * Method getStepExecutionRecord
      */
-    public org.astrogrid.workflow.beans.v1.types.Status getStatus()
+    public org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord[] getStepExecutionRecord()
     {
-        return this._status;
-    } //-- org.astrogrid.workflow.beans.v1.types.Status getStatus() 
+        int size = _stepExecutionRecordList.size();
+        org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord[] mArray = new org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord[size];
+        for (int index = 0; index < size; index++) {
+            mArray[index] = (org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord) _stepExecutionRecordList.get(index);
+        }
+        return mArray;
+    } //-- org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord[] getStepExecutionRecord() 
+
+    /**
+     * Method getStepExecutionRecordCount
+     */
+    public int getStepExecutionRecordCount()
+    {
+        return _stepExecutionRecordList.size();
+    } //-- int getStepExecutionRecordCount() 
 
     /**
      * Returns the value of field 'stepNumber'.
      * 
      * @return the value of field 'stepNumber'.
      */
-    public short getStepNumber()
+    public int getStepNumber()
     {
         return this._stepNumber;
-    } //-- short getStepNumber() 
+    } //-- int getStepNumber() 
 
     /**
      * Returns the value of field 'tool'.
@@ -269,24 +307,15 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'comment'.
+     * Method removeStepExecutionRecord
      * 
-     * @param comment the value of field 'comment'.
+     * @param vStepExecutionRecord
      */
-    public void setComment(java.lang.String comment)
+    public boolean removeStepExecutionRecord(org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord vStepExecutionRecord)
     {
-        this._comment = comment;
-    } //-- void setComment(java.lang.String) 
-
-    /**
-     * Sets the value of field 'completeDate'.
-     * 
-     * @param completeDate the value of field 'completeDate'.
-     */
-    public void setCompleteDate(java.util.Date completeDate)
-    {
-        this._completeDate = completeDate;
-    } //-- void setCompleteDate(java.util.Date) 
+        boolean removed = _stepExecutionRecordList.remove(vStepExecutionRecord);
+        return removed;
+    } //-- boolean removeStepExecutionRecord(org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord) 
 
     /**
      * Sets the value of field 'description'.
@@ -323,42 +352,52 @@ implements java.io.Serializable
      * 
      * @param sequenceNumber the value of field 'sequenceNumber'.
      */
-    public void setSequenceNumber(short sequenceNumber)
+    public void setSequenceNumber(int sequenceNumber)
     {
         this._sequenceNumber = sequenceNumber;
         this._has_sequenceNumber = true;
-    } //-- void setSequenceNumber(short) 
+    } //-- void setSequenceNumber(int) 
 
     /**
-     * Sets the value of field 'startDate'.
+     * Method setStepExecutionRecord
      * 
-     * @param startDate the value of field 'startDate'.
+     * @param index
+     * @param vStepExecutionRecord
      */
-    public void setStartDate(java.util.Date startDate)
+    public void setStepExecutionRecord(int index, org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord vStepExecutionRecord)
+        throws java.lang.IndexOutOfBoundsException
     {
-        this._startDate = startDate;
-    } //-- void setStartDate(java.util.Date) 
+        //-- check bounds for index
+        if ((index < 0) || (index > _stepExecutionRecordList.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        _stepExecutionRecordList.set(index, vStepExecutionRecord);
+    } //-- void setStepExecutionRecord(int, org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord) 
 
     /**
-     * Sets the value of field 'status'.
+     * Method setStepExecutionRecord
      * 
-     * @param status the value of field 'status'.
+     * @param stepExecutionRecordArray
      */
-    public void setStatus(org.astrogrid.workflow.beans.v1.types.Status status)
+    public void setStepExecutionRecord(org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord[] stepExecutionRecordArray)
     {
-        this._status = status;
-    } //-- void setStatus(org.astrogrid.workflow.beans.v1.types.Status) 
+        //-- copy array
+        _stepExecutionRecordList.clear();
+        for (int i = 0; i < stepExecutionRecordArray.length; i++) {
+            _stepExecutionRecordList.add(stepExecutionRecordArray[i]);
+        }
+    } //-- void setStepExecutionRecord(org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord) 
 
     /**
      * Sets the value of field 'stepNumber'.
      * 
      * @param stepNumber the value of field 'stepNumber'.
      */
-    public void setStepNumber(short stepNumber)
+    public void setStepNumber(int stepNumber)
     {
         this._stepNumber = stepNumber;
         this._has_stepNumber = true;
-    } //-- void setStepNumber(short) 
+    } //-- void setStepNumber(int) 
 
     /**
      * Sets the value of field 'tool'.

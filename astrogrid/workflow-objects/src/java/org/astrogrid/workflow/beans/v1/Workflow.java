@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Workflow.java,v 1.2 2004/03/02 14:09:49 pah Exp $
+ * $Id: Workflow.java,v 1.3 2004/03/02 16:50:20 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -15,9 +15,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
-import java.util.Date;
 import org.astrogrid.community.beans.v1.Credentials;
-import org.astrogrid.workflow.beans.v1.types.Status;
+import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -27,7 +26,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class Workflow.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/02 16:50:20 $
  */
 public class Workflow extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -44,26 +43,6 @@ implements java.io.Serializable
     private java.lang.String _name;
 
     /**
-     * Field _startDate
-     */
-    private java.util.Date _startDate;
-
-    /**
-     * Field _completeDate
-     */
-    private java.util.Date _completeDate;
-
-    /**
-     * Field _jobURN
-     */
-    private java.lang.String _jobURN;
-
-    /**
-     * Field _status
-     */
-    private org.astrogrid.workflow.beans.v1.types.Status _status = org.astrogrid.workflow.beans.v1.types.Status.valueOf("INITIALIZED");
-
-    /**
      * Field _sequence
      */
     private org.astrogrid.workflow.beans.v1.Sequence _sequence;
@@ -74,14 +53,14 @@ implements java.io.Serializable
     private java.lang.String _description;
 
     /**
-     * Field _comment
-     */
-    private java.lang.String _comment;
-
-    /**
      * Field _credentials
      */
     private org.astrogrid.community.beans.v1.Credentials _credentials;
+
+    /**
+     * A record of a single execution of a job
+     */
+    private org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord _jobExecutionRecord;
 
 
       //----------------/
@@ -90,33 +69,12 @@ implements java.io.Serializable
 
     public Workflow() {
         super();
-        setStatus(org.astrogrid.workflow.beans.v1.types.Status.valueOf("INITIALIZED"));
     } //-- org.astrogrid.workflow.beans.v1.Workflow()
 
 
       //-----------/
      //- Methods -/
     //-----------/
-
-    /**
-     * Returns the value of field 'comment'.
-     * 
-     * @return the value of field 'comment'.
-     */
-    public java.lang.String getComment()
-    {
-        return this._comment;
-    } //-- java.lang.String getComment() 
-
-    /**
-     * Returns the value of field 'completeDate'.
-     * 
-     * @return the value of field 'completeDate'.
-     */
-    public java.util.Date getCompleteDate()
-    {
-        return this._completeDate;
-    } //-- java.util.Date getCompleteDate() 
 
     /**
      * Returns the value of field 'credentials'.
@@ -139,14 +97,16 @@ implements java.io.Serializable
     } //-- java.lang.String getDescription() 
 
     /**
-     * Returns the value of field 'jobURN'.
+     * Returns the value of field 'jobExecutionRecord'. The field
+     * 'jobExecutionRecord' has the following description: A record
+     * of a single execution of a job
      * 
-     * @return the value of field 'jobURN'.
+     * @return the value of field 'jobExecutionRecord'.
      */
-    public java.lang.String getJobURN()
+    public org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord getJobExecutionRecord()
     {
-        return this._jobURN;
-    } //-- java.lang.String getJobURN() 
+        return this._jobExecutionRecord;
+    } //-- org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord getJobExecutionRecord() 
 
     /**
      * Returns the value of field 'name'.
@@ -167,26 +127,6 @@ implements java.io.Serializable
     {
         return this._sequence;
     } //-- org.astrogrid.workflow.beans.v1.Sequence getSequence() 
-
-    /**
-     * Returns the value of field 'startDate'.
-     * 
-     * @return the value of field 'startDate'.
-     */
-    public java.util.Date getStartDate()
-    {
-        return this._startDate;
-    } //-- java.util.Date getStartDate() 
-
-    /**
-     * Returns the value of field 'status'.
-     * 
-     * @return the value of field 'status'.
-     */
-    public org.astrogrid.workflow.beans.v1.types.Status getStatus()
-    {
-        return this._status;
-    } //-- org.astrogrid.workflow.beans.v1.types.Status getStatus() 
 
     /**
      * Method isValid
@@ -227,26 +167,6 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'comment'.
-     * 
-     * @param comment the value of field 'comment'.
-     */
-    public void setComment(java.lang.String comment)
-    {
-        this._comment = comment;
-    } //-- void setComment(java.lang.String) 
-
-    /**
-     * Sets the value of field 'completeDate'.
-     * 
-     * @param completeDate the value of field 'completeDate'.
-     */
-    public void setCompleteDate(java.util.Date completeDate)
-    {
-        this._completeDate = completeDate;
-    } //-- void setCompleteDate(java.util.Date) 
-
-    /**
      * Sets the value of field 'credentials'.
      * 
      * @param credentials the value of field 'credentials'.
@@ -267,14 +187,17 @@ implements java.io.Serializable
     } //-- void setDescription(java.lang.String) 
 
     /**
-     * Sets the value of field 'jobURN'.
+     * Sets the value of field 'jobExecutionRecord'. The field
+     * 'jobExecutionRecord' has the following description: A record
+     * of a single execution of a job
      * 
-     * @param jobURN the value of field 'jobURN'.
+     * @param jobExecutionRecord the value of field
+     * 'jobExecutionRecord'.
      */
-    public void setJobURN(java.lang.String jobURN)
+    public void setJobExecutionRecord(org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord jobExecutionRecord)
     {
-        this._jobURN = jobURN;
-    } //-- void setJobURN(java.lang.String) 
+        this._jobExecutionRecord = jobExecutionRecord;
+    } //-- void setJobExecutionRecord(org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord) 
 
     /**
      * Sets the value of field 'name'.
@@ -295,26 +218,6 @@ implements java.io.Serializable
     {
         this._sequence = sequence;
     } //-- void setSequence(org.astrogrid.workflow.beans.v1.Sequence) 
-
-    /**
-     * Sets the value of field 'startDate'.
-     * 
-     * @param startDate the value of field 'startDate'.
-     */
-    public void setStartDate(java.util.Date startDate)
-    {
-        this._startDate = startDate;
-    } //-- void setStartDate(java.util.Date) 
-
-    /**
-     * Sets the value of field 'status'.
-     * 
-     * @param status the value of field 'status'.
-     */
-    public void setStatus(org.astrogrid.workflow.beans.v1.types.Status status)
-    {
-        this._status = status;
-    } //-- void setStatus(org.astrogrid.workflow.beans.v1.types.Status) 
 
     /**
      * Method unmarshalWorkflow

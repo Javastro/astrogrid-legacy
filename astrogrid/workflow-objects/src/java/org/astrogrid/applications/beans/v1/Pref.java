@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Pref.java,v 1.2 2004/03/02 14:09:49 pah Exp $
+ * $Id: Pref.java,v 1.3 2004/03/02 16:50:20 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * a reference to a parameter
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/02 16:50:20 $
  */
 public class Pref extends org.astrogrid.applications.beans.v1.ParameterRef 
 implements java.io.Serializable
