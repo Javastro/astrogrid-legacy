@@ -98,6 +98,11 @@ public class RegistryFileHelper {
          if(nl.getLength() == 0) {
             nl = regEntry.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
          }
+         if(nl.getLength() == 0) {
+            nl = regEntry.getElementsByTagName("vg:ManagedAuthority" );
+         }
+         System.out.println("nodelist length = " + nl.getLength());
+         
          if(nl.getLength() > 0) {
             statusMessage += "Authorities owned by this Registry: |";
             for(int i=0;i < nl.getLength();i++) {
@@ -359,18 +364,25 @@ public class RegistryFileHelper {
     */
    public static synchronized void writeRegistryFile() {
       //Don't have it so find the registry file from our configuration.
-      String path = conf.getString(REGISTRY_FILE_DOM_PROPERTY);
+      //String path = conf.getString(REGISTRY_FILE_DOM_PROPERTY);
       File registryFile = null;
-      if(path.indexOf(":///") != -1) {
-         path = path.substring(path.indexOf(":///") + 4);
-      }
-      registryFile = new File(path);
       try {
-         FileOutputStream fos = new FileOutputStream(registryFile,false);
-         XMLUtils.DocumentToStream(loadRegistryFile(),fos);
-         //System.out.println("here is the registry file written");                  
-      }catch(FileNotFoundException e) {
-         e.printStackTrace();
+         System.out.println("the registryfile path = " + conf.getString(REGISTRY_FILE_DOM_PROPERTY));
+         URI path = new URI(conf.getString(REGISTRY_FILE_DOM_PROPERTY)); 
+         //if(path.indexOf(":///") != -1) {
+         //   path = path.substring(path.indexOf(":///") + 3);
+         //}
+         System.out.println("the path for writing the file = " + path);
+         registryFile = new File(path);
+         try {
+            FileOutputStream fos = new FileOutputStream(registryFile,false);
+            XMLUtils.DocumentToStream(loadRegistryFile(),fos);
+            //System.out.println("here is the registry file written");                  
+         }catch(FileNotFoundException e) {
+            e.printStackTrace();
+         }
+      }catch(Exception e) {
+         e.printStackTrace();   
       }
    }
    
@@ -450,8 +462,9 @@ public class RegistryFileHelper {
          if(nl.getLength() == 0) {
             nl = regEntry.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
          }
-
-         
+         if(nl.getLength() == 0) {
+            nl = regEntry.getElementsByTagName("vg:ManagedAuthority" );
+         }
          //System.out.println("the nodelist size for getting manageauthority2 = " + nl2.getLength());
          System.out.println("the nodelist size for getting manageauthority = " + nl.getLength());
          if(nl.getLength() > 0) {
