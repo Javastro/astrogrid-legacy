@@ -112,6 +112,27 @@
 		<p>			
     	   	Here we list the steps involved to deploy the registry (and eXist) onto a servlet container.  An 
     	   	assumption is made that you know basic knowledge of servlet containers such as tomcat. <br />
+    	    There are 2 types of installation one in conjunction with "Astrogird in a Box" and then a standard
+    	    installation instructions.  
+    	    <br />
+    	    Steps involved in "Astrogrid in a Box":
+    	    <ul>
+    	       <li>1.) First you must have maven installed on your system. And be connected to 
+    	               astrogrid/integrationtests/auto-integration.</li>
+    	       <li>2.) Set in your build.properties a registry.authorityid to the main authority id you will be using.</li>
+    	       <li>3.) You may optionally as well set a astrogrid.iteration property to another previous version the default if not
+    	               placed in the properties file is SNAPSHOT.</li>
+    	       <li>4.) In the auto-integration/registry-entries modify the ARegistry.xml file with the desired information, you don't 
+    	               need to change the AuthorityID.</li>
+    	       <li>5.) Now delete or modify any other entries in that registry-entries directory.</li>
+    	       <li>6.) Be sure your servlet container (currently Astrogrid in a Box is only compatible with Tomcat 5 and above) is started.</li>
+    	       <li>7.) Run "maven reg-deploy" then "maven setup-registry".</li>
+    	       <li>8.) Change the astrogrid.properties and optionally the oaicat.properties in your new installed registry located in the "regdeployedarea"/WEB-INF/classes.
+    	               See the properties section a the bottom of this section for a guide or look at the comments in the properties file themselves.</li>
+    	       <li>9.) Your main part of the registry is complete. Skip to number 6 in the "Setup Steps" below for being a full registry or registering yourself with another registry.</li>
+    	    </ul>
+    	    <br /> 
+    	    Now for the Standard Installation:
     	   	Steps involved:
     	   	<ul>
     			<li>1.) Download the latest copy of astrogrid-registry from <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/">Astrogrid repository</a>
@@ -130,7 +151,7 @@
     	   	</ul>
     	    Now the easy part of the installation is complete.  The current iteration is a slightly more difficult on the setup, but will try
     	    to guide you in the steps of setting up your Registry. <br />
-    	    Steps involved:
+    	    Steps involved for Setup of Registry:
     	    <ul>
     			<li>1.) Every Registry needs to define itself before it can be harvested or known to the outside world
                     currently you have an empty Registry so the first step in the setup is to define yourself. First download
