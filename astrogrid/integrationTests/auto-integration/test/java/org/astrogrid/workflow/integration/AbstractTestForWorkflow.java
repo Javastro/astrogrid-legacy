@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.3 2004/07/09 15:49:55 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.4 2004/08/04 16:49:32 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,9 @@ import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
+
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
 
 /** Abstract base class for all tests that fire workflows into jes.
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Jun-2004
@@ -56,7 +59,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
    public static final long WAIT_TIME = 240 * 1000;
 
-    public void checkExecutionResults(Workflow result) {
+    public void checkExecutionResults(Workflow result) throws Exception{
         softAssertEquals("Workflow not completed",
             ExecutionPhase.COMPLETED,
             result.getJobExecutionRecord().getStatus());
@@ -116,8 +119,8 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
             assertNotNull("null workflow returned", result);
             checkExecutionResults(result);
         }
-        catch (WorkflowInterfaceException e) {
-            softFail("testCheckExecutionResults " + e.getMessage());
+        catch (Exception e) {
+            softFail("exception in testCheckExecutionResults " + e.getClass().getName() + "\n" + e.getMessage());
         }
         // tidy up.
         /* bad idea deleting the workflows - goot to keep around, no matter whether the test has succeeded
@@ -132,6 +135,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.4  2004/08/04 16:49:32  nw
+added test for scripting extensions to workflow
+
 Revision 1.3  2004/07/09 15:49:55  nw
 commented out cleanup phase - easier to see whats going on for now
 

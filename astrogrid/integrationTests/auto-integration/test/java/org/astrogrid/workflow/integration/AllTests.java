@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.14 2004/07/01 11:47:39 nw Exp $
+/*$Id: AllTests.java,v 1.15 2004/08/04 16:50:18 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,6 +34,8 @@ public class AllTests {
         suite.addTest(new TestSuite(SimpleDSAWorkflowEndToEndTest.class));        
         suite.addTest(new TestSuite(MySpaceCommandlineWorkflowEndToEndTest.class));
         
+        suite.addTest(new TestSuite(FairlyGroovyWorkflowTest.class));
+        
         suite.addTest(new TestSuite(CompositeWorkflowEndToEndTest.class));
         suite.addTest(new TestSuite(FlowWorkflowTest.class));
 
@@ -42,6 +44,9 @@ public class AllTests {
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.15  2004/08/04 16:50:18  nw
+added test for scripting extensions to workflow
+
 Revision 1.14  2004/07/01 11:47:39  nw
 cea refactor
 

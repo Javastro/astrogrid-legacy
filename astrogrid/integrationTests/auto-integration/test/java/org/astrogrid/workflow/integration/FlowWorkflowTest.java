@@ -1,4 +1,4 @@
-/*$Id: FlowWorkflowTest.java,v 1.3 2004/07/01 11:47:39 nw Exp $
+/*$Id: FlowWorkflowTest.java,v 1.4 2004/08/04 16:49:32 nw Exp $
  * Created on 22-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ public class FlowWorkflowTest extends AbstractTestForWorkflow {
     /**
      * @see org.astrogrid.workflow.integration.SimpleCommandlineWorkflowEndToEndTest#testCheckExecutionResults()
      */
-    public void checkExecutionResults(Workflow wf)  {
+    public void checkExecutionResults(Workflow wf) throws Exception {
         super.checkExecutionResults(wf);
         // now examine execution times for each step, both starts should be before both stops.
         AbstractActivity act = wf.getSequence().getActivity(0);
@@ -121,6 +121,9 @@ public class FlowWorkflowTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: FlowWorkflowTest.java,v $
+Revision 1.4  2004/08/04 16:49:32  nw
+added test for scripting extensions to workflow
+
 Revision 1.3  2004/07/01 11:47:39  nw
 cea refactor
 

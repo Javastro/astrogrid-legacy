@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.11 2004/07/01 11:47:39 nw Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.12 2004/08/04 16:49:32 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,7 +57,7 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForSimple
         info.populateDirectTool(tool);
     }
     
-    public void checkExecutionResults(Workflow wf)  {
+    public void checkExecutionResults(Workflow wf)  throws Exception {
         super.checkExecutionResults(wf);
         // get the result, check its what we expect.
         Step s = (Step)wf.getSequence().getActivity(0);
@@ -67,6 +67,9 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForSimple
 }
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.12  2004/08/04 16:49:32  nw
+added test for scripting extensions to workflow
+
 Revision 1.11  2004/07/01 11:47:39  nw
 cea refactor
 

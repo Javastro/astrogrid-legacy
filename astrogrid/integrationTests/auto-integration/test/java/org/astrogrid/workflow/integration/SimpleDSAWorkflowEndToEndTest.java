@@ -1,4 +1,4 @@
-/*$Id: SimpleDSAWorkflowEndToEndTest.java,v 1.3 2004/07/01 11:47:39 nw Exp $
+/*$Id: SimpleDSAWorkflowEndToEndTest.java,v 1.4 2004/08/04 16:49:32 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,7 +63,7 @@ public class SimpleDSAWorkflowEndToEndTest extends AbstractTestForSimpleWorkflow
         info.populateDirectTool(tool);
     }
     /** @todo add more result checking */
-    public void checkExecutionResults(Workflow wf)  {
+    public void checkExecutionResults(Workflow wf) throws Exception {
     super.checkExecutionResults(wf);
     // get the result, check its what we expect.
     String value = (String)wf.findXPathValue("sequence/activity/tool/output/parameter/value");
@@ -77,6 +77,9 @@ public class SimpleDSAWorkflowEndToEndTest extends AbstractTestForSimpleWorkflow
 
 /* 
 $Log: SimpleDSAWorkflowEndToEndTest.java,v $
+Revision 1.4  2004/08/04 16:49:32  nw
+added test for scripting extensions to workflow
+
 Revision 1.3  2004/07/01 11:47:39  nw
 cea refactor
 

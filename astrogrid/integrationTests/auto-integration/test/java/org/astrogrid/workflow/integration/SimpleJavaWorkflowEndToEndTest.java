@@ -1,4 +1,4 @@
-/*$Id: SimpleJavaWorkflowEndToEndTest.java,v 1.3 2004/07/05 18:32:34 nw Exp $
+/*$Id: SimpleJavaWorkflowEndToEndTest.java,v 1.4 2004/08/04 16:49:32 nw Exp $
  * Created on 23-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,7 @@ public class SimpleJavaWorkflowEndToEndTest extends AbstractTestForSimpleWorkflo
         info.populateDirectTool(tool);
     }
 
-    public void checkExecutionResults(Workflow wf)  {
+    public void checkExecutionResults(Workflow wf) throws Exception {
     super.checkExecutionResults(wf);
     // get the result, check its what we expect.
     String value = (String)wf.findXPathValue("sequence/activity/tool/output/parameter/value");
@@ -56,6 +56,9 @@ public class SimpleJavaWorkflowEndToEndTest extends AbstractTestForSimpleWorkflo
 
 /* 
 $Log: SimpleJavaWorkflowEndToEndTest.java,v $
+Revision 1.4  2004/08/04 16:49:32  nw
+added test for scripting extensions to workflow
+
 Revision 1.3  2004/07/05 18:32:34  nw
 fixed tests
 
