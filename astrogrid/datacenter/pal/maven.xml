@@ -10,16 +10,8 @@
 <property name="webapp.docs" location="${basedir}/target/webapp-docs" />
 <property name="working.dir" location="${basedir}/target/tmp" />
 
-<goal name="pal">
-  <attainGoal name="clean" />
-  <echo>**** buiulding site **** </echo>
-  <attainGoal name="site" />
-  <echo>**** building webapp documentation ****</echo>
-  <attainGoal name="webapp-site" />
-  <echo>*** assembling war ***</echo>
-  <attainGoal name="war:war" />
+<goal name="pal" prereqs="clean,site,webapp-site,war:war" />
 
-</goal>
 
 <!-- hook to add our own things to the mix -->
 <preGoal name="war:war">
@@ -31,9 +23,9 @@
 	<attainGoal name="grab-implementations" />
 </preGoal>
 
-<goal name="webapp-site" description="generate webapp docs to a temp direcotry, for inclusion later in webapp - work around for a bug that stops build">
-	<echo> grabbing schema from client.jar</echo>
-	<attainGoal name="configure-webapp" />
+<goal name="webapp-site" prereqs="configure-webapp"
+	description="generate webapp docs to a temp direcotry, for inclusion later in webapp - work around for a bug that stops build">
+
 	<echo> generating webapp site into ${webapp.docs}" </echo>
 	<!-- first merge two doc sets - site xdocs take precendence  -->
 	<property name="tmp.docs" location="${basedir}/target/webapp-docs-src" />
@@ -54,6 +46,11 @@
 	</copy>
 	<j:set var="maven.docs.dest" value="${webapp.docs}" />
 	<j:set var="maven.docs.src" value="${tmp.docs}" />
+	<j:set var="maven.xdoc.poweredby.title" value="Provided by Astrogrid" />
+	<j:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
+	<j:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
+	<j:set var="maven.ui.banner.background" value="#FF0000" />
+	<j:set var="maven.ui.banner.foreground" value="#000000" />
 	<mkdir dir="${webapp.docs}" />
 	<attainGoal name="site:generate" />
 </goal>
@@ -96,6 +93,7 @@
 </goal>
 
 <goal name="configure-webapp" description="set properties in web.xml, server-config.wsdd, etc">
+	<echo> grabbing schema from client.jar</echo>
 	<!-- patch server-config with wsdd file contained in client.jar -->
 	<mkdir dir="${working.dir}" />
 	<deploy:copy-deps todir="${working.dir}" />
@@ -115,31 +113,13 @@
 		</fileset>
 	</delete>
   	<!-- hack from mailing list to fix Maven XLST bug -->
-	${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}	
+	${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
 	<xslt in="${working.dir}/wsdd/deploy.wsdd"
 	      out="${webapp.root}/WEB-INF/server-config.wsdd"
 	      extension=".wsdd"
 	      style="${basedir}/build/server-config.xsl"
 	/>
 </goal>
-<!-- other stuff -->
-<!-- still to get working -->
-<goal name="pal-publish" description="compile and deploy to webserver, restart webapp, redeploy webservice."
-	prereqs="jar:jar,tomcat-declare-tasks,datacenter-server-zip">
-	<!-- assumes vanilla tomcat & axis installation, and configured tomcat manager app. -->
-	<copy todir="${axis.webapp.location}/WEB-INF/lib">
-		<fileset dir="packaging/datacenter-server/WEB-INF/lib">
-			<include name="*.jar" />
-		</fileset>
-	</copy>
-	<!-- restart webapp -->
-	<tomcat-reload url="http://localhost:8080/manager"
-		username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="/axis" />
-	<!-- remove and reinstall dataservice with axis -->
-	<attainGoal name="dataserver-undeploy" />
-	<attainGoal name="dataserver-deploy"/>
-</goal>
-
 
 <!--
 boilerplate below here
