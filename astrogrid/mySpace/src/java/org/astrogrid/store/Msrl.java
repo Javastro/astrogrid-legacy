@@ -1,5 +1,5 @@
 /*
- * $Id: Msrl.java,v 1.7 2004/03/25 12:21:59 mch Exp $
+ * $Id: Msrl.java,v 1.8 2004/03/25 12:27:19 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -20,7 +20,7 @@ import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 
 /**
- * MySpace Resrource Locator.  An Myspace-specific way of *locating* a
+ * MySpace Resrource Locator.  An Myspace-specific way of <b>locating</b> a
  * file (or the location to create a file) completely in MySpace
  * <p>
  * It is of the form:
@@ -201,6 +201,9 @@ public class Msrl
 
 /*
 $Log: Msrl.java,v $
+Revision 1.8  2004/03/25 12:27:19  mch
+Tidied doc
+
 Revision 1.7  2004/03/25 12:21:59  mch
 Tidied doc
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.12 2004/03/25 12:21:59 mch Exp $
+ * $Id: Agsl.java,v 1.13 2004/03/25 12:27:19 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -19,7 +19,7 @@ import java.net.URL;
 import org.astrogrid.community.User;
 
 /**
- * AstroGrid Storepoint Locator.  An astrogrid-specific way of *locating* a
+ * AstroGrid Storepoint Locator.  An astrogrid-specific way of <b>locating</b> a
  * file (or the location to create a file) completely.
  * <p>
  * This contains all the information you
@@ -239,6 +239,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.13  2004/03/25 12:27:19  mch
+Tidied doc
+
 Revision 1.12  2004/03/25 12:21:59  mch
 Tidied doc
 

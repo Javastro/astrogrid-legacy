@@ -20,7 +20,7 @@ and expect everything to Just Work.
 
 VO-Space is a subset of Store-Space, describing all the store points that
 are 'Registered' with VO Registries and/or Astrogrid Community Registries.  Store points
-such as local files, intranet FTP servers, etc will probably not be part of VO-Space.
+such as local file systems, intranet FTP servers, etc will probably not be part of VO-Space.
 
 <h3>Naming things in VO-Space</h3>
 
@@ -57,8 +57,8 @@ Lower level delegates are those such as soap binding delegates, FTP client softw
 A middle level delegate is a StoreClient implementation that users of this package
 can use to manipulate files on a single Store point using paths and AGSLs.
 <p>
-A top level delegate VoSpaceClient is similar to a StoreClient but manipulates files in VO-Space
-in general, using IVORNs.
+The top level delegate VoSpaceClient is similar to a StoreClient but manipulates
+files in general VO-Space, using IVORNs.
 
 <h3>Store Clients</h3>
 
@@ -66,7 +66,7 @@ The StoreClient interface defines the operations that we can reasonably expect a
 store point must implement; operations such as move, copy, create folder,
 list files, upload, download, etc.
 <p>
-A StoreClient implentation is a 'delegate', and it handles all the communication
+A StoreClient implementation is a 'delegate', and it handles all the communication
 required to carry out these operations with <i>a specific store site</i>.  This is
 a 'middle level' delegate.  (There is an abstract class StoreDelegate which implements
 some of the methods in a 'naive' way for convenience).
@@ -86,7 +86,7 @@ using IVORNs.  This makes it a more abstract layer, and allows us to pass IVORNs
 around our components and store them long term.  If a storepoint moves web address
 and the Registry is updated, an IVORN should remain valid.
 <p>
-However VoSpaceClient limits operations to those storepoints that are Registered
+However VoSpaceClient operations are limited to those storepoints that are Registered
 (ie, those in VoSpace).
 
 </body>
