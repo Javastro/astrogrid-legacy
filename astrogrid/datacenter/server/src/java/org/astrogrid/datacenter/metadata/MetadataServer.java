@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataServer.java,v 1.1 2004/03/08 00:31:28 mch Exp $
+ * $Id: MetadataServer.java,v 1.2 2004/03/09 02:01:11 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,6 +21,7 @@ import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -93,12 +94,12 @@ public class MetadataServer
    /**
     * Returns the whole metadata file as a DOM document
     */
-   public static Element getMetadata() throws IOException
+   public static Document getMetadata() throws IOException
    {
       InputStream is = getMetadataUrl().openStream();
       try
       {
-         return DomHelper.newDocument(is).getDocumentElement();
+         return DomHelper.newDocument(is);
       }
       catch (ParserConfigurationException e)
       {
