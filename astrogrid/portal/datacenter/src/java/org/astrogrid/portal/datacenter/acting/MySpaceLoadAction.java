@@ -1,5 +1,6 @@
 package org.astrogrid.portal.datacenter.acting;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,10 +12,13 @@ import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.SourceResolver;
+import org.astrogrid.portal.common.user.UserHelper;
 import org.astrogrid.portal.utils.acting.ActionUtils;
 import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
-import org.astrogrid.mySpace.delegate.MySpaceClient;
-import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
+import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
+import org.astrogrid.community.User;
 
 /**
  * This class provides the DataCenter UI with the facility to
@@ -24,17 +28,8 @@ import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
  */
 public class MySpaceLoadAction extends AbstractAction {
   /**
-   * <p>
-   *   Load the required ADQL document from MySpace.
-   * </p>
-   * <p>
-   *   SiteMap Requirements:
-   *     <ol>
-   *       <li><code>myspace-end-point</code>: URL for the MySpace delegate</li>
-   *       <li><code>myspace-delegate-class</code>: class name of the MySpace delegate</li>
-   *       <li><code>myspace-name</code>: name of the <code>Request</code> parameter containing the MySpace name</li>
-   *     </ol>
-   * </p>
+   * Load the required ADQL document from MySpace.
+   *
    * <p>
    *   SiteMap Outputs:
    *     <ol>
@@ -60,30 +55,39 @@ public class MySpaceLoadAction extends AbstractAction {
     Request request = ObjectModelHelper.getRequest(objectModel);
     Session session = request.getSession(true);
     
-    logger.debug("[act] params:  " + params);
-    logger.debug("[act] request: " + request);
-    
-    String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request, session);
-    logger.debug("[act] endPoint: " + endPoint);
-
     try {
-      MySpaceClient delegate = MySpaceDelegateFactory.createDelegate(endPoint);
-    
-      logger.debug("[act] myspace-delegate-class: " + delegate.getClass().getName());
-
-			String userId = utils.getAnyParameter("username", params, request, session);
-			logger.debug("[act] userId: " + userId);
-
-			String communityId = utils.getAnyParameter("community-id", params, request, session);
-			logger.debug("[act] communityId: " + communityId);
-
-			String credential = utils.getAnyParameter("credential", params, request, session);
-			logger.debug("[act] credential: " + credential);
+      // Set the current user.
+      User user = UserHelper.getCurrentUser(params, request, session);
+      
+      // Set MySpace end point.
+      String endPoint = utils.getAnyParameter(
+          "myspace-end-point",
+          params, request, session);
+      
+      // Set base AstroGrid storage location.
+      Agsl agsl = new Agsl(endPoint);
+      
+      // Get the storage client.
+      StoreClient storeClient = StoreDelegateFactory.createDelegate(user, agsl);
 
       String mySpaceName = utils.getAnyParameter("myspace-name", params, request, session);
 			logger.debug("[act] mySpaceName: " + mySpaceName);
 
-      String adqlDocument = delegate.getDataHolding(userId, communityId, credential, mySpaceName);
+			// Copy the input stream to the output buffer.
+			InputStream inStream = storeClient.getStream(mySpaceName);
+			StringBuffer outputBuffer = new StringBuffer();
+			
+	    byte[] bytesRead = null;
+	    int bytesAvailable = inStream.available();
+	    while(bytesAvailable > 0) {
+	      bytesRead = new byte[bytesAvailable];
+	      inStream.read(bytesRead);
+	      outputBuffer.append(bytesRead);
+	      
+	      bytesAvailable = inStream.available();
+	    }
+
+	    String adqlDocument = outputBuffer.toString(); 
       
       request.setAttribute("adql-document", adqlDocument);
       request.setAttribute("adql-document-loaded", "true");

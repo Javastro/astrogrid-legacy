@@ -11,10 +11,13 @@ import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.SourceResolver;
-import org.astrogrid.mySpace.delegate.MySpaceClient;
-import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
+import org.astrogrid.community.User;
+import org.astrogrid.portal.common.user.UserHelper;
 import org.astrogrid.portal.utils.acting.ActionUtils;
 import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
+import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
 
 /**
  * This class provides the DataCenter UI with the facility to
@@ -24,18 +27,8 @@ import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
  */
 public class MySpaceSaveAction extends AbstractAction {
   /**
-   * <p>
-   *   Load the required ADQL document from MySpace.
-   * </p>
-   * <p>
-   *   SiteMap Requirements:
-   *     <ol>
-   *       <li><code>myspace-end-point</code>: URL for the MySpace delegate</li>
-   *       <li><code>myspace-delegate-class</code>: class name of the MySpace delegate</li>
-   *       <li><code>myspace-name</code>: name of the <code>Request</code> parameter containing the MySpace name</li>
-   *       <li><code>adql-query</code>: name of the <code>Request</code> parameter containing the ADQL query string</li>
-   *     </ol>
-   * </p>
+   * Save the required ADQL document to MySpace.
+   * 
    * <p>
    *   SiteMap Outputs:
    *     <ol>
@@ -61,47 +54,30 @@ public class MySpaceSaveAction extends AbstractAction {
     Request request = ObjectModelHelper.getRequest(objectModel);
     Session session = request.getSession(true);
     
-    String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request, session);
-
     try {
-      MySpaceClient delegate = MySpaceDelegateFactory.createDelegate(endPoint);
-      logger.debug("[act] myspace-delegate-class: " + delegate.getClass().getName());
-    
-      // do something
-			String userId = utils.getAnyParameter("username", params, request, session);
-			logger.debug("[act] userId: " + userId);
-
-			String communityId = utils.getAnyParameter("community-id", params, request, session);
-			logger.debug("[act] communityId: " + communityId);
-
-			String credential = utils.getAnyParameter("credential", params, request, session);
-			logger.debug("[act] credential: " + credential);
-
-			String mySpaceName = utils.getAnyParameter("myspace-name", params, request, session);
-			logger.debug("[act] mySpaceName: " + mySpaceName);
+      // Set the current user.
+      User user = UserHelper.getCurrentUser(params, request, session);
+      
+      // Set MySpace end point.
+      String endPoint = utils.getAnyParameter(
+          "myspace-end-point",
+          params, request, session);
+      
+      // Set base AstroGrid storage location.
+      Agsl agsl = new Agsl(endPoint);
+      
+      // Get the storage client.
+      StoreClient storeClient = StoreDelegateFactory.createDelegate(user, agsl);
 
       String adqlDocument = utils.getAnyParameter("adql-query", params, request, session);
       logger.debug("[act] adqlDocument: " + adqlDocument);
-      
-      boolean saved =
-          delegate.saveDataHolding(
-              userId,
-              communityId,
-              credential,
-              mySpaceName,
-              adqlDocument,
-              "QUERY",
-              "Overwrite");
-      
-      if(saved) {
-        request.setAttribute("adql-document-saved", "true");
-        sitemapParams.put("adql-document-saved", "true");
-      }
-      else {
-        request.setAttribute("adql-document-saved", "false");
-        request.setAttribute("adql-document-error-message", "MySpace failed to save document");
-        sitemapParams = null;
-      }
+
+      String mySpaceName = utils.getAnyParameter("myspace-name", params, request, session);
+      logger.debug("[act] mySpaceName: " + mySpaceName);
+
+      storeClient.putString(adqlDocument, mySpaceName, false);
+      request.setAttribute("adql-document-saved", "true");
+      sitemapParams.put("adql-document-saved", "true");
     }
 		catch(Throwable t) {
 			request.setAttribute("adql-document-saved", "false");
