@@ -4,10 +4,23 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.6  2004/03/05 17:19:59  dave
+    |   Merged development branch, dave-dev-200402211936, into HEAD
+    |
+    |   Revision 1.5.2.3  2004/03/05 16:28:28  dave
+    |   Added SecurityManager delegate test casees.
+    |   Refactored Maven JUnit properties.
+    |
+    |   Revision 1.5.2.2  2004/03/05 14:03:23  dave
+    |   Added first client side SOAP test - SecurityServiceSoapDelegateTestCase
+    |
+    |   Revision 1.5.2.1  2004/02/22 01:50:47  dave
+    |   Refactored install and deploy goals
+    |
     |   Revision 1.5  2004/02/20 21:11:05  dave
     |   Merged development branch, dave-dev-200402120832, into HEAD
     |
@@ -52,7 +65,7 @@
     xmlns:util="jelly:util"
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
-    xmlns:deploy="deploy"
+    xmlns:astro="org.astrogrid.community"
     >
 
     <!--+
@@ -78,9 +91,8 @@
         | Fix the Maven JAXP properties.
         +-->
     <ant:echo message="Fixing JAXP properties ...."/>
-    <ant:echo message="  javax.xml.transform.TransformerFactory : ${systemScope.getProperty('javax.xml.transform.TransformerFactory')}"/>
     <core:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-    <ant:echo message="  javax.xml.transform.TransformerFactory : ${systemScope.getProperty('javax.xml.transform.TransformerFactory')}"/>
+    <ant:echo message=""/>
 
 <!--
     <j:set var="maven.checkstyle.header.file" value="${project.base.root}/short-license.txt" />
@@ -97,10 +109,13 @@
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
     </goal>
 
+    <!-- ================ Axis goals ================ -->
+
     <!--+
         | Initialise the Axis tools.
         +-->
     <goal name="init.tools">
+        <ant:echo message=""/>
         <ant:echo message="Initialising Axis tools ...."/>
         <!--+
             | Check if we have already done this.
@@ -126,6 +141,7 @@
         | Adds the Axis jars to our build classpath.
         +-->
     <goal name="init.classpath">
+        <ant:echo message=""/>
         <ant:echo message="Initialising Axis classpath ...."/>
         <!--+
             | Check if we have already done this.
@@ -171,6 +187,7 @@
         | Initialise our Axis libraries
         +-->
     <goal name="init.axis">
+        <ant:echo message=""/>
         <ant:echo message="Initialising Axis libraries ...."/>
         <!--+
             | Check if we have already done this.
@@ -212,6 +229,7 @@
         | Initialise our path locations.
         +-->
     <goal name="init.paths">
+        <ant:echo message=""/>
         <ant:echo message="Initialising Axis paths ..."/>
         <!--+
             | Check if we have already done this.
@@ -240,4 +258,284 @@
         </core:if>
     </goal>
 
+    <!-- ================ Install goals ================ -->
+
+	<!--+
+		| Install an artifact to our local repository.
+		+-->
+	<goal name="install-local">
+        <ant:echo message=""/>
+		<ant:echo message="Installing artifact to local repository."/>
+		<ant:echo message="  Type : ${astrogrid.artifact.type}"/>
+		<ant:echo message="  Name : ${astrogrid.artifact.name}"/>
+		<!--+
+			| Set the target name and directory.
+			+-->
+		<core:set var="targetFile" value="${maven.build.dir}/${maven.final.name}.${astrogrid.artifact.type}"/>
+		<core:set var="targetPath" value="${maven.repo.local}/${pom.artifactDirectory}/${astrogrid.artifact.type}s"/>
+		<ant:echo message="  File : ${targetFile}"/>
+		<ant:echo message="  Dest : ${targetPath}"/>
+		<!--+
+			| Create our target directory.
+			+-->
+		<ant:mkdir dir="${targetPath}"/>
+		<!--+
+			| Copy our file.
+			+-->
+		<ant:copy 
+			verbose="true"
+			file="${targetFile}"
+			todir="${targetPath}"
+			overwrite="true"
+			/>
+	</goal>
+
+	<!--+
+		| Install a SNAPSHOT artifact to our local repository.
+		+-->
+	<goal name="install-local-snapshot">
+        <ant:echo message=""/>
+		<ant:echo message="Installing SNAPSHOT artifact to local repository."/>
+		<ant:echo message="  Type : ${astrogrid.artifact.type}"/>
+		<ant:echo message="  Name : ${astrogrid.artifact.name}"/>
+		<!--+
+			| Set the target name and directory.
+			+-->
+		<core:set var="targetFile" value="${maven.build.dir}/${maven.final.name}.${astrogrid.artifact.type}"/>
+		<core:set var="targetPath" value="${maven.repo.local}/${pom.artifactDirectory}/${astrogrid.artifact.type}s"/>
+		<ant:echo message="  File : ${targetFile}"/>
+		<ant:echo message="  Dest : ${targetPath}"/>
+		<!--+
+			| Create our target directory.
+			+-->
+		<ant:mkdir dir="${targetPath}"/>
+		<!--+
+			| Copy our file.
+			+-->
+		<ant:copy 
+			verbose="true"
+			file="${targetFile}"
+			todir="${targetPath}"
+			overwrite="true"
+			/>
+		<!--+
+			| Copy our SNAPSHOT file.
+			+-->
+		<ant:copy 
+			verbose="true"
+			file="${targetFile}"
+			tofile="${targetPath}/${pom.artifactId}-SNAPSHOT.${astrogrid.artifact.type}"
+			overwrite="true"
+			/>
+	</goal>
+
+    <!-- ================ Deploy goals ================ -->
+
+	<!--+
+		| Deploy an artifact to our repository.
+		+-->
+	<goal name="deploy-local">
+        <ant:echo message=""/>
+		<ant:echo message="Deploying artifact to local repository."/>
+		<ant:echo message="  Type : ${astrogrid.artifact.type}"/>
+		<ant:echo message="  Name : ${astrogrid.artifact.name}"/>
+		<!--+
+			| Set the target name and directory.
+			+-->
+		<core:set var="targetFile" value="${maven.build.dir}/${maven.final.name}.${astrogrid.artifact.type}"/>
+		<core:set var="targetPath" value="${maven.repo.central.directory}/${pom.artifactDirectory}/${astrogrid.artifact.type}s"/>
+		<ant:echo message="  File : ${targetFile}"/>
+		<ant:echo message="  Dest : ${targetPath}"/>
+		<!--+
+			| Create our target directory.
+			+-->
+		<ant:mkdir dir="${targetPath}"/>
+		<!--+
+			| Copy our file.
+			+-->
+		<ant:copy 
+			verbose="true"
+			file="${targetFile}"
+			todir="${targetPath}"
+			overwrite="true"
+			/>
+	</goal>
+
+	<!--+
+		| Install a SNAPSHOT artifact to our local repository.
+		+-->
+	<goal name="deploy-local-snapshot">
+        <ant:echo message=""/>
+		<ant:echo message="Deploying SNAPSHOT artifact to local repository."/>
+		<ant:echo message="  Type : ${astrogrid.artifact.type}"/>
+		<ant:echo message="  Name : ${astrogrid.artifact.name}"/>
+		<!--+
+			| Set the target name and directory.
+			+-->
+		<core:set var="targetFile" value="${maven.build.dir}/${maven.final.name}.${astrogrid.artifact.type}"/>
+		<core:set var="targetPath" value="${maven.repo.central.directory}/${pom.artifactDirectory}/${astrogrid.artifact.type}s"/>
+		<ant:echo message="  File : ${targetFile}"/>
+		<ant:echo message="  Dest : ${targetPath}"/>
+		<!--+
+			| Create our target directory.
+			+-->
+		<ant:mkdir dir="${targetPath}"/>
+		<!--+
+			| Copy our file.
+			+-->
+		<ant:copy 
+			verbose="true"
+			file="${targetFile}"
+			todir="${targetPath}"
+			overwrite="true"
+			/>
+		<!--+
+			| Copy our SNAPSHOT file.
+			+-->
+		<ant:copy 
+			verbose="true"
+			file="${targetFile}"
+			tofile="${targetPath}/${pom.artifactId}-SNAPSHOT.${astrogrid.artifact.type}"
+			overwrite="true"
+			/>
+	</goal>
+
+    <!-- ================ Custom tag library ================ -->
+
+    <!--+
+        | Define our local tag library.
+        +-->
+	<define:taglib uri="org.astrogrid.community">
+        <!--+
+            | Test tag, debug only.
+            | Attrib : message - The debug message to print.
+            |
+            +-->
+		<define:tag name="debug.tag">
+			<ant:echo message="Message ${message}"/>
+		</define:tag>
+
+        <!--+
+            | Generate the WSDL and stubs for a WebService.
+            | Attrib : service.name      eg. SecurityManager
+            | Attrib : service.wsdd      eg. org/astrogrid/community/common/security/manager/deploy.wsdd
+            | Attrib : service.class     eg. org.astrogrid.community.server.security.manager.SecurityManagerImpl
+            | Attrib : service.interface eg. org.astrogrid.community.common.security.manager.SecurityManager
+            | Attrib : service.namespace eg. urn:manager.security.common.community.astrogrid.org
+            |
+            +-->
+		<define:tag name="service.generate">
+	        <!--+
+	            | Generate our WSDL.
+	            +-->
+			<ant:echo message=""/>
+			<ant:echo message="Generating WSDL for ${service.name}"/>
+	        <ant:axis.java2wsdl
+	            output="${wsdlDir}/${service.name}.wsdl"
+	            classname="${service.interface}"
+	            location="${axisUrl}/services/${service.name}"
+	            namespace="${service.namespace}"
+	            style="RPC"
+	            >
+	            <classpath>
+	                <ant:path refid="maven.dependency.classpath"/>
+	                <ant:pathelement path="${maven.build.dest}"/>
+	            </classpath>
+	        </ant:axis.java2wsdl>
+	        <!--+
+	            | Generate our stubs.
+	            +-->
+			<ant:echo message=""/>
+			<ant:echo message="Generating Java stubs for ${service.name}"/>
+	        <ant:axis.wsdl2java
+	            verbose="false"
+	            serverside="true"
+	            skeletondeploy="false"
+	            output="${tempDir}"
+	            url="file://${wsdlDir}/${service.name}.wsdl"
+	            >
+	        </ant:axis.wsdl2java>
+	        <!--+
+	            | Modify the WSDD to use our implementation classes.
+	            +-->
+			<ant:echo message=""/>
+			<ant:echo message="Updating WSDD for ${service.name}"/>
+	        <ant:xslt style="${project.base.root}/maven/src/xsl/wsdd-impl.xsl"
+	            in="${tempDir}/${service.wsdd}"
+	            out="${wsddDir}/${service.name}.wsdd">
+	            <outputproperty name="method" value="xml"/>
+	            <outputproperty name="indent" value="yes"/>
+	            <param name="service"   expression="${service.name}"/>
+	            <param name="classname" expression="${service.class}"/>
+	        </ant:xslt>
+	        <!--+
+	            | Copy the generated Java files we want to use.
+	            +-->
+			<ant:echo message=""/>
+			<ant:echo message="Copying generated Java for ${service.name}"/>
+	        <ant:copy verbose="false" toDir="${javaDir}">
+	            <fileset dir="${tempDir}">
+	                <include name="**/${service.name}Service.java"/>
+	                <include name="**/${service.name}ServiceLocator.java"/>
+	                <include name="**/${service.name}SoapBindingStub.java"/>
+	            </fileset>
+	        </ant:copy>
+		</define:tag>
+
+        <!--+
+            | Deploy a WebService into the local Axis config.
+            | Attrib : service.name eg. SecurityManager
+            +-->
+		<define:tag name="service.deploy">
+	        <ant:echo message=""/>
+	        <ant:echo message="Deploying ${service.name}"/>
+	        <ant:echo message="  WSDD : ${wsddDir}/${service.name}.wsdd"/>
+	        <ant:java classname="org.apache.axis.utils.Admin"
+	            dir="${axisDir}/WEB-INF"
+	            classpathref="maven.dependency.classpath"
+	            fork="true"
+	            >
+	            <arg value="server"/>
+	            <arg value="${wsddDir}/${service.name}.wsdd"/>
+	        </ant:java>
+		</define:tag>
+
+        <!--+
+            | Generate the Castor JDO config for a database.
+            | Attrib : database.files
+            | Attrib : database.name
+            | Attrib : database.xml
+            | Attrib : database.sql
+            | Attrib : mapping.xml
+            |
+            +-->
+		<define:tag name="database.generate">
+			<ant:echo message=""/>
+			<ant:echo message="Castor JDO config for ${database.name}"/>
+	        <!--+
+	            | Create a Castor JDO config.
+	            +-->
+	        <ant:xslt style="src/xsl/database-config.xsl"
+	            in="src/config/database/astrogrid-community-database.xml"
+	            out="${database.config}/${database.xml}">
+	            <outputproperty name="method" value="xml"/>
+	            <outputproperty name="indent" value="yes"/>
+	            <param name="name"    expression="${database.name}"/>
+	            <param name="engine"  expression="hsql"/>
+	            <param name="url"     expression="jdbc:hsqldb:${database.data}/${database.files}"/>
+	            <param name="mapping" expression="${mapping.xml}"/>
+	            <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
+	            <param name="user"    expression="sa"/>
+	            <param name="pass"    expression=""/>
+	        </ant:xslt>
+	        <!--+
+	            | Copy the Castor JDO mapping.
+	            +-->
+	        <ant:copy file="src/config/database/astrogrid-community-mapping.xml"  toFile="${database.config}/${mapping.xml}"/>
+	        <!--+
+	            | Create the database SQL script.
+	            +-->
+	        <ant:copy file="src/config/database/astrogrid-community-database.sql"  toFile="${database.config}/${database.sql}"/>
+		</define:tag>
+	</define:taglib>
 </project>

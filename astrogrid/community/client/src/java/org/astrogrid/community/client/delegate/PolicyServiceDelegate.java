@@ -10,7 +10,12 @@ import org.astrogrid.community.common.config.CommunityConfig;
 import org.astrogrid.community.common.policy.service.PolicyService ;
 import org.astrogrid.community.common.policy.service.PolicyServiceService ;
 import org.astrogrid.community.common.policy.service.PolicyServiceServiceLocator ;
-
+/**
+ *
+ *
+ * This API is going to be replaced during iter 5, and will be deprecated in iter 6.
+ *
+ */
 public class PolicyServiceDelegate
     {
     /**

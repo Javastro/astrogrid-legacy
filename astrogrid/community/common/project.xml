@@ -4,10 +4,20 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.5  2004/03/05 17:19:59  dave
+    |   Merged development branch, dave-dev-200402211936, into HEAD
+    |
+    |   Revision 1.4.4.2  2004/02/26 15:17:48  dave
+    |   Removed mockmaker depends.
+    |
+    |   Revision 1.4.4.1  2004/02/23 19:43:47  dave
+    |   Refactored DatabaseManager tests to test the interface.
+    |   Refactored DatabaseManager tests to use common DatabaseManagerTest.
+    |
     |   Revision 1.4  2004/02/12 08:12:13  dave
     |   Merged development branch, dave-dev-200401131047, into HEAD
     |
@@ -100,10 +110,32 @@
             <version>2.2</version>
             <type>jar</type>
             <url>http://www.jconfig.org/</url>
-            <properties>
-                <axis.war>true</axis.war>
-            </properties>
         </dependency>
+        <!--+
+            | The MockMaker jars.
+            | Not used at the moment .....
+        <dependency>
+            <groupId>mockmaker</groupId>
+            <artifactId>mmmockobjects</artifactId>
+            <version>1.12.0</version>
+            <type>jar</type>
+            <url>http://www.mockmaker.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>mockmaker</groupId>
+            <artifactId>mockmaker</artifactId>
+            <version>UNKNOWN</version>
+            <type>jar</type>
+            <url>http://www.mockmaker.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>qdox</groupId>
+            <artifactId>qdox</artifactId>
+            <version>1.3</version>
+            <type>jar</type>
+            <url>http://www.mockmaker.org/</url>
+        </dependency>
+            +-->
 
     </dependencies>
 
@@ -127,7 +159,7 @@
                 | Which tests to include.
                 +-->
             <includes>
-                <include>**/*JUnitTest.java</include>
+                <include>**/*TestCase.java</include>
             </includes>
             <!--+
                 | Which tests to exclude.

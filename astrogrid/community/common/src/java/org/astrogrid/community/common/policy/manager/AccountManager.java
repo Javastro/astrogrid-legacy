@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManager.java,v $
+ *   Revision 1.6  2004/03/05 17:19:59  dave
+ *   Merged development branch, dave-dev-200402211936, into HEAD
+ *
+ *   Revision 1.5.2.1  2004/02/26 13:10:28  dave
+ *   Added AccountManagerMock
+ *
  *   Revision 1.5  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -85,35 +91,17 @@ public interface AccountManager
     extends Remote, CommunityService
     {
     /**
-     * Create a new Account, given the Account name.
+     * Create a new Account, given the Account ident.
      *
      */
-    public AccountData addAccount(String name)
+    public AccountData addAccount(String ident)
         throws RemoteException ;
       
     /**
-     * Request a password for an account
-     * Removed for refactoring.
-     *
-    public String getPassword(String name) throws RemoteException;
+     * Request an Account data, given the Account ident.
      *
      */
-
-    /**
-     * Update an Account password.
-     *
-     * Removed for refactoring.
-     *
-    public AccountData setPassword(String account, String password)
-        throws RemoteException ;
-     *
-     */
-
-    /**
-     * Request an Account data, given the Account name.
-     *
-     */
-    public AccountData getAccount(String name)
+    public AccountData getAccount(String ident)
         throws RemoteException ;
 
     /**

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/config/CommunityConfig.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityConfig.java,v $
+ *   Revision 1.4  2004/03/05 17:19:59  dave
+ *   Merged development branch, dave-dev-200402211936, into HEAD
+ *
+ *   Revision 1.3.2.1  2004/03/02 15:29:35  dave
+ *   Working round Castor problem with PasswordData - objects remain in database cache
+ *
  *   Revision 1.3  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -62,7 +68,7 @@ public class CommunityConfig
      * Switch for our debug statements.
      *
      */
-    private static final boolean DEBUG_FLAG = true ;
+    private static final boolean DEBUG_FLAG = false ;
 
     /**
      * The configuration name to use within jConfig.

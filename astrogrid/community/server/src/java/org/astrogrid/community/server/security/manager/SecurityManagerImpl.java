@@ -1,11 +1,30 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/manager/Attic/SecurityManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerImpl.java,v $
+ *   Revision 1.4  2004/03/05 17:19:59  dave
+ *   Merged development branch, dave-dev-200402211936, into HEAD
+ *
+ *   Revision 1.3.2.5  2004/03/02 15:29:35  dave
+ *   Working round Castor problem with PasswordData - objects remain in database cache
+ *
+ *   Revision 1.3.2.4  2004/03/01 12:49:42  dave
+ *   Updated server SecurityService to match changes to interface
+ *
+ *   Revision 1.3.2.3  2004/02/23 19:43:47  dave
+ *   Refactored DatabaseManager tests to test the interface.
+ *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
+ *
+ *   Revision 1.3.2.2  2004/02/23 08:55:20  dave
+ *   Refactored CastorDatabaseConfiguration into DatabaseConfiguration
+ *
+ *   Revision 1.3.2.1  2004/02/22 20:03:16  dave
+ *   Removed redundant DatabaseConfiguration interfaces
+ *
  *   Revision 1.3  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -42,14 +61,13 @@ package org.astrogrid.community.server.security.manager ;
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.ObjectNotFoundException ;
 
-
 import org.astrogrid.community.common.policy.data.AccountData ;
 
-import org.astrogrid.community.common.security.data.PasswordData ;
+import org.astrogrid.community.server.security.data.PasswordData ;
 import org.astrogrid.community.common.security.manager.SecurityManager ;
 
-import org.astrogrid.community.server.common.CommunityServiceImpl ;
-import org.astrogrid.community.server.database.DatabaseConfiguration ;
+import org.astrogrid.community.server.service.CommunityServiceImpl ;
+import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
 
 /**
  * Implementation of our SecurityManager service.
@@ -101,8 +119,8 @@ public class SecurityManagerImpl
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("SecurityManagerImpl.setPassword()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
-        if (DEBUG_FLAG) System.out.println("  Value : " + value) ;
+        if (DEBUG_FLAG) System.out.println("  Account : " + ident) ;
+        if (DEBUG_FLAG) System.out.println("  Value   : " + value) ;
         //
         // Check for null params
         if (null == ident) return false ;
@@ -130,20 +148,23 @@ public class SecurityManagerImpl
             database.begin();
             //
             // Try loading the Account from the database.
-            AccountData account = (AccountData) database.load(AccountData.class, ident.toString()) ;
+//
+// TODO Use Account manager for this.
+            AccountData account = (AccountData) database.load(AccountData.class, ident) ;
             //
             // If we found the Account.
             if (null != account)
                 {
                 if (DEBUG_FLAG)System.out.println("  PASS : found account") ;
+                if (DEBUG_FLAG)System.out.println("    Account : " + account.getIdent()) ;
                 //
                 // Try loading the PasswordData.
                 PasswordData data = null ;
                 try {
-                    data = (PasswordData) database.load(PasswordData.class, ident.toString()) ;
+                    data = (PasswordData) database.load(PasswordData.class, account.getIdent()) ;
                     }
                 //
-                // Don't worry yf it isn't there.
+                // Don't worry if it isn't there.
                 catch (ObjectNotFoundException ouch)
                     {
                     logExpectedException(ouch, "SecurityManagerImpl.setPassword()") ;
@@ -153,10 +174,15 @@ public class SecurityManagerImpl
                 if (null != data)
                     {
                     if (DEBUG_FLAG)System.out.println("  PASS : found password") ;
+                    if (DEBUG_FLAG)System.out.println("    Account  : " + data.getAccount()) ;
+                    if (DEBUG_FLAG)System.out.println("    Password : " + data.getPassword()) ;
                     //
                     // Change the password value.
                     data.setPassword(value) ;
                     data.setEncryption(PasswordData.NO_ENCRYPTION) ;
+                    if (DEBUG_FLAG)System.out.println("  PASS : changed password") ;
+                    if (DEBUG_FLAG)System.out.println("    Account  : " + data.getAccount()) ;
+                    if (DEBUG_FLAG)System.out.println("    Password : " + data.getPassword()) ;
                     }
                 //
                 // If we didn't find the password.
@@ -167,6 +193,8 @@ public class SecurityManagerImpl
                     data = new PasswordData(ident, value) ;
                     database.create(data) ;
                     if (DEBUG_FLAG)System.out.println("  PASS : created password") ;
+                    if (DEBUG_FLAG)System.out.println("    Account  : " + data.getAccount()) ;
+                    if (DEBUG_FLAG)System.out.println("    Password : " + data.getPassword()) ;
                     }
                 //
                 // Set the response to true.
@@ -207,5 +235,4 @@ public class SecurityManagerImpl
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         return result ;
         }
-
     }

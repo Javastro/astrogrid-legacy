@@ -1,11 +1,30 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/service/Attic/PolicyServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceImpl.java,v $
+ *   Revision 1.6  2004/03/05 17:19:59  dave
+ *   Merged development branch, dave-dev-200402211936, into HEAD
+ *
+ *   Revision 1.5.2.5  2004/02/23 19:43:47  dave
+ *   Refactored DatabaseManager tests to test the interface.
+ *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
+ *
+ *   Revision 1.5.2.4  2004/02/23 08:55:20  dave
+ *   Refactored CastorDatabaseConfiguration into DatabaseConfiguration
+ *
+ *   Revision 1.5.2.3  2004/02/22 20:03:16  dave
+ *   Removed redundant DatabaseConfiguration interfaces
+ *
+ *   Revision 1.5.2.2  2004/02/22 02:24:01  dave
+ *   Fixed multiple database init
+ *
+ *   Revision 1.5.2.1  2004/02/22 01:50:48  dave
+ *   Refactored install and deploy goals
+ *
  *   Revision 1.5  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -100,8 +119,8 @@ import org.astrogrid.community.server.policy.manager.GroupManagerImpl ;
 import org.astrogrid.community.server.policy.manager.CommunityManagerImpl ;
 import org.astrogrid.community.server.policy.manager.PermissionManagerImpl ;
 
-import org.astrogrid.community.server.common.CommunityServiceImpl ;
-import org.astrogrid.community.server.database.DatabaseConfiguration ;
+import org.astrogrid.community.server.service.CommunityServiceImpl ;
+import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
 
 public class PolicyServiceImpl
     extends CommunityServiceImpl
@@ -117,19 +136,19 @@ public class PolicyServiceImpl
      * Our GroupManager.
      *
      */
-    private GroupManagerImpl groupManager = new GroupManagerImpl() ;
+    private GroupManagerImpl groupManager ;
 
     /**
      * Our CommunityManager.
      *
      */
-    private CommunityManagerImpl communityManager = new CommunityManagerImpl() ;
+    private CommunityManagerImpl communityManager ;
 
     /**
      * Our PermissionManager
      *
      */
-    private PermissionManagerImpl permissionManager = new PermissionManagerImpl() ;
+    private PermissionManagerImpl permissionManager ;
 
     /**
      * Public constructor, using default database configuration.
@@ -139,8 +158,8 @@ public class PolicyServiceImpl
         {
         super() ;
         //
-        // Configure our local managers.
-        configLocalManagers() ;
+        // Initialise our local managers.
+        initManagers() ;
         }
 
     /**
@@ -151,8 +170,8 @@ public class PolicyServiceImpl
         {
         super(config) ;
         //
-        // Configure our local managers.
-        configLocalManagers() ;
+        // Initialise our local managers.
+        initManagers() ;
         }
 
     /**
@@ -162,6 +181,9 @@ public class PolicyServiceImpl
     public PolicyServiceImpl(CommunityServiceImpl parent)
         {
         super(parent) ;
+        //
+        // Initialise our local managers.
+        initManagers() ;
         }
 
     /**
@@ -169,7 +191,6 @@ public class PolicyServiceImpl
      * This makes it easier to run JUnit tests with a different database configurations.
      * This calls our base class method and then updates all of our local managers.
      *
-     */
     public void setDatabaseConfiguration(DatabaseConfiguration config)
         {
         //
@@ -179,13 +200,25 @@ public class PolicyServiceImpl
         // Configure our local managers.
         configLocalManagers() ;
         }
+     */
+
+
+    /**
+     * Initialise our local managers, passing a reference to 'this' as their parent.
+     *
+     */
+    private void initManagers()
+        {
+		groupManager = new GroupManagerImpl(this) ;
+		communityManager = new CommunityManagerImpl(this) ;
+		permissionManager = new PermissionManagerImpl(this) ;
+        }
 
     /**
      * Configure our local managers.
      * This calls setDatabaseConfiguration on all of our local managers.
      * We need this in a separate method to initialise the local managers after they are created.
      *
-     */
     private void configLocalManagers()
         {
         //
@@ -196,6 +229,7 @@ public class PolicyServiceImpl
         if (null != communityManager) communityManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
         if (null != permissionManager) permissionManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
         }
+     */
 
     /**
      * Confirm access permissions

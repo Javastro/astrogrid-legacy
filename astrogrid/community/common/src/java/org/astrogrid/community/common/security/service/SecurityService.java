@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/service/SecurityService.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityService.java,v $
+ *   Revision 1.4  2004/03/05 17:19:59  dave
+ *   Merged development branch, dave-dev-200402211936, into HEAD
+ *
+ *   Revision 1.3.2.2  2004/03/02 15:29:35  dave
+ *   Working round Castor problem with PasswordData - objects remain in database cache
+ *
+ *   Revision 1.3.2.1  2004/02/27 16:22:14  dave
+ *   Added SecurityService interface, mock and test
+ *
  *   Revision 1.3  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -41,20 +50,51 @@ package org.astrogrid.community.common.security.service ;
 import java.rmi.Remote ;
 import java.rmi.RemoteException ;
 
-import org.astrogrid.community.common.policy.data.AccountData ;
+import org.astrogrid.community.common.security.data.SecurityToken ;
 
 import org.astrogrid.community.common.service.CommunityService ;
 
+/**
+ * Public interface for our SecurityService.
+ *
+ */
 public interface SecurityService
     extends Remote, CommunityService
     {
 
     /**
      * Check an Account password.
-     * Returns an AccountData if the name and password are valid.
+     * @param account - The account ident.
+     * @param pass - The account password.
+     * @return A valid SecurityToken if the ident and password are valid.
      *
      */
-    public AccountData checkPassword(String name, String pass)
+    public SecurityToken checkPassword(String account, String pass)
+        throws RemoteException ;
+
+    /**
+     * Validate a SecurityToken.
+     * Validates a token, and creates a new tokens issued to the same account.
+     * Note, this uses the original token, which now becomes invalid.
+     * The client should use the new token for subsequent calls to the service.
+     * @param - The token to validate.
+     * @return A new SecurityToken if the original was valid.
+     *
+     */
+    public SecurityToken checkToken(SecurityToken token)
+        throws RemoteException ;
+
+    /**
+     * Split a SecurityToken.
+     * Validates a token, and then creates a new set of tokens issued to the same account.
+     * Note, this uses the original token, which now becomes invalid.
+     * The client should use the first token in the array for subsequent calls to the service.
+     * @param - The token to validate.
+     * @param - The number of new tokens required.
+     * @return An array of new tokens.
+     *
+     */
+    public Object[] splitToken(SecurityToken token, int count)
         throws RemoteException ;
 
     }

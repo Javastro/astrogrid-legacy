@@ -3,11 +3,17 @@
     | Maven project description for the AstroGrid community client components.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: bkm $</cvs:author>
-    | <cvs:date>$Date: 2004/02/19 08:45:50 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.6  2004/03/05 17:19:59  dave
+    |   Merged development branch, dave-dev-200402211936, into HEAD
+    |
+    |   Revision 1.5.2.1  2004/02/22 01:50:47  dave
+    |   Refactored install and deploy goals
+    |
     |   Revision 1.5  2004/02/19 08:45:50  bkm
     |   Revised for Leicester build
     |
@@ -50,8 +56,8 @@
 
     <!--+
         | The location of our deployed web site.
-        +-->
     <siteDirectory>/home/bkm/var/www/www/maven/build/community</siteDirectory>
+        +-->
 
     <!--+
         | Our cvs repository location.

@@ -4,10 +4,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/portal/Attic/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.5  2004/03/05 17:19:59  dave
+    |   Merged development branch, dave-dev-200402211936, into HEAD
+    |
+    |   Revision 1.4.4.1  2004/02/22 01:50:47  dave
+    |   Refactored install and deploy goals
+    |
     |   Revision 1.4  2004/02/12 08:12:13  dave
     |   Merged development branch, dave-dev-200401131047, into HEAD
     |
@@ -37,17 +43,13 @@
     >
 
     <!--+
+        | WARNING : THIS IS WAY OUT OF DATE ....
+		+-->
+
+    <!--+
         | Import the goals from our parent project.
         | Looks like this gets included anyway, possibly because our project inherits from ../maven.project.xml ?
     <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
-        +-->
-
-    <!--+
-        | Primary goals are :
-        |     clean
-        |     install-artifact
-        |     install-snapshot
-        |     site
         +-->
 
     <!--+
@@ -59,26 +61,20 @@
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
     </goal>
 
-    <!--+
-        | Reactor goals.
-        | These are just placeholder targets for the reactor to call.
-        +-->
+    <!-- ================ Reactor goals ================ -->
 
     <!--+
         | Clean our build target.
-        | (required as a target goal for the reactor)
         +-->
     <goal name="clean">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Cleaning portal components ...."/>
         <attainGoal name="clean:clean"/>
     </goal>
 
     <!--+
         | Build and install our component jar.
-        | (required as a target goal for the reactor)
         +-->
     <goal name="install-artifact">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
@@ -90,31 +86,26 @@
 
     <!--+
         | Build and install our snapshot jar.
-        | (required as a target goal for the reactor)
         +-->
     <goal name="install-snapshot">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Building snapshot artifact ...."/>
         <attainGoal name="jar:install-snapshot"/>
     </goal>
 
     <!--+
         | Deploy our snapshot jar.
-        | (required as a target goal for the reactor)
         +-->
     <goal name="deploy-snapshot">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Deploying snapshot artifact ...."/>
         <attainGoal name="jar:deploy-snapshot"/>
     </goal>
 
     <!--+
         | Build our project website.
-        | (required as a target goal for the reactor)
         +-->
     <goal name="site">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>

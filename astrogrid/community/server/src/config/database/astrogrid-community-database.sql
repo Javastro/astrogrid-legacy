@@ -2,11 +2,17 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/config/database/astrogrid-community-database.sql,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: astrogrid-community-database.sql,v $
+ *   Revision 1.3  2004/03/05 17:19:59  dave
+ *   Merged development branch, dave-dev-200402211936, into HEAD
+ *
+ *   Revision 1.2.2.1  2004/03/02 15:29:35  dave
+ *   Working round Castor problem with PasswordData - objects remain in database cache
+ *
  *   Revision 1.2  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -64,21 +70,6 @@ CREATE TABLE accounts
     display     VARCHAR NULL,
     description VARCHAR NULL,
     PRIMARY KEY ( ident )
-    ) ;
-
---
---
--- Drop the passwords table
-DROP TABLE passwords IF EXISTS ;
-
---
--- Create the passwords table
-CREATE TABLE passwords
-    (
-    account     VARCHAR NOT NULL,
-    password    VARCHAR NULL,
-    encryption  VARCHAR NOT NULL,
-    PRIMARY KEY ( account )
     ) ;
 
 --
@@ -157,4 +148,35 @@ CREATE TABLE permissions
     reason      VARCHAR NULL,
     PRIMARY KEY (resourceid, groupid, action)
     ) ;
+
+--
+--
+-- Drop the tokens table
+DROP TABLE tokens IF EXISTS ;
+
+--
+-- Create the tokens table
+CREATE TABLE tokens
+    (
+    account  VARCHAR NOT NULL,
+    token    VARCHAR NOT NULL,
+    status   INTEGER NOT NULL,
+    PRIMARY KEY ( token )
+    ) ;
+
+--
+--
+-- Drop the secrets table
+DROP TABLE secrets IF EXISTS ;
+
+--
+-- Create the secrets table
+CREATE TABLE secrets
+    (
+    account     VARCHAR NOT NULL,
+    password    VARCHAR NULL,
+    encryption  VARCHAR NOT NULL,
+    PRIMARY KEY ( account )
+    ) ;
+
 

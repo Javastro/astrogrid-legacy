@@ -2,10 +2,17 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/install.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: install.xml,v $
+    |   Revision 1.3  2004/03/05 17:19:59  dave
+    |   Merged development branch, dave-dev-200402211936, into HEAD
+    |
+    |   Revision 1.2.2.1  2004/03/04 08:57:10  dave
+    |   Started work on the install xdocs.
+    |   Started work on the Security delegates.
+    |
     |   Revision 1.2  2004/02/20 21:11:05  dave
     |   Merged development branch, dave-dev-200402120832, into HEAD
     |
@@ -77,6 +84,10 @@
         | Load our installation properties.
         +-->
     <property file="${basedir}/install.properties"/>
+    <!--+
+        | Load our tomcat properties (optional).
+        +-->
+    <property file="${basedir}/tomcat.properties"/>
 
     <!--+
         | Default Tomcat properties.
@@ -237,12 +248,39 @@
 
     <!-- ================ Webapp tasks ================ -->
 
+	<!--+
+		| Figure out our war file name.
+		+-->
+	<target name="webapp.warfile" depends="">
+		<echo message=""/>
+		<echo message="Calculating war file location ..."/>
+		<!--+
+			| Create an Ant path for the war file.
+			+-->
+		<path id="webapp.war.path">
+			<fileset dir="${basedir}/war">
+				<include name="*.war"/>
+			</fileset>
+		</path>
+		<!--+
+			| Create an Ant property containing the war file path.
+			+-->
+		<property name="webapp.war.property" refid="webapp.war.path"/>
+		<!--+
+			| Create an Ant property containing just the war file name.
+			+-->
+		<basename property="webapp.war.name" file="${webapp.war.property}"/>
+		<echo message="  Path : ${webapp.war.property}"/>
+		<echo message="  Name : ${webapp.war.name}"/>
+	</target>
+
     <!--+
-        | Install our webapp war file into Tomcat.
+        | Install our war file into Tomcat.
         +-->
     <target name="webapp.install" depends="">
         <!--+
-            | Delete any existing war file.+-->
+            | Delete any existing war file.
+            +-->
         <delete verbose="true"
             failonerror="false"
             file="${tomcat.home}/webapps/${webapp.name}.war"/>
@@ -362,35 +400,6 @@
     </target>
 
     <!--+
-        | Add a context for our WebApp to the Tomcat server.xml.
-        +-->
-    <target name="server.context.insert" depends="">
-        <echo message=""/>
-        <echo message="Adding context to server config."/>
-        <echo message="  tomcat.home  : ${tomcat.home}"/>
-        <echo message="  context.path : ${context.path}"/>
-        <echo message="  context.base : ${context.base}"/>
-        <!--+
-            | Add our context to the Tomcat server.xml.
-            +-->
-        <xslt style="${basedir}/xsl/context-insert.xsl"
-            in="${tomcat.home}/conf/server.xml"
-            out="${tomcat.home}/conf/server.xml.tmp">
-            <outputproperty name="method" value="xml"/>
-            <outputproperty name="indent" value="yes"/>
-            <!-- Set the XSL params -->
-            <param name="context.path" expression="${context.path}"/>
-            <param name="context.base" expression="${context.base}"/>
-        </xslt>
-        <!--+
-            | Replace the existing server.xml with the new one.
-            +-->
-        <move overwrite="true" failonerror="false"
-            file="${tomcat.home}/conf/server.xml.tmp"
-            tofile="${tomcat.home}/conf/server.xml"/>
-    </target>
-
-    <!--+
         | Add a JNDI property to our context in the Tomcat server.xml.
         +-->
     <target name="server.context.property" depends="">
@@ -456,8 +465,39 @@
             tofile="${tomcat.home}/conf/server.xml"/>
     </target>
 
+    <!-- ================ Webapp context tasks ================ -->
+
     <!--+
-        | Add a local context file to the Tomcat webapps directory.
+        | Add a context for our WebApp to the Tomcat server.xml.
+        +-->
+    <target name="server.context.insert" depends="">
+        <echo message=""/>
+        <echo message="Adding context to server config."/>
+        <echo message="  tomcat.home  : ${tomcat.home}"/>
+        <echo message="  context.path : ${context.path}"/>
+        <echo message="  context.base : ${context.base}"/>
+        <!--+
+            | Add our context to the Tomcat server.xml.
+            +-->
+        <xslt style="${basedir}/xsl/context-insert.xsl"
+            in="${tomcat.home}/conf/server.xml"
+            out="${tomcat.home}/conf/server.xml.tmp">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <!-- Set the XSL params -->
+            <param name="context.path" expression="${context.path}"/>
+            <param name="context.base" expression="${context.base}"/>
+        </xslt>
+        <!--+
+            | Replace the existing server.xml with the new one.
+            +-->
+        <move overwrite="true" failonerror="false"
+            file="${tomcat.home}/conf/server.xml.tmp"
+            tofile="${tomcat.home}/conf/server.xml"/>
+    </target>
+
+    <!--+
+        | Install a local context file to the Tomcat webapps directory.
         +-->
     <target name="local.context.install" depends="">
         <echo message=""/>
@@ -568,7 +608,7 @@
         </antcall>
     </target>
 
-    <!-- ================ JNDI Environment property tasks ================ -->
+    <!-- ================ JNDI database resource tasks ================ -->
 
     <!--+
         | There are a numer of ways of setting up a JNDI database resource.

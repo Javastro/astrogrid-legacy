@@ -1,11 +1,27 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/common/policy/service/Attic/PolicyServiceServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/05 17:20:00 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceServiceTest.java,v $
+ *   Revision 1.4  2004/03/05 17:20:00  dave
+ *   Merged development branch, dave-dev-200402211936, into HEAD
+ *
+ *   Revision 1.3.2.4  2004/02/27 13:12:17  dave
+ *   Removed cvs conflict
+ *
+ *   Revision 1.3.2.3  2004/02/26 15:14:11  dave
+ *   Bug fix, removed copy-paste error.
+ *
+ *   Revision 1.3.2.2  2004/02/24 20:08:10  dave
+ *   Got local tests working - using maven generated WSDD config.
+ *
+ *   Revision 1.3.2.1  2004/02/23 19:43:47  dave
+ *   Refactored DatabaseManager tests to test the interface.
+ *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
+ *
  *   Revision 1.3  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -38,7 +54,7 @@ import java.net.URL ;
 import org.apache.axis.client.Call ;
 import org.apache.axis.client.AdminClient ;
 
-import org.astrogrid.community.server.common.CommunityServiceTest ;
+import org.astrogrid.community.server.service.CommunityServiceTest ;
 
 import org.astrogrid.community.common.policy.service.PolicyService ;
 
@@ -100,16 +116,6 @@ public class PolicyServiceServiceTest
         //
         // Create our local endpoint address.
         URL endpoint = new URL("local:///PolicyService") ;
-
-        //
-        // Deploy our local service.
-        String[] args = {
-            "-l",
-            "local:///AdminService",
-            "target/generated/wsdd/PolicyService.wsdd"
-            } ;
-        AdminClient.main(args);
-
         //
         // Try creating a PolicyServiceServiceLocator.
         PolicyServiceService locator = new PolicyServiceServiceLocator() ;
@@ -122,18 +128,9 @@ public class PolicyServiceServiceTest
         assertNotNull(
             "Null PolicyService service",
             service) ;
-/*
- * TODO
- * Remove this until I get the test database config fixed.
         //
         // Try using the service.
-        assertNotNull(
-            "Null Account",
-            service.addAccount("frog")
-            ) ;
- *
- */
-
+		//
         }
     }
 

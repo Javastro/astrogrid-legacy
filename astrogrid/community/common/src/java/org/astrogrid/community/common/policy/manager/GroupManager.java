@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/GroupManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManager.java,v $
+ *   Revision 1.6  2004/03/05 17:19:59  dave
+ *   Merged development branch, dave-dev-200402211936, into HEAD
+ *
+ *   Revision 1.5.2.1  2004/03/04 13:26:17  dave
+ *   1) Added Delegate interfaces.
+ *   2) Added Mock implementations.
+ *   3) Added MockDelegates
+ *   4) Added SoapDelegates
+ *
  *   Revision 1.5  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -80,35 +89,39 @@ import java.rmi.RemoteException ;
 import org.astrogrid.community.common.policy.data.GroupData ;
 import org.astrogrid.community.common.service.CommunityService ;
 
+/**
+ * Public interface to our GroupManager service.
+ *
+ */
 public interface GroupManager
     extends Remote, CommunityService
     {
     /**
-     * Create a new Group, given the Group name.
+     * Create a new Group, given the Group ident.
      *
      */
-    public GroupData addGroup(String name)
+    public GroupData addGroup(String ident)
         throws RemoteException ;
 
     /**
-     * Request an Group data, given the Group name.
+     * Request an Group data, given the Group ident.
      *
      */
-    public GroupData getGroup(String name)
+    public GroupData getGroup(String ident)
         throws RemoteException ;
 
     /**
      * Update an Group data.
      *
      */
-    public GroupData setGroup(GroupData account)
+    public GroupData setGroup(GroupData group)
         throws RemoteException ;
 
     /**
-     * Delete an Group, given the Group name.
+     * Delete a Group, given the Group ident.
      *
      */
-    public GroupData delGroup(String name)
+    public GroupData delGroup(String ident)
         throws RemoteException ;
 
     /**
@@ -119,7 +132,7 @@ public interface GroupManager
         throws RemoteException ;
 
     /**
-     * Get a list of local Groups that an Account belongs to, given the Account name.
+     * Get a list of local Groups that an Account belongs to, given the Account ident.
      *
      */
     public Object[] getLocalAccountGroups(String account)

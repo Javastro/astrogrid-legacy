@@ -23,6 +23,8 @@ import java.util.ArrayList;
  * administration such as inserting permissions, resources, accounts, groups and others.
  * @author Kevin Benson
  *
+ * This API is going to be replaced during iter 5, and will be deprecated in iter 6.
+ *
  */
 public class AdministrationDelegate {
    

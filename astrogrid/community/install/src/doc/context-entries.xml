@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>Context entries</title>
+    </properties>
+    <body>
+        <section name="Context entries">
+            <p>
+                The AstroGrid Community WebService uses JNDI entries to lookup the following resources.
+                <ul>
+                    <li>The service configuration file</li>
+                    <li>The database configuration</li>
+                </ul>
+            </p>
+            <subsection name="Config location">
+                <p>
+                    The Community WebService uses a local configuration file, containing the service settings.
+                </p>
+                <p>
+                    To locate the configuration file, the WebService looks for a JNDI property configured in an <code>Environment</code> entry.
+<source><![CDATA[
+<Environment
+    name="org.astrogrid.community.config"
+    type="java.lang.String"
+    value="/etc/astrogrid/astrogrid-community-config.xml"/>
+]]></source>
+                </p>
+                <p>
+                    The <code>Environment</code> entry should contain the full path to the WebService configuration file on the local file system.
+                </p>
+            </subsection>
+            <subsection name="Database resource">
+                <p>
+                    The Community WebService needs access to a local database to store the Community data.
+                </p>
+                <p>
+                    The WebService looks for a JNDI resource configured in a <code>Resource</code> entry .
+<source><![CDATA[
+<Resource
+    name="jdbc/org.astrogrid.community.database"
+    type="javax.sql.DataSource"
+    auth="Container"/>
+]]></source>
+                </p>
+            </subsection>
+            <subsection name="Database properties">
+                <p>
+                    The database resource is managed by the Tomcat container, configured in a <code>ResourceParams</code> entry.
+<source><![CDATA[
+<ResourceParams
+    name="jdbc/org.astrogrid.community.database">
+    <parameter>
+        <name>url</name>
+        <value>jdbc:hsqldb:/var/astrogrid/org.astrogrid.community</value>
+    </parameter>
+    <parameter>
+        <name>driverName</name>
+        <value>jdbc:hsqldb:/var/astrogrid/org.astrogrid.community</value>
+    </parameter>
+    <parameter>
+        <name>driverClassName</name>
+        <value>org.hsqldb.jdbcDriver</value>
+    </parameter>
+    <parameter>
+        <name>username</name>
+        <value>sa</value>
+    </parameter>
+    <parameter>
+        <name>password</name>
+        <value/>
+    </parameter>
+</ResourceParams>
+]]></source>
+                </p>
+            </subsection>
+        </section>
+    </body>
+</document>

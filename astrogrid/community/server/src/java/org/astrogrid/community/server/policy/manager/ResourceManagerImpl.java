@@ -1,11 +1,24 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/ResourceManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerImpl.java,v $
+ *   Revision 1.6  2004/03/05 17:19:59  dave
+ *   Merged development branch, dave-dev-200402211936, into HEAD
+ *
+ *   Revision 1.5.2.3  2004/02/23 19:43:47  dave
+ *   Refactored DatabaseManager tests to test the interface.
+ *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
+ *
+ *   Revision 1.5.2.2  2004/02/23 08:55:20  dave
+ *   Refactored CastorDatabaseConfiguration into DatabaseConfiguration
+ *
+ *   Revision 1.5.2.1  2004/02/22 20:03:16  dave
+ *   Removed redundant DatabaseConfiguration interfaces
+ *
  *   Revision 1.5  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -71,8 +84,8 @@ import org.astrogrid.community.common.policy.data.ResourceIdent ;
 
 import org.astrogrid.community.common.policy.manager.ResourceManager ;
 
-import org.astrogrid.community.server.common.CommunityServiceImpl ;
-import org.astrogrid.community.server.database.DatabaseConfiguration ;
+import org.astrogrid.community.server.service.CommunityServiceImpl ;
+import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
 
 public class ResourceManagerImpl
     extends CommunityServiceImpl

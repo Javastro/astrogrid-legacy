@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/ResourceManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManager.java,v $
+ *   Revision 1.6  2004/03/05 17:19:59  dave
+ *   Merged development branch, dave-dev-200402211936, into HEAD
+ *
+ *   Revision 1.5.2.1  2004/03/04 13:26:17  dave
+ *   1) Added Delegate interfaces.
+ *   2) Added Mock implementations.
+ *   3) Added MockDelegates
+ *   4) Added SoapDelegates
+ *
  *   Revision 1.5  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -69,7 +78,7 @@ public interface ResourceManager
     * Create a new Resource.
     *
     */
-   public ResourceData addResource(String name)
+   public ResourceData addResource(String ident)
         throws RemoteException ;
 
    /**

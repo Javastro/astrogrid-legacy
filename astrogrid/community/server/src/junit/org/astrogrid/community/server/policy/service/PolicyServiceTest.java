@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/policy/service/Attic/PolicyServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/05 17:20:00 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceTest.java,v $
+ *   Revision 1.4  2004/03/05 17:20:00  dave
+ *   Merged development branch, dave-dev-200402211936, into HEAD
+ *
+ *   Revision 1.3.2.1  2004/02/23 19:43:47  dave
+ *   Refactored DatabaseManager tests to test the interface.
+ *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
+ *
  *   Revision 1.3  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -38,7 +45,7 @@
  */
 package org.astrogrid.community.server.policy.service ;
 
-import org.astrogrid.community.server.common.CommunityServiceTest ;
+import org.astrogrid.community.server.service.CommunityServiceTest ;
 
 import org.astrogrid.community.common.policy.data.PolicyPermission  ;
 import org.astrogrid.community.common.policy.data.PolicyCredentials ;

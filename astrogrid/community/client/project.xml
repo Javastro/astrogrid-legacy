@@ -4,10 +4,24 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.6  2004/03/05 17:19:59  dave
+    |   Merged development branch, dave-dev-200402211936, into HEAD
+    |
+    |   Revision 1.5.2.3  2004/03/05 16:28:28  dave
+    |   Added SecurityManager delegate test casees.
+    |   Refactored Maven JUnit properties.
+    |
+    |   Revision 1.5.2.2  2004/03/05 14:03:23  dave
+    |   Added first client side SOAP test - SecurityServiceSoapDelegateTestCase
+    |
+    |   Revision 1.5.2.1  2004/02/23 19:43:47  dave
+    |   Refactored DatabaseManager tests to test the interface.
+    |   Refactored DatabaseManager tests to use common DatabaseManagerTest.
+    |
     |   Revision 1.5  2004/02/20 21:11:05  dave
     |   Merged development branch, dave-dev-200402120832, into HEAD
     |
@@ -115,16 +129,6 @@
             <url>http://www.astrogrid.org/</url>
         </dependency>
         <!--+
-            | Ant library for the tasks.
-            +-->
-        <dependency>
-            <groupId>ant</groupId>
-            <artifactId>ant</artifactId>
-            <version>1.5.3-1</version>
-            <type>jar</type>
-            <url>http://ant.apache.org/</url>
-        </dependency>
-        <!--+
             | The JConfig jars.
             +-->
         <dependency>
@@ -156,14 +160,8 @@
                 | Which tests to include.
                 +-->
             <includes>
-                <include>**/*Test.java</include>
+                <include>**/*TestCase.java</include>
             </includes>
-            <!--+
-                | Which tests to exclude.
-                +-->
-            <excludes>
-                <exclude>**/*Test.frog</exclude>
-            </excludes>
             <!--+
                 | The resources for our tests.
             <resources>

@@ -4,10 +4,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/20 21:11:04 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.7  2004/03/05 17:19:59  dave
+    |   Merged development branch, dave-dev-200402211936, into HEAD
+    |
+    |   Revision 1.6.2.1  2004/02/22 01:50:47  dave
+    |   Refactored install and deploy goals
+    |
     |   Revision 1.6  2004/02/20 21:11:04  dave
     |   Merged development branch, dave-dev-200402120832, into HEAD
     |
@@ -94,10 +100,9 @@
 
     <!--+
         | Hook for build script clover:html-report
-        | Calls clover-report on the relevant sub-projects.
+        | Does nothing.
         +-->
     <goal name="clover:html-report">
-        <attainGoal name="clover-report"/>
     </goal>
 
     <!--+
@@ -160,13 +165,7 @@
         <ant:echo message="Skipping war:deploy-snapshot, already done by jar:deploy-snapshot"/>
     </goal>
 
-    <!--+
-        | Primary goals are :
-        |     clean
-        |     install-artifact
-        |     install-snapshot
-        |     site
-        +-->
+    <!-- ================ Reactor goals ================ -->
 
     <!--+
         | Debug info ....
@@ -199,7 +198,7 @@
     </goal>
 
     <!--+
-        | Build and install our component artifacts.
+        | Build and install our components.
         +-->
     <goal name="install-artifact">
         <maven:reactor
@@ -213,7 +212,7 @@
     </goal>
 
     <!--+
-        | Build and install our snapshot artifacts.
+        | Build and install our snapshots.
         +-->
     <goal name="install-snapshot">
         <maven:reactor
@@ -227,16 +226,29 @@
     </goal>
 
     <!--+
-        | Generate a clover report for our sub-projects.
-        | Needs to have install-snapshot called first.
+        | Build and deploy our components.
         +-->
-    <goal name="clover-report">
+    <goal name="deploy-artifact">
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml"
-            goals="clover-report"
-            banner="Building clover report : "
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml"
+            goals="deploy-artifact"
+            banner="Deploying snapshot artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
+
+    <!--+
+        | Build and deploy our snapshots.
+        +-->
+    <goal name="deploy-snapshot">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml"
+            goals="deploy-snapshot"
+            banner="Deploying snapshot artifact : "
             ignoreFailures="false"
             />
     </goal>
@@ -281,20 +293,6 @@
                 <attainGoal name="multiproject:site"/>
             </core:default>
         </core:switch>
-    </goal>
-
-    <!--+
-        | Deploy our snapshot artifacts.
-        +-->
-    <goal name="deploy-snapshot">
-        <maven:reactor
-            basedir="${basedir}"
-            postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml"
-            goals="deploy-snapshot"
-            banner="Deploying snapshot artifact : "
-            ignoreFailures="false"
-            />
     </goal>
 
 </project>

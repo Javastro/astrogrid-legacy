@@ -4,10 +4,20 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.6  2004/03/05 17:19:59  dave
+    |   Merged development branch, dave-dev-200402211936, into HEAD
+    |
+    |   Revision 1.5.2.2  2004/03/05 16:28:28  dave
+    |   Added SecurityManager delegate test casees.
+    |   Refactored Maven JUnit properties.
+    |
+    |   Revision 1.5.2.1  2004/02/22 01:50:47  dave
+    |   Refactored install and deploy goals
+    |
     |   Revision 1.5  2004/02/20 21:11:05  dave
     |   Merged development branch, dave-dev-200402120832, into HEAD
     |
@@ -81,92 +91,107 @@
 
     <!--+
         | Clean our build target.
-        | (required as a target goal for the reactor)
         +-->
     <goal name="clean">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Cleaning build target ...."/>
         <attainGoal name="clean:clean"/>
     </goal>
 
     <!--+
-        | Build and install our install toolkit.
-        | (required as a target goal for the reactor)
+        | Build and install our toolkit.
         +-->
     <goal name="install-artifact">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Building install toolkit ...."/>
         <!--+
-            | Build our zip file ....
+            | Build our zip file.
             +-->
         <attainGoal name="build.zipfile"/>
-        <!--+
-            | The rest is basically copy-paste from jar:install-snapshot,
-            | with 'jar' crossed out and 'zip' written in in crayon..
-            +-->
-        <ant:property name="zipdir__" value="${maven.repo.local}/${pom.artifactDirectory}/zips"/>
-        <ant:mkdir dir="${zipdir__}"/>
-        <ant:copy
-            file="${maven.build.dir}/${maven.final.name}.zip"
-            tofile="${zipdir__}/${pom.artifactId}-SNAPSHOT.zip"
-            overwrite="true"
-            />
-        <ant:copy
-            file="${maven.build.dir}/${maven.final.name}.zip"
-            tofile="${zipdir__}/${maven.final.name}.zip"
-            overwrite="true"
-            />
+		<!--+
+			| Install our zip file.
+			+-->
+		<core:set var="astrogrid.artifact.type" value="zip"/>
+		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+		<attainGoal name="install-local"/>
     </goal>
 
     <!--+
-        | Build and install our (snapshot) install toolkit.
-        | (required as a target goal for the reactor)
+        | Build and install our SNAPSHOT toolkit.
         +-->
     <goal name="install-snapshot">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Building install toolkit ...."/>
+		<!--+
+			| Create our snapshot name.
+			+-->
+		<maven:snapshot project="${pom}"/>
+		<core:set var="maven.final.name" value="${snapshotSignature}"/>
         <!--+
-            | Set the SNAPSHOT name.
-            +-->
-        <maven:snapshot project="${pom}"/>    
-        <core:set var="maven.final.name" value="${snapshotSignature}"/>
-        <!--+
-            | Build our zip file ....
+            | Build our zip file.
             +-->
         <attainGoal name="build.zipfile"/>
-        <!--+
-            | The rest is basically copy-paste from jar:install-snapshot,
-            | with 'jar' crossed out and 'zip' written in in crayon..
-            +-->
-        <ant:property name="zipdir__" value="${maven.repo.local}/${pom.artifactDirectory}/zips"/>
-        <ant:mkdir dir="${zipdir__}"/>
-        <ant:copy
-            file="${maven.build.dir}/${maven.final.name}.zip"
-            tofile="${zipdir__}/${pom.artifactId}-SNAPSHOT.zip"
-            overwrite="true"
-            />
-        <ant:copy
-            file="${maven.build.dir}/${maven.final.name}.zip"
-            tofile="${zipdir__}/${maven.final.name}.zip"
-            overwrite="true"
-            />
+		<!--+
+			| Install our SNAPSHOT jar.
+			+-->
+		<core:set var="astrogrid.artifact.type" value="zip"/>
+		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+		<attainGoal name="install-local-snapshot"/>
     </goal>
 
+	<!--+
+		| Build and deploy our toolkit.
+		+-->
+	<goal name="deploy-artifact">
+		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
+		<ant:echo message="Build version   : ${pom.currentVersion}"/>
+		<ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Build our zip file.
+            +-->
+        <attainGoal name="build.zipfile"/>
+		<!--+
+			| Deploy our jar.
+			+-->
+		<core:set var="astrogrid.artifact.type" value="zip"/>
+		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+		<attainGoal name="deploy-local"/>
+	</goal>
+
+	<!--+
+		| Build and deploy our SNAPSHOT toolkit.
+		+-->
+	<goal name="deploy-snapshot">
+		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
+		<ant:echo message="Build version   : ${pom.currentVersion}"/>
+		<ant:echo message="Build directory : ${maven.build.dir}"/>
+		<!--+
+			| Create our snapshot name.
+			+-->
+		<maven:snapshot project="${pom}"/>
+		<core:set var="maven.final.name" value="${snapshotSignature}"/>
+        <!--+
+            | Build our zip file.
+            +-->
+        <attainGoal name="build.zipfile"/>
+		<!--+
+			| Deploy our SNAPSHOT jar.
+			+-->
+		<core:set var="astrogrid.artifact.type" value="zip"/>
+		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+		<attainGoal name="deploy-local-snapshot"/>
+	</goal>
+
     <!--+
-        | Build our project website.
-        | (required as a target goal for the reactor)
+        | Build our component website.
         +-->
     <goal name="site">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Building project site ...."/>
         <attainGoal name="site:generate"/>
         <!--+
             | Add stuff here to put together the install instructions ....
@@ -373,5 +398,25 @@
             basedir="${maven.build.dir}/install"
             />
     </goal>
+
+    <!--+
+        | Setup our JUnit tests.
+        +-->
+    <preGoal name="test:test">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Preparing services for tests"/>
+        <!--+
+            | Initialise our classpaths.
+            +-->
+        <attainGoal name="init.classpath"/>
+        <!--+
+            | Check the JUnit test settings.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="JUnit fork VM - ${maven.junit.fork}"/>
+        <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
+        <ant:echo message=""/>
+    </preGoal>
 
 </project>

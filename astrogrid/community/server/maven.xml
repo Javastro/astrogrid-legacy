@@ -4,10 +4,40 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.6  2004/03/05 17:19:59  dave
+    |   Merged development branch, dave-dev-200402211936, into HEAD
+    |
+    |   Revision 1.5.2.8  2004/03/05 16:28:28  dave
+    |   Added SecurityManager delegate test casees.
+    |   Refactored Maven JUnit properties.
+    |
+    |   Revision 1.5.2.7  2004/03/05 14:03:23  dave
+    |   Added first client side SOAP test - SecurityServiceSoapDelegateTestCase
+    |
+    |   Revision 1.5.2.6  2004/03/04 08:57:10  dave
+    |   Started work on the install xdocs.
+    |   Started work on the Security delegates.
+    |
+    |   Revision 1.5.2.5  2004/03/03 17:50:47  dave
+    |   Refactored maven.xml using local custom tags.
+    |   Added 'local://service' SecurityManager and SecurityService tests.
+    |
+    |   Revision 1.5.2.4  2004/02/24 20:08:10  dave
+    |   Got local tests working - using maven generated WSDD config.
+    |
+    |   Revision 1.5.2.3  2004/02/23 22:07:23  dave
+    |   Added local service test for DatabaseManager
+    |
+    |   Revision 1.5.2.2  2004/02/22 20:03:16  dave
+    |   Removed redundant DatabaseConfiguration interfaces
+    |
+    |   Revision 1.5.2.1  2004/02/22 01:50:47  dave
+    |   Refactored install and deploy goals
+    |
     |   Revision 1.5  2004/02/20 21:11:05  dave
     |   Merged development branch, dave-dev-200402120832, into HEAD
     |
@@ -75,21 +105,13 @@
     xmlns:util="jelly:util"
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
-    xmlns:deploy="deploy"
+    xmlns:astro="org.astrogrid.community"
     >
 
     <!--+
         | Import the goals from our parent project.
         | Looks like this gets included anyway, possibly because our project inherits from ../maven.project.xml ?
     <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
-        +-->
-
-    <!--+
-        | Primary goals are :
-        |     clean
-        |     install-artifact
-        |     install-snapshot
-        |     site
         +-->
 
     <!--+
@@ -101,62 +123,106 @@
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
     </goal>
 
-    <!--+
-        | Reactor goals.
-        | These are just placeholder targets for the reactor to call.
-        +-->
+    <!-- ================ Reactor goals ================ -->
 
     <!--+
         | Clean our build target.
-        | (required as a target goal for the reactor)
         +-->
     <goal name="clean">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Cleaning build target ...."/>
         <attainGoal name="clean:clean"/>
     </goal>
 
-    <!--+
-        | Build and install our component jar.
-        | (required as a target goal for the reactor)
-        +-->
-    <goal name="install-artifact">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Building component artifact ...."/>
-        <attainGoal name="jar:install"/>
-    </goal>
+	<!--+
+		| Build and install our component jar.
+		+-->
+	<goal name="install-artifact">
+		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
+		<ant:echo message="Build version   : ${pom.currentVersion}"/>
+		<ant:echo message="Build directory : ${maven.build.dir}"/>
+		<!--+
+			| Build our jar.
+			+-->
+		<attainGoal name="jar:jar"/>
+		<!--+
+			| Install our jar.
+			+-->
+		<core:set var="astrogrid.artifact.type" value="jar"/>
+		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+		<attainGoal name="install-local"/>
+	</goal>
+
+	<!--+
+		| Build and install our snapshot jar.
+		+-->
+	<goal name="install-snapshot">
+		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
+		<ant:echo message="Build version   : ${pom.currentVersion}"/>
+		<ant:echo message="Build directory : ${maven.build.dir}"/>
+		<!--+
+			| Create our snapshot name.
+			+-->
+		<maven:snapshot project="${pom}"/>
+		<core:set var="maven.final.name" value="${snapshotSignature}"/>
+		<!--+
+			| Build our jar.
+			+-->
+		<attainGoal name="jar:jar"/>
+		<!--+
+			| Install our SNAPSHOT jar.
+			+-->
+		<core:set var="astrogrid.artifact.type" value="jar"/>
+		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+		<attainGoal name="install-local-snapshot"/>
+	</goal>
+
+	<!--+
+		| Build and deploy our component jar.
+		+-->
+	<goal name="deploy-artifact">
+		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
+		<ant:echo message="Build version   : ${pom.currentVersion}"/>
+		<ant:echo message="Build directory : ${maven.build.dir}"/>
+		<!--+
+			| Build our jar.
+			+-->
+		<attainGoal name="jar:jar"/>
+		<!--+
+			| Deploy our jar.
+			+-->
+		<core:set var="astrogrid.artifact.type" value="jar"/>
+		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+		<attainGoal name="deploy-local"/>
+	</goal>
+
+	<!--+
+		| Build and deploy our snapshot jar.
+		+-->
+	<goal name="deploy-snapshot">
+		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
+		<ant:echo message="Build version   : ${pom.currentVersion}"/>
+		<ant:echo message="Build directory : ${maven.build.dir}"/>
+		<!--+
+			| Create our snapshot name.
+			+-->
+		<maven:snapshot project="${pom}"/>
+		<core:set var="maven.final.name" value="${snapshotSignature}"/>
+		<!--+
+			| Build our jar.
+			+-->
+		<attainGoal name="jar:jar"/>
+		<!--+
+			| Deploy our SNAPSHOT jar.
+			+-->
+		<core:set var="astrogrid.artifact.type" value="jar"/>
+		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+		<attainGoal name="deploy-local-snapshot"/>
+	</goal>
 
     <!--+
-        | Build and install our snapshot jar.
-        | (required as a target goal for the reactor)
-        +-->
-    <goal name="install-snapshot">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Building snapshot artifact ...."/>
-        <attainGoal name="jar:install-snapshot"/>
-    </goal>
-
-    <!--+
-        | Deploy our snapshot jar.
-        | (required as a target goal for the reactor)
-        +-->
-    <goal name="deploy-snapshot">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Deploying snapshot artifact ...."/>
-        <attainGoal name="jar:deploy-snapshot"/>
-    </goal>
-
-    <!--+
-        | Build our project website.
-        | (required as a target goal for the reactor)
+        | Build our component site.
         +-->
     <goal name="site">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
@@ -166,22 +232,7 @@
         <attainGoal name="site:generate"/>
     </goal>
 
-    <!--+
-        | Generate a clover report for our project.
-        | (required as a target goal for the reactor)
-        +-->
-    <goal name="clover-report">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Generating clover report ...."/>
-        <attainGoal name="maven-clover-plugin:report"/>
-    </goal>
-
-    <!--+
-        | Project goals.
-        | These are the main project goals.
-        +-->
+    <!-- ================ Component goals ================ -->
 
     <!--+
         | Prepare for the java:compile task.
@@ -202,97 +253,55 @@
         <ant:mkdir dir="${tempDir}"/>
         <ant:mkdir dir="${javaDir}"/>
         <!--+
-            | Generate our PolicyManager WSDL.
+            | Generate our DatabaseManager WSDL and stubs.
             +-->
-        <ant:axis.java2wsdl
-            output="${wsdlDir}/PolicyManager.wsdl"
-            classname="org.astrogrid.community.common.policy.manager.PolicyManager"
-            location="${axisUrl}/services/PolicyManager"
-            namespace="urn:manager.policy.common.community.astrogrid.org"
-            style="RPC"
-            >
-            <classpath>
-                <ant:path refid="maven.dependency.classpath"/>
-                <ant:pathelement path="${maven.build.dest}"/>
-            </classpath>
-        </ant:axis.java2wsdl>
+		<astro:service.generate
+			service.name="DatabaseManager"
+			service.wsdd="org/astrogrid/community/common/database/manager/deploy.wsdd"
+			service.class="org.astrogrid.community.server.database.manager.DatabaseManagerImpl"
+			service.interface="org.astrogrid.community.common.database.manager.DatabaseManager"
+			service.namespace="urn:manager.database.common.community.astrogrid.org"
+			/>
         <!--+
-            | Generate our PolicyManager stubs.
+            | Generate our PolicyManager WSDL and stubs.
             +-->
-        <ant:axis.wsdl2java
-            verbose="false"
-            serverside="true"
-            skeletondeploy="false"
-            output="${tempDir}"
-            url="file://${wsdlDir}/PolicyManager.wsdl"
-            >
-        </ant:axis.wsdl2java>
+		<astro:service.generate
+			service.name="PolicyManager"
+			service.wsdd="org/astrogrid/community/common/policy/manager/deploy.wsdd"
+			service.class="org.astrogrid.community.server.policy.manager.PolicyManagerImpl"
+			service.interface="org.astrogrid.community.common.policy.manager.PolicyManager"
+			service.namespace="urn:manager.policy.common.community.astrogrid.org"
+			/>
         <!--+
-            | Generate our PolicyService WSDL.
+            | Generate our PolicyService WSDL and stubs.
             +-->
-        <ant:axis.java2wsdl
-            output="${wsdlDir}/PolicyService.wsdl"
-            classname="org.astrogrid.community.common.policy.service.PolicyService"
-            location="${axisUrl}/services/PolicyService"
-            namespace="urn:service.policy.common.community.astrogrid.org"
-            style="RPC"
-            >
-            <classpath>
-                <ant:path refid="maven.dependency.classpath"/>
-                <ant:pathelement path="${maven.build.dest}"/>
-            </classpath>
-        </ant:axis.java2wsdl>
+		<astro:service.generate
+			service.name="PolicyService"
+			service.wsdd="org/astrogrid/community/common/policy/service/deploy.wsdd"
+			service.class="org.astrogrid.community.server.policy.service.PolicyServiceImpl"
+			service.interface="org.astrogrid.community.common.policy.service.PolicyService"
+			service.namespace="urn:service.policy.common.community.astrogrid.org"
+			/>
         <!--+
-            | Generate our PolicyService stubs.
+            | Generate our SecurityManager WSDL and stubs.
             +-->
-        <ant:axis.wsdl2java
-            verbose="false"
-            serverside="true"
-            skeletondeploy="false"
-            output="${tempDir}"
-            url="file://${wsdlDir}/PolicyService.wsdl"
-            >
-        </ant:axis.wsdl2java>
+		<astro:service.generate
+			service.name="SecurityManager"
+			service.wsdd="org/astrogrid/community/common/security/manager/deploy.wsdd"
+			service.class="org.astrogrid.community.server.security.manager.SecurityManagerImpl"
+			service.interface="org.astrogrid.community.common.security.manager.SecurityManager"
+			service.namespace="urn:manager.security.common.community.astrogrid.org"
+			/>
         <!--+
-            | Modify our PolicyManager WSDD to use our implementation classes.
+            | Generate our SecurityService WSDL and stubs.
             +-->
-        <ant:xslt style="src/xsl/wsdd-impl.xsl"
-            in="${tempDir}/org/astrogrid/community/common/policy/manager/deploy.wsdd"
-            out="${wsddDir}/PolicyManager.wsdd">
-            <outputproperty name="method" value="xml"/>
-            <outputproperty name="indent" value="yes"/>
-            <param name="service"   expression="PolicyManager"/>
-            <param name="classname" expression="org.astrogrid.community.server.policy.manager.PolicyManagerImpl"/>
-        </ant:xslt>
-        <!--+
-            | Modify our PolicyService WSDD to use our implementation classes.
-            +-->
-        <ant:xslt style="src/xsl/wsdd-impl.xsl"
-            in="${tempDir}/org/astrogrid/community/common/policy/service/deploy.wsdd"
-            out="${wsddDir}/PolicyService.wsdd">
-            <outputproperty name="method" value="xml"/>
-            <outputproperty name="indent" value="yes"/>
-            <param name="service"   expression="PolicyService"/>
-            <param name="classname" expression="org.astrogrid.community.server.policy.service.PolicyServiceImpl"/>
-        </ant:xslt>
-
-<!--+
-    | TODO Deploy the rest of our services ...
-    +-->
-
-        <!--+
-            | Copy the generated Java files we want to use.
-            +-->
-        <ant:copy verbose="false" toDir="${javaDir}">
-            <fileset dir="${tempDir}">
-                <include name="**/PolicyManagerService.java"/>
-                <include name="**/PolicyManagerServiceLocator.java"/>
-                <include name="**/PolicyManagerSoapBindingStub.java"/>
-                <include name="**/PolicyServiceService.java"/>
-                <include name="**/PolicyServiceServiceLocator.java"/>
-                <include name="**/PolicyServiceSoapBindingStub.java"/>
-            </fileset>
-        </ant:copy>
+		<astro:service.generate
+			service.name="SecurityService"
+			service.wsdd="org/astrogrid/community/common/security/service/deploy.wsdd"
+			service.class="org.astrogrid.community.server.security.service.SecurityServiceImpl"
+			service.interface="org.astrogrid.community.common.security.service.SecurityService"
+			service.namespace="urn:service.security.common.community.astrogrid.org"
+			/>
         <!--+
             | Add the Java files to our project source path.
             +-->
@@ -357,179 +366,72 @@
         <!--+
             | Setup our database properties.
             +-->
-        <ant:property name="database.name"   value="test"/>
         <ant:property name="database.data"   value="${maven.build.dir}/database/data"/>
         <ant:property name="database.config" value="${maven.build.dir}/database/config"/>
         <!--+
-            | Create our config directory.
+            | Create our target directories.
             +-->
         <ant:mkdir dir="${database.config}"/>
-        <!--+
-            | Copy our database mapping file.
-            | Not required at the moment, the standard mapping.xml is included as a test resource.
-            | However, we may need custom mapping files for some of the error condition testing.
-        <ant:copy overwrite="true" file="src/config/database/mapping.xml" toDir="${database.config}"/>
-            +-->
-        <!--+
-            | Create our database directory.
-            +-->
         <ant:mkdir dir="${database.data}"/>
-        <!--+
-            | Copy our default database configuration.
-            +-->
-        <ant:copy overwrite="true" file="src/config/database/astrogrid-community-database.xml" toFile="${database.config}/database.xml"/>
-        <ant:copy overwrite="true" file="src/config/database/astrogrid-community-mapping.xml"  toFile="${database.config}/astrogrid-community-mapping.xml"/>
-        <!--+
-            | Create a Castor JDO config for test database 001.
-            +-->
-        <ant:echo message=""/>
-        <ant:echo message="Creating Castor config for test-database-001"/>
-        <ant:xslt style="src/xsl/database-config.xsl"
-            in="src/config/database/astrogrid-community-database.xml"
-            out="${database.config}/test-database-001.xml">
-            <outputproperty name="method" value="xml"/>
-            <outputproperty name="indent" value="yes"/>
-            <param name="name"    expression="test-database-001"/>
-            <param name="engine"  expression="hsql"/>
-            <param name="url"     expression="jdbc:hsqldb:${database.data}/test-database-001"/>
-            <param name="mapping" expression="test-mapping-001.xml"/>
-            <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
-            <param name="user"    expression="sa"/>
-            <param name="pass"    expression=""/>
-        </ant:xslt>
-        <!--+
-            | Copy the Castor JDO mapping file for test database 001.
-            +-->
-        <ant:copy file="src/config/database/astrogrid-community-mapping.xml"  toFile="${database.config}/test-mapping-001.xml"/>
-        <!--+
-            | Copy the SQL script for test database 001.
-            +-->
-        <ant:copy file="src/config/database/astrogrid-community-database.sql"  toFile="${database.config}/test-database-001.sql"/>
-        <!--+
-            | Create our the database tables for test-database-001.
-        <ant:echo message=""/>
-        <ant:echo message="Creating database tables for test-database-001"/>
-        <ant:sql driver="org.hsqldb.jdbcDriver"
-             url="jdbc:hsqldb:${database.data}/test-database-001"
-             classpathref="maven.dependency.classpath"
-             userid="sa"
-             password=""
-             print="true"
-            >
-            <transaction src="src/config/database/astrogrid-community-database.sql"/>
-        </ant:sql>
-            +-->
 
         <!--+
-            | Create our config for test-database-002.
+            | Create a Castor JDO config for our default database.
+            | This is used by the DatabaseConfiguration tests.
             +-->
-        <ant:echo message=""/>
-        <ant:echo message="Creating Castor config for test-database-002"/>
-        <ant:xslt style="src/xsl/database-config.xsl"
-            in="src/config/database/astrogrid-community-database.xml"
-            out="${database.config}/test-database-002.xml">
-            <outputproperty name="method" value="xml"/>
-            <outputproperty name="indent" value="yes"/>
-            <param name="name"    expression="test-database-002"/>
-            <param name="engine"  expression="hsql"/>
-            <param name="url"     expression="jdbc:hsqldb:${database.data}/test-database-002"/>
-            <param name="mapping" expression="test-mapping-002.xml"/>
-            <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
-            <param name="user"    expression="sa"/>
-            <param name="pass"    expression=""/>
-        </ant:xslt>
+		<astro:database.generate
+			database.files="default"
+			database.name="database"
+			database.xml="database.xml"
+			database.sql="database.sql"
+			mapping.xml="mapping.xml"
+			/>
         <!--+
-            | Copy the Castor JDO mapping file for test database 002.
+            | Create a Castor JDO config for our default community database.
+            | This is used by the local:://service tests.
             +-->
-        <ant:copy file="src/config/database/astrogrid-community-mapping.xml"  toFile="${database.config}/test-mapping-002.xml"/>
+		<astro:database.generate
+			database.files="default"
+			database.name="org.astrogrid.community.database"
+			database.xml="astrogrid-community-database.xml"
+			database.sql="astrogrid-community-database.sql"
+			mapping.xml="astrogrid-community-mapping.xml"
+			/>
         <!--+
-            | Copy the SQL script for test database 002.
+            | Create a Castor JDO config for our test database(s).
+            | This are used by the in-process service tests.
             +-->
-        <ant:copy file="src/config/database/astrogrid-community-database.sql"  toFile="${database.config}/test-database-002.sql"/>
-
-        <!--+
-            | Create our config for test-database-003.
-            +-->
-        <ant:echo message=""/>
-        <ant:echo message="Creating Castor config for test-database-003"/>
-        <ant:xslt style="src/xsl/database-config.xsl"
-            in="src/config/database/astrogrid-community-database.xml"
-            out="${database.config}/test-database-003.xml">
-            <outputproperty name="method" value="xml"/>
-            <outputproperty name="indent" value="yes"/>
-            <param name="name"    expression="test-database-003"/>
-            <param name="engine"  expression="hsql"/>
-            <param name="url"     expression="jdbc:hsqldb:${database.data}/test-database-003"/>
-            <param name="mapping" expression="test-mapping-003.xml"/>
-            <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
-            <param name="user"    expression="sa"/>
-            <param name="pass"    expression=""/>
-        </ant:xslt>
-        <!--+
-            | Copy the Castor JDO mapping file for test database 003.
-            +-->
-        <ant:copy file="src/config/database/astrogrid-community-mapping.xml"  toFile="${database.config}/test-mapping-003.xml"/>
-        <!--+
-            | Copy the SQL script for test database 003.
-            +-->
-        <ant:copy file="src/config/database/astrogrid-community-database.sql"  toFile="${database.config}/test-database-003.sql"/>
-
-        <!--+
-            | Create our config for test-database-004.
-            +-->
-        <ant:echo message=""/>
-        <ant:echo message="Creating Castor config for test-database-004"/>
-        <ant:xslt style="src/xsl/database-config.xsl"
-            in="src/config/database/astrogrid-community-database.xml"
-            out="${database.config}/test-database-004.xml">
-            <outputproperty name="method" value="xml"/>
-            <outputproperty name="indent" value="yes"/>
-            <param name="name"    expression="test-database-004"/>
-            <param name="engine"  expression="hsql"/>
-            <param name="url"     expression="jdbc:hsqldb:${database.data}/test-database-004"/>
-            <param name="mapping" expression="test-mapping-004.xml"/>
-            <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
-            <param name="user"    expression="sa"/>
-            <param name="pass"    expression=""/>
-        </ant:xslt>
-        <!--+
-            | Copy the Castor JDO mapping file for test database 004.
-            +-->
-        <ant:copy file="src/config/database/astrogrid-community-mapping.xml"  toFile="${database.config}/test-mapping-004.xml"/>
-        <!--+
-            | Copy the SQL script for test database 004.
-            +-->
-        <ant:copy file="src/config/database/astrogrid-community-database.sql"  toFile="${database.config}/test-database-004.sql"/>
-
-        <!--+
-            | Create a config for an in-memory-database.
-            | At the moment, this fails many of the tests.
-            | I suspect that this may be because it drops the data as soon as the JDBC connection is closed.
-            | Need to look at this one in more detail though.
-        <ant:echo message=""/>
-        <ant:echo message="Creating Castor config for memory-database-test"/>
-        <ant:xslt style="src/xsl/database-config.xsl"
-            in="src/config/database/astrogrid-community-database.xml"
-            out="${database.config}/memory-database-test.xml">
-            <outputproperty name="method" value="xml"/>
-            <outputproperty name="indent" value="yes"/>
-            <param name="name"    expression="memory-database-test"/>
-            <param name="engine"  expression="hsql"/>
-            <param name="url"     expression="jdbc:hsqldb:."/>
-            <param name="mapping" expression="mapping.xml"/>
-            <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
-            <param name="user"    expression="sa"/>
-            <param name="pass"    expression=""/>
-        </ant:xslt>
-            +-->
+		<astro:database.generate
+			database.files="test-database-001"
+			database.name="test-database-001"
+			database.xml="test-database-001.xml"
+			database.sql="test-database-001.sql"
+			mapping.xml="test-mapping-001.xml"
+			/>
+		<astro:database.generate
+			database.files="test-database-002"
+			database.name="test-database-002"
+			database.xml="test-database-002.xml"
+			database.sql="test-database-002.sql"
+			mapping.xml="test-mapping-002.xml"
+			/>
+		<astro:database.generate
+			database.files="test-database-003"
+			database.name="test-database-003"
+			database.xml="test-database-003.xml"
+			database.sql="test-database-003.sql"
+			mapping.xml="test-mapping-003.xml"
+			/>
+		<astro:database.generate
+			database.files="test-database-004"
+			database.name="test-database-004"
+			database.xml="test-database-004.xml"
+			database.sql="test-database-004.sql"
+			mapping.xml="test-mapping-004.xml"
+			/>
     </preGoal>
 
     <!--+
         | Deploy our WebServices into our local Axis WebApp.
-        | At the moment, this isn't used in the tests.
-        | The JUnit tests explicitly deploy each service by calling the AdminClient.
-        | Eventually, I want to find a way of telling the in-process Axis service
-        | to load the server-config.wsdd file from the Axis WebApplication.
         +-->
     <preGoal name="test:test">
         <ant:echo message=""/>
@@ -540,29 +442,313 @@
             +-->
         <attainGoal name="init.classpath"/>
         <!--+
-            | Deploy our PolicyManger service.
+            | Check the JUnit test settings.
             +-->
-        <ant:echo message="Deploying PolicyManager WebService"/>
-        <ant:java classname="org.apache.axis.utils.Admin"
-            dir="${axisDir}/WEB-INF"
-            classpathref="maven.dependency.classpath"
-            fork="true"
-            >
-            <arg value="server"/>
-            <arg value="${wsddDir}/PolicyManager.wsdd"/>
-        </ant:java>
+        <ant:echo message=""/>
+        <ant:echo message="JUnit fork VM - ${maven.junit.fork}"/>
+        <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
         <!--+
-            | Deploy our PolicyService service.
+            | Deploy our services.
             +-->
-        <ant:echo message="Deploying PolicyService WebService"/>
-        <ant:java classname="org.apache.axis.utils.Admin"
-            dir="${axisDir}/WEB-INF"
-            classpathref="maven.dependency.classpath"
-            fork="true"
-            >
-            <arg value="server"/>
-            <arg value="${wsddDir}/PolicyService.wsdd"/>
-        </ant:java>
+		<astro:service.deploy service.name="DatabaseManager"/>
+		<astro:service.deploy service.name="PolicyManager"/>
+		<astro:service.deploy service.name="PolicyService"/>
+		<astro:service.deploy service.name="SecurityManager"/>
+		<astro:service.deploy service.name="SecurityService"/>
+        <ant:echo message=""/>
     </preGoal>
+
+    <!--+
+        | Clean up after our tests.
+        +-->
+    <postGoal name="test:test">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Cleaning up after JUnit tests"/>
+	    <!--+
+	        | Remove the server_config.wsdd from the project directory..
+        <ant:echo message=""/>
+        <ant:echo message="PATCH - Deleting server-config.wsdd from project root."/>
+		<ant:delete file="./server-config.wsdd"/>
+	        +-->
+    </postGoal>
+
+    <!--+
+        | Generate our DatabaseManager WSDL and stubs.
+        | TODO - Replaced by custom tag
+        +-->
+    <goal name="database.manager.wsdl">
+        <!--+
+            | Generate our DatabaseManager WSDL.
+            +-->
+        <ant:axis.java2wsdl
+            output="${wsdlDir}/DatabaseManager.wsdl"
+            classname="org.astrogrid.community.common.database.manager.DatabaseManager"
+            location="${axisUrl}/services/DatabaseManager"
+            namespace="urn:manager.database.common.community.astrogrid.org"
+            style="RPC"
+            >
+            <classpath>
+                <ant:path refid="maven.dependency.classpath"/>
+                <ant:pathelement path="${maven.build.dest}"/>
+            </classpath>
+        </ant:axis.java2wsdl>
+        <!--+
+            | Generate our DatabaseManager stubs.
+            +-->
+        <ant:axis.wsdl2java
+            verbose="false"
+            serverside="true"
+            skeletondeploy="false"
+            output="${tempDir}"
+            url="file://${wsdlDir}/DatabaseManager.wsdl"
+            >
+        </ant:axis.wsdl2java>
+        <!--+
+            | Modify the WSDD to use our implementation classes.
+            +-->
+        <ant:xslt style="src/xsl/wsdd-impl.xsl"
+            in="${tempDir}/org/astrogrid/community/common/database/manager/deploy.wsdd"
+            out="${wsddDir}/DatabaseManager.wsdd">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="service"   expression="DatabaseManager"/>
+            <param name="classname" expression="org.astrogrid.community.server.database.manager.DatabaseManagerImpl"/>
+        </ant:xslt>
+        <!--+
+            | Copy the generated Java files we want to use.
+            +-->
+        <ant:copy verbose="false" toDir="${javaDir}">
+            <fileset dir="${tempDir}">
+                <include name="**/DatabaseManagerService.java"/>
+                <include name="**/DatabaseManagerServiceLocator.java"/>
+                <include name="**/DatabaseManagerSoapBindingStub.java"/>
+            </fileset>
+        </ant:copy>
+	</goal>
+
+    <!--+
+        | Generate our PolicyManager WSDL and stubs.
+        | TODO - Replaced by custom tag
+        +-->
+    <goal name="policy.manager.wsdl">
+        <!--+
+            | Generate our PolicyManager WSDL.
+            +-->
+        <ant:axis.java2wsdl
+            output="${wsdlDir}/PolicyManager.wsdl"
+            classname="org.astrogrid.community.common.policy.manager.PolicyManager"
+            location="${axisUrl}/services/PolicyManager"
+            namespace="urn:manager.policy.common.community.astrogrid.org"
+            style="RPC"
+            >
+            <classpath>
+                <ant:path refid="maven.dependency.classpath"/>
+                <ant:pathelement path="${maven.build.dest}"/>
+            </classpath>
+        </ant:axis.java2wsdl>
+        <!--+
+            | Generate our PolicyManager stubs.
+            +-->
+        <ant:axis.wsdl2java
+            verbose="false"
+            serverside="true"
+            skeletondeploy="false"
+            output="${tempDir}"
+            url="file://${wsdlDir}/PolicyManager.wsdl"
+            >
+        </ant:axis.wsdl2java>
+        <!--+
+            | Modify the WSDD to use our implementation classes.
+            +-->
+        <ant:xslt style="src/xsl/wsdd-impl.xsl"
+            in="${tempDir}/org/astrogrid/community/common/policy/manager/deploy.wsdd"
+            out="${wsddDir}/PolicyManager.wsdd">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="service"   expression="PolicyManager"/>
+            <param name="classname" expression="org.astrogrid.community.server.policy.manager.PolicyManagerImpl"/>
+        </ant:xslt>
+        <!--+
+            | Copy the generated Java files we want to use.
+            +-->
+        <ant:copy verbose="false" toDir="${javaDir}">
+            <fileset dir="${tempDir}">
+                <include name="**/PolicyManagerService.java"/>
+                <include name="**/PolicyManagerServiceLocator.java"/>
+                <include name="**/PolicyManagerSoapBindingStub.java"/>
+            </fileset>
+        </ant:copy>
+	</goal>
+
+    <!--+
+        | Generate our PolicyService WSDL and stubs.
+        | TODO - Replaced by custom tag
+        +-->
+    <goal name="policy.service.wsdl">
+        <!--+
+            | Generate our PolicyService WSDL.
+            +-->
+        <ant:axis.java2wsdl
+            output="${wsdlDir}/PolicyService.wsdl"
+            classname="org.astrogrid.community.common.policy.service.PolicyService"
+            location="${axisUrl}/services/PolicyService"
+            namespace="urn:service.policy.common.community.astrogrid.org"
+            style="RPC"
+            >
+            <classpath>
+                <ant:path refid="maven.dependency.classpath"/>
+                <ant:pathelement path="${maven.build.dest}"/>
+            </classpath>
+        </ant:axis.java2wsdl>
+        <!--+
+            | Generate our PolicyService stubs.
+            +-->
+        <ant:axis.wsdl2java
+            verbose="false"
+            serverside="true"
+            skeletondeploy="false"
+            output="${tempDir}"
+            url="file://${wsdlDir}/PolicyService.wsdl"
+            >
+        </ant:axis.wsdl2java>
+        <!--+
+            | Modify the WSDD to use our implementation classes.
+            +-->
+        <ant:xslt style="src/xsl/wsdd-impl.xsl"
+            in="${tempDir}/org/astrogrid/community/common/policy/service/deploy.wsdd"
+            out="${wsddDir}/PolicyService.wsdd">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="service"   expression="PolicyService"/>
+            <param name="classname" expression="org.astrogrid.community.server.policy.service.PolicyServiceImpl"/>
+        </ant:xslt>
+        <!--+
+            | Copy the generated Java files we want to use.
+            +-->
+        <ant:copy verbose="false" toDir="${javaDir}">
+            <fileset dir="${tempDir}">
+                <include name="**/PolicyServiceService.java"/>
+                <include name="**/PolicyServiceServiceLocator.java"/>
+                <include name="**/PolicyServiceSoapBindingStub.java"/>
+            </fileset>
+        </ant:copy>
+	</goal>
+
+    <!--+
+        | Generate our SecurityManager WSDL and stubs.
+        | TODO - Replaced by custom tag
+        +-->
+    <goal name="security.manager.wsdl">
+        <!--+
+            | Generate our SecurityManager WSDL.
+            +-->
+        <ant:axis.java2wsdl
+            output="${wsdlDir}/SecurityManager.wsdl"
+            classname="org.astrogrid.community.common.security.manager.SecurityManager"
+            location="${axisUrl}/services/SecurityManager"
+            namespace="urn:manager.security.common.community.astrogrid.org"
+            style="RPC"
+            >
+            <classpath>
+                <ant:path refid="maven.dependency.classpath"/>
+                <ant:pathelement path="${maven.build.dest}"/>
+            </classpath>
+        </ant:axis.java2wsdl>
+        <!--+
+            | Generate our SecurityManager stubs.
+            +-->
+        <ant:axis.wsdl2java
+            verbose="false"
+            serverside="true"
+            skeletondeploy="false"
+            output="${tempDir}"
+            url="file://${wsdlDir}/SecurityManager.wsdl"
+            >
+        </ant:axis.wsdl2java>
+        <!--+
+            | Modify the WSDD to use our implementation classes.
+            +-->
+        <ant:xslt style="src/xsl/wsdd-impl.xsl"
+            in="${tempDir}/org/astrogrid/community/common/security/manager/deploy.wsdd"
+            out="${wsddDir}/SecurityManager.wsdd">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="service"   expression="SecurityManager"/>
+            <param name="classname" expression="org.astrogrid.community.server.security.manager.SecurityManagerImpl"/>
+        </ant:xslt>
+        <!--+
+            | Copy the generated Java files we want to use.
+            +-->
+        <ant:copy verbose="false" toDir="${javaDir}">
+            <fileset dir="${tempDir}">
+                <include name="**/SecurityManagerService.java"/>
+                <include name="**/SecurityManagerServiceLocator.java"/>
+                <include name="**/SecurityManagerSoapBindingStub.java"/>
+            </fileset>
+        </ant:copy>
+	</goal>
+
+    <!--+
+        | Generate our SecurityService WSDL and stubs.
+        | TODO - Replaced by custom tag
+        +-->
+    <goal name="security.service.wsdl">
+        <!--+
+            | Generate our SecurityService WSDL.
+            +-->
+        <ant:axis.java2wsdl
+            output="${wsdlDir}/SecurityService.wsdl"
+            classname="org.astrogrid.community.common.security.service.SecurityService"
+            location="${axisUrl}/services/SecurityService"
+            namespace="urn:service.security.common.community.astrogrid.org"
+            style="RPC"
+            >
+            <classpath>
+                <ant:path refid="maven.dependency.classpath"/>
+                <ant:pathelement path="${maven.build.dest}"/>
+            </classpath>
+        </ant:axis.java2wsdl>
+        <!--+
+            | Generate our SecurityService stubs.
+            +-->
+        <ant:axis.wsdl2java
+            verbose="false"
+            serverside="true"
+            skeletondeploy="false"
+            output="${tempDir}"
+            url="file://${wsdlDir}/SecurityService.wsdl"
+            >
+        </ant:axis.wsdl2java>
+        <!--+
+            | Modify the WSDD to use our implementation classes.
+            +-->
+        <ant:xslt style="src/xsl/wsdd-impl.xsl"
+            in="${tempDir}/org/astrogrid/community/common/security/service/deploy.wsdd"
+            out="${wsddDir}/SecurityService.wsdd">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="service"   expression="SecurityService"/>
+            <param name="classname" expression="org.astrogrid.community.server.security.service.SecurityServiceImpl"/>
+        </ant:xslt>
+        <!--+
+            | Copy the generated Java files we want to use.
+            +-->
+        <ant:copy verbose="false" toDir="${javaDir}">
+            <fileset dir="${tempDir}">
+                <include name="**/SecurityServiceService.java"/>
+                <include name="**/SecurityServiceServiceLocator.java"/>
+                <include name="**/SecurityServiceSoapBindingStub.java"/>
+            </fileset>
+        </ant:copy>
+	</goal>
+
+
+	<goal name="test-goal">
+		<astro:debug.tag
+			message="FROG"
+			/>
+	</goal>
+
 
 </project>
