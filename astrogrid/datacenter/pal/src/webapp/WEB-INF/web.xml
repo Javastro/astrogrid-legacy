@@ -18,10 +18,28 @@
     </servlet-class>
   </servlet>
 
- <servlet>
+  <servlet>
     <servlet-name>JUnitEETestServlet</servlet-name>
     <description>JUnitEE test runner</description>
     <servlet-class>org.junitee.servlet.JUnitEEServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>SubmitCone</servlet-name>
+    <description>Servlet for submitting simple cone searches via POST or GET</description>
+    <servlet-class>org.astrogrid.datacenter.servlet.SubmitCone</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>SubmitAdql</servlet-name>
+    <description>Servlet for submitting ADQL/xml queries</description>
+    <servlet-class>org.astrogrid.datacenter.servlet.SubmitAdqlXml</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>SubmitSql</servlet-name>
+    <description>Servlet for submitting raw SQL queries</description>
+    <servlet-class>org.astrogrid.datacenter.servlet.SubmitRawSql</servlet-class>
   </servlet>
 
   <servlet>
@@ -47,6 +65,11 @@
   <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
     <url-pattern>/servlet/AxisServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SubmitCone</servlet-name>
+    <url-pattern>/SubmitCone</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
