@@ -4,7 +4,13 @@
 	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
 	<title>PAL Installation</title>
 </properties>
-
+<!-- packrat requirments
+1 INSTALL document per component, to include:
+Where and how to download the installation kit 
+How to deploy and configure 
+How to administer (stop/start/restart) 
+How to trouble-shoot
+-->
 <body>
 <section name="Introduction">
 <p>

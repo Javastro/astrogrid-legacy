@@ -5,6 +5,7 @@
   <body>
     <menu name="PAL">
 	<item name="INSTALL" href="INSTALL.html" />
+	<item name="RELEASE" href="RELEASE.html" />
     </menu>
 
     <links>

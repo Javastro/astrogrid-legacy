@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+	<title>Iteration 4 Datacenter Release</title>
+</properties>
+
+<body>
+<section name="Iteration 4 Datacenter Release">
+<p>
+To put in here:
+<code>
+1 RELEASE document per component, to include:
+Functionality supported 
+Known bugs and ommissions, with workarounds where possible 
+How to report bugs (BugZilla, content etc) 
+</code>
+</p>
+</body>
+</document>
