@@ -1,5 +1,5 @@
 /*
- * $Id: FileManagerId.java,v 1.4 2005/03/28 01:48:09 mch Exp $
+ * $Id: FileManagerId.java,v 1.5 2005/03/29 20:05:04 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -24,7 +24,6 @@ import org.astrogrid.slinger.StoreException;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.vospace.HomespaceName;
-import org.astrogrid.slinger.vospace.IVORN;
 import org.astrogrid.slinger.vospace.IVOSRN;
 
 /**
@@ -133,6 +132,9 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
          }
          return new FMCompleterStream(node, node.writeContent());
       }
+      catch (IOException e) {
+         throw new StoreException(e+" resolving output stream to "+id+" for "+user,e);
+      }
       catch (CommunityException e) {
          throw new StoreException(e+" resolving output stream to "+id+" for "+user,e);
       }
@@ -190,6 +192,9 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
 /*
 
 $Log: FileManagerId.java,v $
+Revision 1.5  2005/03/29 20:05:04  mch
+Added extra reporting info
+
 Revision 1.4  2005/03/28 01:48:09  mch
 Added socket source/target, and makeFile instead of outputChild
 
