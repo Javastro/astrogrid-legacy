@@ -42,6 +42,8 @@ public class RegistryServerHelper {
    
    private static HashMap manageAuthorities = null;
    
+   private static HashMap otherManagedAuths = null;   
+   
    /**
     * conf - Config variable to access the configuration for the server normally
     * jndi to a config file.
@@ -70,22 +72,34 @@ public class RegistryServerHelper {
    public static String getIdentifier(Node nd) throws IOException {
    	String ident = null;
       String temp = null;
-      NodeList nl = null;
-   	if("0_9".equals(versionNumber)) {
-           ident = DomHelper.getNodeTextValue(nd,"AuthorityID","vr");
-           
-           temp = DomHelper.getNodeTextValue(nd,"ResourceKey","vr");
-           if(temp != null) ident += "/" + temp;
-   	}else {
-   		ident = DomHelper.getNodeTextValue(nd,"Identifier","vr");
+      String regVersion;
+      NodeList nl = ((Element)nd).getElementsByTagNameNS("*","Identifier" );
+      if(nl.getLength() == 0) {
+          throw new IOException("Canot find an Identifier element");
       }
-      return ident;
+      NodeList authNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","AuthorityID");
+      String val = null;
+      if(authNodeList.getLength() == 0) {
+          if(nl.item(0).hasChildNodes())
+              return nl.item(0).getFirstChild().getNodeValue();
+          else
+              throw new IOException("Found an Identifier that was empty");
+      }
+      if(!authNodeList.item(0).hasChildNodes()) {
+          throw new IOException("No Text for AuthorityID this is not allowed");
+      }
+      val = authNodeList.item(0).getFirstChild().getNodeValue();
+      NodeList resList = ((Element)nl.item(0)).getElementsByTagNameNS("*","ResourceKey");
+      if(resList.getLength() > 0 && resList.item(0).hasChildNodes()) {
+          val += "/" + resList.item(0).getFirstChild().getNodeValue(); 
+      }
+      return val;
    }
    
    public static String getXQLDeclarations(String versionNumber) {
        versionNumber = versionNumber.replace('.','_');
        String declarations = conf.getString("declare.namespace." + versionNumber,"");
-       System.out.println("the getXQLDeclarations = " + declarations);
+       //System.out.println("the getXQLDeclarations = " + declarations);
        return declarations;
    }
    
@@ -183,102 +197,60 @@ public class RegistryServerHelper {
       log.debug("end getStatusMessage");
       return statusMessage;
    }
-
-   private static HashMap otherManagedAuths = null;
    
-   public static HashMap getOtherManagedAuthorities()  throws SAXException, MalformedURLException, ParserConfigurationException, IOException {
-      log.debug("start getOtherManagedAuthorities");
-      if(otherManagedAuths == null || otherManagedAuths.size() <= 0) {
-         doOtherManageAuthorities();   
-      }
-      log.debug("end getOtherManagedAuthorities");
-      return otherManagedAuths;            
+   public static HashMap getOtherManagedAuthorities(String collectionName,String regVersion)  throws SAXException, MalformedURLException, ParserConfigurationException, IOException {
+       log.debug("start getOtherManagedAuthorities");
+       if(otherManagedAuths == null || otherManagedAuths.size() <= 0) {
+           processManagedAuthorities(collectionName, regVersion);   
+       }
+       log.debug("end getOtherManagedAuthorities");
+       return otherManagedAuths;            
    }
    
-   public static HashMap doOtherManageAuthorities() throws SAXException, MalformedURLException, ParserConfigurationException, IOException {
-      RegistryService rs = new RegistryService();
-      Document regEntry = null;
-      log.debug("start doOtherManageAuthorities");
-      if(otherManagedAuths == null) {
-         otherManagedAuths = new HashMap();
-      }
-      otherManagedAuths.clear();
-      QueryDBService qdb = new QueryDBService();
-      String regAuthID = conf.getString("org.astrogrid.registry.authorityid");
-      String collectionName = "astrogridv" + conf.getString("org.astrogrid.registry.version");
-      String xqlQuery = RegistryServerHelper.getXQLDeclarations(versionNumber) + " for $x in //vr:Resource where @xsi:type='RegistryType' and vr:Identifier/vr:AuthorityID != '" +
-                         regAuthID +"' return $x";
-      regEntry = qdb.runQuery(collectionName,xqlQuery);
-      
-      if(regEntry != null) {
-         //NodeList nl = DomHelper.getNodeListTags(regEntry,"ManagedAuthority","vg");
-          NodeList nl = regEntry.getElementsByTagNameNS("*","ManagedAuthority");
+   public static HashMap getManagedAuthorities(String collectionName,String regVersion)  throws SAXException, MalformedURLException, ParserConfigurationException, IOException {
+       log.debug("start getManagedAuthorities");
+       if(manageAuthorities == null || manageAuthorities.size() <= 0) {
+           processManagedAuthorities(collectionName, regVersion);   
+       }
+       log.debug("end getManagedAuthorities");
+       return manageAuthorities;            
+    }
+   
+   public static void processManagedAuthorities(String collectionName,String regVersion) throws SAXException, MalformedURLException, ParserConfigurationException, IOException {
 
-         //log.info("the nodelist size for getting manageauthority2 = " + 
-         //         nl2.getLength());
-         log.info("the nodelist size for getting other manageauthority = " + 
-                  nl.getLength());
-         if(nl.getLength() > 0) {
-            for(int i=0;i < nl.getLength();i++) {
-               log.info("the namespace uri = " + nl.item(i).getNamespaceURI());
-               otherManagedAuths.put(nl.item(i).getFirstChild().
-                                                getNodeValue(),null);
-            }//for
-         }//if
-      }//if
-      log.debug("end doOtherManageAuthorities");
-      return otherManagedAuths;
+       if(otherManagedAuths == null)
+           otherManagedAuths = new HashMap();
+       if(manageAuthorities == null)
+           manageAuthorities = new HashMap();
+       QueryDBService qdb = new QueryDBService();       
+       String xqlQuery = RegistryServerHelper.getXQLDeclarations(regVersion) + 
+                         " for $x in //vr:Resource where @xsi:type='RegistryType'" +
+                         " return $x";
+       Document registries = qdb.runQuery(collectionName,xqlQuery);
+       System.out.println("the result of processManaged registries = " + DomHelper.DocumentToString(registries));
+       NodeList resources = registries.getElementsByTagNameNS("*","Resource");
+       HashMap tempHash = new HashMap();
+       boolean sameRegistry = false;
+       String regAuthID = conf.getString("org.astrogrid.registry.authorityid");
+       String val = null;       
+       System.out.println("in processManagedAuthorities the regAuthID = " + regAuthID);
+       for(int j = 0;j < resources.getLength();j++) {
+           NodeList mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","ManagedAuthority");
+           for(int i = 0;i < mgList.getLength();i++) {
+               val = mgList.item(i).getFirstChild().getNodeValue();
+               tempHash.put(val,null);
+               System.out.println("the mgList val = " + val);
+               if(val != null && regAuthID.equals(val.trim()))
+                   sameRegistry = true;
+           }//for
+           if(sameRegistry) {
+               manageAuthorities.putAll(tempHash);
+               sameRegistry = false;
+           }else {
+               otherManagedAuths.putAll(tempHash);
+           }
+           tempHash.clear();
+       }//for
    }  
-   
-   
-   public static HashMap getManagedAuthorities()  throws SAXException, MalformedURLException, ParserConfigurationException, IOException {
-      log.debug("start getManagedAuthorities");
-      if(manageAuthorities == null || manageAuthorities.size() <= 0) {
-         doManageAuthorities();   
-      }
-      log.debug("end getManagedAuthorities");
-      return manageAuthorities;      
-   }
-   
-   public static HashMap doManageAuthorities()  throws SAXException, MalformedURLException, ParserConfigurationException, IOException {
-      RegistryService rs = new RegistryService();
-      Document regEntry = null;
-      log.debug("start doManageAuthorities");
-      if(manageAuthorities == null) {
-         manageAuthorities = new HashMap();
-      }
-      QueryDBService qdb = new QueryDBService();
-      manageAuthorities.clear();
-      String regAuthID = conf.getString("org.astrogrid.registry.authorityid");
-      String collectionName = "astrogridv" + conf.getString("org.astrogrid.registry.version");
-      
-      String xqlQuery = RegistryServerHelper.getXQLDeclarations(versionNumber) + " for $x in //vr:Resource where @xsi:type='RegistryType' and vr:Identifier/vr:AuthorityID = '" +
-                         regAuthID +"' return $x";
-      regEntry = qdb.runQuery(collectionName,xqlQuery);
 
-      if(regEntry != null) {
-         //log.info("The Registry entry = " + 
-         //                    XMLUtils.DocumentToString(regEntry));
-         //TODO fix this so it uses namespaces instead.  This should go away 
-         // anyways with the new db.
-         //NodeList nl =  regEntry.getElementsByTagNameNS("*",
-         //                                               "ManagedAuthority" );
-         //NodeList nl = DomHelper.getNodeListTags(regEntry,"ManagedAuthority","vg");
-         NodeList nl = regEntry.getElementsByTagNameNS("*","ManagedAuthority");         
-
-         //log.info("the nodelist size for getting manageauthority2 = " + 
-         //         nl2.getLength());
-         log.info("the nodelist size for getting manageauthority = " + 
-                  nl.getLength());
-         if(nl.getLength() > 0) {
-            for(int i=0;i < nl.getLength();i++) {
-               log.info("the namespace uri = " + nl.item(i).getNamespaceURI());
-               manageAuthorities.put(nl.item(i).getFirstChild().
-                                                getNodeValue(),null);
-            }//for
-         }//if
-      }//if
-      log.debug("end doManageAuthorities");
-      return manageAuthorities;
-   }       
 }

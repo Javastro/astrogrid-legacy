@@ -288,11 +288,16 @@ public class RegistryQueryService {
       log.info("the versionNumber in loadRegistry = " + versionNumber);
       String collectionName = "astrogridv" + versionNumber;
       log.info("Collection Name for query = " + collectionName);
-      
+      boolean hasAuthorityID = conf.getBoolean(
+                 "identifier.path.hasauthorityid." + versionNumber,true);
+      String xqlIDString = "vr:Identifier/vr:AuthorityID = ";
+      if(!hasAuthorityID) {
+          xqlIDString = "vr:Identifier |= ";
+      }
       String xqlString = RegistryServerHelper.getXQLDeclarations(versionNumber) + 
-                  " //vr:Resource[vr:Identifier/vr:AuthorityID='" + authorityID +
+                  " //vr:Resource[" + xqlIDString + "'" + authorityID +
                   "' and @xsi:type='RegistryType']";      
-      log.info("XQL String = " + xqlString);      
+      log.info("XQL String = " + xqlString);
       Document resultDoc = queryExist(xqlString,collectionName);
       
       XSLHelper xslHelper = new XSLHelper();
@@ -320,26 +325,53 @@ public class RegistryQueryService {
    }
 
    public Document KeywordSearch(Document query) throws AxisFault {
-      //DomHelper.DocumentToStream(query,System.out);
-      try {
-         String keywords = DomHelper.getNodeTextValue(query,"keywords");
-         String orValue = DomHelper.getNodeTextValue(query,"orValue");
+         log.debug("start keywordsearch"); 
+         long beginQ = System.currentTimeMillis();          
+         String keywords = null;
+         String orValue = null;
+         try {
+             keywords = DomHelper.getNodeTextValue(query,"keywords");
+             orValue = DomHelper.getNodeTextValue(query,"orValue");
+         }catch(IOException ioe) {
+             throw new AxisFault("IO problem trying to get keywords and orValue");
+         }
          String attrVersion = getRegistryVersion(query);
          String versionNumber = attrVersion.replace('.','_');
-
-         String collectionName = "astrogridv" + versionNumber;
-         boolean orIt = new Boolean(orValue).booleanValue();
+         String xqlPaths = conf.getString("keyword.query.path." + versionNumber);
+         String []xqlPath = xqlPaths.split(",");
+         String []keyword = keywords.split(" ");
+         boolean orKeywords = new Boolean(orValue).booleanValue();         
+         String xqlString = RegistryServerHelper.getXQLDeclarations(versionNumber) + 
+         " for $x in //vr:Resource where ";
+         for(int i = 0;i < xqlPath.length;i++) {
+             for(int j = 0;j < keyword.length;j++) {
+               xqlString += xqlPath[i] + " |= *" + keyword[j] + "*";
+               if(i != (xqlPath.length - 1) && 
+                  j != (keyword.length - 1)) {
+                   if(orKeywords) { 
+                       xqlString += " or ";
+                   }else {
+                       xqlString += " and ";
+                   }
+               }//if
+             }//for
+         }//for
          
-      }catch(IOException ioe) {
-         throw new AxisFault("IO problem", ioe);
-      }
-      
-      return query;
-   }
-   
-   public Document keywords(Document query) throws AxisFault {
-      //return KeyWor
-      return null;
+         String collectionName = "astrogridv" + versionNumber;
+         Document resultDoc = queryExist(xqlString,collectionName);
+         if(resultDoc != null) {
+             log.info("Number of Resources to be returned = " + 
+                      resultDoc.getDocumentElement().getChildNodes().getLength());
+         }
+         XSLHelper xslHelper = new XSLHelper();
+         log.info("Time taken to complete keywordsearch on server = " +
+                 (System.currentTimeMillis() - beginQ));
+         log.debug("end keywordsearch");         
+         
+         //To be correct we need to transform the results, with a correct response element 
+         //for the soap message and for the right root element around the resources.
+         return xslHelper.transformExistResult((Node)resultDoc,
+                                               versionNumber,"KeywordSearchResponse");
    }
 
    /**
@@ -625,13 +657,6 @@ public class RegistryQueryService {
        XSLHelper xslHelper = new XSLHelper();       
        NodeList nl = query.getElementsByTagNameNS("*","Select");
        //Get the main root element Select
-       /*
-       try {
-           nl = DomHelper.getNodeListTags(query,"Select","ad");
-       }catch(IOException ioe) {
-           throw new AxisFault("IOE problem finding Select element", ioe);
-       }
-       */
        
        //find the namespace.
        String adqlVersion = null;

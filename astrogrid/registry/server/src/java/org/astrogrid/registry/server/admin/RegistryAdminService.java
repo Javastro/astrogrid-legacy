@@ -209,7 +209,7 @@ public class RegistryAdminService {
       //get All the Managed Authorities, the getManagedAutories() does not
       //perform a query every time only once.
       try {
-         manageAuths = RegistryServerHelper.getManagedAuthorities();
+         manageAuths = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
       }catch(SAXException se) {
          //throw new AxisFault("Could not parse xml for getting the Managed Authorities", se);
       }catch(MalformedURLException me) {
@@ -223,7 +223,7 @@ public class RegistryAdminService {
       //get All the Managed Authorities, the getOtherManagedAutories() does not
       //perform a query every time only once.
       try {
-         otherAuths = RegistryServerHelper.getOtherManagedAuthorities();
+         otherAuths = RegistryServerHelper.getOtherManagedAuthorities(collectionName, versionNumber);
       }catch(SAXException se) {
          //throw new AxisFault("Could not parse xml for getting the Managed Authorities", se);
       }catch(MalformedURLException me) {
@@ -804,28 +804,17 @@ public class RegistryAdminService {
     * @return AuthorityID text
     */
    private String getAuthorityID(Element doc) {
-      log.debug("start getAuthorityID");
-     
-      NodeList nl = doc.getElementsByTagNameNS("vr","AuthorityID" );
-     
-      //Okay for some reason vg seems to pick up the ManagedAuthority.
-      //Lets try to find it by the url namespace.
-      if(nl.getLength() == 0) {
-         nl = doc.getElementsByTagNameNS(
-                             "http://www.ivoa.net/xml/VOResource/v0.9",
-                             "AuthorityID" );
+      NodeList nl = doc.getElementsByTagNameNS("*","Identifier" );
+      if(nl.getLength() == 0)
+          return null;
+      NodeList authNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","AuthorityID");
+      String val = null;
+      if(authNodeList.getLength() == 0) {
+          val = nl.item(0).getFirstChild().getNodeValue();
+          if(val.indexOf("/") != -1) 
+              return val.substring(0,val.indexOf("/"));
       }
-      if(nl.getLength() == 0) {
-         nl = doc.getElementsByTagName("AuthorityID" );
-      }
-      if(nl.getLength() == 0) {
-         nl = doc.getElementsByTagName("vr:AuthorityID" );
-      }
-      if(nl.getLength() == 0) {
-         return null;   
-      }
-      log.debug("end getAuthorityID");
-      return nl.item(0).getFirstChild().getNodeValue();
+      return authNodeList.item(0).getFirstChild().getNodeValue();
    }
 
    /**
@@ -837,29 +826,20 @@ public class RegistryAdminService {
     * @return ResourceKey text
     */  
    private String getResourceKey(Element doc) {
-      log.debug("start getResourceKey");
-
-      NodeList nl = doc.getElementsByTagNameNS("vr","ResourceKey" );
-      //Okay for some reason vg seems to pick up the ManagedAuthority.
-      //Lets try to find it by the url namespace.
-      if(nl.getLength() == 0) {
-         nl = doc.getElementsByTagNameNS(
-                             "http://www.ivoa.net/xml/VOResource/v0.9",
-                             "ResourceKey" );
-      }
-      if(nl.getLength() == 0) {
-         nl = doc.getElementsByTagName("ResourceKey" );
-      }
-      if(nl.getLength() == 0) {
-         nl = doc.getElementsByTagName("vr:ResourceKey" );
-      }
-      if(nl.getLength() == 0) {
-         return null;   
-      }
-      if(nl.item(0).hasChildNodes()) {
-         return nl.item(0).getFirstChild().getNodeValue();   
-      }
-      return null;
+       NodeList nl = doc.getElementsByTagNameNS("*","Identifier" );
+       if(nl.getLength() == 0)
+           return null;
+       NodeList resNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","ResourceKey");
+       String val = null;
+       if(resNodeList.getLength() == 0) {
+           val = nl.item(0).getFirstChild().getNodeValue();
+           if(val.indexOf("/") != -1) 
+               return val.substring(val.indexOf("/")+1);
+       }
+       if(resNodeList.item(0).hasChildNodes())
+           return resNodeList.item(0).getFirstChild().getNodeValue();
+       //it is just an empty ResourceKey which is okay.
+       return "";
    }
   
  /**

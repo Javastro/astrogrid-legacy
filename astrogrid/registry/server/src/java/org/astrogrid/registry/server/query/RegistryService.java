@@ -13,6 +13,7 @@ import java.io.IOException;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
 import org.astrogrid.registry.server.XQueryExecution;
+import org.astrogrid.registry.server.RegistryServerHelper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

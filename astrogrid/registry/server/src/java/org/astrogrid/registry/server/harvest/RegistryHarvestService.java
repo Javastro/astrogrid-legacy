@@ -242,7 +242,7 @@ private class HarvestThread extends Thread {
       boolean isRegistryType;
       Document doc = null;
       NodeList nl = null;
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
       //instantiate the Admin service that contains the update methods.
       RegistryAdminService ras = new RegistryAdminService();
