@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.17 2004/09/07 02:28:29 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.18 2004/09/08 21:22:14 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -97,18 +97,23 @@ public class SqlPluginTest extends ServerTestCase {
 
    public void testAdql1() throws Exception {
       
-      askAdqlFromFile("dummydb-test-1.xml");
+      askAdqlFromFile("sample-adql0.7.4-1.xml");
    }
    
-//   public void testAdql2() throws Exception {
-//      askAdqlFromFile("dummydb-test-2.xml");
-//   }
+   public void testAdql2() throws Exception {
+      
+      askAdqlFromFile("sample-adql0.7.4-2.xml");
+   }
 
-//   public void testAdql3() throws Exception {
-//      askAdqlFromFile("dummydb-test-3.xml");
-//   }
+   public void testAdql3() throws Exception {
+      askAdqlFromFile("sample-adql0.7.4-3.xml");
+   }
 
    public void testAdql4() throws Exception {
+      askAdqlFromFile("sample-adql0.7.4-4.xml");
+   }
+
+   public void testPleidies() throws Exception {
       askAdqlFromFile("dummy-pleidies-adql.xml");
    }
    
@@ -218,6 +223,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.18  2004/09/08 21:22:14  mch
+ Updated tests
+
  Revision 1.17  2004/09/07 02:28:29  mch
  Removed ADQL 0.5 tests
 

@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.21 2004/09/08 16:34:42 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.22 2004/09/08 21:22:14 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,30 +48,22 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
     /** Test makes valid SQL from cone earch */
     public void testCone() throws Exception {
        
-       
-       
        String sql = translator.fromCone(new ConeQuery(20,20,3));
        
        //this would be a nasty check...
     }
 
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    //public void test1Adql05() throws Exception { doFromFile("adql0.5", 1); }
-//    public void test1Adql073() throws Exception { doFromFile("adql0.7.3", 1); }
+    public void test1Adql073() throws Exception { doFromFile("adql0.7.3", 1); }
     public void test1Adql074() throws Exception { doFromFile("adql0.7.4", 1); }
-    //public void test1Sadql11() throws Exception { doFromFile("sadql1.1", 1); }
     
-    /** ADQLn - run as separate tests so all get checked even if one fails */
-    //public void test2Adql05() throws Exception { doFromFile("adql0.5", 2); }
-//    public void test2Adql073() throws Exception { doFromFile("adql0.7.3", 2); }
-    //public void test2Sadql11() throws Exception { doFromFile("sadql1.1", 2); }
+    public void test2Adql073() throws Exception { doFromFile("adql0.7.3", 2); }
+    public void test2Adql074() throws Exception { doFromFile("adql0.7.4", 2); }
+
+    //testing cones is very hard.  Test results not the translator
+    //public void test3AdqlCone074() throws Exception { doFromFile("adql0.7.4", 3); }
     
-    /** ADQLn - run as separate tests so all get checked even if one fails */
-    //public void test3AdqlCone05() throws Exception { doFromFile("adql0.5", 3); }
-    public void test3AdqlCone074() throws Exception { doFromFile("adql0.7.4", 3); }
-    
-    /** ADQLn - run as separate tests so all get checked even if one fails */
-    //public void test4Adql() throws Exception { doFromFile("adql0.5", 4); }
+    public void test4Adql074() throws Exception { doFromFile("adql0.7.4", 4); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
    // public void test5Adql() throws Exception { doFromFile("adql0.5", 5); }
@@ -103,6 +95,9 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.22  2004/09/08 21:22:14  mch
+Updated tests
+
 Revision 1.21  2004/09/08 16:34:42  mch
 Added SampleStars init
 

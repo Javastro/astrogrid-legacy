@@ -1,4 +1,4 @@
-/*$Id: PostgresQueryTranslatorTest.java,v 1.4 2004/09/07 02:28:29 mch Exp $
+/*$Id: PostgresQueryTranslatorTest.java,v 1.5 2004/09/08 21:22:14 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,22 +57,16 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
     }
 
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    //public void test1Adql05() throws Exception { doFromFile("adql0.5", 1); }
+    public void test1Adql073() throws Exception { doFromFile("adql0.7.3", 1); }
     public void test1Adql074() throws Exception { doFromFile("adql0.7.4", 1); }
-    //not used public void test1Adql08() throws Exception { doFromFile("adql0.8", 1); }
-    //not ready  public void test1Sadql11() throws Exception { doFromFile("sadql1.1", 1); }
     
-    /** ADQLn - run as separate tests so all get checked even if one fails */
-//    public void test2Adql05() throws Exception { doFromFile("adql0.5", 2); }
-    public void test2Adql074() throws Exception { doFromFile("adql0.7.4", 3); }
-    //not used public void test2Adql08() throws Exception { doFromFile("adql0.8", 2); }
-    //not ready public void test2Sadql11() throws Exception { doFromFile("sadql1.1", 2); }
+    public void test2Adql073() throws Exception { doFromFile("adql0.7.3", 2); }
+    public void test2Adql074() throws Exception { doFromFile("adql0.7.4", 2); }
+
+    //testing cones is very hard.  Test results not the translator
+    //public void test3AdqlCone074() throws Exception { doFromFile("adql0.7.4", 3); }
     
-    /** ADQLn - run as separate tests so all get checked even if one fails */
-//    public void test3AdqlCone05() throws Exception { doFromFile("adql0.5", 3); }
-    
-    /** ADQLn - run as separate tests so all get checked even if one fails */
-//    public void test4Adql() throws Exception { doFromFile("adql0.5", 4); }
+    public void test4Adql074() throws Exception { doFromFile("adql0.7.4", 4); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
 //    public void test5Adql() throws Exception { doFromFile("adql0.5", 5); }
@@ -83,12 +77,6 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
     /** Test makes valid SQL from simple adql */
     public void doFromFile(String ver, int testNum) throws Exception {
 
-       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY, "o");
-       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_RA_COL_KEY, "ra");
-       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_DEC_COL_KEY, "dec");
-       SimpleConfig.getSingleton().setProperty(SqlMaker.DB_TRIGFUNCS_IN_RADIANS, "true");
-       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_COL_UNITS_KEY, "deg");
-       
        String filename = "sample-"+ver+"-"+testNum+".xml";
        Document adqlDom = DomHelper.newDocument( SqlQueryTranslatorTest.class.getResourceAsStream(filename));
        AdqlQuery adqlQuery = new AdqlQuery(adqlDom.getDocumentElement());
@@ -108,6 +96,9 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: PostgresQueryTranslatorTest.java,v $
+Revision 1.5  2004/09/08 21:22:14  mch
+Updated tests
+
 Revision 1.4  2004/09/07 02:28:29  mch
 Removed ADQL 0.5 tests
 
