@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.5 2004/09/07 11:20:49 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.6 2004/09/07 14:51:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -135,10 +135,13 @@ public class VoDescriptionServer {
       try {
          //I've wrapped this in a separate try/catch so that problems with CEA
          //don't stop the initialiser from working.. which is naughty
-         String ceaResource = CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
-         //we convert to Document and back again to Element so that we remove any processing instructions, etc
-         Document ceaDoc = DomHelper.newDocument(ceaResource);
-         vod.append(DomHelper.ElementToString(ceaDoc.getDocumentElement()));
+         String ceaVoDescription = CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
+         //extract the resource elements
+         Document ceaDoc = DomHelper.newDocument(ceaVoDescription);
+         NodeList ceaResources = ceaDoc.getElementsByTagName("Resource");
+         for (int i = 0; i < ceaResources.getLength(); i++) {
+            vod.append(DomHelper.ElementToString((Element) ceaResources.item(i)));
+         }
       } catch (Throwable th) {
         log.error(th);
       }
