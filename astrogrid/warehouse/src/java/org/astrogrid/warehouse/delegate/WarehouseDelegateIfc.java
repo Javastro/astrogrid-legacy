@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseDelegateIfc.java,v 1.1 2003/10/06 15:47:49 kea Exp $
+ * $Id: WarehouseDelegateIfc.java,v 1.2 2003/10/07 17:09:51 kea Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -17,8 +17,13 @@ import org.astrogrid.warehouse.common.QueryStatus;
 import org.w3c.dom.Element;
 
 /**
- * Blah blah blah.
+ * Delegate interface for sending jobs/queries to a grid-based data warehouse.
  *
+ * To fix: What sort of exceptions should the methods throw?
+ *  Currently throwing plain "Exception" (yes, evil) to allow for
+ *  implementing classes to throw arbitrary exceptions, until I'm 
+ *  enlightened as how to throw AG-standard exceptions.
+ *  
  * @author K Andrews 
  */
 public interface WarehouseDelegateIfc
@@ -27,7 +32,8 @@ public interface WarehouseDelegateIfc
   * Returns VOTable
   */
   /*
-  public Element coneSearch(double ra, double dec, double radius);
+  public Element coneSearch(double ra, double dec, double radius) 
+      throws Exception;
  */
 
  /**
@@ -38,32 +44,38 @@ public interface WarehouseDelegateIfc
  * may want to change properties on it.  'resultsFormat' at the moment is
  * only 'votable'
  */
-  public String makeQuery(Element adql, String resultsFormat);
+  public String makeQuery(Element adql, String resultsFormat) 
+      throws Exception;
 
  /**
   * set the myspace server where the results should be stored, for the 
   * given query id.
   */
-  public void setResultsDestination(String id, URL myspace); 
+  public void setResultsDestination(String id, URL myspace) 
+      throws Exception; 
 
  /** 
   * starts given query running
   */
-  public void startQuery(String id);
+  public void startQuery(String id) throws Exception;
 
  /**
   * - stops the given query
   */
-  public void abortQuery(String id);
+  public void abortQuery(String id) throws Exception;
 
  /**
   * - gets info on the query status
   */
-  public Element getStatus(String id);
+  public Element getStatus(String id) throws Exception;
 }
 
 /*
 $Log: WarehouseDelegateIfc.java,v $
+Revision 1.2  2003/10/07 17:09:51  kea
+Adding webservice / webdelegate skeletons.
+Having diffs with wsdl2java-generated class names/structure.
+
 Revision 1.1  2003/10/06 15:47:49  kea
 Initial check-in of interface skeletons, maven setup etc.
 

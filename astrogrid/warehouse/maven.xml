@@ -71,6 +71,17 @@
          <arg value="target/src/java"/>  
          <arg value="${wsdl.path}"/>
       </java>
+
+    <!--
+      <echo message="Cleaning up unneeded classes ..." />
+      <delete>
+        <fileset dir="target/src/java">
+          <include name="**/${port.interface.java.class}.java"/>
+          <include name="**/${service.name}.java"/>
+        </fileset>
+      </delete>
+      -->
+
    </target>
 
 </project>
