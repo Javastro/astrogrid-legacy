@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: bkm $</cvs:date>
-    | <cvs:author>$Date: 2003/10/09 15:48:34 $</cvs:author>
-    | <cvs:version>$Revision: 1.52 $</cvs:version>
+    | <cvs:author>$Date: 2003/10/10 09:19:05 $</cvs:author>
+    | <cvs:version>$Revision: 1.53 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.53  2003/10/10 09:19:05  bkm
+    | Change target to portalcvs.BUILD
+    |
     | Revision 1.52  2003/10/09 15:48:34  bkm
     | Updated build.xml with installkit.BUILD target
     |
@@ -2480,9 +2483,9 @@
 	</target>
 
 <!--+
-    |  Build just cocoon.war from sources (BKM)
+    |  Build just cocoon.war from CVS sources (BKM)
     +-->
-        <target name="installkit.BUILD" depends="init">
+        <target name="portalcvs.BUILD" depends="init">
 	   <delete dir="build" failonerror="false"/>
            <antcall target="axis.unzip"/>
            <antcall target="junit.unzip"/>
