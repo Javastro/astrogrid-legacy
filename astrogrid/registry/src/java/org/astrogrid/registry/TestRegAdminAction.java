@@ -30,7 +30,7 @@ public class RegAdminActionTest extends TestCase {
   // passed, and then the node that want to be deleted, add or update.
 
   public void testDeleteAll() throws IOException {
-	// node to be deleted
+	// node to be deleteds
 	// First parameter xmlFile
 	// Second Parameter node name to be deleted
 	RegAdminAction.deleteNode("D:\\astrogrid\\xml\\ipsi\\query.xml", "keyword");

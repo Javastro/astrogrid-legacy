@@ -14,15 +14,35 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.io.File;
 
+/**
+ * The Registry3_0 class accepts an XQL query from the
+ * QueryParser3_0 class and executes the query against the registry
+ * XML file, registry_1_1.xml.  The registry response is returned in the 
+ * same XML format as the registry file itself.
+ * 
+ * - Elizabeth Auden, 24 October 2003
+ *
+ */
 
 public class Registry3_0 {
-	static int counter = 0;
-	static int tabCounter = 0;
-	int nodeNumber = 0;
+
 	String response = "";
 	String queryResponse = "";
 		
 	public String xmlQuery(String query) {
+		
+		/**
+		 * The xmlQuery method accepts as XQL query as input.  The location
+		 * of the registry file is determined, and the XQL query is executed
+		 * against the registry XML file.
+		 */
+
+        /**
+         * First, determine location of the registry XML file.  It is assumed 
+         * that "user.dir" is $TOMCAT_HOME/bin, and that the parameters file 
+         * containing the registry URL is stored in $TOMCAT_HOME/webapps/org/
+         * astrogrid. 
+         */
 
 		String registryPathName = (System.getProperty("user.dir"));
 		File f = new File(registryPathName);
@@ -36,8 +56,6 @@ public class Registry3_0 {
 		String registryFilename = null;
 		String response = "";
 		boolean goodParameters = true;
-		
-
 		
 		try {
 		  parameterBuilder = parameterFactory.newDocumentBuilder();
@@ -58,6 +76,12 @@ public class Registry3_0 {
 			NodeList parameterNL = parameterDocElement.getElementsByTagName("registryFilename");
 			registryFilename = parameterNL.item(0).getFirstChild().getNodeValue();
 
+            /**
+             * If there is no <registryFilename> element in the parameters
+             * file, return an error.  Otherwise, use the URL listed in the 
+             * <registryFilename> element as the registry filename.
+             */
+            
 			if (registryFilename == null){
 				response = "<error>REGISTRY - Invalid file name.</error>";
 			}  
@@ -85,8 +109,6 @@ public class Registry3_0 {
 					response = "<error>REGISTRY - " + e.toString()+ "</error>";
 				}
 
-				int tabCounter = 0;
-				int counter = 0;
 				Document registryDoc = null;
 				DocumentBuilderFactory registryFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder registryBuilder = null;
@@ -103,12 +125,23 @@ public class Registry3_0 {
 				Document resultDoc = DOMUtil.createDocument();
 				Element root = resultDoc.createElement("queryResponse");
 				resultDoc.appendChild(root);
+				
+				/**
+				 * Once the registry file has been successfully found and the 
+				 * DOM tree built, execute the XQL query against the registry.
+				 */
+				
 				try{
 					XQL.execute(query, doc, root);
 				}
 				catch (Exception e){
 					response = "<error>Malformed XQL statement.</error>";
 				}
+				
+				/**
+				 * Once the query has been executed (or an error has been
+				 * caught), write the XML formatted results to a string.
+				 */
 				
 				try{
 				  Writer w = new StringWriter();
@@ -123,14 +156,19 @@ public class Registry3_0 {
 				}
 			}
 		}
+		
+		/**
+		 * Reformat the XML response string with <queryResponse> elements and 
+		 * clean up spare characters and strings inserted by the IPSI DOM XQL
+		 * query execution.  Return the query response.
+		 */
+		
 		if (response.indexOf("<queryResponse>") == -1){
 			response = "<queryResponse>" + response+ "</queryResponse>";
-
 		}
 	
 		if (response.indexOf("<?xml version=") > -1){
                         String editedResponse = response.replaceFirst("<?.*?>", "");
-			//String editedResponse = response.substring(0, response.indexOf("?xml")) + response.substring(response.indexOf("<?xml version")+24, response.length());  
 			response = null;
 			response = editedResponse;
 		}
@@ -141,22 +179,6 @@ public class Registry3_0 {
 		}
 		return response;
 	}
-	
-	private static int getNodeNumbers(Node node, int tabCounter, int counter){
-		if(node.hasChildNodes()) {
-			NodeList children = node.getChildNodes();
-			if (children != null) {
-				for (int k=1; k< children.getLength(); k=k+2) {
-					if(children.item(k).getNodeType() == Node.ELEMENT_NODE) {
-						counter++;
-						if (counter > tabCounter) tabCounter++; 
-						tabCounter = getNodeNumbers(children.item(k), tabCounter, counter);
-					}
-					counter--;
-				}
-			}
-		}
-		return tabCounter;
-	}	
+
 }
 

@@ -29,7 +29,7 @@ import java.io.File;
  * based on the IVOA's Resource Service Metadata document v0.7 - it does
  * not yet conform to the IVOA's VOResource 0.9 schema.
  * 
- * - Elizabeth Auden, 17 October 2003
+ * Elizabeth Auden, 17 October 2003
  *
  */
 
