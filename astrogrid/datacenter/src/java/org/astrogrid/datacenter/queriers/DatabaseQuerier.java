@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.27 2003/09/22 16:51:24 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.28 2003/09/24 14:37:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -302,8 +302,13 @@ public abstract class DatabaseQuerier implements Runnable
 
          QueryResults results = doQuery();
 
+         setStatus(QueryStatus.RUNNING_RESULTS);
+
          //send the results to the desstinateion
          sendResults(results);
+         
+         setStatus(QueryStatus.FINISHED);
+         
       }
       catch (QueryException e)
       {
