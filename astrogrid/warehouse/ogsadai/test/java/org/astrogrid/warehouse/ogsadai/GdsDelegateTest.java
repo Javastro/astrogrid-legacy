@@ -23,8 +23,8 @@ public class GdsDelegateTest extends TestCase {
   private String testRegistryUrl2
     = "http://hydra.star.le.ac.uk:8082/gdw/services/ogsadai/DAIServiceGroupRegistry";	
 
-  private String query1 = "SELECT * FROM first WHERE POS_EQ_DEC &gt; 59.9";
-  private String query2 = "SELECT * FROM first WHERE POS_EQ_RA &lt; 0.5";
+  private String query1 = "SELECT * FROM first WHERE DECL &gt; 59.9";
+  private String query2 = "SELECT * FROM first WHERE RA &lt; 0.5";
 
   private int timeoutValue = 15;		
 
@@ -147,6 +147,7 @@ public class GdsDelegateTest extends TestCase {
     GdsDelegate gds = new GdsDelegate();
     gds.setRegistryGsh(testRegistryUrl1);
     gds.setFactoryGshFromRegistry();
+    gds.connect();
 
     // Run the query.
     ExtensibilityType result = gds.performSelect(this.query1);
