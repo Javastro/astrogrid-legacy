@@ -128,13 +128,6 @@ variable, to give the possibility that map can be constructed dynamically if
 needed. FOr example the set of supported languages could change depending on the 
 circumstances of installation.<p>
 
- Or, even nicer, imagine an implementation of the map that queried a translator 
-web service for a list of available translators for the plugin's chosen
-intermediate type. When a specific translator is required, the classes are
-downloaded from the translator web service (using a CachingUrlClassLoader
-thingie). This would mean that translators for new languages (or language
-versions) could be deployed to a single translator web service, and would be
-available on all the corresponding data centers.<p>
 
 
 </body></html>
