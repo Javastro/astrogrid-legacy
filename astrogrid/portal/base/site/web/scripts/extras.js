@@ -423,3 +423,29 @@ function defocusit(a){
 	a.style.background = "#ffffff";
 }
 
+function findSelection() {
+  var choice=false;
+  selector = document.RegistryBrowser.selection;
+  if ( selector.length > 1 ) {
+    for ( var i=0; i < selector.length; i++ ) {
+       if ( selector[i].checked ) {
+          choice = true;
+          identifier = selector[i].value;
+          break;
+       }
+    }
+  } else {
+    choice = true;
+    identifier = document.RegistryBrowser.selection.value
+  }
+  if ( !choice ) alert( "Please select a resource" );
+  else {
+    var url = "/astrogrid-portal/bare/mount/datacenter/variablesFromMB.html?action=getTable&uniqueID=";
+    url = url + identifier;
+	window.close();
+	opener.parent.location.href = url;
+	opener.parent.focus();  
+  }
+}
+
+
