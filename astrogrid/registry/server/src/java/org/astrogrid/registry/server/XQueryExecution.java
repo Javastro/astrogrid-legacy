@@ -234,10 +234,8 @@ public class XQueryExecution
             else {
                
                itemName = ((Element) nlSS.item(z)).getAttribute("item");
-               xqlStart = "(" + itemName;
-               //xqlStart = "(.//*:" + itemName;
+               xqlStart = "(.//*:" + itemName;
                //xqlStart = "(*:" + itemName;
-               /*
                if(itemName.indexOf("@") != -1) {
                   if(itemName.indexOf(":") != -1) {
                      itemName = itemName.substring(itemName.indexOf(":")+1);
@@ -247,7 +245,6 @@ public class XQueryExecution
                   xqlStart = "(.//@*:" + itemName;
                   //xqlStart = "(@*:" + itemName;
                }
-               */
                response = response + "";
                response = response + xqlStart;
                String value = ((Element) nlSS.item(z)).getAttribute("value");

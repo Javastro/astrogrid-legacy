@@ -19,7 +19,7 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
-<vr:Resource  xsi:type="AuthorityType"  updated="2002-11-04T15:34:22+0000" status="active" >
+<vr:Resource  xsi:type="AuthorityType">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>AuthorityTest</ResourceKey>

@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.6 2004/08/17 07:56:08 KevinBenson Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.7 2004/08/17 12:00:37 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -71,7 +71,7 @@ public class RegistryDelegateFactory {
     * @return
     */
    public static synchronized RegistryAdminService createAdmin(URL endPoint) {
-      return new org.astrogrid.registry.client.admin.UpdateRegistry(endPoint);
+      return new org.astrogrid.registry.client.admin.RegistryAdminService(endPoint);
    }
    
    /**
