@@ -17,6 +17,11 @@
             location="@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService"
             interface="I1"
             />
+   <tool
+              name="datacenter"
+           location="@TOMCATROOT@/astrogrid-pal-SNAPSHOT/services/CeaDataService"
+           interface="unknown"
+           />
 <!--
     <tool
             name="SExtractor"
