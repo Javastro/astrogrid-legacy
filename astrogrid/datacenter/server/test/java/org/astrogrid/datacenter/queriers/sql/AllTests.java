@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2004/03/12 04:54:06 mch Exp $
+/*$Id: AllTests.java,v 1.4 2004/09/08 21:25:29 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.datacenter.queriers.sql;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.astrogrid.datacenter.queriers.sql.postgres.PostgresQueryTranslatorTest;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Sep-2003
@@ -25,6 +26,7 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(SqlPluginTest.class));
         suite.addTest(new TestSuite(SqlQueryTranslatorTest.class));
+        suite.addTest(new TestSuite(PostgresQueryTranslatorTest.class));
         //$JUnit-END$
         return suite;
     }
@@ -42,6 +44,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.4  2004/09/08 21:25:29  mch
+Added Postgres
+
 Revision 1.3  2004/03/12 04:54:06  mch
 It05 MCH Refactor
 
