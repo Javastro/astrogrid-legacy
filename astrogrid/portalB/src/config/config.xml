@@ -2,64 +2,60 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/config/Attic/config.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/18 16:02:36 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/29 17:25:46 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: config.xml,v $
-    |   Revision 1.4  2003/09/18 16:02:36  dave
-    |   Fixed community config
+    |   Revision 1.5  2003/09/29 17:25:46  dave
+    |   Updated to use RAL community site
     |
     | </cvs:log>
     |
-    | This is the config file for the portal and community properties.
-    | If you are running the portal on it's own, then the client sections need to be updated to match your local settings.
-    | If you are running the portal and a community service in the same Tomcat instance, then update the cocoon web.xml to point to the community config.
-    |
     +-->
 <properties>
-	<!--+
-	    | Configuration properties for the community service.
-	    | These values are for illustration only.
-	    | The actual values are filled in by the Ant build script.
-	    |
-	    +-->
-	<category name="org.astrogrid.community">
-		<!--+
-			| The local community name.
-			| This will default to your local hostname
-			+-->
-		<property name="community.name" value=""/>
+    <!--+
+        | Configuration properties for the community service.
+        | These values are for illustration only.
+        | The actual values should be filled in by the Ant build script.
+        |
+        +-->
+    <category name="org.astrogrid.community">
+        <!--+
+            | The local community name.
+            | This will default to your local hostname
+            +-->
+        <property name="community.name" value="star.rl.ac.uk"/>
 
-		<!--+
-			| The community host name.
-			| This will default to your local hostname
-			+-->
-		<property name="community.host" value=""/>
+        <!--+
+            | The community host name.
+            | This will default to your local hostname
+            +-->
+        <property name="community.host" value="stargrid1.bnsc.rl.ac.uk"/>
 
-		<!--+
-			| The local community services.
-			| These will default to the standard Axis services URL using the community host name.
-			+-->
-		<property name="policy.manager.url" value=""/>
-		<property name="policy.service.url" value=""/>
+        <!--+
+            | The local community services.
+            | These will default to the standard Axis services URL using the community host name.
+            +-->
+        <property name="policy.manager.url" value=""/>
+        <property name="policy.service.url" value=""/>
 
-		<!--+
-			| Configuration for the server database.
-			| No defaults, filled in by the Ant build script.
-			+-->
-		<property name="database.name"    value="...."/>
-		<property name="database.config"  value="...."/>
-		<property name="database.mapping" value="...."/>
+        <!--+
+            | Configuration for the server database.
+            | No defaults, filled in by the Ant build script.
+            +-->
+        <property name="database.name"    value=""/>
+        <property name="database.config"  value=""/>
+        <property name="database.mapping" value=""/>
 
-		<!-- Configuration for the community client  -->
-		<property name="community.security"    value="off" />
-		<property name="community.secure.port" value="8443" />
-		<!-- Configuration for the portal client  -->
-		<property name="portal.security" value="off" />
-		<property name="portal.secure.port" value="8443" />
-		<property name="portal.nonsecure.port" value="8080" />       
-		<!-- Configuration for the portal site  -->
-		<property name="astrogrid.admin" value="Kevin Benson" />
-		<property name="astrogrid.adminEmail" value="kmb@mssl.ucl.ac.uk" />
-	</category> 
+        <!-- Configuration for the community client  -->
+        <property name="community.security"    value="off" />
+        <property name="community.secure.port" value="8443" />
+        <!-- Configuration for the portal client  -->
+        <property name="portal.security" value="off" />
+        <property name="portal.secure.port" value="8443" />
+        <property name="portal.nonsecure.port" value="8080" />
+        <!-- Configuration for the portal site  -->
+        <property name="astrogrid.admin" value="Kevin Benson" />
+        <property name="astrogrid.adminEmail" value="kmb@mssl.ucl.ac.uk" />
+    </category> 
 </properties>
