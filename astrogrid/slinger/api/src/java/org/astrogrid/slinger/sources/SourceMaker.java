@@ -1,5 +1,5 @@
 /*
- * $Id: SourceMaker.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: SourceMaker.java,v 1.2 2005/03/22 12:58:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,7 +13,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import org.astrogrid.slinger.agfm.FileManagerId;
 import org.astrogrid.slinger.myspace.MSRL;
+import org.astrogrid.slinger.vospace.HomespaceName;
 import org.astrogrid.slinger.vospace.IVORN;
 import org.astrogrid.slinger.vospace.IVOSRN;
 
@@ -37,9 +39,12 @@ public abstract class SourceMaker  {
       else if (IVOSRN.isIvorn(id)) {
          return new IVOSRN(id);
       }
-//replaced by Uri and MySpace targets      else if (Agsl.isAgsl(id)) {
-//         return new AgslTarget(new Agsl(id));
-//      }
+      else if (FileManagerId.isFileManagerId(id)) {
+         return new FileManagerId(id);
+      }
+      else if (HomespaceName.isHomespaceName(id)) {
+         return new HomespaceName(id);
+      }
       else {
          throw new IllegalArgumentException("'"+id+" should start 'mailto:' or '"+IVORN.SCHEME+"' or '"+MSRL.SCHEME+"'");
       }
@@ -102,6 +107,9 @@ public abstract class SourceMaker  {
 }
 /*
  $Log: SourceMaker.java,v $
+ Revision 1.2  2005/03/22 12:58:18  mch
+ changed schemes to separate FileManagerId from MSRL
+
  Revision 1.1  2005/02/14 20:47:38  mch
  Split into API and webapp
 

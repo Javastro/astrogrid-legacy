@@ -1,6 +1,6 @@
 /*
 
- * $Id: MySpaceFileType.java,v 1.2 2005/03/21 16:10:43 mch Exp $
+ * $Id: MySpaceFileType.java,v 1.3 2005/03/22 12:58:18 mch Exp $
 
  *
 
@@ -22,7 +22,7 @@ package org.astrogrid.slinger.myspace.it05;
 
 import java.util.Hashtable;
 
-import org.astrogrid.util.TypeSafeEnumerator;
+import org.astrogrid.utils.TypeSafeEnumerator;
 
 
 
@@ -129,6 +129,9 @@ public class MySpaceFileType extends TypeSafeEnumerator
 /*
 
 $Log: MySpaceFileType.java,v $
+Revision 1.3  2005/03/22 12:58:18  mch
+changed schemes to separate FileManagerId from MSRL
+
 Revision 1.2  2005/03/21 16:10:43  mch
 Fixes to compile (including removing refs to FileManager clients)
 

@@ -1,5 +1,5 @@
 /*
- * $Id: FileManagerId.java,v 1.2 2005/03/21 16:10:43 mch Exp $
+ * $Id: FileManagerId.java,v 1.3 2005/03/22 12:58:18 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -48,10 +48,10 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
    /** When set it identifies which filestore the manager should look at */
    private String storeId = null;
    
-   public static final String SCHEME = IVOSRN.SCHEME;
+   public static final String SCHEME = "agfm";
    
    //for error messages
-   public static final String FORM = SCHEME+"://{community}/{individual}[#<Path>[!<Store>]]";
+   public static final String FORM = SCHEME+":ivo://{community}/{individual}[#<Path>[!<Store>]]";
    
    /** Make a single reference out of an identifier in the 'ivo' form */
    public FileManagerId(IVORN ivoFormId)
@@ -64,6 +64,19 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
    {
       this.id = homespaceName.toIvoForm();
    }
+
+   /** Make a single reference from a string */
+   public FileManagerId(String fmid) throws URISyntaxException {
+      assert isFileManagerId(fmid) : "Not a FileManagerID; should be of the form "+FORM;
+
+      this.id = new IVORN(fmid.substring(SCHEME.length()+1));
+   }
+   
+   /** Returns true if the given string looks like it might be a filemanager id */
+   public static boolean isFileManagerId(String candidate) {
+      return candidate.toLowerCase().startsWith(SCHEME);
+   }
+   
    /**
     * This string must be reversable through the above constructor, ie for valid msrl string s:
     *   new Msrl(s).toString().equals(s);
@@ -75,7 +88,7 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
 
    /** Returns URI instance of locator */
    public String toURI()  {
-      return id.toURI();
+      return SCHEME+":"+id.toURI();
    }
    
    /** Returns the myspace filepath */
@@ -102,8 +115,8 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
    }
 
    public OutputStream resolveOutputStream(Principal user) throws IOException {
-      return null;
-      /* temporarily commoneted as there appears to be a compile/maven bug in compiling the client.node() bit
+//      return null;
+  //    /* temporarily commoneted as there appears to be a compile/maven bug in compiling the client.node() bit
       try {
          FileManagerClientFactory factory = new FileManagerClientFactory();
          FileManagerClient client = factory.login();
@@ -119,7 +132,7 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
       catch (URISyntaxException e) {
          throw new StoreException(e+" resolving output stream to "+id+" for "+user,e);
       }
-       */
+      /**/
    }
 
    
@@ -134,8 +147,8 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
    }
    
    public InputStream resolveInputStream(Principal user) throws IOException {
-      return null;
-      /* temporarily commoneted as there appears to be a compile/maven bug in compiling the client.node() bit
+      //return null;
+      // /* temporarily commoneted as there appears to be a compile/maven bug in compiling the client.node() bit
       try {
          FileManagerClientFactory factory = new FileManagerClientFactory();
          FileManagerClient client = factory.login();
@@ -150,7 +163,7 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
       catch (URISyntaxException e) {
          throw new StoreException(e+" resolving input stream to "+id+" for "+user,e);
       }
-       */
+      /**/
    }
    
    public Reader resolveReader(Principal user) throws IOException {
@@ -167,6 +180,9 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
 /*
 
 $Log: FileManagerId.java,v $
+Revision 1.3  2005/03/22 12:58:18  mch
+changed schemes to separate FileManagerId from MSRL
+
 Revision 1.2  2005/03/21 16:10:43  mch
 Fixes to compile (including removing refs to FileManager clients)
 

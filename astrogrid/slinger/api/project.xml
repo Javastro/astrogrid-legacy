@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.4 2005/03/21 16:10:43 mch Exp $ -->
+<!-- $Id: project.xml,v 1.5 2005/03/22 12:58:18 mch Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -56,6 +56,11 @@
          <version>${astrogrid.filemanager.version}</version>
        </dependency>
       
+       <dependency>
+            <artifactId>astrogrid-filemanager-contract</artifactId>
+            <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filemanager.version}</version>
+       </dependency>
 
        <!-- JavaMail for TargetIndicators -->
        <dependency>

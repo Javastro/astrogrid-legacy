@@ -1,5 +1,5 @@
 /*
- * $Id: MSRL.java,v 1.2 2005/03/15 12:07:28 mch Exp $
+ * $Id: MSRL.java,v 1.3 2005/03/22 12:58:18 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -49,10 +49,10 @@ public class MSRL implements SRL, TargetIdentifier, SourceIdentifier
    /** When set it identifies which filestore the manager should look at */
    private String storeId = null;
    
-   public static final String SCHEME = "myspace";
+   public static final String SCHEME = "msrl";
    
    //for error messages
-   public static final String FORM = "myspace:<delegateEndPoint>[#<MySpacePath>[!<Server>]]";
+   public static final String FORM = SCHEME+":<delegateEndPoint>[#<MySpacePath>[!<Server>]]";
    
    /** Make a single myspace:// reference string out of a delegate endpoint */
    public MSRL(URL aDelegateEndpoint)
@@ -248,6 +248,9 @@ public class MSRL implements SRL, TargetIdentifier, SourceIdentifier
 /*
 
 $Log: MSRL.java,v $
+Revision 1.3  2005/03/22 12:58:18  mch
+changed schemes to separate FileManagerId from MSRL
+
 Revision 1.2  2005/03/15 12:07:28  mch
 Added FileManager support
 

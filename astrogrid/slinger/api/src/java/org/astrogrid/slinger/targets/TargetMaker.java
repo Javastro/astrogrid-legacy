@@ -1,5 +1,5 @@
 /*
- * $Id: TargetMaker.java,v 1.2 2005/03/15 12:07:28 mch Exp $
+ * $Id: TargetMaker.java,v 1.3 2005/03/22 12:58:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import org.astrogrid.slinger.agfm.FileManagerId;
 import org.astrogrid.slinger.myspace.MSRL;
 import org.astrogrid.slinger.vospace.HomespaceName;
 import org.astrogrid.slinger.vospace.IVORN;
@@ -47,6 +48,9 @@ public abstract class TargetMaker  {
       }
       else if (HomespaceName.isHomespaceName(id)) {
          return new HomespaceName(id);
+      }
+      else if (FileManagerId.isFileManagerId(id)) {
+         return new FileManagerId(id);
       }
       else {
          //could do with adding some sort of configurable plugin mechanism similar to the URL plugins
@@ -132,6 +136,9 @@ public abstract class TargetMaker  {
 }
 /*
  $Log: TargetMaker.java,v $
+ Revision 1.3  2005/03/22 12:58:18  mch
+ changed schemes to separate FileManagerId from MSRL
+
  Revision 1.2  2005/03/15 12:07:28  mch
  Added FileManager support
 
