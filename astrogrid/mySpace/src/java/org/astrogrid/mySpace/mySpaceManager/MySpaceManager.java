@@ -103,6 +103,7 @@ public class MySpaceManager{
 
    public MySpaceManager(){
    	super();
+   	status.reset();
    }
 
 // =================================================================
@@ -166,7 +167,7 @@ public String upLoad(String jobDetails){
 			msA.setRegistryName(registryName);
 			RegistryManager reg = new RegistryManager(registryName);
 			String mySpaceFileName = "f" + reg.getNextDataItemID();
-			reg.finalize();
+			reg.rewriteRegistryFile();
 			dataitem = msA.importDataHolder(
 			    userID, communityID, jobID, newDataHolderName,
 			    mySpaceFileName, fileSize );
