@@ -1,28 +1,26 @@
 /*
- * $Id: QuerierPlugin.java,v 1.2 2004/03/14 02:17:07 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.3 2004/03/14 04:13:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
-import javax.mail.*;
-
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Properties;
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
-import org.astrogrid.store.Agsl;
-import org.astrogrid.store.delegate.StoreClient;
-import org.astrogrid.store.delegate.StoreDelegateFactory;
 
 /**
  * Querier Plugins are used to carry out all the database specific backend
@@ -41,7 +39,9 @@ public abstract class QuerierPlugin  {
    
    protected static final Log log = LogFactory.getLog(QuerierPlugin.class);
 
-   
+   public final static String EMAIL_SERVER = "datacenter.emailserver.address";
+   public final static String EMAIL_USER   = "datacenter.emailserver.user";
+   public final static String EMAIL_PWD    = "datacenter.emailserver.password";
    
    /** All Plugins implementations will have to have the same constructor as this */
    public QuerierPlugin(Querier givenParent) {
@@ -74,40 +74,21 @@ public abstract class QuerierPlugin  {
       QuerierProcessingResults resultsStatus = new QuerierProcessingResults(querier);
       querier.setStatus(resultsStatus);
 
-      Agsl targetAgsl = querier.getResultsTargetAgsl();
-      
-      if (targetAgsl != null) {
-         
-         log.info(querier+", sending results to "+targetAgsl);
-      
-         if (targetAgsl.getEndpoint().toLowerCase().startsWith("mailto")) {
-            
-            emailResults(results, targetAgsl.getEndpoint().substring(Agsl.SCHEME.length()+1), resultsStatus);
-         }
-         else {
-            StoreClient store = StoreDelegateFactory.createDelegate(Account.ANONYMOUS.toUser(), targetAgsl);
+      TargetIndicator target = querier.getResultsTarget();
 
-            OutputStream out = store.putStream(targetAgsl.getPath());
-            
-            results.write(new OutputStreamWriter(out), resultsStatus, querier.getRequestedFormat());
-            out.close();
-         }
-         
-         log.info(querier+" results sent");
+      if (target.getEmail() != null) {
 
-         //add information to status
-         //resultsLoc = myspace.getUrl("/"+user.getAstrogridId()+"/"+myspaceFilename).toString();
+         log.info(querier+", emailing results to "+target.getEmail());
+
+         emailResults(results, target.getEmail(), resultsStatus);
       }
-      
-      if (querier.getResultsTargetStream() != null) {
 
-         log.info(querier+", streaming results");
-         
-         results.toVotable(querier.getResultsTargetStream(), resultsStatus);
-         
-         log.info(querier+" results sent");
-      }
-      
+      Writer writer = target.resolveWriter(querier.getUser());
+
+      results.write(writer, resultsStatus, querier.getRequestedFormat());
+      writer.close();
+        
+      log.info(querier+" results sent");
    }
 
    /**
@@ -116,9 +97,9 @@ public abstract class QuerierPlugin  {
    protected void emailResults(QueryResults results, String targetAddress, QuerierProcessingResults resultsStatus) throws IOException {
 
       // Get email server from configuration file
-      String emailServer = SimpleConfig.getSingleton().getString("datacenter.emailserver.address");
-      String emailUser = SimpleConfig.getSingleton().getString("datacenter.emailserver.user");
-      String emailPassword = SimpleConfig.getSingleton().getString("datacenter.emailserver.password");
+      String emailServer = SimpleConfig.getSingleton().getString(EMAIL_SERVER);
+      String emailUser = SimpleConfig.getSingleton().getString(EMAIL_USER, null);
+      String emailPassword = SimpleConfig.getSingleton().getString(EMAIL_PWD, null);
          
       try {
          // create some properties and get the default Session
@@ -150,10 +131,14 @@ public abstract class QuerierPlugin  {
          throw new IOException(e+", mailing to "+emailServer);
       }
    }
-     
+
+   
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.3  2004/03/14 04:13:04  mch
+ Wrapped output target in TargetIndicator
+
  Revision 1.2  2004/03/14 02:17:07  mch
  Added CVS format and emailer
 

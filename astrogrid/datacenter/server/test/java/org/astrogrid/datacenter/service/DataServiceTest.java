@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.4 2004/03/14 00:39:30 mch Exp $
+/*$Id: DataServiceTest.java,v 1.5 2004/03/14 04:13:16 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.metadata.MetadataServer;
+import org.astrogrid.datacenter.queriers.TargetIndicator;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
@@ -81,7 +82,7 @@ public class DataServiceTest extends ServerTestCase {
     public void testConeSearch() throws Throwable {
        
       StringWriter sw = new StringWriter();
-       server.askQuery(Account.ANONYMOUS, new ConeQuery(30, 30, 6), sw, "VOTABLE");
+       server.askQuery(Account.ANONYMOUS, new ConeQuery(30, 30, 6), new TargetIndicator(sw), "VOTABLE");
        String results = sw.toString();
 
        Document doc = DomHelper.newDocument(results);
@@ -95,7 +96,7 @@ public class DataServiceTest extends ServerTestCase {
    {
       //submit query
       StringWriter sw = new StringWriter();
-      server.askQuery(Account.ANONYMOUS, query1, sw, "VOTABLE");
+      server.askQuery(Account.ANONYMOUS, query1, new TargetIndicator(sw), "VOTABLE");
       String result = sw.toString();
        
       assertNotNull(result);
@@ -147,6 +148,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.5  2004/03/14 04:13:16  mch
+Wrapped output target in TargetIndicator
+
 Revision 1.4  2004/03/14 00:39:30  mch
 Added error trapping to DataServer and setting Querier error status
 

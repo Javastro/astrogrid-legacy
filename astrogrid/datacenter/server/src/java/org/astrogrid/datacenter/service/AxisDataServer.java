@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.37 2004/03/14 00:39:55 mch Exp $
+ * $Id: AxisDataServer.java,v 1.38 2004/03/14 04:13:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,6 +15,7 @@ import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
+import org.astrogrid.datacenter.queriers.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.io.Piper;
@@ -109,7 +110,7 @@ public abstract class AxisDataServer  {
     */
    public String submitQuery(Account user, Query query, Agsl resultsTarget, String requestedFormat, QuerierListener listener) throws AxisFault {
       try  {
-         Querier querier = Querier.makeQuerier(user, query, resultsTarget, requestedFormat);
+         Querier querier = Querier.makeQuerier(user, query, new TargetIndicator(resultsTarget), requestedFormat);
          querier.addListener(listener);
          server.querierManager.submitQuerier(querier);
          return querier.getId();
@@ -163,6 +164,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.38  2004/03/14 04:13:04  mch
+Wrapped output target in TargetIndicator
+
 Revision 1.37  2004/03/14 00:39:55  mch
 Added error trapping to DataServer and setting Querier error status
 

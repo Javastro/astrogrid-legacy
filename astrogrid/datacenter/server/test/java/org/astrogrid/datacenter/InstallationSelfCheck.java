@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.19 2004/03/14 00:54:45 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.20 2004/03/14 04:13:16 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
  **/
 package org.astrogrid.datacenter;
 
+import org.astrogrid.datacenter.queriers.*;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
@@ -19,11 +21,6 @@ import org.astrogrid.community.Account;
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.metadata.MetadataServer;
-import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.queriers.QuerierPlugin;
-import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
-import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.v041.AxisDataServer_v0_4_1;
@@ -82,7 +79,7 @@ public class InstallationSelfCheck extends TestCase {
    public void testConeSearch() throws Throwable {
       StringWriter sw = new StringWriter(); //although we throw away the results
       DataServer server = new DataServer();
-      server.askQuery(Account.ANONYMOUS, new ConeQuery(30,30,2), sw, QueryResults.FORMAT_VOTABLE);
+      server.askQuery(Account.ANONYMOUS, new ConeQuery(30,30,2), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
    }
 
    public void testCanCreateWorkspace() throws IOException {
@@ -119,6 +116,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.20  2004/03/14 04:13:16  mch
+ Wrapped output target in TargetIndicator
+
  Revision 1.19  2004/03/14 00:54:45  mch
  Changed test on myspace to one that works on deprecated delegate
 

@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.5 2004/03/14 00:39:30 mch Exp $
+ * $Id: QuerierTest.java,v 1.6 2004/03/14 04:13:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -45,7 +45,7 @@ public class QuerierTest extends ServerTestCase {
       DummySqlPlugin.populateDb();
       
       sw = new StringWriter();
-      querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), sw, QueryResults.FORMAT_VOTABLE);
+      querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
       listener = new MockListener();
       querier.addListener(listener);
    }

@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.14 2004/03/13 23:38:56 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.15 2004/03/14 04:13:16 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -10,22 +10,19 @@
 package org.astrogrid.datacenter.queriers.fits;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.fits.FitsTest;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.queriers.TargetIndicator;
 import org.astrogrid.datacenter.query.ConeQuery;
 
 /** Test the Fits processing classes
@@ -51,7 +48,7 @@ public class FitsQuerierTest extends TestCase
    public void testCone() throws IOException
    {
       StringWriter sw = new StringWriter();
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), sw, QueryResults.FORMAT_VOTABLE);
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
       
       assertTrue(querier.getPlugin() instanceof FitsQuerierPlugin);
       
@@ -82,6 +79,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.15  2004/03/14 04:13:16  mch
+ Wrapped output target in TargetIndicator
+
  Revision 1.14  2004/03/13 23:38:56  mch
  Test fixes and better front-end JSP access
 

@@ -6,6 +6,7 @@
        org.astrogrid.community.Account,
        org.astrogrid.datacenter.query.ConeQuery,
        org.astrogrid.store.Agsl,
+       org.astrogrid.datacenter.queriers.TargetIndicator,
        org.astrogrid.datacenter.service.HtmlDataServer"
    isThreadSafe="false"
    session="false" %>
@@ -31,9 +32,15 @@
       double dec = Double.parseDouble(param_dec);
       double sr = Double.parseDouble(param_sr);
 
-      Agsl agsl = new Agsl(resultsTarget);
+      TargetIndicator target = null;
+      if (resultsTarget.startsWith("mailto:")) {
+         target = new TargetIndicator(resultsTarget.substring(7));
+      }
+      else {
+         target = new TargetIndicator(new Agsl(resultsTarget));
+      }
 
-      String id = server.submitQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), agsl, resultsFormat);
+      String id = server.submitQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), target, resultsFormat);
       
       URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
       //redirect to status

@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_4_1.java,v 1.4 2004/03/14 00:39:55 mch Exp $
+ * $Id: AxisDataServer_v0_4_1.java,v 1.5 2004/03/14 04:13:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,8 +18,8 @@ import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.queriers.JobNotifyServiceListener;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.queriers.TargetIndicator;
 import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.store.Agsl;
 
@@ -73,7 +73,7 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
          StringWriter sw = new StringWriter();
          server.askQuery(Account.ANONYMOUS,
                           new AdqlQuery(axisQ.getQueryBody()),
-                          sw,
+                          new TargetIndicator(sw),
                           QueryResults.FORMAT_VOTABLE);
          return sw.toString();
          
@@ -94,7 +94,7 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
    public String  makeQuery(Query axisQ) throws AxisFault {
 
       try {
-         Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(axisQ.getQueryBody()), (Agsl) null, QueryResults.FORMAT_VOTABLE);
+         Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(axisQ.getQueryBody()), null, QueryResults.FORMAT_VOTABLE);
          madeQueriers.put(querier.getId(), querier);
          return querier.getId();
       }
@@ -114,7 +114,7 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
    public String makeQueryWithId(Query axisQ, String assignedId) throws AxisFault {
       
       try {
-         Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(axisQ.getQueryBody()), (Agsl) null, QueryResults.FORMAT_VOTABLE);
+         Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(axisQ.getQueryBody()), null, QueryResults.FORMAT_VOTABLE);
          madeQueriers.put(querier.getId(), querier);
          return querier.getId();
       }
@@ -134,7 +134,7 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
       }
       try {
          Querier querier = (Querier) madeQueriers.get(queryId);
-         querier.setResultsTarget(new Agsl(resultsDestination.toString()));
+         querier.setResultsTarget(new TargetIndicator(new Agsl(resultsDestination.toString())));
       } catch (Exception e) {
          throw makeFault(CLIENTFAULT, e+" setting queryId ["+queryId+"] results target to "+resultsDestination, e);
       }
@@ -255,6 +255,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
 /*
 $Log: AxisDataServer_v0_4_1.java,v $
+Revision 1.5  2004/03/14 04:13:04  mch
+Wrapped output target in TargetIndicator
+
 Revision 1.4  2004/03/14 00:39:55  mch
 Added error trapping to DataServer and setting Querier error status
 

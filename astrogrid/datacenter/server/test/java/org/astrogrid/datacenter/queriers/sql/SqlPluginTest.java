@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.3 2004/03/13 23:38:56 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.4 2004/03/14 04:13:16 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.queriers.TargetIndicator;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
@@ -57,7 +58,7 @@ public class SqlPluginTest extends ServerTestCase {
    
    public void testCone() throws Exception {
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), sw, QueryResults.FORMAT_VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
       manager.askQuerier(q);
       Document results = DomHelper.newDocument(sw.toString());
       assertIsVotable(results);
@@ -87,7 +88,7 @@ public class SqlPluginTest extends ServerTestCase {
       assertNotNull(select);
 
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(select), sw, QueryResults.FORMAT_VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(select), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
 
       manager.askQuerier(q);
       
@@ -112,7 +113,7 @@ public class SqlPluginTest extends ServerTestCase {
 
    private void doSql() throws Exception {
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new RawSqlQuery("select * from SampleStars"), sw, QueryResults.FORMAT_VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new RawSqlQuery("select * from SampleStars"), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
 
       manager.askQuerier(q);
    
@@ -145,6 +146,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.4  2004/03/14 04:13:16  mch
+ Wrapped output target in TargetIndicator
+
  Revision 1.3  2004/03/13 23:38:56  mch
  Test fixes and better front-end JSP access
 

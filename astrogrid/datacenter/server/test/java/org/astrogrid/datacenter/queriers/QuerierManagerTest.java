@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.8 2004/03/13 23:38:56 mch Exp $
+/*$Id: QuerierManagerTest.java,v 1.9 2004/03/14 04:13:16 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,9 +45,9 @@ public class QuerierManagerTest extends ServerTestCase {
    }
    public void testHandleUniqueness() throws Exception {
       
-      s1 = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), (Writer) null, QueryResults.FORMAT_VOTABLE);
+      s1 = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), null, QueryResults.FORMAT_VOTABLE);
       assertNotNull(s1);
-      s2 = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), (Writer) null, QueryResults.FORMAT_VOTABLE);
+      s2 = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), null, QueryResults.FORMAT_VOTABLE);
       assertNotNull(s2);
       assertNotSame(s1,s2);
       assertFalse(s1.getId().equals(s2.getId()));
@@ -66,6 +66,9 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /*
  $Log: QuerierManagerTest.java,v $
+ Revision 1.9  2004/03/14 04:13:16  mch
+ Wrapped output target in TargetIndicator
+
  Revision 1.8  2004/03/13 23:38:56  mch
  Test fixes and better front-end JSP access
 

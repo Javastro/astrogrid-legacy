@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.1 2004/03/13 23:38:46 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.2 2004/03/14 04:13:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,9 +12,9 @@ import java.io.Writer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.queriers.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.store.Agsl;
 
 /**
  * A set of dataserver methods for serving data in HTML form, eg for servlets
@@ -35,11 +35,11 @@ public class HtmlDataServer
    public void askQuery(Account user, Query query, Writer out, String requestedFormat) throws IOException {
       
       try {
-         server.askQuery(user, query, out, requestedFormat);
+         server.askQuery(user, query, new TargetIndicator(out), requestedFormat);
       }
       catch (Throwable th) {
          log.error(th);
-         out.write(exceptionAsHtml("askQuery("+user+", "+query+", "+out+")", th));
+         out.write(exceptionAsHtml("askQuery("+user+", "+query+", Writer)", th));
       }
    }
  
@@ -47,14 +47,14 @@ public class HtmlDataServer
     * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
     * reference id.  Results will be output to given Agsl
     */
-   public String submitQuery(Account user, Query query, Agsl out, String requestedFormat) throws IOException {
+   public String submitQuery(Account user, Query query, TargetIndicator target, String requestedFormat) throws IOException {
       
       try {
-         return server.submitQuery(user, query, out, requestedFormat);
+         return server.submitQuery(user, query, target, requestedFormat);
       }
       catch (Throwable th) {
          log.error(th);
-         return exceptionAsHtml("submitQuery("+user+", "+query+", "+out+")", th);
+         return exceptionAsHtml("submitQuery("+user+", "+query+", "+target+")", th);
       }
    }
 
@@ -164,7 +164,7 @@ public class HtmlDataServer
          "<body>\n"+
          "<h1>ERROR REPORT</h1>\n"+
          "<b>"+title+"</b>\n"+
-         "<p><b>"+th.getMessage()+"</b></p>\n"+
+         "<p><b>"+th+"</b></p>\n"+
          "<p>\n"+
          "<pre>"+stack+"</pre>\n"+
          "</p>\n"+

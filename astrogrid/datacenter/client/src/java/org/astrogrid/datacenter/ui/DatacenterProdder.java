@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.4 2004/03/13 16:26:25 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.5 2004/03/14 04:12:46 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -263,7 +263,7 @@ public class DatacenterProdder extends JFrame
          if (queryLocator.getFileLoc().startsWith("file")) {
             inQuery = new URL(queryLocator.getFileLoc()).openStream();
          } else {
-            inQuery = new Agsl(queryLocator.getFileLoc()).openStream(User.ANONYMOUS);
+            inQuery = new Agsl(queryLocator.getFileLoc()).openInputStream(User.ANONYMOUS);
          }
 
          progBox.setProgress(2);
@@ -326,7 +326,7 @@ public class DatacenterProdder extends JFrame
          if (queryLocator.getFileLoc().startsWith("file")) {
             inQuery = new URL(queryLocator.getFileLoc()).openStream();
          } else {
-            inQuery = new Agsl(queryLocator.getFileLoc()).openStream(User.ANONYMOUS);
+            inQuery = new Agsl(queryLocator.getFileLoc()).openInputStream(User.ANONYMOUS);
          }
 
          progBox.setProgress(2);
@@ -416,6 +416,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.5  2004/03/14 04:12:46  mch
+ Wrapped output target in TargetIndicator
+
  Revision 1.4  2004/03/13 16:26:25  mch
  Changed makeFullSearcher to makeQuerySearcher
 

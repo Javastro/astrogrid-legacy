@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.41 2004/03/14 02:17:07 mch Exp $
+ * $Id: Querier.java,v 1.42 2004/03/14 04:13:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,16 +9,19 @@ package org.astrogrid.datacenter.queriers;
 import org.astrogrid.datacenter.queriers.status.*;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Date;
+import java.util.Properties;
 import java.util.Vector;
+import javax.mail.MessagingException;
+import javax.mail.Provider;
+import javax.mail.Session;
+import javax.mail.Transport;
 import org.apache.commons.logging.Log;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.RawSqlQuery;
 import org.astrogrid.datacenter.service.DataServer;
-import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreException;
@@ -71,11 +74,8 @@ public class Querier implements Runnable {
    private String requestedFormat = QueryResults.FORMAT_VOTABLE; //by default
    
    /** Where the result should be sent (could be set as well as writer) */
-   private Agsl resultsTargetAgsl = null;
+   private TargetIndicator resultsTarget = null;
 
-   /** Where the result should be sent (could be set as well as agsl) */
-   private Writer resultsTargetStream = null;
-   
    /** For measuring how long the query took - calculated from status change times*/
    private Date timeQueryStarted = null;
    /** For measuring how long query took - calculated from status change times*/
@@ -90,11 +90,13 @@ public class Querier implements Runnable {
    public static final String DEFAULT_MYSPACE = "DefaultMySpace";
 
    /** Convenience constructor for other constructors, makers, etc */
-   protected Querier(Account forUser, Query query, String resultsFormat) throws IOException {
+   protected Querier(Account forUser, Query query, TargetIndicator whereToSendResults, String resultsFormat) throws IOException {
       this.id = generateQueryId();
       this.requestedFormat = resultsFormat;
       this.user = forUser;
       this.query = query;
+      this.resultsTarget = whereToSendResults;
+      
 
       //check raw sql
       if ((query instanceof RawSqlQuery) && (!SimpleConfig.getSingleton().getBoolean(DataServer.SQL_PASSTHROUGH_ENABLED, false))) {
@@ -120,20 +122,8 @@ public class Querier implements Runnable {
    
    /** Convenience constructor for struct a querier from the given details. Takes a writer so generally used
     * for blocking queries where the results have to be sent back to the calling client */
-   public static Querier makeQuerier(Account forUser, Query query, Writer whereToSendResults, String resultsFormat) throws IOException {
-      Querier querier = new Querier(forUser, query, resultsFormat);
-
-      querier.resultsTargetStream = whereToSendResults;
-      
-      return querier;
-   }
-   
-   /** Construct a querier from the given details. Takes an agsl for the results target so its
-    * up to the querier to send the results there */
-   public static Querier makeQuerier(Account forUser, Query query, Agsl whereToSendResults, String resultsFormat) throws IOException {
-      Querier querier = new Querier(forUser, query, resultsFormat);
-      
-      querier.resultsTargetAgsl = whereToSendResults;
+   public static Querier makeQuerier(Account forUser, Query query, TargetIndicator whereToSendResults, String resultsFormat) throws IOException {
+      Querier querier = new Querier(forUser, query, whereToSendResults, resultsFormat);
 
       return querier;
    }
@@ -196,15 +186,32 @@ public class Querier implements Runnable {
     * @throws IOException if the operation fails for any reason
     */
    protected void testResultsDestination() throws IOException {
-      if ((resultsTargetAgsl == null) && (resultsTargetStream == null)) {
-         log.error(
-               "No default myspace given in config file (key "+Querier.DEFAULT_MYSPACE+"), "+
-               "or results destination specified, and no stream to return them");
+      if ((resultsTarget == null)) {
          throw new IllegalStateException("no results destination");
       }
+
+      if (resultsTarget.getEmail() != null) {
+         //check email server is available
+         String server = SimpleConfig.getSingleton().getString(QuerierPlugin.EMAIL_SERVER);
+         String user = SimpleConfig.getSingleton().getString(QuerierPlugin.EMAIL_USER, null);
+         String password = SimpleConfig.getSingleton().getString(QuerierPlugin.EMAIL_PWD, null);
+
+         try {
+            Properties props = new Properties();
+            props.put("mail.smtp.host", server);
+            Session session = Session.getDefaultInstance(props, null);
+   
+            Transport transport = session.getTransport(server);
+            transport.connect(server, user, password);
+         }
+         catch (MessagingException e) {
+            throw new QuerierPluginException("Cannot connect to server "+server,e);
+         }
+            
+      }
       
-      if (resultsTargetAgsl != null) {
-         StoreClient store = StoreDelegateFactory.createDelegate(user.toUser(), resultsTargetAgsl);
+      if (resultsTarget.resolveAgsl() != null) {
+         StoreClient store = StoreDelegateFactory.createDelegate(user.toUser(), resultsTarget.resolveAgsl());
       
          store.putString("This is a test file to make sure we can create a file in the given myspace, so our query results are not lost",
                            "testFile", false);
@@ -221,14 +228,10 @@ public class Querier implements Runnable {
 
    /** Sets results target.
     * @deprecated - should be set in constructor - but v4.1 interface uses it */
-   public void setResultsTarget(Agsl agsl)      { resultsTargetAgsl = agsl; }
+   public void setResultsTarget(TargetIndicator target)  { this.resultsTarget = target; }
    
    /** Returns where the results are to be sent    */
-   public Agsl getResultsTargetAgsl()           {   return resultsTargetAgsl;  }
-
-   /** Returns the output stream where the results are to be sent
-    */
-   public Writer getResultsTargetStream()       {   return resultsTargetStream;  }
+   public TargetIndicator getResultsTarget()             {   return resultsTarget;  }
 
    /**
     * Returns the requested results format
@@ -383,6 +386,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.42  2004/03/14 04:13:04  mch
+ Wrapped output target in TargetIndicator
+
  Revision 1.41  2004/03/14 02:17:07  mch
  Added CVS format and emailer
 

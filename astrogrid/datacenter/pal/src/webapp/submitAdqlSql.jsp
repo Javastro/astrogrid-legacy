@@ -5,6 +5,7 @@
        org.apache.commons.logging.*,
        org.astrogrid.store.Agsl,
        org.astrogrid.community.Account,
+       org.astrogrid.datacenter.queriers.TargetIndicator,
        org.astrogrid.datacenter.query.AdqlQuery,
        org.astrogrid.datacenter.service.HtmlDataServer,
        org.astrogrid.io.*"
@@ -21,7 +22,15 @@
    String resultsTarget = request.getParameter("Target");
 
    try {
-     String id = server.submitQuery(Account.ANONYMOUS, new AdqlQuery(adqlSql), new Agsl(resultsTarget), resultsFormat);
+      TargetIndicator target = null;
+      if (resultsTarget.startsWith("mailto:")) {
+         target = new TargetIndicator(resultsTarget.substring(7));
+      }
+      else {
+         target = new TargetIndicator(new Agsl(resultsTarget));
+      }
+         
+      String id = server.submitQuery(Account.ANONYMOUS, new AdqlQuery(adqlSql), target, resultsFormat);
       
       URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
       //redirect to status

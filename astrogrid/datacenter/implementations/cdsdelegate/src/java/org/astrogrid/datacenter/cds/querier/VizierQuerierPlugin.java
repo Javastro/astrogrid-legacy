@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierPlugin.java,v 1.1 2004/03/13 23:40:59 mch Exp $
+/*$Id: VizierQuerierPlugin.java,v 1.2 2004/03/14 04:14:20 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,14 +43,7 @@ public class VizierQuerierPlugin extends QuerierPlugin {
       VizierQueryMaker translator = new VizierQueryMaker();
       VizierQuery query = translator.getVizierQuery(querier.getQuery());
 
-      if (querier.getResultsTargetAgsl() != null) {
-         StoreClient store = StoreDelegateFactory.createDelegate(querier.getUser().toUser(), querier.getResultsTargetAgsl());
-         
-         query.doDelegateQuery(delegate, new OutputStreamWriter(store.putStream(querier.getResultsTargetAgsl().getPath())));
-      }
-      if (querier.getResultsTargetStream() != null) {
-         query.doDelegateQuery(delegate, querier.getResultsTargetStream());
-      }
+      query.doDelegateQuery(delegate, querier.getResultsTarget().resolveWriter(querier.getUser()));
    }
    
    
@@ -59,6 +52,9 @@ public class VizierQuerierPlugin extends QuerierPlugin {
 
 /*
  $Log: VizierQuerierPlugin.java,v $
+ Revision 1.2  2004/03/14 04:14:20  mch
+ Wrapped output target in TargetIndicator
+
  Revision 1.1  2004/03/13 23:40:59  mch
  Changes to adapt to It05 refactor
 
