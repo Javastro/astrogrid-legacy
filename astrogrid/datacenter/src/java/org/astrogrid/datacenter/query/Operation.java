@@ -61,7 +61,14 @@ public abstract class Operation implements Operand {
         IN = "IN",
         NOT_NULL = "NOT_NULL",
         BETWEEN = "BETWEEN",
-        LIKE = "LIKE" ;
+        LIKE = "LIKE",
+        MINUS = "MINUS",
+        PLUS = "PLUS",
+        ORDER_BY_DESC = "ORDER_BY_DESC",
+        ORDER_BY_ASC = "ORDER_BY_ASC",
+        ORDER_BY_AND = "ORDER_BY_AND",
+        GROUP_BY = "GROUP_BY",
+        SUBQUERY = "SUBQUERY" ;
 	
 	private String
 		name = null ;
@@ -76,7 +83,7 @@ public abstract class Operation implements Operand {
 		Operation
 		    newOp = null ;
 		String
-		    opName = null ;
+		    opName = null ;		    
 		
 		try {
 			
@@ -100,9 +107,6 @@ public abstract class Operation implements Operand {
 			}
 			else if( opName.equals( Operation.GREATER_THAN ) ) {
 				newOp = new Operation_GREATER_THAN( opElement, catalog ) ;
-			}
-			else if( opName.equals( Operation.DIFFERENCE ) ) {
-				newOp = new Operation_DIFFERENCE( opElement, catalog ) ;
 			}
 			else if( opName.equals( Operation.CONE ) ) {
 				newOp = new Operation_CONE( opElement, catalog ) ;
@@ -131,6 +135,24 @@ public abstract class Operation implements Operand {
 			else if( opName.equals( Operation.LIKE ) ) {
 				newOp = new Operation_LIKE( opElement, catalog ) ;
 			}	
+			else if( opName.equals( Operation.MINUS ) ) {
+				newOp = new Operation_MINUS( opElement, catalog ) ;
+			}			
+			else if( opName.equals( Operation.PLUS ) ) {
+				newOp = new Operation_PLUS( opElement, catalog ) ;
+			}		
+			else if( opName.equals( Operation.ORDER_BY_DESC ) ) {
+				newOp = new Operation_ORDER_BY_DESC( opElement, catalog ) ;
+			}	
+			else if( opName.equals( Operation.ORDER_BY_ASC ) ) {
+				newOp = new Operation_ORDER_BY_ASC( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.ORDER_BY_AND ) ) {
+				newOp = new Operation_ORDER_BY_AND( opElement, catalog ) ;
+			}	
+			else if( opName.equals( Operation.GROUP_BY ) ) {
+				newOp = new Operation_GROUP_BY( opElement, catalog ) ;
+			}											
 			else {
 				Message
 	               message = new Message( ASTROGRIDERROR_UNSUPPORTED_SQL_OPERATION, opName ) ;
@@ -174,7 +196,7 @@ public abstract class Operation implements Operand {
 				}
 				else if( element.getTagName().equals( RunJobRequestDD.FIELD_ELEMENT ) ) {
 				    this.push( new Field( element, catalog ) ) ;						
-			    } 
+			    } 			    
 			    else {
 					; // JBL Note: What do I do here?
 				}
