@@ -1,4 +1,4 @@
-/*$Id: DefaultParameterAdapter.java,v 1.3 2004/07/20 02:03:23 nw Exp $
+/*$Id: DefaultParameterAdapter.java,v 1.4 2004/07/22 16:33:48 nw Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,12 +14,15 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
+import org.astrogrid.io.Piper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringWriter;
 
 
 /** default parameter adapter implementation
@@ -40,20 +43,23 @@ public class DefaultParameterAdapter implements ParameterAdapter {
      * if the parameter is direct, just return the value of the parameter value itself, 
      * if indirect, retreive the value first
      * @returrn always retirns the string value of this parameter
-     * @todo check that this is the best behaviour - only reads a line of the file - not so good.
      *  */
     public Object process() throws CeaException {
         if (indirectVal == null) {
             return val.getValue();
         } else {
-            BufferedReader br = new BufferedReader( new InputStreamReader( indirectVal.read()));
             try {
-            Object result = br.readLine();
-            br.close();
-            return result;
-            } catch (IOException e) {
-                throw new CeaException("Could not process parameter " + val.getName(),e);
+                StringWriter sw = new StringWriter();
+                Reader r = new InputStreamReader(indirectVal.read());                
+                Piper.pipe(r, sw);
+                r.close();
+                sw.close();
+                return sw.toString();                
             }
+            catch (IOException e) {
+                throw new CeaException("Could not prociess parameter " + val.getName());
+            }
+
         }
     }
 
@@ -66,14 +72,17 @@ public class DefaultParameterAdapter implements ParameterAdapter {
      */
     public void writeBack(Object o) throws CeaException {
         //don't trust it...
+        String value;        
         if (o == null) {
-            return;
+            value = "<null>";
+        } else {
+            value = o.toString();
         }
         if (indirectVal == null) {
-            val.setValue(o.toString());
+            val.setValue(value);
         } else {
             PrintWriter pw = new PrintWriter(new OutputStreamWriter( indirectVal.write() ));
-            pw.println(o);
+            pw.println(value);
             pw.close();
         }
     }
@@ -85,6 +94,9 @@ public class DefaultParameterAdapter implements ParameterAdapter {
 
 /* 
 $Log: DefaultParameterAdapter.java,v $
+Revision 1.4  2004/07/22 16:33:48  nw
+reads in values fully now.
+
 Revision 1.3  2004/07/20 02:03:23  nw
 doc
 
