@@ -1,4 +1,4 @@
-/*$Id: KeywordMaker.java,v 1.1 2004/11/03 05:14:33 mch Exp $
+/*$Id: KeywordMaker.java,v 1.2 2004/11/03 12:13:26 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,13 @@
 **/
 package org.astrogrid.datacenter.impl.cds;
 
+import org.astrogrid.datacenter.query.condition.*;
+
 import java.util.Hashtable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.datacenter.impl.cds.vizier.DecimalDegreesTarget;
-import org.astrogrid.datacenter.impl.cds.vizier.VizierUnit;
-import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.query.condition.*;
 
 /**
  * Takes a 'flat' query - one that consists of no nested equals conditions and only AND
@@ -111,6 +109,9 @@ public class KeywordMaker  {
 
 /*
 $Log: KeywordMaker.java,v $
+Revision 1.2  2004/11/03 12:13:26  mch
+Fixes to branch cockup, plus katatjuta Register and get cone (for examples)
+
 Revision 1.1  2004/11/03 05:14:33  mch
 Bringing Vizier back online
 

@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate_v05.java,v 1.9 2004/11/03 00:17:56 mch Exp $
+ * $Id: WebDelegate_v05.java,v 1.10 2004/11/03 12:13:26 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -126,7 +126,12 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
     * @return InputStream to results document, including votable
     */
    public InputStream coneSearch(double ra, double dec, double sr) throws IOException {
-      return askQuery(SimpleQueryMaker.makeConeQuery(ra, dec, sr, new ReturnTable(null, "VOTABLE")));
+      Query coneQuery = SimpleQueryMaker.makeConeQuery(ra, dec, sr, new ReturnTable(null, "VOTABLE"));
+      if (coneQuery.getScope() != null) {
+         //make sure no scope set from local config, bit of a botch
+         coneQuery.setScope(null);
+      }
+      return askQuery(coneQuery);
    }
    
    /**
@@ -189,6 +194,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
 
 /*
  $Log: WebDelegate_v05.java,v $
+ Revision 1.10  2004/11/03 12:13:26  mch
+ Fixes to branch cockup, plus katatjuta Register and get cone (for examples)
+
  Revision 1.9  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 
@@ -261,6 +269,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate_v05.java,v $
+Revision 1.10  2004/11/03 12:13:26  mch
+Fixes to branch cockup, plus katatjuta Register and get cone (for examples)
+
 Revision 1.9  2004/11/03 00:17:56  mch
 PAL_MCH Candidate 2 merge
 

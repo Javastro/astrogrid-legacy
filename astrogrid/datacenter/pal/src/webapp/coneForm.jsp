@@ -38,7 +38,7 @@
         <%= SimpleConfig.getSingleton().getString(SqlMaker.CONE_SEARCH_TABLE_KEY, "(ERROR: Not Configured") %>.
         <%= SimpleConfig.getSingleton().getString(SqlMaker.CONE_SEARCH_DEC_COL_KEY, "(ERROR: Not Configured") %>
    
-         <form action="SubmitCone" method="POST">
+         <form action="SubmitCone" method="get">
           <p>
             <table border='0'>
             <tr><td align='right'>Right Ascension in decimal degrees, J2000 <td><input type="text" name="RA"/></tr>
