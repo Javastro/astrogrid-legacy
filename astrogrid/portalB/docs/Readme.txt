@@ -122,3 +122,57 @@ if(!authorized) {
   //now you their is a pp.getReason() if you wish to show an error message.
 }
 -------------------------------------------------------
+How to Integrate pages into Astrogrid Cocoon
+
+First create your own page hopefullyin a xsp and xsl pages for cocoon.  With only the content no menus or anything that is common to astrogrid.
+Now once you have your page working then in your xsl page put a surrounding page and content tags around your stuff.
+<page>
+ 	<content>
+ 		//Now here is where you put all your content templates.
+ 	</content
+ </page>
+ 
+ Now it is time to wrap all the common astrogrid stuff into it.  This is done by the astrogrid.xsl file.  Look at the example below.
+ So just add the lines xml element <map:act type="astrogrid"> below your cocoon sitemap entry.
+ Be sure to add all the map:parameter names. And be sure to change the curent-page,help-page and title-name to your page.
+ current-page normally matches your pattern another words the page name the users used to get to the page.
+ help-page is the link to your help page.
+ title-name is used for showing the name in the Astrogrid header.
+          <map:match pattern="agadministration.html">
+            <!-- Call our query action -->
+            <map:act type="astrogrid-admin">
+               <!-- Set the session attribute to check for the user name -->
+               <map:parameter name="user-param"  value="user"/>
+               <!-- Generate our page XML -->
+               <map:generate src="community/xsp/administration.xsp" type="serverpages" label="000, 001"/>
+               <!-- Convert the data into a page -->
+               <map:transform src="community/xsl/administration.xsl" label="002">
+                  <map:parameter name="action" value="{action}"/>
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+                  <map:parameter name="message" value="{message}"/>
+               </map:transform>
+            </map:act>
+            <!-- Wrap the page in our HTML template -->
+            <map:act type="astrogrid">
+            <map:transform src="common/xsl/astrogrid.xsl" label="003">
+		              <map:parameter name="credential" value="{credential}" />
+		              <map:parameter name="current-page"  value="agdataquery.html"/>
+            
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="agadministration.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="title-name"  value="Administration"/>               
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            </map:act>
+            <!-- Serialize as HTML -->
+            <map:serialize type="html"/>
+         </map:match>
+ 
