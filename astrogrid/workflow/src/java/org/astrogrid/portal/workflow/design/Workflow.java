@@ -1116,4 +1116,15 @@ public class Workflow extends Activity {
     // logger.debug( logString ) ;
   }
 
+  /** @TODO  - flesh this out.  Added by JDT to make workflow build on maven.
+   * @param stepActivityKey
+   * @param tool
+   * @param workflow
+   * @return
+   */
+  public static boolean insertToolIntoStep(String stepActivityKey, Tool tool, Workflow workflow) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
 } // end of class Workflow
