@@ -6,6 +6,10 @@
             <item name="AstroGrid" href="http://www.astrogrid.org"/>
             <item name="Projects" href="index.html"/>
         </links>
+	    <menu name="Overview">
+          <item name="About this documentation" 
+                href="about.html"/>
+        </menu>
         <menu name="Downloads">
 			<!--+
 				| The following links use pattern matching, 
