@@ -36,16 +36,16 @@
     <load-on-startup>100</load-on-startup>
   </servlet>
 
-<!--
 <servlet>
    <servlet-name>RegistryHarvest</servlet-name>
    <servlet-class>astrogrid.registry.harvest.daemon.HarvestDaemon</servlet-class>
-   <load-on-startup>1</load-on-startup>
-</servlet>
--->
+   <!--
+   <load-on-startup>200</load-on-startup>
+   -->
+ </servlet>
 
     <servlet>
-      <servlet-name>OAIHandler</servlet-name>
+      <servlet-name>OAIHandlerv0_9</servlet-name>
       <description>
         This servlet processes OAI verbs. 
 
@@ -55,18 +55,45 @@
         name of the action class that will be used to process this request.
       </description>
       <servlet-class>astrogrid.registry.oai.OAIHandler</servlet-class>
-      <!-- don't Load this servlet at server startup time 
-      <load-on-startup>5</load-on-startup>
-      -->
+	  <init-param>
+        <param-name>registry_version</param-name>
+      	<param-value>0.9</param-value>
+      </init-param>
     </servlet>
 
 
-<!--
+    <servlet>
+      <servlet-name>OAIHandlerv0_10</servlet-name>
+      <description>
+        This servlet processes OAI verbs. 
+
+        The initialization parameter names for this servlet are the
+        "servlet path" that will be received by this servlet (after the
+        filename extension is removed).  The corresponding value is the
+        name of the action class that will be used to process this request.
+      </description>
+      <servlet-class>astrogrid.registry.oai.OAIHandler</servlet-class>
+	  <init-param>
+        <param-name>registry_version</param-name>
+      	<param-value>0.10</param-value>
+      </init-param>
+    </servlet>
+
+
+    <context-param>
+      <param-name>properties</param-name>
+      <param-value>oaicat.properties</param-value>
+      <description>
+        The oaicat.properties file containing
+        datapairs used to initialize the OAI repository software.
+      </description>
+    </context-param>
+
+
 <servlet-mapping>
    <servlet-name>RegistryHarvest</servlet-name>
    <url-pattern>/RegistryHarvest</url-pattern>
 </servlet-mapping>
--->
 
   <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
@@ -89,15 +116,16 @@
   </servlet-mapping>
 
     <servlet-mapping>
-      <servlet-name>OAIHandler</servlet-name>
-      <url-pattern>/OAIHandler</url-pattern>
+      <servlet-name>OAIHandlerv0_9</servlet-name>
+      <url-pattern>/OAIHandlerv0_9</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>OAIHandler</servlet-name>
-        <url-pattern>/servlet/OAIHandler</url-pattern>
+        <servlet-name>OAIHandlerv0_9</servlet-name>
+        <url-pattern>/servlet/OAIHandlerv0_9</url-pattern>
     </servlet-mapping>
 
+<!--
     <context-param>
       <param-name>properties</param-name>
       <param-value>oaicat.properties</param-value>
@@ -106,7 +134,7 @@
         datapairs used to initialize the OAI repository software.
       </description>
     </context-param>
-
+-->
 
  <!-- uncomment this if you want the admin servlet -->
  <!--
