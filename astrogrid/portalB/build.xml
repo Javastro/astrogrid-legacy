@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
-    | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/07/31 14:24:24 $</cvs:author>
-    | <cvs:version>$Revision: 1.38 $</cvs:version>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/08/12 10:45:43 $</cvs:author>
+    | <cvs:version>$Revision: 1.39 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.39  2003/08/12 10:45:43  dave
+    | Fixed JUnit classpath in javac tasks
+    |
     | Revision 1.38  2003/07/31 14:24:24  KevinBenson
     | New build xml files works with the DataQuery that is integrated with cocoon and also now does unzip for axis and cocoon instead of untar.
     |
@@ -140,11 +143,10 @@
 	<property name="site.cocoon"  value="${basedir}/build/site/cocoon"/>
 
 	<!--+
-	    | User preferences.
-	    | This is where to put local properties eg.tomcat installation path.
-	    | tomcat.home=/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14
-	    +-->
+	    | User properties, these will override the properties defined in the build script.
 	<property file="${user.home}/ant.properties"/>
+	    +-->
+	<property file="ant.properties"/>
 
 	<!-- Tomcat installation path (default if not in ant.properties) -->
 	<property name="tomcat.home"    value="/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14"/>
@@ -162,7 +164,7 @@
 	<!-- JUnit installation path -->
 	<property name="junit.src"    value="depends/junit/junit-3.8.1.zip"/>
 	<property name="junit.build"  value="build/junit"/>
-	<property name="junit.home"   value="build/junit/junit-3.8.1"/>
+	<property name="junit.home"   value="build/junit"/>
 
 	<!-- Axis properties -->
 <!--
@@ -377,7 +379,7 @@
 	<!-- Clean the Tomcat endorsed libraries -->
 	<target name="tomcat.RESET">
 		<echo message="Cleaning Tomcat endorsed libraries ...."/>
-		<delete verbose="true">
+		<delete verbose="false" failonerror="false">
 			<fileset dir="${tomcat.home}/common/endorsed">
 				<include name="*.jar"/>
 				<include name="**.jar"/>
@@ -528,7 +530,7 @@
 	<!-- Replace the Cocoon build.properties -->
 	<target name="cocoon.2.1.build.properties" depends="cocoon.init">
 		<!-- Install our own version of the build.properties -->
-		<copy verbose="true" overwrite="true" toDir="${cocoon.source}">
+		<copy verbose="false" overwrite="true" toDir="${cocoon.source}">
 			<fileset dir="src/cocoon">
 				<include name="build.properties"/>
 				<include name="blocks.properties"/>
@@ -612,7 +614,7 @@
 	    | This needs to be done before Tomcat is started.
 	    +-->
 	<target name="cocoon.2.0.endorsed" depends="cocoon.init">
-		<copy verbose="true" todir="${tomcat.home}/common/endorsed">
+		<copy verbose="false" todir="${tomcat.home}/common/endorsed">
 			<fileset dir="${cocoon.webapp}/WEB-INF/lib">
 				<include name="xalan-2.3.1.jar"/>
 				<include name="xercesImpl-2.0.0.jar"/>
@@ -842,6 +844,10 @@
 		       deprecation="on"
 		       optimize="on"
 		       >
+			<classpath>
+				<!-- The JUnit libraries -->
+				<path refid="junit.classpath"/>
+			</classpath>
 		</javac>
 	</target>
 
@@ -998,6 +1004,7 @@
 		       >
 			<classpath>
 				<path refid="axis.classpath"/>
+				<path refid="junit.classpath"/>
 			</classpath>
 		</javac>
 	</target>
@@ -1107,6 +1114,8 @@
 				<path refid="cocoon.classpath"/>
 				<!-- Tomcat servlet libraries (required for Axis 1.0) -->
 				<path refid="tomcat.servlet.classpath"/>
+				<!-- The JUnit libraries -->
+				<path refid="junit.classpath"/>
 			</classpath>
 		</javac>
 	</target>
@@ -1522,6 +1531,7 @@
 		       >
 			<classpath>
 				<path refid="axis.classpath"/>
+				<path refid="junit.classpath"/>
 			</classpath>
 		</javac>
 	</target>
@@ -2324,7 +2334,7 @@
 	<!-- Install our source tree as a web-app -->
 	<target name="project.webapp.install" depends="tomcat.tasks">
 		<!-- Copy our WEB-INF directory -->
-		<copy verbose="true" toDir="${basedir}">
+		<copy verbose="false" toDir="${basedir}">
 			<fileset dir="src/webapp">
 			</fileset>
 		</copy>
@@ -2338,10 +2348,10 @@
 
 	<!-- Remove our project webapps-->
 	<target name="release.DELETE" depends="">
-		<delete verbose="true" failonerror="false" dir="${tomcat.home}/webapps/cocoon"/>
-		<delete verbose="true" failonerror="false" file="${tomcat.home}/webapps/cocoon.war"/>
-		<delete verbose="true" failonerror="false" dir="${tomcat.home}/webapps/DataQuery"/>
-		<delete verbose="true" failonerror="false" file="${tomcat.home}/webapps/DataQuery.war"/>
+		<delete verbose="false" failonerror="false" dir="${tomcat.home}/webapps/cocoon"/>
+		<delete verbose="false" failonerror="false" file="${tomcat.home}/webapps/cocoon.war"/>
+		<delete verbose="false" failonerror="false" dir="${tomcat.home}/webapps/DataQuery"/>
+		<delete verbose="false" failonerror="false" file="${tomcat.home}/webapps/DataQuery.war"/>
 	</target>
 
 	<!-- Release our project -->
