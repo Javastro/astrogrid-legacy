@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.25 2004/02/24 16:04:18 mch Exp $
+ * $Id: AxisDataServer.java,v 1.26 2004/02/24 19:31:06 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -298,7 +298,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
             throw new IllegalArgumentException("Unknown qid" + queryId);
          }
          
-         querier.registerListener(new WebNotifyServiceListener(u));
+         querier.registerListener(new JobNotifyServiceListener(u));
       }
       catch (MalformedURLException e)  {
          throw new RemoteException("Malformed URL",e);
