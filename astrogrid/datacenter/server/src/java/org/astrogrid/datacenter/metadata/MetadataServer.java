@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataServer.java,v 1.6 2004/07/01 23:07:14 mch Exp $
+ * $Id: MetadataServer.java,v 1.7 2004/08/11 14:57:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -125,16 +125,53 @@ public class MetadataServer
    }
    
    
-   /* (non-Javadoc)
-    * @see org.astrogrid.datacenter.axisdataserver.AxisDataServer#getLanguageInfo(java.lang.Object)
-    */
-   public Language[] getLanguageInfo(Object arg0) throws RemoteException {
-      
-      try {
-         return PluginQuerier.instantiateQuerierSPI().getTranslatorMap().list();
-      } catch (DatabaseAccessException e) {
-         throw new RemoteException("Could not instantiate querier SPI",e);
+   /** Returns the element for the given table/column */
+   public static Element getColumnElement(String tableName, String columnName) throws IOException {
+      NodeList tables = getMetadata().getElementsByTagName("Table");
+
+      Element tableElement = null;
+      for (int t=0;t<tables.getLength();t++) {
+         if (((Element) tables.item(t)).getAttribute("name").equals(tableName)) {
+            tableElement = (Element) tables.item(t);
+         }
       }
+      
+      if (tableElement == null) {
+         throw new IllegalArgumentException("No such table '"+tableName+"' in metadata");
+      }
+
+      NodeList columns = tableElement.getElementsByTagName("Column");
+      
+      Element colElement = null;
+      for (int c=0;c<columns.getLength();c++) {
+         if (((Element) columns.item(c)).getAttribute("name").equals(columnName)) {
+            colElement = (Element) columns.item(c);
+         }
+      }
+      
+      if (colElement == null) {
+         throw new IllegalArgumentException("No such column '"+columnName+"' in metadata for table '"+tableName+"'");
+      }
+
+      return colElement;
+   }
+
+   /** Returns a list of the tables */
+   public static String[] getTables() throws IOException {
+      NodeList tableNodes = getMetadata().getElementsByTagName("Table");
+      String[] tables = new String[tableNodes.getLength()];
+      for (int t=0;t<tableNodes.getLength();t++) {
+         tables[t] = ((Element) tableNodes.item(t)).getAttribute("name");
+      }
+      return tables;
+   }
+   
+   
+   /** Returns a list of the columns for the given table */
+   
+   /** Returns the units of the given table/column */
+   public static String getUnits(String tableName, String columnName) throws IOException {
+      return DomHelper.getValue(getColumnElement(tableName, columnName), "Units");
    }
    
 }
