@@ -10,32 +10,10 @@
 
 
 <!-- copy all input to output.
-when we encounter an element called 'typeMapping' whose 'type' attribute contains
-the adql package, mangle serializer and deserializer attributes 
 -->
 <xsl:template match="node()">
     <xsl:choose>
-    <!-- change typemappings to use castor serializers -->
-    <!--
-    <xsl:when test="name() = 'typeMapping' and (contains(@type,'org.astrogrid.datacenter.adql.generated') or contains(@type,'org.astrogrid.datacenter.axisdataserver.types'))">
-        <xsl:copy>
-            <xsl:copy-of select="@*[not(name()='serializer' or name()='deserializer')]" />
-            <xsl:attribute name="serializer">org.apache.axis.encoding.ser.castor.CastorSerializerFactory</xsl:attribute>
-            <xsl:attribute name="deserializer">org.apache.axis.encoding.ser.castor.CastorDeserializerFactory</xsl:attribute>
-            <xsl:apply-templates/>
-        </xsl:copy>
-    </xsl:when>
-    -->
-    <!-- change className setting to point to our implementation class -->
-    <!--
-    <xsl:when test="name() = 'parameter' and @name = 'className'">
-    	<xsl:copy>
-		<xsl:copy-of select="@*[not(name()='value')]" />
-		<xsl:attribute name="value">org.astrogrid.datacenter.service.AxisDataServer</xsl:attribute>
-		<xsl:apply-templates />
-	</xsl:copy>
-    </xsl:when>
-    -->
+
    <!-- change className setting to point to our implementation class -->
     <xsl:when test="name() = 'parameter' and @name = 'className'">
     	<xsl:copy>
