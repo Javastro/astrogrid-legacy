@@ -7,7 +7,7 @@
    </From>
    <Where>
       <Compare Comparison="=">
-         <Column Name="vr:Resource/vr:Identifier/vr:AuthorityID"/>
+         <Column Name="vr:Resource/Identifier/AuthorityID"/>
          <Atom><String>org.astrogrid.localhost</String></Atom>
       </Compare>
    </Where>

@@ -8,11 +8,11 @@
    <Where>
    	<And>
       <Compare Comparison="=">
-         <Column Name="vr:Resource/vr:Identifier/vr:AuthorityID"/>
+         <Column Name="vr:Resource/Identifier/AuthorityID"/>
          <Atom><String>org.astrogrid.localhost</String></Atom>
       </Compare>
       <Compare Comparison="=">
-         <Column Name="vr:Resource/vr:Identifier/vr:ResourceKey"/>
+         <Column Name="vr:Resource/Identifier/ResourceKey"/>
          <Atom><String>sia</String></Atom>
       </Compare>      
       </And>
