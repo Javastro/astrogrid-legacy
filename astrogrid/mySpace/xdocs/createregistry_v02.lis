@@ -1,0 +1,258 @@
+AstroGrid Iteration 4 Kit.                                     MySpace system
+
+AstroGrid home page: http://www.astrogrid.org/
+
+This document refers to the AstroGrid Iteration 4 release.  It should be
+displayed with a fixed-pitch (courier) font.
+-----------------------------------------------------------------------------
+
+This document is a slightly incomplete draft.  Please send comments to
+acd@roe.ac.uk
+
+-----------------------------------------------------------------------------
+
+                      Creating a New MySpace Registry
+                      ===============================
+                               --- DRAFT ---
+
+                               A C Davenhall     
+                         Version 2, 28 November 2003
+
+
+Introduction
+------------
+
+One of the steps in installing a new MySpace System is to create a
+MySpace registry for that system.  This note describes how to create a
+new mySpace registry.  An example registry is included in the
+installation kit, though for a real MySpace system, which is to be used
+for production work, you will probably want to create a customised
+MySpace registry from scratch.
+
+A MySpace registry comprises two tables in a database.  Currently the
+DBMS used to create and manipulate this database and its tables is
+HSQLDB (see http://hsqldb.sourceforge.net/), which is available in the
+public domain.  The MySpace release includes a copy of HSQLDB and you do
+not need to obtain any additional software (though you might want to
+consult the home page given above for interest).  The two tables in a
+MySpace registry are:
+
+  REG     a list of all the files known to the MySpace system,
+
+  SERVERS a list of all the servers in the MySpace system.
+
+The REG table is initially empty and will be gradually populated once
+the MySpace system is deployed and the MySpace manager is invoked to
+create users and import files for these users.  However, the SERVERS
+table must be populated before the MySpace system is deployed.  Thus,
+creating a MySpace registry consists of: creating a database, creating
+the two tables in this database and populating the SERVERS table.  It
+would, in principle, be possible to perform these operations by entering
+the appropriate SQL commands into one of the HSQLDB utility programs,
+but this would be tiresome and error-prone.  Instead, a utility,
+CreateMySpaceRegistry, is provided to perform the necessary operations.
+This utility, in turn, reads the details of the servers to be included
+in the MySpace system from a text file.  You will prepare a version of
+this file, containing details of your servers, before running
+CreateMySpaceRegistry.  An example file is included in the release and
+the format of the file is described below.
+
+You might occasionally need to amend the SERVERS table for an
+operational MySpace registry, perhaps because a new server is being
+added or perhaps to change some of the details of an existing server.
+Eventually a set of screens will be provided for this operation.
+However, in Iteration 4 you need to enter the appropriate SQL directly
+using one of the HSQLDB utilities.  Some examples are provided below.
+
+The structure of this document is as follows.  The subsequent sections
+describe where to find the example files, discuss some matters about the
+registry name and describe the format of the CreateMySpaceRegistry input 
+file.  The penultimate section presents the complete procedure to create
+a new registry.  The final section gives examples of querying and
+updating the registry tables using a standard HSQLDB utility.
+
+
+Example Files
+-------------
+
+The installation kit includes the HSQLDB database files for an example
+MySpace registry and the corresponding example input file for the
+CreateMySpaceRegistry program.  These files reside in directory:
+
+ .../astrogrid/mySpace/demoData
+
+The example files are:
+
+  HSQLDB database files: {           example.db.properties
+                         {           example.db.script
+
+  CreateMySpaceRegistry input file:  example.servers
+
+You will probably find it convenient to have a copy of example.servers to
+hand as you read this note.
+
+
+The Registry Name and Registry File Names
+-----------------------------------------
+
+The very first thing that you need to do when creating a registry is to
+decide on its name.  This name will be used as a component of several
+Unix file names, so it is sensible to restrict it to contain only
+alphanumeric characters and the underscore (`_').  Punctuation
+characters, special characters and spaces are all best avoided.  You
+will probably use the same name for the registry as for the MySpace
+system.
+
+The names of the HSQLDB database files are generated from the registry
+name in a fairly obvious fashion (see the examples in the preceding
+section).  The name of the CreateMySpaceRegistry input file is the
+registry name followed by `.servers'.
+
+
+
+The CreateMySpaceRegistry Input File
+------------------------------------
+
+See file: example.servers
+
+The CreateMySpaceRegistry input file lists the servers to be included in
+the MySpace system and specifies their details.  The format of this file
+is quite flexible.  Comment and blank lines can be freely included as 
+required, and their use to improve readability is encouraged.  Comments
+begin with a `#' character and continue for the rest of the line.
+
+The details of each server must occupy a single line.  Each server is
+specified by five items, which must be separated by one or more spaces.
+The items required are as follows and must occur in the following order:
+
+* The string `server', which must be in lower case,
+
+* the name of the server (as it will appear in listings of containers
+  and files),
+
+* the expiry period for files on the server, in days,
+
+* a URL corresponding to the directory on the server which holds
+  the data files,
+
+* the actual file name of the directory on the server containing
+  the data files.
+
+A MySpace system can contain an arbitrary number of servers and an entry
+must be supplied for every server in the system.  At least one server
+entry must be present.  Obviously, the names of the servers must be
+distinct.
+
+IMPORTANT RESTRICTION: currently one of the servers must be called `serv1'.
+
+
+The Procedure to Create a New Registry
+--------------------------------------
+
+The procedure to create a new MySpace registry is as follows.
+
+1. Choose a name for the registry; it will probably be the name of your
+   MySpace system.
+
+2. Create an appropriate input file for CreateMySpaceRegistry, listing
+   the servers to be included in the MySpace system.  The format is
+   described in the preceding section and the example file included in
+   the Iteration 4 kit can be used as a template.
+
+3. Create the registry by running the CreateMySpaceRegistry utility,
+   which resides in directory:
+
+    .../astrogrid/mySpace/src/java/org/astrogrid/mySpace/mySpaceDemo
+
+   Set an appropriate CLASSPATH (*MAGIC DETAILS OMITTED*) and then:
+
+     java org/astrogrid/mySpace/CreateMySpaceRegistry registry-name
+
+   for example, with the example files:
+
+     java org/astrogrid/mySpace/CreateMySpaceRegistry example
+
+   Note that the CreateRegistry utility requires the name of the
+   registry, not the name of the input file.
+
+4. You can check that the registry was created successfully by using
+   the HSQLDB utility DatabaseManager (see the following section).  The
+   REG table will initially be empty, but the contents of the SERVERS
+   table can be displayed by entering the SQL:
+
+     SELECT * FROM SERVERS
+
+
+Direct Access to the Registry Tables
+------------------------------------
+
+This section describes how to use the HSQLDB utility DatabaseManager to
+query or update tables in a MySpace registry.  DatabaseManager is run
+from the Unix shell.  The procedure is as follows.
+
+1. Set an appropriate CLASSPATH (*MAGIC DETAILS OMITTED*).
+
+2. Run DatabaseManager:
+
+     java org.hsqldb.util.DatabaseManager -url jdbc:hsqldb:registry-name.db
+
+   for example, with the example database:
+
+     java org.hsqldb.util.DatabaseManager -url jdbc:hsqldb:example.db
+
+   The DatabaseManager window will then appear.  Enter the required SQL
+   statement and click on the `Execute' panel.
+
+You might use DatabaseManager to query either of the two tables or to
+update table SERVERS.  However, I strongly recommend that you do not
+use it to update table REG, as you are likely to leave the registry
+inconsistent with the files on the servers.  Examples of the SQL
+required for various common operations are listed below.
+
+Query table REG
+
+  SELECT * FROM REG
+
+Query table SERVERS
+
+  SELECT * FROM SERVERS
+
+Add a new server to table SERVERS
+
+  INSERT INTO SERVERS (name, expiryPeriod, URI, directory)
+    VALUES ('serv3', 45, 'http://www.blue.nowhere.org/s3/',
+   '/base/direct/s3/')
+
+Delete a server from table SERVERS
+
+  DELETE FROM SERVERS WHERE (name='serv3')
+
+  Obviously a server should only be deleted from the SERVERS table after
+  the MySpace manager has been used to remove all the files from the server.
+
+Update the entry for a server in table SERVERS
+
+  UPDATE SERVERS SET expiryPeriod=37 WHERE (name='serv3')
+
+  Here the expiry period for server serv3 is being set to 37 days.  The
+  syntax to update the other columns is similar (but don't forget to
+  enclose string values in single quotes).
+
+
+
+Author Contact Details
+----------------------
+
+A C Davenhall (acd@roe.ac.uk)
+Royal Observatory, Blackford Hill, Edinburgh, EH9 3HJ, UK.
+
+
+Revision History
+----------------
+
+Version 1, 29/6/03:  Original version for Iteration 2. (ACD)
+Version 2, xx/12/03: Re-written for Iteration 4. (ACD)
+
+
+-----------------------------------------------------------------------------
+AstroGrid Iteration 4 Kit.                                     MySpace system
