@@ -7,7 +7,7 @@
   <id>astrogrid-datawarehouse</id>
   <name>AstroGrid Data Warehouse</name>
 
-  <currentVersion>HEAD</currentVersion>
+  <currentVersion>SNAPSHOT</currentVersion>
   
   <organization>
     <name>AstroGrid</name>
@@ -16,7 +16,9 @@
   </organization>
 
   <inceptionYear>2002</inceptionYear>
-  <package>org.astrogrid</package> <logo>http://www.astrogrid.org/images/AGlogo</logo> 
+      <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+  <package>org.astrogrid</package> 
+  <logo>http://www.astrogrid.org/images/AGlogo</logo> 
   <shortDescription>AstroGrid Warehouse Components</shortDescription>
 
   <siteDirectory>/var/www/www/maven/build/warehouse</siteDirectory>
@@ -28,6 +30,8 @@
     <developerConnection>
       scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/warehouse
     </developerConnection>
+            <url> http://www.astrogrid.org/viewcvs/astrogrid/warehouse/ 
+            </url>
   </repository>
 
   <developers>
@@ -54,209 +58,13 @@
     	<id>gtr</id>
     	<email>gtr@ast.cam.ac.uk</email>
     </developer>
+    
+    <developer>
+    	<name>John Taylor</name>
+    	<id>jdt</id>
+    	<email>jdt AT roe.ac.uk</email>
+    </developer>
   </developers>
-
-  <dependencies> <!-- hope to be able to remove some of these soon. -->
-
-    <!-- astrogrid -specific deps -->
-    <dependency>
-      <id>astrogrid-common</id>
-      <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-  
-    <dependency>
-      <groupId>astrogrid-datacenter</groupId>
-      <artifactId>astrogrid-datacenter-server</artifactId>
-      <version>Warehouse01</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <groupId>astrogrid-datacenter</groupId>
-      <artifactId>astrogrid-datacenter-client</artifactId>
-      <version>Warehouse01</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <!-- This is needed for runtime tests because 
-         the datacentre stuff needs it. -->
-    <dependency>
-      <id>astrogrid-mySpace</id>
-      <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    
-    <dependency>
-      <id>astrogrid-applications</id>
-      <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>    
-
-    <!-- more standard deps -->
-    <dependency>
-      <id>axis</id>
-      <version>1.1</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <groupId>axis</groupId>
-      <type>jar</type>
-      <artifactId>activation</artifactId>
-      <version>axis-1.1</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <groupId>axis</groupId>
-      <type>jar</type>
-      <artifactId>mailapi</artifactId>
-      <version>axis-1.1</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <id>wsdl4j</id>
-      <version>1.0</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <id>saaj</id>
-      <version>1.0</version>
-      <jar>saaj.jar</jar>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <id>commons-logging</id>
-      <version>1.0.3</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <id>commons-discovery</id>
-      <version>20030211.213356</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    
-    <dependency>
-      <id>jaxrpc-api</id>
-      <version>1.0.3</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    
-    <dependency>
-      <id>xml-apis</id>
-      <version>1.0.b2</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    
-    <dependency>
-      <id>log4j</id>
-      <version>1.2.4</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <id>xercesImpl</id>
-      <version>2.1.0</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <!-- dependencies from datacenter -->
-    <dependency>
-      <id>castor</id>
-      <version>0.9.5-xml</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-  </dependencies>
-
-  <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-
-    <unitTest>
-      <includes>
-        <include>**/*Test.java</include>
-      </includes>
-
-      <resources>
-        <resource>
-          <directory>${basedir}/test/java</directory>
-          <includes>
-            <include>**/*.xml</include>
-	    <include>**/*.properties</include>
-	    <include>**/*.sql</include>
-          </includes>
-        </resource>
-      </resources>
-    </unitTest>
-
-    <resources>
-    
-      <!-- This the is product of the build of the ogsadai sub-project. -->
-      <resource>
-        <directory>ogsadai/target</directory>
-        <includes>
-          <include>astrogrid-ogsadai-delegates.jar</include>
-        </includes>
-      </resource>
-      
-      <resource><!-- config files -->
-        <directory>${basedir}/src/java</directory>
-          <includes>
-            <include>**/*.xml</include>
-            <include>**/*.properties</include>
-          </includes>
-      </resource>
-        
-      <resource> <!-- webservice related files -->
-        <directory>${basedir}</directory>
-        <includes>
-	  <include>src/webapp/WEB-INF/server-config.wsdd</include>
-        </includes>
-      </resource>
-        
-    </resources>
-
-  </build>
 
   <reports>
     <report>

@@ -2,14 +2,9 @@
 <project>
 <extend>${basedir}/build/project-base.xml</extend>
   <!-- the version of maven's project object model -->
-  <pomVersion>3</pomVersion>
-
   <!-- a unique name for this project -->
   <id>astrogrid-datawarehouse</id>
   <name>Astrogrid Data Warehouse</name>
-  
-  <currentVersion>HEAD</currentVersion>
-
 	<description><![CDATA[
 	<p>
 	Links will follow shortly on the left for GDW subproject information:
@@ -130,43 +125,6 @@ This is the configuration file for an Astrogrid data centre - it can be speciali
 	</description>
  
   <shortDescription>AstroGrid Warehouse Components</shortDescription>
-
-  <siteDirectory>/var/www/www/maven/build/warehouse</siteDirectory>
-
-  <repository>
-    <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/warehouse
-    </connection>
-    <developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/warehouse
-    </developerConnection>
-  </repository>
-
-  <developers>
-    <developer>
-      <name>Kona Andrews</name>
-      <id>kea</id>
-      <email>kea@ast.cam.ac.uk</email>
-    </developer>
-
-    <developer>
-    	<name>Elizabeth Auden</name>
-    	<id>eca</id>
-    	<email>eca@mssl.ucl.ac.uk</email>
-    </developer>
-
-    <developer>
-    	<name>Clive Page</name>
-    	<id>cgp</id>
-    	<email>cgp@star.le.ac.uk</email>
-    </developer>
-
-    <developer>
-    	<name>Guy Rixon</name>
-    	<id>gtr</id>
-    	<email>gtr@ast.cam.ac.uk</email>
-    </developer>
-  </developers>
 
   <dependencies> <!-- hope to be able to remove some of these soon. -->
 

@@ -5,10 +5,10 @@
 
   <pomVersion>3</pomVersion>
   <id>astrogrid-ogsadai-app</id>
-  <groupId>astrogrid-ogsadai</groupId>
+  <groupId>org.astrogrid</groupId>
   <name>AstroGrid Data Warehouse OGSA-DAI connection</name>
 
-  <currentVersion>HEAD</currentVersion>
+  <currentVersion>SNAPSHOT</currentVersion>
   
   <organization>
     <name>AstroGrid</name>

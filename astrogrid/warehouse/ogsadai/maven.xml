@@ -3,9 +3,9 @@
 <!-- extension maven script -->
 <project xmlns:artifact="artifact">
 
-  <goal name="site">
+  <!--goal name="site">
     <echo message="Got site"/>
-  </goal>
+  </goal-->
   
   <!-- The multiproject:artifact goal in the parent project
        calls javaapp:javaapp in this sub-project, but the Java-app

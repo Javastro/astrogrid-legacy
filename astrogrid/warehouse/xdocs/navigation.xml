@@ -3,7 +3,7 @@
   <title>AstroGrid Project</title>
   <body>
     <menu name="Warehouse subprojects">
-        <item name="OGSA-DAI Client" href="multiproject/astrogrid-warehouse-ogsadai/index.html" />
+        <item name="OGSA-DAI Client" href="multiproject/astrogrid-ogsadai-app/index.html" />
     </menu>
     <links>
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>

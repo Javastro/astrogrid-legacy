@@ -13,8 +13,11 @@
   <goal name="astrogrid-clean" prereqs="clean"/>
 
   <!-- site goals -->
-  <goal name="astrogrid-build-site" 
-      prereqs="site"/>
+  <goal name="astrogrid-build-site">
+	<echo message="Master Project: astrogrid-build-site"/>
+	<attainGoal name="multiproject:site" />
+  </goal>    
+      
   <goal name="astrogrid-deploy-site"
       prereqs="astrogrid-build-site,site:fsdeploy" />
   <goal name="astrogrid-install-site"
@@ -40,9 +43,7 @@
 <!-- ============================================ -->
 
 
-  <goal name="site">
-      <echo message="Got topsite"/>
-   </goal>
+
 
   
   <!-- Clean the sub-project when the parent project is cleaned. -->
@@ -72,10 +73,7 @@
     <attainGoal name="multiproject:deploy-snapshot"/>
   </goal>
   
-  <!-- Build the web pages for the sub-project when the main site is built. -->
-  <preGoal name="site:generate">
-    <attainGoal name="multiproject:site"/>
-  </preGoal>
+
   
   <!-- Unpack the PAL WAR such that it can be added to.
        The WAR is assumed to be one of the artifacts declared as dependencies.
