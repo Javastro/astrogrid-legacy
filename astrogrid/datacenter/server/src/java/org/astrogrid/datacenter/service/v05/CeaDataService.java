@@ -1,5 +1,5 @@
 /*
- * $Id: CeaDataService.java,v 1.4 2004/04/22 13:25:54 mch Exp $
+ * $Id: CeaDataService.java,v 1.5 2004/04/23 10:54:01 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,8 +12,7 @@ import java.rmi.RemoteException;
 import org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase;
 import org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList;
 import org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue;
-import org.astrogrid.applications.service.v1.cea.impl._ceaFault;
-import org.astrogrid.applications.service.v1.cea.impl._returnRegistryEntryResponse_returnRegistryEntryReturn;
+import org.astrogrid.applications.service.v1.cea.CeaFault;
 import org.astrogrid.community.Account;
 import org.astrogrid.community.User;
 import org.astrogrid.datacenter.queriers.JobNotifyServiceListener;
@@ -45,7 +44,7 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
     * Returns registry metadata
     *
     */
-   public _returnRegistryEntryResponse_returnRegistryEntryReturn returnRegistryEntry() throws RemoteException {
+   public String returnRegistryEntry() throws RemoteException {
       try {
          return null; //DomHelper.ElementToString(MetadataServer.getVODescription());
       }
@@ -57,7 +56,7 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
    /**
     * Returns query status
     */
-   public MessageType queryExecutionStatus(String queryId) throws RemoteException, _ceaFault {
+   public MessageType queryExecutionStatus(String queryId) throws RemoteException, CeaFault {
       try {
          QuerierStatus status = server.getQueryStatus(Account.ANONYMOUS, queryId);
          
@@ -73,7 +72,7 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
    /**
     * Method listApplications
     */
-   public _ApplicationList listApplications() throws RemoteException, _ceaFault {
+   public _ApplicationList listApplications() throws RemoteException, CeaFault {
       
       throw makeFault("Not implemented");
    }
@@ -86,7 +85,7 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
     * converts last String to URL as the JobMonitorURL
    
     */
-   public String execute(_tool parameters, JobIdentifierType jobId, String jobMonitor) throws RemoteException, _ceaFault  {
+   public String execute(_tool parameters, JobIdentifierType jobId, String jobMonitor) throws RemoteException, CeaFault  {
 
       //extract parameters from _tool
       ParameterValue value = parameters.getInput().getParameter(0);
@@ -146,7 +145,7 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
    /**
     * Aborts the query identified with the given id
     */
-   public boolean abort(String queryId) throws RemoteException, _ceaFault  {
+   public boolean abort(String queryId) throws RemoteException, CeaFault  {
       try {
          server.abortQuery(Account.ANONYMOUS, queryId);
          return true;
@@ -163,6 +162,10 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
 
 /*
 $Log: CeaDataService.java,v $
+Revision 1.5  2004/04/23 10:54:01  nw
+updated to fit with new cea service interface
+(just class name changes)
+
 Revision 1.4  2004/04/22 13:25:54  mch
 Allowed IVORN for query
 
