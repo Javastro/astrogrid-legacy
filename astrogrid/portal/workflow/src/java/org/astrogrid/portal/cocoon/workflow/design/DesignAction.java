@@ -145,7 +145,8 @@ public class DesignAction extends AbstractAction {
 	    ACTION_RESET_PARAMETER = "reset-parameter",
 	    ACTION_REMOVE_TOOL_FROM_STEP = "remove-tool-from-step",
 	    ACTION_ADD_STEP_DESCRIPTION = "add-step-description", 	    
-        ACTION_READ_LISTS = "read-lists";
+        ACTION_READ_LISTS = "read-lists",
+        ACTION_REMOVE_WORKFLOW_FROM_SESSION = "remove-workflow-from-session";
         
     public static final String
         AUTHORIZATION_RESOURCE_WORKFLOW = "workflow" ,
@@ -326,6 +327,9 @@ public class DesignAction extends AbstractAction {
 				else if( action.equals( ACTION_ADD_STEP_DESCRIPTION )){
 					this.insertStepDescription();  
 				}
+				else if( action.equals( ACTION_REMOVE_WORKFLOW_FROM_SESSION )){
+					this.removeWorkflow();  
+				}
                 else {
                     debug( "unsupported action"); 
                 }
@@ -374,8 +378,7 @@ public class DesignAction extends AbstractAction {
         
                 // JL Note: Iteration 3 way of doing things...
                 // PJN note: alterred slightly, also not sure if LoginAction intends to put security token into session?
-
-         
+     
                 this.userid = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG );  
                 trace( "userid: " + userid ) ;             
                 this.community = (String)session.getAttribute( COMMUNITY_NAME_TAG );
@@ -503,6 +506,19 @@ public class DesignAction extends AbstractAction {
             }
          
         } // end of createWorkflow()
+        
+   
+        private void removeWorkflow() throws ConsistencyException {
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.removeWorkflow() entry" ) ;
+              
+            try {
+                session.setAttribute( HTTP_WORKFLOW_TAG, null) ;
+                workflow = null ;
+            }
+            finally {
+               if( TRACE_ENABLED ) trace( "DesignActionImpl.removeWorkflow() exit" ) ;
+            }
+        } // end of removeWorkflow()   
         
         
         private void readWorkflow() throws ConsistencyException {
