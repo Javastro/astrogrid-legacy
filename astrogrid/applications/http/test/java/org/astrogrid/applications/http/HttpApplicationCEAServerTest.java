@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationCEAServerTest.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
+/*$Id: HttpApplicationCEAServerTest.java,v 1.5 2004/09/01 16:36:50 jdt Exp $
  * Created on 30-July-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,19 @@
 **/
 package org.astrogrid.applications.http;
 
+import java.net.URL;
+
 import junit.framework.TestCase;
 
 import org.astrogrid.applications.component.CEAComponentManager;
+import org.astrogrid.applications.component.EmptyCEAComponentManager;
 import org.astrogrid.applications.component.HttpApplicationCEAComponentManager;
+import org.astrogrid.applications.component.JavaClassCEAComponentManager;
 import org.astrogrid.applications.http.registry.RegistryQuerier;
 import org.astrogrid.applications.http.test.TestRegistryQuerier;
+
 import org.astrogrid.applications.manager.MetadataService;
+import org.astrogrid.config.SimpleConfig;
 
 /** test of a cea server configured with the javaclass backend.
  * @author jdt/Noel Winstanley nw@jb.man.ac.uk 21-Jun-2004
@@ -33,21 +39,33 @@ public class HttpApplicationCEAServerTest extends TestCase {
     }
     
     protected void setUp() throws Exception {
-        container = new HttpApplicationCEAComponentManager();
-        //temp hack to replace the registry querier with our test one
-        container.getContainer().unregisterComponent(RegistryQuerier.class);
-        container.getContainer().registerComponentInstance(RegistryQuerier.class, new TestRegistryQuerier());
+    	super.setUp();
+    	manager = new HttpApplicationCEAComponentManager();
+        //@TODO temp hack to replace the registry querier with our test one
+    	manager.getContainer().unregisterComponent(RegistryQuerier.class);
+    	manager.getContainer().registerComponentInstance(RegistryQuerier.class, new TestRegistryQuerier());
     }
     
-    protected CEAComponentManager container;
+    protected CEAComponentManager manager;
     
-    public void testMetadata() throws Exception {
-        MetadataService ms = container.getMetadataService();
-        assertNotNull(ms);
-        String reg = ms.returnRegistryEntry();
-        assertNotNull(reg);
-        
+     public void testIsValid() {
+        manager.getContainer().verify();
     }
+    
+    // another validity test - should always be true, but we'll test it anyhow.
+    public void testVerifyRequiredComponents() {
+        assertNotNull(manager.getContainer().getComponentInstanceOfType(EmptyCEAComponentManager.VerifyRequiredComponents.class));
+    }
+    public void testGetController() {
+        assertNotNull(manager.getExecutionController());
+    }
+    public void testGetMetaData() {
+        assertNotNull(manager.getMetadataService());
+    }
+
+    public void testInformation() {
+        System.out.println(manager.information());
+    }    
     
     
 }
@@ -55,25 +73,12 @@ public class HttpApplicationCEAServerTest extends TestCase {
 
 /* 
 $Log: HttpApplicationCEAServerTest.java,v $
+Revision 1.5  2004/09/01 16:36:50  jdt
+Was failing....perhaps a change in the server code since we branched?
+
 Revision 1.4  2004/09/01 15:42:26  jdt
 Merged in Case 3
 
-Revision 1.1.2.3  2004/08/02 18:05:28  jdt
-Added more tests and refactored the test apps to be set up
-from xml.
 
-Revision 1.1.2.2  2004/07/30 16:59:50  jdt
-limping along.
-
-Revision 1.1.2.1  2004/07/30 11:02:30  jdt
-Added unit tests, refactored the RegistryQuerier anf finished off
-HttpApplicationCEAComponentManager.
-
-Revision 1.2  2004/07/01 11:16:22  nw
-merged in branch
-nww-itn06-componentization
-
-Revision 1.1.2.1  2004/07/01 01:42:46  nw
-final version, before merge
  
 */
