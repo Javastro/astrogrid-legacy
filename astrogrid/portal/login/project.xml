@@ -55,6 +55,12 @@
 			</properties>
 		</dependency>
 		
+        <dependency>
+            <groupId>jaxrpc-api</groupId>
+            <artifactId>jaxrpc-api</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+    
 		<!--+
 		    | Both these are needed for javamail
 		    +-->
@@ -697,6 +703,11 @@
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+    	<unitTest>
+			<includes>
+				<include>**/*Test.java</include>
+			</includes>
+		</unitTest>
 	</build>
 </project>

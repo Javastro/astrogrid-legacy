@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/03/24 18:31:33 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/25 15:13:31 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.8  2004/03/25 15:13:31  jdt
+    |   Added a new depdendency and fixed the annoying JDepend bug.
+    |
     |   Revision 1.7  2004/03/24 18:31:33  jdt
     |   Merge from PLGN_JDT_bz#201
     |
@@ -151,5 +154,9 @@
         </copy> 
     </postGoal>
 
+	<preGoal name="site">
+		<mkdir dir="target/classes"/>
+		<!--fix annoying jdepend bug-->
+	</preGoal>
 
 </project>
