@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.70 2004/09/16 12:07:21 nw Exp $ -->
+<!-- $Id: project.xml,v 1.71 2004/09/16 21:49:31 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
   <id>astrogrid-jes</id>
@@ -33,8 +33,8 @@
       <packages>org.astrogrid.jes.jobcontroller:org.astrogrid.jes.delegate.v1.jobcontroller</packages>
     </packageGroup>
     <packageGroup>
-    	<title>Job Monitor and Result Listener</title>
-	<packages>org.astrogrid.jes.jobmonitor:org.astrogrid.jes.delegate.v1.jobmonitor:org.astrogrid.jes.resultlistener</packages>
+        <title>Job Monitor and Result Listener</title>
+        <packages>org.astrogrid.jes.jobmonitor:org.astrogrid.jes.delegate.v1.jobmonitor:org.astrogrid.jes.resultlistener</packages>
     </packageGroup>
   </packageGroups>
   <!-- end of overrides -->
@@ -370,7 +370,7 @@
     <dependency>
       <artifactId>servletapi</artifactId>
       <groupId>servletapi</groupId>
-      <version>2.2</version>
+      <version>2.3</version>
     </dependency>
     <dependency>
       <groupId>hsqldb</groupId>
