@@ -1,5 +1,5 @@
 /*
- * $Id: SocketServer.java,v 1.6 2003/09/17 14:51:30 nw Exp $
+ * $Id: SocketServer.java,v 1.7 2003/09/23 18:09:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -59,7 +59,7 @@ public class SocketServer implements Runnable
       {
          try
          {
-            Log.trace("Waiting for socket connection...");
+            Log.trace("Waiting for socket connection on port "+serverSocket.getLocalPort()+"...");
             //wait for connection - when you get one create
             //new socket handler to manage it
             Socket socket = serverSocket.accept();
