@@ -1,4 +1,4 @@
-/* $Id: JESTest.java,v 1.1 2003/10/27 18:47:52 jdt Exp $
+/* $Id: JESTest.java,v 1.2 2003/10/28 12:28:53 jdt Exp $
  * Created on 27-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,35 +47,12 @@ public class JESTest extends TestCase {
    */
   protected void setUp() throws Exception {
     super.setUp();
-    moveFile(CONFIG_FILE_1_FM, CONFIG_FILE_1_TO);
-    moveFile(CONFIG_FILE_2_FM, CONFIG_FILE_2_TO);
     jes = JES.getInstance();
 
   }
 
-  // These config files sit in the test directory and need to be moved to the
-  // classpath for Maven.  Not very satisfactory approach this.
-  private final static String FILE1 = "ASTROGRID_jesconfig.xml";
-  private final static String FILE2 = "ASTROGRID_jesmessages.properties";
-  private final static String DIR_FM = "test//java";
-  private final static String DIR_TO = "target//test-classes";
-  //reckon the compile will inline these Strings and do something clever with 
-  //StringBuffers
-  private final static File CONFIG_FILE_1_FM = new File(DIR_FM + "//" + FILE1);
-  private final static File CONFIG_FILE_1_TO = new File(DIR_TO + "//" + FILE1);
-  private final static File CONFIG_FILE_2_FM = new File(DIR_FM + "//" + FILE2);
-  private final static File CONFIG_FILE_2_TO = new File(DIR_TO + "//" + FILE2);
-
-  private void moveFile(File from, File to) throws IOException {
-    boolean isFileMoved = from.renameTo(to);
-    if (!isFileMoved)
-      throw new IOException("Unable to move test config file");
-  }
-
   protected void tearDown() throws Exception {
     super.tearDown();
-    moveFile(CONFIG_FILE_1_TO, CONFIG_FILE_1_FM);
-    moveFile(CONFIG_FILE_2_TO, CONFIG_FILE_2_FM);
   }
 
   /**
@@ -112,6 +89,7 @@ public class JESTest extends TestCase {
    * Currently test won't work, because once the properties are loaded, that's
    * it - need to see if we can force a reload.
    */
+  /*
   public void testNoConfigFile() throws IOException  {
     //testMissingConfigFile(CONFIG_FILE_1_TO);
   }
@@ -126,17 +104,17 @@ public class JESTest extends TestCase {
       moveFile(TEMP, file);
     }
   }
-
+*/
   public void testCanWeFindTheTestConfigFiles() throws IOException, AstroGridException {
-    assertTrue("can't find the test config file", CONFIG_FILE_1_TO.exists());
-    assertTrue("can't find the test config file", CONFIG_FILE_2_TO.exists());
-    //and again
     jes.checkPropertiesLoaded();
   }
 }
 
 /*
 *$Log: JESTest.java,v $
+*Revision 1.2  2003/10/28 12:28:53  jdt
+*Better way of putting the test config files in place, using the build.xml file.
+*
 *Revision 1.1  2003/10/27 18:47:52  jdt
 *Initial commits: files to test the JES config stuff.
 *
