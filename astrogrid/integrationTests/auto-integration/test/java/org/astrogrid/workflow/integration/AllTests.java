@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2004/04/08 14:50:54 nw Exp $
+/*$Id: AllTests.java,v 1.4 2004/04/14 10:16:40 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,6 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for org.astrogrid.workflow.integration");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(AbstractTestForIntegration.class));
         suite.addTest(new TestSuite(ApplicationsIntegrationTest.class));
         suite.addTest(new TestSuite(DataCenterIntegrationTest.class));
         suite.addTest(new TestSuite(JesIntegrationTest.class));
@@ -35,6 +34,9 @@ public class AllTests {
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.4  2004/04/14 10:16:40  nw
+added to the workflow integration tests
+
 Revision 1.3  2004/04/08 14:50:54  nw
 polished up the workflow integratioin tests
 
