@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.11 2003/09/15 12:17:46 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.12 2003/09/15 15:23:59 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -37,7 +37,8 @@ public abstract class DatacenterDelegate
 {
    private Vector statusListeners = new Vector();
 
-   /** Creates a delegate given an endpoint (a url to the service)
+   /** Creates a delegate given an endpoint (a url to the service). If the endPoint
+    * is null, creates a dummy delegate that can be used to test against.
     */
    public static DatacenterDelegate makeDelegate(String givenEndPoint)
          throws MalformedURLException, ServiceException, IOException
@@ -52,13 +53,23 @@ public abstract class DatacenterDelegate
          {
             return new SocketDelegate(givenEndPoint);
          }
-         else
+         else if (givenEndPoint.toLowerCase().startsWith("http"))
          {
             return new WebDelegate(new URL(givenEndPoint));
          }
+         /**
+         else if (givenEndPoint.toLowerCase().startsWith("direct"))
+         {
+            return new DirectDelegate(new URL(givenEndPoint));
+         }
+         else if (givenEndPoint.toLowerCase().startsWith("grid"))
+         {
+            return new GridDelegate(new URL(givenEndPoint));
+         }
+          */
       }
 
-//    throw new IllegalArgumentException("Don't know what delegate to start for '"+givenEndPoint);
+      throw new IllegalArgumentException("Don't know what delegate to start for '"+givenEndPoint);
    }
 
    /**
@@ -116,6 +127,13 @@ public abstract class DatacenterDelegate
    public abstract Element getRegistryMetadata() throws IOException;
 
    /**
+    * returns the full metadata document (an XML document describing the data the
+    * center serves)
+    *
+   public abstract Element getRMetadata() throws IOException;
+    /**/
+
+   /**
     * Polls the service and asks for the current status
     */
    public abstract ServiceStatus getServiceStatus(String id);
@@ -149,6 +167,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.12  2003/09/15 15:23:59  mch
+Added doc and framework for future grid/direct delegates
+
 Revision 1.11  2003/09/15 12:17:46  mch
 Renamed HtmlDelegate to WebDelegate
 
