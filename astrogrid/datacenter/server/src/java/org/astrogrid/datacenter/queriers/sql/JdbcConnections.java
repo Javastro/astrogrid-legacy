@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcConnections.java,v 1.1 2004/03/12 14:59:43 mch Exp $
+ * $Id: JdbcConnections.java,v 1.2 2004/03/15 17:07:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -41,11 +41,11 @@ public class JdbcConnections {
    public static final String JDBC_DRIVERS_KEY = "datacenter.plugin.jdbc.drivers";
    
    /** configuration file key, stores a JDBC connection URL for tis database querier */
-   public static final String JDBC_URL_KEY = "DatabaseQuerier.JdbcUrl";
+   public static final String JDBC_URL_KEY = "datacenter.plugin.jdbc.url";
    /** configuration file key, stores the user id for the JDBC connection URL for this database querier */
-   public static final String JDBC_USER_KEY = "DatabaseQuerier.User";
+   public static final String JDBC_USER_KEY = "datacenter.plugin.jdbc.user";
    /** configuration file key, stores the password for the JDBC connection URL for this database querier */
-   public static final String JDBC_PASSWORD_KEY = "DatabaseQuerier.Password";
+   public static final String JDBC_PASSWORD_KEY = "datacenter.plugin.jdbc.password";
    /** configuration file key, stores a set of properties for the connection */
    //public static final String JDBC_CONNECTION_PROPERTIES_KEY = "DatabaseQuerier.ConnectionProperties";
 
