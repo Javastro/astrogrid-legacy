@@ -1,4 +1,4 @@
-/*$Id: JesInterface.java,v 1.5 2004/08/04 16:51:46 nw Exp $
+/*$Id: JesInterface.java,v 1.6 2004/08/06 11:59:12 nw Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,9 +13,11 @@ package org.astrogrid.jes.jobscheduler.impl.groovy;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl;
+import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Step;
@@ -24,6 +26,9 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections.iterators.ListIteratorWrapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -31,7 +36,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 
 /** provides an interface for executing groovy scripts to call methods back into jes 
@@ -56,6 +65,22 @@ public class  JesInterface {
     public Workflow getWorkflow() {
         return wf;
     }
+    
+    /** return list of steps in the workflow document */
+    public List getSteps() {
+            Iterator i = JesUtil.getJobSteps(wf);
+            List l = new ArrayList();
+            CollectionUtils.addAll(l,i);
+             return l;
+        }
+    
+    public ParameterValue newParameter() {
+        ParameterValue pval = new  ParameterValue();
+        pval.setIndirect(false);
+        pval.setEncoding("");
+        return pval;
+    }
+    
     /** the tool step dispatcher */
     public Dispatcher getDispatcher() {
         return disp;
@@ -189,6 +214,9 @@ public class  JesInterface {
 
 /* 
 $Log: JesInterface.java,v $
+Revision 1.6  2004/08/06 11:59:12  nw
+added helper methods for scripts manipulating the workflow document itself.
+
 Revision 1.5  2004/08/04 16:51:46  nw
 added parameter propagation out of cea step call.
 
