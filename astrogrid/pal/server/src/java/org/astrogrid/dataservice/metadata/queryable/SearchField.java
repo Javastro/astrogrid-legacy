@@ -1,5 +1,5 @@
 /*
- * $Id: SearchField.java,v 1.2 2005/03/10 13:49:52 mch Exp $
+ * $Id: SearchField.java,v 1.3 2005/03/30 15:52:15 mch Exp $
  */
 package org.astrogrid.dataservice.metadata.queryable;
 
@@ -19,8 +19,12 @@ public class SearchField {
    private String groupName;
    private String description;
    
-   private String datatype;
+   /** interoperating type - presented to the outside world */
+   private String publicType;
+   /** Java type to hold the values */
    private Class javaType;
+   /** The type as given by the packing store - eg the SQL type */
+   private String backType;
    private String errorField;
    private Units units;
 
@@ -29,6 +33,10 @@ public class SearchField {
 
    //links to more info about the field
    private Vector links = new Vector();
+   
+   public void setBackType(String backType) {      this.backType = backType;  }
+   
+   public String getBackType() {    return backType;  }
    
    public void setDescription(String description)
    {
@@ -79,9 +87,9 @@ public class SearchField {
       return (String) ucds.get(version);
    }
    
-   public void setDatatype(String datatype) {      this.datatype = datatype;   }
+   public void setPublicType(String datatype) {      this.publicType = datatype;   }
    
-   public String getDatatype() {      return datatype;   }
+   public String getPublicType() {      return publicType;   }
    
    public void setId(String id) {      this.id = id;   }
    

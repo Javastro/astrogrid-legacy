@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.4 2005/03/30 15:18:55 mch Exp $
+ * $Id: SqlResults.java,v 1.5 2005/03/30 15:52:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -129,8 +129,14 @@ public class SqlResults extends TableResults {
                cols[i-1].setId(colRef.getTableName()+"."+colRef.getColName());
                cols[i-1].setUcd(interpreter.getColumn(null, colRef.getTableName(), colRef.getColName()).getUcd("1"),"1");
                cols[i-1].setUnits(interpreter.getColumn(null, colRef.getTableName(), colRef.getColName()).getUnits());
-               cols[i-1].setJavaType(getJavaType(metadata.getColumnType(i)));
-               cols[i-1].setDatatype(interpreter.getColumn(null, colRef.getTableName(), colRef.getColName()).getDatatype());
+               cols[i-1].setBackType(""+metadata.getColumnType(i)); //read direct from sql metadata
+               try {
+                  cols[i-1].setJavaType(Class.forName(metadata.getColumnClassName(i))); //read from sql metadata and convert
+               }
+               catch (ClassNotFoundException cnfe) {
+                  log.error(cnfe+" for column "+i);
+               }
+               cols[i-1].setPublicType(interpreter.getColumn(null, colRef.getTableName(), colRef.getColName()).getPublicType());
             }
             else {
                //should probably throw an exception...
@@ -215,6 +221,9 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.5  2005/03/30 15:52:15  mch
+ debug etc for bad sql types
+
  Revision 1.4  2005/03/30 15:18:55  mch
  debug etc for bad sql types
 
@@ -226,6 +235,7 @@ public class SqlResults extends TableResults {
 
 
  */
+
 
 
 

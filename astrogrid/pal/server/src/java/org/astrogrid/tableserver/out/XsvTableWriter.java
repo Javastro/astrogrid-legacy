@@ -1,5 +1,5 @@
 /*
- * $Id: XsvTableWriter.java,v 1.2 2005/03/30 15:18:55 mch Exp $
+ * $Id: XsvTableWriter.java,v 1.3 2005/03/30 15:52:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -94,7 +94,7 @@ public class XsvTableWriter extends AsciiTableSupport {
  
       //types
       for (int i = 0; i < cols.length; i++) {
-         printOut.print(cols[i].getDatatype());
+         printOut.print(cols[i].getPublicType());
          if (i < cols.length-1) {
             printOut.print(separator);
          }
@@ -137,6 +137,9 @@ public class XsvTableWriter extends AsciiTableSupport {
 
 /*
  $Log: XsvTableWriter.java,v $
+ Revision 1.3  2005/03/30 15:52:15  mch
+ debug etc for bad sql types
+
  Revision 1.2  2005/03/30 15:18:55  mch
  debug etc for bad sql types
 
@@ -187,6 +190,7 @@ public class XsvTableWriter extends AsciiTableSupport {
 
 
  */
+
 
 
 

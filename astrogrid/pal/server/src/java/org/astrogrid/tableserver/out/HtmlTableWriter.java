@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.2 2005/03/30 15:18:55 mch Exp $
+ * $Id: HtmlTableWriter.java,v 1.3 2005/03/30 15:52:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -84,16 +84,23 @@ public class HtmlTableWriter extends AsciiTableSupport {
       printOut.println("</TR>");
 
       printOut.println("</TR>");
-      printOut.println("<TH>Type</TH>");
+      printOut.println("<TH>Public Type</TH>");
       for (int i = 0; i < cols.length; i++) {
-         printOut.print("<TH>"+cols[i].getDatatype()+"</TH>");
+         printOut.print("<TH>"+cols[i].getPublicType()+"</TH>");
       }
       printOut.println("</TR>");
 
       printOut.println("</TR>");
       printOut.println("<TH>Java Class</TH>");
       for (int i = 0; i < cols.length; i++) {
-         printOut.print("<TH>"+cols[i].getJavaType()+"</TH>");
+         printOut.print("<TH>"+cols[i].getJavaType().getName()+"</TH>");
+      }
+      printOut.println("</TR>");
+
+      printOut.println("</TR>");
+      printOut.println("<TH>Native Type</TH>");
+      for (int i = 0; i < cols.length; i++) {
+         printOut.print("<TH>"+cols[i].getBackType()+"</TH>");
       }
       printOut.println("</TR>");
 
@@ -166,6 +173,9 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 /*
  $Log: HtmlTableWriter.java,v $
+ Revision 1.3  2005/03/30 15:52:15  mch
+ debug etc for bad sql types
+
  Revision 1.2  2005/03/30 15:18:55  mch
  debug etc for bad sql types
 
@@ -213,6 +223,7 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 
  */
+
 
 
 

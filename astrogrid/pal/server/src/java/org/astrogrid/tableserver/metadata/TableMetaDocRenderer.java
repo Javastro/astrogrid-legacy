@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocRenderer.java,v 1.3 2005/03/21 18:45:55 mch Exp $
+ * $Id: TableMetaDocRenderer.java,v 1.4 2005/03/30 15:52:15 mch Exp $
  */
 package org.astrogrid.tableserver.metadata;
 
@@ -86,7 +86,7 @@ public class TableMetaDocRenderer {
       html.append(
          "<tr>"+
             "<th>"+column.getName() +"</th>"+
-            "<td>"+emptyIfNull(column.getDatatype())+"</td>"+
+            "<td>"+emptyIfNull(column.getPublicType())+"</td>"+
             "<td>"+column.getUnits().toString() +"</td>"+
             "<td>"+column.getUnits().getDimEq() +"</td>"+
             "<td>"+column.getUnits().getDimScale()  +"</td>"+

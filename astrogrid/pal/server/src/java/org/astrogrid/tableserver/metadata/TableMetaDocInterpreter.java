@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.6 2005/03/21 18:45:55 mch Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.7 2005/03/30 15:52:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -275,9 +275,9 @@ public class TableMetaDocInterpreter
          throw new MetadataException("Column "+info.getName()+" has no Datatype element in metadoc");
       }
       
-      info.setDatatype(datatype);
-      if (info.getDatatype() != null) {
-         info.setJavaType(XmlTypes.getJavaType(info.getDatatype()));
+      info.setPublicType(datatype);
+      if (info.getPublicType() != null) {
+         info.setJavaType(XmlTypes.getJavaType(info.getPublicType()));
       }
       return info;
    }

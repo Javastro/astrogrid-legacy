@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.1 2005/03/21 18:45:55 mch Exp $
+ * $Id: VoTableWriter.java,v 1.2 2005/03/30 15:52:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -116,24 +116,24 @@ public class VoTableWriter implements TableWriter {
          if (cols[i].getUcd("1") != null) printOut.print(" ucd='"+cols[i].getUcd("1")+"' ");
          
          //type
-         if (cols[i].getDatatype() != null) {
+         if (cols[i].getPublicType() != null) {
             //do some checking on data types
             String type = null;
             for (int t = 0; t < TYPES.length; t++)
             {
-               if (cols[i].getDatatype().equals(TYPES[t])) {
+               if (cols[i].getPublicType().equals(TYPES[t])) {
                   type = TYPES[t]; //found a match
                }
             }
             if (type == null) {
                //nothign found, try converting from common types
-               if (cols[i].getDatatype().toLowerCase().equals("real")) {
+               if (cols[i].getPublicType().toLowerCase().equals("real")) {
                   type = TYPE_FLOAT;
                }
-               else if (cols[i].getDatatype().toLowerCase().equals("smallint")) {
+               else if (cols[i].getPublicType().toLowerCase().equals("smallint")) {
                   type = TYPE_INT;
                }
-               else if (cols[i].getDatatype().toLowerCase().equals("varchar")) {
+               else if (cols[i].getPublicType().toLowerCase().equals("varchar")) {
                   type = TYPE_CHAR;
                }
             }
@@ -216,6 +216,9 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.2  2005/03/30 15:52:15  mch
+ debug etc for bad sql types
+
  Revision 1.1  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 
