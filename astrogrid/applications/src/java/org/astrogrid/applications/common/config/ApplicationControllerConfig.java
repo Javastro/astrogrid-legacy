@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerConfig.java,v 1.4 2003/12/04 13:26:25 pah Exp $
+ * $Id: ApplicationControllerConfig.java,v 1.5 2003/12/05 22:52:16 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -51,6 +51,8 @@ public class ApplicationControllerConfig {
  */
 ApplicationControllerConfig(DataSource ds)
  {
+    config = ConfigLoader.LoadConfig(ApplicationsConstants.CONFIGFILEKEY);
+
     instance = this;
     dataSource = ds;
  }

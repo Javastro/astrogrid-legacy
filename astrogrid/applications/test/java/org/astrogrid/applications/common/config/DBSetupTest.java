@@ -1,5 +1,5 @@
 /*
- * $Id: DBSetupTest.java,v 1.1 2003/12/04 13:26:25 pah Exp $
+ * $Id: DBSetupTest.java,v 1.2 2003/12/05 22:52:16 pah Exp $
  * 
  * Created on 02-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -25,7 +25,7 @@ import junit.framework.AssertionFailedError;
  * @version $Name:  $
  * @since iteration4
  */
-public class DBSetupTest extends BaseDBTest {
+public class DBSetupTest extends BaseDBTestCase {
 
 
    /**

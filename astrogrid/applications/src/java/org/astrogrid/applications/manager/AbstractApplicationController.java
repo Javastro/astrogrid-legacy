@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.6 2003/12/04 13:26:25 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.7 2003/12/05 22:52:16 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -75,8 +75,8 @@ abstract public class AbstractApplicationController implements ApplicationContro
    }
 
    public String returnRegistryEntry() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("CommandLineApplicationController.returnRegistryEntry() not implemented");
+      //TODO implement this
+      return "this is not implemented yet";
    }
    
    public void addSimpleDescription(SimpleApplicationDescription d)

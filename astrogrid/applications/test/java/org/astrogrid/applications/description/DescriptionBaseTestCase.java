@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionBaseTest.java,v 1.1 2003/12/04 13:26:25 pah Exp $
+ * $Id: DescriptionBaseTestCase.java,v 1.1 2003/12/05 22:52:16 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -27,12 +27,12 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration4
  */
-public class DescriptionBaseTest extends TestCase {
+public class DescriptionBaseTestCase extends TestCase {
 
    /**
     * 
     */
-   public DescriptionBaseTest() {
+   public DescriptionBaseTestCase() {
       super();
       // TODO Auto-generated constructor stub
    }
@@ -40,7 +40,7 @@ public class DescriptionBaseTest extends TestCase {
    /**
     * @param arg0
     */
-   public DescriptionBaseTest(String arg0) {
+   public DescriptionBaseTestCase(String arg0) {
       super(arg0);
       // TODO Auto-generated constructor stub
    }
@@ -65,6 +65,6 @@ public class DescriptionBaseTest extends TestCase {
 
    protected File inputFile;
 
-   protected String TESTAPPNAME = "testapp";
+   protected String TESTAPPNAME = TestAppConst.TESTAPP_NAME;
    
 }

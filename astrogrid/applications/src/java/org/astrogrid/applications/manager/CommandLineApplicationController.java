@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.8 2003/12/04 13:26:25 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.9 2003/12/05 22:52:16 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -57,8 +57,8 @@ public class CommandLineApplicationController extends AbstractApplicationControl
       String jobMonitorURL,
       User user,
       ParameterValues parameters) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("CommandLineApplicationController.initializeApplication() not implemented");
+         
+         throw new UnsupportedOperationException("initialize application");
    }
 
    /**

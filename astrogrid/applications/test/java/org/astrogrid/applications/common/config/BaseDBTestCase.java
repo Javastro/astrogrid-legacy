@@ -1,5 +1,5 @@
 /*
- * $Id: BaseDBTest.java,v 1.1 2003/12/04 13:26:25 pah Exp $
+ * $Id: BaseDBTestCase.java,v 1.1 2003/12/05 22:52:16 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -32,8 +32,6 @@ import javax.sql.DataSource;
 import junit.framework.TestCase;
 
 import org.astrogrid.applications.common.ApplicationsConstants;
-import org.astrogrid.applications.common.config.Config;
-import org.astrogrid.applications.common.config.ConfigLoader;
 
 /**
  * The base test class for applications integration. Various general parameters are set up here - such as the connection to the control database.
@@ -41,7 +39,11 @@ import org.astrogrid.applications.common.config.ConfigLoader;
  * @version $Name:  $
  * @since iteration4
  */
-public class BaseDBTest extends TestCase {
+public class BaseDBTestCase extends TestCase {
+   static
+   {
+      ConfigLoader.setConfigType(ConfigLoader.TEST_CONFIG); // set up the test config as early as possible
+   }
 
 
    private static String DRIVER = "org.hsqldb.jdbcDriver";
@@ -55,7 +57,7 @@ public class BaseDBTest extends TestCase {
    /**
     * 
     */
-   public BaseDBTest() {
+   public BaseDBTestCase() {
       this("Hsqldb");
       
    }
@@ -63,7 +65,7 @@ public class BaseDBTest extends TestCase {
    /**
     * @param name
     */
-   public BaseDBTest(String name) {
+   public BaseDBTestCase(String name) {
       super(name);
       // create the db
       ConfigLoader.setConfigType(ConfigLoader.TEST_CONFIG); // set up the test config as early as possible
@@ -206,5 +208,12 @@ public class BaseDBTest extends TestCase {
            return DriverManager.getConnection (JDBC_URL, username,password);
        }
    }    
+
+   /* (non-Javadoc)
+    * @see junit.framework.TestCase#setUp()
+    */
+   protected void setUp() throws Exception {
+      ConfigLoader.setConfigType(ConfigLoader.TEST_CONFIG); // set up the test config as early as possible
+         }
 
 }

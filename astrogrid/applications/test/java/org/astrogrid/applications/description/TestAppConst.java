@@ -1,7 +1,7 @@
 /*
- * $Id: TestApp.java,v 1.2 2003/12/05 22:52:16 pah Exp $
+ * $Id: TestAppConst.java,v 1.1 2003/12/05 22:52:16 pah Exp $
  * 
- * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
+ * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -11,14 +11,16 @@
  *
  */ 
 
-package org.astrogrid.applications.commandline;
+package org.astrogrid.applications.description;
 
 /**
- * This application does not do anything special - just here to test that the class loading is working...
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
  */
-public class TestApp extends CmdLineApplication {
+public final class TestAppConst {
 
+   public static final String MAIN_INTERFACE = "I1" ;
+
+   public static final String TESTAPP_NAME="testapp";
 }

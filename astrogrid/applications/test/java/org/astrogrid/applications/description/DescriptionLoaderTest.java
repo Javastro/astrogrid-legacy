@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoaderTest.java,v 1.6 2003/12/04 13:26:25 pah Exp $
+ * $Id: DescriptionLoaderTest.java,v 1.7 2003/12/05 22:52:16 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration4
  */
-public class DescriptionLoaderTest extends DescriptionBaseTest {
+public class DescriptionLoaderTest extends DescriptionBaseTestCase {
 
    private DescriptionLoader dl;
 

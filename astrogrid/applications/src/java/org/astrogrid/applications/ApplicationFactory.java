@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationFactory.java,v 1.1 2003/10/30 14:12:25 pah Exp $
+ * $Id: ApplicationFactory.java,v 1.2 2003/12/05 22:52:16 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,11 +11,19 @@
 
 package org.astrogrid.applications;
 
+import org.astrogrid.applications.commandline.CmdLineApplication;
+
 /**
+ * A factory for creating application objects
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration4
  * @stereotype factory 
  */
-public interface ApplicationFactory {
-   Application createApplication();
+public abstract class ApplicationFactory {
+   
+   // TODO I do not think that this is a very good pattern..
+   public abstract AbstractApplication createApplication(String applicationId);
 
    /**
     * @link
