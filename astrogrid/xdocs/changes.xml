@@ -37,7 +37,7 @@ the updates.
             Summary objects return more data.
         </action>
         <action dev="mch" type="add">
-            New <a href="slinger">Slinger</a>&nbsp project.
+            New <a href="slinger">Slinger</a>&nbsp; project.
         </action>  
         <action dev="nw" type="fix" issue="805">
             Added some VOTable arithmetic
