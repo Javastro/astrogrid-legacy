@@ -74,7 +74,7 @@
 					<!--+
 						| If we are logged in, redirect to the front page.
 						+-->
-					<map:redirect-to uri="/astrogrid-portal/main/test/xml"/>
+					<map:redirect-to uri="/astrogrid-portal/main/test.xml"/>
 				</map:act>
 				<!--+
 					| If we are not logged in, display the login form.
