@@ -26,5 +26,30 @@
                     will be removed soon. </p>
             </subsection>
         </section>
+        <section name = "Building the Portal">
+            <subsection name="Prequisites">
+                <p>
+                    <li>JDK1.4 or above</li>
+                    <li><a href="http://maven.apache.org/">Maven</a></li>
+                </p>
+            </subsection>
+            <subsection name = "Building">
+                <p>
+                    After checking out all the files, cd to the root portal directory and execute
+                    <verbatim>
+                        maven astrogrid-build-snapshot
+                    </verbatim>
+                    to generate the war files.
+                    To generate the documentation execute
+                                        <verbatim>
+                        maven astrogrid-build-site
+                    </verbatim>
+                    Note to Windows users: There is a bug in Maven which prevents the portal building
+                    under Windows - you'll simply get an UnknownHostException.  To build under Windows you'll
+                    first need to patch Maven - see http://forum.astrogrid.org/read.php?TID=681 .
+                </p>
+            </subsection>
+            
+        </section>
     </body>
 </document>
