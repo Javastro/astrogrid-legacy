@@ -7,15 +7,19 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.datacenter.cocoon.acting.utils.ActionUtils;
 import org.astrogrid.datacenter.cocoon.acting.utils.ActionUtilsFactory;
 import org.astrogrid.datacenter.common.QueryStatus;
-import org.astrogrid.datacenter.delegate.DatacenterDelegate;
-import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
+import org.astrogrid.datacenter.delegate.deprecated.It03DatacenterDelegate;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
  * @author peter.shillan <mailto:gps@roe.ac.uk />
+ * @modified nww - changed to extending deprecated delegate.
  */
-public class DummyDelegate extends DatacenterDelegate {
+public class DummyDelegate extends It03DatacenterDelegate {
+
+    public DummyDelegate() {
+        super(null);
+    }
 
   /**
    * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#setTimeout(int)
@@ -58,8 +62,7 @@ public class DummyDelegate extends DatacenterDelegate {
   /**
    * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#startQuery(java.lang.String)
    */
-  public Element startQuery(String queryId) throws IOException {
-    return null;
+  public void startQuery(String queryId) throws IOException {
   }
 
   /**
@@ -83,10 +86,6 @@ public class DummyDelegate extends DatacenterDelegate {
     return null;
   }
 
-  /**
-   * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#registerListener(java.lang.String, org.astrogrid.datacenter.delegate.DatacenterStatusListener)
-   */
-  public void registerListener(String queryId, DatacenterStatusListener listener) {
-  }
+
 
 }
