@@ -1,4 +1,4 @@
-/*$Id: ResumeJobSuccessTest.java,v 1.1 2004/03/15 00:32:01 nw Exp $
+/*$Id: ResumeJobSuccessTest.java,v 1.2 2004/03/17 17:20:42 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 /** test behaviour of 'resumeTest' method.
+ * @modified nww to test behaviour when tool returns more than one message.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Feb-2004
  *
  */ 
@@ -44,28 +45,44 @@ public class ResumeJobSuccessTest extends AbstractTestForSchedulerImpl {
         }
         Step step = (Step)JesUtil.getJobSteps(j).next(); // got to have at least one job step
         // shouldn't have been executed yet.
-        assertEquals(0,step.getStepExecutionRecordCount());
-        //use this job step to build an info object
-        MessageType info = new MessageType();   
+        assertEquals(0,step.getStepExecutionRecordCount()); 
   
         String xpath = j.getXPathFor(step);
         assertNotNull(xpath);
         assertEquals(step,j.findXPathValue(xpath));
-        JobIdentifierType id = JesUtil.createJobId(urn,xpath);       
-        info.setContent("TEST COMMENT");
-        info.setPhase(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.COMPLETED);
-        
-        // could take copy of job here from store (need to clone, as using in-memory store). then compare it to result after scheduling.
+        JobIdentifierType id = JesUtil.createJobId(urn,xpath);   
+        //use this job step to build an info object
+        MessageType info = new MessageType();      
+        info.setContent("initializing");
+        info.setPhase(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.INITIALIZING);       
         js.resumeJob(id,info);
+        
+        // now a running message
+        info = new MessageType();
+        info.setContent("running ok");
+        info.setPhase(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.RUNNING);
+        js.resumeJob(id,info);
+        
+        // now a completed message
+        info = new MessageType();
+        info.setContent("completed");
+        info.setPhase(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.COMPLETED);
+        js.resumeJob(id,info);                    
+        
+        // now, say the appcon we're talking to is buggy and doen't follow protocol - what happens
+        info = new MessageType();
+        info.setContent("running again");
+        info.setPhase(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.RUNNING);          
+        js.resumeJob(id,info);
+        
         //now check behaviour is as expected.
         //as we're using in-memory job store, changes happen to objects directly.
         // should now have an execution record.
         assertEquals(1,step.getStepExecutionRecordCount());
         StepExecutionRecord exRec = JesUtil.getLatestOrNewRecord(step);
         int count = exRec.getMessageCount();
-        assertEquals(1,count);
+        assertEquals(4,count);
         
-        assertEquals("TEST COMMENT",exRec.getMessage(0).getContent());
         assertEquals(ExecutionPhase.COMPLETED,exRec.getStatus());
 
         assertEquals(ExecutionPhase.RUNNING,j.getJobExecutionRecord().getStatus());
@@ -75,6 +92,9 @@ public class ResumeJobSuccessTest extends AbstractTestForSchedulerImpl {
 
 /* 
 $Log: ResumeJobSuccessTest.java,v $
+Revision 1.2  2004/03/17 17:20:42  nw
+extended test to simulate multiple messages being returned by app con
+
 Revision 1.1  2004/03/15 00:32:01  nw
 merged contents of comm package into jobscheduler package.
 
