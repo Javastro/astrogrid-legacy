@@ -145,7 +145,7 @@
 					String resKey = DomHelper.getNodeTextValue((Element)nd,"ResourceKey","vr");
 					String identifier = authID;
 					if(resKey != null && resKey.trim().length() > 0) {
-						identifier += "!" + resKey;
+						identifier += "/" + resKey;
 					}
 					String title = DomHelper.getNodeTextValue((Element)nd,"Title","vr");
 					String description = DomHelper.getNodeTextValue((Element)nd,"Description","vr");
