@@ -325,7 +325,7 @@ public String upLoad(String jobDetails){
   */
 
    public String lookupDataHoldersDetails(String jobDetails){
-	if ( DEBUG )  logger.debug("MySpaceManager.moveDataHolder");
+	if ( DEBUG )  logger.debug("MySpaceManager.lookupDataHolderSDetails ");
 	DataItemRecord dataitem = null;
 	Vector itemRecVector = new Vector();
 	loadProperties();
@@ -377,34 +377,42 @@ public String upLoad(String jobDetails){
 			Date currentMySpaceDate = new Date();
 	
 		//   Format and return the results as XML.
-		    String header = util.buildMySpaceManagerResponseHeader( SUCCESS, "");
-		    String footer = util.buildMySpaceManagerResponseFooter();
+		    String header = "";
+		    String footer = "";
 		    String element = "";
-		    logger.debug("DATAITEMRECORD VEC SIZE: "+itemRecVector.size());
-		    for(int i =0; i<itemRecVector.size();i++){
-				if(itemRecVector.elementAt(i)!=null){
-					logger.debug("STATUS: "+successStatus +"   "+warningStatus);
-					if (successStatus){
-						element = element+util.buildMySpaceManagerResponseElement((DataItemRecord)itemRecVector.elementAt(i), SUCCESS, "");
-						logger.debug("GETTING MULTI RESPONSE FOR ELEMENTS: "+response);	    	
-					}else {
-						v = status.getCodes();
-						for(int j=0;i<=v.size();j++){
-							MySpaceStatusCode currCode = (MySpaceStatusCode)v.elementAt(i); 
-							errCode=errCode+","+currCode.getCode();
-							response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");
-							logger.debug("ERROR LOOKUPDATAHOLDERSDETAILS: RESPONSE =" +response);
-							return response;					
-						}		    	
-					}	
-				} else{
-					status.addCode(MySpaceStatusCode.MS_E_FLCRTDH,MySpaceStatusCode.ERROR);
-					MySpaceMessage message =  new MySpaceMessage("MS_E_FLCRTDH");
-					response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
-					return response;
-				}		    			    	    	
-		    } 
-		    response = header+element+footer;
+		    logger.debug("before getting vection size:");
+		    if(itemRecVector!=null){
+		    	header = util.buildMySpaceManagerResponseHeader( SUCCESS, "");
+		    	footer = util.buildMySpaceManagerResponseFooter();
+			    logger.debug("DATAITEMRECORD VEC SIZE: "+itemRecVector.size());
+			    for(int i =0; i<itemRecVector.size();i++){
+					if(itemRecVector.elementAt(i)!=null){
+						logger.debug("STATUS: "+successStatus +"   "+warningStatus);
+						if (successStatus){
+							logger.debug("i = "+i);
+							element = element+util.buildMySpaceManagerResponseElement((DataItemRecord)itemRecVector.elementAt(i), SUCCESS, "");
+							logger.debug("GETTING MULTI RESPONSE FOR ELEMENTS: "+response);	    	
+						}else {
+							v = status.getCodes();
+							for(int j=0;i<=v.size();j++){
+								MySpaceStatusCode currCode = (MySpaceStatusCode)v.elementAt(i); 
+								errCode=errCode+","+currCode.getCode();
+								response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");
+								logger.debug("ERROR LOOKUPDATAHOLDERSDETAILS: RESPONSE =" +response);
+								return response;					
+							}		    	
+						}				
+					}else{
+						status.addCode(MySpaceStatusCode.MS_E_FLCRTDH,MySpaceStatusCode.ERROR);
+						MySpaceMessage message =  new MySpaceMessage("MS_E_FLCRTDH");
+						response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
+						return response;
+					}				
+			    }
+		    }else if(itemRecVector==null){
+		    	element = util.buildMySpaceManagerResponse(null,"WARNING","NO DATAITEMRECORD RETURND FOR YOUR QUERY","");
+			}
+			response = header+element+footer;
 			if( DEBUG ) logger.debug("LOOKUPDATAHOLDERSDETAILS: RESPONSE: "+response); 
 			return response;
 		}catch(Exception e){

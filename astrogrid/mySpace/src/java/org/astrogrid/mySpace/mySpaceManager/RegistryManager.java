@@ -643,10 +643,12 @@ public class RegistryManager
 
          boolean wildCard;
          String comparisonString;
-
+		 logger.debug("inside RegistryManager.lookupDataRecords."+dataHolderNameExpr);
          if (dataHolderNameExpr.endsWith("*") == true)
-         {  wildCard = true;
+         {  
+         	wildCard = true;
             comparisonString = dataHolderNameExpr.substring(0, len-1);
+            logger.debug("wildcad is true:"+comparisonString);
          }
          else
          {  wildCard = false;
@@ -670,7 +672,9 @@ public class RegistryManager
 //         Get the name for the current DataItemRecord.
 
             String dataItemName = itemRec.getDataItemName();
-
+                 
+            logger.debug("registryManager.lookupdatarecords.dataitemname    = " +dataItemName);
+            logger.debug("registryManager.lookupdatarecords.comparisonString= " +comparisonString);
 //
 //         Check the name against the comparison string.  If it matches
 //         then add the current DataItemRecord to the (alphabetically
@@ -682,8 +686,10 @@ public class RegistryManager
                }
             }
             else
-            {  if (dataItemName.startsWith(comparisonString))
+            {  logger.debug("wildcard is true..");
+            	if (dataItemName.startsWith(comparisonString))
                {  itemRecords.add(itemRec);
+               	  logger.debug("added 1");
                }
             }
          }
