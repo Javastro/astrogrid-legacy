@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.23 2004/07/16 16:03:04 mch Exp $
+ * $Id: FailbackConfig.java,v 1.24 2004/08/03 11:13:29 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,7 +9,7 @@
 
 package org.astrogrid.config;
 
-import java.util.*;
+import javax.naming.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,15 +18,12 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NameClassPair;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.NoInitialContextException;
-import javax.naming.ServiceUnavailableException;
+import java.security.AccessControlException;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * All Things To All Men Configuration file.
@@ -303,43 +300,52 @@ public class FailbackConfig extends Config {
 
       log.debug("Looking for "+givenFilename);
      
-      //if it's absolute, look absolutely
-      File f = new File(filename);
-      if (f.isAbsolute()) {
+      try {
+         //if it's absolute, look absolutely
+         File f = new File(filename);
+         if (f.isAbsolute()) {
+            if (f.exists()) {
+               loadFromFile(f);
+               return true;
+            }
+            return false;
+         }
+         
+         //look for file in classpath.
+         //see http://www.javaworld.com/javaworld/javaqa/2003-08/01-qa-0808-property.html
+         //NB this works via URL as we don't expect to get config files from inside jars
+         log.debug("Looking for "+givenFilename+" on classpath");
+   //      URL configUrl = ClassLoader.getSystemResource(filename);
+         URL configUrl = this.getClass().getClassLoader().getResource(filename);
+         if (configUrl != null) {
+            try {
+               loadFromUrl(configUrl);
+               
+               log.info("Configuration file loaded from '"+configUrl+"' (found in classpath)");
+               
+               return true;
+               
+            } catch (IOException ioe) {
+               throw new ConfigException(ioe+" loading property file at '"+configUrl+"' (from classpath)", ioe);
+            }
+         }
+         
+         
+         //look for it in the working directory
+         log.debug("Looking for "+givenFilename+" in working directory");
          if (f.exists()) {
             loadFromFile(f);
             return true;
          }
-         return false;
       }
-      
-      //look for file in classpath.
-      //see http://www.javaworld.com/javaworld/javaqa/2003-08/01-qa-0808-property.html
-      //NB this works via URL as we don't expect to get config files from inside jars
-      log.debug("Looking for "+givenFilename+" on classpath");
-//      URL configUrl = ClassLoader.getSystemResource(filename);
-      URL configUrl = this.getClass().getClassLoader().getResource(filename);
-      if (configUrl != null) {
-         try {
-            loadFromUrl(configUrl);
-            
-            log.info("Configuration file loaded from '"+configUrl+"' (found in classpath)");
-            
-            return true;
-            
-         } catch (IOException ioe) {
-            throw new ConfigException(ioe+" loading property file at '"+configUrl+"' (from classpath)", ioe);
-         }
+      catch (AccessControlException ace) {
+         //this exception is thrown when a file is looked for, even if it doesn't exist,
+         //if there is no FilePermission set for it.  This can be a pain for the fallback
+         //config as it looks in many places for the configuration.  So we just log it - as an
+         //error - but we don't crash
+         log.error("No Permission to access "+givenFilename, ace);
       }
-      
-      
-      //look for it in the working directory
-      log.debug("Looking for "+givenFilename+" in working directory");
-      if (f.exists()) {
-         loadFromFile(f);
-         return true;
-      }
-      
+         
       return false;
    }
    
@@ -604,6 +610,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.24  2004/08/03 11:13:29  mch
+Added trap for AccessControlException
+
 Revision 1.23  2004/07/16 16:03:04  mch
 Added trim for config filename from JNDI, better error reporting and checking
 
@@ -686,6 +695,7 @@ Revision 1.2  2004/02/17 03:54:35  mch
 Nughtily large number of fixes for demo
 
  */
+
 
 
 
