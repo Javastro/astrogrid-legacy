@@ -4,7 +4,8 @@ work.dir=/home/integration/working
 tomcat.location=/usr/local/tomcat
 tomcat.common.lib.dir=${tomcat.location}/common/lib
 tomcat.port=8888
-version=SNAPSHOT
+#replaced with already exist astrogrid.iteration
+#version=SNAPSHOT
 registry.authorityid=org.astrogrid.localhost
 
 #Required to copy site docs across to Uluru
