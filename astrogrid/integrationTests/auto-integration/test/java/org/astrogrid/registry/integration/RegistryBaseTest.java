@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryBaseTest.java,v 1.5 2004/08/17 13:27:13 KevinBenson Exp $
+ * $Id: RegistryBaseTest.java,v 1.6 2004/08/25 11:40:50 KevinBenson Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -44,6 +44,7 @@ public abstract class RegistryBaseTest extends TestCase {
    private static RegistryDelegateFactory factory = new RegistryDelegateFactory() ;
    
    protected RegistryService rs = null;
+   protected RegistryAdminService ras = null;
    
 
    /**
@@ -52,6 +53,7 @@ public abstract class RegistryBaseTest extends TestCase {
    public RegistryBaseTest(String arg0) {
       super(arg0);
       rs = factory.createQuery();
+      ras = factory.createAdmin();
    }
 
    protected void setUp() throws Exception {
@@ -72,8 +74,4 @@ public abstract class RegistryBaseTest extends TestCase {
       assertNotNull(adminDelegate);
    }
    
-   public void testBase() {
-      
-   }
-
 }

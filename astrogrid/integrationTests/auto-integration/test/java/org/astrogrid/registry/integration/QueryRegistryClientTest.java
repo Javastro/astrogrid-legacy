@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientTest.java,v 1.6 2004/08/17 13:27:25 KevinBenson Exp $
+/*$Id: QueryRegistryClientTest.java,v 1.7 2004/08/25 11:40:50 KevinBenson Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.

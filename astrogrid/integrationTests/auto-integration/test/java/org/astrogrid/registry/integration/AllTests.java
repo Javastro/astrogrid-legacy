@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.5 2004/08/17 13:27:25 KevinBenson Exp $
+/*$Id: AllTests.java,v 1.6 2004/08/25 11:40:50 KevinBenson Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,8 +34,8 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
-Revision 1.5  2004/08/17 13:27:25  KevinBenson
-*** empty log message ***
+Revision 1.6  2004/08/25 11:40:50  KevinBenson
+changes back to a previous integration test
 
 Revision 1.3  2004/05/07 15:32:36  pah
 more registry tests to flush out the fact that new entries are not being added
