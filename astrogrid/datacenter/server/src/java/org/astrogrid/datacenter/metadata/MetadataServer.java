@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataServer.java,v 1.2 2004/03/09 02:01:11 mch Exp $
+ * $Id: MetadataServer.java,v 1.3 2004/03/09 21:03:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -70,11 +70,11 @@ public class MetadataServer
       URL url = SimpleConfig.getSingleton().getUrl(METADATA_URL_LOC_KEY, null);
       
       if ((filename != null) && (url != null)) {
-         throw new ConfigException("Server not configured properly: both file "+filename+" and url "+url+" given in config ("+SimpleConfig.loadedFrom()+").  Specify only one.");
+         throw new ConfigException("Server not configured properly: both file "+filename+" and url "+url+" given in config ("+SimpleConfig.loadedFrom()+") to locate metadata file.  Specify only one.");
       }
 
       if ((filename == null) && (url == null)) {
-         log.warn("Server not configured properly: neither file "+filename+" nor url "+url+" are given in config ("+SimpleConfig.loadedFrom()+") Looking in classpath");
+         log.warn("Server not configured properly: neither file "+METADATA_FILE_LOC_KEY+" nor url "+METADATA_URL_LOC_KEY+" are given in config ("+SimpleConfig.loadedFrom()+") to locate metadata file Looking in classpath");
          filename = METADATA_DEFAULT_FILENAME;
       }
 
