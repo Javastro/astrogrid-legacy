@@ -1,4 +1,4 @@
-/*$Id: QOM.java,v 1.4 2003/09/17 14:51:30 nw Exp $
+/*$Id: QOM.java,v 1.5 2003/09/26 14:27:44 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,8 +52,8 @@ public interface QOM {
      * Entry point for a dynamic visitor to process the object tree in a top down fashion (i.e. visit the
      * parent before it's children)
      * @param v the visitor object
-     * @throws Exception if an error occurs during traversal
-     * @todo could split the exceptions into those that may be thrown in traversal, and user exceptions.
+     * @throws TraversalException is the traversal mechanism breaks
+     * @throws ProcessingException if the supplied <tt>visit()</tt> method throws an exception
      * @see DynamicVisitor
      */
     public void acceptTopDown(DynamicVisitor v) throws TraversalException, ProcessingException;
@@ -62,7 +62,8 @@ public interface QOM {
      * nodes before their parents).
      * 
      * @param v visitor object
-     * @throws Exception if an error occurs during traversal.
+    * @throws TraversalException is the traversal mechanism breaks
+     * @throws ProcessingException if the supplied <tt>visit()</tt> method throws an exception
      * @see DynamicVisitor
      */
     public void acceptBottomUp(DynamicVisitor v) throws TraversalException, ProcessingException;
@@ -86,6 +87,9 @@ public interface QOM {
 
 /* 
 $Log: QOM.java,v $
+Revision 1.5  2003/09/26 14:27:44  nw
+documentation tweak
+
 Revision 1.4  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 

@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.13 2003/09/25 01:22:14 nw Exp $
+ * $Id: WebDelegate.java,v 1.14 2003/09/26 14:27:58 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -59,22 +59,21 @@ public class WebDelegate extends DatacenterDelegate
     * described in ADQL (Astronomical Data Query Language).  Returns the
     * results part of the returned document, which may be VOTable or otherwise
     * depending on the results format specified in the ADQL
-    * @todo - seems bad to have to hide these exceptions to fit in with interface - can we loosen interface instead.
-    * or even get rid of it - what does it give us over the machine generated AxisDataServerSoapBindingStub ?
     */
    public Element doQuery(Element adql) throws RemoteException
    {
        try {
           return binding.doQuery(adql);
        } catch (QueryException e) {
-           throw new RemoteException(e.getMessage());
+           RemoteException r = new RemoteException(e.getMessage());
+           r.initCause(e);
+           throw r;
        }
 
    }
 
    /**
     * Returns votable results (or status info if results not ready)
-    * @todo change getResultsAndClose() to take the query Id as string
     */
    public Element getResultsAndClose(String queryId) throws RemoteException
    {
@@ -206,6 +205,9 @@ public Element getMetadata() throws IOException {
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.14  2003/09/26 14:27:58  nw
+documentation tweak
+
 Revision 1.13  2003/09/25 01:22:14  nw
 fixed bug - was passing string instead of element
 

@@ -1,4 +1,4 @@
-/*$Id: QueryTranslator.java,v 1.5 2003/09/17 14:51:30 nw Exp $
+/*$Id: QueryTranslator.java,v 1.6 2003/09/26 14:28:24 nw Exp $
  * Created on 02-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,8 +25,8 @@ import org.w3c.dom.Element;
  * Extend this class to implement DynamicVisitor to provide a concrete translator.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2003
  * @todo  optimize translation frame creation.
- * @see org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator for example application
- * @see TranslationFrame for description of implemenation decisions.
+ * @see org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator 
+ * @see TranslationFrame
  */
 public abstract  class QueryTranslator implements DynamicVisitor {
     /** stack of translation frames
@@ -113,6 +113,9 @@ public abstract  class QueryTranslator implements DynamicVisitor {
 
 /*
 $Log: QueryTranslator.java,v $
+Revision 1.6  2003/09/26 14:28:24  nw
+documentation tweak
+
 Revision 1.5  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 
