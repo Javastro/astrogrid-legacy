@@ -10,6 +10,7 @@
  */
 package org.astrogrid.jes.jobcontroller;
 
+import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
@@ -159,7 +160,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
         try {
         logger.debug("in read job list");
         JobFactory fac = facade.getJobFactory();
-        Iterator i = fac.findUserJobs(JesUtil.axis2castor(arg0));
+        Iterator i = fac.findUserJobs(Axis2Castor.convert(arg0));
         List itemList = new ArrayList();
         while (i.hasNext()) {
             Workflow w = (Workflow)i.next();
@@ -192,7 +193,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
         try {
             logger.debug("in readJob()");
         JobFactory fac = facade.getJobFactory();
-        Workflow w = fac.findJob(JesUtil.axis2castor(arg0));
+        Workflow w = fac.findJob(Axis2Castor.convert(arg0));
         if ( w == null) {
             throw new JesFault("factory returned null workflow");
         }

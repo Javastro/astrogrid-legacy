@@ -1,4 +1,4 @@
-/*$Id: JesUtil.java,v 1.4 2004/03/15 23:45:07 nw Exp $
+/*$Id: JesUtil.java,v 1.5 2004/03/18 16:41:57 pah Exp $
  * Created on 03-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -95,18 +95,6 @@ public class JesUtil {
          }
      }
 
-//--type convertors/////////////////////////////////////////////////////////////////////////////////////////////////////////
- 
-    /** convert between castor and axis representations of the same schema object */
-    public static org.astrogrid.workflow.beans.v1.execution.JobURN axis2castor(JobURN jobURN) {
-        if (jobURN == null ) {
-            return null;
-        }
-        org.astrogrid.workflow.beans.v1.execution.JobURN result = new org.astrogrid.workflow.beans.v1.execution.JobURN();
-        result.setContent(jobURN.toString());
-        return result;
-    }
-
  /** convert between castor and axis representations of the same schema object */
     public static JobURN castor2axis(org.astrogrid.workflow.beans.v1.execution.JobURN jobURN) {
         if (jobURN == null) {
@@ -116,57 +104,14 @@ public class JesUtil {
     }  
    
 
-    /** convert between castor and axis representations of the same schema object */
-    public static org.astrogrid.applications.beans.v1.cea.castor.MessageType axis2castor(MessageType mt) {
-        if (mt == null) {
-            return null;
-        }
-        org.astrogrid.applications.beans.v1.cea.castor.MessageType result = new org.astrogrid.applications.beans.v1.cea.castor.MessageType();
-        result.setContent(mt.getContent());
-        result.setPhase(axis2castor(mt.getPhase()));
-        result.setLevel(axis2castor(mt.getLevel()));
-        result.setSource(mt.getSource());
-        Calendar cal =  mt.getTimestamp();
-        if (cal != null) {
-            result.setTimestamp(cal.getTime());
-        }
-        return result;
-    }
-
-    /** convert between castor and axis representations of the same schema object */
-    public static org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel axis2castor(LogLevel level) {
-        if (level == null) {
-            return null;
-        } else {
-            return org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel.valueOf(level.getValue());
-        }
-    }
-
-    /** convert between castor and axis representations of the same schema object */
-    public static org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase axis2castor(ExecutionPhase phase) {
-        if (phase == null) {
-            return null;
-        } else {
-            return org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.valueOf(phase.getValue());
-        }
-    }
-    
-
-
-
-
-    /** convert between castor and axis representations of the same schema object */
-    public static Account axis2castor(_Account arg0) {
-        Account result = new Account();
-        result.setCommunity(arg0.getCommunity().getValue());
-        result.setName(arg0.getName().getValue());
-        return result;
-    }
 }
 
 
 /* 
 $Log: JesUtil.java,v $
+Revision 1.5  2004/03/18 16:41:57  pah
+moved the axis2castor stuff to the common project under beans package
+
 Revision 1.4  2004/03/15 23:45:07  nw
 improved javadoc
 

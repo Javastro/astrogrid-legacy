@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.13 2004/03/18 01:30:15 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.14 2004/03/18 16:43:05 pah Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.jes;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.jes.component.BasicComponentManager;
 import org.astrogrid.jes.component.ComponentManager;
 import org.astrogrid.jes.component.ComponentManagerFactory;
@@ -136,6 +137,8 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
             fail("timed out waiting for the scheduler to complete");
         }
         assertFalse("timed out waiting for the scheduler to complete",barrier.broken()); // if this is false, meanst that we timed out - need to increase the duration?
+ 
+        Workflow job =  ComponentManagerFactory.getInstance().getFacade().getJobFactory().findJob(Axis2Castor.convert(urn));
         
         Workflow job =  fac.findJob(JesUtil.axis2castor(urn));
         assertNotNull(job);
@@ -194,6 +197,9 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.14  2004/03/18 16:43:05  pah
+moved the axis2castor stuff to the common project under beans package
+
 Revision 1.13  2004/03/18 01:30:15  nw
 improved reporting when there's a timeout
 

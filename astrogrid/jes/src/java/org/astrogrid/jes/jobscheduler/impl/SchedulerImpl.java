@@ -13,6 +13,7 @@ package org.astrogrid.jes.jobscheduler.impl;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
+import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.BeanFacade;
@@ -79,7 +80,7 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
 	        factory.begin() ;
 	        Workflow job;
             try {
-                job = factory.findJob( JesUtil.axis2castor(jobURN)) ;
+                job = factory.findJob( Axis2Castor.convert(jobURN)) ;
             } catch (NotFoundException e) {
                 logger.error("Could not find job for urn:" + jobURN.getValue());
                 return;
@@ -129,8 +130,8 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
              }              
              //add message into execution record for step.      
              StepExecutionRecord er =JesUtil.getLatestOrNewRecord(jobStep);             
-             er.addMessage(JesUtil.axis2castor(info));
-             ExecutionPhase status = JesUtil.axis2castor(info.getPhase());
+             er.addMessage(Axis2Castor.convert(info));
+             ExecutionPhase status = Axis2Castor.convert(info.getPhase());
              // only update status if executioin record hasn't already passed this status.
              if (status.getType() > er.getStatus().getType()) {
                 er.setStatus(status);

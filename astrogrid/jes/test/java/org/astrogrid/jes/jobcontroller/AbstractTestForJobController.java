@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForJobController.java,v 1.5 2004/03/15 00:32:01 nw Exp $
+/*$Id: AbstractTestForJobController.java,v 1.6 2004/03/18 16:42:52 pah Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.jes.jobcontroller;
 
+import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.jes.AbstractTestWorkflowInputs;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
 import org.astrogrid.jes.impl.workflow.CastorBeanFacade;
@@ -103,7 +104,7 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
         SubmitJobRequest req = facade.createSubmitJobRequest(workflowXML);
         assertNotNull(req);
         try {
-            return JesUtil.axis2castor(jc.submitJob(req));
+            return Axis2Castor.convert(jc.submitJob(req));
         } catch (IOException e) {
             seenException = e;
             return null;
@@ -114,6 +115,9 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
 
 /* 
 $Log: AbstractTestForJobController.java,v $
+Revision 1.6  2004/03/18 16:42:52  pah
+moved the axis2castor stuff to the common project under beans package
+
 Revision 1.5  2004/03/15 00:32:01  nw
 merged contents of comm package into jobscheduler package.
 
