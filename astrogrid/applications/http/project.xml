@@ -13,7 +13,7 @@
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-server-jar</artifactId>
             <version>${pom.currentVersion}</version>
-            <jar>astrogrid-cea-server-SNAPSHOT.jar</jar>
+            <jar>astrogrid-cea-server-${pom.currentVersion}.jar</jar>
             <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>

@@ -33,7 +33,7 @@ This functionality is provided with the ApplicationController service, of which 
                 <artifactId>astrogrid-cea-server-jar</artifactId>
 		        <version>${pom.currentVersion}</version>
                 <type>jar</type>
-                <jar>astrogrid-cea-server-SNAPSHOT.jar</jar>
+                <jar>astrogrid-cea-server-${pom.currentVersion}.jar</jar>
                 <properties>
                         <war.bundle>true</war.bundle>
                 </properties>
