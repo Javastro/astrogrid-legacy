@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.9 2004/03/09 22:58:39 mch Exp $
+ * $Id: SqlResults.java,v 1.10 2004/03/10 00:46:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -44,6 +44,18 @@ public class SqlResults implements QueryResults
       this.sqlResults = givenResults;
       this.workspace = givenWorkspace;
       
+   }
+
+   /** Returns number of rows */
+   public int getCount() {
+      try {
+         if (sqlResults.last() == false) return 0;
+         return sqlResults.getRow();
+      }
+      catch (SQLException sqle)  { //may be an unsupported operation
+         log.error(sqle);
+         return -1;
+      }
    }
    
    /**
@@ -157,6 +169,7 @@ public class SqlResults implements QueryResults
       catch (SQLException sqle)
       {
          log.error("Could not convert results",sqle);
+         throw new IOException(sqle+", converting to VOtable");
       }
    }
    
@@ -196,6 +209,9 @@ public class SqlResults implements QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.10  2004/03/10 00:46:00  mch
+ catch unsupported operation
+
  Revision 1.9  2004/03/09 22:58:39  mch
  Provided for piping/writing out of results rather than returning as string
 
