@@ -1,5 +1,5 @@
 /*
- * $Id: HttpFileIndirectExecutionTest.java,v 1.2 2004/09/14 16:35:56 jdt Exp $
+ * $Id: HttpFileIndirectExecutionTest.java,v 1.3 2004/09/15 17:09:01 jdt Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,19 +13,17 @@
 
 package org.astrogrid.applications.integration.http.helloYou;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.net.URI;
+
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.AbstractRunTestForCEA;
 import org.astrogrid.io.Piper;
 import org.astrogrid.workflow.beans.v1.Tool;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.net.URI;
 
 /** test simplest possible execution of a command-line app - direct, no external references involved.
  * @author jdt

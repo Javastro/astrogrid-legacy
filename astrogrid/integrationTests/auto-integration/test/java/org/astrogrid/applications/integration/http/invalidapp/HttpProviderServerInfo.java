@@ -1,4 +1,4 @@
-/*$Id: HttpProviderServerInfo.java,v 1.3 2004/09/14 16:35:56 jdt Exp $
+/*$Id: HttpProviderServerInfo.java,v 1.4 2004/09/15 17:09:01 jdt Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.applications.integration.http.invalidapp;
 
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.ServerInfo;
 import org.astrogrid.integration.AbstractTestForIntegration;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -60,6 +59,9 @@ public class HttpProviderServerInfo implements ServerInfo {
 
 /* 
 $Log: HttpProviderServerInfo.java,v $
+Revision 1.4  2004/09/15 17:09:01  jdt
+Removed superfluous imports.
+
 Revision 1.3  2004/09/14 16:35:56  jdt
 Take responsibity for my sins.
 

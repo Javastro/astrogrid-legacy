@@ -1,5 +1,5 @@
 /*
- * $Id: HttpVOSpaceIndirectExecutionTest.java,v 1.2 2004/09/14 16:35:56 jdt Exp $
+ * $Id: HttpVOSpaceIndirectExecutionTest.java,v 1.3 2004/09/15 17:09:01 jdt Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,6 +13,10 @@
 
 package org.astrogrid.applications.integration.http.helloYou;
 
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.AbstractRunTestForCEA;
@@ -20,12 +24,6 @@ import org.astrogrid.io.Piper;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.workflow.beans.v1.Tool;
-
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
 
 /**
  * @author jdt
