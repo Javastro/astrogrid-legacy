@@ -25,7 +25,6 @@
       <ResourceKey>org.astrogrid.store.myspace.MyspaceMgr</ResourceKey>
     </Identifier>
     <Title>Myspace Manager Service Entry</Title>
-    <ShortName>Myspace</ShortName>
     <Summary>
       <Description>
          This entry is a Myspace manager entry which is a particular service dealing with a user's VOSpace.
@@ -33,22 +32,14 @@
       <ReferenceURL>http://www.astrogrid.org/maven/build/myspace</ReferenceURL>
     </Summary>
     <Type>Archive</Type>
-    <RelatedResource>
-       <Relationship>one of the myspace servers</Relationship>
-       <RelatedTo>
-          <Identifier>
-            <AuthorityID>vm08.astrogrid.org</AuthorityID>
-            <ResourceKey>MyspaceSvr</ResourceKey>
-          </Identifier>
-        <Title>Myspace Server</Title>
-       </RelatedTo>
-    </RelatedResource>
     <Curation>
+      <Publisher>
+         <Title>Myspace Manager Service</Title>
+      </Publisher>    
       <Contact>
         <Name>Clive Davenhall</Name>
-      <Email>acd@roe.ac.uk</Email>
+        <Email>acd@roe.ac.uk</Email>
       </Contact>
-      <Date>2004-02-02</Date>
       <Creator>
         <Name>Kevin Benson</Name>
       </Creator>

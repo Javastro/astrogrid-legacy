@@ -19,53 +19,35 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <vr:Service xsi:type="ServiceType">
+ <vr:Resource xsi:type="RegistryType">
     <Identifier>
-      <AuthorityID>org.astrogrid.test.roe</AuthorityID>
-      <ResourceKey>org.astrogrid.store.myspace.MyspaceMgr</ResourceKey>
+      <AuthorityID>org.astrogrid.test.mssl</AuthorityID>
+      <ResourceKey>mssl/registry</ResourceKey>
     </Identifier>
-    <Title>Myspace Manager Service Entry</Title>
-    <ShortName>Myspace</ShortName>
+    <Title>Astrogrid MSSL Registry</Title>
     <Summary>
       <Description>
-         This entry is a Myspace manager entry which is a particular service dealing with a user's VOSpace.
+      	This is the Astrogrid MSSL main registry currently holding datate for MSSL, Cambridge Community, and Edinburgh-ROE Myspace.
       </Description>
-      <ReferenceURL>http://www.astrogrid.org/maven/build/myspace</ReferenceURL>
+      <ReferenceURL>http://mssl.ucl.ac.uk/</ReferenceURL>
     </Summary>
     <Type>Archive</Type>
-    <RelatedResource>
-       <Relationship>one of the myspace servers</Relationship>
-       <RelatedTo>
-          <Identifier>
-            <AuthorityID>vm08.astrogrid.org</AuthorityID>
-            <ResourceKey>MyspaceSvr</ResourceKey>
-          </Identifier>
-        <Title>Myspace Server</Title>
-       </RelatedTo>
-    </RelatedResource>
     <Curation>
+      <Publisher>
+         <Title>MSSL Registry</Title>
+      </Publisher>
       <Contact>
-        <Name>Clive Davenhall</Name>
-      <Email>acd@roe.ac.uk</Email>
-      </Contact>
-      <Date>2004-02-02</Date>
-      <Creator>
         <Name>Kevin Benson</Name>
-      </Creator>
-      <Contributor>
-        <Name>Dave Morris</Name>
-      </Contributor>
-      <Contributor>
-        <Name>Martin Hill</Name>
-      </Contributor>     
-      <Contributor>
-        <Name>Clive Davenhall</Name>
-      </Contributor>       
+	    <Email>kmb@mssl.ucl.ac.uk</Email>
+      </Contact>
     </Curation>
-    <Subject>Users VOSpace</Subject>
+    <vg:ManagedAuthority>org.astrogrid.test.roe</vg:ManagedAuthority>
+    <vg:ManagedAuthority>org.astrogrid.test.codon</vg:ManagedAuthority>
+    <vg:ManagedAuthority>org.astrogrid.test.cam</vg:ManagedAuthority>
+    <vg:ManagedAuthority>org.astrogrid.test.mssl</vg:ManagedAuthority>
     <Interface>
       <Invocation>WebService</Invocation>
-      <AccessURL use="base">http://grendel12.roe.ac.uk:8080/astrogrid-myspace/services/Manager?wsdl</AccessURL>
+      <AccessURL use="full">http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-registry-webapp/services/RegistryHarvest?wsdl</AccessURL>
     </Interface>
-  </vr:Service>
-</VODescription>
+  </vr:Resource>
+  </VODescription>
