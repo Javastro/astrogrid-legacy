@@ -1,4 +1,4 @@
-/*$Id: WebServiceSiteTest.java,v 1.3 2004/01/15 18:05:17 nw Exp $
+/*$Id: WebServiceSiteTest.java,v 1.4 2004/01/15 18:05:46 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -80,7 +80,7 @@ public class WebServiceSiteTest extends TestCase {
 //      WebServiceSiteTest tester = new WebServiceSiteTest(args[0]);
       //WebServiceSiteTest tester = new WebServiceSiteTest("http://vm07.astrogrid.org:8080/pal/");
       WebServiceSiteTest tester = new WebServiceSiteTest("http://localhost:8080/pal/");
-
+      tester.testBlockingQuery();
       
       
     }
@@ -95,6 +95,9 @@ public class WebServiceSiteTest extends TestCase {
 
 /*
 $Log: WebServiceSiteTest.java,v $
+Revision 1.4  2004/01/15 18:05:46  nw
+minor tweak
+
 Revision 1.3  2004/01/15 18:05:17  nw
 minor tweak
 
