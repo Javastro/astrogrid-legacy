@@ -1,11 +1,11 @@
-/*$Id: SybaseQueryTranslator.java,v 1.2 2003/11/27 00:52:58 nw Exp $
+/*$Id: SybaseQueryTranslator.java,v 1.3 2003/12/15 18:11:47 mch Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.queriers.sybase;
@@ -22,21 +22,23 @@ import org.astrogrid.datacenter.queriers.sql.AdqlQueryTranslator;
  */
 public class SybaseQueryTranslator extends AdqlQueryTranslator {
     /** template for this expression
-     * 
+     *
       transliterated from old query.Operation_Cone
      bit worried about the free vairables - where does UDEC come from? */
     public static final String CIRCLE_TEMPLATE = "( ((2 * ASIN(SQRT(POW(SIN({1}-UDEC)/2),2) + COS(UDEC) + POW(SIN({0}-URA)/2),2)) < {2} )";
 
     /**
      * @todo find out what this should be.
-     *  */
+     *  This should now work in the superclass - MCH, 15 Dec 2003
+    *
     public void visit(Circle c) {
 
         String exp = MessageFormat.format( CIRCLE_TEMPLATE
             , new Object[]{new Double(c.getRa().getValue()),new Double(c.getDec().getValue()), new Double(c.getRadius().getValue()) });
-        stack.top().add(SEARCH,exp); 
+        stack.top().add(SEARCH,exp);
     }
-    
+    */
+   
     /** according to old code, sybase uses '..' as separator between database and table name.
      *  (usually, this is just '.')
      */
@@ -52,8 +54,11 @@ public class SybaseQueryTranslator extends AdqlQueryTranslator {
 }
 
 
-/* 
+/*
 $Log: SybaseQueryTranslator.java,v $
+Revision 1.3  2003/12/15 18:11:47  mch
+Fixed Circle SQL
+
 Revision 1.2  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.
