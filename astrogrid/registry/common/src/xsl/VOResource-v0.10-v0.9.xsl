@@ -293,6 +293,13 @@
          </cea:ApplicationDefinition>
    </xsl:template>
 
+   <xsl:template match="cea2:ApplicationKind">
+         <cea:ApplicationKind>
+            <xsl:apply-templates select="@*|node()"/>
+         </cea:ApplicationKind>
+   </xsl:template>
+
+
    <xsl:template match="cea2:Parameters">
          <cea:Parameters>
             <xsl:apply-templates select="@*|node()"/>
