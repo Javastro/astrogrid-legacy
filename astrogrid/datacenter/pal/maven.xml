@@ -11,12 +11,12 @@
 
 
 <!-- standard astrogrid goals -->
-<goal name="astrogrid-install-artifact" prereqs="war:install" />
-<goal name="astrogrid-deploy-artifact" prereqs="war:deploy" />
+<goal name="astrogrid-install-artifact" prereqs="jar:install,war:install" />
+<goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy" />
 <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,war:install-snapshot" />
-<goal name="astrogrid-deploy-snapshot" prereqs="war:deploy-snapshot" />
-<goal name="astrogrid-build-artifact" prereqs="war" />
-<goal name="astrogrid-build-snapshot" prereqs="war" />
+<goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,war:deploy-snapshot" />
+<goal name="astrogrid-build-artifact" prereqs="jar,war" />
+<goal name="astrogrid-build-snapshot" prereqs="jar,war" />
 
 <!-- hook to add our own things to the mix -->
 <preGoal name="war:war">
