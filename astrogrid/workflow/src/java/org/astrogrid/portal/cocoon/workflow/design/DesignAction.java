@@ -497,11 +497,6 @@ public class DesignAction extends AbstractAction {
                 String
                     name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
                     
-				String
-					description = request.getParameter( WORKFLOW_DESCRIPTION_PARAMETER ) ;                    
-                  
-                // name = "jeff1" ;
-                    
                 if( name == null ) {
                     ; // some logging here
                     throw new ConsistencyException() ;
