@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2004/08/03 14:27:38 nw Exp $
+/*$Id: AllTests.java,v 1.4 2004/08/05 09:59:46 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,11 +25,13 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTestSuite(GroovyResumeJobSuccesssTest.class);
         suite.addTestSuite(GroovySchedulerSetupTest.class);
+        suite.addTestSuite(SetFeatureTest.class);
         suite.addTestSuite(GroovyAbortJobTest.class);
-        suite.addTestSuite(ActivityStatusStoreTest.class);
         suite.addTestSuite(ScriptFeatureTest.class);
+        suite.addTestSuite(ActivityStatusStoreTest.class);
         suite.addTestSuite(FlowFeatureTest.class);
         suite.addTestSuite(RuleStoreTest.class);
+        suite.addTestSuite(UnsetFeatureTest.class);
         suite.addTestSuite(GroovySubmitNewJobSuccessTest.class);
         suite.addTestSuite(GroovyInterpreterFactoryTest.class);
         suite.addTestSuite(RuleTest.class);
@@ -50,15 +52,20 @@ public class AllTests {
         suite.addTestSuite(VarsTest.class);
         suite.addTestSuite(CompilerTest.class);
         suite.addTestSuite(GroovyAssumptionsTest.class);
-        suite.addTestSuite(SetFeatureTest.class);
-        suite.addTestSuite(UnsetFeatureTest.class);
         suite.addTestSuite(ScopeFeatureTest.class);
+        suite.addTestSuite(IfThenTrueFeatureTest.class);
+        suite.addTestSuite(IfThenFalseFeatureTest.class);
+        suite.addTestSuite(IfThenElseTrueFeatureTest.class);
+        suite.addTestSuite(IfThenElseFalseFeatureTest.class);
         //$JUnit-END$
         return suite;
     }
 }
 /* 
  $Log: AllTests.java,v $
+ Revision 1.4  2004/08/05 09:59:46  nw
+ tests for if construct
+
  Revision 1.3  2004/08/03 14:27:38  nw
  added set/unset/scope features.
 
