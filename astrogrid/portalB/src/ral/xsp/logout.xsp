@@ -26,9 +26,12 @@ Version 0.2, Brian McIlwrath, Astrogrid, RAL>
     if(session != null) {
        if(session.getAttribute("user") != null)
          session.removeAttribute("user"); 
+       if(session.getAttribute("community_account") != null)
+       	 session.removeAttribute("community_account");
        if(session.getAttribute("community") != null);
          session.removeAttribute("community"); 
 //       session.invalidate();
+
     }
    xspAttr.clear();
 
