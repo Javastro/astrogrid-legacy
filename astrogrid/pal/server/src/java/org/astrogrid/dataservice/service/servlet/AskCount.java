@@ -1,5 +1,5 @@
 /*
- * $Id: AskCount.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: AskCount.java,v 1.1.1.1 2005/02/17 18:37:35 mch Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;

@@ -60,8 +60,8 @@ public class DatabaseAccessException extends QuerierPluginException
 
 /*
 $Log: DatabaseAccessException.java,v $
-Revision 1.1  2005/02/17 18:37:34  mch
-*** empty log message ***
+Revision 1.1.1.1  2005/02/17 18:37:34  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:24  mch
 Initial checkin

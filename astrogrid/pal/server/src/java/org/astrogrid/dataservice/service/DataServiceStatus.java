@@ -1,5 +1,5 @@
 /*
- * $Id: DataServiceStatus.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: DataServiceStatus.java,v 1.1.1.1 2005/02/17 18:37:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */

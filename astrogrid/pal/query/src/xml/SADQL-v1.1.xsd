@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-   $Id: SADQL-v1.1.xsd,v 1.1 2005/02/17 18:37:34 mch Exp $
+   $Id: SADQL-v1.1.xsd,v 1.1.1.1 2005/02/17 18:37:34 mch Exp $
 
    Definition Schema for an Astronomical Data Query Language.
    

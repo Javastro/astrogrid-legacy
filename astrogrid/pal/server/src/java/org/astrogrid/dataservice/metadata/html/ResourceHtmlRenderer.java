@@ -1,5 +1,5 @@
 /*
- * $Id: ResourceHtmlRenderer.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: ResourceHtmlRenderer.java,v 1.1.1.1 2005/02/17 18:37:34 mch Exp $
  */
 package org.astrogrid.dataservice.metadata.html;
 

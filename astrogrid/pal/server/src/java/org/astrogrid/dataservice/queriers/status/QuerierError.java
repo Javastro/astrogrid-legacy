@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierError.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: QuerierError.java,v 1.1.1.1 2005/02/17 18:37:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -60,8 +60,8 @@ public class QuerierError extends QuerierStatus implements QuerierClosed
 
 /*
 $Log: QuerierError.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:24  mch
 Initial checkin

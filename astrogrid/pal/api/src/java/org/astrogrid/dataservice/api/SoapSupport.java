@@ -1,5 +1,5 @@
 /*
- * $Id: SoapSupport.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: SoapSupport.java,v 1.1.1.1 2005/02/17 18:37:34 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -114,8 +114,8 @@ public class SoapSupport  {
 
 /*
  $Log: SoapSupport.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:23  mch
  Initial checkin
