@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: int-test.sh,v 1.7 2004/12/11 17:57:47 jdt Exp $ 
+# $Id: int-test.sh,v 1.8 2004/12/21 10:41:22 jdt Exp $ 
 ########################################################
 # Script to install AGINAB, run the integration
 # tests and publish the results
@@ -85,6 +85,15 @@ else
 exit 1
 fi
 
+
+
+cd $OLDDIR
+
+
+echo "See http://www.astrogrid.org/maven/docs/HEAD/integrationTests" | mail -s "Integration Tests have completed" $ADMIN_EMAIL
+
+) 2>&1 | tee $LOGFILE
+
 #backup tests and logs
 FROM=$DOCLOCATION/integrationTests
 TO=$DOCLOCATION/backupReports/integrationTests/$TIMESTAMP
@@ -98,10 +107,3 @@ tar -cvzf catalina.logs.tar.gz *
 scp catalina.logs.tar.gz $DOCMACHINE:$TO  
 scp $LOGFILE $DOCMACHINE:$TO  
 rm catalina.logs.tar.gz  
-
-cd $OLDDIR
-
-
-echo "See http://www.astrogrid.org/maven/docs/HEAD/integrationTests" | mail -s "Integration Tests have completed" $ADMIN_EMAIL
-
-) 2>&1 | tee $LOGFILE
