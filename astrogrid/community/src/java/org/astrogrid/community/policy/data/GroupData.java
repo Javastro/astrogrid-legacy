@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/GroupData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 10:02:17 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/09 13:48:09 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupData.java,v $
+ *   Revision 1.4  2003/09/09 13:48:09  dave
+ *   Added addGroupMember - only local accounts and groups to start with.
+ *
  *   Revision 1.3  2003/09/09 10:02:17  dave
  *   Fixed problems introduced by conflicts.
  *
@@ -23,7 +26,16 @@ package org.astrogrid.community.policy.data ;
 
 public class GroupData
 	{
+	/**
+	 * Type value to for a normal Group.
+	 *
+	 */
 	public static final String MULTI_TYPE = "MULTI";
+
+	/**
+	 * Type value to for an Account Group.
+	 *
+	 */
 	public static final String SINGLE_TYPE = "SINGLE";
 
 	/**

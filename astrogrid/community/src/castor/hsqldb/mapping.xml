@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/mapping.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/09 10:02:17 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/09 13:48:09 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: mapping.xml,v $
+    |   Revision 1.9  2003/09/09 13:48:09  dave
+    |   Added addGroupMember - only local accounts and groups to start with.
+    |
     |   Revision 1.8  2003/09/09 10:02:17  dave
     |   Fixed problems introduced by conflicts.
     |
@@ -88,7 +91,20 @@
 		<field name="type" type="string">
 			<sql name="type" type="char"/>
 			<bind-xml node="element"/>
-		</field>		
+		</field>
+	</class>
+
+	<!-- JDO and XML Mapping for Group members -->
+	<class name="org.astrogrid.community.policy.data.GroupMemberData" identity="account group">
+		<map-to table="members" xml="member"/>
+		<field name="account" type="string">
+			<sql name="accountident" type="char"/>
+			<bind-xml node="attribute"/>
+		</field>
+		<field name="group" type="string">
+			<sql name="groupident" type="char"/>
+			<bind-xml node="attribute"/>
+		</field>
 	</class>
 
 	<!-- JDO and XML Mapping for Permissions -->

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/09 13:48:09 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManager.java,v $
+ *   Revision 1.4  2003/09/09 13:48:09  dave
+ *   Added addGroupMember - only local accounts and groups to start with.
+ *
  *   Revision 1.3  2003/09/08 20:28:50  dave
  *   Added CommunityIdent, with isLocal() and isValid()
  *
@@ -71,4 +74,5 @@ public interface GroupManager
 	 */
 	public Object[] getAccountGroupList(String account)
 		throws RemoteException;
+
 	}

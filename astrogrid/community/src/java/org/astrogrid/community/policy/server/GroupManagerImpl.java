@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 10:57:47 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/09 13:48:09 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.5  2003/09/09 13:48:09  dave
+ *   Added addGroupMember - only local accounts and groups to start with.
+ *
  *   Revision 1.4  2003/09/09 10:57:47  dave
  *   Added corresponding SINGLE Group to addAccount and delAccount.
  *
@@ -43,6 +46,7 @@ import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.CommunityIdent ;
 import org.astrogrid.community.policy.data.CommunityConfig ;
+import org.astrogrid.community.policy.data.GroupMemberData ;
 
 import java.util.ArrayList;
 
@@ -146,7 +150,7 @@ public class GroupManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("") ;
 					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("Exception in addGroup()") ;
+					if (DEBUG_FLAG) System.out.println("Generic exception in addGroup()") ;
 
 					//
 					// Set the response to null.
@@ -172,7 +176,7 @@ public class GroupManagerImpl
 						{
 						if (DEBUG_FLAG) System.out.println("") ;
 						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("Exception in addGroup() finally clause") ;
+						if (DEBUG_FLAG) System.out.println("Generic exception in addGroup() finally clause") ;
 
 						//
 						// Set the response to null.
@@ -262,7 +266,7 @@ public class GroupManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("") ;
 					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("Exception in getGroup()") ;
+					if (DEBUG_FLAG) System.out.println("Generic exception in getGroup()") ;
 
 					//
 					// Set the response to null.
@@ -288,7 +292,7 @@ public class GroupManagerImpl
 						{
 						if (DEBUG_FLAG) System.out.println("") ;
 						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("Exception in getGroup() finally clause") ;
+						if (DEBUG_FLAG) System.out.println("Generic exception in getGroup() finally clause") ;
 
 						//
 						// Set the response to null.
@@ -378,7 +382,7 @@ public class GroupManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("") ;
 					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("Exception in setGroup()") ;
+					if (DEBUG_FLAG) System.out.println("Generic exception in setGroup()") ;
 
 					//
 					// Set the response to null.
@@ -404,7 +408,7 @@ public class GroupManagerImpl
 						{
 						if (DEBUG_FLAG) System.out.println("") ;
 						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("Exception in setGroup() finally clause") ;
+						if (DEBUG_FLAG) System.out.println("Generic exception in setGroup() finally clause") ;
 
 						//
 						// Set the response to null.
@@ -476,7 +480,7 @@ public class GroupManagerImpl
          {
          if (DEBUG_FLAG) System.out.println("") ;
          if (DEBUG_FLAG) System.out.println("  ----") ;
-         if (DEBUG_FLAG) System.out.println("Exception in getGroupList()") ;
+         if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList()") ;
 
          //
          // Set the response to null.
@@ -502,7 +506,7 @@ public class GroupManagerImpl
             {
             if (DEBUG_FLAG) System.out.println("") ;
             if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("Exception in getGroupList() finally clause") ;
+            if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList() finally clause") ;
 
             //
             // Set the response to null.
@@ -561,7 +565,7 @@ public class GroupManagerImpl
 			{
 			if (DEBUG_FLAG) System.out.println("") ;
 			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("Exception in getGroupList()") ;
+			if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList()") ;
 
 			//
 			// Set the response to null.
@@ -587,7 +591,7 @@ public class GroupManagerImpl
 				{
 				if (DEBUG_FLAG) System.out.println("") ;
 				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("Exception in getGroupList() finally clause") ;
+				if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList() finally clause") ;
 
 				//
 				// Set the response to null.
@@ -664,7 +668,7 @@ public class GroupManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("") ;
 					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("Exception in delGroup()") ;
+					if (DEBUG_FLAG) System.out.println("Generic exception in delGroup()") ;
 
 					//
 					// Set the response to null.
@@ -690,7 +694,7 @@ public class GroupManagerImpl
 						{
 						if (DEBUG_FLAG) System.out.println("") ;
 						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("Exception in delGroup() finally clause") ;
+						if (DEBUG_FLAG) System.out.println("Generic exception in delGroup() finally clause") ;
 
 						//
 						// Set the response to null.
@@ -718,8 +722,129 @@ public class GroupManagerImpl
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-
+//
+// TODO
+// Should return a DataObject with status response.
 		return true ;
+		}
+
+	/**
+	 * Add an Account to a Group.
+	 * This is not part of the GroupManager interface, and should only be called from the PolicyManager.
+	 *
+	 */
+	public GroupMemberData addGroupMember(CommunityIdent account, CommunityIdent group)
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.addGroupMember()") ;
+		if (DEBUG_FLAG) System.out.println("  account  : " + account) ;
+		if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
+		//
+		// Exit if the account is not valid.
+		if (false == account.isValid())
+			{
+			//
+			// TODO
+			// Should return a DataObject with the reason.
+			if (DEBUG_FLAG) System.out.println("Exit - Account is not valid") ;
+			return null ;
+			}
+		//
+		// Exit if the group is not valid.
+		if (false == group.isValid())
+			{
+			//
+			// TODO
+			// Should return a DataObject with the reason.
+			if (DEBUG_FLAG) System.out.println("Exit - Group is not valid") ;
+			return null ;
+			}
+		//
+		// Exit if the group ident is not local.
+		if (false == group.isLocal())
+			{
+			//
+			// TODO
+			// Should return a DataObject with the reason.
+			if (DEBUG_FLAG) System.out.println("Exit - Group is not local") ;
+			return null ;
+			}
+		//
+		// Create our new GroupMemberData.
+		GroupMemberData member = new GroupMemberData(account.toString(), group.toString()) ;
+		//
+		// Try performing our transaction.
+		try {
+			//
+			// Begin a new database transaction.
+			database.begin();
+			//
+			// Try creating the record in the database.
+			database.create(member);
+			}
+		//
+		// If the account is already a member of this group.
+		catch (DuplicateIdentityException ouch)
+			{
+			if (DEBUG_FLAG) System.out.println("") ;
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("DuplicateIdentityException in addGroupMember()") ;
+
+			//
+			// Set the response to null.
+			member = null ;
+
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("") ;
+			}
+		//
+		// If anything else went bang.
+		catch (Exception ouch)
+			{
+			if (DEBUG_FLAG) System.out.println("") ;
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("Generic exception in addGroupMember()") ;
+
+			//
+			// Set the response to null.
+			member = null ;
+
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("") ;
+			}
+		//
+		// Commit the transaction.
+		finally
+			{
+			try {
+				if (null != group)
+					{
+					database.commit() ;
+					}
+				else {
+					database.rollback() ;
+					}
+				}
+			catch (Exception ouch)
+				{
+				if (DEBUG_FLAG) System.out.println("") ;
+				if (DEBUG_FLAG) System.out.println("  ----") ;
+				if (DEBUG_FLAG) System.out.println("Generic exception in addGroup() finally clause") ;
+
+				//
+				// Set the response to null.
+				member = null ;
+
+				if (DEBUG_FLAG) System.out.println("  ----") ;
+				if (DEBUG_FLAG) System.out.println("") ;
+				}
+			}
+		//
+		// TODO
+		// Should return a DataObject with status response.
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return member ;
 		}
 
 	}

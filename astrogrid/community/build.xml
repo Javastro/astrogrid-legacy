@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/09 10:02:17 $</cvs:date>
-    | <cvs:version>$Revision: 1.16 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/09 13:48:09 $</cvs:date>
+    | <cvs:version>$Revision: 1.17 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.17  2003/09/09 13:48:09  dave
+    |   Added addGroupMember - only local accounts and groups to start with.
+    |
     |   Revision 1.16  2003/09/09 10:02:17  dave
     |   Fixed problems introduced by conflicts.
     |
@@ -1791,12 +1794,10 @@
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
-
 			<!-- Pass in the server config properties -->
 			<sysproperty key="org.astrogrid.policy.server.mapping"          value="file://${policy.server.base}/config/mapping.xml"/>
 			<sysproperty key="org.astrogrid.policy.server.database.config"  value="file://${policy.server.base}/config/database.xml"/>
 			<sysproperty key="org.astrogrid.policy.server.database.name"    value="${hsqldb.database}"/>
-
 			<!-- Run the target JUnitTestCase tests -->
 			<batchtest todir="${policy.base}/junit">
 				<fileset dir="${policy.server.base}/classes">

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 10:57:47 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/09 13:48:09 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.8  2003/09/09 13:48:09  dave
+ *   Added addGroupMember - only local accounts and groups to start with.
+ *
  *   Revision 1.7  2003/09/09 10:57:47  dave
  *   Added corresponding SINGLE Group to addAccount and delAccount.
  *
@@ -55,7 +58,9 @@ import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.AccountData ;
 import org.astrogrid.community.policy.data.CommunityData ;
+import org.astrogrid.community.policy.data.CommunityIdent ;
 import org.astrogrid.community.policy.data.CommunityConfig ;
+import org.astrogrid.community.policy.data.GroupMemberData ;
 
 public class PolicyManagerImpl
 	implements PolicyManager
@@ -302,6 +307,148 @@ public class PolicyManagerImpl
 		{
 		return communityManager.getCommunityList() ;
 		}
+
+	/**
+	 * Add a member to a Group.
+	 *
+	 */
+	public boolean addGroupMember(String accountName, String groupName)
+		throws RemoteException
+		{
+		boolean result = false ;
+
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.addGroupMember()") ;
+		if (DEBUG_FLAG) System.out.println("  account  : " + accountName) ;
+		if (DEBUG_FLAG) System.out.println("  group    : " + groupName) ;
+		//
+		// Create a CommunityIdent for the Group and Account
+		CommunityIdent groupIdent   = new CommunityIdent(groupName) ;
+		CommunityIdent accountIdent = new CommunityIdent(accountName) ;
+		if (DEBUG_FLAG) System.out.println("  --") ;
+		if (DEBUG_FLAG) System.out.println("  account : " + accountIdent) ;
+		if (DEBUG_FLAG) System.out.println("  group   : " + groupIdent) ;
+		//
+		// If the Group is local.
+		if (groupIdent.isLocal())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Group is local") ;
+			//
+			// Try loading the local Group.
+			GroupData groupData = this.getGroup(groupIdent.toString()) ;
+			//
+			// If the local Group exists.
+			if (null != groupData)
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Group is found") ;
+				//
+				// If the group is an account only group.
+				// TODO Need a better test for this.
+				if (groupData.SINGLE_TYPE.equals(groupData.getType()))
+					{
+					//
+					// Fail : Account only group.
+					if (DEBUG_FLAG) System.out.println("FAIL : Group is account") ;
+					}
+				//
+				// If the group is not an account only group.
+				else {
+					if (DEBUG_FLAG) System.out.println("PASS : Group is valid") ;
+					//
+					// If the Account is local
+					if (accountIdent.isLocal())
+						{
+						if (DEBUG_FLAG) System.out.println("PASS : Account is local") ;
+						//
+						// Try loading the local Account.
+						AccountData accountData = this.getAccount(accountIdent.toString()) ;
+						//
+						// If the local Account exists.
+						if (null != accountData)
+							{
+							if (DEBUG_FLAG) System.out.println("PASS : Account is found") ;
+							//
+							// Add the membership record.
+							GroupMemberData member = groupManager.addGroupMember(accountIdent, groupIdent) ;
+							result = (null != member) ;
+							if (DEBUG_FLAG) System.out.println("PASS : Member added : " + result) ;
+							}
+						//
+						// If the local Account does not exist.
+						else {
+							//
+							// Fail : Unknown Account
+							if (DEBUG_FLAG) System.out.println("FAIL : Account is unknown") ;
+							}
+						}
+					//
+					// If the Account is not local.
+					else {
+						if (DEBUG_FLAG) System.out.println("PASS : Account is remote") ;
+						//
+						// Try loading the remote Community.
+						CommunityData communityData = null ;
+						//
+						// If the remote community exists.
+						if (null != communityData)
+							{
+							if (DEBUG_FLAG) System.out.println("PASS : Community is found") ;
+							//
+							// Try requesting the remote Account.
+							AccountData accountData = null ;
+							//
+							// If the remote Account exists.
+							if (null != accountData)
+								{
+								if (DEBUG_FLAG) System.out.println("PASS : Account is found") ;
+								//
+								// Add the membership record.
+								GroupMemberData member = groupManager.addGroupMember(accountIdent, groupIdent) ;
+								result = (null != member) ;
+								if (DEBUG_FLAG) System.out.println("PASS : Member added : " + result) ;
+								}
+							//
+							// If the remote Account does not exist.
+							else {
+								//
+								// Fail : Unknown Account
+								if (DEBUG_FLAG) System.out.println("FAIL : Account is unknown") ;
+								}
+							}
+						//
+						// If the remote community does not exist.
+						else {
+							//
+							// Fail : Unknown Community
+							if (DEBUG_FLAG) System.out.println("FAIL : Community is unknown") ;
+							}
+						}
+					}
+				}
+			//
+			// If the local Group does not exist.
+			else {
+				//
+				// Fail : Unknown Group
+				if (DEBUG_FLAG) System.out.println("FAIL : Group is unknown") ;
+				}
+			}
+		//
+		// If the Group is not local.
+		else {
+			//
+			// Fail : Unknown Group
+			// Pass the request on to the remote service ??
+			if (DEBUG_FLAG) System.out.println("FAIL : Group is remote") ;
+			}
+		//
+		// TODO
+		// Should return a DataObject with status response.
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return result ;
+		}
+
 	}
 
 
