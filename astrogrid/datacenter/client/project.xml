@@ -59,13 +59,23 @@
 
   <!-- jar files the project is dependent on -->
   <dependencies>
-   <!-- required for the NVO cone search delegate -->
-       <dependency>
-        <id>astrogrid-mySpace</id>
-        <version>SNAPSHOT</version>
-       <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
+
+    <!-- required for the NVO cone search delegate -->
+    <dependency>
+      <id>astrogrid-mySpace</id>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <!-- required for the ApplicationController interface -->
+    <dependency>
+      <id>astrogrid-applications</id>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
