@@ -463,7 +463,7 @@
 
         </cea:ApplicationDefinition>
     </vr:Resource>
-    <vr:Resource status="active" xsi:type="cea:CeaServiceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <vr:Resource status="active" xsi:type="CeaServiceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <vr:Identifier>
             <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
             <vr:ResourceKey>TemplateEntry</vr:ResourceKey>
