@@ -25,6 +25,66 @@ reading... <<<MUST>>> be read!
 (2) The workflow messages file ASTROGRID_workflowmessages.properties.
 All messages issued by workflow are detailed here.
 
+
+1.2.1 The astrogrid-portal-workflow Configuration File and associated files
+----------------------------------------------------------------------------
+The workflow configuration file is named ASTROGRID_workflowconfig.xml.
+There are some files associated with it, one containing application
+messages, and others used as templates for xml by the workflow system (to follow).
+All apart from the configuration file are automatically copied to 
+a suitable classpath location. The configuration file requires
+editing, and possibly merging with a previous config file if this is
+not a first install.
+
+1.2 Editing the config file.
+-------------------------------
+The config file is broken down into certain categories:
+GENERAL       do not edit
+MESSAGES      do not edit
+WORKFLOW      editable with caution
+MYSPACE       editable
+JES           editable
+TOOLS         editable
+QueryTool     editable with caution
+VOTableMerge  editable with caution
+Sextractor    editable with caution
+HyperZ        editable with caution
+
+
+1.2.1 WORKFLOW 
+----------------
+Do not change the parser validation value from "false".
+
+1.2.2 MYSPACE
+---------------
+CACHE_DIRECTORY: Local directory where temporary files associated with the MySpace facility can be created
+The url value identifies the myspace web service. This must be set accurately to the
+web service end point...
+http://$HOST_DNS_NAME:8080/axis/services/MySpaceManager 
+Alter $HOST_DNS_NAME to reflect the deployed service for your installation.
+
+1.2.1 JES Category
+----------------------
+Edit the ID value to uniquely name this JES installation. This value is used extensively
+so choose a sensible value and stick with it.
+
+1.2.2 TOOLS Category
+------------------------------
+This is a list of tools available for use in creating a workflow. At present there are 4 tools available:
+. QueryTool
+. VOTableMerge
+. Sextractor
+. HyperZ
+
+1.3 Locate the Config File.
+-----------------------------
+The config file needs to be located on the workflow application class path. Copy it 
+into the $CATALINA_HOME/webapps/$WORKFLOW_HOME/WEB-INF/classes directory, where...
+$CATALINA_HOME is the Tomcat install directory
+$WORKFLOW_HOME is the workflow application install directory
+
+
+
 The workflow package will not work without these files being available. 
 
 Other prerequisites are included with the distribution. 
