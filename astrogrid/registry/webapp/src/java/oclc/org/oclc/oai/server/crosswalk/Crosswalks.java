@@ -36,7 +36,7 @@ import java.util.StringTokenizer;
  * @author Jeffrey A. Young
  */
 public class Crosswalks {
-    private static final boolean debug = false;
+    private static final boolean debug = true;
 
     // map of metadataPrefix/CrosswalkItem
     private Map crosswalksMap = new HashMap();
@@ -50,11 +50,14 @@ public class Crosswalks {
     public Crosswalks(Properties properties) {
         String propertyPrefix = "Crosswalks.";
         Enumeration propNames = properties.propertyNames();
+        System.out.println("entered crosswalks constructor");
         while (propNames.hasMoreElements()) {
             String propertyName = (String)propNames.nextElement();
             if (propertyName.startsWith(propertyPrefix)) {
                 String schemaLabel = propertyName.substring(propertyPrefix.length());
+            System.out.println("CROSSWAL NAME='" + propertyName + " SCHEMALABEL = " + schemaLabel);
 		String formatClassName = (String)properties.get(propertyName);
+            System.out.println("FORMATCLASSNAME = '" + formatClassName + "'");
 		try {
 		    Class crosswalkClass = Class.forName(formatClassName);
 		    Constructor crosswalkConstructor = crosswalkClass.getConstructor(new Class[] {Properties.class});

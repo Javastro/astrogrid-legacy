@@ -36,13 +36,13 @@
     <load-on-startup>100</load-on-startup>
   </servlet>
 
+<!--
 <servlet>
    <servlet-name>RegistryHarvest</servlet-name>
    <servlet-class>astrogrid.registry.harvest.daemon.HarvestDaemon</servlet-class>
-   <!--
    <load-on-startup>1</load-on-startup>
-   -->
 </servlet>
+-->
 
     <servlet>
       <servlet-name>OAIHandler</servlet-name>
@@ -61,11 +61,12 @@
     </servlet>
 
 
-
+<!--
 <servlet-mapping>
    <servlet-name>RegistryHarvest</servlet-name>
    <url-pattern>/RegistryHarvest</url-pattern>
 </servlet-mapping>
+-->
 
   <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
