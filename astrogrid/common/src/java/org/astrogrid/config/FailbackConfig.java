@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.20 2004/04/07 11:41:04 jdt Exp $
+ * $Id: FailbackConfig.java,v 1.21 2004/04/23 19:01:22 pah Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -131,7 +131,7 @@ public class FailbackConfig extends Config {
             jndiContext = new InitialContext();
             
             try {
-               jndiContext.lookup("Dummy");  //force lookup in case initialisation above is lazy
+               jndiContext.lookup("java:comp/env"); //this should be present in a Servlet Container
                
                addLoadedFrom("JNDI");
             }
@@ -150,6 +150,7 @@ public class FailbackConfig extends Config {
             jndiContext = null;
          }
          catch (NamingException ne) {
+            
             throw new ConfigException("Initialising Jndi Access", ne);
          }
       }
@@ -595,6 +596,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.21  2004/04/23 19:01:22  pah
+changed the test for jndi presence slightly
+
 Revision 1.20  2004/04/07 11:41:04  jdt
 Modified by the A.A.A.A.
 
