@@ -1,5 +1,5 @@
 /*
- * $Id: Msrl.java,v 1.3 2004/07/06 20:19:06 mch Exp $
+ * $Id: Msrl.java,v 1.4 2004/07/07 14:02:14 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -111,10 +111,10 @@ public class Msrl
       }
 
       //look for whether start is an Ivorn or URL
-      msrl = msrl.substring(SCHEME.length()+1);
-      if (Ivorn.isIvorn(msrl)) {
+      String rl = msrl.substring(SCHEME.length()+1);
+      if (Ivorn.isIvorn(rl)) {
          try {
-            this.manager = new Ivorn(msrl);
+            this.manager = new Ivorn(rl);
          }
          catch (URISyntaxException use) {
             //should really throw this, but don't know what that will do to backwards compatibility
@@ -123,7 +123,7 @@ public class Msrl
       }
       else {
          //assume URL
-         this.delegateEndpoint = new URL(msrl.substring(SCHEME.length()+1));
+         this.delegateEndpoint = new URL(rl);
       }
    }
 
@@ -236,6 +236,9 @@ public class Msrl
 
 /*
 $Log: Msrl.java,v $
+Revision 1.4  2004/07/07 14:02:14  mch
+Fix to parsing out URL
+
 Revision 1.3  2004/07/06 20:19:06  mch
 Added Itn06 file identifiers
 
