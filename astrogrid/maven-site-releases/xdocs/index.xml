@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.2 2004/04/28 16:56:05 jdt Exp $ -->
+<!-- $Id: index.xml,v 1.3 2004/04/28 17:13:38 jdt Exp $ -->
 <document>
 	<properties>
 		<title>Maven</title>
@@ -15,7 +15,8 @@
 			</subsection>				
 			<subsection name="Itn05 Snapshot">
 				<P> The latest build is Itn05. This code is undergoing 
-					development and is built several times daily. </P>
+					development and is built several times daily.  The latest Iteration 5 build is deployed
+					at least once a day to this <a href="http://twmbarlwm.star.le.ac.uk:8080/astrogrid-portal">portal</a>.</P>
 			</subsection>
 			<subsection name="Itn04_1 Release">
 				<P> The latest release is Itn04_1. Apart from occasional bug 
