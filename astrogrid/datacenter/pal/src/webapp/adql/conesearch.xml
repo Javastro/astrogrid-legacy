@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SQL equivalent: CONE SEARCH
+SELECT first.* FROM first WHERE first.errbox && xmm1.errbox AND DEGREES(2 * ASIN( SQRT(POW(SIN(RADIANS((12.34-first.decl)/2)), 2) + COS(RADIANS(12.34)) * COS(RADIANS(first.decl)) * POW(SIN(RADIANS((123.45-first.ra)/2),2)))) <5.0 
+
+-->
+<Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
+    <Selection>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <AllColumnReference>
+                    <TableName>first</TableName>
+                </AllColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+    </Selection>
+    <TableClause>
+        <FromClause>
+            <TableReference>
+                <Table>
+                    <Name>first</Name>
+                </Table>
+            </TableReference>
+        </FromClause>
+        <WhereClause>
+            <IntersectionSearch>
+                <FirstCondition xsi:type="PredicateSearch">
+                    <ComparisonPred>
+                        <FirstExpr xsi:type="ColumnExpr">
+                            <SingleColumnReference>
+                                <TableName>first</TableName>
+                                <Name>errbox</Name>
+                            </SingleColumnReference>
+                        </FirstExpr>
+                        <Compare>&lt;&gt;</Compare>
+                        <SecondExpr xsi:type="ColumnExpr">
+                            <SingleColumnReference>
+                                <TableName>xmm1</TableName>
+                                <Name>errbox</Name>
+                            </SingleColumnReference>
+                        </SecondExpr>
+                    </ComparisonPred>
+                </FirstCondition>
+                <SecondCondition xsi:type="RegionSearch">
+                    <Circle xmlns:q1="urn:nvo-region" xsi:type="q1:circleType">
+                        <q1:Center>
+                            <Pos3Vector xmlns="urn:nvo-coords">
+                                <CoordValue>
+                                    <Value>
+                                        <double>123.45</double>
+                                        <double>12.34</double>
+                                    </Value>
+                                </CoordValue>
+                            </Pos3Vector>
+                        </q1:Center>
+                        <q1:Radius>5</q1:Radius>
+                    </Circle>
+                </SecondCondition>
+            </IntersectionSearch>
+        </WhereClause>
+    </TableClause>
+</Select>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- XML equiuvalent
+SELECT f.ra, x.* FROM first AS f, xmm1 AS x WHERE AVG(x.M1_FLUX ) < 4.56 ORDER BY x.M1_FLUX
+
+-->
+<Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
+    <Selection>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <SingleColumnReference>
+                    <TableName>f</TableName>
+                    <Name>ra</Name>
+                </SingleColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <AllColumnReference>
+                    <TableName>x</TableName>
+                </AllColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+    </Selection>
+    <TableClause>
+        <FromClause>
+            <TableReference>
+                <Table>
+                    <Name>first</Name>
+                    <AliasName>f</AliasName>
+                </Table>
+                <Table>
+                    <Name>xmm1</Name>
+                    <AliasName>x</AliasName>
+                </Table>
+            </TableReference>
+        </FromClause>
+        <WhereClause>
+            <PredicateSearch>
+                <ComparisonPred>
+                    <FirstExpr xsi:type="FunctionExpr">
+                        <ExpressionFunction>
+                            <AggregateFunction>AVG</AggregateFunction>
+                            <Expr xsi:type="ColumnExpr">
+                                <SingleColumnReference>
+                                    <TableName>x</TableName>
+                                    <Name>M1_FLUX</Name>
+                                </SingleColumnReference>
+                            </Expr>
+                        </ExpressionFunction>
+                    </FirstExpr>
+                    <Compare>&lt;</Compare>
+                    <SecondExpr xsi:type="AtomExpr">
+                        <Value>
+                            <NumberLiteral>
+                                <ApproxNum>
+                                    <Value>4.56</Value>
+                                </ApproxNum>
+                            </NumberLiteral>
+                        </Value>
+                    </SecondExpr>
+                </ComparisonPred>
+            </PredicateSearch>
+        </WhereClause>
+    </TableClause>
+    <OrderBy>
+        <OrderList>
+            <Order>
+                <Expr xsi:type="ColumnExpr">
+                    <SingleColumnReference>
+                        <TableName>x</TableName>
+                        <Name>M1_FLUX</Name>
+                    </SingleColumnReference>
+                </Expr>
+            </Order>
+        </OrderList>
+    </OrderBy>
+</Select>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SQL equivalent
+SELECT f.ra, x.decl FROM first AS f, xmm1 AS x HAVING f.ra && x.ra
+
+-->
+<Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
+    <Selection>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <SingleColumnReference>
+                    <TableName>f</TableName>
+                    <Name>ra</Name>
+                </SingleColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <SingleColumnReference>
+                    <TableName>x</TableName>
+                    <Name>decl</Name>
+                </SingleColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+    </Selection>
+    <TableClause>
+        <FromClause>
+            <TableReference>
+                <Table>
+                    <Name>first</Name>
+                    <AliasName>f</AliasName>
+                </Table>
+                <Table>
+                    <Name>xmm1</Name>
+                    <AliasName>x</AliasName>
+                </Table>
+            </TableReference>
+        </FromClause>
+        <HavingClause>
+            <PredicateSearch>
+                <ComparisonPred>
+                    <FirstExpr xsi:type="ColumnExpr">
+                        <SingleColumnReference>
+                            <TableName>f</TableName>
+                            <Name>ra</Name>
+                        </SingleColumnReference>
+                    </FirstExpr>
+                    <Compare>&lt;&gt;</Compare>
+                    <SecondExpr xsi:type="ColumnExpr">
+                        <SingleColumnReference>
+                            <TableName>x</TableName>
+                            <Name>ra</Name>
+                        </SingleColumnReference>
+                    </SecondExpr>
+                </ComparisonPred>
+            </PredicateSearch>
+        </HavingClause>
+    </TableClause>
+</Select>
