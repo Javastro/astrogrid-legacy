@@ -224,7 +224,7 @@ public class MySpaceManager {
 				reg.rewriteRegistryFile();
 				dataitem = msA.importDataHolder(
 					userID, communityID, credential, importURI,
-					mySpaceFileName, contentsType );
+				newDataHolderName, contentsType );
 	
 				if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"jobid"+jobID+"newDataHN"+newDataHolderName+"filenm:"+mySpaceFileName
 									   +"fileSize"+fileSize);
@@ -895,6 +895,7 @@ public class MySpaceManager {
 
 		if ( DEBUG )logger.debug("registryName = "+registryName);
 		request = util.getRequestAttributes(jobDetails);
+		logger.debug("UUUUUUUUUUUUUUUUUUU" +request.containsKey("fileConcent"));
 		try{
 			if(request.get("userID")!=null) userID = request.get("userID").toString();
 			if(request.get("communityID")!=null) communityID = request.get("communityID").toString();
@@ -903,7 +904,9 @@ public class MySpaceManager {
 			if(request.get("newDataItemName")!=null) newDataItemName = request.get("newDataItemName").toString();
 			if(request.get("newContainerName")!=null) newContainerName = request.get("newContainerName").toString();	
 			if(request.get("serverFileName")!=null) serverFileName = request.get("serverFileName").toString();
-			if(request.get("fileContent")!=null) fileContent = request.get("fileContent").toString();
+			if(request.get("fileContent")!=null) {fileContent = request.get("fileContent").toString();
+			logger.debug("%%%%%%%%%%%%%%%%%%%%%%%%: fileContent:"+fileContent);} else{logger.debug("&&&&&&&&&&&&");
+			}
 			if(request.get("category")!=null) category = request.get("category").toString();
 			if(request.get("credential")!=null) credential = request.get("credential").toString();
 			if(request.get("downloadPath")!=null) downloadPath = request.get("downloadPath").toString();
@@ -941,9 +944,9 @@ public class MySpaceManager {
         		
 		if ( request.containsKey("newDataHolderName")){
 			if (request.get("newDataHolderName").toString().trim().length()>0){
-				logger.debug("MySpaceManager.getValue newDataHolderName:"+newDataHolderName);
-				if ( DEBUG ) logger.debug("newdatraholdernema:"+newDataHolderName+"done");
+				logger.debug("MySpaceManager.getValue newDataHolderName:"+newDataHolderName);			
 				newDataHolderName = request.get("newDataHolderName").toString();
+				if ( DEBUG ) logger.debug("newdatraholdernema:"+newDataHolderName+"done");
 				
 			}else{
 				logger.debug("MySpaceManager.getValue serverFileName length:"+serverFileName.length()+", name: "+serverFileName.toString());
@@ -1061,8 +1064,10 @@ public class MySpaceManager {
 		}  
 		boolean isUserCreated = false;
 			try{			
-				setUp();		
+				setUp();	
+				if(DEBUG) logger.debug("about to call msA..");	
 				isUserCreated = msA.createUser(userid, communityid, credential, servers);
+				if(DEBUG) logger.debug("finished calling msA...");
 			}catch(Exception e){
 				logger.error("ERROR CREATEUSER MYSPACEMANAGER" +e.toString());
 				status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
