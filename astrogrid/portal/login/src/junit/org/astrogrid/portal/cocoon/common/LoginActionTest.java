@@ -1,5 +1,5 @@
 /*
- * $Id: LoginActionTest.java,v 1.3 2004/03/25 15:18:40 jdt Exp $ Created on Mar
+ * $Id: LoginActionTest.java,v 1.4 2004/03/26 18:08:39 jdt Exp $ Created on Mar
  * 23, 2004 by jdt Copyright (C) AstroGrid. All rights reserved. It's my
  * birthday! This software is published under the terms of the AstroGrid
  * Software License version 1.2, a copy of which has been included with this
@@ -48,7 +48,7 @@ public final class LoginActionTest extends TestCase {
         final LoginAction action = new LoginAction();
         final Map objectModel = new HashMap();
         final DummyRequest request = new DummyRequest();
-        request.addParameter(LoginAction.NAME_PARAM, "John");
+        request.addParameter(LoginAction.USER_PARAM, "John");
         request.addParameter(LoginAction.COMMUNITY_PARAM, "roe");
         request.addParameter(LoginAction.PASS_PARAM, "secret");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
@@ -64,7 +64,7 @@ public final class LoginActionTest extends TestCase {
         final LoginAction action = new LoginAction();
         final Map objectModel = new HashMap();
         final DummyRequest request = new DummyRequest();
-        request.addParameter(LoginAction.NAME_PARAM, "John");
+        request.addParameter(LoginAction.USER_PARAM, "John");
         request.addParameter(LoginAction.COMMUNITY_PARAM, "roe");
         request.addParameter(LoginAction.PASS_PARAM, "wrongpassword");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
@@ -78,7 +78,7 @@ public final class LoginActionTest extends TestCase {
         final LoginAction action = new LoginAction();
         final Map objectModel = new HashMap();
         final DummyRequest request = new DummyRequest();
-        //request.addParameter(LoginAction.NAME_PARAM,"John");
+        //request.addParameter(LoginAction.USER_PARAM,"John");
         request.addParameter(LoginAction.COMMUNITY_PARAM, "roe");
         request.addParameter(LoginAction.PASS_PARAM, "wrongpassword");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
@@ -96,7 +96,7 @@ public final class LoginActionTest extends TestCase {
         final LoginAction action = new LoginAction();
         final Map objectModel = new HashMap();
         final DummyRequest request = new DummyRequest();
-        request.addParameter(LoginAction.NAME_PARAM, "John");
+        request.addParameter(LoginAction.USER_PARAM, "John");
         //request.addParameter(LoginAction.COMMUNITY_PARAM,"roe");
         request.addParameter(LoginAction.PASS_PARAM, "wrongpassword");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
@@ -114,7 +114,7 @@ public final class LoginActionTest extends TestCase {
         final LoginAction action = new LoginAction();
         final Map objectModel = new HashMap();
         final DummyRequest request = new DummyRequest();
-        request.addParameter(LoginAction.NAME_PARAM, "John");
+        request.addParameter(LoginAction.USER_PARAM, "John");
         request.addParameter(LoginAction.COMMUNITY_PARAM, "roe");
         //request.addParameter(LoginAction.PASS_PARAM,"wrongpassword");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
@@ -132,7 +132,7 @@ public final class LoginActionTest extends TestCase {
         final LoginAction action = new LoginAction();
         final Map objectModel = new HashMap();
         final DummyRequest request = new DummyRequest();
-        request.addParameter(LoginAction.NAME_PARAM, "");
+        request.addParameter(LoginAction.USER_PARAM, "");
         request.addParameter(LoginAction.COMMUNITY_PARAM, "roe");
         request.addParameter(LoginAction.PASS_PARAM, "wrongpassword");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
@@ -150,7 +150,7 @@ public final class LoginActionTest extends TestCase {
         final LoginAction action = new LoginAction();
         final Map objectModel = new HashMap();
         final DummyRequest request = new DummyRequest();
-        request.addParameter(LoginAction.NAME_PARAM, "John");
+        request.addParameter(LoginAction.USER_PARAM, "John");
         request.addParameter(LoginAction.COMMUNITY_PARAM, "");
         request.addParameter(LoginAction.PASS_PARAM, "wrongpassword");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
@@ -168,7 +168,7 @@ public final class LoginActionTest extends TestCase {
         final LoginAction action = new LoginAction();
         final Map objectModel = new HashMap();
         final DummyRequest request = new DummyRequest();
-        request.addParameter(LoginAction.NAME_PARAM, "John");
+        request.addParameter(LoginAction.USER_PARAM, "John");
         request.addParameter(LoginAction.COMMUNITY_PARAM, "roe");
         request.addParameter(LoginAction.PASS_PARAM, "");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
@@ -190,7 +190,7 @@ public final class LoginActionTest extends TestCase {
         final LoginAction action = new LoginAction();
         final Map objectModel = new HashMap();
         final DummyRequest request = new DummyRequest();
-        request.addParameter(LoginAction.NAME_PARAM, "John");
+        request.addParameter(LoginAction.USER_PARAM, "John");
         request.addParameter(LoginAction.COMMUNITY_PARAM, "roe");
         request.addParameter(LoginAction.PASS_PARAM, "pass");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
@@ -204,6 +204,13 @@ public final class LoginActionTest extends TestCase {
 }
 /*
  * $Log: LoginActionTest.java,v $
+ * Revision 1.4  2004/03/26 18:08:39  jdt
+ * Merge from PLGN_JDT_bz#275
+ *
+ * Revision 1.3.2.1  2004/03/26 17:43:03  jdt
+ * Factored out the keys used to store the session into a separate
+ * class that everyone can access.
+ *
  * Revision 1.3  2004/03/25 15:18:40  jdt
  * Some refactoring of the debugging and added unit tests.
  * Revision 1.2 2004/03/24 18:31:33 jdt Merge

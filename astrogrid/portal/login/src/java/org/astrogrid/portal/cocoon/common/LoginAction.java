@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.21 2004/03/25 15:18:13 jdt Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.22 2004/03/26 18:08:39 jdt Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/03/25 15:18:13 $</cvs:date>
- * <cvs:version>$Revision: 1.21 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/26 18:08:39 $</cvs:date>
+ * <cvs:version>$Revision: 1.22 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
@@ -30,6 +30,7 @@ import org.astrogrid.community.common.security.data.SecurityToken;
 import org.astrogrid.community.common.security.service.*; 
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.portal.login.common.SessionKeys;
 /**
  * Login Action.  Extracts login parameters from the 
  * request action and checks them with the security 
@@ -45,27 +46,11 @@ public final class LoginAction extends AbstractAction {
      */
     public static final String ORG_ASTROGRID_PORTAL_COMMUNITY_URL = "org.astrogrid.portal.community.url";
     /**
-     * Parameter names to look for in the session object.
-     */
-    public static final String CREDENTIAL_SESH = "credential";
-    /**
-     * Parameter names to look for in the session object.
-     */
-    public static final String COMMUNITY_NAME_SESH = "community_name";
-    /**
-     * Parameter names to look for in the session object.
-     */
-    public static final String COMMUNITY_ACCOUNT_SESH = "community_account";
-    /**
-     * Parameter names to look for in the session object.
-     */
-    public static final String USER_SESH = "user";
-    /**
      * Parameter names to look for in the request object. We could refer to
      * these vars for better safety in the xsps, but it makes the code so ugly
      * and difficult to read I've decided not to.
      */
-    public static final String NAME_PARAM = USER_SESH;
+    public static final String USER_PARAM = "user";
     /**
      * Parameter names to look for in the request object.
      */
@@ -74,11 +59,7 @@ public final class LoginAction extends AbstractAction {
      * Parameter names to look for in the request object.
      */
     public static final String PASS_PARAM = "pass";
-    /**
-     * Key used in the request object and returned map
-     * to pass back the account name
-     */
-    public static final String ACCOUNT_PARAM = "account";
+
     /**
      * Switch for our debug statements. 
      * JDT: I know we shouldn't be using System.outs but they
@@ -136,7 +117,7 @@ public final class LoginAction extends AbstractAction {
 
         //
         // Get the user name and password from our request.
-        String user = request.getParameter(NAME_PARAM);
+        String user = request.getParameter(USER_PARAM);
         String community = request.getParameter(COMMUNITY_PARAM);
         String pass = request.getParameter(PASS_PARAM);
         user = checkParameter(user, log);
@@ -194,21 +175,21 @@ public final class LoginAction extends AbstractAction {
         log.debug("  Account : " + token.getAccount());
 
         // We pass the tests so set the current account info in our session.
-        session.setAttribute(USER_SESH, name);
+        session.setAttribute(SessionKeys.USER, name);
         session.setAttribute(
-            CREDENTIAL_SESH,
+            SessionKeys.CREDENTIAL,
             "guest@" + CommunityConfig.getCommunityName());
-        session.setAttribute(COMMUNITY_ACCOUNT_SESH, token.getAccount());
+        session.setAttribute(SessionKeys.COMMUNITY_ACCOUNT, token.getAccount());
         session.setAttribute(
-            COMMUNITY_NAME_SESH,
+            SessionKeys.COMMUNITY_NAME,
             CommunityConfig.getCommunityName());
         //
         // Set the current account info in our request.
-        request.setAttribute(ACCOUNT_PARAM, token.getAccount());
+        request.setAttribute(USER_PARAM, user);
         //
         // Add our results.
+        // Currently just use a non-null map to indicate success
         final Map results = new HashMap();
-        results.put(ACCOUNT_PARAM, token.getAccount());
         return results;
     }
     /**
@@ -275,8 +256,8 @@ public final class LoginAction extends AbstractAction {
      *  
      */
     private void checkLogger() {
-        final Logger log = super.getLogger();
-        if (log == null || debugToSystemOutOn) {
+        final Logger logger = super.getLogger();
+        if (logger == null || debugToSystemOutOn) {
             enableLogging(new ConsoleLogger());
         }
     }
@@ -284,6 +265,13 @@ public final class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.22  2004/03/26 18:08:39  jdt
+ * Merge from PLGN_JDT_bz#275
+ *
+ * Revision 1.21.2.1  2004/03/26 17:43:03  jdt
+ * Factored out the keys used to store the session into a separate
+ * class that everyone can access.
+ *
  * Revision 1.21  2004/03/25 15:18:13  jdt
  * Some refactoring of the debugging and added unit tests.
  *

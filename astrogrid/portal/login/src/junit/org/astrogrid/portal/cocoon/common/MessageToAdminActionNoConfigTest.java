@@ -1,4 +1,4 @@
-/* $Id: MessageToAdminActionNoConfigTest.java,v 1.2 2004/03/26 15:01:05 jdt Exp $
+/* $Id: MessageToAdminActionNoConfigTest.java,v 1.3 2004/03/26 18:08:39 jdt Exp $
  * Created on Mar 22, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -19,11 +19,6 @@ import junit.framework.TestCase;
 
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.environment.ObjectModelHelper;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.portal.cocoon.messaging.EmailMessenger;
-import org.astrogrid.portal.cocoon.messaging.Messenger;
-import org.astrogrid.portal.cocoon.messaging.MessengerException;
 import org.astrogrid.portal.cocoon.messaging.MockEmailMessenger;
 
 /**
@@ -36,7 +31,7 @@ public final class MessageToAdminActionNoConfigTest extends TestCase {
      * Kick off the test
      * @param args unused
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(MessageToAdminActionNoConfigTest.class);
     }
     /**
@@ -47,11 +42,11 @@ public final class MessageToAdminActionNoConfigTest extends TestCase {
         final MessageToAdminAction action = new MessageToAdminAction(true);
         final MockEmailMessenger messenger = (MockEmailMessenger) action.getMessenger();
         // these are the defaults set up in action class
-        String recipient = "jdt@roe.ac.uk";
-        String server = "127.0.0.1";
-        String user = "astrogrid";
-        String pass = "";
-        String sender = "astrogrid@star.le.ac.uk";
+        final String recipient = "jdt@roe.ac.uk";
+        final String server = "127.0.0.1";
+        final String user = "astrogrid";
+        final String pass = "";
+        final String sender = "astrogrid@star.le.ac.uk";
         assertEquals(messenger.getRecipient(),recipient);
         final Session sesh = messenger.getSession();
         final Properties props = sesh.getProperties();
@@ -93,6 +88,12 @@ public final class MessageToAdminActionNoConfigTest extends TestCase {
 
 /*
  *  $Log: MessageToAdminActionNoConfigTest.java,v $
+ *  Revision 1.3  2004/03/26 18:08:39  jdt
+ *  Merge from PLGN_JDT_bz#275
+ *
+ *  Revision 1.2.2.1  2004/03/26 17:40:17  jdt
+ *  a few minor style points
+ *
  *  Revision 1.2  2004/03/26 15:01:05  jdt
  *  Changed the defaults.
  *
