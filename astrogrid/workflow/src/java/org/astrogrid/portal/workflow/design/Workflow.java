@@ -497,13 +497,13 @@ public class Workflow extends Activity {
         try {
             
             if( templateName.equals( "OneStepJob" )  ) {
-                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_SINGLESTEP, WKF.MYSPACE_CATEGORY ) ;
+                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_SINGLESTEP, WKF.WORKFLOW_CATEGORY ) ;
             }
             else if( templateName.equals( "TwoParallelJobsteps" )  ) {
-                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_TWOSTEPFLOW, WKF.MYSPACE_CATEGORY ) ;
+                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_TWOSTEPFLOW, WKF.WORKFLOW_CATEGORY ) ;
             }
             else if( templateName.equals( "TwoSequentialJobsteps" )  ) {
-                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_TWOSTEPSEQUENCE, WKF.MYSPACE_CATEGORY ) ;
+                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_TWOSTEPSEQUENCE, WKF.WORKFLOW_CATEGORY ) ;
             }
 
         }
