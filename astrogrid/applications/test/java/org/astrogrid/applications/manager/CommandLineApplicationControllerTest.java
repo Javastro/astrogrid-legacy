@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.12 2003/12/31 00:56:17 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.13 2004/01/04 14:51:22 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,6 +16,7 @@ package org.astrogrid.applications.manager;
 
 import org.astrogrid.applications.Parameter;
 import org.astrogrid.applications.ParameterValues;
+import org.astrogrid.applications.Status;
 import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.common.config.BaseApplicationTestCase;
 import org.astrogrid.applications.common.config.BaseDBTestCase;
@@ -102,10 +103,16 @@ public class CommandLineApplicationControllerTest extends BaseApplicationTestCas
 
    final public void testInitializeApplication() {
       
+      executionId = initApp();
+      
+   }
+
+   private String initApp() {
+      String exid;
       parameters.setMethodName(TestAppConst.MAIN_INTERFACE);
       parameters.setParameterSpec(TestAppConst.PARAMETERSPEC1);
-      executionId = controller.initializeApplication(applicationid, jobstepid, monitorURL, user, parameters);
-      CmdLineApplication app = controller.getRunningApplication(executionId);
+      exid = controller.initializeApplication(applicationid, jobstepid, monitorURL, user, parameters);
+      CmdLineApplication app = controller.getRunningApplication(exid);
       assertNotNull("applicaton object not returned after initialization", app);
       Parameter[] params = app.getParameters();
       assertNotNull("application did not return the parameters that were set",params);
@@ -114,6 +121,40 @@ public class CommandLineApplicationControllerTest extends BaseApplicationTestCas
       for (int i = 0; i < params.length; i++) {
          System.out.println(i + " " + params[i]);
       }
+      return exid;
+   }
+   
+   final public void testMultiRun()
+   {
+      String ex1, ex2;
+      ex1 = initApp();
+      ex2 = initApp();
+      String status1 = controller.queryApplicationExecutionStatus(ex1);
+      assertEquals("status", Status.INITIALIZED.toString(),status1);
+      String status2 = controller.queryApplicationExecutionStatus(ex2);
+      assertEquals("status", Status.INITIALIZED.toString(),status2);
+      
+      //run te applications
+      controller.executeApplication(ex1);
+      status1 = controller.queryApplicationExecutionStatus(ex1);
+      assertEquals("status", Status.RUNNING.toString(),status1);
+      
+      controller.executeApplication(ex2);
+      
+      status2 = controller.queryApplicationExecutionStatus(ex2);
+      assertEquals("status", Status.RUNNING.toString(),status2);
+      
+      try {
+         Thread.sleep(40000);// wait for the applications to finish - they should run for 30 seconds each
+      }
+      catch (InterruptedException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      status1 = controller.queryApplicationExecutionStatus(ex1);
+      assertEquals("status", Status.COMPLETED.toString(),status1);
+      status2 = controller.queryApplicationExecutionStatus(ex2);
+      assertEquals("status", Status.COMPLETED.toString(),status2);
       
    }
 

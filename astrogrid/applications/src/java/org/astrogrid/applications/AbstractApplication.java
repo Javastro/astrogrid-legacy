@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.7 2003/12/31 00:56:17 pah Exp $
+ * $Id: AbstractApplication.java,v 1.8 2004/01/04 14:51:22 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -12,18 +12,14 @@
 package org.astrogrid.applications;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Vector;
+import java.util.List;
 
 import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.manager.AbstractApplicationController;
-import org.astrogrid.applications.manager.ApplicationController;
 import org.astrogrid.community.User;
-
-import java.util.List;
 
 public abstract class AbstractApplication implements Application {
    /**
@@ -31,9 +27,30 @@ public abstract class AbstractApplication implements Application {
     *@associates org.astrogrid.applications.Parameter
     */
    protected List parameters; 
+   
+   /**
+    * The application controller that is running this application
+    */
    protected AbstractApplicationController controller;
+   /**
+    * The description of this application
+    */
    protected ApplicationDescription applicationDescription;
+   /**
+    * The user context that this application is running in
+    */
    protected User user;
+   /**
+    * the application status
+    */
+   protected Status status = Status.NEW;
+   //REFACTORME - probably the jobstep paramters are really a application controller properties.
+   
+   /**
+    * the endpoint for the jobmonitor service to conctact to inform when this application has finished 
+    */
+   protected String jobMonitorURL;
+   protected String jobStepID;
    
    public AbstractApplication(AbstractApplicationController controller, User user)
    {
@@ -105,6 +122,48 @@ public abstract class AbstractApplication implements Application {
     */
    public User getUser() {
       return user;
+   }
+
+   /**
+    * @return
+    */
+   public String getJobMonitorURL() {
+      return jobMonitorURL;
+   }
+
+   /**
+    * @param string
+    */
+   public void setJobMonitorURL(String string) {
+      jobMonitorURL = string;
+   }
+
+   /**
+    * @return
+    */
+   public String getJobStepID() {
+      return jobStepID;
+   }
+
+   /**
+    * @param string
+    */
+   public void setJobStepID(String string) {
+      jobStepID = string;
+   }
+
+   /**
+    * @return
+    */
+   public Status getStatus() {
+      return status;
+   }
+
+   /**
+    * @param status
+    */
+   public void setStatus(Status status) {
+      this.status = status;
    }
 
 }

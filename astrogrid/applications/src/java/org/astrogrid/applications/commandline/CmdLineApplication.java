@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.5 2003/12/31 00:56:17 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.6 2004/01/04 14:51:22 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -22,10 +22,12 @@ import java.util.List;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Parameter;
 import org.astrogrid.applications.Result;
+import org.astrogrid.applications.Status;
 import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
 import org.astrogrid.applications.common.io.StreamPiper;
 import org.astrogrid.applications.manager.AbstractApplicationController;
 import org.astrogrid.community.User;
+import org.astrogrid.jes.delegate.jobMonitor.JobMonitorDelegate;
 /**
  * A generic model for a command line application. This generally assumes that the application can be run from a command line obtaining all of its parameters from commandline arguments and possibly standard in. 
  * The application can interact with the filesystem.
@@ -37,7 +39,8 @@ import org.astrogrid.community.User;
  * @version $Name:  $
  * @since iteration4
  */
-public class CmdLineApplication extends AbstractApplication {
+public class CmdLineApplication extends AbstractApplication implements Runnable {
+   private Thread appWaitThread;
    private StreamPiper outPiper;
    private StreamPiper errPiper;
    static private org.apache.commons.logging.Log logger =
@@ -65,8 +68,7 @@ public class CmdLineApplication extends AbstractApplication {
       setupParameters();
       startApplication();
       waitForApplication();
-      endApplication();
-
+      status = Status.RUNNING;
       return true;
       //TODO set this to something sensible whether the application fails or not.
    }
@@ -103,25 +105,58 @@ public class CmdLineApplication extends AbstractApplication {
     *stop reader and writer threads and free up some resources 
     */
    protected void endApplication() {
+      status = Status.COMPLETED;
       errPiper.terminate();
       outPiper.terminate();
       process = null;
+ 
+ //inform the job monitor that we have finished     
+      JobMonitorDelegate 
+      delegate = JobMonitorDelegate.buildDelegate( jobMonitorURL );
+      
+      // FIXME need to call with a proper joburn and to make the jobstep an integer - requires jobcontroller interface change....
+//      try {
+//// FIXME         delegate.monitorJob("joburn123",Integer.parseInt(jobStepID),delegate.STATUS_COMPLETED,"comment" );
+//      }
+//      catch (NumberFormatException e) {
+//         // TODO Auto-generated catch block
+//         e.printStackTrace();
+//      }
+//      catch (JesDelegateException e) {
+//         // TODO Auto-generated catch block
+//         e.printStackTrace();
+//      }
+
+
+   }
+
+   /**
+    * creates a new thread to wait for the application to finish....
+    */
+   protected void waitForApplication() {
+      appWaitThread = new Thread(this);
+      appWaitThread.start();
+    
+  
+
    }
 
    /**
     * 
     */
-   protected void waitForApplication() {
+   private void waitForApplicationImp() {
       logger.info("waiting for " + applicationDescription.getName() + " to finish....");
       try {
          exitStatus = process.waitFor();
          logger.info(applicationDescription.getName() + "finished");
+    
+         endApplication();
+
       }
       catch (InterruptedException e) {
          // TODO Auto-generated catch block
          e.printStackTrace();
       }
-
    }
 
    /**
@@ -193,6 +228,13 @@ public class CmdLineApplication extends AbstractApplication {
    public Result[] retrieveResult() {
       // TODO Auto-generated method stub
       throw new UnsupportedOperationException("CmdLineApplication.retrieveResult() not implemented");
+   }
+
+   /**
+    * run a thread that waits for the application.
+    */
+   public void run() {
+      waitForApplicationImp();
    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.14 2003/12/31 00:56:17 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.15 2004/01/04 14:51:22 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.astrogrid.applications.ApplicationFactory;
 import org.astrogrid.applications.ParameterValues;
+import org.astrogrid.applications.Status;
 import org.astrogrid.applications.commandline.CmdLineApplicationEnvironment;
 import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.commandline.CmdLineApplicationCreator;
@@ -70,8 +71,17 @@ public class CommandLineApplicationController extends AbstractApplicationControl
     * @see org.astrogrid.applications.manager.ApplicationController#queryApplicationExecutionStatus(int)
     */
    public String queryApplicationExecutionStatus(String executionId) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("CommandLineApplicationController.queryApplicationExecutionStatus() not implemented");
+      
+      CmdLineApplication app;
+      if((app = getRunningApplication(executionId))!= null)
+      {
+      return app.getStatus().toString();
+      }
+      else
+      {
+         return Status.UNKNOWN.toString();
+      }
+
    }
 
    /* (non-Javadoc)
@@ -113,6 +123,11 @@ public class CommandLineApplicationController extends AbstractApplicationControl
             
               // add this application to the execution map
               runningApplications.put(Integer.toString(executionId), cmdLineApplication);
+              
+              // set up the job step paramters
+              cmdLineApplication.setJobMonitorURL(jobMonitorURL);
+              cmdLineApplication.setJobStepID(jobstepID);
+              cmdLineApplication.setStatus(Status.INITIALIZED);
             
             
             }

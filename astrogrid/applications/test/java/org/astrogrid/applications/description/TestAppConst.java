@@ -1,5 +1,5 @@
 /*
- * $Id: TestAppConst.java,v 1.3 2003/12/31 00:56:18 pah Exp $
+ * $Id: TestAppConst.java,v 1.4 2004/01/04 14:51:22 pah Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,6 +24,6 @@ public final class TestAppConst {
 
    public static final String TESTAPP_NAME="testapp";
    
-   public static final String PARAMETERSPEC1 = "<tool><input><parameter name='P1'>1</parameter><parameter name='P1'>2</parameter><parameter name='P2'>p2</parameter><parameter name='P9'>testInFile</parameter><parameter name='P4'>p4</parameter></input><output><parameter name='P3'>out1file</parameter></output></tool>";
+   public static final String PARAMETERSPEC1 = "<tool><input><parameter name='P1'>30</parameter><parameter name='P1'>2</parameter><parameter name='P2'>p2</parameter><parameter name='P9'>testInFile</parameter><parameter name='P4'>p4</parameter></input><output><parameter name='P3'>out1file</parameter></output></tool>";
 
 }
