@@ -206,8 +206,9 @@
         <!--+
             | Locate our registry server jar.
             +-->
+        <core:set var="serverJarIdent" value="${pom.groupId}:astrogrid-registry-server"/>
         <core:forEach var="artifact" items="${pom.getArtifacts()}">
-            <core:if test="${artifact.getDependency().getId().equals('astrogrid-registry:astrogrid-registry-server')}">
+            <core:if test="${artifact.getDependency().getId().equals(serverJarIdent)}">
                 <ant:echo message="Found registry server jar"/>
                 <ant:echo message="Name     : ${artifact.getName()}"/>
                 <ant:echo message="Path     : ${artifact.getPath()}"/>
