@@ -19,7 +19,7 @@
         <form name="properties_form">
             <table width="80%"  border="1" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td width="50%">
+                    <td width="50%" valign="top">
                         <table width="100%"  border="1" cellspacing="0" cellpadding="0">
                             <tr>                            
                                 <div class="agWorkflow_table_header">Step</div>
