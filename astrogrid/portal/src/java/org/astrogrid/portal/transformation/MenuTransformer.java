@@ -106,7 +106,6 @@ public class MenuTransformer extends AbstractDOMTransformer {
       
       String fileMenuName = (String) fileContext.getValue("/menu/@name");
       Double menuValue = (Double) menuContext.getValue("count(//menu[@name='" + fileMenuName + "'])");
-//      Object menuValue = menuContext.getValue("count(*/menu[@name='" + fileMenuName + "'])");
       
       result = (menuValue.doubleValue() == 0.0d);
     }
