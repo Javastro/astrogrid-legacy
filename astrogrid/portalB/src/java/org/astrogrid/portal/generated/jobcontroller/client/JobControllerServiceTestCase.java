@@ -11,26 +11,25 @@ public class JobControllerServiceTestCase extends junit.framework.TestCase {
     public JobControllerServiceTestCase(java.lang.String name) {
         super(name);
     }
-    public void test1JobControllerServiceSubmitJob() throws Exception {
-        org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceSoapBindingStub binding;
+    public void test1JobControllerServiceSubmitJob() {
+        org.astrogrid.portal.generated.jobcontroller.client.JobController binding;
         try {
-            binding = (org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceSoapBindingStub)
-                          new org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceLocator().getJobControllerService();
+            binding = new org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceLocator().getJobControllerService();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
                 jre.getLinkedCause().printStackTrace();
             throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
         }
-        assertNotNull("binding is null", binding);
+        assertTrue("binding is null", binding != null);
 
-        // Time out after a minute
-        binding.setTimeout(60000);
-
-        // Test operation
-        java.lang.String value = null;
-        value = binding.submitJob(new java.lang.String());
-        // TBD - validate results
+        try {
+            java.lang.String value = null;
+            value = binding.submitJob(new java.lang.String());
+        }
+        catch (java.rmi.RemoteException re) {
+            throw new junit.framework.AssertionFailedError("Remote Exception caught: " + re);
+        }
     }
 
 }

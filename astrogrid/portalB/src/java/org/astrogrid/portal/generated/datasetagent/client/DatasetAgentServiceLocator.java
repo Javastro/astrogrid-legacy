@@ -33,7 +33,7 @@ public class DatasetAgentServiceLocator extends org.apache.axis.client.Service i
             endpoint = new java.net.URL(DatasetAgent_address);
         }
         catch (java.net.MalformedURLException e) {
-            throw new javax.xml.rpc.ServiceException(e);
+            return null; // unlikely as URL was validated in WSDL2Java
         }
         return getDatasetAgent(endpoint);
     }
@@ -74,18 +74,9 @@ public class DatasetAgentServiceLocator extends org.apache.axis.client.Service i
      * then ServiceException is thrown.
      */
     public java.rmi.Remote getPort(javax.xml.namespace.QName portName, Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
-        if (portName == null) {
-            return getPort(serviceEndpointInterface);
-        }
-        String inputPortName = portName.getLocalPart();
-        if ("DatasetAgent".equals(inputPortName)) {
-            return getDatasetAgent();
-        }
-        else  {
-            java.rmi.Remote _stub = getPort(serviceEndpointInterface);
-            ((org.apache.axis.client.Stub) _stub).setPortName(portName);
-            return _stub;
-        }
+        java.rmi.Remote _stub = getPort(serviceEndpointInterface);
+        ((org.apache.axis.client.Stub) _stub).setPortName(portName);
+        return _stub;
     }
 
     public javax.xml.namespace.QName getServiceName() {

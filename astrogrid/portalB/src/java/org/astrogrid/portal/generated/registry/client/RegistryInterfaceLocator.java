@@ -33,7 +33,7 @@ public class RegistryInterfaceLocator extends org.apache.axis.client.Service imp
             endpoint = new java.net.URL(RegistryInterfacePort_address);
         }
         catch (java.net.MalformedURLException e) {
-            throw new javax.xml.rpc.ServiceException(e);
+            return null; // unlikely as URL was validated in WSDL2Java
         }
         return getRegistryInterfacePort(endpoint);
     }
@@ -74,18 +74,9 @@ public class RegistryInterfaceLocator extends org.apache.axis.client.Service imp
      * then ServiceException is thrown.
      */
     public java.rmi.Remote getPort(javax.xml.namespace.QName portName, Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
-        if (portName == null) {
-            return getPort(serviceEndpointInterface);
-        }
-        String inputPortName = portName.getLocalPart();
-        if ("RegistryInterfacePort".equals(inputPortName)) {
-            return getRegistryInterfacePort();
-        }
-        else  {
-            java.rmi.Remote _stub = getPort(serviceEndpointInterface);
-            ((org.apache.axis.client.Stub) _stub).setPortName(portName);
-            return _stub;
-        }
+        java.rmi.Remote _stub = getPort(serviceEndpointInterface);
+        ((org.apache.axis.client.Stub) _stub).setPortName(portName);
+        return _stub;
     }
 
     public javax.xml.namespace.QName getServiceName() {

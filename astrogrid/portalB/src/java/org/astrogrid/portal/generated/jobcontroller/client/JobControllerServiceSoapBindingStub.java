@@ -13,23 +13,6 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
     private java.util.Vector cachedSerFactories = new java.util.Vector();
     private java.util.Vector cachedDeserFactories = new java.util.Vector();
 
-    static org.apache.axis.description.OperationDesc [] _operations;
-
-    static {
-        _operations = new org.apache.axis.description.OperationDesc[1];
-        org.apache.axis.description.OperationDesc oper;
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("submitJob");
-        oper.addParameter(new javax.xml.namespace.QName("", "jobXML"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        oper.setReturnClass(java.lang.String.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "submitJobReturn"));
-        oper.setStyle(org.apache.axis.enum.Style.RPC);
-        oper.setUse(org.apache.axis.enum.Use.ENCODED);
-        _operations[0] = oper;
-
-    }
-
     public JobControllerServiceSoapBindingStub() throws org.apache.axis.AxisFault {
          this(null);
     }
@@ -72,7 +55,10 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
             java.util.Enumeration keys = super.cachedProperties.keys();
             while (keys.hasMoreElements()) {
                 java.lang.String key = (java.lang.String) keys.nextElement();
-                _call.setProperty(key, super.cachedProperties.get(key));
+                if(_call.isPropertySupported(key))
+                    _call.setProperty(key, super.cachedProperties.get(key));
+                else
+                    _call.setScopedProperty(key, super.cachedProperties.get(key));
             }
             return _call;
         }
@@ -86,22 +72,19 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[0]);
+        _call.addParameter(new javax.xml.namespace.QName("", "jobXML"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, javax.xml.rpc.ParameterMode.IN);
+        _call.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationStyle("rpc");
         _call.setOperationName(new javax.xml.namespace.QName("urn:org.astrogrid.jobController", "submitJob"));
 
-        setRequestHeaders(_call);
-        setAttachments(_call);
         java.lang.Object _resp = _call.invoke(new java.lang.Object[] {jobXML});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
         }
         else {
-            getResponseHeaders(_call);
-            extractAttachments(_call);
             try {
                 return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {

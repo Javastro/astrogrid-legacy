@@ -10,7 +10,7 @@ package org.astrogrid.portal.generated.jobcontroller.client;
 public class JobControllerServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.portal.generated.jobcontroller.client.JobControllerService {
 
     // Use to get a proxy class for JobControllerService
-    private final java.lang.String JobControllerService_address = "http://localhost:8080/axis/services/JobControllerService";
+    private final java.lang.String JobControllerService_address = "http://hydra.star.le.ac.uk:8080/axis/services/JobControllerService";
 
     public java.lang.String getJobControllerServiceAddress() {
         return JobControllerService_address;
@@ -33,7 +33,7 @@ public class JobControllerServiceLocator extends org.apache.axis.client.Service 
             endpoint = new java.net.URL(JobControllerService_address);
         }
         catch (java.net.MalformedURLException e) {
-            throw new javax.xml.rpc.ServiceException(e);
+            return null; // unlikely as URL was validated in WSDL2Java
         }
         return getJobControllerService(endpoint);
     }
@@ -74,18 +74,9 @@ public class JobControllerServiceLocator extends org.apache.axis.client.Service 
      * then ServiceException is thrown.
      */
     public java.rmi.Remote getPort(javax.xml.namespace.QName portName, Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
-        if (portName == null) {
-            return getPort(serviceEndpointInterface);
-        }
-        String inputPortName = portName.getLocalPart();
-        if ("JobControllerService".equals(inputPortName)) {
-            return getJobControllerService();
-        }
-        else  {
-            java.rmi.Remote _stub = getPort(serviceEndpointInterface);
-            ((org.apache.axis.client.Stub) _stub).setPortName(portName);
-            return _stub;
-        }
+        java.rmi.Remote _stub = getPort(serviceEndpointInterface);
+        ((org.apache.axis.client.Stub) _stub).setPortName(portName);
+        return _stub;
     }
 
     public javax.xml.namespace.QName getServiceName() {

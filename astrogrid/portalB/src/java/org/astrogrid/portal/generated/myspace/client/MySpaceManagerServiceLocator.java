@@ -33,7 +33,7 @@ public class MySpaceManagerServiceLocator extends org.apache.axis.client.Service
             endpoint = new java.net.URL(MySpaceManager_address);
         }
         catch (java.net.MalformedURLException e) {
-            throw new javax.xml.rpc.ServiceException(e);
+            return null; // unlikely as URL was validated in WSDL2Java
         }
         return getMySpaceManager(endpoint);
     }
@@ -74,18 +74,9 @@ public class MySpaceManagerServiceLocator extends org.apache.axis.client.Service
      * then ServiceException is thrown.
      */
     public java.rmi.Remote getPort(javax.xml.namespace.QName portName, Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
-        if (portName == null) {
-            return getPort(serviceEndpointInterface);
-        }
-        String inputPortName = portName.getLocalPart();
-        if ("MySpaceManager".equals(inputPortName)) {
-            return getMySpaceManager();
-        }
-        else  {
-            java.rmi.Remote _stub = getPort(serviceEndpointInterface);
-            ((org.apache.axis.client.Stub) _stub).setPortName(portName);
-            return _stub;
-        }
+        java.rmi.Remote _stub = getPort(serviceEndpointInterface);
+        ((org.apache.axis.client.Stub) _stub).setPortName(portName);
+        return _stub;
     }
 
     public javax.xml.namespace.QName getServiceName() {

@@ -13,93 +13,6 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
     private java.util.Vector cachedSerFactories = new java.util.Vector();
     private java.util.Vector cachedDeserFactories = new java.util.Vector();
 
-    static org.apache.axis.description.OperationDesc [] _operations;
-
-    static {
-        _operations = new org.apache.axis.description.OperationDesc[8];
-        org.apache.axis.description.OperationDesc oper;
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("upLoad");
-        oper.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        oper.setReturnClass(java.lang.String.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "upLoadReturn"));
-        oper.setStyle(org.apache.axis.enum.Style.RPC);
-        oper.setUse(org.apache.axis.enum.Use.ENCODED);
-        _operations[0] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("lookupDataHolderDetails");
-        oper.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        oper.setReturnClass(java.lang.String.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "lookupDataHolderDetailsReturn"));
-        oper.setStyle(org.apache.axis.enum.Style.RPC);
-        oper.setUse(org.apache.axis.enum.Use.ENCODED);
-        _operations[1] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("lookupDataHoldersDetails");
-        oper.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        oper.setReturnClass(java.lang.String.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "lookupDataHoldersDetailsReturn"));
-        oper.setStyle(org.apache.axis.enum.Style.RPC);
-        oper.setUse(org.apache.axis.enum.Use.ENCODED);
-        _operations[2] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("copyDataHolder");
-        oper.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        oper.setReturnClass(java.lang.String.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "copyDataHolderReturn"));
-        oper.setStyle(org.apache.axis.enum.Style.RPC);
-        oper.setUse(org.apache.axis.enum.Use.ENCODED);
-        _operations[3] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("moveDataHolder");
-        oper.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        oper.setReturnClass(java.lang.String.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "moveDataHolderReturn"));
-        oper.setStyle(org.apache.axis.enum.Style.RPC);
-        oper.setUse(org.apache.axis.enum.Use.ENCODED);
-        _operations[4] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("exportDataHolder");
-        oper.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        oper.setReturnClass(java.lang.String.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "exportDataHolderReturn"));
-        oper.setStyle(org.apache.axis.enum.Style.RPC);
-        oper.setUse(org.apache.axis.enum.Use.ENCODED);
-        _operations[5] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("createContainer");
-        oper.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        oper.setReturnClass(java.lang.String.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "createContainerReturn"));
-        oper.setStyle(org.apache.axis.enum.Style.RPC);
-        oper.setUse(org.apache.axis.enum.Use.ENCODED);
-        _operations[6] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("deleteDataHolder");
-        oper.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        oper.setReturnClass(java.lang.String.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "deleteDataHolderReturn"));
-        oper.setStyle(org.apache.axis.enum.Style.RPC);
-        oper.setUse(org.apache.axis.enum.Use.ENCODED);
-        _operations[7] = oper;
-
-    }
-
     public MySpaceManagerSoapBindingStub() throws org.apache.axis.AxisFault {
          this(null);
     }
@@ -142,7 +55,10 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
             java.util.Enumeration keys = super.cachedProperties.keys();
             while (keys.hasMoreElements()) {
                 java.lang.String key = (java.lang.String) keys.nextElement();
-                _call.setProperty(key, super.cachedProperties.get(key));
+                if(_call.isPropertySupported(key))
+                    _call.setProperty(key, super.cachedProperties.get(key));
+                else
+                    _call.setScopedProperty(key, super.cachedProperties.get(key));
             }
             return _call;
         }
@@ -156,22 +72,19 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[0]);
+        _call.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, javax.xml.rpc.ParameterMode.IN);
+        _call.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationStyle("rpc");
         _call.setOperationName(new javax.xml.namespace.QName("mySpace:MySpaceManager", "upLoad"));
 
-        setRequestHeaders(_call);
-        setAttachments(_call);
         java.lang.Object _resp = _call.invoke(new java.lang.Object[] {jobDetails});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
         }
         else {
-            getResponseHeaders(_call);
-            extractAttachments(_call);
             try {
                 return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {
@@ -185,22 +98,19 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[1]);
+        _call.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, javax.xml.rpc.ParameterMode.IN);
+        _call.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationStyle("rpc");
         _call.setOperationName(new javax.xml.namespace.QName("mySpace:MySpaceManager", "lookupDataHolderDetails"));
 
-        setRequestHeaders(_call);
-        setAttachments(_call);
         java.lang.Object _resp = _call.invoke(new java.lang.Object[] {jobDetails});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
         }
         else {
-            getResponseHeaders(_call);
-            extractAttachments(_call);
             try {
                 return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {
@@ -214,22 +124,19 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[2]);
+        _call.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, javax.xml.rpc.ParameterMode.IN);
+        _call.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationStyle("rpc");
         _call.setOperationName(new javax.xml.namespace.QName("mySpace:MySpaceManager", "lookupDataHoldersDetails"));
 
-        setRequestHeaders(_call);
-        setAttachments(_call);
         java.lang.Object _resp = _call.invoke(new java.lang.Object[] {jobDetails});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
         }
         else {
-            getResponseHeaders(_call);
-            extractAttachments(_call);
             try {
                 return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {
@@ -243,22 +150,19 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[3]);
+        _call.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, javax.xml.rpc.ParameterMode.IN);
+        _call.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationStyle("rpc");
         _call.setOperationName(new javax.xml.namespace.QName("mySpace:MySpaceManager", "copyDataHolder"));
 
-        setRequestHeaders(_call);
-        setAttachments(_call);
         java.lang.Object _resp = _call.invoke(new java.lang.Object[] {jobDetails});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
         }
         else {
-            getResponseHeaders(_call);
-            extractAttachments(_call);
             try {
                 return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {
@@ -272,22 +176,19 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[4]);
+        _call.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, javax.xml.rpc.ParameterMode.IN);
+        _call.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationStyle("rpc");
         _call.setOperationName(new javax.xml.namespace.QName("mySpace:MySpaceManager", "moveDataHolder"));
 
-        setRequestHeaders(_call);
-        setAttachments(_call);
         java.lang.Object _resp = _call.invoke(new java.lang.Object[] {jobDetails});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
         }
         else {
-            getResponseHeaders(_call);
-            extractAttachments(_call);
             try {
                 return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {
@@ -301,22 +202,19 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[5]);
+        _call.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, javax.xml.rpc.ParameterMode.IN);
+        _call.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationStyle("rpc");
         _call.setOperationName(new javax.xml.namespace.QName("mySpace:MySpaceManager", "exportDataHolder"));
 
-        setRequestHeaders(_call);
-        setAttachments(_call);
         java.lang.Object _resp = _call.invoke(new java.lang.Object[] {jobDetails});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
         }
         else {
-            getResponseHeaders(_call);
-            extractAttachments(_call);
             try {
                 return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {
@@ -330,22 +228,19 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[6]);
+        _call.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, javax.xml.rpc.ParameterMode.IN);
+        _call.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationStyle("rpc");
         _call.setOperationName(new javax.xml.namespace.QName("mySpace:MySpaceManager", "createContainer"));
 
-        setRequestHeaders(_call);
-        setAttachments(_call);
         java.lang.Object _resp = _call.invoke(new java.lang.Object[] {jobDetails});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
         }
         else {
-            getResponseHeaders(_call);
-            extractAttachments(_call);
             try {
                 return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {
@@ -359,22 +254,19 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[7]);
+        _call.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, javax.xml.rpc.ParameterMode.IN);
+        _call.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationStyle("rpc");
         _call.setOperationName(new javax.xml.namespace.QName("mySpace:MySpaceManager", "deleteDataHolder"));
 
-        setRequestHeaders(_call);
-        setAttachments(_call);
         java.lang.Object _resp = _call.invoke(new java.lang.Object[] {jobDetails});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
         }
         else {
-            getResponseHeaders(_call);
-            extractAttachments(_call);
             try {
                 return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {

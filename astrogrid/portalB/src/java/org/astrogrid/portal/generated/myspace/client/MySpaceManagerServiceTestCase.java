@@ -11,180 +11,172 @@ public class MySpaceManagerServiceTestCase extends junit.framework.TestCase {
     public MySpaceManagerServiceTestCase(java.lang.String name) {
         super(name);
     }
-    public void test1MySpaceManagerUpLoad() throws Exception {
-        org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub binding;
+    public void test1MySpaceManagerUpLoad() {
+        org.astrogrid.portal.generated.myspace.client.MySpaceManager binding;
         try {
-            binding = (org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub)
-                          new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
+            binding = new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
                 jre.getLinkedCause().printStackTrace();
             throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
         }
-        assertNotNull("binding is null", binding);
+        assertTrue("binding is null", binding != null);
 
-        // Time out after a minute
-        binding.setTimeout(60000);
-
-        // Test operation
-        java.lang.String value = null;
-        value = binding.upLoad(new java.lang.String());
-        // TBD - validate results
+        try {
+            java.lang.String value = null;
+            value = binding.upLoad(new java.lang.String());
+        }
+        catch (java.rmi.RemoteException re) {
+            throw new junit.framework.AssertionFailedError("Remote Exception caught: " + re);
+        }
     }
 
-    public void test2MySpaceManagerLookupDataHolderDetails() throws Exception {
-        org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub binding;
+    public void test2MySpaceManagerLookupDataHolderDetails() {
+        org.astrogrid.portal.generated.myspace.client.MySpaceManager binding;
         try {
-            binding = (org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub)
-                          new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
+            binding = new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
                 jre.getLinkedCause().printStackTrace();
             throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
         }
-        assertNotNull("binding is null", binding);
+        assertTrue("binding is null", binding != null);
 
-        // Time out after a minute
-        binding.setTimeout(60000);
-
-        // Test operation
-        java.lang.String value = null;
-        value = binding.lookupDataHolderDetails(new java.lang.String());
-        // TBD - validate results
+        try {
+            java.lang.String value = null;
+            value = binding.lookupDataHolderDetails(new java.lang.String());
+        }
+        catch (java.rmi.RemoteException re) {
+            throw new junit.framework.AssertionFailedError("Remote Exception caught: " + re);
+        }
     }
 
-    public void test3MySpaceManagerLookupDataHoldersDetails() throws Exception {
-        org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub binding;
+    public void test3MySpaceManagerLookupDataHoldersDetails() {
+        org.astrogrid.portal.generated.myspace.client.MySpaceManager binding;
         try {
-            binding = (org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub)
-                          new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
+            binding = new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
                 jre.getLinkedCause().printStackTrace();
             throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
         }
-        assertNotNull("binding is null", binding);
+        assertTrue("binding is null", binding != null);
 
-        // Time out after a minute
-        binding.setTimeout(60000);
-
-        // Test operation
-        java.lang.String value = null;
-        value = binding.lookupDataHoldersDetails(new java.lang.String());
-        // TBD - validate results
+        try {
+            java.lang.String value = null;
+            value = binding.lookupDataHoldersDetails(new java.lang.String());
+        }
+        catch (java.rmi.RemoteException re) {
+            throw new junit.framework.AssertionFailedError("Remote Exception caught: " + re);
+        }
     }
 
-    public void test4MySpaceManagerCopyDataHolder() throws Exception {
-        org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub binding;
+    public void test4MySpaceManagerCopyDataHolder() {
+        org.astrogrid.portal.generated.myspace.client.MySpaceManager binding;
         try {
-            binding = (org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub)
-                          new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
+            binding = new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
                 jre.getLinkedCause().printStackTrace();
             throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
         }
-        assertNotNull("binding is null", binding);
+        assertTrue("binding is null", binding != null);
 
-        // Time out after a minute
-        binding.setTimeout(60000);
-
-        // Test operation
-        java.lang.String value = null;
-        value = binding.copyDataHolder(new java.lang.String());
-        // TBD - validate results
+        try {
+            java.lang.String value = null;
+            value = binding.copyDataHolder(new java.lang.String());
+        }
+        catch (java.rmi.RemoteException re) {
+            throw new junit.framework.AssertionFailedError("Remote Exception caught: " + re);
+        }
     }
 
-    public void test5MySpaceManagerMoveDataHolder() throws Exception {
-        org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub binding;
+    public void test5MySpaceManagerMoveDataHolder() {
+        org.astrogrid.portal.generated.myspace.client.MySpaceManager binding;
         try {
-            binding = (org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub)
-                          new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
+            binding = new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
                 jre.getLinkedCause().printStackTrace();
             throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
         }
-        assertNotNull("binding is null", binding);
+        assertTrue("binding is null", binding != null);
 
-        // Time out after a minute
-        binding.setTimeout(60000);
-
-        // Test operation
-        java.lang.String value = null;
-        value = binding.moveDataHolder(new java.lang.String());
-        // TBD - validate results
+        try {
+            java.lang.String value = null;
+            value = binding.moveDataHolder(new java.lang.String());
+        }
+        catch (java.rmi.RemoteException re) {
+            throw new junit.framework.AssertionFailedError("Remote Exception caught: " + re);
+        }
     }
 
-    public void test6MySpaceManagerExportDataHolder() throws Exception {
-        org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub binding;
+    public void test6MySpaceManagerExportDataHolder() {
+        org.astrogrid.portal.generated.myspace.client.MySpaceManager binding;
         try {
-            binding = (org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub)
-                          new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
+            binding = new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
                 jre.getLinkedCause().printStackTrace();
             throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
         }
-        assertNotNull("binding is null", binding);
+        assertTrue("binding is null", binding != null);
 
-        // Time out after a minute
-        binding.setTimeout(60000);
-
-        // Test operation
-        java.lang.String value = null;
-        value = binding.exportDataHolder(new java.lang.String());
-        // TBD - validate results
+        try {
+            java.lang.String value = null;
+            value = binding.exportDataHolder(new java.lang.String());
+        }
+        catch (java.rmi.RemoteException re) {
+            throw new junit.framework.AssertionFailedError("Remote Exception caught: " + re);
+        }
     }
 
-    public void test7MySpaceManagerCreateContainer() throws Exception {
-        org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub binding;
+    public void test7MySpaceManagerCreateContainer() {
+        org.astrogrid.portal.generated.myspace.client.MySpaceManager binding;
         try {
-            binding = (org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub)
-                          new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
+            binding = new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
                 jre.getLinkedCause().printStackTrace();
             throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
         }
-        assertNotNull("binding is null", binding);
+        assertTrue("binding is null", binding != null);
 
-        // Time out after a minute
-        binding.setTimeout(60000);
-
-        // Test operation
-        java.lang.String value = null;
-        value = binding.createContainer(new java.lang.String());
-        // TBD - validate results
+        try {
+            java.lang.String value = null;
+            value = binding.createContainer(new java.lang.String());
+        }
+        catch (java.rmi.RemoteException re) {
+            throw new junit.framework.AssertionFailedError("Remote Exception caught: " + re);
+        }
     }
 
-    public void test8MySpaceManagerDeleteDataHolder() throws Exception {
-        org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub binding;
+    public void test8MySpaceManagerDeleteDataHolder() {
+        org.astrogrid.portal.generated.myspace.client.MySpaceManager binding;
         try {
-            binding = (org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub)
-                          new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
+            binding = new org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator().getMySpaceManager();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
                 jre.getLinkedCause().printStackTrace();
             throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
         }
-        assertNotNull("binding is null", binding);
+        assertTrue("binding is null", binding != null);
 
-        // Time out after a minute
-        binding.setTimeout(60000);
-
-        // Test operation
-        java.lang.String value = null;
-        value = binding.deleteDataHolder(new java.lang.String());
-        // TBD - validate results
+        try {
+            java.lang.String value = null;
+            value = binding.deleteDataHolder(new java.lang.String());
+        }
+        catch (java.rmi.RemoteException re) {
+            throw new junit.framework.AssertionFailedError("Remote Exception caught: " + re);
+        }
     }
 
 }
