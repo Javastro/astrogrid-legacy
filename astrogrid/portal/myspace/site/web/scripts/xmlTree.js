@@ -169,37 +169,34 @@ function setNewIvorn() {
                myspace_baseIvorn.value,
                myspace_agsl.value,
                myspace_item.value);
+
+  return myspace_ivorn.value; 
 }
 
 function newIvorn(baseIvorn, path, file) {
-  var errorMsg = null;
+  var errorMsg = '';
   var result = '';
   
   if(!baseIvorn || baseIvorn.length == 0) {
-    if(errorMsg != null) {
-      errorMsg = errorMsg + '\n'
-    }
-    
     errorMsg = 'No base IVORN.';
   }
 
-  if(!path && path.length == 0) {
-    if(errorMsg != null) {
-      errorMsg = errorMsg + '\n'
+  if(!path || path.length == 0 ) {
+    if(errorMsg.length != 0 ) {
+      errorMsg = errorMsg + '\n';
     }
-    
-    errorMsg = errorMsg + 'Invalid path'
+    errorMsg = errorMsg + 'Invalid location.';
   }
 
-  if(!file && file.length == 0) {
-    if(errorMsg != null) {
-      errorMsg = errorMsg + '\n'
+  // name must exist and not contain white space...
+  if(!file || file.length == 0 || file.match(/[\s]/) ) {
+    if(errorMsg.length != 0 ) {
+      errorMsg = errorMsg + '\n';
     }
-    
-    errorMsg = errorMsg + 'No MySpace name supplied';
+    errorMsg = errorMsg + 'Invalid name.';
   }
   
-  if(errorMsg != null) {
+  if(errorMsg.length != 0) {
     alert(errorMsg);
     result = '';
   }
@@ -281,4 +278,18 @@ function callParentFunction(parent_func) {
     parent_func_expr = "parent." + parent_func;
     eval(parent_func_expr);
   } 
+}
+
+
+function processMicroBrowserOK( ivorn, agsl, fieldName, fieldValue, formName, formAction, parentFunction ) {
+ 
+  result=setNewIvorn();	
+ 
+  if( result != '' ) {
+     setParentIVORNAgsl(ivorn, agsl );
+     setParentHiddenField(fieldName, fieldValue);
+     submitParentForm(formName, formAction);
+     callParentFunction(parentFunction);
+  }
+  
 }

@@ -53,26 +53,26 @@
         	</input>
           <table id="myspace-tree-header">
             <tr>
-              <td>IVORN:</td>
-              <td style="width:100%"><input name="myspace-ivorn" id="myspace-ivorn" type="text" readonly="true" style="width:100%;border-style:none;"/></td>
-            </tr>
-            <tr>
-              <td>AGSL:</td>
+              <td>Location:</td>
               <td style="width:100%"><input name="myspace-agsl" id="myspace-agsl" type="text" readonly="true" style="width:100%;border-style:none;"/></td>
             </tr>
+            <tr>
+              <td>Name:</td>
+              <td style="width:100%"><input name="myspace-item" id="myspace-item" type="text" onfocus="skipcycle=true;" onblur="skipcycle=false;"/></td>
+            </tr>
           </table>
-          
+          <input type="hidden" name="myspace-ivorn" id="myspace-ivorn" />
+ <!--         
           <p>
             Item Name: <input name="myspace-item" id="myspace-item" type="text" onfocus="skipcycle=true;" onblur="skipcycle=false;"/>
           </p>
-          
+          -->
           <input class="agActionButton" type="button" value="OK">
             <xsl:attribute name="onclick">
-              setNewIvorn();
-              setParentIVORNAgsl('<xsl:value-of select="$ivorn"/>', '<xsl:value-of select="$agsl"/>');
-              setParentHiddenField('<xsl:value-of select="$field_name"/>', '<xsl:value-of select="$field_value"/>');
-              submitParentForm('<xsl:value-of select="$form_name"/>', '<xsl:value-of select="$form_action"/>');
-              callParentFunction('<xsl:value-of select="$parent_func"/>');
+              processMicroBrowserOK('<xsl:value-of select="$ivorn"/>', '<xsl:value-of select="$agsl"/>',
+                                    '<xsl:value-of select="$field_name"/>', '<xsl:value-of select="$field_value"/>',
+                                    '<xsl:value-of select="$form_name"/>', '<xsl:value-of select="$form_action"/>',
+                                    '<xsl:value-of select="$parent_func"/>');
             </xsl:attribute>
           </input>
 
@@ -87,14 +87,44 @@
   <xsl:template match="myspace-tree">
     <xsl:apply-templates/>
   </xsl:template>
-
-  <xsl:template match="myspace-item[@type='folder']">
+  
+  <!-- Selects the top folder of the user.
+       The idea is to ensure this one is always displayed as open.
+       Priority 3 is to ensure this one is chosen first
+  -->  
+  <xsl:template match="myspace-tree/myspace-item[@type='folder']" priority="3">
+    <xsl:call-template name="folder">
+       <xsl:with-param name="display">block</xsl:with-param>
+       <xsl:with-param name="icon-path">/astrogrid-portal/icons/Open.png</xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+  
+  <!-- Selects all other folders of the user.
+       The idea is to default display as not open.
+       Priority 2 is to ensure this template is not chosen over the top folder selection
+  -->  
+  <xsl:template match="myspace-item[@type='folder']" priority="2">
+    <xsl:call-template name="folder">
+       <xsl:with-param name="display">none</xsl:with-param>
+       <xsl:with-param name="icon-path">/astrogrid-portal/icons/Folder.png</xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+  
+  <!-- Named template "folder"
+       The idea is to supply common processing for folders, varying only on the default
+       display characteristics. As used above, the top folder is always shown as open by
+       default, others are shown closed by default. The user has the option to toggle.
+  -->  
+  <xsl:template name="folder">
+    <xsl:param name="display"/>
+    <xsl:param name="icon-path"/>
     <span class="trigger">
       <xsl:attribute name="onclick">
         showBranch('<xsl:value-of select="@safe-name"/>');
       </xsl:attribute>
 
-      <img src="/astrogrid-portal/icons/Folder.png" alt="toggle">
+      <img alt="toggle">
+        <xsl:attribute name="src"><xsl:value-of select="$icon-path"/></xsl:attribute>
         <xsl:attribute name="id">I<xsl:value-of select="@safe-name"/></xsl:attribute>
       </img>
     </span>
@@ -109,13 +139,18 @@
     </span>
 
     <span class="branch">
+      <xsl:attribute name="style">display:<xsl:value-of select="$display"/></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="@safe-name"/></xsl:attribute>
       <xsl:apply-templates/>
       <notag/>
     </span>
   </xsl:template>
-
-  <xsl:template match="myspace-item">
+  
+  
+  <!-- Selects all other items of the user, which means files.
+       Priority 1 is to ensure this template is not chosen over any folder selection
+  --> 
+  <xsl:template match="myspace-item" priority="1">
     <img src="/astrogrid-portal/icons/Document.png" alt="doc"/>
 
     &#160;
