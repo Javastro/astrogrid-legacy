@@ -2,7 +2,8 @@
                  org.w3c.dom.NodeList,
                  org.w3c.dom.Element,
                  org.w3c.dom.Document,   
-                 org.astrogrid.util.DomHelper,                 
+                 org.astrogrid.util.DomHelper,
+                 org.astrogrid.registry.server.RegistryServerHelper,                 
              org.astrogrid.registry.server.query.*"
    isThreadSafe="false"
    session="false"
@@ -41,15 +42,9 @@ are available.
    boolean newRegistry = true;
    String ivoStr = null;
    if(entry != null) {
-      NodeList identifiers = entry.getElementsByTagNameNS("*","Identifier");        
-      if(identifiers.getLength() > 0) {
-         newRegistry = false;
-        Element resource = (Element) ((Element) identifiers.item(0)).getElementsByTagNameNS("*","ResourceKey").item(0);
-        Element authority = (Element) ((Element) identifiers.item(0)).getElementsByTagNameNS("*","AuthorityID").item(0);
-        ivoStr = authority.getFirstChild().getNodeValue();
-        if(resource != null && resource.getFirstChild() != null) {
-           ivoStr += "/" + resource.getFirstChild().getNodeValue();
-       }//if
+      ivoStr = RegistryServerHelper.getIdentifier(entry.getDocumentElement());
+      if(ivoStr != null) {
+        newRegistry = false;
       }//if
    }//if
    
@@ -57,8 +52,8 @@ are available.
       out.write("This Registry has not yet been configured; click <a href='setup/install.jsp'>here</a> to set it up");
    }
    else {
-      out.write("This Registry main authorityid <b>"+SimpleConfig.getSingleton().getString("org.astrogrid.registry.authorityid")+"</b>");
-      out.write("<br />Click <a href='viewEntryXml.jsp?IVORN=" + ivoStr + "'>here</a> to see the main Registry type for this registry and all authority ids managed by this registry.");
+      out.write("This Registry main authorityid <b>"+SimpleConfig.getSingleton().getString("reg.amend.authorityid")+"</b>");
+      out.write("<br />Click <a href='viewResourceEntry.jsp?IVORN=" + ivoStr + "'>here</a> to see the main Registry type for this registry and all authority ids managed by this registry.");
    }
 %>
 </body>

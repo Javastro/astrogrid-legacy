@@ -7,6 +7,7 @@ import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
+
 import java.io.Reader;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
@@ -16,7 +17,7 @@ import java.io.IOException;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
 import org.astrogrid.registry.server.XQueryExecution;
-import org.astrogrid.registry.common.XSLHelper;
+import org.astrogrid.registry.server.XSLHelper;
 import java.net.URL;
 
 import java.net.MalformedURLException;
@@ -25,13 +26,22 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.io.*;
 import org.apache.axis.AxisFault;
-import org.astrogrid.xmldb.eXist.server.QueryDBService;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.server.harvest.RegistryHarvestService;
 import org.astrogrid.registry.server.RegistryServerHelper;
 import org.astrogrid.registry.server.QueryHelper;
+import org.astrogrid.xmldb.client.QueryService;
+import org.astrogrid.xmldb.client.XMLDBFactory;
+
+import org.xmldb.api.base.ResourceSet;
+import org.xmldb.api.modules.XMLResource;
+import org.xmldb.api.base.Resource;
+import org.xmldb.api.base.Collection;
+import org.xmldb.api.base.XMLDBException;
 
 import java.util.ArrayList;
+
+import org.astrogrid.registry.NoResourcesFoundException;
 
 /**
  *
@@ -60,6 +70,8 @@ public class RegistryQueryService {
     */
    private static final String AUTHORITYID_PROPERTY =
                                           "org.astrogrid.registry.authorityid";
+   
+   private XMLDBFactory xdb = new XMLDBFactory();
 
    /**
     * Static to be used on the initiatian of this class for the config
@@ -86,30 +98,20 @@ public class RegistryQueryService {
       XSLHelper xslHelper = new XSLHelper();
 
       //get the version of Resources we are querying on.
-      String attrVersion = getRegistryVersion(query);
-      String versionNumber = attrVersion.replace('.','_');
+      String versionNumber = getRegistryVersion(query);
 
       //transform the ADQL to an XQuery for the registry.
       String xqlQuery = getQuery(query,versionNumber);
       log.info("The XQLQuery = " + xqlQuery);
-      
-      //the location in the eXist db to be queries on.
-      String collectionName = "astrogridv" + versionNumber;
-      log.info("Collection Name for query = " + collectionName);
-
       //perform the query and log how long it took to query.
-      Document resultDoc = queryExist(xqlQuery,collectionName);
+      Node resultDoc = queryExist(xqlQuery,versionNumber);
       log.info("Time taken to complete search on server = " +
               (System.currentTimeMillis() - beginQ));
       log.debug("end Search");
-      if(resultDoc != null) {
-          log.info("Number of Resources to be returned = " + 
-                   resultDoc.getElementsByTagNameNS("*","Resource").getLength());
-      }
       
       //To be correct we need to transform the results, with a correct response element 
       //for the soap message and for the right root element around the resources.
-      return xslHelper.transformExistResult((Node)resultDoc,
+      return xslHelper.transformExistResult(resultDoc,
                                             versionNumber,"SearchResponse");
    }
 
@@ -132,17 +134,9 @@ public class RegistryQueryService {
          String xql = DomHelper.getNodeTextValue(query,"XQLString");
          log.debug("end Query");
          
-         String attrVersion = getRegistryVersion(query);
-         String versionNumber = attrVersion.replace('.','_');
-      
-         String collectionName = "astrogridv" + versionNumber;
-         log.info("Collection Name for query = " + collectionName);
+         String versionNumber = getRegistryVersion(query);
          //query the eXist db.
-         resultDoc = queryExist(xql,collectionName);
-         if(resultDoc != null) {
-             log.info("Number of Resources to be returned = " + 
-                     resultDoc.getElementsByTagNameNS("*","Resource").getLength());
-         }         
+         resultDoc = (Document)queryExist(xql,versionNumber);
       }catch(IOException ioe) {
          throw new AxisFault("IO problem", ioe);
       }
@@ -163,19 +157,11 @@ public class RegistryQueryService {
       log.debug("start XQLString");
       Document resultDoc = null;
       try {
-         String attrVersion = getRegistryVersion(query);
-         String versionNumber = attrVersion.replace('.','_');
+         String versionNumber = getRegistryVersion(query);
 
-         String collectionName = "astrogridv" + versionNumber;     
-         log.info("Collection Name for query = " + collectionName);
-         
          String xql = DomHelper.getNodeTextValue(query,"XQLString");
          log.debug("end XQLString");
-         resultDoc = queryExist(xql,collectionName);
-         if(resultDoc != null) {
-             log.info("Number of Resources to be returned = " + 
-                     resultDoc.getElementsByTagNameNS("*","Resource").getLength());
-         }               
+         resultDoc = (Document)queryExist(xql,versionNumber);
       }catch(IOException ioe) {
          throw new AxisFault("IO problem", ioe);         
       }
@@ -189,6 +175,7 @@ public class RegistryQueryService {
    * soon be rarely used for the ADQL version to be the standard for the
    * IVOA.  Will be deprecated in itn07.
    * 
+   * @deprecated - It is still being used some, but will be factored away in a matter of a couple of weeks Jan 24,2005
    * @param query XML document object representing the query language used on the registry.
    * @throws - AxisFault containing exceptions that might have occurred setting up
    * or querying the registry.
@@ -199,27 +186,19 @@ public class RegistryQueryService {
       log.debug("start submitQuery");
       long beginQ = System.currentTimeMillis();
       XSLHelper xslHelper = new XSLHelper();
-      
-      String attrVersion = getRegistryVersion(query);
-      String versionNumber = attrVersion.replace('.','_');
-      String collectionName = "astrogridv" + versionNumber;
-      log.info("Collection Name for query = " + collectionName);
-      //log.info("received = " + DomHelper.DocumentToString(query));
+            
+      String versionNumber = getRegistryVersion(query);
       //parse query right now actually does the query.
-      String xql = RegistryServerHelper.getXQLDeclarations(versionNumber) + XQueryExecution.createXQL(query);
+      String xql = XQueryExecution.createXQL(query,versionNumber);
       log.info("Query to be performed on the db = " + xql);
-      Document resultDoc = queryExist(xql,collectionName);
+      Node resultDoc = queryExist(xql,versionNumber);
       log.info("Time taken to complete submitQuery on server = " +
               (System.currentTimeMillis() - beginQ));
-      if(resultDoc != null) {
-          log.info("Number of Resources to be returned = " + 
-                  resultDoc.getElementsByTagNameNS("*","Resource").getLength());
-      }      
       log.debug("end submitQuery");
 
       //To be correct we need to transform the results, with a correct response element 
       //for the soap message and for the right root element around the resources.
-      return xslHelper.transformExistResult((Node)resultDoc,versionNumber,null);
+      return xslHelper.transformExistResult(resultDoc,versionNumber,null);
    }
    
    /**
@@ -238,19 +217,27 @@ public class RegistryQueryService {
       //get the default autority id for this registry.      
       Document doc = null;
       Document responseDoc = null;
-      String attrVersion = getRegistryVersion(query);
-      String versionNumber = attrVersion.replace('.','_');
+      String versionNumber = getRegistryVersion(query);
       log.info("the versionNumber in loadRegistry = " + versionNumber);
       return loadMainRegistry(versionNumber);
    }
-   
+
+   /**
+    * Queries for the Registry Resource element that is tied to this Registry.
+    * All Astrogrid Registries have one Registry Resource tied to the Registry.
+    * Which defines the AuthorityID's it manages and how to access the Registry.
+    * 
+    * @param version of the schema to be queryied on (the vr namespace); hence the collection
+    * @throws - AxisFault containing exceptions that might have occurred setting up
+    * or querying the registry. 
+    * @return XML docuemnt object representing the result of the query.
+    */
    public Document loadMainRegistry(String versionNumber) throws AxisFault {
        long beginQ = System.currentTimeMillis();       
-       String collectionName = "astrogridv" + versionNumber;
-       log.info("Collection Name for query = " + collectionName);
+
        String xqlString = QueryHelper.queryForMainRegistry(versionNumber);
        log.info("XQL String = " + xqlString);
-       Document resultDoc = queryExist(xqlString,collectionName);
+       Node resultDoc = queryExist(xqlString,versionNumber);
        
        XSLHelper xslHelper = new XSLHelper();
        log.info("Time taken to complete loadRegistry on server = " +
@@ -259,69 +246,166 @@ public class RegistryQueryService {
        
        //To be correct we need to transform the results, with a correct response element 
        //for the soap message and for the right root element around the resources.
-       return xslHelper.transformExistResult((Node)resultDoc,versionNumber,null);
+       return xslHelper.transformExistResult(resultDoc,versionNumber,null);
    }
    
    /**
-    * Queries the eXist xml database, on the collection of the registry.
+    * Queries the xml database, on the collection of the registry.
     * @param xqlString an XQuery to query the database
     * @param collectionName the location in the database to query (sort of like a table)
     * @return xml DOM object returned from the database, which are Resource elements
     * @throws - AxisFault containing exceptions that might have occurred setting up
     * or querying the registry.
     */
-   private Document queryExist(String xqlString, String collectionName) throws AxisFault {
+   private Node queryExist(String xqlString, String versionNumber) throws AxisFault {
       log.debug("start queryExist");
-      QueryDBService qdb = new QueryDBService();
-      return qdb.query(collectionName,xqlString);
+      Collection coll = null;
+      int tempIndex = 0;
+      try {
+          String collectionName = "astrogridv" + versionNumber.replace('.','_');
+          coll = xdb.openCollection(collectionName);
+          log.info("Got Collection");
+          QueryService xqs = xdb.getQueryService(coll);
+          String returnCount = conf.getString("reg.amend.returncount");
+          String xqlExpression = conf.getString("reg.custom.query.expression"); 
+          xqlExpression = xqlExpression.replaceAll("__declareNS__", QueryHelper.getXQLDeclarations(versionNumber));
+          //log.info(" the xqlExpression = " + xqlExpression);
+          //xqlExpression = xqlExpression.replaceAll("regquery", xqlString);
+          //log.info("the xqlString = " + xqlString);
+          //xqlExpression = xqlExpression.replaceAll("__query__", xqlString);
+          tempIndex = xqlExpression.indexOf("__query__");
+          if(tempIndex == -1) {
+              throw AxisFault.makeFault(new RegistryException("XQL Expression has no placement for a Query"));
+          }
+          String endString = xqlExpression.substring(tempIndex+9);
+          xqlExpression = xqlExpression.substring(0,tempIndex);
+          xqlExpression += xqlString + endString;
+          log.info(" the xqlExpression = " + xqlExpression);
+          xqlExpression = xqlExpression.replaceAll("__returnCount__", returnCount);
+          log.info("Now querying in colleciton = " + collectionName + " query = " + xqlExpression);
+          ResourceSet rs = xqs.query(xqlExpression);
+          log.info("Number of results found in query = " + rs.getSize());
+          if(rs.getSize() == 0) {
+              NoResourcesFoundException nrfe = new NoResourcesFoundException("Nothing found with query = " + xqlExpression + " for collection = " + collectionName);
+              throw AxisFault.makeFault(nrfe);
+          }
+          Resource xmlr = rs.getMembersAsResource();
+          return DomHelper.newDocument(xmlr.getContent().toString());
+      }catch(XMLDBException xdbe) {
+          xdbe.printStackTrace();
+          throw AxisFault.makeFault(xdbe);
+      }catch(ParserConfigurationException pce) {
+          pce.printStackTrace();
+          throw AxisFault.makeFault(pce);
+      }catch(SAXException sax) {
+          sax.printStackTrace();
+          throw AxisFault.makeFault(sax);
+      }catch(IOException ioe) {
+          ioe.printStackTrace();
+          throw AxisFault.makeFault(ioe);
+      }
+      finally {
+          try {
+              xdb.closeCollection(coll);
+          }catch(XMLDBException xmldb) {
+              log.error(xmldb);
+          }
+      }
    }
    
-   public ArrayList getAstrogridVersions() {
-       QueryDBService qdb = new QueryDBService();
+   /**
+    * Does not actually do a query, it opens the main root colleciton /db and finds all the child collections
+    * associated with astrogridv?? (??=version number) and puts them as strings in an array list to be returned.
+    * 
+    * @return an ArrayList of Strings containging the versions number supported by this registry (or in the xml db).
+    */
+   public ArrayList getAstrogridVersions() throws XMLDBException { 
        ArrayList al = new ArrayList();
+       Collection coll = null;
        try {
-           Document doc = qdb.getCollection("");
-           String xml = DomHelper.DocumentToString(doc);
-           int index = -1;
-           int temp = 0;
-           
-           while((index = xml.indexOf("astrogridv",temp)) != -1) {
-               temp = xml.indexOf("\"", index+10);
-               System.out.println("adding to the arraylist = " + ((String)xml.substring(index+10,temp)));
-               al.add(((String)xml.substring(index+10,temp)));
+           coll = xdb.openCollection();
+           String []childCollections = coll.listChildCollections();
+           for(int i = 0;i < childCollections.length;i++) {
+               if(childCollections[i].startsWith("astrogridv")) {
+                   al.add(((String)childCollections[i].substring(10).replace('_','.')));    
+               }
            }
-       }catch(MalformedURLException mue) {
-           mue.printStackTrace();
-       }catch(ParserConfigurationException pce) {
-           pce.printStackTrace();
-       }catch(IOException ioe) {
-           ioe.printStackTrace();
-       }catch(SAXException sax) {
-           sax.printStackTrace();
+       }finally {
+           try {
+               xdb.closeCollection(coll);
+           }catch(XMLDBException xmldb) {
+               log.error(xmldb);
+           }
+
        }
        return al;
    }
+
+   /**
+    * A Keyword search web service method.  Gets the keywords from the soap body (also if the keywords are to be 'or' together)
+    * The paths used for comparison with the keywords are obtained from the JNDI/properties file. The keywords seperated by spaces.
+    * 
+    * @param query - The soap body of the web service call, containing sub elements of keywords.
+    * @throws - AxisFault containing exceptions that might have occurred setting up
+    * or querying the registry.
+    * @return XML docuemnt object representing the result of the query.
+    */
+   public Document KeywordSearch(Document query) throws AxisFault {
+       log.debug("start keywordsearch");                   
+       String keywords = null;
+       String orValue = null;
+       try {
+           keywords = DomHelper.getNodeTextValue(query,"keywords");
+           orValue = DomHelper.getNodeTextValue(query,"orValue");
+       }catch(IOException ioe) {
+           throw new AxisFault("IO problem trying to get keywords and orValue");
+       }
+       String attrVersion = getRegistryVersion(query);
+       boolean orKeywords = new Boolean(orValue).booleanValue();
+       return keywordQuery(keywords,orKeywords,attrVersion);
+   }
    
+   /**
+    * A Keyword search baic method called from jsp pages.
+    * The paths used for comparison with the keywords are obtained from the JNDI/properties file.
+    * 
+    * @param keywords - A string of keywords seperated by spaces.
+    * @param orKeywords - Are the key words to be or'ed together
+    * @throws - AxisFault containing exceptions that might have occurred setting up
+    * or querying the registry.
+    * @return XML docuemnt object representing the result of the query.
+    */   
    public Document keywordQuery(String keywords, boolean orKeywords) throws AxisFault {
        return keywordQuery(keywords,orKeywords,RegistryServerHelper.getDefaultVersionNumber());
    }
    
+   /**
+    * A Keyword search method. Splits the keywords and forms a xql query for the key word search.
+    * The paths used for comparison with the keywords are obtained from the JNDI/properties file.
+    * 
+    * @param query - The soap body of the web service call, containing sub elements of keywords.
+    * @param orKeywords - Are the key words to be or'ed together
+    * @param version - The version number from vr namespace used to form the collection name and get the xpaths from the properties. 
+    * @throws - AxisFault containing exceptions that might have occurred setting up
+    * or querying the registry.
+    * @return XML docuemnt object representing the result of the query.
+    */   
    public Document keywordQuery(String keywords, boolean orKeywords, String version) throws AxisFault {
        long beginQ = System.currentTimeMillis();
        if(version == null || version.trim().length() <= 0) {
            version = RegistryServerHelper.getDefaultVersionNumber();
        }       
-       String versionNumber = version.replace('.','_');
+       String versionNumber = version;
        String []keyword = keywords.split(" ");
-       String xqlPaths = conf.getString("keyword.query.path." + versionNumber);
+       String xqlPaths = conf.getString("reg.custom.keywordxpaths." + versionNumber);
        String []xqlPath = xqlPaths.split(",");
        
 
        String xqlString = QueryHelper.getStartQuery(versionNumber);       
        for(int i = 0;i < xqlPath.length;i++) {
-           xqlString += "(";
+           xqlString += " (";
            for(int j = 0;j < keyword.length;j++) {
-             xqlString += xqlPath[i] + " &= '*" + keyword[j] + "*'";
+             xqlString += "$x/" + xqlPath[i] + " &= '*" + keyword[j] + "*'";
              if(j != (keyword.length - 1)) {
                  if(orKeywords) { 
                      xqlString += " or ";
@@ -337,12 +421,7 @@ public class RegistryQueryService {
        }//for
        xqlString += " return $x";
        
-       String collectionName = "astrogridv" + versionNumber;
-       Document resultDoc = queryExist(xqlString,collectionName); 
-       if(resultDoc != null) {
-           log.info("Number of Resources to be returned = " + 
-                   resultDoc.getElementsByTagNameNS("*","Resource").getLength());
-       }
+       Node resultDoc = queryExist(xqlString,versionNumber); 
        XSLHelper xslHelper = new XSLHelper();
        log.info("Time taken to complete keywordsearch on server = " +
                (System.currentTimeMillis() - beginQ));
@@ -350,7 +429,7 @@ public class RegistryQueryService {
        
        //To be correct we need to transform the results, with a correct response element 
        //for the soap message and for the right root element around the resources.
-       return xslHelper.transformExistResult((Node)resultDoc,
+       return xslHelper.transformExistResult(resultDoc,
                                              versionNumber,"KeywordSearchResponse");
    }
    
@@ -359,13 +438,11 @@ public class RegistryQueryService {
        if(versionNumber == null || versionNumber.trim().length() <= 0) {
            versionNumber = RegistryServerHelper.getDefaultVersionNumber();
        }
-       String queryVersion = versionNumber.replace('.','_');
-       String collectionName = "astrogridv" + queryVersion;
-       log.info("collname=" + collectionName);
-       String xqlString = QueryHelper.getAllQuery(queryVersion);
-       Document resultDoc = queryExist(xqlString,collectionName);
-       return xslHelper.transformExistResult((Node)resultDoc,
-               queryVersion,"GetAllResponse");
+       
+       String xqlString = QueryHelper.getAllQuery(versionNumber);
+       Node resultDoc = queryExist(xqlString,versionNumber);
+       return xslHelper.transformExistResult(resultDoc,
+               versionNumber,"GetAllResponse");
    }
    
    public Document GetResourcesByIdentifier(Document query) throws AxisFault {
@@ -389,12 +466,52 @@ public class RegistryQueryService {
        if(ivorn == null || ivorn.trim().length() <= 0) {
            throw new AxisFault("Cannot have empty or null identifier");
        }
-       String queryVersion = versionNumber.replace('.','_');
-       String collectionName = "astrogridv" + queryVersion;
-       String xqlString = QueryHelper.queryForResource(ivorn,queryVersion);
-       Document resultDoc = queryExist(xqlString,collectionName);
-       return xslHelper.transformExistResult((Node)resultDoc,
-               queryVersion,"GetResourceByIdentifier");
+       String xqlString = QueryHelper.queryForResource(ivorn,versionNumber);
+       Node resultDoc = queryExist(xqlString,versionNumber);
+       return xslHelper.transformExistResult(resultDoc,
+               versionNumber,"GetResourcesByIdentifier");
+   }
+   
+   public Document GetResourceByIdentifier(Document query) throws AxisFault {
+       log.debug("start GetResourcesByIdentifier");                   
+       String ident = null;
+       try {
+           ident = DomHelper.getNodeTextValue(query,"identifier");
+           log.info("found identifier in web service request = " + ident);
+       }catch(IOException ioe) {
+           throw new AxisFault("IO problem trying to get identifier");
+       }
+       String attrVersion = getRegistryVersion(query);
+       return getResourceByIdentifier(ident,attrVersion);
+   }
+   
+
+   public Document getResourceByIdentifier(String ivorn, String versionNumber) throws AxisFault {
+       XSLHelper xslHelper = new XSLHelper();
+       if(versionNumber == null || versionNumber.trim().length() <= 0) {
+           versionNumber = RegistryServerHelper.getDefaultVersionNumber();
+       }
+       if(ivorn == null || ivorn.trim().length() <= 0) {
+           throw new AxisFault("Cannot have empty or null identifier");
+       }
+       String id = ivorn.replaceAll("[^\\w*]","_");
+       
+       String collectionName = "astrogridv" + versionNumber.replace('.','_');
+       Collection coll = null;
+       try {
+           coll = xdb.openCollection(collectionName);
+           XMLResource xmr = (XMLResource)xdb.getResource(coll,id);           
+           return xslHelper.transformExistResult(xmr.getContentAsDOM(),
+                       versionNumber,"GetResourceByIdentifier");
+       }catch(XMLDBException xdbe) {
+           throw AxisFault.makeFault(xdbe);
+       }finally {
+           try {
+               xdb.closeCollection(coll);
+           }catch(XMLDBException xmldb) {
+               log.error(xmldb);
+           }
+       }
    }
    
    public Document getResourcesByAnyIdentifier(String ivorn, String versionNumber) throws AxisFault {
@@ -402,42 +519,13 @@ public class RegistryQueryService {
        if(versionNumber == null || versionNumber.trim().length() <= 0) {
            versionNumber = RegistryServerHelper.getDefaultVersionNumber();
        }
-       String queryVersion = versionNumber.replace('.','_');
-       String collectionName = "astrogridv" + queryVersion;
-       String xqlString = QueryHelper.queryForAllResource(ivorn,queryVersion);
-       Document resultDoc = queryExist(xqlString,collectionName);
-       return xslHelper.transformExistResult((Node)resultDoc,
-               queryVersion,"GetResourceByIdentifier");
+
+       String xqlString = QueryHelper.queryForAllResource(ivorn,versionNumber);
+       Node resultDoc = queryExist(xqlString,versionNumber);
+       return xslHelper.transformExistResult(resultDoc,
+               versionNumber,"GetResourceByIdentifier");
    }
       
-   public Document getResourcesByAuthority(String ivorn, String versionNumber) throws AxisFault {
-       XSLHelper xslHelper = new XSLHelper();
-       if(versionNumber == null || versionNumber.trim().length() <= 0) {
-           versionNumber = RegistryServerHelper.getDefaultVersionNumber();
-       }
-       String queryVersion = versionNumber.replace('.','_');
-       String collectionName = "astrogridv" + queryVersion;
-       String xqlString = QueryHelper.queryForResourceByAuthority(ivorn,queryVersion);
-       Document resultDoc = queryExist(xqlString,collectionName);
-       return xslHelper.transformExistResult((Node)resultDoc,
-               queryVersion,"GetResourceByAuthroity");
-   }
-   
-      
-   public Document KeywordSearch(Document query) throws AxisFault {
-         log.debug("start keywordsearch");                   
-         String keywords = null;
-         String orValue = null;
-         try {
-             keywords = DomHelper.getNodeTextValue(query,"keywords");
-             orValue = DomHelper.getNodeTextValue(query,"orValue");
-         }catch(IOException ioe) {
-             throw new AxisFault("IO problem trying to get keywords and orValue");
-         }
-         String attrVersion = getRegistryVersion(query);
-         boolean orKeywords = new Boolean(orValue).booleanValue();
-         return keywordQuery(keywords,orKeywords,attrVersion);
-   }
 
    /**
     * Queries and returns all the Resources that are Registry type resources.
@@ -454,8 +542,7 @@ public class RegistryQueryService {
    public Document GetRegistries(Document query) throws AxisFault {
       //DomHelper.DocumentToStream(query,System.out);
 
-      String attrVersion = getRegistryVersion(query);
-      String versionNumber = attrVersion.replace('.','_');
+      String versionNumber = getRegistryVersion(query);
       return getRegistriesQuery(versionNumber);
    }
    
@@ -464,255 +551,20 @@ public class RegistryQueryService {
        if(versionNumber == null || versionNumber.trim().length() <= 0) {
            versionNumber = RegistryServerHelper.getDefaultVersionNumber();
        }
-       String queryVersion = versionNumber.replace('.','_');
-       String collectionName = "astrogridv" + queryVersion;
-       log.info("Collection Name for query = " + collectionName);
        
        //Should declare namespaces, but it is not required so will leave out for now.
-       String xqlString = QueryHelper.queryForRegistries(queryVersion);
+       String xqlString = QueryHelper.queryForRegistries(versionNumber);
        log.info("XQL String = " + xqlString);      
-       Document resultDoc = queryExist(xqlString,collectionName);
+       Node resultDoc = queryExist(xqlString,versionNumber);
        XSLHelper xslHelper = new XSLHelper();
        log.info("Time taken to complete GetRegistries on server = " +
        (System.currentTimeMillis() - beginQ));
        log.debug("end loadRegistry");
        
-       return xslHelper.transformExistResult((Node)resultDoc,
-               queryVersion,"GetRegistriesResponse");       
+       return xslHelper.transformExistResult(resultDoc,
+               versionNumber,"GetRegistriesResponse");       
    }
    
-   /**
-    * Used by all the OAI required method interfaces to get the OAI
-    * conformed Resources from a URL.  This URL is a servlet to query
-    * the eXist database and put the XML in a OAI form.  The XML DOM returned
-    * are all the Resources managed by this Registry.
-    * @param oaiServlet a url string 
-    * @return OAI conformed DOM object of all the Resourced managed by this Registry.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
-    */
-   private Document queryOAI(String oaiServlet) throws AxisFault {
-      try {
-        log.info("the oaiservlet url = '" + oaiServlet + "'");
-        return DomHelper.newDocument(new URL(oaiServlet));
-       }catch(MalformedURLException me) {
-        throw new AxisFault("Incorrect url for calling oai servlet", me);
-       }catch(ParserConfigurationException pce) {
-         throw new AxisFault("Parser Config error", pce);
-       }catch(SAXException sax) {
-         throw new AxisFault("SAX problem parsing xml" , sax);
-       }catch(IOException ioe) {
-         throw new AxisFault("IO Problem", ioe);
-       }    
-   }
-   
-   private String getOAIServletURL(Document query) {
-       String attrVersion = getRegistryVersion(query);
-       String versionNumber = attrVersion.replace('.','_');       
-       return conf.getString("oai.servlet.url." + versionNumber);       
-   }
-
-   /**
-    * OAI-Identify conformed Web service method.
-    * 
-    * @param query actually this OAI mehtod requires nothing. 
-    * @return XML DOM object conforming to the OAI Identify.
-    * @throws - AxisFault containing exceptions that might have occurred
-    *  calling the servlet/url.
-    * @link http://www.openarchives.org 
-    */
-   public Document Identify(Document query) throws AxisFault {
-      String oaiServlet = getOAIServletURL(query) + "?verb=Identify";
-      Document resultDoc = queryOAI(oaiServlet);
-      Element currentRoot = resultDoc.getDocumentElement();
-      Element root = resultDoc.createElement("IdentifyResponse");
-      root.appendChild(currentRoot);
-      resultDoc.appendChild(root);
-      return resultDoc;
-   }
-
-   /**
-    * OAI-ListMetadataFormats conformed Web service method.
-    * 
-    * @param query contains an optional identifier string. 
-    * @return XML DOM object conforming to the OAI ListMetadataFormats.
-    * @throws - AxisFault containing exceptions that might have occurred
-    *  calling the servlet/url.
-    * @link http://www.openarchives.org 
-    */
-   public Document ListMetadataFormats(Document query) throws AxisFault {
-      String oaiServlet = getOAIServletURL(query) + "?verb=ListMetadataFormats";       
-      NodeList nl = null;
-      if( (nl = query.getElementsByTagName("identifier")).getLength() > 0  )
-           oaiServlet += "&identifier=" + nl.item(0).getFirstChild().getNodeValue(); 
-      Document resultDoc = queryOAI(oaiServlet);
-      Element currentRoot = resultDoc.getDocumentElement();
-      Element root = resultDoc.createElement("ListMetadataFormatsResponse");
-      root.appendChild(currentRoot);
-      resultDoc.appendChild(root);
-      return resultDoc;
-   }
-
-   /**
-    * OAI-ListSets conformed Web service method. Currently not implemented.
-    * 
-    * @param query 
-    * @return XML DOM object conforming to the OAI OAI-ListSets.
-    * @throws - AxisFault containing exceptions that might have occurred
-    *  calling the servlet/url.
-    * @link http://www.openarchives.org 
-    */   
-   public Document ListSets(Document query) throws AxisFault {
-    throw new AxisFault("Sorry but this method is currently not implemented");
-   }
-
-   /**
-    * OAI-ResumeListSets conformed Web service method. Currently not implemented.
-    * 
-    * @param query 
-    * @return XML DOM object conforming to the OAI OAI-ResumeListSets.
-    * @throws - AxisFault containing exceptions that might have occurred
-    *  calling the servlet/url.
-    * @link http://www.openarchives.org 
-    */   
-   public Document ResumeListSets(Document query) throws AxisFault {
-      throw new AxisFault("Sorry but this method is currently not implemented");
-   }
-
-   /**
-    * OAI-GetRecord conformed Web service method.
-    * 
-    * @param query contains an identifier string and metadataPrefix. The prefix
-    * is defaulted to the standard registry ivo_vor if not given. 
-    * @return XML DOM object conforming to the OAI GetRecord.
-    * @throws - AxisFault containing exceptions that might have occurred
-    *  calling the servlet/url.
-    * @link http://www.openarchives.org 
-    */   
-   public Document GetRecord(Document query) throws AxisFault {
-       String oaiServlet = getOAIServletURL(query) + "?verb=GetRecord";       
-       NodeList nl = null;
-       if( (nl = query.getElementsByTagName("identifier")).getLength() > 0  ) 
-          oaiServlet += "&identifier=" + nl.item(0).getFirstChild().getNodeValue();
-       else
-          throw new AxisFault("No Identifier given"); 
-       if( (nl = query.getElementsByTagName("metadataPrefix")).getLength() > 0  )
-        oaiServlet += "&metadataPrefix=" + nl.item(0).getFirstChild().getNodeValue();
-       else
-        oaiServlet += "&metadataPrefix=ivo_vor";
-       Document resultDoc = queryOAI(oaiServlet);
-       //wrap it with a response method element.
-       Element currentRoot = resultDoc.getDocumentElement();
-       Element root = resultDoc.createElement("GetRecordResponse");
-       root.appendChild(currentRoot);
-       resultDoc.appendChild(root);
-       return resultDoc;
-   }
-
-   /**
-    * OAI-ListIdentifiers conformed Web service method.
-    * 
-    * @param query contains a metadataPrefix, and optional from and until 
-    * @return XML DOM object conforming to the OAI ListIdentifiers.
-    * @throws - AxisFault containing exceptions that might have occurred
-    *  calling the servlet/url.
-    * @link http://www.openarchives.org 
-    */   
-   public Document ListIdentifiers(Document query) throws AxisFault {
-      String oaiServlet = getOAIServletURL(query) + "?verb=ListIdentifiers";
-      NodeList nl = null;      
-      if( (nl = query.getElementsByTagName("metadataPrefix")).getLength() > 0  )
-       oaiServlet += "&metadataPrefix=" + nl.item(0).getFirstChild().getNodeValue();
-      else 
-        oaiServlet += "&metadataPrefix=ivo_vor";        
-      if( (nl = query.getElementsByTagName("from")).getLength() > 0  ) 
-        oaiServlet += "&from=" + nl.item(0).getFirstChild().getNodeValue();
-      if( (nl = query.getElementsByTagName("until")).getLength() > 0  )
-        oaiServlet += "&until=" + nl.item(0).getFirstChild().getNodeValue();
-      Document resultDoc = queryOAI(oaiServlet);
-      Element currentRoot = resultDoc.getDocumentElement();
-      Element root = resultDoc.createElement("ListIdentifiersResponse");
-      root.appendChild(currentRoot);
-      resultDoc.appendChild(root);
-      return resultDoc;
-
-   }
-
-   /**
-    * OAI-ResumeListIdentifiers conformed Web service method.
-    * 
-    * @param query contains a resumptionToken 
-    * @return XML DOM object conforming to the OAI ResumeListIdentifiers.
-    * @throws - AxisFault containing exceptions that might have occurred
-    *  calling the servlet/url.
-    * @link http://www.openarchives.org 
-    */
-   public Document ResumeListIdentifiers(Document query) throws AxisFault {
-        String oaiServlet = getOAIServletURL(query);
-        NodeList nl = null;
-        if( (nl = query.getElementsByTagName("resumptionToken")).getLength() > 0  ) 
-          oaiServlet += "?resumptionToken=" + nl.item(0).getFirstChild().getNodeValue();
-        else 
-          throw new AxisFault("No resumptionToken found in ResumeListIdentifiers");
-        Document resultDoc = queryOAI(oaiServlet);
-        Element currentRoot = resultDoc.getDocumentElement();
-        Element root = resultDoc.createElement("ResumeListIdentifiersResponse");
-        root.appendChild(currentRoot);
-        resultDoc.appendChild(root);
-        return resultDoc;
-   }
-
-   /**
-    * OAI-ListRecords conformed Web service method.
-    * 
-    * @param query contains a metadataPrefix, optional from&until elements. 
-    * @return XML DOM object conforming to the OAI ListRecords.
-    * @throws - AxisFault containing exceptions that might have occurred
-    *  calling the servlet/url.
-    * @link http://www.openarchives.org 
-    */   
-   public Document ListRecords(Document query) throws AxisFault {
-        String oaiServlet = getOAIServletURL(query) + "?verb=ListRecords";
-        NodeList nl = null;        
-        if( (nl = query.getElementsByTagName("metadataPrefix")).getLength() > 0  )
-         oaiServlet += "&metadataPrefix=" + nl.item(0).getNodeValue();
-        else
-         oaiServlet += "&metadataPrefix=ivo_vor";
-        if( (nl = query.getElementsByTagName("from")).getLength() > 0  ) 
-          oaiServlet += "&from=" + nl.item(0).getFirstChild().getNodeValue();
-        if( (nl = query.getElementsByTagName("until")).getLength() > 0  )
-          oaiServlet += "&until=" + nl.item(0).getFirstChild().getNodeValue();
-        Document resultDoc = queryOAI(oaiServlet);
-        Element currentRoot = resultDoc.getDocumentElement();
-        Element root = resultDoc.createElement("ListRecordsResponse");
-        root.appendChild(currentRoot);
-        resultDoc.appendChild(root);
-        return resultDoc;
-   }
-
-   /**
-    * OAI-ResumeListRecords conformed Web service method.
-    * 
-    * @param query contains a resumptionToken 
-    * @return XML DOM object conforming to the OAI ResumeListRecords.
-    * @throws - AxisFault containing exceptions that might have occurred
-    *  calling the servlet/url.
-    * @link http://www.openarchives.org
-    */
-   public Document ResumeListRecords(Document query) throws AxisFault {
-       String oaiServlet = getOAIServletURL(query);
-       NodeList nl = null;       
-       if( (nl = query.getElementsByTagName("resumptionToken")).getLength() > 0  ) 
-         oaiServlet += "?resumptionToken=" + nl.item(0).getFirstChild().getNodeValue();
-       else 
-           throw new AxisFault("No resumptionToken found in ResumeListRecords");       
-       Document resultDoc = queryOAI(oaiServlet);
-       Element currentRoot = resultDoc.getDocumentElement();
-       Element root = resultDoc.createElement("ResumeListRecordsResponse");
-       root.appendChild(currentRoot);
-       resultDoc.appendChild(root);
-       return resultDoc;          
-   }
    
    /**
     * Transforms ADQL to XQuery, uses the namespace of ADQL to allow the
@@ -738,12 +590,6 @@ public class RegistryQueryService {
        if(nl.getLength() > 0) {
            log.info("the namespaceuri for element = " + ((Element)nl.item(0)).getNamespaceURI());
            adqlVersion = ((Element)nl.item(0)).getNamespaceURI();
-           /*
-           adqlVersion = DomHelper.getNodeAttrValue((Element)nl.item(0),"ad","xmlns");
-           if(adqlVersion == null || adqlVersion.trim().length() == 0) {
-               adqlVersion = DomHelper.getNodeAttrValue((Element)nl.item(0),"xmlns");
-           }//if
-           */
        }//if
        
        //throw an error if no version was found.
@@ -752,11 +598,11 @@ public class RegistryQueryService {
        }
        //get only the actual version number.
        adqlVersion = adqlVersion.substring(adqlVersion.lastIndexOf("v")+1);
-       adqlVersion = adqlVersion.replace('.','_');
+//       adqlVersion = adqlVersion.replace('.','_');
        //make the transformation using an xsl stylesheet.
        return xslHelper.transformADQLToXQL(query, adqlVersion, 
-                        RegistryServerHelper.getRootNodeName(resourceVersion),
-                        RegistryServerHelper.getXQLDeclarations(resourceVersion));
+                        RegistryServerHelper.getRootNodeName(resourceVersion),"");
+                        //QueryHelper.getXQLDeclarations(resourceVersion));
    }
    
    /**
@@ -784,17 +630,5 @@ public class RegistryQueryService {
        return RegistryServerHelper.getRegistryVersionFromNode(
                                    query.getDocumentElement());    
    }
-   
-   public Document harvestResource(Document resources)  throws AxisFault {
-       RegistryHarvestService rhs = new RegistryHarvestService();
-       try {   
-          rhs.harvestResource(resources,null);
-       }catch(IOException ioe) {
-          throw new AxisFault("IOE problem",ioe);
-       }catch(RegistryException re) {
-        throw new AxisFault("Registry exception", re);
-       }
-       return resources;      
-   }   
-   
+      
 }

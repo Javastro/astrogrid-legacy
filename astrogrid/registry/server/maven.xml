@@ -178,26 +178,20 @@
     <!--+
         | Prepare the files for the jar goal.
         | Adds the generated WSDL and WSDD files into the jar META-INF.
-        +-->
+ 
     <preGoal name="jar:jar">
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Preparing for jar:jar ...."/>
-        <!--+
-            | Create the META-INF directory.
-            +-->
         <ant:mkdir dir="${maven.build.dest}/META-INF"/>
         <ant:mkdir dir="${maven.build.dest}/META-INF/wsdd"/>
-        <!--+
-            | Copy our WSDD service deployment files.
-            +-->
         <ant:copy verbose="false" todir="${maven.build.dest}/META-INF/wsdd">
             <ant:fileset dir="${maven.src.dir}/wsdd">
                 <include name="**/*.wsdd"/>
             </ant:fileset>
         </ant:copy>        
     </preGoal>
-    
+        +-->   
 
     <!--+
         | Prepare the database config files for our JUnit tests.

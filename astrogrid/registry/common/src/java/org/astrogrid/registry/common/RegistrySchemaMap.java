@@ -1,4 +1,4 @@
-/*$Id: RegistrySchemaMap.java,v 1.3 2005/01/07 14:14:25 jdt Exp $
+/*$Id: RegistrySchemaMap.java,v 1.4 2005/02/15 12:43:44 clq2 Exp $
  * Created on 01-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -73,8 +73,6 @@ public class RegistrySchemaMap {
         ALL.put("http://www.astrogrid.org/xml/AstrogridDataService/v0.2",RegistrySchemaMap.class.getResource("/schema/registry/AstrogridDataService-0.2.xsd"));
         
         ALL.put("http://www.ivoa.net/xml/OpenSkyNode/v0.1",RegistrySchemaMap.class.getResource("/schema/registry/OpenSkyNode-v0.1.xsd"));
-        
-                                                                                            
     }
     
 
@@ -83,6 +81,12 @@ public class RegistrySchemaMap {
 
 /* 
 $Log: RegistrySchemaMap.java,v $
+Revision 1.4  2005/02/15 12:43:44  clq2
+REG_KMB_889/889_2
+
+Revision 1.3.6.1  2005/01/19 14:37:16  KevinBenson
+changing where the xsl is, and fix some of the xsl.
+
 Revision 1.3  2005/01/07 14:14:25  jdt
 merged from Reg_KMB_787
 

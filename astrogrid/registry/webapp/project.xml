@@ -264,27 +264,6 @@
         </dependency>
         
         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-exist-server</artifactId>
-	        <version>${astrogrid.eXist.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>            
-        </dependency>
-    	
-        <dependency>
-            <artifactId>commons-httpclient</artifactId>
-            <groupId>commons-httpclient</groupId>
-            <version>2.0-beta1</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>        	
-        </dependency>
-    	
-        
-        <dependency>
         	<artifactId>commons-fileupload</artifactId>
             <groupId>commons-fileupload</groupId>
             <version>1.0</version>
@@ -292,7 +271,56 @@
             	<war.bundle>true</war.bundle>
             </properties>            
         </dependency>
-        	
+
+        <dependency>
+          <groupId>org.astrogrid</groupId>
+          <type>jar</type>
+          <artifactId>astrogrid-security</artifactId>
+          <version>${astrogrid.security.version}</version>
+            <properties>
+  	  	  	<war.bundle>true</war.bundle>
+            </properties>
+        </dependency> 	
+    	
+        <dependency>
+          <groupId>org.astrogrid</groupId>
+          <type>jar</type>
+          <artifactId>astrogrid-community-client</artifactId>
+          <version>${astrogrid.community.version}</version>
+          <properties>
+	  	  	<war.bundle>true</war.bundle>
+          </properties>
+        </dependency>
+
+        <dependency>
+          <groupId>org.astrogrid</groupId>
+          <type>jar</type>
+          <artifactId>astrogrid-community-common</artifactId>
+          <version>${astrogrid.community.version}</version>
+            <properties>
+  	  	  	<war.bundle>true</war.bundle>
+            </properties>        	
+        </dependency>
+
+        <dependency>
+          <groupId>org.astrogrid</groupId>
+          <type>jar</type>
+          <artifactId>astrogrid-community-resolver</artifactId>
+          <version>${astrogrid.community.version}</version>
+            <properties>
+  	  	  	<war.bundle>true</war.bundle>
+            </properties>        	
+        </dependency>
+
+        <dependency>
+          <groupId>org.astrogrid</groupId>
+          <type>jar</type>
+          <artifactId>astrogrid-registry-client-lite</artifactId>
+          <version>${astrogrid.registry.version}</version>
+            <properties>
+  	  	  	<war.bundle>true</war.bundle>
+            </properties>        	
+        </dependency>        	  
                         
         <dependency>
         	<id>xerces</id>
@@ -321,16 +349,13 @@
              <groupId>commons-logging</groupId>
              <version>1.0.3</version>
          </dependency>
-
-       <dependency>
-            <artifactId>commons-pool</artifactId>
-            <groupId>exist</groupId>
-            <version>1.1</version>
-          	<properties>
-          		<war.bundle>true</war.bundle>
-          	</properties>            
-        </dependency>
     	
+         <dependency>
+             <artifactId>log4j</artifactId>
+             <groupId>log4j</groupId>
+             <version>1.2.4</version>
+         </dependency>
+
         <dependency>
             <artifactId>servletapi</artifactId>
             <groupId>servletapi</groupId>
@@ -341,18 +366,22 @@
            <id>jaxrpc</id>
            <version>unknown</version>
            <jar>jaxrpc.jar</jar>
+           	<!--
             <properties>
             	<war.bundle>true</war.bundle>
         	</properties>
+        	-->
         </dependency>
 
         <dependency>
            <id>saaj</id>
            <version>unknown</version>
            <jar>saaj.jar</jar>
+           	<!--
             <properties>
             	<war.bundle>true</war.bundle>
         	</properties>        	
+        	-->
         </dependency>
     	
         <dependency>
@@ -370,7 +399,105 @@
             	<war.bundle>true</war.bundle>
         	</properties>        	
         </dependency>
+    	
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-xmldb-client</artifactId>
+	        <version>${astrogrid.xmldb.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>
+        </dependency>
+    	
+        <dependency>
+            <groupId>exist</groupId>
+            <artifactId>exist</artifactId>
+	        <version>1.0b2</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+                <properties>
+                   	<war.bundle>true</war.bundle>
+              	</properties>            	
+        </dependency>
+	
+    	<dependency>
+        	<groupId>exist</groupId>
+	        <artifactId>exist-optional</artifactId>
+    	    <version>1.0b2</version>
+        	<type>jar</type>
+	        <url>http://www.astrogrid.org/</url>
+                <properties>
+                   	<war.bundle>true</war.bundle>
+              	</properties>	        	
+    	</dependency>
 
+	    <dependency>
+    	    <groupId>exist</groupId>
+        	<artifactId>jakarta-oro</artifactId>
+	        <version>2.0.8</version>
+    	    <type>jar</type>
+        	<url>http://www.astrogrid.org/</url>
+                <properties>
+                   	<war.bundle>true</war.bundle>
+              	</properties>        		
+	    </dependency>
+	
+    	<dependency>
+        	<groupId>exist</groupId>
+	        <artifactId>xml-commons-resolver</artifactId>
+	        <version>1.1</version>
+    	    <type>jar</type>
+        	<url>http://www.astrogrid.org/</url>
+                <properties>
+                   	<war.bundle>true</war.bundle>
+              	</properties>        		
+	    </dependency>
+	
+        <dependency>
+            <groupId>exist</groupId>
+            <artifactId>commons-pool</artifactId>
+	        <version>1.1</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+                <properties>
+                   	<war.bundle>true</war.bundle>
+              	</properties>            	
+        </dependency>
+		
+    	<dependency>
+        	<groupId>exist</groupId>
+	        <artifactId>antlr</artifactId>
+	        <type>jar</type>
+    		<jar>antlr.jar</jar>
+        	<url>http://www.astrogrid.org/</url>
+                <properties>
+                   	<war.bundle>true</war.bundle>
+              	</properties>        		
+	    </dependency>
+	
+        <dependency>
+            <groupId>exist</groupId>
+            <artifactId>xmlrpc</artifactId>
+	        <version>1.2-patched</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+                <properties>
+                   	<war.bundle>true</war.bundle>
+              	</properties>            	
+        </dependency>
+	   	
+    	<dependency>
+        	<groupId>exist</groupId>
+	        <artifactId>xmldb</artifactId>
+	        <type>jar</type>
+    		<jar>xmldb.jar</jar>
+        	<url>http://www.astrogrid.org/</url>
+                <properties>
+                   	<war.bundle>true</war.bundle>
+              	</properties>        		
+	    </dependency>
 
     </dependencies>
 
@@ -381,28 +508,41 @@
         <!--+
             | The location of our Java source code.
             +-->
-        <sourceDirectory>src/java-tmp</sourceDirectory>
-    	
-    	<!--
-        <resources>
-            <resource>
-				<directory>src/oaicatconfig</directory>
-		        <includes>
-	            	<include>*</include>
-		        </includes>
-            </resource>
-        </resources>
-    	-->
+        <sourceDirectory>src/webapp-java</sourceDirectory>
     	
     	
         <!--+
             | The location of our JUnit source code.
             +-->
-        <unitTestSourceDirectory/>
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
         <!--+
             | Our JUnit test classes.
             +-->
-        <unitTest/>
+        <unitTest>
+
+            <!--+
+                | Which tests to include.
+                +-->
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+
+        	
+            <!--+
+                | Which tests to include.
+                +-->
+            <resources>
+                <resource>
+               	   <directory>${basedir}/src/junit</directory>
+    		        <includes>
+    		           	<include>**/*.xml</include>
+       		           	<include>**/*.properties</include>
+      		           	<include>**/data</include>
+      		           	<include>**/data/*</include>
+    		        </includes>            	
+                </resource>
+            </resources>
+        </unitTest>
     </build>
     <reports>
         <report><!--few reports for this subproject-->

@@ -12,6 +12,10 @@
 <%
       RegistryQueryService server = new RegistryQueryService();
       ArrayList al = server.getAstrogridVersions();
+      String version = request.getParameter("version");
+	   if(version == null || version.trim().length() <= 0) {
+   		version = RegistryServerHelper.getDefaultVersionNumber();
+   	}      
 %>
 
 <html>
@@ -45,15 +49,15 @@ A default registry in AstroGrid is pre-set.
 <p>
 <select name="version">
    <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"><%out.print(((String)al.get(k)).replaceAll("_","."));%></option>  
+      <option value="<%=al.get(k)%>"
+        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
+      ><%=al.get(k)%></option>  
    <%}%>
 </select>
 <input name="getregs" value="http://hydra.star.le.ac.uk:8080/astrogrid-registry" size="64" type="text">
 <input name="getregsubmit" value="Set up harvesting" type="submit">
 </p>
 </form>
-
-
 
 <%
   String postregsubmit = request.getParameter("postregsubmit");
