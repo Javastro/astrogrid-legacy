@@ -21,6 +21,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import org.w3c.dom.DocumentFragment;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -340,9 +341,11 @@ public class RegistryQueryAction extends AbstractAction
       NodeList nl = docResults.getDocumentElement().getChildNodes();
       ArrayList al = new ArrayList();
       for(int i = 0;i < nl.getLength();i++) {
-         Element elem = (Element)nl.item(i);
-         al.add("<vodescription>" + XMLUtils.ElementToString(elem) +
-                "</vodescription>"); 
+         if(nl.item(i) instanceof org.w3c.dom.Element ) {
+            Element elem = (Element)nl.item(i);
+            al.add("<vodescription>" + XMLUtils.ElementToString(elem) +
+                   "</vodescription>"); 
+         }
       }      
       return al;
    }
