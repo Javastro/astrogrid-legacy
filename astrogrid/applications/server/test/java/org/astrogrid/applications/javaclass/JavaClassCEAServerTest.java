@@ -1,4 +1,4 @@
-/*$Id: JavaClassCEAServerTest.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: JavaClassCEAServerTest.java,v 1.3 2004/08/11 16:54:50 nw Exp $
  * Created on 21-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ public class JavaClassCEAServerTest extends TestCase {
     
     protected void setUp() throws Exception {
         container = new JavaClassCEAComponentManager();
+        container.start();
     }
     
     protected CEAComponentManager container;
@@ -50,6 +51,9 @@ public class JavaClassCEAServerTest extends TestCase {
 
 /* 
 $Log: JavaClassCEAServerTest.java,v $
+Revision 1.3  2004/08/11 16:54:50  nw
+must start the container, before testing it.
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization
