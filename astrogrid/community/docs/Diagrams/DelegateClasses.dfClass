@@ -12,12 +12,6 @@ class diagram {
 */
 class reference {
 }/**
-@__ref <oiref:java#Class#CommunityDbHelper:oiref><oihard>
-@__modelType reference
-@__imported 
-*/
-class reference2 {
-}/**
 @__ref <oiref:java#Class#AuthenticationDelegate:oiref><oihard>
 @__modelType reference
 @__imported 
@@ -42,6 +36,11 @@ class reference11 {
 @__imported 
 */
 class reference15 {
+}/**
+@__ref <oiref:design#Class#id2hji4diymtjmydiyn132s.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference21 {
 }}/**
 
 @__tags
@@ -53,16 +52,26 @@ class __tags {
 */
 class __options {
 }/**
-@__positions <oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram:oiref>=680,310,115,57,1:oigroup>
-<oigroup:<oiref:java#Class#AuthenticationDelegate:oiref>=270,40,170,110,1:oigroup>
-<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link20:oiref>=788,230,788,310:oigroup>
-<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link19:oiref>=533,134,780,310:oigroup>
-<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link:oiref>=130,150,737,310:oigroup>
-<oigroup:<oiref:java#Class#RegistrationDelegate:oiref>=460,40,146,94,1:oigroup>
-<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link18:oiref>=355,150,766,310:oigroup>
-<oigroup:<oiref:java#Class#CommunityDbHelper:oiref>=30,220,167,85,1:oigroup>
-<oigroup:<oiref:java#Class#AuthorizationDelegate:oiref>=30,40,200,110,1:oigroup>
-<oigroup:<oiref:java#Class#AdministrationDelegate:oiref>=650,40,200,190,1:oigroup>
+@__positions <oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram:oiref>=340,310,115,57,1:oigroup>
+<oigroup:<oiref:design#Class#id2hji4diymtjmydiyn132s.node:oiref>=30,260,230,76,1:oigroup>
+<oigroup:<oiref:java#Class#AuthenticationDelegate:oiref>=270,40,170,101,1:oigroup>
+<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link20:oiref>=750,221,430,310:oigroup>
+<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link19:oiref>=533,125,406,310:oigroup>
+<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link:oiref>=112,125,361,310:oigroup>
+<oigroup:<oiref:java#Class#RegistrationDelegate:oiref>=460,40,146,85,1:oigroup>
+<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link18:oiref>=382,141,382,310:oigroup>
+<oigroup:<oiref:java#Class#AuthorizationDelegate:oiref>=30,40,165,85,1:oigroup>
+<oigroup:<oiref:java#Class#AdministrationDelegate:oiref>=650,40,200,181,1:oigroup>
 */
 class __positions {
+}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Client delegate classes
+using the Stubbs generated
+from the WSDL2Java that came from
+the wsdl file from your webservices 
+*/
+class node {
 }

@@ -53,11 +53,6 @@ class reference21 {
 */
 class reference23 {
 }/**
-@__ref <oiref:java#Class#AccountDataObject:oiref><oihard>
-@__modelType reference 
-*/
-class reference25 {
-}/**
 @__ref <oiref:java#Class#GroupDataObject:oiref><oihard>
 @__modelType reference 
 */
@@ -77,6 +72,42 @@ class reference31 {
 @__modelType reference 
 */
 class reference33 {
+}/**
+@__ref <oiref:design#Class#id4tbxtdjdvu8vwdjdw1qiw.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#wsdl2javastubbs1:oiref> 
+*/
+class reference13 {
+}/**
+@__ref <oiref:java#Class#AdministrationService:oiref><oihard>
+@__modelType reference 
+*/
+class reference15 {
+}/**
+@__ref <oiref:java#Class#AuthorizationService:oiref><oihard>
+@__modelType reference 
+*/
+class reference16 {
+}/**
+@__ref <oiref:java#Class#RegistrationService:oiref><oihard>
+@__modelType reference 
+*/
+class reference18 {
+}/**
+@__ref <oiref:java#Class#AuthenticationService:oiref><oihard>
+@__modelType reference 
+*/
+class reference19 {
+}/**
+@__ref <oiref:java#Class#CommunityDb:oiref><oihard>
+@__modelType reference 
+*/
+class reference20 {
+}/**
+@__ref <oiref:java#Class#AccountDataObject:oiref><oihard>
+@__modelType reference 
+*/
+class reference2 {
 }}/**
 @__tags
 @shapeType ClassDiagram 
@@ -90,39 +121,49 @@ class __options {
 @__positions <oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link20:oiref>=144,256,493,57:oigroup>
 <oigroup:<oiref:java#Implements#MembersDataObject#IDbObject:oiref>=461,270,782,175:oigroup>
 <oigroup:<oiref:java#Class#AccountDetailDataObject:oiref>=200,520,172,309,1:oigroup>
-<oigroup:<oiref:java#Class#AccountDataObject:oiref>=140,270,200,213,1:oigroup>
+<oigroup:<oiref:java#Class#AccountDataObject:oiref>=597,674,200,350,1:oigroup>
 <oigroup:<oiref:java#Implements#ResourceDataObject#IDbObject:oiref>=1032,420,871,175:oigroup>
 <oigroup:<oiref:java#Implements#Account#IDbObject:oiref>=498,624,563,218:oigroup>
+<oigroup:<oiref:design#Class#id4tbxtdjdvu8vwdjdw1qiw.diagram:oiref>=606,23,122,57,1:oigroup>
 <oigroup:<oiref:java#Class#MembersDataObject:oiref>=370,270,183,197,1:oigroup>
+<oigroup:<oiref:java#Class#AdministrationService:oiref>=387,604,200,190,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#ResourceDataObject#groupOwner:oiref>=940,460,819,460:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#GroupDataObject#groupOwner:oiref>=780,489,780,538,868,538,868,450,819,450:oigroup>
+<oigroup:<oiref:java#Class#RegistrationService:oiref>=394,481,146,94,1:oigroup>
 <oigroup:<oiref:java#Class#CommunityDbHelper:oiref>=300,30,167,85,1:oigroup>
 <oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link18:oiref>=538,96,538,57:oigroup>
-<oigroup:<oiref:java#Class#AuthorizationDelegate:oiref>=20,20,200,110,1:oigroup>
+<oigroup:<oiref:design#Class#id4tbxtdjdvu8vwdjdw1qiw.diagram.link20:oiref>=487,604,644,80:oigroup>
+<oigroup:<oiref:java#Class#AuthorizationDelegate:oiref>=20,20,165,85,1:oigroup>
 <oigroup:<oiref:java#Class#Account:oiref>=457,624,83,82,1:oigroup>
 <oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link19:oiref>=387,126,508,57:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#MembersDataObject#group:oiref>=553,368,620,368:oigroup>
 <oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram:oiref>=478,0,115,57,1:oigroup>
 <oigroup:<oiref:java#Class#Interface1:oiref>=44,396,83,98,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#AccountDataObject#accountDetail:oiref>=246,483,246,520:oigroup>
+<oigroup:<oiref:design#Class#id4tbxtdjdvu8vwdjdw1qiw.diagram.link18:oiref>=817,549,695,80:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#AccountDataObject#accountDetail:oiref>=597,751,372,751:oigroup>
+<oigroup:<oiref:java#Class#CommunityDb:oiref>=134,131,167,85,1:oigroup>
 <oigroup:<oiref:java#Class#AccountDataObjectg:oiref>=143,615,129,82,1:oigroup>
+<oigroup:<oiref:design#Class#id4tbxtdjdvu8vwdjdw1qiw.diagram.link19:oiref>=467,481,625,80:oigroup>
 <oigroup:<oiref:java#Implements#PermissionDataObject#IDbObject:oiref>=1390,280,895,175:oigroup>
 <oigroup:<oiref:java#Implements#AccountDataObjectg#IDbObject:oiref>=207,615,563,218:oigroup>
-<oigroup:<oiref:java#Implements#AccountDataObject#IDbObject:oiref>=240,270,766,175:oigroup>
+<oigroup:<oiref:java#Implements#AccountDataObject#IDbObject:oiref>=697,674,850,175:oigroup>
 <oigroup:<oiref:java#Class#AuthorizationDataObject:oiref>=415,180,200,190,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#PermissionDataObject#group:oiref>=1290,384,819,384:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#MembersDataObject#account:oiref>=370,368,340,368:oigroup>
 <oigroup:<oiref:java#Class#IDbObject:oiref>=750,10,160,165,1:oigroup>
-<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link:oiref>=220,38,478,38:oigroup>
+<oigroup:<oiref:design#Class#id13je0diymtjmydiyn7c27.diagram.link:oiref>=185,38,478,38:oigroup>
+<oigroup:<oiref:java#Class#AuthorizationService:oiref>=555,502,165,94,1:oigroup>
+<oigroup:<oiref:java#Class#AuthenticationService:oiref>=732,549,170,110,1:oigroup>
 <oigroup:<oiref:java#Class#PermissionDataObject:oiref>=1290,280,200,213,1:oigroup>
-<oigroup:<oiref:java#Class#AuthenticationDelegate:oiref>=484,96,170,110,1:oigroup>
 <oigroup:<oiref:java#Class#ResourceDataObject:oiref>=940,420,184,398,1:oigroup>
-<oigroup:<oiref:java#Class#AdministrationDelegate:oiref>=44,256,200,190,1:oigroup>
+<oigroup:<oiref:java#Class#AuthenticationDelegate:oiref>=484,96,170,101,1:oigroup>
+<oigroup:<oiref:java#Class#AdministrationDelegate:oiref>=44,256,200,181,1:oigroup>
 <oigroup:<oiref:java#Implements#GroupDataObject#IDbObject:oiref>=719,260,830,175:oigroup>
 <oigroup:<oiref:java#Class#GroupDataObject:oiref>=620,260,199,229,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#PermissionDataObject#resource:oiref>=1290,456,1124,456:oigroup>
 <oigroup:<oiref:java#Implements#AccountDetailDataObject#IDbObject:oiref>=309,520,806,175:oigroup>
-<oigroup:<oiref:java#Class#RegistrationDelegate:oiref>=314,126,146,94,1:oigroup>
+<oigroup:<oiref:java#Class#RegistrationDelegate:oiref>=314,126,146,85,1:oigroup>
+<oigroup:<oiref:design#Class#id4tbxtdjdvu8vwdjdw1qiw.diagram.link:oiref>=663,502,663,80:oigroup>
 */
 class __positions {
 }

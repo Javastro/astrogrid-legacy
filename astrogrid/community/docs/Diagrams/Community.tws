@@ -1,10 +1,12 @@
-workspace.diagram.active = <oiref:design#Class#idtce6dixm6azkdixmaklr.diagram:oiref>
+workspace.diagram.active = <oiref:design#Class#id26pv5djdvu8vwdjdw1fmy.diagram:oiref>
 workspace.diagram.open.0 = <oiref:design#Class#iduvendi7bhhxgdi7bk2nb.diagram:oiref>
 workspace.diagram.open.1 = <oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.diagram:oiref>
 workspace.diagram.open.2 = <oiref:design#Class#id1s9widifjf2w9difkot7f.diagram:oiref>
 workspace.diagram.open.3 = <oiref:design#Class#id5gc5udi5y3s01di63r3fv.diagram:oiref>
 workspace.diagram.open.4 = <oiref:design#Class#idtce6dixm6azkdixmaklr.diagram:oiref>
-workspace.editor.active = C:\Development\eclipse\workspace\AstroProj\astrogrid\community\docs\Diagrams\GroupDataObject.java
-workspace.editor.open.0 = C:\Development\eclipse\workspace\AstroProj\astrogrid\community\docs\Diagrams\GroupDataObject.java
+workspace.editor.active = C:\Development\eclipse\workspace\AstroProj\astrogrid\community\docs\Diagrams\AuthorizationService.java
+workspace.editor.open.0 = C:\Development\eclipse\workspace\AstroProj\astrogrid\community\docs\Diagrams\AuthorizationService.java
 workspace.diagram.open.5 = <oiref:design#Class#id2hji4diymtjmydiyn132s.diagram:oiref>
-workspace.editor.open.1 = C:\Development\eclipse\workspace\AstroProj\astrogrid\community\docs\Diagrams\AccountDataObject.java
+workspace.editor.open.1 = C:\Development\eclipse\workspace\AstroProj\astrogrid\community\docs\Diagrams\GroupDataObject.java
+workspace.diagram.open.6 = <oiref:design#Class#id26pv5djdvu8vwdjdw1fmy.diagram:oiref>
+workspace.editor.open.2 = C:\Development\eclipse\workspace\AstroProj\astrogrid\community\docs\Diagrams\AccountDataObject.java

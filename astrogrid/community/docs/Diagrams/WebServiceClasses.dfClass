@@ -1,0 +1,60 @@
+package id26pv5djdvu8vwdjdw1fmy;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#AuthorizationService:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#CommunityDb:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference4 {
+}/**
+@__ref <oiref:java#Class#AuthenticationService:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference7 {
+}/**
+@__ref <oiref:java#Class#RegistrationService:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference10 {
+}/**
+@__ref <oiref:java#Class#AdministrationService:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference12 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#AuthorizationService:oiref>=57,10,165,94,1:oigroup>
+<oigroup:<oiref:design#Class#id4tbxtdjdvu8vwdjdw1qiw.diagram.link19:oiref>=321,95,321,251:oigroup>
+<oigroup:<oiref:java#Class#CommunityDb:oiref>=680,280,167,85,1:oigroup>
+<oigroup:<oiref:design#Class#id4tbxtdjdvu8vwdjdw1qiw.diagram.link:oiref>=139,95,290,251:oigroup>
+<oigroup:<oiref:design#Class#id4tbxtdjdvu8vwdjdw1qiw.diagram.link20:oiref>=508,191,351,251:oigroup>
+<oigroup:<oiref:design#Class#id4tbxtdjdvu8vwdjdw1qiw.diagram.link18:oiref>=180,279,260,279:oigroup>
+<oigroup:<oiref:java#Class#AdministrationService:oiref>=408,10,200,190,1:oigroup>
+<oigroup:<oiref:java#Class#AuthenticationService:oiref>=650,20,170,110,1:oigroup>
+<oigroup:<oiref:java#Class#RegistrationService:oiref>=242,10,146,94,1:oigroup>
+*/
+class __positions {
+}

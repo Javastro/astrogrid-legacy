@@ -76,7 +76,7 @@ class __options {
 <oigroup:MemberLink#<oiref:java#Member#MembersDataObject#group:oiref>=1130,368,649,368:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#MembersDataObject#account:oiref>=1130,268,220,268:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#ResourceDataObject#groupOwner:oiref>=910,494,649,494:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#AccountDataObject#accountDetail:oiref>=115,440,115,590:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#AccountDataObject#accountDetail:oiref>=115,303,115,590:oigroup>
 <oigroup:<oiref:java#Class#IDbObject:oiref>=580,20,160,165,1:oigroup>
 <oigroup:<oiref:java#Implements#AccountDetailDataObject#IDbObject:oiref>=151,590,630,185:oigroup>
 <oigroup:<oiref:java#Class#AuthorizationDataObject:oiref>=240,260,266,185,0:oigroup>
@@ -85,7 +85,7 @@ class __options {
 <oigroup:<oiref:java#Class#MembersDataObject:oiref>=1130,200,183,197,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#PermissionDataObject#group:oiref>=549,610,549,569:oigroup>
 <oigroup:<oiref:java#Class#AccountDetailDataObject:oiref>=80,590,172,309,1:oigroup>
-<oigroup:<oiref:java#Class#AccountDataObject:oiref>=20,90,200,350,1:oigroup>
+<oigroup:<oiref:java#Class#AccountDataObject:oiref>=20,90,200,213,1:oigroup>
 <oigroup:<oiref:java#Implements#PermissionDataObject#IDbObject:oiref>=675,610,675,185:oigroup>
 */
 class __positions {
