@@ -208,25 +208,6 @@ public class GridServiceDelegate {
     return this.connected;
   }
   
-  
-  /**
-   * Copies all properties from a given GridServiceDelegate to this
-   * delegate.  This transcribes only the properties common to all
-   * GridServiceDelegates, ignoring any properties added in subclasses.
-   * This method is intended to copy the generic state of a common
-   * GridServiceDelegate to an instance of a delegate subclass.
-   *
-   * @param g the delegate from which properties are copied.
-   */
-  protected void copyState (GridServiceDelegate g) {
-    this.factoryHandle    = g.factoryHandle;
-    this.instanceHandle   = g.instanceHandle;
-    this.connected        = g.connected;
-    this.throwsExceptions = g.throwsExceptions;
-    this.error            = g.error;
-    this.simulating       = g.simulating;
-  }
-  
     
   /**
    * Finds the service factory and makes it available via the
