@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<vr:VODescription xmlns="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+<vr:VODescription 
+xmlns="http://www.ivoa.net/xml/CEAService/v0.1" 
+xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" 
+xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" 
+xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" 
+xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" 
+xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" 
+xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 	<!--A Genuine SIAP service - Guy's recently announced INT WFS service at Cambridge-->
-	<vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+	<vr:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaHttpApplicationType">
 		<vr:Identifier>
-			<vr:AuthorityID>hellotest</vr:AuthorityID>
+			<vr:AuthorityID>TESTAUTHORITY</vr:AuthorityID>
 			<vr:ResourceKey>INTWideFieldSurveySIAP</vr:ResourceKey>
 		</vr:Identifier>
 		<vr:Title>Guy's INT Wide Field Survey SIAP service</vr:Title>
@@ -75,9 +83,9 @@
 			<ceab:URL>http://archive.ast.cam.ac.uk/cgi-bin/wfs-siap/queryImage</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
 	</vr:Resource>
-	<vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+	<vr:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaHttpApplicationType">
 		<vr:Identifier>
-			<vr:AuthorityID>hellotest</vr:AuthorityID>
+			<vr:AuthorityID>TESTAUTHORITY</vr:AuthorityID>
 			<vr:ResourceKey>CDS.XMatch</vr:ResourceKey>
 		</vr:Identifier>
 		<vr:Title>CDS Cross Match tool</vr:Title>
@@ -147,12 +155,12 @@
 		</cea:ApplicationDefinition>
 		<cea:CeaHttpAdapterSetup>
 			<!--This needs to have the end point better adapted....-->
-			<ceab:URL>http://cdsws.u-strasbg.fr/</ceab:URL>
+			<ceab:URL>http://cdsws.u-strasbg.fr/xmatch/XMatchFrontend</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
 	</vr:Resource>
-	<vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType">
+	<vr:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaServiceType">
 		<vr:Identifier>
-			<vr:AuthorityID>hellotest</vr:AuthorityID>
+			<vr:AuthorityID>TESTAUTHORITY</vr:AuthorityID>
 			<vr:ResourceKey>RealHttpCEC</vr:ResourceKey>
 		</vr:Identifier>
 		<vr:Title>TestHttpCEC</vr:Title>
@@ -193,11 +201,11 @@
 		</vr:Interface>
 		<cea:ManagedApplications>
 			<cea:ApplicationReference>
-				<vr:AuthorityID>hellotest</vr:AuthorityID>
+				<vr:AuthorityID>TESTAUTHORITY</vr:AuthorityID>
 				<vr:ResourceKey>INTWideFieldSurveySIAP</vr:ResourceKey>
 			</cea:ApplicationReference>
 			<ApplicationReference>
-				<vr:AuthorityID>hellotest</vr:AuthorityID>
+				<vr:AuthorityID>TESTAUTHORITY</vr:AuthorityID>
 				<vr:ResourceKey>CDS.XMatch</vr:ResourceKey>
 			</ApplicationReference>
 		</cea:ManagedApplications>

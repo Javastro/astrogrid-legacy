@@ -43,6 +43,37 @@ public class ValidatorTest extends TestCase {
         RegistryValidator.isValid(queryDoc);
     }
     
+    public void testValidCEAEntries() throws Exception {
+        Document queryDoc = askQueryFromFile("CEAEntries.xml");
+        RegistryValidator.isValid(queryDoc);
+    }
+    
+    public void testValidCEAHTTPEntries() throws Exception {
+        Document queryDoc = askQueryFromFile("CEAHttpapps.xml");
+        RegistryValidator.isValid(queryDoc);
+    }    
+    
+    public void testValidExternalEntries() throws Exception {
+        Document queryDoc = askQueryFromFile("ExternalCEAEntries.xml");
+        RegistryValidator.isValid(queryDoc);
+    }    
+        
+    
+    public void testValidfilestore() throws Exception {
+        Document queryDoc = askQueryFromFile("filestore-one.xml");
+        RegistryValidator.isValid(queryDoc);
+    } 
+    
+    public void testValidfilemgr() throws Exception {
+        Document queryDoc = askQueryFromFile("filemanager-one.xml");
+        RegistryValidator.isValid(queryDoc);
+    } 
+    
+    public void testValidCEAHttpRealApps() throws Exception {
+        Document queryDoc = askQueryFromFile("CEAHttpRealapps.xml");
+        RegistryValidator.isValid(queryDoc);
+    } 
+    
     public void testValidAuthorityVODescription() throws Exception {
         Document queryDoc = askQueryFromFile("AuthorityTest.xml");
         RegistryValidator.isValid(queryDoc,"VODescription");

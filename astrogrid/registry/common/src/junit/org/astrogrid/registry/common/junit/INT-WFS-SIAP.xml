@@ -4,9 +4,9 @@
   xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
   xmlns:sia="http://www.ivoa.net/xml/SIA/v0.6"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
- <vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="ServiceType">
+ <vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="vr:ServiceType">
     <Identifier>
-      <AuthorityID>hellotest</AuthorityID>
+      <AuthorityID>TESTAUTHORITY</AuthorityID>
       <ResourceKey>INT-WFS.SIAP</ResourceKey>
     </Identifier>
     <Title>SIAP service for the INT wide-field survey</Title>
