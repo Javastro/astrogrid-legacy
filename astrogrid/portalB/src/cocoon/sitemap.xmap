@@ -81,9 +81,14 @@
          </map:match>
 
          <!-- Registry browser and admin pages -->
+         <map:match pattern="registry">
+            <map:redirect-to uri="agregistry.html"/>
+         </map:match>
+
          <map:match pattern="registry/**">
             <map:mount uri-prefix="registry" src="registry/sitemap.xmap"  check-reload="yes" reload-method="synchron"/>
          </map:match>
+
 
          <map:match pattern="agregistry.html">
               <map:generate src="registry/xsp/browse.xsp" type="serverpages"/>

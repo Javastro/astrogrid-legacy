@@ -81,9 +81,14 @@
          </map:match>
 
          <!-- Registry browser and admin pages -->
+         <map:match pattern="registry">
+            <map:redirect-to uri="agregistry.html"/>
+         </map:match>
+
          <map:match pattern="registry/**">
             <map:mount uri-prefix="registry" src="registry/sitemap.xmap"  check-reload="yes" reload-method="synchron"/>
          </map:match>
+
 
          <map:match pattern="agregistry.html">
               <map:generate src="registry/xsp/browse.xsp" type="serverpages"/>
@@ -112,7 +117,6 @@
               <map:transform src="registry/xsl/admin.xsl"/>
               <map:serialize type="html"/>
          </map:match>
-
 
          <map:match pattern="aglogin.html">
          	<map:act type="astrogrid-login">
@@ -159,7 +163,7 @@
             <map:read src="images/{1}.png" mime-type="images/png"/>
          </map:match>
 
-         <!-- Administratin page -->
+         <!-- Administration page -->
          <map:match pattern="agadministration.html">
             <!-- Call our query action -->
             <map:act type="astrogrid-admin">
@@ -229,7 +233,6 @@
             <map:match pattern="agtemplate.xsl">
                <map:redirect-to uri="xsl/agtemplate.xsl"/>
             </map:match>
-                        
 
             <!-- DataQuery page -->
             <map:match pattern="agdataquery.html">
