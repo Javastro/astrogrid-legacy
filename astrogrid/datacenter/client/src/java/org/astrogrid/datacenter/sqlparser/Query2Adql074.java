@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql074.java,v 1.3 2004/08/24 19:06:44 mch Exp $
+ * $Id: Query2Adql074.java,v 1.4 2004/08/24 22:58:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,8 @@ import org.astrogrid.datacenter.query.criteria.*;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.query.results.ResultsDefinition;
 import org.astrogrid.datacenter.query.results.TableResultsDefinition;
 import org.astrogrid.io.xml.XmlPrinter;
@@ -21,9 +23,12 @@ import org.astrogrid.io.xml.XmlTagPrinter;
 
 public class Query2Adql074  {
    
+   protected static Log log = LogFactory.getLog(Query2Adql074.class);
    
    public static String makeAdql(Query query, String comment) throws IOException {
 
+      log.debug("Making ADQL from "+query.toString());
+      
       ResultsDefinition resultsDef = query.getResultsDef();
      
       StringWriter sw = new StringWriter();
@@ -152,6 +157,9 @@ public class Query2Adql074  {
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.4  2004/08/24 22:58:49  mch
+ added debug line
+
  Revision 1.3  2004/08/24 19:06:44  mch
  Improvements to JSP pages, lots to query building and translating
 
