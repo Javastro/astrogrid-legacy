@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/mapping.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/08/28 17:33:56 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: mapping.xml,v $
+    |   Revision 1.1  2003/08/28 17:33:56  dave
+    |   Initial policy prototype
+    |
+    | </cvs:log>
+    |
+    +-->
+<mapping>
+
+	<!-- JDO and XML Mapping for Community -->
+<!--
+	<class name="org.astrogrid.community.policy.server.Community" identity="ident">
+		<map-to table="communities" xml="community"/>
+		<field name="ident" type="string">
+			<sql name="ident" type="char"/>
+			<bind-xml node="attribute"/>
+		</field>
+		<field name="description" type="string">
+			<sql name="description" type="char"/>
+			<bind-xml node="element"/>
+		</field>
+		<field name="service" type="string">
+			<sql name="service" type="char"/>
+			<bind-xml node="element"/>
+		</field>
+	</class>
+-->
+
+	<!-- JDO and XML Mapping for Accounts -->
+<!--
+	<class name="org.astrogrid.community.policy.server.Account" identity="ident">
+		<map-to table="accounts" xml="account"/>
+		<field name="ident" type="string">
+			<sql name="ident" type="char"/>
+			<bind-xml node="attribute"/>
+		</field>
+		<field name="description" type="string">
+			<sql name="description" type="char"/>
+			<bind-xml node="element"/>
+		</field>
+	</class>
+-->
+
+	<!-- JDO and XML Mapping for Groups -->
+<!--
+	<class name="org.astrogrid.community.policy.server.Group" identity="ident">
+		<map-to table="groups" xml="group"/>
+		<field name="ident" type="string">
+			<sql name="ident" type="char"/>
+			<bind-xml node="attribute"/>
+		</field>
+		<field name="description" type="string">
+			<sql name="description" type="char"/>
+			<bind-xml node="element"/>
+		</field>
+	</class>
+-->
+
+	<!-- JDO and XML Mapping for Permissions -->
+	<class name="org.astrogrid.community.policy.server.PolicyPermission" identity="resource group action">
+		<map-to table="permissions" xml="permission"/>
+		<field name="resource" type="string">
+			<sql name="resourceid" type="char"/>
+			<bind-xml node="attribute"/>
+		</field>
+		<field name="group" type="string">
+			<sql name="groupid" type="char"/>
+			<bind-xml node="attribute"/>
+		</field>
+		<field name="action" type="string">
+			<sql name="action" type="char"/>
+			<bind-xml node="attribute"/>
+		</field>
+		<field name="valid" type="boolean">
+			<sql name="valid" type="boolean"/>
+			<bind-xml node="attribute"/>
+		</field>
+		<field name="reason" type="string">
+			<sql name="reason" type="char"/>
+			<bind-xml node="element"/>
+		</field>
+	</class>
+
+</mapping>

@@ -1,0 +1,86 @@
+/*
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountData.java,v $</cvs:source>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/08/28 17:33:56 $</cvs:date>
+ * <cvs:version>$Revision: 1.1 $</cvs:version>
+ *
+ * <cvs:log>
+ *   $Log: AccountData.java,v $
+ *   Revision 1.1  2003/08/28 17:33:56  dave
+ *   Initial policy prototype
+ *
+ * </cvs:log>
+ *
+ */
+package org.astrogrid.community.policy.server ;
+
+public class AccountData
+	{
+	/**
+	 * Public constructor.
+	 *
+	 */
+	public AccountData()
+		{
+		this(null, null) ;
+		}
+
+	/**
+	 * Public constructor.
+	 *
+	 */
+	public AccountData(String ident, String description)
+		{
+		this.ident = ident ;
+		this.description = description ;
+		}
+
+	/**
+	 * Our Account ident.
+	 *
+	 */
+	private String ident ;
+
+	/**
+	 * Access to our Account ident.
+	 *
+	 */
+	public String getIdent()
+		{
+		return this.ident ;
+		}
+
+	/**
+	 * Access to our Account ident.
+	 *
+	 */
+	public void setIdent(String ident)
+		{
+		this.ident = ident ;
+		}
+
+	/**
+	 * Our Account description.
+	 *
+	 */
+	private String description ;
+
+	/**
+	 * Access to our Account description.
+	 *
+	 */
+	public String getDescription()
+		{
+		return this.description ;
+		}
+
+	/**
+	 * Access to our Account description.
+	 *
+	 */
+	public void setDescription(String description)
+		{
+		this.description = description ;
+		}
+
+	}

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/axis/wsdd/policy/Attic/undeploy.wsdd,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/08/28 17:33:56 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: undeploy.wsdd,v $
+    |   Revision 1.1  2003/08/28 17:33:56  dave
+    |   Initial policy prototype
+    |
+    | </cvs:log>
+    |
+    +-->
+<undeployment name="test"
+	xmlns="http://xml.apache.org/axis/wsdd/">
+	<service name="PolicyService"/>
+</undeployment>

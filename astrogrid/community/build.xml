@@ -1,0 +1,1447 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/08/28 17:33:56 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: build.xml,v $
+    |   Revision 1.1  2003/08/28 17:33:56  dave
+    |   Initial policy prototype
+    |
+    | </cvs:log>
+    |
+    +-->
+<project default="init" basedir=".">
+
+	<!-- Project build properties -->
+	<property name="project.home"    value="${basedir}"/>
+	<property name="project.name"    value="ast-policy"/>
+	<property name="project.version" value="1.0"/>
+
+	<!--+
+		| User preferences.
+		| This is where to put local properties eg.tomcat installation path.
+		+-->
+	<property file="${user.home}/ant.properties"/>
+
+	<!--+
+		| Prefix for system properties.
+		+-->
+	<property environment="env"/>
+
+	<!-- ================ Project tasks ================ -->
+	<!-- Initialise the build environment -->
+	<target name="init">
+		<!-- Prefix for system environment properties -->
+		<property environment="env"/>
+
+		<!-- Build timestamp -->
+		<tstamp>
+			<format property="build.time" pattern="yyyy.MM.dd.HH.mm.ss"/>
+			<format property="build.date" pattern="yyyy.MM.dd"/>
+		</tstamp>
+
+		<!-- Build name -->
+		<property name="build.name" value="${project.name}-${project.version}"/>
+
+		<!-- Display the current settings -->
+		<echo message="os.name      : ${os.name}"/>
+		<echo message="os.arch      : ${os.arch}"/>
+		<echo message="os.version   : ${os.version}"/>
+		<echo message=""/>
+
+		<echo message="user.home    : ${user.home}"/>
+		<echo message=""/>
+
+		<echo message="java.version : ${java.version}"/>
+		<echo message="java.home    : ${java.home}"/>
+		<echo message="JAVA.HOME    : ${env.JAVA_HOME}"/>
+		<echo message=""/>
+
+		<echo message="ant.version  : ${ant.version}"/>
+		<echo message="ant.home     : ${ant.home}"/>
+		<echo message=""/>
+
+		<echo message="junit.version : ${junit.version}"/>
+		<echo message="junit.home    : ${junit.home}"/>
+		<echo message=""/>
+
+		<echo message="castor.version : ${castor.version}"/>
+		<echo message="castor.home    : ${castor.home}"/>
+		<echo message=""/>
+
+		<echo message="hsqldb.version : ${hsqldb.version}"/>
+		<echo message="hsqldb.home    : ${hsqldb.home}"/>
+		<echo message=""/>
+
+		<echo message="tomcat.version : ${tomcat.version}"/>
+		<echo message="tomcat.home    : ${tomcat.home}"/>
+		<echo message="tomcat.url     : ${tomcat.url}"/>
+		<echo message=""/>
+
+		<echo message="axis.version   : ${axis.version}"/>
+		<echo message="axis.home      : ${axis.home}"/>
+		<echo message="axis.url       : ${axis.url}"/>
+		<echo message=""/>
+
+		<echo message="build.home     : ${basedir}"/>
+		<echo message="build.file     : ${ant.file}"/>
+		<echo message="build.date     : ${build.date}"/>
+		<echo message="build.time     : ${build.time}"/>
+	</target>
+
+	<!-- ================ Ant tasks ================ -->
+	<!--+
+		| The Ant library classpath.
+		+-->
+	<path id="ant.classpath">
+		<pathelement location="${ant.home}/lib/ant.jar"/>
+		<pathelement location="${ant.home}/lib/optional.jar"/>
+	</path>
+
+	<!--+
+		| Run an Ant task in a forked VM.
+		| Requires two properties, the task in task.name and a path refenece in task.path.
+		| This allows us more control over the classpath.
+		+-->
+	<target name="java.ant" depends="init">
+		<java fork="true" classname="org.apache.tools.ant.Main">
+			<classpath>
+				<path refid="${task.classpath}"/>
+			</classpath>
+			<arg value="${task.name}"/>
+		</java>
+	</target>
+
+	<!-- ================ JUnit tasks ================ -->
+	<!--+
+		| There is a classloader problem with JUnit.
+		| To run a junit task, the JUnit binary needs to be in the main Ant classpath.
+		| This means that we need to JUnit library in our classpath before we launch Ant.
+		| I havn't found a nice fix for this yet, so you need to have the Junit library in your classpath.
+		+-->
+	<!--+
+		| JUnit properties.
+		+-->
+	<property name="junit.base"    value="${basedir}/build/junit"/>
+	<property name="junit.version" value="3.8.1"/>
+	<property name="junit.name"    value="junit${junit.version}"/>
+	<property name="junit.dist"    value="http://belnet.dl.sourceforge.net/sourceforge/junit/junit${junit.version}.zip"/>
+	<property name="junit.home"    value="${junit.base}/${junit.name}"/>
+
+	<!--+
+		| The JUnit library classpath.
+		+-->
+	<path id="junit.classpath">
+		<pathelement location="${junit.home}/junit.jar"/>
+	</path>
+
+	<!--+
+		| Delete the JUnit directory.
+		+-->
+	<target name="junit.delete" depends="">
+		<delete dir="${junit.base}"/>
+	</target>
+
+	<!--+
+		| Download the JUnit binary.
+		+-->
+	<target name="junit.dist.fetch" depends="">
+		<mkdir dir="${junit.base}"/>
+		<get verbose="true" usetimestamp="true"
+			src="${junit.dist}"
+			dest="${junit.base}/junit-${junit.version}.zip"
+			/>
+	</target>
+
+	<!--+
+		| Unzip the JUnit binary.
+		+-->
+	<target name="junit.dist.unzip" depends="">
+		<unzip src="${junit.base}/junit-${junit.version}.zip" dest="${junit.base}"/>
+	</target>
+
+	<!--+
+		| Install JUnit.
+		+-->
+	<target name="junit.INSTALL" depends="">
+		<antcall target="junit.dist.fetch"/>
+		<antcall target="junit.dist.unzip"/>
+	</target>
+
+	<!--+
+		| Prepare JUnit.
+		+-->
+	<target name="junit.PREPARE" depends="">
+	</target>
+
+	<!--+
+		| Run a set of JUnit tests in the current VM.
+		| This task is designed to be called from a forked VM to give us more control over the classpath.
+		+-->
+	<target name="junit.task" depends="">
+		<!-- Create our reports directory -->
+		<mkdir dir="${junit.target}/junit"/>
+		<!-- Run our JUnitTestCase tests -->
+		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="false">
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Run all the target JUnitTestCase tests -->
+			<batchtest todir="${junit.target}/junit">
+				<fileset dir="${junit.target}/classes">
+					<include name="**/junit/**/JUnitTestCase.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!--+
+		| Install the JUnit javadoc as a webapp.
+		+-->
+	<target name="junit.docs.install" depends="tomcat.tasks">
+		<echo message=""/>
+		<echo message="Installing JUnit documentation ...."/>
+		<!-- Copy the web.xml file -->
+		<copy file="src/webapps/docs/WEB-INF/web.xml" todir="${junit.home}/javadoc/WEB-INF"/>
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Install our webapp -->
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/junit-docs" war="file://${junit.home}/javadoc"/>
+	</target>
+
+<!--+
+	| Useful JUnit tools ....
+	| http://jtestcase.sourceforge.net/
+	| http://xmlunit.sourceforge.net/
+	+-->
+
+	<!-- ================ Tomcat tasks ================ -->
+	<!--+
+		| Tomcat properties.
+		+-->
+	<property name="tomcat.home"    value="/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14"/>
+	<property name="tomcat.host"    value="localhost"/>
+	<property name="tomcat.port"    value="8080"/>
+	<property name="tomcat.server"  value="${tomcat.host}:${tomcat.port}"/>
+	<property name="tomcat.url"     value="http://${tomcat.server}"/>
+	<property name="tomcat.timeout" value="60"/>
+
+	<!--+
+		| Tomcat manager properties.
+		+-->
+	<property name="tomcat.manager.url"      value="${tomcat.url}/manager"/>
+	<property name="tomcat.manager.username" value="astrogrid"/>
+	<property name="tomcat.manager.password" value="please"/>
+
+	<!--+
+		| Bootstrap classpath for Tomcat
+		+-->
+	<path id="tomcat.classpath.bootstrap">
+		<pathelement location="${env.JAVA_HOME}/lib/tools.jar"/>
+		<pathelement location="${tomcat.home}/bin/bootstrap.jar"/>
+	</path>
+
+	<!--+
+		| Endorsed libraries for Tomcat.
+		+-->
+	<path id="tomcat.classpath.endorsed">
+		<pathelement path="${tomcat.home}/bin"/>
+		<pathelement path="${tomcat.home}/common/endorsed"/>
+	</path>
+
+	<!--+
+		| Tomcat servlet libraries.
+		+-->
+	<path id="tomcat.classpath.servlet">
+		<pathelement location="${tomcat.home}/common/lib/servlet.jar"/>
+	</path>
+
+	<!-- Define the Tomcat manager tasks -->
+	<target name="tomcat.tasks" depends="">
+		<taskdef name="tomcat.deploy"    classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.DeployTask"/>
+		<taskdef name="tomcat.install"   classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.InstallTask"/>
+		<taskdef name="tomcat.list"      classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.ListTask"/>
+		<taskdef name="tomcat.reload"    classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.ReloadTask"/>
+		<taskdef name="tomcat.remove"    classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.RemoveTask"/>
+		<taskdef name="tomcat.resources" classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.ResourcesTask"/>
+		<taskdef name="tomcat.roles"     classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.RolesTask"/>
+		<taskdef name="tomcat.start"     classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.StartTask"/>
+		<taskdef name="tomcat.stop"      classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.StopTask"/>
+		<taskdef name="tomcat.undeploy"  classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.UndeployTask"/>
+	</target>
+
+	<!--+
+		| Start Tomcat in a separate VM.
+		+-->
+	<target name="tomcat.start" depends="">
+		<!-- Start Tomcat in a separate VM -->
+		<java taskname="tomcat" classname="org.apache.catalina.startup.Bootstrap" fork="true" dir="${tomcat.home}/bin">
+			<!-- Use the bootstrap classpath -->
+			<classpath refid="tomcat.classpath.bootstrap"/>
+			<!-- These replace the -D command line arguments -->
+			<sysproperty key="java.endorsed.dirs" path="${tomcat.classpath.endorsed}"/>
+			<sysproperty key="catalina.base"      path="${tomcat.home}"/>
+			<sysproperty key="catalina.home"      path="${tomcat.home}"/>
+			<sysproperty key="java.io.tmpdir"     path="${tomcat.home}/temp"/>
+
+			<!-- Setup our test params -->
+			<sysproperty key="astrogrid.policy.server.mapping"          value="file://${policy.server.base}/config/mapping.xml"/>
+			<sysproperty key="astrogrid.policy.server.database.config"  value="file://${policy.server.base}/config/database.xml"/>
+			<sysproperty key="astrogrid.policy.server.database.name"    value="${hsqldb.database}"/>
+
+			<!-- Select the server JVM (fails on Linux JDK 1.4.0) -->
+			<!-- <jvmarg value="-server"/> -->
+			<!-- Args for the Tomcat Bootstrap class -->
+			<arg value="start"/>
+		</java>
+	</target>
+
+	<!--+
+		| Stop Tomcat.
+		+-->
+	<target name="tomcat.stop" depends="">
+		<!-- Stop Tomcat -->
+		<java taskname="tomcat" classname="org.apache.catalina.startup.Bootstrap" fork="true">
+			<!-- Use the bootstrap classpath -->
+			<classpath refid="tomcat.classpath.bootstrap"/>
+			<!-- These replace the -D command line arguments -->
+			<sysproperty key="java.endorsed.dirs" path="${tomcat.classpath.endorsed}"/>
+			<sysproperty key="catalina.base"      path="${tomcat.home}"/>
+			<sysproperty key="catalina.home"      path="${tomcat.home}"/>
+			<sysproperty key="java.io.tmpdir"     path="${tomcat.home}/temp"/>
+			<!-- Select the server JVM (fails on Linux JDK 1.4.0) -->
+			<!-- <jvmarg value="-server"/> -->
+			<!-- Args for the Tomcat Bootstrap class -->
+			<arg value="stop"/>
+		</java>
+	</target>
+
+	<!--+
+		| Wait for Tomcat to respond.
+		+-->
+	<target name="tomcat.wait" depends="">
+		<echo message=""/>
+		<echo message="Waiting for Tomcat ...."/>
+		<echo message="URL : ${tomcat.url}/"/>
+		<waitfor maxwait="60" maxwaitunit="second" checkevery="500">
+			<http url="${tomcat.url}/"/>
+		</waitfor>
+	</target>
+
+	<!--+
+		| Wait for Tomcat manager to respond.
+		+-->
+	<target name="tomcat.manager.wait" depends="">
+		<echo message=""/>
+		<echo message="Waiting for Tomcat manager ...."/>
+		<echo message="URL : ${tomcat.manager.url}/"/>
+		<waitfor maxwait="${tomcat.timeout}" maxwaitunit="second" checkevery="500">
+			<http url="${tomcat.manager.url}/"/>
+		</waitfor>
+	</target>
+
+	<!--+
+		| Delete the Tomcat working files.
+		+-->
+	<target name="tomcat.work.clean" depends="">
+		<echo message=""/>
+		<echo message="Cleaning Tomcat temp files ...."/>
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${tomcat.home}/work" includes="**"/>
+		</delete>
+		<echo message="Cleaning Tomcat log files ...."/>
+		<delete failonerror="false">
+			<fileset dir="${tomcat.home}/logs" includes="*"/>
+		</delete>
+	</target>
+
+	<!--+
+		| Delete the Tomcat endorsed libraries
+		+-->
+	<target name="tomcat.endorsed.clean">
+		<echo message="Cleaning Tomcat endorsed libraries ...."/>
+		<delete verbose="false" failonerror="false">
+			<fileset dir="${tomcat.home}/common/endorsed">
+				<include name="*.jar"/>
+				<include name="**.jar"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!--+
+		| Prepare Tomcat.
+		+-->
+	<target name="tomcat.PREPARE" depends="">
+		<antcall target="tomcat.work.clean"/>
+		<antcall target="tomcat.endorsed.clean"/>
+	</target>
+
+	<!-- ================ Castor tasks ================ -->
+	<!--+
+		| Castor properties.
+		+-->
+	<property name="castor.base"    value="${basedir}/build/castor"/>
+	<property name="castor.version" value="0.9.5"/>
+	<property name="castor.dist"    value="ftp://ftp.exolab.org/pub/castor/castor_${castor.version}/castor-${castor.version}.zip"/>
+	<property name="castor.home"    value="${castor.base}/castor-${castor.version}"/>
+
+	<!--+
+		| The Castor library classpath.
+		+-->
+	<path id="castor.classpath">
+		<pathelement location="${castor.home}/castor-${castor.version}.jar"/>
+		<pathelement location="${castor.home}/castor-${castor.version}-xml.jar"/>
+	</path>
+
+	<!--+
+		| Delete the Castor directory.
+		+-->
+	<target name="castor.delete" depends="">
+		<delete dir="${castor.base}"/>
+	</target>
+
+	<!--+
+		| Download the Castor binary.
+		+-->
+	<target name="castor.dist.fetch" depends="">
+		<mkdir dir="${castor.base}"/>
+		<get verbose="true" usetimestamp="true"
+			src="${castor.dist}"
+			dest="${castor.base}/castor-${castor.version}.zip"
+			/>
+	</target>
+
+	<!--+
+		| Unzip the Castor binary.
+		+-->
+	<target name="castor.dist.unzip" depends="">
+		<unzip src="${castor.base}/castor-${castor.version}.zip" dest="${castor.base}"/>
+	</target>
+
+	<!--+
+		| Unzip the Castor examples.
+		+-->
+	<target name="castor.examples.unzip" depends="">
+		<unzip src="${castor.home}/examples.zip" dest="${castor.home}"/>
+	</target>
+
+	<!--+
+		| Install Castor.
+		+-->
+	<target name="castor.INSTALL" depends="">
+		<antcall target="castor.dist.fetch"/>
+		<antcall target="castor.dist.unzip"/>
+	</target>
+
+	<!--+
+		| Prepare Castor.
+		+-->
+	<target name="castor.PREPARE" depends="">
+	</target>
+
+	<!--+
+		| Install the Castor javadoc as a webapp.
+		+-->
+	<target name="castor.docs.install" depends="tomcat.tasks">
+		<echo message=""/>
+		<echo message="Installing Castor documentation ...."/>
+		<!-- Copy the web.xml file -->
+		<copy file="src/webapps/docs/WEB-INF/web.xml" todir="${castor.home}/doc/WEB-INF"/>
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Install our webapp -->
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/castor-docs" war="file://${castor.home}/doc"/>
+	</target>
+
+	<!-- ================ Xerces tasks ================ -->
+	<!--+
+		| Xerces properties.
+		+-->
+	<property name="xerces.base"    value="${basedir}/build/xerces"/>
+	<property name="xerces.version" value="2.5.0"/>
+	<property name="xerces.name"    value="xerces-2_5_0"/>
+	<property name="xerces.dist"    value="http://xml.apache.org/dist/xerces-j/Xerces-J-bin.${xerces.version}.zip"/>
+	<property name="xerces.home"    value="${xerces.base}/${xerces.name}"/>
+
+	<!--+
+		| The Xerces library classpath.
+		+-->
+	<path id="xerces.classpath">
+		<pathelement location="${xerces.home}/xml-apis.jar"/>
+		<pathelement location="${xerces.home}/xercesImpl.jar"/>
+	</path>
+
+	<!--+
+		| Delete the Xerces directory.
+		+-->
+	<target name="xerces.delete" depends="">
+		<delete dir="${xerces.base}"/>
+	</target>
+
+	<!--+
+		| Download the Xerces binary.
+		+-->
+	<target name="xerces.dist.fetch" depends="">
+		<mkdir dir="${xerces.base}"/>
+		<get verbose="true" usetimestamp="true"
+			src="${xerces.dist}"
+			dest="${xerces.base}/xerces-${xerces.version}.zip"
+			/>
+	</target>
+
+	<!--+
+		| Unzip the Xerces binary.
+		+-->
+	<target name="xerces.dist.unzip" depends="">
+		<unzip src="${xerces.base}/xerces-${xerces.version}.zip" dest="${xerces.base}"/>
+	</target>
+
+	<!--+
+		| Install Xerces.
+		+-->
+	<target name="xerces.INSTALL" depends="">
+		<antcall target="xerces.dist.fetch"/>
+		<antcall target="xerces.dist.unzip"/>
+	</target>
+
+	<!--+
+		| Prepare Xerces.
+		+-->
+	<target name="xerces.PREPARE" depends="">
+	</target>
+
+	<!--+
+		| Install the Xerces docs as a webapp.
+		+-->
+	<target name="xerces.docs.install" depends="tomcat.tasks">
+		<echo message=""/>
+		<echo message="Installing Xerces documentation ...."/>
+		<!-- Copy the web.xml file -->
+		<copy file="src/webapps/docs/WEB-INF/web.xml" todir="${xerces.home}/docs/WEB-INF"/>
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Install our webapp -->
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/xerces-docs" war="file://${xerces.home}/docs"/>
+	</target>
+
+	<!-- ================ Hsqldb tasks ================ -->
+	<!--+
+		| Hsqldb properties.
+		+-->
+	<property name="hsqldb.base"     value="${basedir}/build/hsqldb"/>
+	<property name="hsqldb.version"  value="1_7_1"/>
+	<property name="hsqldb.name"     value="hsqldb"/>
+	<property name="hsqldb.dist"     value="http://belnet.dl.sourceforge.net/sourceforge/hsqldb/hsqldb_${hsqldb.version}.zip"/>
+	<property name="hsqldb.home"     value="${hsqldb.base}/${hsqldb.name}"/>
+	<property name="hsqldb.data"     value="${hsqldb.base}/data"/>
+	<property name="hsqldb.host"     value="methionine.codon.demon.co.uk"/>
+	<property name="hsqldb.port"     value="9001"/>
+	<property name="hsqldb.database" value="policy"/>
+	<property name="hsqldb.user"     value="sa"/>
+	<property name="hsqldb.pass"     value="veritas"/>
+	<property name="hsqldb.timeout"  value="60"/>
+
+	<property name="hsqldb.url"      value="jdbc:hsqldb:hsql://${hsqldb.host}:${hsqldb.port}"/>
+
+	<!--+
+		| The Hsqldb library classpath.
+		+-->
+	<path id="hsqldb.classpath">
+		<pathelement location="${hsqldb.home}/lib/hsqldb.jar"/>
+	</path>
+
+	<!--+
+		| Delete the Hsqldb directory.
+		+-->
+	<target name="hsqldb.delete" depends="">
+		<delete dir="${hsqldb.base}"/>
+	</target>
+
+	<!--+
+		| Download the Hsqldb binary.
+		+-->
+	<target name="hsqldb.dist.fetch" depends="">
+		<mkdir dir="${hsqldb.base}"/>
+		<get verbose="true" usetimestamp="true"
+			src="${hsqldb.dist}"
+			dest="${hsqldb.base}/hsqldb-${hsqldb.version}.zip"
+			/>
+	</target>
+
+	<!--+
+		| Unzip the Hsqldb binary.
+		+-->
+	<target name="hsqldb.dist.unzip" depends="">
+		<unzip src="${hsqldb.base}/hsqldb-${hsqldb.version}.zip" dest="${hsqldb.base}"/>
+	</target>
+
+	<!--+
+		| Install Hsqldb.
+		+-->
+	<target name="hsqldb.INSTALL" depends="">
+		<antcall target="hsqldb.dist.fetch"/>
+		<antcall target="hsqldb.dist.unzip"/>
+	</target>
+
+	<!--+
+		| Prepare Hsqldb.
+		+-->
+	<target name="hsqldb.PREPARE" depends="">
+		<antcall target="hsqldb.data.delete"/>
+	</target>
+
+	<!--+
+		| Create the Hsqldb server properties.
+		| Can be overriden by command line args in hsqldb.start.
+		+-->
+	<target name="hsqldb.properties" depends="">
+		<echo message=""/>
+		<echo message="Creating Hsqldb properties ...."/>
+		<mkdir dir="${hsqldb.data}"/>
+		<!-- Create the properties file -->
+		<propertyfile file="${hsqldb.data}/server.properties" comment="Hqsldb server config">
+			<entry key="server.port"           value="${hsqldb.port}"/>
+			<entry key="server.database"       value="${hsqldb.database}"/>
+			<entry key="server.no_system_exit" value="true"/>
+		</propertyfile>
+	</target>
+
+	<!--+
+		| Start the Hsqldb database server.
+		+-->
+	<target name="hsqldb.start" depends="">
+		<echo message=""/>
+		<echo message="Starting Hqsldb ...."/>
+		<mkdir dir="${hsqldb.data}"/>
+		<java taskname="hsqldb" classname="org.hsqldb.Server" fork="true" dir="${hsqldb.data}">
+			<!-- Use the Hsqldb classpath -->
+			<classpath refid="hsqldb.classpath"/>
+			<!-- Args for the Hsqldb server -->
+			<arg value="-database"/>
+			<arg value="${hsqldb.database}"/>
+			<arg value="-port"/>
+			<arg value="${hsqldb.port}"/>
+		</java>
+	</target>
+
+	<!--+
+		| Stop the Hsqldb database server.
+		+-->
+	<target name="hsqldb.stop" depends="">
+		<echo message=""/>
+		<echo message="Stopping Hqsldb ...."/>
+		<java taskname="hsqldb" classname="org.hsqldb.util.ShutdownServer" fork="true" dir="${hsqldb.data}">
+			<!-- Use the Hsqldb classpath -->
+			<classpath refid="hsqldb.classpath"/>
+			<!-- Args for the Hsqldb server -->
+			<arg value="-url"/>
+			<arg value="${hsqldb.url}"/>
+			<arg value="-user"/>
+			<arg value="${hsqldb.user}"/>
+			<arg value="-password"/>
+			<arg value="${hsqldb.pass}"/>
+			<arg value="-shutdownarg"/>
+			<arg value=""/>
+		</java>
+	</target>
+
+	<!--+
+		| Wait for the Hsqldb database to start.
+		+-->
+	<target name="hsqldb.wait" depends="">
+		<echo message=""/>
+		<echo message="Waiting for Hqsldb ...."/>
+		<waitfor maxwait="${hsqldb.timeout}" maxwaitunit="second" checkevery="500">
+			<socket server="${hsqldb.host}" port="${hsqldb.port}"/>
+		</waitfor>
+	</target>
+
+	<!--+
+		| Initialise the Hsqldb database.
+		| This only needs to run once, when a new database is created.
+		+-->
+	<target name="hsqldb.database.init" depends="">
+		<echo message=""/>
+		<echo message="Initialising Hqsldb ...."/>
+		<sql driver="org.hsqldb.jdbcDriver"
+		     url="${hsqldb.url}"
+		     classpathref="hsqldb.classpath"
+		     userid="sa"
+		     password=""
+		     print="true"
+			>
+			<![CDATA[
+				set password "${hsqldb.pass}" ;
+			]]>
+		</sql>
+	</target>
+
+	<!--+
+		| Delete our Hsqldb data.
+		+-->
+	<target name="hsqldb.data.delete" depends="">
+		<delete dir="${hsqldb.data}" failonerror="false"/>
+	</target>
+
+	<!--+
+		| Build our Hsqldb database.
+		+-->
+	<target name="hsqldb.BUILD" depends="">
+		<antcall target="hsqldb.wait"/>
+		<antcall target="hsqldb.database.init"/>
+		<antcall target="hsqldb.database.create"/>
+	</target>
+
+	<!--+
+		| Install the Hsqldb docs as a webapp.
+		+-->
+	<target name="hsqldb.docs.install" depends="tomcat.tasks">
+		<echo message=""/>
+		<echo message="Installing Hsqldb documentation ...."/>
+		<!-- Copy the web.xml file -->
+		<copy file="src/webapps/docs/WEB-INF/web.xml" todir="${hsqldb.home}/doc/WEB-INF"/>
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Install our webapp -->
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/hsqldb-docs" war="file://${hsqldb.home}/doc"/>
+	</target>
+
+	<!-- ================ Database tasks ================ -->
+	<!--+
+		| Create our policy database tables.
+		+-->
+	<target name="hsqldb.database.create" depends="">
+		<echo message=""/>
+		<echo message="Creating Hqsldb tables ...."/>
+		<sql driver="org.hsqldb.jdbcDriver"
+		     url="${hsqldb.url}"
+		     classpathref="hsqldb.classpath"
+		     userid="${hsqldb.user}"
+		     password="${hsqldb.pass}"
+		     print="true"
+			>
+			<transaction src="src/sql/hsqldb/create.sql"/>
+		</sql>
+	</target>
+
+	<!--+
+		| Select all rows from our database tables.
+		+-->
+	<target name="hsqldb.database.select" depends="">
+		<sql driver="org.hsqldb.jdbcDriver"
+		     url="${hsqldb.url}"
+		     classpathref="hsqldb.classpath"
+		     userid="${hsqldb.user}"
+		     password="${hsqldb.pass}"
+		     print="true"
+			>
+			<![CDATA[
+				SELECT * FROM groups      ;
+				SELECT * FROM members     ;
+				SELECT * FROM accounts    ;
+				SELECT * FROM resources   ;
+				SELECT * FROM communities ;
+				SELECT * FROM permissions ;
+			]]>
+		</sql>
+	</target>
+
+	<!--+
+		| Delete all rows from our database tables.
+		+-->
+	<target name="hsqldb.database.delete" depends="">
+		<sql driver="org.hsqldb.jdbcDriver"
+		     url="${hsqldb.url}"
+		     classpathref="hsqldb.classpath"
+		     userid="${hsqldb.user}"
+		     password="${hsqldb.pass}"
+		     print="true"
+			>
+			<![CDATA[
+				DELETE FROM groups      ;
+				DELETE FROM members     ;
+				DELETE FROM accounts    ;
+				DELETE FROM resources   ;
+				DELETE FROM communities ;
+				DELETE FROM permissions ;
+			]]>
+		</sql>
+	</target>
+
+	<!-- ================ JAF tasks ================ -->
+	<!--+
+		| We only need this to install activation.jar into the Tomcat endorsed directory for Axis.
+		| Once we have the dependencies sorted, this should go.
+		| Required with JDK 1.4.2
+		| There is a problem with downloading the JAF files, Sun require you to say 'yes' to the licence agreement.
+		| This means that we can't just download from a public server using an Ant task.
+		| For now, I've included the JAF binary in cvs.
+		+-->
+	<!--+
+		| JAF properties.
+		+-->
+	<property name="jaf.zip"  value="${basedir}/depends/jaf/jaf-1.0.2.zip"/>
+	<property name="jaf.base" value="${basedir}/build/jaf"/>
+	<property name="jaf.home" value="${basedir}/build/jaf/jaf-1.0.2"/>
+
+	<!--+
+		| Delete the JAF directory.
+		+-->
+	<target name="jaf.delete" depends="">
+		<delete dir="${jaf.base}" failonerror="false"/>
+	</target>
+
+	<!--+
+		| Unpack the JAF binary.
+		+--> 
+	<target name="jaf.dist.unzip" depends="">
+		<mkdir dir="${jaf.base}"/>
+		<unzip src="${jaf.zip}" dest="${jaf.base}"/>
+	</target>
+
+	<!--+
+		| Install JAF.
+		+-->
+	<target name="jaf.INSTALL" depends="">
+		<antcall target="jaf.dist.unzip"/>
+	</target>
+
+	<!--+
+		| Prepare JAF.
+		+-->
+	<target name="jaf.PREPARE" depends="">
+	</target>
+
+	<!-- ================ Axis tasks ================ -->
+	<!--+
+		| Axis properties.
+		+-->
+	<property name="axis.base"    value="${basedir}/build/axis"/>
+	<property name="axis.version" value="1.1"/>
+	<property name="axis.dist"    value="http://ws.apache.org/axis/dist/1_1/axis-1_1.zip"/>
+	<property name="axis.zip"     value="${axis.base}/axis-${axis.version}.zip"/>
+
+	<property name="axis.home"    value="${axis.base}/axis-1_1"/>
+	<property name="axis.webapp"  value="${axis.home}/webapps/axis"/>
+	<property name="axis.host"    value="localhost"/>
+	<property name="axis.port"    value="8080"/>
+	<property name="axis.server"  value="${axis.host}:${axis.port}"/>
+	<property name="axis.servlet" value="axis"/>
+	<property name="axis.url"     value="http://${axis.server}/${axis.servlet}"/>
+	<property name="axis.timeout" value="60"/>
+
+	<!--+
+		| The Axis library classpath.
+		+-->
+	<path id="axis.classpath">
+		<pathelement location="${axis.webapp}/WEB-INF/lib/axis.jar"/>
+		<pathelement location="${axis.webapp}/WEB-INF/lib/axis-ant.jar"/>
+		<pathelement location="${axis.webapp}/WEB-INF/lib/commons-discovery.jar"/>
+		<pathelement location="${axis.webapp}/WEB-INF/lib/commons-logging.jar"/>
+		<pathelement location="${axis.webapp}/WEB-INF/lib/jaxrpc.jar"/>
+		<pathelement location="${axis.webapp}/WEB-INF/lib/saaj.jar"/>
+		<pathelement location="${axis.webapp}/WEB-INF/lib/wsdl4j.jar"/>
+	</path>
+
+	<!--+
+		| Delete the Axis directory.
+		+-->
+	<target name="axis.delete" depends="">
+		<delete dir="${axis.base}"/>
+	</target>
+
+	<!--+
+		| Download the Axis binary.
+		+-->
+	<target name="axis.dist.fetch" depends="">
+		<mkdir dir="${axis.base}"/>
+		<get verbose="true" usetimestamp="true"
+			src="${axis.dist}"
+			dest="${axis.zip}"
+			/>
+	</target>
+
+	<!--+
+		| Unzip the Axis binary.
+		+-->
+	<target name="axis.dist.unzip" depends="">
+		<mkdir dir="${axis.base}"/>
+		<unzip src="${axis.zip}" dest="${axis.base}"/>
+	</target>
+
+	<!--+
+		| Patch the Tomcat endorsed classes to enable Axis.
+		| Copy activation.jar into the Tomcat endorsed directory.
+		| Required with Axis 1.1 on JDK 1.4.2
+		| This needs to be done befoe Tomcat starts.
+		+-->
+	<target name="axis.endorsed.patch" depends="">
+		<copy verbose="true" file="${jaf.home}/activation.jar" toDir="${tomcat.home}/common/endorsed"/>
+	</target>
+
+	<!--+
+		| Install our Axis webapp.
+		+-->
+	<target name="axis.webapp.install" depends="tomcat.tasks">
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Install our webapp -->
+		<echo message=""/>
+		<echo message="Installing Axis webapp ...."/>
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${axis.servlet}" war="file://${axis.webapp}"/>
+	</target>
+
+	<!--+
+		| Start our Axis webapp.
+		+-->
+	<target name="axis.webapp.start" depends="tomcat.tasks">
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Start our webapp -->
+		<tomcat.start username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${axis.servlet}"/>
+	</target>
+
+	<!--+
+		| Stop our Axis webapp.
+		+-->
+	<target name="axis.webapp.stop" depends="tomcat.tasks">
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Stop our webapp -->
+		<tomcat.stop username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${axis.servlet}"/>
+	</target>
+
+	<!--+
+		| Reload our Axis webapp.
+		+-->
+	<target name="axis.webapp.reload" depends="tomcat.tasks">
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Reload our webapp -->
+		<tomcat.reload username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${axis.servlet}"/>
+	</target>
+
+	<!--+
+		| Remove our Axis webapp.
+		+-->
+	<target name="axis.webapp.remove" depends="tomcat.tasks">
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Remove our webapp -->
+		<tomcat.remove username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${axis.servlet}"/>
+	</target>
+
+	<!--+
+	    | Wait for Axis to respond.
+	    | This just check that calling happyaxis.jsp responds, not the content.
+	    | It would be nice to use something like HttpUnit to check that Axis really is happy.
+	    +-->
+	<target name="axis.wait" depends="">
+		<echo message=""/>
+		<echo message="Waiting for Axis webapp ...."/>
+		<echo message="URL : ${axis.url}/happyaxis.jsp"/>
+		<waitfor maxwait="${axis.timeout}" maxwaitunit="second" checkevery="500">
+			<http url="${axis.url}/happyaxis.jsp"/>
+		</waitfor>
+	</target>
+
+	<!--+
+	    | Define the Axis manager tasks.
+	    +-->
+	<target name="axis.tasks" depends="">
+		<taskdef name="axis.admin" classname="org.apache.axis.tools.ant.axis.AdminClientTask">
+			<classpath>
+				<!-- Our Axis libraries -->
+				<path refid="axis.classpath"/>
+				<!-- Tomcat servlet libraries (required for Axis 1.0) -->
+				<path refid="tomcat.classpath.servlet"/>
+			</classpath>
+		</taskdef>
+		<taskdef name="axis.wsdl2java" classpathref="axis.classpath" classname="org.apache.axis.tools.ant.wsdl.Wsdl2javaAntTask"/>
+		<taskdef name="axis.java2wsdl" classpathref="axis.classpath" classname="org.apache.axis.tools.ant.wsdl.Java2WsdlAntTask"/>
+	</target>
+
+	<!--+
+		| Install Axis.
+		+-->
+	<target name="axis.INSTALL" depends="">
+		<!-- Download Axis binary -->
+		<antcall target="axis.dist.fetch"/>
+		<!-- Unpack the Axis binary -->
+		<antcall target="axis.dist.unzip"/>
+	</target>
+
+	<!--+
+		| Prepare Axis.
+		+-->
+	<target name="axis.PREPARE" depends="">
+		<!-- Add the Axis endorsed classes to Tomcat -->
+		<antcall target="axis.endorsed.patch"/>
+	</target>
+
+	<!--+
+		| Install the Axis docs as a webapp.
+		+-->
+	<target name="axis.docs.install" depends="tomcat.tasks">
+		<echo message=""/>
+		<echo message="Installing Axis documentation ...."/>
+		<!-- Copy the web.xml file -->
+		<copy file="src/webapps/docs/WEB-INF/web.xml" todir="${axis.home}/docs/WEB-INF"/>
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Install our webapp -->
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/axis-docs" war="file://${axis.home}/docs"/>
+	</target>
+
+	<!-- ================ Policy tasks ================ -->
+
+	<property name="policy.common.base" value="${basedir}/build/policy/common"/>
+	<property name="policy.server.base" value="${basedir}/build/policy/server"/>
+	<property name="policy.client.base" value="${basedir}/build/policy/client"/>
+
+	<!--+
+		| The Policy server classpath.
+		+-->
+	<path id="policy.server.classpath">
+		<!-- The Castor libraries -->
+		<path refid="castor.classpath"/>
+		<!-- The Xerces libraries -->
+		<path refid="xerces.classpath"/>
+		<!-- The Hsqldb libraries -->
+		<path refid="hsqldb.classpath"/>
+		<!-- Our common classes -->
+		<pathelement path="${policy.common.base}/classes"/>
+		<!-- Our server classes -->
+		<pathelement path="${policy.server.base}/classes"/>
+	</path>
+
+	<!--+
+		| The Policy client classpath.
+		+-->
+	<path id="policy.client.classpath">
+		<!-- The Axis libraries -->
+		<path refid="axis.classpath"/>
+		<!-- Our client classes -->
+		<pathelement path="${policy.client.base}/classes"/>
+	</path>
+
+	<!--+
+		| Delete our build directory.
+		+-->
+	<target name="policy.delete" depends="">
+		<delete dir="build/policy" failonerror="false"/>
+	</target>
+
+	<!--+
+		| Compile our common classes.
+		+-->
+	<target name="policy.common.javac" depends="">
+		<!-- Create our build directory -->
+		<mkdir dir="${policy.common.base}/classes"/>
+		<!-- Compile the common classes -->
+		<javac srcdir="src/java"
+		       destdir="${policy.common.base}/classes"
+		       debug="on"
+		       deprecation="on"
+		       optimize="on"
+		       >
+			<include name="org/astrogrid/community/policy/common/**"/>
+			<classpath>
+				<!-- Include the JUnit libraries -->
+				<path refid="junit.classpath"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<!--+
+		| Compile our server classes.
+		+-->
+	<target name="policy.server.javac" depends="policy.common.javac">
+		<!-- Create our build directory -->
+		<mkdir dir="${policy.server.base}/classes"/>
+		<!-- Compile the server classes -->
+		<javac srcdir="src/java"
+		       destdir="${policy.server.base}/classes"
+		       debug="on"
+		       deprecation="on"
+		       optimize="on"
+		       >
+			<include name="org/astrogrid/community/policy/server/**"/>
+			<classpath>
+				<!-- Include the common classes -->
+				<path location="${policy.common.base}/classes"/>
+				<!-- Include the JUnit libraries -->
+				<path refid="junit.classpath"/>
+				<!-- Include the Castor libraries -->
+				<path refid="castor.classpath"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<!--+
+		| Deploy our Axis service.
+		+-->
+	<target name="policy.service.deploy" depends="axis.tasks">
+		<!-- Copy our classes into the Axis WEB-INF/classes directory -->
+		<copy verbose="false" todir="${axis.webapp}/WEB-INF/classes">
+			<fileset dir="${policy.common.base}/classes">
+				<include name="**/*.class"/>
+			</fileset>
+			<fileset dir="${policy.server.base}/classes">
+				<include name="**/*.class"/>
+			</fileset>
+		</copy>
+
+		<!-- Copy the 3rd party libraries into our Axis WEB-INF/lib directory -->
+		<copy verbose="false" todir="${axis.webapp}/WEB-INF/lib">
+			<fileset dir="${castor.home}">
+				<include name="castor-${castor.version}.jar"/>
+				<include name="castor-${castor.version}-xml.jar"/>
+				<include name="jta1.0.1.jar"/>
+			</fileset>
+			<fileset dir="${xerces.home}">
+				<include name="xml-apis.jar"/>
+				<include name="xercesImpl.jar"/>
+			</fileset>
+			<fileset dir="${hsqldb.home}/lib">
+				<include name="hsqldb.jar"/>
+			</fileset>
+		</copy>
+
+		<!-- Wait for the Axis service -->
+		<antcall target="axis.wait"/>
+		<!-- Deploy our service -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="src/axis/wsdd/policy/deploy.wsdd"
+			/>
+	</target>
+
+	<!--+
+		| Remove our Axis service files.
+		+-->
+	<target name="policy.service.remove" depends="axis.tasks">
+		<!-- Wait for the Axis service -->
+		<antcall target="axis.wait"/>
+		<!-- Remove our WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="src/axis/wsdd/policy/undeploy.wsdd"
+			/>
+		<!-- Remove our classes from the Axis WEB-INF/classes directory -->
+		<delete verbose="true" failonerror="false" dir="${axis.webapp}/WEB-INF/classes/org/astrogrid"/>
+		<!-- Remove the Castor libraries from our Axis WEB-INF/lib directory -->
+		<delete verbose="true" failonerror="false">
+			<fileset dir="${axis.webapp}/WEB-INF/lib">
+				<include name="castor-${castor.version}.jar"/>
+				<include name="castor-${castor.version}-xml.jar"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!--+
+	    | Generate the WSDL description for our service.
+	    +-->
+	<target name="policy.server.java2wsdl" depends="axis.tasks">
+		<echo message=""/>
+		<echo message="Creating WSDL from service ...."/>
+		<!-- Create our wsdl directory -->
+		<mkdir dir="${policy.client.base}/wsdl"/>
+		<!-- Generate our WSDL description -->
+<!-- Not working yet ...
+		<axis.java2wsdl
+			output="${policy.client.base}/wsdl/policy.wsdl"
+			classname="org.astrogrid.community.policy.server.PolicyServiceImpl"
+			location="${axis.url}/services/policy"
+			methods="getServiceStatus, getAccountData"
+			namespace="policy"
+			>
+			<mapping namespace="${axis.url}/services/policy" package="org.astrogrid.community.policy.client"/>
+			<mapping namespace="${axis.url}/services/policy" package="org.astrogrid.community.policy.server"/>
+		</axis.java2wsdl>
+-->
+	</target>
+
+	<!--+
+	    | Generate the client stubs from our (live) service.
+	    | Once I get the java2wsdl running, then this can use the generated WSDL.
+	    +-->
+	<target name="policy.client.wsdl2java" depends="axis.tasks">
+		<echo message=""/>
+		<echo message="Creating client stubs from WSDL ...."/>
+		<echo message="URL : ${axis.url}/services/policy"/>
+		<!-- Create our client directory -->
+		<mkdir dir="${policy.client.base}/java"/>
+		<!-- Wait for the Axis service -->
+		<antcall target="axis.wait"/>
+		<!-- Generate our client stubs -->
+		<axis.wsdl2java
+			verbose="true"
+			output="${policy.client.base}/java"
+			url="${axis.url}/services/PolicyService?wsdl"
+			>
+			<mapping namespace="${axis.url}/services/PolicyService"                                   package="org.astrogrid.community.policy.client"/>
+			<mapping namespace="http://methionine.codon.demon.co.uk:8080/axis/services/PolicyService" package="org.astrogrid.community.policy.client"/>
+			<mapping namespace="http://server.policy.community.astrogrid.org"                         package="org.astrogrid.community.policy.client"/>
+		</axis.wsdl2java>
+	</target>
+
+	<!--+
+		| Compile our client classes.
+		+-->
+	<target name="policy.client.javac" depends="">
+		<!-- Create our build directory -->
+		<mkdir dir="${policy.client.base}/classes"/>
+		<!-- Compile the client classes -->
+		<javac destdir="${policy.client.base}/classes"
+		       debug="on"
+		       deprecation="on"
+		       optimize="on"
+		       >
+			<src path="src/java"/>
+			<src path="${policy.client.base}/java"/>
+			<include name="org/astrogrid/community/policy/client/**"/>
+			<classpath>
+				<!-- Include the Axis libraries -->
+				<path refid="axis.classpath"/>
+				<!-- Include the JUnit libraries -->
+				<path refid="junit.classpath"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<!--+
+		| Run our client JUnit tests.
+		+-->
+	<target name="policy.client.junit" depends="policy.client.javac">
+		<!-- Create our reports directory -->
+		<mkdir dir="${policy.client.base}/junit"/>
+		<!-- Run our JUnitTestCase tests -->
+		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
+			<classpath>
+				<!-- The Policy classes -->
+				<path refid="policy.client.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Run the target JUnitTestCase tests -->
+			<batchtest todir="${policy.client.base}/junit">
+				<fileset dir="${policy.client.base}/classes">
+					<include name="org/astrogrid/community/policy/client/**/JUnitTestCase.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!--+
+		| Copy our database config.
+		+-->
+	<target name="policy.server.config" depends="">
+		<!-- Create our config directory -->
+		<mkdir dir="${policy.server.base}/config"/>
+		<!-- Copy our database mapping files -->
+		<copy verbose="false" overwrite="true" toDir="${policy.server.base}/config">
+			<fileset dir="src/castor/hsqldb">
+				<include name="database.xml"/>
+				<include name="mapping.xml"/>
+				<include name="content.xml"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!--+
+		| Run our server JUnit tests.
+		+-->
+	<target name="policy.server.junit" depends="policy.server.javac, policy.server.config">
+		<!-- Create our reports directory -->
+		<mkdir dir="${policy.server.base}/junit"/>
+		<!-- Run our JUnitTestCase tests -->
+		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
+			<classpath>
+				<!-- The Policy classes -->
+				<path refid="policy.server.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Pass in the location of our config files and database name -->
+			<sysproperty key="astrogrid.policy.server.mapping"          value="file://${policy.server.base}/config/mapping.xml"/>
+			<sysproperty key="astrogrid.policy.server.database.config"  value="file://${policy.server.base}/config/database.xml"/>
+			<sysproperty key="astrogrid.policy.server.database.name"    value="${hsqldb.database}"/>
+			<!-- Run the target JUnitTestCase tests -->
+			<batchtest todir="${policy.server.base}/junit">
+				<fileset dir="${policy.server.base}/classes">
+					<include name="org/astrogrid/community/policy/server/**/JUnitTestCase.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+<!-- +++++++++++++++++++++++++++++++++++ -->
+
+	<!--+
+		| Run our database load JUnit tests.
+		+-->
+	<target name="policy.database.junit.load" depends="policy.server.javac, policy.server.config">
+
+		<!-- Empty our database -->
+		<antcall target="hsqldb.database.delete"/>
+
+		<!-- Create our XML data directory -->
+		<mkdir dir="${policy.server.base}/xml"/>
+		<mkdir dir="${policy.server.base}/xml/temp"/>
+		<!-- Create our reports directory -->
+		<mkdir dir="${policy.server.base}/junit"/>
+		<!-- Run our JUnitTestCase tests -->
+		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
+			<classpath>
+				<!-- The Policy classes -->
+				<path refid="policy.server.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Pass in the location of our config files and database name -->
+			<sysproperty key="astrogrid.policy.server.mapping"          value="file://${policy.server.base}/config/mapping.xml"/>
+			<sysproperty key="astrogrid.policy.server.database.config"  value="file://${policy.server.base}/config/database.xml"/>
+			<sysproperty key="astrogrid.policy.server.database.content" value="${policy.server.base}/config/content.xml"/>
+			<sysproperty key="astrogrid.policy.server.database.name"    value="${hsqldb.database}"/>
+			<sysproperty key="astrogrid.policy.server.test.xml.path"    value="${policy.server.base}/xml/temp"/>
+			<!-- Pass in the Castor settings -->
+			<sysproperty key="org.exolab.castor.indent" value="true"/>
+			<!-- Run the target JUnitTestCase tests -->
+			<batchtest todir="${policy.server.base}/junit">
+				<fileset dir="${policy.server.base}/classes">
+					<include name="**/data/junit/load/JUnitTestCase.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!-- ================ Project tasks ================ -->
+	<!--+
+	    | Download our 3rd party components.
+	    +-->
+	<target name="project.INSTALL" depends="init">
+		<antcall target="jaf.INSTALL"/>
+		<antcall target="axis.INSTALL"/>
+		<antcall target="junit.INSTALL"/>
+		<antcall target="castor.INSTALL"/>
+		<antcall target="xerces.INSTALL"/>
+		<antcall target="hsqldb.INSTALL"/>
+		<antcall target="tomcat.INSTALL"/>
+	</target>
+
+	<!--+
+	    | Prepare our 3rd party components.
+	    +-->
+	<target name="project.PREPARE" depends="init">
+		<antcall target="tomcat.PREPARE"/>
+		<antcall target="jaf.PREPARE"/>
+		<antcall target="junit.PREPARE"/>
+		<antcall target="castor.PREPARE"/>
+		<antcall target="xerces.PREPARE"/>
+		<antcall target="hsqldb.PREPARE"/>
+		<antcall target="axis.PREPARE"/>
+
+	</target>
+
+	<!--+
+	    | Install our project WebApps ....
+	    | Needs Tomcat already running.
+	    +-->
+	<target name="project.WEBAPPS" depends="init">
+		<!-- Install our Axis webapp -->
+		<antcall target="axis.webapp.install"/>
+		<!-- Install our documentation webapps -->
+<!--
+		<antcall target="axis.docs.install"/>
+		<antcall target="junit.docs.install"/>
+		<antcall target="castor.docs.install"/>
+		<antcall target="xerces.docs.install"/>
+		<antcall target="hsqldb.docs.install"/>
+-->
+	</target>
+
+	<!--+
+	    | Build our project components.
+	    +-->
+	<target name="project.BUILD" depends="init">
+		<!-- Delete our policy build directory -->
+		<antcall target="policy.delete"/>
+		<!-- Build our common classes -->
+		<antcall target="policy.common.javac"/>
+		<!-- Build our server classes -->
+		<antcall target="policy.server.javac"/>
+		<!-- Test our server classes -->
+		<antcall target="policy.server.junit"/>
+
+
+		<!-- Configure our service -->
+		<antcall target="policy.server.config"/>
+		<!-- Depoly our service -->
+		<antcall target="policy.service.deploy"/>
+		<!-- Generate our client stubs -->
+		<antcall target="policy.client.wsdl2java"/>
+		<!-- Build our client classes -->
+		<antcall target="policy.client.javac"/>
+		<!-- Test our client classes -->
+		<antcall target="policy.client.junit"/>
+
+
+	</target>
+
+
+
+	<!--+
+	    +-->
+	<target name="project.RUN" depends="init">
+		<parallel>
+			<!-- Start hsqldb in a separate JVM -->
+			<sequential>
+			</sequential>
+			<!-- Start tomcat in a separate JVM -->
+			<sequential>
+			</sequential>
+			<!-- Install our project services -->
+			<sequential>
+			</sequential>
+		</parallel>
+	</target>
+
+	<!--+
+	    | Re-build everything from clean.
+	    +-->
+	<target name="project.REBUILD" depends="init">
+		<!-- Delete everything -->
+		<delete dir="build" failonerror="false"/>
+	</target>
+
+	<!-- Build a release -->
+	<target name="project.RELEASE" depends="">
+	</target>
+
+	<!--+
+		|
+./build.sh project.PREPARE
+./build.sh tomcat.start
+
+./build.sh hsqldb.start
+
+./build.sh hsqldb.BUILD
+./build.sh project.WEBAPPS
+./build.sh project.BUILD
+
+
+
+		|
+		+-->
+
+
+</project>
+

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/axis/wsdd/policy/Attic/deploy.wsdd,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/08/28 17:33:56 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: deploy.wsdd,v $
+    |   Revision 1.1  2003/08/28 17:33:56  dave
+    |   Initial policy prototype
+    |
+    | </cvs:log>
+    |
+    +-->
+<deployment name="test"
+	xmlns="http://xml.apache.org/axis/wsdd/" 
+	xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+	<service name="PolicyService" style="java:RPC">
+		<parameter name="className"      value="org.astrogrid.community.policy.server.PolicyService"/>
+		<parameter name="allowedMethods" value="getServiceStatus, getAccountData, setAccountData, getAccountList, checkPermissions"/>
+		<!--+
+		    | This needs to use the same namespace as the targetNamespace in generated WSDL file.
+		    | Easiest way is to deploy the service without this, generate the WSDL, and then update the BeanMapping.
+		    +-->
+		<beanMapping qname="PolicyService:ServiceData"       xmlns:PolicyService="http://server.policy.community.astrogrid.org" languageSpecificType="java:org.astrogrid.community.policy.server.ServiceData"/>
+		<beanMapping qname="PolicyService:AccountData"       xmlns:PolicyService="http://server.policy.community.astrogrid.org" languageSpecificType="java:org.astrogrid.community.policy.server.AccountData"/>
+		<beanMapping qname="PolicyService:PolicyCredentials" xmlns:PolicyService="http://server.policy.community.astrogrid.org" languageSpecificType="java:org.astrogrid.community.policy.server.PolicyCredentials"/>
+		<beanMapping qname="PolicyService:PolicyPermission"  xmlns:PolicyService="http://server.policy.community.astrogrid.org" languageSpecificType="java:org.astrogrid.community.policy.server.PolicyPermission"/>
+	</service>
+</deployment>
