@@ -1,4 +1,4 @@
-/*$Id: JobMonitor.java,v 1.4 2004/03/03 01:13:42 nw Exp $
+/*$Id: JobMonitor.java,v 1.5 2004/03/15 01:30:30 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,15 +15,28 @@ package org.astrogrid.jes.delegate;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
-/** Delegate interface to a job monitor
+/** Interface to a service that should be called when execution of a job step is completed.
+ * <p>
+ * should rename this as some kind of *Listener interface  - as it is just a callback, albeit as a webservice
+ * <p>
+ * generalize - from a monitor of completion to a listener to job execution progress.
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Feb-2004
  *
  */
 public interface JobMonitor extends Delegate{
+    /**
+     * notify an interested party of the progress of job execution
+     * @param id unique identifier for the job and step.
+     * @param info record of information about a job step execution
+     * @throws JesDelegateException
+     */
     public abstract void monitorJob(JobIdentifierType id,MessageType info) throws JesDelegateException;
 }
 /* 
 $Log: JobMonitor.java,v $
+Revision 1.5  2004/03/15 01:30:30  nw
+jazzed up javadoc
+
 Revision 1.4  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

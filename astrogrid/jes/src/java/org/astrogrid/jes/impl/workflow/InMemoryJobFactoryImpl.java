@@ -1,4 +1,4 @@
-/*$Id: InMemoryJobFactoryImpl.java,v 1.5 2004/03/07 21:04:38 nw Exp $
+/*$Id: InMemoryJobFactoryImpl.java,v 1.6 2004/03/15 01:31:12 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.jes.impl.workflow;
 
 import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
@@ -131,6 +131,9 @@ public class InMemoryJobFactoryImpl extends AbstractJobFactoryImpl implements Co
 
 /* 
 $Log: InMemoryJobFactoryImpl.java,v $
+Revision 1.6  2004/03/15 01:31:12  nw
+jazzed up javadoc
+
 Revision 1.5  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 

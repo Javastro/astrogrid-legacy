@@ -1,5 +1,15 @@
 <html>
 	<body>
-		<h1>Job Service Delegates</h1>
+		<h1>JES SOAP Delegates</h1>
+		Call the static methods on {@link org.astrogrid.jes.delegate.JesDelegateFactory} to create either a {@link org.astrogrid.jes.delegate.JobController} delegate
+		or a {@link org.astrogrid.jes.delegate.JobMonitor} delegate.
+		<h2>
+			Job Controller
+		</h2>
+		This interface provides methods to submit jobs / remove records / query progress of jobs in a job execution service
+		<h2>
+			Job Monitor
+		</h2>
+		This inteface is a 'callback' into the job execution service that is used to report progress of job step executions.
 	</body>
 </html>

@@ -1,4 +1,4 @@
-/*$Id: JobFactory.java,v 1.10 2004/03/04 01:57:35 nw Exp $
+/*$Id: JobFactory.java,v 1.11 2004/03/15 01:31:12 nw Exp $
  * Created on 09-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,26 +21,61 @@ import java.util.Iterator;
  *
  */
 public interface JobFactory {
+    /** start a transaction.
+     * @deprecated - not needed, and poorly supported. code in a way as not to require rollback instead
+     *
+     */
     void begin();
-    boolean end(boolean bCommit) throws JobException;
-    Workflow createJob(SubmitJobRequest req) throws JobException;
-    //Iterator findJobsWhere(String queryString) throws JobException;
-    Workflow findJob(JobURN urn) throws JobException;
-    /** 
+    /** end a transaction
      * 
-     * @param userid
-     * @param community
-     * @param jobListXML obsolete - ignored. remove.
-     * @return iterator of job objects.
+     * @param bCommit whether to rollback or not.
+     * @return dunno
+     * @throws JobException
+     * @deprecated - not needed. poorly supported. don't rely on rollback functionality being there.
+     */
+    boolean end(boolean bCommit) throws JobException;
+    /** create a new workflow from a submission request
+     * @todo refactor away - doesn't serve any purpose any more.
+     * @param req abstract request type
+     * @return concrete workflow object
+     * @throws JobException
+     */
+    Workflow createJob(SubmitJobRequest req) throws JobException;
+    /** retreive a job by unque id
+     * 
+     * @param urn unique identifier for the job
+     * @return associated workflow object
+     * @throws JobException on general error
+     * @throws NotFoundException if the workflow associated with the unique id cannot be found.
+     * @throws DuplicateFoundException if the unique id has more than one workflow associated with it (unlikely, at least for current implementations)
+     */
+    Workflow findJob(JobURN urn) throws JobException, NotFoundException, DuplicateFoundException;
+
+    /** return list of jobs for a user
+     * @todo change to a strongly-typed return type - Workflow[] for example.
+     * @param acc defines the user to search for jobs for
+     * @return iterator of <tt>Workflow</tt> objects: never null, may be empty
      * @throws JobException
      */
     public Iterator findUserJobs(Account acc) throws JobException;
-
+    /** remove a workflow document from the store 
+     * @todo change to accepting jobURN instead
+     * @param job document to remove
+     * @throws JobException
+     */
     void deleteJob(Workflow job) throws JobException;
+    /** write an updated workflow document back to the store
+     * 
+     * @param job - workflow document, containing the unique JobURN.
+     * @throws JobException
+     */
     void updateJob(Workflow job) throws JobException;
 }
 /* 
 $Log: JobFactory.java,v $
+Revision 1.11  2004/03/15 01:31:12  nw
+jazzed up javadoc
+
 Revision 1.10  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

@@ -1,4 +1,4 @@
-/*$Id: DefaultSqlCommands.java,v 1.3 2004/03/07 21:04:38 nw Exp $
+/*$Id: DefaultSqlCommands.java,v 1.4 2004/03/15 01:31:12 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
-import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -147,6 +147,9 @@ public class DefaultSqlCommands implements SqlCommands , ComponentDescriptor{
 
 /* 
 $Log: DefaultSqlCommands.java,v $
+Revision 1.4  2004/03/15 01:31:12  nw
+jazzed up javadoc
+
 Revision 1.3  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 

@@ -1,4 +1,4 @@
-/*$Id: JobController.java,v 1.6 2004/03/09 15:04:42 nw Exp $
+/*$Id: JobController.java,v 1.7 2004/03/15 01:30:30 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,21 +14,52 @@ import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
-/** Interface to a job controller.
+/** Interface to a service for managing jobs - listing, deleting, submitting for execution, etc.
  * <p />
  * same as axis-generated service interface, but with castor types instead
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Feb-2004
  *
  */
-public interface JobController extends Delegate { 
+public interface JobController extends Delegate {
+    /** submit a workflow document for execution as a new job
+     * 
+     * @param wf workflow to execute
+     * @return a unique identifier for this job
+     * @throws JesDelegateException
+     */ 
     public JobURN submitWorkflow(Workflow wf) throws JesDelegateException;
+    /** cancel the execution of a job
+     * 
+     * @param urn unique identifier of the job to cancel
+     * @throws JesDelegateException
+     */
     public void cancelJob(JobURN urn) throws JesDelegateException;
+    /** delete all record of a job
+     * 
+     * @param urn unique identifier of the job to delete
+     * @throws JesDelegateException
+     */
     public void deleteJob(JobURN urn) throws JesDelegateException;
+    /** retreive a list of all jobs (pending, running and completed) for a particular user
+     * 
+     * @param acc account object for the user in question
+     * @return array of job summary objects, one summary for each job the user has in the system
+     * @throws JesDelegateException
+     */
     public JobSummary[] readJobList(Account acc) throws JesDelegateException;
+    /** retrive the workflow document for a job.
+     * 
+     * @param urn unique identifier for a job.
+     * @return annotated workflow document - will contains details of step execution, etc.
+     * @throws JesDelegateException
+     */
     public Workflow readJob(JobURN urn) throws JesDelegateException;
 }
 /* 
 $Log: JobController.java,v $
+Revision 1.7  2004/03/15 01:30:30  nw
+jazzed up javadoc
+
 Revision 1.6  2004/03/09 15:04:42  nw
 renamed JobInfo to JobSummary
 

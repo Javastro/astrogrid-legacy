@@ -1,4 +1,4 @@
-/*$Id: JobSummary.java,v 1.1 2004/03/09 15:04:42 nw Exp $
+/*$Id: JobSummary.java,v 1.2 2004/03/15 01:30:30 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,11 +30,11 @@ public class JobSummary {
     
     protected final String name;
     protected final JobURN jobID;
-    
+    /** human-readable name of the job */
     public String getName() {
         return name;
     }
-    
+    /** unique identifier assigned to this job */
     public JobURN getJobURN() {
         return jobID;
     }
@@ -43,6 +43,9 @@ public class JobSummary {
 
 /* 
 $Log: JobSummary.java,v $
+Revision 1.2  2004/03/15 01:30:30  nw
+jazzed up javadoc
+
 Revision 1.1  2004/03/09 15:04:42  nw
 renamed JobInfo to JobSummary
 

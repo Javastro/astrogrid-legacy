@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.54 2004/03/09 14:22:35 nw Exp $ -->
+<!-- $Id: project.xml,v 1.55 2004/03/15 01:29:29 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -33,24 +33,28 @@
     </repository>
         <packageGroups>
                 <packageGroup>
-                        <title>Public Web Service Delegate Interface</title>
+                        <title>Web Service Delegate - Public Interface</title>
                         <packages>org.astrogrid.jes.delegate</packages>
                 </packageGroup>
                 <packageGroup>
-                        <title>Web Service Delegate Implementation</title>
-                        <packages>org.astrogrid.jes.delegate.*</packages>
+                        <title>Web Service Delegate - Implementation</title>
+                        <packages>org.astrogrid.jes.delegate.impl</packages>
                 </packageGroup>
                 <packageGroup>
-                        <title>Job Factory and Store</title>
+                	<title>Service Components Configuration</title>
+                	<packages>org.astrogrid.jes.component*</packages>
+                </packageGroup>
+                <packageGroup>
+                        <title>Job Store</title>
                         <packages>org.astrogrid.jes.job:org.astrogrid.jes.impl.workflow</packages>
-                </packageGroup>
+                </packageGroup>               
                 <packageGroup>
-                        <title>Job Scheduler Implementation</title>
+                        <title>Scheduler</title>
                         <packages>org.astrogrid.jes.jobscheduler*</packages>
                 </packageGroup>
                 <packageGroup>
-                        <title>Web Service Implementation</title>
-                        <packages>org.astrogrid.jes.jobcontroller:org.astrogrid.jes.jobmonitor:org.astrogrid.jes.component:org.astrogrid.jes.comm</packages>
+                        <title>Controller and Monitor</title>
+                        <packages>org.astrogrid.jes.jobcontroller:org.astrogrid.jes.jobmonitor</packages>
                 </packageGroup>
         </packageGroups>
     <!-- end of overrides -->

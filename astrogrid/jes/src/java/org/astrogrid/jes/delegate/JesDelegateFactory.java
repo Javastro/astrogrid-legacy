@@ -1,4 +1,4 @@
-/*$Id: JesDelegateFactory.java,v 1.6 2004/03/10 12:15:32 nw Exp $
+/*$Id: JesDelegateFactory.java,v 1.7 2004/03/15 01:30:30 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,10 @@ import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
 
 import java.net.URL;
 
-/** Factory for jes delegates.
+/** Factory for JES delegates.
+ * <p>
+ * Delegates to JES web services - JobController and JobMonitor - can be created by either passing in a service endpoint explicitly, or by letting the factory
+ * try to locate an endpoint in the system configuration.
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Feb-2004
  *
  */
@@ -92,6 +95,9 @@ public class JesDelegateFactory {
 
 /* 
 $Log: JesDelegateFactory.java,v $
+Revision 1.7  2004/03/15 01:30:30  nw
+jazzed up javadoc
+
 Revision 1.6  2004/03/10 12:15:32  nw
 fixed goof
 

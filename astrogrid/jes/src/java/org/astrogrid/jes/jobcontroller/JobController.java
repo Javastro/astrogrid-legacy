@@ -12,7 +12,7 @@ package org.astrogrid.jes.jobcontroller;
 
 import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JesFault;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobException;
@@ -38,35 +38,12 @@ import junit.framework.Test;
 
 
 /**
- * The <code>JobController</code> class represents one of the top level
- * components in the AstroGrid Job Entry System (JES), the other components
- * being the <code>JobScheduler</code> and the <code>JobMonitor</code>. 
+ * Management interface into the job execution system.
  * <p>
- * The <code>JobController</code> accepts a request for job submission and
- * creates the necessary job structures within the Job database for scheduling
- * and tracking the Job through the AstroGrid system. It informs the JobScheduler
- * that there is a new candidate for scheduling before returning a reply which
- * contains the unique identifier for the job.
+ * This class allows clients to interact with a job store - listing, removing, retreiving jobs, etc. Adding a job to the store has the effect of 
+ * scheduling it for execution too.
  * <p>
- * The mainline argument (the workflow) is held within the method submitJob(),
- * which should be referred to for further detail. The basic workflow is:
- *      1. Load the JobController properties (if not already loaded).
- *      2. Analyse the job submission document and create the appropriate 
- *         data structures within the Job database.
- *      3  Inform the JobScheduler.
- *      4. Format a reply, passing back the unique job identifier.
- * <p>	
- * The above does not cover use cases where errors occur.
- * <p>
- * An instance of a JobController is stateless, with some provisos:
- * 1. The JobController is driven by a properties file, held at class level.
- * 2. AstroGrid messages are held in a manner amenable to internationalization.
- * These are also loaded from a properties file, held at class level.
- * 3. Finally, and importantly, the JobController utilizes an entity which does
- * contain state - the Job entity, which currently represents a number of tables 
- * held in any suitable JDBC compliant database. However, again this is not 
- * an absolute restriction. Note well: the JobController does not hold Job
- * as an instance variable.
+ * This class could be accessed directly, but would more usually be called from a web delegate via a SOAP call.
  *
  * @author  Jeff Lusted
  * @version 1.0 28-May-2003
@@ -87,7 +64,10 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
 	private static final Log
 		logger = LogFactory.getLog( JobController.class ) ;
     
-    /** adapter, to enable this class to implement the generated JobController interface */
+    /** Submit a job to the execution service
+     * 
+     * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#submitWorkflow(org.astrogrid.jes.types.v1.WorkflowString)
+     */
     public JobURN submitWorkflow(WorkflowString workflowXML) throws JesFault{
         logger.debug("in submit workflow");
         try {
@@ -98,30 +78,19 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
         }
     }
 	
-	/**
-	  * <p> 
-	  * Represents the mainline workflow argument for the JobController. 
-	  * <p>
-	  * Shows the JobController to be a component with no state.
-	  * It neither uses nor creates instance variables. In the EJB model 
-	  * it would be considered a stateless session bean.
-	  * 
-	  * @param jobXML - The service request XML received as a String.
-	  * @return A String containing the reponse document in XML.
-	  * 
-	  * @see SubmitJobRequest.xsd in CVS
-	  * @see SubmitJobResponse.xsd in CVS
-	  * 
-	  * Bug#12   Jeff Lusted - 30-June-2003
-	  **/     
+/** 
+ * Submit a job to the execution service
+ * @todo remove this extra method - merge with submitWorkflow(String); 
+ * @param req abstract request object
+ * @return unique identifier for the new job.
+ * @throws JesFault
+ */    
     public JobURN submitJob( SubmitJobRequest req ) throws JesFault {
         logger.debug("in submit job");
 		JobFactory factory = null ;
         Workflow job= null;
-
 			
         try { 
-
 	        factory = facade.getJobFactory() ;
 	        factory.begin() ;
 	        job = factory.createJob( req) ;
@@ -140,7 +109,6 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
             }
             throw createFault("Failed to submit job",jex);
         }
-
          	
     } // end of submitJob()
     
