@@ -100,21 +100,6 @@ Requires:
          url="${basedir}/src/wsdl/SkyNode0.7.wsdl"
          deployscope="Application" serverside="true" skeletondeploy="true">
       </axis-wsdl2java>
-      
-      <axis-wsdl2java output="${generated.src}" verbose="true" testcase="true"
-         url="${basedir}/src/wsdl/AstroGridDataServer0.5.wsdl"
-         deployscope="Application" serverside="true" skeletondeploy="true">
-         <mapping
-            namespace="http://www.astrogrid.org/datacenter/It05/dataserver/v1"
-            package="org.astrogrid.datacenter.axisdataserver0_5" />
-         <mapping
-            namespace="http://www.astrogrid.org/datacenter/It05/dataserver/v1/types"
-            package="org.astrogrid.datacenter.axisdataserver0_5.types" />
-         <mapping
-            namespace="http://tempuri.org/adql"
-            package="org.astrogrid.datacenter.adql.generated0_5" />
-      </axis-wsdl2java>
-
    </goal>
 
 
