@@ -39,95 +39,119 @@
       <id>jl99</id>
       <email>jl99@star.le.ac.uk</email>
     </developer>
+    <developer>
+      <name>John D Taylor</name>
+      <id>jdt</id>
+      <email>jdt@roe.ac.uk</email>
+      <roles>
+	      <role>Unit Tester</role>
+	  </roles>
+    </developer>    
   </developers>
   
   <dependencies>
     <dependency>
-      <id>astrogrid-common</id>
+      <artifactId>astrogrid-common</artifactId>
+      <groupId>astrogrid-common</groupId>
       <version>SNAPSHOT</version>
     </dependency>
 
     <dependency>
-      <id>axis</id>
+      <artifactId>axis</artifactId>
+      <groupId>axis</groupId>
       <version>1.1</version>
     </dependency>
 
     <!--dependency>
-      <id>jax-qname</id>
+      <artifactId>jax-qname</artifactId>
+      <groupId>null</groupId>
       <version>UNKNOWN</version>
       <jar>jax-qname.jar</jar>
     </dependency-->
 
     <!--dependency>
-      <id>jaxrpc-api</id>
+      <artifactId>jaxrpc-api</artifactId>
+      <groupId>null</groupId>
       <version>1.0.3</version>
     </dependency-->
 
     <!--dependency>
-      <id>jconn</id>
+      <artifactId>jconn</artifactId>
       <version>UNKNOWN</version>
+      <groupId>null</groupId>
       <jar>jconn2.jar</jar>
     </dependency-->
 
     <dependency>
-      <id>junit</id>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
       <version>3.8.1</version>
     </dependency>
 
 <!--1.2.8 now available-->
     <dependency>
-      <id>log4j</id>
+      <artifactId>log4j</artifactId>
+      <groupId>log4j</groupId>
       <version>1.2.4</version>
     </dependency>
 
     <!--dependency>
-      <id>saaj-api</id>
+      <artifactId>saaj-api</artifactId>
+      <groupId>null</groupId>
       <version>1.1.1</version>
     </dependency-->
 
 <!--version 2.3 now available-->
     <dependency>
-      <id>servletapi</id>
+      <artifactId>servletapi</artifactId>
+      <groupId>servletapi</groupId>
       <version>2.2</version>
     </dependency>
     
     <!-- Don't know where this one comes from!-->
     <!-- who builds this and where does it go? -->
     <dependency>
-	   	<id>policy-client</id>    
+	   	<artifactId>policy-client</artifactId>  
+	   	<groupId>policy-client</groupId>  
      	<version>1.0</version>
      	
     </dependency> 
     
     <dependency>
-    	<id>jconfig</id>
+    	<artifactId>jconfig</artifactId>
+    	<groupId>jconfig</groupId>
     	<version>2.1</version>
     </dependency>
     <dependency>
-    	<id>jaxrpc</id>
+    	<artifactId>jaxrpc</artifactId>
+    	<groupId>jaxrpc</groupId>
     	<version>UNKNOWN</version>
     	<jar>jaxrpc.jar</jar>
     </dependency>
     <dependency>
-      <id>saaj</id>
+      <artifactId>saaj</artifactId>
+      <groupId>saaj</groupId>
       <version>UNKNOWN</version>
       <jar>saaj.jar</jar>
     </dependency> 
     <dependency>
-      <id>wsdl4j</id>
+      <artifactId>wsdl4j</artifactId>
+      <groupId>wsdl4j</groupId>
       <version>UNKNOWN</version>
       <jar>wsdl4j.jar</jar>
     </dependency>  
        
     <!--Don't know where this one comes from!-doesn't exist on repo-->
     <dependency>
-    	<id>datacenterdelegates</id>
+    	<artifactId>datacenterdelegates</artifactId>
+    	<groupId>datacenterdelegates</groupId>
     	<version>UNKNOWN</version>
     	     	<jar>datacenterdelegates.jar</jar>
     </dependency>
      <!-- Don't know where this one comes from!-doesn't exist on repo -->
     <dependency>
-    	<id>authentication-client</id>
+    	<artifactId>authentication-client</artifactId>
+    	<groupId>authentication-client</groupId>
     	<version>1.0_JLbugfix</version>
     </dependency>          
   </dependencies>
