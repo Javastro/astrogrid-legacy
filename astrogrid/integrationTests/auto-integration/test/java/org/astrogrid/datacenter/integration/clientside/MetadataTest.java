@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.1 2004/10/08 15:52:18 mch Exp $
+/*$Id: MetadataTest.java,v 1.2 2004/10/08 15:59:22 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import junit.framework.TestSuite;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.integration.StdKeys;
@@ -118,7 +119,9 @@ public class MetadataTest extends TestCase implements StdKeys {
       
    }
    
+   /** To run standalone */
    public static void main(String[] args) {
+      SimpleConfig.setProperty("tomcat.root", "http://twmbarlwm.star.le.ac.uk:8888");
       junit.textui.TestRunner.run(new TestSuite(MetadataTest.class));
    }
 }
@@ -126,6 +129,9 @@ public class MetadataTest extends TestCase implements StdKeys {
 
 /*
 $Log: MetadataTest.java,v $
+Revision 1.2  2004/10/08 15:59:22  mch
+made stdkey strings non-static
+
 Revision 1.1  2004/10/08 15:52:18  mch
 More tests for Registry push etc
 

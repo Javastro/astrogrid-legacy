@@ -1,4 +1,4 @@
-/*$Id: DatacenterTestCase.java,v 1.3 2004/10/06 22:03:45 mch Exp $
+/*$Id: DatacenterTestCase.java,v 1.4 2004/10/08 15:59:22 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,8 @@ import org.astrogrid.datacenter.query.QueryException;
  */
 public class DatacenterTestCase extends TestCase {
 
+   
+   
    /**
     * Checks the given inputstream is aVOTable, returning it as a DOM
     */
@@ -67,6 +69,9 @@ public class DatacenterTestCase extends TestCase {
 
 /*
 $Log: DatacenterTestCase.java,v $
+Revision 1.4  2004/10/08 15:59:22  mch
+made stdkey strings non-static
+
 Revision 1.3  2004/10/06 22:03:45  mch
 Following Query model changes in PAL
 
