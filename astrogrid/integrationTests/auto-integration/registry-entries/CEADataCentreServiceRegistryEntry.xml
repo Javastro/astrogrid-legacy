@@ -34,7 +34,7 @@
                 <vr:Capability>
                         <vr:StandardURL>http://www.astrogrid.org/maven/build/applications/</vr:StandardURL>
                         <vr:StandardID>
-                                <vr:AuthorityID>astrogrid.og</vr:AuthorityID>
+                                <vr:AuthorityID>astrogrid.org</vr:AuthorityID>
                                 <vr:ResourceKey>CommonExecutionArchitucture</vr:ResourceKey>
                         </vr:StandardID>
                 </vr:Capability>
@@ -44,8 +44,8 @@
                 </vr:Interface>
                 <ManagedApplications>
                         <ApplicationReference>
-                                <vr:AuthorityID>org.astrogrid.test.mssl</vr:AuthorityID>
-                                <vr:ResourceKey>6DF</vr:ResourceKey>
+                                <vr:AuthorityID>org.astrogrid.localhost</vr:AuthorityID>
+                                <vr:ResourceKey>testdsa</vr:ResourceKey>
                         </ApplicationReference>
                 </ManagedApplications>
         </CeaService>
