@@ -293,9 +293,9 @@ public class EntryNode implements StoreFile
    }
 
 /**
- * Return the parent folder of this file/folder.  For this class null
- * is always returned.
+ * Return the parent folder of this file/folder.
  */
+
    public StoreFile getParent()
    {  return parent;
    }
@@ -304,6 +304,7 @@ public class EntryNode implements StoreFile
  * Returns true if this EntryNode is a container which can hold other
  * files or folders.
  */
+
    public boolean isFolder()
    {  boolean isContainer;
 
@@ -323,6 +324,7 @@ public class EntryNode implements StoreFile
  * it is not a file.  A value of false is always returned because currently
  * MySpace cannot handle database tables.
  */
+
    public boolean isFile()
    {  return false;
    }
@@ -353,22 +355,15 @@ public class EntryNode implements StoreFile
  * Return the path to this file on the MySpace Service.
  */
    public String getPath()
-   {  String path = "/";
-
-      int lastSep = entryName.lastIndexOf("/");
-      if (lastSep>0)
-      {  path = entryName.substring(0, lastSep+1);
-      }
-
-      return path;
+   {  return entryName;
    }
    
 /**
  * Return where to find this file using an AstroGrid Store Locator.
  *
  * [TODO] Hmmm.  The following may or may not be correct!
-
  */
+
    public Agsl toAgsl()
    {  try
       {  Agsl agsl = new Agsl( new java.net.URL(entryUri) );
@@ -503,6 +498,22 @@ public class EntryNode implements StoreFile
       return shortName;
    }
    
+/** 
+ * Return the container path to the file on the MySpace Service,
+ * without the final file name.
+ */
+
+   public String getContainerPath()
+   {  String path = "/";
+
+      int lastSep = entryName.lastIndexOf("/");
+      if (lastSep>0)
+      {  path = entryName.substring(0, lastSep+1);
+      }
+
+      return path;
+   }
+
 
 // ----------------------------------------------------------------------
 

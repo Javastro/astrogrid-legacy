@@ -193,14 +193,7 @@ public class EntryRecord implements StoreFile
  * Return the path to this file on the MySpace Service.
  */
    public String getPath()
-   {  String path = "/";
-
-      int lastSep = entryName.lastIndexOf("/");
-      if (lastSep>0)
-      {  path = entryName.substring(0, lastSep+1);
-      }
-
-      return path;
+   {  return entryName;
    }
    
 /**
@@ -324,6 +317,21 @@ public class EntryRecord implements StoreFile
    }
 
 
+/** 
+ * Return the container path to the file on the MySpace Service,
+ * without the final file name.
+ */
+   public String getContainerPath()
+   {  String path = "/";
+
+      int lastSep = entryName.lastIndexOf("/");
+      if (lastSep>0)
+      {  path = entryName.substring(0, lastSep+1);
+      }
+
+      return path;
+   }
+   
 // ----------------------------------------------------------------------
 
 //

@@ -895,9 +895,6 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * list and checked to see whether any correspond to an error.
  *
  * @param results Results object returned by the inner delegate.
- * @return A flag indicating whether any of the given messages
- *   corresponds to an error.  A value of true is returned if an error
- *   was found; otherwise false.
  */
 
    private void appendAndCheckStatusMessages(KernelResults results)
@@ -936,7 +933,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
          }
       }
 
-      if (errorRaised)
+      if (errorRaised && throwExceptions)
       {  throw new StoreException(messageFromManager);
       }
    }
