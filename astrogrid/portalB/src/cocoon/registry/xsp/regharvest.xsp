@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsp:page language="java"
+		create-session="true"
+		xmlns:xsp="http://apache.org/xsp"
+		xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+		
+		<!--+
+	    | Import any java classes here.
+	    +-->
+
+	<xsp:structure>
+		<xsp:include>java.util.Iterator</xsp:include>
+		<xsp:include>java.util.ArrayList</xsp:include>
+	</xsp:structure>	    
+	
+	<wrappit>
+		<xsp:logic>
+			<![CDATA[
+				String result = (String)request.getParameter("HarvestResult");
+			]]>
+			<xsp:element name="test">
+				<xsp:expr>result</xsp:expr>
+			</xsp:element>
+		</xsp:logic>
+	</wrappit>
+</xsp:page>

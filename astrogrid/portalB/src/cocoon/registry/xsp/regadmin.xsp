@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsp:page language="java"
+		create-session="true"
+		xmlns:xsp="http://apache.org/xsp"
+		xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+		
+			<!--+
+	    | Import any java classes here.
+	    +-->
+
+	<xsp:structure>
+		<xsp:include>java.util.Iterator</xsp:include>
+		<xsp:include>java.util.Map</xsp:include>		
+		<xsp:include>java.util.ArrayList</xsp:include>		
+		<xsp:include>java.util.Set</xsp:include>
+	</xsp:structure>	    
+	
+	<registryquery>		
+		<regitems>
+			<xsp:logic>
+			<![CDATA[
+				Map regList = (Map)request.getAttribute("regitems");
+				Set st = regList.keySet();
+				Iterator iter = null;
+				String actionType = (String)request.getAttribute("action");
+				String regKey = null;
+				String regVal = null;
+				if(regList != null && regList.size() > 0 ) {
+				iter = st.iterator();				
+				while (iter.hasNext()) {
+					regKey = (String)iter.next();
+					regVal = (String)regList.get(regKey);
+					if(!"update".equals(actionType)) {
+						regVal = "";
+					}
+			]]>
+					<xsp:element name="regitem">
+						<xsp:attribute name="name"><xsp:expr>regKey</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>regVal</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+					}
+			]]>
+			</xsp:logic>
+		</regitems>
+	</registryquery>
+</xsp:page>
