@@ -35,6 +35,12 @@
      banner="installing snapshots"
      ignoreFailures="true" />
 </goal>
+<goal name="astrogrid-build-snapshot">
+   <echo message="Goal not implemented"/>
+</goal>
+<goal name="astrogrid-build-artifact">
+   <echo message="Goal not implemented"/>
+</goal>
 <goal name="astrogrid-install-artifact">
    <echo message="Master Project: astrogrid-install-artifact"/>
    <maven:reactor
