@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.16 2003/09/15 21:27:15 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.17 2003/09/15 22:05:34 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,7 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
 import javax.xml.rpc.ServiceException;
-import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.w3c.dom.Element;
 
@@ -122,7 +122,7 @@ public abstract class DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public abstract ServiceStatus getServiceStatus(String id);
+   public abstract QueryStatus getServiceStatus(String id);
 
 
    /**
@@ -136,26 +136,29 @@ public abstract class DatacenterDelegate
    }
 
    /** A convenience method for sublcasses that keep (some) status listeners locally.
-    * Informs *all* listeners of the new status change for the given service id.
+    * Informs *all* listeners of the new status change for the given query id.
     * @todo Not threadsafe...
     */
-   protected void fireStatusChanged(String serviceId, ServiceStatus newStatus)
+   protected void fireStatusChanged(String queryId, QueryStatus newStatus)
    {
       for (int i=0;i<statusListeners.size();i++)
       {
-         ((DatacenterStatusListener) statusListeners.get(i)).datacenterStatusChanged(serviceId, newStatus);
+         ((DatacenterStatusListener) statusListeners.get(i)).datacenterStatusChanged(queryId, newStatus);
       }
    }
 
    /**
     * Register listener with *service*
     */
-   public abstract void registerListener(String serviceId, DatacenterStatusListener listener);
+   public abstract void registerListener(String queryId, DatacenterStatusListener listener);
 
 }
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.17  2003/09/15 22:05:34  mch
+Renamed service id to query id throughout to make identifying state clearer
+
 Revision 1.16  2003/09/15 21:27:15  mch
 Listener/state refactoring.
 

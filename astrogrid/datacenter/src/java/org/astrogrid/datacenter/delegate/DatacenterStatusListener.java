@@ -1,12 +1,12 @@
 /*
- * $Id: DatacenterStatusListener.java,v 1.10 2003/09/15 21:27:15 mch Exp $
+ * $Id: DatacenterStatusListener.java,v 1.11 2003/09/15 22:05:34 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate;
 
-import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.QueryStatus;
 
 /**
  * Classes that implement this interface, and register with the
@@ -22,11 +22,14 @@ public interface DatacenterStatusListener
    /** Called by the datacenter delegate when it has been notified of a
     * status change.  NB a delegate may have several services running at once.
     */
-   public void datacenterStatusChanged(String serviceId, ServiceStatus newStatus);
+   public void datacenterStatusChanged(String queryId, QueryStatus newStatus);
 }
 
 /*
 $Log: DatacenterStatusListener.java,v $
+Revision 1.11  2003/09/15 22:05:34  mch
+Renamed service id to query id throughout to make identifying state clearer
+
 Revision 1.10  2003/09/15 21:27:15  mch
 Listener/state refactoring.
 

@@ -30,7 +30,7 @@ public class StatusHelperTest extends TestCase {
    }
    public void testMakeStatusTag()  throws Exception{
 
-      String result = StatusHelper.makeStatusTag("foo", ServiceStatus.STARTING);
+      String result = StatusHelper.makeStatusTag("foo", QueryStatus.STARTING);
         Document doc = DocHelper.wrap(result); // just test its correct XML.
         assertNotNull(doc);
 
@@ -46,13 +46,13 @@ public class StatusHelperTest extends TestCase {
     /** Tests that service status un/marshalling works */
    public void testGetServiceStatus() throws Exception {
 
-      String src = StatusHelper.makeStatusTag("foo",ServiceStatus.RUNNING_QUERY);
+      String src = StatusHelper.makeStatusTag("foo",QueryStatus.RUNNING_QUERY);
         System.out.println(src);
         Document doc = DocHelper.wrap("<bar>"+src+"</bar>");
         assertNotNull(doc);
-      ServiceStatus result = StatusHelper.getServiceStatus("foo", doc.getDocumentElement());
+      QueryStatus result = StatusHelper.getServiceStatus("foo", doc.getDocumentElement());
         assertNotNull(result);
-        assertEquals(result, ServiceStatus.RUNNING_QUERY);
+        assertEquals(result, QueryStatus.RUNNING_QUERY);
 
    }
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceIdHelper.java,v 1.4 2003/09/15 15:44:44 mch Exp $
+ * $Id: QueryIdHelper.java,v 1.1 2003/09/15 22:05:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,32 +17,32 @@ import org.w3c.dom.NodeList;
  * @author M Hill
  */
 
-public class ServiceIdHelper
+public class QueryIdHelper
 {
    /** The service id name when used as a tag tag name */
-   public static final String SERVICE_ID_TAG = "ServiceId";
+   public static final String QUERY_ID_TAG = "ServiceId";
 
    /** The service id name when using as an attribute */
-   public static final String SERVICE_ID_ATT = "serviceid";
+   public static final String QUERY_ID_ATT = "serviceid";
 
    /** Makes a service tag with the given id as the tag value */
-   public static String makeServiceIdTag(String id)
+   public static String makeQueryIdTag(String id)
    {
-      String tagString = "<"+SERVICE_ID_TAG+">"+id+"</"+SERVICE_ID_TAG+">";
+      String tagString = "<"+QUERY_ID_TAG+">"+id+"</"+QUERY_ID_TAG+">";
 
       return tagString;
       //return XMLUtils.newDocument(tagString).getDocumentElement();
    }
 
    /** Finds the service tag in the given dom and returns its tag value */
-   public static String getServiceId(Element domContainingId)
+   public static String getQueryId(Element domContainingId)
    {
-      NodeList idNodes = domContainingId.getElementsByTagName(SERVICE_ID_TAG);
+      NodeList idNodes = domContainingId.getElementsByTagName(QUERY_ID_TAG);
 
       if (idNodes.getLength() == 0)
       {
          //no service id tag found, look for attribute in top tag
-         return domContainingId.getAttribute(ServiceIdHelper.SERVICE_ID_ATT);
+         return domContainingId.getAttribute(QueryIdHelper.QUERY_ID_ATT);
       }
 
       Log.affirm(idNodes.getLength() == 1, "Should only be 1 service id tag in an element");
@@ -60,9 +60,9 @@ public class ServiceIdHelper
    /** Makes a tag with the given name, and a service id attribute set to the
     * given id
     */
-   public static String makeTagWithServiceIdAttr(String tagName, String id)
+   public static String makeTagWithQueryIdAttr(String tagName, String id)
    {
-      return "<"+tagName+"  "+SERVICE_ID_ATT+"='"+id+"'>";
+      return "<"+tagName+"  "+QUERY_ID_ATT+"='"+id+"'>";
    }
 }
 

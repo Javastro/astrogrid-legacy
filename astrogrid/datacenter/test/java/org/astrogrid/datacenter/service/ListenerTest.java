@@ -31,7 +31,7 @@ public class ListenerTest extends TestCase
 
       //make sure it can be registered properly
       DummyDelegate delegate = (DummyDelegate) DatacenterDelegate.makeDelegate(null);
-      delegate.registerListener(DummyDelegate.SERVICE_ID, listener);
+      delegate.registerListener(DummyDelegate.QUERY_ID, listener);
 
       DummyQuerier querier = new DummyQuerier();
    }
@@ -58,6 +58,9 @@ public class ListenerTest extends TestCase
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.2  2003/09/15 22:09:00  mch
+Renamed service id to query id throughout to make identifying state clearer
+
 Revision 1.1  2003/09/15 21:28:09  mch
 Listener/state refactoring.
 

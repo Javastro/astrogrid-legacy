@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.22 2003/09/15 21:27:15 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.23 2003/09/15 22:05:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 import org.astrogrid.datacenter.common.DocMessageHelper;
-import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.delegate.JobNotifyServiceListener;
@@ -54,7 +54,7 @@ public abstract class DatabaseQuerier implements Runnable
    private Vector serviceListeners = new Vector();
 
    /** status of call */
-   private ServiceStatus status = ServiceStatus.UNKNOWN;
+   private QueryStatus status = QueryStatus.UNKNOWN;
 
    /** If an error is thrown in the spawned thread, this holds the exception */
    private Throwable error = null;
@@ -95,7 +95,7 @@ public abstract class DatabaseQuerier implements Runnable
       handle = generateHandle();
       queriers.put(handle, this);
       workspace = new Workspace(handle);
-      setStatus(ServiceStatus.CONSTRUCTED);
+      setStatus(QueryStatus.CONSTRUCTED);
    }
 
    /**
@@ -288,11 +288,11 @@ public abstract class DatabaseQuerier implements Runnable
     */
    public void doQuery() throws QueryException, DatabaseAccessException
    {
-      setStatus(ServiceStatus.RUNNING_QUERY);
+      setStatus(QueryStatus.RUNNING_QUERY);
 
       results = queryDatabase(query);
 
-      setStatus(ServiceStatus.QUERY_COMPLETE);
+      setStatus(QueryStatus.QUERY_COMPLETE);
 
    }
 
@@ -380,9 +380,9 @@ public abstract class DatabaseQuerier implements Runnable
     * throws an exception (as each querier should only handle one query).
     * Synchronised as the queriers may be running under a different thread
     */
-   public synchronized void setStatus(ServiceStatus newStatus)
+   public synchronized void setStatus(QueryStatus newStatus)
    {
-      Log.affirm(status != ServiceStatus.ERROR,
+      Log.affirm(status != QueryStatus.ERROR,
                  "Trying to start a step '"+newStatus+"' when the status is '"
                     +status+"'");
 
@@ -403,7 +403,7 @@ public abstract class DatabaseQuerier implements Runnable
     */
    protected void setErrorStatus(Throwable th)
    {
-      setStatus(ServiceStatus.ERROR);
+      setStatus(QueryStatus.ERROR);
 
       error = th;
    }
@@ -413,7 +413,7 @@ public abstract class DatabaseQuerier implements Runnable
     */
    public Throwable getError()
    {
-      Log.affirm(status == ServiceStatus.ERROR,
+      Log.affirm(status == QueryStatus.ERROR,
                  "Trying to get exception but there is no error, status='"+status+"'");
 
       return error;
@@ -422,7 +422,7 @@ public abstract class DatabaseQuerier implements Runnable
    /**
     * Returns the current status
     */
-   public ServiceStatus getStatus()
+   public QueryStatus getStatus()
    {
       return status;
    }
@@ -441,7 +441,7 @@ public abstract class DatabaseQuerier implements Runnable
    /** informs all listeners of the new status change. Not threadsafe... should
     * call setStatus() rather than this directly
     */
-   private void fireStatusChanged(ServiceStatus newStatus)
+   private void fireStatusChanged(QueryStatus newStatus)
    {
       for (int i=0;i<serviceListeners.size();i++)
       {

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2003/09/15 17:39:18 mch Exp $
+/*$Id: AllTests.java,v 1.4 2003/09/15 22:09:00 mch Exp $
  * Created on 11-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ public class AllTests {
             new TestSuite("Test for org.astrogrid.datacenter.common");
         //$JUnit-BEGIN$
         suite.addTest(DocHelperTest.suite());
-        suite.addTest(ServiceIdHelperTest.suite());
+        suite.addTest(QueryIdHelperTest.suite());
         suite.addTest(StatusHelperTest.suite());
         suite.addTest(ResponseHelperTest.suite());
         //$JUnit-END$
@@ -39,6 +39,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.4  2003/09/15 22:09:00  mch
+Renamed service id to query id throughout to make identifying state clearer
+
 Revision 1.3  2003/09/15 17:39:18  mch
 Better test coverage
 

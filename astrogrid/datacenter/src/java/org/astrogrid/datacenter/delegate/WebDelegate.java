@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.5 2003/09/15 21:27:15 mch Exp $
+ * $Id: WebDelegate.java,v 1.6 2003/09/15 22:05:34 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,8 +11,8 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.datacenter.common.DocHelper;
-import org.astrogrid.datacenter.common.ServiceIdHelper;
-import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.QueryIdHelper;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.query.QueryException;
@@ -72,14 +72,14 @@ public class WebDelegate extends DatacenterDelegate
 
    /**
     * Returns votable results (or status info if results not ready)
-    * @todo change getResultsAndClose() to take the service Id as string
+    * @todo change getResultsAndClose() to take the query Id as string
     */
-   public Element getResults(String id) throws RemoteException
+   public Element getResults(String queryId) throws RemoteException
    {
       try
       {
          return binding.getResultsAndClose(
-            DocHelper.wrap(ServiceIdHelper.makeServiceIdTag(id)).getDocumentElement());
+            DocHelper.wrap(QueryIdHelper.makeQueryIdTag(queryId)).getDocumentElement());
 
       }
       catch (Exception e)
@@ -127,7 +127,7 @@ public class WebDelegate extends DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public ServiceStatus getServiceStatus(String id)
+   public QueryStatus getServiceStatus(String id)
    {
       return binding.getStatus(id);
    }
@@ -137,11 +137,11 @@ public class WebDelegate extends DatacenterDelegate
     * WebNotify Listeners will work - as this delegate has
     * no session contact with the server.
     */
-   public void registerListener(String serviceId, DatacenterStatusListener listener)
+   public void registerListener(String queryId, DatacenterStatusListener listener)
    {
       if (listener instanceof WebNotifyServiceListener)
       {
-         return binding.registerWebListener( serviceId, (WebNotifyServiceListener) listener);
+         return binding.registerWebListener( queryId, (WebNotifyServiceListener) listener);
       }
       else
       {
@@ -155,6 +155,9 @@ public class WebDelegate extends DatacenterDelegate
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.6  2003/09/15 22:05:34  mch
+Renamed service id to query id throughout to make identifying state clearer
+
 Revision 1.5  2003/09/15 21:27:15  mch
 Listener/state refactoring.
 

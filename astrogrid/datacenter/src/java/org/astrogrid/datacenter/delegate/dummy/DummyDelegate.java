@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.4 2003/09/15 21:27:15 mch Exp $
+ * $Id: DummyDelegate.java,v 1.5 2003/09/15 22:05:34 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -13,8 +13,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.DocHelper;
 import org.astrogrid.datacenter.common.ResponseHelper;
-import org.astrogrid.datacenter.common.ServiceIdHelper;
-import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.QueryIdHelper;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
 import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
@@ -49,10 +49,10 @@ public class DummyDelegate extends DatacenterDelegate
    public static final String FINISHED = "Finished";
 
    /** Pretend service id */
-   public static final String SERVICE_ID = "DummyId";
+   public static final String QUERY_ID = "DummyId";
 
    /** Last status set */
-   private ServiceStatus lastStatus = ServiceStatus.CONSTRUCTED;
+   private QueryStatus lastStatus = QueryStatus.CONSTRUCTED;
 
    /** Generally speaking don't use this directly - use the factory
     * method DatacenterDelegate.makeDelegate(null), which is a
@@ -77,9 +77,9 @@ public class DummyDelegate extends DatacenterDelegate
     */
    public Element adqlQuery(Element adql) throws RemoteException
    {
-      setStatus(ServiceStatus.STARTING);
+      setStatus(QueryStatus.STARTING);
 
-      setStatus(ServiceStatus.RUNNING_QUERY);
+      setStatus(QueryStatus.RUNNING_QUERY);
 
       //we *could* unmarshall the query here but that starts getting all
       //horribly involved with server code, so we just skip it...
@@ -95,11 +95,11 @@ public class DummyDelegate extends DatacenterDelegate
       }
        /**/
 
-      setStatus(ServiceStatus.RUNNING_RESULTS);
+      setStatus(QueryStatus.RUNNING_RESULTS);
 
       Element results = getSampleResults();
 
-      setStatus(ServiceStatus.FINISHED);
+      setStatus(QueryStatus.FINISHED);
 
       return results;
    }
@@ -109,13 +109,13 @@ public class DummyDelegate extends DatacenterDelegate
     */
    public Element spawnAdqlQuery(Element adql) throws RemoteException
    {
-      setStatus(ServiceStatus.STARTING);
+      setStatus(QueryStatus.STARTING);
 
-      setStatus(ServiceStatus.RUNNING_QUERY);
+      setStatus(QueryStatus.RUNNING_QUERY);
 
       try
       {
-         return DocHelper.wrap(ServiceIdHelper.makeServiceIdTag(SERVICE_ID)).getDocumentElement();
+         return DocHelper.wrap(QueryIdHelper.makeQueryIdTag(QUERY_ID)).getDocumentElement();
       }
       catch (SAXException e)
       {
@@ -132,12 +132,12 @@ public class DummyDelegate extends DatacenterDelegate
       URL url = null;
       try
       {
-         setStatus(ServiceStatus.RUNNING_RESULTS);
+         setStatus(QueryStatus.RUNNING_RESULTS);
 
          url = getClass().getResource("ExampleResults.xml");
          Document resultsDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
 
-         setStatus(ServiceStatus.FINISHED);
+         setStatus(QueryStatus.FINISHED);
 
          return resultsDoc.getDocumentElement();
       }
@@ -159,7 +159,7 @@ public class DummyDelegate extends DatacenterDelegate
     */
    public Element getResults(String id) throws RemoteException
    {
-      if (id.equals(SERVICE_ID))
+      if (id.equals(QUERY_ID))
       {
          return getSampleResults();
       }
@@ -204,17 +204,17 @@ public class DummyDelegate extends DatacenterDelegate
    /**
     * Sets the status, does update, etc
     */
-   public void setStatus(ServiceStatus newStatus)
+   public void setStatus(QueryStatus newStatus)
    {
       lastStatus = newStatus;
 
-      fireStatusChanged(SERVICE_ID, lastStatus);
+      fireStatusChanged(QUERY_ID, lastStatus);
    }
 
    /**
     * Returns unknown
     */
-   public ServiceStatus getServiceStatus(String id)
+   public QueryStatus getServiceStatus(String id)
    {
       return lastStatus;
    }
@@ -222,7 +222,7 @@ public class DummyDelegate extends DatacenterDelegate
    /**
     * Registers a listener with this service.
     */
-   public void registerListener(String serviceId, DatacenterStatusListener listener)
+   public void registerListener(String queryId, DatacenterStatusListener listener)
    {
       addListener(listener);
    }
@@ -232,6 +232,9 @@ public class DummyDelegate extends DatacenterDelegate
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.5  2003/09/15 22:05:34  mch
+Renamed service id to query id throughout to make identifying state clearer
+
 Revision 1.4  2003/09/15 21:27:15  mch
 Listener/state refactoring.
 

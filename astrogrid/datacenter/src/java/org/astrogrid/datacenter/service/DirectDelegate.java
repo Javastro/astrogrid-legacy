@@ -1,5 +1,5 @@
 /*
- * $Id: DirectDelegate.java,v 1.2 2003/09/15 21:27:15 mch Exp $
+ * $Id: DirectDelegate.java,v 1.3 2003/09/15 22:05:34 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -8,7 +8,7 @@ package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
 import org.w3c.dom.Element;
@@ -88,16 +88,16 @@ public class DirectDelegate extends DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public ServiceStatus getServiceStatus(String id)
+   public QueryStatus getServiceStatus(String id)
    {
-      return ServiceStatus.UNKNOWN;
+      return QueryStatus.UNKNOWN;
    }
 
    /**
     * Registers a web listener with this service.  It's a bit of a pain to
     * implement this properly using the dummy, so not doing it yet...
     */
-   public void registerListener(String serviceId, DatacenterStatusListener listener)
+   public void registerListener(String queryId, DatacenterStatusListener listener)
    {
       throw new UnsupportedOperationException("Not implemented yet");
    }
@@ -106,6 +106,9 @@ public class DirectDelegate extends DatacenterDelegate
 
 /*
 $Log: DirectDelegate.java,v $
+Revision 1.3  2003/09/15 22:05:34  mch
+Renamed service id to query id throughout to make identifying state clearer
+
 Revision 1.2  2003/09/15 21:27:15  mch
 Listener/state refactoring.
 

@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.6 2003/09/15 15:44:44 mch Exp $
+ * $Id: ResponseHelper.java,v 1.7 2003/09/15 22:05:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -39,7 +39,7 @@ public class ResponseHelper
     */
    public static Document makeStartQueryResponse(DatabaseQuerier querier) throws Throwable
    {
-      if (querier.getStatus() == ServiceStatus.ERROR)
+      if (querier.getStatus() == QueryStatus.ERROR)
       {
          throw querier.getError();
       }
@@ -61,7 +61,7 @@ public class ResponseHelper
     */
    public static Document makeStatusResponse(DatabaseQuerier querier) throws Throwable
    {
-      if (querier.getStatus() == ServiceStatus.ERROR)
+      if (querier.getStatus() == QueryStatus.ERROR)
       {
          throw querier.getError();
       }
@@ -104,7 +104,7 @@ public class ResponseHelper
     */
    public static Document makeResultsResponse(DatabaseQuerier querier, Element results) throws Throwable
    {
-      if (querier.getStatus() == ServiceStatus.ERROR)
+      if (querier.getStatus() == QueryStatus.ERROR)
       {
          throw querier.getError();
       }
@@ -116,7 +116,7 @@ public class ResponseHelper
       }
 
       String doc =
-          ServiceIdHelper.makeTagWithServiceIdAttr(DATACENTER_RESULTS_TAG, querier.getHandle())+"\n"
+          QueryIdHelper.makeTagWithQueryIdAttr(DATACENTER_RESULTS_TAG, querier.getHandle())+"\n"
          +"   <TIME>"+querier.getQueryTimeTaken()+"</TIME>\n"
          +"   <Results type='votable'>\n"
          +XMLUtils.ElementToString(results)

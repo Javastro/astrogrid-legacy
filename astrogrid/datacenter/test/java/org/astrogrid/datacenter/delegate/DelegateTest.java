@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.7 2003/09/15 21:28:09 mch Exp $
+ * $Id: DelegateTest.java,v 1.8 2003/09/15 22:09:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,8 +25,8 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.ResponseHelper;
-import org.astrogrid.datacenter.common.ServiceIdHelper;
-import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.QueryIdHelper;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.common.StatusHelper;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.query.QueryException;
@@ -66,7 +66,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
    {
       DatacenterDelegate delegate = DatacenterDelegate.makeDelegate(null);
 
-      delegate.registerListener(DummyDelegate.SERVICE_ID, this);
+      delegate.registerListener(DummyDelegate.QUERY_ID, this);
 
       //load test query file
       URL url = getClass().getResource("testQuery.xml");
@@ -88,8 +88,8 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
    {
       //check results look ok
       assertEquals(ResponseHelper.DATACENTER_RESULTS_TAG, results.getNodeName());
-      assertEquals(DummyDelegate.SERVICE_ID, ServiceIdHelper.getServiceId(results));
-      assertEquals(ServiceStatus.FINISHED, StatusHelper.getServiceStatus(results));
+      assertEquals(DummyDelegate.QUERY_ID, QueryIdHelper.getQueryId(results));
+      assertEquals(QueryStatus.FINISHED, StatusHelper.getServiceStatus(results));
 
       //check that some statuses are returned
       assertTrue("Status's not been returned", statusChangedList.size() != 0);
@@ -108,7 +108,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
    {
       DatacenterDelegate delegate = DatacenterDelegate.makeDelegate(null);
 
-      delegate.registerListener(DummyDelegate.SERVICE_ID, this);
+      delegate.registerListener(DummyDelegate.QUERY_ID, this);
 
       //load test query file
       URL url = getClass().getResource("testQuery.xml");
@@ -118,9 +118,9 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
       Element response = delegate.spawnAdqlQuery(adqlQuery);
 
       //check status
-      String id = ServiceIdHelper.getServiceId(response);
+      String id = QueryIdHelper.getQueryId(response);
       assertNotNull(id);
-      ServiceStatus status = delegate.getServiceStatus(id);
+      QueryStatus status = delegate.getServiceStatus(id);
 
       //get results
       response = delegate.getResults(id);
@@ -140,7 +140,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
    /** 'Callback' method called by Delegate when its status changes.  Stores
     * the status returned so that the tests above can examine them
     */
-   public void datacenterStatusChanged(String id, ServiceStatus newStatus)
+   public void datacenterStatusChanged(String id, QueryStatus newStatus)
    {
       statusChangedList.add(newStatus);
    }

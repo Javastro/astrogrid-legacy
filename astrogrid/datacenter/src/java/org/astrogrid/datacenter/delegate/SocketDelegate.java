@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.9 2003/09/15 21:27:15 mch Exp $
+ * $Id: SocketDelegate.java,v 1.10 2003/09/15 22:05:34 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -15,7 +15,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.datacenter.common.ResponseHelper;
-import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
 import org.astrogrid.datacenter.io.TraceInputStream;
@@ -31,6 +31,8 @@ import org.xml.sax.SAXException;
  * NB this is not properly threadsafe - eg request/response needs to be
  * atomic.  At the moment, a thread can call getMetadata() while another
  * is calling getQuery, and this will get mixed up responses.
+ *
+ * @todo make threadsafe
  *
  * @see DatacenterDelegate
  *
@@ -207,16 +209,16 @@ public class SocketDelegate extends DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public synchronized ServiceStatus getServiceStatus(String id)
+   public synchronized QueryStatus getServiceStatus(String id)
    {
-      return ServiceStatus.UNKNOWN;
+      return QueryStatus.UNKNOWN;
    }
 
 
    /**
     * Register listener
     */
-   public void registerListener(String serviceId, DatacenterStatusListener listener)
+   public void registerListener(String queryId, DatacenterStatusListener listener)
    {
       //action depends on listener
       throw new UnsupportedOperationException("Not implemented yet");
@@ -227,6 +229,9 @@ public class SocketDelegate extends DatacenterDelegate
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.10  2003/09/15 22:05:34  mch
+Renamed service id to query id throughout to make identifying state clearer
+
 Revision 1.9  2003/09/15 21:27:15  mch
 Listener/state refactoring.
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.9 2003/09/15 21:27:15 mch Exp $
+ * $Id: SocketHandler.java,v 1.10 2003/09/15 22:05:34 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import org.astrogrid.datacenter.common.ResponseHelper;
-import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.common.StatusHelper;
 import org.astrogrid.datacenter.delegate.SocketDelegate;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
@@ -107,7 +107,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
                   //assume a blocking query
                   DatabaseQuerier querier = DatabaseQuerier.doQueryGetResults(docRequest.getDocumentElement());
 
-                  querier.setStatus(ServiceStatus.RUNNING_RESULTS);
+                  querier.setStatus(QueryStatus.RUNNING_RESULTS);
 
                   Document response = ResponseHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
 
@@ -163,6 +163,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.10  2003/09/15 22:05:34  mch
+Renamed service id to query id throughout to make identifying state clearer
+
 Revision 1.9  2003/09/15 21:27:15  mch
 Listener/state refactoring.
 

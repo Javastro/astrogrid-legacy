@@ -6,19 +6,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * JUnit test case for ServiceIdHelperTest
+ * JUnit test case for QueryIdHelperTest
  */
 
-public class ServiceIdHelperTest extends TestCase {
+public class QueryIdHelperTest extends TestCase {
    //declare reusable objects to be used across multiple tests
-   public ServiceIdHelperTest(String name) {
+   public QueryIdHelperTest(String name) {
       super(name);
    }
    public static void main(String[] args) {
-      junit.textui.TestRunner.run(ServiceIdHelperTest.class);
+      junit.textui.TestRunner.run(QueryIdHelperTest.class);
    }
    public static Test suite() {
-      return new TestSuite(ServiceIdHelperTest.class);
+      return new TestSuite(QueryIdHelperTest.class);
    }
    protected void setUp() {
    //define reusable objects to be used across multiple tests
@@ -26,27 +26,27 @@ public class ServiceIdHelperTest extends TestCase {
    protected void tearDown() {
    //clean up after testing (if necessary)
    }
-   public void testMakeServiceIdTag() throws Exception {
+   public void testMakeQueryIdTag() throws Exception {
 
-      String result = ServiceIdHelper.makeServiceIdTag("noel");
+      String result = QueryIdHelper.makeQueryIdTag("noel");
         Document doc = DocHelper.wrap(result);
         assertNotNull(doc);
    }
 
-   public void testMakeTagWithServiceIdAttr() throws Exception {
+   public void testMakeTagWithQueryIdAttr() throws Exception {
 
-      String result = ServiceIdHelper.makeTagWithServiceIdAttr("foo","bar") + "</foo>";
+      String result = QueryIdHelper.makeTagWithQueryIdAttr("foo","bar") + "</foo>";
         Document doc = DocHelper.wrap(result);
         assertNotNull(doc);
 
    }
     /** Tests that service id un/marshalling works */
-    public void testGetServiceId() throws Exception {
+    public void testGetQueryId() throws Exception {
 
-        String src = ServiceIdHelper.makeServiceIdTag("noel");
+        String src = QueryIdHelper.makeQueryIdTag("noel");
         Document doc = DocHelper.wrap("<foo>"+src+"</foo>");
         assertNotNull(doc);
-        String result = ServiceIdHelper.getServiceId(doc.getDocumentElement());
+        String result = QueryIdHelper.getQueryId(doc.getDocumentElement());
         assertNotNull(result);
         assertEquals("noel",result);
     }

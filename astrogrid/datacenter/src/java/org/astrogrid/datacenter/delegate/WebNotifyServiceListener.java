@@ -1,5 +1,5 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.1 2003/09/15 21:27:15 mch Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.2 2003/09/15 22:05:34 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -14,7 +14,7 @@ import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.DocHelper;
-import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.common.StatusHelper;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
@@ -48,7 +48,7 @@ public class WebNotifyServiceListener implements DatacenterStatusListener
     * status change. Opens a connection to the URL and sends it a document, which
     * is defined in StatusHelper
     */
-   public void datacenterStatusChanged(String id, ServiceStatus newStatus)
+   public void datacenterStatusChanged(String id, QueryStatus newStatus)
    {
       Log.trace("WebNotifyServiceListener.serviceStatusChanged("+newStatus+")") ;
 
@@ -87,6 +87,9 @@ public class WebNotifyServiceListener implements DatacenterStatusListener
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.2  2003/09/15 22:05:34  mch
+Renamed service id to query id throughout to make identifying state clearer
+
 Revision 1.1  2003/09/15 21:27:15  mch
 Listener/state refactoring.
 

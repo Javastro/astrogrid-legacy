@@ -55,6 +55,24 @@ and the following 3rd party ones:
 <li>...more...
 
 <p>
+<h3>A matter of state</h3>
+
+In principle a delegate has 'state', in that it represents the clients view on a single server 
+for as long as it exists.  However, the WebDelegate uses http to communicate with the server, and 
+http has no concept of state.
+<p>
+(Having said this, what we're actually doing is using rpc over http, and there is a 'session'
+concept available, but not sure if this works for non-java clients.  To be investigated).
+<p>
+Most service calls anyway are atomic - a request for information with a response containing that 
+information or an error.  It is up to the delegate to make sure the response ties in with the 
+request - to make sure that the delegate is threadsafe (so that if one thread calls a request, and 
+another does so too before the response returns, the appropriate response is directed to the
+appropriate request). 
+<p>
+What we <i>do</i> have is a query state - it is possible to start a database query, and then request 
+the status of that query.  
+<p>
 <h3>How they work</h3>
 
 <h4>Web Delegates</h4>

@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.9 2003/09/15 21:28:09 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.10 2003/09/15 22:09:00 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DummyQuerier;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
-import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -116,12 +116,12 @@ public class DataQueryServiceTest extends HsqlTestCase {
         assertNotNull(votable);
 
         assertEquals("VOTABLE",votable.getDocumentElement().getLocalName());
-        assertEquals(ServiceStatus.QUERY_COMPLETE,querier.getStatus());
+        assertEquals(QueryStatus.QUERY_COMPLETE,querier.getStatus());
 
        // check what the listener recorded.
 //not always        assertEquals(4,l.statusList.size());
 //        String[] expected = new String[]{ServiceStatus.STARTING,ServiceStatus.RUNNING_QUERY,ServiceStatus.RUNNING_RESULTS,ServiceStatus.FINISHED};
-        assertEquals(ServiceStatus.QUERY_COMPLETE,l.getLast());
+        assertEquals(QueryStatus.QUERY_COMPLETE,l.getLast());
     }
 
     public void testHandleUniqueness() throws IOException {
@@ -135,7 +135,7 @@ public class DataQueryServiceTest extends HsqlTestCase {
 
     public void testStatus() throws IOException {
         DatabaseQuerier s1 = new DummyQuerier();
-        assertEquals(s1.getStatus(),ServiceStatus.CONSTRUCTED);
+        assertEquals(s1.getStatus(),QueryStatus.CONSTRUCTED);
     }
 
     static class TestListener implements QueryListener {
@@ -148,9 +148,9 @@ public class DataQueryServiceTest extends HsqlTestCase {
             statusList.add(querier.getStatus());
         }
 
-        public ServiceStatus getLast()
+        public QueryStatus getLast()
         {
-           return (ServiceStatus) statusList.get(statusList.size()-1);
+           return (QueryStatus) statusList.get(statusList.size()-1);
         }
     }
 }
@@ -158,6 +158,9 @@ public class DataQueryServiceTest extends HsqlTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.10  2003/09/15 22:09:00  mch
+Renamed service id to query id throughout to make identifying state clearer
+
 Revision 1.9  2003/09/15 21:28:09  mch
 Listener/state refactoring.
 

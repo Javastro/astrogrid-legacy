@@ -1,5 +1,5 @@
 /*
- * $Id: StatusHelper.java,v 1.6 2003/09/15 15:44:44 mch Exp $
+ * $Id: StatusHelper.java,v 1.7 2003/09/15 22:05:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,10 +26,10 @@ public class StatusHelper
     * Returns a status tag for the given service id with the value of the given
     * status
     */
-   public static String makeStatusTag(String serviceId, ServiceStatus status)
+   public static String makeStatusTag(String queryId, QueryStatus status)
    {
        return
-          "<"+STATUS_TAG+"  "+ServiceIdHelper.SERVICE_ID_ATT+"='"+serviceId+"'>"
+          "<"+STATUS_TAG+"  "+QueryIdHelper.QUERY_ID_ATT+"='"+queryId+"'>"
          +status
          +"</"+STATUS_TAG+">\n";
 
@@ -38,11 +38,11 @@ public class StatusHelper
    /**
     * Returns an Iteration 02 job notification tag with status included
     */
-   public static String makeJobNotificationTag(String serviceId, String status)
+   public static String makeJobNotificationTag(String queryId, String status)
    {
       return
-            "<job name='"+serviceId+"'  >"+
-               "<jobstep name='"+serviceId+"' status='"+status+"'/>"+
+            "<job name='"+queryId+"'  >"+
+               "<jobstep name='"+queryId+"' status='"+status+"'/>"+
             "</job>";
    }
 
@@ -50,35 +50,35 @@ public class StatusHelper
     * Returns the status of the given service id, given by a status tag in
     * the given dom document
     */
-   public static ServiceStatus getServiceStatus(String serviceId, Element domContainingStatuses)
+   public static QueryStatus getServiceStatus(String queryId, Element domContainingStatuses)
    {
       NodeList idNodes = domContainingStatuses.getElementsByTagName(STATUS_TAG);
 
-      //run through nodes looking for one where the serviceid attribute
+      //run through nodes looking for one where the queryId attribute
       //corresponds to the given id
       for (int i=0;i<idNodes.getLength();i++)
       {
-         String serviceIdAttr =
-            ((Element) idNodes.item(i)).getAttribute(ServiceIdHelper.SERVICE_ID_ATT);
+         String queryIdAttr =
+            ((Element) idNodes.item(i)).getAttribute(QueryIdHelper.QUERY_ID_ATT);
 
-         if (serviceIdAttr.length() == 0)
+         if (queryIdAttr.length() == 0)
          {
             //should now do something horrible, as we have a status with no
             //service id, but we don't really want to crash (after all it may
             //be some irrelevent part of the document), so lets just log
             //it
-            Log.logError(STATUS_TAG+" in document has no "+ServiceIdHelper.SERVICE_ID_ATT+" attribute");
+            Log.logError(STATUS_TAG+" in document has no "+QueryIdHelper.QUERY_ID_ATT+" attribute");
          }
          else
          {
-            if (serviceIdAttr.equals(serviceId))
+            if (queryIdAttr.equals(queryId))
             {
                String status = ((Element) idNodes.item(i)).getNodeValue();
                if (status == null)
                {
                   status = ((Element) idNodes.item(i)).getFirstChild().getNodeValue();
                }
-               return ServiceStatus.getFor(status.trim());
+               return QueryStatus.getFor(status.trim());
             }
          }
 
@@ -92,7 +92,7 @@ public class StatusHelper
     * Returns the status, given by a status tag in
     * the given dom document.
     */
-   public static ServiceStatus getServiceStatus(Element domContainingStatuses)
+   public static QueryStatus getServiceStatus(Element domContainingStatuses)
    {
       NodeList idNodes = domContainingStatuses.getElementsByTagName(STATUS_TAG);
 
@@ -108,7 +108,7 @@ public class StatusHelper
       {
           status = ((Element) idNodes.item(0)).getFirstChild().getNodeValue();
       }
-      return ServiceStatus.getFor(status.trim());
+      return QueryStatus.getFor(status.trim());
 
    }
 

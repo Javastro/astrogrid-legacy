@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.14 2003/09/15 21:27:15 mch Exp $
+ * $Id: AxisDataServer.java,v 1.15 2003/09/15 22:05:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,8 +7,8 @@
 package org.astrogrid.datacenter.service;
 import java.io.IOException;
 import org.astrogrid.datacenter.common.ResponseHelper;
-import org.astrogrid.datacenter.common.ServiceIdHelper;
-import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.QueryIdHelper;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
@@ -85,7 +85,7 @@ public class AxisDataServer extends ServiceServer
    {
       DatabaseQuerier querier = DatabaseQuerier.doQueryGetResults(soapBody);
 
-      querier.setStatus(ServiceStatus.RUNNING_RESULTS);
+      querier.setStatus(QueryStatus.RUNNING_RESULTS);
 
       return ResponseHelper.makeResultsResponse(
          querier,
@@ -94,7 +94,9 @@ public class AxisDataServer extends ServiceServer
    }
 
    /**
-    * Starts an asynchronous query, returns a document including the id.
+    * Creates an asynchronous query, returns a document including the id.
+    * Does not start the query running - may want to register listeners with
+    * it first
     * <p>
     * If the querier has an error (status = error) throws the exception. (Don't
     * like this too general throwing Throwable)
@@ -122,11 +124,11 @@ public class AxisDataServer extends ServiceServer
     */
    public Element getResultsAndClose(Element soapBody) throws IOException, SAXException, Throwable
    {
-      String serviceID = ServiceIdHelper.getServiceId(soapBody);
+      String serviceID = QueryIdHelper.getQueryId(soapBody);
       DatabaseQuerier querier = DatabaseQuerier.getQuerier(serviceID);
 
       //has querier finished?
-      if (querier.getStatus().isBefore(ServiceStatus.FINISHED))
+      if (querier.getStatus().isBefore(QueryStatus.FINISHED))
       {
          //not finished - return status
          return getServiceStatus(serviceID);
@@ -152,8 +154,8 @@ public class AxisDataServer extends ServiceServer
     */
    public void abortQuery(Element soapBody)
    {
-      String serviceID = ServiceIdHelper.getServiceId(soapBody);
-      DatabaseQuerier querier = DatabaseQuerier.getQuerier(serviceID);
+      String queryId = QueryIdHelper.getQueryId(soapBody);
+      DatabaseQuerier querier = DatabaseQuerier.getQuerier(queryId);
 
       querier.abort();
    }
@@ -163,7 +165,7 @@ public class AxisDataServer extends ServiceServer
     * <p>
     * @soap
     */
-   public ServiceStatus getStatus(String id)
+   public QueryStatus getStatus(String id)
    {
       return DatabaseQuerier.getQuerier(id).getStatus();
    }
@@ -173,9 +175,9 @@ public class AxisDataServer extends ServiceServer
     * <p>
     * @soap
     */
-   public void registerWebListener(String serviceId, WebNotifyServiceListener listener)
+   public void registerWebListener(String queryId, WebNotifyServiceListener listener)
    {
-      DatabaseQuerier querier = DatabaseQuerier.getQuerier(serviceId);
+      DatabaseQuerier querier = DatabaseQuerier.getQuerier(queryId);
 
       querier.registerListener(new QueryStatusForwarder(listener));
    }
