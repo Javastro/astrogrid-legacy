@@ -1,0 +1,138 @@
+There are three ways to set properties in Maven, and they all behave differently.
+---+ project.properties
+In a 'normal' Maven build you can add a project.properties file, which is automagically loaded by Maven at the start of a build.
+
+The properties in this file can refer to other Maven properties, and the references are automagically resolved by Maven when the properties are loaded.
+For example, you can set a property 'my.name' to be the group and artifact name from your project.xml file.
+<verbatim>
+	#
+	# Set 'my.name' using values from our project.xml
+	my.name=${pom.groupID}-${pom.artifactID}
+</verbatim>
+Maven will resolve this when it loads your project.properties file, using the values defined in your project.xml file.
+<verbatim>
+	#
+	# Set 'my.name' using values from our project.xml
+	my.name=MyGroup-MyArtifact
+</verbatim>
+
+You could also refer to other properties from the Maven build environment.
+For example, you can set a property 'my.path' based on the war plugin webapp directory.
+<verbatim>
+	#
+	# Locate 'my.path' inside the war webapp directory
+	my.path=${maven.war.webapp.dir}/extra
+</verbatim>
+Again, Maven will resolve this for you, using the global property from war plugin, when it loads your project.properties file.
+<verbatim>
+	#
+	# Locate 'my.path' inside the war webapp directory
+	my.path=target/community-client/extra
+</verbatim>
+
+However, this only applies to the project.properties file loaded automagically by Maven.
+
+---+ util:properties
+If you want to load any additional property files, you can use the the properties tag from the Maven utils tag library.
+<verbatim>
+	<!--+
+		| Load our additional properties.
+		+-->
+	<util:properties file="${project.base.root}/maven/maven.properties"/>
+</verbatim>
+
+This does indeed load your properties into the Maven build environment, but treats them all as just plain test strings.
+It does not resolve references to any other values or properties.
+
+This means that our example properties would be set to '${pom.groupID}-${pom.artifactID}' and '${maven.war.webapp.dir}/extra'.
+
+I have experimented with combinations of expr, parse and set tags, and I can't find a way of getting Jelly to resolve the string value '${pom.groupID}-${pom.artifactID}'
+into anything useful.
+
+---+ ant:property
+There is another way to load property files, and that is to use te Ant property task.
+
+<verbatim>
+	<!--+
+		| Load our additional properties.
+		+-->
+	<ant:property file="${project.base.root}/maven/axis.properties"/>
+</verbatim>
+
+The Ant task loads the properties, and will resolve references to other Ant properties, but not to Jelly variables.
+This is understandable, the Ant property task is part of the Ant library, and does not know about Jelly variables.
+
+This means that it will not be able to resolve the Jelly references to the project attributes ${pom.groupID} or ${pom.artifactID} defined in your project.xml file.
+<verbatim>
+	#
+	# Set 'my.name' using values from our project.xml
+	my.name=${pom.groupID}-${pom.artifactID}
+</verbatim>
+would still resolve to
+<verbatim>
+	#
+	# Set 'my.name' using values from our project.xml
+	my.name=${pom.groupID}-${pom.artifactID}
+</verbatim>
+
+However, it can resolve references to other Ant properties, like the war plugin wepapp location.
+<verbatim>
+	#
+	# Locate 'my.path' inside the war webapp directory
+	my.path=${maven.war.webapp.dir}/path
+</verbatim>
+would be resolved to
+<verbatim>
+	#
+	# Locate 'my.path' inside the war webapp directory
+	my.path=target/community-client/extra
+</verbatim>
+which is what we wanted.
+
+So, makes sense to use the Ant ant:propery tag rather than the Jelly util:properties tag.
+At least you can resolve some of the external references.
+
+Not necessarily.
+
+The Ant tag is invoking an Ant task to load the properties, and Ant does not know about Jelly, or Maven plugins.
+It can resolve references to other Ant properties, but it does not set the corresponding Jelly variables.
+
+This means that the other Maven plugins will not be able to read your properties, because they use the global Jelly variables not the local Ant properties.
+So, if you want to refer to another Maven property in your properties
+<verbatim>
+	#
+	# Locate 'my.path' inside the war webapp directory
+	my.path=${maven.war.webapp.dir}/extra
+</verbatim>
+then you need to use the ant:propery tag to resolve the reference
+<verbatim>
+	<!--+
+		| Load our additional properties.
+		+-->
+	<ant:property file="${project.base.root}/maven/axis.properties"/>
+</verbatim>
+
+If you want to change one of the properties used by the other Maven plugins, to change the maven.war.webapp.dir property for example
+<verbatim>
+	#
+	# Change the war webapp directory
+	maven.war.webapp.dir=special
+</verbatim>
+then you need to use the Jelly util:properties tag.
+<verbatim>
+	<!--+
+		| Load our additional properties.
+		+-->
+	<util:properties file="${project.base.root}/maven/maven.properties"/>
+</verbatim>
+but, you this won't resolve references to other Maven properties, so you couldn't do this
+<verbatim>
+	#
+	# Change the war webapp directory
+	maven.war.webapp.dir=${maven.build.dir}/special
+</verbatim>
+because it would not resolve the ${maven.build.dir} reference.
+
+Maven and Jelly - QualitySoftware, no suprises.
+
+

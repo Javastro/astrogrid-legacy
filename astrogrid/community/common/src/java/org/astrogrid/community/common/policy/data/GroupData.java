@@ -1,12 +1,12 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/GroupData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 06:56:45 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupData.java,v $
- *   Revision 1.3  2004/02/12 06:56:45  dave
+ *   Revision 1.4  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
  *   Revision 1.2.4.3  2004/01/27 19:09:52  dave

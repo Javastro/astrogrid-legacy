@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/config/database/Attic/database.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: database.xml,v $
+    |   Revision 1.2  2004/02/12 08:12:13  dave
+    |   Merged development branch, dave-dev-200401131047, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/01/26 13:18:08  dave
+    |   Added new DatabaseManager to enable local JUnit testing
+    |
+    | </cvs:log>
+    |
+    +-->
+<!DOCTYPE databases PUBLIC
+    "-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
+    "http://castor.exolab.org/jdo-conf.dtd">
+<!--+
+	| Template for our local database configuration(s).
+	| 
+	| For the Web Application, this should be replaced by a JNDI property.
+	| 
+	| For the JUnit tests, the database name and URL should be modified
+	| by our Maven build script before the tests are run.
+	+-->
+<database name="community" engine="hsql">
+	<driver
+		class-name="org.hsqldb.jdbcDriver"
+		url="jdbc:hsqldb:/var/astrogrid/community">
+		<param name="user"     value="sa"/>
+		<param name="password" value=""/>
+	</driver>
+	<!--+
+		| This refers to a local mapping file, in the same directory.
+		+-->
+	<mapping href="mapping.xml"/>
+</database>

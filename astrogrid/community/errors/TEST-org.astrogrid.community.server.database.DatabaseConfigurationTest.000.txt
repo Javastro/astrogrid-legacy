@@ -1,0 +1,461 @@
+Testsuite: org.astrogrid.community.server.database.DatabaseConfigurationTest
+Tests run: 9, Failures: 0, Errors: 0, Time elapsed: 16.365 sec
+------------- Standard Output ---------------
+
+----"----
+DatabaseConfigurationTest:testCreateDefaultConfig()
+
+----"----
+DatabaseConfiguration()
+  Name   : 'database'
+  Config : 'database.xml'
+
+----"----
+DatabaseConfiguration:setName()
+  Name : 'database'
+
+----"----
+DatabaseConfiguration:loadEngine()
+  Name   : 'database'
+  Config : 'null'
+
+----"----
+DatabaseConfiguration:setConfigName()
+  Name : 'database.xml'
+
+----"----
+DatabaseConfiguration:setConfigUrl()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/database.xml'
+
+----"----
+DatabaseConfiguration:loadConfig()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/database.xml'
+
+----"----
+DatabaseConfigurationTest:testCreatePhantomConfig()
+
+----"----
+DatabaseConfiguration()
+  Name   : 'test-database-000'
+  Config : 'test-database-000.xml'
+
+----"----
+DatabaseConfiguration:setName()
+  Name : 'test-database-000'
+
+----"----
+DatabaseConfiguration:loadEngine()
+  Name   : 'test-database-000'
+  Config : 'null'
+
+----"----
+DatabaseConfiguration:setConfigName()
+  Name : 'test-database-000.xml'
+
+----"----
+DatabaseConfiguration:setConfigUrl()
+  URL : 'null'
+Failed to find database config : 'test-database-000.xml'
+PASS : expected FileNotFoundException thrown
+
+----"----
+DatabaseConfigurationTest:testValidConfig()
+
+----"----
+DatabaseConfiguration()
+  Name   : 'test-database-001'
+  Config : 'test-database-001.xml'
+
+----"----
+DatabaseConfiguration:setName()
+  Name : 'test-database-001'
+
+----"----
+DatabaseConfiguration:loadEngine()
+  Name   : 'test-database-001'
+  Config : 'null'
+
+----"----
+DatabaseConfiguration:setConfigName()
+  Name : 'test-database-001.xml'
+
+----"----
+DatabaseConfiguration:setConfigUrl()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-001.xml'
+
+----"----
+DatabaseConfiguration:loadConfig()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-001.xml'
+
+----"----
+DatabaseConfigurationTest:testCreateEngine()
+
+----"----
+DatabaseConfiguration()
+  Name   : 'test-database-001'
+  Config : 'test-database-001.xml'
+
+----"----
+DatabaseConfiguration:setName()
+  Name : 'test-database-001'
+
+----"----
+DatabaseConfiguration:loadEngine()
+  Name   : 'test-database-001'
+  Config : 'null'
+
+----"----
+DatabaseConfiguration:setConfigName()
+  Name : 'test-database-001.xml'
+
+----"----
+DatabaseConfiguration:setConfigUrl()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-001.xml'
+
+----"----
+DatabaseConfiguration:loadConfig()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-001.xml'
+
+----"----
+DatabaseConfigurationTest:testInvalidName()
+
+----"----
+DatabaseConfiguration()
+  Name   : 'INVALID-NAME'
+  Config : 'test-database-001.xml'
+
+----"----
+DatabaseConfiguration:setName()
+  Name : 'INVALID-NAME'
+
+----"----
+DatabaseConfiguration:loadEngine()
+  Name   : 'INVALID-NAME'
+  Config : 'null'
+
+----"----
+DatabaseConfiguration:setConfigName()
+  Name : 'test-database-001.xml'
+
+----"----
+DatabaseConfiguration:setConfigUrl()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-001.xml'
+
+----"----
+DatabaseConfiguration:loadConfig()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-001.xml'
+PASS : expected DatabaseNotFoundException thrown
+
+----"----
+DatabaseConfigurationTest:testConnectValid()
+
+----"----
+DatabaseConfiguration()
+  Name   : 'test-database-001'
+  Config : 'test-database-001.xml'
+
+----"----
+DatabaseConfiguration:setName()
+  Name : 'test-database-001'
+
+----"----
+DatabaseConfiguration:loadEngine()
+  Name   : 'test-database-001'
+  Config : 'null'
+
+----"----
+DatabaseConfiguration:setConfigName()
+  Name : 'test-database-001.xml'
+
+----"----
+DatabaseConfiguration:setConfigUrl()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-001.xml'
+
+----"----
+DatabaseConfiguration:loadConfig()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-001.xml'
+
+----"----
+DatabaseConfigurationTest:testDatabaseData()
+
+----"----
+DatabaseConfiguration()
+  Name   : 'test-database-001'
+  Config : 'test-database-001.xml'
+
+----"----
+DatabaseConfiguration:setName()
+  Name : 'test-database-001'
+
+----"----
+DatabaseConfiguration:loadEngine()
+  Name   : 'test-database-001'
+  Config : 'null'
+
+----"----
+DatabaseConfiguration:setConfigName()
+  Name : 'test-database-001.xml'
+
+----"----
+DatabaseConfiguration:setConfigUrl()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-001.xml'
+
+----"----
+DatabaseConfiguration:loadConfig()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-001.xml'
+
+----"----
+DatabaseConfiguration:checkDatabaseTables()
+  PASS : got test data 'org.astrogrid.community.server.database.DatabaseTestData@11ca803'
+
+----"----
+DatabaseConfigurationTest:testCreateTables()
+
+----"----
+DatabaseConfiguration()
+  Name   : 'test-database-002'
+  Config : 'test-database-002.xml'
+
+----"----
+DatabaseConfiguration:setName()
+  Name : 'test-database-002'
+
+----"----
+DatabaseConfiguration:loadEngine()
+  Name   : 'test-database-002'
+  Config : 'null'
+
+----"----
+DatabaseConfiguration:setConfigName()
+  Name : 'test-database-002.xml'
+
+----"----
+DatabaseConfiguration:setConfigUrl()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-002.xml'
+
+----"----
+DatabaseConfiguration:loadConfig()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-002.xml'
+
+----"----
+DatabaseConfiguration:createDatabaseTables()
+
+----"----
+DatabaseConfiguration:executeSQL()
+  Resource : 'database.sql'
+
+----"----
+DatabaseConfiguration:executeSQL()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/database.sql'
+
+----"----
+DatabaseConfiguration:executeSQL()
+  Stream : 'java.io.BufferedInputStream@e020c9'
+
+----"----
+DatabaseConfiguration:executeSQL()
+PASS : Openned buffered reader
+PASS : Openned database connection
+PASS : Started database transaction
+Excuting SQL statement
+----
+CALL SQL /*
+*
+* <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/errors/TEST-org.astrogrid.community.server.database.DatabaseConfigurationTest.000.txt,v $</cvs:source>
+* <cvs:author>$Author: dave $</cvs:author>
+* <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
+* <cvs:version>$Revision: 1.2 $</cvs:version>
+*
+* <cvs:log>
+*   $Log: TEST-org.astrogrid.community.server.database.DatabaseConfigurationTest.000.txt,v $
+*   Revision 1.2  2004/02/12 08:12:13  dave
+*   Merged development branch, dave-dev-200401131047, into HEAD
+*
+*   Revision 1.1.2.1  2004/01/26 13:18:07  dave
+*   Added new DatabaseManager to enable local JUnit testing
+*
+* </cvs:log>
+*
+*
+*/
+DROP TABLE testdata IF EXISTS  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL CREATE TABLE testdata
+(
+ident       VARCHAR NOT NULL,
+version     VARCHAR NULL,
+PRIMARY KEY ( ident )
+)  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL INSERT INTO testdata (ident, version)
+VALUES (
+'ident',
+'version'
+)  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL DROP TABLE accounts IF EXISTS  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL CREATE TABLE accounts
+(
+ident       VARCHAR NOT NULL,
+description VARCHAR NULL,
+PRIMARY KEY ( ident )
+)  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL DROP TABLE groups IF EXISTS  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL CREATE TABLE groups
+(
+ident       VARCHAR NOT NULL,
+description VARCHAR NULL,
+type        VARCHAR NULL,
+PRIMARY KEY ( ident )
+)  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL DROP TABLE members IF EXISTS  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL CREATE TABLE members
+(
+groupident   VARCHAR NOT NULL,
+accountident VARCHAR NOT NULL,
+PRIMARY KEY (accountident, groupident)
+)  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL DROP TABLE resources IF EXISTS  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL CREATE TABLE resources
+(
+ident       VARCHAR NOT NULL,
+description VARCHAR NULL,
+PRIMARY KEY ( ident )
+)  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL DROP TABLE communities IF EXISTS  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL CREATE TABLE communities
+(
+ident       VARCHAR NOT NULL,
+service     VARCHAR NULL,
+manager     VARCHAR NULL,
+identity    VARCHAR NULL,
+description VARCHAR NULL,
+PRIMARY KEY ( ident )
+)  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL DROP TABLE permissions IF EXISTS  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+Excuting SQL statement
+----
+CALL SQL CREATE TABLE permissions
+(
+action      VARCHAR NOT NULL,
+resourceid  VARCHAR NOT NULL,
+groupid     VARCHAR NOT NULL,
+status      INTEGER,
+reason      VARCHAR NULL,
+PRIMARY KEY (resourceid, groupid, action)
+)  AS org.astrogrid.community.server.database.DatabaseTestData
+----
+
+----"----
+DatabaseConfiguration:checkDatabaseTables()
+  PASS : got test data 'org.astrogrid.community.server.database.DatabaseTestData@bad8a8'
+
+----"----
+DatabaseConfiguration()
+  Name   : 'test-database-001'
+  Config : 'test-database-001.xml'
+
+----"----
+DatabaseConfiguration:setName()
+  Name : 'test-database-001'
+
+----"----
+DatabaseConfiguration:loadEngine()
+  Name   : 'test-database-001'
+  Config : 'null'
+
+----"----
+DatabaseConfiguration:setConfigName()
+  Name : 'test-database-001.xml'
+
+----"----
+DatabaseConfiguration:setConfigUrl()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-001.xml'
+
+----"----
+DatabaseConfiguration:loadConfig()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-001.xml'
+PASS : Got database connection : org.exolab.castor.jdo.engine.DatabaseImpl@766a24:test-database-001
+
+----"----
+DatabaseConfiguration:checkDatabaseTables()
+  PASS : got test data 'org.astrogrid.community.server.database.DatabaseTestData@32784a'
+
+----"----
+DatabaseConfiguration()
+  Name   : 'test-database-002'
+  Config : 'test-database-002.xml'
+
+----"----
+DatabaseConfiguration:setName()
+  Name : 'test-database-002'
+
+----"----
+DatabaseConfiguration:loadEngine()
+  Name   : 'test-database-002'
+  Config : 'null'
+
+----"----
+DatabaseConfiguration:setConfigName()
+  Name : 'test-database-002.xml'
+
+----"----
+DatabaseConfiguration:setConfigUrl()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-002.xml'
+
+----"----
+DatabaseConfiguration:loadConfig()
+  URL : 'file:/var/projects/astrogrid/dave-dev-200401131047/community/server/target/test-classes/test-database-002.xml'
+PASS : Got database connection : org.exolab.castor.jdo.engine.DatabaseImpl@104c575:test-database-002
+
+----"----
+DatabaseConfiguration:checkDatabaseTables()
+  PASS : got test data 'org.astrogrid.community.server.database.DatabaseTestData@3fa5ac'
+------------- ---------------- ---------------
+
+Testcase: testCreateDefaultConfig took 7.374 sec
+Testcase: testCreatePhantomConfig took 0.007 sec
+Testcase: testCreateValid took 0.539 sec
+Testcase: testCreateEngine took 0.082 sec
+Testcase: testInvalidName took 0.298 sec
+Testcase: testConnectValid took 0.106 sec
+Testcase: testDatabaseData took 2.848 sec
+Testcase: testCreateTables took 1.183 sec
+Testcase: testMultipleDatabases took 0.403 sec

@@ -1,0 +1,228 @@
+The Maven build for Community.
+
+I've tried to make the Maven build for Community as easy to use as possible.
+However, there are a number of quirks that I havn't been able to work around, and need documenting.
+
+---+ Separate sub-projects
+I've split the Community build into separate components, each located in a sub-directory below community.
+<verbatim>
+    community
+      |
+      +-- common  : The common Java classes, including the service API and DataObjects (jar file)
+      +-- client  : The delegate API (jar file)
+      +-- server  : The server implementation  (jar file)
+      +-- webapp  : The complete WebApplication (war file)
+      +-- install : The installation toolkit (zip file)
+      \-- maven   : Common goals and properties
+</verbatim>
+
+---+ Common files
+I've moved a lot of the properties and goals for the Community components into a shared set of files in the maven directory.
+<verbatim>
+    community
+      |
+      +-- ....
+      \-- maven
+           |
+           +-- project.xml
+           +-- maven.xml
+           +-- maven.properties
+           \-- axis.properties
+</verbatim>
+
+---++ project.xml
+The shared project.xml contains the common properties for the project
+    * project group
+    * list of developers
+    * cvs repository
+    * common dependencies
+
+Each of the project.xml files in the sub-projects inherit from this common project.xml.
+<verbatim>
+    <!--+
+        | Extend the common project descriptor.
+        +-->
+    <extend>../maven/project.xml</extend>
+</verbatim>
+
+---++ properties
+An odd quirk of the way that Maven loads property files means that I had to split the properties into two separate files, maven.properties and axis.properties.
+    * axis.properties defines the default properties for the axis tools
+    * maven.properties defines some properties used by other Maven components
+
+See MavenProperties for an explanation.
+
+---++ maven.xml
+This file contains a set of internal goals, mainly to do with manipulating the Axis classpaths and libraries.
+This file is included by all of the sub-project maven.xml files.
+
+I originally had this in the sub-project maven.xml files.
+<verbatim>
+    <!--+
+        | Import the goals from our parent project.
+		+-->
+    <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
+</verbatim>
+But it turns out that we don't actually need to explicitly include the parent maven.xml file.
+I think that this is because we are inheriting from the parent project.xml file.
+Maven finds a maven.xml in the same directory as our parent project.xml file and includes it anyway, because it feels like it.
+I've left the explicit include reference in, but commented it out, otherwise there is no clue to someone reading the code that the parent file gets included.
+<verbatim>
+    <!--+
+        | Import the goals from our parent project.
+        | Looks like this gets included anyway, possibly because our project inherits from ../maven.project.xml ?
+    <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
+        +-->
+</verbatim>
+
+Maven and Jelly - QualitySoftware, no suprises.
+
+---+ Axis jar files
+
+The Axis WebApplication comes with a number of jars packages in the lib directory.
+These include the core Axis jars, plus a set of 3rd party jars that Axis needs to function properly.
+
+Most of the other AstroGrid projects list all of these jars separately in their own project.xml file,
+and then build their WebApplication by adding the individual jars into their WEB-INF/lib directory.
+
+Few of the jars shipped with the Axis WebApplication have version numbers,
+so each team has had make up their own version numbers to list the 3rd party jars in their Maven project.xml.
+
+I suspect that we already have about four different versions of jaxrpc-x.y.z.jar and saaj-x.y.z.jar, and the number is likely to increase.
+
+The way I look at it, our project does not depend on a specific version of jaxrpc, it depends on version 1.1 of the the Axis WebApplication.
+
+So, I've made a copy of the whole Axis-1.1 WebApplication, packaged this as a WAR file, and placed in one of the remote repositories.
+
+<verbatim>
+    maven
+      |
+      +-- ....
+      \-- axis
+           |
+           +-- ....
+           \-- wars
+                 \-- axis-1.1.war
+</verbatim>
+
+All of the project.xml files for the Community components list axis-1.1.war as a dependency.
+Downloading this gets a local copy of the whole axis-1.1 WebApplication, including the all of the 3rd party jars shipped with Axis-1.1.
+
+---+ Axis related goals
+I've created a set of internal Maven goals that locate the axis-1.1.war file in your local repository, and unpack it into a known location in your build (target) directory.
+These goals are all defined in the parent maven.xml file.
+
+---++ init.paths
+This goal initialises the Jelly variables for the file locations.
+
+You might think that these should probably be properties rather than Jelly variables, but I've had problems dealing with properties.
+It was much easier just to make them into Jelly variables.
+
+See MavenProperties for an explanation.
+
+The default settings will setup the following directories in your build tree.
+
+<verbatim>
+	project
+	  |
+	  \-- target
+	        +-- axis
+	        |    \-- webapp : Unpacked Axis 1.1 WebApplication
+	        |
+	        \-- generated
+	              +-- temp : Temp location for the files generated by wsdl2java and java2wsdl
+	              +-- java : Generated Java files that we actually want to use
+	              +-- wsdl : WSDL description files
+	              \-- wsdd : WSDD deployment files
+</verbatim>
+
+The default settings will setup the following Jelly variables.
+
+---+++ axisUrl
+Default : 'http://localhost:8080/astrogrid-community'
+
+This is the default endpoint URL used by the Axis tools java2wsdl and wsdl2java.
+It defaults to http://localhost:8080/${pom.groupId}
+The last bit ${pom.groupId} refers to the groupID defined in your project.xml file.
+For the Community components this is set to 'astrogrid-community', making the default endpoint URL http://localhost:8080/astrogrid-community
+
+---+++ axisDir
+Default : 'target/axis/webapp'.
+
+This is the location of the unpacked Axis WebApplication.
+
+---+++ tempDir
+Default : 'target/generated/temp'.
+
+This is the temp location for the generated files created by java2wsdl and wsdl2java.
+
+I've set up the java2wsdl and wsdl2java tasks to use a temp directory to make it easier to filter which of the generated files we want to use.
+Many of the teams using the SoapyBeans approach use wsdl2java to generate their SOAP stubs, and then explicitly delete the files they don't want.
+This means that you have to know which files you _don't_ want and explicitly list them in your maven.xml goal.
+Problem is that the list of files generated by the Axis tools may change with a new version of Axis.
+
+The Community build does it the other way round.
+
+The java2wsdl and wsdl2java tasks place their results in a temp directory, and then we explicitly copy the files that we _do_ want into our build.
+
+---+++ javaDir
+Default : 'target/generated/java'.
+This is where we copy the wsdl2java generated files that we want to include in our build.
+
+---+++ wsdlDir
+Default : 'target/generated/wsdl'.
+This is where we copy the generated WSDL files that we want to include in our build.
+
+---+++ wsddDir
+Default : 'target/generated/wsdd'.
+This is where we copy the generated WSDD files that we want to include in our build.
+
+---++ init.axis
+This goal locates the Axis WebApplication WAR file in your local repository, and unpacks it into your build tree.
+It uses the Jelly variable axisDir (set by init.paths) to set the location of the unpacked WebApplication, resulting in the following files installed in your build tree.
+
+<verbatim>
+	project
+	  |
+	  \-- target
+	        \-- axis
+	             \-- webapp
+	                   +-- index.html
+	                   +-- happyaxis.jsp
+	                   \-- WEB-INF
+	                         +-- web.xml
+	                         \-- lib
+	                              +-- axis.jar
+	                              +-- axis-ant.jar
+	                              +-- commons-discovery.jar
+	                              +-- commons-logging.jar
+	                              +-- jaxrpc.jar
+	                              +-- log4j-1.2.8.jar
+	                              +-- saaj.jar
+	                              \-- wsdl4j.jar
+</verbatim>
+
+---++ init.classpath
+This goal will add all of the jars in the axis/webapp/WEB-INF/lib directory into your Maven build classpath.
+Enabling you to include the Axis classes in your Java code.
+
+---++ init.tools
+This goal registers the Axis Ant tasks, axis.java2wsdl, axis.wsdl2java and axis.admin so you can call them in your own Maven goals.
+<verbatim>
+	<!--+
+	    | Generate our PolicyManager WSDL.
+	    +-->
+	<ant:axis.java2wsdl
+	    output="${wsdlDir}/PolicyManager.wsdl"
+	    classname="org.astrogrid.community.common.policy.manager.PolicyManager"
+	    location="${axisUrl}/services/PolicyManager"
+	    namespace="urn:manager.policy.common.community.astrogrid.org"
+	    style="RPC"
+	    >
+	    <classpath>
+	        <ant:path refid="maven.dependency.classpath"/>
+	        <ant:pathelement path="${maven.build.dest}"/>
+	    </classpath>
+	</ant:axis.java2wsdl>
+</verbatim>
+
