@@ -240,6 +240,12 @@ while(enum.hasMoreElements()) {
  		 defaultsBean.setMsmsUrl(baseURL+"/MySpaceManager,");
 	} 
 %>     
+<%--If export pressed let's save 'em--%>
+<%
+	if (exportPressed) {
+		 MMC.getInstance().save();
+	}
+	%>
 <%=message%>
 
 
