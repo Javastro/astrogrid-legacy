@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.4 2004/02/04 16:31:19 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.5 2004/02/06 11:49:41 jdt Exp $ -->
 <project>
     <pomVersion>3</pomVersion>
     <id>astrogrid-master</id>
@@ -221,14 +221,6 @@
             </roles>
         </developer>
     </developers>
-    <repository>
-        <connection> scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid 
-            </connection>
-        <developerConnection> 
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid 
-            </developerConnection>
-        <url>http://www.astrogrid.org/viewcvs/astrogrid</url>
-    </repository>
     <reports>
         <report> maven-changelog-plugin </report>
         <report> maven-changes-plugin </report>
