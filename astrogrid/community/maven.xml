@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven build tasks for the AstroGrid community component.
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/11/16 18:24:34 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: maven.xml,v $
+    |   Revision 1.2  2003/11/16 18:24:34  dave
+    |   Merged dev branch back into HEAD
+    |
+    |   Revision 1.1.2.9  2003/11/16 14:08:54  dave
+    |   Replaced tabs with spaces
+    |
+    |   Revision 1.1.2.8  2003/11/14 13:16:20  dave
+    |   Experimening with  Jelly code
+    |
+    |   Revision 1.1.2.7  2003/11/13 10:41:54  dave
+    |   Version number or SNAPSHOT in release files
+    |
+    |   Revision 1.1.2.6  2003/11/11 15:20:56  dave
+    |   Added depends chain to the tasks
+    |
+    |   Revision 1.1.2.5  2003/11/10 05:14:08  dave
+    |   Added JTA dependency for Castor tools.
+    |
+    |   Revision 1.1.2.4  2003/11/10 04:29:07  dave
+    |   Fixed problems with jar versions
+    |
+    |   Revision 1.1.2.3  2003/11/09 21:12:52  dave
+    |   Got the main build process to work
+    |
+    |   Revision 1.1.2.2  2003/11/07 23:20:53  dave
+    |   Got the main libraries and classpaths done
+    |
+    |   Revision 1.1.2.1  2003/11/07 12:45:05  dave
+    |   Added initial Maven scripts
+    |
+    | </cvs:log>
+    +-->
+<project
+    xmlns:core="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:log="jelly:log"
+    xmlns:define="jelly:define"
+    xmlns:deploy="deploy"
+    >
+
+
+    <!-- ================ Quick fix tasks ================ -->
+    <!--+
+        | Quick fix tasks, these just call the Ant tasks in our orginal build.xml
+        +-->
+
+    <!--+
+        | Call the axis.webapp.unwar task in our Ant build file.
+        | This assumes that Maven has already downloaded the Axis war file from the remote repository.
+        +-->
+    <target name="axis.SETUP" depends="">
+        <ant antfile="build.xml" target="axis.webapp.unwar"/>
+    </target>
+
+    <!--+
+        | Call the project.BUILD task in our Ant build file.
+        | This will build the policy and authentication jar files.
+        | TODO - fix the config files.
+        +-->
+    <target name="project.BUILD" depends="axis.SETUP">
+        <!-- Fix the broken jaxp properties in Maven -->
+        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+        <!-- Call the Ant task in our build.xml -->
+        <ant antfile="build.xml" target="project.BUILD">
+            <property name="project.version" value="${pom.currentVersion}"/>
+        </ant>
+    </target>
+
+    <!--+
+        | Call the project.release task in our Ant build file.
+        | This will build the policy and authentication jar files and transfer them into the release directory.
+        | TODO - fix the config files.
+        +-->
+    <target name="project.RELEASE" depends="axis.SETUP">
+        <!-- Fix the broken jaxp properties in Maven -->
+        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+        <!-- Call the Ant task in our build.xml -->
+        <ant antfile="build.xml" target="project.release">
+            <property name="project.version" value="${pom.currentVersion}"/>
+        </ant>
+    </target>
+
+    <!--+
+        | Call the project.release task in our Ant build file.
+        | This will build the policy and authentication jar files and transfer them into the release directory.
+        | TODO - fix the config files.
+        +-->
+    <target name="project.SNAPSHOT" depends="axis.SETUP">
+        <!-- Fix the broken jaxp properties in Maven -->
+        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+        <!-- Call the Ant task in our build.xml -->
+        <ant antfile="build.xml" target="project.release">
+            <property name="project.version" value="SNAPSHOT"/>
+        </ant>
+    </target>
+
+    <!-- ================ Community tasks ================ -->
+    <!--+
+        | These are the beginnings of the Community build tasks.
+        +-->
+
+
+    <!-- ================ Experimental tasks ================ -->
+    <!--+
+        | These are experimental tasks while I'm learning how to use Maven and Jelly.
+        +-->
+
+    <!--+
+        | Test task to collect the jars for our Axis webapp.
+        | Looks for dependencies in our project.xml, with the 'axis.war' property set to 'true'.
+        +-->
+    <target name="axis-jars">
+        <ant:mkdir dir="axis-jars"/>
+        <!--+
+            | Iterate the list of artifacts.
+            +-->
+        <core:forEach var="lib" items="${pom.artifacts}">
+            <!--+
+                | Check if we want to include this jar.
+                +-->
+            <core:if test="${lib.dependency.getProperty('axis.war')=='true'}">
+                <ant:echo message=""/>
+                <ant:echo message="Found a jar to include"/>
+                <ant:echo message="Name  : ${lib.dependency.artifactId}"/>
+                <ant:echo message="Group : ${lib.dependency.groupId}"/>
+                <ant:echo message="Type  : ${lib.dependency.type}"/>
+                <ant:echo message="Base  : ${lib.file.parent}"/>
+                <ant:echo message="File  : ${lib.file.name}"/>
+                <ant:echo message="Path  : ${lib.path}"/>
+                <!--+
+                    | Copy the jar to our target directory.
+                    +-->
+                <ant:copy todir="webapp-jars" file="${lib.path}"/>
+            </core:if>
+        </core:forEach>
+    </target>
+
+    <!--+
+        | Task to unpack all the plugin jars.
+        +-->
+    <target name="plugin-list">
+
+        <!--+
+            | Set the name of the directory we want to unpack the jars to.
+            +-->
+        <core:set var="unpackdir" value="/var/projects/mumble/plugins"/>
+        <!--+
+            | Set the name of the directory we want to copy the jelly files to.
+            +-->
+        <core:set var="jellydir" value="/var/projects/mumble/jelly"/>
+
+        <!--+
+            | Create our directories.
+            +-->
+        <ant:mkdir dir="${unpackdir}"/>
+        <ant:mkdir dir="${jellydir}"/>
+
+        <!--+
+            | Use an Ant fileScanner to create a list of plugins jars.
+            +-->
+        <ant:fileScanner var="pluginjars">
+            <ant:fileset dir="${maven.home}/plugins" includes="*.jar"/>
+        </ant:fileScanner>
+        <!--+
+            | Iterate our list of files.
+            +-->
+        <core:forEach var="pluginjar" items="${pluginjars.iterator()}">
+            <ant:echo message=""/>
+            <ant:echo message="Base  : ${pluginjar.parent}"/>
+            <ant:echo message="File  : ${pluginjar.name}"/>
+            <ant:echo message="Path  : ${pluginjar.path}"/>
+            <!--+
+                | Get the plugin name from the jar name.
+                | Plugin jars all follow the same format maven-{name}-plugin-{version}.jar
+                +-->
+            <core:set var="pluginname" value="${pluginjar.name.substring(6, pluginjar.name.lastIndexOf('-plugin'))}"/>
+            <ant:echo message="Name  : ${pluginname}"/>
+            <!--+
+                | Create a directory for the jar contents.
+                +-->
+            <ant:mkdir dir="${unpackdir}/${pluginname}"/>
+            <!--+
+                | Unpack the jar file into our target directory.
+                +-->
+            <ant:unzip src="${pluginjar.path}" dest="${unpackdir}/${pluginname}"/>
+            <!--+
+                | Copy the plugin.jelly file to our jelly directory.
+                +-->
+            <ant:copy vebose="true" file="${unpackdir}/${pluginname}/plugin.jelly" tofile="${jellydir}/${pluginname}.jelly"/>
+
+        </core:forEach>
+    </target>
+
+    <target name="frog">
+        <ant:echo message="Version  : ${pom.currentVersion}"/>
+    </target>
+
+
+</project>

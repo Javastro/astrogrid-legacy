@@ -2,10 +2,49 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/11/06 15:35:25 $</cvs:date>
-    | <cvs:version>$Revision: 1.46 $</cvs:version>
+    | <cvs:date>$Date: 2003/11/16 18:24:34 $</cvs:date>
+    | <cvs:version>$Revision: 1.47 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.47  2003/11/16 18:24:34  dave
+    |   Merged dev branch back into HEAD
+    |
+    |   Revision 1.46.2.12  2003/11/16 15:03:08  dave
+    |   Fixed cvs snafu in build.xml
+    |
+    |   Revision 1.46.2.11  2003/11/16 14:08:54  dave
+    |   Replaced tabs with spaces
+    |
+    |   Revision 1.46.2.10  2003/11/14 13:42:54  dave
+    |   Fixed typo in build.xml
+    |
+    |   Revision 1.46.2.9  2003/11/14 13:16:20  dave
+    |   Experimening with  Jelly code
+    |
+    |   Revision 1.46.2.8  2003/11/13 10:41:54  dave
+    |   Version number or SNAPSHOT in release files
+    |
+    |   Revision 1.46.2.7  2003/11/11 15:47:30  dave
+    |   Fixed jar cache delete
+    |
+    |   Revision 1.46.2.6  2003/11/11 15:11:50  dave
+    |   Changed the remote repository to use machine at Cambridge
+    |
+    |   Revision 1.46.2.5  2003/11/11 14:44:03  dave
+    |   Got the JUnit tests working
+    |
+    |   Revision 1.46.2.4  2003/11/10 05:14:08  dave
+    |   Added JTA dependency for Castor tools.
+    |
+    |   Revision 1.46.2.3  2003/11/10 04:29:07  dave
+    |   Fixed problems with jar versions
+    |
+    |   Revision 1.46.2.2  2003/11/09 21:12:52  dave
+    |   Got the main build process to work
+    |
+    |   Revision 1.46.2.1  2003/11/07 23:20:53  dave
+    |   Got the main libraries and classpaths done
+    |
     |   Revision 1.46  2003/11/06 15:35:25  dave
     |   Replaced tabs with spaces
     |
@@ -154,12 +193,24 @@
     |
     +-->
 <project default="init" basedir="." name="Community">
+    <!--+
+        | README
+        | In the process of changing this over to using Maven to do the build.
+        | To build the Community code, please use either project.RELEASE or project.SNAPSHOT tasks from Maven.
+        +-->
 
-    <!-- Project build properties -->
+    <!--+
+        | The project build directory.
+        +-->
     <property name="project.home"    value="${basedir}"/>
-    <property name="project.name"    value="ast-policy"/>
-    <property name="project.version" value="1.0"/>
-    <property name="testdir" value="${basedir}/test"></property>
+
+    <!--+
+        | The project build version.
+        | ${astrogrid.version}.${astrogrid.iteration}.${astrogrid.week}
+        | Note :- This should be set from within Maven.
+        +-->
+    <property name="project.version" value="1.4.1"/>
+
     <!--+
         | User preferences.
         | This is where to put local properties eg.tomcat installation path.
@@ -174,17 +225,13 @@
     <!-- ================ Project tasks ================ -->
     <!-- Initialise the build environment -->
     <target name="init">
-        <!-- Prefix for system environment properties -->
-        <property environment="env"/>
+        <echo message=""/>
 
         <!-- Build timestamp -->
         <tstamp>
             <format property="build.time" pattern="yyyy.MM.dd.HH.mm.ss"/>
             <format property="build.date" pattern="yyyy.MM.dd"/>
         </tstamp>
-
-        <!-- Build name -->
-        <property name="build.name" value="${project.name}-${project.version}"/>
 
         <!-- Display the current settings -->
         <echo message="os.name      : ${os.name}"/>
@@ -204,12 +251,10 @@
         <echo message="ant.home     : ${ant.home}"/>
         <echo message=""/>
 
-        <echo message="junit.version : ${junit.version}"/>
-        <echo message="junit.home    : ${junit.home}"/>
+        <echo message="castor.version : ${castor.version}"/>
         <echo message=""/>
 
-        <echo message="castor.version : ${castor.version}"/>
-        <echo message="castor.home    : ${castor.home}"/>
+        <echo message="junit.version  : ${junit.version}"/>
         <echo message=""/>
 
         <echo message="hsqldb.version : ${hsqldb.version}"/>
@@ -226,19 +271,42 @@
         <echo message="axis.url       : ${axis.url}"/>
         <echo message=""/>
 
+        <echo message="maven.home    : ${maven.home.local}"/>
+        <echo message="maven.repo    : ${maven.repo.local}"/>
+        <echo message=""/>
+
         <echo message="build.home     : ${basedir}"/>
         <echo message="build.file     : ${ant.file}"/>
         <echo message="build.date     : ${build.date}"/>
         <echo message="build.time     : ${build.time}"/>
+
+        <echo message=""/>
     </target>
 
     <!-- ================ Ant tasks ================ -->
     <!--+
+        | Ant properties.
+        | This is available anyway when running inside Ant.
+        | When running inside Maven, we need to set it manually.
+        +-->
+    <property name="ant.version" value="1.5.4"/>
+
+    <!--+
         | The Ant library classpath.
         +-->
     <path id="ant.classpath">
+        <!--+
+            | When running inside Ant, ${ant.home} points to the current Ant installation
+            +-->
         <pathelement location="${ant.home}/lib/ant.jar"/>
         <pathelement location="${ant.home}/lib/optional.jar"/>
+        <!--+
+            | When running inside Maven, you can't get at the Ant libraries directly.
+            | So we need to download another copy of the Ant jars into the Maven repository.
+            | Result is that we might be building with one version of Ant, and Maven is using a different one to run the Ant tasks.
+            +-->
+        <pathelement location="${jar.cache.local}/ant/jars/ant-${ant.version}.jar"/>
+        <pathelement location="${jar.cache.local}/ant/jars/ant-optional-${ant.version}.jar"/>
     </path>
     
     <!--+
@@ -255,107 +323,60 @@
         </java>
     </target>
 
-    <!-- ================ JUnit tasks ================ -->
+    <!-- ================ Maven tasks ================ -->
     <!--+
-        | There is a classloader problem with JUnit.
-        | To run a junit task, the JUnit binary needs to be in the main Ant classpath.
-        | This means that we need to JUnit library in our classpath before we launch Ant.
-        | I havn't found a nice fix for this yet, so you need to have the Junit library in your classpath.
+        | These tasks provide the tools to populate a Maven style jar repository.
+        | This means that you can run the tasks as standard Ant tasks, or as Maven tasks, and the classpaths should still woork.
         +-->
-    <!--+
-        | JUnit properties.
-        +-->
-    <property name="junit.base"    value="${basedir}/build/junit"/>
-    <property name="junit.version" value="3.8.1"/>
-    <property name="junit.name"    value="junit${junit.version}"/>
-    <property name="junit.dist"    value="http://belnet.dl.sourceforge.net/sourceforge/junit/junit${junit.version}.zip"/>
-    <property name="junit.home"    value="${junit.base}/${junit.name}"/>
 
     <!--+
-        | The JUnit library classpath.
+        | Read our Maven settings.
         +-->
-    <path id="junit.classpath">
-        <pathelement location="${junit.home}/junit.jar"/>
-    </path>
+    <property file="${project.home}/build.properties"/>
+    <property file="${project.home}/project.properties"/>
 
     <!--+
-        | Delete the JUnit directory.
+        | Our local jar repository.
+        | By default, this is set to the same location as the Maven repository.
         +-->
-    <target name="junit.delete" depends="">
-        <delete dir="${junit.base}"/>
-    </target>
+    <property name="jar.cache.local" value="${maven.repo.local}"/>
 
     <!--+
-        | Download the JUnit binary.
+        | Our remote jar repository.
+        | At the moment, this only supports one remote repository.
+        | I hope to extende this to use the same list as maven.repo.remote.
+    <property name="jar.cache.remote" value="http://codon.demon.co.uk/installs/java/maven"/>
         +-->
-    <target name="junit.dist.fetch" depends="">
-        <mkdir dir="${junit.base}"/>
+    <property name="jar.cache.remote" value="http://capc49.ast.cam.ac.uk/maven"/>
+
+    <!--+
+        | Download the a jar file.
+        +-->
+    <target name="jar.cache.fetch" depends="">
+        <echo message=""/>
+        <echo message="Downloading ${jar.name}"/>
+        <echo message="  Remote : ${jar.cache.remote}"/>
+        <echo message="  Local  : ${jar.cache.local}"/>
+        <!-- Create the cache directory -->
+        <mkdir dir="${jar.cache.local}/${jar.group}/jars"/>
+        <!-- Download the jar file -->
         <get verbose="true" usetimestamp="true"
-            src="${junit.dist}"
-            dest="${junit.base}/junit-${junit.version}.zip"
+            src="${jar.cache.remote}/${jar.group}/jars/${jar.name}"
+            dest="${jar.cache.local}/${jar.group}/jars/${jar.name}"
             />
     </target>
 
     <!--+
-        | Unzip the JUnit binary.
+        | Clear out the Maven repository.
         +-->
-    <target name="junit.dist.unzip" depends="">
-        <unzip src="${junit.base}/junit-${junit.version}.zip" dest="${junit.base}"/>
-    </target>
-
-    <!--+
-        | Install JUnit.
-        +-->
-    <target name="junit.INSTALL" depends="">
-        <antcall target="junit.dist.fetch"/>
-        <antcall target="junit.dist.unzip"/>
-    </target>
-
-    <!--+
-        | Prepare JUnit.
-        +-->
-    <target name="junit.PREPARE" depends="">
-    </target>
-
-    <!--+
-        | Run a set of JUnit tests in the current VM.
-        | This task is designed to be called from a forked VM to give us more control over the classpath.
-        +-->
-    <target name="junit.task" depends="">
-        <!-- Create our reports directory -->
-        <mkdir dir="${junit.target}/junit"/>
-        <!-- Run our JUnitTestCase tests -->
-        <junit printsummary="yes" haltonfailure="yes" haltonerror="yes" showoutput="yes" fork="false">
-            <!-- Generate an XML log file -->
-            <formatter type="xml"/>
-            <!-- Run all the target JUnitTestCase tests -->
-            <batchtest todir="${junit.target}/junit">
-                <fileset dir="${junit.target}/classes">
-                    <include name="**/junit/**/JUnitTestCase.class"/>
-                </fileset>
-            </batchtest>
-        </junit>
-    </target>
-
-    <!--+
-        | Install the JUnit javadoc as a webapp.
-        +-->
-    <target name="junit.docs.install" depends="tomcat.tasks">
+    <target name="jar.cache.clear" depends="">
         <echo message=""/>
-        <echo message="Installing JUnit documentation ...."/>
-        <!-- Copy the web.xml file -->
-        <copy file="src/webapps/docs/WEB-INF/web.xml" todir="${junit.home}/javadoc/WEB-INF"/>
-        <!-- Wait for the Tomcat manager -->
-        <antcall target="tomcat.manager.wait"/>
-        <!-- Install our webapp -->
-        <tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/junit-docs" war="file://${junit.home}/javadoc"/>
+        <echo message="Clearing local repository"/>
+        <delete includeEmptyDirs="true" failonerror="false">
+            <fileset dir="${jar.cache.local}" includes="*"/>
+        </delete>
     </target>
 
-<!--+
-    | Useful JUnit tools ....
-    | http://jtestcase.sourceforge.net/
-    | http://xmlunit.sourceforge.net/
-    +-->
 
     <!-- ================ Tomcat tasks ================ -->
     <!--+
@@ -507,7 +528,7 @@
     <!--+
         | Install Tomcat.
         +-->
-    <target name="tomcat.INSTALL" depends="">
+    <target name="tomcat.SETUP" depends="">
         <!-- Project assumes Tomcat is installed -->
     </target>
 
@@ -515,6 +536,24 @@
         | Prepare Tomcat.
         +-->
     <target name="tomcat.PREPARE" depends="">
+        <!--+
+            | Patch the Tomcat endorsed classes to enable Axis 1.1 on JDK 1.4.1.
+            | This needs to be done BEFORE Tomcat starts.
+            +-->
+        <copy verbose="true" toDir="${tomcat.home}/common/endorsed">
+            <fileset dir="${jar.cache.local}/jaf/jars">
+                <include name="jaf-${jaf.version}.jar"/>
+            </fileset>
+            <!--+
+                | Required for Tomcat 27 (overrides the existing ones).
+            <fileset dir="${jar.cache.local}/xerces/jars">
+                <include name="xerces-${xerces.version}.jar"/>
+            </fileset>
+            <fileset dir="${jar.cache.local}/xml-apis/jars">
+                <include name="xml-apis-${xml-apis.version}.jar"/>
+            </fileset>
+                +-->
+        </copy>
     </target>
 
     <!--+
@@ -523,66 +562,105 @@
     <target name="tomcat.RESET" depends="">
         <antcall target="tomcat.clean.work"/>
         <!--+
-            | ZRQ Removed for Tomcat 27
+            | ZRQ Need to remove this for Tomcat 27
             +-->
         <antcall target="tomcat.clean.endorsed"/>
     </target>
+
+    <!-- ================ JUnit tasks ================ -->
+    <!--+
+        | There is a classloader problem with calling JUnit tasks from within Ant.
+        | To run a junit task, the JUnit binary needs to be in the main Ant classpath.
+        | This means that we need to have the JUnit library in our classpath *before* we launch Ant.
+        | I havn't found a nice fix for this yet, so you need to put the Junit library in your classpath.
+        +-->
+
+    <!--+
+        | JUnit properties.
+        +-->
+    <property name="junit.version" value="3.8.1"/>
+
+    <!--+
+        | The JUnit library classpath.
+        +-->
+    <path id="junit.classpath">
+        <pathelement location="${jar.cache.local}/junit/jars/junit-${junit.version}.jar"/>
+    </path>
+
+    <!--+
+        | Install JUnit.
+        +-->
+    <target name="junit.SETUP" depends="">
+        <antcall target="jar.cache.fetch">
+            <param name="jar.group"   value="junit"/>
+            <param name="jar.name"    value="junit-${junit.version}.jar"/>
+        </antcall>
+    </target>
+
+    <!--+
+        | Prepare JUnit.
+        +-->
+    <target name="junit.PREPARE" depends="">
+    </target>
+
+    <!--+
+        | Run a set of JUnit tests in the current VM.
+        | This task is designed to be called from a forked VM to give us more control over the classpath.
+        +-->
+    <target name="junit.task" depends="">
+        <!-- Create our reports directory -->
+        <mkdir dir="${junit.target}/junit"/>
+        <!-- Run our JUnitTestCase tests -->
+        <junit printsummary="yes" haltonfailure="yes" haltonerror="yes" showoutput="yes" fork="false">
+            <!-- Generate an XML log file -->
+            <formatter type="xml"/>
+            <!-- Run all the target JUnitTestCase tests -->
+            <batchtest todir="${junit.target}/junit">
+                <fileset dir="${junit.target}/classes">
+                    <include name="**/junit/**/JUnitTestCase.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+<!--+
+    | Useful JUnit tools ....
+    | http://jtestcase.sourceforge.net/
+    | http://xmlunit.sourceforge.net/
+    +-->
 
     <!-- ================ Castor tasks ================ -->
     <!--+
         | Castor properties.
         +-->
-    <property name="castor.base"    value="${basedir}/build/castor"/>
     <property name="castor.version" value="0.9.5"/>
-    <property name="castor.dist"    value="ftp://ftp.exolab.org/pub/castor/castor_${castor.version}/castor-${castor.version}.zip"/>
-    <property name="castor.home"    value="${castor.base}/castor-${castor.version}"/>
+    <property name="jta.version" value="1.0.1"/>
 
     <!--+
         | The Castor library classpath.
         +-->
     <path id="castor.classpath">
-        <pathelement location="${castor.home}/castor-${castor.version}.jar"/>
-        <pathelement location="${castor.home}/castor-${castor.version}-xml.jar"/>
+        <pathelement location="${jar.cache.local}/castor/jars/castor-${castor.version}.jar"/>
+        <pathelement location="${jar.cache.local}/castor/jars/castor-${castor.version}-xml.jar"/>
+        <pathelement location="${jar.cache.local}/jta/jars/jta-${jta.version}.jar"/>
     </path>
-
-    <!--+
-        | Delete the Castor directory.
-        +-->
-    <target name="castor.delete" depends="">
-        <delete dir="${castor.base}"/>
-    </target>
-
-    <!--+
-        | Download the Castor binary.
-        +-->
-    <target name="castor.dist.fetch" depends="">
-        <mkdir dir="${castor.base}"/>
-        <get verbose="true" usetimestamp="true"
-            src="${castor.dist}"
-            dest="${castor.base}/castor-${castor.version}.zip"
-            />
-    </target>
-
-    <!--+
-        | Unzip the Castor binary.
-        +-->
-    <target name="castor.dist.unzip" depends="">
-        <unzip src="${castor.base}/castor-${castor.version}.zip" dest="${castor.base}"/>
-    </target>
-
-    <!--+
-        | Unzip the Castor examples.
-        +-->
-    <target name="castor.examples.unzip" depends="">
-        <unzip src="${castor.home}/examples.zip" dest="${castor.home}"/>
-    </target>
 
     <!--+
         | Install Castor.
         +-->
-    <target name="castor.INSTALL" depends="">
-        <antcall target="castor.dist.fetch"/>
-        <antcall target="castor.dist.unzip"/>
+    <target name="castor.SETUP" depends="">
+        <antcall target="jar.cache.fetch">
+            <param name="jar.group"   value="castor"/>
+            <param name="jar.name"    value="castor-${castor.version}.jar"/>
+        </antcall>
+        <antcall target="jar.cache.fetch">
+            <param name="jar.group"   value="castor"/>
+            <param name="jar.name"    value="castor-${castor.version}-xml.jar"/>
+        </antcall>
+        <antcall target="jar.cache.fetch">
+            <param name="jar.group"   value="jta"/>
+            <param name="jar.name"    value="jta-${jta.version}.jar"/>
+        </antcall>
     </target>
 
     <!--+
@@ -591,69 +669,33 @@
     <target name="castor.PREPARE" depends="">
     </target>
 
-    <!--+
-        | Install the Castor javadoc as a webapp.
-        +-->
-    <target name="castor.docs.install" depends="tomcat.tasks">
-        <echo message=""/>
-        <echo message="Installing Castor documentation ...."/>
-        <!-- Copy the web.xml file -->
-        <copy file="src/webapps/docs/WEB-INF/web.xml" todir="${castor.home}/doc/WEB-INF"/>
-        <!-- Wait for the Tomcat manager -->
-        <antcall target="tomcat.manager.wait"/>
-        <!-- Install our webapp -->
-        <tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/castor-docs" war="file://${castor.home}/doc"/>
-    </target>
-
     <!-- ================ Xerces tasks ================ -->
     <!--+
         | Xerces properties.
         +-->
-    <property name="xerces.base"    value="${basedir}/build/xerces"/>
-    <property name="xerces.version" value="2.5.0"/>
-    <property name="xerces.name"    value="xerces-2_5_0"/>
-    <property name="xerces.dist"    value="http://xml.apache.org/dist/xerces-j/Xerces-J-bin.${xerces.version}.zip"/>
-    <property name="xerces.home"    value="${xerces.base}/${xerces.name}"/>
+    <property name="xerces.version"   value="2.4.0"/>
+    <property name="xml-apis.version" value="1.0.b2"/>
 
     <!--+
         | The Xerces library classpath.
         +-->
     <path id="xerces.classpath">
-        <pathelement location="${xerces.home}/xml-apis.jar"/>
-        <pathelement location="${xerces.home}/xercesImpl.jar"/>
+        <pathelement location="${jar.cache.local}/xerces/jars/xerces-${xerces.version}.jar"/>
+        <pathelement location="${jar.cache.local}/xml-apis/jars/xml-apis-${xml-apis.version}.jar"/>
     </path>
-
-    <!--+
-        | Delete the Xerces directory.
-        +-->
-    <target name="xerces.delete" depends="">
-        <delete dir="${xerces.base}"/>
-    </target>
-
-    <!--+
-        | Download the Xerces binary.
-        +-->
-    <target name="xerces.dist.fetch" depends="">
-        <mkdir dir="${xerces.base}"/>
-        <get verbose="true" usetimestamp="true"
-            src="${xerces.dist}"
-            dest="${xerces.base}/xerces-${xerces.version}.zip"
-            />
-    </target>
-
-    <!--+
-        | Unzip the Xerces binary.
-        +-->
-    <target name="xerces.dist.unzip" depends="">
-        <unzip src="${xerces.base}/xerces-${xerces.version}.zip" dest="${xerces.base}"/>
-    </target>
 
     <!--+
         | Install Xerces.
         +-->
-    <target name="xerces.INSTALL" depends="">
-        <antcall target="xerces.dist.fetch"/>
-        <antcall target="xerces.dist.unzip"/>
+    <target name="xerces.SETUP" depends="">
+        <antcall target="jar.cache.fetch">
+            <param name="jar.group" value="xerces"/>
+            <param name="jar.name"  value="xerces-${xerces.version}.jar"/>
+        </antcall>
+        <antcall target="jar.cache.fetch">
+            <param name="jar.group" value="xml-apis"/>
+            <param name="jar.name"  value="xml-apis-${xml-apis.version}.jar"/>
+        </antcall>
     </target>
 
     <!--+
@@ -662,73 +704,28 @@
     <target name="xerces.PREPARE" depends="">
     </target>
 
-    <!--+
-        | Install the Xerces docs as a webapp.
-        +-->
-    <target name="xerces.docs.install" depends="tomcat.tasks">
-        <echo message=""/>
-        <echo message="Installing Xerces documentation ...."/>
-        <!-- Copy the web.xml file -->
-        <copy file="src/webapps/docs/WEB-INF/web.xml" todir="${xerces.home}/docs/WEB-INF"/>
-        <!-- Wait for the Tomcat manager -->
-        <antcall target="tomcat.manager.wait"/>
-        <!-- Install our webapp -->
-        <tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/xerces-docs" war="file://${xerces.home}/docs"/>
-    </target>
-    
-    <property name="logging.home" value="${basedir}/build/logging"></property>
-    <path id= "logging.classpath">
-    <pathelement location="${logging.home}/commons-logging.jar"/>
-    </path>
 
     <!-- ================ JConfig tasks ================ -->
     <!--+
         | JConfig properties.
         +-->
-    <property name="jconfig.base"    value="${basedir}/build/jconfig"/>
-    <property name="jconfig.name"    value="jConfig"/>
     <property name="jconfig.version" value="2.2"/>
-    <property name="jconfig.dist"    value="http://belnet.dl.sourceforge.net/sourceforge/jconfig/jconfig-bin-v${jconfig.version}.zip"/>
-    <property name="jconfig.home"    value="${jconfig.base}/${jconfig.name}"/>
 
     <!--+
-        | The JConfig library classpath.
+        | Set the JConfig library classpath.
         +-->
     <path id="jconfig.classpath">
-        <pathelement location="${jconfig.home}/dist/jconfig.jar"/>
+        <pathelement location="${jar.cache.local}/jconfig/jars/jconfig-${jconfig.version}.jar"/>
     </path>
-
-    <!--+
-        | Delete the JConfig directory.
-        +-->
-    <target name="jconfig.delete" depends="">
-        <delete dir="${jconfig.base}"/>
-    </target>
-
-    <!--+
-        | Download the JConfig binary.
-        +-->
-    <target name="jconfig.dist.fetch" depends="">
-        <mkdir dir="${jconfig.base}"/>
-        <get verbose="true" usetimestamp="true"
-            src="${jconfig.dist}"
-            dest="${jconfig.base}/jconfig-${jconfig.version}.zip"
-            />
-    </target>
-
-    <!--+
-        | Unzip the JConfig binary.
-        +-->
-    <target name="jconfig.dist.unzip" depends="">
-        <unzip src="${jconfig.base}/jconfig-${jconfig.version}.zip" dest="${jconfig.base}"/>
-    </target>
 
     <!--+
         | Install JConfig.
         +-->
-    <target name="jconfig.INSTALL" depends="">
-        <antcall target="jconfig.dist.fetch"/>
-        <antcall target="jconfig.dist.unzip"/>
+    <target name="jconfig.SETUP" depends="">
+        <antcall target="jar.cache.fetch">
+            <param name="jar.group" value="jconfig"/>
+            <param name="jar.name"  value="jconfig-${jconfig.version}.jar"/>
+        </antcall>
     </target>
 
     <!--+
@@ -737,33 +734,15 @@
     <target name="jconfig.PREPARE" depends="">
     </target>
 
-    <!--+
-        | Install the JConfig docs as a webapp.
-        +-->
-    <target name="jconfig.docs.install" depends="tomcat.tasks">
-        <echo message=""/>
-        <echo message="Installing JConfig documentation ...."/>
-        <!-- Copy the web.xml file -->
-        <copy file="src/webapps/docs/WEB-INF/web.xml" todir="${jconfig.home}/javadoc/WEB-INF"/>
-        <!-- Wait for the Tomcat manager -->
-        <antcall target="tomcat.manager.wait"/>
-        <!-- Install our webapp -->
-        <tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/jconfig-docs" war="file://${jconfig.home}/javadoc"/>
-    </target>
-
     <!-- ================ Hsqldb tasks ================ -->
     <!--+
         | Hsqldb properties.
         +-->
-    <property name="hsqldb.base"     value="${basedir}/build/hsqldb"/>
-    <property name="hsqldb.version"  value="1_7_1"/>
-    <property name="hsqldb.name"     value="hsqldb"/>
-    <property name="hsqldb.dist"     value="http://belnet.dl.sourceforge.net/sourceforge/hsqldb/hsqldb_${hsqldb.version}.zip"/>
-    <property name="hsqldb.home"     value="${hsqldb.base}/${hsqldb.name}"/>
-    <property name="hsqldb.data"     value="${hsqldb.base}/data"/>
+    <property name="hsqldb.version"  value="1.7.1"/>
+    <property name="hsqldb.home"     value="${basedir}/build/hsqldb"/>
     <property name="hsqldb.host"     value="localhost"/>
     <property name="hsqldb.port"     value="9001"/>
-    <property name="hsqldb.database" value="policy"/>
+    <property name="hsqldb.name"     value="policy"/>
     <property name="hsqldb.user"     value="sa"/>
     <property name="hsqldb.pass"     value="veritas"/>
     <property name="hsqldb.timeout"  value="60"/>
@@ -774,40 +753,17 @@
         | The Hsqldb library classpath.
         +-->
     <path id="hsqldb.classpath">
-        <pathelement location="${hsqldb.home}/lib/hsqldb.jar"/>
+        <pathelement location="${jar.cache.local}/hsqldb/jars/hsqldb-${hsqldb.version}.jar"/>
     </path>
-
-    <!--+
-        | Delete the Hsqldb directory.
-        +-->
-    <target name="hsqldb.delete" depends="">
-        <delete dir="${hsqldb.base}"/>
-    </target>
-
-    <!--+
-        | Download the Hsqldb binary.
-        +-->
-    <target name="hsqldb.dist.fetch" depends="">
-        <mkdir dir="${hsqldb.base}"/>
-        <get verbose="true" usetimestamp="true"
-            src="${hsqldb.dist}"
-            dest="${hsqldb.base}/hsqldb-${hsqldb.version}.zip"
-            />
-    </target>
-
-    <!--+
-        | Unzip the Hsqldb binary.
-        +-->
-    <target name="hsqldb.dist.unzip" depends="">
-        <unzip src="${hsqldb.base}/hsqldb-${hsqldb.version}.zip" dest="${hsqldb.base}"/>
-    </target>
 
     <!--+
         | Install Hsqldb.
         +-->
-    <target name="hsqldb.INSTALL" depends="">
-        <antcall target="hsqldb.dist.fetch"/>
-        <antcall target="hsqldb.dist.unzip"/>
+    <target name="hsqldb.SETUP" depends="">
+        <antcall target="jar.cache.fetch">
+            <param name="jar.group" value="hsqldb"/>
+            <param name="jar.name"  value="hsqldb-${hsqldb.version}.jar"/>
+        </antcall>
     </target>
 
     <!--+
@@ -823,11 +779,11 @@
     <target name="hsqldb.properties" depends="">
         <echo message=""/>
         <echo message="Creating Hsqldb properties ...."/>
-        <mkdir dir="${hsqldb.data}"/>
+        <mkdir dir="${hsqldb.home}"/>
         <!-- Create the properties file -->
-        <propertyfile file="${hsqldb.data}/server.properties" comment="Hqsldb server config">
+        <propertyfile file="${hsqldb.home}/server.properties" comment="Hqsldb server config">
             <entry key="server.port"           value="${hsqldb.port}"/>
-            <entry key="server.database"       value="${hsqldb.database}"/>
+            <entry key="server.database"       value="${hsqldb.name}"/>
             <entry key="server.no_system_exit" value="true"/>
         </propertyfile>
     </target>
@@ -838,13 +794,13 @@
     <target name="hsqldb.start" depends="">
         <echo message=""/>
         <echo message="Starting Hqsldb ...."/>
-        <mkdir dir="${hsqldb.data}"/>
-        <java taskname="hsqldb" classname="org.hsqldb.Server" fork="true" dir="${hsqldb.data}">
+        <mkdir dir="${hsqldb.home}"/>
+        <java taskname="hsqldb" classname="org.hsqldb.Server" fork="true" dir="${hsqldb.home}">
             <!-- Use the Hsqldb classpath -->
             <classpath refid="hsqldb.classpath"/>
             <!-- Args for the Hsqldb server -->
             <arg value="-database"/>
-            <arg value="${hsqldb.database}"/>
+            <arg value="${hsqldb.name}"/>
             <arg value="-port"/>
             <arg value="${hsqldb.port}"/>
         </java>
@@ -856,7 +812,7 @@
     <target name="hsqldb.stop" depends="">
         <echo message=""/>
         <echo message="Stopping Hqsldb ...."/>
-        <java taskname="hsqldb" classname="org.hsqldb.util.ShutdownServer" fork="true" dir="${hsqldb.data}">
+        <java taskname="hsqldb" classname="org.hsqldb.util.ShutdownServer" fork="true" dir="${hsqldb.home}">
             <!-- Use the Hsqldb classpath -->
             <classpath refid="hsqldb.classpath"/>
             <!-- Args for the Hsqldb server -->
@@ -886,7 +842,7 @@
         | Initialise the Hsqldb database.
         | This only needs to run once, when a new database is created.
         +-->
-    <target name="hsqldb.database.init" depends="">
+    <target name="hsqldb.init" depends="">
         <echo message=""/>
         <echo message="Initialising Hqsldb ...."/>
         <sql driver="org.hsqldb.jdbcDriver"
@@ -901,6 +857,31 @@
             ]]>
         </sql>
     </target>
+
+    <!--+
+        | Delete our Hsqldb data.
+        +-->
+    <target name="hsqldb.delete" depends="">
+        <delete dir="${hsqldb.home}" failonerror="false"/>
+    </target>
+
+    <!--+
+        | Build our Hsqldb database.
+        +-->
+    <target name="hsqldb.BUILD" depends="">
+        <antcall target="hsqldb.wait"/>
+        <antcall target="hsqldb.init"/>
+        <antcall target="hsqldb.database.create"/>
+    </target>
+
+    <!--+
+        | Reset our Hsqldb database.
+        +-->
+    <target name="hsqldb.RESET" depends="">
+        <antcall target="hsqldb.delete"/>
+    </target>
+
+    <!-- ================ Database tasks ================ -->
 
     <!--+
         | Create our database tables.
@@ -918,45 +899,6 @@
             <transaction src="src/sql/hsqldb/create.sql"/>
         </sql>
     </target>
-
-    <!--+
-        | Delete our Hsqldb data.
-        +-->
-    <target name="hsqldb.data.delete" depends="">
-        <delete dir="${hsqldb.data}" failonerror="false"/>
-    </target>
-
-    <!--+
-        | Build our Hsqldb database.
-        +-->
-    <target name="hsqldb.BUILD" depends="">
-        <antcall target="hsqldb.wait"/>
-        <antcall target="hsqldb.database.init"/>
-        <antcall target="hsqldb.database.create"/>
-    </target>
-
-    <!--+
-        | Reset our Hsqldb database.
-        +-->
-    <target name="hsqldb.RESET" depends="">
-        <antcall target="hsqldb.data.delete"/>
-    </target>
-
-    <!--+
-        | Install the Hsqldb docs as a webapp.
-        +-->
-    <target name="hsqldb.docs.install" depends="tomcat.tasks">
-        <echo message=""/>
-        <echo message="Installing Hsqldb documentation ...."/>
-        <!-- Copy the web.xml file -->
-        <copy file="src/webapps/docs/WEB-INF/web.xml" todir="${hsqldb.home}/doc/WEB-INF"/>
-        <!-- Wait for the Tomcat manager -->
-        <antcall target="tomcat.manager.wait"/>
-        <!-- Install our webapp -->
-        <tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/hsqldb-docs" war="file://${hsqldb.home}/doc"/>
-    </target>
-
-    <!-- ================ Database tasks ================ -->
 
     <!--+
         | Select all rows from our database tables.
@@ -1004,40 +946,31 @@
 
     <!-- ================ JAF tasks ================ -->
     <!--+
-        | We only need this to install activation.jar into the Tomcat endorsed directory for Axis.
-        | Once we have the dependencies sorted, this should go.
-        | Required with JDK 1.4.2
+        | We need this to install activation.jar into the endorsed directory for Axis-1.1 with JDK-1.4.2.
         | There is a problem with downloading the JAF files, Sun require you to say 'yes' to the licence agreement.
-        | This means that we can't just download from a public server using an Ant task.
-        | For now, I've included the JAF binary in cvs.
+        | We need to add jaf to the maven repository (but there may be licence issues with making it public).
         +-->
+
     <!--+
         | JAF properties.
         +-->
-    <property name="jaf.zip"  value="${basedir}/depends/jaf/jaf-1.0.2.zip"/>
-    <property name="jaf.base" value="${basedir}/build/jaf"/>
-    <property name="jaf.home" value="${basedir}/build/jaf/jaf-1.0.2"/>
+    <property name="jaf.version" value="1.0.2"/>
 
     <!--+
-        | Delete the JAF directory.
+        | The JAF library classpath.
         +-->
-    <target name="jaf.delete" depends="">
-        <delete dir="${jaf.base}" failonerror="false"/>
-    </target>
-
-    <!--+
-        | Unpack the JAF binary.
-        +--> 
-    <target name="jaf.dist.unzip" depends="">
-        <mkdir dir="${jaf.base}"/>
-        <unzip src="${jaf.zip}" dest="${jaf.base}"/>
-    </target>
+    <path id="jaf.classpath">
+        <pathelement location="${jar.cache.local}/jaf/jars/jaf-${jaf.version}.jar"/>
+    </path>
 
     <!--+
         | Install JAF.
         +-->
-    <target name="jaf.INSTALL" depends="">
-        <antcall target="jaf.dist.unzip"/>
+    <target name="jaf.SETUP" depends="">
+        <antcall target="jar.cache.fetch">
+            <param name="jar.group" value="jaf"/>
+            <param name="jar.name"  value="jaf-${jaf.version}.jar"/>
+        </antcall>
     </target>
 
     <!--+
@@ -1050,13 +983,9 @@
     <!--+
         | Axis properties.
         +-->
-    <property name="axis.base"    value="${basedir}/build/axis"/>
     <property name="axis.version" value="1.1"/>
-    <property name="axis.dist"    value="http://ws.apache.org/axis/dist/1_1/axis-1_1.zip"/>
-    <property name="axis.zip"     value="${axis.base}/axis-${axis.version}.zip"/>
-
-    <property name="axis.home"    value="${axis.base}/axis-1_1"/>
-    <property name="axis.webapp"  value="${axis.home}/webapps/axis"/>
+    <property name="axis.home"    value="${basedir}/build/axis"/>
+    <property name="axis.webapp"  value="${axis.home}/webapp"/>
     <property name="axis.host"    value="localhost"/>
     <property name="axis.port"    value="8080"/>
     <property name="axis.server"  value="${axis.host}:${axis.port}"/>
@@ -1068,60 +997,134 @@
         | The Axis library classpath.
         +-->
     <path id="axis.classpath">
+        <!--+
+            | Use tha jar files in the Maven repository.
+        <pathelement location="${jar.cache.local}/axis/jars/axis-${axis.version}.jar"/>
+        <pathelement location="${jar.cache.local}/axis/jars/axis-ant-${axis.version}.jar"/>
+            +-->
+        <!--+
+            | Or, just use the jar files in the Axis webapp.
+            +-->
         <pathelement location="${axis.webapp}/WEB-INF/lib/axis.jar"/>
         <pathelement location="${axis.webapp}/WEB-INF/lib/axis-ant.jar"/>
-        <pathelement location="${axis.webapp}/WEB-INF/lib/commons-discovery.jar"/>
-        <pathelement location="${axis.webapp}/WEB-INF/lib/commons-logging.jar"/>
-        <pathelement location="${axis.webapp}/WEB-INF/lib/jaxrpc.jar"/>
+        <!--+
+            | These jars are required by the Java2Wsdl task
+            +-->
         <pathelement location="${axis.webapp}/WEB-INF/lib/saaj.jar"/>
         <pathelement location="${axis.webapp}/WEB-INF/lib/wsdl4j.jar"/>
+        <pathelement location="${axis.webapp}/WEB-INF/lib/jaxrpc.jar"/>
+        <pathelement location="${axis.webapp}/WEB-INF/lib/commons-logging.jar"/>
+        <pathelement location="${axis.webapp}/WEB-INF/lib/commons-discovery.jar"/>
+
     </path>
 
     <!--+
         | Delete the Axis directory.
         +-->
     <target name="axis.delete" depends="">
-        <delete dir="${axis.base}"/>
+        <delete dir="${axis.home}"/>
     </target>
 
     <!--+
-        | Download the Axis binary.
+        | Install the Axis libraries.
         +-->
-    <target name="axis.dist.fetch" depends="">
-        <mkdir dir="${axis.base}"/>
-        <get verbose="true" usetimestamp="true"
-            src="${axis.dist}"
-            dest="${axis.zip}"
-            />
-    </target>
-
-    <!--+
-        | Unzip the Axis binary.
-        +-->
-    <target name="axis.dist.unzip" depends="">
-        <mkdir dir="${axis.base}"/>
-        <unzip src="${axis.zip}" dest="${axis.base}"/>
-    </target>
-
-    <!--+
-        | Patch the Tomcat endorsed classes to enable Axis.
-        | Copy activation.jar into the Tomcat endorsed directory.
-        | Required with Axis 1.1 on JDK 1.4.2
-        | This needs to be done befoe Tomcat starts.
-        +-->
-    <target name="axis.endorsed.patch" depends="">
-        <copy verbose="true" file="${jaf.home}/activation.jar" toDir="${tomcat.home}/common/endorsed"/>
-
+    <target name="axis.webapp.fetch" depends="">
         <!--+
-            | ZRQ Added for Tomcat 27
-        <copy verbose="true" toDir="${tomcat.home}/common/endorsed"/>
-            <fileset dir="${xerces.home}">
-                <include name="xml-apis.jar"/>
-                <include name="xercesImpl.jar"/>
+            | Get the Axis jars files.
+            | Deprecated, just get the Axis war file.
+        <antcall target="jar.cache.fetch">
+            <param name="jar.group" value="axis"/>
+            <param name="jar.name"  value="axis-${axis.version}.jar"/>
+        </antcall>
+        <antcall target="jar.cache.fetch">
+            <param name="jar.group" value="axis"/>
+            <param name="jar.name"  value="axis-ant-${axis.version}.jar"/>
+        </antcall>
+            +-->
+        <!--+
+            | Get the Axis webapp war file.
+            +-->
+        <antcall target="jar.cache.fetch">
+            <param name="jar.group" value="axis"/>
+            <param name="jar.name"  value="axis-${axis.version}.war"/>
+        </antcall>
+    </target>
+
+    <!--+
+        | Unpack our Axis webapp war file.
+        +-->
+    <target name="axis.webapp.unwar" depends="">
+        <unwar src="${jar.cache.local}/axis/wars/axis-${axis.version}.war" dest="${axis.home}/webapp"/>
+    </target>
+
+    <!--+
+        | Wrap up our Axis webapp into a war file.
+        | TODO Make the war file name configurable.
+        +-->
+    <target name="axis.webapp.war" depends="">
+        <war destfile="${axis.home}/axis.war" webxml="${axis.home}/webapp/WEB-INF/web.xml">
+            <!-- Add the Axis libraries -->
+            <lib dir="${axis.home}/webapp/WEB-INF/lib"/>
+            <!-- Add our class files -->
+            <classes dir="${axis.home}/webapp/WEB-INF/classes"/>
+            <!-- Add the basic jsp page -->
+            <fileset dir="${axis.home}/webapp">
+                <include name="index.html"/>
+                <include name="happyaxis.jsp"/>
+            </fileset>
+            <!--+
+                | Add our own jar files
+            <lib dir="${axis.home}/webapp/lib"/>
+                +-->
+        </war>
+    </target>
+
+    <!--+
+        | Install the 3rd party jars our service(s) depend on.
+        +-->
+    <target name="axis.external.install" depends="">
+        <!-- Copy the 3rd party libraries into our Axis WEB-INF/lib directory -->
+        <copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
+            <fileset dir="${jar.cache.local}/castor/jars">
+                <include name="castor-${castor.version}.jar"/>
+                <include name="castor-${castor.version}-xml.jar"/>
+            </fileset>
+            <fileset dir="${jar.cache.local}/jta/jars">
+                <include name="jta-${jta.version}.jar"/>
+            </fileset>
+            <fileset dir="${jar.cache.local}/xerces/jars">
+                <include name="xerces-${xerces.version}.jar"/>
+            </fileset>
+            <fileset dir="${jar.cache.local}/xml-apis/jars">
+                <include name="xml-apis-${xml-apis.version}.jar"/>
+            </fileset>
+            <fileset dir="${jar.cache.local}/hsqldb/jars">
+                <include name="hsqldb-${hsqldb.version}.jar"/>
+            </fileset>
+            <fileset dir="${jar.cache.local}/jconfig/jars">
+                <include name="jconfig-${jconfig.version}.jar"/>
+            </fileset>
+            <!--+
+                | TODO - Use our own Maven repository for this ?
+                +-->
+            <fileset dir="${basedir}/depends/myspace">
+                <include name="myspace-client.jar"/>
             </fileset>
         </copy>
-            +-->
+    </target>
 
+    <!--+
+        | Install our Axis webapp.
+        +-->
+    <target name="axis.SETUP" depends="">
+        <antcall target="axis.webapp.fetch"/>
+        <antcall target="axis.webapp.unwar"/>
+    </target>
+
+    <!--+
+        | Prepare Axis.
+        +-->
+    <target name="axis.PREPARE" depends="">
     </target>
 
     <!--+
@@ -1209,24 +1212,6 @@
     </target>
 
     <!--+
-        | Install Axis.
-        +-->
-    <target name="axis.INSTALL" depends="">
-        <!-- Download Axis binary -->
-        <antcall target="axis.dist.fetch"/>
-        <!-- Unpack the Axis binary -->
-        <antcall target="axis.dist.unzip"/>
-    </target>
-
-    <!--+
-        | Prepare Axis.
-        +-->
-    <target name="axis.PREPARE" depends="">
-        <!-- Add the Axis endorsed classes to Tomcat -->
-        <antcall target="axis.endorsed.patch"/>
-    </target>
-
-    <!--+
         | Reset Axis.
         +-->
     <target name="axis.RESET" depends="">
@@ -1254,20 +1239,6 @@
         </delete>
     </target>
 
-    <!--+
-        | Install the Axis docs as a webapp.
-        +-->
-    <target name="axis.docs.install" depends="tomcat.tasks">
-        <echo message=""/>
-        <echo message="Installing Axis documentation ...."/>
-        <!-- Copy the web.xml file -->
-        <copy file="src/webapps/docs/WEB-INF/web.xml" todir="${axis.home}/docs/WEB-INF"/>
-        <!-- Wait for the Tomcat manager -->
-        <antcall target="tomcat.manager.wait"/>
-        <!-- Install our webapp -->
-        <tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/axis-docs" war="file://${axis.home}/docs"/>
-    </target>
-
     <!-- ================ Policy tasks ================ -->
 
     <property name="policy.base" value="${basedir}/build/policy"/>
@@ -1277,8 +1248,8 @@
     <property name="policy.server.base"  value="${policy.base}/server"/>
     <property name="policy.client.base"  value="${policy.base}/client"/>
 
-    <property name="policy.server.jar"  value="policy-server-${project.version}.jar"/>
-    <property name="policy.client.jar"  value="policy-client-${project.version}.jar"/>
+    <property name="policy.server.jar"  value="astrogrid-community-policy-server-${project.version}.jar"/>
+    <property name="policy.client.jar"  value="astrogrid-community-policy-client-${project.version}.jar"/>
 
     <!--+
         | The Policy server classpath.
@@ -1540,7 +1511,12 @@
                 <!-- Include the generated data objects -->
                 <!-- <include name="org/astrogrid/community/policy/data/*.java"/> -->
             </fileset>
-            <!-- Copy our own Java source -->
+            <!--+
+                | Copy our own Java source.
+                | Yes, we could probably just get all of the java files using 'org/astrogrid/community/policy/server**'
+                | However, at this point I wanted to be specific about which classes are included.
+                | If I have time to re-visit this I'll have a go at tidying it up a bit.
+                +-->
             <fileset dir="src/java">
                 <!-- Include our PolicyService interface and implementation -->
                 <include name="org/astrogrid/community/policy/server/PolicyService.java"/>
@@ -1557,31 +1533,25 @@
                 <!-- Include our ResourceManager interface and implementation -->
                 <include name="org/astrogrid/community/policy/server/ResourceManager.java"/>
                 <include name="org/astrogrid/community/policy/server/ResourceManagerImpl.java"/>
-                
                 <!-- Include our GroupManager interface and implementation -->
                 <include name="org/astrogrid/community/policy/server/GroupManager.java"/>
                 <include name="org/astrogrid/community/policy/server/GroupManagerImpl.java"/>
                 <!-- Include our CommunityManager interface and implementation -->
                 <include name="org/astrogrid/community/policy/server/CommunityManager.java"/>
                 <include name="org/astrogrid/community/policy/server/CommunityManagerImpl.java"/>
-
                 <!-- Include our PermissionManager interface and implementation -->
                 <include name="org/astrogrid/community/policy/server/PermissionManager.java"/>
                 <include name="org/astrogrid/community/policy/server/PermissionManagerImpl.java"/>
-
                 <!-- Include our Configuration implementation -->
                 <include name="org/astrogrid/community/policy/server/CommunityConfigImpl.java"/>
-
                 <!-- Include our common objects -->
                 <include name="org/astrogrid/community/common/**"/>
                 <!-- Include our data objects -->
                 <include name="org/astrogrid/community/policy/data/*.java"/>
                 <!-- Include our JUnit tests -->
                 <include name="org/astrogrid/community/policy/server/junit/**"/>
-
                 <!-- Include the policy loader classes -->
                 <include name="org/astrogrid/community/policy/loader/**"/>
-
             <!--+
                 | PATCH : Include the authentication data objects
                 | Required because the Castor mapping refers to org.astrogrid.community.authentication.data.SecurityToken.
@@ -1589,7 +1559,6 @@
                 +-->
                 <include name="org/astrogrid/community/authentication/data/SecurityToken.java"/>
                 <include name="org/astrogrid/community/service/authentication/data/SecurityToken.java"/>
-
             </fileset>
         </copy>
     </target>
@@ -1664,6 +1633,9 @@
         | Compile our server classes.
         +-->
     <target name="policy.server.javac" depends="">
+
+        <echo message="policy.server.javac ...."/>
+
         <!-- Create our build directory -->
         <mkdir dir="${policy.server.base}/classes"/>
         <!-- Compile the server classes -->
@@ -1694,8 +1666,11 @@
                 <path refid="axis.classpath"/>
                 <!-- Include the JConfig libraries -->
                 <path refid="jconfig.classpath"/>
-                <!-- include the myspace libraries of the delegate -->
+                <!-- Include the myspace delegate -->
                 <path refid="myspace.classpath"/>
+
+                <!-- Include the Ant classes -->
+                <path refid="ant.classpath"/>
 
             </classpath>
         </javac>
@@ -1777,7 +1752,7 @@
     <!--+
         | Build our policy service.
         +-->
-    <target name="policy.BUILD" depends="">
+    <target name="policy.BUILD" depends="init">
         <antcall target="policy.delete"/>
 
         <antcall target="policy.service.javac"/>
@@ -1799,6 +1774,7 @@
         <antcall target="policy.client.jar"/>
     </target>
 
+    <!-- What is this doing here ? -->
     <path id="myspace.classpath">
         <pathelement location="${basedir}/depends/myspace/myspace-client.jar"/>
     </path>
@@ -1808,29 +1784,7 @@
         +-->
     <target name="policy.server.install" depends="">
         <!-- Copy the 3rd party libraries into our Axis WEB-INF/lib directory -->
-        <copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
-            <fileset dir="${castor.home}">
-                <include name="jta1.0.1.jar"/>
-                <include name="castor-${castor.version}.jar"/>
-                <include name="castor-${castor.version}-xml.jar"/>
-            </fileset>
-            <!--+
-                | ZRQ Removed for Tomcat 27
-                +-->
-            <fileset dir="${xerces.home}">
-                <include name="xml-apis.jar"/>
-                <include name="xercesImpl.jar"/>
-            </fileset>
-            <fileset dir="${hsqldb.home}/lib">
-                <include name="hsqldb.jar"/>
-            </fileset>
-            <fileset dir="${jconfig.home}/dist">
-                <include name="jconfig.jar"/>
-            </fileset>
-            <fileset dir="${basedir}/depends/myspace">
-                <include name="myspace-client.jar"/>
-            </fileset>
-        </copy>
+        <antcall target="axis.external.install"/>
         <!-- Copy our jar into the Axis WEB-INF/lib directory -->
         <copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
             <fileset dir="${policy.base}/jar">
@@ -1852,9 +1806,10 @@
     </target>
 
     <!--+
-        | Deploy our PolicyService service.
+        | Deploy our PolicyService service (using the axis admin client).
+        | Needs the Axis service running to connect to the admin service.
         +-->
-    <target name="policy.service.deploy" depends="axis.tasks">
+    <target name="policy.service.deploy.live" depends="axis.tasks">
         <!-- Wait for the Axis service -->
         <antcall target="axis.wait"/>
         <!-- Deploy our PolicyService service -->
@@ -1868,9 +1823,10 @@
     </target>
 
     <!--+
-        | Deploy our PolicyManager service.
+        | Deploy our PolicyManager service (using the axis admin client).
+        | Needs the Axis service running to connect to the admin service.
         +-->
-    <target name="policy.manager.deploy" depends="axis.tasks">
+    <target name="policy.manager.deploy.live" depends="axis.tasks">
         <!-- Wait for the Axis service -->
         <antcall target="axis.wait"/>
         <!-- Deploy our PolicyManager service -->
@@ -1884,17 +1840,19 @@
     </target>
 
     <!--+
-        | Deploy our Axis services.
+        | Deploy our Policy services (using the axis admin client).
+        | Needs the Axis service running to connect to the admin service.
         +-->
-    <target name="policy.server.deploy" depends="axis.tasks">
-        <antcall target="policy.service.deploy"/>
-        <antcall target="policy.manager.deploy"/>
+    <target name="policy.server.deploy.live" depends="axis.tasks">
+        <antcall target="policy.service.deploy.live"/>
+        <antcall target="policy.manager.deploy.live"/>
     </target>
 
     <!--+
-        | Undeploy our PolicyService service.
+        | Undeploy our PolicyService service (using the axis admin client).
+        | Needs the Axis service running to connect to the admin service.
         +-->
-    <target name="policy.service.undeploy" depends="axis.tasks">
+    <target name="policy.service.undeploy.live" depends="axis.tasks">
         <!-- Wait for the Axis service -->
         <antcall target="axis.wait"/>
         <!-- Remove our WebService -->
@@ -1908,9 +1866,10 @@
     </target>
 
     <!--+
-        | Undeploy our PolicyManager service.
+        | Undeploy our PolicyManager service (using the axis admin client).
+        | Needs the Axis service running to connect to the admin service.
         +-->
-    <target name="policy.manager.undeploy" depends="axis.tasks">
+    <target name="policy.manager.undeploy.live" depends="axis.tasks">
         <!-- Wait for the Axis service -->
         <antcall target="axis.wait"/>
         <!-- Remove our WebService -->
@@ -1924,11 +1883,12 @@
     </target>
 
     <!--+
-        | Undeploy our Axis services.
+        | Undeploy our Policy services (using the axis admin client).
+        | Needs the Axis service running to connect to the admin service.
         +-->
     <target name="policy.server.undeploy" depends="axis.tasks">
-        <antcall target="policy.service.undeploy"/>
-        <antcall target="policy.manager.undeploy"/>
+        <antcall target="policy.service.undeploy.live"/>
+        <antcall target="policy.manager.undeploy.live"/>
     </target>
 
     <!--+
@@ -1982,7 +1942,7 @@
         <!-- Reload Axis -->
         <antcall target="axis.webapp.reload"/>
         <!-- Deploy our service -->
-        <antcall target="policy.server.deploy"/>
+        <antcall target="policy.server.deploy.live"/>
         <!-- Check we can read our service WSDL -->
         <antcall target="policy.server.axis2wsdl"/>
     </target>
@@ -2128,9 +2088,9 @@
         <!-- Run our server side tests -->
         <antcall target="policy.server.junit"/>
         <!-- Run our client side tests -->
-    <antcall target="policy.client.junit"/>
+        <antcall target="policy.client.junit"/>
         <!-- Display our database -->
-    <antcall target="hsqldb.database.select"/>
+        <antcall target="hsqldb.database.select"/>
     </target>
 
     <!--+
@@ -2237,7 +2197,7 @@
         | Configuration properties.
         +-->
     <property name="config.base" value="${basedir}/build/config"></property>
-    <property name="config.file" value="${config.base}/config.xml"></property>
+    <property name="config.file" value="${config.base}/astrogrid-community-config.xml"></property>
 
     <!--+
         | Delete our configuration files.
@@ -2258,28 +2218,28 @@
         <!-- Copy our database mapping files -->
         <copy verbose="false" overwrite="true" toDir="${config.base}">
             <fileset dir="src/castor/hsqldb">
-                <include name="database.xml"/>
-                <include name="mapping.xml"/>
+                <include name="astrogrid-community-database.xml"/>
+                <include name="astrogrid-community-mapping.xml"/>
             </fileset>
         </copy>
         <!-- Copy our config files -->
         <copy verbose="false" overwrite="true" toDir="${config.base}">
             <fileset dir="src/config">
-                <include name="config.xml"/>
+                <include name="astrogrid-community-config.xml"/>
             </fileset>
         </copy>
         <!-- Transform our config file, filling in the correct values -->
         <antcall target="config.xslt">
             <param name="property.name"  value="database.name"/>
-            <param name="property.value" value="${hsqldb.database}"/>
+            <param name="property.value" value="${hsqldb.name}"/>
         </antcall>
         <antcall target="config.xslt">
             <param name="property.name"  value="database.config"/>
-            <param name="property.value" value="${config.base}/database.xml"/>
+            <param name="property.value" value="${config.base}/astrogrid-community-database.xml"/>
         </antcall>
         <antcall target="config.xslt">
             <param name="property.name"  value="database.mapping"/>
-            <param name="property.value" value="${config.base}/mapping.xml"/>
+            <param name="property.value" value="${config.base}/astrogrid-community-mapping.xml"/>
         </antcall>
     </target>
 
@@ -2348,14 +2308,15 @@
     </target>
 
     <!-- ================ Authentication tasks ================ -->
+    <property name="auth.testdir" value="${basedir}/test"></property>
 
     <property name="authentication.build" value="${basedir}/build/authentication"/>
     <property name="authentication.classes" value="${basedir}/build/authentication/classes"></property> <!-- use the eclipse build for now -->
 
-    <property name="authentication.server.jar"  value="authentication-server-${project.version}.jar"/>
-    <property name="authentication.client.jar"  value="authentication-client-${project.version}.jar"/>
+    <property name="authentication.server.jar"  value="astrogrig-community-auth-server-${project.version}.jar"/>
+    <property name="authentication.client.jar"  value="astrogrig-community-auth-client-${project.version}.jar"/>
     
-        <target name="authentication.delete" depends="">
+    <target name="authentication.delete" depends="">
         <delete dir="${authentication.build}" failonerror="false"/>
     </target>
     
@@ -2374,7 +2335,7 @@
 
     <target name="authentication.testSetup" description="moves various config files from the main tree into the test tree prior to testing">
         <antcall target="authentication.genTestSetup">
-            <param name="testbase" value="${testdir}/java"/>
+            <param name="testbase" value="${auth.testdir}/java"/>
         </antcall>
     </target>
 
@@ -2387,11 +2348,11 @@
     <target name="authentication.genTestSetup">
         <copy file="${basedir}/src/sql/hsqldb/create.sql" todir="${testbase}/org/astrogrid/community/common/db/">
         </copy>
-        <copy file="${basedir}/src/castor/hsqldb/mapping.xml" todir="${testdir}/config/"></copy>
+        <copy file="${basedir}/src/castor/hsqldb/mapping.xml" todir="${auth.testdir}/config/"></copy>
         <echo file="${testbase}/org/astrogrid/community/common/Test.properties" append="false">
-database.mapping=file://${testdir}/config/mapping.xml
-database.config=file://${testdir}/config/databaseinmemory.xml
-database.name=${hsqldb.database}
+database.mapping=file://${auth.testdir}/config/mapping.xml
+database.config=file://${auth.testdir}/config/databaseinmemory.xml
+database.name=${hsqldb.name}
 database.url=jdbc:hsqldb:test/data/policy
 database.password=
 database.user=sa
@@ -2401,7 +2362,7 @@ database.user=sa
     <!--+
         | Ensure that the appropriate file is compiled
         +-->
-        <target name="authentication.server.javac" depends="">
+    <target name="authentication.server.javac" depends="">
         <!-- Create our build directory -->
         <mkdir dir="${authentication.build}/classes"/>
         <!-- Compile the interface classes -->
@@ -2500,6 +2461,13 @@ database.user=sa
 
     <!--+
         | Compile authentication classes - could be all the classes except errors are forcing the excludes....
+        |
+        | Should NOT be all of the classes, we want to keep a clear separation between authentication and policy, and keep client and server side separate..
+        | The aim is to end up with four separate jars, policy and auth, server and client.
+        | With only a few of the common classes shared between them.
+        | Compiling 'all' and then excluding the ones you don't want is a bit like 'import package.*' in Java.
+        | Better to be explicit which classes you DO want to complile.
+        | That way when somone adds a new class to another section of the source code, this task don't break.
         +-->
     <target name="authentication.javac" depends="" description="compile all the classes related to authentication">
         <!-- Create our build directory -->
@@ -2512,13 +2480,18 @@ database.user=sa
                optimize="on"
                verbose="off"
                >
-             <include name="org/astrogrid/community/**"/>
-               <exclude name="org/astrogrid/community/policy/client/**"/>
-               <exclude name="org/astrogrid/community/policy/server/**"/>
-               <exclude name="org/astrogrid/community/policy/loader/**"/>
-               <exclude name="org/astrogrid/community/auth/**"/>
-               <exclude name="org/astrogrid/community/delegate/policy/**"/> 
-
+            <include name="org/astrogrid/community/**"/>
+            <exclude name="org/astrogrid/community/policy/client/**"/>
+            <exclude name="org/astrogrid/community/policy/server/**"/>
+            <exclude name="org/astrogrid/community/policy/loader/**"/>
+            <exclude name="org/astrogrid/community/auth/**"/>
+            <exclude name="org/astrogrid/community/delegate/policy/**"/> 
+            <!--+
+                | Excluding the ant and xml parser classes for now.
+                | At the moment, these are only used in the policy loader.
+                +-->
+            <exclude name="org/astrogrid/community/common/util/ant/**"/>
+            <exclude name="org/astrogrid/community/common/util/xml/**"/>
             <classpath>
                 <!-- Include the JUnit libraries -->
                 <path refid="junit.classpath"/>
@@ -2610,8 +2583,8 @@ database.user=sa
         <!-- Copy our database mapping files -->
         <copy verbose="false" overwrite="true" toDir="${authentication.build}/config">
             <fileset dir="src/castor/hsqldb">
-                <include name="database.xml"/>
-                <include name="mapping.xml"/>
+                <include name="astrogrid-community-database.xml"/>
+                <include name="astrogrid-community-mapping.xml"/>
             </fileset>
         </copy>
     </target>
@@ -2640,28 +2613,7 @@ database.user=sa
         +-->
     <target name="authentication.server.install" depends="">
         <!-- Copy the 3rd party libraries into our Axis WEB-INF/lib directory -->
-        <copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
-            <fileset dir="${castor.home}">
-                <include name="jta1.0.1.jar"/>
-                <include name="castor-${castor.version}.jar"/>
-                <include name="castor-${castor.version}-xml.jar"/>
-            </fileset>
-
-            <!--+
-                | ZRQ Removed for Tomcat 27
-                +-->
-            <fileset dir="${xerces.home}">
-                <include name="xml-apis.jar"/>
-                <include name="xercesImpl.jar"/>
-            </fileset>
-
-            <fileset dir="${hsqldb.home}/lib">
-                <include name="hsqldb.jar"/>
-            </fileset>
-            <fileset dir="${jconfig.home}/dist">
-                <include name="jconfig.jar"/>
-            </fileset>
-        </copy>
+        <antcall target="axis.external.install"/>
         <!-- Copy our jar into the Axis WEB-INF/lib directory -->
         <copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
             <fileset dir="${authentication.build}/jar">
@@ -2685,7 +2637,7 @@ database.user=sa
     <!--+
         | Deploy our authenticationService service.
         +-->
-    <target name="authentication.service.deploy" depends="axis.tasks">
+    <target name="authentication.service.deploy.live" depends="axis.tasks">
         <!-- Wait for the Axis service -->
         <antcall target="axis.wait"/>
         <!-- Deploy our authenticationService service -->
@@ -2697,7 +2649,7 @@ database.user=sa
             xmlfile="${basedir}/wsdd/AuthenticationService/deploy.wsdd"
             />
     </target>
-    <target name="authentication.service.undeploy" depends="axis.tasks">
+    <target name="authentication.service.undeploy.live" depends="axis.tasks">
         <!-- Wait for the Axis service -->
         <antcall target="axis.wait"/>
         <!-- Deploy our authenticationService service -->
@@ -2734,7 +2686,7 @@ database.user=sa
         <!-- Reload Axis -->
         <antcall target="axis.webapp.reload"/>
         <!-- Deploy our service -->
-        <antcall target="authentication.service.deploy"/>
+        <antcall target="authentication.service.deploy.live"/>
         <!-- Check we can read our service WSDL -->
         <antcall target="authentication.service.axis2wsdl"/>
     </target>
@@ -2761,7 +2713,7 @@ database.user=sa
     <!--+
         | Run our server side JUnit tests.
         +-->
-    <target name="authentication.server.junit" depends="authentication.test.javac,authentication.testSetupJunit,hsqldb.data.delete">
+    <target name="authentication.server.junit" depends="authentication.test.javac,authentication.testSetupJunit,hsqldb.delete">
         <!-- Create our reports directory -->
         <mkdir dir="${authentication.build}/junit"/>
         <!-- Run our JUnitTestCase tests -->
@@ -2817,7 +2769,7 @@ database.user=sa
              userid="${hsqldb.user}"
              password="${hsqldb.pass}"
              print="true"
-             src="${testdir}/java/org/astrogrid/community/common/db/testData.sql"
+             src="${auth.testdir}/java/org/astrogrid/community/common/db/testData.sql"
             />
     </target>
         <target name="authentication.database.showtestdata" depends="">
@@ -2854,15 +2806,15 @@ database.user=sa
     <!--+
         | Download our 3rd party components.
         +-->
-    <target name="project.INSTALL" depends="init">
-        <antcall target="jaf.INSTALL"/>
-        <antcall target="axis.INSTALL"/>
-        <antcall target="junit.INSTALL"/>
-        <antcall target="castor.INSTALL"/>
-        <antcall target="xerces.INSTALL"/>
-        <antcall target="jconfig.INSTALL"/>
-        <antcall target="hsqldb.INSTALL"/>
-        <antcall target="tomcat.INSTALL"/>
+    <target name="project.SETUP" depends="init">
+        <antcall target="jaf.SETUP"/>
+        <antcall target="axis.SETUP"/>
+        <antcall target="junit.SETUP"/>
+        <antcall target="castor.SETUP"/>
+        <antcall target="xerces.SETUP"/>
+        <antcall target="jconfig.SETUP"/>
+        <antcall target="hsqldb.SETUP"/>
+        <antcall target="tomcat.SETUP"/>
     </target>
 
     <!--+
@@ -2905,14 +2857,6 @@ database.user=sa
         <echo message="Installing project WebApps ...."/>
         <!-- Install our Axis webapp -->
         <antcall target="axis.webapp.install"/>
-        <!--+
-            | Install our documentation webapps
-        <antcall target="axis.docs.install"/>
-        <antcall target="junit.docs.install"/>
-        <antcall target="castor.docs.install"/>
-        <antcall target="xerces.docs.install"/>
-        <antcall target="hsqldb.docs.install"/>
-            +-->
         <echo message=""/>
         <echo message="Ok, project WebApps installed."/>
     </target>
@@ -3009,7 +2953,7 @@ database.user=sa
         <!-- Delete everything -->
         <delete dir="build" failonerror="false"/>
         <!-- Install everything -->
-        <antcall target="project.INSTALL"/>
+        <antcall target="project.SETUP"/>
         <parallel>
             <!-- Start the servers -->
             <sequential>
@@ -3024,8 +2968,12 @@ database.user=sa
         </parallel>
     </target>
 
-    <!-- Update our release jars -->
-    <target name="project.RELEASE" depends="">
+    <!--+
+        | Create our release jars.
+        | TODO - Create an Axis webapp war file for deployment.
+        +-->
+    <target name="project.release" depends="">
+
         <!-- Build our jar files -->
         <antcall target="policy.BUILD"/>
         <antcall target="authentication.BUILD"/>
@@ -3036,7 +2984,7 @@ database.user=sa
         <mkdir dir="release/client/jar"/>
         <mkdir dir="release/client/config"/>
         <!-- Copy our community jars -->
-        <copy verbose="true" overwrite="true" todir="release/client/jar">
+        <copy verbose="true" overwrite="true" toDir="release/client/jar">
             <fileset dir="${policy.base}/jar">
                 <include name="${policy.client.jar}"/>
             </fileset>
@@ -3044,19 +2992,17 @@ database.user=sa
                 <include name="${authentication.client.jar}"/>
             </fileset>
         </copy>
-        <!-- Copy our config files -->
-        <copy verbose="false" overwrite="true" toDir="release/client/config">
-            <fileset dir="src/config">
-                <include name="config.xml"/>
-            </fileset>
-        </copy>
+        <!-- Copy our client config file -->
+        <copy verbose="false" overwrite="true"
+            file="src/config/astrogrid-community-config.xml"
+            toFile="release/client/config/astrogrid-community-config-${project.version}.xml"/>
 
         <!-- Create the server directories -->
         <mkdir dir="release/server"/>
         <mkdir dir="release/server/jar"/>
         <mkdir dir="release/server/config"/>
         <!-- Copy our community jars -->
-        <copy verbose="true" overwrite="true" todir="release/server/jar">
+        <copy verbose="true" overwrite="true" toDir="release/server/jar">
             <fileset dir="${policy.base}/jar">
                 <include name="${policy.client.jar}"/>
                 <include name="${policy.server.jar}"/>
@@ -3067,24 +3013,45 @@ database.user=sa
             </fileset>
         </copy>
         <!-- Copy our database mapping files -->
-        <copy verbose="false" overwrite="true" toDir="release/server/config">
-            <fileset dir="src/castor/hsqldb">
-                <include name="database.xml"/>
-                <include name="mapping.xml"/>
-            </fileset>
-        </copy>
-        <!-- Copy our config files -->
-        <copy verbose="false" overwrite="true" toDir="release/server/config">
-            <fileset dir="src/config">
-                <include name="config.xml"/>
-            </fileset>
-        </copy>
+        <copy verbose="false" overwrite="true"
+            file="src/castor/hsqldb/astrogrid-community-database.xml"
+            toFile="release/server/config/astrogrid-community-database-${project.version}.xml"/>
+        <copy verbose="false" overwrite="true"
+            file="src/castor/hsqldb/astrogrid-community-mapping.xml"
+            toFile="release/server/config/astrogrid-community-mapping-${project.version}.xml"/>
+        <!-- Copy our server config file -->
+        <copy verbose="false" overwrite="true"
+            file="src/config/astrogrid-community-config.xml"
+            toFile="release/server/config/astrogrid-community-config-${project.version}.xml"/>
     </target>
+
+
+
+
+    <!--+
+        | TODO - notes
+OK Version numbers in our jar files.
+OK Snapshot jar files.
+Version numbers and build dates in our jar manifest files.
+
+Build a complete Axis web-app.
+Deployment Ant tasks.
+Deploy off-line into Axis by adding our wsdd to the axis wsdd.
+Deploy on-line into Axis by calling the Axis manager task.
+
+Configuration Ant tasks.
+Add our JNDI property into the Axis web.xml
+Add our JNDI property into the Tomcat server.xml
+Add our config files into Axis WEB-INF
+Add our config files into Tomcat conf
+
+        |
+        +-->
 
     <!--+
         |
 To run from command line.
-    project.INSTALL
+    project.SETUP
     project.START
 Then, in separate command line.
     project.BUILD
@@ -3111,6 +3078,72 @@ To repeat
         </antcall>
         <!-- Display our database contents -->
         <antcall target="hsqldb.database.select"/>
+    </target>
+
+    <!--+
+        | Load our database.
+        +-->
+    <target name="policy.LOAD" depends="">
+        <!-- Run our loader tests -->
+        <antcall target="policy.loader">
+            <param name="community.name"  value="codon.demon.co.uk"/>
+        </antcall>
+        <!-- Display our database contents -->
+        <antcall target="hsqldb.database.select"/>
+    </target>
+
+<!-- Un-attributed stuff -->
+<!--
+    <property name="logging.home" value="${basedir}/build/logging"></property>
+    <path id= "logging.classpath">
+    <pathelement location="${logging.home}/commons-logging.jar"/>
+    </path>
+-->
+
+    <!--+
+        | Deploy a service using the admin tools to modify the service.wsdd.
+        | This requires the service jars in the Axis lib directory.
+        | This does not require the Axis service running.
+        | Params :
+        |   service.wsdd.path - location of the service deployment descriptor
+        +-->
+    <target name="axis.deploy.service.static" depends="">
+        <java classname="org.apache.axis.utils.Admin"
+            dir="${axis.home}/webapp/WEB-INF"
+            fork="yes"
+            failonerror="true">
+            <arg value="server"/>
+            <arg value="${service.wsdd.path}"/>
+            <classpath>
+                <!-- Include all the jars in the Axis lib directory -->
+                <fileset dir="${axis.home}/webapp/WEB-INF/lib">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+        </java>
+    </target>
+
+    <!--+
+        | Deploy our Policy services using the admin tools to modify the service.wsdd.
+        | This does not need the Axis service running.
+        +-->
+    <target name="policy.server.deploy.static" depends="">
+        <antcall target="axis.deploy.service.static">
+            <param name="service.wsdd.path" value="${policy.service.base}/wsdd/PolicyServiceDeploy.wsdd"/>
+        </antcall>
+        <antcall target="axis.deploy.service.static">
+            <param name="service.wsdd.path" value="${policy.manager.base}/wsdd/PolicyManagerDeploy.wsdd"/>
+        </antcall>
+    </target>
+
+    <!--+
+        | Deploy our Authentication service using the admin tools to modify the service.wsdd.
+        | This does not need the Axis service running.
+        +-->
+    <target name="auth.server.deploy.static" depends="">
+        <antcall target="deploy.wsdd">
+            <param name="service.wsdd.path" value="${basedir}/wsdd/AuthenticationService/deploy.wsdd"/>
+        </antcall>
     </target>
 
 </project>

@@ -1,11 +1,17 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/mapping.xml,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/astrogrid-community-mapping.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
-    | <cvs:version>$Revision: 1.14 $</cvs:version>
+    | <cvs:date>$Date: 2003/11/16 18:24:34 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
-    |   $Log: mapping.xml,v $
+    |   $Log: astrogrid-community-mapping.xml,v $
+    |   Revision 1.2  2003/11/16 18:24:34  dave
+    |   Merged dev branch back into HEAD
+    |
+    |   Revision 1.1.2.1  2003/11/13 10:41:54  dave
+    |   Version number or SNAPSHOT in release files
+    |
     |   Revision 1.14  2003/11/06 15:35:26  dave
     |   Replaced tabs with spaces
     |
