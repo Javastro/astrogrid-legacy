@@ -1,5 +1,5 @@
 /*
- * $Id: StoreDelegateFactory.java,v 1.10 2004/04/05 14:15:27 KevinBenson Exp $
+ * $Id: StoreDelegateFactory.java,v 1.11 2004/04/06 09:00:46 KevinBenson Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -34,7 +34,7 @@ public class StoreDelegateFactory
    {
 
       if (location.getScheme().startsWith(Agsl.SCHEME+":"+Msrl.SCHEME) && location.getEndpoint().endsWith("/Manager")) {
-         System.out.println("the endpoint location = " + location.getEndpoint().toString());
+         //System.out.println("the endpoint location = " + location.getEndpoint().toString());
          return new MySpaceIt05Delegate(operator, location.getEndpoint().toString());
       }
       if (location.getScheme().startsWith(Agsl.SCHEME+":"+Msrl.SCHEME)) {
@@ -55,15 +55,22 @@ public class StoreDelegateFactory
     * given Agsl.  Ignores the path of the Agsl.
     */
    public static StoreAdminClient createAdminDelegate(User operator, Agsl location) throws IOException {
+      if (location.getScheme().startsWith(Agsl.SCHEME+":"+Msrl.SCHEME) && location.getEndpoint().endsWith("/Manager")) {
+         //System.out.println("the endpoint location = " + location.getEndpoint().toString());
+         return new MySpaceIt05Delegate(operator, location.getEndpoint().toString());
+      }      
       if (location.getScheme().startsWith(Agsl.SCHEME+":file")) {
          return new org.astrogrid.store.delegate.local.LocalFileStore(location);
-      }
+      }      
       throw new IllegalArgumentException("Don't know how to create delegate for AGSL '"+location+"'");
    }
 }
 
 /*
 $Log: StoreDelegateFactory.java,v $
+Revision 1.11  2004/04/06 09:00:46  KevinBenson
+changed it around so that it calls community first then registry to figvure out endpoints
+
 Revision 1.10  2004/04/05 14:15:27  KevinBenson
 change to strip out the myspace.  And call the myspaceitn05
 

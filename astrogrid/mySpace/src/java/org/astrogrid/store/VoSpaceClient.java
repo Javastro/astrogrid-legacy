@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceClient.java,v 1.2 2004/03/25 12:21:59 mch Exp $
+ * $Id: VoSpaceClient.java,v 1.3 2004/04/06 09:00:46 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,9 +13,11 @@ import java.net.URL;
 import org.astrogrid.community.User;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreAdminClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.store.delegate.VoSpaceResolver;
+import java.net.URISyntaxException;
 
 /**
  * This delegate provides methods for operating on files in VoSpace - that is,
@@ -124,10 +126,27 @@ public class VoSpaceClient {
       StoreClient client = StoreDelegateFactory.createDelegate(operator, fileAgsl);
       client.newFolder(fileAgsl.getPath());
    }
+   
+   public Ivorn createUser(Ivorn target, String user) throws IOException, URISyntaxException {
+      Agsl vospaceTarget = VoSpaceResolver.resolveAgsl(target);
+      StoreAdminClient client = StoreDelegateFactory.createAdminDelegate(operator, vospaceTarget);      
+      client.createUser(new User(user,null,null));
+      return new Ivorn(target.toString() + "#" + user);
+   }
+   
+   public void deleteUser(Ivorn target, String user) throws IOException, URISyntaxException {
+      Agsl vospaceTarget = VoSpaceResolver.resolveAgsl(target);
+      StoreAdminClient client = StoreDelegateFactory.createAdminDelegate(operator, vospaceTarget);      
+      client.deleteUser(new User(user,null,null));
+   }
+   
 }
 
 /*
 $Log: VoSpaceClient.java,v $
+Revision 1.3  2004/04/06 09:00:46  KevinBenson
+changed it around so that it calls community first then registry to figvure out endpoints
+
 Revision 1.2  2004/03/25 12:21:59  mch
 Tidied doc
 

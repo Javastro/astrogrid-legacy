@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.10 2004/04/05 12:47:22 KevinBenson Exp $
+ * $Id: VoSpaceResolver.java,v 1.11 2004/04/06 09:00:46 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -69,18 +69,19 @@ public class VoSpaceResolver {
       }
 
       if (agsl == null) {
-         try {
-            agsl = registryResolve(ivorn);
+         try {         
+            agsl = communityResolve(ivorn);
          }catch(ResolverException re) {
             re.printStackTrace();
             agsl = null;
          }
-         
+      }
+
+
+      if (agsl == null) {
+         agsl = registryResolve(ivorn);         
       }
       
-      if (agsl == null) {
-         agsl = communityResolve(ivorn);
-      }
 
       if (agsl == null) {
          throw new FileNotFoundException("Cannot resolve "+ivorn);
@@ -239,6 +240,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.11  2004/04/06 09:00:46  KevinBenson
+changed it around so that it calls community first then registry to figvure out endpoints
+
 Revision 1.10  2004/04/05 12:47:22  KevinBenson
 small changes and debug printouts for now.
 
