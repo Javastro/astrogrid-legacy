@@ -209,6 +209,14 @@
                 </path>
         </pathconvert>
             <util:tokenize var="entryList" delim=" ">${entries}</util:tokenize>
+          <j:catch>
+            <echo>The regentry: ${entry}</echo>
+            <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+            <ant target="register" antfile="register.xml" >
+        `       <property name="registry.entry" value="${temporary.dir}/registry-entries/ARegistry.xml"/>
+            </ant>
+          </j:catch>            
+            
         <j:forEach var="entry" items="${entryList}">
           <j:catch>
             <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
