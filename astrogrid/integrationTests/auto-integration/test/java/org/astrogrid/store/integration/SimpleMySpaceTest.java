@@ -351,55 +351,21 @@ public class SimpleMySpaceTest extends TestCase {
      * @param text the text to store
      * @throws Exception who knows
      */
-    private void importExportDelete(final String name, final String text)
-        throws Exception {
-        importExportDeleteDelayed(name, text, 0);
-    }
-    /**
-     * Just as importExportDelete, except a random delay is inserted between
-     * the calls to import/export/delete
-     * 
-     * @see importExportDelete(String, String)
-     * @param name full myspace path name
-     * @param text text to insert
-     * @param maxDelay maximum delay in milliseconds between calls
-     * @throws Exception who knows
-     */
-    private void importExportDeleteDelayed(
-        final String name,
-        final String text,
-        final int maxDelay)
-        throws Exception {
-        try {
-            Thread.sleep((int) (maxDelay * Math.random()));
-        } catch (InterruptedException e) {
-            log.info(e); //ignore
-        }
-        try {
-            Thread.sleep((int) (maxDelay * Math.random()));
-        } catch (InterruptedException e) {
-            log.info(e); //ignore
-        }
+    private void importExportDelete(final String name, final String text) throws IOException
+         {
+
         myspace.putString(text, name, false);
-        try {
-            Thread.sleep((int) (maxDelay * Math.random()));
-        } catch (InterruptedException e) {
-            log.info(e); //ignore
-        }
+
         String result = myspace.getString(name);
         assertNotNull("Returned result from getDataHolding was null", result);
         log.info("Attempted to save '" + text + "' under name " + name);
         log.info("Received back '" + result + "'");
-        String testText = text + "\n"; //@TODO see bug 119
+        final String testText = text + "\n"; //@TODO see bug 119
         assertEquals(
             "data returned from myspace not same as saved",
             result,
             testText);
-        try {
-            Thread.sleep((int) (maxDelay * Math.random()));
-        } catch (InterruptedException e) {
-            log.info(e); //ignore
-        }
+
         log.info("deleting...");
         myspace.delete(name);
     }
