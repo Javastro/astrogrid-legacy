@@ -156,8 +156,8 @@ public class RegistryManager
  * Add a <code>DataItemRecord</code> to the registry.
  */
 
-   public boolean addDataItemRecord(DataItemRecord dataItemRecord)
-   {  boolean status = true;
+   public int addDataItemRecord(DataItemRecord dataItemRecord)
+   {  int returnDataItemID = -1;
 
       try
       {
@@ -201,12 +201,34 @@ public class RegistryManager
 
          Vector dbvec = this.transact(sqlStatement, true);
          if (dbvec == null)
-         {  status = false;
+         {  returnDataItemID = -1;
             System.out.println("db error : " + sqlStatement);
-        }
+         }
+
+//
+//      Assemble the SQL statement to retrieve the new DataItemRecord.
+
+         sqlStatement = "SELECT * FROM reg WHERE (dataItemName='" +
+           dataItemRecord.getDataItemName() + "')";
+
+//
+//      Attempt to execute this SQL statement.
+
+         dbvec = this.transact(sqlStatement, false);
+
+//
+//      Attempt to retrieve the dataItemID from the returned
+//      DataItemRecord.
+
+         if (dbvec != null)
+         {  if (dbvec.size() == 1)
+            {  DataItemRecord newRec = (DataItemRecord)dbvec.elementAt(0);
+               returnDataItemID = newRec.getDataItemID();
+            }
+         }
       }
       catch (Exception all)
-      {  status = false;
+      {  returnDataItemID = -1;
 
          all.printStackTrace();
 
@@ -215,7 +237,7 @@ public class RegistryManager
 //         MySpaceStatusCode.LOG, this.getClassName() );
       }
 
-      return status;
+      return returnDataItemID;
    }
 
 // -------------------------------------------------------------------
@@ -406,6 +428,204 @@ public class RegistryManager
       }
 
       return returnItemRecords;
+   }
+
+// -------------------------------------------------------------------
+
+/**
+ * Return the Vector of server names.  This method returns a Vector
+ * comprising a list of the names of all the servers belonging to the
+ * current MySpace manager.
+ */
+
+   public Vector getServerNames()
+   {  Vector serverNames = new Vector();
+
+      try
+      {
+//
+//      Assemble the SQL to select all the servers.
+
+         String sqlStatement = "SELECT * FROM servers";
+
+//
+//      Attempt to execute the SQL statement.
+
+         Vector dbvec = this.transact(sqlStatement, false);
+
+//
+//      Retrieve the names of the selected servers.
+
+         if (dbvec != null)
+         {  if (dbvec.size() > 0)
+            {  for (int loop = 0; loop < dbvec.size(); loop++)
+               {  ServerDetails currentServer =
+                    (ServerDetails)dbvec.elementAt(loop);
+                  serverNames.add(currentServer.getName() );
+               }
+            }
+            else
+            {  serverNames = null;
+            }
+         }
+         else
+         {  serverNames = null;
+         }
+      }
+      catch (Exception all)
+      {  serverNames = null;
+      }
+
+      return serverNames;
+   }
+
+// -------------------------------------------------------------------
+
+/**
+ * Check whether a given name is the name of a server.  A value of
+ * true is returned if the name is valid; otherwise false is returned.
+ */
+
+   public boolean isServerName(String serverName)
+   {  boolean isName;
+
+      try
+      {  Vector serverNames = this.getServerNames();
+
+         int serverIndex = serverNames.indexOf(serverName);
+
+         if (serverIndex > -1)
+         {  isName = true;
+         }
+         else
+         {  isName = false;
+         }
+      }
+      catch (Exception all)
+      {  isName = false;
+      }
+
+      return isName;
+   }
+
+// -------------------------------------------------------------------
+
+/**
+ * Return the expiry period, in days, for a given server.
+ */
+
+   public int getServerExpiryPeriod(String serverName)
+   {  int serverExpiryPeriod = -1;
+
+      try
+      {
+//
+//      Assemble the SQL to select the specified server.
+
+         String sqlStatement =
+           "SELECT * FROM servers WHERE (name='" + serverName + "')" ;
+
+//
+//      Attempt to execute the SQL statement.
+
+         Vector dbvec = this.transact(sqlStatement, false);
+
+//
+//      Retrieve the expiry period of the specified server.
+
+         if (dbvec != null)
+         {  if (dbvec.size() == 1)
+            {  ServerDetails currentServer =
+                 (ServerDetails)dbvec.elementAt(0);
+               serverExpiryPeriod = currentServer.getExpiryPeriod();
+            }
+         }
+      }
+      catch (Exception all)
+      {  serverExpiryPeriod = -1;
+      }
+
+      return serverExpiryPeriod;
+   }
+
+// -------------------------------------------------------------------
+
+/**
+ * Return the base URI for a given server.
+ */
+
+   public String getServerURI(String serverName)
+   {  String serverURI = null;
+
+      try
+      {
+//
+//      Assemble the SQL to select the specified server.
+
+         String sqlStatement =
+           "SELECT * FROM servers WHERE (name='" + serverName + "')" ;
+
+//
+//      Attempt to execute the SQL statement.
+
+         Vector dbvec = this.transact(sqlStatement, false);
+
+//
+//      Retrieve the URI of the specified server.
+
+         if (dbvec != null)
+         {  if (dbvec.size() == 1)
+            {  ServerDetails currentServer =
+                 (ServerDetails)dbvec.elementAt(0);
+               serverURI = currentServer.getURI();
+            }
+         }
+      }
+      catch (Exception all)
+      {  serverURI = null;
+      }
+
+      return serverURI;
+   }
+
+// -------------------------------------------------------------------
+
+/**
+ * Return the base directory for a given server.
+ */
+
+   public String getServerDirectory(String serverName)
+   {  String serverDirectory = null;
+
+      try
+      {
+//
+//      Assemble the SQL to select the specified server.
+
+         String sqlStatement =
+           "SELECT * FROM servers WHERE (name='" + serverName + "')" ;
+
+//
+//      Attempt to execute the SQL statement.
+
+         Vector dbvec = this.transact(sqlStatement, false);
+
+//
+//      Retrieve the base directory of the specified server.
+
+         if (dbvec != null)
+         {  if (dbvec.size() == 1)
+            {  ServerDetails currentServer =
+                 (ServerDetails)dbvec.elementAt(0);
+               serverDirectory = currentServer.getDirectory();
+            }
+         }
+      }
+      catch (Exception all)
+      {  serverDirectory = null;
+      }
+
+      return serverDirectory;
    }
 
 //
