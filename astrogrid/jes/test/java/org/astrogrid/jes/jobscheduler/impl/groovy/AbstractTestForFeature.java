@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForFeature.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: AbstractTestForFeature.java,v 1.3 2004/08/18 21:50:59 nw Exp $
  * Created on 08-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,6 +51,17 @@ public abstract class AbstractTestForFeature extends TestCase{
         interpFactory = new GroovyInterpreterFactory(new XStreamPickler());
         sched = new GroovySchedulerImpl(jobFactory,trans,disp,interpFactory); 
     }
+    
+    protected void tearDown() throws Exception {
+        sched = null;
+        jobFactory = null;
+        trans = null;
+        disp = null;
+        interpFactory = null;
+        System.gc();
+        
+    }
+    
     protected JobScheduler sched;
     protected JobFactory jobFactory;
     protected GroovySchedulerImpl.Transformers trans;
@@ -161,6 +172,13 @@ public abstract class AbstractTestForFeature extends TestCase{
         assertEquals(ExecutionPhase.COMPLETED, rec.getStatus());
         assertTrue(rec.getMessageCount() > 0);
     }
+    
+    protected void assertStepError(Step step) {
+        assertEquals(1,step.getStepExecutionRecordCount());
+        StepExecutionRecord rec = step.getStepExecutionRecord(0);
+        assertEquals(ExecutionPhase.ERROR, rec.getStatus());
+        assertTrue(rec.getMessageCount() > 0);
+    }    
 
     /**
      * @param step
@@ -178,6 +196,9 @@ public abstract class AbstractTestForFeature extends TestCase{
 
 /* 
 $Log: AbstractTestForFeature.java,v $
+Revision 1.3  2004/08/18 21:50:59  nw
+worked on tests
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

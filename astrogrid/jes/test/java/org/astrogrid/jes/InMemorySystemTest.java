@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.20 2004/08/13 09:09:40 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.21 2004/08/18 21:52:24 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,7 +84,7 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
             pico.unregisterComponent(SCHEDULER_ENGINE);
             DefaultComponentAdapterFactory fac = new DefaultComponentAdapterFactory();
             pico.registerComponent(
-                //new ImplementationHidingComponentAdapter(
+               //new HotSwappingComponentAdapter (
                     new CachingComponentAdapter(
                         fac.createComponentAdapter(SCHEDULER_ENGINE,ObservableJobScheduler.class,null)
                         //new DefaultComponentAdapterFactory(JobScheduler.class,ObservableJobScheduler.class)
@@ -195,6 +195,9 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.21  2004/08/18 21:52:24  nw
+worked on tests
+
 Revision 1.20  2004/08/13 09:09:40  nw
 tidied imports
 

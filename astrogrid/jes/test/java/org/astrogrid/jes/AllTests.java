@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.11 2004/07/30 15:42:34 nw Exp $
+/*$Id: AllTests.java,v 1.12 2004/08/18 21:52:24 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,12 +34,14 @@ public class AllTests {
         suite.addTest(org.astrogrid.jes.jobmonitor.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobscheduler.AllTests.suite());
         suite.addTest(org.astrogrid.jes.component.AllTests.suite());
-        suite.addTest(org.astrogrid.jes.jobscheduler.impl.groovy.AllTests.suite());
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.12  2004/08/18 21:52:24  nw
+worked on tests
+
 Revision 1.11  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

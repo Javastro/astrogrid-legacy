@@ -1,4 +1,4 @@
-/*$Id: JesInterfaceTest.java,v 1.5 2004/08/13 09:10:05 nw Exp $
+/*$Id: JesInterfaceTest.java,v 1.6 2004/08/18 21:50:59 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,9 +49,7 @@ public class JesInterfaceTest extends TestCase {
         assertNotNull(jes.getDispatcher());
     }
 
-    public void testGetLog() {
-        assertNotNull(jes.getLog());
-    }
+
 
     public void testId() {
         assertNull(jes.getId("6"));
@@ -93,6 +91,9 @@ public class JesInterfaceTest extends TestCase {
 
 /* 
 $Log: JesInterfaceTest.java,v $
+Revision 1.6  2004/08/18 21:50:59  nw
+worked on tests
+
 Revision 1.5  2004/08/13 09:10:05  nw
 tidied imports
 

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.7 2004/08/09 17:34:10 nw Exp $
+/*$Id: AllTests.java,v 1.8 2004/08/18 21:50:59 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ public class AllTests {
             "Test for org.astrogrid.jes.jobscheduler.impl.groovy");
         //$JUnit-BEGIN$
         suite.addTestSuite(GroovyResumeJobSuccesssTest.class);
+        suite.addTestSuite(ParforManyFeatureTest.class);
         suite.addTestSuite(GroovySchedulerSetupTest.class);
         suite.addTestSuite(SetFeatureTest.class);
         suite.addTestSuite(GroovyAbortJobTest.class);
@@ -56,21 +57,24 @@ public class AllTests {
         suite.addTestSuite(EmptyWorkflowFeatureTest.class);
         suite.addTestSuite(IfThenFalseFeatureTest.class);
         suite.addTestSuite(IfThenTrueFeatureTest.class);
+        suite.addTestSuite(ParforEmptyFeatureTest.class);
         suite.addTestSuite(StepFeatureTest.class);
         suite.addTestSuite(ForManyFeatureTest.class);
         suite.addTestSuite(VarsTest.class);
+        suite.addTestSuite(ParforSingletonFeatureTest.class);
         suite.addTestSuite(CompilerTest.class);
         suite.addTestSuite(ScopeFeatureTest.class);
         suite.addTestSuite(GroovyAssumptionsTest.class);
-        suite.addTestSuite(ParforEmptyFeatureTest.class);
-        suite.addTestSuite(ParforSingletonFeatureTest.class);
-        suite.addTestSuite(ParforManyFeatureTest.class);
+        suite.addTestSuite(GroovyDeleteJobTest.class);
         //$JUnit-END$
         return suite;
     }
 }
 /* 
  $Log: AllTests.java,v $
+ Revision 1.8  2004/08/18 21:50:59  nw
+ worked on tests
+
  Revision 1.7  2004/08/09 17:34:10  nw
  implemented parfor.
  removed references to rulestore

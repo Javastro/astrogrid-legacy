@@ -1,4 +1,4 @@
-/*$Id: GroovySchedulerSetupTest.java,v 1.3 2004/08/09 17:32:18 nw Exp $
+/*$Id: GroovySchedulerSetupTest.java,v 1.4 2004/08/18 21:50:59 nw Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,19 +62,15 @@ public class GroovySchedulerSetupTest extends AbstractTestForSchedulerImpl {
         //@todo add some equality checking in here..
         
     }
-    /**
-     * @see org.astrogrid.jes.jobscheduler.impl.AbstractTestForSchedulerImpl#createScheduler()
-     */
-    protected AbstractJobSchedulerImpl createScheduler() throws Exception {
-
-        return new GroovySchedulerImpl(fac,new GroovyTransformers(),dispatcher,new GroovyInterpreterFactory(new XStreamPickler())); 
-    }
 
 }
 
 
 /* 
 $Log: GroovySchedulerSetupTest.java,v $
+Revision 1.4  2004/08/18 21:50:59  nw
+worked on tests
+
 Revision 1.3  2004/08/09 17:32:18  nw
 updated due to removing RuleStore
 

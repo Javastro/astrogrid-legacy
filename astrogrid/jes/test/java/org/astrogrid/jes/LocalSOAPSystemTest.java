@@ -1,4 +1,4 @@
-/*$Id: LocalSOAPSystemTest.java,v 1.4 2004/07/09 09:32:12 nw Exp $
+/*$Id: LocalSOAPSystemTest.java,v 1.5 2004/08/18 21:52:24 nw Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,7 +70,7 @@ public class LocalSOAPSystemTest extends InMemorySystemTest {
         JesComponentManager cm = new SOAPTestComponentManager();        
         JesComponentManagerFactory._setInstance(cm);
         
-        WAIT_SECONDS = 20;
+        WAIT_SECONDS = 60;
     }
 
     
@@ -82,6 +82,9 @@ public class LocalSOAPSystemTest extends InMemorySystemTest {
 
 /* 
 $Log: LocalSOAPSystemTest.java,v $
+Revision 1.5  2004/08/18 21:52:24  nw
+worked on tests
+
 Revision 1.4  2004/07/09 09:32:12  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

@@ -1,4 +1,4 @@
-/*$Id: GroovyAbortJobTest.java,v 1.3 2004/08/13 09:10:05 nw Exp $
+/*$Id: GroovyAbortJobTest.java,v 1.4 2004/08/18 21:50:59 nw Exp $
  * Created on 13-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,20 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.jes.jobcontroller.AbstractTestForJobController;
 import org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl;
-import org.astrogrid.jes.jobscheduler.impl.AbstractTestForAbort;
+import org.astrogrid.jes.jobscheduler.impl.AbstractTestForSchedulerImpl;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 /** test abort functionality works in script scheduler.
  * @author Noel Winstanley nw@jb.man.ac.uk 13-May-2004
  *
  */
-public class GroovyAbortJobTest extends AbstractTestForAbort {
+public class GroovyAbortJobTest extends AbstractTestForSchedulerImpl {
     /** Construct a new ScriptedAbortJobTest
      * @param arg0
      */
@@ -26,10 +32,18 @@ public class GroovyAbortJobTest extends AbstractTestForAbort {
     }
     
     /**
-     * @see org.astrogrid.jes.jobscheduler.impl.AbstractTestForSchedulerImpl#createScheduler()
+     * @see org.astrogrid.jes.jobcontroller.AbstractTestForJobController#performTest(org.astrogrid.workflow.beans.v1.execution.JobURN)
      */
-    protected AbstractJobSchedulerImpl createScheduler() throws Exception {        
-        return new GroovySchedulerImpl(fac,new GroovyTransformers(),dispatcher,new GroovyInterpreterFactory(new XStreamPickler())); 
+    protected void performTest(JobURN urn) throws Exception {
+        // we know it already exists. 
+        scheduler.abortJob(JesUtil.castor2axis(urn));
+        Workflow wf = this.fac.findJob(urn);
+        assertEquals(ExecutionPhase.ERROR,wf.getJobExecutionRecord().getStatus());
+        MessageType[] messages = wf.getJobExecutionRecord().getMessage();
+        assertTrue(messages.length > 0);
+        MessageType lastMessage = messages[messages.length-1];
+        assertNotNull(lastMessage);
+        assertTrue(lastMessage.getContent().startsWith("Aborted"));
     }
 
  
@@ -38,6 +52,9 @@ public class GroovyAbortJobTest extends AbstractTestForAbort {
 
 /* 
 $Log: GroovyAbortJobTest.java,v $
+Revision 1.4  2004/08/18 21:50:59  nw
+worked on tests
+
 Revision 1.3  2004/08/13 09:10:05  nw
 tidied imports
 
