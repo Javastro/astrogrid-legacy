@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
-    | <cvs:author>$Author: pah $</cvs:author>
-    | <cvs:date>$Date: 2003/09/19 21:49:56 $</cvs:date>
-    | <cvs:version>$Revision: 1.40 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/09/22 13:48:04 $</cvs:date>
+    | <cvs:version>$Revision: 1.41 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.41  2003/09/22 13:48:04  dave
+    |   Updates to the community/portal build
+    |
     |   Revision 1.40  2003/09/19 21:49:56  pah
     |   server junit tests now running of in-memory database
     |
@@ -1264,6 +1267,10 @@
 		<path refid="hsqldb.classpath"/>
 		<!-- The JConfig libraries -->
 		<path refid="jconfig.classpath"/>
+
+		<!-- ZRQ : The XMLToolKit libraries -->
+		<path refid="xmltool.classpath"/>
+
 		<!-- Our policy jar -->
 		<pathelement path="${policy.base}/jar/${policy.server.jar}"/>
 		<!-- Our authentication jar -->
@@ -1545,6 +1552,9 @@
 				<!-- Include our JUnit tests -->
 				<include name="org/astrogrid/community/policy/server/junit/**"/>
 
+				<!-- ZRQ : Include the policy loader classes -->
+				<include name="org/astrogrid/community/policy/loader/**"/>
+
 			<!--+
 				| PATCH : Include the authentication data objects
 				| Required because the Castor mapping refers to org.astrogrid.community.authentication.data.SecurityToken.
@@ -1639,6 +1649,8 @@
 			<include name="org/astrogrid/community/common/**"/>
 			<include name="org/astrogrid/community/policy/data/**"/>
 			<include name="org/astrogrid/community/policy/server/**"/>
+			<!-- ZRQ -->
+			<include name="org/astrogrid/community/policy/loader/**"/>
 			<!--+
 				| PATCH : Include the authentication data objects
 				| Required because the Castor mapping refers to org.astrogrid.community.authentication.data.SecurityToken.
@@ -1658,6 +1670,10 @@
 				<path refid="jconfig.classpath"/>
 				<!-- include the myspace libraries of the delegate -->
 				<path refid="myspace.classpath"/>
+
+				<!-- ZRQ : The XMLToolKit libraries -->
+				<path refid="xmltool.classpath"/>
+
 			</classpath>
 		</javac>
 	</target>
@@ -1704,6 +1720,8 @@
 				<include name="org/astrogrid/community/common/**"/>
 				<include name="org/astrogrid/community/policy/data/**"/>
 				<include name="org/astrogrid/community/policy/server/**"/>
+				<!-- ZRQ -->
+				<include name="org/astrogrid/community/policy/loader/**"/>
 				<!--+
 					| PATCH : Include the auth data objects
 					| Required because the Castor mapping refers to org.astrogrid.community.authentication.data.SecurityToken.
@@ -2716,8 +2734,7 @@ Start of Authentication "auth" tasks
 	    | Configuration properties.
 	    +-->
 	<property name="config.base" value="${basedir}/build/config"></property>
-	<property name="config.name" value="config.xml"></property>
-	<property name="config.file" value="${config.base}/${config.name}"></property>
+	<property name="config.file" value="${config.base}/config.xml"></property>
 
 	<!--+
 		| Delete our configuration files.
@@ -2742,43 +2759,51 @@ Start of Authentication "auth" tasks
 				<include name="mapping.xml"/>
 			</fileset>
 		</copy>
-		<!-- Transform our template config file, filling in the correct values -->
+		<!-- Copy our config files -->
+		<copy verbose="false" overwrite="true" toDir="${config.base}">
+			<fileset dir="src/config">
+				<include name="config.xml"/>
+			</fileset>
+		</copy>
+		<!-- Transform our config file, filling in the correct values -->
+		<antcall target="config.xslt">
+			<param name="property.name"  value="database.name"/>
+			<param name="property.value" value="${hsqldb.database}"/>
+		</antcall>
+		<antcall target="config.xslt">
+			<param name="property.name"  value="database.config"/>
+			<param name="property.value" value="${config.base}/database.xml"/>
+		</antcall>
+		<antcall target="config.xslt">
+			<param name="property.name"  value="database.mapping"/>
+			<param name="property.value" value="${config.base}/mapping.xml"/>
+		</antcall>
+	</target>
+
+	<!--+
+		| Transform our config file, setting a named property.
+		+-->
+	<target name="config.xslt" depends="">
+
+		<echo message=""/>
+		<echo message="Updating community config ...."/>
+		<echo message="  Config file    : ${config.file}"/>
+		<echo message="  Property name  : ${property.name}"/>
+		<echo message="  Property value : ${property.value}"/>
+
+		<!-- Transform our config file, filling in the specified value -->
 		<xslt style="src/xsl/build/config/config.xsl"
-		      in="src/config/config.xml"
-		      out="${config.file}">
+		      in="${config.file}"
+		      out="${config.file}.new">
 			<outputproperty name="method" value="xml"/>
 			<outputproperty name="indent" value="yes"/>
 			<!-- Set the XSL params -->
 			<param name="category"         expression="org.astrogrid.community"/>
-			<param name="database.name"    expression="${hsqldb.database}"/>
-			<param name="database.config"  expression="${config.base}/database.xml"/>
-			<param name="database.mapping" expression="${config.base}/mapping.xml"/>
+			<param name="property.name"    expression="${property.name}"/>
+			<param name="property.value"   expression="${property.value}"/>
 		</xslt>
-	</target>
-
-	<!--+
-		| Modify the Axis web.xml to include our JNDI property.
-		| This uses an XSL transform to add the path to our config file to the Axis web.xml.
-		| This will be picked up by our WebService using a JNDI lookup call.
-		+-->
-	<target name="config.axis.jndi" depends="">
-		<echo message=""/>
-		<echo message="Modifying Axis web.xml ...."/>
-		<!-- Copy the existing web.xml to a backup file -->
-		<copy file="${axis.webapp}/WEB-INF/web.xml" tofile="${axis.webapp}/WEB-INF/web.xml.old" overwrite="true" failonerror="false"/>
-
-		<!-- Transform the Axis web.xml, adding our JNDI property -->
-		<xslt style="src/xsl/build/config/webapp.xsl"
-		      in="${axis.webapp}/WEB-INF/web.xml"
-		      out="${axis.webapp}/WEB-INF/web.xml.new">
-			<outputproperty name="method" value="xml"/>
-			<outputproperty name="indent" value="yes"/>
-			<!-- Set the XSL params -->
-			<param name="property.name"  expression="org.astrogrid.community.config"/>
-			<param name="property.value" expression="${config.file}"/>
-		</xslt>
-		<!-- Replace the existing web.xml with the new one -->
-		<move file="${axis.webapp}/WEB-INF/web.xml.new" tofile="${axis.webapp}/WEB-INF/web.xml" overwrite="true" failonerror="false"/>
+		<!-- Replace our existing config.xml with the new one -->
+		<move file="${config.file}.new" tofile="${config.file}" overwrite="true" failonerror="false"/>
 	</target>
 
 	<!--+
@@ -2793,8 +2818,7 @@ Start of Authentication "auth" tasks
 		<echo message="  Target config : ${target.config}"/>
 		<!-- Copy the existing web.xml to a backup file -->
 		<copy file="${target.webapp}/WEB-INF/web.xml" tofile="${target.webapp}/WEB-INF/web.xml.old" overwrite="true" failonerror="false"/>
-
-		<!-- Transform the Axis web.xml, adding our JNDI property -->
+		<!-- Transform the target web.xml, adding our JNDI property -->
 		<xslt style="src/xsl/build/config/webapp.xsl"
 		      in="${target.webapp}/WEB-INF/web.xml"
 		      out="${target.webapp}/WEB-INF/web.xml.new">
@@ -2814,7 +2838,10 @@ Start of Authentication "auth" tasks
 	<target name="config.BUILD" depends="">
 		<antcall target="config.delete"/>
 		<antcall target="config.jconfig"/>
-		<antcall target="config.axis.jndi"/>
+		<antcall target="config.webapp.jndi">
+			<param name="target.webapp" value="${axis.webapp}"/>
+			<param name="target.config" value="${config.file}"/>
+		</antcall>
 	</target>
 
 	<!-- ================ Project tasks ================ -->
@@ -3167,6 +3194,8 @@ database.user=sa
 		     <include name="org/astrogrid/community/**"/>
 		       <exclude name="org/astrogrid/community/policy/client/**"/>
 		       <exclude name="org/astrogrid/community/policy/server/**"/>
+				<!-- ZRQ -->
+		       <exclude name="org/astrogrid/community/policy/loader/**"/>
 		       <exclude name="org/astrogrid/community/auth/**"/>
 		       <exclude name="org/astrogrid/community/delegate/policy/**"/> 
 
@@ -3515,6 +3544,115 @@ To repeat
 		|
 		+-->
 
+	<!-- ================ XML ToolKit tasks ================ -->
+	<!--+
+		| XML ToolKit properties.
+		+-->
+	<property name="xmltool.jar"  value="xmltoolkit-0.2.jar"/>
+	<property name="xmltool.src"  value="${basedir}/depends/xmltool/${xmltool.jar}"/>
+	<property name="xmltool.base" value="${basedir}/build/xmltool"/>
+
+	<!--+
+		| The XML ToolKit classpath.
+		+-->
+	<path id="xmltool.classpath">
+		<pathelement location="${xmltool.base}/${xmltool.jar}"/>
+	</path>
+
+	<!--+
+		| Delete the XML ToolKit directory.
+		+-->
+	<target name="xmltool.delete" depends="">
+		<delete dir="${xmltool.base}" failonerror="false"/>
+	</target>
+
+	<!--+
+		| Copy the XML ToolKit jar.
+		+-->
+	<target name="xmltool.copy" depends="">
+		<mkdir dir="${xmltool.base}"/>
+		<copy verbose="true" file="${xmltool.src}" toFile="${xmltool.base}/${xmltool.jar}"/>
+	</target>
+
+	<!--+
+		| Install the XML ToolKit jar.
+		+-->
+	<target name="xmltool.INSTALL" depends="">
+		<antcall target="xmltool.copy"/>
+	</target>
+
+	<!--+
+		| Prepare the XML ToolKit.
+		+-->
+	<target name="xmltool.PREPARE" depends="">
+	</target>
+
+	<!-- ================ Database loader tasks ================ -->
+	<!--+
+	    | These will be moved into the main policy or community build once I have the XML loader working.
+	    | While I'm working on this I've added some temp patches to some of the other tasks, look for ZRQ in the comments.
+	    +-->
+	<!--+
+	    | ZRQ : Policy test data.
+	    +-->
+	<property name="policy.data" value="${policy.base}/data"/>
+
+	<!--+
+	    | ZRQ : Copy our test data.
+	    +-->
+	<target name="policy.loader.data" depends="">
+		<mkdir dir="${policy.data}"/>
+		<copy verbose="true" todir="${policy.data}">
+			<fileset dir="src/xml/data">
+				<include name="**/**.xml"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!--+
+		| ZRQ : Run our database loader JUnit tests.
+		+-->
+	<target name="policy.loader.junit" depends="">
+		<!-- Create our reports directory -->
+		<mkdir dir="${policy.base}/junit"/>
+		<!-- Run our JUnitTestCase tests -->
+		<junit printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
+			<classpath>
+				<!-- The Policy classes -->
+				<path refid="policy.server.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Pass in the location of the config file -->
+			<sysproperty key="org.astrogrid.community.config" value="${config.file}"/>
+			<!-- Pass in the location of the test data -->
+			<sysproperty key="org.astrogrid.community.data" value="${policy.data}"/>
+			<!-- Run the target JUnitTestCase tests -->
+			<batchtest todir="${policy.base}/junit">
+				<fileset dir="${policy.server.base}/classes">
+					<include name="org/astrogrid/community/policy/loader/junit/JUnit*.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!--+
+	    | ZRQ : Quick re-test for the database load
+	    +-->
+	<target name="policy.LOAD-TEST" depends="">
+		<!-- Install the xmltool library -->
+		<antcall target="xmltool.INSTALL"/>
+		<!-- Build our server code -->
+		<antcall target="policy.server.prepare"/>
+		<antcall target="policy.server.javac"/>
+		<antcall target="policy.server.jar"/>
+		<!-- Reset our database -->
+		<antcall target="hsqldb.database.delete"/>
+		<!-- Copy our test data -->
+		<antcall target="policy.loader.data"/>
+		<!-- Run our loader tests -->
+		<antcall target="policy.loader.junit"/>
+	</target>
 
 </project>
 

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/config/Attic/config.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/18 15:50:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/22 13:48:24 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: config.xml,v $
+    |   Revision 1.6  2003/09/22 13:48:24  dave
+    |   Updates to the community/portal build
+    |
     |   Revision 1.5  2003/09/18 15:50:03  dave
     |   Fixing bugs in configuration
     |
@@ -58,9 +61,9 @@
 			| Configuration for the server database.
 			| No defaults, filled in by the Ant build script.
 			+-->
-		<property name="database.name"    value="...."/>
-		<property name="database.config"  value="...."/>
-		<property name="database.mapping" value="...."/>
+		<property name="database.name"    value=""/>
+		<property name="database.config"  value=""/>
+		<property name="database.mapping" value=""/>
 
 		<!-- Configuration for the community client  -->
 		<property name="community.security"    value="off" />

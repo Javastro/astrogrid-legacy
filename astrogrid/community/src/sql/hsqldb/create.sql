@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/sql/hsqldb/Attic/create.sql,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/22 13:48:38 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: create.sql,v $
+ *   Revision 1.10  2003/09/22 13:48:38  dave
+ *   Updates to the community/portal build
+ *
  *   Revision 1.9  2003/09/17 19:47:21  dave
  *   1) Fixed classnotfound problems in the build.
  *   2) Added the JUnit task to add the initial accounts and groups.
@@ -75,6 +78,7 @@ DROP TABLE members IF EXISTS ;
 
 --
 -- Create the members table
+-- TODO Should have both fields as the primary key (prevent duplicates).
 CREATE TABLE members
     (
     groupident   VARCHAR NOT NULL,

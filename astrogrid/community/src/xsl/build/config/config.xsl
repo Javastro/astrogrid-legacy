@@ -2,10 +2,13 @@
 <!--+
 	| <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/xsl/build/config/Attic/config.xsl,v $</cvs:source>
 	| <cvs:author>$Author: dave $</cvs:author>
-	| <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
-	| <cvs:version>$Revision: 1.2 $</cvs:version>
+	| <cvs:date>$Date: 2003/09/22 13:48:53 $</cvs:date>
+	| <cvs:version>$Revision: 1.3 $</cvs:version>
 	| <cvs:log>
 	|   $Log: config.xsl,v $
+	|   Revision 1.3  2003/09/22 13:48:53  dave
+	|   Updates to the community/portal build
+	|
 	|   Revision 1.2  2003/09/17 19:47:21  dave
 	|   1) Fixed classnotfound problems in the build.
 	|   2) Added the JUnit task to add the initial accounts and groups.
@@ -17,6 +20,8 @@
 	|
 	| </cvs:log>
 	|
+	| XSL transform to update a named config property.
+	|
 	+-->
 <xsl:stylesheet
 	version="1.0" 
@@ -25,55 +30,17 @@
 	>
 	<!-- Config path from the Ant build -->
 	<xsl:param name="category">category</xsl:param>
-	<xsl:param name="community.name"></xsl:param>
-	<xsl:param name="database.name"></xsl:param>
-	<xsl:param name="database.config"></xsl:param>
-	<xsl:param name="database.mapping"></xsl:param>
+	<xsl:param name="property.name"></xsl:param>
+	<xsl:param name="property.value"></xsl:param>
 
-	<!-- Match the community.name property -->
-	<xsl:template match="/properties/category[@name=$category]/property[@name='community.name']">
+	<!-- Match the named property -->
+	<xsl:template match="/properties/category[@name=$category]/property[@name=$property.name]">
 		<xsl:copy>
 			<xsl:attribute name="name">
-				<xsl:text>community.name</xsl:text>
+				<xsl:value-of select="$property.name"/>
 			</xsl:attribute>
 			<xsl:attribute name="value">
-				<xsl:value-of select="$community.name"/>
-			</xsl:attribute>
-		</xsl:copy>
-	</xsl:template>
-
-	<!-- Match the database.name property -->
-	<xsl:template match="/properties/category[@name=$category]/property[@name='database.name']">
-		<xsl:copy>
-			<xsl:attribute name="name">
-				<xsl:text>database.name</xsl:text>
-			</xsl:attribute>
-			<xsl:attribute name="value">
-				<xsl:value-of select="$database.name"/>
-			</xsl:attribute>
-		</xsl:copy>
-	</xsl:template>
-
-	<!-- Match the database.config property -->
-	<xsl:template match="/properties/category[@name=$category]/property[@name='database.config']">
-		<xsl:copy>
-			<xsl:attribute name="name">
-				<xsl:text>database.config</xsl:text>
-			</xsl:attribute>
-			<xsl:attribute name="value">
-				<xsl:value-of select="$database.config"/>
-			</xsl:attribute>
-		</xsl:copy>
-	</xsl:template>
-
-	<!-- Match the database.mapping property -->
-	<xsl:template match="/properties/category[@name=$category]/property[@name='database.mapping']">
-		<xsl:copy>
-			<xsl:attribute name="name">
-				<xsl:text>database.mapping</xsl:text>
-			</xsl:attribute>
-			<xsl:attribute name="value">
-				<xsl:value-of select="$database.mapping"/>
+				<xsl:value-of select="$property.value"/>
 			</xsl:attribute>
 		</xsl:copy>
 	</xsl:template>
