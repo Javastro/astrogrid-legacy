@@ -76,6 +76,37 @@
     </dependency>
 
     <dependency>
+      <id>saaj</id>
+      <version>unknown</version>
+      <jar>saaj.jar</jar>
+    </dependency>
+
+    <dependency>
+      <id>commons-cli</id>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <id>commons-logging</id>
+      <version>1.0.3</version>
+    </dependency>
+
+    <dependency>
+      <id>commons-discovery</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <id>commons-pool</id>
+      <version>1.0.1</version>
+    </dependency>
+
+    <dependency>
+      <id>jdom</id>
+      <version>1.0b8</version>
+    </dependency>
+
+    <dependency>
       <id>servletapi</id>
       <version>2.2</version>
     </dependency>
@@ -93,6 +124,11 @@
     <dependency>
       <id>activation</id>
       <version>1.0.2</version>
+    </dependency>
+
+    <dependency>
+      <id>log4j</id>
+      <version>1.2.8</version>
     </dependency>
   </dependencies>
   
