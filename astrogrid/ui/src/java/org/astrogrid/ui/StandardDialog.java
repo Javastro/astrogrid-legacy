@@ -60,7 +60,7 @@ public class StandardDialog extends JDialog
    {
       super(parent, title);
       
-      init();
+      sdinit();
    }
    
    /**
@@ -74,13 +74,16 @@ public class StandardDialog extends JDialog
    {
       super(parent, title);
       
-      init();
+      sdinit();
    }
    
    /**
-    * assembles components and sets properties
+    * assembles components and sets properties.  Final so that subclasses
+    * cannot override - if they do, it will get called by this classes
+    * constructor, ie before the subclass constructors get a chance to
+    * initialise components
     */
-   private void init()
+   private final void sdinit()
    {
       setModal(true);
       setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -93,12 +96,15 @@ public class StandardDialog extends JDialog
       super.setContentPane(internalContentPane);
 
       //space nicely
+      /** leave to subclasses
       internalContentPane.setLayout(
          new BorderLayout(COMPONENT_SPACING, COMPONENT_SPACING));
       
       internalContentPane.setBorder(
          BorderFactory.createEmptyBorder(COMPONENT_SPACING,
                                          COMPONENT_SPACING, COMPONENT_SPACING, COMPONENT_SPACING));
+       **/
+      internalContentPane.setLayout(new BorderLayout());
       
       //OK button with anonymous action class - only works if data is valid
       okButton = new JButton(
