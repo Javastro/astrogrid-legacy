@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: releases.xml,v 1.2 2004/11/24 01:43:39 jdt Exp $ -->
+<!-- $Id: releases.xml,v 1.3 2004/12/03 11:50:47 jdt Exp $ -->
 <document>
 	<properties>
 		<title>Astrogrid Releases and Test Installations</title>
@@ -32,7 +32,7 @@
                 <P> Head code has been tested and accepted by the integration team.  
                     It is guaranteed to build, and in
                     general its integration test pass rate will increase monotonically with time.</P>
-                    <P>Accepted code is deployed as needed to <a href="http://twmbarlwm.star.le.ac.uk:8080/astrogrid-portal">twmbarlwm:8080</a>, but be aware 
+                    <P>Accepted code is deployed as needed to <a href="http://twmbarlwm.star.le.ac.uk:8888/astrogrid-portal">twmbarlwm:8888</a>, but be aware 
                         that this machine can be withdrawn for use by the integration team without notice.</P>
                    <P> For a summary of the latest features and fixes see the <a 
                     href="http://www.astrogrid.org/maven/docs/HEAD/changes-report.html">changes</a> 
