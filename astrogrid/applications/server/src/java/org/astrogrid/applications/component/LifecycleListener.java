@@ -1,4 +1,4 @@
-/*$Id: LifecycleListener.java,v 1.2 2004/09/17 01:20:22 nw Exp $
+/*$Id: LifecycleListener.java,v 1.3 2004/09/22 10:52:50 pah Exp $
  * Created on 16-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,6 @@ import java.net.URL;
 
 
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -105,6 +104,9 @@ public class LifecycleListener implements ServletContextListener {
 
 /* 
 $Log: LifecycleListener.java,v $
+Revision 1.3  2004/09/22 10:52:50  pah
+getting rid of some unused imports
+
 Revision 1.2  2004/09/17 01:20:22  nw
 added lifecycle listener and threadpool
 

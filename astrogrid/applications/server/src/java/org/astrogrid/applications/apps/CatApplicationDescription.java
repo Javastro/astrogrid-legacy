@@ -1,4 +1,4 @@
-/*$Id: CatApplicationDescription.java,v 1.6 2004/09/17 10:59:53 nw Exp $
+/*$Id: CatApplicationDescription.java,v 1.7 2004/09/22 10:52:50 pah Exp $
  * Created on 16-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,6 @@ import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.DefaultIDs;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.AbstractApplication.IDs;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.astrogrid.applications.description.ApplicationInterface;
@@ -233,6 +232,9 @@ public class CatApplicationDescription extends AbstractApplicationDescription
 
 /* 
 $Log: CatApplicationDescription.java,v $
+Revision 1.7  2004/09/22 10:52:50  pah
+getting rid of some unused imports
+
 Revision 1.6  2004/09/17 10:59:53  nw
 made sure streams are closed
 

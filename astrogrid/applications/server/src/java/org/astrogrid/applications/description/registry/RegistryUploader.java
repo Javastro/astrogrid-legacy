@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryUploader.java,v 1.4 2004/08/18 16:40:53 pah Exp $
+ * $Id: RegistryUploader.java,v 1.5 2004/09/22 10:52:50 pah Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,25 +13,20 @@
 
 package org.astrogrid.applications.description.registry;
 
-import java.io.Reader;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.astrogrid.applications.component.ProvidesVODescription;
-import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.astrogrid.registry.beans.resource.VODescription;
-import org.astrogrid.registry.client.admin.RegistryAdminService;
+import junit.framework.Test;
+import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.component.ProvidesVODescription;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.util.SAX2DOMHandler;
 import org.picocontainer.Startable;
 import org.w3c.dom.Document;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
 
 /**
  * Component that will lodge this services' vodescription with the registry.

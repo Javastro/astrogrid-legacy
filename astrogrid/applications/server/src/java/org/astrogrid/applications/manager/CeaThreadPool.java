@@ -1,4 +1,4 @@
-/*$Id: CeaThreadPool.java,v 1.2 2004/09/17 01:21:49 nw Exp $
+/*$Id: CeaThreadPool.java,v 1.3 2004/09/22 10:52:50 pah Exp $
  * Created on 14-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,12 +12,10 @@ package org.astrogrid.applications.manager;
 
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 
-import org.apache.commons.collections.UnboundedFifoBuffer;
 import org.picocontainer.Startable;
 
 import junit.framework.Test;
 
-import EDU.oswego.cs.dl.util.concurrent.Channel;
 import EDU.oswego.cs.dl.util.concurrent.LinkedQueue;
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
@@ -77,6 +75,9 @@ public class CeaThreadPool extends PooledExecutor implements
 
 /* 
 $Log: CeaThreadPool.java,v $
+Revision 1.3  2004/09/22 10:52:50  pah
+getting rid of some unused imports
+
 Revision 1.2  2004/09/17 01:21:49  nw
 implemented execution controller that uses a threadpool
 

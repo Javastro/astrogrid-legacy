@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.9 2004/09/17 01:20:22 nw Exp $
+ * $Id: InitServlet.java,v 1.10 2004/09/22 10:52:50 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,18 +14,11 @@
 package org.astrogrid.applications.component;
 
 
-import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
-import org.astrogrid.config.SimpleConfig;
 
 /**
  * A simple servlet that starts cea service, by instantiating the pico container

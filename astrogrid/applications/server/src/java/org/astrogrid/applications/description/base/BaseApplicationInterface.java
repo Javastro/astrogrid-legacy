@@ -1,5 +1,5 @@
 /*
- * $Id: BaseApplicationInterface.java,v 1.7 2004/08/28 07:17:34 pah Exp $
+ * $Id: BaseApplicationInterface.java,v 1.8 2004/09/22 10:52:50 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,6 +11,9 @@
 
 package org.astrogrid.applications.description.base;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.Cardinality;
@@ -18,12 +21,6 @@ import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.ParameterDirection;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 /**
  * Basic implementation of {@link org.astrogrid.applications.description.ApplicationInterface}
   <p />

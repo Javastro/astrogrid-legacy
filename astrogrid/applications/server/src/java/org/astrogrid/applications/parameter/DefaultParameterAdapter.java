@@ -1,4 +1,4 @@
-/*$Id: DefaultParameterAdapter.java,v 1.8 2004/09/17 11:39:07 nw Exp $
+/*$Id: DefaultParameterAdapter.java,v 1.9 2004/09/22 10:52:51 pah Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,6 @@ import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.io.Piper;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -135,6 +134,9 @@ public class DefaultParameterAdapter implements ParameterAdapter {
 
 /* 
 $Log: DefaultParameterAdapter.java,v $
+Revision 1.9  2004/09/22 10:52:51  pah
+getting rid of some unused imports
+
 Revision 1.8  2004/09/17 11:39:07  nw
 made sure streams are closed
 

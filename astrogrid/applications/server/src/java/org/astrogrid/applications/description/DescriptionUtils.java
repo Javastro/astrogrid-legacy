@@ -1,4 +1,4 @@
-/*$Id: DescriptionUtils.java,v 1.6 2004/09/09 13:21:09 pah Exp $
+/*$Id: DescriptionUtils.java,v 1.7 2004/09/22 10:52:50 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.applications.description;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.astrogrid.applications.beans.v1.ApplicationBase;
 import org.astrogrid.applications.beans.v1.Input;
 import org.astrogrid.applications.beans.v1.Interface;
@@ -21,7 +20,6 @@ import org.astrogrid.applications.beans.v1.Output;
 import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentation;
-import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
 
 /** Class of static helper methods for working wih descriptions.
@@ -122,6 +120,9 @@ public class DescriptionUtils {
 
 /* 
 $Log: DescriptionUtils.java,v $
+Revision 1.7  2004/09/22 10:52:50  pah
+getting rid of some unused imports
+
 Revision 1.6  2004/09/09 13:21:09  pah
 schema change
 

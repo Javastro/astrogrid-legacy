@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.8 2004/09/17 01:20:22 nw Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.9 2004/09/22 10:52:50 pah Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,6 @@ import org.astrogrid.applications.description.registry.RegistryAdminLocator;
 import org.astrogrid.applications.description.registry.RegistryEntryBuilder;
 import org.astrogrid.applications.description.registry.RegistryUploader;
 import org.astrogrid.applications.manager.CeaThreadPool;
-import org.astrogrid.applications.manager.DefaultExecutionController;
 import org.astrogrid.applications.manager.DefaultMetadataService;
 import org.astrogrid.applications.manager.DefaultQueryService;
 import org.astrogrid.applications.manager.ExecutionController;
@@ -296,6 +295,9 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
+Revision 1.9  2004/09/22 10:52:50  pah
+getting rid of some unused imports
+
 Revision 1.8  2004/09/17 01:20:22  nw
 added lifecycle listener and threadpool
 

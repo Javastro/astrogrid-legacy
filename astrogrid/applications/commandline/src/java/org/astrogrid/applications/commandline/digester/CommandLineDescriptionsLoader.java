@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoader.java,v 1.5 2004/08/27 19:39:54 pah Exp $
+ * $Id: CommandLineDescriptionsLoader.java,v 1.6 2004/09/22 10:52:50 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,27 +11,22 @@
 
 package org.astrogrid.applications.commandline.digester;
 
+import java.net.URL;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.digester.AbstractObjectCreationFactory;
+import org.apache.commons.digester.Digester;
+import org.apache.commons.digester.NodeCreateRule;
+import org.apache.commons.digester.RegexRules;
+import org.apache.commons.digester.SimpleRegexMatcher;
 import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.base.BaseApplicationInterface;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotLoadedException;
-import org.astrogrid.common.bean.v1.Namespaces;
-
-import org.apache.commons.digester.AbstractObjectCreationFactory;
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.ExtendedBaseRules;
-import org.apache.commons.digester.NodeCreateRule;
-import org.apache.commons.digester.RegexMatcher;
-import org.apache.commons.digester.RegexRules;
-import org.apache.commons.digester.SimpleRegexMatcher;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
-
-import java.net.URL;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 /** ApplicationDescrptions Library for use with commandline apps.
  * Loads the application descriptions from the description file into a set of {@link ApplicationDescription} objects. It uses the {@link org.apache.commons.digester.Digester} to parse the XML file. 
