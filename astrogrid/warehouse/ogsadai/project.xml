@@ -21,7 +21,7 @@
   <shortDescription>AstroGrid Warehouse OGSA-DAI Components</shortDescription>
 
   
-  <siteDirectory>/var/www/www/maven/build/warehouse/ogsadai</siteDirectory>
+  <siteDirectory>${astrogrid.docs}/${astrogrid.iteration}/warehouse/ogsadai</siteDirectory>
 
   <repository>
     <connection>

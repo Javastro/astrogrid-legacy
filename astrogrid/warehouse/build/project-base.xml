@@ -21,7 +21,7 @@
   <logo>http://www.astrogrid.org/images/AGlogo</logo> 
   <shortDescription>AstroGrid Warehouse Components</shortDescription>
 
-  <siteDirectory>/var/www/www/maven/build/warehouse</siteDirectory>
+  <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/warehouse</siteDirectory>
 
   <repository>
     <connection>
