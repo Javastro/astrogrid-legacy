@@ -1,15 +1,21 @@
 <?xml version="1.0"?>
-<!-- $Id: maven.xml,v 1.6 2004/07/09 10:23:11 clq2 Exp $ -->
+<!-- $Id: maven.xml,v 1.7 2004/07/21 15:25:30 jdt Exp $ -->
 <!-- extension maven script -->
-<project>
+<project xmlns:artifact="artifact">
 	<!-- This is just the base project for inheritance - it shouldn't be mavened-->
 	<!-- astrogrid goals for nightly build -->
-    <!-- astrogrid goals for nightly build -->
+
     <goal name="astrogrid-clean" prereqs="clean"/>
     <goal name="astrogrid-deploy-site" 
         prereqs="astrogrid-build-site,site:deploy" />
     <goal name="astrogrid-build-site" prereqs="site"/>
-    <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot"/>
+    <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot">
+		<artifact:deploy-snapshot
+		  artifact="${maven.build.dir}/${maven.final.name}.jar"
+		  type="jar"
+		  project="${pom}"
+
+    </goal>
     <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot"/>
     <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot"/>
     <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy"/>
