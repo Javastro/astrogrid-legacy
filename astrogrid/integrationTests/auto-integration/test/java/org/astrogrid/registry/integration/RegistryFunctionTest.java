@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryFunctionTest.java,v 1.17 2004/09/03 10:01:12 nw Exp $
+ * $Id: RegistryFunctionTest.java,v 1.18 2004/09/03 10:08:19 nw Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,6 +15,8 @@ package org.astrogrid.registry.integration;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+
+import javax.xml.transform.TransformerException;
 
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -57,7 +59,7 @@ public class RegistryFunctionTest extends RegistryBaseTest {
       entryurl = this.getClass().getResource("dummyEntry.xml");
    }
    
-   public void testAddnew() throws RegistryException, URISyntaxException
+   public void testAddnew() throws RegistryException, URISyntaxException, TransformerException
    {
       System.out.println("the entryurl = " + entryurl.toExternalForm());
       ras.updateFromURL(entryurl);
@@ -75,7 +77,7 @@ public class RegistryFunctionTest extends RegistryBaseTest {
       
 
    }
-   public void testRetrieve() throws RegistryException, URISyntaxException
+   public void testRetrieve() throws RegistryException, URISyntaxException, TransformerException
    {
       Document doc = rs.getResourceByIdentifier(new Ivorn("ivo://"+AUTHORITY_ID+"/"+"testapp"));
       assertNotNull("failed to retrieve a known registry entry",doc);

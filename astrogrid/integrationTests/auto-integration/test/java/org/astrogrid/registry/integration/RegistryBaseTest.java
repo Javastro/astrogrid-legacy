@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryBaseTest.java,v 1.8 2004/09/03 10:01:12 nw Exp $
+ * $Id: RegistryBaseTest.java,v 1.9 2004/09/03 10:08:19 nw Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -91,13 +91,17 @@ public abstract class RegistryBaseTest extends TestCase {
    }
    
 
-   /** assert a document conforms to the vodescription schema, and contains at least one resource */
-   public void assertNonEmptyVODescription(Document doc) {
+   /** assert a document conforms to the vodescription schema, and contains at least one resource 
+ * @throws TransformerException*/
+   public void assertNonEmptyVODescription(Document doc) throws TransformerException {
        assertVODescription(doc);
+       AstrogridAssert.assertXpathEvaluatesTo("true","count(/*/*[local-name(.) = 'Resource'] &gt; 0)",doc);
    }
-   /** assert a document conforms to the vodescription schema, and containis exactly one resource */
-   public void assertSingletonVODescription(Document doc) {
+   /** assert a document conforms to the vodescription schema, and containis exactly one resource 
+ * @throws TransformerException*/
+   public void assertSingletonVODescription(Document doc) throws TransformerException {
        assertVODescription(doc);
+       AstrogridAssert.assertXpathEvaluatesTo("true","count(/*/*[local-name(.) = 'Resource'] = 1)",doc);       
    }
    
    
