@@ -20,7 +20,7 @@ public class ToggleButtonControllerListener implements ActionListener
     boolean enabledState = false;
     int componentLoop = 0;
 
-    if (e.getSource() instanceof JToggleButton) 
+    if (e.getSource() instanceof JToggleButton)
     {
       if ( ((JToggleButton) e.getSource()).isSelected() )
       {
@@ -29,7 +29,7 @@ public class ToggleButtonControllerListener implements ActionListener
 
       for (componentLoop = 0; componentLoop < components.size() ; componentLoop++ )
       {
-        JComponent tempComponent = 
+        JComponent tempComponent =
           (JComponent) components.elementAt(componentLoop);
 
         tempComponent.setEnabled(enabledState);
@@ -37,4 +37,4 @@ public class ToggleButtonControllerListener implements ActionListener
       }
     }
   };
-};
+}

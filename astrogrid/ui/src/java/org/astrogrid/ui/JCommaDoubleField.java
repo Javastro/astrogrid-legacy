@@ -1,3 +1,22 @@
+// JCommaDoubleField v1.1
+// Alan Maxwell
+//
+// Version History
+//
+// 1.1:  14 Nov 2002
+//       Rewrote the NumberDocument class so that it now, rather than testing 
+//       char-by-char on insert, builds a temporary version of what the text
+//       field WOULD contain if it were allowed to have the new content
+//       inserted and then tests this with NumberChecker.isPotentialDouble(). 
+//       If this test
+//       fails the insert does not happen. The net effect is similar to
+//       checking char-by-char but is more robust and prevents false strings 
+//       like '-5..5-' which would be accepted by the char tester but 
+//       rejected by the NumberChecker.isPotentialDouble() function.
+// 1.0:  05 Nov 2002
+//       Initial version.
+//
+
 package org.astrogrid.ui;
 
 import javax.swing.text.AttributeSet;
@@ -6,6 +25,8 @@ import javax.swing.text.PlainDocument;
 import javax.swing.JTextField;
 
 import java.util.StringTokenizer;
+
+import org.astrogrid.ui.NumberChecker;
 
 /**
  * JDoubleField.java
@@ -30,25 +51,24 @@ public class JCommaDoubleField extends JTextField
       public void insertString(int offs, String str, AttributeSet atts)
                                                    throws BadLocationException
       {
-         if ( 
-              !Character.isDigit(str.charAt(0)) && 
-              !(str.charAt(0) == '-') &&
-              !(str.charAt(0) == '.') &&
-              !(str.charAt(0) == ',') &&
-              !(str.charAt(0) == 'e') &&
-              !(str.charAt(0) == 'E')
-            ) {
-            return;
-         }
+        // Get the existing text, and do a 'test' insert of new string...
+        StringBuffer testText = new StringBuffer(getText(0, getLength()));
+        testText.insert(offs, str);
 
-         if (str.charAt(0) == ',')
-         {
-           super.insertString(offs, str + " ", atts);
-         }
-         else
-         {
-           super.insertString(offs, str, atts);
-         }
+        StringTokenizer testTokens = new StringTokenizer(testText.toString());
+
+        boolean areValidDoubles = true;
+        while ( (areValidDoubles == true) && (testTokens.hasMoreTokens()) )
+        {
+          areValidDoubles = 
+            (areValidDoubles) &&
+            (NumberChecker.isPotentialDouble(testTokens.nextToken(",").trim()));
+        };
+        
+        if ( areValidDoubles == true )
+        {
+          super.insertString(offs, str, atts);
+        };
       }
    }
    

@@ -12,3 +12,4 @@ public class JMutableList extends JList
     return (DefaultListModel) getModel();
   };
 }
+

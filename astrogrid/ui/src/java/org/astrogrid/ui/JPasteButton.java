@@ -1,5 +1,5 @@
 /*
-   $Id: JPasteButton.java,v 1.2 2002/12/03 17:28:51 mch Exp $
+   $Id: JPasteButton.java,v 1.3 2002/12/09 22:48:31 mch Exp $
 
    Date       Author      Changes
    19 Oct 2002 M Hill      Created
@@ -10,6 +10,7 @@
 package org.astrogrid.ui;
 
 import java.awt.event.ActionListener;
+import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
@@ -27,14 +28,25 @@ public class JPasteButton extends JButton implements ActionListener
 
    public JPasteButton(JTextField aField)
    {
-      super(IconFactory.getIcon("paste"));
+      super(IconFactory.getIcon("Paste"));
+      
+      this.textField = aField;
+      this.setToolTipText("Replaces text with clipboard contents");
+      this.addActionListener(this);
+      
       if (getIcon()==null)
       {
          setText("Paste");
       }
-      this.textField = aField;
-      this.setToolTipText("Replaces text with clipboard contents");
-      this.addActionListener(this);
+      else
+      {
+         setBorder(null);
+         setPreferredSize(new Dimension(
+                 textField.getPreferredSize().height,
+                 textField.getPreferredSize().height
+         ));
+      }
+
    }
 
 

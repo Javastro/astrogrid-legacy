@@ -1,3 +1,22 @@
+// JIntegerField v1.1
+// Alan Maxwell
+//
+// Version History
+//
+// 1.1:  14 Nov 2002
+//       Rewrote the NumberDocument class so that it now, rather than testing
+//       char-by-char on insert, builds a temporary version of what the text
+//       field WOULD contain if it were allowed to have the new content
+//       inserted and then tests this with NumberChecker.isPotentialInt().
+//       If this test
+//       fails the insert does not happen. The net effect is similar to
+//       checking char-by-char but is more robust and prevents false strings
+//       like '-5-5-5' which would be accepted by the char tester but
+//       rejected by the NumberChecker.isPotentialInteger() function.
+// 1.0:  05 Nov 2002
+//       Initial version.
+//
+
 package org.astrogrid.ui;
 
 import javax.swing.text.AttributeSet;
@@ -5,36 +24,37 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import javax.swing.JTextField;
 
+import org.astrogrid.ui.NumberChecker;
+
 /**
  * JIntegerField.java
  *
  * A convenient subclass of JTextField that just allows integer
  * numbers to be entered and provides get/setValue methods
  *
- * @author M Hill
+ * @author Alan Maxwell
  */
 
 public class JIntegerField extends JTextField
 {
 
    /**
-    * A text document which will reject any characters that are not
-    * digits.
+    * A text document which will refuse to insert any characters that would
+    * make the text document not-an-integer.
     */
    public class NumberDocument extends PlainDocument
    {
       public void insertString(int offs, String str, AttributeSet atts)
                                                    throws BadLocationException
       {
-         if (
-              !Character.isDigit(str.charAt(0)) &&
-              !(str.charAt(0) == '-') &&
-              !(str.charAt(0) == 'e') &&
-              !(str.charAt(0) == 'E')
-            )  {
-            return;
-         }
-         super.insertString(offs, str, atts);
+        // Get the existing text, and do a 'test' insert of new string...
+        StringBuffer testText = new StringBuffer(getText(0, getLength()));
+        testText.insert(offs, str);
+
+        if ( NumberChecker.isPotentialInt(testText.toString()) == true )
+        {
+          super.insertString(offs, str, atts);
+        };
       }
    }
    
@@ -45,7 +65,7 @@ public class JIntegerField extends JTextField
    {
       super();
       setDocument(new NumberDocument());
-   }
+   };
 
    /**
     * Returns the value entered in the field.  It <i>should</i> be impossible
@@ -73,9 +93,9 @@ public class JIntegerField extends JTextField
     */
    public void setValue(int value)
    {
-      // Calls superclass directly as there is no need to for the integer
-      //check in setText(String);
-      super.setText(""+value);
+     // Calls superclass directly as there is no need to for the integer
+     // check in setText(String);
+     super.setText("" + value);
    }
    
    /**
@@ -86,7 +106,7 @@ public class JIntegerField extends JTextField
    {
       try
       {
-         super.setText(""+Integer.parseInt(value.trim()));
+         super.setText("" + Integer.parseInt(value.trim()));
       }
       catch (NumberFormatException nfe)
       {
@@ -94,4 +114,5 @@ public class JIntegerField extends JTextField
       }
    }
 }
+
 
