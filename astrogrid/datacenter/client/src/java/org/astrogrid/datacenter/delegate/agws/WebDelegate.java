@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.6 2003/11/21 17:30:19 nw Exp $
+ * $Id: WebDelegate.java,v 1.7 2003/11/25 11:54:41 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
  * @author Jeff Lusted (from DatasetAgentDelegate)
  */
 
-public class WebDelegate implements AdqlQuerier, ConeSearcher
+public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
 {
    /** Generated binding code that mirrors the service's methods */
    private AxisDataServerSoapBindingStub binding;
@@ -117,7 +117,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
       */
       public void setResultsDestination(URL resultsDestination) throws RemoteException
       {
-         binding.setResultsDestination(queryId,buildURI(resultsDestination));       
+         binding.setResultsDestination(queryId,buildURI(resultsDestination));
       }
       
       /**
@@ -176,7 +176,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
       
    }
    
-   /** helper method to build a URI from a URL. 
+   /** helper method to build a URI from a URL.
     * @todo could replace URL with URI altogether - a better class in some ways, as URL will barf at protocols it doesn't know. (myspace://)
     * @param url
     * @return valid apache uri
@@ -364,12 +364,38 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
          throw new DatacenterException("Invalid ADQL XML created from cone search parameters: "+adqlString, e);
       }
   }
-   
+  
+  /**
+   * SqlQuerier implementation - direct pass through of SQL string.
+   * Simple blocking query - takes SQL and submits to the backend database, returning results
+   */
+  public DatacenterResults doSqlQuery(String resultsFormat, String sql) throws IOException
+  {
+     throw new UnsupportedOperationException("Not implemented yet");
+     /*
+     try
+     {
+         String result = binding.doSqlQuery(resultsFormat, sql);
+         InputStream is = new ByteArrayInputStream(result.getBytes());
+         Document rDoc = XMLUtils.newDocument(is);
+         
+         //extract results to DatacenterResults
+         //only one type for It03 servers - votable
+         return new DatacenterResults(rDoc.getDocumentElement());
+      }
+      catch (Exception e) {
+          throw new DatacenterException(e.getMessage(), e);
+      }
+      */
+  }
    
 }
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.7  2003/11/25 11:54:41  mch
+Added framework for SQL-passthrough queries
+
 Revision 1.6  2003/11/21 17:30:19  nw
 improved WSDL binding - passes more strongly-typed data
 

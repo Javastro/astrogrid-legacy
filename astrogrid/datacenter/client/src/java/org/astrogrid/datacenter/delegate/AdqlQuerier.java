@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQuerier.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: AdqlQuerier.java,v 1.2 2003/11/25 11:54:41 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -25,7 +25,6 @@ public interface AdqlQuerier
     * @param resultsformat string specifying how the results will be returned (eg
     * votable, fits, etc) strings as given in the datacenter's metadata
     * @param ADQL
-    * @todo move adql package into common
     */
    public DatacenterResults doQuery(String resultsFormat,  Select adql) throws IOException;
 
@@ -68,6 +67,9 @@ public interface AdqlQuerier
 
 /*
 $Log: AdqlQuerier.java,v $
+Revision 1.2  2003/11/25 11:54:41  mch
+Added framework for SQL-passthrough queries
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.3 2003/11/18 00:34:37 mch Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.4 2003/11/25 11:54:41 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -97,11 +97,22 @@ public class DatacenterDelegateFactory
       
       return new WebDelegate(new URL(givenEndPoint));
    }
-   
+
+   /**
+    * Creates a SQL-passthrough-implementing delegate given an endpoint (a
+    * url to the service).
+    */
+   public static SqlQuerier makeSqlQuerier(String givenEndPoint) throws ServiceException, MalformedURLException, IOException
+   {
+      return new WebDelegate(new URL(givenEndPoint));
+   }
 }
 
 /*
 $Log: DatacenterDelegateFactory.java,v $
+Revision 1.4  2003/11/25 11:54:41  mch
+Added framework for SQL-passthrough queries
+
 Revision 1.3  2003/11/18 00:34:37  mch
 New Adql-compliant cone search
 
