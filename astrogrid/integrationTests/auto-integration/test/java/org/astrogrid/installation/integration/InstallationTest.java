@@ -1,4 +1,4 @@
-/* $Id: InstallationTest.java,v 1.2 2004/04/20 13:25:19 jdt Exp $
+/* $Id: InstallationTest.java,v 1.3 2004/09/21 00:01:03 jdt Exp $
  * Created on Mar 29, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
@@ -142,7 +142,9 @@ public final class InstallationTest  {
                 log.debug(headerKey+": "+conn.getHeaderField(headerKey));
             }
             final String response = conn.getHeaderField(null);
-            assertEquals("Checking "+urlString,"HTTP/1.1 200 OK", response);
+            //Allow 200 (OK) and 401 (Unauthorised)
+            assertTrue("Checking "+urlString,(response.indexOf("HTTP/1.1 200 OK")!=-1) ||
+            		                         (response.indexOf("HTTP/1.1 401 Unauthorized")!=-1));
         
         }
     } //end class
@@ -151,6 +153,12 @@ public final class InstallationTest  {
 
 /*
  *  $Log: InstallationTest.java,v $
+ *  Revision 1.3  2004/09/21 00:01:03  jdt
+ *  The new org.astrogrid.memory.endpoint url requires a login,
+ *  so was giving a 401 (unauthorized) when checked.  Relaxed test
+ *  to allow this, but really not sure about it.  I guess I'm just checking for
+ *  duff URLs, so perhaps this is OK.
+ *
  *  Revision 1.2  2004/04/20 13:25:19  jdt
  *  Removed java.vendor.url and java.vendor.url.bug urls
  *
