@@ -4,10 +4,14 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/04/14 14:37:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/29 15:36:40 $</cvs:date>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.11  2004/04/29 15:36:40  jdt
+    |   Changed the way the site doc location is obtained...idea is to make it
+    |   easy to deploy different iteration's site docs to different locations.
+    |
     |   Revision 1.10  2004/04/14 14:37:20  jdt
     |   Windows requires file URLs to be of the form
     |   file:///C:/foo
@@ -449,10 +453,10 @@
         <!--+
             | Set the target name and directory.
             +-->
+        <core:set var="targetPath" value="${maven.site.central.directory}/${astrogrid.iteration}/${astrogrid.name}"/>
         <ant:echo message="  Source location  : ${maven.docs.dest}"/>
-        <ant:echo message="  Default location : ${maven.repo.central.directory}"/>
+        <ant:echo message="  Default location : ${targetPath}"/>
         <ant:echo message="  Custom location  : ${astrogrid.community.deploy.site}"/>
-        <core:set var="targetPath" value="${maven.site.central.directory}"/>
         <core:set var="customPath" value="${astrogrid.community.deploy.site}"/>
         <core:if test="${customPath.length() > 0}">
             <core:set var="targetPath" value="${customPath}"/>
