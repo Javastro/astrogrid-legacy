@@ -632,15 +632,17 @@ public class QueryRegistry implements RegistryService {
       HashMap hm = null;
       Document doc = loadRegistry();
       if (doc != null) {
-         try {
-            NodeList nl = DomHelper.getNodeListTags(doc, "ManagedAuthority", "vg");
+         //try {
+            //System.out.println("the doc in managedAuthorities = " + DomHelper.DocumentToString(doc));
+            //NodeList nl = DomHelper.getNodeListTags(doc, "ManagedAuthority", "vg");
+            NodeList nl = doc.getElementsByTagNameNS("*","ManagedAuthority");            
             hm = new HashMap();
             for (int i = 0; i < nl.getLength(); i++) {
                hm.put(nl.item(i).getFirstChild().getNodeValue(), null);
             } //for
-         }catch(IOException ioe) {
-            throw new RegistryException(ioe);   
-         }
+         //}catch(IOException ioe) {
+         //   throw new RegistryException(ioe);   
+         //}
       }
       if (DEBUG_FLAG)
          System.out.println("exiting managedAuthorities");
@@ -691,17 +693,18 @@ public class QueryRegistry implements RegistryService {
          }
          selectQuery += "</selectionSequence></query>";
          doc = submitQuery(selectQuery);
-         try {
-            NodeList resultList = DomHelper.getNodeListTags(doc,"Resource","vr");
-            if(resultList.getLength() > 1) {
+         //try {
+            //NodeList resultList = DomHelper.getNodeListTags(doc,"Resource","vr");
+            NodeList resultList = doc.getElementsByTagNameNS("*","Resource");            
+            if(resultList.getLength() == 0) {
                throw new RegistryException("No Resource Found for ident = " + ident);   
             }          
             if(resultList.getLength() > 1) {
                throw new RegistryException("Found more than one Resource for Ident = " + ident);   
             }
-         }catch(IOException ioe) {
-            throw new RegistryException(ioe);   
-         }         
+         //}catch(IOException ioe) {
+         //   throw new RegistryException(ioe);   
+         //}         
          if (DEBUG_FLAG)
             System.out.println(
                "exiting getResourceByIdentifierDOM (did not use config cache)");
