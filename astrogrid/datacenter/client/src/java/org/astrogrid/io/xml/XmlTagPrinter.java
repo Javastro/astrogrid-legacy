@@ -1,5 +1,5 @@
 /*
-   $Id: XmlTagPrinter.java,v 1.4 2004/09/06 20:23:00 mch Exp $
+   $Id: XmlTagPrinter.java,v 1.5 2004/09/06 20:35:37 mch Exp $
 
    (c) Copyright...
 */
@@ -24,13 +24,13 @@ public class XmlTagPrinter
    private XmlTagPrinter parent = null;
    private XmlTagPrinter child = null;  //can only have one child at a time
    private String name = null;
-   private String attrs = null;
+   private String[] attrs = null;
    private boolean closed = false;
 
    /** Constructor for a new xml tag (ie, a new element). The constructor should
     * be called using the factory method XmlTagPrinter.newTag(), so that it can
     * be properly attached to the parent */
-   protected XmlTagPrinter(String givenName, String givenAttrs, XmlTagPrinter parentWriter) throws IOException
+   protected XmlTagPrinter(String givenName, String[] givenAttrs, XmlTagPrinter parentWriter) throws IOException
    {
       super();
       
@@ -43,15 +43,23 @@ public class XmlTagPrinter
    protected void open() throws IOException {
       //write out tag here WITHOUT indent at this level.
       if (name != null) {
-         if ((attrs == null) || (attrs.length() == 0))
+         if ((attrs == null) || (attrs.length == 0))
          {
             writeLine(0,"<"+name+">");
          }
          else
          {
-            writeLine(0,"<"+name+" "+attrs+">");
+            writeLine(0,"<"+name+" "+concatAttrs(attrs)+">");
          }
       }
+   }
+
+   protected String concatAttrs(String[] attrs) {
+      StringBuffer all = new StringBuffer();
+      for (int i = 0; i < attrs.length; i++) {
+         all.append(attrs[i]+" ");
+      }
+      return all.toString();
    }
    
    /**
@@ -96,10 +104,10 @@ public class XmlTagPrinter
     * Convenience routine to write a child tag with attributes (given as
     * "name='Value' other='more' " etc) within this element
     */
-   public void writeTag(String tag, String attr, String value) throws IOException
+   public void writeTag(String tag, String[] attrs, String value) throws IOException
    {
       closeChild();
-      this.writeLine("<"+tag+" "+attr+">"+transformSpecials(value)+"</"+tag+">");
+      this.writeLine("<"+tag+" "+concatAttrs(attrs)+">"+transformSpecials(value)+"</"+tag+">");
    }
 
    /**
@@ -164,9 +172,9 @@ public class XmlTagPrinter
     * Automatically closes existing child
     * @param attr a string such as " name='this' size='other' "
     */
-   public XmlTagPrinter newTag(String tag, String attr) throws IOException
+   public XmlTagPrinter newTag(String tag, String[] attrs) throws IOException
    {
-      return newTag(new XmlTagPrinter(tag, attr, this));
+      return newTag(new XmlTagPrinter(tag, attrs, this));
    }
 
    /**
@@ -238,6 +246,9 @@ public class XmlTagPrinter
 
 /*
  $Log: XmlTagPrinter.java,v $
+ Revision 1.5  2004/09/06 20:35:37  mch
+ Changed attrs argument to array of attrs to avoid programmer errors mistaking attr for value...
+
  Revision 1.4  2004/09/06 20:23:00  mch
  Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
 
