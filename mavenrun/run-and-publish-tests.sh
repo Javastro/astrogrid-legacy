@@ -1,10 +1,11 @@
 #!/bin/bash
-# $Id: run-and-publish-tests.sh,v 1.4 2004/11/29 18:00:35 jdt Exp $ 
+# $Id: run-and-publish-tests.sh,v 1.5 2004/11/29 18:09:21 anoncvs Exp $ 
 ######################################################
 # Run the tests and publish the results to Uluru
 # (or wherever)
 ######################################################
 #
+# I really shouldn't be able to do this
 if [ -z "$BUILDHOME" ]; then
 	echo "Value of BUILDHOME (ie where AGINAB is) must be set"
 	exit 1
