@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.3 2004/03/12 05:03:23 mch Exp $
+/*$Id: PostgresSqlMaker.java,v 1.4 2004/03/12 20:04:57 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,11 +13,10 @@ package org.astrogrid.datacenter.queriers.ogsadai;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.query.AdqlQuery;
-import org.astrogrid.datacenter.queriers.query.QueryException;
 import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
 
 /**
@@ -96,6 +95,9 @@ public class PostgresSqlMaker extends StdSqlMaker {
 
 /*
 $Log: PostgresSqlMaker.java,v $
+Revision 1.4  2004/03/12 20:04:57  mch
+It05 Refactor (Client)
+
 Revision 1.3  2004/03/12 05:03:23  mch
 Removed unused code
 

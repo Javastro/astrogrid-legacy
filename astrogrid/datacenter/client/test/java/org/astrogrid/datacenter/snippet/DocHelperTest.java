@@ -1,4 +1,5 @@
 package org.astrogrid.datacenter.snippet;
+import org.astrogrid.datacenter.service.v041.*;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.35 2004/03/12 05:15:32 mch Exp $
+ * $Id: Querier.java,v 1.36 2004/03/12 20:04:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,7 +16,7 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.queriers.query.Query;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
@@ -91,6 +91,8 @@ public class Querier implements Runnable {
 
    /** Key to configuration entry for the default target myspace for this server */
    public static final String DEFAULT_MYSPACE = "DefaultMySpace";
+
+   public final static String SQL_PASSTHROUGH_ENABLED = "datacenter.sql.passthrough.enabled";
    
    /** Convenience constructor for other constructors, makers, etc */
    protected Querier(Account forUser, Query query, String resultsFormat) throws IOException {
@@ -101,6 +103,11 @@ public class Querier implements Runnable {
 
       this.extRef = this.id; //default to same as internal
 
+      //check raw sql
+      if (!SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED, false)) {
+         throw new IllegalArgumentException("This datacenter does not allow raw SQL to be submitted");
+      }
+      
       //default results destination is taken from default myspace given in config
       /** don't do this, as it means queries that have not been given an AGSL try to send to mysapce...
       URL defaultMySpace = SimpleConfig.getSingleton().getUrl(DEFAULT_MYSPACE, null);
@@ -396,6 +403,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.36  2004/03/12 20:04:57  mch
+ It05 Refactor (Client)
+
  Revision 1.35  2004/03/12 05:15:32  mch
  Removed automatic send to myspace
 

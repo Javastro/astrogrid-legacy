@@ -15,7 +15,7 @@ import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.query.AdqlQuery;
+import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.queriers.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.queriers.status.QuerierComplete;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
@@ -190,6 +190,9 @@ public class PluginQuerier extends QuerierPlugin {
 }
 /*
  $Log: PluginQuerier.java,v $
+ Revision 1.10  2004/03/12 20:04:57  mch
+ It05 Refactor (Client)
+
  Revision 1.9  2004/03/12 04:45:26  mch
  It05 MCH Refactor
 

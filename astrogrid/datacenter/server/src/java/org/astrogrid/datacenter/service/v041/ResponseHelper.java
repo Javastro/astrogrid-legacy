@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: ResponseHelper.java,v 1.2 2004/03/12 20:04:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,10 +12,10 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.query.QueryState;
-import org.astrogrid.datacenter.snippet.DocHelper;
-import org.astrogrid.datacenter.snippet.DocMessageHelper;
-import org.astrogrid.datacenter.snippet.QueryIdHelper;
-import org.astrogrid.datacenter.snippet.StatusHelper;
+import org.astrogrid.datacenter.service.v041.DocHelper;
+import org.astrogrid.datacenter.service.v041.DocMessageHelper;
+import org.astrogrid.datacenter.service.v041.QueryIdHelper;
+import org.astrogrid.datacenter.service.v041.StatusHelper;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_4_1.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: AxisDataServer_v0_4_1.java,v 1.2 2004/03/12 20:04:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,12 +14,12 @@ import org.apache.axis.types.URI;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.axisdataserver.types.Language;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
-import org.astrogrid.datacenter.delegate.FullSearcher;
+import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.queriers.JobNotifyServiceListener;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.query.AdqlQuery;
-import org.astrogrid.datacenter.queriers.query.QueryException;
+import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.store.Agsl;
 
@@ -64,7 +64,7 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
             log.error("Empty parameter for results format");
             throw makeFault("Empty parameter for results format");
          }
-         if (!resultsFormat.toLowerCase().equals(FullSearcher.VOTABLE.toLowerCase()))  {
+         if (!resultsFormat.toLowerCase().equals(QuerySearcher.VOTABLE.toLowerCase()))  {
             log.error("Can only produce votable results");
             throw makeFault("Can only produce votable results");
          }
@@ -262,6 +262,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
 /*
 $Log: AxisDataServer_v0_4_1.java,v $
+Revision 1.2  2004/03/12 20:04:57  mch
+It05 Refactor (Client)
+
 Revision 1.1  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 

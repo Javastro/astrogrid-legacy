@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.13 2004/03/12 04:45:26 mch Exp $
+ * $Id: DataServer.java,v 1.14 2004/03/12 20:04:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
@@ -16,8 +17,8 @@ import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.query.ConeQuery;
-import org.astrogrid.datacenter.queriers.query.Query;
+import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.store.Agsl;
 
@@ -47,6 +48,12 @@ public class DataServer
    
    public final QuerierManager querierManager = new QuerierManager("DataServer");
 
+   /** Start Time for status info */
+   private final Date startTime = new Date();
+
+   /** Number of queries asked/submitted for status info */
+   private long numQueries = 0;
+   
    /**
     * Runs a blocking SQL query.  Many systems will have this disabled; it
     * is useful though for manipulating data until the official query languages
@@ -121,7 +128,34 @@ public class DataServer
     * Returns the status of the service.
     */
    public ServiceStatus getServerStatus() {
-      return new ServiceStatus("RUNNING");
+      return new ServiceStatus(this);
+   }
+   
+   /** Defines the service status */
+   public class ServiceStatus {
+      private Date timestamp = new Date(); //time of this status
+      
+      private Date serverStarted;
+      private long numQueriesRun;
+      private long numQueriesRunning;
+      
+      public ServiceStatus(DataServer server) {
+         this.serverStarted = startTime;
+         this.numQueriesRun = numQueries;
+         this.numQueriesRunning = querierManager.getQueriers().size();
+      }
+      
+      public String toString() {
+         return "DataServer Status at "+timestamp+": \n"+
+            "        Started:"+serverStarted+"\n"+
+            "    Queries Run:"+numQueriesRun+"\n"+
+            "Queries Running:"+numQueriesRunning;
+      }
+      
+      public String toHtml() {
+         return toString(); //for now
+      }
+      
    }
    
    /**

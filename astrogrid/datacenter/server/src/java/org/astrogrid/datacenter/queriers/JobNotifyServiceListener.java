@@ -1,5 +1,5 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.2 2004/03/12 20:04:57 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,12 +11,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
-import org.astrogrid.datacenter.query.QueryState;
-import org.astrogrid.datacenter.webnotify.WebNotifier;
-import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobMonitor;
-import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
 
 /**
  * Very much like the WebNotifyServiceListener, this one creates a special
@@ -64,6 +60,9 @@ public class JobNotifyServiceListener implements QuerierListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.2  2004/03/12 20:04:57  mch
+It05 Refactor (Client)
+
 Revision 1.1  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 

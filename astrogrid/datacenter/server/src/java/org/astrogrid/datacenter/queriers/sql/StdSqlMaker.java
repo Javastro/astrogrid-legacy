@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.2 2004/03/12 20:04:57 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,14 +14,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.query.AdqlQuery;
-import org.astrogrid.datacenter.queriers.query.ConeQuery;
-import org.astrogrid.datacenter.queriers.query.QueryException;
 import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.queriers.sql.deprecated.SqlQuerierSPI;
+import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * A 'standard' translator that creates 'standard' SQL
@@ -118,6 +117,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.2  2004/03/12 20:04:57  mch
+It05 Refactor (Client)
+
 Revision 1.1  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 

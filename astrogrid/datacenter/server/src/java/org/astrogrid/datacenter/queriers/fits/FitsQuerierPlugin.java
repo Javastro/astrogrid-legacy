@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.2 2004/03/12 20:04:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,23 +9,18 @@ package org.astrogrid.datacenter.queriers.fits;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Hashtable;
 import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginException;
-import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.query.ConeQuery;
 import org.astrogrid.datacenter.queriers.query.ConeQueryMaker;
 import org.astrogrid.datacenter.queriers.status.QuerierAborted;
-import org.astrogrid.datacenter.snippet.DocHelper;
+import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.service.v041.DocHelper;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -180,6 +175,9 @@ public class FitsQuerierPlugin extends QuerierPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.2  2004/03/12 20:04:57  mch
+ It05 Refactor (Client)
+
  Revision 1.1  2004/03/12 04:45:26  mch
  It05 MCH Refactor
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.34 2004/03/12 04:45:26 mch Exp $
+ * $Id: AxisDataServer.java,v 1.35 2004/03/12 20:04:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,13 +8,17 @@ package org.astrogrid.datacenter.service;
 
 import java.io.*;
 
+import java.net.URL;
 import org.apache.axis.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.metadata.MetadataServer;
+import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.io.Piper;
+import org.astrogrid.store.Agsl;
 
 /**
  * A class for serving data through an Axis webservice implementation.  It is
@@ -99,39 +103,21 @@ public abstract class AxisDataServer  {
          throw makeFault(SERVERFAULT, "Could not access metadata", e);
      }
    }
-
+   
    /**
-    * Carries out a full synchronous (ie blocking) adql query, returning the
-    * results as a VOTable string.  Note that queries
-    * that take a long time might therefore cause a timeout at the client as
-    * it waits for its response.
-    *
-   public String askQuery(Account user, String q)  throws AxisFault {
-      
-      Querier querier = null;
-      try {
-         querier =  QuerierManager.createQuerier(q);
-         QueryResults results = querier.doQuery();
-         querier.setState(QueryState.RUNNING_RESULTS);
-         Element result = ResponseHelper.makeResultsResponse(
-            querier,
-            results.toVotable().getDocumentElement()
-         ).getDocumentElement();
-         querier.setState(QueryState.FINISHED);
-         
-         return XMLUtils.ElementToString(result);
+    * Submits given query
+    */
+   public String submitQuery(Account user, Query query, String extRef, URL monitorUrl, Agsl resultsTarget, String requestedFormat) throws AxisFault {
+      try  {
+         Querier querier = Querier.makeQuerier(user, extRef, query, resultsTarget, requestedFormat);
+         server.querierManager.submitQuerier(querier);
+         return querier.getExtRef();
       }
-      catch (Exception e) {
-         throw makeFault(SERVERFAULT, "Query failed to complete", e);
-      }
-      finally  {
-         try {
-            QuerierManager.closeQuerier(querier);
-         } catch (IOException ioe) {
-            log.error(ioe+" closing querier "+querier,ioe);
-         }
-      }
+      catch (Throwable e)  {
+         throw makeFault(SERVERFAULT, "Submitting "+query+" for user "+user, e);
+     }
    }
+   
    
    /**
     * Aborts the query specified by the given id.  Returns
@@ -161,7 +147,7 @@ public abstract class AxisDataServer  {
    /**
     * Returns the state of the server
     */
-   public ServiceStatus getServerStatus(String queryId) throws AxisFault {
+   public DataServer.ServiceStatus getServerStatus(String queryId) throws AxisFault {
       try {
          return server.getServerStatus();
       }
@@ -176,6 +162,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.35  2004/03/12 20:04:57  mch
+It05 Refactor (Client)
+
 Revision 1.34  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 

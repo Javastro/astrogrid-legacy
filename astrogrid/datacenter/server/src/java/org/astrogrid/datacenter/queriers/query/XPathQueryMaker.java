@@ -1,4 +1,4 @@
-/*$Id: XPathQueryMaker.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+/*$Id: XPathQueryMaker.java,v 1.2 2004/03/12 20:04:57 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,11 @@
 **/
 package org.astrogrid.datacenter.queriers.query;
 
-import org.astrogrid.datacenter.queriers.query.AdqlQuery;
-import org.astrogrid.datacenter.queriers.query.ConeQuery;
-import org.astrogrid.datacenter.queriers.query.Query;
-import org.astrogrid.datacenter.queriers.query.QueryException;
-import org.astrogrid.datacenter.queriers.query.RawSqlQuery;
+import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.query.RawSqlQuery;
 
 /**
  * Translates queries into SQL
@@ -62,6 +62,9 @@ public class XPathQueryMaker  {
 
 /*
 $Log: XPathQueryMaker.java,v $
+Revision 1.2  2004/03/12 20:04:57  mch
+It05 Refactor (Client)
+
 Revision 1.1  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 

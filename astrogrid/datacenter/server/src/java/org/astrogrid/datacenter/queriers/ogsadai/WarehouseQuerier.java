@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.3 2004/03/12 04:45:26 mch Exp $
+ * $Id: WarehouseQuerier.java,v 1.4 2004/03/12 20:04:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -125,10 +125,12 @@ public class WarehouseQuerier extends QuerierPlugin {
     }
     Document results = doShelledOutQuery(sql, tempFile);
     processResults(new WarehouseResults(results));
+    workspace.close();
   }
 
    /** Abort - if this is called, try and top the query and tidy up */
-   public void abort() {
+   public void abort()  {
+      //don't forget to workspace.close();
       // TODO
    }
    
@@ -446,6 +448,9 @@ public class WarehouseQuerier extends QuerierPlugin {
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.4  2004/03/12 20:04:57  mch
+It05 Refactor (Client)
+
 Revision 1.3  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 

@@ -1,4 +1,4 @@
-/*$Id: AdqlQueryMaker.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+/*$Id: AdqlQueryMaker.java,v 1.2 2004/03/12 20:04:57 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,15 @@
 **/
 package org.astrogrid.datacenter.queriers.query;
 
-import org.astrogrid.datacenter.adql.generated.*;
-
 import org.astrogrid.datacenter.adql.ADQLUtils;
-import org.astrogrid.datacenter.queriers.query.AdqlQuery;
-import org.astrogrid.datacenter.queriers.query.ConeQuery;
-import org.astrogrid.datacenter.queriers.query.Query;
-import org.astrogrid.datacenter.queriers.query.QueryException;
+import org.astrogrid.datacenter.adql.generated.Circle;
+import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.adql.generated.TableExpression;
+import org.astrogrid.datacenter.adql.generated.Where;
+import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.QueryException;
 
 /**
  * Translates queries into Cone searches
@@ -72,6 +74,9 @@ public class AdqlQueryMaker  {
 
 /*
 $Log: AdqlQueryMaker.java,v $
+Revision 1.2  2004/03/12 20:04:57  mch
+It05 Refactor (Client)
+
 Revision 1.1  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 

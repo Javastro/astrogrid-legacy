@@ -1,5 +1,5 @@
 /*
- * $Id: DummySqlPlugin.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: DummySqlPlugin.java,v 1.2 2004/03/12 20:04:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,8 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
-import org.astrogrid.datacenter.queriers.sql.JdbcQuerier;
+import org.astrogrid.datacenter.queriers.sql.JdbcConnections;
+import org.astrogrid.datacenter.queriers.sql.JdbcPlugin;
 import org.astrogrid.datacenter.queriers.sql.SqlMaker;
 import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
 
@@ -23,7 +24,7 @@ import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
  * @author M Hill
  */
 
-public class DummySqlPlugin extends JdbcQuerier
+public class DummySqlPlugin extends JdbcPlugin
 {
    
    private static boolean populated = false;
@@ -40,12 +41,17 @@ public class DummySqlPlugin extends JdbcQuerier
    public static void initConfig() {
       
       SimpleConfig.setProperty(QuerierPluginFactory.DATABASE_QUERIER_KEY, DummySqlPlugin.class.getName());
-      SimpleConfig.setProperty(JdbcQuerier.SQL_TRANSLATOR, StdSqlMaker.class.getName());
+      SimpleConfig.setProperty(JdbcPlugin.SQL_TRANSLATOR, StdSqlMaker.class.getName());
 
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_RA_COL_KEY, "RA");
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_DEC_COL_KEY,"DEC");
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY,  "SampleStars");
       
+      //set up properties so we connect to the db
+      SimpleConfig.setProperty(JdbcConnections.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver");
+      SimpleConfig.setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:."); //in memory db
+      SimpleConfig.setProperty(JdbcConnections.JDBC_USER_KEY, "sa"); //in memory db
+      SimpleConfig.setProperty(JdbcConnections.JDBC_PASSWORD_KEY, ""); //in memory db
       
    }
    
@@ -57,18 +63,16 @@ public class DummySqlPlugin extends JdbcQuerier
       
       if (populated) return;
       
-
-      //set up properties so we connect to the db
-      SimpleConfig.setProperty(JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver");
-      SimpleConfig.setProperty(JDBC_URL_KEY, "jdbc:hsqldb:."); //in memory db
-      SimpleConfig.setProperty(JDBC_USER_KEY, "sa"); //in memory db
-      SimpleConfig.setProperty(JDBC_PASSWORD_KEY, ""); //in memory db
-      
-      //start drivers
-      startDrivers();
+      initConfig();
       
       //connect
-      Connection connection = createConnection();
+      Connection connection = null;
+      try {
+         connection = JdbcConnections.makeFromConfig().createConnection();
+      }
+      catch (SQLException se) {
+         throw new DatabaseAccessException("Could not connect to JDBC: "+se);
+      }
       
       //first remove in case there in memory still from previous test
       try {
@@ -146,6 +150,9 @@ public class DummySqlPlugin extends JdbcQuerier
 }
    /*
    $Log: DummySqlPlugin.java,v $
+   Revision 1.2  2004/03/12 20:04:57  mch
+   It05 Refactor (Client)
+
    Revision 1.1  2004/03/12 04:45:26  mch
    It05 MCH Refactor
 

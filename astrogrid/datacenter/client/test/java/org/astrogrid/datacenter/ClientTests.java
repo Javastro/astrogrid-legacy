@@ -1,4 +1,4 @@
-/*$Id: ClientTests.java,v 1.5 2003/11/26 16:31:46 nw Exp $
+/*$Id: ClientTests.java,v 1.6 2004/03/12 20:04:39 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,9 +12,7 @@ package org.astrogrid.datacenter;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.astrogrid.datacenter.axisdataserver.TransportTest;
-import org.astrogrid.datacenter.delegate.nvocone.AdqlNvoConeTest;
 import org.astrogrid.datacenter.delegate.nvocone.NvoConeTest;
 
 /**
@@ -36,13 +34,12 @@ public class ClientTests {
         TestSuite suite = new TestSuite("Test for datacenter client");
         //$JUnit-BEGIN$
         //suite.addTest(QueryTestSuite.suite());
-        //$JUnit-END$ 
+        //$JUnit-END$
         // and add other suites too.
         suite.addTest(org.astrogrid.datacenter.delegate.DelegateTest.suite());
         suite.addTest(org.astrogrid.datacenter.adql.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.snippet.AllTests.suite());
         suite.addTest(new TestSuite(TransportTest.class));
-        suite.addTest(AdqlNvoConeTest.suite());
         suite.addTest(NvoConeTest.suite());
         return suite;
     }
@@ -51,6 +48,9 @@ public class ClientTests {
 
 /*
 $Log: ClientTests.java,v $
+Revision 1.6  2004/03/12 20:04:39  mch
+It05 Refactor (Client)
+
 Revision 1.5  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor
