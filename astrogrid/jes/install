@@ -48,6 +48,10 @@ astrogrid-jes-SNAPSHOT
       +__lib
       
 At the same time, the JES web services will be deployed automatically.
+
+The appropriate jdbc driver for MySQL will be found in the lib directory. It will be named
+mm.mysql-2.0.14-bin.jar. Please copy this into the $CATALINA_HOME/common/lib directory where
+$CATALINA_HOME is the tomcat install directory.
       
 The astrogrid-jes-SNAPSHOT directory (or similarly named) will contain contain two important files:
 ASTROGRID_workflowconfig.xmlm    - the JES configuration file
@@ -67,12 +71,11 @@ MySQL or a similar relational database is required. The details here are pertine
 --------------------
 
 Use the following command to create the JES database and its required 4 tables:
-mysql -u [admin user id] -p -f < $CATALINA_HOME/webapps/astrogrid-jes-SNAPSHOT/mysql_jes_database.ddl
+mysql -u [admin user id] -p < $CATALINA_HOME/webapps/astrogrid-jes-SNAPSHOT/mysql_jes_database.ddl
 You will be prompted for the password for the admin user. 
-***EXTREME CAUTION*** 
-The -f or "force" option is required since the script attempts to drop the jes database, 
-which does not exist first time. On subsequent runs the existing database will be dropped. If this is
-not the required behaviour, edit the script and remove the DROP statement!
+On subsequent runs the script will fail as the database will already exist. If you desire a complete
+fresh start, edit the script and uncomment the DROP command. ***CAUTION*** You will lose all current
+job data if the DROP command is run.
 
 3.2 Create an astrogrid database user
 ----------------------------------------
