@@ -28,6 +28,8 @@ public class MySpaceDummyDelegate implements MySpaceClient
 {
    private File dir = null;
    String endPoint = null;
+   static private org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(MySpaceDummyDelegate.class);
 
    public static final String DUMMY = "http://Dummy.address/"; //use this URL to ask for a dummy delegate
 
@@ -456,7 +458,8 @@ public class MySpaceDummyDelegate implements MySpaceClient
     * @throws Exception
     */
    public boolean createUser(String userId, String communityId, String credential, Vector servers) throws Exception {
-      throw new UnsupportedOperationException();
+      logger.info("This operation is not supported in the dummy delegate");
+      return true;
    }
    
    /**
