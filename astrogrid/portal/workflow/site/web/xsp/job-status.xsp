@@ -127,7 +127,9 @@
                         <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
                         <xsp:attribute name="step-join-condition"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
                         <xsp:attribute name="step-status"><xsp:expr>step.getStepExecutionRecord(step.getStepExecutionRecordCount() -1).getStatus()</xsp:expr></xsp:attribute>
-                        <xsp:attribute name="step-start-time"><xsp:expr>step.getStepExecutionRecord(step.getStepExecutionRecordCount() -1).getStartTime()</xsp:expr></xsp:attribute>                                                             
+                        <xsp:attribute name="step-start-time"><xsp:expr>step.getStepExecutionRecord(step.getStepExecutionRecordCount() -1).getStartTime()</xsp:expr></xsp:attribute>
+                        <xsp:attribute name="step-finish-time"><xsp:expr>step.getStepExecutionRecord(step.getStepExecutionRecordCount() -1).getFinishTime()</xsp:expr></xsp:attribute>
+                        <xsp:attribute name="step-message"><xsp:expr>step.getStepExecutionRecord(step.getStepExecutionRecordCount() -1).getMessage(0)</xsp:expr></xsp:attribute>                                                             
                     </xsp:element>                        
                 }
                 else
@@ -138,7 +140,9 @@
                         <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
                         <xsp:attribute name="step-description"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
                         <xsp:attribute name="step-status"><xsp:expr>new String("Not submitted")</xsp:expr></xsp:attribute>
-                        <xsp:attribute name="step-start-time"><xsp:expr>new String("-")</xsp:expr></xsp:attribute>                                                                                     
+                        <xsp:attribute name="step-start-time"><xsp:expr>new String("--")</xsp:expr></xsp:attribute>
+                        <xsp:attribute name="step-finish-time"><xsp:expr>new String("--")</xsp:expr></xsp:attribute>                                                                                     
+                        <xsp:attribute name="step-message"><xsp:expr>step.getStepExecutionRecord(step.getStepExecutionRecordCount() -1).getMessage(0)</xsp:expr></xsp:attribute>
                     </xsp:element>             
                 }
             }
