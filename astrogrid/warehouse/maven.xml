@@ -6,22 +6,45 @@
          xmlns:ant="jelly:ant" 
          default="war:war">
 
- <!-- custom astrogrid goals for nightly build -->
+<!-- ======================================== -->
+<!-- custom astrogrid goals for nightly build -->
+
+  <!-- clean goals -->
   <goal name="astrogrid-clean" prereqs="clean"/>
+
+  <!-- site goals -->
+  <goal name="astrogrid-build-site" 
+      prereqs="site"/>
   <goal name="astrogrid-deploy-site"
-    prereqs="astrogrid-build-site,site:fsdeploy" />
-  <goal name="astrogrid-build-site" prereqs="site"/>
-  <goal name="astrogrid-deploy-snapshot"
-prereqs="jar:deploy-snapshot,war:deploy-snapshot"/>
-  <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,war:war"/>
+      prereqs="astrogrid-build-site,site:fsdeploy" />
+  <goal name="astrogrid-install-site"
+      prereqs="astrogrid-build-site,site:fsdeploy" />
+
+  <!-- snapshot goals -->
+  <goal name="astrogrid-build-snapshot" 
+      prereqs="jar:snapshot,war:war"/>
   <goal name="astrogrid-install-snapshot"
-prereqs="jar:install-snapshot,war:install-snapshot"/>
-  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy"/>
-  <goal name="astrogrid-build-artifact" prereqs="jar:jar,war:war"/>
+      prereqs="jar:install-snapshot,war:install-snapshot"/>
+  <goal name="astrogrid-deploy-snapshot"
+      prereqs="jar:deploy-snapshot,war:deploy-snapshot"/>
+
+  <!-- artifact goals -->
+  <goal name="astrogrid-build-artifact" 
+      prereqs="jar:jar,war:war"/>
   <goal name="astrogrid-install-artifact"
-prereqs="jar:install,war:install"/>
+      prereqs="jar:install,war:install"/>
+  <goal name="astrogrid-deploy-artifact" 
+      prereqs="jar:deploy,war:deploy"/>
+
+<!-- end custom astrogrid goals for nightly build -->
+<!-- ============================================ -->
 
 
+  <goal name="site">
+      <echo message="Got topsite"/>
+   </goal>
+
+  
   <!-- Clean the sub-project when the parent project is cleaned. -->
   <preGoal name="clean:clean">
     <attainGoal name="multiproject:clean"/>
@@ -35,12 +58,16 @@ prereqs="jar:install,war:install"/>
   <preGoal name="war:init">
     <attainGoal name="multiproject:artifact"/>
     <attainGoal name="webapp:unpack"/>
-    <attainGoal name="webapp:customize"/>
-  </preGoal>
-  
-  <!-- When asked to deploy the "jar" artifact (which this component
-       doesn't have), deploy instead the artifact from the ogsadai
-       sub-project. -->
+ </preGoal>
+
+  <!-- When asked to install/deploy the "jar" artifact (which this 
+       component doesn't have), install/deploy instead the artifact 
+       from the ogsadai sub-project. -->
+       <!--
+  <goal name="jar:install-snapshot">
+    <attainGoal name="multiproject:install-snapshot"/>
+  </goal>
+  -->
   <goal name="jar:deploy-snapshot">
     <attainGoal name="multiproject:deploy-snapshot"/>
   </goal>

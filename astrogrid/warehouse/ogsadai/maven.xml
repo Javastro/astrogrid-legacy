@@ -3,6 +3,10 @@
 <!-- extension maven script -->
 <project xmlns:artifact="artifact">
 
+  <goal name="site">
+    <echo message="Got site"/>
+  </goal>
+  
   <!-- The multiproject:artifact goal in the parent project
        calls javaapp:javaapp in this sub-project, but the Java-app
        plug-in doesn't provide that goal. This declaration redirects
