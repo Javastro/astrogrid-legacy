@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Initially I'm just going to make these up based on what seems sensible for AstroGrid.
+    | This is just to get something in place for our code generators to use. 
+    | Then, we can begin to merge our schema with the IVOA standards.
+    +-->
+<schema xmlns:ast="http://www.astrogrid.org/schema" version="2.0">
+
+    <!--+
+        | All of our Java objects extend our generic Bean.
+        +-->
+    <object type="bean">
+        <property name="ident" type="integer">
+            <description>The internal database ident</description>
+        </property>
+    </object>
+
+    <!--+
+        | All of the IVOA objects extend the IdentBean.
+        +-->
+    <object type="ident" extends="bean">
+        <property name="authority" type="string">
+            <description>The IVOA authority ident (part of the IVOA global ident)</description>
+        </property>
+        <property name="resource" type="string">
+            <description>The IVOA resource ident (part of the IVOA global ident)</description>
+        </property>
+    </object>
+
+    <object type="resource" extends="ident">
+        <!--+
+            | Fake property to test the XSL transforms.
+            | This should appear as a WARNING comment in the generated source.
+            +-->
+        <property name="frog" type="toad" null="no">
+            <description>XSL test property</description>
+        </property>
+
+        <property name="name" type="string" null="no">
+            <description>The resource name</description>
+        </property>
+        <property name="version" type="string" null="no">
+            <description>The resource version</description>
+        </property>
+        <property name="description" type="string" null="yes">
+            <description>The resource description</description>
+        </property>
+    </object>
+
+    <object type="service" extends="resource">
+        <property name="host" type="string" null="yes">
+            <description>The service host name</description>
+        </property>
+    </object>
+
+    <object type="registry" extends="service">
+    </object>
+
+    <object type="communtiy" extends="service">
+    </object>
+
+    <object type="myspace" extends="service">
+    </object>
+
+    <object type="jes" extends="service">
+    </object>
+
+    <object type="datacenter" extends="service">
+    </object>
+
+
+    <object type="contact" extends="bean">
+        <property name="name" type="string">
+            <description>The contact name</description>
+        </property>
+        <property name="email" type="string">
+            <description>The contact email</description>
+        </property>
+    </object>
+
+</schema>

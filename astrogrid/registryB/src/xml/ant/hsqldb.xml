@@ -1,0 +1,219 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registryB/src/xml/ant/Attic/hsqldb.xml,v $</cvs:source>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2003/10/28 10:23:58 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: hsqldb.xml,v $
+    |   Revision 1.1  2003/10/28 10:23:58  KevinBenson
+    |   *** empty log message ***
+    |
+    | </cvs:log>
+    |
+    | Ant build script for Hsqldb specific tasks.
+    |
+    +-->
+<project default="init">
+
+    <!--+
+        | Hsqldb library classpath.
+        +-->
+    <path id="hsqldb.classpath">
+        <pathelement location="${hsqldb.home}/lib/hsqldb.jar"/>
+    </path>
+
+    <!--+
+        | Hsqldb database properties.
+        +-->
+    <property name="hsqldb.home"    value="${project.base}/build/hsqldb"/>
+    <property name="hsqldb.data"    value="${project.base}/build/hsqldb/data"/>
+    <property name="hsqldb.host"    value="localhost"/>
+    <property name="hsqldb.port"    value="9001"/>
+    <property name="hsqldb.name"    value="registry"/>
+    <property name="hsqldb.user"    value="sa"/>
+    <property name="hsqldb.pass"    value="veritas"/>
+    <property name="hsqldb.timeout" value="60"/>
+    <property name="hsqldb.url"     value="jdbc:hsqldb:hsql://${hsqldb.host}:${hsqldb.port}"/>
+
+    <!--+
+        | Initialise the Hsqldb components.
+        +-->
+    <target name="init">
+        <echo message="Hsqldb settings"/>
+        <echo message="  hsqldb.version : ${hsqldb.version}"/>
+        <echo message="  hsqldb.home    : ${hsqldb.home}"/>
+        <echo message="  hsqldb.url     : ${hsqldb.url}"/>
+        <echo message=""/>
+    </target>
+
+    <!--+
+        | Hsqldb distribution properties.
+        +-->
+    <property name="hsqldb.version" value="1.7.1"/>
+    <property name="hsqldb.content" value="hsqldb"/>
+    <property name="hsqldb.zip"     value="hsqldb-${hsqldb.version}.zip"/>
+    <property name="hsqldb.source"  value="http://codon.demon.co.uk/installs/java/libraries/hsqldb/hsqldb-${hsqldb.version}/${hsqldb.zip}"/>
+
+    <!--+
+        | Delete the Hsqldb binary.
+        +-->
+    <target name="dist.delete" depends="">
+        <delete dir="${hsqldb.home}"/>
+    </target>
+
+    <!--+
+        | Download the Hsqldb binary.
+        +-->
+    <target name="dist.fetch" depends="">
+        <mkdir dir="${download.cache}"/>
+        <get verbose="true" usetimestamp="true"
+            src="${hsqldb.source}"
+            dest="${download.cache}/${hsqldb.zip}"
+            />
+    </target>
+
+    <!--+
+        | Unzip the Hsqldb binary.
+        +-->
+    <target name="dist.unzip" depends="">
+        <mkdir dir="${download.temp}/hsqldb"/>
+        <unzip src="${download.cache}/${hsqldb.zip}" dest="${download.temp}/hsqldb"/>
+        <move toDir="${hsqldb.home}">
+            <fileset dir="${download.temp}/hsqldb/${hsqldb.content}"/>
+        </move>
+        <delete dir="${download.temp}/hsqldb"/>
+    </target>
+
+    <!--+
+        | Install the Hsqldb binary.
+        +-->
+    <target name="dist.install" depends="">
+        <antcall target="dist.delete"/>
+        <antcall target="dist.fetch"/>
+        <antcall target="dist.unzip"/>
+    </target>
+
+    <!--+
+        | Create the Hsqldb server properties.
+        | Overriden by command line args in hsqldb.start.
+        +-->
+    <target name="hsqldb.properties" depends="">
+        <echo message=""/>
+        <echo message="Creating Hsqldb properties ...."/>
+        <echo message="Data location : ${hsqldb.data}"/>
+        <mkdir dir="${hsqldb.data}"/>
+        <!-- Create the properties file -->
+        <propertyfile file="${hsqldb.data}/server.properties" comment="Hqsldb server config">
+            <entry key="server.port"           value="${hsqldb.port}"/>
+            <entry key="server.database"       value="${hsqldb.name}"/>
+            <entry key="server.no_system_exit" value="true"/>
+        </propertyfile>
+    </target>
+
+    <!--+
+        | Start the Hsqldb database server.
+        +-->
+    <target name="hsqldb.start" depends="">
+        <echo message=""/>
+        <echo message="Starting Hqsldb server ...."/>
+        <echo message="Data location : ${hsqldb.data}"/>
+        <mkdir dir="${hsqldb.data}"/>
+        <java taskname="hsqldb" classname="org.hsqldb.Server" fork="true" dir="${hsqldb.data}">
+            <!-- Use the Hsqldb classpath -->
+            <classpath refid="hsqldb.classpath"/>
+            <!-- Args for the Hsqldb server -->
+            <arg value="-database"/>
+            <arg value="${hsqldb.name}"/>
+            <arg value="-port"/>
+            <arg value="${hsqldb.port}"/>
+        </java>
+    </target>
+
+    <!--+
+        | Stop the Hsqldb database server.
+        +-->
+    <target name="hsqldb.stop" depends="">
+        <echo message=""/>
+        <echo message="Stopping Hqsldb server ...."/>
+        <java taskname="hsqldb" classname="org.hsqldb.util.ShutdownServer" fork="true" dir="${hsqldb.data}">
+            <!-- Use the Hsqldb classpath -->
+            <classpath refid="hsqldb.classpath"/>
+            <!-- Args for the Hsqldb server -->
+            <arg value="-url"/>
+            <arg value="${hsqldb.url}"/>
+            <arg value="-user"/>
+            <arg value="${hsqldb.user}"/>
+            <arg value="-password"/>
+            <arg value="${hsqldb.pass}"/>
+            <arg value="-shutdownarg"/>
+            <arg value=""/>
+        </java>
+    </target>
+
+    <!--+
+        | Wait for the Hsqldb database to start.
+        +-->
+    <target name="hsqldb.wait" depends="">
+        <echo message=""/>
+        <echo message="Waiting for Hqsldb server ...."/>
+        <waitfor maxwait="${hsqldb.timeout}" maxwaitunit="second" checkevery="500">
+            <socket server="${hsqldb.host}" port="${hsqldb.port}"/>
+        </waitfor>
+    </target>
+
+    <!--+
+        | Initialise the Hsqldb database.
+        | This only needs to run once, when a new database is created.
+        +-->
+    <target name="hsqldb.init" depends="">
+        <antcall target="hsqldb.wait"/>
+        <echo message=""/>
+        <echo message="Initialising Hqsldb database ...."/>
+        <sql driver="org.hsqldb.jdbcDriver"
+             url="${hsqldb.url}"
+             classpathref="hsqldb.classpath"
+             userid="sa"
+             password=""
+             print="true"
+            >
+            <![CDATA[
+                set password "${hsqldb.pass}" ;
+            ]]>
+        </sql>
+    </target>
+
+    <!--+
+        | Run an SQL script in our database.
+        +-->
+    <target name="hsqldb.script" depends="">
+        <antcall target="hsqldb.wait"/>
+        <echo message=""/>
+        <echo message="Running SQL script"/>
+        <sql driver="org.hsqldb.jdbcDriver"
+             url="${hsqldb.url}"
+             classpathref="hsqldb.classpath"
+             userid="${hsqldb.user}"
+             password="${hsqldb.pass}"
+             print="true"
+            >
+            <transaction src="${file.name}"/>
+        </sql>
+    </target>
+
+    <!--+
+        | Reset the Hsqldb data files.
+        +-->
+    <target name="hsqldb.reset" depends="">
+        <!-- Delete the data directory -->
+        <delete dir="${hsqldb.data}" failonerror="false"/>
+    </target>
+
+    <!--+
+        | Prepare Hsqldb.
+        +-->
+    <target name="hsqldb.prepare" depends="">
+        <!-- Nothing yet ... -->
+    </target>
+
+</project>

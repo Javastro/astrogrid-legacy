@@ -1,0 +1,236 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registryB/src/xml/ant/Attic/axis.xml,v $</cvs:source>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2003/10/28 10:23:58 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: axis.xml,v $
+    |   Revision 1.1  2003/10/28 10:23:58  KevinBenson
+    |   *** empty log message ***
+    |
+    | </cvs:log>
+    |
+    | Ant build script for Axis specific tasks.
+    |
+    +-->
+<project default="init">
+
+    <!--+
+        | Initialise the components.
+        +-->
+    <target name="init">
+        <echo message="Axis settings"/>
+        <echo message="  axis.version   : ${axis.version}"/>
+        <echo message="  axis.home      : ${axis.home}"/>
+        <echo message="  axis.url       : ${axis.url}"/>
+        <echo message=""/>
+    </target>
+
+    <!--+
+        | Axis properties.
+        +-->
+    <property name="axis.home"    value="${project.base}/build/axis"/>
+    <property name="axis.version" value="1.1"/>
+    <property name="axis.content" value="axis-1_1"/>
+    <property name="axis.zip"     value="axis-${axis.version}.zip"/>
+    <property name="axis.source"  value="http://codon.demon.co.uk/installs/java/libraries/axis/axis-${axis.version}/${axis.zip}"/>
+    <property name="axis.webapp"  value="${axis.home}/webapps/axis"/>
+    <property name="axis.host"    value="localhost"/>
+    <property name="axis.port"    value="8080"/>
+    <property name="axis.server"  value="${axis.host}:${axis.port}"/>
+    <property name="axis.context" value="/axis"/>
+    <property name="axis.url"     value="http://${axis.server}${axis.context}"/>
+    <property name="axis.timeout" value="60"/>
+
+    <!--+
+        | The Axis library classpath.
+        +-->
+    <path id="axis.classpath">
+        <pathelement location="${axis.webapp}/WEB-INF/lib/axis.jar"/>
+        <pathelement location="${axis.webapp}/WEB-INF/lib/axis-ant.jar"/>
+        <pathelement location="${axis.webapp}/WEB-INF/lib/commons-discovery.jar"/>
+        <pathelement location="${axis.webapp}/WEB-INF/lib/commons-logging.jar"/>
+        <pathelement location="${axis.webapp}/WEB-INF/lib/jaxrpc.jar"/>
+        <pathelement location="${axis.webapp}/WEB-INF/lib/saaj.jar"/>
+        <pathelement location="${axis.webapp}/WEB-INF/lib/wsdl4j.jar"/>
+    </path>
+
+    <!--+
+        | Delete the Axis directory.
+        +-->
+    <target name="dist.delete" depends="">
+        <delete dir="${axis.home}"/>
+    </target>
+
+    <!--+
+        | Download the Axis binary.
+        +-->
+    <target name="dist.fetch" depends="">
+        <mkdir dir="${download.cache}"/>
+        <get verbose="true" usetimestamp="true"
+            src="${axis.source}"
+            dest="${download.cache}/axis-${axis.version}.zip"
+            />
+    </target>
+
+    <!--+
+        | Unzip the Axis binary.
+        +-->
+    <target name="dist.unzip" depends="">
+        <mkdir dir="${download.temp}/axis"/>
+        <unzip src="${download.cache}/axis-${axis.version}.zip" dest="${download.temp}/axis"/>
+        <move toDir="${axis.home}">
+            <fileset dir="${download.temp}/axis/${axis.content}"/>
+        </move>
+        <delete dir="${download.temp}/axis"/>
+    </target>
+
+    <!--+
+        | Install the Axis binary.
+        +-->
+    <target name="dist.install" depends="">
+        <antcall target="dist.delete"/>
+        <antcall target="dist.fetch"/>
+        <antcall target="dist.unzip"/>
+    </target>
+
+    <!--+
+        | Patch the Tomcat endorsed classes to enable Axis.
+        | Copy activation.jar into the Tomcat endorsed directory.
+        | Required with Axis 1.1 on JDK 1.4.1
+        +-->
+    <target name="axis.endorsed.patch" depends="">
+        <!--
+        <copy verbose="true" file="${jaf.home}/activation.jar" toDir="${tomcat.home}/common/endorsed"/>
+        -->
+    </target>
+
+    <!--+
+        | Install our Axis webapp into Tomcat.
+        +-->
+    <target name="axis.webapp.install" depends="">
+        <echo message=""/>
+        <echo message="Installing Axis webapp ...."/>
+        <ant dir="${project.base}/src/ant" antfile="tomcat.xml" target="tomcat.webapp.install">
+            <property name="webapp.context"  value="${axis.context}"/>
+            <property name="webapp.location" value="file://${axis.webapp}"/>
+        </ant>
+    </target>
+
+    <!--+
+        | Start our Axis webapp.
+        +-->
+    <target name="axis.webapp.start" depends="">
+        <echo message=""/>
+        <echo message="Starting Axis webapp ...."/>
+        <ant dir="${project.base}/src/ant" antfile="tomcat.xml" target="tomcat.webapp.start">
+            <property name="webapp.context" value="${axis.context}"/>
+        </ant>
+    </target>
+
+    <!--+
+        | Stop our Axis webapp.
+        +-->
+    <target name="axis.webapp.stop" depends="">
+        <antcall target="axis.webapp.wait"/>
+        <echo message=""/>
+        <echo message="Stopping Axis webapp ...."/>
+        <ant dir="${project.base}/src/ant" antfile="tomcat.xml" target="tomcat.webapp.stop">
+            <property name="webapp.context" value="${axis.context}"/>
+        </ant>
+    </target>
+
+    <!--+
+        | Reload our Axis webapp.
+        +-->
+    <target name="axis.webapp.reload" depends="">
+        <antcall target="axis.webapp.wait"/>
+        <echo message=""/>
+        <echo message="Reloading Axis webapp ...."/>
+        <ant dir="${project.base}/src/ant" antfile="tomcat.xml" target="tomcat.webapp.reload">
+            <property name="webapp.context" value="${axis.context}"/>
+        </ant>
+    </target>
+
+    <!--+
+        | Remove our Axis webapp.
+        +-->
+    <target name="axis.webapp.remove" depends="">
+        <antcall target="axis.webapp.wait"/>
+        <echo message=""/>
+        <echo message="Removing Axis webapp ...."/>
+        <ant dir="${project.base}/src/ant" antfile="tomcat.xml" target="tomcat.webapp.remove">
+            <property name="webapp.context" value="${axis.context}"/>
+        </ant>
+    </target>
+
+    <!--+
+        | Wait for Axis to respond.
+        | This just check that calling happyaxis.jsp responds, not the content.
+        | It would be nice to use something like HttpUnit to check that Axis really is happy.
+        +-->
+    <target name="axis.webapp.wait" depends="">
+        <echo message=""/>
+        <echo message="Waiting for Axis webapp ...."/>
+        <echo message="  url : ${axis.url}/happyaxis.jsp"/>
+        <waitfor maxwait="${axis.timeout}" maxwaitunit="second" checkevery="500">
+            <http url="${axis.url}/happyaxis.jsp"/>
+        </waitfor>
+    </target>
+
+    <!--+
+        | Define the Axis manager tasks.
+        +-->
+    <target name="axis.tasks" depends="">
+        <taskdef name="axis.admin" classname="org.apache.axis.tools.ant.axis.AdminClientTask">
+            <classpath>
+                <!-- Our Axis libraries -->
+                <path refid="axis.classpath"/>
+                <!--+
+                    | Tomcat servlet libraries (required for Axis 1.0)
+                <path refid="tomcat.classpath.servlet"/>
+                    +-->
+            </classpath>
+        </taskdef>
+        <taskdef name="axis.wsdl2java" classpathref="axis.classpath" classname="org.apache.axis.tools.ant.wsdl.Wsdl2javaAntTask"/>
+        <taskdef name="axis.java2wsdl" classpathref="axis.classpath" classname="org.apache.axis.tools.ant.wsdl.Java2WsdlAntTask"/>
+    </target>
+
+    <!--+
+        | Prepare Axis.
+        +-->
+    <target name="axis.PREPARE" depends="">
+        <!-- Add the Axis endorsed classes to Tomcat -->
+        <antcall target="axis.endorsed.patch"/>
+    </target>
+
+    <!--+
+        | Reset Axis.
+        +-->
+    <target name="axis.RESET" depends="">
+        <!-- Delete any additional libraries -->
+        <delete verbose="true" failonerror="false" includeEmptyDirs="true">
+            <fileset dir="${axis.webapp}/WEB-INF/lib">
+                <!-- Exclude the Axis libraries -->
+                <exclude name="axis-ant.jar"/>
+                <exclude name="axis.jar"/>
+                <exclude name="commons-discovery.jar"/>
+                <exclude name="commons-logging.jar"/>
+                <exclude name="jaxrpc.jar"/>
+                <exclude name="jta1.0.1.jar"/>
+                <exclude name="log4j-1.2.8.jar"/>
+                <exclude name="saaj.jar"/>
+                <exclude name="wsdl4j.jar"/>
+            </fileset>
+        </delete>
+        <!-- Delete any additional classes -->
+        <delete verbose="true" failonerror="false" includeEmptyDirs="true">
+            <fileset dir="${axis.webapp}/WEB-INF/classes">
+                <!-- Exclude the Axis samples -->
+                <exclude name="samples/**"/>
+            </fileset>
+        </delete>
+    </target>
+
+</project>

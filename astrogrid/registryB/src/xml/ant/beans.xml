@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registryB/src/xml/ant/Attic/beans.xml,v $</cvs:source>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2003/10/28 10:23:58 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: beans.xml,v $
+    |   Revision 1.1  2003/10/28 10:23:58  KevinBenson
+    |   *** empty log message ***
+    |
+    | </cvs:log>
+    |
+    | Ant build script to generate JavaBeans from our schema.
+    |
+    +-->
+<project default="init">
+
+    <!--+
+        | Schema properties.
+        +-->
+    <property name="schema.version" value="schema-2.0"/>
+    <property name="schema.base"    value="${project.base}/src/schema"/>
+    <property name="schema.src"     value="${schema.base}/${schema.version}"/>
+
+    <!--+
+        | Bean properties.
+        +-->
+    <property name="bean.base"    value="${project.build}/beans"/>
+    <property name="bean.java"    value="${bean.base}/java"/>
+    <property name="bean.classes" value="${bean.base}/classes"/>
+    <property name="bean.package" value="org.astrogrid.registry.beans"/>
+
+    <!--+
+        | Delete all the generated beans code.
+        +-->
+    <target name="beans.delete" depends="">
+        <delete dir="${bean.base}" failonerror="false"/>
+    </target>
+
+    <!--+
+        | Generate an Ant script from our schema.
+        +-->
+    <target name="beans.ant" depends="">
+        <mkdir dir="${bean.base}"/>
+        <echo message=""/>
+        <echo message="Creating Ant script from service schema"/>
+        <xslt style="${project.home}/src/xsl/beans/beans.xsl"
+              in="${schema.src}/service.xml"
+              out="${bean.base}/build.xml"
+              force="true">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="bean.xslt"    expression="${project.home}/src/xsl/beans/bean.xsl"/>
+            <param name="bean.schema"  expression="${schema.src}/service.xml"/>
+            <param name="bean.path"    expression="${bean.java}"/>
+            <param name="bean.package" expression="${bean.package}"/>
+        </xslt>
+    </target>
+
+    <!--+
+        | Generate the JavaBeans from our schema.
+        +-->
+    <target name="beans.xsl" depends="">
+        <mkdir dir="${bean.java}"/>
+        <echo message=""/>
+        <echo message="Creating JavaBeans from services schema"/>
+        <ant dir="${bean.base}" antfile="build.xml" target="bean.xslt"/>
+    </target>
+
+    <!--+
+        | Compile our JavaBeans.
+        +-->
+    <target name="beans.javac" depends="">
+        <mkdir dir="${bean.classes}"/>
+        <echo message=""/>
+        <echo message="Compiling JavaBeans"/>
+        <!-- Compile the classes -->
+        <javac srcdir="${bean.java}"
+               destdir="${bean.classes}"
+               debug="on"
+               deprecation="on"
+               optimize="on"
+               >
+            <classpath>
+                <!-- No extra libraries required -->
+            </classpath>
+        </javac>
+    </target>
+
+    <!--+
+        | Generate the SQL tables from our schema.
+        | Puts the generated SQL file in ${file.name}.
+        +-->
+    <target name="tables.sql" depends="">
+        <echo message=""/>
+        <echo message="Creating SQL tables from service schema"/>
+        <xslt style="${project.home}/src/xsl/beans/tables.xsl"
+              in="${schema.src}/service.xml"
+              out="${file.name}"
+              force="true">
+            <outputproperty name="method" value="text"/>
+        </xslt>
+    </target>
+
+    <!--+
+        | Generate our JDO mapping file.
+        | Puts the generated mapping file in ${file.name}.
+        +-->
+    <target name="mapping.xml" depends="">
+        <echo message=""/>
+        <echo message="Creating Castor database mapping from service schema"/>
+        <xslt style="${project.home}/src/xsl/beans/mapping.xsl"
+              in="${schema.src}/service.xml"
+              out="${file.name}"
+              force="true">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="bean.package" expression="${bean.package}"/>
+        </xslt>
+    </target>
+
+    <!--+
+        | Generate our query API ?
+        | Generate our query JUnit tests ?
+        | Generate our manager API ?
+        | Generate our manager JUnit tests ?
+        +-->
+
+</project>
