@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.9 2005/03/23 17:24:48 mch Exp $
+ * $Id: VoResourceSupport.java,v 1.10 2005/03/29 19:53:40 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -122,7 +122,7 @@ public class VoResourceSupport {
             //ConfigFactory.getCommonConfig().getString("datacenter.contact.date", ""));
             ConfigFactory.getCommonConfig().getString("data.description", ""),
             ConfigFactory.getCommonConfig().getString("datacenter.url", ""),
-            "Other"
+            "Catalog"
          );
    }
    
