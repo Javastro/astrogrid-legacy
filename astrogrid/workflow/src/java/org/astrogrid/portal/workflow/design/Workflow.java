@@ -637,7 +637,7 @@ public class Workflow extends Activity {
         try {
             
             Object []
-               inserts = new Object[5] ;
+               inserts = new Object[6] ;
             inserts[0] = this.name ;
             inserts[1] = (this.templateName == null)  ?  "" :  ("templateName=\"" + this.templateName + "\"") ;
             inserts[2] = this.userid ;
