@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                xsi:noNamespaceSchemaLocation="http://www.astrogrid.org/schema/registry_v1_0.xsd">
+    <service>
+<identity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                  xsi:noNamespaceSchemaLocation="http://www.astrogrid.org/schema/identity.xsd">
+ <title></title>
+ <shortName></shortName>
+ <identifier></identifier>
+</identity>
+
+<curation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:noNamespaceSchemaLocation="http://www.astrogrid.org/schema/curation.xsd">
+ <publisher></publisher>
+ <publisherID></publisherID>
+ <creator></creator>
+ <creatorLogo></creatorLogo>
+ <subject>
+     <keyword></keyword>
+ </subject>
+ <description>
+     <abstract></abstract>
+     <README></README>
+ </description>
+ <contributor></contributor>
+ <date></date>
+ <version></version>
+ <referenceURL></referenceURL>
+ <source></source>
+ <contact>
+     <name></name>
+     <email></email>
+ </contact>
+ <dataSize>
+     <byteSize unitByteSize="MB"></byteSize>
+     <nPixels></nPixels>
+     <nRows></nRows>
+     <nRecords></nRecords>
+ </dataSize>
+</curation>
+
+<content xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="http://www.astrogrid.org/schema/content.xsd">
+ <resourceType></resourceType>
+ <contentLevelType>
+     <contentLevel></contentLevel>
+ </contentLevelType>
+ <formatType>
+     <format></format>
+ </formatType>
+ <rights></rights>
+ <resourceContentType>
+     <datasetContent>
+         <ucdList>
+             <ucd></ucd>
+         </ucdList>
+         <coverage>
+             <coverageSpatial>
+                 <regionSpatial>
+                     <ellipse>
+                         <cframe>
+                             <cframeType></cframeType>
+                         </cframe>
+                         <coordinatePair unitAngle="deg">
+                             <coordinate></coordinate>
+                             <coordinate></coordinate>
+                         </coordinatePair>
+                         <ellipseParams unitAngle="deg">
+                             <coordinate></coordinate>
+                             <coordinate></coordinate>
+                             <coordinate></coordinate>
+                         </ellipseParams>
+                     </ellipse>
+                     <polygon>
+                         <cframe>
+                             <cframeType></cframeType>
+                         </cframe>
+                         <coordinatePair unitAngle="deg">
+                             <coordinate></coordinate>
+                             <coordinate></coordinate>
+                         </coordinatePair>
+                         <coordinatePair unitAngle="deg">
+                             <coordinate></coordinate>
+                             <coordinate></coordinate>
+                         </coordinatePair>
+                         <coordinatePair unitAngle="deg">
+                             <coordinate></coordinate>
+                             <coordinate></coordinate>
+                         </coordinatePair>
+                     </polygon>
+                     <sector>
+                         <cframe>
+                             <cframeType></cframeType>
+                         </cframe>
+                         <coordinatePair unitAngle="deg">
+                             <coordinate></coordinate>
+                             <coordinate></coordinate>
+                         </coordinatePair>
+                         <coordinatePair unitAngle="deg">
+                             <coordinate></coordinate>
+                             <coordinate></coordinate>
+                         </coordinatePair>
+                     </sector>
+                     <healpix>
+                         <cframe>
+                             <cframeType></cframeType>
+                         </cframe>
+                         <healpixNo></healpixNo>
+                     </healpix>
+                 </regionSpatial>
+                 <cframe>
+                     <cframeType></cframeType>
+                 </cframe>
+                 <regionOfRegard unitAngle="deg"></regionOfRegard>
+             </coverageSpatial>
+             <coverageSpectral>
+                 <coverageSpectralRegion>
+                     <coverageSpectralWaveband></coverageSpectralWaveband>
+                     <coverageSpectralBandpass></coverageSpectralBandpass>
+                 </coverageSpectralRegion>
+                 <coverageSpectralWavelengthRange unitSpectral="metre">
+                     <coverageSpectralCentralWavelength></coverageSpectralCentralWavelength>
+                     <coverageSpectralWavelengthShort></coverageSpectralWavelengthShort>
+                     <coverageSpectralWavelengthLong></coverageSpectralWavelengthLong>
+                 </coverageSpectralWavelengthRange>
+             </coverageSpectral>
+             <coverageTemporal>
+                 <coverageTemporalStartTime></coverageTemporalStartTime>
+                 <coverageTemporalStopTime></coverageTemporalStopTime>
+             </coverageTemporal>
+             <coverageDepth unitFluxDensity="" unitArea=""></coverageDepth>
+             <coverageObjectDensity unitSpatialDensity="deg-2"></coverageObjectDensity>
+             <coverageObjectCount></coverageObjectCount>
+             <coverageSkyFraction></coverageSkyFraction>
+         </coverage>
+         <resolution>
+             <resolutionSpatial unitAngle="deg"></resolutionSpatial>
+             <resolutionSpectral unitSpectralResolution="inverseFraction"></resolutionSpectral>
+             <resolutionTemporal></resolutionTemporal>
+         </resolution>
+         <dataQuality>
+             <photometryError unitFluxDensity="" unitArea=""></photometryError>
+             <astrometryError unitAngle="deg"></astrometryError>
+             <timingError></timingError>
+         </dataQuality>
+         <facilityList>
+             <facility></facility>
+         </facilityList>
+         <instrumentList>
+             <instrument></instrument>
+         </instrumentList>
+     </datasetContent>
+     <communityContent>
+         <mySpaceLocation></mySpaceLocation>
+     </communityContent>
+     <mySpaceContent>
+         <status>
+             <status></status>
+             <details></details>
+             <currentDate></currentDate>
+         </status>
+         <dataItemRecords>
+             <dataItemRecord>
+                 <dataItemName></dataItemName>
+                 <dataItemID></dataItemID>
+                 <ownerID></ownerID>
+                 <creationDate></creationDate>
+                 <expiryDate></expiryDate>
+                 <size></size>
+                 <type></type>
+                 <permissionsMask></permissionsMask>
+                 <dataHolderURI></dataHolderURI>
+             </dataItemRecord>
+         </dataItemRecords>
+     </mySpaceContent>
+ </resourceContentType>
+</content>
+
+<serviceMetadataConcept xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                           xsi:noNamespaceSchemaLocation="http://www.astrogrid.org/schema/service.xsd">
+ <interfaceMetadata>
+     <serviceInterfaceUrl></serviceInterfaceUrl>
+     <serviceBaseUrl></serviceBaseUrl>
+     <serviceHTTPResults>
+         <serviceHTTPResultType>text/plain</serviceHTTPResultType>
+         <serviceHTTPResultType>text/html</serviceHTTPResultType>
+     </serviceHTTPResults>
+ </interfaceMetadata>
+ <capabilitiesMetadata>
+     <serviceStandardUri></serviceStandardUri>
+     <serviceStandardUrl></serviceStandardUrl>
+     <serviceRestriction>
+         <serviceRestrictionSpatial unitAngle="deg">
+             <serviceMSR></serviceMSR>
+             <serviceMaxImageSize></serviceMaxImageSize>
+         </serviceRestrictionSpatial>
+         <serviceMaxNrows></serviceMaxNrows>
+     </serviceRestriction>
+ </capabilitiesMetadata>
+</serviceMetadataConcept>
+    </service>
+</registry>
+
+
+
+
+
+
+
+
+
