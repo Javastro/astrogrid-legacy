@@ -1,49 +1,38 @@
 <?xml version="1.0"?>
-<!-- extension maven script -->
+<!-- extension maven script - extends workflow and core cdk maven.xmls. -->
 <project default="astrogrid-build-site" xmlns:j="jelly:core" xmlns:deploy="deploy" xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
 
         <goal name="astrogrid-deploy-site">
             <echo message="Please deploy the site docs from the base aggregate project"/>
         </goal>
-        <goal name="astrogrid-deploy-snapshot" prereqs="dist:deploy-bin-snapshot,war:deploy-snapshot"/>
+        <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,dist:deploy-bin-snapshot,war:deploy-snapshot"/>
 
-        <goal name="astrogrid-build-snapshot" prereqs="dist:build-bin,war:war">
+        <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,dist:build-bin,war:war">
                 <echo>NB - no goal exists to build dist snapshot - called dist:build-bin instead</echo>
                 <echo>NB - no goal exists to build war snapshot - called war:war instead </echo>
         </goal>
-        <goal name="astrogrid-install-snapshot" prereqs="dist:build-bin,war:install-snapshot">
+        <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,dist:build-bin,war:install-snapshot">
                 <echo>NB - no goal exist to install dist - calling dist:build-bin instead</echo>
         </goal>
-        <goal name="astrogrid-deploy-artifact" prereqs="dist:deploy-bin,war:deploy"/>
-        <goal name="astrogrid-build-artifact" prereqs="dist:build-bin,war:war"/>
-        <goal name="astrogrid-install-artifact" prereqs="dist:build-bin,war:install">
+        <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:deploy-bin,war:deploy"/>
+        <goal name="astrogrid-build-artifact" prereqs="jar:jar,dist:build-bin,war:war"/>
+        <goal name="astrogrid-install-artifact" prereqs="jar:install,dist:build-bin,war:install">
                 <echo>NB - no goal exist to install dist - calling dist:build-bin instead</echo>
         </goal>
 
 <!-- set up dist to do what we want -->
-        <!-- remove artificial jar, but add in dependencies -->
-        <postGoal name="dist:prepare-bin-filesystem">
-                <delete>
-                 <fileset dir="${maven.dist.bin.assembly.dir}">
-                        <include name="*.jar" />
-                 </fileset>
-                </delete>
-                <deploy:copy-deps todir="${maven.dist.bin.assembly.dir}"
+        <goal name="patch-bin">
+                        <deploy:copy-deps todir="${maven.dist.bin.assembly.dir}"
                         excludes="commons-jelly-tags-xml,commons-jelly-tags-jsl"/>
-        </postGoal>
+        </goal>
 
 <!-- now adjust war goal, so that it creates a jnlp thingie -->
-        <preGoal name="jnlp:init">
-                <!-- set jnlp to run into same dir as is later used for war -->
-                <j:set var="maven.jnlp.dir" value="${maven.build.dir}/${pom.artifactId}" />
-        </preGoal>
 
-        <postGoal name="war:webapp">
-                <attainGoal name="jnlp:generate-jnlp" />
+                
+	<goal name="patch-webapp">                
                 <delete includeEmptyDirs="true">
                         <fileset dir="${maven.build.dir}/${pom.artifactId}">
                                 <include name="WEB-INF/**" />
-                                <include name="${pom.artifactId}*.jar" />
                         </fileset>
                 </delete>
                 <!-- sign jars by hand - as maven jnlp task is flakey -->
@@ -52,24 +41,14 @@
                                 <include name="*.jar" />
                         </fileset>
                 </signjar>
-                <attainGoal name="patch-jnlp" />
-        </postGoal>
+       </goal>
 
         <goal name="patch-jnlp">
-                <!-- remove dependency on dummy jar - as breaks jnlp
-                a bit convoluted - as template priorities, and jxml:if appears to be broken ..
-                and there's a barrier between jelly variables and expressions in jsl..
-                upshot is that the stylesheet becomes more brittle - need to watch it.
-
+                <!--  alter jnlp to depend on workflow cdk extension
                 -->
              ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
              <jsl:stylesheet var="patch">
-                <jsl:template match="jar[starts-with(@href,'astrogrid-cdk-script')]"> <!-- gah- ${pom.artifactId} won't work here -->
-                </jsl:template>
-                <jsl:template match="jar[not(starts-with(@href,'astrogrid-cdk-script')]">
-                        <jxml:copyOf select="." />
-                </jsl:template>
-                <jsl:template match="information|security|application-desc|component-desc|property"> <!-- deliberately omitted j2se - as an extension descriptor shouldn't specify this -->
+                <jsl:template match="jar|information|security|application-desc|component-desc|property"> <!-- deliberately omitted j2se - as an extension descriptor shouldn't specify this -->
                         <jxml:copyOf select="." />
                 </jsl:template>
                 <jsl:template match="jnlp|@*">

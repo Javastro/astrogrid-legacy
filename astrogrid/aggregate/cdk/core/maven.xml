@@ -23,6 +23,11 @@
 <!-- set up dist to do what we want -->
         <!-- remove artificial jar, but add in dependencies -->
         <postGoal name="dist:prepare-bin-filesystem">
+        	<attainGoal name="patch-bin" />
+        </postGoal>
+        
+        <!-- necessary to write this as a separate action - to give extendng projects a change to override this -->
+        <goal name="patch-bin">               	
                 <delete>
                  <fileset dir="${maven.dist.bin.assembly.dir}">
                         <include name="*.jar" />
@@ -30,7 +35,7 @@
                 </delete>
                 <deploy:copy-deps todir="${maven.dist.bin.assembly.dir}"
                         excludes="commons-jelly-tags-xml,commons-jelly-tags-jsl"/>
-        </postGoal>
+         </goal>
 
 <!-- now adjust war goal, so that it creates a jnlp thingie -->
         <preGoal name="jnlp:init">
@@ -40,6 +45,11 @@
 
         <postGoal name="war:webapp">
                 <attainGoal name="jnlp:generate-jnlp" />
+                <attainGoal name="patch-webapp"/>
+                <attainGoal name="patch-jnlp" />
+        </postGoal>
+        
+        <goal name="patch-webapp">
                 <delete includeEmptyDirs="true">
                         <fileset dir="${maven.build.dir}/${pom.artifactId}">
                                 <include name="WEB-INF/**" />
@@ -52,8 +62,7 @@
                                 <include name="*.jar" />
                         </fileset>
                 </signjar>
-                <attainGoal name="patch-jnlp" />
-        </postGoal>
+	</goal>                      
 
         <goal name="patch-jnlp">
                 <!-- remove dependency on dummy jar - as breaks jnlp

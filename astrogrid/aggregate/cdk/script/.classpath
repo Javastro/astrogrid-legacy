@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<classpath>
+  <classpathentry excluding="" kind="src" path="src/java">
+  </classpathentry>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-scripting-0.7.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-cea-server-0.7.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/starlink/jars/stil-2.0-1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-workflow-0.7.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-jes-delegate-0.7.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-workflow-objects-0.7.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-cea-client-0.7.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/commons-jxpath/jars/commons-jxpath-1.1-patched.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/castor/jars/castor-0.9.5-xml.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/regexp/jars/regexp-1.3.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-common-0.7.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-store-client-0.8-b000h.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-filestore-client-0.8-b000g.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-community-common-0.7.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-community-client-0.7.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-community-resolver-0.7.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-registry-common-0.7.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-registry-client-lite-0.7.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xerces-2.4.0-patched.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/xml-apis/jars/xml-apis-1.0.b2-patched.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/axis/jars/axis-1.1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/jax-qname/jars/jax-qname.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/jaxrpc-api/jars/jaxrpc-api-1.0.3.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/saaj-api/jars/saaj-api-1.1.1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/wsdl4j/jars/wsdl4j.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/commons-discovery/jars/commons-discovery-20030211.213356fixed1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.3.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/commons-collections/jars/commons-collections-3.1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/commons-jelly/jars/commons-jelly-tags-jsl-20030211.143151.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/commons-jelly/jars/commons-jelly-tags-xml-20030211.142705.jar">
+  </classpathentry>
+  <classpathentry kind="output" path="target/classes">
+  </classpathentry>
+</classpath>
