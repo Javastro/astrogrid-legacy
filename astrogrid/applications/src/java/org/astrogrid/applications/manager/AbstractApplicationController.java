@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.8 2003/12/07 01:09:48 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.9 2003/12/09 09:11:51 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,19 +11,15 @@
 
 package org.astrogrid.applications.manager;
 
-import org.astrogrid.applications.Application;
-import org.astrogrid.applications.Parameter;
-import org.astrogrid.applications.common.config.ApplicationControllerConfig;
-import org.astrogrid.applications.description.ApplicationDescription;
-import org.astrogrid.applications.description.ApplicationDescriptions;
-import org.astrogrid.applications.description.DescriptionLoader;
-import org.astrogrid.applications.description.SimpleApplicationDescription;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.astrogrid.applications.common.config.ApplicationControllerConfig;
+import org.astrogrid.applications.description.ApplicationDescriptions;
+import org.astrogrid.applications.description.DescriptionLoader;
+import org.astrogrid.applications.description.SimpleApplicationDescription;
 
 abstract public class AbstractApplicationController implements ApplicationController {
    /**

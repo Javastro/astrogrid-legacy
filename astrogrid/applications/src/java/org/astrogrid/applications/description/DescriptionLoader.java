@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoader.java,v 1.6 2003/12/04 13:26:25 pah Exp $
+ * $Id: DescriptionLoader.java,v 1.7 2003/12/09 09:11:51 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -16,21 +16,14 @@ import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.digester.AbstractObjectCreationFactory;
-import org.apache.commons.digester.BeanPropertySetterRule;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.ExtendedBaseRules;
 import org.apache.commons.digester.NodeCreateRule;
 import org.apache.commons.digester.SetTopRule;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import org.astrogrid.applications.description.exception.ParameterTypeNotDefinedException;
 import org.astrogrid.applications.manager.AbstractApplicationController;
 
 /**

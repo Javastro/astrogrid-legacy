@@ -1,5 +1,5 @@
 /*
- * $Id: AllBodyIncElementsRule.java,v 1.2 2003/12/04 13:26:25 pah Exp $
+ * $Id: AllBodyIncElementsRule.java,v 1.3 2003/12/09 09:11:51 pah Exp $
  * 
  * Created on 28-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,15 +14,9 @@
 package org.astrogrid.applications.description;
 
 import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.digester.BeanPropertySetterRule;
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.Rule;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.Attributes;
 
 /**
     * A rule that incorporates all of the enclosed elements into a property
