@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.17 2003/11/06 17:02:24 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.18 2003/11/06 22:10:04 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,6 @@
  *
 **/
 package org.astrogrid.datacenter.service;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -21,16 +20,14 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.adql.ADQLException;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.common.QueryStatus;
-import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.DummyQuerier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
-import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
-import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
 import org.w3c.dom.Document;
 
 /** Test the entire DataQueryService, end-to-end, over a Hsql database
@@ -55,7 +52,7 @@ public class DataQueryServiceTest extends TestCase {
     protected void setUp() throws Exception {
         //wsTest.setUp(); //sets up workspace
         HsqlTestCase.initializeConfiguration();
-        Configuration.setProperty(DatabaseQuerierManager.RESULTS_TARGET_KEY,"fooble");
+        SimpleConfig.setProperty(DatabaseQuerierManager.RESULTS_TARGET_KEY,MySpaceDummyDelegate.DUMMY);
         DataSource ds = new HsqlTestCase.HsqlDataSource();
         //File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
         conn = ds.getConnection();
@@ -79,7 +76,7 @@ public class DataQueryServiceTest extends TestCase {
     }
 
     public void testHandleUniqueness() throws IOException {
-        Configuration.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY,DummyQuerier.class.getName());
+        SimpleConfig.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY,DummyQuerier.class.getName());
          DatabaseQuerier s1 = DatabaseQuerierManager.createQuerier();
          assertNotNull(s1);
          DatabaseQuerier s2 = DatabaseQuerierManager.createQuerier();
@@ -157,8 +154,8 @@ public class DataQueryServiceTest extends TestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
-Revision 1.17  2003/11/06 17:02:24  mch
-Added main method
+Revision 1.18  2003/11/06 22:10:04  mch
+Work with both real and dummy myspace
 
 Revision 1.16  2003/11/05 18:54:43  mch
 Build fixes for change to SOAPy Beans and new delegates
