@@ -90,6 +90,7 @@ public class DesignAction extends AbstractAction {
         ACTION_READ_WORKFLOW = "read-workflow" ,
         ACTION_DELETE_WORKFLOW = "delete-workflow" ,
         ACTION_CREATE_WORKFLOW_FROM_TEMPLATE = "create-workflow-from-template" ,
+        ACTION_SUBMIT_WORKFLOW = "submit-workflow" ,
         ACTION_READ_WORKFLOW_LIST = "read-workflow-list" ,
         ACTION_CHOOSE_QUERY = "choose-query" ,
         ACTION_EDIT_JOINCONDITION = "edit-join-condition" ;
@@ -194,7 +195,7 @@ public class DesignAction extends AbstractAction {
                 this.consistencyCheck() ;
                     
                 if( action == null ){
-                    ; 
+                    debug( "action is null") ;  
                 }      
                 if( action.equals( ACTION_CREATE_WORKFLOW ) ) {
                     this.createWorkflow() ;
@@ -211,6 +212,9 @@ public class DesignAction extends AbstractAction {
                 else if( action.equals( ACTION_CREATE_WORKFLOW_FROM_TEMPLATE ) ) {
                     this.createWorkflowFromTemplate() ; 
                 }
+                else if( action.equals( ACTION_SUBMIT_WORKFLOW ) ) {
+                    this.submitWorkflow() ; 
+                }
                 else if( action.equals( ACTION_CHOOSE_QUERY ) ) {
                     this.chooseQuery() ; 
                 }
@@ -218,8 +222,9 @@ public class DesignAction extends AbstractAction {
                     this.editJoinCondition() ; 
                 }
                 else {
-                    debug( "unsupported action") ; // unsupported action
+                    debug( "unsupported action") ; 
                 }
+                
                 // Save the workflow in the session object...
                 debug( "about to set session attribute..." ) ;
                 session.setAttribute( HTTP_WORKFLOW_TAG, workflow ) ;
@@ -228,8 +233,15 @@ public class DesignAction extends AbstractAction {
             catch( ConsistencyException cex ) {
                 debug( "ConsistencyException occurred");
             }
+            //JBL Note: these should only be here during testing...
             catch( Exception ex) {
-                debug( "Exception: ex") ;
+                debug( "Exception: ex" ) ;
+                ex.printStackTrace() ;
+            }
+            //JBL Note: these should only be here during testing...
+            catch( Throwable th ) {
+                debug( "Throwable th" ) ;
+                th.printStackTrace() ;
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.act() exit" ) ;  
@@ -414,6 +426,20 @@ public class DesignAction extends AbstractAction {
             }
          
         }
+        
+        
+        private void submitWorkflow() {
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.submitWorkflow() entry" ) ;
+              
+            try {
+                           
+            }
+            finally {
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.submitWorkflow() exit" ) ;
+            }
+         
+        }
+        
         
         
         private void chooseQuery() {

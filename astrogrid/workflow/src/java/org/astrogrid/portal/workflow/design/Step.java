@@ -44,8 +44,8 @@ public class Step extends Activity {
     private String
         name = null,
         description = null ;
-    private boolean
-        joinCondition = true ;
+    private JoinCondition
+        joinCondition ;
     private Tool
         tool = NULLTOOL ;
     private Resources
@@ -54,7 +54,8 @@ public class Step extends Activity {
     
     public Step() {
         super() ;
-        if( TRACE_ENABLED ) trace( "Step() entry/exit") ; 
+        if( TRACE_ENABLED ) trace( "Step() entry/exit") ;
+        joinCondition = JoinCondition.ANY ; 
     }
 
 	public void setName(String name) {
@@ -65,13 +66,25 @@ public class Step extends Activity {
 		return name;
 	}
 
-	public void setJoinCondition( boolean joinCondition ) {
+	public void setJoinCondition( JoinCondition joinCondition ) {
 		this.joinCondition = joinCondition;
 	}
+    
+    public JoinCondition getJoinCondition() {
+        return this.joinCondition ;
+    }
 
-	public boolean isJoinCondition() {
-		return joinCondition;
+	public boolean isJoinConditionTrue() {
+		return joinCondition == JoinCondition.TRUE ;
 	}
+    
+    public boolean isJoinConditionFalse() {
+        return joinCondition == JoinCondition.FALSE ;
+    }
+    
+    public boolean isJoinConditionAny() {
+        return joinCondition == JoinCondition.ANY ;
+    }
 
 	public void setTool( Tool tool ) {
 		this.tool = tool;

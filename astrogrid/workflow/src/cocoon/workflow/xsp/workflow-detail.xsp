@@ -118,7 +118,7 @@
 					<xsp:element name="tool"><xsp:expr>step.getTool().getName()</xsp:expr></xsp:element>
 					<xsp:element name="joinCondition">
 						<xsp:attribute name="value">
-							<xsp:expr>new Boolean( step.isJoinCondition() )</xsp:expr>
+							<xsp:expr>step.getJoinCondition()</xsp:expr>
 						</xsp:attribute>
 					</xsp:element>
 				</xsp:element>
