@@ -86,10 +86,6 @@ ant axis.REBUILD  //this builds a new axis install. Not really used except
     for referencing jar files.
 ant junit.REBUILD //used only for junit tasks.  And is needed for reference
     to jar files.
-ant cocoon.REBUILD //this builds a new cocoon install.
-ant config.BUILD  //still in the works.  This builds a config file and puts
-    the environment entry into the cocoons web.xml file for pointing to the
-    config file.
 ant portal.REBUILD  //this builds a new portal install.
 ant cocoon.release  //This build a new cocoon war file.
 
@@ -112,21 +108,10 @@ Restart your webserver.  This will install the cocoon directory and all the
 neeeded components for the portal in the webapps directory.  Please verify
 after startup that in the cocoon/WEB-INF/web.xml file that the
 "org.astrogrid.community.config" environment entry is their and is pointing to
-a config file that is in the right location.
-
-
-
-web.xml: Until the config.BUILD ant task is working appropriatly please put
-this in your webapps/cocoon/WEB-INF/web.xml file at the bottom then restart
-your server. example of entry normally at the bottom right before </web-app>
-<env-entry> <!-- JNDI property for config file right now this has
-community.config probably will be changed to portal.config The evn-entry-value
-may be point to anywhere on your system or even a url. -->
-
-<env-entry-name>org.astrogrid.community.config</env-entry-name>
-<env-entry-value>C:\astro_community_client.xml</env-entry-value>
-<env-entry-type>java.lang.String</env-entry-type> </env-entry>
-
+a config file that is in the right location.  Currently it points to a config
+file at cocoon/WEB-INF/config/config.xml, this is what you must edit to point
+to your community.  If desired you may move this config file anywhere on your 
+system and edit the web.xml file to point to that config file.
 ---------------------------------------------------
 How to check if a user is authorized to perform a task (with portal).  I don't
 go into detail on the Administration page because it is very basic user
