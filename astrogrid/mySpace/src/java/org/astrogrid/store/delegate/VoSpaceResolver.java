@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.20 2004/04/21 12:11:48 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.21 2004/04/21 13:36:08 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -104,10 +104,15 @@ public class VoSpaceResolver {
             lookedIn += ", Registry "+registry;
          }
       }
-      catch (ResolverException re) {
-         //if it's the special hardcoded auto-integration resolver then we want
-         //to ignore any problems and continue to hard-resolve it.  Otherwise
-         //rethrow the exception
+      //if it's the special hardcoded auto-integration resolver then we want
+      //to ignore any problems and continue to hard-resolve it.  Otherwise
+      //rethrow the exception
+      catch (IOException ie) {
+         if (!ivorn.getPath().toString().equals(AUTOINT_MYSPACE_IVOKEY)) {
+            throw ie;
+         }
+      }
+      catch (RuntimeException re) {
          if (!ivorn.getPath().toString().equals(AUTOINT_MYSPACE_IVOKEY)) {
             throw re;
          }
@@ -392,6 +397,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.21  2004/04/21 13:36:08  mch
+Extra exception ignoring
+
 Revision 1.20  2004/04/21 12:11:48  mch
 Fix to attempt ivorn resolving even if community is down
 
@@ -465,6 +473,7 @@ Revision 1.1  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 
  */
+
 
 
 
