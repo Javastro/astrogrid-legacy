@@ -104,17 +104,18 @@
         </dependency>
         <!--+
             | The 3rd party jars that Axis depends on.
-            +-->
+
         <dependency>
             <groupId>jaf</groupId>
             <artifactId>jaf</artifactId>
             <version>1.0.2</version>
             <type>jar</type>
         </dependency>
+                    +-->
         <!--+
             | The JConfig jars.
             | Soon to be replaced by the AstroGrid common tools.
-            +-->
+
         <dependency>
             <groupId>jconfig</groupId>
             <artifactId>jconfig</artifactId>
@@ -125,6 +126,7 @@
                 <dist.zip>true</dist.zip>
             </properties>
         </dependency>
+                    +-->
     </dependencies>
 
     <!--+
