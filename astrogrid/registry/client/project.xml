@@ -68,6 +68,57 @@
 			</ul>
 		</p>
 	</section>
+	<section name="Installation">
+		<p>
+			It is expected that this jar will be bunded with an appropriate war file for use with other components.  There
+			is no seperate installation just for the client itself.  After a build a jar file is produced in the "target"
+			directory.  When ever it is bundled with another component, it is expected to have in the System properties or
+			JNDI a key value of "org.astrogrid.config.url" pointing to a config file.  An example config file is given in
+			cvs under the config directory.
+			<ul>
+				<li>clean - cleans out and removes all previous builds.</li>
+				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+			</ul>
+		</p>
+	</section>
+	<section name="Interface (Delegates)">
+		<p>
+			This section is a quick description of what delegate methods can be used for other components to take advantage of.
+			This is not necessarily the actual web service interface methods on the server side registry.
+			
+			<strong>First the Query:</strong>
+			<ul>
+				<li>submitQuery - 
+				  Queries the Registry. Examples of the queries can be found in config/junitcache, but will add a section here soon.
+				  There are various submitQueries that can be used.
+  				  	submitQuery - Submit a Document DOM object and get a VODescription java bean object back.<br />
+  				  	submitQueryString - Submit a String and get a VODescription java bean object back.<br />
+				  	submitQueryDOM - submit a Document DOM object and get a Document DOM object back.<br />
+				  	submitQueryStringDOM - submit a String and get a Document DOM object back.
+				</li>
+				<li>getResourceByIdentifier(String ident) - returns a VODescription java bean object of this one resource entry.</li>
+				<li>getResourceByIdentifierDOM(String ident) - returns a Document DOM object of this one resource entry.</li>
+				<li>getEndPointByIdentifier(String ident) - returns a string which is a endpoint of a Service entry.</li>
+				<li>loadRegistryDOM(Document) - returns a Document DOM object of just the registry resource entry.</li>
+				<li>loadRegistry(VODescription) - returns a VODescription java bean object of the registry resource entry.</li>
+			</ul>
+			<strong>The Update:</strong>
+			<ul>
+				<li>update(VODescription) - updates a resource entries in the registry given a one or more Resources from a VODescription bean.</li>
+				<li>update(Document) - updates a resource entries in the registry given a one or more Resources from a Document DOM object.</li>
+				<li>add - will put here later about add it may be factored out later.</li>
+				<li>updateFromUrl(URL url) - Not yet implemented.</li>
+				<li>updateFromFile(File fi) - Not Yet imnplemented.</li>
+			</ul>
+			<strong>The harvesting:</strong>
+			<i>Will add this later.</i>
+			
+		</p>
+	</section>
+	
+	
 		]]>        
     
     </description>

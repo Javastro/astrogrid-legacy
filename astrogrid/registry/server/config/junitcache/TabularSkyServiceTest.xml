@@ -19,12 +19,12 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <Resource xsi:type="java:org.astrogrid.registry.beans.resource.registry.RegistryType">
+  <vr:Resource xsi:type="java:org.astrogrid.registry.beans.resource.dataservice.SkyServiceType">
     <Identifier>
-      <AuthorityID>astrogrid</AuthorityID>
-      <ResourceKey>RegistryTest</ResourceKey>
+      <AuthorityID>vm05.astrogrid.org</AuthorityID>
+      <ResourceKey>TabularSkyServiceTest</ResourceKey>
     </Identifier>
-    <Title>NCSA Astronomy Digital Image Library Query Form</Title>
+    <Title>NCSA Astronomy Digital Image Library Cone Search</Title>
     <ShortName>ADIL</ShortName>
     <Summary>
       <Description>
@@ -34,19 +34,29 @@
       <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
     </Summary>
     <Type>Archive</Type>
+    <RelatedResource>
+       <Relationship>service-for</Relationship>
+       <RelatedTo>
+          <Identifier>
+            <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+            <ResourceKey>ADIL</ResourceKey>
+          </Identifier>
+         <Title>NCSA Astronomy Digital Image Library</Title>
+       </RelatedTo>
+    </RelatedResource>
     <Curation>
       <Publisher>
-       <Identifier>
-         <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
-      <ResourceKey>ADIL</ResourceKey>
-       </Identifier>
+         <Identifier>
+           <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+           <ResourceKey>ADIL</ResourceKey>
+         </Identifier>
          <Title>NCSA Astronomy Digital Image Library</Title>
       </Publisher>
       <Contact>
-        <Name>Dr. Raymond Plante</Name>
-   <Email>rplante@ncsa.uiuc.edu</Email>
+         <Name>Dr. Raymond Plante</Name>
+         <Email>rplante@ncsa.uiuc.edu</Email>
       </Contact>
-      <Date>1994-09-01</Date>
+      <Date>2002-04-01</Date>
       <Creator>
         <Name>Dr. Raymond Plante</Name>
         <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
@@ -56,16 +66,18 @@
       </Contributor>
     </Curation>
     <Subject>radio astronomy</Subject>
-    <Subject>data repositories</Subject>
-    <Subject>digital libraries</Subject>
-    <Subject>grid-based processing</Subject>
-    <ContentLevel>Research</ContentLevel>
-    <ContentLevel>University</ContentLevel>
-    <ContentLevel>Community College</ContentLevel>
-    <vg:ManagedAuthority>astrogrid</vg:ManagedAuthority>
+    <ContentLevel>Research</ContentLevel>    
+    <vr:Capability xsi:type="java:org.astrogrid.registry.beans.resource.conesearch.ConeSearchType">
+       <vr:StandardURL>http://www.us-vo.org/metadata/conesearch/</vr:StandardURL>
+       <cs:MaxSR>10</cs:MaxSR>
+       <cs:MaxRecords>5000</cs:MaxRecords>
+       <cs:Verbosity>false</cs:Verbosity>
+    </vr:Capability>
     <Interface>
-      <Invocation>WebBrowser</Invocation>
-      <AccessURL use="dir">http://adil.ncsa.uiuc.edu/QueryPage.html</AccessURL>
+      <Invocation>WebService</Invocation>
+      <AccessURL use="base">http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager</AccessURL>
     </Interface>
-  </Resource>
+    <vs:Coverage>
+    </vs:Coverage>
+  </vr:Resource>
   </VODescription>

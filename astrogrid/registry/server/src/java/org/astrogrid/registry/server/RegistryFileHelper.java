@@ -89,8 +89,8 @@ public class RegistryFileHelper {
          e.printStackTrace();
          regEntry = null;   
       }
-      if(regEntry != null) {
-         NodeList nl = regEntry.getElementsByTagName("ManagedAuthority");
+      if(regEntry != null) {         
+         NodeList nl = regEntry.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
          if(nl.getLength() > 0) {
             statusMessage += "Authorities owned by this Registry: |";
             for(int i=0;i < nl.getLength();i++) {
@@ -408,7 +408,12 @@ public class RegistryFileHelper {
          regEntry = null;   
       }
       if(regEntry != null) {
-         NodeList nl = regEntry.getElementsByTagName("ManagedAuthority");
+         System.out.println("The Registry entry = " + XMLUtils.DocumentToString(regEntry));
+         //TODO fix this so it uses namespaces instead.  This should go away anyways with the new db.
+         //NodeList nl =  regEntry.getElementsByTagNameNS("*","ManagedAuthority" );
+         NodeList nl = regEntry.getElementsByTagName("vg:ManagedAuthority");
+         //System.out.println("the nodelist size for getting manageauthority2 = " + nl2.getLength());
+         System.out.println("the nodelist size for getting manageauthority = " + nl.getLength());
          if(nl.getLength() > 0) {
             for(int i=0;i < nl.getLength();i++) {
                manageAuthorities.put(nl.item(i).getFirstChild().getNodeValue(),null);

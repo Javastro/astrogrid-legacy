@@ -24,11 +24,11 @@ import org.xml.sax.InputSource;
 import junit.framework.*;
 import java.io.File;
 import java.util.Date;
-import org.astrogrid.registry.server.query.RegistryService;
+import org.astrogrid.registry.server.admin.RegistryAdminService;
 import org.astrogrid.registry.server.RegistryFileHelper;
 
 
-public class RegistryQueryJunit extends TestCase{ 
+public class RegistryAdminJunit extends TestCase{ 
 
 
    /**
@@ -38,7 +38,7 @@ public class RegistryQueryJunit extends TestCase{
    private static boolean DEBUG_FLAG = true ;
 
 
-   RegistryService rs = null;
+   RegistryAdminService ras = null;
 
         
    /**
@@ -57,22 +57,36 @@ public class RegistryQueryJunit extends TestCase{
        System.out.println("Property for config = " + System.getProperty("org.astrogrid.registry.junitcache.url"));
        String junitBuildDir = System.getProperty("org.astrogrid.registry.junitcache.build.url");
        String junitDir = System.getProperty("org.astrogrid.registry.junitcache.url");
-       rs = new RegistryService();
-       rs.conf.setProperty("org.astrogrid.registry.file",junitBuildDir+"/registry.xml");
-       rs.conf.setProperty("org.astrogrid.registry.junit.authQuery1",junitDir+"/AuthorityQuery1.xml");
-       rs.conf.setProperty("org.astrogrid.registry.junit.orgQuery1",junitDir+"/OrganisationQuery1.xml");
-       rs.conf.setProperty("org.astrogrid.registry.junit.orgQuery2",junitDir+"/OrganisationQuery2.xml");
-              
-       assertNotNull(rs);
+       ras = new RegistryAdminService();
+       ras.conf.setProperty("org.astrogrid.registry.file",junitBuildDir+"/registry.xml");
+       ras.conf.setProperty("registry.junit.test/ServiceTest",junitDir+"/ServiceTest.xml");
+       ras.conf.setProperty("registry.junit.test/OrganisationTest",junitDir+"/OrganisationTest.xml");
+       ras.conf.setProperty("registry.junit.test/DataCollectionTest",junitDir+"/DataCollectionTest.xml");
+       ras.conf.setProperty("registry.junit.test/AuthorityTest",junitDir+"/AuthorityTest.xml");
+       ras.conf.setProperty("registry.junit.test/RegistryTest",junitDir+"/RegistryTest.xml");
+       ras.conf.setProperty("registry.junit.test/TabularSkyServiceTest",junitDir+"/TabularSkyServiceTest.xml");
+       ras.conf.setProperty("registry.junit.test/Combo1Test",junitDir+"/ResourcesCombo1.xml");
+       assertNotNull(ras);
        if (DEBUG_FLAG) System.out.println("----\"----") ;
    }
    
    
-   public void testLoadRegistry() throws Exception {
-      if (DEBUG_FLAG) System.out.println("Begin testLoadRegistry");
-      Document doc = rs.loadRegistry(null);
-      if (DEBUG_FLAG) System.out.println("loadRegistry returned = " + XMLUtils.DocumentToString(doc));
+   public void testUpdateService() throws Exception {
+      if (DEBUG_FLAG) System.out.println("Begin testUpdateService");
+      Document doc = ras.update(ras.conf.getDom("registry.junit.test/ServiceTest"));
+      //TODO put assert statements here.      
+      if(doc != null)      
+         if (DEBUG_FLAG) System.out.println("loadRegistry returned = " + XMLUtils.DocumentToString(doc));
    }
+   
+   public void testUpdateOrganisation() throws Exception {
+      if (DEBUG_FLAG) System.out.println("Begin testUpdateOrganisation");
+      Document doc = ras.update(ras.conf.getDom("registry.junit.test/OrganisationTest"));
+      //TODO put assert statements here.
+      if(doc != null)
+         if (DEBUG_FLAG) System.out.println("loadRegistry returned = " + XMLUtils.DocumentToString(doc));
+   }
+      
 /*   
    public void testSubmitQueryEqualsOrganisationQuery() throws Exception {
       Document doc = rs.conf.getDom("org.astrogrid.registry.junit.orgQuery1");  
@@ -88,13 +102,6 @@ public class RegistryQueryJunit extends TestCase{
       System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
    }
   */ 
-   public void testSubmitQueryContainsAuthorityQuery() throws Exception {
-      if (DEBUG_FLAG) System.out.println("Begin testSubmitQueryContainsAuthorityQuery");      
-      Document doc = rs.conf.getDom("org.astrogrid.registry.junit.authQuery1");  
-      Document responseDoc = rs.submitQuery(doc);
-      assertNotNull(responseDoc);
-      if (DEBUG_FLAG) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
-   }
        
 } 
 

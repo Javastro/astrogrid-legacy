@@ -1,4 +1,16 @@
+#This is the authorityid that this registry manages.  The current authority id here is is coordination with the
+#sample registry.xml file.
 org.astrogrid.registry.authorityid=astrogrid
+
+#next line at the moment is not used.
 org.astrogrid.registry.writefile.timedelay.minutes=10
-org.astrogrid.registry.file=C:\Development\temp\registry\registry.xml
+
+#this is the sample registry xml file currently needed, but will be factored out as the eXist XMLDB comes online with
+#the registry component.  You can find this sample registry xml file located in the config/junitcache directory.
+org.astrogrid.registry.file=file:///C:/Development/temp/registry/registry.xml
+
+#current version of this registry.
 org.astrogrid.registry.version=0_9
+
+#next line is currently not needed.
+org.astrogrid.registry.debug=true

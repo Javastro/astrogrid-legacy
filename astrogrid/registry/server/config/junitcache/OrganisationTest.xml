@@ -18,54 +18,42 @@
                       http://www.ivoa.net/xml/ConeSearch/v0.2
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
-                      http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <Resource xsi:type="java:org.astrogrid.registry.beans.resource.registry.RegistryType">
+                      http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">  
+                      <vr:Resource  xsi:type="java:org.astrogrid.registry.beans.resource.community.OrganisationType">
     <Identifier>
       <AuthorityID>astrogrid</AuthorityID>
-      <ResourceKey>RegistryTest</ResourceKey>
+      <ResourceKey>OrganisationTest</ResourceKey>
     </Identifier>
-    <Title>NCSA Astronomy Digital Image Library Query Form</Title>
-    <ShortName>ADIL</ShortName>
+    <Title>NCSA Radio Astronomy Imaging Testing</Title>
+    <ShortName>NCSA-RAITesting</ShortName>
     <Summary>
       <Description>
-        This Web page allows users to interactively search the contents
-        of the ADIL.
+        A test The Radio Astronomy Imaging Group is focused on applying
+        high-performance computing to astronomical research.  Our
+        projects include the NCSA Astronomy Digital Image Library, 
+        the BIMA Data Archive, the BIMA Image Pipeline, and AIPS++.  
       </Description>
-      <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
+      <ReferenceURL>http://rai.ncsa.uiuc.edu/</ReferenceURL>
     </Summary>
-    <Type>Archive</Type>
+    <Type>Organisation</Type>
     <Curation>
       <Publisher>
-       <Identifier>
-         <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
-      <ResourceKey>ADIL</ResourceKey>
-       </Identifier>
-         <Title>NCSA Astronomy Digital Image Library</Title>
+         <Title>NCSA Radio Astronomy Imaging</Title>
       </Publisher>
       <Contact>
         <Name>Dr. Raymond Plante</Name>
    <Email>rplante@ncsa.uiuc.edu</Email>
       </Contact>
-      <Date>1994-09-01</Date>
+      <Date>1993-01-01</Date>
       <Creator>
         <Name>Dr. Raymond Plante</Name>
-        <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
+        <Logo>http://rai.ncsa.uiuc.edu/rai.jpg</Logo>
       </Creator>
-      <Contributor>
-        <Name>Damien Guillaume</Name>
-      </Contributor>
     </Curation>
     <Subject>radio astronomy</Subject>
     <Subject>data repositories</Subject>
     <Subject>digital libraries</Subject>
     <Subject>grid-based processing</Subject>
     <ContentLevel>Research</ContentLevel>
-    <ContentLevel>University</ContentLevel>
-    <ContentLevel>Community College</ContentLevel>
-    <vg:ManagedAuthority>astrogrid</vg:ManagedAuthority>
-    <Interface>
-      <Invocation>WebBrowser</Invocation>
-      <AccessURL use="dir">http://adil.ncsa.uiuc.edu/QueryPage.html</AccessURL>
-    </Interface>
-  </Resource>
+  </vr:Resource>
   </VODescription>

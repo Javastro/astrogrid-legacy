@@ -12,6 +12,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.exolab.castor.xml.*;
 import org.astrogrid.registry.beans.resource.*;
 
+import org.astrogrid.config.Config;
+
 
 
 /**
@@ -26,6 +28,14 @@ import org.astrogrid.registry.beans.resource.*;
  */
 public class RegistryAdminService implements
                        org.astrogrid.registry.common.RegistryAdminInterface {
+                          
+   public static Config conf = null;
+   
+   static {
+      if(conf == null) {
+         conf = org.astrogrid.config.SimpleConfig.getSingleton();
+      }      
+   }                             
 
    /**
     * Takes an XML Document and will either update and insert the data in the registry.  If a client is
@@ -44,6 +54,7 @@ public class RegistryAdminService implements
   public Document update(Document query) throws ValidationException {
     Document doc = null;
     Document newDoc = null;
+    /*
     try {
        VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,query);
        DocumentBuilder registryBuilder = null;
@@ -55,12 +66,14 @@ public class RegistryAdminService implements
     }catch(ParserConfigurationException pce) {
        pce.printStackTrace();
     }
+    */
     
     //Load the registry first.
     //RegistryFileHelper.translateRegistry(query);
     //call updateDocument method to go through the document objects
     //and look for the primary key (resourcekey,AuthorityID) and do an update
-    doc = RegistryFileHelper.updateDocument(newDoc.getDocumentElement(),false, true);
+    //doc = RegistryFileHelper.updateDocument(newDoc.getDocumentElement(),false, true);
+    doc = RegistryFileHelper.updateDocument(query.getDocumentElement(),true, true);
     return doc;
   }
 
@@ -81,6 +94,7 @@ public class RegistryAdminService implements
    public Document add(Document query) throws ValidationException {
       Document doc = null;
       Document newDoc = null;
+      /*
       try {
          VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,query);
          DocumentBuilder registryBuilder = null;         
@@ -92,12 +106,14 @@ public class RegistryAdminService implements
       }catch(ParserConfigurationException pce) {
          pce.printStackTrace();
       }
+      */
       //Load the registry first.
       //RegistryFileHelper.translateRegistry(query);
       //call updateDocument method to go through the document objects
       //and look for the primary key (resourcekey,AuthorityID) and determine
       //an update or an add.
-      doc = RegistryFileHelper.addDocument(newDoc.getDocumentElement(), true);
+      //doc = RegistryFileHelper.addDocument(newDoc.getDocumentElement(), true);
+      doc = RegistryFileHelper.addDocument(query.getDocumentElement(), true);
       //query to see if this is an authority type.
       /*      
       NodeList nl = query.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","Authority");

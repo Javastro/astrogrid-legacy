@@ -53,6 +53,7 @@ public class RegistryQueryJunit extends TestCase{
        System.out.println("Property for config = " + System.getProperty("org.astrogrid.config.url"));
        System.out.println("Property for cachedir = " + System.getProperty("org.astrogrid.registry.cache.url"));      
        String cacheDir = System.getProperty("org.astrogrid.registry.cache.url");
+       String junitDir = System.getProperty("org.astrogrid.registry.junitcache.url");       
        if(cacheDir == null) {
           rs = null;
           return;
@@ -60,12 +61,8 @@ public class RegistryQueryJunit extends TestCase{
 
        rs = RegistryDelegateFactory.createQuery();
        rs.conf.setProperty("vm05.astrogrid.org/MyspaceManager",cacheDir+"/Myspace.xml");
-       
-       //System.out.println("Property for config = " + System.getProperty("org.astrogrid.config.url"));
-       //printProperties();
+       rs.conf.setProperty("org.astrogrid.registry.junit.authQuery1",junitDir+"/AuthorityQuery1.xml");
        assertNotNull(rs);
-       
-       
        if (DEBUG_FLAG) System.out.println("----\"----") ;
        }
             
@@ -97,5 +94,18 @@ public class RegistryQueryJunit extends TestCase{
       assertNotNull(endPoint);
       if(DEBUG_FLAG) System.out.println("endPoint = " + endPoint);
    }
+   
+   
+   public void testSubmitQueryContainsAuthorityQuery() throws Exception {
+      if (DEBUG_FLAG) System.out.println("Begin testSubmitQueryContainsAuthorityQuery");
+      rs = RegistryDelegateFactory.createQuery(rs.conf.getUrl("org.astrogrid.registry.query.junit.endpoint"));
+      if (DEBUG_FLAG) System.out.println("Endpoint = " + rs.conf.getString("org.astrogrid.registry.query.junit.endpoint"));             
+      Document doc = rs.conf.getDom("org.astrogrid.registry.junit.authQuery1");  
+      Document responseDoc = rs.submitQueryDOM(doc);
+      assertNotNull(responseDoc);
+      if (DEBUG_FLAG) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
+   }
+ 
+   
 } 
 

@@ -54,16 +54,20 @@
 		information is stored in a flat file, but will soon be using an XMLDB of eXist.
 		See <a href="exist.sourceforge.net">eXist</a>
 		<br />
-		Web Service Interface methods:
-		<ul>
-			<li>update(Resource schema) - updates the Registry with one to many Resources.</li>
-			<li>harvestFrom(date) - return all resource information modified from a particular date.</li>
-			<li>havest() - return all resource information.</li>
-			<li>submitQuery - Query for entries based on a particular criteria.</li>
-			<li>harvestResource - Registers a resource entry into the db and performs a harvest on that entry if possible.</li>
-			<li>loadRegistry() - just returns the Registry Resource metadata entry for this resource.</li>
-		</ul>
 	</p>
+	<section name="Interface">
+		<p>
+				Web Service Interface methods:
+			<ul>
+				<li>update(Resource schema) - updates the Registry with one to many Resources.</li>
+				<li>harvestFrom(date) - return all resource information modified from a particular date.</li>
+				<li>havest() - return all resource information.</li>
+				<li>submitQuery - Query for entries based on a particular criteria.</li>
+				<li>harvestResource - Registers a resource entry into the db and performs a harvest on that entry if possible.</li>
+				<li>loadRegistry() - just returns the Registry Resource metadata entry for this resource.</li>
+			</ul>
+		</p>
+	</section>
 	<section name="Builds">
 		<p>
 			The registry allows you to build at the top level or at it's sub-project level.  
@@ -76,6 +80,17 @@
 			</ul>
 		</p>
 	</section>
+	<section name="Installation">
+		<p>
+			This only builds the server jar and is expected to be bundled up with a war file.  See the WebApp portion of
+			the registry which bundles up the full server installation into a war file.
+			After a build a jar file is produced in the "target"
+			directory.  When ever it is bundled with another component, it is expected to have in the System properties or
+			JNDI a key value of "org.astrogrid.config.url" pointing to a config file.  An example config file is given in
+			cvs under the config directory.  Currently the config file requires pointing to a xml file which will be your
+			registry, this will be factored out as we come online with the eXist XMLDB.
+		</p>
+	</section>	
 		]]>        
     </description>
 

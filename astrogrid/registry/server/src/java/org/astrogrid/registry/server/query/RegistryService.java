@@ -52,7 +52,6 @@ public class RegistryService implements
    * 
    * @param query XML document object representing the query language used on the registry.
    * @return XML docuemnt object representing the result of the query.
-   * @deprecated Being deprecated this method now only returns the full XML document.
    * @author Kevin Benson 
    */
    public Document submitQuery(Document query) {

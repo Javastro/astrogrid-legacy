@@ -67,6 +67,8 @@ public class RegistryService  {
    
    public static Config conf = null;
    
+   private static boolean DEBUG_FLAG = true ;   
+   
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
@@ -156,6 +158,7 @@ public class RegistryService  {
    public Document submitQueryDOM(Document query) throws RegistryException {
       Document doc = null;
       try {
+         if(DEBUG_FLAG) System.out.println("entered submitQueryDOM");
          VODescription vo = submitQuery(query);
          DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          doc = registryBuilder.newDocument();
@@ -209,15 +212,9 @@ public class RegistryService  {
       DocumentBuilder registryBuilder = null;
       Document doc = null;
       Document resultDoc = null;
+      if(DEBUG_FLAG) System.out.println("entered submitQuery");        
       try {
-         VODescription vp = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,query);
-      }catch(ValidationException ve) {
-         throw new RegistryException(ve);   
-      }catch(MarshalException me) {
-         throw new RegistryException(me);   
-      }
-        
-      try {
+         if(DEBUG_FLAG) System.out.println("creating full soap element.");
          registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          doc = registryBuilder.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI,"submitQuery");
@@ -232,17 +229,18 @@ public class RegistryService  {
       if(doc == null) {
          return null;   
       }
-              
+      if(DEBUG_FLAG) System.out.println("creating call object");              
       Call call = getCall();
       SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
       sbeRequest.setName("submitQuery");
       sbeRequest.setNamespaceURI(NAMESPACE_URI);
       VODescription vo = null;
       try {            
+         if(DEBUG_FLAG) System.out.println("invoking service call");
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
          resultDoc = sbe.getAsDocument();
-         vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,query);
+         vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,resultDoc);
       }catch(RemoteException re) {
          vo = null;
          re.printStackTrace();

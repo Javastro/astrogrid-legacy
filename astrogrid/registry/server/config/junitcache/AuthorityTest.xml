@@ -19,53 +19,31 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <Resource xsi:type="java:org.astrogrid.registry.beans.resource.registry.RegistryType">
+<vr:Resource  xsi:type="java:org.astrogrid.registry.beans.resource.registry.AuthorityType">
     <Identifier>
-      <AuthorityID>astrogrid</AuthorityID>
-      <ResourceKey>RegistryTest</ResourceKey>
+      <AuthorityID>vm05.astrogrid.org</AuthorityID>
+      <ResourceKey>AuthorityTest</ResourceKey>
     </Identifier>
-    <Title>NCSA Astronomy Digital Image Library Query Form</Title>
-    <ShortName>ADIL</ShortName>
+    <Title>NCSA Radio Astronomy Imaging Naming Authority</Title>
+    <ShortName>NCSA-RAI</ShortName>
+    <Subject>test</Subject>
     <Summary>
       <Description>
-        This Web page allows users to interactively search the contents
-        of the ADIL.
+        This authority ID will be used to identify generic resources 
+   related to the NCSA Radio Astronomy Imaging Group at the 
+   National Center for Supercomputing Applications (NCSA)
       </Description>
-      <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
+      <ReferenceURL>http://rai.ncsa.uiuc.edu/</ReferenceURL>
     </Summary>
-    <Type>Archive</Type>
     <Curation>
       <Publisher>
-       <Identifier>
-         <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
-      <ResourceKey>ADIL</ResourceKey>
-       </Identifier>
-         <Title>NCSA Astronomy Digital Image Library</Title>
+         <Title>NCSA Radio Astronomy Imaging</Title>
       </Publisher>
       <Contact>
         <Name>Dr. Raymond Plante</Name>
    <Email>rplante@ncsa.uiuc.edu</Email>
       </Contact>
-      <Date>1994-09-01</Date>
-      <Creator>
-        <Name>Dr. Raymond Plante</Name>
-        <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
-      </Creator>
-      <Contributor>
-        <Name>Damien Guillaume</Name>
-      </Contributor>
+      <Date>2003-08-30</Date>
     </Curation>
-    <Subject>radio astronomy</Subject>
-    <Subject>data repositories</Subject>
-    <Subject>digital libraries</Subject>
-    <Subject>grid-based processing</Subject>
-    <ContentLevel>Research</ContentLevel>
-    <ContentLevel>University</ContentLevel>
-    <ContentLevel>Community College</ContentLevel>
-    <vg:ManagedAuthority>astrogrid</vg:ManagedAuthority>
-    <Interface>
-      <Invocation>WebBrowser</Invocation>
-      <AccessURL use="dir">http://adil.ncsa.uiuc.edu/QueryPage.html</AccessURL>
-    </Interface>
-  </Resource>
+  </vr:Resource>
   </VODescription>

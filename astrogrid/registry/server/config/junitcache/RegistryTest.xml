@@ -19,9 +19,9 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <Resource xsi:type="java:org.astrogrid.registry.beans.resource.registry.RegistryType">
+ <vr:Resource xsi:type="java:org.astrogrid.registry.beans.resource.registry.RegistryType">
     <Identifier>
-      <AuthorityID>astrogrid</AuthorityID>
+      <AuthorityID>vm05.astrogrid.org</AuthorityID>
       <ResourceKey>RegistryTest</ResourceKey>
     </Identifier>
     <Title>NCSA Astronomy Digital Image Library Query Form</Title>
@@ -62,10 +62,10 @@
     <ContentLevel>Research</ContentLevel>
     <ContentLevel>University</ContentLevel>
     <ContentLevel>Community College</ContentLevel>
-    <vg:ManagedAuthority>astrogrid</vg:ManagedAuthority>
+    <vg:ManagedAuthority>vm05.astrogrid.org</vg:ManagedAuthority>
     <Interface>
       <Invocation>WebBrowser</Invocation>
       <AccessURL use="dir">http://adil.ncsa.uiuc.edu/QueryPage.html</AccessURL>
     </Interface>
-  </Resource>
+  </vr:Resource>
   </VODescription>

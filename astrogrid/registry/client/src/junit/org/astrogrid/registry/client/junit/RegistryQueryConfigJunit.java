@@ -30,7 +30,7 @@ import org.astrogrid.registry.beans.resource.types.*;
 import org.astrogrid.registry.beans.resource.registry.*;
 
 
-public class RegistryQueryCastorJunit extends TestCase{ 
+public class RegistryQueryConfigJunit extends TestCase{ 
    
 
    /**
