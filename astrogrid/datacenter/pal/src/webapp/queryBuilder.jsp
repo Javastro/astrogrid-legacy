@@ -1,5 +1,5 @@
 <%@ page language="java"
-    import="java.util.*, org.astrogrid.datacenter.sqlparser.*, org.astrogrid.datacenter.query.results.*, org.astrogrid.datacenter.query.criteria.*,
+    import="java.util.*, java.io.*, org.astrogrid.datacenter.sqlparser.*, org.astrogrid.datacenter.query.results.*, org.astrogrid.datacenter.query.criteria.*,
     org.astrogrid.datacenter.metadata.*, org.astrogrid.datacenter.service.HtmlDataServer, org.w3c.dom.*, org.astrogrid.util.* " %>
 
 <!-- returns 'checked' if the given value is in the list of values -->
@@ -57,7 +57,21 @@
 This form helps you construct a query without messing about with SQL or ADQL.
 Just select below what you want to know; if you leave all of the 'Return' checkboxes
 empty you will receive all the columns in your results.
-
+<%
+   Document metadata = null;
+   try {
+      metadata = MetadataServer.getMetadata();
+   }
+   catch (FileNotFoundException fnfe) {
+      StringWriter sw = new StringWriter();
+      MetadataGenerator.writeMetadata(sw);
+      metadata = DomHelper.newDocument(sw.toString());
+      %>
+      <p>Note that a configured metadata file could not be found (<%= fnfe %>)
+      so this is based on the plugin's automatically generated metadata.
+      <%
+   }
+%>
 <h2>From</h2>
 
 Select which columns you will be using to search:
@@ -79,7 +93,6 @@ Select which columns you will be using to search:
 
 
 <%
-   Document metadata = MetadataServer.getMetadata();
    NodeList tables = metadata.getElementsByTagName("Table");
    if (tables.getLength() == 0) {
       //would like to use assert but some Tomcats can't compile it properly
@@ -92,17 +105,17 @@ Select which columns you will be using to search:
       for (int c=0;c<columns.getLength();c++) {
          Element colElement = (Element) columns.item(c);
          String colName = colElement.getAttribute("name");
-
-         out.write("<tr>\n");
-         out.write("<td>"+tableName+"</td>");
-         out.write("<td>"+colName+"</td>");
-         out.write("<td>"+DomHelper.getValue(colElement, "Description")+"</td>");
-         out.write("<td>"+DomHelper.getValue(colElement, "Units")+"</td>\n");
-
          String colId = tableName+"."+colName;
-         out.write("<td><input type='checkbox' name='searchColumn' value='"+colId+"' "+getChecked(searchCols,colId)+"></td>\n");
-         out.write("<td><input type='checkbox' name='resultColumn' value='"+colId+"' "+getChecked(resultCols,colId)+"></td>\n");
+         %>
+         <tr>
+         <td><%= tableName %></td>
+         <td><%= colName %></td>
+         <td><%= DomHelper.getValue(colElement, "Description") %></td>
+         <td><%= DomHelper.getValue(colElement, "Units") %></td>
 
+         <td><input type='checkbox' name='searchColumn' value='<%= colId %>' <%= getChecked(searchCols,colId) %> ></td>
+         <td><input type='checkbox' name='resultColumn' value='<%= colId %>' <%= getChecked(resultCols,colId) %> ></td>
+         <%
       }
    }
 %>
