@@ -1,4 +1,4 @@
-/*$Id: MonitorEndpointFromConfig.java,v 1.5 2004/03/17 00:26:09 nw Exp $
+/*$Id: MonitorEndpointFromConfig.java,v 1.6 2004/07/01 11:19:05 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,8 @@ import org.apache.axis.server.AxisServer;
 import com.sun.corba.se.connection.GetEndPointInfoAgainException;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,7 +41,7 @@ public class MonitorEndpointFromConfig extends SimpleComponentDescriptor impleme
     public static final String MONITOR_ENDPOINT_KEY = "jes.monitor.endpoint.url";
     /** absolute fallback endpoint - if no value specified in config, and we can't calculate value by querying axis message endpoint */
     public static final String MONITOR_DEFAULT_ENDPOINT ="http://localhost:8080/jes/services/JobMonitorService" ;
-    public MonitorEndpointFromConfig(Config conf) throws MalformedURLException {
+    public MonitorEndpointFromConfig(Config conf) throws MalformedURLException, URISyntaxException {
         URL defaultURL = new URL(MONITOR_DEFAULT_ENDPOINT);
         try {
         Iterator i = MessageContext.getCurrentContext().getAxisEngine().getConfig().getDeployedServices();
@@ -57,26 +59,27 @@ public class MonitorEndpointFromConfig extends SimpleComponentDescriptor impleme
             // oh well
         }
 
-         url = conf.getUrl(MONITOR_ENDPOINT_KEY,defaultURL);
-   
+         URL url = conf.getUrl(MONITOR_ENDPOINT_KEY,defaultURL);
+         uri = new URI(url.toString());
         name = "ApplicationControllerDispatcher - Monitor Endpoint configuration";
              description = "Loads job-monitor endpoint (used by callback from application controller) from Config\n" +
                  "key :" + MONITOR_ENDPOINT_KEY
                  + "\n current value:" + url.toString();        
     }
 
-    protected final URL url;
-    /**
-     * @see org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher.MonitorEndpoint#getURL()
-     */
-    public URL getURL() {
-        return url;
+    protected final URI uri;
+
+    public URI getURI() {
+        return uri;
     }
 }
 
 
 /* 
 $Log: MonitorEndpointFromConfig.java,v $
+Revision 1.6  2004/07/01 11:19:05  nw
+updated interface with cea - part of cea componentization
+
 Revision 1.5  2004/03/17 00:26:09  nw
 attempt at determining monitor endpoint by querying axis engine
 

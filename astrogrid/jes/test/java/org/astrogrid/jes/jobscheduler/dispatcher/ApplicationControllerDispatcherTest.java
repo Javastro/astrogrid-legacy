@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcherTest.java,v 1.7 2004/03/24 11:47:13 pah Exp $
+/*$Id: ApplicationControllerDispatcherTest.java,v 1.8 2004/07/01 11:20:07 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 
 /** Unit test for the application controller dispatcher.
@@ -38,10 +39,10 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
     
     protected void setUp() throws Exception {
         Locator locator = new MockLocator();
-        final URL monitorURL =  new URL("http://www.nowhere.org");
+        final URI monitorURL =  new URI("http://www.nowhere.org");
         ApplicationControllerDispatcher.MonitorEndpoint monitor = new ApplicationControllerDispatcher.MonitorEndpoint() {
 
-            public URL getURL() {
+            public URI getURI() {
                 return monitorURL;
             }
         };
@@ -78,6 +79,9 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
 
 /* 
 $Log: ApplicationControllerDispatcherTest.java,v $
+Revision 1.8  2004/07/01 11:20:07  nw
+updated interface with cea - part of cea componentization
+
 Revision 1.7  2004/03/24 11:47:13  pah
 removed the buildParameters test - not needed as the new CEC delegate uses workflow objects directly
 

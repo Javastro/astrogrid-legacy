@@ -1,4 +1,4 @@
-/*$Id: BasicComponentManager.java,v 1.7 2004/03/18 10:53:54 nw Exp $
+/*$Id: BasicComponentManager.java,v 1.8 2004/07/01 11:19:05 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ import org.astrogrid.jes.jobscheduler.policy.LinearPolicy;
 import org.picocontainer.Parameter;
 import org.picocontainer.defaults.ComponentParameter;
 
+import java.net.URI;
 import java.net.URL;
 
 /** Basic stand-alone component set up - no need for external config file.
@@ -46,7 +47,7 @@ public class BasicComponentManager extends EmptyComponentManager {
     public BasicComponentManager() throws ComponentManagerException{
         super();
         try {
-        defaultCallbackURL = new URL("http://localhost:8080/astrogrid-jes/services/JobMonitor");
+        defaultCallbackURL = new URI("http://localhost:8080/astrogrid-jes/services/JobMonitor");
         pico.registerComponentInstance("jes-meta",JES_META);
         pico.registerComponentImplementation(JobScheduler.class,SchedulerTaskQueueDecorator.class,
         new Parameter[] {
@@ -59,7 +60,7 @@ public class BasicComponentManager extends EmptyComponentManager {
         pico.registerComponentImplementation(Dispatcher.class,ApplicationControllerDispatcher.class);
         pico.registerComponentInstance(ApplicationControllerDispatcher.MonitorEndpoint.class, 
             new ApplicationControllerDispatcher.MonitorEndpoint() {
-            public URL getURL() {
+            public URI getURI() {
                 return defaultCallbackURL;
             }
         });
@@ -83,7 +84,7 @@ public class BasicComponentManager extends EmptyComponentManager {
     }
 
     // will do something better here later.
-    protected final URL defaultCallbackURL; 
+    protected final URI defaultCallbackURL; 
     
     /** @todo add config tests for a basic system in here */
     private static final ComponentDescriptor JES_META = new SimpleComponentDescriptor(
@@ -98,6 +99,9 @@ public class BasicComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: BasicComponentManager.java,v $
+Revision 1.8  2004/07/01 11:19:05  nw
+updated interface with cea - part of cea componentization
+
 Revision 1.7  2004/03/18 10:53:54  nw
 upgraded to use join policy
 

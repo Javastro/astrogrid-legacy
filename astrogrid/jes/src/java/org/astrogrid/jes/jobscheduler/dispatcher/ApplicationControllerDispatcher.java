@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.11 2004/05/27 09:49:42 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.12 2004/07/01 11:19:05 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.StringWriter;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.rmi.RemoteException;
@@ -48,7 +49,7 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
     *
     */
    public interface MonitorEndpoint {
-      URL getURL();
+      URI getURI();
    }
    /** Construct a new ApplicationControllerDispatcher    
     * @param locator tool locator component to use to resolve endpoints
@@ -57,14 +58,14 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
     */
    public ApplicationControllerDispatcher(Locator locator, MonitorEndpoint endpoint) {
       this.locator = locator;
-      this.monitorURL = endpoint.getURL();
+      this.monitorURL = endpoint.getURI();
       assert monitorURL != null;
       logger.info("monitor URL set to " + monitorURL.toString());
    }
    /** tool locator component */
    protected final Locator locator;
    /** endpoint of local jobmonitor service - used as a callback */
-   protected final URL monitorURL;
+   protected final URI monitorURL;
    /**
     * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(java.lang.String, org.astrogrid.jes.job.JobStep)
     */
@@ -86,8 +87,11 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
             + ", "
             + id.getValue());
       try {
-         String applicationID =
-            appController.execute(js.getTool(), id, monitorURL.toString());
+          // iteration 5
+         //String applicationID =
+         //   appController.execute(js.getTool(), id, monitorURL.toString());
+         String applicationId = appController.init(js.getTool(),id);
+         appController.registerProgressListener(applicationId,monitorURL);
 
       }
       catch (CEADelegateException e) {
@@ -132,7 +136,7 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
          super(s);
       }
       public void testCanConnectMonitorURL() throws Exception {
-         URLConnection conn = monitorURL.openConnection();
+         URLConnection conn = monitorURL.toURL().openConnection();
          assertNotNull(conn);
          conn.connect();
 
@@ -149,6 +153,9 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.12  2004/07/01 11:19:05  nw
+updated interface with cea - part of cea componentization
+
 Revision 1.11  2004/05/27 09:49:42  nw
 improved exception reporting 'when applications go bad'
 

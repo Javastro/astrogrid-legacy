@@ -1,4 +1,4 @@
-/*$Id: AbstractJobFactoryImpl.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: AbstractJobFactoryImpl.java,v 1.5 2004/07/01 11:19:05 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -100,7 +100,7 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
            .append( '/' )          
            .append( System.currentTimeMillis()) 
            .append( ':' )
-           .append(rand.nextInt());
+           .append(Math.abs( rand.nextInt()));
         JobURN urn = new JobURN();
         urn.setContent(buffer.toString().trim());
         return urn;
@@ -113,6 +113,9 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
 
 /* 
 $Log: AbstractJobFactoryImpl.java,v $
+Revision 1.5  2004/07/01 11:19:05  nw
+updated interface with cea - part of cea componentization
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

@@ -1,4 +1,4 @@
-/*$Id: MockLocator.java,v 1.4 2004/03/24 11:51:29 pah Exp $
+/*$Id: MockLocator.java,v 1.5 2004/07/01 11:20:07 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.jes.jobscheduler.locator;
 
-import org.astrogrid.applications.delegate.Delegate;
+import org.astrogrid.common.delegate.Delegate;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.workflow.beans.v1.Step;
@@ -50,6 +50,9 @@ public class MockLocator implements Locator {
 
 /* 
 $Log: MockLocator.java,v $
+Revision 1.5  2004/07/01 11:20:07  nw
+updated interface with cea - part of cea componentization
+
 Revision 1.4  2004/03/24 11:51:29  pah
 update the test for the new dummydelegate URI
 
