@@ -87,10 +87,10 @@ function myspace_browse_fill(selectedId, destId, funcName, actionValue) {
       
       // Get agsl (micro)
       if(funcName) {
-        micro_browser = window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?parent_func=" + funcName + "()&agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
+        micro_browser = window.open("/astrogrid-portal/mount/myspace/myspace-micro?parent_func=" + funcName + "()&agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
       }
       else {
-        micro_browser = window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
+        micro_browser = window.open("/astrogrid-portal/mount/myspace/myspace-micro?agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
       }
 
       // Focus micro browser and maintain focus on it.
