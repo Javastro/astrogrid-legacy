@@ -38,13 +38,25 @@ public class Cardinality {
     }
     
     
-    private Cardinality( String cardinality ) {
-    }
-    
-    
     public Cardinality ( int minimum, int maximum ) {
         this.minimum = minimum ;
         this.maximum = maximum ;
+    }
+
+	/**
+	  */
+	public int getMaximum() {
+		return maximum;
+	}
+
+	/**
+	  */
+	public int getMinimum() {
+		return minimum;
+	}
+    
+    public boolean isUnlimited() {
+        return (maximum == Cardinality.UNLIMITED) ;
     }
 
 } // end of class Cardinality

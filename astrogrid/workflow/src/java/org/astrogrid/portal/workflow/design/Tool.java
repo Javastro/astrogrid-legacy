@@ -122,23 +122,21 @@ public class Tool {
 	}
 
 	/**
-	   */
+	  */
 	public void setOutputParameters(List list) {
 		outputParameters = list;
 	}
 
 	/**
-	   * <p>Attempts to establish a connection with the data source that
-	   * this <code>DataSource</code> object represents.
-	   *
-	   * @param username the database user on whose behalf the connection is 
-	   *  being made
-	   * @param password the user's password
-	   * @return  a connection to the data source
-	   * @exception SQLException if a database access error occurs
-	   */
-	public ToolFactory getFactory() {
+	  */
+	protected ToolFactory getFactory() {
 		return factory;
+	}
+
+	/**
+	  */
+	public String getName() {
+		return name;
 	}
 
 } // end of class Tool
