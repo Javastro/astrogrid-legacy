@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04Delegate.java,v 1.9 2004/03/17 23:37:22 mch Exp $
+ * $Id: MySpaceIt04Delegate.java,v 1.10 2004/03/18 17:07:32 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -208,12 +208,15 @@ public class MySpaceIt04Delegate implements StoreClient
             for (int loop = offset; loop<length; loop++) {
                toSend.append(bytes[loop]+" ");
             }
-            //log.debug("MySpace.putBytes("+toSend.toString()+")");
-            
+            { //debug
+               String s = toSend.toString();
+               if (s.length()>100) s = s.substring(0,100)+"...";
+               log.debug("putBytes("+s+", "+targetPath+", "+append+")");
+            }
             MySpaceHelper helper = new MySpaceHelper();
             String jobDetails = helper.buildSave(operator.getUserId(), operator.getCommunity(), operator.getToken(),
                                                  "/"+targetPath, toSend.toString(), "(not used)", action);
-            String s = getBinding().upLoad(jobDetails);
+            status = getBinding().upLoad(jobDetails);
         }
         catch (ServiceException se) {
             log.error("putBytes("+targetPath+", "+action+")", se);
@@ -434,6 +437,9 @@ public class MySpaceIt04Delegate implements StoreClient
 
 /*
 $Log: MySpaceIt04Delegate.java,v $
+Revision 1.10  2004/03/18 17:07:32  mch
+Added debug
+
 Revision 1.9  2004/03/17 23:37:22  mch
 Removed debug print of encoded string
 
@@ -486,4 +492,5 @@ Revision 1.1  2004/02/15 23:16:06  mch
 New-style VoSpace delegates.  Not agreed so private to datacenter for the moment
 
  */
+
 
