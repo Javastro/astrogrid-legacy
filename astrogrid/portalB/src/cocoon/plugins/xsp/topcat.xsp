@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsp:page language="java"
+		create-session="true"
+		xmlns:xsp="http://apache.org/xsp"
+		xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+		
+	<!--+
+	    | The XSP page needs one non-xsp tag.
+	    | Anything in here gets added inside the Generator generate() method.
+	    +-->
+	<topcat>
+		<xsp:element name="img">
+			<xsp:attribute name="src">votable</xsp:attribute>
+		</xsp:element>
+		<xsp:logic>
+			<![CDATA[
+				if (null != (String)request.getParameter("url") && ((String)request.getParameter("url")).length() > 0) {
+			]]>
+					<xsp:element name="url">
+						<xsp:attribute name="val"><xsp:expr>(String)request.getParameter("url")</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+			]]>
+			<![CDATA[
+				if (null != (String)request.getParameter("xaxis") && ((String)request.getParameter("xaxis")).length() > 0) {
+			]]>
+					<xsp:element name="xaxis">
+						<xsp:attribute name="val"><xsp:expr>(String)request.getParameter("xaxis")</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+				if (null != (String)request.getParameter("yaxis") && ((String)request.getParameter("yaxis")).length() > 0) {
+			]]>
+					<xsp:element name="yaxis">
+						<xsp:attribute name="val"><xsp:expr>(String)request.getParameter("yaxis")</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+			]]>
+		</xsp:logic>
+	</topcat>
+
+</xsp:page>
