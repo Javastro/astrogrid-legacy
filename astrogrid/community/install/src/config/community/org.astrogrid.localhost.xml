@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/org.astrogrid.localhost.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/23 16:58:13 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/23 17:11:33 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: org.astrogrid.localhost.xml,v $
+    |   Revision 1.6  2004/04/23 17:11:33  dave
+    |   Added demo accounts
+    |
     |   Revision 1.5  2004/04/23 16:58:13  dave
     |   Added demo accounts
     |
@@ -109,6 +112,17 @@
         <password account="ivo://org.astrogrid.localhost/frog"  password="qwerty"/>
         <password account="ivo://org.astrogrid.localhost/toad"  password="qwerty"/>
         <password account="ivo://org.astrogrid.localhost/newt"  password="qwerty"/>
+        <!--+
+            | Anonymous Account.
+            +-->
+        <password account="ivo://org.astrogrid.localhost/anonymous"  password="qwerty"/>
+        <!--+
+            | Demo Accounts.
+            +-->
+        <password account="ivo://org.astrogrid.localhost/keith"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.localhost/andy"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.localhost/tony"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.localhost/nic"    password="qwerty"/>
     </passwords>
 
 </community>
