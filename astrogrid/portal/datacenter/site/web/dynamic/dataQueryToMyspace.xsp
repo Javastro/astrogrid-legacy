@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Patricio F. Ortiz "pfo@star.le.ac.uk"
+    | Date: Tue Nov 30 11:20:17 GMT 2004 
+    +-->
+
+<xsp:page language="java"
+	  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	  xmlns:xsp="http://apache.org/xsp"
+	  xmlns:util="http://apache.org/xsp/util/2.0"
+	  xmlns:jpath="http://apache.org/xsp/jpath/1.0"
+	  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+	  xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+  
+    <!--+
+	| Import any java classes here.
+	+-->
+
+	<xsp:structure>
+	  <xsp:include>org.w3c.dom.Document</xsp:include>
+	  <xsp:include>org.astrogrid.util.DomHelper</xsp:include>
+	</xsp:structure>
+
+  <AstroGrid>
+<xsp:logic>
+	String profile, user;
+	user=(String) <xsp-session:get-attribute default="nadie" name="user"/>;
+
+	profile = "http://barbara.star.le.ac.uk/datoz-bin/profiler?act=whole&amp;z=" + user;
+	<util:include-uri>
+	   <util:href><xsp:expr>profile</xsp:expr></util:href>
+	</util:include-uri>
+</xsp:logic>
+
+<!--
+<DQtableID><xsp-request:get-parameter default="null" name="tableID"/></DQtableID>
+-->
+
+<mainarea>
+  <xsp:logic>
+	String quString = "null";
+	String uniqueID = "null";
+	String sessionTable = "null";
+	String errorMessage = "noError";
+    	errorMessage=(String) <xsp-session:get-attribute default="noError" name="query-builder-adql-error"/>;
+    	quString=(String) <xsp-session:get-attribute name="adqlQuery"/>;
+    	uniqueID=(String) <xsp-session:get-attribute default="NoSource" name="uniqueID"/>;
+
+		Object ob = null;
+
+/*		ob = session.getAttribute("uniqueID");*/
+		ob = session.getAttribute("tableID");
+		if (ob != null )
+		{
+			sessionTable = ob.toString();
+		}
+<DQtableID><xsp:expr>sessionTable</xsp:expr></DQtableID>
+<OneTableID><xsp:expr>sessionTable</xsp:expr></OneTableID>
+
+		ob = session.getAttribute("resultSingleCatalog");
+		if ((ob != null) &amp;&amp; (ob instanceof Document))
+		{
+		<util:include-expr>
+		  <util:expr>
+		    DomHelper.DocumentToString((Document)ob)
+		  </util:expr>
+		</util:include-expr>
+		}
+
+
+<friendly>yes</friendly>
+<ErrorMsg><xsp:expr>errorMessage</xsp:expr></ErrorMsg>
+<OneTableID><xsp:expr>uniqueID</xsp:expr></OneTableID>
+<QUERYAREA>
+<textarea name="adqlQuery" class="areaInput2" id="ag_data-query" cols="50"
+rows="8"><xsp:expr>quString</xsp:expr></textarea>
+</QUERYAREA>
+
+<!--
+<DQtableID2><xsp:expr>sessionTable</xsp:expr></DQtableID2>
+<OneTableID2><xsp:expr>sessionTable</xsp:expr></OneTableID2>
+-->
+  </xsp:logic>
+</mainarea>
+
+
+  </AstroGrid>
+</xsp:page>

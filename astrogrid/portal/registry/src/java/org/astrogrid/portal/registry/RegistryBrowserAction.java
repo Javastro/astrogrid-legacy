@@ -77,7 +77,11 @@ public class RegistryBrowserAction extends AbstractAction
    
 	 public static final String TABLE_ACTION = "getTable";
    
-	 public static final String SEPARATOR = "/";   
+/* Following change done by PFO to uniform the UniqueTableID using !
+ * instead of / as component separators
+ */
+/*	 public static final String SEPARATOR = "/";   */
+	 public static final String SEPARATOR = "!";   
 
 	 public static final String SEPARATORHACK = "!";   
 

@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.18 2004/12/03 21:16:00 clq2 Exp $
+    | CVS $Id: sitemap.xmap,v 1.19 2004/12/07 17:34:34 clq2 Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -305,6 +305,7 @@
 -->
               <map:generate type="serverpages"
 		      src="web/dynamic/dataQueryFromMyspace.xsp"/>
+	      <map:transform src="web/style/xsl/simplifyRegistry.xsl" />
               <map:transform src="web/style/xsl/dataQuery07.xsl"/>
               <map:transform src="cocoon://xml2html.xsl"/>
               <map:serialize type="xml"/>
@@ -321,8 +322,12 @@
               <map:transform src="web/style/xsl/dataQuery.xsl"/>
   -->
               <map:generate type="serverpages"
-		      src="web/dynamic/dataQueryFromMyspace.xsp"/>
+		      src="web/dynamic/dataQueryToMyspace.xsp"/>
+	      <map:transform src="web/style/xsl/simplifyRegistry.xsl" />
               <map:transform src="web/style/xsl/dataQuery07.xsl"/>
+	      <!--
+              <map:transform src="web/style/xsl/vanilla.xsl"/>
+	      -->
               <map:transform src="cocoon://xml2html.xsl"/>
               <map:serialize type="xml"/>          
             </map:act>

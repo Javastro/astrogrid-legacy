@@ -764,7 +764,9 @@ function getSelectionId(authId, resourceKey) {
   } 
   if ( !choice ) alert( "Please select a resource" );
   else {
-     j = identifier.indexOf( '/' );
+  /* Modified by PFO */
+/*     j = identifier.indexOf( '/' );*/
+     j = identifier.indexOf( '!' );
      id = identifier.substring(0, j);
      key = identifier.substring(j+1);
 

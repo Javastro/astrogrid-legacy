@@ -55,7 +55,11 @@ public class MySpaceLoadAction extends AbstractAction {
     
     public static final String SESSIONKEY_RESULT_SINGLE_CATALOG = "resultSingleCatalog" ;
     
-    public static final String SEPARATOR = "/";   
+    /*
+     * Modified by PFO
+    public static final String SEPARATOR = "/";
+     */
+    public static final String SEPARATOR = "!";
     
     
   /**

@@ -663,6 +663,20 @@
 	text-decoration: none;
 }
 
+.agPath {
+	font-family: 'Helvetica', arial, sans-serif;
+	font-size: 0.8em;
+	font-weight: bold;
+	color: #000099;
+	border: 1px solid #000099;
+/*	cursor: pointer;*/
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	text-decoration: none;
+}
+
 
 .agWelcomeTitle {
 	font-size: larger;

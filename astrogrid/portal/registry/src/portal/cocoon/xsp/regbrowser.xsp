@@ -68,6 +68,7 @@
                 String title = "";
                 String description = "";
                 String identifier = "";
+                String ToolIdentifier = "";
                 String tablename = "";
                 String tablenameVS = "";
                 String element = null;
@@ -76,9 +77,11 @@
                    id = DomHelper.getNodeTextValue( nd,"AuthorityID","vr" );
                    resKey = DomHelper.getNodeTextValue( nd,"ResourceKey","vr" );
                    identifier = id;
+                   ToolIdentifier = id;
                    if(resKey != null && resKey.trim().length() > 0) {
          ]]>
-                     identifier += "/" + resKey;
+                     identifier += "!" + resKey;
+                     ToolIdentifier += "/" + resKey;
                    }
 
                    title = DomHelper.getNodeTextValue(nd,"Title","vr");
@@ -98,6 +101,7 @@
 <xsp:attribute name="id"><xsp:expr>id</xsp:expr></xsp:attribute>
 <xsp:attribute name="key"><xsp:expr>resKey</xsp:expr></xsp:attribute>
 <xsp:attribute name="identifier"><xsp:expr>identifier</xsp:expr></xsp:attribute>
+<xsp:attribute name="ToolIdentifier"><xsp:expr>ToolIdentifier</xsp:expr></xsp:attribute>
            <xsp:logic>
       <![CDATA[
                    for ( int j=0; j < nrtab; j++ ) {

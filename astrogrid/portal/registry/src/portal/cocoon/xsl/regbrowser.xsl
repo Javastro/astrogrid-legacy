@@ -188,7 +188,7 @@
 	<input type="hidden" name="queryregistry" value="Select..." />
 <table width="100%">
 <tr>
-<td bgcolor="green" width="20px" onclick="findSelection()">
+<td bgcolor="green" title="Click here to proceed" style="cursor: pointer" width="20px" onclick="findSelection()">
 </td>
 <td>
               <table>                    
@@ -210,7 +210,7 @@
                      <td>                                           
                        <input type="radio" name="selektion">
                          <xsl:attribute name="value">
-                         <xsl:value-of select="../@identifier"/>/<xsl:value-of
+                         <xsl:value-of select="../@identifier"/>!<xsl:value-of
                                                                     select="."/>
                          </xsl:attribute>
                        </input>
@@ -227,7 +227,7 @@
                      <td>                                           
                        <input type="radio" name="selektion">
                          <xsl:attribute name="value">
-                         <xsl:value-of select="../@identifier"/>/<xsl:value-of
+                         <xsl:value-of select="../@identifier"/>!<xsl:value-of
                                                                     select="."/>
                          </xsl:attribute>
                        </input>
@@ -244,7 +244,7 @@
                      <td>                                           
                        <input type="radio" name="selektion">
                          <xsl:attribute name="value">
-                         <xsl:value-of select="../@identifier"/>/<xsl:value-of
+                         <xsl:value-of select="../@identifier"/>!<xsl:value-of
                                                                     select="."/>
                          </xsl:attribute>
                        </input>
@@ -293,19 +293,31 @@
                   <xsl:value-of select="$mainelement"/>
                 </xsl:attribute>
               </input>
+<table width="100%">
+<tr>
+<td bgcolor="green" title="Click here to proceed" style="cursor: pointer" width="20px">
+   <xsl:attribute name="onClick">
+       getSelectionId('<xsl:value-of select="$parent_authId"/>',
+                      '<xsl:value-of select="$parent_resourceKey"/>');
+   </xsl:attribute>                              
+</td>
+<td>
               Select a <xsl:value-of select="$mainelement"/> from the following:
               <br/>      
                 <xsl:for-each
                    select="//BrowserQuery/BrowserBody/ResultsList/result">
                   <input type="radio" name="selektion">
                     <xsl:attribute name="value">
-                      <xsl:value-of select="@identifier"/>
+                      <xsl:value-of select="@ToolIdentifier"/>
                     </xsl:attribute>
                   </input>             
                   <strong> <xsl:value-of select="@key"/> </strong>
                   <em> : <xsl:value-of select="@title"/></em>
                   <br/> 
                 </xsl:for-each>
+</td>
+</tr>
+</table>
               <input class="agActionButton" type="button" value="Select">
                 <xsl:attribute name="onClick">
                    getSelectionId('<xsl:value-of select="$parent_authId"/>',
