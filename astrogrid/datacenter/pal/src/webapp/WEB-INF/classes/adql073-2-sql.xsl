@@ -1,4 +1,9 @@
-<xsl:stylesheet xmlns="http://adql.ivoa.net/v0.73" xmlns:ad="http://adql.ivoa.net/v0.73" xmlns:q1="urn:nvo-region" xmlns:q2="urn:nvo-coords" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0">
+<xsl:stylesheet xmlns="http://adql.ivoa.net/v0.73"
+                xmlns:ad="http://adql.ivoa.net/v0.73"
+                xmlns:q1="urn:nvo-region"
+                xmlns:q2="urn:nvo-coords"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0">
    <!--
    - Stylesheet to convert ADQL version 0.7.3 to an SQL String
    - Version 1.0 - Initial Revision

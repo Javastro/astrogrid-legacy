@@ -7,9 +7,7 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 version="1.0">
 
-   <xsl:output method="text"/>
-
-   <xsl:template match="ad:Select">
+   <xsl:template match="Select">
       <xsl:text>SELECT </xsl:text>
       <xsl:apply-templates select="ad:OptionalAllOrDistinct"/>
       <xsl:apply-templates select="ad:OptionalTop"/>

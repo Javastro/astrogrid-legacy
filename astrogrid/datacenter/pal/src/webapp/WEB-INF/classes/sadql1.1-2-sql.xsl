@@ -142,11 +142,11 @@
     <xsl:text> ) </xsl:text>
 </xsl:template>
 
-<xsl:template name="parent">
+<!--xsl:template name="parent">
    <xsl:for-each select="./../name()">
       <xsl:apply-templates/>
    </xsl:for-each>
-</xsl:template>
+</xsl:template> -->
 
 <xsl:template match="Intersection">
     <xsl:text> (and </xsl:text>
