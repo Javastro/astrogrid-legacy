@@ -1,5 +1,5 @@
 /*
- $Id: StoreDelegate.java,v 1.1 2004/03/22 10:25:42 mch Exp $
+ $Id: StoreDelegate.java,v 1.2 2004/03/22 12:10:30 mch Exp $
 
  (c) Copyright...
  */
@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.User;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Agsl;
-import org.astrogrid.store.delegate.StoreDelegate;
 
 /**
  * Abstract class that implements some of the StoreClient methods in 'naive'
