@@ -1,0 +1,22 @@
+<Context path="@FILEMANAGER_WEBAPP@">
+    <Environment
+        name="org.astrogrid.filemanager.service.name"
+        override="false" type="java.lang.String"
+        value="@FILEMANAGER_NAME@"/>
+    <Environment
+        name="@FILEMANAGER_NAME@.service.ivorn"
+        override="false" type="java.lang.String"
+        value="@FILEMANAGER_IVORN@"/>
+    <Environment
+        name="@FILEMANAGER_NAME@.filestore.ivorn" description="Default FileStore"
+        override="false" type="java.lang.String"
+        value="@FILESTORE_IVORN@"/>
+    <Environment
+        name="@FILEMANAGER_NAME@.basedir"
+        override="false" type="java.lang.String"
+        value="@FILEMANAGER_REPO@"/>
+    <Environment
+        name="org.astrogrid.registry.result.version"
+        override="false" type="java.lang.String"
+        value="0.10"/>
+</Context>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<projectDescription>
+  <name>astrogrid-filemanager-deploy-script</name>
+  <comment>This project contains everything necessary to install the application, when run as a stand-alone ant script. This is then bundled into a jar for installation on a webserver from where it can be accessed by other applications.</comment>
+  <projects>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+      <arguments>
+      </arguments>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

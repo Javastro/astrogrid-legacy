@@ -1,0 +1,193 @@
+<project name="install" default="info" basedir=".">
+	<property file="default.properties"/>
+	<property name="temporary.dir" value="tmp"/>
+	<property name="filemanager.war" value="${maven.local.repo}/${astrogrid.groupId}/wars/${filemanager.war.name}"/>
+	<property name="local.filemanager.war" value="${basedir}/filemanager.war"/>
+	
+	<!--Public Targets-->
+
+	<target name="save-config" description="Save this configuration for future use">
+        <input addProperty="input.saveProperties.file" defaultvalue="${antigen.home}/filemanager-installer.properties">Enter a file name for saving your current settings</input>
+        <echoproperties destfile="${input.saveProperties.file}" prefix="input." description="This file can then be reused for hands-free operation"/>
+    	<property name="properties.saved" value="true"/>
+    </target>
+	
+	<target name="load-config" description="Load a previously saved configuration">
+    	<input addProperty="input.loadProperties.file" defaultvalue="${user.home}/filemanager-installer.properties">Enter the filename of your previously saved settings</input>
+    	<property file="${input.loadProperties.file}"/>
+    </target>
+
+	<target name="install" description="Install FileManager" depends="checkTomcat, download, deploy, check-installed-ok">
+	        <echo>***The filemanager has been successfully installed***</echo>
+	    	<property name="filemanager.installed" value="true"/>
+    </target>		
+	
+	<target name="register" description="Register this FileManager" depends="checkRegistry, get-registry-keys,set-context-path">
+		<echo>Registering the filemanager...</echo>
+		<echo>Registering ${input.filemanager.regkey} under authority ${input.filemanager.regauthority} with service URL ${filemanager.service.url}</echo>
+		<input addproperty="input.contact.name" defaultvalue="John Taylor">Please enter a contact name</input>
+		<input addproperty="input.contact.email" defaultvalue="jdt@roe.ac.uk">Please enter a contact email</input>		
+		<tempfile property="filemanager.regentry"/>
+		<filterset id="regfilter">
+            <filter token="REGAUTHORITY"   value="${input.filemanager.regauthority}"/>
+            <filter token="REGKEY" value="${input.filemanager.regkey}"/>
+            <filter token="SERVICEURL" value="${filemanager.service.url}"/>
+            <filter token="CONTACT_NAME" value="${input.contact.name}"/>
+            <filter token="CONTACT_EMAIL" value="${input.contact.email}"/>			
+        </filterset>
+
+		<copy file="registryentries/filemanager-v10.xml" tofile="${filemanager.regentry}">
+			<filterset refid="regfilter"/>
+		</copy>
+		<register-entry registry="${astrogrid.registry.update.endpoint}" data="${filemanager.regentry}"/>
+		<echo>This filemanager has been registered in ${astrogrid.registry.endpoint}</echo>
+	</target>
+	
+	<target name="remove" description="Remove FileManager" depends="checkTomcat,  undeploy, check-uninstalled-ok">
+    	<sleep seconds="10" description="Allow Tomcat to catch up"/>
+        <echo>***The filemanager has been successfully removed***</echo>
+    	<property name="filemanager.uninstalled" value="true"/>
+	</target>
+	
+	
+	<!--Private Targets -->
+	<target name="setup-repository" description="Initialise the filemanager repository" depends="get-working-dir">
+		<mkdir dir="${input.filemanager.working.dir}"/>		
+	</target>
+			
+	<target name="info">
+		<echo>filemanager installation script</echo>
+	</target>
+	
+	<target name="get-working-dir">
+		<input addproperty="input.filemanager.working.dir" defaultvalue="${antigen.home}/filemanager/repository">Please enter the location of your filemanager repository</input>
+	</target>
+		
+    <target name="checkTomcat" depends="fail-if-no-tomcat,get-tomcat-url">
+        <input addProperty="input.tomcat.manager.user" defaultvalue="admin"> Please enter the Tomcat manager username </input>
+        <input addProperty="input.tomcat.manager.pass" defaultvalue="admin"> Please enter the Tomcat manager password </input>
+        <echo>Attempting to contact Tomcat Manager...</echo>
+        <tempfile property="page.check"/>
+        <property name="tomcat.manager.url" value="${input.tomcat.url}/manager"/>
+        <get src="${tomcat.manager.url}" dest="${page.check}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}"/>
+        <echo>...OK</echo>
+    </target>	
+	
+	<target name="get-tomcat-url">
+		<input addProperty="input.tomcat.url" defaultvalue="http://127.0.0.1:8080">Please enter the URL of Tomcat on your system </input>
+	</target>
+
+	<target name="fail-if-no-tomcat">
+		<input addProperty="input.tomcat.present" validargs="yes,no"> Is Tomcat running on your system with the Manager app enabled? </input>
+        <condition property="tomcat.present.true">
+	            <equals arg1="${input.tomcat.present}" arg2="yes"/>
+        </condition>
+        <fail message="Please start Tomcat and retry the installation" unless="tomcat.present.true"/>
+	</target>
+	
+    <target name="download">
+    	<echo>Downloading filemanager software....this may take some time...</echo>
+    	<mkdir dir="${maven.local.repo}/${astrogrid.groupId}/wars/"/>
+        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${filemanager.war.name}" dest="${filemanager.war}" verbose="true" usetimestamp="true"/>
+		<!--Due to firewall, assume war bundled with installer-->
+    	<!--copy file="${filemanager.war.name}" toFile="${filemanager.war}"/-->   	
+    </target>
+
+	
+    <target name="deploy" depends="createTmpDir,checkTomcat,download,update-war,set-context-path">
+        <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
+            path="${input.filemanager.contextpath}" war="${local.filemanager.war}" />
+    </target>
+	
+	<target name="set-context-path" depends="get-tomcat-url">
+		<input addproperty="input.filemanager.contextpath" defaultvalue="/astrogrid-filemanager">Please enter the context path on the webserver for filemanager</input>
+		<property name="filemanager.service.url" value="${input.tomcat.url}${input.filemanager.contextpath}/services/FileManagerPort"/>
+	</target>
+	
+    <target name="undeploy" depends="checkTomcat,set-context-path">
+        <tomcat-remove url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
+            path="${input.filemanager.contextpath}"  />
+    </target>   
+
+    <target name="update-war" depends="download, input-filemanager-settings, set-context-path, get-registry-keys,get-working-dir">
+        <filterset id="myfilter">
+            <filter token="FILEMANAGER_NAME"   value="${input.filemanager.name}"/>
+            <filter token="FILEMANAGER_WEBAPP" value="${input.filemanager.contextpath}"/>
+            <filter token="FILEMANAGER_IVORN"   value="${filemanager.ivorn}"/>
+            <filter token="FILESTORE_IVORN"   value="${input.filestore.ivorn}"/>        	
+            <filter token="FILEMANAGER_REPO" value="${input.filemanager.working.dir}"/>        	
+        </filterset>
+    	<echo>This filemanager is being installed with the following settings:</echo>
+    	<echo>Name: ${input.filemanager.name}</echo>
+    	<echo>Webapp: ${input.filemanager.contextpath}</echo>
+    	<echo>IVORN: ${filemanager.ivorn}</echo>
+    	<echo>Default FileStore ivorn: ${input.filestore.ivorn}</echo>    		
+    	<echo>FileManager Repository ${input.filemanager.working.dir}</echo>
+        <copy todir="${temporary.dir}/filemanager">
+            <filterset refid="myfilter"/>
+            <fileset dir="context" />
+        </copy>
+        <copy file="${filemanager.war}" tofile="${local.filemanager.war}"/>
+    	<!--update the context.xml-->
+        <war update="yes" destfile="${local.filemanager.war}">
+            <metainf dir="${temporary.dir}/filemanager" />
+        </war>
+    </target>
+
+	<target name="get-registry-keys">
+		<input addproperty="input.filemanager.regauthority" defaultvalue="org.astrogrid.localhost">Please enter the Authority under which this filemanager is/will be registered.</input>
+		<input addproperty="input.filemanager.regkey" defaultvalue="filemanager">Please enter the registry key for this filemanager</input>
+		<property name="filemanager.ivorn" value="ivo://${input.filemanager.regauthority}/${input.filemanager.regkey}"/>
+		<echo>IVORN for this filemanager is ${filemanager.ivorn}</echo>
+	</target>
+
+	<target name="input-filemanager-settings">
+		<input addproperty="input.filemanager.name" defaultvalue="org.astrogrid.filemanager">Please enter the name of this filemanager</input>
+		<input addproperty="input.filestore.ivorn" defaultvalue="ivo://org.astrogrid.localhost/filestore">Please enter the ivorn of a default FileStore for this FileManager</input>		
+	</target>
+	    
+    <target name="checkRegistry">
+        <input addProperty="input.astrogrid.registry.endpoint" defaultvalue="http://127.0.0.1:8080/astrogrid-registry-SNAPSHOT/">Please enter the URL of your registry</input>
+    	<property name="astrogrid.registry.endpoint" value="${input.astrogrid.registry.endpoint}"/>
+    	<property name="astrogrid.registry.update.endpoint" value="${astrogrid.registry.endpoint}${astrogrid.registry.update.offset}"/>
+        <echo>Attempting to contact the registry...</echo>
+        <tempfile property="page.check"/>
+        <get src="${astrogrid.registry.update.endpoint}" dest="${page.check}"/>
+        <echo>...OK</echo>
+    </target>
+    
+    	
+	<target name="check-installed-ok" depends="checkTomcat">
+    	<waitfor maxwait="30" maxwaitunit="second" checkevery="2000" timeoutproperty="installation.failed">
+    	    <http url="${input.tomcat.url}${input.filemanager.contextpath}"/>
+    	</waitfor>
+    	<fail if="installation.failed">Installation failed for some reason.  Please retry</fail>
+	</target>
+	
+	<target name="check-uninstalled-ok" depends="checkTomcat">
+    	<waitfor maxwait="6" maxwaitunit="second" checkevery="2000" timeoutproperty="uninstallation.failed">
+    	    <http url="${input.tomcat.url}${input.filemanager.contextpath}"/>
+    	</waitfor>
+    	<fail unless="uninstallation.failed">Uninstallation failed for some reason.  Please retry</fail>
+	</target>	
+	    
+    <target name="createTmpDir">
+        <delete dir="${temporary.dir}"/>
+        <mkdir dir="${temporary.dir}"/>
+    </target>
+ 
+
+	
+	<!-- Configure the custom Ant tasks for the Manager application -->
+    <taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" />
+    <taskdef name="tomcat-install" classname="org.apache.catalina.ant.InstallTask" />
+    <taskdef name="tomcat-list" classname="org.apache.catalina.ant.ListTask" />
+    <taskdef name="tomcat-reload" classname="org.apache.catalina.ant.ReloadTask" />
+    <taskdef name="tomcat-remove" classname="org.apache.catalina.ant.RemoveTask" />
+    <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" />
+    <taskdef name="tomcat-roles" classname="org.apache.catalina.ant.RolesTask" />
+    <taskdef name="tomcat-start" classname="org.apache.catalina.ant.StartTask" />
+    <taskdef name="tomcat-stop" classname="org.apache.catalina.ant.StopTask" />
+    <taskdef name="tomcat-undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+    <taskdef name="register-entry" classname="org.astrogrid.deployment.RegistryLoaderTask"/>
+</project>
