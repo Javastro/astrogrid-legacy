@@ -13,6 +13,8 @@ package org.astrogrid.jes.job;
 import org.w3c.dom.* ;
 import org.apache.log4j.Logger;
 import org.astrogrid.jes.jobcontroller.*;
+// import org.astrogrid.jes.JES ;
+import org.astrogrid.Configurator ;
 // import org.astrogrid.jes.i18n.*;
 
 
@@ -23,6 +25,9 @@ public class JobStep {
 	
 	private static Logger 
 		logger = Logger.getLogger( JobStep.class ) ;
+        
+    private final static String 
+        SUBCOMPONENT_NAME = Configurator.getClassName( Job.class );                          
 		
 	public static  final String
 		STATUS_INITIALIZED = "INITIALIZED",  // Created but not yet running

@@ -11,8 +11,9 @@
 package org.astrogrid.jes.job;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.jes.i18n.*;
+import org.astrogrid.i18n.*;
 import org.astrogrid.jes.jobcontroller.*;
+import org.astrogrid.Configurator ;
 import org.w3c.dom.* ;
 
 /**
@@ -36,6 +37,9 @@ public class Table {
 	
 	private static Logger 
 		logger = Logger.getLogger( Table.class ) ;
+        
+    private final static String 
+        SUBCOMPONENT_NAME = Configurator.getClassName( Table.class );                 
 		
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_TABLE = "AGJESE00620" ;
@@ -61,8 +65,9 @@ public class Table {
 			setName(tableElement.getAttribute( SubmissionRequestDD.TABLE_NAME_ATTR )) ;			
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_TABLE ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_TABLE 
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex );    		
 		}

@@ -10,15 +10,16 @@
  */
 package org.astrogrid.jes.jobmonitor;
 
-import org.astrogrid.jes.i18n.*;
+import org.astrogrid.jes.*;
+import org.astrogrid.i18n.*;
 
 public class JobMonitorException extends JesException {
 
-    public JobMonitorException( Message message ) {
+    public JobMonitorException( AstroGridMessage message ) {
     	super( message ) ;
     }
 
-    public JobMonitorException( Message message, Exception exception ) {
+    public JobMonitorException( AstroGridMessage message, Exception exception ) {
     	super( message, exception ) ;
     }
      

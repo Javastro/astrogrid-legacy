@@ -13,9 +13,10 @@ package org.astrogrid.jes.impl;
 import org.astrogrid.jes.job.Job ;
 import org.astrogrid.jes.job.JobStep ;
 import org.astrogrid.jes.job.JobException ;
-import org.astrogrid.jes.jobcontroller.JobController ;
+import org.astrogrid.jes.JES ;
 import org.astrogrid.jes.jobcontroller.SubmissionRequestDD ;
-import org.astrogrid.jes.i18n.*;
+import org.astrogrid.i18n.*;
+import org.astrogrid.Configurator ;
 import org.apache.log4j.Logger;
 
 import org.w3c.dom.* ;
@@ -39,6 +40,9 @@ public class JobImpl extends Job {
 	
 	private static Logger 
 		logger = Logger.getLogger( JobImpl.class ) ;
+        
+    private final static String 
+        SUBCOMPONENT_NAME = Configurator.getClassName( JobFactoryImpl.class );                
 		
 	private static String
 		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGDTCE00160" ,
@@ -130,8 +134,9 @@ public class JobImpl extends Job {
 */			
 		}
 		catch( Exception ex ) {		
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			// We must have at least the semblance of a primary key for the Job entity...    
 			if( (this.jobURN == null) || (this.jobURN.equals("")) ) {
@@ -152,7 +157,8 @@ public class JobImpl extends Job {
 			if( preparedStatement == null ) {
 				Object[]
 					inserts = new Object[1] ;
-			 	inserts[0] = JobController.getProperty( JobFactoryImpl.JOB_TABLENAME ) ;
+			 	inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOB
+                                            , JES.JOB_CATEGORY ) ;
 				String
 				     updateString = MessageFormat.format( JobFactoryImpl.JOB_INSERT_TEMPLATE, inserts ) ; 									     			
 				preparedStatement = getConnection().prepareStatement( updateString ) ;		
@@ -188,8 +194,9 @@ public class JobImpl extends Job {
 			}
 		}
 		catch( SQLException e ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), e ) ;
 			throw new JobException( message, e );
 		}

@@ -10,15 +10,16 @@
  */
 package org.astrogrid.jes.jobscheduler;
 
-import org.astrogrid.jes.i18n.*;
+import org.astrogrid.jes.*;
+import org.astrogrid.i18n.*;
 
 public class JobSchedulerException extends JesException {
 
-    public JobSchedulerException( Message message ) {
+    public JobSchedulerException( AstroGridMessage message ) {
     	super( message ) ;
     }
 
-    public JobSchedulerException( Message message, Exception exception ) {
+    public JobSchedulerException( AstroGridMessage message, Exception exception ) {
     	super( message, exception ) ;
     }
      

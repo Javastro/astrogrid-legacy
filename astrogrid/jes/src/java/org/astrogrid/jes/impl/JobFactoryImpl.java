@@ -11,9 +11,10 @@
 package org.astrogrid.jes.impl;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.jes.jobcontroller.JobController;
-import org.astrogrid.jes.i18n.*;
+import org.astrogrid.i18n.*;
 import org.astrogrid.jes.job.* ;
+import org.astrogrid.jes.JES ;
+import org.astrogrid.Configurator ;
 
 import org.w3c.dom.* ;
 
@@ -29,7 +30,7 @@ import java.text.MessageFormat ;
 // import java.util.Date ;
 import java.util.HashSet ;
 import java.util.Iterator ;
-import java.lang.Math ;
+// import java.lang.Math ;
 
 
 public class JobFactoryImpl implements JobFactory {
@@ -39,17 +40,10 @@ public class JobFactoryImpl implements JobFactory {
 	
 	private static Logger 
 		logger = Logger.getLogger( JobFactoryImpl.class ) ;
+        
+    private final static String 
+        SUBCOMPONENT_NAME = Configurator.getClassName( JobFactoryImpl.class );        
 	    
-	public static final String
-		JOB_DATASOURCE_LOCATION = "JOB.DATASOURCE",
-		JOB_TABLENAME = "JOB.TABLENAME",
-	    JOBSTEP_TABLENAME = "JOBSTEP.TABLENAME",
-	    QUERY_TABLENAME = "QUERY.TABLENAME",
-	    CATALOG_TABLENAME = "CATALOG.TABLENAME",
-	    TABLE_TABLENAME = "TABLE.TABLENAME",
-	    SERVICE_TABLENAME = "SERVICE.TABLENAME",
-	    JES_ID = "JES.ID" ;
-		
 	public static final String
 		JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, JOBXML ) " +
 												"VALUES ( ?, ?, ?, ?, ?, ?, ? )" ,	                          
@@ -116,7 +110,14 @@ public class JobFactoryImpl implements JobFactory {
 		COL_SERVICE_STEPNUMBER = 2,
 		COL_SERVICE_CATALOGNAME = 3,
 		COL_SERVICE_SERVICENAME = 4,
-        COL_SERVICE_SERVICEURL = 5 ;      ;     
+        COL_SERVICE_SERVICEURL = 5 ;      
+        
+    public static final String
+        JOBID_SELECT_TEMPLATE = "SELECT ASSIGNED FROM {0}",
+        JOBID_INSERT_TEMPLATE = "INSERT INTO {0} ( ASSIGNED ) VALUES ( ''{1}'' )" ; 
+        
+    public static final int
+        COL_JOBID_ASSIGNED = 1 ;                
     
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_DATASOURCE            = "AGJESE00150",
@@ -135,32 +136,134 @@ public class JobFactoryImpl implements JobFactory {
         ASTROGRIDERROR_TABLE_NOT_FOUND                            = "AGJESE00770",
         ASTROGRIDERROR_SERVICE_NOT_FOUND                          = "AGJESE00780",       
         ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST            = "AGJESE00790", 
-        ASTROGRIDERROR_UNABLE_TO_COMPLETE_UPDATE_REQUEST          = "AGJESE00800" ;
-	    
+        ASTROGRIDERROR_UNABLE_TO_COMPLETE_UPDATE_REQUEST          = "AGJESE00800",
+        ASTROGRIDERROR_JOBID_SINGLETON_ROW_FAULT                  = "AGJESE00810",
+        ASTROGRIDERROR_UNEXPECTED_SQL_ERROR_ON_TABLE              = "AGJESE00820" ;
+    
 	private static DataSource
 		datasource = null ;
 
-	//JBL Note: this is a fudge for the moment		
-	private static int
-	    uniqueID =  ( new Double( Math.random() * Integer.MAX_VALUE ) ).intValue() ;
+
+    private static int
+        assignedLimit = -1,
+	    uniqueID = 0;
 	    
 	private Connection
 		connection = null ;
 
-    //JBL Note: this is a fudge for the moment
-    private int generateUniqueInt() {
+
+    private synchronized static int generateUniqueInt( JobFactoryImpl jobFactory ) throws JobException {
+        if( TRACE_ENABLED ) logger.debug( "generateUniqueInt(): entry") ;
+          
+        try {          
+            if( uniqueID >= assignedLimit ) {
+                updateAssignedLimit( jobFactory ) ;
+            }
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "generateUniqueInt(): exit") ;            
+        }
     	
-    	int
-    	    retValue = 0 ;
-    	
-    	synchronized ( JobFactoryImpl.class ) {
-    		retValue = uniqueID++ ;
-    	}
-    	
-    	return retValue ;
+    	return ++uniqueID ;
     	
     } // end of generateUniqueInt()
+    
+    
+    private static void updateAssignedLimit( JobFactoryImpl jobFactory ) throws JobException {
+        
+        Statement   
+           statement = null ;
+        ResultSet
+           rs = null ;
+           
+        try {           
+            // Attempt to retrieve the singleton row containing assigned values...
+            rs = updateAssignedLimit_Retrieve( statement ) ;
+            
+            if( !rs.isBeforeFirst() ) {
+                // First time through for this system!!!
+                // Initialize here. Insert the system's one and only row...
+                try { rs.close(); } catch( SQLException sex ) {;} 
+                try { statement.close(); } catch( SQLException sex ) {;} 
+                statement = jobFactory.getConnection().createStatement() ;
+                updateAssignedLimit_Insert( statement ) ;                
+            }
+            else {
+                // Update our one and only row...    
+                updateAssignedLimit_Update( rs ) ;
+            } 
+                           
+        }
+        catch( SQLException ex ) {
+            AstroGridMessage
+                message = new AstroGridMessage( ASTROGRIDERROR_UNEXPECTED_SQL_ERROR_ON_TABLE
+                                              , SUBCOMPONENT_NAME
+                                              , JES.getProperty( JES.JOB_TABLENAME_JOBID, JES.JOB_CATEGORY ) ) ;
+            logger.error( message.toString(), ex ) ;
+            throw new JobException( message, ex ) ;         
+        }
+        finally {
+            if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
+            if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }     
+        }                                                                              
+       
+    }
+    
+    
+    private static ResultSet updateAssignedLimit_Retrieve( Statement statement ) throws SQLException {
+        
+        Object []
+           inserts = new Object[1] ;
+        inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOBID
+                                    , JES.JOB_CATEGORY ) ;  
+        String
+           selectString = MessageFormat.format( JOBID_SELECT_TEMPLATE, inserts ) ;  
+        logger.debug( "Assigned limit select: " + selectString ) ;        
 
+        return statement.executeQuery( selectString );
+                 
+    } // end of updateAssignedLimit_Retrieve()
+    
+    
+    private static ResultSet updateAssignedLimit_Insert( Statement statement ) throws SQLException {
+        
+        Object []
+           inserts = new Object[1] ;
+        inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOBID
+                                    , JES.JOB_CATEGORY ) ;  
+        String
+           insertString = MessageFormat.format( JOBID_INSERT_TEMPLATE, inserts ) ;  
+        logger.debug( "Assigned limit insert: " + insertString ) ;        
+
+        return statement.executeQuery( insertString );
+                 
+    } // end of updateAssignedLimit_Insert()
+    
+    
+    private static void updateAssignedLimit_Update( ResultSet rs ) throws SQLException, JobException {
+        
+        rs.next() ;  // position on the (hopefully) one and only row.
+        
+        // The range is set within a configuration property...
+         int 
+             range = new Integer( JES.getProperty( JES.JOB_ID_BOOKABLERANGE
+                                                 , JES.JOB_CATEGORY ) ).intValue() ;          
+        uniqueID = rs.getInt( COL_JOBID_ASSIGNED ) ;
+        assignedLimit = uniqueID + range ;
+                
+        rs.updateInt( COL_JOBID_ASSIGNED, assignedLimit ) ;
+                
+        if( rs.next() == true ) {
+            // We have multiple rows!!! This should be impossible...
+            AstroGridMessage
+               message = new AstroGridMessage( ASTROGRIDERROR_JOBID_SINGLETON_ROW_FAULT
+                                             , SUBCOMPONENT_NAME
+                                             , JES.getProperty( JES.JOB_TABLENAME_JOBID, JES.JOB_CATEGORY ) ) ;
+            throw new JobException( message ) ;
+        }    
+               
+    } // end of updateAssignedLimit_Update()
+    
 
 	public static DataSource getDataSource() throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "getDataSource(): entry") ; 
@@ -176,7 +279,8 @@ public class JobFactoryImpl implements JobFactory {
 				   if( datasource == null ){
 				   	   InitialContext
 					      initialContext = new InitialContext() ;
-					   datasourceName = JobController.getProperty( JOB_DATASOURCE_LOCATION ) ;
+					   datasourceName = JES.getProperty( JES.JOB_DATASOURCE
+                                                       , JES.JOB_CATEGORY ) ;
 					   datasource = (DataSource) initialContext.lookup( datasourceName ) ;
 				   }
 			   } // end synchronized
@@ -184,9 +288,10 @@ public class JobFactoryImpl implements JobFactory {
 			
 		}
 		catch( NamingException ne ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_DATASOURCE
-									 , (datasourceName != null ? datasourceName : "") ) ;			                     
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_DATASOURCE
+                                              , SUBCOMPONENT_NAME
+									          , (datasourceName != null ? datasourceName : "") ) ;			                     
 			logger.error( message.toString(), ne ) ;
 			throw new JobException( message, ne );
 		}
@@ -209,8 +314,9 @@ public class JobFactoryImpl implements JobFactory {
 			}
 		}
 		catch( SQLException e) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), e ) ;
 			throw new JobException( message, e );
 		}
@@ -253,8 +359,9 @@ public class JobFactoryImpl implements JobFactory {
 			createJobSteps( job ) ;
     	}
     	catch( SQLException sex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT 
+                                              , SUBCOMPONENT_NAME                ) ;
 			logger.error( message.toString(), sex ) ;
 			throw new JobException( message, sex );    		
     	}
@@ -277,7 +384,8 @@ public class JobFactoryImpl implements JobFactory {
 		try {
 			Object []
 			   inserts = new Object[3] ;
-			inserts[0] = JobController.getProperty( JOB_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOB
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = job.getStatus() ;
 			inserts[2] = job.getId() ;
 
@@ -289,8 +397,9 @@ public class JobFactoryImpl implements JobFactory {
 			updateJobSteps( job ) ;
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_UPDATE_REQUEST ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_UPDATE_REQUEST
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;   		
 		}
 		finally {
@@ -314,7 +423,8 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[2] ;
-			inserts[0] = JobController.getProperty( JOB_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOB
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = jobURN ;
 
 			String
@@ -325,8 +435,10 @@ public class JobFactoryImpl implements JobFactory {
 			
 			if( !rs.isBeforeFirst() ) {
 				// Whoops! Job not found when it should have been...
-				Message
-				   message = new Message( ASTROGRIDERROR_JOB_NOT_FOUND, jobURN ) ;
+				AstroGridMessage
+				   message = new AstroGridMessage( ASTROGRIDERROR_JOB_NOT_FOUND
+                                                 , SUBCOMPONENT_NAME
+                                                 , jobURN ) ;
 				throw new NotFoundException( message ) ;
 			}
 			else {
@@ -344,8 +456,10 @@ public class JobFactoryImpl implements JobFactory {
 				
 				if( rs.next() == true ) {
 					// We have a duplicate Job!!! This should be impossible...
-					Message
-					   message = new Message( ASTROGRIDERROR_DUPLICATE_JOB_FOUND, jobURN ) ;
+					AstroGridMessage
+					   message = new AstroGridMessage( ASTROGRIDERROR_DUPLICATE_JOB_FOUND
+                                                     , SUBCOMPONENT_NAME
+                                                     , jobURN ) ;
 					throw new DuplicateFoundException( message ) ;
 				}
 
@@ -353,8 +467,9 @@ public class JobFactoryImpl implements JobFactory {
 						   
 		}
 		catch( SQLException ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex ) ;   		
 		}
@@ -383,7 +498,8 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[2] ;
-			inserts[0] = JobController.getProperty( JOB_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOB
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = criteriaString ;
 
 			String
@@ -394,8 +510,10 @@ public class JobFactoryImpl implements JobFactory {
 			
 			if( !rs.isBeforeFirst() ) {
 				// Whoops! No Jobs found when perhaps there should have been...
-				Message
-				   message = new Message( ASTROGRIDERROR_JOBS_NOT_FOUND, criteriaString  ) ; 
+				AstroGridMessage
+				   message = new AstroGridMessage( ASTROGRIDERROR_JOBS_NOT_FOUND
+                                                 , SUBCOMPONENT_NAME
+                                                 , criteriaString  ) ; 
 				throw new NotFoundException( message ) ;
 			}
 			else {
@@ -425,8 +543,9 @@ public class JobFactoryImpl implements JobFactory {
 						   
 		}
 		catch( SQLException ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ; 
 			throw new JobException( message, ex ) ;  		
 		}
@@ -451,7 +570,8 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[2] ;
-			inserts[0] = JobController.getProperty( JOB_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOB
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = job.getId() ;
 
 			String
@@ -462,8 +582,9 @@ public class JobFactoryImpl implements JobFactory {
 			   
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT 
+                                              , SUBCOMPONENT_NAME) ;
 			logger.error( message.toString(), ex ) ;		
 		}
 		finally {
@@ -499,13 +620,17 @@ public class JobFactoryImpl implements JobFactory {
 		}
 		catch( SQLException sex ) { 
 			
-			Message
+			AstroGridMessage
 				message ;
 			if( bCommit ) {
-				message = new Message( ASTROGRIDERROR_FAILED_TO_COMMIT, sex ) ;
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_COMMIT
+                                              , SUBCOMPONENT_NAME
+                                              , sex ) ;
 			}
 			else{
-				message = new Message( ASTROGRIDERROR_FAILED_TO_ROLLBACK, sex ) ;
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_ROLLBACK
+                                              , SUBCOMPONENT_NAME
+                                              , sex ) ;
 			}
 			logger.error( message.toString() ) ; 
 			throw new JobException( message ) ;	
@@ -516,7 +641,8 @@ public class JobFactoryImpl implements JobFactory {
 				if( connection != null ) connection.close() ; 
 			} 
 			catch( SQLException e ) { 
-				logger.error( new Message( ASTROGRIDERROR_FAILED_TO_CLOSE_CONNECTION ) ) ; 
+				logger.error( new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CLOSE_CONNECTION
+                                                  , SUBCOMPONENT_NAME ) ) ; 
 			}
 			connection = null ;
 			if( TRACE_ENABLED ) logger.debug( "end(): exit") ;   	
@@ -563,7 +689,8 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[6] ;
-			inserts[0] = JobController.getProperty( JOBSTEP_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOBSTEP
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = jobStep.getParent().getId() ;            // foreign key to parent
 			inserts[2] = jobStep.getStepNumber() ;                // unique for step within job
 			inserts[3] = jobStep.getName() ;
@@ -578,8 +705,9 @@ public class JobFactoryImpl implements JobFactory {
 			createQuery( jobStep.getQuery() ) ;
 		}
 		catch( SQLException sex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), sex ) ;
 			throw new JobException( message, sex );    		
 		}
@@ -605,7 +733,8 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[2] ;
-			inserts[0] = JobController.getProperty( JOBSTEP_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOBSTEP
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = job.getId() ;
 			String
 			   selectString = MessageFormat.format( JOBSTEP_SELECT_TEMPLATE, inserts ) ; 	
@@ -615,8 +744,10 @@ public class JobFactoryImpl implements JobFactory {
 			
 			if( !rs.isBeforeFirst() ) {
 				// Whoops! JobStep not found when it should have been...
-				Message
-				   message = new Message( ASTROGRIDERROR_JOBSTEP_NOT_FOUND, job.getId() ) ;
+				AstroGridMessage
+				   message = new AstroGridMessage( ASTROGRIDERROR_JOBSTEP_NOT_FOUND
+                                                 , SUBCOMPONENT_NAME
+                                                 , job.getId() ) ;
 				throw new NotFoundException( message ) ;
 			}
 			else {
@@ -637,8 +768,9 @@ public class JobFactoryImpl implements JobFactory {
 						   
 		}
 		catch( SQLException ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex ) ;   		
 		}
@@ -688,7 +820,8 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[5] ;
-			inserts[0] = JobController.getProperty( JOBSTEP_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOBSTEP
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = jobStep.getStatus() ;
 			inserts[2] = jobStep.getComment() ;
 			inserts[3] = jobStep.getParent().getId() ;
@@ -699,11 +832,11 @@ public class JobFactoryImpl implements JobFactory {
 			logger.debug( "Update JobStep: " + updateString ) ;			
 			statement = getConnection().createStatement() ;
 			statement.executeUpdate( updateString );
-			createQuery( jobStep.getQuery() ) ;
 		}
 		catch( SQLException sex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_UPDATE_REQUEST ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_UPDATE_REQUEST
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), sex ) ;
 			throw new JobException( message, sex );    		
 		}
@@ -725,7 +858,8 @@ public class JobFactoryImpl implements JobFactory {
 			
 			 Object []
 				inserts = new Object[3] ;
-			 inserts[0] = JobController.getProperty( QUERY_TABLENAME ) ;
+			 inserts[0] = JES.getProperty( JES.JOB_TABLENAME_QUERY
+                                         , JES.JOB_CATEGORY ) ;
 			 inserts[1] = query.getParent().getParent().getId() ;
 			 inserts[2] = query.getParent().getStepNumber() ;
 
@@ -738,8 +872,9 @@ public class JobFactoryImpl implements JobFactory {
 
 		 }
 		 catch( SQLException sex ) {
-			 Message
-				 message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			 AstroGridMessage
+				 message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+                                               , SUBCOMPONENT_NAME ) ;
 			 logger.error( message.toString(), sex ) ;
 			 throw new JobException( message, sex );    		
 		 }
@@ -765,7 +900,8 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[3] ;
-			inserts[0] = JobController.getProperty( QUERY_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_QUERY
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = jobStep.getParent().getId() ;
 			inserts[2] = jobStep.getStepNumber() ;
 
@@ -778,10 +914,11 @@ public class JobFactoryImpl implements JobFactory {
 			if( !rs.isBeforeFirst() ) {
 				// Whoops! Query not found when it should have been...
 				// AGJESE00750=:JobFactoryImpl: Query not found for Job with URN [{0}] and JobStep number [{1}]
-				Message
-				   message = new Message( ASTROGRIDERROR_QUERY_NOT_FOUND
-				                        , jobStep.getParent().getId()
-				                        , jobStep.getStepNumber() ) ;
+				AstroGridMessage
+				   message = new AstroGridMessage( ASTROGRIDERROR_QUERY_NOT_FOUND
+                                                 , SUBCOMPONENT_NAME
+				                                 , jobStep.getParent().getId()
+				                                 , jobStep.getStepNumber() ) ;
 				throw new NotFoundException( message ) ;
 			}
 			else {
@@ -796,10 +933,11 @@ public class JobFactoryImpl implements JobFactory {
 					
 				if( rs.next() == true ) {
 					// We have a duplicate Query!!! This should be impossible...
-					Message
-					   message = new Message( ASTROGRIDERROR_DUPLICATE_QUERY_FOUND
-											, jobStep.getParent().getId()
-                                            , jobStep.getStepNumber() ) ;
+					AstroGridMessage
+					   message = new AstroGridMessage( ASTROGRIDERROR_DUPLICATE_QUERY_FOUND
+                                                     , SUBCOMPONENT_NAME
+											         , jobStep.getParent().getId()
+                                                     , jobStep.getStepNumber() ) ;
 					throw new DuplicateFoundException( message ) ;
 				}
 
@@ -807,8 +945,9 @@ public class JobFactoryImpl implements JobFactory {
 						   
 		}
 		catch( SQLException ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex ) ;   		
 		}
@@ -853,7 +992,8 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[4] ;
-			inserts[0] = JobController.getProperty( CATALOG_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_CATALOG
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = catalog.getParent().getParent().getParent().getId() ;            
 			inserts[2] = catalog.getParent().getParent().getStepNumber() ;
 			inserts[3] = catalog.getName() ;
@@ -868,8 +1008,9 @@ public class JobFactoryImpl implements JobFactory {
 			createServices( catalog ) ;
 		}
 		catch( SQLException sex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), sex ) ;
 			throw new JobException( message, sex );    		
 		}
@@ -895,7 +1036,8 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[3] ;
-			inserts[0] = JobController.getProperty( CATALOG_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_CATALOG
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = query.getParent().getParent().getId() ;
 			inserts[2] = query.getParent().getStepNumber() ;
 
@@ -907,10 +1049,11 @@ public class JobFactoryImpl implements JobFactory {
 			
 			if( !rs.isBeforeFirst() ) {
 				// Whoops! Catalog not found when it should have been...
-				Message
-				   message = new Message( ASTROGRIDERROR_CATALOG_NOT_FOUND
-				                        , query.getParent().getParent().getId()
-				                        , query.getParent().getStepNumber() ) ;
+				AstroGridMessage
+				   message = new AstroGridMessage( ASTROGRIDERROR_CATALOG_NOT_FOUND
+                                                 , SUBCOMPONENT_NAME
+				                                 , query.getParent().getParent().getId()
+				                                 , query.getParent().getStepNumber() ) ;
 				throw new NotFoundException( message ) ;
 			}
 			else {
@@ -929,8 +1072,9 @@ public class JobFactoryImpl implements JobFactory {
 						   
 		}
 		catch( SQLException ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex ) ;   		
 		}
@@ -993,7 +1137,8 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[5] ;
-			inserts[0] = JobController.getProperty( TABLE_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_TABLE
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = table.getParent().getParent().getParent().getParent().getId() ;  // JobURN
 			inserts[2] = table.getParent().getParent().getParent().getStepNumber() ;      // step number
 			inserts[3] = table.getParent().getName() ;                                    // catalog name
@@ -1006,8 +1151,9 @@ public class JobFactoryImpl implements JobFactory {
 			statement.executeUpdate( updateString );
 		}
 		catch( SQLException sex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), sex ) ;
 			throw new JobException( message, sex );    		
 		}
@@ -1029,7 +1175,8 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[6] ;
-			inserts[0] = JobController.getProperty( SERVICE_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_SERVICE
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = service.getParent().getParent().getParent().getParent().getId() ; // JobURN  
 			inserts[2] = service.getParent().getParent().getParent().getStepNumber() ;     // step number
 			inserts[3] = service.getParent().getName() ;                                   // catalog name
@@ -1043,8 +1190,9 @@ public class JobFactoryImpl implements JobFactory {
 			statement.executeUpdate( updateString );
 		}
 		catch( SQLException sex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), sex ) ;
 			throw new JobException( message, sex );    		
 		}
@@ -1057,7 +1205,7 @@ public class JobFactoryImpl implements JobFactory {
 	
 		
 	 
-	private String generateUniqueJobURN( Job job )  {
+	private String generateUniqueJobURN( Job job ) throws JobException {
 		
 	    StringBuffer
 	        buffer = new StringBuffer( 64 ) ;
@@ -1067,9 +1215,9 @@ public class JobFactoryImpl implements JobFactory {
 	       .append( ':' )
 	       .append( job.getCommunity() )
 	       .append( ':' )
-	       .append( JobController.getProperty( JES_ID ) )
+	       .append( JES.getProperty( JES.JES_ID, JES.JES_CATEGORY ) )
 	       .append( ':' )
-	       .append( generateUniqueInt() ) ;
+	       .append( generateUniqueInt( this ) ) ;
 	       
 		return buffer.toString() ;
 		
@@ -1090,7 +1238,8 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[4] ;
-			inserts[0] = JobController.getProperty( TABLE_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_TABLE
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = catalog.getParent().getParent().getParent().getId() ;
 			inserts[2] = catalog.getParent().getParent().getStepNumber() ;
 			inserts[3] = catalog.getName() ;			
@@ -1103,12 +1252,12 @@ public class JobFactoryImpl implements JobFactory {
 			
 			if( !rs.isBeforeFirst() ) {
 				// Whoops! Table not found when it should have been...
-				Message
-				   message = new Message( ASTROGRIDERROR_TABLE_NOT_FOUND
-				                        , catalog.getName()
-										, catalog.getParent().getParent().getParent().getId()
-										, catalog.getParent().getParent().getStepNumber() ) ;
-				throw new NotFoundException( message ) ;
+//				Message
+//				   message = new Message( ASTROGRIDERROR_TABLE_NOT_FOUND
+//				                        , catalog.getName()
+//										, catalog.getParent().getParent().getParent().getId()
+//										, catalog.getParent().getParent().getStepNumber() ) ;
+//				throw new NotFoundException( message ) ;
 			}
 			else {
 				
@@ -1124,8 +1273,9 @@ public class JobFactoryImpl implements JobFactory {
 						   
 		}
 		catch( SQLException ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex ) ;   		
 		}
@@ -1152,7 +1302,8 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[4] ;
-			inserts[0] = JobController.getProperty( SERVICE_TABLENAME ) ;
+			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_SERVICE
+                                        , JES.JOB_CATEGORY ) ;
 			inserts[1] = catalog.getParent().getParent().getParent().getId() ;
 			inserts[2] = catalog.getParent().getParent().getStepNumber() ;
 			inserts[3] = catalog.getName() ;			
@@ -1165,11 +1316,12 @@ public class JobFactoryImpl implements JobFactory {
 			
 			if( !rs.isBeforeFirst() ) {
 				// Whoops! Service not found when it should have been...
-				Message
-				   message = new Message( ASTROGRIDERROR_SERVICE_NOT_FOUND
-										, catalog.getName()
-										, catalog.getParent().getParent().getParent().getId()
-										, catalog.getParent().getParent().getStepNumber() ) ;
+				AstroGridMessage
+				   message = new AstroGridMessage( ASTROGRIDERROR_SERVICE_NOT_FOUND
+                                                 , SUBCOMPONENT_NAME
+										         , catalog.getName()
+										         , catalog.getParent().getParent().getParent().getId()
+										         , catalog.getParent().getParent().getStepNumber() ) ;
 				throw new NotFoundException( message ) ;
 			}
 			else {
@@ -1187,8 +1339,9 @@ public class JobFactoryImpl implements JobFactory {
 						   
 		}
 		catch( SQLException ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex ) ;   		
 		}

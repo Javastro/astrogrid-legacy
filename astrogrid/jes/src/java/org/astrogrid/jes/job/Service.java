@@ -11,8 +11,9 @@
 package org.astrogrid.jes.job;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.jes.i18n.*;
+import org.astrogrid.i18n.*;
 import org.astrogrid.jes.jobcontroller.*;
+import org.astrogrid.Configurator ;
 import org.w3c.dom.* ;
 
 /**
@@ -36,6 +37,9 @@ public class Service {
 	
 	private static Logger 
 		logger = Logger.getLogger( Service.class ) ;
+        
+    private final static String 
+        SUBCOMPONENT_NAME = Configurator.getClassName( Service.class );             
 		
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE = "AGJESE00630" ;
@@ -63,8 +67,9 @@ public class Service {
 			setUrl(serviceElement.getAttribute( SubmissionRequestDD.SERVICE_URL_ATTR )) ;			
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex );    		
 		}

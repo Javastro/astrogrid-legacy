@@ -12,8 +12,9 @@
 package org.astrogrid.jes.job; 
 
 import org.apache.log4j.Logger;
-import org.astrogrid.jes.i18n.*;
+import org.astrogrid.i18n.*;
 import org.astrogrid.jes.jobcontroller.*;
+import org.astrogrid.Configurator ;
 import org.w3c.dom.* ;
 import java.util.Set ;
 import java.util.HashSet ;
@@ -26,6 +27,9 @@ public class Query {
 	
 	private static Logger 
 		logger = Logger.getLogger( Query.class ) ;
+        
+    private final static String 
+        SUBCOMPONENT_NAME = Configurator.getClassName( Job.class );                          
 		
 	private static final String
         ASTROGRIDERROR_COULD_NOT_CREATE_QUERY = "AGJESE00610" ;
@@ -70,8 +74,9 @@ public class Query {
 			
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_QUERY ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_QUERY
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex );    		
 		}

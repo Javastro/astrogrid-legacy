@@ -11,8 +11,9 @@
 package org.astrogrid.jes.job;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.jes.i18n.*;
+import org.astrogrid.i18n.*;
 import org.astrogrid.jes.jobcontroller.*;
+import org.astrogrid.Configurator ;
 import org.w3c.dom.* ;
 import java.util.Set ;
 import java.util.HashSet;
@@ -40,6 +41,9 @@ public class Catalog {
 	
 	private static Logger 
 		logger = Logger.getLogger( Catalog.class ) ;
+        
+    private final static String 
+        SUBCOMPONENT_NAME = Configurator.getClassName( Catalog.class );                        
 		
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_CRITERIA = "AGJESE00600" ;
@@ -111,8 +115,9 @@ public class Catalog {
 	
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_CRITERIA ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_CRITERIA
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex );    		
 		}

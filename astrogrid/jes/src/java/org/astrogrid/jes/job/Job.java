@@ -12,8 +12,9 @@ package org.astrogrid.jes.job;
 
 import java.util.Iterator;
 import org.apache.log4j.Logger;
-import org.astrogrid.jes.i18n.*;
-import org.astrogrid.jes.jobcontroller.*;
+import org.astrogrid.i18n.*;
+import org.astrogrid.Configurator ;
+import org.astrogrid.jes.JES ;
 import java.util.Date ;
 
 
@@ -24,6 +25,9 @@ public abstract class Job {
 	
 	private static Logger 
 		logger = Logger.getLogger( Job.class ) ;
+        
+    private final static String 
+        SUBCOMPONENT_NAME = Configurator.getClassName( Job.class );                  
 		
 	public static  final String
 		STATUS_INITIALIZED = "INITIALIZED",  // Created but not yet running
@@ -45,7 +49,8 @@ public abstract class Job {
 		if( TRACE_ENABLED ) logger.debug( "getFactory(): entry") ;   	
     	
 		String
-			implementationFactoryName = JobController.getProperty( JOBFACTORY_KEY ) ;
+			implementationFactoryName = JES.getProperty( JES.JOB_FACTORY
+                                                       , JES.JOB_CATEGORY ) ;
 			
 		// JBL Note: We are holding txn state (the Connection) within JobFactoryImpl
 		// and therefore we must return a new factory for each invocation! 
@@ -66,8 +71,10 @@ public abstract class Job {
 			factory = (JobFactory) factoryBuilder.newInstance() ;
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_JOBFACTORY_IMPL, implementationFactoryName ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_JOBFACTORY_IMPL
+                                              , SUBCOMPONENT_NAME
+                                              , implementationFactoryName ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex );
 		}

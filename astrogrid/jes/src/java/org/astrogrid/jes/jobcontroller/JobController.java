@@ -10,17 +10,15 @@
  */
 package org.astrogrid.jes.jobcontroller ;
 
-import org.astrogrid.jes.i18n.* ;
+import org.astrogrid.jes.*;
+import org.astrogrid.i18n.* ;
+import org.astrogrid.AstroGridException ;
 import org.astrogrid.jes.job.Job ;
 import org.astrogrid.jes.job.JobFactory ;
+import org.astrogrid.jes.JES ;
 
 import org.apache.log4j.Logger;
 
-import java.util.Properties;
-import java.util.ResourceBundle ;
-import java.util.Locale ;
-import java.io.InputStream;
-// import java.io.IOException;
 import java.io.StringReader ; 
 import java.text.MessageFormat ;
 import java.util.Date ;
@@ -88,24 +86,9 @@ public class JobController {
 	  * Set this to false to eliminate all assertions statements within the byte code.*/	 	
 	private static final boolean 
 		ASSERTIONS_ENABLED = true ;
-			
-	private static final String 
-	/** Properties' file for this component. */  
-		CONFIG_FILENAME              = "ASTROGRID_jesconfig.properties",
-	/** Key within the component's Properties' file which helps identify the appropriate
-	 *  language ResourceBundle. */  
-		CONFIG_MESSAGES_BASENAME     = "MESSAGES.INSTALLATION.BASENAME" ,
-	/** Key within the component's Properties' file which helps identify the appropriate
-	 *  language ResourceBundle. */  
-		CONFIG_MESSAGES_LANGUAGECODE = "MESSAGES.INSTALLATION.LANGUAGECODE" ,
-	/** Key within the component's Properties' file which helps identify the appropriate
-	 *  language ResourceBundle. */  
-		CONFIG_MESSAGES_COUNTRYCODE  = "MESSAGES.INSTALLATION.COUNTRYCODE" ;
 	    
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGJESZ00001:JobController: Could not read my configuration file {0}",
-		ASTROGRIDERROR_JES_NOT_INITIALIZED          = "AGJESZ00002:JobController: Not initialized. Perhaps my configuration file is missing.",
-		ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00030",
+        ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00030",
 		ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE       = "AGJESE00040",
 	    ASTROGRIDINFO_JOB_SUCCESSFULLY_SUBMITTED    = "AGJESI00050",
 		ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE    = "AGJESE00400",
@@ -113,187 +96,17 @@ public class JobController {
 	    ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE    = "AGJESE00420",
         ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG = "AGJESE00060",
         ASTROGRIDINFO_JOB_STATUS_MESSAGE            = "AGJESI00070" ;
-	        			
-	/** Key within the component's Properties' file signifying whether the web service request
-	 *  document is to be parsed with validation turned on or off*/  
-	private static final String
-	    PARSER_VALIDATION = "PARSER.VALIDATION" ;
-	    
-	private static final String 
-	/** Key within the component's Properties' file identifying the template
-	 *  used for the submit job response */  
-		SUBMIT_JOB_RESPONSE_TEMPLATE = "SUBMIT_JOB_RESPONSE.TEMPLATE",
-	/** Key within the component's Properties' file identifying the template
-	 *  used for the schedule job request */  
-	    SCHEDULE_JOB_REQUEST_TEMPLATE = "SCHEDULE_JOB_REQUEST.TEMPLATE",
-	/** Key within the component's Properties' file identifying the template
-	 *  used in formatting a message document for the AstroGrid message log */  
-        MESSAGE_LOG_REQUEST_TEMPLATE  = "ASTROGRID_MESSAGE_LOG_REQUEST.TEMPLATE" ;
 		
-    private static final String 
-	/** Key within the component's Properties' file identifying the url
-	 * to be used for JobScheduler requests */  
-	    SCHEDULER_URL = "SCHEDULER.URL" ,
-	/** Key within the component's Properties' file identifying the url
-	 * to be used for AstroGrid message log requests */  
-        MESSAGE_LOG_URL = "ASTROGRID_MESSAGE_LOG.URL" ,
-	/** Key within the component's Properties' file identifying the url
-	 * to the current JobController */  
-        CONTROLLER_URL = "CONTROLLER.URL" ;
-
 	/** Log4J logger for this class. */    			    			
 	private static Logger 
 		logger = Logger.getLogger( JobController.class ) ;
+        
+
+    public JobController(){
+        if( TRACE_ENABLED ) logger.debug( "JobController() entry/exit") ;
+    }
 		
-	/** The JobController's properties' file. */  
-	private static Properties
-		configurationProperties = null ;
-	
-	static {
-		doConfigure();
-	}
-
-
-	/**
-	  *  
-	  * Static initialization routine called during class loading.
-	  * <p>
-	  * Attempts to load the component's configuration properties
-	  * from a properties file. If it fails, a log message is
-	  * produced. If it succeeds, attempts to configure the
-	  * component's default language basis for messages.
-	  * <p>
-	  * @see configureMessages()
-	  * <p>
-	  * A candidate for refactoring...
-	  * @see org.astrogrid.datacenter.datasetagent.DatasetAgent
-	  * @see org.astrogrid.jes.JobScheduler
-	  * @see org.astrogrid.jes.JobMonitor
-	  * 
-	  **/           	
-	private static void doConfigure() {
-		if( TRACE_ENABLED ) logger.debug( "doConfigure(): entry") ;
-				
-		configurationProperties = new Properties();
-		
-		try {
-			InputStream 
-	            istream = JobController.class.getClassLoader().getResourceAsStream( CONFIG_FILENAME ) ;
-			configurationProperties.load(istream);
-			istream.close();
-			logger.debug( configurationProperties.toString() ) ;
-			
-			// If successful so far, load installation-type messages
-			configureMessages() ;
-		}
-		catch ( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE, CONFIG_FILENAME ) ;
-			logger.error( message.toString(), ex ) ;
-			configurationProperties = null ;
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "doConfigure(): exit") ;			
-		}
-		
-		return ;
-
-	} // end of doConfigure()
-	  
-
-	/**
-	  *  
-	  * Configures the component's language basis for messages.
-	  * This is the installation's default language.
-	  * <p>
-	  * @see org.astrogrid.datacenter.i18n.Message
-	  * <p>
-	  * A candidate for refactoring...
-	  * @see org.astrogrid.datacenter.datasetagent.DatasetAgent
-	  * @see org.astrogrid.jes.JobScheduler
-	  * @see org.astrogrid.jes.JobMonitor
-	  * 
-	  **/         	  
-	private static void configureMessages() {
-		if( TRACE_ENABLED ) logger.debug( "configureMessages(): entry") ;
-			
-		try {
-			
-			String 
-				messageBundleBaseName = getProperty( CONFIG_MESSAGES_BASENAME ), 
-				language = getProperty( CONFIG_MESSAGES_LANGUAGECODE ),
-				country = getProperty( CONFIG_MESSAGES_COUNTRYCODE ) ;
-				
-			logger.debug( "messageBundleBaseName[" + messageBundleBaseName + "]\t" +
-			              "language[" + language + "]\t" +
-			              "country[" + country + "]" ) ;		
-				
-			if( messageBundleBaseName != null ) {
-				     
-				if( (language != null) && (!language.equals("")) )  {
-			    	
-				   Locale
-					  locale =  new Locale( language, (country != null ? country : "") );
-				   Message.setMessageResource( ResourceBundle.getBundle( messageBundleBaseName, locale ) ) ;	
-				   
-				}
-				else {
-				   Message.setMessageResource( ResourceBundle.getBundle( messageBundleBaseName ) ) ;	
-				}
-			    
-			}
-			
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "configureMessages(): exit") ;	 
-		}
-		 	  
-	} // end of configureMessages()
-	  
-
-	/**
-	  *  
-	  * Static getter for properties from the component's properties' file.
-	  * <p>
-	  * 
-	  * A candidate for refactoring...
-	  * @see org.astrogrid.datacenter.datasetagent.DatasetAgent
-	  * @see org.astrogrid.jes.JobScheduler
-	  * @see org.astrogrid.jes.JobMonitor
-	  * 
-	  * @param key - the property key
-	  * @return the String value of the property, or the empty string if null
-	  * 
-	  **/   	
-	public static String getProperty( String key ) {
-		if( TRACE_ENABLED ) logger.debug( "getProperty(): entry") ;
-		
-		String
-			retValue = configurationProperties.getProperty( key.toUpperCase() ) ;
-		if( TRACE_ENABLED ) logger.debug( "getProperty(): exit") ;			
-		return ( retValue == null ? "" : retValue.trim() ) ;
-		
-	} // end of getProperty()
-
-
-	private void checkPropertiesLoaded() throws JobControllerException {
-		if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() entry") ;
-		
-		try{
-			if( configurationProperties == null ) {
-				Message
-					message = new Message( ASTROGRIDERROR_JES_NOT_INITIALIZED ) ;
-				logger.error( message.toString() ) ;
-				throw new JobControllerException( message ) ;
-			}
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() exit") ;
-		}
-
-	} // end checkPropertiesLoaded()
-	
-	
+        
 	private Document parseRequest( String jobXML ) throws JobControllerException {  	
 		if( TRACE_ENABLED ) logger.debug( "parseRequest() entry") ;
 		
@@ -305,16 +118,18 @@ public class JobController {
 		   builder = null;
 	       
 		try {
-		   factory.setValidating( Boolean.getBoolean( getProperty( PARSER_VALIDATION ) ) ) ; 		    
-		   builder = factory.newDocumentBuilder();
+		   factory.setValidating( Boolean.getBoolean( JES.getProperty( JES.CONTROLLER_PARSER_VALIDATION
+		                                                             , JES.CONTROLLER_CATEGORY )  )  ) ; 		    
+		   builder = factory.newDocumentBuilder(); 
 		   logger.debug( jobXML ) ;
 		   InputSource
 			  jobSource = new InputSource( new StringReader( jobXML ) );
 			submitDoc = builder.parse( jobSource );
 		}
 		catch ( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST ) ; 
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST
+                                              , this.getComponentName() ) ; 
 			logger.error( message.toString(), ex ) ;
 			throw new JobControllerException( message, ex );
 		} 
@@ -358,7 +173,7 @@ public class JobController {
         try { 
 	        // If properties file is not loaded, we bail out...
 	        // Each JES MUST be properly initialized! 
-	        checkPropertiesLoaded() ;
+	        JES.getInstance().checkPropertiesLoaded() ;   
     		
 	        // Parse the request... 
 	        Document
@@ -375,11 +190,12 @@ public class JobController {
             response = formatGoodResponse( job ) ;
 
         }
-        catch( JesException jex ) {
+        catch( AstroGridException jex ) {
         	
-	        Message
+	        AstroGridMessage
 		       detailMessage = jex.getAstroGridMessage() ,  
-		       generalMessage = new Message( ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE ) ;
+		       generalMessage = new AstroGridMessage( ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE
+                                                    , this.getComponentName() ) ;
 	        logger.error( detailMessage.toString(), jex ) ;
 	        logger.error( generalMessage.toString() ) ;
 					
@@ -423,10 +239,11 @@ public class JobController {
 		
 		String
 		    retValue = null ;
-		Message
+		AstroGridMessage
 			message = null ;
 		try {
-			message = new Message( ASTROGRIDINFO_JOB_SUCCESSFULLY_SUBMITTED ) ; 
+			message = new AstroGridMessage( ASTROGRIDINFO_JOB_SUCCESSFULLY_SUBMITTED
+                                          , this.getComponentName() ) ; 
 			retValue = formatResponse( job, message.toString() ) ;
 		}
 		finally {
@@ -450,7 +267,7 @@ public class JobController {
 	  * @see org.astrogrid.jes.i18n.Message
 	  * @see <code>String formatResponse( Job job, String aMessage )</code>
 	  **/         
-	private String formatBadResponse( Job job, Message errorMessage ) {
+	private String formatBadResponse( Job job, AstroGridMessage errorMessage ) {
 		if( TRACE_ENABLED ) logger.debug( "formatBadResponse() entry") ;
 		String
 		   retValue = null ;
@@ -485,7 +302,8 @@ public class JobController {
 		if( TRACE_ENABLED ) logger.debug( "formatResponse() entry") ;
 		
 		String 
-		   response = getProperty( SUBMIT_JOB_RESPONSE_TEMPLATE ) ;
+		   response = JES.getProperty( JES.CONTROLLER_SUBMIT_JOB_RESPONSE_TEMPLATE
+		                             , JES.CONTROLLER_CATEGORY ) ;
 		
 		try {
 			
@@ -501,8 +319,9 @@ public class JobController {
 
 		}
 		catch ( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE ) ; 
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE
+                                              , this.getComponentName() ) ; 
 			logger.error( message.toString(), ex ) ;
 		} 
 		finally {
@@ -551,7 +370,8 @@ public class JobController {
 			Call 
 			   call = (Call) new Service().createCall() ;			  
 
-			call.setTargetEndpointAddress( new URL( JobController.getProperty( SCHEDULER_URL ) ) ) ;
+			call.setTargetEndpointAddress( new URL( JES.getProperty( JES.SCHEDULER_URL
+			                                                       , JES.SCHEDULER_CATEGORY )  )  ) ;
 			call.setOperationName( "scheduleJob" ) ;  // Set method to invoke		
 			call.addParameter("scheduleJobXML", XMLType.XSD_STRING,ParameterMode.IN);
 			call.setReturnType(XMLType.XSD_STRING);
@@ -562,8 +382,9 @@ public class JobController {
 
 		}
 		catch ( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER, ex ) ; 
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER
+                                              , this.getComponentName()) ; 
 			logger.error( message.toString(), ex ) ;
 		} 
 		finally {
@@ -594,7 +415,8 @@ public class JobController {
 		if( TRACE_ENABLED ) logger.debug( "formatScheduleRequest() entry") ;
 		
 		String 
-		   response = getProperty( SCHEDULE_JOB_REQUEST_TEMPLATE ) ;
+		   response = JES.getProperty( JES.SCHEDULER_JOB_REQUEST_TEMPLATE
+		                             , JES.SCHEDULER_CATEGORY ) ;
 		
 		try {
 			
@@ -610,8 +432,9 @@ public class JobController {
 
 		}
 		catch ( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE ) ; 
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE
+                                              , this.getComponentName() ) ; 
 			logger.error( message.toString(), ex ) ;
 		} 
 		finally {
@@ -651,7 +474,8 @@ public class JobController {
 			   
 			// We keep the appropriate end-point in a properties' file.
 			// JBL note: Is this sufficient?
-			call.setTargetEndpointAddress( new URL( JobController.getProperty( MESSAGE_LOG_URL ) ) ) ;
+			call.setTargetEndpointAddress( new URL( JES.getProperty( JES.MESSAGE_LOG_URL
+			                                                       , JES.MESSAGE_LOG_CATEGORY )  )  ) ;
       
 			SOAPBodyElement[] 
 			   bodyElement = new SOAPBodyElement[1];
@@ -659,11 +483,14 @@ public class JobController {
 			// The request document is simple enough to keep a template of it in 
 			// a properties' file and use the MessageFormat class to complete it...
 			String
-				requestString = JobController.getProperty( MESSAGE_LOG_REQUEST_TEMPLATE ) ;
+				requestString = JES.getProperty( JES.MESSAGE_LOG_REQUEST_TEMPLATE
+				                               , JES.MESSAGE_LOG_CATEGORY ) ;
 			Object []
 				inserts = new Object[ 5 ] ;
-			inserts[0] = JobController.getProperty( CONTROLLER_URL ) ;            // source
-			inserts[1] = JobController.getProperty( MESSAGE_LOG_URL ) ;           // destination
+			inserts[0] = JES.getProperty( JES.CONTROLLER_URL
+			                            , JES.CONTROLLER_CATEGORY ) ;             // source
+			inserts[1] = JES.getProperty( JES.MESSAGE_LOG_URL
+                                        , JES.MESSAGE_LOG_CATEGORY ) ;            // destination
 			inserts[2] = new Timestamp( new Date().getTime() ).toString() ;       // timestamp - is this OK?
 			inserts[3] = "Job submitted" ;                                        // subject
 			
@@ -687,8 +514,9 @@ public class JobController {
     
 		}
 		catch( Exception ex ) {
-			Message
-			   message = new Message( ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG ) ;
+			AstroGridMessage
+			   message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG
+                                             , this.getComponentName() ) ;
 			logger.debug( message.toString(), ex ) ;
 		}
 		finally {
@@ -713,20 +541,21 @@ public class JobController {
 	private String formatStatusMessage ( Job job ) {
 		if( TRACE_ENABLED ) logger.debug( "formatStatusMessage(): entry") ;	
 		
-		Message
+		AstroGridMessage
 		   message = null ;	
 		
 		try {
 			// AGJESI00070=:JobController: Job status [{0}] job name [{1}] userid [{2}] community [{3}] job id [{4}] 
 			Object []
-				inserts = new Object[ 5 ] ;
-			inserts[0] = job.getStatus() ;           
-			inserts[1] = job.getName() ;
-			inserts[2] = job.getUserId() ;
-			inserts[3] = job.getCommunity() ;
-			inserts[4] = job.getId() ;
+				inserts = new Object[ 6 ] ;
+            inserts[0] = this.getComponentName() ;                 
+			inserts[1] = job.getStatus() ;           
+			inserts[2] = job.getName() ;
+			inserts[3] = job.getUserId() ;
+			inserts[4] = job.getCommunity() ;
+			inserts[5] = job.getId() ;
 			 
-			message = new Message( ASTROGRIDINFO_JOB_STATUS_MESSAGE, inserts ) ;
+			message = new AstroGridMessage( ASTROGRIDINFO_JOB_STATUS_MESSAGE, inserts ) ;
 					
 		}
 		catch( Exception ex ) {
@@ -739,5 +568,8 @@ public class JobController {
 		
 	} // end of formatStatusMessage()
 	
+
+	protected String getComponentName() { return this.getClass().getName() ; }
+
 
 } // end of class JobController
