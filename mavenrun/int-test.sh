@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: int-test.sh,v 1.8 2004/12/21 10:41:22 jdt Exp $ 
+# $Id: int-test.sh,v 1.9 2004/12/21 16:49:54 jdt Exp $ 
 ########################################################
 # Script to install AGINAB, run the integration
 # tests and publish the results
@@ -34,9 +34,9 @@ TESTMODULE=astrogrid/integrationTests/auto-integration
 BUILDHOME=$CHECKOUTHOME/$TESTMODULE
 export BUILDHOME
 
-TIMESTAMP=`date +%Y%m%d-%T`
+
 echo admininstrator email is ${ADMIN_EMAIL:="jdt@roe.ac.uk clq2@star.le.ac.uk"}
-TOMLOGS=$CATALINA_HOME/logs
+
 
 
 # Processing Starts Here
@@ -95,6 +95,7 @@ echo "See http://www.astrogrid.org/maven/docs/HEAD/integrationTests" | mail -s "
 ) 2>&1 | tee $LOGFILE
 
 #backup tests and logs
+TIMESTAMP=`date +%Y%m%d-%T`
 FROM=$DOCLOCATION/integrationTests
 TO=$DOCLOCATION/backupReports/integrationTests/$TIMESTAMP
 echo "Backing up reports and logs from $FROM to $TO" 
@@ -102,6 +103,7 @@ ssh $DOCMACHINE mkdir $TO
 ssh $DOCMACHINE cp -rf $FROM/* $TO  
 scp $LOGFILE $DOCMACHINE:$DOCLOCATION/log/integration.log  
 #back up those that logs that will be useful..
+TOMLOGS=$CATALINA_HOME/logs
 cd $TOMLOGS  
 tar -cvzf catalina.logs.tar.gz *  
 scp catalina.logs.tar.gz $DOCMACHINE:$TO  
