@@ -158,7 +158,7 @@ public class AsciiInputStream extends FilterInputStream
      */
     public String readString(char eoFieldMarker) throws IOException
     {
-        String returnString = "";
+        StringBuffer returnString = new StringBuffer();
         
         int c = read();
         
@@ -167,13 +167,13 @@ public class AsciiInputStream extends FilterInputStream
         
         //read until end of field marker found
         while (( c != eoFieldMarker) && !charIsEOLine(c)) {
-            returnString = returnString + (char) c;
+            returnString.append((char) c);
             c =  read();
         }
         
         isEOL = charIsEOLine(c);    //mark if reached end of line
         
-        return returnString;
+        return returnString.toString();
     }
     
     /**
@@ -182,7 +182,7 @@ public class AsciiInputStream extends FilterInputStream
      */
     public String readString(int width) throws IOException
     {
-        String returnString = "";
+        StringBuffer returnString = new StringBuffer();
         
         int c = AsciiCodes.NUL;
         
@@ -190,7 +190,7 @@ public class AsciiInputStream extends FilterInputStream
             c = read();
             
             if (!charIsEOLine(c)) {
-                returnString = returnString +  (char) c;
+                returnString.append( (char) c);
             }
             
             width --;
@@ -198,7 +198,7 @@ public class AsciiInputStream extends FilterInputStream
         
         isEOL = charIsEOLine(c);    //mark if reached end of line
         
-        return returnString;
+        return returnString.toString();
     }
     
     /**
@@ -210,7 +210,7 @@ public class AsciiInputStream extends FilterInputStream
     public String readToEOL() throws IOException {
         
         int c = AsciiCodes.NUL;
-        String r = "";
+        StringBuffer line = new StringBuffer();
         
         //if we've already reached the end of line, eg due to a readString(),
         //we don't want to do this as we'll end up reading the complete next
@@ -218,13 +218,13 @@ public class AsciiInputStream extends FilterInputStream
         if (!isEOL) {
             while ((c != c_eoFile) && (c != c_eoLine)) {
                 c = read();
-                r = r + (char) c;
+                line.append( (char) c);
             }
         }
         
         isEOL = false;
         
-        return r;
+        return line.toString();
     }
 }
 
