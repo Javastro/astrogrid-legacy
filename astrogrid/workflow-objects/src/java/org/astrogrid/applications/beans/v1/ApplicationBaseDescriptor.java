@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ApplicationBaseDescriptor.java,v 1.2 2004/03/09 14:35:58 pah Exp $
+ * $Id: ApplicationBaseDescriptor.java,v 1.3 2004/03/10 13:58:28 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ApplicationBaseDescriptor.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/09 14:35:58 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/10 13:58:28 $
  */
 public class ApplicationBaseDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

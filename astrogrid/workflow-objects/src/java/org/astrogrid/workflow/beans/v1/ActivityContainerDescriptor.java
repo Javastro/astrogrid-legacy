@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ActivityContainerDescriptor.java,v 1.5 2004/03/09 14:35:58 pah Exp $
+ * $Id: ActivityContainerDescriptor.java,v 1.6 2004/03/10 13:58:29 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ActivityContainerDescriptor.
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/09 14:35:58 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/10 13:58:29 $
  */
 public class ActivityContainerDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor {
 
@@ -94,13 +94,12 @@ public class ActivityContainerDescriptor extends org.astrogrid.workflow.beans.v1
         } );
         desc.setHandler(handler);
         desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGWorkflow/v1");
-        desc.setRequired(true);
         desc.setMultivalued(true);
         addFieldDescriptor(desc);
         
         //-- validation code for: _activityList
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        fieldValidator.setMinOccurs(1);
+        fieldValidator.setMinOccurs(0);
         { //-- local scope
         }
         desc.setValidator(fieldValidator);

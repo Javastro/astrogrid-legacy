@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ApplicationList.java,v 1.2 2004/03/09 14:35:58 pah Exp $
+ * $Id: ApplicationList.java,v 1.3 2004/03/10 13:58:28 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -24,7 +26,7 @@ import org.xml.sax.ContentHandler;
 /**
  * list of applications
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/09 14:35:58 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/10 13:58:28 $
  */
 public class ApplicationList extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -39,7 +41,7 @@ implements java.io.Serializable
      * This is a generic application definition that does not take
      * in all of the specializations for web/commandline etc
      */
-    private org.astrogrid.applications.beans.v1.ApplicationBase _applicationDefn;
+    private java.util.ArrayList _applicationDefnList;
 
 
       //----------------/
@@ -48,12 +50,52 @@ implements java.io.Serializable
 
     public ApplicationList() {
         super();
+        _applicationDefnList = new ArrayList();
     } //-- org.astrogrid.applications.beans.v1.ApplicationList()
 
 
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Method addApplicationDefn
+     * 
+     * @param vApplicationDefn
+     */
+    public void addApplicationDefn(org.astrogrid.applications.beans.v1.ApplicationBase vApplicationDefn)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        _applicationDefnList.add(vApplicationDefn);
+    } //-- void addApplicationDefn(org.astrogrid.applications.beans.v1.ApplicationBase) 
+
+    /**
+     * Method addApplicationDefn
+     * 
+     * @param index
+     * @param vApplicationDefn
+     */
+    public void addApplicationDefn(int index, org.astrogrid.applications.beans.v1.ApplicationBase vApplicationDefn)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        _applicationDefnList.add(index, vApplicationDefn);
+    } //-- void addApplicationDefn(int, org.astrogrid.applications.beans.v1.ApplicationBase) 
+
+    /**
+     * Method clearApplicationDefn
+     */
+    public void clearApplicationDefn()
+    {
+        _applicationDefnList.clear();
+    } //-- void clearApplicationDefn() 
+
+    /**
+     * Method enumerateApplicationDefn
+     */
+    public java.util.Enumeration enumerateApplicationDefn()
+    {
+        return new org.exolab.castor.util.IteratorEnumeration(_applicationDefnList.iterator());
+    } //-- java.util.Enumeration enumerateApplicationDefn() 
 
     /**
      * Note: hashCode() has not been overriden
@@ -71,12 +113,12 @@ implements java.io.Serializable
         if (obj instanceof ApplicationList) {
         
             ApplicationList temp = (ApplicationList)obj;
-            if (this._applicationDefn != null) {
-                if (temp._applicationDefn == null) return false;
-                else if (!(this._applicationDefn.equals(temp._applicationDefn))) 
+            if (this._applicationDefnList != null) {
+                if (temp._applicationDefnList == null) return false;
+                else if (!(this._applicationDefnList.equals(temp._applicationDefnList))) 
                     return false;
             }
-            else if (temp._applicationDefn != null)
+            else if (temp._applicationDefnList != null)
                 return false;
             return true;
         }
@@ -84,17 +126,41 @@ implements java.io.Serializable
     } //-- boolean equals(java.lang.Object) 
 
     /**
-     * Returns the value of field 'applicationDefn'. The field
-     * 'applicationDefn' has the following description: This is a
-     * generic application definition that does not take in all of
-     * the specializations for web/commandline etc
+     * Method getApplicationDefn
      * 
-     * @return the value of field 'applicationDefn'.
+     * @param index
      */
-    public org.astrogrid.applications.beans.v1.ApplicationBase getApplicationDefn()
+    public org.astrogrid.applications.beans.v1.ApplicationBase getApplicationDefn(int index)
+        throws java.lang.IndexOutOfBoundsException
     {
-        return this._applicationDefn;
-    } //-- org.astrogrid.applications.beans.v1.ApplicationBase getApplicationDefn() 
+        //-- check bounds for index
+        if ((index < 0) || (index > _applicationDefnList.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        
+        return (org.astrogrid.applications.beans.v1.ApplicationBase) _applicationDefnList.get(index);
+    } //-- org.astrogrid.applications.beans.v1.ApplicationBase getApplicationDefn(int) 
+
+    /**
+     * Method getApplicationDefn
+     */
+    public org.astrogrid.applications.beans.v1.ApplicationBase[] getApplicationDefn()
+    {
+        int size = _applicationDefnList.size();
+        org.astrogrid.applications.beans.v1.ApplicationBase[] mArray = new org.astrogrid.applications.beans.v1.ApplicationBase[size];
+        for (int index = 0; index < size; index++) {
+            mArray[index] = (org.astrogrid.applications.beans.v1.ApplicationBase) _applicationDefnList.get(index);
+        }
+        return mArray;
+    } //-- org.astrogrid.applications.beans.v1.ApplicationBase[] getApplicationDefn() 
+
+    /**
+     * Method getApplicationDefnCount
+     */
+    public int getApplicationDefnCount()
+    {
+        return _applicationDefnList.size();
+    } //-- int getApplicationDefnCount() 
 
     /**
      * Method isValid
@@ -135,16 +201,44 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'applicationDefn'. The field
-     * 'applicationDefn' has the following description: This is a
-     * generic application definition that does not take in all of
-     * the specializations for web/commandline etc
+     * Method removeApplicationDefn
      * 
-     * @param applicationDefn the value of field 'applicationDefn'.
+     * @param vApplicationDefn
      */
-    public void setApplicationDefn(org.astrogrid.applications.beans.v1.ApplicationBase applicationDefn)
+    public boolean removeApplicationDefn(org.astrogrid.applications.beans.v1.ApplicationBase vApplicationDefn)
     {
-        this._applicationDefn = applicationDefn;
+        boolean removed = _applicationDefnList.remove(vApplicationDefn);
+        return removed;
+    } //-- boolean removeApplicationDefn(org.astrogrid.applications.beans.v1.ApplicationBase) 
+
+    /**
+     * Method setApplicationDefn
+     * 
+     * @param index
+     * @param vApplicationDefn
+     */
+    public void setApplicationDefn(int index, org.astrogrid.applications.beans.v1.ApplicationBase vApplicationDefn)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        //-- check bounds for index
+        if ((index < 0) || (index > _applicationDefnList.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        _applicationDefnList.set(index, vApplicationDefn);
+    } //-- void setApplicationDefn(int, org.astrogrid.applications.beans.v1.ApplicationBase) 
+
+    /**
+     * Method setApplicationDefn
+     * 
+     * @param applicationDefnArray
+     */
+    public void setApplicationDefn(org.astrogrid.applications.beans.v1.ApplicationBase[] applicationDefnArray)
+    {
+        //-- copy array
+        _applicationDefnList.clear();
+        for (int i = 0; i < applicationDefnArray.length; i++) {
+            _applicationDefnList.add(applicationDefnArray[i]);
+        }
     } //-- void setApplicationDefn(org.astrogrid.applications.beans.v1.ApplicationBase) 
 
     /**

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ApplicationListDescriptor.java,v 1.2 2004/03/09 14:35:58 pah Exp $
+ * $Id: ApplicationListDescriptor.java,v 1.3 2004/03/10 13:58:29 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ApplicationListDescriptor.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/09 14:35:58 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/10 13:58:29 $
  */
 public class ApplicationListDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -67,8 +67,8 @@ public class ApplicationListDescriptor extends org.exolab.castor.xml.util.XMLCla
         
         //-- initialize element descriptors
         
-        //-- _applicationDefn
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.ApplicationBase.class, "_applicationDefn", "ApplicationDefn", org.exolab.castor.xml.NodeType.Element);
+        //-- _applicationDefnList
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.ApplicationBase.class, "_applicationDefnList", "ApplicationDefn", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -81,7 +81,7 @@ public class ApplicationListDescriptor extends org.exolab.castor.xml.util.XMLCla
             {
                 try {
                     ApplicationList target = (ApplicationList) object;
-                    target.setApplicationDefn( (org.astrogrid.applications.beans.v1.ApplicationBase) value);
+                    target.addApplicationDefn( (org.astrogrid.applications.beans.v1.ApplicationBase) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
@@ -94,10 +94,10 @@ public class ApplicationListDescriptor extends org.exolab.castor.xml.util.XMLCla
         desc.setHandler(handler);
         desc.setNameSpaceURI("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1");
         desc.setRequired(true);
-        desc.setMultivalued(false);
+        desc.setMultivalued(true);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _applicationDefn
+        //-- validation code for: _applicationDefnList
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         fieldValidator.setMinOccurs(1);
         { //-- local scope
