@@ -42,7 +42,8 @@
                <td style="color: blue; background-color: lightblue; text-align: center;">Description</td>
                <td style="color: blue; background-color: lightblue; text-align: center;">Time submitted</td>
                <td style="color: blue; background-color: lightblue; text-align: center;">Status</td>
-               <td style="color: blue; background-color: lightblue; text-align: center;">Job ID</td> 
+               <td style="color: blue; background-color: lightblue; text-align: center;">Job ID</td>
+               <td style="color: blue; background-color: lightblue; text-align: center;">Delete?</td> 
             </tr>
             <xsl:for-each select="//job">
                <tr>    
@@ -57,7 +58,17 @@
                      <xsl:value-of select="@jobid"/>
                      <xsl:element name="/a">
                      </xsl:element>                                                                 
-                  </td>                  
+                  </td>
+                  <td>
+                      <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form">
+                          <xsl:element name="input">                              
+                              <xsl:attribute name="type">hidden</xsl:attribute>
+                              <xsl:attribute name="name">jobURN</xsl:attribute>
+                              <xsl:attribute name="value"><xsl:value-of select="@jobid" /></xsl:attribute>
+                          </xsl:element>                                                                                                        
+                          <input type="submit" name="action" value="delete-job"/>                          
+                      </form>
+                  </td>                 
                </tr>
             </xsl:for-each>
          </table>                                                                                                                
