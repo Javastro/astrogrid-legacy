@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerDelegate.java,v 1.2 2003/11/27 12:40:48 pah Exp $
+ * $Id: ApplicationControllerDelegate.java,v 1.3 2003/12/07 01:09:48 pah Exp $
  * 
  * Created on 25-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,8 +20,9 @@ import java.net.MalformedURLException ;
 
 import javax.xml.rpc.ServiceException;
 
-import org.astrogrid.applications.delegate.beans.ApplicationDescription;
 import org.astrogrid.applications.delegate.beans.ParameterValues;
+import org.astrogrid.applications.delegate.beans.SimpleApplicationDescription;
+import org.astrogrid.applications.delegate.beans.User;
 
 
 /**
@@ -86,7 +87,7 @@ public class ApplicationControllerDelegate implements ApplicationController {
    /* (non-Javadoc)
     * @see org.astrogrid.applications.delegate.ApplicationController#getApplicationDescription(java.lang.String)
     */
-   public ApplicationDescription getApplicationDescription(String applicationID)
+   public SimpleApplicationDescription getApplicationDescription(String applicationID)
       throws RemoteException {
          return binding.getApplicationDescription(applicationID);
    }
@@ -98,16 +99,17 @@ public class ApplicationControllerDelegate implements ApplicationController {
       String applicationID,
       String jobstepID,
       String jobMonitorURL,
+      User user,
       ParameterValues parameters)
       throws RemoteException {
-       return binding.initializeApplication(applicationID, jobstepID, jobMonitorURL, parameters);
+       return binding.initializeApplication(applicationID, jobstepID, jobMonitorURL, user, parameters);
    }
 
    /* (non-Javadoc)
     * @see org.astrogrid.applications.delegate.ApplicationController#executeApplication(int)
     */
-   public void executeApplication(int executionId) throws RemoteException {
-      binding.executeApplication(executionId);
+   public boolean executeApplication(int executionId) throws RemoteException {
+      return binding.executeApplication(executionId);
    }
 
    /* (non-Javadoc)

@@ -30,8 +30,8 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getApplicationDescription");
         oper.addParameter(new javax.xml.namespace.QName("", "applicationID"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "ApplicationDescription"));
-        oper.setReturnClass(org.astrogrid.applications.delegate.beans.ApplicationDescription.class);
+        oper.setReturnType(new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "SimpleApplicationDescription"));
+        oper.setReturnClass(org.astrogrid.applications.delegate.beans.SimpleApplicationDescription.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getApplicationDescriptionReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -42,6 +42,7 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
         oper.addParameter(new javax.xml.namespace.QName("", "applicationID"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "jobstepID"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "jobMonitorURL"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("", "user"), new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "User"), org.astrogrid.applications.delegate.beans.User.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "parameters"), new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "ParameterValues"), org.astrogrid.applications.delegate.beans.ParameterValues.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         oper.setReturnClass(int.class);
@@ -53,7 +54,9 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("executeApplication");
         oper.addParameter(new javax.xml.namespace.QName("", "executionId"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        oper.setReturnClass(boolean.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "executeApplicationReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
         _operations[3] = oper;
@@ -104,6 +107,20 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
             java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
             java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
+            qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "User");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.delegate.beans.User.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "SimpleApplicationDescription");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.delegate.beans.SimpleApplicationDescription.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
             qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "ParameterValues");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.applications.delegate.beans.ParameterValues.class;
@@ -117,13 +134,6 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
             cachedSerClasses.add(cls);
             cachedSerFactories.add(arraysf);
             cachedDeserFactories.add(arraydf);
-
-            qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "ApplicationDescription");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.delegate.beans.ApplicationDescription.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
 
     }
 
@@ -211,7 +221,7 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
         }
     }
 
-    public org.astrogrid.applications.delegate.beans.ApplicationDescription getApplicationDescription(java.lang.String applicationID) throws java.rmi.RemoteException {
+    public org.astrogrid.applications.delegate.beans.SimpleApplicationDescription getApplicationDescription(java.lang.String applicationID) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -232,14 +242,14 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.applications.delegate.beans.ApplicationDescription) _resp;
+                return (org.astrogrid.applications.delegate.beans.SimpleApplicationDescription) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.applications.delegate.beans.ApplicationDescription) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.applications.delegate.beans.ApplicationDescription.class);
+                return (org.astrogrid.applications.delegate.beans.SimpleApplicationDescription) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.applications.delegate.beans.SimpleApplicationDescription.class);
             }
         }
     }
 
-    public int initializeApplication(java.lang.String applicationID, java.lang.String jobstepID, java.lang.String jobMonitorURL, org.astrogrid.applications.delegate.beans.ParameterValues parameters) throws java.rmi.RemoteException {
+    public int initializeApplication(java.lang.String applicationID, java.lang.String jobstepID, java.lang.String jobMonitorURL, org.astrogrid.applications.delegate.beans.User user, org.astrogrid.applications.delegate.beans.ParameterValues parameters) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -252,7 +262,7 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {applicationID, jobstepID, jobMonitorURL, parameters});
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {applicationID, jobstepID, jobMonitorURL, user, parameters});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -267,7 +277,7 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
         }
     }
 
-    public void executeApplication(int executionId) throws java.rmi.RemoteException {
+    public boolean executeApplication(int executionId) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -285,7 +295,14 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
         }
-        extractAttachments(_call);
+        else {
+            extractAttachments(_call);
+            try {
+                return ((java.lang.Boolean) _resp).booleanValue();
+            } catch (java.lang.Exception _exception) {
+                return ((java.lang.Boolean) org.apache.axis.utils.JavaUtils.convert(_resp, boolean.class)).booleanValue();
+            }
+        }
     }
 
     public java.lang.String queryApplicationExecutionStatus(int executionId) throws java.rmi.RemoteException {

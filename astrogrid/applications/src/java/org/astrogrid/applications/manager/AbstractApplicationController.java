@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.7 2003/12/05 22:52:16 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.8 2003/12/07 01:09:48 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -29,13 +29,13 @@ abstract public class AbstractApplicationController implements ApplicationContro
    /**
     * The place where the application controller stores local execution status. 
     */
-   private DataSource db;
+   protected DataSource db;
 
    /**
     * The store for the descriptions of the applications that this application controller manages.
     */
-   private ApplicationDescriptions applicationDescriptions;
-   private Map simpleDescriptions;
+   protected ApplicationDescriptions applicationDescriptions;
+   protected Map simpleDescriptions;
    
    AbstractApplicationController()
    {

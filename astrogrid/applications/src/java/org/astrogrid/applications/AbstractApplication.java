@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.2 2003/11/13 22:44:14 pah Exp $
+ * $Id: AbstractApplication.java,v 1.3 2003/12/07 01:09:48 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -12,12 +12,18 @@
 package org.astrogrid.applications;
 
 import java.util.Vector;
+
+import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
+import org.astrogrid.applications.description.ApplicationDescription;
+
 public class AbstractApplication implements Application {
    /**
     *@link aggregation
     *@associates org.astrogrid.applications.Parameter
     */
    protected Vector parameters;
+   
+   protected ApplicationDescription applicationDescription;
    
    /* (non-Javadoc)
     * @see org.astrogrid.applications.Application#completionStatus()
@@ -30,7 +36,7 @@ public class AbstractApplication implements Application {
    /* (non-Javadoc)
     * @see org.astrogrid.applications.Application#execute()
     */
-   public void execute() {
+   public boolean execute() throws ApplicationExecutionException {
       // TODO Auto-generated method stub
       throw new UnsupportedOperationException("AbstractApplication.execute() not implemented");
    }
@@ -49,6 +55,24 @@ public class AbstractApplication implements Application {
    public void setParameter() {
       // TODO Auto-generated method stub
       throw new UnsupportedOperationException("AbstractApplication.setParameter() not implemented");
+   }
+
+   /**
+    * @return
+    */
+   public ApplicationDescription getApplicationDescription() {
+      return applicationDescription;
+   }
+
+   /**
+    * @param description
+    */
+   public void setApplicationDescription(ApplicationDescription description) {
+      applicationDescription = description;
+   }
+
+   public String toString() {
+      return applicationDescription.getName();
    }
 
 }

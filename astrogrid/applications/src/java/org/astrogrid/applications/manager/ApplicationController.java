@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.10 2003/12/02 18:13:31 pah Exp $
+ * $Id: ApplicationController.java,v 1.11 2003/12/07 01:09:48 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -45,7 +45,7 @@ public interface ApplicationController {
     * @param jobMonitorURL the jobmonitor service to call to notify of execution completion.
     * @param user The user credentials for the user that the job will be run in the name of. This bean represents what was commonly known as the "community snippet".
     * @param parameters the description of the job parameters.
-    * @return an identifier for this particular execution instance.
+    * @return an identifier for this particular execution instance -1 indicates a failure in initializing the application.
     */
    int initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, User user, org.astrogrid.applications.ParameterValues parameters);
 
@@ -53,7 +53,7 @@ public interface ApplicationController {
     * Executes a particular application asynchronously that has previously been intialized by {@link #initializeApplication}
     * @param executionId The executionId returned by {@link #initializeApplication} .
     */
-   void executeApplication(int executionId);
+   boolean executeApplication(int executionId);
 
    /**
     * Query the status of a particular application execution.

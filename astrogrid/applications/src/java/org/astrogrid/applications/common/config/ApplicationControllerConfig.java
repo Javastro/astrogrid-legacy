@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerConfig.java,v 1.5 2003/12/05 22:52:16 pah Exp $
+ * $Id: ApplicationControllerConfig.java,v 1.6 2003/12/07 01:09:48 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -97,5 +97,12 @@ ApplicationControllerConfig(DataSource ds)
 public javax.sql.DataSource getDataSource() {
    return dataSource;
 }
-
+  public String getDBuser()
+  {
+     return config.getProperty(ApplicationsConstants.DATABASE_USER_KEY);
+  }
+  public String getDBpwd()
+  {
+     return config.getProperty(ApplicationsConstants.DATABASE_PASSWORD_KEY);
+  }
 }

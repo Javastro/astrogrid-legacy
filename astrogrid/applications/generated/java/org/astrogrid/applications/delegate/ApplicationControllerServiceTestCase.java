@@ -50,7 +50,7 @@ public class ApplicationControllerServiceTestCase extends junit.framework.TestCa
         binding.setTimeout(60000);
 
         // Test operation
-        org.astrogrid.applications.delegate.beans.ApplicationDescription value = null;
+        org.astrogrid.applications.delegate.beans.SimpleApplicationDescription value = null;
         value = binding.getApplicationDescription(new java.lang.String());
         // TBD - validate results
     }
@@ -73,7 +73,7 @@ public class ApplicationControllerServiceTestCase extends junit.framework.TestCa
 
         // Test operation
         int value = -3;
-        value = binding.initializeApplication(new java.lang.String(), new java.lang.String(), new java.lang.String(), new org.astrogrid.applications.delegate.beans.ParameterValues());
+        value = binding.initializeApplication(new java.lang.String(), new java.lang.String(), new java.lang.String(), new org.astrogrid.applications.delegate.beans.User(), new org.astrogrid.applications.delegate.beans.ParameterValues());
         // TBD - validate results
     }
 
@@ -94,7 +94,8 @@ public class ApplicationControllerServiceTestCase extends junit.framework.TestCa
         binding.setTimeout(60000);
 
         // Test operation
-        binding.executeApplication(0);
+        boolean value = false;
+        value = binding.executeApplication(0);
         // TBD - validate results
     }
 

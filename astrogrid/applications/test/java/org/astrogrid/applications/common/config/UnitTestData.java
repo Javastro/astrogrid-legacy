@@ -1,5 +1,5 @@
 /*
- * $Id: UnitTestData.java,v 1.1 2003/12/04 13:26:25 pah Exp $
+ * $Id: UnitTestData.java,v 1.2 2003/12/07 01:09:48 pah Exp $
  * 
  * Created on 19-Sep-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -26,7 +26,7 @@ import java.sql.Statement;
    final class UnitTestData {
    
    private static String[] sqlcmds = {
-   "insert into execution  values (1,'jobstep1','testapp','2001-01-01 10:00', '2001-01-01 12:00');",
+   "insert into exestat  values (null,'jobstep1','testapp','2001-01-01 10:00', '2001-01-01 12:00');",
    };
    
    static void load(Connection conn) throws SQLException

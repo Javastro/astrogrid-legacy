@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplicationCreator.java,v 1.1 2003/12/05 22:52:16 pah Exp $
+ * $Id: CmdLineApplicationCreator.java,v 1.2 2003/12/07 01:09:48 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ public class CmdLineApplicationCreator extends ApplicationFactory {
    
    public static CmdLineApplicationCreator getInstance(ApplicationDescriptions appdisc){
       if (instance == null) {
-         synchronized(instance)
+         synchronized(CmdLineApplicationCreator.class)
          {
             if (instance == null) {
                instance = new CmdLineApplicationCreator(appdisc);

@@ -13,10 +13,17 @@
   </schema>
   <schema targetNamespace="urn:beans.applications.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
-   <complexType name="ApplicationDescription">
+   <complexType name="SimpleApplicationDescription">
     <sequence>
      <element name="name" nillable="true" type="xsd:string"/>
-     <element name="parameter" nillable="true" type="xsd:string"/>
+     <element name="xmlDescriptor" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="User">
+    <sequence>
+     <element name="account" nillable="true" type="xsd:string"/>
+     <element name="group" nillable="true" type="xsd:string"/>
+     <element name="token" nillable="true" type="xsd:string"/>
     </sequence>
    </complexType>
    <complexType name="ParameterValues">
@@ -29,6 +36,8 @@
  </wsdl:types>
 
    <wsdl:message name="executeApplicationResponse">
+
+      <wsdl:part name="executeApplicationReturn" type="xsd:boolean"/>
 
    </wsdl:message>
 
@@ -78,7 +87,7 @@
 
    <wsdl:message name="getApplicationDescriptionResponse">
 
-      <wsdl:part name="getApplicationDescriptionReturn" type="tns1:ApplicationDescription"/>
+      <wsdl:part name="getApplicationDescriptionReturn" type="tns1:SimpleApplicationDescription"/>
 
    </wsdl:message>
 
@@ -95,6 +104,8 @@
       <wsdl:part name="jobstepID" type="xsd:string"/>
 
       <wsdl:part name="jobMonitorURL" type="xsd:string"/>
+
+      <wsdl:part name="user" type="tns1:User"/>
 
       <wsdl:part name="parameters" type="tns1:ParameterValues"/>
 
@@ -118,7 +129,7 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="initializeApplication" parameterOrder="applicationID jobstepID jobMonitorURL parameters">
+      <wsdl:operation name="initializeApplication" parameterOrder="applicationID jobstepID jobMonitorURL user parameters">
 
          <wsdl:input message="intf:initializeApplicationRequest" name="initializeApplicationRequest"/>
 

@@ -18,7 +18,7 @@
 <property name="axis.url"     value="${tomcat.url}/${appint.webapp.name}"/>
 <property name="axis.timeout" value="60"/>
 
-<!-- this classpath comes from the files that are extracted from the axis distro -->
+<!-- this classpath comes from the files that are extracted from the axis distro / could this be shortened with a fileset?-->
     <path id="axis.classpath">
         <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/axis.jar"/>
         <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/axis-ant.jar"/>
@@ -123,11 +123,14 @@
             style="RPC"
             use="ENCODED"
    >
-            <!-- The classpath to find the authenticationService classes -->
+            <!-- The classpath to find the applicationServerService classes -->
             <classpath>
                 <path location="${maven.build.dest}"/>
+                <path refid="maven.dependency.classpath"/> <!-- for things in the common jar -->
             </classpath>
             <mapping package="org.astrogrid.applications" namespace="urn:beans.applications.astrogrid.org" />
+            <mapping package="org.astrogrid.applications.description" namespace="urn:beans.applications.astrogrid.org" />
+            <mapping package="org.astrogrid.community" namespace="urn:beans.applications.astrogrid.org" /> <!-- this is in the common package - perhaps it should just be left as is and deleted -->
             
    </axis-java2wsdl>
    </goal> 
@@ -143,6 +146,10 @@
            <mapping namespace="urn:manager.applications.astrogrid.org" package="org.astrogrid.applications.delegate"/>
            <mapping namespace="urn:impl.manager.applications.astrogrid.org"   package="org.astrogrid.applications.delegate.impl"/>
            <mapping namespace="urn:beans.applications.astrogrid.org"   package="org.astrogrid.applications.delegate.beans"/>
+            <classpath>
+                <path location="${maven.build.dest}"/>
+                <path refid="maven.dependency.classpath"/> <!-- for things in the common jar -->
+            </classpath>
 		
 	</axis-wsdl2java>
 	<!-- generate the server side stuff -->
@@ -183,6 +190,9 @@
 		<echo message="tomcat.manager.username     : ${tomcat.manager.username}"/>
 		<echo message="tomcat.manager.password     : ${tomcat.manager.password}"/>
 		<echo message="maven.war.src               : ${maven.war.src}"/>
+        <property name="project.class.path.string" refid="maven.dependency.classpath"/>
+        <echo>maven.dependency.classpath=${project.class.path.string}</echo>
+
  		<echo message=""/>
     </goal>
 
@@ -241,7 +251,7 @@
 
 
     <goal name="delegatejar" prereqs="java:compile">
-         <jar destfile="${maven.build.dir}/ApplicationControllerDelegate.jar">
+         <jar destfile="${maven.build.dir}/ApplicationControllerDelegate-${pom.currentVersion}.jar">
             <fileset dir="${maven.build.dest}">
                <include name="**/delegate/**" />
             </fileset>
@@ -267,11 +277,19 @@
   
 -->
   <goal name="axis-declare-tasks">
-     <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
+     <taskdef resource="axis-tasks.properties"   inheritRefs="true" >
+           <classpath>
+                <path refid="maven.dependency.classpath"/> 
+                <path refid="axis.classpath" />
+            </classpath>
+     
+     </taskdef>
   </goal>
 
 <!-- tomcat tools -->
 <goal name="tomcat-declare-tasks">
+   <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
+  
    <!-- Configure the custom Ant tasks for the Manager application -->
   <taskdef name="tomcat-deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath"/>
   <taskdef name="tomcat-install"   classname="org.apache.catalina.ant.InstallTask" classpathref="maven.dependency.classpath"/>

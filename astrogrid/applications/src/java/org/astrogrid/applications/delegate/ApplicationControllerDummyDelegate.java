@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerDummyDelegate.java,v 1.3 2003/12/05 22:52:16 pah Exp $
+ * $Id: ApplicationControllerDummyDelegate.java,v 1.4 2003/12/07 01:09:48 pah Exp $
  * 
  * Created on 25-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,8 +15,9 @@ package org.astrogrid.applications.delegate;
 
 import java.rmi.RemoteException;
 
-import org.astrogrid.applications.delegate.beans.ApplicationDescription;
 import org.astrogrid.applications.delegate.beans.ParameterValues;
+import org.astrogrid.applications.delegate.beans.SimpleApplicationDescription;
+import org.astrogrid.applications.delegate.beans.User;
 
 /**
  * A dummy delegate for the application controller service.
@@ -50,11 +51,11 @@ public class ApplicationControllerDummyDelegate
    /* (non-Javadoc)
     * @see org.astrogrid.applications.delegate.ApplicationController#getApplicationDescription(java.lang.String)
     */
-   public ApplicationDescription getApplicationDescription(String applicationID)
+   public SimpleApplicationDescription getApplicationDescription(String applicationID)
       throws RemoteException {
-        ApplicationDescription d = new ApplicationDescription();
+        SimpleApplicationDescription d = new SimpleApplicationDescription();
         d.setName("sextractor");
-        d.setParameter("this should be an wsdl description of the parameters?");
+        d.setXmlDescriptor("this should be an wsdl description of the parameters?");
         return d;
    }
 
@@ -65,6 +66,7 @@ public class ApplicationControllerDummyDelegate
       String applicationID,
       String jobstepID,
       String jobMonitorURL,
+      User user,
       ParameterValues parameters)
       throws RemoteException {
          return 10;
@@ -74,7 +76,8 @@ public class ApplicationControllerDummyDelegate
    /* (non-Javadoc)
     * @see org.astrogrid.applications.delegate.ApplicationController#executeApplication(int)
     */
-   public void executeApplication(int executionId) throws RemoteException {
+   public boolean executeApplication(int executionId) throws RemoteException {
+      return true;
    }
 
    /* (non-Javadoc)

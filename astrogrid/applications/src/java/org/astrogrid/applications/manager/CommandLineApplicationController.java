@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.9 2003/12/05 22:52:16 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.10 2003/12/07 01:09:48 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,13 +11,17 @@
 
 package org.astrogrid.applications.manager;
 
-import org.astrogrid.applications.Application;
-import org.astrogrid.applications.Parameter;
-import org.astrogrid.applications.ParameterValues;
-import org.astrogrid.applications.description.ApplicationDescription;
-import org.astrogrid.applications.description.SimpleApplicationDescription;
-import org.astrogrid.community.User;
 import java.util.HashSet;
+import java.util.Map;
+
+import org.astrogrid.applications.ApplicationFactory;
+import org.astrogrid.applications.ParameterValues;
+import org.astrogrid.applications.commandline.ApplicationEnvironment;
+import org.astrogrid.applications.commandline.CmdLineApplication;
+import org.astrogrid.applications.commandline.CmdLineApplicationCreator;
+import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
+import org.astrogrid.applications.commandline.exceptions.CannotCreateWorkingDirectoryException;
+import org.astrogrid.community.User;
 
 public class CommandLineApplicationController extends AbstractApplicationController  {
    
@@ -35,9 +39,26 @@ public class CommandLineApplicationController extends AbstractApplicationControl
    /* (non-Javadoc)
     * @see org.astrogrid.applications.manager.ApplicationController#executeApplication(int)
     */
-   public void executeApplication(int executionId) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("CommandLineApplicationController.executeApplication() not implemented");
+   public boolean executeApplication(int executionId) {
+      boolean success = false;
+      
+      Integer id = new Integer(executionId);
+      
+      if (runningApplications.containsKey(id)) {
+         CmdLineApplication app =
+            (CmdLineApplication)runningApplications.get(id);
+            try {
+               success = app.execute();
+            }
+            catch (ApplicationExecutionException e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+            }
+      }
+      
+      
+      return success;
+      
    }
 
    /* (non-Javadoc)
@@ -57,14 +78,41 @@ public class CommandLineApplicationController extends AbstractApplicationControl
       String jobMonitorURL,
       User user,
       ParameterValues parameters) {
+         int executionId = -1;
          
-         throw new UnsupportedOperationException("initialize application");
+         // create the application object
+         ApplicationFactory factory = CmdLineApplicationCreator.getInstance(applicationDescriptions);
+         CmdLineApplication cmdLineApplication = (CmdLineApplication)factory.createApplication(applicationID);
+      
+
+         
+      try {
+         // create the application environment
+           ApplicationEnvironment environment = new ApplicationEnvironment();
+           cmdLineApplication.setApplicationEnvironment(environment);
+           executionId = environment.getExecutionId();
+           
+        //TODO parse the parameter values and set up the parameter array
+        
+        // add this application to the execution map
+        runningApplications.put(new Integer(executionId), cmdLineApplication);
+        
+        
+      }
+      catch (CannotCreateWorkingDirectoryException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+         
+      }
+       
+       
+       return executionId;
    }
 
    /**
     *@link aggregation
     *      @associates org.astrogrid.applications.commandline.ApplicationEnvironment
     */
-   private HashSet runningApplications;
+   private Map runningApplications;
 }
 

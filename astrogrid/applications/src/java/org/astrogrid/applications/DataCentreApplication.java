@@ -1,5 +1,5 @@
 /*
- * $Id: DataCentreApplication.java,v 1.1 2003/10/30 14:12:25 pah Exp $
+ * $Id: DataCentreApplication.java,v 1.2 2003/12/07 01:09:48 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ package org.astrogrid.applications;
 public class DataCentreApplication extends AbstractApplication {
 public DataCentreApplication(){}
 
-   public void execute(){
-      // Write your code here
+   public boolean execute(){
+      return false;
    }
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.3 2003/12/05 22:52:16 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.4 2003/12/07 01:09:48 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,7 +13,6 @@
 
 package org.astrogrid.applications.manager;
 
-import com.sun.enterprise.deployment.Application;
 
 import org.astrogrid.applications.ParameterValues;
 import org.astrogrid.applications.common.config.BaseDBTestCase;

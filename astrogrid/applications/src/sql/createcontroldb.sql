@@ -1,14 +1,13 @@
--- $Id: createcontroldb.sql,v 1.1 2003/12/01 22:24:59 pah Exp $
+-- $Id: createcontroldb.sql,v 1.2 2003/12/07 01:09:48 pah Exp $
 -- creates the control database for the application controller
 
 -- main table of execution parameters
-DROP TABLE execution IF EXISTS ;
-CREATE TABLE execution
+DROP TABLE exestat IF EXISTS ;
+CREATE TABLE exestat
     (
-    executionId       VARCHAR NOT NULL,
-    jobstepId    VARCHAR NOT NULL,
-    program      VARCHAR NOT NULL,
+    executionId      INTEGER IDENTITY,
+    jobstepId    VARCHAR ,
+    program      VARCHAR ,
     starttime        DATETIME DEFAULT 'now',
-    endtime TIMESTAMP,
-    PRIMARY KEY (executionId)
+    endtime TIMESTAMP
     ) ;
