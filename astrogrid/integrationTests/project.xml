@@ -55,6 +55,11 @@
 	</repository>
 	<dependencies>
 		<dependency>
+			<artifactId>astrogrid-mySpace</artifactId>
+			<groupId>astrogrid-mySpace</groupId>
+			<version>SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<artifactId>jconfig</artifactId>
 			<groupId>jconfig</groupId>
 			<version>2.1</version>
