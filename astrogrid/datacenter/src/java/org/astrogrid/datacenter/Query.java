@@ -65,6 +65,8 @@ public class Query {
 					    if (nodeList2.item(j).getNodeType() != Node.ELEMENT_NODE) 
 						    continue;
 						    for (int k= 0 ; k < nodeList2.getLength() ; k++) {
+								if (nodeList2.item(k).getNodeType() != Node.ELEMENT_NODE) 
+									continue;
 								element = (Element) nodeList2.item(k) ;
 								if (element.getTagName().equals(JobDocDescriptor.CATALOG_ELEMENT)) 
 									catalog = new Catalog( element );
