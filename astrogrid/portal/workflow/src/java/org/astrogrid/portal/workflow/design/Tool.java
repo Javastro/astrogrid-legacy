@@ -133,9 +133,6 @@ public class Tool {
     }
     
     
-
-    /**
-      */
     public String getName() {
         return this.name;
     }
@@ -146,66 +143,33 @@ public class Tool {
     }
     
     
-    public ListIterator getInputParameters() {
-        if( TRACE_ENABLED ) trace( "Tool.getInputParameters() entry") ; 
+    public ListIterator getInputParameters() {; 
         return this.inputParameters.listIterator() ;
     }
     
     
-    public ListIterator getOutputParameters() {
-        if( TRACE_ENABLED ) trace( "Tool.getOutputParameters() entry") ; 
+    public ListIterator getOutputParameters() { 
         return this.outputParameters.listIterator() ;
     }
     
     
     public Parameter newInputParameter( String name ) {
-        if( TRACE_ENABLED ) trace( "Tool.newInputParameter() entry") ;
-        
-        Parameter
-            p = new Parameter( name ) ;
-        this.inputParameters.add( p ) ;
-        return p ;
-        
-    }
+        return Tool.newParameter( name, this.inputParameters ) ;  
+    } 
  
  
     public Parameter newInputParameter( Parameter param ) {
-        if( TRACE_ENABLED ) trace( "Tool.newInputParameter() entry") ;
-        
-        Parameter
-            p = this.newInputParameter( param.getName() ) ;
-        p.setContents( param.getContents() ) ; 
-        p.setDocumentation( param.getDocumentation() ) ;
-        p.setLocation( param.getLocation()) ;
-        p.setType( param.getType() ) ;
-        p.setCardinality( param.getCardinality() ) ;
-          
-        return p ;
+        return Tool.newParameter( param.getName(), this.inputParameters ) ; 
     }
  
     
     public Parameter newOutputParameter( String name ) {
-        if( TRACE_ENABLED ) trace( "Tool.newInputParameter() entry") ;
-        
-        Parameter
-            p = new Parameter( name ) ;
-        this.outputParameters.add( p ) ;
-        return p ;
-    }
+        return Tool.newParameter( name, this.outputParameters ) ;
+    } 
     
     
     public Parameter newOutputParameter( Parameter param ) {
-        if( TRACE_ENABLED ) trace( "Tool.newOutputParameter() entry") ;
-        
-        Parameter
-            p = this.newOutputParameter( param.getName() ) ;
-        p.setContents( param.getContents() ) ; 
-        p.setDocumentation( param.getDocumentation() ) ;
-        p.setLocation( param.getLocation()) ;
-        p.setType( param.getType() ) ;
-        p.setCardinality( param.getCardinality() ) ;
-          
-        return p ;
+        return Tool.newParameter( param.getName(), this.outputParameters ) ;
      }
     
        
@@ -333,5 +297,62 @@ public class Tool {
 	public void setOutputParameters(List list) {
 		outputParameters = list;
 	}
+    
+    
+    private static Parameter newParameter( String name
+                                         , List parameterList ) {
+        if( TRACE_ENABLED ) trace( "Tool.newParameter(name,parameterList) entry") ;
+        
+        Parameter 
+            p = null ,
+            sourceParam = null ;        
+        ListIterator iterator = null ;            
+        int index = 0 ;
+        
+        try {
+
+            iterator = parameterList.listIterator() ;
+            
+            while( iterator.hasNext() ) {
+                p = (Parameter)iterator.next() ;
+                if( p.getName().equals( name ) ) {
+                    sourceParam = p ;
+                    index++ ;      
+                }
+            } // end while
+            
+            p = new Parameter( name ) ;
+            Tool.setBaseValues( p, sourceParam ) ;
+            
+            if( index == 0 ) {
+                parameterList.add( p ) ;
+            }
+            else {
+                parameterList.add( index, p ) ;
+            }
+                        
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Tool.newParameter(name,parameterList) exit") ;
+        }
+              
+        return p ;
+        
+    } // end of Tool.newParameter(name,parameterList)
+
+    
+    private static Parameter setBaseValues( Parameter target
+                                          , Parameter source ) {
+        if( source != null ) {
+//          target.setContents( source.getContents() ) ; 
+          target.setDocumentation( source.getDocumentation() ) ;
+//          target.setLocation( source.getLocation()) ;
+          target.setType( source.getType() ) ;
+          target.setCardinality( source.getCardinality() ) ;          
+        }
+        
+        return target ; 
+
+     } // end of setBaseValues()                  
 
 } // end of class Tool
