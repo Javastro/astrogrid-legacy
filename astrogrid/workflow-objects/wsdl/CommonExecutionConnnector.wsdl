@@ -1,105 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
-<!-- $Id: CommonExecutionConnnector.wsdl,v 1.1 2004/03/09 18:22:01 pah Exp $ -->
-<wsdl:definitions xmlns="http://schemas.xmlsoap.org/wsdl/" 
-    xmlns:apachesoap="http://xml.apache.org/xml-soap" 
-    xmlns:impl="urn:impl.cea.applications.astrogrid.org" 
-    xmlns:intf="urn:cea.applications.astrogrid.org" 
-    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
-    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
-    xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-    xmlns:cea="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" 
-    xmlns:wkf="http://www.astrogrid.org/schema/AGWorkflow/v1" 
-    xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" 
-    xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" 
-    xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1" 
-    targetNamespace="urn:cea.applications.astrogrid.org">
+<!-- $Id: CommonExecutionConnnector.wsdl,v 1.2 2004/03/10 13:57:20 pah Exp $ -->
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:impl.cea.applications.astrogrid.org" xmlns:intf="urn:cea.applications.astrogrid.org" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:cea="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:wkf="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1" xmlns:ns="http://www.astrogrid.org/schema/ExecutionRecord/v1" targetNamespace="urn:cea.applications.astrogrid.org">
 	<wsdl:types>
-		<schema targetNamespace="urn:impl.cea.applications.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
-			<import namespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" schemaLocation="../schema/AGApplicationBase.xsd"/>
-			<import namespace="http://www.astrogrid.org/schema/AGWorkflow/v1" schemaLocation="../schema/Workflow.xsd"/>
-			<import namespace="http://www.astrogrid.org/schema/CEATypes/v1" schemaLocation="../schema/CEATypes.xsd"/>
-			<element name="execute">
-				<complexType>
-					<sequence>
-						<element name="applicationID" type="xsd:string"/>
-						<element name="jobstepID" type="ceat:job-identifier-type"/>
-						<element name="jobMonitorURL" type="xsd:string"/>
-						<element ref="wkf:tool"/>
-					</sequence>
-				</complexType>
-			</element>
-			<element name="executeResponse">
-				<complexType>
-					<sequence>
-						<element name="executeReturn" type="xsd:string"/>
-					</sequence>
-				</complexType>
-			</element>
-			<element name="abort">
-				<complexType>
-					<sequence>
-						<element name="executionId" type="xsd:string"/>
-					</sequence>
-				</complexType>
-			</element>
-			<element name="abortResponse">
-				<complexType>
-					<sequence>
-						<element name="abortReturn" type="xsd:boolean"/>
-					</sequence>
-				</complexType>
-			</element>
-			<element name="listApplications">
-				<complexType/>
-			</element>
-			<element name="listApplicationsResponse">
-				<complexType>
-					<sequence>
-						<element name="listApplicationsReturn" type="cea:ApplicationList"/>
-					</sequence>
-				</complexType>
-			</element>
-			<element name="getApplicationDescription">
-				<complexType>
-					<sequence>
-						<element name="applicationID" type="xsd:string"/>
-					</sequence>
-				</complexType>
-			</element>
-			<element name="getApplicationDescriptionResponse">
-				<complexType>
-					<sequence>
-						<element name="getApplicationDescriptionReturn" type="xsd:string"/>
-					</sequence>
-				</complexType>
-			</element>
-			<element name="queryExecutionStatus">
-				<complexType>
-					<sequence>
-						<element name="executionId" type="xsd:string"/>
-					</sequence>
-				</complexType>
-			</element>
-			<element name="queryExecutionStatusResponse">
-				<complexType>
-					<sequence>
-						<element name="queryExecutionStatusReturn" type="ceat:message-type"/>
-					</sequence>
-				</complexType>
-			</element>
-			<element name="returnRegistryEntry">
-				<complexType/>
-			</element>
-			<element name="returnRegistryEntryResponse">
-				<complexType>
-					<sequence>
-						<element name="returnRegistryEntryReturn" type="xsd:string"/>
-					</sequence>
-				</complexType>
-			</element>
-		</schema>
+		<xsd:schema targetNamespace="urn:impl.cea.applications.astrogrid.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+			<xsd:annotation>
+				<xsd:documentation>AGApplictionBase needed for the application descriptions</xsd:documentation>
+			</xsd:annotation>
+			<xsd:import namespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" schemaLocation="../schema/AGApplicationBase.xsd"/>
+			<xsd:annotation>
+				<xsd:documentation>Workflow,xsd is needed for the tool element</xsd:documentation>
+			</xsd:annotation>
+			<xsd:import namespace="http://www.astrogrid.org/schema/AGWorkflow/v1" schemaLocation="../schema/Workflow.xsd"/>
+			<xsd:annotation>
+				<xsd:documentation>CEATypes is needed for the status callback..</xsd:documentation>
+			</xsd:annotation>
+			<xsd:import namespace="http://www.astrogrid.org/schema/CEATypes/v1" schemaLocation="../schema/CEATypes.xsd"/>
+			<xsd:annotation>
+				<xsd:documentation>The following types are all needed for the wrapped style of the interface</xsd:documentation>
+			</xsd:annotation>
+			<xsd:element name="execute">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element ref="wkf:tool"/>
+						<xsd:element name="jobstepID" type="ceat:job-identifier-type">
+							<xsd:annotation>
+								<xsd:documentation>The identifier for the job step being executed</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="jobMonitorURL" type="xsd:string">
+							<xsd:annotation>
+								<xsd:documentation>The endpoint of the JobMonitor service that is to be used for status callbacks</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="executeResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="executeReturn" type="xsd:string">
+							<xsd:annotation>
+								<xsd:documentation>The idetifier that can be used to track this particular execution instance of the application</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="abort">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="executionId" type="xsd:string">
+							<xsd:annotation>
+								<xsd:documentation>The identifier for the execution instance that is to be aborted.</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="abortResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="abortReturn" type="xsd:boolean"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="listApplications">
+				<xsd:complexType/>
+			</xsd:element>
+			<xsd:element name="listApplicationsResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="listApplicationsReturn" type="cea:ApplicationList"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getApplicationDescription">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="applicationID" type="xsd:string"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getApplicationDescriptionResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="getApplicationDescriptionReturn" type="xsd:string"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="queryExecutionStatus">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="executionId" type="xsd:string">
+							<xsd:annotation>
+								<xsd:documentation>The identifier for the execution instance that is to be queried</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="queryExecutionStatusResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="queryExecutionStatusReturn" type="ceat:message-type"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="returnRegistryEntry">
+				<xsd:complexType/>
+			</xsd:element>
+			<xsd:element name="returnRegistryEntryResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="returnRegistryEntryReturn" type="xsd:string"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
 	</wsdl:types>
 	<wsdl:message name="abortResponse">
 		<wsdl:part name="parameters" element="impl:abortResponse"/>
@@ -137,18 +155,25 @@
 	<wsdl:message name="getApplicationDescriptionResponse">
 		<wsdl:part name="parameters" element="impl:getApplicationDescriptionResponse"/>
 	</wsdl:message>
+	<wsdl:message name="ceaFault">
+		<wsdl:part name="message" type="xsd:string"/>
+	</wsdl:message>
 	<wsdl:portType name="CommonExecutionConnector">
 		<wsdl:operation name="execute" parameterOrder="">
+		<wsdl:documentation>Run an application asynchronously</wsdl:documentation>
 			<wsdl:input name="executeRequest" message="intf:executeRequest"/>
 			<wsdl:output name="executeResponse" message="intf:executeResponse"/>
+			<wsdl:fault name="executeFault" message="intf:ceaFault"/>
 		</wsdl:operation>
 		<wsdl:operation name="abort" parameterOrder="">
 			<wsdl:input name="abortRequest" message="intf:abortRequest"/>
 			<wsdl:output name="abortResponse" message="intf:abortResponse"/>
+			<wsdl:fault name="abortFault" message="intf:ceaFault"/>
 		</wsdl:operation>
 		<wsdl:operation name="listApplications">
 			<wsdl:input name="listApplicationsRequest" message="intf:listApplicationsRequest"/>
 			<wsdl:output name="listApplicationsResponse" message="intf:listApplicationsResponse"/>
+			<wsdl:fault name="listApplicationsFault" message="intf:ceaFault"/>
 		</wsdl:operation>
 		<wsdl:operation name="getApplicationDescription" parameterOrder="">
 			<wsdl:input name="getApplicationDescriptionRequest" message="intf:getApplicationDescriptionRequest"/>
@@ -157,6 +182,7 @@
 		<wsdl:operation name="queryExecutionStatus" parameterOrder="">
 			<wsdl:input name="queryExecutionStatusRequest" message="intf:queryExecutionStatusRequest"/>
 			<wsdl:output name="queryExecutionStatusResponse" message="intf:queryExecutionStatusResponse"/>
+			<wsdl:fault name="queryExecutionStatusFault" message="intf:ceaFault"/>
 		</wsdl:operation>
 		<wsdl:operation name="returnRegistryEntry">
 			<wsdl:input name="returnRegistryEntryRequest" message="intf:returnRegistryEntryRequest"/>
@@ -173,6 +199,9 @@
 			<wsdl:output>
 				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
 			</wsdl:output>
+			<wsdl:fault name="executeFault">
+				<wsdlsoap:fault name="ceaFault" use="literal"/>
+			</wsdl:fault>
 		</wsdl:operation>
 		<wsdl:operation name="abort">
 			<wsdlsoap:operation/>
@@ -182,6 +211,9 @@
 			<wsdl:output>
 				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
 			</wsdl:output>
+			<wsdl:fault name="abortFault">
+				<wsdlsoap:fault name="ceaFault" use="literal"/>
+			</wsdl:fault>
 		</wsdl:operation>
 		<wsdl:operation name="listApplications">
 			<wsdlsoap:operation/>
@@ -191,6 +223,9 @@
 			<wsdl:output>
 				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
 			</wsdl:output>
+			<wsdl:fault name="listApplicationsFault">
+				<wsdlsoap:fault name="ceaFault" use="literal"/>
+			</wsdl:fault>
 		</wsdl:operation>
 		<wsdl:operation name="getApplicationDescription">
 			<wsdlsoap:operation/>
@@ -209,6 +244,9 @@
 			<wsdl:output>
 				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
 			</wsdl:output>
+			<wsdl:fault name="queryExecutionStatusFault">
+				<wsdlsoap:fault name="ceaFault" use="literal"/>
+			</wsdl:fault>
 		</wsdl:operation>
 		<wsdl:operation name="returnRegistryEntry">
 			<wsdlsoap:operation/>
