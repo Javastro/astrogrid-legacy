@@ -123,6 +123,7 @@
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
+      <jar>JavaMail.jar</jar>
     </dependency>
 
       <!-- hsqldb - for testing -->
