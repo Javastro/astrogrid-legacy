@@ -2,57 +2,27 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
         targetNamespace="urn:jes/types/v1"
         xmlns:types="urn:jes/types/v1"
-                xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1"
         >
 
-        <xsd:import namespace="http://www.astrogrid.org/schema/CEATypes/v1" schemaLocation="CEATypes.xsd"/>
-<!-- types used within Job Controler -->
 
-                <xsd:complexType name="SubmissionResponse">
-                        <xsd:sequence>
-                                <xsd:element name="jobURN" type="types:jobURN" />
-                                <xsd:element name="message" type="xsd:string" />
-                        </xsd:sequence>
-                        <xsd:attribute name="submissionSuccessful" type="xsd:boolean" />
-                </xsd:complexType>
-                <xsd:complexType name="ListCriteria">
-                        <xsd:sequence>
-                                <xsd:element name="community" type="xsd:string" />
-                                <xsd:element name="userId" type="xsd:string" />
-                        </xsd:sequence>
-                </xsd:complexType>
-                <xsd:complexType name="WorkflowList">
-                        <xsd:sequence>
-                                        <xsd:element name="community" type="xsd:string" />
-                                        <xsd:element name="userId" type="xsd:string" />
-                                        <xsd:element name="message" type="xsd:string" />
-                                <xsd:element name="Workflow" type="xsd:string" maxOccurs="unbounded" />
-                        </xsd:sequence>
-                </xsd:complexType>
 
         <!-- duplication of jobURN in ExecutionRecord.xsd . simpler like this for now -->
         <xsd:simpleType name="jobURN">
                 <xsd:restriction base="xsd:anyURI" />
         </xsd:simpleType>
 
-<!-- message types - necessary to trigger use of 'wrapped style' -->
 
-                        <!-- definition of input parameters - using wrapped stype to work around a bug in document with multiple parts -->
-                        <xsd:element name="monitorJob">
-                                <xsd:complexType>
-                                        <xsd:sequence>
-                                        <xsd:element ref="ceat:job-identifier" />
-                                        <xsd:element ref="ceat:message" />
-                                        </xsd:sequence>
-                                </xsd:complexType>
-                        </xsd:element>
-                        <!-- resume job is the just the same, for now -->
-                        <xsd:element name="resumeJob">
-                                <xsd:complexType>
-                                        <xsd:sequence>
-                                        <xsd:element ref="ceat:job-identifier" />
-                                        <xsd:element ref="ceat:message" />
-                                        </xsd:sequence>
-                                </xsd:complexType>
-                        </xsd:element>
+        <xsd:simpleType name="workflow-string">
+                <xsd:restriction base="xsd:string" />
+        </xsd:simpleType>
+
+                      <xsd:complexType name="workflow-summary">
+                               <xsd:sequence>
+                             <xsd:element name="workflow-name" type="xsd:string" />
+                             <xsd:element name="job-urn" type="types:jobURN" />
+                               </xsd:sequence>
+                    </xsd:complexType>
+
+
+
 </xsd:schema>
