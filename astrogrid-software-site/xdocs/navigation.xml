@@ -78,6 +78,7 @@
 			<item name="AstroGrid Maven Documentation" href="/developerdocs/maven.html" collapse="true">
 				<item name="SNAPSHOT" href="http://www.astrogrid.org/maven/docs/SNAPSHOT"/>
 				<item name="HEAD" href="http://www.astrogrid.org/maven/docs/HEAD"/>                
+				<item name="Released" href="http://www.astrogrid.org/maven/docs/0.6.0"/>                 
 				<item name="All releases" href="http://www.astrogrid.org/maven/build"/>
 			</item>
 		</menu>
