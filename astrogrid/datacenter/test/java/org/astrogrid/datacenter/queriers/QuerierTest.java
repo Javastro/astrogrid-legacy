@@ -1,5 +1,5 @@
 /*
- * $Id: TestDummies.java,v 1.2 2003/08/27 16:34:15 mch Exp $
+ * $Id: QuerierTest.java,v 1.1 2003/08/29 15:20:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,7 +19,7 @@ import org.apache.axis.utils.XMLUtils;
  * @author M Hill
  */
 
-public class TestDummies extends TestCase
+public class QuerierTest extends TestCase
 {
 
    /**
@@ -70,7 +70,7 @@ public class TestDummies extends TestCase
      */
     public static Test suite() {
         // Reflection is used here to add all the testXXX() methods to the suite.
-        return new TestSuite(TestDummies.class);
+        return new TestSuite(QuerierTest.class);
     }
 
     /**
