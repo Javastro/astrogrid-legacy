@@ -2,58 +2,23 @@
 <!--+
     | Maven project description for the AstroGrid registry client components.
     +-->
-<project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
-
-    <!--+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="maven-project.xsd">
+	<!--+
         | Extend the top level project descriptor.
         +-->
-    <extend>./maven/project.xml</extend>
-
-    <!--+
-        | The current version of the Maven project descriptor.
-        +-->
-    <pomVersion>3</pomVersion>
-
-    <!--+
+	<extend>./maven/project.xml</extend>
+	<!--+
         | The short name of the project.
         | This is used when naming jars and distribution files.
         +-->
-    <id>astrogrid-registry-master</id>
-
-    <!--+
+	<id>astrogrid-registry-master</id>
+	<!--+
         | The full name of the project.
         | This is used when generating JavaDoc titles.
         +-->
-    <name>AstroGrid registry</name>
-
-    
-
-
-    <!--+
-        | Our cvs repository location.
-        +-->
-    <repository>
-        <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry
-        </connection>
-        <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry
-        </developerConnection>
-                <url> http://www.astrogrid.org/viewcvs/astrogrid/registry/ 
-            </url>
-    </repository>
-
-
-	<organization>
-		<name>AstroGrid</name>
-		<url>http://www.astrogrid.org</url>
-		<logo>http://www.astrogrid.org/images/AGlogo</logo>
-	</organization>
-	<inceptionYear>2002</inceptionYear>
-        <description>
-        <![CDATA[
+	<name>AstroGrid registry</name>
+	<description> <![CDATA[
 	<p>
 		The registry is based around metadata for virtual observatories based on IVOA standards <a href="http://www.ivoa.net">IVOA website</a>.
 		A registry holds vast amounts of metadata for particular Resources.
@@ -107,8 +72,10 @@
 			</ul>
 		</p>
 	</section>
-		]]>        
-</description>
-        <shortDescription>Astrogrid Registry</shortDescription>
-        
+		]]> </description>
+	<shortDescription>Astrogrid Registry</shortDescription>
+	<build>
+		<sourceDirectory/>
+		<unitTestSourceDirectory/>
+	</build>
 </project>
