@@ -86,7 +86,7 @@ public class RegistryHarvestAction extends AbstractAction
          request.setAttribute("registryxml",registryXML);
       }
       //Get the date format.
-      String dateSince = request.getParameter("date_since");
+      String dateSince = request.getParameter("dateFrom");
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
       Date dat = null;
       String newRegistry = request.getParameter("newregistry");
@@ -124,12 +124,16 @@ public class RegistryHarvestAction extends AbstractAction
             int startTemp = -1;
             int endTemp = -1;
                if(registryXML != null &&  registryXML.length() > 0) {
-                  startTemp = registryXML.indexOf("<AccessURL>");            
+                  startTemp = registryXML.indexOf("<AccessURL");            
                   endTemp = registryXML.indexOf("</AccessURL>");
                }//if
+         
                if(startTemp != -1 && endTemp != -1) {
-                  accessURL = registryXML.substring(startTemp + "<AccessURL>".length(),endTemp);
+                  startTemp = registryXML.indexOf(">",startTemp) + 1;
+                  System.out.println("the startTemp = " + startTemp + " and endTemp = " + endTemp);
+                  accessURL = registryXML.substring(startTemp,endTemp);
                }//if
+               System.out.println("the startTemp = " + startTemp + " endTemp = " + endTemp + " and accessurl = " + accessURL);
             if(accessURL != null) {
                if(accessURL.indexOf("?") == -1) {
                   accessURL += "?verb=ListRecords&dateFrom=" + sdf.format(dat);   

@@ -20,7 +20,7 @@
 	<!--+
 	    | Match the admin element.
 		+-->
-	<xsl:template match="registryharvest">
+	<xsl:template match="harvest">
 		<page>
 			<!-- Add our page content -->
 			<content>
@@ -42,7 +42,7 @@
 		</xsl:if>		
 		<br />
 		<xsl:if test="$harvestResult != ''" >
-			<i>Raw XML of the Harvest Result and has been updated to the Registry:</i> <br />
+			<i>Raw XML of the Harvest Result:</i> <br />
 			<xsl:value-of select="$harvestResult" />
 		</xsl:if>
 		<xsl:if test="$errorMessage != ''" >

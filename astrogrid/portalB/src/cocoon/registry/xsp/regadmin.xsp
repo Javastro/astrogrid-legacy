@@ -22,7 +22,7 @@
 		<regitems>
 			<xsp:logic>
 			<![CDATA[
-				Map regList = (Map)request.getAttribute("regitems");
+				Map regList = (Map)session.getAttribute("regitems");
 				Set st = regList.keySet();
 				Iterator iter = null;
 				String actionType = (String)request.getAttribute("action");

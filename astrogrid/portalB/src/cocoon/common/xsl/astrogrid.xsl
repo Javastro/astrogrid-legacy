@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/astrogrid.xsl,v $</cvs:source>
-    | <cvs:date>$Author: pjn3 $</cvs:date>
-    | <cvs:author>$Date: 2003/10/28 16:27:55 $</cvs:author>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:date>$Author: KevinBenson $</cvs:date>
+    | <cvs:author>$Date: 2003/12/16 17:16:08 $</cvs:author>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     | <cvs:log>
     | $Log: astrogrid.xsl,v $
+    | Revision 1.12  2003/12/16 17:16:08  KevinBenson
+    | small bug changes fixed.  Also added a sitemap.xmap file in the ral directory.
+    |
     | Revision 1.11  2003/10/28 16:27:55  pjn3
     | Job Monitor renamed Job Manager
     |
@@ -199,8 +202,9 @@
 									<xsl:attribute name="href">
 										<xsl:value-of select="$registry-page"/>
 									</xsl:attribute>
-									Browse Registry
+									Registry
 								</a>
+								<!--
 								<br/>
 								<br/>
 								<a class="menu">
@@ -208,7 +212,8 @@
 										<xsl:value-of select="$regadmin-page"/>
 									</xsl:attribute>
 									Registry Admin
-								</a>								
+								</a>
+								-->								
 								<br/>
 								<br/>
 									<a class="menu">

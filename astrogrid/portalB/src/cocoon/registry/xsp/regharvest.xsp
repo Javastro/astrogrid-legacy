@@ -17,13 +17,5 @@
 	</xsp:structure>	    
 	
 	<harvest>
-		<xsp:logic>
-			<![CDATA[
-				String result = "nevermind everything held in xsl page";
-			]]>
-			<xsp:element name="metadata">
-				<xsp:expr>result</xsp:expr>
-			</xsp:element>
-		</xsp:logic>
 	</harvest>
 </xsp:page>

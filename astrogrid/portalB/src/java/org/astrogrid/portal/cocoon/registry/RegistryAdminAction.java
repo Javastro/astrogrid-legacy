@@ -64,7 +64,13 @@ public class RegistryAdminAction extends AbstractAction
    
    private static final String REMOVE_ACTION = "remove";   
 
-   private static final String ADD_CRITERIA_ACTION = "addcriteria";   
+   private static final String ADD_CRITERIA_ACTION = "addcriteria";
+   
+   private static final String REGISTRY_ITEMS_PARAM = "regitems";   
+   
+   private static final String CREATE_COPY_PARAM = "createcopy";   
+   
+   private static final String UPDATE_XML_PARAM = "updatexml";   
    
 
    /**
@@ -105,10 +111,10 @@ public class RegistryAdminAction extends AbstractAction
       DocumentBuilderFactory dbf = null;
       DocumentBuilder regBuilder = null;
       //See if a client passed in the IVOA xml to be updated.
-      String updateXML = request.getParameter("updatexml");
+      String updateXML = request.getParameter(UPDATE_XML_PARAM);
       boolean createCopy = false;
       //Are we doing an update or just grabbing the data for template purposes on an add.
-      if(request.getParameter("createcopy") != null) {
+      if(request.getParameter(CREATE_COPY_PARAM) != null) {
          createCopy = true;
       }
       String authID = "";
@@ -171,8 +177,6 @@ public class RegistryAdminAction extends AbstractAction
          }
          //Create the map from the DOM tree.
          mp = RegistryAdminDocumentHelper.createMap(registryDocument);
-         //set the map into the request.
-         request.setAttribute("regitems",mp);
         // printMap(mp);         
       }
 
@@ -196,15 +200,19 @@ public class RegistryAdminAction extends AbstractAction
       //Okay it is an update or add action.      
       if(ADD_ACTION.equals(action) || UPDATE_ACTION.equals(action)) {
          Enumeration enum = request.getParameterNames();
-         LinkedHashMap lhm = new LinkedHashMap();
+         //LinkedHashMap lhm = new LinkedHashMap();
          boolean validAuthority = true;
+         mp = (Map)session.getAttribute(REGISTRY_ITEMS_PARAM);
          //put the request results in a LinkedHashMap
          while(enum.hasMoreElements()) {
             String param = (String)enum.nextElement();
             if(param.indexOf("/") != -1) {
                String val = request.getParameter(param);
                if(val != null && val.trim().length() > 0) {
-                  lhm.put(param,val);
+                  if(mp.containsKey(param)) {
+                     mp.put(param,val);
+                  }
+                  //NOT NEEDED lhm.put(param,val);
                }
                //make sure you have authority to make an add or update.
                if(param.indexOf("vg:") == -1 && param.indexOf("AuthorityID") != -1 && param.indexOf("Identifier") != -1) {
@@ -215,16 +223,17 @@ public class RegistryAdminAction extends AbstractAction
             }//if
          }//while
          //Debug lets print out the map.
-         printMap(lhm);
+         printMap(mp);
          //Create the DOM tree from the map.
-         Document finalDoc = RegistryAdminDocumentHelper.createDocument(lhm);
+         Document finalDoc = RegistryAdminDocumentHelper.createDocument(mp);
          System.out.println("the resulting document = " + XMLUtils.DocumentToString(finalDoc) );
          url = RegistryConfig.getProperty("publish.registry.update.url");
+         
          //Now lets create a Mapping.
          //TODO this is not right need to create a mapping from the update service call below.
          
-         mp = RegistryAdminDocumentHelper.createMap(finalDoc);
-         request.setAttribute("regitems",mp);
+         //mp = RegistryAdminDocumentHelper.createMap(finalDoc);
+         
          //make sure it is a valid authority.
          if(validAuthority) {         
             try {
@@ -249,6 +258,9 @@ public class RegistryAdminAction extends AbstractAction
       }else if(REMOVE_ACTION.equals(action)) {
 //       call the client service remove method
       }
+      if(mp != null && mp.size() > 0) {
+         session.setAttribute(REGISTRY_ITEMS_PARAM,mp);
+      }//if
       
       //set the action for the portal.
       if(mainElem != null && mainElem.length() > 0 ) {
@@ -277,6 +289,16 @@ public class RegistryAdminAction extends AbstractAction
          key = (String)iter.next();
          System.out.println(" The key = " + key + " The value = " + (String)tm.get(key));
       }//while      
-   }   
-     
+   }  
+   
+   private boolean validateUpdateDocument(Document doc) {
+      if(doc.getElementsByTagName("AuthorityID").getLength() > 0 &&
+         doc.getElementsByTagName("Description").getLength() > 0 &&
+         doc.getElementsByTagName("Title").getLength() > 0 &&
+         doc.getElementsByTagName("Subject").getLength() > 0 &&
+         doc.getElementsByTagName("ReferenceURL").getLength() > 0) {
+            return true;
+         }//if
+      return false;  
+   }//validateUpdateDocument 
 }

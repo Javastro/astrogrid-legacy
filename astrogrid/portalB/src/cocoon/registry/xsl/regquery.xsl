@@ -137,7 +137,7 @@
 					<input type="hidden" name="registryxml">
 						<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
 					</input>
-					Havest From Date: <input type="text" name="date_since" />
+					Havest From Date: <input type="text" name="dateFrom" />
 					<input type="submit" name="harvest" value="Harvest Registry" />
 				</form>
 			</xsl:if>

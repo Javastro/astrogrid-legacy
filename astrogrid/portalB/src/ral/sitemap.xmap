@@ -36,6 +36,9 @@
 	    <map:action name="astrogrid-credentials" src="org.astrogrid.portal.cocoon.community.CredentialAction"/>
 	    <map:action name="astrogrid-login" src="org.astrogrid.portal.cocoon.common.LoginAction"/>
 	    <map:action name="astrogrid-workflow" src="org.astrogrid.portal.cocoon.workflow.design.DesignAction"/>
+	    <map:action name="astrogrid-registry-admin" src="org.astrogrid.portal.cocoon.registry.RegistryAdminAction"/>
+	    <map:action name="astrogrid-registry-query" src="org.astrogrid.portal.cocoon.registry.RegistryQueryAction"/>
+	    <map:action name="astrogrid-registry-options" src="org.astrogrid.portal.cocoon.registry.RegistryOptionsAction"/>	    
       </map:actions>
    </map:components>
 
@@ -85,11 +88,40 @@
             <map:redirect-to uri="agregistry.html"/>
          </map:match>
 
+<!--
          <map:match pattern="registry/**">
             <map:mount uri-prefix="registry" src="registry/sitemap.xmap"  check-reload="yes" reload-method="synchron"/>
          </map:match>
+-->
 
+         <map:match pattern="agregistry.html">
+         	<map:act type="astrogrid-registry-options">
+               <map:generate src="registry/xsp/regoptions.xsp" type="serverpages" label="000, 001"/>         	
+              <map:transform src="registry/xsl/regoptions.xsl" label="002">
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+              </map:transform>
+             </map:act>
+	          <map:transform src="common/xsl/astrogrid.xsl" label="003">
+		        <map:parameter name="current-page"  value="agdataquery.html"/>
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="agregistry.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="title-name"  value="Login"/>               
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            <!-- Serialize as HTML -->
+            <map:serialize type="html"/>
+         </map:match>
 
+<!--
          <map:match pattern="agregistry.html">
               <map:generate src="registry/xsp/browse.xsp" type="serverpages"/>
               <map:transform src="registry/xsl/browse.xsl"/>
@@ -111,13 +143,14 @@
             </map:transform>
               <map:serialize type="html"/>
          </map:match>
-
+-->
+<--
          <map:match pattern="agregadmin.html">
               <map:generate src="registry/xsp/admin.xsp" type="serverpages"/>
               <map:transform src="registry/xsl/admin.xsl"/>
               <map:serialize type="html"/>
          </map:match>
-
+-->
          <map:match pattern="aglogin.html">
          	<map:act type="astrogrid-login">
                <map:generate src="common/xsp/login.xsp" type="serverpages" label="000, 001"/>         	
