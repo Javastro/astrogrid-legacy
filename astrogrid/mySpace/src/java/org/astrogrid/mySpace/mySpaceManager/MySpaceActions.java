@@ -1171,7 +1171,6 @@ public class MySpaceActions
          RegistryManager reg = new RegistryManager(registryName);
          if (status.getSuccessStatus())
          {
-
 //
 //         Assemble the UserAccount from the account.
 
@@ -1182,7 +1181,6 @@ public class MySpaceActions
 
             if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
             {
-
 //
 //            Check that the user is permitted to add new users.
 
@@ -1231,7 +1229,29 @@ public class MySpaceActions
 //                  Check that this container does not already exist.
 
                      Vector vec = reg.lookupDataItemRecords(containerName);
-                     if (vec.size() == 0)
+
+//                   logger.appendMessage("loop, (containerName: " + loop
+//                     + " " + containerName);
+//                   if (vec == null)
+//                   {  logger.appendMessage("vec is null");
+//                   }
+//                   else
+//                   {  logger.appendMessage("vec is not null, size" +
+//                        vec.size());
+//                   }
+
+                     boolean exists = true;
+
+                     if (vec == null)
+                     { exists = false;
+                     }
+                     else
+                     {  if (vec.size() == 0)
+                        {  exists = false;
+                        }
+                     }
+
+                     if (!exists)
                      {
 
 //
