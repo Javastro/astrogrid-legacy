@@ -1,42 +1,83 @@
 package org.astrogrid.mySpace.mySpaceManager;
 
 import java.sql.*;
-// import java.io.*;
 import java.util.*;
 
-// import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
-// import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
+import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
+import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
 
 /**
  * The <code>RegistryManager</code> class is used to access entries in
- * a MySpace registry.
+ * a MySpace registry and to access details of the servers in the MySpace
+ * system.
  * 
  * <p>
- * Prototype version using JDBC.
+ * The following functions are provided to access registry entries:
+ * </p>
+ * <ul>
+ *   <li>add an entry to the registry,</li>
+ *   <li>update an entry in the registry,</li>
+ *   <li>delete an entry from the registry,</li>
+ *   <li>look up a single entry in the registry,</li>
+ *   <li>look up a set of named entries in the registry.</li>
+ * </ul>
+ * <p>
+ * The operations are performed at quite a low-level: the entries are
+ * merely read from or written to the registry.  No checks for logical
+ * consistency are made.  For example, if an entry is being added there is
+ * no check that the DataHolder name corresponds to a container which already
+ * already exists.  Such checks are assumed to have already been performed
+ * at a higher level.
+ * </p>
+ * <p>
+ * The following functions are provided to access the servers known to the
+ * MySpace system:
+ * </p>
+ * <ul>
+ *   <li>obtain the names of all the servers in the MySpace system,</li>
+ *   <li>check whether a server with a given name exists in the MySpace
+ *    system,</li>
+ *   <li>obtain the expiry period, in days, of a given server,</li>
+ *   <li>obtain the URI of a given server,</li>
+ *   <li>obtain the base directory of a given server.</li>
+ * </ul>
+ * <p>
+ * There are no methods to update the details of a server or to add or
+ * delete a server.
+ * </p>
+ * <p>
+ * Constructors to either access an existing registry or to create a new
+ * registry are supplied.  In addition there is a dummy constructor with
+ * no arguments.
+ * </p>
+ * <p>
+ * The registry entries and server details are held as two tables in a
+ * DBMS and accessed using JDBC.
+ * </p>
  * 
  * @author A C Davenhall (Edinburgh)
  * @version Iteration 4.
  */
 
 public class RegistryManager
-{  private String jdbcDriverClass = "org.hsqldb.jdbcDriver";
+{  private boolean DEBUG = true;
+
+   private String jdbcDriverClass = "org.hsqldb.jdbcDriver";
 
    private String registryName;
                            // Name of the registry.
    private String registryDBName;
                            // Name of the database holding the registry.
 
-   private int dataItemIDSeqNo;
-                           // Sequence number for new dataItems.
-
 
 //
 // -- Constructors ---------------------------------------------------
 
 /**
- * Constructor to create a <code>RegistryManager</code> object by reading
- * an existing registry file.  The argument passed to the constructor is
- * the name of this file.
+ * Constructor to create a <code>RegistryManager</code> object for an
+ * existing, populated registry.
+ *
+ * @param registryName The name of the registry.
  */
 
    public RegistryManager(String registryName)
@@ -48,9 +89,11 @@ public class RegistryManager
 
 /**
  * Constructor to create a <code>RegistryManager</code> object for a new,
- * empty registry.  The first argument is the name of the file to which
- * this registry will, in due course, be written.  The second argument
- * is a Vector containing details of the Servers known to the MySpace system.
+ * empty registry.
+ *
+ * @param registryName The name of the new registry.
+ * @param servers Vector of <code>ServerDetails</code> containing the
+ *   details of the servers in the MySpace system.
  */
 
    public RegistryManager(String registryName, Vector servers)
@@ -78,8 +121,7 @@ public class RegistryManager
 
          Vector dbvec = this.transact(sqlStatement, true);
          if (dbvec == null)
-         {  
-            System.out.println("db error : " + sqlStatement);
+         {  throw new Exception("JDBC error : " + sqlStatement);
          }
 
 //
@@ -96,8 +138,7 @@ public class RegistryManager
 
          dbvec = this.transact(sqlStatement, true);
          if (dbvec == null)
-         {  
-            System.out.println("db error : " + sqlStatement);
+         {  throw new Exception("JDBC error : " + sqlStatement);
          }
 
 //
@@ -122,17 +163,17 @@ public class RegistryManager
 
                dbvec = this.transact(sqlStatement, true);
                if (dbvec == null)
-               {  System.out.println("db error : " + sqlStatement);
+               {  throw new Exception("JBDC error : " + sqlStatement);
                }
             }
          }
       }
       catch (Exception all)
-      {  all.printStackTrace();
+      {  if (DEBUG) all.printStackTrace();
 
-//       MySpaceStatus exStatus = new MySpaceStatus(
-//         MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
-//         MySpaceStatusCode.LOG, this.getClassName() );
+         MySpaceStatus exStatus = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
    }
 
@@ -145,8 +186,6 @@ public class RegistryManager
    public RegistryManager()
    {  registryName = null;
       registryDBName = null;
-
-      dataItemIDSeqNo = 0;
    }
 
 //
@@ -154,6 +193,13 @@ public class RegistryManager
 
 /**
  * Add a <code>DataItemRecord</code> to the registry.
+ *
+ * @param dataItemRecord The <code>DataItemRecord</code> to be added to
+ *   the registry.  Any <code>DataItemID</code> that has been set will
+ *   be ignored (<code>addDataItemRecord</code> will itself allocate
+ *   a <code>DataItemID</code>).
+ * @return The <code>DataItemID</code> allocated for the
+ *   <code>DataItemRecord</code>.
  */
 
    public int addDataItemRecord(DataItemRecord dataItemRecord)
@@ -201,8 +247,7 @@ public class RegistryManager
 
          Vector dbvec = this.transact(sqlStatement, true);
          if (dbvec == null)
-         {  returnDataItemID = -1;
-            System.out.println("db error : " + sqlStatement);
+         {  throw new Exception("JDBC error : " + sqlStatement);
          }
 
 //
@@ -225,16 +270,22 @@ public class RegistryManager
             {  DataItemRecord newRec = (DataItemRecord)dbvec.elementAt(0);
                returnDataItemID = newRec.getDataItemID();
             }
+            else
+            {  throw new Exception("JDBC error : " + sqlStatement);
+            }
+         }
+         else
+         {  throw new Exception("JDBC error : " + sqlStatement);
          }
       }
       catch (Exception all)
       {  returnDataItemID = -1;
 
-         all.printStackTrace();
+         if (DEBUG) all.printStackTrace();
 
-//       MySpaceStatus exStatus = new MySpaceStatus(
-//         MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
-//         MySpaceStatusCode.LOG, this.getClassName() );
+         MySpaceStatus exStatus = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
 
       return returnDataItemID;
@@ -245,7 +296,12 @@ public class RegistryManager
 /**
  * Update a <code>DataItemRecord</code> in the registry.  The given
  * new <code>DataItemRecord</code> is used to replace an existing
- * <code>DataItemRecord</code> in the registry with the same key.
+ * <code>DataItemRecord</code> in the registry with the same
+ * <code>dataItemID</code>.
+ *
+ * @param dataItemRecord The <code>DataItemRecord</code> to be updated,
+ *   with the new values in place.
+ * @return true if the update succeeded, otherwise false.
  */
 
    public boolean updateDataItemRecord(DataItemRecord dataItemRecord)
@@ -283,16 +339,17 @@ public class RegistryManager
 
          Vector dbvec = this.transact(sqlStatement, true);
          if (dbvec == null)
-         {  status = false;
-            System.out.println("db error : " + sqlStatement);
+         {  throw new Exception("JDBC error : " + sqlStatement);
         }
       }
       catch (Exception all)
       {  status = false;
 
-//       MySpaceStatus exStatus = new MySpaceStatus(
-//         MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
-//         MySpaceStatusCode.LOG, this.getClassName() );
+         if (DEBUG) all.printStackTrace();
+
+         MySpaceStatus exStatus = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
 
       return status;
@@ -305,6 +362,10 @@ public class RegistryManager
  * Delete a <code>DataItemRecord</code> from the registry.  The
  * <code>DataItemRecord</code> to be deleted is specified by its
  * identifier, which is passed as the argument.
+ *
+ * @param dataItemID The <code>dataItemID</code> (unique integer
+ *   identifer) for the <code>DataItemRecord</code>.
+ * @return true if the deletion succeeded, otherwise false.
  */
 
    public boolean deleteDataItemRecord(int dataItemID)
@@ -323,15 +384,17 @@ public class RegistryManager
 
          Vector dbvec = this.transact(sqlStatement, true);
          if (dbvec == null)
-         {  status = false;
+         {  throw new Exception("JDBC error : " + sqlStatement);
          }
       }
       catch (Exception all)
       {  status = false;
 
-//       MySpaceStatus exStatus = new MySpaceStatus(
-//         MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
-//         MySpaceStatusCode.LOG, this.getClassName() );
+         if (DEBUG) all.printStackTrace();
+
+         MySpaceStatus exStatus = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
 
       return  status;
@@ -341,11 +404,12 @@ public class RegistryManager
 // -------------------------------------------------------------------
 
 /**
- * Lookup a <code>DataItemRecord</code> in the registry.  The
- * <code>DataItemRecord</code> to be obtained is specified by its
- * identifier, which is passed as the argument.  If the specified
- * <code>DataItemRecord</code> could not be found then a null
- * <code>DataItemRecord</code> is returned.
+ * Look up a given <code>DataItemRecord</code> in the registry.
+ *
+ * @param dataItemID The <code>dataItemID</code> (unique integer
+ *   identifer) for the required <code>DataItemRecord</code>.
+ * @return The <code>DataItemRecord</code> found.  If the specified
+ *   entry was not found then null is returned.
  */
 
    public DataItemRecord lookupDataItemRecord(int dataItemID)
@@ -367,31 +431,40 @@ public class RegistryManager
          {  if (dbvec.size() == 1)
             {  returnItemRecord = (DataItemRecord)dbvec.elementAt(0);
             }
-        }
+            else
+            {  throw new Exception("JDBC error : " + sqlStatement);
+            }
+         }
+         else
+         {  throw new Exception("JDBC error : " + sqlStatement);
+         }
       }
       catch (Exception all)
       {  returnItemRecord = null;
 
-         all.printStackTrace();
+         if (DEBUG) all.printStackTrace();
 
-//       MySpaceStatus status = new MySpaceStatus(
-//         MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
-//         MySpaceStatusCode.LOG, this.getClassName() );
+         MySpaceStatus status = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
 
       return returnItemRecord;
    }
 
-
-
 // -------------------------------------------------------------------
 
 /**
- * Lookup the <code>DataItemRecord</code>s in the registry which match a
+ * Look up the <code>DataItemRecord</code>s in the registry which match a
  * given expression.  This expression comprises a DataHolder name which
  * can optionally contain a wild-card.  The wild-card character is an
- * asterisk (`*').  In Iteration 2 the wild-card can only occur at the
- * end of the expression.
+ * asterisk ("*").
+ *
+ * @param dataHolderNameExpr The string which
+ *   <code>DataItemRecord</code> names must match in order to be
+ *   selected.
+ * @return a Vector of <code>DataItemRecord</code>s which match the
+ *   given name.  If no entries match null is returned.
  */
 
    public Vector lookupDataItemRecords(String dataHolderNameExpr)
@@ -418,13 +491,18 @@ public class RegistryManager
          if (dbvec != null)
          {  returnItemRecords = dbvec;
          }
+         else
+         {  throw new Exception("JDBC error : " + sqlStatement);
+         }
       }
       catch (Exception all)
-      {  
+      {  returnItemRecords = null;
 
-//       MySpaceStatus status = new MySpaceStatus(
-//         MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
-//         MySpaceStatusCode.LOG, this.getClassName() );
+         if (DEBUG) all.printStackTrace();
+
+         MySpaceStatus status = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
 
       return returnItemRecords;
@@ -433,9 +511,10 @@ public class RegistryManager
 // -------------------------------------------------------------------
 
 /**
- * Return the Vector of server names.  This method returns a Vector
- * comprising a list of the names of all the servers belonging to the
- * current MySpace manager.
+ * Return a Vector of server names.
+ *
+ * @return A Vector comprising a list of the names of all the servers
+ *   belonging to the current MySpace system.
  */
 
    public Vector getServerNames()
@@ -465,15 +544,21 @@ public class RegistryManager
                }
             }
             else
-            {  serverNames = null;
+            {  throw new Exception("JDBC error : " + sqlStatement);
             }
          }
          else
-         {  serverNames = null;
+         {  throw new Exception("JDBC error : " + sqlStatement);
          }
       }
       catch (Exception all)
       {  serverNames = null;
+
+         if (DEBUG) all.printStackTrace();
+
+         MySpaceStatus status = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00107, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
 
       return serverNames;
@@ -482,8 +567,11 @@ public class RegistryManager
 // -------------------------------------------------------------------
 
 /**
- * Check whether a given name is the name of a server.  A value of
- * true is returned if the name is valid; otherwise false is returned.
+ * Check whether a given name is the name of a server in the MySpace
+ * system.
+ *
+ * @param serverName The name of the server.
+ * @return true if the name was found, otherwise false.
  */
 
    public boolean isServerName(String serverName)
@@ -511,7 +599,10 @@ public class RegistryManager
 // -------------------------------------------------------------------
 
 /**
- * Return the expiry period, in days, for a given server.
+ * Return the expiry period for a given server.
+ *
+ * @param serverName The name of the server.
+ * @return The expiry period, in days, of the server.
  */
 
    public int getServerExpiryPeriod(String serverName)
@@ -539,10 +630,22 @@ public class RegistryManager
                  (ServerDetails)dbvec.elementAt(0);
                serverExpiryPeriod = currentServer.getExpiryPeriod();
             }
+            else
+            {  throw new Exception("JDBC error : " + sqlStatement);
+            }
+         }
+         else
+         {  throw new Exception("JDBC error : " + sqlStatement);
          }
       }
       catch (Exception all)
       {  serverExpiryPeriod = -1;
+
+         if (DEBUG) all.printStackTrace();
+
+         MySpaceStatus status = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00107, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
 
       return serverExpiryPeriod;
@@ -552,6 +655,9 @@ public class RegistryManager
 
 /**
  * Return the base URI for a given server.
+ *
+ * @param serverName The name of the server.
+ * @return The URI of the server.
  */
 
    public String getServerURI(String serverName)
@@ -579,10 +685,22 @@ public class RegistryManager
                  (ServerDetails)dbvec.elementAt(0);
                serverURI = currentServer.getURI();
             }
+            else
+            {  throw new Exception("JDBC error : " + sqlStatement);
+            }
+         }
+         else
+         {  throw new Exception("JDBC error : " + sqlStatement);
          }
       }
       catch (Exception all)
       {  serverURI = null;
+
+         if (DEBUG) all.printStackTrace();
+
+         MySpaceStatus status = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00107, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
 
       return serverURI;
@@ -592,6 +710,9 @@ public class RegistryManager
 
 /**
  * Return the base directory for a given server.
+ *
+ * @param serverName The name of the server.
+ * @return The base directory of the server.
  */
 
    public String getServerDirectory(String serverName)
@@ -619,10 +740,22 @@ public class RegistryManager
                  (ServerDetails)dbvec.elementAt(0);
                serverDirectory = currentServer.getDirectory();
             }
+            else
+            {  throw new Exception("JDBC error : " + sqlStatement);
+            }
+         }
+         else
+         {  throw new Exception("JDBC error : " + sqlStatement);
          }
       }
       catch (Exception all)
       {  serverDirectory = null;
+
+         if (DEBUG) all.printStackTrace();
+
+         MySpaceStatus status = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00107, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
 
       return serverDirectory;
@@ -633,18 +766,28 @@ public class RegistryManager
 
 /**
  * Execute a database transaction.
+ *
+ * @param The sqlStatement SQL statement to be executed.
+ * @param update Update or query flag: true if the transaction is an
+ *   update which will modify the database, false if it is a passive
+ *   query which will leave the database unchanged.
+ * @return If the transaction is a query a Vector of selected rows are
+ *   returned.  If the transaction is an update a dummy vector is
+ *   returned (containing one element comprising the string "true").
+ *   In either case if an error occurred then null is returned.
  */
 
-   public Vector transact (String sqlStatement, boolean update)
+   private Vector transact (String sqlStatement, boolean update)
    {  Vector vec = null;
 
-      if (update)
-      {  System.out.println("\n" + "Update...");
+      if (DEBUG)
+      {  if (update)
+         {  System.out.println("\n" + "SQL update: " + sqlStatement);
+         }
+         else
+         {  System.out.println("\n" + "SQL query: " + sqlStatement);
+         }
       }
-      else
-      {  System.out.println("\n" + "Query...");
-      }
-      System.out.println("sqlStatement: " + sqlStatement);
 
       try
       {
@@ -676,7 +819,7 @@ public class RegistryManager
             int sqlStatus = st.executeUpdate(sqlStatement);
 
             if (sqlStatus == -1)
-            {  System.out.println("db error : " + sqlStatement);
+            {  throw new Exception("JDBC error : " + sqlStatement);
             }
             else
             {  Vector newvec = new Vector();
@@ -701,7 +844,7 @@ public class RegistryManager
             ResultSetMetaData meta = sqlResults.getMetaData();
             int numColumns = meta.getColumnCount();
 
-            System.out.println("numColumns: " + numColumns);
+//            System.out.println("numColumns: " + numColumns);
 
             if (numColumns == 9)
             {  DataItemRecord itemRec = new DataItemRecord();
@@ -757,11 +900,11 @@ public class RegistryManager
       catch (Exception all)
       {  vec = null;
 
-         all.printStackTrace();
+         if (DEBUG) all.printStackTrace();
 
-//       MySpaceStatus exStatus = new MySpaceStatus(
-//         MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
-//         MySpaceStatusCode.LOG, this.getClassName() );
+         MySpaceStatus exStatus = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
 
       return vec;
