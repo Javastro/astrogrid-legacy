@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+  <pomVersion>3</pomVersion>
+  <id>astrogrid-portalB</id>
+  <name>AstroGrid Portal B</name>
+
+  <currentVersion>HEAD</currentVersion>
+  
+  <organization>
+    <name>AstroGrid</name>
+    <url>http://www.astrogrid.org</url>
+  </organization>
+  
+  <inceptionYear>2002</inceptionYear>
+  <package>org.astrogrid</package>
+  
+  <shortDescription>AstroGrid Portal B Components</shortDescription>
+
+  <siteDirectory>/var/www/www/maven/build/portalB</siteDirectory>
+  
+  <repository>
+    <connection>
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/portalB
+    </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/portalB
+    </developerConnection>
+  </repository>
+  
+  <developers>
+    <developer>
+      <name>Dave Morris</name>
+      <id>dm01</id>
+      <email>dm01@star.le.ac.uk</email>
+    </developer>
+  </developers>
+  
+  <dependencies>
+    <dependency>
+      <id>avalon-framework</id>
+      <version>20020627</version>
+    </dependency>
+
+    <dependency>
+      <id>axis</id>
+      <version>1.1</version>
+    </dependency>
+
+    <dependency>
+      <id>cocoon</id>
+      <version>2.0.4</version>
+    </dependency>
+
+    <dependency>
+      <id>commons-discovery</id>
+      <version>0.1</version>
+    </dependency>
+
+    <dependency>
+      <id>commons-logging</id>
+      <version>1.0.3</version>
+    </dependency>
+
+    <dependency>
+      <id>jaxrpc-api</id>
+      <version>1.0.3</version>
+    </dependency>
+
+    <dependency>
+      <id>jax-qname</id>
+      <version>UNKNOWN</version>
+      <jar>jax-qname.jar</jar>
+    </dependency>
+
+    <dependency>
+      <id>junit</id>
+      <version>3.8</version>
+    </dependency>
+
+    <dependency>
+      <id>log4j</id>
+      <version>1.2.4</version>
+    </dependency>
+
+    <dependency>
+      <id>mySpace</id>
+      <version>UNKNOWN</version>
+      <jar>mySpace.classes.jar</jar>
+    </dependency>
+
+    <dependency>
+      <id>saaj-api</id>
+      <version>1.1.1</version>
+    </dependency>
+
+    <dependency>
+      <id>saaj-api</id>
+      <version>1.1.1</version>
+    </dependency>
+
+    <dependency>
+      <id>servletapi</id>
+      <version>2.2</version>
+    </dependency>
+
+    <dependency>
+      <id>wsdl4j</id>
+      <version>UNKNOWN</version>
+      <jar>wsdl4j.jar</jar>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+    
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+    </unitTest>
+  </build>
+  
+  <reports>
+    <report>
+      maven-changelog-plugin
+    </report>
+    <report>
+      maven-changes-plugin
+    </report>
+    <report>
+      maven-checkstyle-plugin
+    </report>
+    <report>
+      maven-clover-plugin
+    </report>
+    <report>
+      maven-developer-activity-plugin
+    </report>
+    <report>
+      maven-file-activity-plugin
+    </report>
+    <report>
+      maven-javadoc-plugin
+    </report>
+    <report>
+      maven-jdepend-plugin
+    </report>
+    <report>
+      maven-junit-report-plugin
+    </report>
+    <report>
+      maven-jxr-plugin
+    </report>
+    <report>
+      maven-license-plugin
+    </report>
+    <report>
+      maven-linkcheck-plugin
+    </report>
+    <report>
+      maven-pmd-plugin
+    </report>
+    <report>
+      maven-tasklist-plugin
+    </report>
+    <report>
+      maven-simian-plugin
+    </report>
+  </reports>
+</project>
