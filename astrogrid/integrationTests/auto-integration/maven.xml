@@ -151,10 +151,8 @@
   </preGoal>
 
   <preGoal name="test:test-resources">
-            <echo>copying across all client resources</echo>
-          <copy todir="test/java" filtering="true" overwrite="true">
-                <fileset dir="client-config" />
-        </copy>
+            <echo>Copying global config file across to the client / test code</echo>
+          <copy file="webapps/astrogrid-configuration/AstroGridConfig.properties" tofile="test/java/astrogrid.properties" filtering="true" overwrite="true" />
   </preGoal>
 
 
@@ -237,9 +235,9 @@
         </war>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-registry-SNAPSHOT" war="file://${temporary.dir}/astrogrid-registry-SNAPSHOT.war"/>
-          
+
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/exist" war="file://${temporary.dir}/exist-inttest.war"/>          
+          path="/exist" war="file://${temporary.dir}/exist-inttest.war"/>
 </goal>
 
 <goal name="myspace-deploy" >
@@ -430,7 +428,7 @@
 
 <goal name="portal-undeploy">
         <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="astrogrid-portal-SNAPSHOT" />
+                path="/astrogrid-portal-SNAPSHOT" />
 </goal>
 
 <!--+
