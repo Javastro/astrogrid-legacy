@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- XML equiuvalent
-SELECT x.ra, x.decl FROM xmm1 AS x GROUP BY x.ra, x.decl HAVING AVG(x.M1_FLUX) < 4.56 LIMIT 100000;
+SELECT x.ra, x.decl FROM xmm1 AS x GROUP BY x.ra, x.decl, x.M1_FLUX HAVING AVG(x.M1_FLUX) < -1.0E-15 LIMIT 100000;
 -->
 <Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
@@ -40,6 +40,10 @@ xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
                     <TableName>x</TableName>
                     <Name>decl</Name>
                 </SingleColumnReference>
+                                                <SingleColumnReference>
+                    <TableName>x</TableName>
+                    <Name>M1_FLUX</Name>
+                </SingleColumnReference>
         </GroupByClause>
         <HavingClause>
             <PredicateSearch>
@@ -60,7 +64,7 @@ xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
                         <Value>
                             <NumberLiteral>
                                 <ApproxNum>
-                                    <Value>4.56</Value>
+                                    <Value>-1.0E-15</Value>
                                 </ApproxNum>
                             </NumberLiteral>
                         </Value>

@@ -66,7 +66,7 @@ USE SELECT_CIRCLE_FAST INSTEAD!
                                 </CoordValue>
                             </Pos3Vector>
                         </q1:Center>
-                        <q1:Radius>5</q1:Radius>
+                        <q1:Radius>15.0</q1:Radius>
                     </Circle>
                 </SecondCondition>
             </IntersectionSearch>
