@@ -1,5 +1,5 @@
 /*
- * $Id: TableResults.java,v 1.3 2005/03/29 16:34:18 mch Exp $
+ * $Id: TableResults.java,v 1.4 2005/03/30 13:01:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -148,9 +148,14 @@ public abstract class TableResults implements QueryResults
       if (target instanceof IVOSRN) {
          s = s + " -> "+((IVOSRN) target).resolve();
       }
-      if (target instanceof HomespaceName) {
-            s = s + " -> "+( (HomespaceName) target).resolveIvosrn();
-            s = s + " -> "+((HomespaceName) target).toLocation(user);
+      try {
+         if (target instanceof HomespaceName) {
+               s = s + " -> "+( (HomespaceName) target).resolveIvosrn();
+               s = s + " -> "+((HomespaceName) target).toLocation(user);
+         }
+      }
+      catch (Exception e) {
+         log.error(e+" resolving "+target+" for adding to status ",e);
       }
 
       status.addDetail(s);
