@@ -2,10 +2,11 @@ package org.astrogrid.community.delegate.authentication;
 
 //import org.astrogrid.community.policy.data.PolicyCredentials;
 
-import org.astrogrid.community.authentication.server.AuthenticationManager ;
-import org.astrogrid.community.authentication.server.AuthenticationManagerService ;
-import org.astrogrid.community.authentication.server.AuthenticationManagerLocator ;
+import org.astrogrid.community.auth.server.AuthenticationManager ;
+import org.astrogrid.community.auth.server.AuthenticationManagerService ;
+import org.astrogrid.community.auth.server.AuthenticationManagerServiceLocator ;
 
+import java.net.URL;
 
 public class AuthenticationDelegate2 {
    
@@ -20,6 +21,17 @@ public class AuthenticationDelegate2 {
    
    private String communityURL = "local";
    
+   private AuthenticationManager service = null;
+   
+   public AuthenticationDelegate2() {
+      try {
+         service = getService(communityURL);
+      }catch(Exception e) {
+         e.printStackTrace();
+         service = null;
+      }      
+   }   
+   
    public void setCommunityURL(String url) {
       this.communityURL = url; 
    }
@@ -28,7 +40,7 @@ public class AuthenticationDelegate2 {
       return this.communityURL;
    }
    
-   public String authenticateToken(String account, String token) {
+   public String authenticateToken(String account, String token) throws Exception {
       return authenticateToken(account,token,localTarget);
    }
   /*    
@@ -42,9 +54,8 @@ public class AuthenticationDelegate2 {
     * Service health check.
     *
     */
-   public String authenticateToken(String account,String token,String target) {
-      AuthenticationManager am = getAuthenticationManager(this.communityURL);
-      return am.authenticateToken(account,token,target);
+   public String authenticateToken(String account,String token,String target) throws Exception {
+      return service.authenticateToken(account,token,target);
    }
    
    
@@ -52,7 +63,7 @@ public class AuthenticationDelegate2 {
     * Setup our tests.
     *
     */
-   protected AuthenticationManager getAuthenticationManager(String url)
+   protected AuthenticationManager getService(String url)
       throws Exception
       {
       if (DEBUG_FLAG) System.out.println("") ;
@@ -64,14 +75,13 @@ public class AuthenticationDelegate2 {
       //
       // Create our service locator.
       locator = new AuthenticationManagerServiceLocator();
-      locator.setEndPoint(url);
+
       //
       // Create our service.
-      service = locator.getGroupManager();
+      service = locator.getauthService(new URL(url));
 
       if (DEBUG_FLAG) System.out.println("----\"----") ;
       if (DEBUG_FLAG) System.out.println("") ;
-   }
-
-   
+      return service;
+   }   
 }

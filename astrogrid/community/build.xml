@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/09/08 11:01:35 $</cvs:date>
-    | <cvs:version>$Revision: 1.12 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/08 16:02:47 $</cvs:date>
+    | <cvs:version>$Revision: 1.13 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.13  2003/09/08 16:02:47  KevinBenson
+    |   finally an authentication piece that is building.
+    |
     |   Revision 1.12  2003/09/08 11:01:35  KevinBenson
     |   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
     |   along with an AdministrationDelegate
@@ -1945,7 +1948,7 @@ Start of Authentication "auth" tasks
 		       optimize="on"
 		       >
 			<include name="org/astrogrid/community/auth/data/*.java"/>
-			<include name="org/astrogrid/community/auth/server/authService.java"/>
+			<include name="org/astrogrid/community/auth/server/AuthenticationManager.java"/>
 			<classpath>
 			</classpath>
 		</javac>
@@ -1964,7 +1967,7 @@ Start of Authentication "auth" tasks
 		<!-- Generate our WSDL description -->
 		<axis.java2wsdl
 			output="${auth.service.base}/wsdl/java2wsdl/authService.wsdl"
-			classname="org.astrogrid.community.auth.server.authService"
+			classname="org.astrogrid.community.auth.server.AuthenticationManager"
 			location="${axis.url}/services/authService"
 			methods="authenticateToken"
 			namespace="urn:server.auth.community.astrogrid.org"
@@ -2011,43 +2014,20 @@ Start of Authentication "auth" tasks
 		<!-- Transform the deploy wsdd -->
 		<xslt style="src/xsl/build/auth/wsdd.xsl"
 		      in="${auth.service.base}/java/org/astrogrid/community/auth/server/deploy.wsdd"
-		      out="${auth.service.base}/wsdd/authServiceDeploy.wsdd">
+		      out="${auth.service.base}/wsdd/AuthenticationManagerDeploy.wsdd">
 			<outputproperty name="method" value="xml"/>
 			<outputproperty name="indent" value="yes"/>
 			<!-- Set the XSL params -->
-			<param name="impl"    expression="org.astrogrid.community.auth.server.authServiceImpl"/>
-			<param name="service" expression="authService"/>
+			<param name="impl"    expression="org.astrogrid.community.auth.server.AuthenticationManagerImpl"/>
+			<param name="service" expression="AuthenticationManager"/>
 		</xslt>
 		<!-- Copy the undeploy wsdd -->
 		<copy verbose="false"
-		      tofile="${auth.service.base}/wsdd/authServiceUndeploy.wsdd"
+		      tofile="${auth.service.base}/wsdd/AuthenticationManagerUndeploy.wsdd"
 		      file="${auth.service.base}/java/org/astrogrid/community/auth/server/undeploy.wsdd"
 		      />
 	</target>
 
-	<!--+
-		| Modify the authManager WSDD deployment descriptor.
-		| This modifies the deployment descriptor to use our own implementation classes rather than the template generated from the WSDL.
-		+-->
-	<target name="auth.manager.wsdd.xslt" depends="">
-		<!-- Create our wsdd directory -->
-		<mkdir dir="${auth.manager.base}/wsdd"/>
-		<!-- Transform the deploy wsdd -->
-		<xslt style="src/xsl/build/auth/wsdd.xsl"
-		      in="${auth.manager.base}/java/org/astrogrid/community/auth/server/deploy.wsdd"
-		      out="${auth.manager.base}/wsdd/authManagerDeploy.wsdd">
-			<outputproperty name="method" value="xml"/>
-			<outputproperty name="indent" value="yes"/>
-			<!-- Set the XSL params -->
-			<param name="impl"    expression="org.astrogrid.community.auth.server.authManagerImpl"/>
-			<param name="service" expression="authManager"/>
-		</xslt>
-		<!-- Copy the undeploy wsdd -->
-		<copy verbose="false"
-		      toFile="${auth.manager.base}/wsdd/authManagerUndeploy.wsdd"
-		      file="${auth.manager.base}/java/org/astrogrid/community/auth/server/undeploy.wsdd"
-		      />
-	</target>
 
 	<!--+
 		| Prepare the server code.
@@ -2062,46 +2042,26 @@ Start of Authentication "auth" tasks
 			<!-- Copy the authService wsdl2java generated source -->
 			<fileset dir="${auth.service.base}/java">
 				<!-- Include the generated authService stubs -->
-				<include name="org/astrogrid/community/auth/server/authServiceService.java"/>
-				<include name="org/astrogrid/community/auth/server/authServiceServiceLocator.java"/>
-				<include name="org/astrogrid/community/auth/server/authServiceSoapBindingStub.java"/>
+				<include name="org/astrogrid/community/auth/server/AuthenticationManagerService.java"/>
+				<include name="org/astrogrid/community/auth/server/AuthenticationManagerServiceLocator.java"/>
+				<include name="org/astrogrid/community/auth/server/AuthServiceSoapBindingStub.java"/>
 				<!-- Include the generated data objects -->
 				<!-- <include name="org/astrogrid/community/auth/data/*.java"/> -->
 			</fileset>
-			<!-- Copy the authService wsdl2java generated source -->
-			<fileset dir="${auth.manager.base}/java">
-				<!-- Include the generated authManager stubs -->
-				<include name="org/astrogrid/community/auth/server/authManagerService.java"/>
-				<include name="org/astrogrid/community/auth/server/authManagerServiceLocator.java"/>
-				<include name="org/astrogrid/community/auth/server/authManagerSoapBindingStub.java"/>
-				<!-- Include the generated data objects -->
-				<!-- <include name="org/astrogrid/community/auth/data/*.java"/> -->
-			</fileset>
+
 			<!-- Copy our own Java source -->
 			<fileset dir="src/java">
-				<!-- Include our authService interface and implementation -->
-				<include name="org/astrogrid/community/auth/server/authService.java"/>
-				<include name="org/astrogrid/community/auth/server/authServiceImpl.java"/>
 				<!-- Include our authManager interface and implementation -->
-				<include name="org/astrogrid/community/auth/server/authManager.java"/>
-				<include name="org/astrogrid/community/auth/server/authManagerImpl.java"/>
-				<!-- Include our DatabaseManager interface and implementation -->
-				<include name="org/astrogrid/community/auth/server/DatabaseManager.java"/>
-				<include name="org/astrogrid/community/auth/server/DatabaseManagerImpl.java"/>
-				<!-- Include our AccountManager interface and implementation -->
-				<include name="org/astrogrid/community/auth/server/AccountManager.java"/>
-				<include name="org/astrogrid/community/auth/server/AccountManagerImpl.java"/>
-				<!-- Include our GroupManager interface and implementation -->
-				<include name="org/astrogrid/community/auth/server/GroupManager.java"/>
-				<include name="org/astrogrid/community/auth/server/GroupManagerImpl.java"/>
-				<!-- Include our CommunityManager interface and implementation -->
-				<include name="org/astrogrid/community/auth/server/CommunityManager.java"/>
-				<include name="org/astrogrid/community/auth/server/CommunityManagerImpl.java"/>
-
+				<!-- Include our delegate objects -->
+				<include name="org/astrogrid/community/delegate/authentication/*2*.java"/>
+				
+				<include name="org/astrogrid/community/auth/server/AuthenticationManager.java"/>
+				<include name="org/astrogrid/community/auth/server/AuthenticationManagerImpl.java"/>
 				<!-- Include our data objects -->
 				<include name="org/astrogrid/community/auth/data/*.java"/>
-				<!-- Include our JUnit tests -->
-				<include name="org/astrogrid/community/auth/server/junit/**"/>
+				<!-- Include our JUnit tests 
+				<include name="org/astrogrid/community/authentication/server/junit/**"/>
+				-->
 			</fileset>
 		</copy>
 	</target>
@@ -2116,44 +2076,27 @@ Start of Authentication "auth" tasks
 	<target name="auth.client.prepare" depends="">
 		<!-- Copy the Java source code -->
 		<copy verbose="false" todir="${auth.client.base}/java">
-			<!-- Copy the authService wsdl2java generated source -->
-			<fileset dir="${auth.service.base}/java">
-				<!-- Include the generated authService service and locator -->
-				<include name="org/astrogrid/community/auth/server/authServiceService.java"/>
-				<include name="org/astrogrid/community/auth/server/authServiceServiceLocator.java"/>
-				<include name="org/astrogrid/community/auth/server/authServiceSoapBindingStub.java"/>
-				<!-- Include the generated data objects -->
-				<!-- <include name="org/astrogrid/community/auth/data/*.java"/> -->
-			</fileset>
 			<!-- Copy the authManager wsdl2java generated source -->
-			<fileset dir="${auth.manager.base}/java">
-				<!-- Include the generated authManager service and locator -->
-				<include name="org/astrogrid/community/auth/server/authManagerService.java"/>
-				<include name="org/astrogrid/community/auth/server/authManagerServiceLocator.java"/>
-				<include name="org/astrogrid/community/auth/server/authManagerSoapBindingStub.java"/>
+			<fileset dir="${auth.service.base}/java">
+				<!-- Include the generated authService stubs -->
+				<include name="org/astrogrid/community/auth/server/AuthenticationManagerService.java"/>
+				<include name="org/astrogrid/community/auth/server/AuthenticationManagerServiceLocator.java"/>
+				<include name="org/astrogrid/community/auth/server/AuthServiceSoapBindingStub.java"/>
 				<!-- Include the generated data objects -->
 				<!-- <include name="org/astrogrid/community/auth/data/*.java"/> -->
 			</fileset>
 			<!-- Copy our own Java source -->
 			<fileset dir="src/java">
 				<!-- Include our delegate objects -->
-				<include name="org/astrogrid/community/delegate/auth/*.java"/>
-				<!-- Include our authService interface -->
-				<include name="org/astrogrid/community/auth/server/authService.java"/>
+				<include name="org/astrogrid/community/delegate/authentication/*2*.java"/>
 				<!-- Include our authManager interface -->
-				<include name="org/astrogrid/community/auth/server/authManager.java"/>
-				<!-- Include our AccountManager interface -->
-				<include name="org/astrogrid/community/auth/server/AccountManager.java"/>
-				<!-- Include our GroupManager interface -->
-				<include name="org/astrogrid/community/auth/server/GroupManager.java"/>
-				<!-- Include our CommunityManager interface -->
-				<include name="org/astrogrid/community/auth/server/CommunityManager.java"/>
+				<include name="org/astrogrid/community/auth/server/AuthenticationManager.java"/>
 
 				<!-- Include our data objects -->
 				<include name="org/astrogrid/community/auth/data/*.java"/>
-				<!-- Include our JUnit tests -->
+				<!-- Include our JUnit tests 
 				<include name="org/astrogrid/community/auth/client/junit/**"/>
-				
+				-->
 			</fileset>
 		</copy>
 	</target>
@@ -2173,6 +2116,7 @@ Start of Authentication "auth" tasks
 		       >
 			<include name="org/astrogrid/community/auth/data/**"/>
 			<include name="org/astrogrid/community/auth/server/**"/>
+			<include name="org/astrogrid/community/delegate/authentication/**"/>
 			<classpath>
 				<!-- Include the JUnit libraries -->
 				<path refid="junit.classpath"/>
@@ -2180,6 +2124,7 @@ Start of Authentication "auth" tasks
 				<path refid="castor.classpath"/>
 				<!-- Include the Axis libraries -->
 				<path refid="axis.classpath"/>
+				<path refid="policy.client.classpath" />
 			</classpath>
 		</javac>
 	</target>
@@ -2200,7 +2145,7 @@ Start of Authentication "auth" tasks
 			<include name="org/astrogrid/community/auth/data/**"/>
 			<include name="org/astrogrid/community/auth/server/**"/>
 			<include name="org/astrogrid/community/auth/client/**"/>
-			<include name="org/astrogrid/community/delegate/auth/**"/>
+			<include name="org/astrogrid/community/delegate/authentication/**"/>
 			<classpath>
 				<!-- Include the JUnit libraries -->
 				<path refid="junit.classpath"/>
@@ -2272,11 +2217,6 @@ Start of Authentication "auth" tasks
 		<antcall target="auth.service.java2wsdl"/>
 		<antcall target="auth.service.wsdl2java"/>
 		<antcall target="auth.service.wsdd.xslt"/>
-
-		<antcall target="auth.manager.javac"/>
-		<antcall target="auth.manager.java2wsdl"/>
-		<antcall target="auth.manager.wsdl2java"/>
-		<antcall target="auth.manager.wsdd.xslt"/>
 
 		<antcall target="auth.server.prepare"/>
 		<antcall target="auth.server.javac"/>
@@ -2618,14 +2558,10 @@ Start of Authentication "auth" tasks
 		</junit>
 	</target>
 
-
-
-
-
-
 <!-- 
 	End of Authentication tasks
 -->
+
 <!--+
 	| End
 	| Deprecated tests ..... code has changed since these were written ....
