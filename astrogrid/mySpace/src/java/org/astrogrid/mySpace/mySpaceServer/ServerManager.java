@@ -47,11 +47,9 @@ public class ServerManager {
         return true;
     }
 
-    public String moveDataHolder(String dataHolderPath, String destinationDataHolderPath) {
+    public boolean moveDataHolder(String dataHolderPath, String destinationDataHolderPath) {
 
-		logger.debug("YYY moveDataHolder cotent = TEST........");
-		String s = "SUCCS "+dataHolderPath +destinationDataHolderPath;
-        return s;
+        return true;
     }
 
     public boolean saveDataHolder(String content, String dataHolderPath) 
