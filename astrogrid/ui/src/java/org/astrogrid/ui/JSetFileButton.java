@@ -1,5 +1,5 @@
 /*
-   $Id: JSetFileButton.java,v 1.3 2002/12/09 15:40:41 mch Exp $
+   $Id: JSetFileButton.java,v 1.4 2002/12/13 16:41:15 mch Exp $
 
    Date       Author      Changes
    $date$     M Hill      Created
@@ -59,20 +59,15 @@ public class JSetFileButton extends JButton implements ActionListener
          setBorder(null);
 //       setMargin(new Insets(0,0,0,0));
       }
-      setToolTipText("Browse files");
+      setToolTipText("Choose file from browser");
    }
 
-   public JSetFileButton(String text, Icon icon)
+   public JSetFileButton(JTextField textField)
    {
-      super(text, icon);
-      addActionListener(this);
+      this();
+      setTextField(textField);
    }
-
-   public JSetFileButton(String text)
-   {
-      super(text);
-      addActionListener(this);
-   }
+   
 
    /**
     * Used if special file choosers are required
