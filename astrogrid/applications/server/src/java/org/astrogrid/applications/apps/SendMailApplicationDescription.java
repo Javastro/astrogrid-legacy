@@ -1,4 +1,4 @@
-/*$Id: SendMailApplicationDescription.java,v 1.2 2004/08/16 11:03:46 nw Exp $
+/*$Id: SendMailApplicationDescription.java,v 1.3 2004/08/28 11:25:10 nw Exp $
  * Created on 11-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -226,6 +226,8 @@ public class SendMailApplicationDescription extends AbstractApplicationDescripti
                             reportError("Could not find mail session in JNDI",e);
                         } catch (MessagingException e) {
                             reportError("Failed to construct email message",e);
+                        } catch (Throwable t) {
+                            reportError("Something went wrong",t);
                         }
                     }
             };
@@ -252,6 +254,9 @@ public class SendMailApplicationDescription extends AbstractApplicationDescripti
 
 /* 
 $Log: SendMailApplicationDescription.java,v $
+Revision 1.3  2004/08/28 11:25:10  nw
+tried to improve error trapping - seems to fail to complete at the moment.
+
 Revision 1.2  2004/08/16 11:03:46  nw
 first stab at a cat application
 
