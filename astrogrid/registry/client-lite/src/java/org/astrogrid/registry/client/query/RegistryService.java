@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Iterator;
-import java.util.Date;
 
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.common.XSLHelper;
@@ -62,25 +61,6 @@ import org.astrogrid.util.DomHelper;
  */
 public interface RegistryService  { 
 
-   public Document getRegistries() throws RegistryException;
-    
-	public Document identify() throws RegistryException;
-    
-   public Document listRecords() throws RegistryException;
-   
-   public Document listRecords(Date fromDate) throws RegistryException;
-   
-   public Document listRecords(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException;
-   
-   public Document listMetadataFormats(String identifier) throws RegistryException;
-   
-   public Document getRecord(String identifier) throws RegistryException;
-   
-   public Document getRecord(String identifier, String metadataPrefix) throws RegistryException;
-   
-   public Document listIdentifiers() throws RegistryException;
-   
-   public Document listIdentifiers(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException;   
     
    public Document search(String xadql) throws RegistryException;
    

@@ -80,7 +80,6 @@ public class XML2ivo_vrCrosswalk extends Crosswalk {
        throw new CannotDisseminateFormatException(getSchemaLocation());
    }
       int endOffset = fullItem.indexOf(elementEnd) + elementEnd.length();
-      System.out.println("STARTOFFSET = " + startOffset + " ENDOFFSET=" + endOffset + "THE FULLITEM = " + fullItem);
       return fullItem.substring(startOffset, endOffset);
     }
 }

@@ -35,11 +35,6 @@ public class XSLHelper {
    public XSLHelper() {
       
    }
-   
-   private InputStream loadStyleSheet(String name) {
-       ClassLoader loader = this.getClass().getClassLoader();
-       return loader.getResourceAsStream(name);
-   }
       
    private InputStream loadDBXSL() {
       ClassLoader loader = this.getClass().getClassLoader();
@@ -52,7 +47,7 @@ public class XSLHelper {
    }
    
 
-   public String transformADQLToXQL(Node doc, String versionNumber) {
+   public String transformADQLToXQL(String versionNumber, Node doc) {
       
       Source xmlSource = new DOMSource(doc);
       Document resultDoc = null;
@@ -130,15 +125,55 @@ public class XSLHelper {
       return resultDoc;
    }
    
-   public Document transformExistResult(Node doc, String versionNumber, String responseElement) {
+   
+   public Document transformResultVersions(Node doc, String fromVersion, String toVersion) {
+      String fileName = "VOResource-" + fromVersion + "-" + toVersion + ".xsl";
+
+      Source xmlSource = new DOMSource(doc);
+      Document resultDoc = null;
+      
+      ClassLoader loader = this.getClass().getClassLoader();
+      InputStream is = null;
+      is = loader.getResourceAsStream(fileName);
+      Source xslSource = new StreamSource(is);
+            
+      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+      try {
+         builderFactory.setNamespaceAware(true);
+         DocumentBuilder builder = builderFactory.newDocumentBuilder();
+         resultDoc = builder.newDocument();
+         //DocumentFragment df = resultDoc.createDocumentFragment();
+         TransformerFactory transformerFactory = TransformerFactory.newInstance();
+         
+         DOMResult result = new DOMResult(resultDoc);
+         Transformer transformer = transformerFactory.newTransformer(xslSource);
+         
+         transformer.transform(xmlSource,result);
+         //System.out.println("the resultwriter transform = " + sw.toString());
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();
+      }catch(TransformerConfigurationException tce) {
+         tce.printStackTrace();
+      }catch(TransformerException te) {
+         te.printStackTrace();
+      }
+      return resultDoc;
+      
+   }
+   
+   
+   public Document transformExistResult(String versionNumber, boolean withResponseElement, Node doc) {
       
       Source xmlSource = new DOMSource(doc);
       Document resultDoc = null;
       
       ClassLoader loader = this.getClass().getClassLoader();
       InputStream is = null;
-
-      is = loader.getResourceAsStream("ExistRegistryResult" + versionNumber + ".xsl");
+      if(withResponseElement) {      
+         is = loader.getResourceAsStream("ExistRegistryResult" + versionNumber + "WithResponse.xsl");
+      } else {
+         is = loader.getResourceAsStream("ExistRegistryResult" + versionNumber + ".xsl");
+      }
       
       Source xslSource = new StreamSource(is);
       
@@ -155,12 +190,7 @@ public class XSLHelper {
          Transformer transformer = transformerFactory.newTransformer(xslSource);
          
          transformer.transform(xmlSource,result);
-         if(responseElement != null && responseElement.trim().length() > 0) {
-             Element currentRoot = resultDoc.getDocumentElement();
-             Element root = resultDoc.createElement(responseElement);
-             root.appendChild(currentRoot);
-             resultDoc.appendChild(root);
-         }
+         //System.out.println("the resultwriter transform = " + sw.toString());
       }catch(ParserConfigurationException pce) {
          pce.printStackTrace();
       }catch(TransformerConfigurationException tce) {
@@ -171,38 +201,7 @@ public class XSLHelper {
       return resultDoc;
    }
    
-  
-   public Document transformUpdate(Node doc,String versionNumber) {
-       
-       Source xmlSource = new DOMSource(doc);
-       Document resultDoc = null;
-       String styleSheetName = "UpdateProcess_" + versionNumber + ".xsl";
-       System.out.println("the stylesheet name = " + styleSheetName);
-       Source xslSource = new StreamSource(loadStyleSheet(styleSheetName));
-       DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-       try {
-          builderFactory.setNamespaceAware(true);
-          DocumentBuilder builder = builderFactory.newDocumentBuilder();
-          resultDoc = builder.newDocument();
-          //DocumentFragment df = resultDoc.createDocumentFragment();
-          TransformerFactory transformerFactory = TransformerFactory.newInstance();
-          
-          DOMResult result = new DOMResult(resultDoc);
-          Transformer transformer = transformerFactory.newTransformer(xslSource);
-          
-          transformer.transform(xmlSource,result);
-          
-       }catch(ParserConfigurationException pce) {
-          pce.printStackTrace();
-       }catch(TransformerConfigurationException tce) {
-          tce.printStackTrace();
-       }catch(TransformerException te) {
-          te.printStackTrace();
-       }
-       System.out.println("THIS IS AFTER THE TRANSFORMUPDATE");
-       DomHelper.DocumentToStream(resultDoc,System.out);
-       return resultDoc;
-    }   
+   
    
    
    public Document transformDatabaseProcess(Node doc) {
