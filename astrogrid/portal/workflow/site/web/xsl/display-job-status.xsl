@@ -34,8 +34,8 @@
                   <input class="agActionButton" type="submit" name="action" value="printer-friendly"/>
                   <input type="hidden" name="jobURN" id="jobURN"/>
                   </form>
--->                </td>
-            </tr>            
+                </td>
+-->            </tr>            
             <tr>
                 <td>Description:</td>
                 <td>
