@@ -1,4 +1,4 @@
-/*$Id: SubmitNewJobNotifierFailsTest.java,v 1.6 2004/03/09 14:24:09 nw Exp $
+/*$Id: SubmitNewJobNotifierFailsTest.java,v 1.7 2004/03/10 14:37:35 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,7 +42,12 @@ public class SubmitNewJobNotifierFailsTest extends AbstractTestForJobScheduler{
         js.scheduleNewJob(JesUtil.castor2axis(urn));
         //now check behaviour is as expected.
         // should have dispatched something - should be all steps.
-        assertTrue(((MockDispatcher)dispatcher).getCallCount() > 0);
+        if (getInputFileNumber() != EMPTY_WORKFLOW) {
+            assertTrue(((MockDispatcher)dispatcher).getCallCount() > 0);
+        } else {
+            assertEquals(0,((MockDispatcher)dispatcher).getCallCount());
+        }
+        
         // don't know what happens when first error is encountered.
         
         //
@@ -69,6 +74,9 @@ public class SubmitNewJobNotifierFailsTest extends AbstractTestForJobScheduler{
 
 /* 
 $Log: SubmitNewJobNotifierFailsTest.java,v $
+Revision 1.7  2004/03/10 14:37:35  nw
+adjusted tests to handle an empty workflow
+
 Revision 1.6  2004/03/09 14:24:09  nw
 upgraded to new job controller wsdl
 

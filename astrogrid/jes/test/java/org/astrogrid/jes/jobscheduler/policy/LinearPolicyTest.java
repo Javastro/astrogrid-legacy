@@ -1,4 +1,4 @@
-/*$Id: LinearPolicyTest.java,v 1.1 2004/03/05 16:16:55 nw Exp $
+/*$Id: LinearPolicyTest.java,v 1.2 2004/03/10 14:37:35 nw Exp $
  * Created on 04-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,29 +36,32 @@ public class LinearPolicyTest extends AbstractTestWorkflowInputs {
         policy = new LinearPolicy();
     }
     protected LinearPolicy policy;
-
     /**
      * @see org.astrogrid.jes.AbstractTestWorkflowInputs#testIt(java.io.InputStream, int)
      */
     protected void testIt(InputStream is, int resourceNum) throws Exception {
         Workflow wf = Workflow.unmarshalWorkflow(new InputStreamReader(is));  
         policy.registerFunctions(wf);
-        
-        assertEquals(ExecutionPhase.PENDING,policy.currentJobStatus(wf));      
+        if (getInputFileNumber() == EMPTY_WORKFLOW) {
+            assertEquals(ExecutionPhase.COMPLETED,policy.currentJobStatus(wf));
+            
+        } else {
+            assertEquals(ExecutionPhase.PENDING,policy.currentJobStatus(wf));
+             
         testFindStepInVirginWorkflow(wf);
         
         testFindStepInInitializedWorkflow(wf);
         assertEquals(ExecutionPhase.PENDING,policy.currentJobStatus(wf));
         
-        testFindStepInExecutingWorkflow(wf,resourceNum);
-        
+        testFindStepInExecutingWorkflow(wf);
+        }
         testFillingInWorkflow(wf);
     }
     
     /**
      * @param wf
      */
-    public void testFindStepInExecutingWorkflow(Workflow wf, int resourceNum) {
+    public void testFindStepInExecutingWorkflow(Workflow wf) {
         // first initialize workflow
 
         Step s = (Step)wf.findXPathValue("//*[jes:isStep()]");
@@ -67,7 +70,7 @@ public class LinearPolicyTest extends AbstractTestWorkflowInputs {
         er.setStatus(ExecutionPhase.COMPLETED);
         
         Step s1 = policy.nextExecutableStep(wf);
-        if (resourceNum == 0 || resourceNum == 4 ) { // these workflows only have a sngle step
+        if (getInputFileNumber() == 0 || getInputFileNumber() == 4 ) { // these workflows only have a sngle step
             assertNull(s1);
         } else {
             assertNotNull(s1);
@@ -80,20 +83,26 @@ public class LinearPolicyTest extends AbstractTestWorkflowInputs {
     public void testFindStepInInitializedWorkflow(Workflow wf) {
 
         Step s = (Step)wf.findXPathValue("//*[jes:isStep() ]");
-        assertNotNull(s);
-        JesUtil.getLatestOrNewRecord(s); //initializes job step.
+
+            assertNotNull(s);
+            JesUtil.getLatestOrNewRecord(s); //initializes job step.
         
-        Step s1 = policy.nextExecutableStep(wf);
-        assertNotNull(s1);
-        assertEquals(1,s1.getStepExecutionRecordCount());
-        assertEquals(ExecutionPhase.PENDING,s1.getStepExecutionRecord(0).getStatus());
+            Step s1 = policy.nextExecutableStep(wf);
+            assertNotNull(s1);
+            assertEquals(1,s1.getStepExecutionRecordCount());
+            assertEquals(ExecutionPhase.PENDING,s1.getStepExecutionRecord(0).getStatus());
+       
         
     }
 
     public void testFindStepInVirginWorkflow(Workflow wf) {
         Step s = policy.nextExecutableStep(wf);
-        assertNotNull(s);
-        assertEquals(0,s.getStepExecutionRecordCount());
+        if (getInputFileNumber() == EMPTY_WORKFLOW) { // empty workflow document
+            assertNull(s) ;
+        } else {
+            assertNotNull(s);
+            assertEquals(0,s.getStepExecutionRecordCount());
+        }
     }
     
     public void testFillingInWorkflow(Workflow wf) {
@@ -116,6 +125,9 @@ public class LinearPolicyTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: LinearPolicyTest.java,v $
+Revision 1.2  2004/03/10 14:37:35  nw
+adjusted tests to handle an empty workflow
+
 Revision 1.1  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy

@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcherTest.java,v 1.5 2004/03/07 21:04:39 nw Exp $
+/*$Id: ApplicationControllerDispatcherTest.java,v 1.6 2004/03/10 14:37:35 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,6 +71,10 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
         urn.setContent("jes:dummy:job");
        jex.setJobId(urn);
        w.setJobExecutionRecord(jex);
+       if (getInputFileNumber() == EMPTY_WORKFLOW) {
+           assertFalse(JesUtil.getJobSteps(w).hasNext());
+           return;
+       }
         Step js = (Step)JesUtil.getJobSteps(w).next();
         assertNotNull(js); 
         testDispatchStep(w,js);
@@ -82,6 +86,9 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
 
 /* 
 $Log: ApplicationControllerDispatcherTest.java,v $
+Revision 1.6  2004/03/10 14:37:35  nw
+adjusted tests to handle an empty workflow
+
 Revision 1.5  2004/03/07 21:04:39  nw
 merged in nww-itn05-pico - adds picocontainer
 

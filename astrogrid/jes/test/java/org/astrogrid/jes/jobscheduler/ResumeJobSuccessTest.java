@@ -1,4 +1,4 @@
-/*$Id: ResumeJobSuccessTest.java,v 1.6 2004/03/09 14:24:09 nw Exp $
+/*$Id: ResumeJobSuccessTest.java,v 1.7 2004/03/10 14:37:35 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,6 +38,10 @@ public class ResumeJobSuccessTest extends AbstractTestForJobScheduler {
         // find job, get first jobstep out of it.
         Workflow j = fac.findJob(urn);
         assertNotNull(j);
+        if (getInputFileNumber() == EMPTY_WORKFLOW) {
+            assertFalse(JesUtil.getJobSteps(j).hasNext());
+            return;
+        }
         Step step = (Step)JesUtil.getJobSteps(j).next(); // got to have at least one job step
         // shouldn't have been executed yet.
         assertEquals(0,step.getStepExecutionRecordCount());
@@ -71,6 +75,9 @@ public class ResumeJobSuccessTest extends AbstractTestForJobScheduler {
 
 /* 
 $Log: ResumeJobSuccessTest.java,v $
+Revision 1.7  2004/03/10 14:37:35  nw
+adjusted tests to handle an empty workflow
+
 Revision 1.6  2004/03/09 14:24:09  nw
 upgraded to new job controller wsdl
 
