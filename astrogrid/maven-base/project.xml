@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.7 2004/02/07 01:00:30 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.8 2004/02/13 18:56:13 jdt Exp $ -->
 <project>
     <pomVersion>3</pomVersion>
     <id>astrogrid-master</id>
@@ -28,6 +28,14 @@
     </repository>
     <build>
         <sourceDirectory>src/java</sourceDirectory>
+        <resources>
+	        <resource>
+		        <directory>${basedir}/src/java</directory>
+	            <includes>
+	                <include>**/log4j.properties</include>
+	            </includes>
+	        </resource>
+	    </resources>
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
         <unitTest>
             <includes>
