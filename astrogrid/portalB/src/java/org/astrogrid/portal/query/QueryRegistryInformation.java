@@ -108,7 +108,6 @@ public class QueryRegistryInformation {
 		end = response.indexOf(temp) + temp.length(); 
 		DataSetColumn dsColumn = null;
 		while(response.indexOf("item=",end) != -1) {
-//			System.out.println("Current start index = " + start + " Current end index = " + end + " IndexOf item = " + response.indexOf("item=",end));
 			start = response.indexOf("item=",end) + 6;
 			end = response.indexOf("\"",start+1);
 			if(end <= 0) { end = response.indexOf("'",start+1); }
@@ -140,6 +139,7 @@ public class QueryRegistryInformation {
 			CreateRequest cr = new CreateRequest();
 			  System.out.println("The registry XmL going to the webservice is = " + req);
 			  binding = new RegistryInterfaceLocator().getRegistryInterfacePort();
+			  //binding.setTimeout(30000);
 			  String response = binding.submitQuery(req);
 			  System.out.println("the response from the call to the webservice = " + response);
 			  return response;

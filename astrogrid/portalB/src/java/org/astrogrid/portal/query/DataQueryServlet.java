@@ -272,10 +272,15 @@ public class DataQueryServlet extends HttpServlet {
 				String tempStr = send(qb);
 				//set a Session of the request in xml format sent.
 				session.setAttribute("LastWebServiceXML",tempStr);
+				session.setAttribute("jobid",tempStr.substring((tempStr.indexOf("<jobid>") + 8),tempStr.indexOf("</jobid>")   ));
+				System.out.println("the jobid is = " + tempStr.substring((tempStr.indexOf("<jobid>") + 8),tempStr.indexOf("</jobid>")   ));
 				//now that it is sent blank out the QueryString and put it as part of their Sent Queries.
 				if(queryString == null){queryString = "";}
 				queryString = qb.formulateQuery() + "<br />" + queryString;
-				session.setAttribute("QueryStringSent","\nSent Query:" + queryString);
+				session.setAttribute("QueryStringSent","\nSent Query:" +
+					queryString + " With jobid = " + 
+					tempStr.substring((tempStr.indexOf("<jobid>") + 8),tempStr.indexOf("</jobid>")) );
+					
 				session.setAttribute("QueryString",null);
 				qb.clear();
 				qb = null;
@@ -330,6 +335,7 @@ public class DataQueryServlet extends HttpServlet {
 	private String send(QueryBuilder qb) {
         JobController binding;
         String xmlBuildResult = null;
+        String response = null;
         try {
         	//CreateRequest is an object that creates the necessary xml document object to send to the job controller.
 			CreateRequest cr = new CreateRequest();
@@ -339,13 +345,14 @@ public class DataQueryServlet extends HttpServlet {
 			//xmlBuildResult = xmlBuildResult.substring(xmlBuildResult.indexOf("<jo"));
 			System.out.println("The XmL going to the webservice is = " + xmlBuildResult);
 			binding = new JobControllerServiceLocator().getJobControllerService();
+			//binding.setTimeout(30000);
 			//submit the request and get a response back.
-        	String response = binding.submitJob(xmlBuildResult);
+        	response = binding.submitJob(xmlBuildResult);
 			System.out.println("the response from the call to the webservice = " + response);
         }catch (Exception e) {
         	e.printStackTrace();
         }
         if(xmlBuildResult != null && xmlBuildResult.length() > 0) xmlBuildResult = xmlBuildResult.replaceAll(">",">\n");
-        return xmlBuildResult;
+        return "XML String sent to webservice = " + xmlBuildResult + "Response = " + response;
 	}
 }
