@@ -8,25 +8,49 @@
             <p>
                 The AstroGrid Community WebService uses JNDI entries to lookup the following resources.
                 <ul>
-                    <li>The service configuration file</li>
+                    <li>The service identifier</li>
                     <li>The database configuration</li>
                 </ul>
             </p>
-            <subsection name="Config location">
+            <subsection name="Community identifier">
                 <p>
-                    The Community WebService uses a local configuration file, containing the service settings.
+                    The Community WebService needs to know the IVO identifier for the Community service.
+                    This identifier forms the base for the IVO identifiers used to access objects within this Community service.
                 </p>
                 <p>
-                    To locate the configuration file, the WebService looks for a JNDI property configured in an <code>Environment</code> entry.
+                    For example, if the CommunityIdentifier is set to
+                    <ul>
+                        <li><i>org.astrogrid.test.xyz</i></li>
+                    </ul>
+                    then the IVO identifier for the service would be
+                    <ul>
+                        <li><code>ivo://org.astrogrid.test.xyz</code></li>
+                    </ul>
+                    and the IVO identifier for an Account <i>abc</i> in the Community service would be
+                    <ul>
+                        <li><code>ivo://org.astrogrid.test.xyz/abc</code></li>
+                    </ul>
+                </p>
+                <p>
+                    In order to make it available to the WebService, the Community identifier needs to be
+                    configured in a JNDI <code>Environment</code> property in the server configuration or
+                    WebApp context.
 <source><![CDATA[
 <Environment
-    name="org.astrogrid.community.config"
+    name="org.astrogrid.community.ident"
     type="java.lang.String"
-    value="/etc/astrogrid/astrogrid-community-config.xml"/>
+    value="org.astrogrid.test.xyz"/>
 ]]></source>
                 </p>
                 <p>
-                    The <code>Environment</code> entry should contain the full path to the WebService configuration file on the local file system.
+                    When the WebService is installed, the install toolkit reads the Community identifier from the
+                    <code>install.properties</code> file and automatically configures the JNDI <code>Environment</code>
+                    property in the Tomcat configuration.
+<source><![CDATA[
+# Local community name.
+# Change this property to set the service identifier.
+org.astrogrid.community.ident=org.astrogrid.localhost
+]]></source>
                 </p>
             </subsection>
             <subsection name="Database resource">
@@ -34,7 +58,8 @@
                     The Community WebService needs access to a local database to store the Community data.
                 </p>
                 <p>
-                    The WebService looks for a JNDI resource configured in a <code>Resource</code> entry .
+                    In order to make it available to the WebService, the database needs to be configured in
+                    a JNDI <code>Resource</code> entry in the server configuration or WebApp context.
 <source><![CDATA[
 <Resource
     name="jdbc/org.astrogrid.community.database"
@@ -42,10 +67,15 @@
     auth="Container"/>
 ]]></source>
                 </p>
+                <p>
+                    When the WebService is installed, the install toolkit automatically configures the JNDI
+                    <code>Resource</code> property in the Tomcat configuration.
+                </p>
             </subsection>
             <subsection name="Database properties">
                 <p>
-                    The database resource is managed by the Tomcat container, configured in a <code>ResourceParams</code> entry.
+                    In addition to the database <code>Resource</code> entry, the database properties need to be
+                    configured in a <code>ResourceParams</code> entry in the server configuration or WebApp context.
 <source><![CDATA[
 <ResourceParams
     name="jdbc/org.astrogrid.community.database">
@@ -71,6 +101,21 @@
     </parameter>
 </ResourceParams>
 ]]></source>
+                </p>
+                <p>
+                    When the WebService is installed, the install toolkit reads the database location from the
+                    <code>install.properties</code> file and automatically configures the <code>ResourceParams</code>
+                    entries in the Tomcat configuration.
+<source><![CDATA[
+# Database files location.
+# Change this property if you want to relocate the database files.
+database.home=/var/astrogrid/community
+]]></source>
+                </p>
+                <p style="font-size:x-small;font-style:italic;margin:20px">
+                    <img style="float:left;margin-right:5px" src="images/note.gif"/>
+                    The WebService needs to have read/write access to the database files.
+                    Make sure that the system account that Tomcat runs as can read and write files in this directory.
                 </p>
             </subsection>
         </section>

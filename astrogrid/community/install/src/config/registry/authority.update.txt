@@ -1,0 +1,114 @@
+[register.task] ----"----
+[register.task] CommunityRegistryTask.init()
+[register.task] ----"----
+[register.task] CommunityRegistryTask.execute()
+[register.task]   Data     : /var/projects/astrogrid/dave-dev-200403300547/community/install/target/install/config/registry/authority.update.xml
+[register.task]   Registry : http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-registry-webapp/services/Registry
+[register.task] tried validating and results = true
+[register.task] the endpoint = http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-registry-webapp/services/Registry
+[register.task] okay calling update service with doc = <?xml version="1.0" encoding="UTF-8"?>
+[register.task] <update><VODescription xmlns="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.2" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.6" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.2" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.4" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v0.9                       http://www.ivoa.net/xml/VOResource/VOResource-v0.9.xsd                       http://www.ivoa.net/xml/VOCommunity/v0.2                       http://www.ivoa.net/xml/VOCommunity/VOCommunity-v0.2.xsd                       http://www.ivoa.net/xml/VORegistry/v0.2                       http://www.ivoa.net/xml/VORegistry/VORegistry-v0.2.xsd                       http://www.ivoa.net/xml/ConeSearch/v0.2                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-
+[register.task] v0.2.xsd                       http://www.ivoa.net/xml/SIA/v0.6                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
+[register.task]     <vr:Resource xsi:type="AuthorityType">
+[register.task]         <Identifier>
+[register.task]             <AuthorityID>org.astrogrid.test.frog</AuthorityID>
+[register.task]             <ResourceKey>test</ResourceKey>
+[register.task]         </Identifier>
+[register.task]         <Title>test</Title>
+[register.task]         <ShortName>test</ShortName>
+[register.task]         <Subject>test</Subject>
+[register.task]         <Summary>
+[register.task]             <Description>test</Description>
+[register.task]             <ReferenceURL>http://org.astrogrid.test.frog/</ReferenceURL>
+[register.task]         </Summary>
+[register.task]         <Curation>
+[register.task]             <Publisher>
+[register.task]                 <Title>test</Title>
+[register.task]             </Publisher>
+[register.task]             <Contact>
+[register.task]                 <Name>test</Name>
+[register.task]                 <Email>test</Email>
+[register.task]             </Contact>
+[register.task]             <Date>2003-08-30</Date>
+[register.task]         </Curation>
+[register.task]     </vr:Resource>
+[register.task] </VODescription></update>
+[register.task] AxisFault
+[register.task]  faultCode: {http://schemas.xmlsoap.org/soap/envelope/}Server.generalException
+[register.task]  faultSubcode:
+[register.task]  faultString: Couldnt find an appropriate operation for XML QName {0}
+[register.task]  faultActor:
+[register.task]  faultNode:
+[register.task]  faultDetail:
+[register.task]         {http://xml.apache.org/axis/}stackTrace: AxisFault
+[register.task]  faultCode: {http://schemas.xmlsoap.org/soap/envelope/}Server.generalException
+[register.task]  faultSubcode:
+[register.task]  faultString: Couldnt find an appropriate operation for XML QName {0}
+[register.task]  faultActor:
+[register.task]  faultNode:
+[register.task]  faultDetail:
+
+[register.task] Couldnt find an appropriate operation for XML QName {0}
+[register.task]         at org.apache.axis.message.SOAPFaultBuilder.createFault(SOAPFaultBuilder.java:260)
+[register.task]         at org.apache.axis.message.SOAPFaultBuilder.endElement(SOAPFaultBuilder.java:169)
+[register.task]         at org.apache.axis.encoding.DeserializationContextImpl.endElement(DeserializationContextImpl.java:1015)
+[register.task]         at org.apache.xerces.parsers.AbstractSAXParser.endElement(Unknown Source)
+[register.task]         at org.apache.xerces.impl.XMLNSDocumentScannerImpl.scanEndElement(Unknown Source)
+[register.task]         at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl$FragmentContentDispatcher.dispatch(Unknown Source)
+[register.task]         at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl.scanDocument(Unknown Source)
+[register.task]         at org.apache.xerces.parsers.XML11Configuration.parse(Unknown Source)
+[register.task]         at org.apache.xerces.parsers.DTDConfiguration.parse(Unknown Source)
+[register.task]         at org.apache.xerces.parsers.XMLParser.parse(Unknown Source)
+[register.task]         at org.apache.xerces.parsers.AbstractSAXParser.parse(Unknown Source)
+[register.task]         at javax.xml.parsers.SAXParser.parse(SAXParser.java:345)
+[register.task]         at org.apache.axis.encoding.DeserializationContextImpl.parse(DeserializationContextImpl.java:242)
+[register.task]         at org.apache.axis.SOAPPart.getAsSOAPEnvelope(SOAPPart.java:538)
+[register.task]         at org.apache.axis.Message.getSOAPEnvelope(Message.java:376)
+[register.task]         at org.apache.axis.client.Call.invokeEngine(Call.java:2583)
+[register.task]         at org.apache.axis.client.Call.invoke(Call.java:2553)
+[register.task]         at org.apache.axis.client.Call.invoke(Call.java:1672)
+[register.task]         at org.astrogrid.registry.client.admin.RegistryAdminService.update(RegistryAdminService.java:209)
+[register.task]         at org.astrogrid.registry.client.admin.RegistryAdminService.updateFromFile(RegistryAdminService.java:227)
+[register.task]         at org.astrogrid.community.install.ant.CommunityRegistryTask.execute(CommunityRegistryTask.java:147)
+[register.task]         at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:193)
+[register.task]         at org.apache.tools.ant.Task.perform(Task.java:341)
+[register.task]         at org.apache.tools.ant.Target.execute(Target.java:309)
+[register.task]         at org.apache.tools.ant.Target.performTasks(Target.java:336)
+[register.task]         at org.apache.tools.ant.Project.executeTarget(Project.java:1339)
+[register.task]         at org.apache.tools.ant.Project.executeTargets(Project.java:1255)
+[register.task]         at org.apache.tools.ant.Main.runBuild(Main.java:609)
+[register.task]         at org.apache.tools.ant.Main.start(Main.java:196)
+[register.task]         at org.apache.tools.ant.Main.main(Main.java:235)
+
+
+[register.task] Couldnt find an appropriate operation for XML QName {0}
+[register.task]         at org.apache.axis.message.SOAPFaultBuilder.createFault(SOAPFaultBuilder.java:260)
+[register.task]         at org.apache.axis.message.SOAPFaultBuilder.endElement(SOAPFaultBuilder.java:169)
+[register.task]         at org.apache.axis.encoding.DeserializationContextImpl.endElement(DeserializationContextImpl.java:1015)
+[register.task]         at org.apache.xerces.parsers.AbstractSAXParser.endElement(Unknown Source)
+[register.task]         at org.apache.xerces.impl.XMLNSDocumentScannerImpl.scanEndElement(Unknown Source)
+[register.task]         at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl$FragmentContentDispatcher.dispatch(Unknown Source)
+[register.task]         at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl.scanDocument(Unknown Source)
+[register.task]         at org.apache.xerces.parsers.XML11Configuration.parse(Unknown Source)
+[register.task]         at org.apache.xerces.parsers.DTDConfiguration.parse(Unknown Source)
+[register.task]         at org.apache.xerces.parsers.XMLParser.parse(Unknown Source)
+[register.task]         at org.apache.xerces.parsers.AbstractSAXParser.parse(Unknown Source)
+[register.task]         at javax.xml.parsers.SAXParser.parse(SAXParser.java:345)
+[register.task]         at org.apache.axis.encoding.DeserializationContextImpl.parse(DeserializationContextImpl.java:242)
+[register.task]         at org.apache.axis.SOAPPart.getAsSOAPEnvelope(SOAPPart.java:538)
+[register.task]         at org.apache.axis.Message.getSOAPEnvelope(Message.java:376)
+[register.task]         at org.apache.axis.client.Call.invokeEngine(Call.java:2583)
+[register.task]         at org.apache.axis.client.Call.invoke(Call.java:2553)
+[register.task]         at org.apache.axis.client.Call.invoke(Call.java:1672)
+[register.task]         at org.astrogrid.registry.client.admin.RegistryAdminService.update(RegistryAdminService.java:209)
+[register.task]         at org.astrogrid.registry.client.admin.RegistryAdminService.updateFromFile(RegistryAdminService.java:227)
+[register.task]         at org.astrogrid.community.install.ant.CommunityRegistryTask.execute(CommunityRegistryTask.java:147)
+[register.task]         at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:193)
+[register.task]         at org.apache.tools.ant.Task.perform(Task.java:341)
+[register.task]         at org.apache.tools.ant.Target.execute(Target.java:309)
+[register.task]         at org.apache.tools.ant.Target.performTasks(Target.java:336)
+[register.task]         at org.apache.tools.ant.Project.executeTarget(Project.java:1339)
+[register.task]         at org.apache.tools.ant.Project.executeTargets(Project.java:1255)
+[register.task]         at org.apache.tools.ant.Main.runBuild(Main.java:609)
+[register.task]         at org.apache.tools.ant.Main.start(Main.java:196)
+[register.task]         at org.apache.tools.ant.Main.main(Main.java:235)

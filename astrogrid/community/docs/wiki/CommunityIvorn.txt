@@ -1,0 +1,252 @@
+The following description applies to the iteration 5 Community Ivorn resolvers.
+
+---++ Community identifiers
+
+A Community service is identified by the authority ID in an Ivorn identifier.
+
+For example :
+
+   * ==ivo://org.astrogrid.test.cam== =/dave/public/data/dataset.2004.03.30.xml=
+   * ==ivo://org.astrogrid.test.cam== =/dave#public/data/dataset.2004.03.30.xml=
+
+The following test communities are currently available :
+   * Test community at codon     =ivo://org.astrogrid.test.codon=
+   * Test community at cambridge =ivo://org.astrogrid.test.cam=
+
+The following test communities are in progress :
+   * Test community at mssl =ivo://org.astrogrid.test.mssl=
+   * Test community at leicester VM =ivo://org.astrogrid.test.le=
+   * Test community at edinburgh VM =ivo://org.astrogrid.test.roe=
+
+---++ Account identifiers
+
+A Community account is identified by the community and the firt part of the path in an Ivorn identifier.
+
+For example :
+
+   * ==ivo://org.astrogrid.test.cam/dave== =/public/data/dataset.2004.03.30.xml=
+   * ==ivo://org.astrogrid.test.cam/dave== =#public/data/dataset.2004.03.30.xml=
+
+The community parsers will also handle this syntax :
+
+   * ==ivo://org.astrogrid.test.cam#dave== =/public/data/dataset.2004.03.30.xml=
+
+However, this may not be compatible with some of the other AstroGrid services.
+
+---++ Service resolvers
+
+The Community component includes a set of tools for resolving service endpoints and delegates from an Ivorn identifier.
+
+These resolvers will parse an Ivorn to get the service identifier, lookup the service endpoint in the Registry,
+and return a delegate for the services.
+
+The Community services are registered in the Registry, indexed by the service identifier and service type.
+
+For example, given the following identifier, 
+
+=ivo://org.astrogrid.test.cam/dave/public/data/dataset.2004.03.30.xml=
+
+the SecurityServiceResolver will parse the IVO identifier to get the service identifier,
+
+==ivo://org.astrogrid.test.cam== =/dave/public/data/dataset.2004.03.30.xml=
+
+The AstroGrid Registry should contain an entry for a SecurityService with this the authority ID, which includes the URL for the service WSDL.
+<verbatim>
+   <VODescription>
+      <Resource>
+         <AuthorityID>org.astrogrid.test.cam</AuthorityID>
+         <ResourceKey>org.astrogrid.community.common.security.service.SecurityService</ResourceKey>
+      </Resource>
+      ....
+        <Interface>
+            <Invocation>WebService</Invocation>
+            <AccessURL use="base">http://capc49.ast.cam.ac.uk:8080/astrogrid-community/services/SecurityService?wsdl</AccessURL>
+        </Interface>
+   </VODescription>
+</verbatim>
+
+The SecurityServiceResolver uses the service identifier lookup the WSDL location in the Registry, resolves
+the service endpoint from the WSDL, and returns a SecurityServiceDelegate for the service.
+
+---++ Account resolver
+
+The Community component includes a set of tools for resolving Community accounts from an Ivorn identifier.
+
+The CommunityAccountResolver will parse an Ivorn identifier to get the service identifier, resolve the service endpoint,
+and call the service to request the account details, and returns an AccountData object containing the details of the account.
+
+For example, given the following identifier, 
+
+=ivo://org.astrogrid.test.cam/dave/public/data/dataset.2004.03.30.xml=
+
+the CommunityAccountResolver will parse the identifier to get the service identifier,
+
+==ivo://org.astrogrid.test.cam== =/dave/public/data/dataset.2004.03.30.xml=
+
+and account identifier,
+
+==ivo://org.astrogrid.test.cam/dave== =/public/data/dataset.2004.03.30.xml=
+
+The CommunityAccountResolver will call the Registry to lookup Community service endpoint,
+call the Community service to request the account details, and returns an Accountdata object containing
+the details of the account.
+<verbatim>
+   <account ident="ivo://org.astrogrid.test.cam/dave">
+       <display>Dave Morris</display>
+       <description>Astrogrid developer</description>
+       <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.cam/dave</home>
+       <email>dave@mail.astrogrid.org</email>
+   </account>
+</verbatim>
+
+---++ Account home space resolver
+
+Each account in a Community can have an associated MySpace space allocated on a MySpace service.
+
+The Community component includes a set of tools for resolving MySpace Ivorn identifiers from an account Ivorn identifier.
+
+The CommunityAccountSpaceResolver will parse an Ivorn identifier to get the Community service identifier,
+resolve the service endpoint, and then call the service to request the account details.
+
+The account details contain the Ivorn identifier of the associated MySpace home for the account.
+
+The resolver uses the home space identifier to generate a new Ivorn identifier for the MySpace metadata location.
+
+For example, given the following identifier, 
+
+=ivo://org.astrogrid.test.cam/dave/public/data/dataset.2004.03.30.xml=
+
+The CommunityAccountSpaceResolver will parse the identifier to get the service identifier,
+
+==ivo://org.astrogrid.test.cam== =/dave/public/data/dataset.2004.03.30.xml=
+
+and account identifier,
+
+==ivo://org.astrogrid.test.cam/dave== =/public/data/dataset.2004.03.30.xml=
+
+The CommunityAccountSpaceResolver calls the Registry to lookup the Community service with this identifier,
+and then calls the Community service to request the account details, including the account home space identifier.
+
+<verbatim>
+   <account ident="ivo://org.astrogrid.test.cam/dave">
+       <display>Dave Morris</display>
+       <description>Astrogrid developer</description>
+       <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.cam/dave</home>
+       <email>dave@mail.astrogrid.org</email>
+   </account>
+</verbatim>
+
+In this example, the account has space allocated on a MySpace service at Edinburgh, identified by,
+
+=ivo://org.astrogrid.test.roe/org.astrogrid.test.cam/dave=
+
+The CommunityAccountSpaceResolver will combine the home space identifier with the remainder of the original
+identifier
+
+=ivo://org.astrogrid.test.cam/dave= ==/public/data/dataset.2004.03.30.xml==
+
+and returun a new Ivorn identifier for the MySpace meta data,
+
+=ivo://org.astrogrid.test.roe/org.astrogrid.test.cam/dave/public/data/dataset.2004.03.30.xml=
+
+---++ Context sensitive meaning
+
+The identifiers are context sensitive, which means that the same string can refer to different things, depending
+on how far it has been resolved.
+
+For example, if we start with the following identifier, 
+
+=ivo://org.astrogrid.test.cam/dave/public/data/dataset.2004.03.30.xml=
+
+If this is an un-resolved identifier, then the authority ID of the identifier
+
+==ivo://org.astrogrid.test.cam== =/dave/public/data/dataset.2004.03.30.xml=
+
+refers to the Community service.
+
+However, if the account has been allocated MySpace space at the same institute, then the MySpace service will have the same authority ID as the Community service.
+
+This means that the identifier for the account MySpace home will be 
+
+=ivo://org.astrogrid.test.cam/org.astrogrid.test.cam/dave=
+
+Where the authority ID of the identifier,
+
+==ivo://org.astrogrid.test.cam== =/org.astrogrid.test.cam/dave=
+
+refers to the MySPace manager.
+
+The two services are distinguished in the Registry by the specifying the service type in the resource key.
+<verbatim>
+   <VODescription>
+      <Resource>
+         <AuthorityID>org.astrogrid.test.cam</AuthorityID>
+         <ResourceKey>org.astrogrid.community.common.security.service.SecurityService</ResourceKey>
+      </Resource>
+      ....
+   </VODescription>
+</verbatim>
+and
+<verbatim>
+   <VODescription>
+      <Resource>
+         <AuthorityID>org.astrogrid.test.cam</AuthorityID>
+         <ResourceKey>org.astrogrid.store.myspace.MySpaceMgr</ResourceKey>
+      </Resource>
+      ....
+   </VODescription>
+</verbatim>
+
+Passing the original identifier, 
+
+=ivo://org.astrogrid.test.cam/dave/public/data/dataset.2004.03.30.xml=
+
+to the CommunityAccountSpaceResolver will result in the following steps.
+
+   1 The resolver will parse the identifier to get the Community service identifier =ivo://org.astrogrid.test.cam=.
+
+   2 The resolver will pass this to the Registry, to lookup a Community PolicyManager service endpoint.
+<verbatim>
+   <VODescription>
+      <Resource>
+         <AuthorityID>org.astrogrid.test.cam</AuthorityID>
+         <ResourceKey>org.astrogrid.community.common.policy.manager.PolicyManager</ResourceKey>
+      </Resource>
+      ....
+      <Interface>
+         <Invocation>WebService</Invocation>
+         <AccessURL use="base">http://capc49.ast.cam.ac.uk:8080/astrogrid-community/services/PolicyManager?wsdl</AccessURL>
+      </Interface>
+   </VODescription>
+</verbatim>
+
+   3 The resolver uses the service endpoint to request the account details.
+<verbatim>
+   <account ident="ivo://org.astrogrid.test.cam/dave">
+       <display>Dave Morris</display>
+       <description>Astrogrid developer</description>
+       <home>ivo://org.astrogrid.test.cam/org.astrogrid.test.cam/dave</home>
+       <email>dave@mail.astrogrid.org</email>
+   </account>
+</verbatim>
+
+   4 The resolver gets the home space identifier, =ivo://org.astrogrid.test.cam/org.astrogrid.test.cam/dave=, from the account details.
+
+   5 The resolver combines this with the remainder of the original identifier, =public/data/dataset.2004.03.30.xml=, to create a new Ivorn.
+
+The resulting Ivorn identifier,
+
+=ivo://org.astrogrid.test.cam/org.astrogrid.test.cam/dave/public/data/dataset.2004.03.30.xml=
+
+refers to a MySpace metadata location in the MySpace service at Cambridge.
+
+Comparing this with the original identifier, it is not possible to determine what type of service the authority ID refers to.
+
+   * ==ivo://org.astrogrid.test.cam== =/dave/public/data/dataset.2004.03.30.xml=
+   * ==ivo://org.astrogrid.test.cam== =/org.astrogrid.test.cam/dave/public/data/dataset.2004.03.30.xml=
+
+This is, I think, how it is supposed to work.
+However, it means that when we are passing Ivorn identifiers between our components, we need to keep track of what the identifiers mean,
+and how to resolve them into what we actually need.
+
+-- Main.DaveMorris - 31 Mar 2004

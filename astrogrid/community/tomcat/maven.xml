@@ -4,10 +4,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/tomcat/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/30 04:44:01 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.8  2004/04/01 07:09:39  dave
+    |   Merged development branch, dave-dev-200403300547, into HEAD
+    |
+    |   Revision 1.7.2.2  2004/03/31 10:30:57  dave
+    |   Updated test data
+    |
+    |   Revision 1.7.2.1  2004/03/30 06:09:00  dave
+    |   Fixes to tomcat goals
+    |
     |   Revision 1.7  2004/03/30 04:44:01  dave
     |   Merged development branch, dave-dev-200403300258, into HEAD
     |
@@ -595,17 +604,12 @@
         <attainGoal name="database.load"/>
     </goal>
 
-
     <!-- ================ Local resolver goals ================ -->
 
     <!--+
         | Login to our service, using the local registry config.
         +-->
     <goal name="resolver.login.local">
-        <!--+
-            | Wait for Tomcat to start.
-            +-->
-        <attainGoal name="tomcat.wait"/>
         <!--+
             | Call the task in our resolver script.
             +-->
@@ -621,10 +625,6 @@
         +-->
     <goal name="resolver.token.local">
         <!--+
-            | Wait for Tomcat to start.
-            +-->
-        <attainGoal name="tomcat.wait"/>
-        <!--+
             | Call the task in our resolver script.
             +-->
         <ant:ant
@@ -639,10 +639,6 @@
         +-->
     <goal name="resolver.account.local">
         <!--+
-            | Wait for Tomcat to start.
-            +-->
-        <attainGoal name="tomcat.wait"/>
-        <!--+
             | Call the task in our resolver script.
             +-->
         <ant:ant
@@ -656,10 +652,6 @@
         | Validate an Account home space, using the local registry config.
         +-->
     <goal name="resolver.account.home.local">
-        <!--+
-            | Wait for Tomcat to start.
-            +-->
-        <attainGoal name="tomcat.wait"/>
         <!--+
             | Call the task in our resolver script.
             +-->
@@ -677,10 +669,6 @@
         +-->
     <goal name="resolver.login.live">
         <!--+
-            | Wait for Tomcat to start.
-            +-->
-        <attainGoal name="tomcat.wait"/>
-        <!--+
             | Call the task in our resolver script.
             +-->
         <ant:ant
@@ -694,10 +682,6 @@
         | Validate a token, using a live registry service.
         +-->
     <goal name="resolver.token.live">
-        <!--+
-            | Wait for Tomcat to start.
-            +-->
-        <attainGoal name="tomcat.wait"/>
         <!--+
             | Call the task in our resolver script.
             +-->
@@ -713,10 +697,6 @@
         +-->
     <goal name="resolver.account.live">
         <!--+
-            | Wait for Tomcat to start.
-            +-->
-        <attainGoal name="tomcat.wait"/>
-        <!--+
             | Call the task in our resolver script.
             +-->
         <ant:ant
@@ -730,10 +710,6 @@
         | Validate an Account home space, using a live registry service.
         +-->
     <goal name="resolver.account.home.live">
-        <!--+
-            | Wait for Tomcat to start.
-            +-->
-        <attainGoal name="tomcat.wait"/>
         <!--+
             | Call the task in our resolver script.
             +-->

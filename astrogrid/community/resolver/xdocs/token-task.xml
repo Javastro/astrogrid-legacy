@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>AstroGrid community resolver toolkit</title>
+    </properties>
+    <body>
+        <section name="Token task">
+            <p>
+                The resolver toolkit provides an Ant task to validate an AstroGrid Community SecurityToken.
+            </p>
+            <p>
+                The task resolves the Community service that issued the original SecurityToken,
+                calls the service to validate the token, and returns a new SecurityToken.
+            </p>
+            <p>
+                    The following Ant script fragment registers the token resolver as an Ant task.
+<source><![CDATA[
+<taskdef name="validate.task" classname="org.astrogrid.community.resolver.ant.CommunityTokenResolverTask">
+    <classpath refid="resolver.classpath"/>
+</taskdef>
+]]></source>
+            </p>
+            <subsection name="Live registry">
+                <p>
+                    The <code>validate.live</code> Ant task uses a live Registry service to resolve the endpoint of the Community
+                    service that issued the original token, and then calls the service to validate the token.
+                </p>
+                <p>
+                    The following command will run the task, using a live Registry service to resolve the Community service.
+<source><![CDATA[
+ant -f resolver.xml validate.live
+]]></source>
+                </p>
+                <p>
+                    The command invokes the following Ant script to run the token resolver, using a live Registry service to resolve the Community service.
+<source><![CDATA[
+    <!--+
+        | Validate a token, using a live registry service.
+        +-->
+    <target name="validate.live" depends="">
+        <echo message=""/>
+        <echo message="Token test ...."/>
+        <!--+
+            | Login to get our first token.
+            +-->
+        <login.task
+            registry="${org.astrogrid.registry.url}"
+            account="${org.astrogrid.community.account}"
+            password="qwerty"
+            />
+        <!--+
+            | Validate our token.
+            +-->
+        <validate.task
+            registry="${org.astrogrid.registry.url}"
+            />
+    </target>
+]]></source>
+                </p>
+                <p>
+                    The <code>validate</code> task reads the original token from an Ant property called <code>org.astrogrid.community.token</code>.
+                </p>
+                <p>
+                    In this example, script needs to invoke the <code>login.task</code> to get the first token before it can call the
+                    <code>validate.task</code> to check the token.
+                </p>
+                <p>
+                    The validate task requires the following parameters :
+                    <ul>
+                        <li>registry <i> - The endpoint URL for an AstroGrid Registry service</i></li>
+                    </ul>
+                </p>
+                <p>
+                    If the original token was valid, then the task will receive a new security token from the Community service.
+                    The task will automatically update the <code>org.astrogrid.community.token</code> Ant property with the new token.
+                </p>
+            </subsection>
+            <subsection name="Local registry">
+                <p style="font-size:x-small;font-style:italic;margin:20px">
+                    <img style="float:left;margin-right:5px" src="../images/note.gif"/>
+                    There are reported problems when using the local registry files on a Windows system.
+                </p>
+                <p>
+                    The <code>validate.local</code> Ant task uses local Registry files to resolve the endpoint of the Community
+                    service that issued the original token, and then calls the service to validate the token.
+                </p>
+                <p>
+                    The following command will run the token resolver task, using local Registry files to resolve the Community service.
+<source><![CDATA[
+ant -f resolver.xml token.local
+]]></source>
+                </p>
+                <p>
+                    The command invokes the following Ant script to run the token resolver, using local Registry properties to resolve the Community service.
+<source><![CDATA[
+<!--+
+    | Validate a token, using the local registry config.
+    +-->
+<target name="validate.local" depends="">
+    <echo message=""/>
+    <echo message="Token test ...."/>
+    <!--+
+        | Login to get our first token.
+        +-->
+    <login.task
+        properties="${basedir}/config/registry.properties"
+        account="${org.astrogrid.community.account}"
+        password="qwerty"
+        />
+    <!--+
+        | Validate our token.
+        +-->
+    <validate.task
+        properties="${basedir}/config/registry.properties"
+        />
+</target>
+]]></source>
+                </p>
+                <p>
+                    The <code>validate</code> task reads the original token from an Ant property called <code>org.astrogrid.community.token</code>.
+                </p>
+                <p>
+                    In this example, script needs to invoke the <code>login.task</code> to get the first token before it can call the
+                    <code>validate.task</code> to check the token.
+                </p>
+                <p>
+                    The validate task requires the following parameters :
+                    <ul>
+                        <li>properties <i> - The location of the local Registry properties file</i></li>
+                    </ul>
+                </p>
+                <p>
+                    If the original token was valid, then the task will receive a new security token from the Community service.
+                    The task will automatically update the <code>org.astrogrid.community.token</code> Ant property with the new token.
+                </p>
+            </subsection>
+        </section>
+    </body>
+</document>

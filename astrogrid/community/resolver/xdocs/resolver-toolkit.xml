@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>AstroGrid community resolver toolkit</title>
+    </properties>
+    <body>
+        <section name="Resolver toolkit">
+            <p>
+                The resolver toolkit contains a set of Ant tasks to connect to an AstroGrid Community WebService.
+            </p>
+            <p>
+                The toolkit includes the following components :
+                <ul>
+                    <li>Ant script</li>
+                    <li>Ant properties</li>
+                    <li>Resolver library</li>
+                    <li>3rd party libraries</li>
+                </ul>
+            </p>
+            <subsection name="Required components">
+                <p>
+                    The resolver toolkit requires the following pre-requisites installed.
+                    <ul>
+                        <li>Apache Ant <i>(recomended version 1.5.4)</i></li>
+                    </ul>
+                </p>
+            </subsection>
+            <subsection name="Resolver properties">
+                <p>
+                    The resolver toolkit uses the following properties, configured in the <code>resolver.properties</code> file supplied with the toolkit.
+                    <ul>
+                        <li>org.astrogrid.community.account <i> - the Community account identifier</i></li>
+                        <li>org.astrogrid.registry.url <i> - the endpoint URL for an AstroGrid Registry service</i></li>
+                    </ul>
+<source><![CDATA[
+#
+# Community identifier.
+# Change this property to set the community account.
+org.astrogrid.community.account=ivo://org.astrogrid.localhost/frog
+
+#
+# Default registry endpoint.
+# Change this property if you want to use a different registry.
+org.astrogrid.registry.url=http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-registry-webapp/services/Registry
+]]></source>
+                </p>
+            </subsection>
+        </section>
+    </body>
+</document>

@@ -2,27 +2,15 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/ant/resolver.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/30 04:44:01 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: resolver.xml,v $
-    |   Revision 1.3  2004/03/30 04:44:01  dave
-    |   Merged development branch, dave-dev-200403300258, into HEAD
+    |   Revision 1.4  2004/04/01 07:09:39  dave
+    |   Merged development branch, dave-dev-200403300547, into HEAD
     |
-    |   Revision 1.2.2.3  2004/03/30 04:42:31  dave
-    |   Added CommunityAccountSpaceResolverTask.
-    |
-    |   Revision 1.2.2.2  2004/03/30 03:58:31  dave
-    |   Added CommunityTokenResolverTask.
-    |
-    |   Revision 1.2.2.1  2004/03/30 03:24:57  dave
-    |   Fixes to resolver tasks.
-    |
-    |   Revision 1.2  2004/03/30 01:40:03  dave
-    |   Merged development branch, dave-dev-200403242058, into HEAD
-    |
-    |   Revision 1.1.2.1  2004/03/30 01:38:14  dave
-    |   Refactored resolver and install toolkits.
+    |   Revision 1.3.2.1  2004/04/01 01:50:14  dave
+    |   Updated install and resolver docs.
     |
     | </cvs:log>
     |
@@ -43,9 +31,9 @@
     <property file="${basedir}/resolver.properties"/>
 
     <!--+
-        | Default community ident.
+        | Default community account.
         +-->
-    <property name="org.astrogrid.community.ident" value="org.astrogrid.localhost"/>
+    <property name="org.astrogrid.community.account" value="org.astrogrid.localhost/frog"/>
 
     <!--+
         | Default registry endpoint.
@@ -116,7 +104,7 @@
     <taskdef name="login.task" classname="org.astrogrid.community.resolver.ant.CommunityPasswordResolverTask">
         <classpath refid="resolver.classpath"/>
     </taskdef>
-    <taskdef name="token.task" classname="org.astrogrid.community.resolver.ant.CommunityTokenResolverTask">
+    <taskdef name="validate.task" classname="org.astrogrid.community.resolver.ant.CommunityTokenResolverTask">
         <classpath refid="resolver.classpath"/>
     </taskdef>
     <taskdef name="account.task" classname="org.astrogrid.community.resolver.ant.CommunityAccountResolverTask">
@@ -139,7 +127,7 @@
             +-->
         <login.task
             properties="${basedir}/config/registry.properties"
-            account="ivo://${org.astrogrid.community.ident}/dave"
+            account="${org.astrogrid.community.account}"
             password="qwerty"
             />
     </target>
@@ -147,7 +135,7 @@
     <!--+
         | Validate a token, using the local registry config.
         +-->
-    <target name="token.local" depends="">
+    <target name="validate.local" depends="">
         <echo message=""/>
         <echo message="Token test ...."/>
         <!--+
@@ -155,13 +143,13 @@
             +-->
         <login.task
             properties="${basedir}/config/registry.properties"
-            account="ivo://${org.astrogrid.community.ident}/dave"
+            account="${org.astrogrid.community.account}"
             password="qwerty"
             />
         <!--+
             | Validate our token.
             +-->
-        <token.task
+        <validate.task
             properties="${basedir}/config/registry.properties"
             />
     </target>
@@ -174,7 +162,7 @@
         <echo message="Account test ...."/>
         <account.task
             properties="${basedir}/config/registry.properties"
-            account="ivo://${org.astrogrid.community.ident}/dave/path/file?query#fragment"
+            account="${org.astrogrid.community.account}"
             />
     </target>
 
@@ -187,7 +175,7 @@
         <account.home.task
             property="frog"
             properties="${basedir}/config/registry.properties"
-            account="ivo://${org.astrogrid.community.ident}/dave/path/file?query#fragment"
+            account="${org.astrogrid.community.account}/path/file?query#fragment"
             />
         <echo message="Result : ${frog}"/>
     </target>
@@ -205,7 +193,7 @@
             +-->
         <login.task
             registry="${org.astrogrid.registry.url}"
-            account="ivo://${org.astrogrid.community.ident}/dave"
+            account="${org.astrogrid.community.account}"
             password="qwerty"
             />
     </target>
@@ -213,7 +201,7 @@
     <!--+
         | Validate a token, using a live registry service.
         +-->
-    <target name="token.live" depends="">
+    <target name="validate.live" depends="">
         <echo message=""/>
         <echo message="Token test ...."/>
         <!--+
@@ -221,13 +209,13 @@
             +-->
         <login.task
             registry="${org.astrogrid.registry.url}"
-            account="ivo://${org.astrogrid.community.ident}/dave"
+            account="${org.astrogrid.community.account}"
             password="qwerty"
             />
         <!--+
             | Validate our token.
             +-->
-        <token.task
+        <validate.task
             registry="${org.astrogrid.registry.url}"
             />
     </target>
@@ -240,8 +228,9 @@
         <echo message="Account test ...."/>
         <account.task
             registry="${org.astrogrid.registry.url}"
-            account="ivo://${org.astrogrid.community.ident}/dave/path/file?query#fragment"
+            account="${org.astrogrid.community.account}"
             />
+        <echo message="Result : ${org.astrogrid.community.token}"/>
     </target>
 
     <!--+
@@ -253,11 +242,10 @@
         <account.home.task
             property="frog"
             registry="${org.astrogrid.registry.url}"
-            account="ivo://${org.astrogrid.community.ident}/dave/path/file?query#fragment"
+            account="${org.astrogrid.community.account}/path/file?query#fragment"
             />
         <echo message="Result : ${frog}"/>
     </target>
-
 
 </project>
 

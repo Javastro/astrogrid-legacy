@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/Attic/org.astrogrid.test.le.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: org.astrogrid.test.le.xml,v $
+    |   Revision 1.2  2004/04/01 07:09:39  dave
+    |   Merged development branch, dave-dev-200403300547, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/03/31 10:30:57  dave
+    |   Updated test data
+    |
+    | </cvs:log>
+    |
+    +-->
+<community ident="ivo://org.astrogrid.test.le">
+    <!--+
+        | The community Accounts.
+        +-->
+    <accounts>
+	    <!--+
+	        | Astrogrid developers.
+	        +-->
+        <account ident="ivo://org.astrogrid.test.le/clq">
+            <display>Catherine Qin</display>
+            <description>Astrogrid developer</description>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.le/clq</home>
+            <email>clq@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.test.le/cgp">
+            <display>Clive Page</display>
+            <description>Astrogrid developer</description>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.le/cgp</home>
+            <email>cgp@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.test.le/jl99">
+            <display>Jeff Lusted</display>
+            <description>Astrogrid developer</description>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.le/jl99</home>
+            <email>jl99@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.test.le/pfo">
+            <display>Patricio Ortiz</display>
+            <description>Astrogrid developer</description>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.le/pfo</home>
+            <email>pfo@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.test.le/pjn3">
+            <display>Phillip Nicolson</display>
+            <description>Astrogrid developer</description>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.le/pjn3</home>
+            <email>pjn3@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.test.le/ktn">
+            <display>Keith Noddle</display>
+            <description>Astrogrid technical lead</description>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.le/ktn</home>
+            <email>ktn@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.test.le/ael">
+            <display>Tony Linde</display>
+            <description>Astrogrid project manager</description>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.le/ael</home>
+            <email>ael@mail.astrogrid.org</email>
+        </account>
+	    <!--+
+	        | Astrogrid scientists.
+	        +-->
+        <account ident="ivo://org.astrogrid.test.le/mgw">
+            <display>Mike Watson</display>
+            <description>Astrogrid scientist</description>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.le/mgw</home>
+            <email>mgw@mail.astrogrid.org</email>
+        </account>
+		<!--+
+			| Test accounts.
+			+-->
+        <account ident="ivo://org.astrogrid.test.le/guy">
+            <display>Guy Rixon</display>
+            <description>Astrogrid developer</description>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.le/guy</home>
+            <email>guy@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.test.le/dave">
+            <display>Dave Morris</display>
+            <description>Astrogrid developer</description>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.le/dave</home>
+            <email>dave@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.test.le/kevin">
+            <display>Kevin Benson</display>
+            <description>Astrogrid developer</description>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.le/kevin</home>
+            <email>kevin@mail.astrogrid.org</email>
+        </account>
+    </accounts>
+    <!--+
+        | The community Groups.
+        +-->
+    <groups>
+        <group ident="ivo://org.astrogrid.test.le/public">
+            <description>Public group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.test.le/user">
+            <description>General users group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.test.le/java">
+            <description>Java developers group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.test.le/astro">
+            <description>Astronomers group</description>
+        </group>
+    </groups>
+
+    <!--+
+        | The community passwords.
+        +-->
+    <passwords>
+	    <!--+
+	        | Astrogrid developers.
+	        +-->
+        <password account="ivo://org.astrogrid.test.le/clq"    password="qwerty"/>
+        <password account="ivo://org.astrogrid.test.le/cgp"    password="qwerty"/>
+        <password account="ivo://org.astrogrid.test.le/jl99"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.test.le/pfo"    password="qwerty"/>
+        <password account="ivo://org.astrogrid.test.le/pjn3"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.test.le/ktn"    password="qwerty"/>
+        <password account="ivo://org.astrogrid.test.le/ael"    password="qwerty"/>
+	    <!--+
+	        | Astrogrid scientists.
+	        +-->
+        <password account="ivo://org.astrogrid.test.le/mgw"    password="qwerty"/>
+		<!--+
+			| Test accounts.
+			+-->
+        <password account="ivo://org.astrogrid.test.le/dave"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.test.le/guy"    password="qwerty"/>
+        <password account="ivo://org.astrogrid.test.le/kevin"  password="qwerty"/>
+    </passwords>
+</community>

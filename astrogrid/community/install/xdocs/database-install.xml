@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>AstroGrid community database install</title>
+    </properties>
+    <body>
+        <section name="Database install">
+            <subsection name="Database files">
+                <p>
+                    The AstroGrid Community WebService uses an internal HsqlDB database to store its data.
+                </p>
+                <p>
+                    The location of the database files is configured in a JNDI <code>Resource</code> entry in the server configuration.
+                    For details of how to configure this, see <a href="quick-install.html#Service properties">Service properties</a>
+                    and <a href="context-entries.html#Database properties">Database properties</a>.
+                </p>
+                <p style="font-size:x-small;font-style:italic;margin:20px">
+                    <img style="float:left;margin-right:5px" src="images/note.gif"/>
+                    The WebService needs to have read/write access to the database files.
+                    Make sure that the system account that Tomcat runs as can read and write files in this directory.
+                </p>
+            </subsection>
+            <subsection name="Database tables">
+                <p>
+                    The database tables are created internally the Community WebService.
+                </p>
+                <p>
+                    However, at the moment, this process is not triggerd automatically, and you will need to initiate
+                    the process using the install toolkit.
+                </p>
+                <p>
+                    The install toolkit contains an Ant task that calls the WebService and instructs it to
+                    create the database tables.
+                </p>
+                <p>
+                    Once the Community WebService has been installed, re-start the Tomcat server, and then use the <code>database.reset</code>
+                    Ant task to trigger the creation of the database tables.
+<source><![CDATA[
+ant -f install.xml database.reset
+]]></source>
+                </p>
+                <p style="color:red;font-size:x-small;font-style:italic;margin:20px">
+                    <img style="float:left;margin-right:5px" src="images/note.gif"/>
+                    Issuing this command on an existing installation will delete all the data from the database tables.
+                </p>
+            </subsection>
+            <subsection name="Database data">
+                <p>
+                    Once you have created the database tables, you need to populate the database with the initial data for the Community.
+                </p>
+                <p>
+                    The install toolkit contains test data files for the following communities :
+                    <ul>
+                        <li>Cambridge <code>(ivo://org.astrogrid.test.cam)</code></li>
+                        <li>Leicester <code>(ivo://org.astrogrid.test.le)</code></li>
+                        <li>Edinburgh <code>(ivo://org.astrogrid.test.roe)</code></li>
+                    </ul>
+                </p>
+                <p>
+                    The install toolkit contains an Ant task that uses the WebService interface to load the initial community data.
+                    <br/>
+                    The Ant task uses the community identifier configured in the <code>install.properties</code> to select which data set to load.
+<source><![CDATA[
+# Local community name.
+# Change this property to set the service identifier.
+org.astrogrid.community.ident=org.astrogrid.localhost
+]]></source>
+                </p>
+                <p>
+                    The <code>database.load</code> Ant task will upload the test data into the Community service.
+<source><![CDATA[
+ant -f install.xml database.load
+]]></source>
+                </p>
+                <p style="font-size:x-small;font-style:italic;margin:20px">
+                    <img style="float:left;margin-right:5px" src="images/note.gif"/>
+                    You need to have set the service identifier <b>before</b> you install the WebService.
+                    The installation process sets the service identifier in a JNDI property, and once this is
+                    configured the WebService will not allow you to load data for a different community.
+                </p>
+            </subsection>
+        </section>
+    </body>
+</document>

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/security/service/SecurityServiceResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceResolver.java,v $
+ *   Revision 1.3  2004/04/01 07:09:39  dave
+ *   Merged development branch, dave-dev-200403300547, into HEAD
+ *
+ *   Revision 1.2.8.1  2004/03/31 10:30:57  dave
+ *   Updated test data
+ *
  *   Revision 1.2  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -95,7 +101,7 @@ public class SecurityServiceResolver
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceResolverImpl.resolve()") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceResolver.resolve()") ;
         if (DEBUG_FLAG) System.out.println("  Ivorn : " + ((null != ivorn) ? ivorn : null)) ;
         //
         // Check for null ivorn.
@@ -128,7 +134,7 @@ public class SecurityServiceResolver
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceResolverImpl.resolve()") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceResolver.resolve()") ;
         if (DEBUG_FLAG) System.out.println("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
         //
         // Check for null parser.

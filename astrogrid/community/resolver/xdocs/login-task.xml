@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>AstroGrid community resolver toolkit</title>
+    </properties>
+    <body>
+        <section name="Login task">
+            <p>
+                The resolver toolkit provides an Ant task to login to an AstroGrid Community service.
+            </p>
+            <p>
+                The task validates an Account password and returns a new SecurityToken.
+            </p>
+            <p>
+                    The following Ant script fragment registers the password resolver as an Ant task.
+<source><![CDATA[
+<taskdef name="login.task" classname="org.astrogrid.community.resolver.ant.CommunityPasswordResolverTask">
+    <classpath refid="resolver.classpath"/>
+</taskdef>
+]]></source>
+            </p>
+            <subsection name="Live registry">
+                <p>
+                    The <code>login.live</code> Ant task uses a live Registry service to resolve the endpoint of a Community
+                    service, and then calls the service to validate the Account password.
+                </p>
+                <p>
+                    The following command will run the login task, using a live Registry service to resolve the Community service.
+<source><![CDATA[
+ant -f resolver.xml login.live
+]]></source>
+                </p>
+                <p>
+                    The command invokes the following Ant script to run the password resolver, using a live Registry service to resolve the Community service.
+<source><![CDATA[
+<!--+
+    | Login to our service, using a live registry service.
+    +-->
+<target name="login.live" depends="">
+    <echo message=""/>
+    <echo message="Login test ...."/>
+    <!--+
+        | Login to get our first token.
+        +-->
+    <login.task
+        registry="${org.astrogrid.registry.url}"
+        account="${org.astrogrid.community.account}"
+        password="qwerty"
+        />
+</target>
+]]></source>
+                </p>
+                <p>
+                    The <code>login</code> task requires the following parameters :
+                    <ul>
+                        <li>registry <i> - The endpoint URL for an AstroGrid Registry service</i></li>
+                        <li>account <i> - The IVO identifier for the Account</i></li>
+                        <li>password <i> - The Account password</i></li>
+                    </ul>
+                </p>
+                <p>
+                    If the login succeeds the task will store the new token in an Ant property called <code>org.astrogrid.community.token</code>.
+                </p>
+                <p style="font-size:x-small;font-style:italic;margin:20px">
+                    <img style="float:left;margin-right:5px" src="../images/note.gif"/>
+                    Before using the login task, check that the Account identifier and registry URL have been configured.
+                    <br/>
+                    See <a href="resolver-toolkit.html#Resolver properties">Resolver properties</a>
+                </p>
+            </subsection>
+            <subsection name="Local registry">
+                <p style="font-size:x-small;font-style:italic;margin:20px">
+                    <img style="float:left;margin-right:5px" src="../images/note.gif"/>
+                    There are reported problems when using the local registry files on a Windows system.
+                </p>
+                <p>
+                    The <code>login.local</code> Ant task uses local Registry files to resolve the endpoint of a Community
+                    service, and then calls the Community service to validate the Account identifier and password.
+                </p>
+                <p>
+                    The following command will run the login task, using local Registry files to resolve the Community service.
+<source><![CDATA[
+ant -f resolver.xml login.local
+]]></source>
+                </p>
+                <p>
+                    The command invokes the following Ant script to run the password resolver, using local Registry properties to resolve the Community service.
+<source><![CDATA[
+<!--+
+    | Login to our service, using the local registry config.
+    +-->
+<target name="login.local" depends="">
+    <echo message=""/>
+    <echo message="Login test ...."/>
+    <!--+
+        | Login to get our first token.
+        +-->
+    <login.task
+        properties="${basedir}/config/registry.properties"
+        account="${org.astrogrid.community.account}"
+        password="qwerty"
+        />
+</target>
+]]></source>
+                </p>
+                <p>
+                    The <code>login</code> task requires the following parameters :
+                    <ul>
+                        <li>properties <i> - The location of the local Registry properties file</i></li>
+                        <li>account <i> - The IVO identifier for the Account</i></li>
+                        <li>password <i> - The Account password</i></li>
+                    </ul>
+                </p>
+                <p>
+                    If the login succeeds the task will store the new token in an Ant property called <code>org.astrogrid.community.token</code>.
+                </p>
+            </subsection>
+        </section>
+    </body>
+</document>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<project>
+    <title>
+        AstroGrid Community resolver
+    </title>
+    <body>
+        <menu name="Resolver Toolkit">
+            <item name="Toolkit" collapse="true" href="/resolver-toolkit.html">
+                <item name="Libraries"   href="/resolver-toolkit.html#Required components"/>
+                <item name="Properties"  href="/resolver-toolkit.html#Resolver properties"/>
+            </item>
+            <item name="Login" collapse="true" href="/toolkit/login-task.html">
+                <item name="Live"  href="/login-task.html#Live registry"/>
+                <item name="Local" href="/login-task.html#Local registry"/>
+            </item>
+            <item name="Validate" collapse="true" href="/toolkit/token-task.html">
+                <item name="Live"  href="/token-task.html#Live registry"/>
+                <item name="Local" href="/token-task.html#Local registry"/>
+            </item>
+        </menu>
+        <menu name="Resolver Classes">
+            <item name="Community" collapse="true" href="/community-resolver.html">
+            </item>
+            <item name="Password" collapse="true" href="/password-resolver.html">
+            </item>
+            <item name="Token" collapse="true" href="/token-resolver.html">
+            </item>
+        </menu>
+        <menu name="Download">
+            <item name="Toolkit (ZIP)" href="http://www.astrogrid.org/maven/org.astrogrid/zips/astrogrid-community-resolver-SNAPSHOT.zip"/>
+        </menu>
+    </body>
+</project>

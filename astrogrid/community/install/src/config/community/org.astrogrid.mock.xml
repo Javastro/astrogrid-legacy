@@ -3,21 +3,15 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/org.astrogrid.mock.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: org.astrogrid.mock.xml,v $
-    |   Revision 1.2  2004/03/30 01:40:03  dave
-    |   Merged development branch, dave-dev-200403242058, into HEAD
+    |   Revision 1.3  2004/04/01 07:09:39  dave
+    |   Merged development branch, dave-dev-200403300547, into HEAD
     |
-    |   Revision 1.1.2.3  2004/03/28 09:11:43  dave
-    |   Convert tabs to spaces
-    |
-    |   Revision 1.1.2.2  2004/03/28 07:06:19  dave
-    |   Tidied up config files
-    |
-    |   Revision 1.1.2.1  2004/03/28 02:00:55  dave
-    |   Added database management tasks.
+    |   Revision 1.2.4.1  2004/03/31 10:30:57  dave
+    |   Updated test data
     |
     | </cvs:log>
     |
@@ -27,23 +21,26 @@
         | The community Accounts.
         +-->
     <accounts>
+	    <!--+
+	        | Test Accounts.
+	        +-->
         <account ident="ivo://org.astrogrid.mock/dave">
             <display>Dave Morris</display>
-            <description>Java developer</description>
+            <description>Astrogrid developer</description>
             <home>ivo://org.astrogrid.mock/dave</home>
             <email>dave@mail.astrogrid.org</email>
         </account>
         <account ident="ivo://org.astrogrid.mock/kevin">
             <display>Kevin Benson</display>
-            <description>Java developer</description>
+            <description>Astrogrid developer</description>
             <home>ivo://org.astrogrid.mock/kevin</home>
             <email>kevin@mail.astrogrid.org</email>
         </account>
-        <account ident="ivo://org.astrogrid.mock/martin">
-            <display>Martin Hill</display>
-            <description>Java developer</description>
-            <home>ivo://org.astrogrid.mock/martin</home>
-            <email>martin@mail.astrogrid.org</email>
+        <account ident="ivo://org.astrogrid.mock/guy">
+            <display>Guy Rixon</display>
+            <description>Astrogrid developer</description>
+            <home>ivo://org.astrogrid.mock/guy</home>
+            <email>guy@mail.astrogrid.org</email>
         </account>
     </accounts>
     <!--+
@@ -68,9 +65,12 @@
         | The community passwords.
         +-->
     <passwords>
+	    <!--+
+	        | Test Accounts.
+	        +-->
         <password account="ivo://org.astrogrid.mock/dave"   password="qwerty"/>
         <password account="ivo://org.astrogrid.mock/kevin"  password="qwerty"/>
-        <password account="ivo://org.astrogrid.mock/martin" password="qwerty"/>
+        <password account="ivo://org.astrogrid.mock/guy"    password="qwerty"/>
     </passwords>
 
 </community>

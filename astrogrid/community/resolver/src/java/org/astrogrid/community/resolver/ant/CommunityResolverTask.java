@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/Attic/CommunityResolverTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 04:44:01 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityResolverTask.java,v $
+ *   Revision 1.4  2004/04/01 07:09:39  dave
+ *   Merged development branch, dave-dev-200403300547, into HEAD
+ *
+ *   Revision 1.3.2.1  2004/04/01 01:50:14  dave
+ *   Updated install and resolver docs.
+ *
  *   Revision 1.3  2004/03/30 04:44:01  dave
  *   Merged development branch, dave-dev-200403300258, into HEAD
  *
@@ -91,7 +97,7 @@ public class CommunityResolverTask
      * The name of our token property.
      *
      */
-    public static final String TOKEN_PROPERTY = "org.astrogrod.token" ;
+    public static final String TOKEN_PROPERTY = "org.astrogrid.community.token" ;
 
     /**
      * Get our security token.

@@ -4,9 +4,12 @@
         <title>AstroGrid community quick install</title>
     </properties>
     <body>
-        <section name="Quick install">
+        <section name="Service install">
             <p>
-                The InstallToolkit contains all of the components required to install and configure the AstroGrid Community WebService.
+                The install toolkit contains all of the components required to install and configure the AstroGrid Community WebService.
+            </p>
+            <p>
+                The toolkit includes the following components :
                 <ul>
                     <li>Ant script</li>
                     <li>Ant properties</li>
@@ -16,22 +19,47 @@
             </p>
             <subsection name="Required components">
                 <p>
-                    The InstallToolkit requires the following pre-requisites installed on the target system(s).
+                    The install toolkit requires the following pre-requisites installed on the target system(s).
                     <ul>
                         <li>Apache Ant <i>(recomended version 1.5.4)</i></li>
-                        <li>Apache Tomcat <i>(version 4.1.24 to 5.0.18)</i></li>
+                        <li>Apache Tomcat <i>(recomended version 4.1.24)</i></li>
                     </ul>
+                </p>
+            </subsection>
+            <subsection name="Service properties">
+                <p>
+                    The install toolkit uses the following properties, configured in the <code>install.properties</code> file supplied with the toolkit.
+                    <ul>
+                        <li>org.astrogrid.community.ident <i> - the ivo name of your Community.</i></li>
+                        <li>database.home <i> - the location of the Community database files.</i></li>
+                    </ul>
+<source><![CDATA[
+# Your community name.
+# Change this property to set the service identifier.
+org.astrogrid.community.ident=org.astrogrid.localhost
+
+# Database files location.
+# The default is to put the database files in '/var/astrogrid'.
+# Change this property if you want to relocate the database files.
+database.home=/var/astrogrid/community
+]]></source>
                 </p>
             </subsection>
             <subsection name="Local install">
                 <p>
-                    The InstallToolkit can install the WebService directly into a Tomcat instance on the local system.
+                    The install toolkit can install the WebService directly into a Tomcat instance on the local system.
                 </p>
                 <p>
-                    Assuming that the pre-requisites are already installed, executing the <code>install</code> Ant task will automatically install and configure the WebService.
-<source>
+                    Assuming that the pre-requisites are already installed, and the service properties have been configured, executing the <code>install</code> Ant task will automatically install and configure the WebService.
+<source><![CDATA[
 ant -f install.xml install
-</source>
+]]></source>
+                </p>
+                <p>
+                    This will install the basic WebService into Tomcat container.
+                </p>
+                <p>
+                    To install and configure the database, refer to the <a href="database-install.html">Database install</a> page.
                 </p>
             </subsection>
             <subsection name="Remote deploy">
@@ -40,21 +68,21 @@ ant -f install.xml install
                     Remote deployment is not implemented in the current release.
                 </p>
                 <p>
-                    The InstallToolkit can also deploy the WebService into a Tomcat server running on a remote system.
+                    The install toolkit can also deploy the WebService into a Tomcat server running on a remote system.
                 </p>
                 <p>
                     Deploying the WebService on a remote system requires Tomcat installed and running on the target system, and Ant installed on the local system.
                     Assuming that the pre-requisites are already installed, executing the <code>deploy</code> Ant task will automatically deploy the WebService on the target machine.
-<source>
+<source><![CDATA[
 ant -f install.xml deploy \
     -Dtomcat.host=host.astrogrid.org \
     -Dtomcat.manager.name=xyz \
     -Dtomcat.manager.pass=xyz
-</source>
+]]></source>
                 </p>
                 <p>
                     Alternatively, the Tomcat properties can be set by providing a local properties file, <code>tomcat.properties</code>.
-<source>
+<source><![CDATA[
 #
 # Target deployment hostname.
 # Used by the remote deployment task.
@@ -66,39 +94,13 @@ tomcat.host=localhost
 # Change these properties to match the settings on the target system.
 tomcat.manager.name=QWERTY
 tomcat.manager.pass=qwerty
-</source>
+]]></source>
                 </p>
                 <p>
                     In which case, the Ant command can be simplified to the following.
-<source>
+<source><![CDATA[
 ant -f install.xml deploy
-</source>
-                </p>
-            </subsection>
-            <subsection name="Default properties">
-                <p>
-                    The InstallToolkit uses the following properties, configured in the <code>install.properties</code> file supplied with the toolkit.
-                    <ul>
-                        <li>config.home <i> - the location of the Community configuration files.</i></li>
-                        <li>database.home <i> - the location of the Community database files.</i></li>
-                        <li>community.name <i> - the ivo name of your Community.</i></li>
-                    </ul>
-<source>
-# Your community name.
-# The default is to use the local host name.
-# Change this property if you want to change your community name.
-community.name=test.astrogrid.org
-
-# Config files location.
-# The default is to put the configuration files in '/etc/astrogrid'.
-# Change this property if you want to relocate the config files.
-config.home=/etc/astrogrid/community
-
-# Database files location.
-# The default is to put the database files in '/var/astrogrid'.
-# Change this property if you want to relocate the database files.
-database.home=/var/astrogrid/community
-</source>
+]]></source>
                 </p>
             </subsection>
         </section>

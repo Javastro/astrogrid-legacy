@@ -4,39 +4,26 @@
         AstroGrid Community InstallToolkit
     </title>
     <body>
-        <menu name="Install methods">
-            <item name="Quick install" collapse="true" href="/quick-install.html">
-                <item name="Requirements"  href="/quick-install.html#Required components"/>
-                <item name="Local install" href="/quick-install.html#Local install"/>
-                <item name="Remote deploy" href="/quick-install.html#Remote deploy"/>
-                <item name="Properties"    href="/quick-install.html#Default properties"/>
+        <menu name="Install toolkit">
+            <item name="Service install" collapse="true" href="/service-install.html">
+                <item name="Libraries"     href="/service-install.html#Required components"/>
+                <item name="Properties"    href="/service-install.html#Service properties"/>
+                <item name="Local install" href="/service-install.html#Local install"/>
+                <item name="Remote deploy" href="/service-install.html#Remote deploy"/>
             </item>
             <item name="Context entries" collapse="true" href="/context-entries.html">
-                <item name="Config location"   href="/context-entries.html#Config location"/>
+                <item name="Community ident"   href="/context-entries.html#Community identifier"/>
                 <item name="Database resource" href="/context-entries.html#Database resource"/>
                 <item name="Database param"    href="/context-entries.html#Database properties"/>
             </item>
-            <item name="Local context" collapse="true" href="/local-context.html">
-                <item name="Config location"   href="/local-context.html#Config location"/>
-                <item name="Database resource" href="/local-context.html#Database resource"/>
-                <item name="Database param"    href="/local-context.html#Database properties"/>
+            <item name="Database install" collapse="true" href="/database-install.html">
+                <item name="Database files"  href="/database-install.html#Database files"/>
+                <item name="Database tables" href="/database-install.html#Database tables"/>
+                <item name="Database data"   href="/database-install.html#Database data"/>
             </item>
-            <item name="Global context" collapse="true" href="/global-context.html">
-                <item name="Config location"   href="/global-context.html#Config location"/>
-                <item name="Database resource" href="/global-context.html#Database resource"/>
-                <item name="Database param"    href="/global-context.html#Database properties"/>
-                <item name="Resource links"    href="/global-context.html#Resource links"/>
-            </item>
-            <item name="WebApp context" collapse="true" href="/webapp-context.html">
-                <item name="Context file"      href="/webapp-context.html#Context file"/>
-                <item name="Config location"   href="/webapp-context.html#Config location"/>
-                <item name="Database resource" href="/webapp-context.html#Database resource"/>
-                <item name="Database param"    href="/webapp-context.html#Database properties"/>
-            </item>
-            <item name="Manual install" collapse="true" href="/manual-install.html"/>
         </menu>
         <menu name="Download">
-            <item name="InstallToolkit" href="http://www.astrogrid.org/maven/org.astrogrid/zips/astrogrid-community-install-SNAPSHOT.zip"/>
+            <item name="Toolkit (ZIP)" href="http://www.astrogrid.org/maven/org.astrogrid/zips/astrogrid-community-install-SNAPSHOT.zip"/>
         </menu>
     </body>
 </project>
