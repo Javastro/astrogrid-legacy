@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsp:page language="java"
+    xmlns:xsp="http://apache.org/xsp"
+    xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+    xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+    xmlns:util="http://apache.org/xsp/util/2.0"     
+    >
+    
+      <!--+
+      | Import any java classes here.
+      +-->
+
+    <xsp:structure>
+      <xsp:include>org.astrogrid.workflow.beans.v1.Workflow</xsp:include>  
+      <xsp:include>org.w3c.dom.Document</xsp:include> 
+      <xsp:include>org.astrogrid.util.DomHelper</xsp:include>
+      <xsp:include>org.exolab.castor.xml.Marshaller</xsp:include>
+      <xsp:include>java.io.StringWriter</xsp:include>
+      <xsp:include>org.apache.axis.utils.XMLUtils</xsp:include>
+    </xsp:structure>        
+    
+    <printer>
+      <xsp:logic>
+      
+        Object ob = null;
+        Workflow wf = null;
+        String wfDoc;
+
+        try {
+          ob = session.getAttribute("workflow-staus-tag");          
+          if ((ob != null) &amp;&amp; (ob instanceof Workflow))
+          {
+             Document doc = DomHelper.newDocument();           
+             wf = (Workflow)ob;
+             Marshaller.marshal(wf,doc);
+             StringWriter sw = new StringWriter();
+             XMLUtils.PrettyDocumentToWriter(doc,sw);    
+                                                           
+
+                <util:include-expr>
+                  <util:expr>
+                    sw.toString()
+                  </util:expr>
+                </util:include-expr>
+
+              
+             sw.close();
+           }
+          } 
+          catch (Exception e) 
+          {
+            System.out.println("Exception thrown in printer-friendly.xsp: " +e.getMessage());
+          }         
+           
+       </xsp:logic>
+    </printer>
+      
+</xsp:page>
