@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.9 2004/03/14 03:31:01 mch Exp $
+ * $Id: Agsl.java,v 1.10 2004/03/15 18:18:31 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,6 +9,8 @@
 
 package org.astrogrid.store;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -184,7 +186,13 @@ public class Agsl
     */
    public OutputStream openOutputStream(User user) throws IOException {
       if (url != null) {
-         throw new UnsupportedOperationException("Cannot (currently) open outputs to URLs");
+         if (url.getProtocol().equals("file")) {
+            File f = new File(url.getFile());
+            return new FileOutputStream(f);
+         }
+         else {
+            throw new UnsupportedOperationException("Cannot (currently) open outputs to URLs");
+         }
       }
       else {
          return msrl.openOutputStream();
@@ -222,6 +230,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.10  2004/03/15 18:18:31  mch
+Added file output
+
 Revision 1.9  2004/03/14 03:31:01  mch
 Added openOutputStream
 
