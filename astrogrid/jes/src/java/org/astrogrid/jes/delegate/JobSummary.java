@@ -1,4 +1,4 @@
-/*$Id: JobInfo.java,v 1.1 2004/03/09 14:23:12 nw Exp $
+/*$Id: JobSummary.java,v 1.1 2004/03/09 15:04:42 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,13 +17,13 @@ import org.astrogrid.workflow.beans.v1.execution.JobURN;
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Mar-2004
  *
  */
-public class JobInfo {
-    public JobInfo(WorkflowSummary item) {
+public class JobSummary {
+    public JobSummary(WorkflowSummary item) {
         name = item.getWorkflowName();
         jobID = new JobURN();
         jobID.setContent(item.getJobUrn().toString());
     }
-    public JobInfo(String name,JobURN jobID) {
+    public JobSummary(String name,JobURN jobID) {
         this.name = name;
         this.jobID = jobID;
     }
@@ -42,7 +42,10 @@ public class JobInfo {
 
 
 /* 
-$Log: JobInfo.java,v $
+$Log: JobSummary.java,v $
+Revision 1.1  2004/03/09 15:04:42  nw
+renamed JobInfo to JobSummary
+
 Revision 1.1  2004/03/09 14:23:12  nw
 integrated new JobController wsdl interface
  

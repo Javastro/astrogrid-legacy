@@ -1,4 +1,4 @@
-/*$Id: SOAPJobControllerTest.java,v 1.2 2004/03/09 14:23:36 nw Exp $
+/*$Id: SOAPJobControllerTest.java,v 1.3 2004/03/09 15:04:42 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobController;
-import org.astrogrid.jes.delegate.JobInfo;
+import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JesFault;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
@@ -117,10 +117,10 @@ public class SOAPJobControllerTest extends AbstractTestForSOAPService {
          assertNotNull(storedURN);
          Account acc = wf.getCredentials().getAccount();
          assertNotNull(acc);
-         JobInfo[] arr = delegate.readJobList(acc);
+         JobSummary[] arr = delegate.readJobList(acc);
          assertNotNull(arr);
          assertTrue(arr.length > 0);
-         JobInfo i = arr[0];
+         JobSummary i = arr[0];
          assertNotNull(i);
          assertEquals(storedURN.getContent(),i.getJobURN().getContent());
      }
@@ -130,7 +130,7 @@ public class SOAPJobControllerTest extends AbstractTestForSOAPService {
          Account acc = new Account();
          acc.setCommunity("unknown");
          acc.setName("unknown");
-         JobInfo[] arr = delegate.readJobList(acc);
+         JobSummary[] arr = delegate.readJobList(acc);
          assertNotNull(arr);
          assertEquals(0,arr.length);
      }
@@ -177,6 +177,9 @@ public class SOAPJobControllerTest extends AbstractTestForSOAPService {
 
 /* 
 $Log: SOAPJobControllerTest.java,v $
+Revision 1.3  2004/03/09 15:04:42  nw
+renamed JobInfo to JobSummary
+
 Revision 1.2  2004/03/09 14:23:36  nw
 tests that exercise the soap transport
 

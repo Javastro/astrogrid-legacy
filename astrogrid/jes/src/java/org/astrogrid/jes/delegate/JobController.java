@@ -1,4 +1,4 @@
-/*$Id: JobController.java,v 1.5 2004/03/09 14:23:12 nw Exp $
+/*$Id: JobController.java,v 1.6 2004/03/09 15:04:42 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,11 +24,14 @@ public interface JobController extends Delegate {
     public JobURN submitWorkflow(Workflow wf) throws JesDelegateException;
     public void cancelJob(JobURN urn) throws JesDelegateException;
     public void deleteJob(JobURN urn) throws JesDelegateException;
-    public JobInfo[] readJobList(Account acc) throws JesDelegateException;
+    public JobSummary[] readJobList(Account acc) throws JesDelegateException;
     public Workflow readJob(JobURN urn) throws JesDelegateException;
 }
 /* 
 $Log: JobController.java,v $
+Revision 1.6  2004/03/09 15:04:42  nw
+renamed JobInfo to JobSummary
+
 Revision 1.5  2004/03/09 14:23:12  nw
 integrated new JobController wsdl interface
 

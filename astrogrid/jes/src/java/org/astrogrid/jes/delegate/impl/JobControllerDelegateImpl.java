@@ -4,7 +4,7 @@ import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.axis.Identifier;
 import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.jes.delegate.JesDelegateException;
-import org.astrogrid.jes.delegate.JobInfo;
+import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobControllerServiceLocator;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobControllerServiceSoapBindingStub;
@@ -97,7 +97,7 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
     /**
      * @see org.astrogrid.jes.delegate.JobController#readJobList(org.astrogrid.community.beans.v1.Account)
      */
-    public JobInfo[] readJobList(Account acc) throws JesDelegateException {
+    public JobSummary[] readJobList(Account acc) throws JesDelegateException {
         try {
             JobController jc = getBinding();
             _Account axisAcc = new _Account();
@@ -114,9 +114,9 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
             if (wl == null) { // returns null if none found - change this to an empy array;
                 wl = new WorkflowSummary[]{};
             }
-            JobInfo[] result = new JobInfo[wl.length];
+            JobSummary[] result = new JobSummary[wl.length];
             for (int i = 0; i < wl.length; i++) {
-                JobInfo nfo = new JobInfo(wl[i]);
+                JobSummary nfo = new JobSummary(wl[i]);
                 result[i] = nfo;
             }
             return result;

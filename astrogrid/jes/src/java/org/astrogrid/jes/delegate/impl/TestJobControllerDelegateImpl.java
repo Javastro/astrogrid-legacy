@@ -3,7 +3,7 @@ package org.astrogrid.jes.delegate.impl;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.delegate.Delegate;
 import org.astrogrid.jes.delegate.JesDelegateException;
-import org.astrogrid.jes.delegate.JobInfo;
+import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
@@ -65,9 +65,9 @@ public class TestJobControllerDelegateImpl extends JobControllerDelegate {
     /**
      * @see org.astrogrid.jes.delegate.JobController#readJobList(org.astrogrid.community.beans.v1.Account)
      */
-    public JobInfo[] readJobList(Account acc) throws JesDelegateException {
+    public JobSummary[] readJobList(Account acc) throws JesDelegateException {
         log.info("Test Job Controller: reading job list ");
-        return new JobInfo[]{};
+        return new JobSummary[]{};
     }
 
 
