@@ -152,7 +152,7 @@ public class WorkflowHelper {
       
     "   </input>" +
     
-    "   <output>" +    "   <parameter name=\"result\" location=\"myspace://votable2\" />" +
+    "   <output>" +    "   <parameter name=\"result\" type=\"MySpace_VOTableReference\" >" +    "       myspace://jl99@star.le.ac.uk/serv1/votables/votable2" +    "   </parameter>" +
     "   </output>" +
         "</tool>" +
         
@@ -173,10 +173,14 @@ public class WorkflowHelper {
         " <step name=\"StepOne\" stepNumber=\"1\" sequenceNumber=\"1\">" +    
         "  <tool name=\"someQueryTool\">" +
         "   <input>" +
-        "    <parameter name=\"query\" type=\"adql\" location=\"myspace://query/query01.xml\" />" +
+        "      <parameter name=\"query\" type=\"MySpace_FileReference\" >" +
+        "           myspace://jl99@star.le.ac.uk/serv1/query/query01.xml" +
+        "      </parameter>" +        
         "   </input>" +
         "   <output>" +
-        "    <parameter name=\"result\" location=\"myspace://votable2\" />" +
+        "      <parameter name=\"result\" type=\"MySpace_VOTableReference\" >" +
+        "           myspace://jl99@star.le.ac.uk/serv1/votables/votable2" +
+        "      </parameter>" +
         "   </output>" +
         "  </tool>" +  
         " </step>" +
