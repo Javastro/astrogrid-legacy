@@ -50,35 +50,15 @@ public class IndexGenerator
 //   private static Log log = LogFactory.getLog(IndexGenerator.class); //because it's a pain to configure
    
    /**
-    * Generates an index XML file for the FITS files at the given urls
-    */
-   public static String generateIndex(Object[] urls) throws IOException
-   {
-      StringBuffer index = new StringBuffer("<FitsDataCenterIndex>\n");
-      
-      for (int i=0;i<urls.length;i++)
-      {
-         assert urls[i] != null;  //or could report it and continue?
-         index.append(generateIndex((URL)urls[i]));
-      }
-
-      index.append("</FitsDataCenterIndex>\n");
-      
-      return index.toString();
-      
-   }
-   
-
-   /**
     * Generates a single index FitsFile 'snippet' for the FITS file at the
     * given url
     */
-   public static String generateIndex(URL fitsUrl) throws IOException
+   public static String makeIndexSnippet(URL fitsUrl) throws IOException
    {
       assert fitsUrl != null;
       
       Log.trace("Examining file "+fitsUrl+"...");
-      return generateIndex(new FitsStreamReader(fitsUrl), fitsUrl.toString());
+      return makeIndexSnippet(new FitsStreamReader(fitsUrl), fitsUrl.toString());
    }
    
    /**
@@ -87,14 +67,14 @@ public class IndexGenerator
     * @todo tidy up so that, for example, multiline comments become one tag
     * @TODO max pixels are WRONG
     */
-   public static String generateIndex(FitsReader reader, String filename) throws IOException
+   public static String makeIndexSnippet(FitsReader reader, String filename) throws IOException
    {
       StringBuffer snippet = new StringBuffer();
       
       FitsHeader header = new FitsHeader();
       reader.readHeaderKeywords(header, null);
 
-      snippet.append(generateIndex(header, filename));
+      snippet.append(makeIndexSnippet(header, filename));
 
       FitsHdu primaryHdu = new FitsHdu(header);
 
@@ -114,7 +94,7 @@ public class IndexGenerator
                header = new FitsHeader();
                reader.readHeaderKeywords(header, null);
          
-               snippet.append(generateIndex(header, filename));
+               snippet.append(makeIndexSnippet(header, filename));
          
                FitsHdu extHdu = new FitsHdu(header);
          
@@ -131,17 +111,17 @@ public class IndexGenerator
    /**
     * Generates an index snippet for the given header
     */
-   public static String generateIndex(FitsHeader header, String fileLocation) throws IOException
+   public static String makeIndexSnippet(FitsHeader header, String fileLocation) throws IOException
    {
       StringBuffer keywordSnippet = new StringBuffer();
       StringBuffer coverageSnippet = new StringBuffer();
       String key = null;
       String val = null;
       
-      if(header == null) 
+      if(header == null)
         return "";
 
-      if (header.getNumAxis() >= 2) {      
+      if (header.getNumAxis() >= 2) {
          //return "";
       
          //work out coverage.  This is not a straightforward rectangle, as the
@@ -198,6 +178,7 @@ public class IndexGenerator
       return snippet;
    }
 
+   /** Checks that the given snippet is valid XML */
    public static void validate(String snippet) throws IOException
    {
      try
@@ -210,6 +191,49 @@ public class IndexGenerator
    }
 
    /**
+    * Generates an index XML file for the FITS files at the given urls
+    */
+   public static String generateIndex(Object[] urls) throws IOException
+   {
+      StringBuffer index = new StringBuffer("<FitsDataCenterIndex>\n");
+      
+      for (int i=0;i<urls.length;i++)
+      {
+         assert urls[i] != null;  //or could report it and continue?
+         index.append(makeIndexSnippet((URL)urls[i]));
+      }
+
+      index.append("</FitsDataCenterIndex>\n");
+      
+      return index.toString();
+      
+   }
+   
+   /**
+    * Generates an index XML file for the FITS files at the URLs listed in the
+    * given file
+    */
+   public static String generateIndex(FileReader urlFile) throws IOException
+   {
+         BufferedReader in
+            = new BufferedReader(urlFile);
+         ArrayList al = new ArrayList();
+         String line = null;
+         while( (line = in.readLine()) != null) {
+            System.out.println("the url added to be processed = " + line);
+            al.add(new URL(line));
+         }
+         in.close();
+         String indexFile = generateIndex(al.toArray());
+         Log.trace(indexFile);
+         return indexFile;
+   }
+
+   
+   /**
+   
+   
+   /**
      * Test harness
      */
     public static void main(String args[]) throws IOException, MalformedURLException
@@ -219,26 +243,16 @@ public class IndexGenerator
 //                             }));
        Log.traceOn();
       Log.logToConsole();
-      Locale.setDefault(Locale.UK);      
+      Locale.setDefault(Locale.UK);
       Document indexDoc = null;
       if(args == null || args.length < 2) {
-         System.out.println("java IndexGenerator -f <filename of urls (one url per line)> or");   
+         System.out.println("java IndexGenerator -f <filename of urls (one url per line)> or");
          System.out.println("java IndexGenerator -u <URLs seperated by spaces>");
          return;
       }
       String indexFile = null;
-      if("-f".equals(args[0])) {         
-         BufferedReader in
-            = new BufferedReader(new FileReader(args[1]));
-         ArrayList al = new ArrayList();
-         String line = null;
-         while( (line = in.readLine()) != null) {
-            System.out.println("the url added to be processed = " + line);
-            al.add(new URL(line));
-         }
-         in.close();
-         indexFile = generateIndex(al.toArray()); 
-         Log.trace(indexFile);
+      if("-f".equals(args[0])) {
+         indexFile = generateIndex(new FileReader(args[1]));
       }else if("-u".equals(args[0])) {
          Object []fitsURLS = new Object[(args.length-1)];
          for(int i = 1;i < args.length;i++) {
@@ -269,12 +283,12 @@ public class IndexGenerator
          pw.close();
          System.out.println("Successfull creation of fits file index, it was created as = " + String.valueOf(fileTime) + ".xml");
          System.out.println("Now the file must be uploaded to the eXist xml database to be used for querying the file");
-         System.out.println("You may do this manually or this program can do it automatically by calling \"java -s IndexGenerator <filename>\" by using the file name just created");         
+         System.out.println("You may do this manually or this program can do it automatically by calling \"java -s IndexGenerator <filename>\" by using the file name just created");
          
       }
 
       if("-s".equals(args[0])) {
-         try {         
+         try {
             indexDoc = DomHelper.newDocument(new File(args[1]));
          }catch(ParserConfigurationException pce) {
             throw new RuntimeException("Server configuration error",pce);
@@ -296,13 +310,13 @@ public class IndexGenerator
             URL eXistLocation = null;
             while( (line = consoleInput.readLine()) != null) ;
             line = line.replaceAll("[^\\w*]","_");
-            if(!line.endsWith(".xml")) line += ".xml"; 
+            if(!line.endsWith(".xml")) line += ".xml";
             fileName = line;
             System.out.println("What is the url to the exist database? ex: http://localhost:8080/exist  is a typical url");
             System.out.println("We only need it up to the \"exist\" part");
             while( (line = consoleInput.readLine()) != null) ;
             
-            if(!line.endsWith("/")) {  
+            if(!line.endsWith("/")) {
                line += "servlet/db/dcfitsfiles/" + fileName;
             }
             else {
@@ -329,10 +343,10 @@ public class IndexGenerator
           dos.flush();
           dos.close();
           huc.disconnect();
-       } catch (javax.xml.parsers.ParserConfigurationException e) { 
-          throw new IOException(e.toString()); 
-       } catch (org.xml.sax.SAXException e) { 
-          throw new IOException(e.toString()); 
+       } catch (javax.xml.parsers.ParserConfigurationException e) {
+          throw new IOException(e.toString());
+       } catch (org.xml.sax.SAXException e) {
+          throw new IOException(e.toString());
        }
     }
     
@@ -340,6 +354,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.14  2004/09/06 21:20:01  mch
+Factored out generateIndex for a filename for tests
+
 Revision 1.13  2004/08/05 15:14:22  KevinBenson
 small bug fix in the FitsREsults.  And now uses dates was teh result of the mber of kevin-dev-03-08-04
 
@@ -364,7 +381,7 @@ Still need to make a few more corrections, but wanted to check this in now.
 It is the fits querier that now uses exist for doing adql->xquery
 
 Revision 1.7.4.1  2004/07/16 09:02:25  KevinBenson
-small change for IndexGenerator to use arguments for it's files and urls.  And 
+small change for IndexGenerator to use arguments for it's files and urls.  And
 Fitskeyword to handle dates.
 
 Revision 1.7  2004/07/12 23:26:14  mch
