@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- $Id: maven.xml,v 1.4 2004/03/03 21:42:52 jdt Exp $ -->
 <!-- extension maven script -->
 <project>
 	<!-- This is just the base project for inheritance - it shouldn't be mavened-->

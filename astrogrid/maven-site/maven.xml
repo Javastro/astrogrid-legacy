@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- $Id: maven.xml,v 1.2 2004/03/03 21:42:50 jdt Exp $ -->
 <!-- extension maven script -->
 <project>
 	<!-- astrogrid goals for nightly build -->
