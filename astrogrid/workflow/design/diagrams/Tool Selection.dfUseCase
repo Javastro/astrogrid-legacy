@@ -1,0 +1,111 @@
+package id4c78tdjnqz1q1djnsfvhq;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node36:oiref><oihard>
+@__modelType reference 
+*/
+class reference37 {
+}/**
+@__ref <oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node38:oiref><oihard>
+@__modelType reference 
+*/
+class reference39 {
+}/**
+@__ref <oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node41:oiref><oihard>
+@__modelType reference 
+*/
+class reference42 {
+}/**
+@__ref <oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node43:oiref><oihard>
+@__modelType reference 
+*/
+class reference44 {
+}}/**
+
+@__tags
+@shapeType UseCaseDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node36:oiref>=250,150,122,28,1:oigroup>
+<oigroup:<oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node41:oiref>=90,30,380,60,0:oigroup>
+<oigroup:<oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node.link:oiref>=172,215,250,168:oigroup>
+<oigroup:<oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node43.link:oiref>=329,390,329,348:oigroup>
+<oigroup:<oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node38:oiref>=250,320,159,28,1:oigroup>
+<oigroup:<oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node.link40:oiref>=131,277,329,320:oigroup>
+<oigroup:<oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node41.link:oiref>=311,90,311,150:oigroup>
+<oigroup:<oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node43:oiref>=90,390,366,40,1:oigroup>
+<oigroup:<oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node:oiref>=90,200,82,77,1:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Actor
+@__modelType node
+@name Astronomer 
+*/
+class node {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node36:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node38:oiref><oihard> 
+*/
+class link40 {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name Choose tool 
+*/
+class node36 {
+}/**
+@shapeType UseCase
+@__modelType node
+@name Enter tool editor 
+*/
+class node38 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Different tools available for execution. So far we have one - the Query tool with its own design editor 
+*/
+class node41 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node36:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note2
+@text Here is where we would hand over to the Query editor 
+*/
+class node43 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.node38:oiref><oihard> 
+*/
+class link {
+}}

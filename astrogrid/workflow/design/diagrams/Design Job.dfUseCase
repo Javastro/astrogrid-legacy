@@ -1,0 +1,207 @@
+package id3e52bdjnqz1q1djnua99w;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node47:oiref><oihard>
+@__modelType reference 
+*/
+class reference48 {
+}/**
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node49:oiref><oihard>
+@__modelType reference 
+*/
+class reference50 {
+}/**
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node53:oiref><oihard>
+@__modelType reference 
+*/
+class reference54 {
+}/**
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node135:oiref><oihard>
+@__modelType reference 
+*/
+class reference136 {
+}/**
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node145:oiref><oihard>
+@__modelType reference 
+*/
+class reference146 {
+}/**
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node150:oiref><oihard>
+@__modelType reference 
+*/
+class reference151 {
+}/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id1x05cdjnqz1q1djo3gm1d.node182:oiref><oihard> 
+*/
+class link {
+}}/**
+
+@__tags
+@shapeType UseCaseDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node49:oiref>=510,120,147,28,1:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node53:oiref>=210,430,167,28,1:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node47:oiref>=210,10,167,28,1:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node45.link60:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node:oiref>=30,200,82,77,1:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node135.link137:oiref>=454,390,335,430:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node145:oiref>=220,240,151,28,1:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node51.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node.link55:oiref>=71,200,265,38:oigroup>
+<oigroup:Composite#<<extend>>#<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node47.link:oiref>=458,-1,91,17,0:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node.link62:oiref>=71,277,293,430:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node.link56:oiref>=91,200,259,148:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node45.link:oiref>=:oigroup>
+<oigroup:Composite#<<extend>>#<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node150.link:oiref>=398,113,91,17,0:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node51.link148:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node150.link:oiref>=377,134,510,134:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node135.link149:oiref>=454,350,295,268:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node150:oiref>=220,120,157,28,1:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node135:oiref>=380,350,149,40,1:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node150.link147:oiref>=278,148,278,240:oigroup>
+<oigroup:<oiref:design#Class#id3e52bdjnqz1q1djnua99w.node47.link:oiref>=377,20,630,20,630,120:oigroup>
+
+
+
+*/
+class __positions {
+}/**
+@shapeType Actor
+@__modelType node
+@name Astronomer 
+*/
+class node {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node47:oiref><oihard> 
+*/
+class link55 {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node150:oiref><oihard>
+*/
+class link56 {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node53:oiref><oihard> 
+*/
+class link62 {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name create job design 
+*/
+class node47 {
+/**
+@shapeType ExtendsLink
+@__modelType link
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node49:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id1x05cdjnqz1q1djo3gm1d.node182:oiref><oihard> 
+*/
+class link192 {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name edit job design 
+*/
+class node49 {
+/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id4c8radjnqz1q1djnrw21i.diagram:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name delete job design 
+*/
+class node53 {
+/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id1x05cdjnqz1q1djo3gm1d.node186:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Access to MySpace 
+*/
+class node135 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node53:oiref><oihard> 
+*/
+class link137 {
+}/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node145:oiref><oihard> 
+*/
+class link149 {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name read job design 
+*/
+class node145 {
+/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id1x05cdjnqz1q1djo3gm1d.node158:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name open job design 
+*/
+class node150 {
+/**
+@shapeType IncludesLink
+@__modelType link
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node145:oiref><oihard> 
+*/
+class link147 {
+}/**
+@shapeType ExtendsLink
+@__modelType link
+@__ref <oiref:design#Class#id3e52bdjnqz1q1djnua99w.node49:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id1x05cdjnqz1q1djo3gm1d.node:oiref><oihard> 
+*/
+class link193 {
+}}

@@ -1,0 +1,99 @@
+package id4blxdjnqz1q1djnx72wk;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id4blxdjnqz1q1djnx72wk.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id4blxdjnqz1q1djnx72wk.node99:oiref><oihard>
+@__modelType reference 
+*/
+class reference100 {
+}/**
+@__ref <oiref:design#Class#id4blxdjnqz1q1djnx72wk.node101:oiref><oihard>
+@__modelType reference 
+*/
+class reference102 {
+}/**
+@__ref <oiref:design#Class#id4blxdjnqz1q1djnx72wk.node104:oiref><oihard>
+@__modelType reference 
+*/
+class reference105 {
+}}/**
+
+@__tags
+@shapeType UseCaseDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+
+<oigroup:<oiref:design#Class#id4blxdjnqz1q1djnx72wk.node.link103:oiref>=152,182,220,220:oigroup>
+<oigroup:<oiref:design#Class#id4blxdjnqz1q1djnx72wk.node99:oiref>=260,40,160,28,1:oigroup>
+<oigroup:<oiref:design#Class#id4blxdjnqz1q1djnx72wk.node101:oiref>=220,210,243,28,1:oigroup>
+<oigroup:<oiref:design#Class#id4blxdjnqz1q1djnx72wk.node104:oiref>=50,310,499,84,0:oigroup>
+<oigroup:<oiref:design#Class#id4blxdjnqz1q1djnx72wk.node:oiref>=70,120,82,77,1:oigroup>
+<oigroup:<oiref:design#Class#id4blxdjnqz1q1djnx72wk.node.link:oiref>=111,120,340,68:oigroup>
+<oigroup:<oiref:design#Class#id4blxdjnqz1q1djnx72wk.node104.link:oiref>=341,310,341,238:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Actor
+@__modelType node
+@name Astronomer 
+*/
+class node {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id4blxdjnqz1q1djnx72wk.node99:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id4blxdjnqz1q1djnx72wk.node101:oiref><oihard> 
+*/
+class link103 {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name design activities 
+*/
+class node99 {
+/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id20olcdjnqz1q1djnxanh7.diagram:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name arrange order of activities 
+*/
+class node101 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text This will be the order in which activities contained within the flow (strictly speaking the steps grouped within it) are dispatched at execution time. The contained steps can be single-shot or wait-for-return, but in any case all the "activities" within a flow will in principle execute in parallel. 
+*/
+class node104 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id4blxdjnqz1q1djnx72wk.node101:oiref><oihard> 
+*/
+class link {
+}}

@@ -1,0 +1,132 @@
+package id4knd3djnqz1q1djnw9o51;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id4knd3djnqz1q1djnw9o51.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id4knd3djnqz1q1djnw9o51.node64:oiref><oihard>
+@__modelType reference 
+*/
+class reference65 {
+}/**
+@__ref <oiref:design#Class#id4knd3djnqz1q1djnw9o51.node66:oiref><oihard>
+@__modelType reference 
+*/
+class reference67 {
+}/**
+@__ref <oiref:design#Class#id4knd3djnqz1q1djnw9o51.node68:oiref><oihard>
+@__modelType reference 
+*/
+class reference69 {
+}/**
+@__ref <oiref:design#Class#id4knd3djnqz1q1djnw9o51.node70:oiref><oihard>
+@__modelType reference 
+*/
+class reference71 {
+}}/**
+
+@__tags
+@shapeType UseCaseDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id4knd3djnqz1q1djnw9o51.node64:oiref>=290,50,112,28,1:oigroup>
+<oigroup:<oiref:design#Class#id4knd3djnqz1q1djnw9o51.node:oiref>=85,163,82,77,1:oigroup>
+<oigroup:<oiref:design#Class#id4knd3djnqz1q1djnw9o51.node70:oiref>=290,430,112,28,1:oigroup>
+<oigroup:<oiref:design#Class#id4knd3djnqz1q1djnw9o51.node68:oiref>=290,320,101,28,1:oigroup>
+<oigroup:Composite#<<extend>>#<oiref:design#Class#id4knd3djnqz1q1djnw9o51.node68.link:oiref>=270,258,91,17,0:oigroup>
+<oigroup:<oiref:design#Class#id4knd3djnqz1q1djnw9o51.node.link:oiref>=126,163,346,78:oigroup>
+<oigroup:<oiref:design#Class#id4knd3djnqz1q1djnw9o51.node66:oiref>=290,190,100,28,1:oigroup>
+<oigroup:<oiref:design#Class#id4knd3djnqz1q1djnw9o51.node.link74:oiref>=105,240,346,430:oigroup>
+<oigroup:<oiref:design#Class#id4knd3djnqz1q1djnw9o51.node.link73:oiref>=126,240,340,320:oigroup>
+<oigroup:Composite#<<extend>>#<oiref:design#Class#id4knd3djnqz1q1djnw9o51.node64.link:oiref>=273,123,91,17,0:oigroup>
+<oigroup:<oiref:design#Class#id4knd3djnqz1q1djnw9o51.node68.link:oiref>=365,320,365,218:oigroup>
+<oigroup:<oiref:design#Class#id4knd3djnqz1q1djnw9o51.node.link72:oiref>=167,204,290,204:oigroup>
+<oigroup:<oiref:design#Class#id4knd3djnqz1q1djnw9o51.node64.link:oiref>=368,78,368,190:oigroup>
+ 
+*/
+class __positions {
+}/**
+@shapeType Actor
+@__modelType node
+@name Astronomer 
+*/
+class node {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id4knd3djnqz1q1djnw9o51.node64:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id4knd3djnqz1q1djnw9o51.node66:oiref><oihard> 
+*/
+class link72 {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id4knd3djnqz1q1djnw9o51.node68:oiref><oihard> 
+*/
+class link73 {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id4knd3djnqz1q1djnw9o51.node70:oiref><oihard> 
+*/
+class link74 {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name create step 
+*/
+class node64 {
+/**
+@shapeType ExtendsLink
+@__modelType link
+@__ref <oiref:design#Class#id4knd3djnqz1q1djnw9o51.node66:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name edit step 
+*/
+class node66 {
+/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id2p3zbdjnqz1q1djns8su4.diagram:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name copy step 
+*/
+class node68 {
+/**
+@shapeType ExtendsLink
+@__modelType link
+@__ref <oiref:design#Class#id4knd3djnqz1q1djnw9o51.node66:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name delete step 
+*/
+class node70 {
+}

@@ -1,0 +1,108 @@
+package id20olcdjnqz1q1djnxanh7;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id20olcdjnqz1q1djnxanh7.node13:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id20olcdjnqz1q1djnxanh7.node17:oiref><oihard>
+@__modelType reference 
+*/
+class reference87 {
+}/**
+@__ref <oiref:design#Class#id20olcdjnqz1q1djnxanh7.node15:oiref><oihard>
+@__modelType reference 
+*/
+class reference88 {
+}/**
+@__ref <oiref:design#Class#id20olcdjnqz1q1djnxanh7.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference89 {
+}}/**
+
+@__tags
+@shapeType UseCaseDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id20olcdjnqz1q1djnxanh7.node.link91:oiref>=90,325,303,360:oigroup>
+<oigroup:<oiref:design#Class#id20olcdjnqz1q1djnxanh7.node17:oiref>=220,250,163,28,1:oigroup>
+<oigroup:<oiref:design#Class#id20olcdjnqz1q1djnxanh7.node:oiref>=49,248,82,77,1:oigroup>
+<oigroup:<oiref:design#Class#id20olcdjnqz1q1djnxanh7.node.link90:oiref>=131,264,220,264:oigroup>
+<oigroup:<oiref:design#Class#id20olcdjnqz1q1djnxanh7.node13:oiref>=240,130,118,28,1:oigroup>
+<oigroup:<oiref:design#Class#id20olcdjnqz1q1djnxanh7.node15:oiref>=240,360,118,28,1:oigroup>
+<oigroup:<oiref:design#Class#id20olcdjnqz1q1djnxanh7.node.link:oiref>=90,248,303,158:oigroup>
+*/
+class __positions {
+}/**
+@shapeType UseCase
+@__modelType node
+@name design step
+*/
+class node13 {
+/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id4knd3djnqz1q1djnw9o51.diagram:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name design sequence
+*/
+class node17 {
+/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id1u70odjnqz1q1djnyxedz.diagram:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name design flow
+*/
+class node15 {
+/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id4b2sdjnqz1q1djnwypys.diagram:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Actor
+@__modelType node
+@name Astronomer 
+*/
+class node {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id20olcdjnqz1q1djnxanh7.node13:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id20olcdjnqz1q1djnxanh7.node17:oiref><oihard> 
+*/
+class link90 {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id20olcdjnqz1q1djnxanh7.node15:oiref><oihard> 
+*/
+class link91 {
+}}

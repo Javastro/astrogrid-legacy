@@ -1,0 +1,108 @@
+package id297podn4otkfddn4p16ij;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Query:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Resource:oiref><oihard>
+@__modelType reference 
+*/
+class reference7 {
+}/**
+@__ref <oiref:design#Class#idhx8dn4otkfddn4p16je.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.portal.workflow.design.activity:oiref> 
+*/
+class reference8 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Sequence:oiref><oihard>
+@__modelType reference 
+*/
+class reference9 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Tool:oiref><oihard>
+@__modelType reference 
+*/
+class reference10 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Workflow:oiref><oihard>
+@__modelType reference 
+*/
+class reference11 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.JoinCondition:oiref><oihard>
+@__modelType reference 
+*/
+class reference12 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.NullTool:oiref><oihard>
+@__modelType reference 
+*/
+class reference13 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.WorkflowDD:oiref><oihard>
+@__modelType reference 
+*/
+class reference14 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Step:oiref><oihard>
+@__modelType reference 
+*/
+class reference15 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Resources:oiref><oihard>
+@__modelType reference 
+*/
+class reference16 {
+}/**
+@__ref <oiref:design#Class#id2u4yjdn4otkfddn4p16k6.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.portal.workflow.design.unittest:oiref> 
+*/
+class reference17 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Flow:oiref><oihard>
+@__modelType reference 
+*/
+class reference18 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.portal.workflow.design.Flow:oiref>=1184,650,177,199,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.portal.workflow.design.NullTool:oiref>=223,319,193,300,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.portal.workflow.design.Step#resources:oiref>=595,1197,595,1267:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.portal.workflow.design.Tool:oiref>=253,10,175,239,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.portal.workflow.design.Step#NULLTOOL:oiref>=496,469,416,469:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.portal.workflow.design.Step#tool:oiref>=538,319,382,249:oigroup>
+<oigroup:<oiref:design#Class#idhx8dn4otkfddn4p16je.diagram:oiref>=1184,890,133,121,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.portal.workflow.design.WorkflowDD:oiref>=1184,10,200,603,1:oigroup>
+<oigroup:<oiref:design#Class#id2u4yjdn4otkfddn4p16k6.diagram:oiref>=1184,1050,123,70,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.portal.workflow.design.Resources:oiref>=507,1267,177,182,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.portal.workflow.design.Resource:oiref>=751,10,193,249,1:oigroup>
+<oigroup:<oiref:java#Implements#org.astrogrid.portal.workflow.design.NullTool#org.astrogrid.portal.workflow.design.Tool:oiref>=336,319,336,249:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.portal.workflow.design.Workflow:oiref>=964,10,200,1184,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.portal.workflow.design.Step#joinCondition:oiref>=580,319,580,209:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.portal.workflow.design.Sequence:oiref>=716,290,177,199,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.portal.workflow.design.Query:oiref>=10,319,193,453,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.portal.workflow.design.JoinCondition#TRUE:oiref>=641,209,641,249,711,249,711,179,671,179:oigroup>
+<oigroup:<oiref:java#Implements#org.astrogrid.portal.workflow.design.Query#org.astrogrid.portal.workflow.design.Tool:oiref>=106,319,294,249:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.portal.workflow.design.JoinCondition:oiref>=520,10,151,199,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.portal.workflow.design.Step:oiref>=496,319,200,878,1:oigroup> 
+*/
+class __positions {
+}

@@ -1,0 +1,134 @@
+package id2p3zbdjnqz1q1djns8su4;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node25:oiref><oihard>
+@__modelType reference 
+*/
+class reference26 {
+}/**
+@__ref <oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node27:oiref><oihard>
+@__modelType reference 
+*/
+class reference28 {
+}/**
+@__ref <oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node30:oiref><oihard>
+@__modelType reference 
+*/
+class reference31 {
+}/**
+@__ref <oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node32:oiref><oihard>
+@__modelType reference 
+*/
+class reference33 {
+}/**
+@__ref <oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node307:oiref><oihard>
+@__modelType reference 
+*/
+class reference308 {
+}}/**
+
+@__tags
+@shapeType UseCaseDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node.link309:oiref>=121,200,343,168:oigroup>
+<oigroup:<oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node.link29:oiref>=142,262,260,290:oigroup>
+<oigroup:<oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node25:oiref>=260,60,157,28,1:oigroup>
+<oigroup:<oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node:oiref>=60,200,82,77,1:oigroup>
+<oigroup:<oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node32:oiref>=260,210,178,28,1:oigroup>
+<oigroup:<oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node.link35:oiref>=101,277,330,370:oigroup>
+<oigroup:<oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node307:oiref>=280,140,127,28,1:oigroup>
+<oigroup:<oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node30:oiref>=260,370,140,28,1:oigroup>
+<oigroup:<oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node.link34:oiref>=142,224,260,224:oigroup>
+<oigroup:<oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node.link:oiref>=101,200,328,88:oigroup>
+<oigroup:<oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node27:oiref>=260,280,108,28,1:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Actor
+@__modelType node
+@name Astronomer 
+*/
+class node {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node25:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node27:oiref><oihard> 
+*/
+class link29 {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node32:oiref><oihard> 
+*/
+class link34 {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node30:oiref><oihard> 
+*/
+class link35 {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id2p3zbdjnqz1q1djns8su4.node307:oiref><oihard> 
+*/
+class link309 {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name enter step name 
+*/
+class node25 {
+}/**
+@shapeType UseCase
+@__modelType node
+@name select tool 
+*/
+class node27 {
+/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id4c78tdjnqz1q1djnsfvhq.diagram:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name edit resources 
+*/
+class node30 {
+}/**
+@shapeType UseCase
+@__modelType node
+@name edit join condition 
+*/
+class node32 {
+}/**
+@shapeType UseCase
+@__modelType node
+@name edit position 
+*/
+class node307 {
+}

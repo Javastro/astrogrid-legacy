@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+<xsd:element name = "Workflow">
+   <xsd:complexType>
+      <xsd:sequence>
+         <xsd:element ref = "Userid" minOccurs = "1" maxOccurs = "1"/>
+         <xsd:element ref = "Community" minOccurs = "1" maxOccurs = "1"/>
+         <xsd:element ref = "Sequence" minOccurs = "1" maxOccurs = "1"/>
+      </xsd:sequence>
+      <xsd:attribute name = "name" use = "optional">
+          <xsd:simpleType>
+             <xsd:restriction base = "xsd:CDATA">
+             </xsd:restriction>
+          </xsd:simpleType>
+      </xsd:attribute>
+   </xsd:complexType>
+</xsd:element>
+
+<xsd:element name = "Userid">
+   <xsd:complexType>
+      <xsd:sequence>
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:element>
+
+<xsd:element name = "Community">
+   <xsd:complexType>
+      <xsd:sequence>
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:element>
+
+<xsd:element name = "Sequence">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:group ref = "Activity" minOccurs = "0" maxOccurs = "unlimited"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+
+<xsd:element name = "Flow">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:group ref = "Activity" minOccurs = "1" maxOccurs = "unlimited"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+
+<xsd:element name = "Step">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element ref = "Tool" minOccurs = "1" maxOccurs = "1"/>
+<xsd:element ref = "Resources" minOccurs = "1" maxOccurs = "1"/>
+</xsd:sequence>
+<xsd:attribute name = "name" use = "optional">
+<xsd:simpleType>
+<xsd:restriction base = "xsd:string">
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:attribute>
+<xsd:attribute name = "joinCondition" use = "optional">
+<xsd:simpleType>
+<xsd:restriction base = "xsd:boolean">
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:attribute>
+</xsd:complexType>
+</xsd:element>
+
+<xsd:element name = "Tool">
+<xsd:complexType>
+<xsd:sequence>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+
+<xsd:element name = "Resources">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element ref = "Resource" minOccurs = "1" maxOccurs = "1"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+
+<xsd:element name = "Resource">
+<xsd:complexType>
+<xsd:sequence>
+</xsd:sequence>
+<xsd:attribute name = "type" use = "optional">
+<xsd:simpleType>
+<xsd:restriction base = "xsd:string">
+<xsd:enumeration value = "input"/>
+<xsd:enumeration value = "output"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:attribute>
+</xsd:complexType>
+</xsd:element>
+
+<xsd:group name = "Activity">
+<xsd:sequence>
+<xsd:element ref = "Sequence" minOccurs = "0" maxOccurs = "unlimited"/>
+<xsd:element ref = "Flow" minOccurs = "0" maxOccurs = "unlimited"/>
+<xsd:element ref = "Step" minOccurs = "0" maxOccurs = "unlimited"/>
+</xsd:sequence>
+</xsd:group>
+
+</xsd:schema>

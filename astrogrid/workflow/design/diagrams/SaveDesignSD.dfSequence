@@ -1,0 +1,167 @@
+package id12t4ndjnqz1q1djs8qh6x;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node278:oiref><oihard>
+@__modelType reference 
+*/
+class reference279 {
+}/**
+@__ref <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node280:oiref><oihard>
+@__modelType reference 
+*/
+class reference281 {
+}/**
+@__ref <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node282:oiref><oihard>
+@__modelType reference 
+*/
+class reference283 {
+}}/**
+
+@__tags
+@shapeType SequenceDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node278:oiref>=230,30,129,280,1:oigroup>
+<oigroup:<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node:oiref>=48,30,92,280,1:oigroup>
+<oigroup:<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node282.node:oiref>=629,190,14,20,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node.link:oiref>=105,104,52,17,0:oigroup>
+<oigroup:<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node278.node:oiref>=287,150,14,70,1:oigroup>
+<oigroup:<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node280.link286:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node278.link288:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node.link:oiref>=101,125,458,125:oigroup>
+<oigroup:<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node280.link285:oiref>=458,150,301,150:oigroup>
+<oigroup:<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node280.node:oiref>=458,125,14,105,1:oigroup>
+<oigroup:<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node278.link287:oiref>=301,190,629,190:oigroup>
+<oigroup:<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node282:oiref>=570,30,133,280,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node280.link285:oiref>=390,129,64,17,0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node278.link287:oiref>=305,169,76,17,0:oigroup>
+<oigroup:<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node280:oiref>=420,30,90,280,1:oigroup>
+<oigroup:<oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node.link284:oiref>=:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Object
+@__modelType node
+@name Astronomer
+@stereotype actor 
+*/
+class node {
+/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node280:oiref><oihard>
+@sendingInstant 125
+@processingDuration 105
+@sequenceNumber 1
+@diagram_uniqe_name <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.diagram:oiref>
+@label save 
+*/
+class link {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node280:oiref><oihard> 
+*/
+class link284 {
+}}/**
+@shapeType Object
+@__modelType node
+@name WorkflowFactory 
+*/
+class node278 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#org.astrogrid.workflow.WorkflowFactory:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation2
+@activationMessage <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node280.link285:oiref> 
+*/
+class node {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node282:oiref><oihard>
+@sendingInstant 190
+@processingDuration 20 
+@sequenceNumber 1.1.1
+@diagram_uniqe_name <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.diagram:oiref>
+@label save
+*/
+class link287 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node282:oiref><oihard> 
+*/
+class link288 {
+}}/**
+@shapeType Object
+@__modelType node
+@name Workflow 
+*/
+class node280 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#org.astrogrid.workflow.Workflow:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation1
+@activationMessage <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node.link:oiref> 
+*/
+class node {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node278:oiref><oihard>
+@sendingInstant 150
+@processingDuration 70
+@sequenceNumber 1.1
+@diagram_uniqe_name <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.diagram:oiref>
+@label save
+@minProcessingDuration 20 
+*/
+class link285 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node278:oiref><oihard> 
+*/
+class link286 {
+}}/**
+@shapeType Object
+@__modelType node
+@name MySpaceDelegate 
+*/
+class node282 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation3
+@activationMessage <oiref:design#Class#id12t4ndjnqz1q1djs8qh6x.node278.link287:oiref> 
+*/
+class node {
+}}

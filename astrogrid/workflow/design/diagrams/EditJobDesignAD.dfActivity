@@ -1,0 +1,174 @@
+package id30mr4djnqz1q1djqz42m9;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node194:oiref><oihard>
+@__modelType reference 
+*/
+class reference195 {
+}/**
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node202:oiref><oihard>
+@__modelType reference 
+*/
+class reference203 {
+}/**
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node210:oiref><oihard>
+@__modelType reference 
+*/
+class reference211 {
+}/**
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node212:oiref><oihard>
+@__modelType reference 
+*/
+class reference213 {
+}/**
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node214:oiref><oihard>
+@__modelType reference 
+*/
+class reference215 {
+}/**
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node217:oiref><oihard>
+@__modelType reference 
+*/
+class reference218 {
+}}/**
+
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+
+
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node212.link:oiref>=250,423,250,480:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node202:oiref>=180,240,128,23,1:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node198.link208:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node194.link:oiref>=244,133,244,240:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node.link:oiref>=247,47,247,110:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node217.link:oiref>=380,330,290,340:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node202.link:oiref>=250,263,250,330:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node:oiref>=241,35,12,12,1:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node200.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node194:oiref>=180,110,130,23,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node210.link:oiref>=90,286,30,18,1:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node210.link:oiref>=210,340,80,340,80,250,180,250:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node214:oiref>=242,480,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node217:oiref>=380,300,181,40,1:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node212:oiref>=190,400,110,23,1:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node210:oiref>=210,330,80,20,0:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node210.link216:oiref>=250,350,250,400:oigroup>
+<oigroup:<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node204.link:oiref>=:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id30mr4djnqz1q1djqz42m9.node210.link216:oiref>=260,366,25,18,1:oigroup>
+ 
+*/
+class __positions {
+}/**
+@shapeType StartState
+@__modelType node
+@name StartState1 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node194:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name edit job details 
+*/
+class node194 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node202:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name design activity 
+*/
+class node202 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node210:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id204tmdjnqz1q1djr42u51.diagram:oiref><oihard> 
+*/
+class link220 {
+}}/**
+Do we want to design another activity?
+@shapeType Decision
+@__modelType node
+@name AnotherActivity 
+*/
+class node210 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node202:oiref><oihard>
+@event Yes 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node212:oiref><oihard>
+@event No 
+*/
+class link216 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name save design 
+*/
+class node212 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node214:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndState1
+@backgroundColor 0,0,0 
+*/
+class node214 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Design another activity? 
+*/
+class node217 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id30mr4djnqz1q1djqz42m9.node210:oiref><oihard> 
+*/
+class link {
+}}

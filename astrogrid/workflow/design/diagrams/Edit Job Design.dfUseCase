@@ -1,0 +1,117 @@
+package id4c8radjnqz1q1djnrw21i;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id4c8radjnqz1q1djnrw21i.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id4c8radjnqz1q1djnrw21i.node11:oiref><oihard>
+@__modelType reference 
+*/
+class reference12 {
+}/**
+@__ref <oiref:design#Class#id4c8radjnqz1q1djnrw21i.node19:oiref><oihard>
+@__modelType reference 
+*/
+class reference20 {
+}/**
+@__ref <oiref:design#Class#id4c8radjnqz1q1djnrw21i.node92:oiref><oihard>
+@__modelType reference 
+*/
+class reference93 {
+}/**
+@__ref <oiref:design#Class#id4c8radjnqz1q1djnrw21i.node152:oiref><oihard>
+@__modelType reference 
+*/
+class reference153 {
+}}/**
+
+@__tags
+@shapeType UseCaseDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+<oigroup:<oiref:design#Class#id4c8radjnqz1q1djnrw21i.node:oiref>=110,192,82,77,1:oigroup>
+<oigroup:<oiref:design#Class#id4c8radjnqz1q1djnrw21i.node152.link:oiref>=504,360,375,420:oigroup>
+<oigroup:<oiref:design#Class#id4c8radjnqz1q1djnrw21i.node.link24:oiref>=130,269,351,420:oigroup>
+<oigroup:<oiref:design#Class#id4c8radjnqz1q1djnrw21i.node92:oiref>=260,220,160,28,1:oigroup>
+<oigroup:<oiref:design#Class#id4c8radjnqz1q1djnrw21i.node.link94:oiref>=192,234,260,234:oigroup>
+<oigroup:<oiref:design#Class#id4c8radjnqz1q1djnrw21i.node152:oiref>=430,320,149,40,1:oigroup>
+<oigroup:<oiref:design#Class#id4c8radjnqz1q1djnrw21i.node19:oiref>=280,420,119,28,1:oigroup>
+<oigroup:<oiref:design#Class#id4c8radjnqz1q1djnrw21i.node.link:oiref>=151,192,343,68:oigroup>
+<oigroup:<oiref:design#Class#id4c8radjnqz1q1djnrw21i.node11:oiref>=270,40,147,28,1:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Actor
+@__modelType node
+@name Astronomer 
+*/
+class node {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id4c8radjnqz1q1djnrw21i.node11:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id4c8radjnqz1q1djnrw21i.node19:oiref><oihard> 
+*/
+class link24 {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id4c8radjnqz1q1djnrw21i.node92:oiref><oihard> 
+*/
+class link94 {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name edit job details 
+*/
+class node11 {
+}/**
+@shapeType UseCase
+@__modelType node
+@name save design 
+*/
+class node19 {
+}/**
+@shapeType UseCase
+@__modelType node
+@name design activities 
+*/
+class node92 {
+/**
+@shapeType Hyperlink
+@__modelType link
+@__ref <oiref:design#Class#id20olcdjnqz1q1djnxanh7.diagram:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Access to MySpace 
+*/
+class node152 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id4c8radjnqz1q1djnrw21i.node19:oiref><oihard> 
+*/
+class link {
+}}

@@ -1,0 +1,42 @@
+package idhx8dn4otkfddn4p16je;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.activity.ActivityIterator:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.activity.Activity:oiref><oihard>
+@__modelType reference 
+*/
+class reference19 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.activity.ActivityKey:oiref><oihard>
+@__modelType reference 
+*/
+class reference20 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.activity.ActivityContainer:oiref><oihard>
+@__modelType reference 
+*/
+class reference21 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

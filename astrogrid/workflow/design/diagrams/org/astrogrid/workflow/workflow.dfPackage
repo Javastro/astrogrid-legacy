@@ -1,0 +1,33 @@
+package id2o61vdjnqz1q1djsajyt6;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.Workflow:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.WorkflowFactory:oiref><oihard>
+@__modelType reference 
+*/
+class reference315 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.workflow.WorkflowFactory:oiref>=113,10,130,83,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.Workflow:oiref>=10,10,83,83,1:oigroup> 
+*/
+class __positions {
+}
