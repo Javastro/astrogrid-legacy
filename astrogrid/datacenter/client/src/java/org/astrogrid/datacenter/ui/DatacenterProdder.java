@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.9 2004/08/03 11:56:58 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.10 2004/09/28 15:49:55 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -257,7 +257,7 @@ public class DatacenterProdder extends JFrame
 
          //connect up to the datacenter
          log.info("Connecting to datacenter at "+datacenterLocator.getDelegateEndPoint());
-         QuerySearcher querier = DatacenterDelegateFactory.makeQuerySearcher(datacenterLocator.getDelegateEndPoint());
+         QuerySearcher querier = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, datacenterLocator.getDelegateEndPoint(), DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
 
          progBox.setProgress(1);
          progBox.setNote("Connecting to query document");
@@ -320,7 +320,7 @@ public class DatacenterProdder extends JFrame
 
          //connect up to the datacenter
          log.info("Connecting to datacenter at "+datacenterLocator.getDelegateEndPoint());
-         QuerySearcher querier = DatacenterDelegateFactory.makeQuerySearcher(datacenterLocator.getDelegateEndPoint());
+         QuerySearcher querier = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, datacenterLocator.getDelegateEndPoint(), DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
 
          progBox.setProgress(1);
          progBox.setNote("Connecting to query document");
@@ -419,6 +419,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.10  2004/09/28 15:49:55  mch
+ Removed calls to deprecated methods
+
  Revision 1.9  2004/08/03 11:56:58  mch
  Removed import to unused IvoAccount
 

@@ -1,4 +1,4 @@
-/*$Id: DatacenterCommander.java,v 1.7 2004/09/28 14:59:35 mch Exp $
+/*$Id: DatacenterCommander.java,v 1.8 2004/09/28 15:49:55 mch Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,23 +10,20 @@
  **/
 package org.astrogrid.datacenter.ui;
 
-import java.io.*;
-
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.RawSqlQuery;
 import org.astrogrid.io.Piper;
-import org.astrogrid.util.DomHelper;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 /** Simple tool to fire a query at a server, and print out the response.
  * Currently accepts queries in ADQL and SQL
@@ -112,7 +109,7 @@ public class DatacenterCommander {
          return;
       }
       System.out.println("Connecting to server...");
-      QuerySearcher del = DatacenterDelegateFactory.makeQuerySearcher(endpoint.toString());
+      QuerySearcher del = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, endpoint.toString(), DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       System.out.println("Reading query...");
       System.out.println("...FAIL: need to update this bit of code");
       /*
@@ -143,7 +140,7 @@ public class DatacenterCommander {
    public static void doSql(String endpoint, String sql) throws ServiceException, MarshalException, ValidationException, IOException {
       
       System.out.println("Connecting to server...");
-      QuerySearcher del = DatacenterDelegateFactory.makeQuerySearcher(endpoint.toString());
+      QuerySearcher del = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, endpoint.toString(), DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       System.out.println("Asking query...");
       InputStream results = del.askQuery(new RawSqlQuery(sql), QuerySearcher.VOTABLE);
       System.out.println("Results:");
@@ -155,6 +152,9 @@ public class DatacenterCommander {
 
 /*
  $Log: DatacenterCommander.java,v $
+ Revision 1.8  2004/09/28 15:49:55  mch
+ Removed calls to deprecated methods
+
  Revision 1.7  2004/09/28 14:59:35  mch
  Removed obsolete ADQL 0.5 object model
 

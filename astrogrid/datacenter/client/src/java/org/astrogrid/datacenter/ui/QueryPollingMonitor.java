@@ -1,5 +1,5 @@
 /*
- * $Id: QueryPollingMonitor.java,v 1.3 2004/03/12 20:00:11 mch Exp $
+ * $Id: QueryPollingMonitor.java,v 1.4 2004/09/28 15:49:55 mch Exp $
  */
 
 package org.astrogrid.datacenter.ui;
@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterClient;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterException;
@@ -61,7 +62,7 @@ public class QueryPollingMonitor extends JFrame implements Runnable
       super("QueryPollingMonitor");
       this.id = queryId;
       
-      delegate = DatacenterDelegateFactory.makeConeSearcher(datacenterEndpoint.toString());
+      delegate = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, datacenterEndpoint.toString(), DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       
       initComponents();
 

@@ -11,26 +11,22 @@ package org.astrogrid.datacenter.delegate.nvocone;
  * @author M Hill
  */
 
+import VOTableUtil.Votable;
+import com.tbf.xml.XmlElement;
+import com.tbf.xml.XmlParser;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.Vector;
-
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.test.OptionalTestCase;
-
-import VOTableUtil.Votable;
-
-import com.tbf.xml.XmlElement;
-import com.tbf.xml.XmlParser;
 
 public class NvoConeTest extends OptionalTestCase
 {
@@ -40,7 +36,7 @@ public class NvoConeTest extends OptionalTestCase
     */
    public void testFactory() throws MalformedURLException, DatacenterException
    {
-      ConeSearcher searcher = DatacenterDelegateFactory.makeConeSearcher("http://dummy.nvoconesearch/cone?cat=mycatalogue");
+      ConeSearcher searcher = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, "http://dummy.nvoconesearch/cone?cat=mycatalogue", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       
       assertTrue(searcher instanceof NvoConeSearchDelegate);
    }
@@ -108,6 +104,9 @@ public class NvoConeTest extends OptionalTestCase
 
 /*
  $Log: NvoConeTest.java,v $
+ Revision 1.8  2004/09/28 15:50:50  mch
+ Removed calls to deprecated methods
+
  Revision 1.7  2004/03/22 16:33:15  mch
  Added tests against real services
 
