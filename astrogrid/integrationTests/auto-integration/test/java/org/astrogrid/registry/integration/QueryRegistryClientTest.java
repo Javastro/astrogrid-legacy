@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientTest.java,v 1.2 2004/08/03 13:41:29 KevinBenson Exp $
+/*$Id: QueryRegistryClientTest.java,v 1.3 2004/08/05 12:07:39 KevinBenson Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.registry.integration;
 
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.client.query.QueryRegistry;
 
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -30,9 +29,8 @@ import java.net.URL;
  * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
  *
  */
-public class QueryRegistryClientTest extends TestCase {
-    
-   QueryRegistry qr = null; 
+public class QueryRegistryClientTest extends RegistryBaseTestCase {
+     
     /**
      * Constructor for RegistryInstallationTest.
      * @param arg0
@@ -44,27 +42,27 @@ public class QueryRegistryClientTest extends TestCase {
     public void testLoadRegistry() throws RegistryException
     {
        //HashMap auth = delegate.managedAuthorities();
-       Document result = qr.loadRegistry();
+       Document result = rs.loadRegistry();
        assertNotNull(result);
        DomHelper.DocumentToStream(result,System.out);
     }
     
     public void testSubmitQuery() throws Exception {
        Document queryDoc = askQueryFromFile("GetLocalHostResources.xml");
-       Document  result = qr.submitQuery(queryDoc);
+       Document  result = rs.submitQuery(queryDoc);
        assertNotNull(result);
        DomHelper.DocumentToStream(result,System.out);       
     }
     
    public void testSubmitQuery2() throws Exception {
       Document queryDoc = askQueryFromFile("GetContainsResources.xml");
-      Document  result = qr.submitQuery(queryDoc);
+      Document  result = rs.submitQuery(queryDoc);
       assertNotNull(result);
       DomHelper.DocumentToStream(result,System.out);       
    }
    
    public void testGetResourceByIdentifier() throws Exception {
-      Document result = qr.getResourceByIdentifier("org.astrogrid.localhost/noaa_trace");
+      Document result = rs.getResourceByIdentifier("org.astrogrid.localhost/noaa_trace");
       assertNotNull(result);
       DomHelper.DocumentToStream(result,System.out);      
    }
@@ -76,7 +74,7 @@ public class QueryRegistryClientTest extends TestCase {
    }
 
    public void testGetEndpointByIdentifier2() throws Exception {
-      String result = qr.getEndPointByIdentifier("org.astrogrid.localhost/sia");
+      String result = rs.getEndPointByIdentifier("org.astrogrid.localhost/sia");
       assertNotNull(result);
       System.out.println("the endpoint2 = " + result);
    }
@@ -97,8 +95,6 @@ public class QueryRegistryClientTest extends TestCase {
     */
    protected void setUp() throws Exception {
       super.setUp();
-      //qr = new QueryRegistry(new URL(SERVICE_ENDPOINT));
-      qr = new QueryRegistry();
    }
 
 }

@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientADQLTest.java,v 1.2 2004/08/03 13:41:29 KevinBenson Exp $
+/*$Id: QueryRegistryClientADQLTest.java,v 1.3 2004/08/05 12:07:39 KevinBenson Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.registry.integration;
 
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.client.query.QueryRegistry;
 
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -30,9 +29,8 @@ import java.net.URL;
  * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
  *
  */
-public class QueryRegistryClientADQLTest extends TestCase {
- 
-   QueryRegistry qr = null; 
+public class QueryRegistryClientADQLTest extends RegistryBaseTestCase {
+
     /**
      * Constructor for RegistryInstallationTest.
      * @param arg0
@@ -43,14 +41,14 @@ public class QueryRegistryClientADQLTest extends TestCase {
             
     public void testSearch() throws Exception {
        Document queryDoc = askQueryFromFile("GetLocalHostResourcesADQL.xml");
-       Document  result = qr.search(queryDoc);
+       Document  result = rs.search(queryDoc);
        assertNotNull(result);
        DomHelper.DocumentToStream(result,System.out);       
     }
     
    public void testSearch2() throws Exception {
       Document queryDoc = askQueryFromFile("GetLocalHostResourcesADQL2.xml");
-      Document  result = qr.search(queryDoc);
+      Document  result = rs.search(queryDoc);
       assertNotNull(result);
       DomHelper.DocumentToStream(result,System.out);       
    }
@@ -71,8 +69,6 @@ public class QueryRegistryClientADQLTest extends TestCase {
     */
    protected void setUp() throws Exception {
       super.setUp();
-      //qr = new QueryRegistry(new URL(SERVICE_ENDPOINT));
-      qr = new QueryRegistry();
    }
 
 }

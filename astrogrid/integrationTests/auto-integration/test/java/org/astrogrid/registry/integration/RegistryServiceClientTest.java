@@ -1,4 +1,4 @@
-/*$Id: RegistryServiceClientTest.java,v 1.2 2004/08/03 13:41:29 KevinBenson Exp $
+/*$Id: RegistryServiceClientTest.java,v 1.3 2004/08/05 12:07:39 KevinBenson Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.registry.integration;
 
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.scripting.Astrogrid;
 import org.astrogrid.scripting.Service;
 
@@ -30,11 +31,8 @@ import java.net.URL;
  * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
  *
  */
-public class RegistryServiceClientTest extends TestCase {
+public class RegistryServiceClientTest extends RegistryBaseTestCase {
     
-   //public static final String SERVICE_ENDPOINT = "http://localhost:8080/astrogrid-registry-SNAPSHOT/services/Registry" ;    
-   
-   RegistryService rs = null; 
     /**
      * Constructor for RegistryInstallationTest.
      * @param arg0
@@ -56,8 +54,6 @@ public class RegistryServiceClientTest extends TestCase {
     */
    protected void setUp() throws Exception {
       super.setUp();
-      //rs = new RegistryService(new URL(SERVICE_ENDPOINT));
-      rs = new RegistryService();
    }
 
 }
