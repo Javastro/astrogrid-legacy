@@ -1,6 +1,8 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
+                 org.w3c.dom.Element,
+                 org.w3c.dom.NodeList,
                  org.astrogrid.io.Piper,
                  org.astrogrid.util.DomHelper,
                  java.net.*,
@@ -16,8 +18,7 @@
 
 <h1>Registry Entries</h1>
 
-
-<pre>
+<hr>
 <%
    RegistryService server = new RegistryService();
 
@@ -36,8 +37,51 @@
       out.write("<p>No entries?!</p>");
    }
    else {
-     DomHelper.DocumentToWriter(entry, out);
+   
+      out.write("<table border=1>");
+      out.write("<tr><td>AuthorityID</td><td>ResourceKey</td><td>Actions</td></tr>");
+      
+      
+      NodeList identifiers = entry.getElementsByTagName("Identifier");
+      
+      for (int n=0;n<identifiers.getLength();n++) {
+         out.write("<tr>\n");
+         
+//         NodeList d2 = ((Element) identifiers.item(n)).getElementsByTagName("ResourceKey");
+//         out.write("Item 0:"+d2.item(0).getNodeName()+", "+d2.item(0).getFirstChild().getNodeValue()+"\n");
+//         out.write("Item 1:"+d2.item(1).getNodeName()+", "+d2.item(1).getNodeValue()+"\n");
+         
+         
+         Element resource = (Element) ((Element) identifiers.item(n)).getElementsByTagName("ResourceKey").item(0);
+         Element authority = (Element) ((Element) identifiers.item(n)).getElementsByTagName("AuthorityID").item(0);
+         
+         if (authority == null) {
+            out.write("<td>null?!</td>");
+         } else {
+            out.write("<td>"+authority.getFirstChild().getNodeValue()+"</td>\n");
+         }
+
+         if (resource == null) {
+            out.write("<td>null?!</td>");
+         } else {
+            out.write("<td>"+resource.getFirstChild().getNodeValue()+"</td>\n");
+         }
+         
+         out.write("<td><a href=viewResourceEntry.jsp?IVORN="+authority.getFirstChild().getNodeValue()+">View</a></td>\n");
+         
+         out.write("</tr>\n");
+         
+      }
+      
+      out.write("</table>");
    }
+
+%>
+<hr>
+Use your browser's 'view source' to view the XML:
+<pre>
+<%
+      DomHelper.DocumentToWriter(entry, out);
 
 %>
 </pre>
