@@ -148,13 +148,12 @@
         | Build our project website.
         | (required as a target goal for the reactor)
         +-->
-    <goal name="site">
+    <preGoal name="site">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <ant:echo message="Building project site ...."/>
-        <attainGoal name="site:generate"/>
-    </goal>
+    </preGoal>
 
     <!--+
         | Generate a clover report for our project.
