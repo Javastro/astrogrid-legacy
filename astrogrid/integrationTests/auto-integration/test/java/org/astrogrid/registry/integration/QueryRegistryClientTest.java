@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientTest.java,v 1.4 2004/08/05 12:13:58 KevinBenson Exp $
+/*$Id: QueryRegistryClientTest.java,v 1.5 2004/08/17 10:50:05 pah Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,12 +67,6 @@ public class QueryRegistryClientTest extends RegistryBaseTest {
       DomHelper.DocumentToStream(result,System.out);      
    }
    
-   public void testGetEndpointByIdentifier() throws Exception {
-      //String result = qr.getEndPointByIdentifier("org.astrogrid.localhost/org.astrogrid.community.common.security.service.SecurityService");
-      //assertNotNull(result);
-      //System.out.println("the endpoint = " + result);
-   }
-
    public void testGetEndpointByIdentifier2() throws Exception {
       String result = rs.getEndPointByIdentifier("org.astrogrid.localhost/sia");
       assertNotNull(result);
