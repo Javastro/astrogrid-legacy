@@ -21,7 +21,7 @@ The datacenter requires two types of database:
 (1) A Job database to keep track of jobs entered in the AstroGrid system.
 This is a small database of 1 table. The ddl is available in the dbscripts
 directory. The database is accessed with write capability. Some details are
-configurable within the ASTROGRID_jesconfig file.
+configurable within the ASTROGRID_datasetconfig file.
 
 (2) A variable number of astronomical databases. These databases can be on
 different RDBMS's, have any variability in numbers of tables and naming

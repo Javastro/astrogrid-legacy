@@ -1,5 +1,5 @@
 /*
- * @(#)Service.java   1.0
+ * @(#)Table.java   1.0
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -8,15 +8,14 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-package org.astrogrid.datacenter.job;
+package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
 /**
- * The <code>Service</code> class represents ...
+ * The <code>Table</code> class represents ...
  * <p>
  * Introductory text.... For example:
  * <p><blockquote><pre>
@@ -30,27 +29,25 @@ import org.w3c.dom.* ;
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2
  */
-public class Service {
+public class Table {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
 	
 	private static Logger 
-		logger = Logger.getLogger( Service.class ) ;
+		logger = Logger.getLogger( Table.class ) ;
 		
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_dosomething = "AGDTCE00???" ;
 	
 	private String 
-	   name,
-	   url ;
+	   name ;
 	   
-	public Service( Element serviceElement ) throws QueryException {
-		if( TRACE_ENABLED ) logger.debug( "Service(Element): entry") ;  
-		 		
+	public Table( Element tableElement ) throws QueryException {
+		if( TRACE_ENABLED ) logger.debug( "Table(Element): entry") ;   
+				
 		try {
-			setName(serviceElement.getAttribute( RunJobRequestDD.SERVICE_NAME_ATTR )) ;
-			setUrl(serviceElement.getAttribute( RunJobRequestDD.SERVICE_URL_ATTR )) ;			
+			setName( tableElement.getFirstChild().getNodeValue().trim() ) ;			
 		}
 		catch( Exception ex ) {
 			Message
@@ -59,10 +56,10 @@ public class Service {
 			throw new QueryException( message, ex );    		
 		}
 		finally {
-			if( TRACE_ENABLED ) logger.debug( "Service(Element): exit") ;   	
+			if( TRACE_ENABLED ) logger.debug( "Table(Element): exit") ;   	
 		}
 		   
-	} // end of Service( Element )
+	} // end of Table( Element )
 
 
 	public void setName(String name) {
@@ -71,14 +68,6 @@ public class Service {
 
 	public String getName() {
 		return name;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public String getUrl() {
-		return url;
 	}	   
 
-} // end of class Service 
+} // end of class Table 

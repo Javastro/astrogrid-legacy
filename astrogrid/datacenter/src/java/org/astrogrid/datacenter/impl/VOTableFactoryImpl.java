@@ -13,8 +13,8 @@ package org.astrogrid.datacenter.impl;
 import org.apache.log4j.Logger;
 
 import org.astrogrid.datacenter.i18n.*;
-import org.astrogrid.datacenter.job.Query;
 import org.astrogrid.datacenter.myspace.Allocation;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.votable.VOTable;
 import org.astrogrid.datacenter.votable.VOTableException;
 import org.astrogrid.datacenter.votable.VOTableFactory;

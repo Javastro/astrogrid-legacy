@@ -11,7 +11,7 @@
    xmlns="http://xml.apache.org/axis/wsdd/"
    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"
    xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance">
-   <service name="DatasetAgent" provider="java:RPC">
+   <service name="DatasetAgentService" provider="java:RPC">
       <parameter name="className" value="org.astrogrid.datacenter.datasetagent.DatasetAgent"/>
       <parameter name="allowedMethods" value="runQuery"/>
    </service>

@@ -12,8 +12,8 @@ package org.astrogrid.datacenter.datasetagent;
 
 import org.astrogrid.datacenter.i18n.* ;
 import org.astrogrid.datacenter.job.Job;
-import org.astrogrid.datacenter.job.Query;
 import org.astrogrid.datacenter.myspace.Allocation;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.votable.VOTable;
 
 import org.apache.log4j.Logger;
@@ -75,9 +75,16 @@ public class DatasetAgent {
 		TRACE_ENABLED = true ;
 			
 	private static final String 
+	/** Properties' file for this component. */  
 		CONFIG_FILENAME              = "ASTROGRID_datasetconfig.properties",
+	/** Key within the component's Properties' file which helps identify the appropriate
+	 *  language ResourceBundle. */  
 		CONFIG_MESSAGES_BASENAME     = "MESSAGES.INSTALLATION.BASENAME" ,
+	/** Key within the component's Properties' file which helps identify the appropriate
+	 *  language ResourceBundle. */  
 		CONFIG_MESSAGES_LANGUAGECODE = "MESSAGES.INSTALLATION.LANGUAGECODE" ,
+	/** Key within the component's Properties' file which helps identify the appropriate
+	 *  language ResourceBundle. */  
 	    CONFIG_MESSAGES_COUNTRYCODE  = "MESSAGES.INSTALLATION.COUNTRYCODE" ;
 	    
 	private static final String
@@ -86,12 +93,16 @@ public class DatasetAgent {
 	    ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGDTCE00030",
 	    ASTROGRIDERROR_ULTIMATE_QUERYFAILURE        = "AGDTCE00040";
 	    
+	/** Key within the component's Properties' file signifying whether the web service request
+	 *  document is to be parsed with validation turned on or off*/  
 	private static final String
 		PARSER_VALIDATION = "PARSER.VALIDATION" ;	    
-	    			
+		
+	/** Log4J logger for this class. */    			    			   			
 	private static Logger 
 		logger = Logger.getLogger( DatasetAgent.class ) ;
-		
+	
+	/** The DatasetAgent's properties' file. */  	
 	private static Properties
 	    configurationProperties = null ;
 	
@@ -244,11 +255,55 @@ public class DatasetAgent {
 	  * <p> 
 	  * Represents the mainline workflow argument for the DatasetAgent. 
 	  * <p>
-	  * Shows the DatasetAgent to be a "pristine" component with no state.
+	  * Shows the DatasetAgent to be a stateless component.
 	  * It neither uses nor creates instance variables. In the EJB model 
 	  * it would be considered a stateless session bean.
 	  * 
+	  * The workflow:
+      * 
+      * 1. Load the datacenter properties (if not already loaded).
+      *    This includes the message resource bundle, which determines
+      *    the default language for a datacenter. This step is
+      *    a precondition of correct working.
+      * 
+      * 2. Parse the request XML into a document.
+      * 
+      * 3  Acquire a factory for the Job data structures and use it
+      *    to fill out all the appropriate job objects. This is a 
+      *    major structural step and is partly parameterized by the
+      *    fact that the factory is dynamically loaded, something
+      *    controlled by the DatasetAgent's properties' file. The
+      *    factory takes care of all persistence as related to Job.
+      *    It is conceivable that a data center might write an
+      *    alternative implementation if it were desired to hold
+      *    job information in a form other than a JDBC compliant
+      *    database.
+      * 
+      * 4  Execute the query. The implementation of this aspect
+      *    is held in a dynamically loaded class controlled by
+      *    the DatasetAgent's properties' file. It is conceivable
+      *    that a data center might write an alternative implementation
+      * . 
+      * 5  Allocate temporary file space within the local file system.
+      * 
+      * 6. Convert the query into VOTable format and stream it to
+      *    the allocated file.
+      * 
+      * 7. Inform the MySpace facility that there is a file to
+      *    pick up, and give it the file location.
+      * 
+      * 8. Inform the JobMonitor of completion, successful or
+      *    otherwise.
+      * 
+      * Throughout the above process, the DatasetAgent attempts to
+      * update the job status to appropriate values and persist this
+      * information to the Job database.
 	  * 
+	  * @param jobXML - The service request XML received as a String.
+	  * @return A String used for testing purposes only. This service
+	  * is presented as a one-way call..
+	  * 
+	  * @see RunJobRequest.xsd in CVS
 	  **/     
     public String runQuery( String jobXML ) { 	
     	if( TRACE_ENABLED ) logger.debug( "runQuery() entry") ;

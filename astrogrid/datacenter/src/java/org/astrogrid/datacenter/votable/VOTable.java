@@ -13,8 +13,8 @@ package org.astrogrid.datacenter.votable;
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
-import org.astrogrid.datacenter.job.Query;
 import org.astrogrid.datacenter.myspace.*;
+import org.astrogrid.datacenter.query.Query;
 
 
 public class VOTable {

@@ -13,6 +13,7 @@ package org.astrogrid.datacenter.job;
 import org.w3c.dom.* ;
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.datasetagent.*;
+import org.astrogrid.datacenter.query.*;
 // import org.astrogrid.datacenter.i18n.*;
 
 

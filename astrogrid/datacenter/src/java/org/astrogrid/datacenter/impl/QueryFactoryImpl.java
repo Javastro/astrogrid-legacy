@@ -5,9 +5,9 @@ package org.astrogrid.datacenter.impl;
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.datasetagent.DatasetAgent;
 import org.astrogrid.datacenter.i18n.*;
-import org.astrogrid.datacenter.job.Query;
-import org.astrogrid.datacenter.job.QueryException;
-import org.astrogrid.datacenter.job.QueryFactory;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.query.QueryFactory;
 
 // import javax.xml.parsers.*;
 import org.w3c.dom.*;
