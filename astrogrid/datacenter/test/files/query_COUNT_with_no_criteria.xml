@@ -1,0 +1,22 @@
+<?xml version = "1.0" encoding = "UTF8"?>
+<job name = "jl012">
+   <userid>jlusted</userid>
+   <community>leicester</community>
+   <jobstep name="COUNT AND NO CRITERIA" >
+      <query>  
+<!--============================================== 
+    SELECT COUNT(*) 
+    FROM USNOB 
+===============================================--> 
+         <from>         
+            <catalog name="USNOB">         
+               <service name="AGHomeService" url="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent" />
+               <table>USNOB</table>
+            </catalog>
+         </from>
+         <return>
+            <field name="COUNT(*)" type="COLUMN"/>
+         </return>
+      </query>
+   </jobstep>
+</job>

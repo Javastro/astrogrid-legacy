@@ -113,7 +113,7 @@ public class QueryTestSuite extends TestCase {
         final String
             sqlString = "SELECT  URA, UDEC, PMPROB FROM USNOB..USNOB  WHERE " +
                         "( ((2 * ASIN(SQRT(POW(SIN(-12.34-UDEC)/2),2) + COS(UDEC) + POW(SIN(234.56-URA)/2),2)) < 0.01 )" ,
-            fileName = "query_CONE01.xml" ;
+            fileName = "query_CONE.xml" ;
         Element
             queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
 		Query
@@ -135,6 +135,170 @@ public class QueryTestSuite extends TestCase {
 		}
         
 	} // end of testQueryToString_CONE()
+	
+
+	public void testQueryToString_AND_with_EQUALS_and_NOT_EQUALS() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_AND_with_EQUALS_and_NOT_EQUALS()" );	
+		
+		// This is the pseudo-SQL... 
+		// "SELECT "
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO, COLUMN_THREE FROM USNOB..USNOB  " +
+			            "WHERE ( ( COLUMN_FOUR = 16 ) AND ( COLUMN_FIVE <> 11.5 ) )",
+			fileName = "query_AND_EQUALS_NE.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString() ;
+			// logger.info( "testQueryToString_CONE_with_AND: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_AND_with_EQUALS_and_NOT_EQUALS()" );	
+		}
+        
+	} // end of testQueryToString_AND_with_EQUALS_and_NOT_EQUALS()
+
+
+	public void testQueryToString_CONE_with_AND() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_CONE_with_AND()" );	
+		
+		// This is the pseudo-SQL... 
+		// "SELECT URA, UDEC, PMPROB FROM USNOB WHERE CONE(234.56, -12.34, 0.01)"
+		final String
+			sqlString = "SELECT  URA, UDEC, PMPROB FROM USNOB..USNOB  " + 
+                        "WHERE ( ( ((2 * ASIN(SQRT(POW(SIN(-12.34-UDEC)/2),2) " + 
+                        "+ COS(UDEC) + POW(SIN(234.56-URA)/2),2)) < 0.01 ) AND ( PMPROB > 5 ) )" ,
+			fileName = "query_AND_CONE_GT.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString() ;
+			logger.info( "testQueryToString_CONE_with_AND: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_CONE_with_AND()" );	
+		}
+        
+	} // end of testQueryToString_CONE_with_AND()
+
+
+	public void testQueryToString_BETWEEN_BETWEEN_GT() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_BETWEEN_BETWEEN_GT()" );	
+		
+		// This is the pseudo-SQL... 
+		// "SELECT URA, UDEC, PMPROB FROM USNOB WHERE CONE(234.56, -12.34, 0.01)"
+		final String
+			sqlString = "SELECT  URA, UDEC, NDETS FROM USNOB..USNOB  WHERE " +
+			            "( ( URA BETWEEN 234.56 AND 234.6 ) AND " +
+			            "( UDEC BETWEEN -12.34 AND -12.45 ) AND ( NDETS > 4 ) )" ,
+			fileName = "query_AND_BETWEEN_BETWEEN_GT.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString() ;
+			logger.info( "testQueryToString_BETWEEN_BETWEEN_GT: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_BETWEEN_BETWEEN_GT()" );	
+		}
+        
+	} // end of testQueryToString_BETWEEN_BETWEEN_GT()
+
+
+	public void testQueryToString_AND_GTE_LTE_OR_NE_GT_LT_NE() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_AND_GTE_LTE_OR_NE_GT_LT_NE()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO FROM USNOB..USNOB  " +
+			            "WHERE ( ( COLUMN_6 >= 60 ) AND ( COLUMN_7 <= 70 ) AND " +
+			            "( ( COLUMN_11 = 110 ) OR ( COLUMN_12 <> COLUMN_13 ) ) AND " +
+			            "( COLUMN_8 > 80 ) AND ( COLUMN_9 < 90 ) AND ( COLUMN_10 <> 100 ) )" ,
+			fileName = "query_AND_GTE_LTE_OR_NE_GT_LT_NE.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString() ;
+//			logger.info( "testQueryToString_AND_GTE_LTE_OR_NE_GT_LT_NE: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_AND_GTE_LTE_OR_NE_GT_LT_NE()" );	
+		}
+        
+	} // end of testQueryToString_AND_GTE_LTE_OR_NE_GT_LT_NE()
+
+
+	public void testQueryToString_AND_GT_NOT_NULL() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_AND_GT_NOT_NULL()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  * FROM USNOB..USNOB  WHERE ( ( TYCHO > 0 ) AND ( NMAG NOT NULL ) )" ,
+			fileName = "query_AND_GT_NOT_NULL.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString() ;
+//			logger.info( "testQueryToString_AND_GT_NOT_NULL: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_AND_GT_NOT_NULL()" );	
+		}
+        
+	} // end of testQueryToString_AND_GT_NOT_NULL()
+
 
 
 	/**
