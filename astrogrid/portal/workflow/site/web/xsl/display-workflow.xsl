@@ -55,6 +55,7 @@
                      else if (tool_name != '')
                      {
                          document.getElementById('tool_select_dropdown').style.display="none";
+                         document.getElementById('tool_select_button').style.display="none";
                      }                     
                       document.properties_form.step_name.value = step_name;
                       document.properties_form.join_condition.value = join_condition; 
