@@ -18,8 +18,14 @@ import javax.security.auth.Subject;
  * to interact with JAX-RPC handler-chains and thus to use the
  * credentials in SOAP messages.
  *
- * @see ClientSecurityGuard
- * @see ServiceSecurityGuard
+ * The SecurityGuard maintains two sets of credentials: "single-sign-on"
+ * (SSO) and "grid".  The SSO credentials are used to sign on to the
+ * grid via some portal that manages user accounts. The grid credentials
+ * are used to authenticate messages to services in the grid. A user
+ * obtains the grid credentials by signing on with the SSO credentials.
+ *
+ * @see {@link ClientSecurityGuard}
+ * @see {@link ServiceSecurityGuard}
  *
  * @author Guy Rixon
  */
@@ -78,8 +84,15 @@ public class SecurityGuard {
   /**
    * Sets the password property.
    */
-  public void setPassword (Password pass) {
-    this.subject.getPrivateCredentials().add(pass);
+  public void setPassword (String word) {
+    try {
+      Password p = new Password(word, false);
+      this.subject.getPrivateCredentials().add(p);
+    }
+    catch (Exception e) {
+      // Ignore the exception for now.
+      // This is a horrible kludge; needs refactoring out.
+    }
   }
 
   /**
@@ -87,13 +100,13 @@ public class SecurityGuard {
    *
    * @return the password (may be null if the property is not set)
    */
-   public Password getPassword () {
+   public String getPassword () {
      Set passwords = this.subject.getPrivateCredentials(Password.class);
      if (passwords.size() == 0) {
        return null;
      }
      else {
-       return (Password) passwords.iterator().next();
+       return ((Password) passwords.iterator().next()).getPlainPassword();
      }
    }
 
@@ -187,12 +200,7 @@ public class SecurityGuard {
    * @param word the password
    */
   protected void setSsoPassword (String word) {
-    try {
-      this.setPassword(new Password(word, false));
-    }
-    catch (Exception e) {
-      // KLUDGE!
-    }
+    this.setPassword(word);
   }
 
   /**
@@ -207,7 +215,7 @@ public class SecurityGuard {
    * @return the password
    */
   public String getSsoPassword () {
-    return this.getPassword().getPlainPassword();
+    return this.getPassword();
   }
 
 }
