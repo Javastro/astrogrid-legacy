@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.5 2004/08/10 11:06:09 nw Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.6 2004/08/31 23:45:17 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,7 +40,9 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         ag = Astrogrid.getInstance();
+        assertNotNull("astrogrid instance is null",ag);
         // credentials object
+        assertNotNull("oject builder is null",ag.getObjectBuilder());
         acc = ag.getObjectBuilder().createAccount(USERNAME,COMMUNITY); // will want to change this to a standard user later.
         group = ag.getObjectBuilder().createGroup("devel",COMMUNITY);
         creds = ag.getObjectBuilder().createCredendtials(acc,group);
@@ -86,6 +88,9 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.6  2004/08/31 23:45:17  nw
+added sanity checking assertions
+
 Revision 1.5  2004/08/10 11:06:09  nw
 fixed breakage due to my refactoring of astrogrid-scripting.
 sorry about that.
