@@ -119,7 +119,7 @@
                 <div>                                                
                   <select size="1">
                     <xsl:attribute name="id">select<xsl:value-of select="@key"/></xsl:attribute>
-                    <xsl:attribute name="onChange">if(document.getElementById('select<xsl:value-of select="@key"/>').value=='browse') javascript:void(window.open('/astrogrid-portal/lean/mount/registry/registrybrowser.html?mainelement=Tool&amp;parent_authId=tool_name<xsl:value-of select="@key"/>', 'RegistryMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=450, height=500')); 
+                    <xsl:attribute name="onChange">if(document.getElementById('select<xsl:value-of select="@key"/>').value=='browse') popupBrowser('/astrogrid-portal/lean/mount/resources/agresourcesMB.html?mainelement=Task&amp;parent_authId=tool_name<xsl:value-of select="@key"/>'); 
                                                    else if (document.getElementById('select<xsl:value-of select="@key"/>').value=='none') alert('Please select....');
                                                    else document.getElementById('tool_name<xsl:value-of select="@key"/>').value = document.getElementById('select<xsl:value-of select="@key"/>').value;
                     </xsl:attribute>
@@ -155,6 +155,7 @@
           </table>
           <input type="hidden" name="display_tool_values"><xsl:attribute name="value">true</xsl:attribute></input>
           <input type="hidden" name="activity_key"><xsl:attribute name="value"><xsl:value-of select="@key"/></xsl:attribute></input>            
+          <input type="hidden" name="orig_tool_name"><xsl:attribute name="value"><xsl:value-of select="//@orig-tool-name"/></xsl:attribute></input>            
         </form>                
       </div>
     <xsl:apply-templates select="*" mode="activity-details"/>      

@@ -15,6 +15,7 @@
           |
           +-->
     <xsl:template name="parameter-details">
+      <ag-script type="text/javascript" src="/astrogrid-portal/extras.js"/>
       <script language="javascript">    
         function toggleHelp(id)
         {
@@ -196,7 +197,7 @@
             <input class="agActionButton" name="myspace-name" type="button" value="Browse...">
               <xsl:attribute name="onClick">                
                              javascript:document.getElementById('<xsl:value-of select="$indirect-id"/>').checked = 'true'; 
-                             void(window.open('/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=<xsl:value-of select="$ivorn-id"/>&amp;agsl=<xsl:value-of select="$agsl-id"/>', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'));
+                             popupBrowser('/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=<xsl:value-of select="$ivorn-id"/>&amp;agsl=<xsl:value-of select="$agsl-id"/>');
               </xsl:attribute>
             </input>
           </td>
