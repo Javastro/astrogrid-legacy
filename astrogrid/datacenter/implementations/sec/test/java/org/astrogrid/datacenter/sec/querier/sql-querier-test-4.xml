@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns="http://adql.ivoa.net/v0.73">
+<SelectionList>
+  <All /> 
+  </SelectionList>
+<From>
+      <Table Name="sgas_event" Alias="sg"/>
+   </From>
+   <Where>
+      <And>
+         <Compare Comparison="&gt;">
+            <Column Table="sg" Name="nar"/>
+            <Atom>
+               <Real>9500</Real>
+            </Atom>
+         </Compare>
+         <Compare Comparison="&lt;">
+            <Column Table="sg" Name="nar"/>
+            <Atom>
+               <Real>9600</Real>
+            </Atom>
+         </Compare>
+      </And>
+   </Where>     
+</Select>
