@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleConfig.java,v 1.1 2003/08/26 23:21:51 mch Exp $
+ * $Id: SimpleConfig.java,v 1.2 2003/08/27 10:08:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,13 +29,22 @@ public class SimpleConfig
 
    /** class initialisation - loads the properties.
     */
-   public SimpleConfig() throws IOException
+   public SimpleConfig()
    {
-      properties.load(new FileInputStream(filename));
 
-      if (properties.getProperty("PARSER.VALIDATION") == null)
+      try
       {
-         throw new IOException("could not locate PARSER.VALIDATION in config file - is the file missing?");
+         properties.load(new FileInputStream(filename));
+
+         if (properties.getProperty("PARSER.VALIDATION") == null)
+         {
+            throw new IOException("could not locate PARSER.VALIDATION in config file - is the file missing?");
+         }
+      }
+      catch (IOException e)
+      {
+         System.out.println("ERROR: Could not load property file "+filename);
+         e.printStackTrace(System.out);
       }
    }
 
