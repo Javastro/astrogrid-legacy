@@ -1,6 +1,5 @@
 package org.astrogrid.registry.xquery;
 
-package gmd;
 
 import de.gmd.ipsi.xql.*;
 import de.gmd.ipsi.domutil.*;
