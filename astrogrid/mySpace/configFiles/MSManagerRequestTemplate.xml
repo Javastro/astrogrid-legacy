@@ -14,5 +14,13 @@
         <serverFileName>{10}</serverFileName>
         <fileSize>{11}</fileSize>
         <extentionPeriod>{12}</extentionPeriod>
+        <!--for save -->
+        <fileName>{13}</fileName> <!--fileName without full path,we deside if store in WF or Query or VOTable-->
+        <fileContent>{14}</fileContent>
+        <category>{15}{/category}<!-- WF or Query or Votable-->
+        <action>{16}{/action}<!--overwrite or append -->
+        <!--for download(get) -->
+        <!-- serverFileName -->
+        <downloadPath>{17}</downloadPath>
     </elements>
 </request>
