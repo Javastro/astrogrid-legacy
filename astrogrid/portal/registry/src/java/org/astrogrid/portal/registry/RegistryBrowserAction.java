@@ -7,6 +7,7 @@ import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.environment.ObjectModelHelper;
+import org.astrogrid.query.sql.Sql2Adql;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.Set;
 import java.util.Iterator;
 import java.io.File;
 import java.io.IOException;
-import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
+//import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
@@ -162,6 +163,7 @@ public class RegistryBrowserAction extends AbstractAction
 			String result = null;
 			String resultid = null;
 			String method = "Action()";
+         String adqlString = null;
 
 			// Get paramters from Cocoon           
 			String action = request.getParameter(PARAM_ACTION);
@@ -226,7 +228,9 @@ public class RegistryBrowserAction extends AbstractAction
 						// Now lets submit the query.
 						RegistryService rs = RegistryDelegateFactory.createQuery( );
 						printDebug( method, "Service = " + rs);
-						Document doc = rs.submitQuery( query );
+                  adqlString = Sql2Adql.translateToAdql074(query);                        
+						//Document doc = rs.submitQuery( query );
+                  Document doc = rs.search( adqlString );
 						request.setAttribute("resultDoc", (Node) doc);
 
 						//create the results and put it in the request.
@@ -298,7 +302,9 @@ public class RegistryBrowserAction extends AbstractAction
 							  
 				RegistryService rs = RegistryDelegateFactory.createQuery();
 				printDebug( method, "Service = " + rs);
-				Document doc = rs.submitQuery( tableQuery );
+				//Document doc = rs.submitQuery( tableQuery );
+            adqlString = Sql2Adql.translateToAdql074(tableQuery);                
+            Document doc = rs.search( adqlString );
 			 			 
 				//request.setAttribute("tableID", table);			  
 				//request.setAttribute("resultSingleCatalog", doc);
@@ -423,16 +429,21 @@ public class RegistryBrowserAction extends AbstractAction
 		 String query = "<query>\n<selectionSequence>";
 		 query += "\n<selection item='searchElements' itemOp='EQ' value='Resource'/>";
 		 query += "\n<selectionOp op='$and$'/>";
+       String sqlQuery = "Select * from Registry where ";
 		 if ( CATALOG_SEARCH.equals( main ) ) {
+            /*
 				query += "\n<selectionSequence>\n";
-//query += "<selection item='@xsi:Type' itemOp='EQ' value='TabularSkyService'/>";
-//query += "<selectionOp op='OR'/>";
 				query += "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>";
 				query += "\n</selectionSequence>";
+            */
+             sqlQuery += "vr:content/vr:type='Catalog' ";
 		 }
 		 else if ( TOOL_SEARCH.equals( main ) ) {
+           /*
 			 query += "\n<selection item='@xsi:type' itemOp='EQ'";
 			 query += " value='CeaApplicationType'/>";
+             */
+             sqlQuery += "@xsi:type='cea:CeaApplicationType' ";
 //		Following removed as there seems to be a confusion over id or key and the value of
 //		authid was getting included as part of the search string in the form:
 //				 vr:Identifier/vr:AuthorityID = "tool_name" which prevented anything from being found!
@@ -440,56 +451,87 @@ public class RegistryBrowserAction extends AbstractAction
 //			 key = null;       
 			}
 		 else if ( TABLE_SEARCH.equals( main ) ) {
+          /*
 			 query += "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>";
+          */
+          sqlQuery += "vr:content/vr:type='Catalog' ";
 		 }
 
 		 // Now lets check for other filters.
 		 if ( id != null ) {
+          /*
 			 query += "\n<selectionOp op='AND'/>";
 			 query += "<selection item='vr:Identifier/vr:AuthorityID' itemOp='CONTAINS'";
 			 query += " value='" + id + "'/>";
+          */
+          sqlQuery += " and vr:identifier like '%" + id +"%' ";
 		 }
 		 if ( key != null ) {
+          /*
 			 query += "\n<selectionOp op='AND'/>";
 			 query += "<selection item='vr:Identifier/vr:ResourceKey' itemOp='CONTAINS'";
 			 query += " value='" + key + "'/>";
+          */
+          sqlQuery += " and vr:identifier like '%" + key +"%' ";
 		 }
 
 		 if ( title != null ) {
+          /*
 			 query += "\n<selectionOp op='AND'/>";
 			 query += "<selection item='vr:Title' itemOp='CONTAINS' value='"
 									+ title + "'/>";
+          */
+          sqlQuery += " and vr:title like '%" + title +"%' ";             
 		 }
 		 if ( tabname != null ) {
+          /*
 			 query += "\n<selectionOp op='AND'/>";
 			 query += "<selection item='*:Table/vr:Name' "
 								+ "itemOp='EQ' value='" + tabname + "'/>";
+          */
+          sqlQuery += " and vs:table/vs:name = '" + tabname + "'";
 		 }
 		 if ( colname != null ) {
+          /*
 			 query += "\n<selectionOp op='AND'/>";
 			 query += "<selection item='*:Table/*:Column/vr:Name' "
 								+ "itemOp='EQ' value='" + colname + "'/>";
+          */
+          sqlQuery += " and vs:table/vs:column/vs:name = '" + colname + "'";             
+          
 		 }
 		 if ( ucd != null ) {
+          /*
 			 query += "\n<selectionOp op='AND'/>";
 			 query += "<selection item='*:Table/*:Column/*:UCD' "
 								+ "itemOp='EQ' value='" + ucd + "'/>";
+          */
+          sqlQuery += " and vs:table/vs:column/vs:ucd = '" + ucd + "'";
 		 }
 		 if ( units != null ) {
+          /*
 			 query += "\n<selectionOp op='AND'/>";
 			 query += "<selection item='*:Table/*:Column/*:Unit' "
 								+ "itemOp='EQ' value='" + units + "'/>";
+          */
+          sqlQuery += " and vs:table/vs:column/vs:unit = '" + units + "'";
 		 }
 		 if ( desc != null ) {
+          /*
 			 query += "\n<selectionOp op='AND'/>";
 			 query += "<selection item='*:Table/*:Column/vr:Description' "
 								+ "itemOp='CN' value='" + desc + "'/>";
+          */
+          sqlQuery += " and vs:table/vs:column/vs:description = '" + desc + "'";             
 		 }
 
 		 // End of Query.
+       /*
 		 query += "\n</selectionSequence></query>";
 
 		 return query;
+       */
+       return sqlQuery;
 	 }
 
 	 private String getResultMessage(Document doc) {

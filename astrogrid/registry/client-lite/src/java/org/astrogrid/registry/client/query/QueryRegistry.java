@@ -13,7 +13,7 @@ import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.message.SOAPBodyElement;
 import org.apache.axis.utils.XMLUtils;
-//import org.astrogrid.datacenter.query.Sql2Adql;
+import org.astrogrid.query.sql.Sql2Adql;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
@@ -70,9 +70,9 @@ public class QueryRegistry implements RegistryService {
      */
     private static final Log logger = LogFactory.getLog(QueryRegistry.class);
     
-    private static String reg_default_version = "0.9";
+    private static String reg_default_version = "0.10";
     
-    private static String reg_transform_version = "0.9";
+    private static String reg_transform_version = "0.10";
 
    /**
     * target end point is the location of the webservice. 
@@ -93,8 +93,8 @@ public class QueryRegistry implements RegistryService {
    static {
       if (conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
-         reg_default_version = conf.getString("org.astrogrid.registry.version","0.9"); 
-         reg_transform_version = conf.getString("org.astrogrid.registry.result.version","0.9");
+         reg_default_version = conf.getString("org.astrogrid.registry.version",reg_default_version); 
+         reg_transform_version = conf.getString("org.astrogrid.registry.result.version",reg_transform_version);
       }
    }
 
@@ -156,16 +156,12 @@ public class QueryRegistry implements RegistryService {
     */
    public Document searchFromSADQL(String adql) throws RegistryException {
       //send to sadql->adql parser.
-      //call return search(adql);
-       throw new RegistryException("Not implemented yet");
-       /*
        try {
            String adqlString = Sql2Adql.translateToAdql074(adql);
            return search(DomHelper.newDocument(adqlString));
        }catch(Exception e) {
            throw new RegistryException(e);
        }
-       */
        //throw new RegistryException("Cannot get to this point");
    }
 
@@ -255,6 +251,8 @@ public class QueryRegistry implements RegistryService {
            if (result.size() > 0) {
               sbe = (SOAPBodyElement)result.get(0);
               resultDoc = sbe.getAsDocument();
+              logger.info("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(resultDoc));
+              System.out.println("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(resultDoc));
               if(!reg_default_version.replace('_','.').equals(reg_transform_version.replace('_','.'))) {
                   System.out.println("performing tranformation = " + reg_transform_version + 
                                      " default version = " + reg_default_version);
@@ -264,6 +262,7 @@ public class QueryRegistry implements RegistryService {
               }//if
               return resultDoc;            
            }
+           logger.info("RETURNING NULL FROM CALLSERVICE");
            return null;
    }
    

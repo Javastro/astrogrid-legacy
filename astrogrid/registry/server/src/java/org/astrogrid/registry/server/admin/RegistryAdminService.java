@@ -564,7 +564,7 @@ public class RegistryAdminService {
       // errored Resource that was not able to be updated in the db.
       try {      
           returnDoc = DomHelper.newDocument();
-          returnDoc.appendChild(returnDoc.createElement("UpdateResponse"));          
+          returnDoc.appendChild(returnDoc.createElementNS("http://www.astrogrid.org/registry/wsdl","UpdateResponse"));          
       }catch(ParserConfigurationException pce) {
           pce.printStackTrace();
           log.error(pce);   

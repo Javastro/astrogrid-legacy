@@ -14,9 +14,9 @@
          xmlns:tns="http://www.ivoa.net/wsdl/RegistrySearch/v0.1" 
          targetNamespace="http://www.ivoa.net/wsdl/RegistrySearch/v0.1">
          <xs:import namespace="http://www.ivoa.net/xml/ADQL/v0.7.4" 
-                    schemaLocation="/schema/adql/ADQL-0.7.4.xsd" />
+                    schemaLocation="../schema/adql/ADQL-0.7.4.xsd" />
          <xs:import namespace="http://www.ivoa.net/xml/RegistryInterface/v0.1"
-                    schemaLocation="/wsdl/RegistryInterface-v0.1.xsd"/>
+                    schemaLocation="../schema/RegistryInterface-v0.1.xsd"/>
       <xs:element name="Search">        <xs:complexType>          <xs:sequence>            <xs:element minOccurs="0" maxOccurs="1" ref="adql:Select" />          </xs:sequence>        </xs:complexType>      </xs:element>
       <xs:element name="SearchResponse">        <xs:complexType>          <xs:sequence>            <xs:element minOccurs="1" maxOccurs="1" ref="ri:VOResources" />          </xs:sequence>        </xs:complexType>      </xs:element>
       <xs:element name="KeywordSearch">        <xs:complexType>          <xs:sequence>            <xs:element minOccurs="1" maxOccurs="1" name="keywords" type="xs:string" />            <xs:element minOccurs="1" maxOccurs="1" name="orValue" type="xs:boolean" />          </xs:sequence>        </xs:complexType>      </xs:element>            </xs:schema>         </types>

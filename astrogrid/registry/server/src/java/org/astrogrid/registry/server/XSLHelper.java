@@ -192,7 +192,7 @@ public class XSLHelper {
          transformer.transform(xmlSource,result);
          if(responseElement != null && responseElement.trim().length() > 0) {
              Element currentRoot = resultDoc.getDocumentElement();
-             Element root = resultDoc.createElement(responseElement);
+             Element root = resultDoc.createElementNS("http://www.astrogrid.org/registry/wsdl",responseElement);
              root.appendChild(currentRoot);
              resultDoc.appendChild(root);
          }

@@ -4,15 +4,6 @@
       xmlns:xsp-request="http://apache.org/xsp/request/2.0"
       xmlns:xsp-formval="http://apache.org/xsp/form-validator/2.0">
   
-	<xsp:structure>
-		<xsp:include>org.astrogrid.registry.client.RegistryDelegateFactory</xsp:include>
-		<xsp:include>org.astrogrid.registry.client.query.RegistryService</xsp:include>
-		<xsp:include>org.astrogrid.registry.client.query.ServiceData</xsp:include>
-		<xsp:include>org.astrogrid.registry.common.CommunityInterfaceType</xsp:include>		
-		<xsp:include>org.astrogrid.registry.RegistryException</xsp:include>		
-	</xsp:structure>	    
-  
-  
 <page>
 	<xsp-formval:descriptor name="cocoon:/defs/logon-def.xml" constraint-set="login"/>
 	<xsp:logic>
@@ -30,43 +21,12 @@
        <login-input type="password" name="pass" size="20" caption="Password:">
            <xsp:attribute name="value"><xsp-request:get-parameter name="pass" default=""/></xsp:attribute>
        </login-input>  
-       <!--
        <login-input type="text" name="community" size="20" caption="Community:">
            <xsp:attribute name="value"><xsp-request:get-parameter name="community" default=""/></xsp:attribute>
        </login-input>
-       -->       
-	 <communities caption="Community:" name="community">
-		<xsp:logic>
-			<![CDATA[
-			      try {
-			      RegistryService rs = RegistryDelegateFactory.createQuery();
-					ServiceData []sd = rs.getResourcesByInterfaceType(new CommunityInterfaceType());
-					String ivornStr = null;
-					String comm_data = null;
-					for(int k = 0;k < sd.length;k++) {
-					ivornStr = sd[k].getIvorn().toString();
-					if(ivornStr.indexOf("/",7) != -1) {
-						ivornStr = ivornStr.substring(6,ivornStr.lastIndexOf("/"));
-					}
-					comm_data = sd[k].getTitle() + "-" + ivornStr;
-					]]>
-					<xsp:element name="communitydata">
-						<xsp:attribute name="name"><xsp:expr>ivornStr</xsp:expr></xsp:attribute>
-						<xsp:attribute name="val"><xsp:expr>ivornStr</xsp:expr></xsp:attribute>
-					</xsp:element>
-				   <![CDATA[
-						}
-						}catch(RegistryException re) {
-							re.printStackTrace();
-						}
-       			]]>
-			</xsp:logic>	 
-	 </communities>
-       
        <login-input-right class="AGaction" type="submit" name="action" value="login"/>
      </login-form>
 	 <!--TODO see if we can move this into a stylesheet or logic sheet too-->
-		 
 	 
      <xsp:logic>
        if (notNew &amp;&amp; <xsp-formval:is-error name="user"/>) {

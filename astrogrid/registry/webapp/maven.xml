@@ -306,7 +306,7 @@
             </patternset>
         </ant:unzip>
 
-        <ant:copy verbose="false" todir="${axisDir}" overwrite="false">
+        <ant:copy verbose="false" todir="${axisDir}/schema" overwrite="false">
         	<fileset dir="${tempDir}/schema">
             </fileset>
         </ant:copy>

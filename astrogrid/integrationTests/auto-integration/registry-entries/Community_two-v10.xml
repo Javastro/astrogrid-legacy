@@ -42,7 +42,7 @@
   <type>Archive</type>
   <relationship>
     <relationshipType>derived-from</relationshipType>
-	<relatedResource ivo-id="ivo://org.astrogrid/MySpaceKind">CommunityServerKind</relatedResource>
+	<relatedResource ivo-id="ivo://org.astrogrid/CommunityServerKind">CommunityServerKind</relatedResource>
   </relationship>
  </content>
     <interface xsi:type="vs:WebService">

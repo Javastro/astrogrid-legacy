@@ -148,6 +148,19 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        <!-- for writing XML -->
+       <dependency>
+          <artifactId>astrogrid-slinger-xml</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.slinger.version}</version>
+       </dependency>
+
+       <dependency>
+          <artifactId>astrogrid-slinger-api</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.slinger.version}</version>
+       </dependency>
+    	
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>

@@ -28,6 +28,8 @@ public class XSLHelper {
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(XSLHelper.class);
+    
+    private static final String XSL_DIRECTORY = "xsl/";
    
    /**
     * The default name of our database.
@@ -98,8 +100,8 @@ public class XSLHelper {
     * @return XML of the converted schema.
     */
    public Document transformResourceToResource(Node doc, String sourceVersion, String targetVersion) {
-       sourceVersion = sourceVersion.replace('.','_');
-       targetVersion = targetVersion.replace('.','_');
+       //sourceVersion = sourceVersion.replace('.','_');
+       //targetVersion = targetVersion.replace('.','_');
        
        String fileName = "VOResource-v" + sourceVersion + "-v" + targetVersion + ".xsl";
 
@@ -109,7 +111,8 @@ public class XSLHelper {
        
        ClassLoader loader = this.getClass().getClassLoader();
        InputStream is = null;
-       is = loader.getResourceAsStream(fileName);
+       System.out.println("the filename being loaded = " + XSL_DIRECTORY + fileName);
+       is = loader.getResourceAsStream(XSL_DIRECTORY + fileName);
        Source xslSource = new StreamSource(is);
              
        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
@@ -127,12 +130,22 @@ public class XSLHelper {
           //System.out.println("the resultwriter transform = " + sw.toString());
        }catch(ParserConfigurationException pce) {
          logger.error("transformResourceToResource(Node, String)", pce);
+         pce.printStackTrace();
        }catch(TransformerConfigurationException tce) {
          logger.error("transformResourceToResource(Node, String)", tce);
+         tce.printStackTrace();
        }catch(TransformerException te) {
          logger.error("transformResourceToResource(Node, String)", te);
+         te.printStackTrace();
        }
        //@todo never return null on error.
+       if(resultDoc == null) {
+           logger.error("IN tranformResouceToResource resultDoc was null");
+           System.out.println("IN tranformResouceToResource resultDoc was null");
+       }else {
+           logger.info("THE RESULTDOC IN transformResourceToResource = "  + DomHelper.DocumentToString(resultDoc));
+           System.out.println("THE RESULTDOC IN transformResourceToResource = "  + DomHelper.DocumentToString(resultDoc));
+       }
        return resultDoc;
     }
    

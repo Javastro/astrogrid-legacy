@@ -26,7 +26,7 @@ import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory; 
 //bug 566 --clq2
 //import org.astrogrid.datacenter.sqlparser.Sql2Adql074;
-import org.astrogrid.datacenter.query.Sql2Adql;
+import org.astrogrid.query.sql.Sql2Adql;
 
 import org.apache.avalon.framework.logger.ConsoleLogger;
 

@@ -411,6 +411,21 @@
   </env-entry>
 
   <env-entry>
+    <env-entry-name>org.astrogrid.registry.version</env-entry-name>
+    <env-entry-value>0.10</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>Registry version to be queried on.</description>
+  </env-entry>
+
+  <env-entry>
+    <env-entry-name>org.astrogrid.registry.result.version</env-entry-name>
+    <env-entry-value>0.9</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>The version of the results to come back in.</description>
+  </env-entry>
+
+
+  <env-entry>
     <env-entry-name>emailserver.from</env-entry-name>
     <env-entry-value>admin@astrogrid.org</env-entry-value>
     <env-entry-type>java.lang.String</env-entry-type>

@@ -211,8 +211,15 @@
          <xsl:value-of select="@Comparison"/>
       </xsl:variable>
       <xsl:apply-templates select="ad:Arg[1]"/>
-      <xsl:text> </xsl:text>
-      <xsl:value-of select="$comp"/>
+      <xsl:text> </xsl:text>      
+      <xsl:choose>
+         <xsl:when test="$comp = 'LIKE'">
+           <xsl:text>|=</xsl:text>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:value-of select="$comp"/>
+         </xsl:otherwise>
+      </xsl:choose>
       <xsl:text> </xsl:text>
       <xsl:apply-templates select="ad:Arg[2]"/>
    </xsl:template>
@@ -280,7 +287,7 @@
       
    <xsl:value-of select="$declare_elems"/>
    <xsl:text>
-		for $x in //</xsl:text><xsl:value-of select="$resource_elem"/>
+      for $x in //</xsl:text><xsl:value-of select="$resource_elem"/>
       <xsl:text>
        where 
        $x/@status='active' and 
@@ -288,7 +295,7 @@
       <xsl:apply-templates select="ad:Condition"/>
       <xsl:text> 
          return $x
-	  </xsl:text>
+     </xsl:text>
    </xsl:template>
    
    <!-- GroupBy Template -->

@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.Iterator;
 import java.io.File;
 import java.io.IOException;
-import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
+//import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
@@ -136,10 +136,10 @@ public class RegistryQueryAction extends AbstractAction
          // now get the unique last text nodes of the map.
          // should be able to do an indexOf and see if their is an "attr"
          // which you put in "@" in front of the string.
-         RegistryAdminDocumentHelper rad = new RegistryAdminDocumentHelper();
-         Map mp = rad.createMap(registryDocument);
-         Set st = mp.keySet();
-         Iterator iter = st.iterator();
+         //RegistryAdminDocumentHelper rad = new RegistryAdminDocumentHelper();
+         Map mp = null;//rad.createMap(registryDocument);
+         //Set st = mp.keySet();
+         //Iterator iter = st.iterator();
          //TreeMap selectItems = new TreeMap();
          //Go through the Map and put it in a TreeMap which is
          //an alphabetical list.

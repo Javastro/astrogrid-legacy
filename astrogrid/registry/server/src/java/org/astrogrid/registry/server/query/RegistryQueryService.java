@@ -42,6 +42,7 @@ import org.xmldb.api.base.XMLDBException;
 import java.util.ArrayList;
 
 import org.astrogrid.registry.NoResourcesFoundException;
+import org.astrogrid.store.Ivorn;
 
 /**
  *
@@ -466,7 +467,12 @@ public class RegistryQueryService {
        if(ivorn == null || ivorn.trim().length() <= 0) {
            throw new AxisFault("Cannot have empty or null identifier");
        }
-       String xqlString = QueryHelper.queryForResource(ivorn,versionNumber);
+       String queryIvorn = ivorn;
+       //this is a hack for now delete later.  Some old client delegates might not pass the ivorn
+       //the new delegates do.
+       if(!Ivorn.isIvorn(ivorn))
+           queryIvorn = "ivo://" + ivorn;
+       String xqlString = QueryHelper.queryForResource(queryIvorn,versionNumber);
        Node resultDoc = queryExist(xqlString,versionNumber);
        return xslHelper.transformExistResult(resultDoc,
                versionNumber,"GetResourcesByIdentifier");
@@ -494,7 +500,12 @@ public class RegistryQueryService {
        if(ivorn == null || ivorn.trim().length() <= 0) {
            throw new AxisFault("Cannot have empty or null identifier");
        }
-       String id = ivorn.replaceAll("[^\\w*]","_");
+       String queryIvorn = ivorn;
+       if(Ivorn.isIvorn(ivorn)) { 
+           queryIvorn = ivorn.substring(6);
+       }
+       
+       String id = queryIvorn.replaceAll("[^\\w*]","_");       
        
        String collectionName = "astrogridv" + versionNumber.replace('.','_');
        Collection coll = null;

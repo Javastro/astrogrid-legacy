@@ -7,4 +7,10 @@
         name="org.astrogrid.filemanager.service.name"
         override="false" type="java.lang.String"
         value="@FILEMANAGER_NAME@"/>
+
+ <Environment
+        name="org.astrogrid.registry.result.version"
+        override="false" type="java.lang.String"
+        value="0.9"/>
+
 </Context>

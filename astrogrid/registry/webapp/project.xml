@@ -249,6 +249,37 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+    	
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-pal-query</artifactId>
+            <version>${astrogrid.pal.version}</version>
+            <type>jar</type>
+                <properties>
+                    <war.bundle>true</war.bundle>
+                </properties>        	
+        </dependency>    	
+    	
+        <!-- for writing XML -->
+       <dependency>
+          <artifactId>astrogrid-slinger-xml</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.slinger.version}</version>
+        <properties>
+            <war.bundle>true</war.bundle>
+        </properties>       	
+       </dependency>
+
+       <dependency>
+          <artifactId>astrogrid-slinger-api</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.slinger.version}</version>
+        <properties>
+            <war.bundle>true</war.bundle>
+        </properties>       	
+       </dependency>
+    	
+    	
         <!--+
             | The Registry server components.
             +-->
@@ -366,22 +397,12 @@
            <id>jaxrpc</id>
            <version>unknown</version>
            <jar>jaxrpc.jar</jar>
-           	<!--
-            <properties>
-            	<war.bundle>true</war.bundle>
-        	</properties>
-        	-->
         </dependency>
 
         <dependency>
            <id>saaj</id>
            <version>unknown</version>
            <jar>saaj.jar</jar>
-           	<!--
-            <properties>
-            	<war.bundle>true</war.bundle>
-        	</properties>        	
-        	-->
         </dependency>
     	
         <dependency>

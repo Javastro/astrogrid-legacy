@@ -49,6 +49,17 @@
                         <version>${astrogrid.common.version}</version>
                         <groupId>org.astrogrid</groupId>
                 </dependency>
+        	
+            <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-pal-query</artifactId>
+                <version>${astrogrid.pal.version}</version>
+                <type>jar</type>
+                <properties>
+                    <war.bundle>true</war.bundle>
+                </properties>
+            </dependency>    	
+        	
         <!-- registry -->
                 <dependency>
                         <artifactId>astrogrid-registry-client-lite</artifactId>

@@ -177,7 +177,7 @@ Browse for another version
    
             out.write("<a href=viewResourceEntry.jsp?version="+version+"&IVORN=ivo://"+ivoStr+">XML</a>,  ");
 
-            out.write("<a href=editEntry.jsp?version="+version+"&IVORN="+ivoStr+">Edit</a>");
+            out.write("<a href=editEntry.jsp?version="+version+"&IVORN=ivo://"+ivoStr+">Edit</a>");
 
 			/*
             if (!deleted) {

@@ -31,6 +31,35 @@
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-pal-query</artifactId>
+            <version>${astrogrid.pal.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>    	
+    	
+        <!-- for writing XML -->
+       <dependency>
+          <artifactId>astrogrid-slinger-xml</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.slinger.version}</version>
+        <properties>
+            <war.bundle>true</war.bundle>
+        </properties>       	
+       </dependency>
+
+       <dependency>
+          <artifactId>astrogrid-slinger-api</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.slinger.version}</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>       	
+       </dependency>
+    	
+        <dependency>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-portal-common</artifactId>
             <version>${pom.currentVersion}</version>
             <type>jar</type>
@@ -45,6 +74,7 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+    	<!--
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-datacenter-client</artifactId>
@@ -54,6 +84,7 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        -->
         <dependency>
             <groupId>jaxrpc-api</groupId>
             <artifactId>jaxrpc-api</artifactId>

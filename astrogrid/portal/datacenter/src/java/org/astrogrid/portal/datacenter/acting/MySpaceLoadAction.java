@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.io.IOException;
 
+import org.astrogrid.query.sql.Sql2Adql;
 import org.apache.avalon.framework.logger.Logger;
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.acting.AbstractAction;
@@ -221,11 +222,21 @@ public class MySpaceLoadAction extends AbstractAction {
                    + "\n<selection item='vr:Identifier/vr:ResourceKey' itemOp='EQ' value='"+resourceKey+"'/>"   
                    + "\n<selectionOp op='AND'/>"        
                    + "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>"
-                   + "\n</selectionSequence></query>";  
+                   + "\n</selectionSequence></query>";
+        String sqlQuery = "Select * from Registry where vr:identifier='" + authorityID + "' and ";
+        sqlQuery += " vr:content/vr:type='Catalog' ";
+        
                                               
         logger.debug( "tableQuery = " + tableQuery);                              
         RegistryService rs = RegistryDelegateFactory.createQuery();
-        Document doc = rs.submitQuery( tableQuery );       
+            
+        //String adqlString = Sql2Adql.translateToAdql074(tableQuery);
+        String adqlString = Sql2Adql.translateToAdql074(sqlQuery);
+        logger.info("ADQL String in PORTAL for REGISTRY = " + adqlString);
+        /*
+         Document doc = rs.submitQuery( tableQuery );  
+        */
+        Document doc = rs.search(adqlString);        
              
 //        request.setAttribute("tableName", table);
 //        request.setAttribute("tableName", "testTable");

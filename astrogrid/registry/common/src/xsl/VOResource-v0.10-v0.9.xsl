@@ -17,6 +17,7 @@
                 xmlns:cea2="http://www.ivoa.net/xml/CEAService/v0.2"
                 xmlns:cs2="http://www.ivoa.net/xml/ConeSearch/v0.3" 
                 xmlns:sia2="http://www.ivoa.net/xml/SIA/v0.7" 
+                xmlns:tb2="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
                 xmlns:xs="http://www.w3.org/2001/XMLSchema" 
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
@@ -371,7 +372,7 @@
       <xsl:call-template name="doindent">      
          <xsl:with-param name="nlev" select="1"/>
       </xsl:call-template>
-      <vr:Resource xsi:type="vg:Registry">
+      <vr:Resource xsi:type="vg:RegistryType">
          <xsl:call-template name="setResourceAttrs"/>
 
          <xsl:value-of select="$cr"/>
@@ -404,7 +405,7 @@
       <xsl:call-template name="doindent">
          <xsl:with-param name="nlev" select="1"/>
       </xsl:call-template>
-      <vr:Resource xsi:type="vr:Service">
+      <vr:Resource xsi:type="vr:ServiceType">
          <xsl:call-template name="setResourceAttrs"/>
 
          <xsl:value-of select="$cr"/>
@@ -483,6 +484,27 @@
          </xsl:call-template>
       </vr:Resource>
    </xsl:template>
+
+   <xsl:template match="*[@xsi:type='TabularDB' or 
+                          @xsi:type='tb2:TabularDB']">
+      <xsl:call-template name="doindent">
+         <xsl:with-param name="nlev" select="1"/>
+      </xsl:call-template>
+      <vr:Resource xsi:type="vs:TabularSkyServiceType">
+         <xsl:call-template name="setResourceAttrs"/>
+         <xsl:value-of select="$cr"/>
+         <xsl:call-template name="convertResource"/>
+         <xsl:apply-templates select="vr2:interface"/>
+         <xsl:apply-templates select="vs2:facility"/>
+         <xsl:apply-templates select="vs2:instrument"/>
+         <xsl:call-template name="doCoverage"/>
+         <xsl:apply-templates select="vs2:table"/>
+         <xsl:call-template name="doindent">
+            <xsl:with-param name="nlev" select="1"/>
+         </xsl:call-template>
+      </vr:Resource>
+   </xsl:template>
+
 
    <xsl:template match="*[@xsi:type='DataCollection' or 
                           @xsi:type='vs:DataCollection']">
@@ -782,6 +804,12 @@
       <Subject>
          <xsl:value-of select="."/>
       </Subject>
+   </xsl:template>
+
+   <xsl:template match="vr2:email">
+      <Email>
+         <xsl:value-of select="."/>
+      </Email>
    </xsl:template>
 
    <xsl:template match="vr2:relatedResource">
@@ -1693,4 +1721,17 @@
       </Summary>
       <xsl:value-of select="$cr"/>
    </xsl:template>
+
+   <xsl:template match="vr2:description">
+      <Description>
+         <xsl:value-of select="."/>
+      </Description>
+   </xsl:template>
+
+   <xsl:template match="vr2:referenceURL">
+      <ReferenceURL>
+         <xsl:value-of select="."/>
+      </ReferenceURL>
+   </xsl:template>
+
 </xsl:stylesheet>

@@ -95,7 +95,7 @@ public class OAIService {
        String oaiServlet = getOAIServletURL(query) + "?verb=Identify";
        Document resultDoc = queryOAI(oaiServlet);
        Element currentRoot = resultDoc.getDocumentElement();
-       Element root = resultDoc.createElement("IdentifyResponse");
+       Element root = resultDoc.createElementNS("http://www.astrogrid.org/registry/wsdl","IdentifyResponse");
        root.appendChild(currentRoot);
        resultDoc.appendChild(root);
        return resultDoc;
@@ -117,7 +117,7 @@ public class OAIService {
             oaiServlet += "&identifier=" + nl.item(0).getFirstChild().getNodeValue(); 
        Document resultDoc = queryOAI(oaiServlet);
        Element currentRoot = resultDoc.getDocumentElement();
-       Element root = resultDoc.createElement("ListMetadataFormatsResponse");
+       Element root = resultDoc.createElementNS("http://www.astrogrid.org/registry/wsdl","ListMetadataFormatsResponse");
        root.appendChild(currentRoot);
        resultDoc.appendChild(root);
        return resultDoc;
@@ -173,7 +173,7 @@ public class OAIService {
         Document resultDoc = queryOAI(oaiServlet);
         //wrap it with a response method element.
         Element currentRoot = resultDoc.getDocumentElement();
-        Element root = resultDoc.createElement("GetRecordResponse");
+        Element root = resultDoc.createElementNS("http://www.astrogrid.org/registry/wsdl","GetRecordResponse");
         root.appendChild(currentRoot);
         resultDoc.appendChild(root);
         return resultDoc;
@@ -203,7 +203,7 @@ public class OAIService {
            oaiServlet += "&resumptionToken=" + nl.item(0).getFirstChild().getNodeValue();       
        Document resultDoc = queryOAI(oaiServlet);
        Element currentRoot = resultDoc.getDocumentElement();
-       Element root = resultDoc.createElement("ListIdentifiersResponse");
+       Element root = resultDoc.createElementNS("http://www.astrogrid.org/registry/wsdl","ListIdentifiersResponse");
        root.appendChild(currentRoot);
        resultDoc.appendChild(root);
        return resultDoc;
@@ -235,7 +235,7 @@ public class OAIService {
              oaiServlet += "&resumptionToken=" + nl.item(0).getFirstChild().getNodeValue();                
          Document resultDoc = queryOAI(oaiServlet);
          Element currentRoot = resultDoc.getDocumentElement();
-         Element root = resultDoc.createElement("ListRecordsResponse");
+         Element root = resultDoc.createElementNS("http://www.astrogrid.org/registry/wsdl","ListRecordsResponse");
          root.appendChild(currentRoot);
          resultDoc.appendChild(root);
          return resultDoc;

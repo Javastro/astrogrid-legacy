@@ -24,12 +24,13 @@
    -->
     
   <service name="RegistryUpdate" provider="java:MSG" style="message" use="literal">
-      <parameter name="wsdlTargetNamespace" value="http://www.ivoa.net/schemas/services/UpdateRegistry/wsdl"/>
+      <parameter name="wsdlTargetNamespace" value="http://www.astrogrid.org/registry/wsdl"/>
       <parameter name="wsdlServiceElement" value="UpdateRegistryService"/>
       <parameter name="wsdlServicePort" value="UpdateRegistrySOAPPort"/>
       <parameter name="className" value="org.astrogrid.registry.server.admin.RegistryAdminService"/>
       <parameter name="wsdlPortType" value="UpdateRegistryPortType"/>
       <parameter name="allowedMethods" value="Update"/>
+  		<wsdlFile>/../../wsdl/updateRegistry.wsdl</wsdlFile>      
    </service>  
   
 </deployment>

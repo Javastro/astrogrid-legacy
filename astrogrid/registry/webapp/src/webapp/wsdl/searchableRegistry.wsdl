@@ -4,20 +4,12 @@
              xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
              xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
              xmlns:ris="http://www.ivoa.net/wsdl/RegistrySearch/v0.1"
-             xmlns:rih="http://www.ivoa.net/wsdl/RegistryHarvest/v0.1"
-             xmlns:tns="http://myvo.org/registry/searchableRegistry.wsdl"
-             targetNamespace="http://myvo.org/registry/searchableRegistry.wsdl">
+             xmlns:tns="http://www.astrogrid.org/registry/wsdl"
+             targetNamespace="http://www.astrogrid.org/registry/wsdl">             
    <import namespace="http://www.ivoa.net/wsdl/RegistrySearch/v0.1"
-           location="/wsdl/RegistrySearch-v0.1.wsdl"/>
-   <import namespace="http://www.ivoa.net/wsdl/RegistryHarvest/v0.1"
-           location="/wsdl/RegistryHarvest-v0.1.wsdl"/>
-
-   <service name="RegistryInterfaceService">
+           location="../wsdl/RegistrySearch-v0.1.wsdl"/>   <service name="RegistryInterfaceService">
       <port name="RegistrySearchPort" binding="ris:RegistrySearchSOAP">
          <soap:address 
-        location="http://localhost:8080/axis/services/RegistrySearchPort"/>
-      </port>      <port name="RegistryHarvestPort" binding="rih:RegistryHarvestSOAP">
-         <soap:address 
-        location="http://localhost:8080/axis/services/RegistryHarvestPort"/>
+        location="http://localhost:8080/astrogrid-registry/services/RegistrySearchPort"/>
       </port>   </service>
 </definitions>

@@ -15,7 +15,7 @@
 		<parameter name="wsdlPortType" value="QueryRegistryPortType"/>
 		<parameter name="className" value="org.astrogrid.registry.server.query.RegistryQueryService"/>
 		<parameter name="wsdlServicePort" value="QueryRegistrySOAPPort"/>
-		<parameter name="wsdlTargetNamespace" value="http://www.ivoa.net/schemas/services/QueryRegistry/wsdl"/>
+		<parameter name="wsdlTargetNamespace" value="http://www.astrogrid.org/registry/wsdl"/>
 		<parameter name="wsdlServiceElement" value="QueryRegistryService"/>  
 		<wsdlFile>/../../wsdl/searchableRegistry.wsdl</wsdlFile>
 	</service>
@@ -25,9 +25,9 @@
   		<parameter name="wsdlPortType" value="RegistryHarvestPortType"/>
   		<parameter name="className" value="org.astrogrid.registry.server.query.OAIService"/>
   		<parameter name="wsdlServicePort" value="RegistryHarvestPort"/>
-  		<parameter name="wsdlTargetNamespace" value="http://www.ivoa.net/schemas/services/QueryRegistry/wsdl"/>
+  		<parameter name="wsdlTargetNamespace" value="http://www.astrogrid.org/registry/wsdl"/>
 	  	<parameter name="wsdlServiceElement" value="RegistryInterfaceService"/>
-  		<wsdlFile>/../../wsdl/searchableRegistry.wsdl</wsdlFile>
+  		<wsdlFile>/../../wsdl/publishingRegistry.wsdl</wsdlFile>
 	</service>
   
 </deployment>

@@ -115,7 +115,7 @@ Look for another version
          Element resourceElement = (Element) resources.item(n);
   			String authority = RegistryServerHelper.getAuthorityID(resourceElement);
 			String resource = RegistryServerHelper.getResourceKey(resourceElement);
-         String ivoStr = authority;
+         String ivoStr = "ivo://" + authority;
          if (resource != null || resource.trim().length() > 0) {
 	     	   ivoStr = ivoStr+"/"+resource;
          }

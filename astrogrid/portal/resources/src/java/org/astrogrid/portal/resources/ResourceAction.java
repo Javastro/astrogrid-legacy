@@ -16,10 +16,12 @@ import org.apache.axis.components.logger.LogFactory;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.util.DomHelper;
 
-import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
+//import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.registry.RegistryException;
+
+import org.astrogrid.query.sql.Sql2Adql;
 
 import org.astrogrid.config.Config;
 
@@ -36,7 +38,8 @@ import org.astrogrid.store.Ivorn;
 
 /**
  * @author Phil Nicolson (pjn3@star.le.ac.uk) Jan 05
- * @version $Name:  $Revision: 1.3 $Date:
+ * @version $Name:  $Revision: 1.4 $Date:
+ * @version $Name:  $Revision: 1.4 $Date:
  */
 public class ResourceAction extends AbstractAction {
 
@@ -260,6 +263,7 @@ public class ResourceAction extends AbstractAction {
       String keywordjoin = "";
       String categoryjoin = "";
       String query = "";
+      String sqlQuery = "";
       String andor = "";
       boolean andreqd = false; // used to add 'and' between e.g. (constraints) and (wavelength)
                     
@@ -284,14 +288,16 @@ public class ResourceAction extends AbstractAction {
         keywordjoin = request.getParameter( PARAM_KEYWORD_JOIN ).trim(); 
         
         categoryjoin = request.getParameter( PARAM_CONSTRAINT_ALL ).trim();
-                             
+                 
+        sqlQuery = "Select * from Regitry where vr:content/vr:type='Catalog' ";
         // Lets build up the XML for a query.
+        /*
         query = "<query>\n"
          + "<selectionSequence>\n" // start of main sequence
          + "<selection item='searchElements' itemOp='EQ' value='Resource'/>\n"
          + "<selectionOp op='$and$'/>\n"
          + "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>\n" ;
-		 
+		 */
 
          // is this an empty search?
 		 if ( resource.length() > 0 || description.length() > 0 || 
@@ -300,109 +306,180 @@ public class ResourceAction extends AbstractAction {
 		      ( mission != null && mission.length > 0 )  ||
 		      ( keyword != null && keyword.length > 0 ) ) 
 		  {
+            sqlQuery += " and ";
+            /* 
             query += "\n<selectionOp op='AND'/>";
-			query +=  "\n<selectionSequence>\n"; // start of inner sequence
+            query +=  "\n<selectionSequence>\n"; // start of inner sequence
+            */
         
             // GENERAL CONSTRAINTS
             if ( resource.length() > 0 || description.length() > 0 ||
                  publisher.length() >0 || title.length() > 0 ) {        
-                 
-			  query +=  "\n<selectionSequence>\n"; // start of constraints sequence
-			         
+                
+                /*
+                query +=  "\n<selectionSequence>\n"; // start of constraints sequence
+			       */
+                
               if ( resource.length() > 0 ) 
               {
+                sqlQuery += " vr:identifier like '%" + resource + "%' ";
+                /*
                 query +=  "\n<selectionSequence>\n";          	
                 query += "<selection item='vr:Identifier/vr:AuthorityID' itemOp='CONTAINS' value='" + resource + "'/>";
   			    query += "<selectionOp op='OR'/>";
 			    query += "<selection item='vr:Identifier/vr:ResourceKey' itemOp='CONTAINS' value='" + resource + "'/>";
                 query +=  "\n</selectionSequence>\n";
+                */
                 andreqd = true;
               }
               if ( description.length() > 0 ) 
               {
                 if (andreqd) 
+                    sqlQuery += constraintjoin;
+                    /*
                   query += "\n<selectionOp op='"+constraintjoin+"'/>";
-                query += "<selection item='vr:Summary/vr:Description' itemOp='CONTAINS' value='" + description + "'/>";
+                  */
+                    /*
+                  query += "<selection item='vr:Summary/vr:Description' itemOp='CONTAINS' value='" + description + "'/>";
+                  */
+                  sqlQuery += " vr:content/vr:description like '%" + description + "%' ";
                 andreqd = true;
               }
               if ( publisher.length() > 0 ) 
               {
                 if (andreqd)
+                    sqlQuery += constraintjoin;
+                    /*
                   query += "\n<selectionOp op='"+constraintjoin+"'/>";
+                  */
+                /*
                 query += "<selection item='vr:Curation/vr:Publisher/vr:Title' itemOp='CONTAINS' value='" + publisher + "'/>";
+                */
+                sqlQuery += " vr:curration/vr:publisher like '%" + publisher + "%' ";
                 andreqd = true;
               }
               if ( title.length() > 0 ) 
               {
                 if (andreqd)
-                  query += "\n<selectionOp op='"+constraintjoin+"'/>";
+                    sqlQuery += constraintjoin;
+                 /*
+                 query += "\n<selectionOp op='"+constraintjoin+"'/>";
+                 */
+                /*
                 query += "<selection item='vr:Title' itemOp='CONTAINS' value='" + title + "'/>";
+                */
+                sqlQuery += " vr:title like '%" + title + "%' ";
                 andreqd = true;
               }
+              /*
               query +=  "\n</selectionSequence>\n"; // end of constraints sequence
+              */
             } // end of GENERAL CONSTRAINTS
 
             // WAVELENGTH
             if ( wavelength != null && wavelength.length > 0 ) 
             {
 			  if (andreqd)
-                query +=  "\n<selectionOp op='" + categoryjoin + "'/>" ;
+                  sqlQuery += categoryjoin;
+                /*
+                query += "\n<selectionOp op='"+categoryjoin+"'/>";
+                */
+              /*
 			  query += "<selectionSequence>"; // start of wavelength sequence
+              */
               for ( int i=0; i< wavelength.length; i++ ) {
                 if ( i > 0 ) 
                 {
+                    /*
                   query += "\n<selectionOp op='" + wavelengthjoin + "'/>";
+                  */
+                    sqlQuery += wavelengthjoin;
                 }
+                /*
                 query += "<selection item='vs:Coverage/vs:Spectral/vs:Waveband'"
-                      + " itemOp='EQ' value='" + wavelength[i].trim() + "'/>";          
+                      + " itemOp='EQ' value='" + wavelength[i].trim() + "'/>";
+                */
+                sqlQuery += "vs:coverage/vs:spectral/vs:waveband = '" + wavelength[i].trim() + "' ";
               }
 			  andreqd = true;
+              /*
               query +=  "\n</selectionSequence>"; // end of wavelength sequence
+              */
             } // end of WAVELENGTH
 
             // MISSION
             if ( mission != null && mission.length > 0 ) 
             {
 			  if (andreqd)
-                query +=  "\n<selectionOp op='" + categoryjoin + "'/>";
+                  sqlQuery += categoryjoin;
+           /*
+           query += "\n<selectionOp op='"+categoryjoin+"'/>";
+           */
+              /*
               query += "\n<selectionSequence>"; // start of mission sequence
+              */
               for ( int i=0; i< mission.length; i++ ) {
                 if ( i > 0 ) 
                 {
+                  /*
                   query += "\n<selectionOp op='" + missionjoin + "'/>";
+                  */
+                  sqlQuery += missionjoin;
                 }
+                /*
                 query += "<selection item='vr:Facility'"
-                      + " itemOp='EQ' value='" + mission[i].trim() + "'/>";          
+                      + " itemOp='EQ' value='" + mission[i].trim() + "'/>";
+                */ 
+                sqlQuery += "vr:facility = '" + mission[i].trim() + "' ";
               }
 			  andreqd = true;
+              /*
               query +=  "\n</selectionSequence>"; // end of main mission
+              */
             } // end of MISSION
 
             // KEYWORD
             if ( keyword != null && keyword.length > 0 ) 
             {
 			  if (andreqd)
-                query +=  "\n<selectionOp op='" + categoryjoin + "'/>" ;
+                  sqlQuery += categoryjoin;
+           /*
+           query += "\n<selectionOp op='"+categoryjoin+"'/>";
+           */    
+              /*
               query += "\n<selectionSequence>"; // start of keyword sequence
+              */
               for ( int i=0; i< keyword.length; i++ ) 
               {
                 if ( i > 0 ) 
                 {
+                    sqlQuery += keywordjoin;
+                  /*
                   query += "\n<selectionOp op='" + keywordjoin + "'/>";
+                  */
                 }
+                /*
               query += "<selection item='vr:Subject'"
-                    + " itemOp='EQ' value='" + keyword[i].trim() + "'/>";          
+                    + " itemOp='EQ' value='" + keyword[i].trim() + "'/>";
+               */
+                sqlQuery += "vr:content/vr:subject = '" + keyword[i].trim() + "'";
               }
+              /*
               query +=  "\n</selectionSequence>";  // end of keyword sequence
+              */
             } // end of KEYWORD
-            
+        /*
 		  query +=  "\n</selectionSequence>"; // end of inner sequence
+        */
             
 		  }
-		  
-	    query += "\n</selectionSequence>\n";  // end of main sequence  
+		 /*
+	    query += "\n</selectionSequence>\n";  // end of main sequence
+        */  
         //  End of Query.
-        query += "\n</query>";  
+         /*
+        query += "\n</query>";
+        */  
       }
       catch(Exception ex) {
 		session.setAttribute( ERROR_MESSAGE_PARAMETER, ex.getMessage() ) ;      	
@@ -412,9 +489,9 @@ public class ResourceAction extends AbstractAction {
       }        
 
       try {      
-        debug( query ); 
-        if ( query.length() > 0 ) 
-          submitQuery( query );
+        debug( sqlQuery ); 
+        if ( sqlQuery.length() > 0 ) 
+          submitQuery( sqlQuery );
       }
       catch(Exception ex) {
         ex.printStackTrace();
@@ -436,15 +513,20 @@ public class ResourceAction extends AbstractAction {
       String description = ""; 
       String taskJoin = "";          
       String query = "";
+      String sqlQuery = "";
 	  boolean andreqd = false; // used to add 'and' between e.g. (constraints) and (wavelength)
   
       try {        
         authorityId = request.getParameter( PARAM_AUTHORITY_FIELD ).trim();				
         taskTitle = request.getParameter( PARAM_TITLE ).trim();
         description = request.getParameter( PARAM_DESCRIPTION ).trim();
-		taskJoin = request.getParameter( PARAM_TASK_JOIN ).trim();        
+        taskJoin = request.getParameter( PARAM_TASK_JOIN ).trim();        
 
         // Lets build up the XML for a query.
+        sqlQuery = " Select * from Registry where @xsi:type = 'cea:CeaApplicationType' or ";
+        sqlQuery += " @xsi:type = 'cea:CeaHttpApplicationType' ";
+        
+        /*
         query = "<query>\n"
                 + "<selectionSequence>\n"
 				+ "<selectionSequence>\n"
@@ -463,42 +545,65 @@ public class ResourceAction extends AbstractAction {
                 + "\n<selection item='@xsi:type' itemOp='EQ'"
                 + " value='cea:CeaApplicationType'/>"
 				+  "\n</selectionSequence>\n";
+          */
 
 		// is this an empty search?
 		if ( authorityId.length() > 0 || taskTitle.length() > 0 || description.length() > 0 )
-		{					 
+		{				
+        sqlQuery += " and ";
+        /*
 		  query += "\n<selectionOp op='AND'/>"
 		        +  "\n<selectionSequence>\n"; // start of inner sequence
+        */
 
           if ( authorityId.length() > 0 ) 
           {
+         /*
 			query +=  "\n<selectionSequence>\n";          	
 			query += "<selection item='vr:Identifier/vr:AuthorityID' itemOp='CONTAINS' value='" + authorityId + "'/>";
 		    query += "<selectionOp op='OR'/>";
 			query += "<selection item='vr:Identifier/vr:ResourceKey' itemOp='CONTAINS' value='" + authorityId + "'/>";
 			query +=  "\n</selectionSequence>\n";
+         */
+         sqlQuery += " vr:identifier like '%" + authorityId + "%' ";
 			andreqd = true;
           }
           if ( taskTitle.length() > 0 ) 
           {
-			if (andreqd) 
-			  query += "\n<selectionOp op='"+taskJoin+"'/>";          	
+			if (andreqd)
+           sqlQuery += taskJoin;
+           /*
+			  query += "\n<selectionOp op='"+taskJoin+"'/>";
+           */          	
+         /*
 			query += "<selection item='vr:Title' itemOp='CONTAINS' value='" + taskTitle + "'/>";
+         */
+         sqlQuery += " vr:title like '%" + taskTitle + "%' ";
 			andreqd = true;
           }
           if ( description.length() > 0 ) 
           {
 		    if (andreqd) 
-			  query += "\n<selectionOp op='"+taskJoin+"'/>";          	          	
-			  query += "<selection item='vr:Summary/vr:Description' itemOp='CONTAINS' value='" + description + "'/>";
+               sqlQuery += taskJoin;
+          /*
+              query += "\n<selectionOp op='"+taskJoin+"'/>";
+          */            
+		     sqlQuery += " vr:content/vr:description like '%" + description + "%' ";
+             /*
+              query += "<selection item='vr:Summary/vr:Description' itemOp='CONTAINS' value='" + description + "'/>";
+             */
           }
 		
+        /*
 		  query +=  "\n</selectionSequence>"; // end of inner sequence
+        */
 		}
 		  
+      /*
 		query += "\n</selectionSequence>\n";  // end of main sequence                  
         //  End of Query.
-        query += "\n</query>";               
+        query += "\n</query>";
+      */               
       }
       catch(Exception ex){
 		session.setAttribute( ERROR_MESSAGE_PARAMETER, ex.getMessage() ) ;      	
@@ -508,9 +613,9 @@ public class ResourceAction extends AbstractAction {
       }
       
       try {      
-        debug( query ); 
-        if ( query.length() > 0 )         
-          submitQuery( query );                
+        debug( sqlQuery ); 
+        if ( sqlQuery.length() > 0 )         
+          submitQuery( sqlQuery );                
       }
       catch(Exception ex) 
       {     	
@@ -557,7 +662,12 @@ public class ResourceAction extends AbstractAction {
         // if error thrown in building query string,
         // string will be empty so do not submit.
         {
-           Document doc = rs.submitQuery( query );        
+           String adqlString = Sql2Adql.translateToAdql074(query);
+           debug("ADQL String in PORTAL for REGISTRY = " + adqlString);
+           /*
+           Document doc = rs.submitQuery( query );
+           */
+           Document doc = rs.search(adqlString);
 
           //create the results and put it in the request.
            resultlist = createList( doc );
@@ -578,7 +688,8 @@ public class ResourceAction extends AbstractAction {
       }
 
       catch( Exception ex ) 
-      {     	
+      {   
+          ex.printStackTrace();
 		session.setAttribute( ERROR_MESSAGE_PARAMETER, ex.getMessage() ) ;      	
         debug("Error thrown whilst submitting query: "); 
         debug( ex.getMessage() ) ;        

@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistry.java,v 1.11 2004/12/13 13:55:05 pjn3 Exp $
+/*$Id: RegistryApplicationRegistry.java,v 1.12 2005/03/01 13:23:33 clq2 Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ import org.astrogrid.registry.beans.resource.ResourceType;
 import org.astrogrid.registry.beans.resource.VODescription;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.query.sql.Sql2Adql;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
@@ -69,7 +70,8 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
     }
     protected final RegistryService service;
     /** string query to to pass to registry to get list of tools back 
-     */
+    */
+    /*
     public final static String LIST_QUERY_STRING= "<query><selectionSequence>" +
     "<selection item='searchElements' itemOp='EQ' value='vr:Resource'/>" +
     "<selectionOp op='$and$'/>" +
@@ -81,12 +83,20 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
     "<selectionOp op='OR'/>" +
     "<selection item='@xsi:type' itemOp='EQ' value='cea:CeaHttpApplicationType'/>"  +
     "</selectionSequence></query>";
-
+    */
     
+    public final static String LIST_QUERY_STRING= "Select * from Registry where " +
+    " @xsi:type = 'cea:CeaApplicationType' or " +
+    " @xsi:type = 'cea:CeaHttpApplicationType'";
     
     public String[] listApplications() throws WorkflowInterfaceException {
-        try {           
-            Document doc = service.submitQuery(LIST_QUERY_STRING);
+        try {
+            String adqlString = Sql2Adql.translateToAdql074(LIST_QUERY_STRING);
+            logger.info("ADQL String in PORTAL for REGISTRY = " + adqlString);
+            /*
+              Document doc = service.submitQuery(LIST_QUERY_STRING); 
+            */
+            Document doc = service.search(adqlString);
             assert doc != null;
             NodeList nl = doc.getElementsByTagNameNS("*","Identifier");
             
@@ -102,6 +112,9 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
         } catch (RegistryException e) {
             logger.error("listApplications Failed with exception from registry",e);
             throw new WorkflowInterfaceException(e);
+        } catch(IOException e) {
+            logger.error("IOException Failure probable cause is the sql to adql translator",e);
+            throw new WorkflowInterfaceException(e);
         }
     }
 
@@ -110,7 +123,13 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
      */
     public ApplicationDescriptionSummary[] listUIApplications() throws WorkflowInterfaceException {
         try {
-        Document doc = service.submitQuery(LIST_QUERY_STRING);
+            String adqlString = Sql2Adql.translateToAdql074(LIST_QUERY_STRING);
+            logger.info("ADQL String in PORTAL for REGISTRY = " + adqlString);
+            /*
+              Document doc = service.submitQuery(LIST_QUERY_STRING); 
+            */
+            Document doc = service.search(adqlString);
+
         assert doc != null;
         NodeList nl = doc.getElementsByTagNameNS("*","Resource");
 
@@ -141,6 +160,9 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
         return descs;
         } catch (RegistryException e){
             logger.error("listUIApplications failed with exception from registry",e);
+            throw new WorkflowInterfaceException(e);
+        } catch(IOException e) {
+            logger.error("IOException Failure probable cause is the sql to adql translator",e);
             throw new WorkflowInterfaceException(e);
         }
     }
@@ -195,6 +217,15 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
 
 /* 
 $Log: RegistryApplicationRegistry.java,v $
+Revision 1.12  2005/03/01 13:23:33  clq2
+upgrade to v10 registry
+
+Revision 1.11.16.2  2005/02/28 21:58:50  KevinBenson
+Now uses the adql translator to put in adql and query registry using adql.
+
+Revision 1.11.16.1  2005/02/23 15:37:32  KevinBenson
+now uses the sql2adql so it queries the registry by adql now.
+
 Revision 1.11  2004/12/13 13:55:05  pjn3
 Bug #827 - change by RTP to query string to include cea namespace
 

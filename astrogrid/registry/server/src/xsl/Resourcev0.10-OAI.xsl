@@ -6,11 +6,11 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
    xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10"
    xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"
-   xmlns:oai="http://www.openarchives.org/OAI/2.0/"
-   xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
-   xmlns:dc="http://purl.org/dc/elements/1.1/">
+   xmlns:oai="http://www.openarchives.org/OAI/2.0/">
    <!--
    exclude-result-prefixes="vr vs vg vc vt cs cea ceapd ceab sia oai oai_dc dc vor">
+      xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
    -->
    <!--
    exclude-result-prefixes="vr vs vg vc vt cs cea ceapd ceab sia oai oai_dc dc vor">
@@ -58,7 +58,11 @@
                </xsl:if>
             </xsl:element>
             <xsl:element name="oai:metadata">
+               <!--
                <xsl:element name="oai_dc:dc">
+               -->
+                 <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+                            xmlns:dc="http://purl.org/dc/elements/1.1/">
                   <xsl:if test="./vrx:title">
                      <xsl:element name="dc:title">
                         <xsl:value-of select="./vrx:title"/>
@@ -120,7 +124,10 @@
                         <xsl:value-of select="./vrx:content/vrx:source"/>
                      </xsl:element>
                   </xsl:if>
+                  <!--
                </xsl:element>
+               -->
+               </oai_dc:dc>
                
                <vr:Resource xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" 
                xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10" 

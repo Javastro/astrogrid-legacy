@@ -30,7 +30,7 @@
 	  resourceDoc = server.getResourcesByIdentifier(request.getParameter("IVORN"),
                                                     request.getParameter("version"));
 	   if (resourceDoc != null) {
-    	  resource = DomHelper.DocumentToString(resourceDoc);
+    	  resource = DomHelper.ElementToString(((Element)(resourceDoc.getDocumentElement().getFirstChild())));
 	   }
 	}
 %>

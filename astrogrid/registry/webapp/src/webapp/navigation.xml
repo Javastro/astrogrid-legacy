@@ -13,7 +13,7 @@
       <ul>
          <li><a href="ivornLookupForm.jsp" >IVORN Lookup</a>
          <li><a href="browse.jsp" >Browse</a>
-         <li><a href="adqlquery.jsp" >Query</a>
+         <li><a href="sadqlquery.jsp" >Query</a>
          <li><a href="keywordquery.jsp" >Keyword Query</a>
          <li><a href="backup.jsp">Backup</a>
       </ul>

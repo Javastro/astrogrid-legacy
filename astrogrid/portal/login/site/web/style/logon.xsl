@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--+
-    |  $Id: logon.xsl,v 1.9 2005/01/14 11:17:26 clq2 Exp $
+    |  $Id: logon.xsl,v 1.10 2005/03/01 13:23:26 clq2 Exp $
     |  Transforms pages which simply display a message
     |
     +-->
@@ -55,21 +55,6 @@
     </tr>
   </xsl:template>  
 
-	<xsl:template match="login-form/communities">
-    	<td align="right"><xsl:value-of select="@caption"/></td>
-      <td align="left">
-        <xsl:element name="select">
-          	<xsl:attribute name = "name"><xsl:value-of select="@name"/></xsl:attribute>
-				<xsl:for-each select="//login-form/communities/communitydata">
-					<xsl:element name="option">
-						<xsl:attribute name="value"><xsl:value-of select="@name"/></xsl:attribute>
-						<xsl:value-of select="@val"/>
-					</xsl:element>				  
-				</xsl:for-each>
-	        </xsl:element>
-      </td>
-	</xsl:template>
-
   <xsl:template match="login-form/login-input-right">
     <tr>
       <td align="right"><xsl:value-of select="@caption"/></td>
@@ -96,11 +81,12 @@
 		
 <!--+
     | $Log: logon.xsl,v $
-    | Revision 1.9  2005/01/14 11:17:26  clq2
-    | Reg_KMB_889_2
+    | Revision 1.10  2005/03/01 13:23:26  clq2
+    | upgrade to v10 registry
     |
-    | Revision 1.8.18.1  2005/01/13 11:25:23  KevinBenson
-    | new login page with select box
+    | Revision 1.9.16.1  2005/02/28 17:53:34  KevinBenson
+    | fixing small bugs so that it will now query registry using sql/adql.  Also rolled back login page for now back to
+    | a textbox for the community id because it was the one thing not switched over to 0.10
     |
     | Revision 1.8  2004/12/07 16:26:04  clq2
     | portal_kea_719

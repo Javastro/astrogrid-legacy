@@ -216,6 +216,26 @@
             <groupId>commons-logging</groupId>
             <version>1.0.3</version>
         </dependency>
+    	
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-pal-query</artifactId>
+            <version>${astrogrid.pal.version}</version>
+            <type>jar</type>
+        </dependency>    	
+    	
+        <!-- for writing XML -->
+       <dependency>
+          <artifactId>astrogrid-slinger-xml</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.slinger.version}</version>
+       </dependency>
+
+       <dependency>
+          <artifactId>astrogrid-slinger-api</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.slinger.version}</version>
+       </dependency>
         
         <dependency>
         	<id>xerces</id>

@@ -21,7 +21,7 @@ import java.util.Date;
 import java.text.ParseException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
-import org.astrogrid.registry.client.harvest.RegistryHarvestService;
+//import org.astrogrid.registry.client.harvest.RegistryHarvestService;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.astrogrid.util.DomHelper;
