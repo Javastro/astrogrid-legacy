@@ -2,8 +2,8 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/03/19 13:02:25 $</cvs:date>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/19 13:09:03 $</cvs:date>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 <!-- ======================== Components ================================ -->
@@ -74,29 +74,6 @@
       <map:pipeline>
       <!-- Login page -->
          <map:match pattern="login-form">
-         <!--+
-             | Call the LoginAction to validate the name and password.
-             +-->
-            <map:act type="astro-login">
-            <!--+
-                | If we are logged in, display a nice page.
-		        | We can't do a redirect, because this page is requested indirectly
-		        | via the map:aggregate in the main site map.
-		        +-->
-               <map:generate type="serverpages" src="xsp/login-pass.xsp" />
-               <map:serialize type="xml" />
-            </map:act>
-
-            <!--+
-                | If we are not logged in, display the login form.
-                +-->
-            <map:generate type="serverpages" src="xsp/login-form.xsp" />
-
-            <map:serialize type="xml" />
-         </map:match>
-
-         <!-- New Login page -->
-         <map:match pattern="login-jdt">
          <!--+
              | If we are not logged in, display the login form.
              +-->
@@ -188,6 +165,10 @@
 <!--+
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
+    |   Revision 1.11  2004/03/19 13:09:03  jdt
+    |   references to login-jdt -> login-form
+    |   ie, new page is now live.
+    |
     |   Revision 1.10  2004/03/19 13:02:25  jdt
     |   Pruned the log messages - they cause conflicts on merge, 
     |   best just to reduce them to the merge message.

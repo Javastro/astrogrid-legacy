@@ -14,7 +14,7 @@
     
     <title>Log On</title>
     <content>
-     <login-form action="login-jdt" method="get" message="Please enter your username, community and password.">
+     <login-form action="login-form" method="get" message="Please enter your username, community and password.">
        <login-input type="text" name="user" size="60" caption="Username:">
            <xsp:attribute name="value"><xsp-request:get-parameter name="user" default=""/></xsp:attribute>
        </login-input> 
