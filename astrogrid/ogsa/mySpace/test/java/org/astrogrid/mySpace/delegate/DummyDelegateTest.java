@@ -1,4 +1,4 @@
-/*$Id: DummyDelegateTest.java,v 1.1 2003/09/28 17:19:55 gtr Exp $
+/*$Id: DummyDelegateTest.java,v 1.1.1.1 2003/09/28 17:19:55 gtr Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -134,8 +134,10 @@ public class DummyDelegateTest extends TestCase {
 
 /*
 $Log: DummyDelegateTest.java,v $
-Revision 1.1  2003/09/28 17:19:55  gtr
-*** empty log message ***
+Revision 1.1.1.1  2003/09/28 17:19:55  gtr
+A copy of the source from the mySpace component taken two days from the end
+of iteration 3.  This copy was made in order to experiment with GridFTP
+independently of the mainstream development.
 
 Revision 1.1  2003/09/22 17:36:09  mch
 tests for MySpaceDumnmyDelegate
