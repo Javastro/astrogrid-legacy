@@ -131,8 +131,11 @@ public class IndexGenerator
       StringBuffer coverageSnippet = new StringBuffer();
       String key = null;
       String val = null;
+      
+      if(header == null) 
+        return "";
 
-      if (header != null && header.getNumAxis() >= 2) {      
+      if (header.getNumAxis() >= 2) {      
          //return "";
       
          //work out coverage.  This is not a straightforward rectangle, as the
@@ -327,6 +330,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.11  2004/07/29 11:17:44  KevinBenson
+small change to check that the header is null return an empty string
+
 Revision 1.10  2004/07/29 11:15:22  KevinBenson
 *** empty log message ***
 
