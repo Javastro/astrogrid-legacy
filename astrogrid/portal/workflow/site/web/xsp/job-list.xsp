@@ -9,30 +9,29 @@
 
 <xsp:structure>
 	<xsp:include>org.astrogrid.portal.cocoon.workflow.jes.JesAction</xsp:include>
-	<xsp:include>org.astrogrid.portal.workflow.jes.*</xsp:include>
-	<xsp:include>java.util.Iterator</xsp:include>
+	<xsp:include>org.astrogrid.workflow.beans.v1.Workflow</xsp:include>
+	<xsp:include>org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord</xsp:include>
 </xsp:structure>
 
 
-<xsp:logic>
 
+<xsp:logic>
 		
-		private static final boolean 
-        	TRACE_ENABLED = true ;
-        	
-		public void jobList ( Iterator iterator ) throws SAXException {
+		private static final boolean TRACE_ENABLED = true ;
+                	
+		public void jobList ( Workflow[] workflows ) throws SAXException {
         	if( TRACE_ENABLED ) trace( "job-list-xsp.list() entry") ; 
         	
         	AttributesImpl xspAttr = new AttributesImpl() ;
         
         	try {
+                
+                Workflow workflow = null;
             
-        		Job job;
-        	
-				while( iterator.hasNext() ) {
-					job = (Job)iterator.next() ;
-					outputJob( job, xspAttr ) ;			
-				}
+                for( int i=0; i<workflows.length; i++ ) {
+                    outputJob( workflows[i], xspAttr ); 
+                }
+
         	}
 			catch(Exception e){
 		       ; // some logging req'd
@@ -46,23 +45,48 @@
 		} // end of list() 
 		
 		
-		private void outputJob( Job job, AttributesImpl xspAttr ) throws SAXException {  	
+		private void outputJob( Workflow workflow, AttributesImpl xspAttr ) throws SAXException {  	
 			if( TRACE_ENABLED ) trace( "job-list-xsp.outputJob() entry") ;
 		        	
+            JobExecutionRecord job = null;
+                    
 		    try { 
-               if(job != null ){		     	
-			      <content>	
-      				<xsp:element name="job">
-		 			   <xsp:attribute name="name"><xsp:expr>job.getName()</xsp:expr></xsp:attribute>
-					   <xsp:attribute name="description"><xsp:expr>job.getDescription()</xsp:expr></xsp:attribute>
-					   <xsp:attribute name="time"><xsp:expr>job.getTimestamp()</xsp:expr></xsp:attribute>
-					   <xsp:attribute name="status"><xsp:expr>job.getStatus()</xsp:expr></xsp:attribute>	
-					   <xsp:attribute name="jobid"><xsp:expr>job.getJobid()</xsp:expr></xsp:attribute>															
-	    			</xsp:element>
-			      </content>			
+                
+               if( workflow != null ){
+                   
+                   job = workflow.getJobExecutionRecord();
+                             
+                   if( job != null ){	
+                        	
+			          <content>	
+                         <xsp:element name="job">
+		 			        <xsp:attribute name="name"><xsp:expr>workflow.getName()()</xsp:expr></xsp:attribute>
+					        <xsp:attribute name="description"><xsp:expr>workflow.getDescription()</xsp:expr></xsp:attribute>
+					        <xsp:attribute name="time"><xsp:expr>job.getStartTime()</xsp:expr></xsp:attribute>
+					        <xsp:attribute name="status"><xsp:expr>job.getStatus()</xsp:expr></xsp:attribute>	
+					        <xsp:attribute name="jobid"><xsp:expr>job.getJobId().getContent()</xsp:expr></xsp:attribute>															
+	    			     </xsp:element>
+			          </content>
+
+                   }
+                   else {
+                       
+                      <content>    
+                          <xsp:element name="job">
+                             <xsp:attribute name="name"><xsp:expr>workflow.getName()()</xsp:expr></xsp:attribute>
+                             <xsp:attribute name="description"><xsp:expr>workflow.getDescription()</xsp:expr></xsp:attribute>
+                             <xsp:attribute name="time"><xsp:expr>n/a</xsp:expr></xsp:attribute>
+                             <xsp:attribute name="status"><xsp:expr>n/a</xsp:expr></xsp:attribute>   
+                             <xsp:attribute name="jobid"><xsp:expr>n/a</xsp:expr></xsp:attribute>                                                         
+                          </xsp:element>
+                      </content>                       
+                       
+                   }
+                  			
                }
                else
                {
+                   
 			      <content>	
 				     <xsp:element name="job">
 					   <xsp:attribute name="name">n/a</xsp:attribute>
@@ -71,7 +95,8 @@
 					   <xsp:attribute name="status">n/a</xsp:attribute>	
 					   <xsp:attribute name="jobid">n/a</xsp:attribute>															
 				     </xsp:element>
-			      </content>			
+			      </content>
+                  			
                }		
 		    }
         	finally {
@@ -87,30 +112,33 @@
 		
 		private static void debug( String traceString ) {
 			System.out.println( traceString ) ;
-		}
-		
-	
-</xsp:logic>
+        }
 
+
+</xsp:logic>
 
 <workflow>
 
 	<xsp:logic>
-		
-	
-		//================================================================================
-		Iterator
-			iterator = (Iterator)request.getAttribute( JesAction.HTTP_JOBLIST_TAG ) ;
-		
-		//================================================================================
-		
-		<xsp:logic>
-			//========================================================================
-			
-			jobList( iterator ) ;
-		
-			//========================================================================
-		</xsp:logic>
+        
+        try{
+           if( TRACE_ENABLED ) trace( "job-list-xsp: Retrieving workflow from request object start") ;
+           
+           //================================================================================
+           Workflow[]
+               workflows = (Workflow[])request.getAttribute( JesAction.HTTP_JOBLIST_TAG ) ;
+           
+           jobList( workflows ) ; 
+           //================================================================================
+
+        }
+        catch(Exception e) {
+           if( TRACE_ENABLED ) trace( "job-list-xsp: Error retrieving workflow from request object:") ;
+           e.printStackTrace() ;
+        }         
+        finally {
+           if( TRACE_ENABLED ) trace( "job-list-xsp: Retrieving workflow from request object finish ") ;
+        }
 				
 	</xsp:logic>
 
