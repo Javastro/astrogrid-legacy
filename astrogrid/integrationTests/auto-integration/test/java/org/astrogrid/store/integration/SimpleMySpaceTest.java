@@ -1,3 +1,13 @@
+/*$Id: SimpleMySpaceTest.java,v 1.10 2004/05/04 14:25:49 jdt Exp $
+ * Created on 05-Sep-2003
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
+ *
+ **/
 package org.astrogrid.store.integration;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -93,7 +103,7 @@ public final class SimpleMySpaceTest extends TestCase {
         try {
             deleteUser(defaultUser, defaultCommunity);
         } catch (IOException e) {
-            fail("There was a problem deleting the test user - the database might now be corrupt");
+            fail("There was a problem deleting the test user - the database might now be corrupt\n"+e.toString());
         }
     }
     /**
@@ -320,20 +330,14 @@ public final class SimpleMySpaceTest extends TestCase {
          * @throws IOException if something bad happens
          */
         private void wipe(final User account) throws IOException {
-            final StoreFile root =
-                myspace.getFiles("/" + account.getUserId() + "/*");
-            final StoreFile[] files = root.listFiles();
-            if (files == null) {
-                log.debug("Found no files");
-            } else {
-                log.info("Found " + files.length + " files");
-                for (int i = 0; i < files.length; ++i) {
-                    StoreFile file = files[i];
-                    log.info("found file " + file.getPath());
-                    myspace.delete(file.getPath());
-                }
-            }
             myspace.deleteUser(account);
         }
     }
 }
+/*
+ $Log: SimpleMySpaceTest.java,v $
+ Revision 1.10  2004/05/04 14:25:49  jdt
+ Updated MySpaceWiper.  To delete a user it's no longer necessary
+ to delete all his files...can just delete the user.   ahhh, much easier.
+
+ */
