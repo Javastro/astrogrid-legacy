@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityIvornParser.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornParser.java,v $
+ *   Revision 1.6  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.5.4.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.5  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -94,8 +100,8 @@ public class CommunityIvornParser
         throws CommunityIdentifierException
         {
         this.setIvorn(
-        	parse(ident)
-        	) ;
+            parse(ident)
+            ) ;
         }
 
     /**
@@ -165,11 +171,11 @@ public class CommunityIvornParser
         //
         // Check for null param.
         if (null == ivorn)
-        	{
-        	throw new CommunityIdentifierException(
-        		"Null identifier"
-        		) ;
-        	}
+            {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
         //
         // Save the ivorn.
         this.ivorn     = ivorn ;
@@ -257,7 +263,7 @@ public class CommunityIvornParser
             // Create a new Ivorn.
             return new Ivorn(
                 this.getCommunityName(),
-				null
+                null
                 ) ;
             }
         //
@@ -628,97 +634,97 @@ public class CommunityIvornParser
             ) ;
         }
 
-	/**
-	 * Convert a string identifier into an Ivorn.
-	 * @param ident The identifier.
-	 * @return a new Ivorn containing the identifier.
-	 * @throws CommunityIdentifierException If the identifier is invalid.
-	 *
-	 */
-	protected static Ivorn parse(String ident)
-		throws CommunityIdentifierException
-		{
+    /**
+     * Convert a string identifier into an Ivorn.
+     * @param ident The identifier.
+     * @return a new Ivorn containing the identifier.
+     * @throws CommunityIdentifierException If the identifier is invalid.
+     *
+     */
+    protected static Ivorn parse(String ident)
+        throws CommunityIdentifierException
+        {
         if (null == ident)
-        	{
-        	throw new CommunityIdentifierException(
-        		"Null identifier"
-        		) ;
-        	}
-		try {
-			return new Ivorn(ident) ;
-			}
+            {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
+        try {
+            return new Ivorn(ident) ;
+            }
         catch (URISyntaxException ouch)
             {
             throw new CommunityIdentifierException(
                 ouch
                 ) ;
             }
-		}
+        }
 
-	/**
-	 * The property name for our local Community identifier.
-	 *
-	 */
-	public static final String LOCAL_COMMUNITY_PROPERTY = "org.astrogrid.community.ident" ;
+    /**
+     * The property name for our local Community identifier.
+     *
+     */
+    public static final String LOCAL_COMMUNITY_PROPERTY = "org.astrogrid.community.ident" ;
 
-	/**
-	 * Access to the local Community identifier.
-	 * @throws CommunityServiceException If the local Community identifier is not set.
-	 * @todo Trap org.astrogrid.config.PropertyNotFoundException and throw an Exception.
-	 *
-	 */
-	public static String getLocalIdent()
-		throws CommunityServiceException
-		{
+    /**
+     * Access to the local Community identifier.
+     * @throws CommunityServiceException If the local Community identifier is not set.
+     * @todo Trap org.astrogrid.config.PropertyNotFoundException and throw an Exception.
+     *
+     */
+    public static String getLocalIdent()
+        throws CommunityServiceException
+        {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("CommunityIvornParser.getLocalIdent()") ;
-		//
-		// Get the local identifier from our configuration.
-		String local = (String) config.getProperty(LOCAL_COMMUNITY_PROPERTY) ;
+        //
+        // Get the local identifier from our configuration.
+        String local = (String) config.getProperty(LOCAL_COMMUNITY_PROPERTY) ;
         if (DEBUG_FLAG) System.out.println("  Local : " + local) ;
-		//
-		// If we found the local ident.
-		if (null != local)
-			{
-			return local ;
-			}
-		//
-		// If we didn't find the local ident.
-		else {
-			throw new CommunityServiceException(
-				"Local Community identifier not configured"
-				) ;
-			}
-		}
+        //
+        // If we found the local ident.
+        if (null != local)
+            {
+            return local ;
+            }
+        //
+        // If we didn't find the local ident.
+        else {
+            throw new CommunityServiceException(
+                "Local Community identifier not configured"
+                ) ;
+            }
+        }
 
-	/**
-	 * Check if the Community ident is local.
-	 * @return true If the Ivorn Community matches the local Community identifier.
-	 * @throws CommunityServiceException If the local Community identifier is not set.
-	 *
-	 */
-	public boolean isLocal()
-		throws CommunityServiceException
-		{
+    /**
+     * Check if the Community ident is local.
+     * @return true If the Ivorn Community matches the local Community identifier.
+     * @throws CommunityServiceException If the local Community identifier is not set.
+     *
+     */
+    public boolean isLocal()
+        throws CommunityServiceException
+        {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("CommunityIvornParser.isLocal()") ;
         if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
-		//
-		// Compare the ident.
-		return getLocalIdent().equals(
-			this.getCommunityName()
-			) ;
-		}
+        //
+        // Compare the ident.
+        return getLocalIdent().equals(
+            this.getCommunityName()
+            ) ;
+        }
 
-	/**
-	 * Convert the parser to a String.
-	 *
-	 */
-	public String toString()
-		{
-		return "CommunityIvornParser : " + ((null != ivorn) ? ivorn.toString() : null) ;
-		}
+    /**
+     * Convert the parser to a String.
+     *
+     */
+    public String toString()
+        {
+        return "CommunityIvornParser : " + ((null != ivorn) ? ivorn.toString() : null) ;
+        }
 
     }

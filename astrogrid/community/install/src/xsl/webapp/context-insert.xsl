@@ -1,11 +1,17 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/xsl/Attic/context-insert.xsl,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/xsl/webapp/Attic/context-insert.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
     | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: context-insert.xsl,v $
+    |   Revision 1.2  2004/03/30 01:40:03  dave
+    |   Merged development branch, dave-dev-200403242058, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/03/28 02:00:55  dave
+    |   Added database management tasks.
+    |
     |   Revision 1.2  2004/02/20 21:11:05  dave
     |   Merged development branch, dave-dev-200402120832, into HEAD
     |

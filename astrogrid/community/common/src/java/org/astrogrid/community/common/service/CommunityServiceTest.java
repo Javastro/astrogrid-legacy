@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/service/CommunityServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceTest.java,v $
+ *   Revision 1.5  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.4.4.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.4  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -81,15 +87,15 @@ public class CommunityServiceTest
         this.setCommunityService(service) ;
         }
 
-	/**
-	 * Create a local Ivorn.
-	 *
-	 */
-	public Ivorn createLocal(String ident)
-		throws CommunityServiceException, CommunityIdentifierException
-		{
-		return CommunityAccountIvornFactory.createLocal(ident) ;
-		}
+    /**
+     * Create a local Ivorn.
+     *
+     */
+    public Ivorn createLocal(String ident)
+        throws CommunityServiceException, CommunityIdentifierException
+        {
+        return CommunityAccountIvornFactory.createLocal(ident) ;
+        }
 
     /**
      * Our target CommunityService.
@@ -125,7 +131,7 @@ public class CommunityServiceTest
      * Test the service status.
      * Just checks that the return is not null.
      * @todo Check that the service returns useful info.
-	 *
+     *
      */
     public void testServiceStatus()
         throws Exception

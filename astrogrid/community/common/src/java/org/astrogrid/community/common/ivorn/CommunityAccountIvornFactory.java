@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityAccountIvornFactory.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountIvornFactory.java,v $
+ *   Revision 1.4  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.3.4.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.3  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -65,16 +71,16 @@ public class CommunityAccountIvornFactory
      * Create a local Community Account Ivorn.
      * @param account   The Account name, without the Community ident.
      * @throws CommunityIdentifierException If the identifiers are not valid.
-	 * @throws CommunityServiceException If the local Community identifier is not set.
+     * @throws CommunityServiceException If the local Community identifier is not set.
      *
      */
     public static Ivorn createLocal(String account)
         throws CommunityServiceException, CommunityIdentifierException
         {
-		return createIvorn(
+        return createIvorn(
             CommunityIvornParser.getLocalIdent(),
             account
-			) ;
+            ) ;
         }
 
     /**
@@ -82,17 +88,17 @@ public class CommunityAccountIvornFactory
      * @param account   The Account name, without the Community ident.
      * @param resource  The resource, added after the account.
      * @throws CommunityIdentifierException If the identifiers are not valid.
-	 * @throws CommunityServiceException If the local Community identifier is not set.
+     * @throws CommunityServiceException If the local Community identifier is not set.
      *
      */
     public static Ivorn createLocal(String account, String resource)
         throws CommunityServiceException, CommunityIdentifierException
         {
-		return createIvorn(
+        return createIvorn(
             CommunityIvornParser.getLocalIdent(),
             account,
-			resource
-			) ;
+            resource
+            ) ;
         }
 
     /**

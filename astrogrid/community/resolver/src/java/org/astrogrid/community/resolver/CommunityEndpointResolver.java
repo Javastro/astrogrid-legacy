@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityEndpointResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityEndpointResolver.java,v $
+ *   Revision 1.6  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.5.2.2  2004/03/30 01:38:14  dave
+ *   Refactored resolver and install toolkits.
+ *
+ *   Revision 1.5.2.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.5  2004/03/24 16:56:25  dave
  *   Merged development branch, dave-dev-200403231641, into HEAD
  *
@@ -146,19 +155,19 @@ public class CommunityEndpointResolver
         //
         // Check for null ivorn.
         if (null == ivorn)
-        	{
-        	throw new CommunityIdentifierException(
-        		"Null identifier"
-        		) ;
-        	}
+            {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
         //
         // Check for null type.
         if (null == type)
-        	{
-        	throw new CommunityIdentifierException(
-        		"Null service type"
-        		) ;
-        	}
+            {
+            throw new CommunityIdentifierException(
+                "Null service type"
+                ) ;
+            }
         //
         // Parse the ivorn and resolve it.
         return this.resolve(
@@ -189,27 +198,27 @@ public class CommunityEndpointResolver
         //
         // Check for null param.
         if (null == parser)
-        	{
-        	throw new CommunityIdentifierException(
-        		"Null identifier"
-        		) ;
-        	}
+            {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
         //
         // Check for null type.
         if (null == type)
-        	{
-        	throw new CommunityIdentifierException(
-        		"Null service type"
-        		) ;
-        	}
+            {
+            throw new CommunityIdentifierException(
+                "Null service type"
+                ) ;
+            }
         //
         // Check for null community.
         if (null == parser.getCommunityIdent())
-        	{
-        	throw new CommunityIdentifierException(
-        		"Null community identifier"
-        		) ;
-        	}
+            {
+            throw new CommunityIdentifierException(
+                "Null community identifier"
+                ) ;
+            }
         //
         // Create our service Ivorn.
         Ivorn ivorn  = CommunityServiceIvornFactory.createIvorn(
@@ -220,19 +229,22 @@ public class CommunityEndpointResolver
         if (DEBUG_FLAG) System.out.println("  Ivorn    : " + ivorn)  ;
         //
         // Lookup the service in the registry.
-		String endpoint = null ;
-		try {
-	        endpoint = registry.getEndPointByIdentifier(
-    	    	ivorn.getPath()
-        		) ;
-			}
-		catch (Throwable ouch)
-			{
-			throw new CommunityResolverException(
-				"Registry lookup failed",
-				ouch
-				) ;
-			}
+        String endpoint = null ;
+        try {
+            endpoint = registry.getEndPointByIdentifier(
+                ivorn.getPath()
+                ) ;
+            }
+        catch (Throwable ouch)
+            {
+            if (DEBUG_FLAG) System.out.println("FAIL : Registry lookup failed")  ;
+            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch)  ;
+ouch.printStackTrace() ;
+            throw new CommunityResolverException(
+                "Registry lookup failed",
+                ouch
+                ) ;
+            }
         //
         // If we found an entry in the Registry.
         if (null != endpoint)

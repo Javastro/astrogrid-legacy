@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/Attic/CommunityTokenResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityTokenResolverTestCase.java,v $
+ *   Revision 1.3  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.2.4.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.2  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -45,65 +51,65 @@ public class CommunityTokenResolverTestCase
      * Test that we can resolve a mock address.
      *
      */
-	public void testResolveMock()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("CommunityTokenResolverTestCase.testResolveMock()") ;
+    public void testResolveMock()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CommunityTokenResolverTestCase.testResolveMock()") ;
         //
         // Create our Account Ivorn.
         Ivorn ident = CommunityAccountIvornFactory.createMock(
-        	"community",
-        	"frog"
-        	) ;
-		if (DEBUG_FLAG) System.out.println("  Ident  : " + ident) ;
-		//
-		// Create our password resolver.
-		CommunityPasswordResolver resolver = new CommunityPasswordResolver() ;
-		//
-		// Ask our resolver to check the password
-		SecurityToken token = resolver.checkPassword(
-			ident.toString(),
-			"test-password"
-			) ;
-		//
-		// Check we got a token back.
+            "community",
+            "frog"
+            ) ;
+        if (DEBUG_FLAG) System.out.println("  Ident  : " + ident) ;
+        //
+        // Create our password resolver.
+        CommunityPasswordResolver resolver = new CommunityPasswordResolver() ;
+        //
+        // Ask our resolver to check the password
+        SecurityToken token = resolver.checkPassword(
+            ident.toString(),
+            "test-password"
+            ) ;
+        //
+        // Check we got a token back.
         assertNotNull(
-        	"Null token",
-			token
-			) ;
-		if (DEBUG_FLAG) System.out.println("  Token : " + token) ;
-		//
-		// Check we can validate the token.
-		checkToken(token) ;
+            "Null token",
+            token
+            ) ;
+        if (DEBUG_FLAG) System.out.println("  Token : " + token) ;
+        //
+        // Check we can validate the token.
+        checkToken(token) ;
         }
 
-	/**
-	 * Check that we can validate a token.
-	 *
-	 */
-	public void checkToken(SecurityToken original)
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("CommunityTokenResolverTestCase.checkToken()") ;
-		if (DEBUG_FLAG) System.out.println("  Original : " + original) ;
-		//
-		// Create our token resolver.
-		CommunityTokenResolver resolver = new CommunityTokenResolver() ;
-		//
-		// Ask our resolver to validate the token
-		SecurityToken result = resolver.checkToken(
-			original
-			) ;
-		//
-		// Check we got a token back.
+    /**
+     * Check that we can validate a token.
+     *
+     */
+    public void checkToken(SecurityToken original)
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CommunityTokenResolverTestCase.checkToken()") ;
+        if (DEBUG_FLAG) System.out.println("  Original : " + original) ;
+        //
+        // Create our token resolver.
+        CommunityTokenResolver resolver = new CommunityTokenResolver() ;
+        //
+        // Ask our resolver to validate the token
+        SecurityToken result = resolver.checkToken(
+            original
+            ) ;
+        //
+        // Check we got a token back.
         assertNotNull(
-        	"Null token",
-			result
-			) ;
-		if (DEBUG_FLAG) System.out.println("  Result   : " + result) ;
-		}
+            "Null token",
+            result
+            ) ;
+        if (DEBUG_FLAG) System.out.println("  Result   : " + result) ;
+        }
     }

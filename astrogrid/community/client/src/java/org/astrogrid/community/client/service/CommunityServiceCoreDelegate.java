@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/service/CommunityServiceCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceCoreDelegate.java,v $
+ *   Revision 1.4  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.3.4.2  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
+ *   Revision 1.3.4.1  2004/03/28 02:00:55  dave
+ *   Added database management tasks.
+ *
  *   Revision 1.3  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -88,7 +97,7 @@ public class CommunityServiceCoreDelegate
      *
      */
     public ServiceStatusData getServiceStatus()
-		throws CommunityServiceException
+        throws CommunityServiceException
         {
         //
         // If we have a valid service reference.
@@ -103,128 +112,130 @@ public class CommunityServiceCoreDelegate
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-				throw new CommunityServiceException(
-					"WebService call failed",
-					ouch
-					) ;
+                throw new CommunityServiceException(
+                    "WebService call failed",
+                    ouch
+                    ) ;
                 }
             }
-		//
-		// If we don't have a valid service.
-		else {
-			throw new CommunityServiceException(
-				"Service not initialised"
-				) ;
-			}
+        //
+        // If we don't have a valid service.
+        else {
+            throw new CommunityServiceException(
+                "Service not initialised"
+                ) ;
+            }
         }
 
-	/**
-	 * A converter utility to unpack a CommunityServiceException from a RemoteException.
-	 * @throws CommunityServiceException If the RemoteException cause was a CommunityServiceException.
-	 *
-	 */
-	public void convertServiceException(RemoteException ouch)
-		throws CommunityServiceException
-		{
-		//
-		// If the remote Exception has a cause.
-		if (ouch.getCause() != null)
-			{
-			//
-			// If the cause is a CommunityServiceException.
-			if (ouch.getCause() instanceof CommunityServiceException)
-				{
-				//
-				// Re-throw the CommunityServiceException.
-				throw (CommunityServiceException) ouch.getCause() ;
-				}
-			}
-		}
+    /**
+     * A converter utility to unpack a CommunityServiceException from a RemoteException.
+     * @throws CommunityServiceException If the RemoteException cause was a CommunityServiceException.
+     *
+     */
+    public void convertServiceException(RemoteException ouch)
+        throws CommunityServiceException
+        {
+        //
+        // If the remote Exception has a cause.
+        if (ouch.getCause() != null)
+            {
+            //
+            // If the cause is a CommunityServiceException.
+            if (ouch.getCause() instanceof CommunityServiceException)
+                {
+                //
+                // Re-throw the CommunityServiceException.
+                throw (CommunityServiceException) ouch.getCause() ;
+                }
+            }
+        }
 
-	/**
-	 * A converter utility to unpack a CommunityIdentifierException from a RemoteException.
-	 * @throws CommunityIdentifierException If the RemoteException cause was a CommunityIdentifierException.
-	 *
-	 */
-	public void convertIdentifierException(RemoteException ouch)
-		throws CommunityIdentifierException
-		{
-		//
-		// If the remote Exception has a cause.
-		if (ouch.getCause() != null)
-			{
-			//
-			// If the cause is a CommunityIdentifierException.
-			if (ouch.getCause() instanceof CommunityIdentifierException)
-				{
-				//
-				// Re-throw the CommunityIdentifierException.
-				throw (CommunityIdentifierException) ouch.getCause() ;
-				}
-			}
-		}
+    /**
+     * A converter utility to unpack a CommunityIdentifierException from a RemoteException.
+     * @throws CommunityIdentifierException If the RemoteException cause was a CommunityIdentifierException.
+     *
+     */
+    public void convertIdentifierException(RemoteException ouch)
+        throws CommunityIdentifierException
+        {
+        //
+        // If the remote Exception has a cause.
+        if (ouch.getCause() != null)
+            {
+            //
+            // If the cause is a CommunityIdentifierException.
+            if (ouch.getCause() instanceof CommunityIdentifierException)
+                {
+                //
+                // Re-throw the CommunityIdentifierException.
+                throw (CommunityIdentifierException) ouch.getCause() ;
+                }
+            }
+        }
 
-	/**
-	 * A converter utility to unpack a CommunitySecurityException from a RemoteException.
-	 * @throws CommunitySecurityException If the RemoteException cause was a CommunitySecurityException.
-	 *
-	 */
-	public void convertSecurityException(RemoteException ouch)
-		throws CommunitySecurityException
-		{
-		//
-		// If the remote Exception has a cause.
-		if (ouch.getCause() != null)
-			{
-			//
-			// If the cause is a CommunitySecurityException.
-			if (ouch.getCause() instanceof CommunitySecurityException)
-				{
-				//
-				// Re-throw the CommunitySecurityException.
-				throw (CommunitySecurityException) ouch.getCause() ;
-				}
-			}
-		}
+    /**
+     * A converter utility to unpack a CommunitySecurityException from a RemoteException.
+     * @throws CommunitySecurityException If the RemoteException cause was a CommunitySecurityException.
+     *
+     */
+    public void convertSecurityException(RemoteException ouch)
+        throws CommunitySecurityException
+        {
+        //
+        // If the remote Exception has a cause.
+        if (ouch.getCause() != null)
+            {
+            //
+            // If the cause is a CommunitySecurityException.
+            if (ouch.getCause() instanceof CommunitySecurityException)
+                {
+                //
+                // Re-throw the CommunitySecurityException.
+                throw (CommunitySecurityException) ouch.getCause() ;
+                }
+            }
+        }
 
-	/**
-	 * A converter utility to unpack one of the CommunityExceptions from a RemoteException.
-	 * @throws CommunityPolicyException If the RemoteException cause was a CommunityPolicyException.
-	 * @throws CommunityServiceException If the RemoteException cause was a CommunityServiceException.
-	 * @throws CommunityIdentifierException If the RemoteException cause was a CommunityIdentifierException.
-	 *
-	 */
-	public void convertCommunityException(RemoteException ouch)
-		throws CommunityPolicyException, CommunityServiceException, CommunityIdentifierException
-		{
-		//
-		// If the remote Exception has a cause.
-		if (ouch.getCause() != null)
-			{
-			//
-			// If the cause is a CommunityPolicyException.
-			if (ouch.getCause() instanceof CommunityPolicyException)
-				{
-				//
-				// Re-throw the CommunityPolicyException.
-				throw (CommunityPolicyException) ouch.getCause() ;
-				}
-			//
-			// If the cause is a CommunityIdentifierException.
-			if (ouch.getCause() instanceof CommunityIdentifierException)
-				{
-				//
-				// Re-throw the CommunityIdentifierException.
-				throw (CommunityIdentifierException) ouch.getCause() ;
-				}
-			//
-			// If the cause is a CommunityServiceException.
-			if (ouch.getCause() instanceof CommunityServiceException)
-				{
-				//
-				// Re-throw the CommunityServiceException.
-				throw (CommunityServiceException) ouch.getCause() ;
-				}
-			}
-		}
+    /**
+     * A converter utility to unpack one of the CommunityExceptions from a RemoteException.
+     * @throws CommunityPolicyException If the RemoteException cause was a CommunityPolicyException.
+     * @throws CommunityServiceException If the RemoteException cause was a CommunityServiceException.
+     * @throws CommunityIdentifierException If the RemoteException cause was a CommunityIdentifierException.
+     * @todo Need to handle java.net.ConnectException
+     * @todo Need to handle org.astrogrid.config.PropertyNotFoundException
+     *
+     */
+    public void convertCommunityException(RemoteException ouch)
+        throws CommunityPolicyException, CommunityServiceException, CommunityIdentifierException
+        {
+        //
+        // If the remote Exception has a cause.
+        if (ouch.getCause() != null)
+            {
+            //
+            // If the cause is a CommunityPolicyException.
+            if (ouch.getCause() instanceof CommunityPolicyException)
+                {
+                //
+                // Re-throw the CommunityPolicyException.
+                throw (CommunityPolicyException) ouch.getCause() ;
+                }
+            //
+            // If the cause is a CommunityIdentifierException.
+            if (ouch.getCause() instanceof CommunityIdentifierException)
+                {
+                //
+                // Re-throw the CommunityIdentifierException.
+                throw (CommunityIdentifierException) ouch.getCause() ;
+                }
+            //
+            // If the cause is a CommunityServiceException.
+            if (ouch.getCause() instanceof CommunityServiceException)
+                {
+                //
+                // Re-throw the CommunityServiceException.
+                throw (CommunityServiceException) ouch.getCause() ;
+                }
+            }
+        }
     }

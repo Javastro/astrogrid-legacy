@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.8  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.7.4.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.7  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -176,18 +182,18 @@ public class GroupManagerImpl
         CommunityIvornParser ident = new CommunityIvornParser(
             group.getIdent()
             ) ;
-		//
-		// Set the Group ident.
-		group.setIdent(
-			ident.getAccountIdent()
-			) ;
+        //
+        // Set the Group ident.
+        group.setIdent(
+            ident.getAccountIdent()
+            ) ;
         //
         // If the ident is local.
         if (ident.isLocal())
             {
             //
             // Try performing our transaction.
-    		Database database = null ;
+            Database database = null ;
             try {
                 //
                 // Open our database connection.
@@ -243,7 +249,7 @@ public class GroupManagerImpl
                 {
                 closeConnection(database) ;
                 }
-	        return group ;
+            return group ;
             }
         //
         // If the ident is not local.
@@ -305,8 +311,8 @@ public class GroupManagerImpl
         // If the ident is local.
         if (ident.isLocal())
             {
-	        Database  database = null ;
-	        GroupData group    = null ;
+            Database  database = null ;
+            GroupData group    = null ;
             try {
                 //
                 // Open our database connection.
@@ -362,7 +368,7 @@ public class GroupManagerImpl
                 {
                 closeConnection(database) ;
                 }
-	        return group ;
+            return group ;
             }
         //
         // If the ident is not local.
@@ -403,15 +409,15 @@ public class GroupManagerImpl
         //
         // Get the Group ident.
         CommunityIvornParser ident = new CommunityIvornParser(
-        	group.getIdent()
-        	) ;
+            group.getIdent()
+            ) ;
         //
         // If the ident is local.
         if (ident.isLocal())
             {
             //
             // Try update the database.
-	        Database database = null ;
+            Database database = null ;
             try {
                 //
                 // Open our database connection.
@@ -471,7 +477,7 @@ public class GroupManagerImpl
                 {
                 closeConnection(database) ;
                 }
-	        return group ;
+            return group ;
             }
         //
         // If the ident is not local.
@@ -536,8 +542,8 @@ public class GroupManagerImpl
             {
             //
             // Try update the database.
-	        GroupData group    = null ;
-	        Database  database = null ;
+            GroupData group    = null ;
+            Database  database = null ;
             try {
                 //
                 // Open our database connection.
@@ -596,7 +602,7 @@ public class GroupManagerImpl
                 {
                 closeConnection(database) ;
                 }
-	        return group ;
+            return group ;
             }
         //
         // If the ident is not local.
@@ -702,15 +708,15 @@ public class GroupManagerImpl
     public GroupMemberData addGroupMember(String account, String group)
         throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-		return this.addGroupMember(
-			new CommunityIvornParser(
-				account
-				),
-			new CommunityIvornParser(
-				group
-				)
-			) ;
-		}
+        return this.addGroupMember(
+            new CommunityIvornParser(
+                account
+                ),
+            new CommunityIvornParser(
+                group
+                )
+            ) ;
+        }
 
     /**
      * Add an Account to a Group.
@@ -761,11 +767,11 @@ public class GroupManagerImpl
             // Create our new GroupMemberData.
             GroupMemberData member = new GroupMemberData() ;
             member.setAccount(
-            	account.getAccountIdent()
-            	) ;
+                account.getAccountIdent()
+                ) ;
             member.setGroup(
-            	group.getAccountIdent()
-            	) ;
+                group.getAccountIdent()
+                ) ;
             //
             // Try performing our transaction.
             Database database = null ;
@@ -794,7 +800,7 @@ public class GroupManagerImpl
                 // Throw a new Exception.
                 throw new CommunityPolicyException(
                     "GroupMembership already exists",
-					(account.getAccountIdent() + "|" + group.getAccountIdent())
+                    (account.getAccountIdent() + "|" + group.getAccountIdent())
                     ) ;
                 }
             //
@@ -823,7 +829,7 @@ public class GroupManagerImpl
                 {
                 closeConnection(database) ;
                 }
-	        return member ;
+            return member ;
             }
         //
         // If the group is not local.
@@ -849,15 +855,15 @@ public class GroupManagerImpl
     public GroupMemberData delGroupMember(String account, String group)
         throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-		return this.delGroupMember(
-			new CommunityIvornParser(
-				account
-				),
-			new CommunityIvornParser(
-				group
-				)
-			) ;
-		}
+        return this.delGroupMember(
+            new CommunityIvornParser(
+                account
+                ),
+            new CommunityIvornParser(
+                group
+                )
+            ) ;
+        }
 
     /**
      * Remove an Account from a Group.
@@ -950,7 +956,7 @@ public class GroupManagerImpl
             // Throw a new Exception.
             throw new CommunityPolicyException(
                 "GroupMembership not found",
-				(account.getAccountIdent() + "|" + group.getAccountIdent())
+                (account.getAccountIdent() + "|" + group.getAccountIdent())
                 ) ;
             }
         //
@@ -996,16 +1002,16 @@ public class GroupManagerImpl
      */
     public GroupMemberData getGroupMember(String account, String group)
         throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
-		{
-		return this.getGroupMember(
-			new CommunityIvornParser(
-				account
-				),
-			new CommunityIvornParser(
-				group
-				)
-			) ;
-		}
+        {
+        return this.getGroupMember(
+            new CommunityIvornParser(
+                account
+                ),
+            new CommunityIvornParser(
+                group
+                )
+            ) ;
+        }
 
     /**
      * Request a Group Membership details.
@@ -1083,7 +1089,7 @@ public class GroupManagerImpl
                 // Throw a new Exception.
                 throw new CommunityPolicyException(
                     "GroupMembership not found",
-					(account.getAccountIdent() + "|" + group.getAccountIdent())
+                    (account.getAccountIdent() + "|" + group.getAccountIdent())
                     ) ;
                 }
             //
@@ -1112,7 +1118,7 @@ public class GroupManagerImpl
                 {
                 closeConnection(database) ;
                 }
-	        return member ;
+            return member ;
             }
         //
         // If the group is not local.
@@ -1136,12 +1142,12 @@ public class GroupManagerImpl
     public Object[] getGroupMembers(String group)
         throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-		return this.getGroupMembers(
-			new CommunityIvornParser(
-				group
-				)
-			) ;
-		}
+        return this.getGroupMembers(
+            new CommunityIvornParser(
+                group
+                )
+            ) ;
+        }
 
     /**
      * Request a list of Group Members.

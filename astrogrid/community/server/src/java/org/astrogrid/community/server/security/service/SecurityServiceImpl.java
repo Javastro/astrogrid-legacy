@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/service/Attic/SecurityServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/24 17:43:59 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceImpl.java,v $
+ *   Revision 1.8  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.7.2.2  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
+ *   Revision 1.7.2.1  2004/03/28 02:00:55  dave
+ *   Added database management tasks.
+ *
  *   Revision 1.7  2004/03/24 17:43:59  dave
  *   Fixed side effects of changes to unit tests
  *
@@ -173,11 +182,11 @@ public class SecurityServiceImpl
      * Generate a new token for an account.
      * @param account The Account ident.
      * @throws CommunityIdentifierException If the identifiers are not valid.
-	 * @throws CommunityServiceException If the local Community identifier is not set.
+     * @throws CommunityServiceException If the local Community identifier is not set.
      *
      */
     protected SecurityToken createToken(CommunityIvornParser account)
-		throws CommunityServiceException, CommunityIdentifierException
+        throws CommunityServiceException, CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -187,18 +196,18 @@ public class SecurityServiceImpl
             {
             value = "TOKEN-" + counter++ ;
             }
-		//
-		// Create an Ivorn for the token.
-		Ivorn ivorn = CommunityAccountIvornFactory.createLocal(
-//			account.getAccountName(),
-			value
-			) ;
+        //
+        // Create an Ivorn for the token.
+        Ivorn ivorn = CommunityAccountIvornFactory.createLocal(
+//            account.getAccountName(),
+            value
+            ) ;
         //
         // Issue a new Security token to the account.
         SecurityToken token = new SecurityToken(
-        	account.getAccountIdent(),
-        	ivorn.toString()
-        	) ;
+            account.getAccountIdent(),
+            ivorn.toString()
+            ) ;
         //
         // Mark the token as valid.
         token.setStatus(SecurityToken.VALID_TOKEN) ;
@@ -250,7 +259,7 @@ public class SecurityServiceImpl
             ) ;
         //
         // Try searching the database.
-		SecurityToken token = null ;
+        SecurityToken token = null ;
         Database database = null ;
         try {
             //
@@ -275,23 +284,23 @@ public class SecurityServiceImpl
                 token = this.createToken(ident) ;
                 database.create(token);
                 if (DEBUG_FLAG)System.out.println("  PASS : Got new token") ;
-	            //
-	            // Commit the database transaction.
-	            database.commit() ;
+                //
+                // Commit the database transaction.
+                database.commit() ;
                 }
             //
             // If the password don't match.
             else {
-	            //
-	            // Throw a new Exception.
-	            throw new CommunitySecurityException(
-	                "Password invalid",
-	                ident.getAccountIdent()
-	                ) ;
+                //
+                // Throw a new Exception.
+                throw new CommunitySecurityException(
+                    "Password invalid",
+                    ident.getAccountIdent()
+                    ) ;
                 }
             }
-		//
-		// If the password check failed.
+        //
+        // If the password check failed.
         catch (CommunitySecurityException ouch)
             {
             //
@@ -311,7 +320,7 @@ public class SecurityServiceImpl
             //
             // Throw a new Exception.
             throw new CommunitySecurityException(
-                "Account not found",
+                "Account password not found",
                 ident.toString()
                 ) ;
             }
@@ -342,8 +351,8 @@ public class SecurityServiceImpl
             {
             closeConnection(database) ;
             }
-		//
-		// Return the new token.
+        //
+        // Return the new token.
         return token ;
         }
 
@@ -374,9 +383,9 @@ public class SecurityServiceImpl
                 "Null token"
                 ) ;
             }
-		//
-		// Mark the original as invalid.
-		original.setStatus(SecurityToken.INVALID_TOKEN) ;
+        //
+        // Mark the original as invalid.
+        original.setStatus(SecurityToken.INVALID_TOKEN) ;
         //
         // Get the token value.
         CommunityIvornParser token = new CommunityIvornParser(
@@ -390,7 +399,7 @@ public class SecurityServiceImpl
             ) ;
         if (DEBUG_FLAG) System.out.println("  Account : " + account) ;
 
-		SecurityToken result = null ;
+        SecurityToken result = null ;
         Database database = null ;
         try {
             //
@@ -417,27 +426,27 @@ public class SecurityServiceImpl
                 // Create a new token.
                 result = this.createToken(account) ;
                 database.create(result) ;
-	            //
-	            // Commit the database transaction.
-	            database.commit() ;
-				//
-				// Return the new token.
-				return result ;
+                //
+                // Commit the database transaction.
+                database.commit() ;
+                //
+                // Return the new token.
+                return result ;
                 }
             //
             // If the original is no longer valied.
             else {
                 if (DEBUG_FLAG)System.out.println("  FAIL : Original is not valid") ;
-	            //
-	            // Throw a new Exception.
-	            throw new CommunitySecurityException(
-	                "Token invalid",
-	                original.getToken()
-	                ) ;
+                //
+                // Throw a new Exception.
+                throw new CommunitySecurityException(
+                    "Token invalid",
+                    original.getToken()
+                    ) ;
                 }
             }
-		//
-		// If the password check failed.
+        //
+        // If the password check failed.
         catch (CommunitySecurityException ouch)
             {
             //
@@ -514,9 +523,9 @@ public class SecurityServiceImpl
                 "Null token"
                 ) ;
             }
-		//
-		// Mark the original as invalid.
-		original.setStatus(SecurityToken.INVALID_TOKEN) ;
+        //
+        // Mark the original as invalid.
+        original.setStatus(SecurityToken.INVALID_TOKEN) ;
         //
         // Get the token value.
         CommunityIvornParser token = new CommunityIvornParser(
@@ -530,7 +539,7 @@ public class SecurityServiceImpl
             ) ;
         if (DEBUG_FLAG) System.out.println("  Account : " + account) ;
 
-		Vector vector = new Vector() ;
+        Vector vector = new Vector() ;
         Database database = null ;
         try {
             //
@@ -561,24 +570,24 @@ public class SecurityServiceImpl
                     database.create(result) ;
                     vector.add(result) ;
                     }
-	            //
-	            // Commit the database transaction.
-	            database.commit() ;
+                //
+                // Commit the database transaction.
+                database.commit() ;
                 }
             //
             // If the original is no longer valied.
             else {
                 if (DEBUG_FLAG)System.out.println("  FAIL : Original is not valid") ;
-	            //
-	            // Throw a new Exception.
-	            throw new CommunitySecurityException(
-	                "Token invalid",
-	                original.getToken()
-	                ) ;
+                //
+                // Throw a new Exception.
+                throw new CommunitySecurityException(
+                    "Token invalid",
+                    original.getToken()
+                    ) ;
                 }
             }
-		//
-		// If the password check failed.
+        //
+        // If the password check failed.
         catch (CommunitySecurityException ouch)
             {
             //
@@ -629,8 +638,8 @@ public class SecurityServiceImpl
             {
             closeConnection(database) ;
             }
-		//
-		// Return the new token.
-		return vector.toArray() ;
+        //
+        // Return the new token.
+        return vector.toArray() ;
         }
     }

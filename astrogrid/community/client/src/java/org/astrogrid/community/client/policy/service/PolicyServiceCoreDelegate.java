@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/service/PolicyServiceCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceCoreDelegate.java,v $
+ *   Revision 1.6  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.5.4.2  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
+ *   Revision 1.5.4.1  2004/03/28 02:00:55  dave
+ *   Added database management tasks.
+ *
  *   Revision 1.5  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -80,7 +89,7 @@ public class PolicyServiceCoreDelegate
      */
     protected void setPolicyService(PolicyService service)
         {
-		this.setCommunityService(service) ;
+        this.setCommunityService(service) ;
         this.service = service ;
         }
 
@@ -111,24 +120,24 @@ public class PolicyServiceCoreDelegate
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-				//
-				// Try converting the Exception.
-				convertCommunityException(ouch) ;
-				//
-				// If we get this far, then we don't know what it is.
-				throw new CommunityServiceException(
-					"WebService call failed - unexpected Exception type",
-					ouch
-					) ;
+                //
+                // Try converting the Exception.
+                convertCommunityException(ouch) ;
+                //
+                // If we get this far, then we don't know what it is.
+                throw new CommunityServiceException(
+                    "WebService call failed - " + ouch,
+                    ouch
+                    ) ;
                 }
             }
-		//
-		// If we don't have a valid service.
-		else {
-			throw new CommunityServiceException(
-				"Service not initialised"
-				) ;
-			}
+        //
+        // If we don't have a valid service.
+        else {
+            throw new CommunityServiceException(
+                "Service not initialised"
+                ) ;
+            }
         }
 
     /**
@@ -156,23 +165,23 @@ public class PolicyServiceCoreDelegate
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-				//
-				// Try converting the Exception.
-				convertCommunityException(ouch) ;
-				//
-				// If we get this far, then we don't know what it is.
-				throw new CommunityServiceException(
-					"WebService call failed - unexpected Exception type",
-					ouch
-					) ;
+                //
+                // Try converting the Exception.
+                convertCommunityException(ouch) ;
+                //
+                // If we get this far, then we don't know what it is.
+                throw new CommunityServiceException(
+                    "WebService call failed - " + ouch,
+                    ouch
+                    ) ;
                 }
             }
-		//
-		// If we don't have a valid service.
-		else {
-			throw new CommunityServiceException(
-				"Service not initialised"
-				) ;
-			}
+        //
+        // If we don't have a valid service.
+        else {
+            throw new CommunityServiceException(
+                "Service not initialised"
+                ) ;
+            }
         }
     }

@@ -4,10 +4,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.6  2004/03/30 01:40:03  dave
+    |   Merged development branch, dave-dev-200403242058, into HEAD
+    |
+    |   Revision 1.5.4.2  2004/03/30 01:38:14  dave
+    |   Refactored resolver and install toolkits.
+    |
+    |   Revision 1.5.4.1  2004/03/28 02:00:55  dave
+    |   Added database management tasks.
+    |
     |   Revision 1.5  2004/03/23 16:34:08  dave
     |   Merged development branch, dave-dev-200403191458, into HEAD
     |
@@ -96,7 +105,7 @@
                 +-->
             <ant:xslt style="${basedir}/src/xsl/registry/service.entry.xsl"
                   in="${basedir}/src/config/registry/service.entry.xml"
-                  out="${org.astrogrid.registry.data}/${service.file}">
+                  out="${org.astrogrid.registry.data}/local/${service.file}">
                 <outputproperty name="method" value="xml"/>
                 <outputproperty name="indent" value="yes"/>
                 <param name="service.authority" expression="${org.astrogrid.community.ident}"/>
@@ -106,10 +115,10 @@
             <!--+
                 | Add the config property reference.
                 +-->
-            <ant:propertyfile file="${maven.build.dir}/config/astrogrid.properties">
+            <ant:propertyfile file="${maven.build.dir}/config/registry.properties">
                 <entry
                     key="${org.astrogrid.community.ident}/${service.class}"
-                    value="file://${org.astrogrid.registry.data}/${service.file}"/>
+                    value="file://${maven.build.dir}/config/registry/local/${service.file}"/>
             </ant:propertyfile>
         </define:tag>
     </define:taglib>
@@ -154,6 +163,16 @@
         <core:set var="astrogrid.artifact.type" value="jar"/>
         <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
         <attainGoal name="install-local"/>
+        <!--+
+            | Build our zip file.
+            +-->
+        <attainGoal name="build.zipfile"/>
+        <!--+
+            | Install our zip file.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="zip"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="install-local"/>
     </goal>
 
     <!--+
@@ -178,6 +197,16 @@
         <core:set var="astrogrid.artifact.type" value="jar"/>
         <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
         <attainGoal name="install-local-snapshot"/>
+        <!--+
+            | Build our zip file.
+            +-->
+        <attainGoal name="build.zipfile"/>
+        <!--+
+            | Install our SNAPSHOT zip.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="zip"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="install-local-snapshot"/>
     </goal>
 
     <!--+
@@ -197,6 +226,12 @@
         <core:set var="astrogrid.artifact.type" value="jar"/>
         <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
         <attainGoal name="deploy-local"/>
+        <!--+
+            | Deploy our zip.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="zip"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="deploy-local"/>
     </goal>
 
     <!--+
@@ -214,6 +249,12 @@
             | Deploy our SNAPSHOT jar.
             +-->
         <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="deploy-local-snapshot"/>
+        <!--+
+            | Deploy our SNAPSHOT zip.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="zip"/>
         <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
         <attainGoal name="deploy-local-snapshot"/>
     </goal>
@@ -270,8 +311,8 @@
         <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
         <!--+
             | Initialise our config files.
-            +-->
         <attainGoal name="init.config"/>
+            +-->
         <!--+
             | Initialise our mock services.
             +-->
@@ -385,27 +426,27 @@
         <astro:service.deploy service.name="SecurityManager"/>
         <astro:service.deploy service.name="SecurityService"/>
         <!--+
-            | Register our services
+            | Register our local services
             +-->
         <custom:register.service.local
             service.name="PolicyManager"
             service.class="org.astrogrid.community.common.policy.manager.PolicyManager"
-            service.file="local.policy.manager.xml"
+            service.file="org.astrogrid.local.policy.manager.xml"
             />
         <custom:register.service.local
             service.name="PolicyService"
             service.class="org.astrogrid.community.common.policy.service.PolicyService"
-            service.file="local.policy.service.xml"
+            service.file="org.astrogrid.local.policy.service.xml"
             />
         <custom:register.service.local
             service.name="SecurityManager"
             service.class="org.astrogrid.community.common.security.manager.SecurityManager"
-            service.file="local.security.manager.xml"
+            service.file="org.astrogrid.local.security.manager.xml"
             />
         <custom:register.service.local
             service.name="SecurityService"
             service.class="org.astrogrid.community.common.security.service.SecurityService"
-            service.file="local.security.service.xml"
+            service.file="org.astrogrid.local.security.service.xml"
             />
     </goal>
 
@@ -417,22 +458,182 @@
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Initialising config files ...."/>
         <!--+
-            | Clean the config directory.
+            | Initialise our paths.
             +-->
-        <ant:delete dir="${maven.build.dir}/config"/>
+        <attainGoal name="init.paths"/>
+        <!--+
+            | Create our config directories.
+            +-->
         <ant:mkdir dir="${maven.build.dir}/config"/>
+        <ant:mkdir dir="${maven.build.dir}/config/registry"/>
+        <ant:mkdir dir="${maven.build.dir}/config/community"/>
         <!--+
-            | Clean the registry directory.
-            +-->
-        <ant:delete dir="${org.astrogrid.registry.data}"/>
-        <ant:mkdir dir="${org.astrogrid.registry.data}"/>
-        <!--+
-            | Copy the initial config file.
-            +-->
+            | Copy our config files.
         <ant:copy todir="${maven.build.dir}/config">
-            <fileset dir="src/config">
-                <include name="astrogrid.properties"/>
+            <fileset dir="src/config"/>
+        </ant:copy>
+            +-->
+    </goal>
+
+<!-- =============== -->
+
+
+    <!--+
+        | Add our Community jars.
+        +-->
+    <goal name="install.client">
+        <ant:echo message="Installing Community client jar ...."/>
+        <!--+
+            | Check if we have already done this.
+            +-->
+        <core:if test="${!clientDone}">
+            <ant:echo message="...."/>
+            <core:set var="clientDone" value="true"/>
+            <!--+
+                | Create our target directory.
+                +-->
+            <ant:mkdir dir="${maven.build.dir}/resolver/jar"/>
+            <!--+
+                | Project.getDependencyPath() only works for jar and ejb files.
+                | See : http://maven.apache.org/xref/org/apache/maven/DependencyClasspathBuilder.html#100
+                | Means we have to do this the long way round .... by iterating through our list of artifacts.
+                +-->
+            <core:forEach var="artifact" items="${pom.getArtifacts()}">
+                <!--+
+                    | If the artifact matches our criteria.
+                    +-->
+                <core:if test="${artifact.dependency.getProperty('jar.fileset')=='true'}">
+                    <ant:echo message="Found Community jar"/>
+                    <ant:echo message="  Ident    : ${artifact.getDependency().getId()}"/>
+                    <ant:echo message="  Version  : ${artifact.getDependency().getVersion()}"/>
+                    <ant:echo message="  Type     : ${artifact.getDependency().getType()}"/>
+                    <ant:echo message="  Name     : ${artifact.getName()}"/>
+                    <ant:echo message="  Path     : ${artifact.getPath()}"/>
+                    <!--+
+                        | Copy the jar file to our target directory.
+                        +-->
+                    <ant:copy file="${artifact.getPath()}" toDir="${maven.build.dir}/resolver/jar"/>
+                </core:if>
+            </core:forEach>
+        </core:if>
+    </goal>
+
+    <!--+
+        | Copy our 3rd party libraries.
+        +-->
+    <goal name="install.depends">
+        <ant:echo message="Installing 3rd party libraries ...."/>
+        <!--+
+            | Check if we have already done this.
+            +-->
+        <core:if test="${!libsDone}">
+            <ant:echo message="...."/>
+            <core:set var="libsDone" value="true"/>
+            <!--+
+                | Create our target directory.
+                +-->
+            <ant:mkdir dir="${maven.build.dir}/resolver/lib"/>
+            <!--+
+                | Project.getDependencyPath() only works for jar and ejb files.
+                | See : http://maven.apache.org/xref/org/apache/maven/DependencyClasspathBuilder.html#100
+                | Means we have to do this the long way round .... by iterating through our list of artifacts.
+                +-->
+            <core:forEach var="artifact" items="${pom.getArtifacts()}">
+                <!--+
+                    | If the artifact matches our criteria.
+                    +-->
+                <core:if test="${artifact.dependency.getProperty('lib.fileset')=='true'}">
+                    <ant:echo message="Found 3rd party library"/>
+                    <ant:echo message="  Ident    : ${artifact.getDependency().getId()}"/>
+                    <ant:echo message="  Version  : ${artifact.getDependency().getVersion()}"/>
+                    <ant:echo message="  Type     : ${artifact.getDependency().getType()}"/>
+                    <ant:echo message="  Name     : ${artifact.getName()}"/>
+                    <ant:echo message="  Path     : ${artifact.getPath()}"/>
+                    <!--+
+                        | Copy the jar file to our target directory.
+                        +-->
+                    <ant:copy file="${artifact.getPath()}" toFile="${maven.build.dir}/resolver/lib/${artifact.getName()}"/>
+                </core:if>
+            </core:forEach>
+        </core:if>
+    </goal>
+
+    <!--+
+        | Copy our Axis libraries.
+        +-->
+    <goal name="install.axis">
+        <ant:echo message="Installing Axis libraries ...."/>
+        <!--+
+            | Initialise our Axis libraries
+            +-->
+        <attainGoal name="init.paths"/>
+        <attainGoal name="init.classpath"/>
+        <!--+
+            | Copy all the jars from the Axis lib directory.
+            +-->
+        <ant:copy toDir="${maven.build.dir}/resolver/lib">
+            <fileset dir="${axisDir}/WEB-INF/lib">
+                <include name="*.jar"/>
             </fileset>
         </ant:copy>
     </goal>
+
+    <!--+
+        | Copy our ant script and tools.
+        +-->
+    <goal name="install.tools">
+        <ant:echo message="Installing Ant script and tools ...."/>
+        <!--+
+            | Copy our Ant script and properties.
+            +-->
+        <ant:copy toDir="${maven.build.dir}/resolver">
+            <fileset dir="src/ant">
+                <include name="*.xml"/>
+                <include name="*.properties"/>
+            </fileset>
+        </ant:copy>
+        <!--+
+            | Copy our configuration data.
+            +-->
+        <ant:copy toDir="${maven.build.dir}/resolver/config">
+            <fileset dir="src/config">
+                <include name="**/*.properties"/>
+                <include name="**/*.xml"/>
+            </fileset>
+        </ant:copy>
+        <!--+
+            | Copy our resolver library.
+            | TODO - This should either be SNAPSHOT or version.
+            +-->
+        <ant:copy toDir="${maven.build.dir}/resolver/jar">
+            <fileset dir="${maven.build.dir}">
+                <include name="${maven.final.name}.jar"/>
+            </fileset>
+        </ant:copy>
+    </goal>
+
+    <!--+
+        | Create our zipfile.
+        | We could use the Maven dist plugin, but quite frankly, I'm tired of suprises.
+        +-->
+    <goal name="build.zipfile">
+        <!--+
+            | Install the zipfile components.
+            +-->
+		<attainGoal name="install.client"/>
+		<attainGoal name="install.depends"/>
+		<attainGoal name="install.axis"/>
+		<attainGoal name="install.tools"/>
+        <!--+
+            | Create our zip file.
+            +-->
+        <ant:zip
+            zipfile="${maven.build.dir}/${maven.final.name}.zip"
+            compress="true"
+            basedir="${maven.build.dir}/resolver"
+            />
+    </goal>
+
+
+
 </project>

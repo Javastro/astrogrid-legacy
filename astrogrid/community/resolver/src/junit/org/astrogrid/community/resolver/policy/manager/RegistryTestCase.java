@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/policy/manager/Attic/RegistryTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: RegistryTestCase.java,v $
+ *   Revision 1.4  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.3.4.2  2004/03/30 01:38:14  dave
+ *   Refactored resolver and install toolkits.
+ *
+ *   Revision 1.3.4.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.3  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -46,25 +55,25 @@ public class RegistryTestCase
      */
     private static boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Test the registry delegate.
-	 *
-	 */
-	public void testLocalDelegate()
-		throws Exception
-		{
-		System.out.println("") ;
-		System.out.println("----\"----") ;
-		System.out.println("RegistryTestCase.testLocalDelegate()") ;
-		//
-		// Create our registry delegate.
-		RegistryService registry = RegistryDelegateFactory.createQuery() ;
-		System.out.println("Got registry") ;
-		System.out.println("Get property : " + registry.conf.getProperty("org.astrogrid.local.community/org.astrogrid.community.common.policy.manager.PolicyManager")) ;
-		//
-		// Try resolving our service.
-		String endPoint = registry.getEndPointByIdentifier("org.astrogrid.local.community/org.astrogrid.community.common.policy.manager.PolicyManager");
-		System.out.println("Resolved endpoint : " + endPoint) ;
-		}
+    /**
+     * Test the registry delegate.
+     *
+     */
+    public void testLocalDelegate()
+        throws Exception
+        {
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("RegistryTestCase.testLocalDelegate()") ;
+        //
+        // Create our registry delegate.
+        RegistryService registry = RegistryDelegateFactory.createQuery() ;
+        System.out.println("Got registry") ;
+        System.out.println("Get property : " + registry.conf.getProperty("org.astrogrid.local/org.astrogrid.community.common.policy.manager.PolicyManager")) ;
+        //
+        // Try resolving our service.
+        String endPoint = registry.getEndPointByIdentifier("org.astrogrid.local/org.astrogrid.community.common.policy.manager.PolicyManager");
+        System.out.println("Resolved endpoint : " + endPoint) ;
+        }
 
-	}
+    }

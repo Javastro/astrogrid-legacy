@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.11  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.10.4.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.10  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -104,16 +110,16 @@ public class AccountManagerImpl
      */
     private static Ivorn DEFAULT_GROUP_IVORN ;
 
-	static {
-		try {
-			DEFAULT_GROUP_IVORN = CommunityAccountIvornFactory.createLocal(
-				DEFAULT_GROUP_NAME
-				) ;
-			}
-		catch (Exception ouch)
-			{
-			}
-		}
+    static {
+        try {
+            DEFAULT_GROUP_IVORN = CommunityAccountIvornFactory.createLocal(
+                DEFAULT_GROUP_NAME
+                ) ;
+            }
+        catch (Exception ouch)
+            {
+            }
+        }
 
     /**
      * Public constructor, using default database configuration.
@@ -156,12 +162,12 @@ public class AccountManagerImpl
     public AccountData addAccount(String ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-		//
-		// Create a new Accountdata.
-		return this.addAccount(
-			new AccountData(
-				ident
-				)
+        //
+        // Create a new Accountdata.
+        return this.addAccount(
+            new AccountData(
+                ident
+                )
             ) ;
         }
 
@@ -231,11 +237,11 @@ account.setIdent(string) ;
             GroupMemberData guestmember = new GroupMemberData() ;
             guestmember.setAccount(string) ;
             guestmember.setGroup(
-				DEFAULT_GROUP_IVORN.toString()
-            	) ;
+                DEFAULT_GROUP_IVORN.toString()
+                ) ;
             //
             // Try performing our transaction.
-	        Database database = null ;
+            Database database = null ;
             try {
                 //
                 // Open our database connection.
@@ -391,10 +397,10 @@ account.setIdent(string) ;
         // If the ident is local.
         if (ident.isLocal())
             {
-			//
-			// Try finding the Account.
-	        Database    database = null ;
-	        AccountData account  = null ;
+            //
+            // Try finding the Account.
+            Database    database = null ;
+            AccountData account  = null ;
             try {
 //
 // Get the string ident.
@@ -453,7 +459,7 @@ String string = ident.getAccountIdent() ;
                 {
                 closeConnection(database) ;
                 }
-			return account ;
+            return account ;
             }
         //
         // If the ident is not local.
@@ -495,15 +501,15 @@ String string = ident.getAccountIdent() ;
         //
         // Get the Account ident.
         CommunityIvornParser ident = new CommunityIvornParser(
-        	account.getIdent()
-        	) ;
+            account.getIdent()
+            ) ;
         //
         // If the ident is local.
         if (ident.isLocal())
             {
             //
             // Try update the database.
-	        Database database = null ;
+            Database database = null ;
             try {
 //
 // Get the string ident.
@@ -568,7 +574,7 @@ String string = ident.getAccountIdent() ;
                 {
                 closeConnection(database) ;
                 }
-	        return account ;
+            return account ;
             }
         //
         // If the ident is not local.
@@ -628,9 +634,9 @@ String string = ident.getAccountIdent() ;
                 ) ;
             }
 
-	//
-	// @todo Refactor this.
-	AccountData account  = null ;
+    //
+    // @todo Refactor this.
+    AccountData account  = null ;
 
         //
         // If the ident is local.
@@ -639,7 +645,7 @@ String string = ident.getAccountIdent() ;
             if (DEBUG_FLAG) System.out.println("  PASS : ident is local") ;
             //
             // Try update the database.
-	        Database    database = null ;
+            Database    database = null ;
             try {
 //
 // Get the string ident.
@@ -862,8 +868,8 @@ String string = ident.getAccountIdent() ;
             while (results.hasMore())
                 {
                 collection.add(
-                	(AccountData)results.next()
-                	) ;
+                    (AccountData)results.next()
+                    ) ;
                 }
             //
             // Convert it into an array.

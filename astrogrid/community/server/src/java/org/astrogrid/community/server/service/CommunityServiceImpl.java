@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/service/CommunityServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceImpl.java,v $
+ *   Revision 1.4  2004/03/30 01:40:04  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.3.20.1  2004/03/28 02:00:55  dave
+ *   Added database management tasks.
+ *
  *   Revision 1.3  2004/03/08 13:42:33  dave
  *   Updated Maven goals.
  *   Replaced tabs with Spaces.
@@ -73,7 +79,7 @@ import org.exolab.castor.jdo.DatabaseNotFoundException ;
 import org.astrogrid.community.common.service.CommunityService ;
 import org.astrogrid.community.common.service.data.ServiceStatusData ;
 
-import org.astrogrid.community.common.config.CommunityConfig;
+//import org.astrogrid.community.common.config.CommunityConfig;
 
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
 import org.astrogrid.community.server.database.configuration.DatabaseConfigurationFactory ;
@@ -123,7 +129,7 @@ public class CommunityServiceImpl
         if (DEBUG_FLAG) System.out.println("  Class  : " + this.getClass()) ;
         //
         // Initialise our config properties.
-        CommunityConfig.loadConfig() ;
+//        CommunityConfig.loadConfig() ;
         //
         // Create our database configuration factory.
         DatabaseConfigurationFactory factory = new DatabaseConfigurationFactory() ;
@@ -159,7 +165,7 @@ public class CommunityServiceImpl
         if (DEBUG_FLAG) System.out.println("  Config : " + config) ;
         //
         // Initialise our config properties.
-        CommunityConfig.loadConfig() ;
+//        CommunityConfig.loadConfig() ;
         //
         // Set our database configuration.
         this.setDatabaseConfiguration(config) ;
@@ -178,7 +184,7 @@ public class CommunityServiceImpl
         if (DEBUG_FLAG) System.out.println("  Parent : " + parent.getClass()) ;
         //
         // Initialise our config properties.
-        CommunityConfig.loadConfig() ;
+//        CommunityConfig.loadConfig() ;
         //
         // Use our parent's database configuration 
         if (null != parent)
@@ -201,7 +207,7 @@ public class CommunityServiceImpl
 
         ServiceStatusData status =  new ServiceStatusData() ;
 
-        status.setConfigPath(CommunityConfig.getProperty("config.location")) ;
+//      status.setConfigPath(CommunityConfig.getProperty("config.location")) ;
         if (DEBUG_FLAG) System.out.println("  Database config : " + databaseConfiguration) ;
         if (null != databaseConfiguration)
             {
@@ -254,6 +260,7 @@ public class CommunityServiceImpl
 
     /**
      * Close a database connection.
+     * @todo Handle java.lang.IllegalStateException
      *
      */
     public void closeConnection(Database database)
@@ -276,6 +283,7 @@ public class CommunityServiceImpl
 
     /**
      * Rollback a database transaction.
+     * @todo Handle java.lang.IllegalStateException
      *
      */
     public void rollbackTransaction(Database database)

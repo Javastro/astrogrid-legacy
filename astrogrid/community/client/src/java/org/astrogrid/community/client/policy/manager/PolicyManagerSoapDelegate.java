@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/PolicyManagerSoapDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerSoapDelegate.java,v $
+ *   Revision 1.6  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.5.6.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.5  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -86,8 +92,8 @@ public class PolicyManagerSoapDelegate
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("PolicyManagerSoapDelegate()") ;
         if (DEBUG_FLAG) System.out.println("  URL : " + endpoint) ;
-		//
-		// Check for null param.
+        //
+        // Check for null param.
         if (null == endpoint) { throw new IllegalArgumentException("Null endpoint") ; }
         //
         // Set our endpoint address.

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/org.astrogrid.mock.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: org.astrogrid.mock.xml,v $
+    |   Revision 1.2  2004/03/30 01:40:03  dave
+    |   Merged development branch, dave-dev-200403242058, into HEAD
+    |
+    |   Revision 1.1.2.3  2004/03/28 09:11:43  dave
+    |   Convert tabs to spaces
+    |
+    |   Revision 1.1.2.2  2004/03/28 07:06:19  dave
+    |   Tidied up config files
+    |
+    |   Revision 1.1.2.1  2004/03/28 02:00:55  dave
+    |   Added database management tasks.
+    |
+    | </cvs:log>
+    |
+    +-->
+<community ident="ivo://org.astrogrid.mock">
+    <!--+
+        | The community Accounts.
+        +-->
+    <accounts>
+        <account ident="ivo://org.astrogrid.mock/dave">
+            <display>Dave Morris</display>
+            <description>Java developer</description>
+            <home>ivo://org.astrogrid.mock/dave</home>
+            <email>dave@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.mock/kevin">
+            <display>Kevin Benson</display>
+            <description>Java developer</description>
+            <home>ivo://org.astrogrid.mock/kevin</home>
+            <email>kevin@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.mock/martin">
+            <display>Martin Hill</display>
+            <description>Java developer</description>
+            <home>ivo://org.astrogrid.mock/martin</home>
+            <email>martin@mail.astrogrid.org</email>
+        </account>
+    </accounts>
+    <!--+
+        | The community Groups.
+        +-->
+    <groups>
+        <group ident="ivo://org.astrogrid.mock/public">
+            <description>Public group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.mock/user">
+            <description>General users group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.mock/java">
+            <description>Java developers group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.mock/astro">
+            <description>Astronomers group</description>
+        </group>
+    </groups>
+
+    <!--+
+        | The community passwords.
+        +-->
+    <passwords>
+        <password account="ivo://org.astrogrid.mock/dave"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.mock/kevin"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.mock/martin" password="qwerty"/>
+    </passwords>
+
+</community>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/org.astrogrid.localhost.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: org.astrogrid.localhost.xml,v $
+    |   Revision 1.2  2004/03/30 01:40:03  dave
+    |   Merged development branch, dave-dev-200403242058, into HEAD
+    |
+    |   Revision 1.1.2.3  2004/03/28 09:11:43  dave
+    |   Convert tabs to spaces
+    |
+    |   Revision 1.1.2.2  2004/03/28 07:06:19  dave
+    |   Tidied up config files
+    |
+    |   Revision 1.1.2.1  2004/03/28 02:00:55  dave
+    |   Added database management tasks.
+    |
+    | </cvs:log>
+    |
+    +-->
+<community ident="ivo://org.astrogrid.localhost">
+    <!--+
+        | The community Accounts.
+        +-->
+    <accounts>
+        <account ident="ivo://org.astrogrid.localhost/dave">
+            <display>Dave Morris</display>
+            <description>Java developer</description>
+            <home>ivo://org.astrogrid.localhost/dave</home>
+            <email>dave@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.localhost/kevin">
+            <display>Kevin Benson</display>
+            <description>Java developer</description>
+            <home>ivo://org.astrogrid.localhost/kevin</home>
+            <email>kevin@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.localhost/martin">
+            <display>Martin Hill</display>
+            <description>Java developer</description>
+            <home>ivo://org.astrogrid.localhost/martin</home>
+            <email>martin@mail.astrogrid.org</email>
+        </account>
+    </accounts>
+    <!--+
+        | The community Groups.
+        +-->
+    <groups>
+        <group ident="ivo://org.astrogrid.localhost/public">
+            <description>Public group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.localhost/user">
+            <description>General users group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.localhost/java">
+            <description>Java developers group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.localhost/astro">
+            <description>Astronomers group</description>
+        </group>
+    </groups>
+
+    <!--+
+        | The community passwords.
+        +-->
+    <passwords>
+        <password account="ivo://org.astrogrid.localhost/dave"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.localhost/kevin"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.localhost/martin" password="qwerty"/>
+    </passwords>
+
+</community>

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/service/SecurityServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceTest.java,v $
+ *   Revision 1.6  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.5.2.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.5  2004/03/24 16:56:25  dave
  *   Merged development branch, dave-dev-200403231641, into HEAD
  *
@@ -197,8 +203,8 @@ public class SecurityServiceTest
         //
         // Setup our test account.
         AccountData account = accountManager.addAccount(
-			createLocal(TEST_ACCOUNT).toString()
-        	) ;
+            createLocal(TEST_ACCOUNT).toString()
+            ) ;
         assertNotNull(
             "addAccount returned null",
             account
@@ -215,9 +221,9 @@ public class SecurityServiceTest
         //
         // Check we can validate our password.
         SecurityToken token = securityService.checkPassword(
-        	account.getIdent(),
-        	TEST_PASSWORD
-        	) ;
+            account.getIdent(),
+            TEST_PASSWORD
+            ) ;
         //
         // Check that we got a token.
         assertNotNull(
@@ -252,8 +258,8 @@ public class SecurityServiceTest
         //
         // Setup our test account.
         AccountData account = accountManager.addAccount(
-			createLocal(TEST_ACCOUNT).toString()
-        	) ;
+            createLocal(TEST_ACCOUNT).toString()
+            ) ;
         assertNotNull(
             "addAccount returned null",
             account
@@ -270,9 +276,9 @@ public class SecurityServiceTest
         //
         // Check we can validate our password.
         SecurityToken original = securityService.checkPassword(
-        	account.getIdent(),
-        	TEST_PASSWORD
-        	) ;
+            account.getIdent(),
+            TEST_PASSWORD
+            ) ;
         //
         // Check that we got a token.
         assertNotNull(
@@ -330,28 +336,28 @@ public class SecurityServiceTest
             ) ;
         //
         // Check that the original is no longer valid.
-		try {
+        try {
             securityService.checkToken(original) ;
             fail("Expected CommunitySecurityException") ;
             }
-		catch (CommunitySecurityException ouch)
-			{
+        catch (CommunitySecurityException ouch)
+            {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
             if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
-			}
-		catch (RemoteException ouch)
-			{
+            }
+        catch (RemoteException ouch)
+            {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
             if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
-			}
+            }
         //
         // Check that the original is no longer valid.
-		assertFalse(
-			"Original token still valid",
-			original.isValid()
-			) ;
+        assertFalse(
+            "Original token still valid",
+            original.isValid()
+            ) ;
         }
 
     /**
@@ -373,8 +379,8 @@ public class SecurityServiceTest
         //
         // Setup our test account.
         AccountData account = accountManager.addAccount(
-			createLocal(TEST_ACCOUNT).toString()
-        	) ;
+            createLocal(TEST_ACCOUNT).toString()
+            ) ;
         assertNotNull(
             "addAccount returned null",
             account
@@ -437,12 +443,12 @@ public class SecurityServiceTest
                 account.getIdent(),
                 token.getAccount()
                 ) ;
-	        //
-	        // Check that the token is valid.
-	        assertTrue(
-	            "Token is not valid",
-	            token.isValid()
-	            ) ;
+            //
+            // Check that the token is valid.
+            assertTrue(
+                "Token is not valid",
+                token.isValid()
+                ) ;
             //
             // Check that the token has a different value.
             checkNotEqual(
@@ -460,27 +466,27 @@ public class SecurityServiceTest
             }
         //
         // Check that the original is no longer valid.
-		try {
+        try {
             securityService.checkToken(original) ;
             fail("Expected CommunitySecurityException") ;
             }
-		catch (CommunitySecurityException ouch)
-			{
+        catch (CommunitySecurityException ouch)
+            {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-			}
-		catch (RemoteException ouch)
-			{
+            }
+        catch (RemoteException ouch)
+            {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
             if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
-			}
+            }
         //
         // Check that the original is no longer valid.
-		assertFalse(
-			"Original token still valid",
-			original.isValid()
-			) ;
+        assertFalse(
+            "Original token still valid",
+            original.isValid()
+            ) ;
         }
     }
 

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/security/service/SecurityServiceTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceTestCase.java,v $
+ *   Revision 1.5  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.4.2.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.4  2004/03/24 16:56:25  dave
  *   Merged development branch, dave-dev-200403231641, into HEAD
  *
@@ -87,57 +93,57 @@ public class SecurityServiceTestCase
         this.resetDatabase() ;
         }
 
-	/**
-	 * Test the mock password.
-	 *
-	 */
-	public void testMockPassword()
-		throws Exception
-		{
+    /**
+     * Test the mock password.
+     *
+     */
+    public void testMockPassword()
+        throws Exception
+        {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("SecurityServiceTestCase.testMockPassword()") ;
-		//
-		// Create our mock service.
-		SecurityServiceMock mock = new SecurityServiceMock() ;
-		//
-		// Clear the password.
-		mock.setPassword(null) ;
-		//
-		// Check that the wrong password works.
-		assertNotNull(
-			"Check password returned null",
-			mock.checkPassword("frog", "unknown")
-			) ;
-		//
-		// Set the password.
-		mock.setPassword("ribbet") ;
-		//
-		// Check that the right password works.
-		assertNotNull(
-			"Check password returned null",
-			mock.checkPassword("frog", "ribbet")
-			) ;
-		//
-		// Check that the wrong passord fails.
-		try {
-			mock.checkPassword("frog", "unknown") ;
+        //
+        // Create our mock service.
+        SecurityServiceMock mock = new SecurityServiceMock() ;
+        //
+        // Clear the password.
+        mock.setPassword(null) ;
+        //
+        // Check that the wrong password works.
+        assertNotNull(
+            "Check password returned null",
+            mock.checkPassword("frog", "unknown")
+            ) ;
+        //
+        // Set the password.
+        mock.setPassword("ribbet") ;
+        //
+        // Check that the right password works.
+        assertNotNull(
+            "Check password returned null",
+            mock.checkPassword("frog", "ribbet")
+            ) ;
+        //
+        // Check that the wrong passord fails.
+        try {
+            mock.checkPassword("frog", "unknown") ;
             fail("Expected CommunitySecurityException") ;
             }
-		catch (CommunitySecurityException ouch)
-			{
+        catch (CommunitySecurityException ouch)
+            {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
             if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
-			}
-		//
-		// Clear the password.
-		mock.setPassword(null) ;
-		//
-		// Check that the wrong password works.
-		assertNotNull(
-			"Check password returned null",
-			mock.checkPassword("frog", "unknown")
-			) ;
-		}
+            }
+        //
+        // Clear the password.
+        mock.setPassword(null) ;
+        //
+        // Check that the wrong password works.
+        assertNotNull(
+            "Check password returned null",
+            mock.checkPassword("frog", "unknown")
+            ) ;
+        }
     }

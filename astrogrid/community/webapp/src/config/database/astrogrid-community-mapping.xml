@@ -1,0 +1,224 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/src/config/database/astrogrid-community-mapping.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/03/30 01:40:04 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:log>
+    |   $Log: astrogrid-community-mapping.xml,v $
+    |   Revision 1.4  2004/03/30 01:40:04  dave
+    |   Merged development branch, dave-dev-200403242058, into HEAD
+    |
+    |   Revision 1.3.2.1  2004/03/28 02:00:55  dave
+    |   Added database management tasks.
+    |
+    |   Revision 1.5  2004/03/23 16:34:08  dave
+    |   Merged development branch, dave-dev-200403191458, into HEAD
+    |
+    |   Revision 1.4.6.1  2004/03/22 00:53:31  dave
+    |   Refactored GroupManager to use Ivorn identifiers.
+    |   Started removing references to CommunityManager.
+    |
+    |   Revision 1.4  2004/03/12 15:22:17  dave
+    |   Merged development branch, dave-dev-200403101018, into HEAD
+    |
+    |   Revision 1.3.12.1  2004/03/10 13:32:01  dave
+    |   Added home space to AccountData.
+    |   Improved null param checking in AccountManager.
+    |   Improved null param checking in AccountManager tests.
+    |
+    |   Revision 1.3  2004/03/05 17:19:59  dave
+    |   Merged development branch, dave-dev-200402211936, into HEAD
+    |
+    |   Revision 1.2.2.4  2004/03/02 15:29:35  dave
+    |   Working round Castor problem with PasswordData - objects remain in database cache
+    |
+    |   Revision 1.2.2.3  2004/03/01 12:49:42  dave
+    |   Updated server SecurityService to match changes to interface
+    |
+    |   Revision 1.2.2.2  2004/02/23 19:43:47  dave
+    |   Refactored DatabaseManager tests to test the interface.
+    |   Refactored DatabaseManager tests to use common DatabaseManagerTest.
+    |
+    |   Revision 1.2.2.1  2004/02/23 08:55:20  dave
+    |   Refactored CastorDatabaseConfiguration into DatabaseConfiguration
+    |
+    |   Revision 1.2  2004/02/20 21:11:05  dave
+    |   Merged development branch, dave-dev-200402120832, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/02/19 14:51:00  dave
+    |   Changed DatabaseManager to DatabaseConfigurationFactory.
+    |
+    |   Revision 1.2.2.1  2004/02/16 15:20:54  dave
+    |   Changed tabs to spaces
+    |
+    |   Revision 1.2  2004/02/12 08:12:13  dave
+    |   Merged development branch, dave-dev-200401131047, into HEAD
+    |
+    |   Revision 1.1.2.2  2004/01/30 14:55:46  dave
+    |   Added PasswordData object
+    |
+    |   Revision 1.1.2.1  2004/01/26 13:18:08  dave
+    |   Added new DatabaseManager to enable local JUnit testing
+    |
+    | </cvs:log>
+    |
+    +-->
+<mapping>
+
+    <!--+
+        | JDO Mapping for DatabaseTestData.
+        | This is used as an empty data object for CREATE TABLE statements.
+        | This may grow to contain our service configuration data.
+        +-->
+    <class name="org.astrogrid.community.server.database.configuration.DatabaseConfigurationTestData" identity="ident">
+        <map-to table="testdata"/>
+        <field name="ident" type="string">
+            <sql name="ident" type="char"/>
+        </field>
+    </class>
+
+    <!--+
+        | JDO Mapping for CommunityData.
+        +-->
+    <class name="org.astrogrid.community.common.policy.data.CommunityData" identity="ident">
+        <map-to table="communities"/>
+        <field name="ident" type="string">
+            <sql name="ident" type="char"/>
+        </field>
+        <field name="serviceUrl" type="string">
+            <sql name="service" type="char"/>
+        </field>
+        <field name="managerUrl" type="string">
+            <sql name="manager" type="char"/>
+        </field>
+        <field name="authenticationUrl" type="string">
+            <sql name="identity" type="char"/>
+        </field>
+        <field name="description" type="string">
+            <sql name="description" type="char"/>
+        </field>
+    </class>
+
+    <!--+
+        | JDO Mapping for AccountData.
+        +-->
+    <class name="org.astrogrid.community.common.policy.data.AccountData" identity="ident">
+        <map-to table="accounts"/>
+        <field name="ident" type="string">
+            <sql name="ident" type="char"/>
+        </field>
+        <field name="displayName" type="string">
+            <sql name="display" type="char"/>
+        </field>
+        <field name="description" type="string">
+            <sql name="description" type="char"/>
+        </field>
+        <field name="homeSpace" type="string">
+            <sql name="home" type="char"/>
+        </field>
+        <field name="emailAddress" type="string">
+            <sql name="email" type="char"/>
+        </field>
+    </class>
+
+    <!--+
+        | JDO Mapping for GroupData.
+        +-->
+    <class name="org.astrogrid.community.common.policy.data.GroupData" identity="ident">
+        <map-to table="groups"/>
+        <field name="ident" type="string">
+            <sql name="ident" type="char"/>
+        </field>
+        <field name="displayName" type="string">
+            <sql name="display" type="char"/>
+        </field>
+        <field name="description" type="string">
+            <sql name="description" type="char"/>
+        </field>
+        <field name="type" type="string">
+            <sql name="type" type="char"/>
+        </field>
+    </class>
+
+    <!--+
+        | JDO Mapping for ResourceData.
+        +-->
+    <class name="org.astrogrid.community.common.policy.data.ResourceData" identity="ident">
+        <map-to table="resources"/>
+        <field name="ident" type="string">
+            <sql name="ident" type="char"/>
+        </field>
+        <field name="description" type="string">
+            <sql name="description" type="char"/>
+        </field>
+    </class>
+
+    <!--+
+        | JDO Mapping for GroupMemberData.
+        +-->
+    <class name="org.astrogrid.community.common.policy.data.GroupMemberData" identity="account group">
+        <map-to table="members"/>
+        <field name="account" type="string">
+            <sql name="accountident" type="char"/>
+        </field>
+        <field name="group" type="string">
+            <sql name="groupident" type="char"/>
+        </field>
+    </class>
+
+    <!--+
+        | JDO Mapping for PolicyPermission.
+        +-->
+    <class name="org.astrogrid.community.common.policy.data.PolicyPermission" identity="resource group action">
+        <map-to table="permissions"/>
+        <field name="resource" type="string">
+            <sql name="resourceid" type="char"/>
+        </field>
+        <field name="group" type="string">
+            <sql name="groupid" type="char"/>
+        </field>
+        <field name="action" type="string">
+            <sql name="action" type="char"/>
+        </field>
+        <field name="status" type="integer">
+            <sql name="status" type="integer"/>
+        </field>
+        <field name="reason" type="string">
+            <sql name="reason" type="char"/>
+        </field>
+    </class>
+
+    <!--+
+        | JDO Mapping for SecurityToken.
+        +-->
+    <class name="org.astrogrid.community.common.security.data.SecurityToken" identity="token">
+        <map-to table="tokens"/>
+        <field name="token" type="string">
+            <sql name="token" type="char"/>
+        </field>
+        <field name="account" type="string">
+            <sql name="account" type="char"/>
+        </field>
+        <field name="status" type="integer">
+            <sql name="status" type="integer"/>
+        </field>
+    </class>
+
+    <!--+
+        | JDO Mapping for PasswordData.
+        +-->
+    <class name="org.astrogrid.community.server.security.data.PasswordData" identity="account">
+        <map-to table="secrets"/>
+        <field name="account" type="string">
+            <sql name="account" type="char"/>
+        </field>
+        <field name="password" type="string">
+            <sql name="password" type="char"/>
+        </field>
+        <field name="encryption" type="string">
+            <sql name="encryption" type="char"/>
+        </field>
+    </class>
+
+</mapping>

@@ -4,10 +4,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.11  2004/03/30 01:40:03  dave
+    |   Merged development branch, dave-dev-200403242058, into HEAD
+    |
+    |   Revision 1.10.4.2  2004/03/30 01:38:14  dave
+    |   Refactored resolver and install toolkits.
+    |
+    |   Revision 1.10.4.1  2004/03/28 02:00:55  dave
+    |   Added database management tasks.
+    |
     |   Revision 1.10  2004/03/23 16:34:08  dave
     |   Merged development branch, dave-dev-200403191458, into HEAD
     |
@@ -84,6 +93,16 @@
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <!--+
+            | Build our jar file.
+            +-->
+        <attainGoal name="build.jarfile"/>
+        <!--+
+            | Install our jar file.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="install-local"/>
+        <!--+
             | Build our zip file.
             +-->
         <attainGoal name="build.zipfile"/>
@@ -108,11 +127,21 @@
         <maven:snapshot project="${pom}"/>
         <core:set var="maven.final.name" value="${snapshotSignature}"/>
         <!--+
+            | Build our jar file.
+            +-->
+        <attainGoal name="build.jarfile"/>
+        <!--+
+            | Install our SNAPSHOT jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="install-local-snapshot"/>
+        <!--+
             | Build our zip file.
             +-->
         <attainGoal name="build.zipfile"/>
         <!--+
-            | Install our SNAPSHOT jar.
+            | Install our SNAPSHOT zip.
             +-->
         <core:set var="astrogrid.artifact.type" value="zip"/>
         <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
@@ -133,6 +162,12 @@
         <!--+
             | Deploy our jar.
             +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="deploy-local"/>
+        <!--+
+            | Deploy our zip.
+            +-->
         <core:set var="astrogrid.artifact.type" value="zip"/>
         <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
         <attainGoal name="deploy-local"/>
@@ -151,6 +186,12 @@
         <attainGoal name="astrogrid-install-snapshot"/>
         <!--+
             | Deploy our SNAPSHOT jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="deploy-local-snapshot"/>
+        <!--+
+            | Deploy our SNAPSHOT zip.
             +-->
         <core:set var="astrogrid.artifact.type" value="zip"/>
         <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
@@ -173,7 +214,7 @@
     <!-- ================ Project goals ================ -->
 
     <!--+
-        | Copy our Community WebApp war file.
+        | Add our Community WebApp war file.
         +-->
     <goal name="install.webapp">
         <ant:echo message="Installing Community webapp war ...."/>
@@ -212,7 +253,7 @@
     </goal>
 
     <!--+
-        | Copy our Community client jar file.
+        | Add our Community jars.
         +-->
     <goal name="install.client">
         <ant:echo message="Installing Community client jar ...."/>
@@ -341,9 +382,19 @@
         <!--+
             | Copy our configuration data.
             +-->
-        <ant:copy toDir="${maven.build.dir}/install/xml">
-            <fileset dir="src/xml">
+        <ant:copy toDir="${maven.build.dir}/install/config">
+            <fileset dir="src/config">
+                <include name="**/*.properties"/>
                 <include name="**/*.xml"/>
+            </fileset>
+        </ant:copy>
+        <!--+
+            | Copy our install library.
+            | TODO - This should either be SNAPSHOT or version.
+            +-->
+        <ant:copy toDir="${maven.build.dir}/install/jar">
+            <fileset dir="${maven.build.dir}">
+                <include name="${maven.final.name}.jar"/>
             </fileset>
         </ant:copy>
     </goal>
@@ -372,6 +423,19 @@
     </goal>
 
     <!--+
+        | Build our jar file.
+        +-->
+    <goal name="build.jarfile">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Building toolkit jar ...."/>
+        <!--+
+            | Build and test our tools.
+            +-->
+        <attainGoal name="jar:jar"/>
+    </goal>
+
+    <!--+
         | Setup our JUnit tests.
         +-->
     <preGoal name="test:test">
@@ -383,6 +447,18 @@
             +-->
         <attainGoal name="init.classpath"/>
         <!--+
+            | Create our config directories.
+            +-->
+        <ant:mkdir dir="${maven.build.dir}/config"/>
+        <ant:mkdir dir="${maven.build.dir}/config/registry"/>
+        <ant:mkdir dir="${maven.build.dir}/config/community"/>
+        <!--+
+            | Copy our config files.
+            +-->
+        <ant:copy todir="${maven.build.dir}/config">
+            <fileset dir="src/config"/>
+        </ant:copy>
+        <!--+
             | Check the JUnit test settings.
             +-->
         <ant:echo message=""/>
@@ -390,5 +466,4 @@
         <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
         <ant:echo message=""/>
     </preGoal>
-
 </project>

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/security/manager/Attic/SecurityManagerResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerResolverTestCase.java,v $
+ *   Revision 1.3  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.2.4.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.2  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -67,9 +73,9 @@ public class SecurityManagerResolverTestCase
         //
         // Create our Ivorn.
         Ivorn ivorn = CommunityAccountIvornFactory.createMock(
-        	"community",
-        	"frog"
-        	) ;
+            "community",
+            "frog"
+            ) ;
         if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
         //
         // Create our resolver.
@@ -90,12 +96,12 @@ public class SecurityManagerResolverTestCase
             SecurityManagerMockDelegate.class,
             delegate.getClass()
             ) ;
-		//
-		// Check that our service works.
-		assertNotNull(
+        //
+        // Check that our service works.
+        assertNotNull(
             "Null service status",
-			delegate.getServiceStatus()
-			) ;
+            delegate.getServiceStatus()
+            ) ;
         }
 
     /**
@@ -111,8 +117,8 @@ public class SecurityManagerResolverTestCase
         //
         // Create our Ivorn.
         Ivorn ivorn = CommunityAccountIvornFactory.createLocal(
-        	"frog"
-        	) ;
+            "frog"
+            ) ;
         if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
         //
         // Create our resolver.
@@ -133,11 +139,11 @@ public class SecurityManagerResolverTestCase
             SecurityManagerSoapDelegate.class,
             delegate.getClass()
             ) ;
-		//
-		// Check that our service works.
-		assertNotNull(
+        //
+        // Check that our service works.
+        assertNotNull(
             "Null service status",
-			delegate.getServiceStatus()
-			) ;
+            delegate.getServiceStatus()
+            ) ;
         }
     }

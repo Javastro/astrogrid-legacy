@@ -4,10 +4,25 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/tomcat/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/30 01:40:04 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.6  2004/03/30 01:40:04  dave
+    |   Merged development branch, dave-dev-200403242058, into HEAD
+    |
+    |   Revision 1.5.6.4  2004/03/30 01:38:14  dave
+    |   Refactored resolver and install toolkits.
+    |
+    |   Revision 1.5.6.3  2004/03/28 08:54:19  dave
+    |   Bug fixes
+    |
+    |   Revision 1.5.6.2  2004/03/28 08:37:10  dave
+    |   Fixes to test data
+    |
+    |   Revision 1.5.6.1  2004/03/28 02:00:55  dave
+    |   Added database management tasks.
+    |
     |   Revision 1.5  2004/03/19 14:43:15  dave
     |   Merged development branch, dave-dev-200403151155, into HEAD
     |
@@ -92,9 +107,17 @@
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <ant:echo message="Building install toolkit ...."/>
         <!--+
-            | Install our toolkit ....
+            | Install our toolkits.
             +-->
         <attainGoal name="toolkit.install"/>
+        <!--+
+            | Configure our toolkits.
+            +-->
+        <attainGoal name="toolkit.config"/>
+        <!--+
+            | Install our service.
+            +-->
+        <attainGoal name="service.install"/>
     </goal>
 
     <!--+
@@ -267,6 +290,58 @@
             />
     </goal>
 
+    <!-- ================ Resolver kit goals ================ -->
+
+    <!--+
+        | Install our toolkit.
+        +-->
+    <goal name="resolver.install">
+        <ant:echo message=""/>
+        <ant:echo message="Installing resolver toolkit ...."/>
+        <!--+
+            | Create our target directory.
+            +-->
+        <ant:mkdir dir="${maven.build.dir}/install"/>
+        <!--+
+            | Project.getDependencyPath() only works for jar and ejb files.
+            | See : http://maven.apache.org/xref/org/apache/maven/DependencyClasspathBuilder.html#100
+            | Means we have to do this the long way round .... by iterating through our list of artifacts.
+            +-->
+        <core:forEach var="artifact" items="${pom.getArtifacts()}">
+            <!--+
+                | If the artifact matches our criteria.
+                +-->
+            <core:if test="${artifact.dependency.getProperty('resolverkit')=='true'}">
+                <ant:echo message="Found Community toolkit"/>
+                <ant:echo message="  Ident   : ${artifact.getDependency().getId()}"/>
+                <ant:echo message="  Version : ${artifact.getDependency().getVersion()}"/>
+                <ant:echo message="  Type    : ${artifact.getDependency().getType()}"/>
+                <ant:echo message="  Name    : ${artifact.getName()}"/>
+                <ant:echo message="  Path    : ${artifact.getPath()}"/>
+                <!--+
+                    | Unpack the zip file ....
+                    +-->
+                <ant:unzip src="${artifact.getPath()}" dest="${maven.build.dir}/resolver"/>
+            </core:if>
+        </core:forEach>
+    </goal>
+
+    <!--+
+        | Configure our toolkit.
+        +-->
+    <goal name="resolver.config">
+        <ant:echo message=""/>
+        <ant:echo message="Configuring resolver toolkit ...."/>
+        <!--+
+            | Set the community ident.
+            +-->
+        <ant:propertyfile
+            file="${maven.build.dir}/resolver/resolver.properties">
+            <entry key="org.astrogrid.community.ident"
+                value="${org.astrogrid.community.ident}"/>
+        </ant:propertyfile>
+    </goal>
+
     <!-- ================ Install kit goals ================ -->
 
     <!--+
@@ -274,7 +349,7 @@
         +-->
     <goal name="install.install">
         <ant:echo message=""/>
-        <ant:echo message="Installing Install toolkit ...."/>
+        <ant:echo message="Installing install toolkit ...."/>
         <!--+
             | Create our target directory.
             +-->
@@ -308,7 +383,7 @@
         +-->
     <goal name="install.config">
         <ant:echo message=""/>
-        <ant:echo message="Configuring Install toolkit ...."/>
+        <ant:echo message="Configuring install toolkit ...."/>
         <!--+
             | Initialise our Tomcat path.
             +-->
@@ -323,7 +398,15 @@
                 value="${tomcat.home}"/>
         </ant:propertyfile>
         <!--+
-            | Set the config files location.
+            | Set the community ident.
+            +-->
+        <ant:propertyfile
+            file="${maven.build.dir}/install/install.properties">
+            <entry key="org.astrogrid.community.ident"
+                value="${org.astrogrid.community.ident}"/>
+        </ant:propertyfile>
+        <!--+
+            | Set the config location.
             +-->
         <ant:propertyfile
             file="${maven.build.dir}/install/install.properties">
@@ -355,10 +438,6 @@
         <ant:mkdir dir="${maven.build.dir}/tomcat"/>
         <ant:mkdir dir="${maven.build.dir}/tomcat/xsl"/>
         <!--+
-            | Unpack our install toolkit.
-            +-->
-        <attainGoal name="install.install"/>
-        <!--+
             | Unpack our Tomcat dist.
             +-->
         <attainGoal name="tomcat.install"/>
@@ -377,143 +456,62 @@
             </fileset>
         </ant:copy>
         <!--+
+            | Install our install toolkit.
+            +-->
+        <attainGoal name="install.install"/>
+        <!--+
+            | Install our resolver toolkit.
+            +-->
+        <attainGoal name="resolver.install"/>
+    </goal>
+
+    <!--+
+        | Configure our toolkits.
+        +-->
+    <goal name="toolkit.config">
+        <ant:echo message=""/>
+        <ant:echo message="Configuring toolkit ...."/>
+        <!--+
             | Configure our Tomcat installation.
             +-->
         <attainGoal name="tomcat.config"/>
         <!--+
-            | Configure our install kit.
+            | Configure our install toolkit.
             +-->
         <attainGoal name="install.config"/>
         <!--+
-            | Install our webapp.
+            | Configure our resolver toolkit.
             +-->
-        <attainGoal name="webapp.install"/>
-        <!--+
-            | Configure our webapp context.
-            +-->
-        <attainGoal name="webapp.context"/>
-        <!--+
-            | Install our webapp config.
-            +-->
-        <attainGoal name="config.install"/>
+        <attainGoal name="resolver.config"/>
     </goal>
 
+    <!-- ================ Service install ================ -->
+
     <!--+
-        | Test our tools are installed ok.
+        | Install our WebService.
         +-->
-    <goal name="toolkit.init">
+    <goal name="service.install">
+        <ant:echo message=""/>
+        <ant:echo message="Installing service ...."/>
         <!--+
-            | Initialise our Tomcat path.
+            | Locate the tomcat home.
             +-->
         <attainGoal name="tomcat.path"/>
         <!--+
-            | Call the init task in our Ant scripts.
+            | Install our web service.
             +-->
         <ant:ant
-            target="init"
-            dir="${maven.build.dir}/install"
-            antfile="${maven.build.dir}/install/install.xml">
-            <property name="tomcat.version" value="${tomcat.version}"/>
-            <property name="tomcat.home"    value="${tomcat.home}"/>
-        </ant:ant>
-        <ant:ant
-            target="init"
-            dir="${maven.build.dir}/tomcat"
-            antfile="${maven.build.dir}/tomcat/tomcat.xml">
-            <property name="tomcat.version" value="${tomcat.version}"/>
-            <property name="tomcat.home"    value="${tomcat.home}"/>
-        </ant:ant>
-    </goal>
-
-    <!-- ================ WebApp goals ================ -->
-
-    <!--+
-        | Install our WebApp.
-        +-->
-    <goal name="webapp.install">
-        <ant:echo message=""/>
-        <ant:echo message="Installing webapp ...."/>
-        <!--+
-            | Initialise our Tomcat path.
-            +-->
-        <attainGoal name="tomcat.path"/>
-        <!--+
-            | Call the install task in our Ant script.
-            +-->
-        <ant:ant
-            target="webapp.install"
-            dir="${maven.build.dir}/install"
-            antfile="${maven.build.dir}/install/install.xml">
-            <property name="tomcat.version" value="${tomcat.version}"/>
-            <property name="tomcat.home"    value="${tomcat.home}"/>
-        </ant:ant>
-    </goal>
-
-    <!--+
-        | Configure our WebApp context.
-        +-->
-    <goal name="webapp.context">
-        <ant:echo message=""/>
-        <ant:echo message="Configuring webapp context ...."/>
-        <!--+
-            | Initialise our Tomcat path.
-            +-->
-        <attainGoal name="tomcat.path"/>
-        <!--+
-            | Call the install tasks in our Ant script.
-            | This adds a global JNDI property in the Tomcat server.xml file.
-            | See install.xml for details of other options.
-            +-->
-        <ant:ant
-            target="jndi.server.global"
-            dir="${maven.build.dir}/install"
-            antfile="${maven.build.dir}/install/install.xml">
-            <property name="tomcat.version" value="${tomcat.version}"/>
-            <property name="tomcat.home"    value="${tomcat.home}"/>
-        </ant:ant>
-    </goal>
-
-    <!-- ================ Config goals ================ -->
-
-    <!--+
-        | Install our config file(s).
-        +-->
-    <goal name="config.install">
-        <ant:echo message=""/>
-        <ant:echo message="Installing webapp config ...."/>
-        <!--+
-            | Call the corresponding task in our install script.
-            +-->
-        <ant:ant
-            target="config.install"
+            target="install"
             dir="${maven.build.dir}/install"
             antfile="${maven.build.dir}/install/install.xml"
             >
-            <property name="config.home" value="${maven.build.dir}/config"/>
+            <property name="config.home"    value="${maven.build.dir}/config"/>
+            <property name="tomcat.home"    value="${tomcat.home}"/>
+            <property name="tomcat.version" value="${tomcat.version}"/>
         </ant:ant>
     </goal>
 
     <!-- ================ Service test goals ================ -->
-
-    <!--+
-        | Setup our JUnit tests.
-        +-->
-    <preGoal name="test:test">
-        <ant:echo message=""/>
-        <ant:echo message="Artifact : ${pom.artifactId}"/>
-        <ant:echo message="Preparing services for tests"/>
-        <!--+
-            | Initialise our classpaths.
-            +-->
-        <attainGoal name="init.classpath"/>
-        <!--+
-            | Check the JUnit test settings.
-            +-->
-        <ant:echo message=""/>
-        <ant:echo message="JUnit fork VM - ${maven.junit.fork}"/>
-        <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
-        <ant:echo message=""/>
-    </preGoal>
 
     <!--+
         | Test our WebService.
@@ -533,5 +531,95 @@
             />
     </goal>
 
+    <!-- ================ Database config goals ================ -->
+
+    <!--+
+        | Reset our database tables.
+        +-->
+    <goal name="database.reset">
+        <!--+
+            | Wait for Tomcat to start.
+            +-->
+        <attainGoal name="tomcat.wait"/>
+        <!--+
+            | Call the task in our install script.
+            +-->
+        <ant:ant
+            target="database.reset"
+            dir="${maven.build.dir}/install"
+            antfile="${maven.build.dir}/install/install.xml"
+            />
+    </goal>
+
+    <!--+
+        | Load our database data.
+        +-->
+    <goal name="database.load">
+        <!--+
+            | Wait for Tomcat to start.
+            +-->
+        <attainGoal name="tomcat.wait"/>
+        <!--+
+            | Call the task in our install script.
+            +-->
+        <ant:ant
+            target="database.load"
+            dir="${maven.build.dir}/install"
+            antfile="${maven.build.dir}/install/install.xml"
+            />
+    </goal>
+
+    <!--+
+        | Install our database.
+        +-->
+    <goal name="database.install">
+	    <!--+
+	        | Reset our database tables.
+	        +-->
+        <attainGoal name="database.reset"/>
+	    <!--+
+	        | Load our database data.
+	        +-->
+        <attainGoal name="database.load"/>
+    </goal>
+
+
+    <!-- ================ Resolver goals ================ -->
+
+    <!--+
+        | Login to our service.
+        +-->
+    <goal name="resolver.login">
+        <!--+
+            | Wait for Tomcat to start.
+            +-->
+        <attainGoal name="tomcat.wait"/>
+        <!--+
+            | Call the task in our resolver script.
+            +-->
+        <ant:ant
+            target="login.live"
+            dir="${maven.build.dir}/resolver"
+            antfile="${maven.build.dir}/resolver/resolver.xml"
+            />
+    </goal>
+
+    <!--+
+        | Validate a token.
+        +-->
+    <goal name="resolver.token">
+        <!--+
+            | Wait for Tomcat to start.
+            +-->
+        <attainGoal name="tomcat.wait"/>
+        <!--+
+            | Call the task in our resolver script.
+            +-->
+        <ant:ant
+            target="token.live"
+            dir="${maven.build.dir}/resolver"
+            antfile="${maven.build.dir}/resolver/resolver.xml"
+            />
+    </goal>
 
 </project>

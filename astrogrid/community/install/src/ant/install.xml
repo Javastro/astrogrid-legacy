@@ -2,81 +2,30 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/install.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: install.xml,v $
-    |   Revision 1.4  2004/03/08 13:42:33  dave
-    |   Updated Maven goals.
-    |   Replaced tabs with Spaces.
+    |   Revision 1.5  2004/03/30 01:40:03  dave
+    |   Merged development branch, dave-dev-200403242058, into HEAD
     |
-    |   Revision 1.3.2.1  2004/03/08 12:53:18  dave
-    |   Changed tabs to spaces
+    |   Revision 1.4.20.5  2004/03/30 01:38:14  dave
+    |   Refactored resolver and install toolkits.
     |
-    |   Revision 1.3  2004/03/05 17:19:59  dave
-    |   Merged development branch, dave-dev-200402211936, into HEAD
+    |   Revision 1.4.20.4  2004/03/29 11:44:54  dave
+    |   Fixed bugs in Ant tasks
     |
-    |   Revision 1.2.2.1  2004/03/04 08:57:10  dave
-    |   Started work on the install xdocs.
-    |   Started work on the Security delegates.
+    |   Revision 1.4.20.3  2004/03/28 09:11:43  dave
+    |   Convert tabs to spaces
     |
-    |   Revision 1.2  2004/02/20 21:11:05  dave
-    |   Merged development branch, dave-dev-200402120832, into HEAD
+    |   Revision 1.4.20.2  2004/03/28 07:06:18  dave
+    |   Tidied up config files
     |
-    |   Revision 1.1.2.6  2004/02/20 19:34:11  dave
-    |   Added JNDI Resource for community database.
-    |   Removed multiple calls to loadDatabaseConfiguration .
-    |
-    |   Revision 1.1.2.5  2004/02/16 23:27:59  dave
-    |   Tested with the following Tomcat versions :
-    |       4.1.24
-    |       4.1.24-LE-jdk14
-    |       4.1.26
-    |       4.1.26-LE-jdk14
-    |       4.1.27
-    |       4.1.27-LE-jdk14
-    |       4.1.29
-    |       4.1.29-LE-jdk14
-    |       4.1.30
-    |       4.1.30-LE-jdk14
-    |       5.0.16 **
-    |       5.0.18 **
-    |
-    |   ** Target directory for the local context file has moved in tomcat-5.0.xx
-    |
-    |   Revision 1.1.2.4  2004/02/16 15:20:54  dave
-    |   Changed tabs to spaces
-    |
-    |   Revision 1.1.2.3  2004/02/16 14:13:20  dave
-    |   Fixed JNDI install scripts to use different methods
-    |
-    |   Revision 1.1.2.2  2004/02/15 00:28:22  dave
-    |   Added tools for adding separate webapp context file to Tomcat
-    |
-    |   Revision 1.1.2.1  2004/02/14 22:24:09  dave
-    |   Test toolkit for the install and tomcat sub-projects
-    |
-    |   Revision 1.4  2004/02/12 08:12:13  dave
-    |   Merged development branch, dave-dev-200401131047, into HEAD
-    |
-    |   Revision 1.2.4.2  2004/02/12 06:26:37  dave
-    |   Reconfiguring install toolkit
-    |
-    |   Revision 1.2.4.1  2004/02/10 00:40:37  dave
-    |   Added install tooklit to the Maven build.
-    |   Changed Maven project to use 'org.astrogrid' as the group name.
-    |   Fixed dependencies that used the original group name.
-    |
-    |   Revision 1.2  2004/01/07 10:45:39  dave
-    |   Merged development branch, dave-dev-20031224, back into HEAD
-    |
-    |   Revision 1.1.2.1  2004/01/05 06:47:18  dave
-    |   Moved policy data classes into policy.data package
-    |
+    |   Revision 1.4.20.1  2004/03/28 02:00:55  dave
+    |   Added database management tasks.
     | </cvs:log>
     |
-    | Webapp deployment script.
-    | Adds all of the components in the right places and sets up the configuration files.
+    | WebService install script.
     |
     |
     +-->
@@ -91,10 +40,21 @@
         | Load our installation properties.
         +-->
     <property file="${basedir}/install.properties"/>
+
     <!--+
         | Load our tomcat properties (optional).
         +-->
     <property file="${basedir}/tomcat.properties"/>
+
+    <!--+
+        | Default community properties.
+        +-->
+    <property name="org.astrogrid.community.ident" value="org.astrogrid.localhost"/>
+
+    <!--+
+        | Our default configuration data.
+    <property name="community.data"  value="${basedir}/config/community"/>
+        +-->
 
     <!--+
         | Default Tomcat properties.
@@ -116,12 +76,6 @@
         +-->
     <property name="context.name" value="astrogrid-community"/>
     <property name="context.file" value="astrogrid-community-context.xml"/>
-
-    <!--+
-        | Default config properties.
-        +-->
-    <property name="config.name" value="astrogrid-community-config.xml"/>
-    <property name="config.home" value="/etc/astrogrid"/>
 
     <!--+
         | Default database properties.
@@ -180,15 +134,10 @@
         <echo message="webapp.url     : ${webapp.url}"/>
         <echo message=""/>
 
-        <echo message="config.name    : ${config.name}"/>
-        <echo message="config.home    : ${config.home}"/>
-        <echo message=""/>
-
         <echo message="database.name  : ${database.name}"/>
         <echo message="database.home  : ${database.home}"/>
         <echo message="database.url   : ${database.url}"/>
         <echo message="database.jndi  : ${database.jndi}"/>
-
         <echo message=""/>
 
         <echo message=""/>
@@ -211,46 +160,17 @@
     <!--+
         | Install our config files.
         | At the moment, this will overwrite any existing config files.
-        | TODO, move existing config files to backups ??
         +-->
     <target name="config.install" depends="">
+        <echo message=""/>
+        <echo message="Installing config files ...."/>
+        <echo message="  Config home : ${config.home}"/>
         <mkdir dir="${config.home}"/>
         <copy toDir="${config.home}">
-            <fileset dir="${basedir}/xml/config">
-                <include name="${config.name}"/>
+            <fileset dir="${basedir}/config">
+                <include name="**"/>
             </fileset>
         </copy>
-    </target>
-
-    <!--+
-        | Set a property in our config file.
-        +-->
-    <target name="config.xslt" depends="">
-        <echo message=""/>
-        <echo message="Updating community config ...."/>
-        <echo message="  Config file    : ${config.file}"/>
-        <echo message="  Property name  : ${property.name}"/>
-        <echo message="  Property value : ${property.value}"/>
-        <!--+
-            | Transform our config file, filling in the specified value.
-            +-->
-        <xslt style="${basedir}/xsl/jconfig-property.xsl"
-              in="${config.file}"
-              out="${config.file}.tmp">
-            <outputproperty name="method" value="xml"/>
-            <outputproperty name="indent" value="yes"/>
-            <!-- Set the XSL params -->
-            <param name="property.category" expression="org.astrogrid.community"/>
-            <param name="property.name"     expression="${property.name}"/>
-            <param name="property.value"    expression="${property.value}"/>
-        </xslt>
-        <!--+
-            | Replace the existing config.xml with the new one.
-            +-->
-        <move overwrite="true"
-            failonerror="false"
-            file="${config.file}.tmp"
-            tofile="${config.file}"/>
     </target>
 
     <!-- ================ Webapp tasks ================ -->
@@ -285,23 +205,25 @@
         | Install our war file into Tomcat.
         +-->
     <target name="webapp.install" depends="">
+        <echo message=""/>
+        <echo message="Installing Community webapp ...."/>
         <!--+
             | Delete any existing war file.
             +-->
-        <delete verbose="true"
+        <delete verbose="false"
             failonerror="false"
             file="${tomcat.home}/webapps/${webapp.name}.war"/>
         <!--+
             | Delete any existing webapp
             +-->
-        <delete verbose="true"
+        <delete verbose="false"
             failonerror="false"
             includeEmptyDirs="true"
             dir="${tomcat.home}/webapps/${webapp.name}"/>
         <!--+
             | Install our war file into Tomcat.
             +-->
-        <copy verbose="true"
+        <copy verbose="false"
             toFile="${tomcat.home}/webapps/${webapp.name}.war">
             <fileset dir="${basedir}/war">
                 <include name="*.war"/>
@@ -343,7 +265,7 @@
     <target name="webxml.property" depends="">
         <echo message=""/>
         <echo message="Adding JNDI property to webapp."/>
-        <echo message="  webapp.home : ${webapp.home}"/>
+        <echo message="  webapp.home    : ${webapp.home}"/>
         <echo message="  property.name  : ${property.name}"/>
         <echo message="  property.type  : ${property.type}"/>
         <echo message="  property.value : ${property.value}"/>
@@ -357,7 +279,7 @@
         <!--+
             | Update our WebApp web.xml, adding our JNDI property.
             +-->
-        <xslt style="${basedir}/xsl/webxml-property.xsl"
+        <xslt style="${basedir}/xsl/webapp/webxml-property.xsl"
             in="${webapp.home}/WEB-INF/web.xml"
             out="${webapp.home}/WEB-INF/web.tmp">
             <outputproperty name="method" value="xml"/>
@@ -381,14 +303,14 @@
     <target name="server.global.property" depends="">
         <echo message=""/>
         <echo message="Adding global JNDI property to server config."/>
-        <echo message="  tomcat.home : ${tomcat.home}"/>
+        <echo message="  tomcat.home    : ${tomcat.home}"/>
         <echo message="  property.name  : ${property.name}"/>
         <echo message="  property.type  : ${property.type}"/>
         <echo message="  property.value : ${property.value}"/>
         <!--+
             | Add our JNDI property to the Tomcat server.xml.
             +-->
-        <xslt style="${basedir}/xsl/global-property.xsl"
+        <xslt style="${basedir}/xsl/webapp/global-property.xsl"
             in="${tomcat.home}/conf/server.xml"
             out="${tomcat.home}/conf/server.xml.tmp">
             <outputproperty name="method" value="xml"/>
@@ -412,7 +334,7 @@
     <target name="server.context.property" depends="">
         <echo message=""/>
         <echo message="Adding JNDI property to server context"/>
-        <echo message="  tomcat.home : ${tomcat.home}"/>
+        <echo message="  tomcat.home    : ${tomcat.home}"/>
         <echo message="  context.path   : ${context.path}"/>
         <echo message="  property.name  : ${property.name}"/>
         <echo message="  property.type  : ${property.type}"/>
@@ -420,7 +342,7 @@
         <!--+
             | Add the JNDI property to our context.
             +-->
-        <xslt style="${basedir}/xsl/context-property.xsl"
+        <xslt style="${basedir}/xsl/webapp/context-property.xsl"
             in="${tomcat.home}/conf/server.xml"
             out="${tomcat.home}/conf/server.xml.tmp">
             <outputproperty name="method" value="xml"/>
@@ -445,7 +367,7 @@
     <target name="server.context.reference" depends="">
         <echo message=""/>
         <echo message="Adding JNDI reference to server context"/>
-        <echo message="  tomcat.home : ${tomcat.home}"/>
+        <echo message="  tomcat.home   : ${tomcat.home}"/>
         <echo message="  context.path  : ${context.path}"/>
         <echo message="  property.name : ${property.name}"/>
         <echo message="  property.type : ${property.type}"/>
@@ -453,7 +375,7 @@
         <!--+
             | Add a reference to the JNDI property in our context.
             +-->
-        <xslt style="${basedir}/xsl/global-property-reference.xsl"
+        <xslt style="${basedir}/xsl/webapp/global-property-reference.xsl"
             in="${tomcat.home}/conf/server.xml"
             out="${tomcat.home}/conf/server.xml.tmp">
             <outputproperty name="method" value="xml"/>
@@ -486,7 +408,7 @@
         <!--+
             | Add our context to the Tomcat server.xml.
             +-->
-        <xslt style="${basedir}/xsl/context-insert.xsl"
+        <xslt style="${basedir}/xsl/webapp/context-insert.xsl"
             in="${tomcat.home}/conf/server.xml"
             out="${tomcat.home}/conf/server.xml.tmp">
             <outputproperty name="method" value="xml"/>
@@ -540,7 +462,7 @@
         <!--+
             | Update our context file, adding the JNDI property
             +-->
-        <xslt style="${basedir}/xsl/context-property.xsl"
+        <xslt style="${basedir}/xsl/webapp/context-property.xsl"
             in="${tomcat.home}/webapps/${context.file}"
             out="${tomcat.home}/webapps/${context.file}.tmp">
             <outputproperty name="method" value="xml"/>
@@ -565,7 +487,7 @@
     <target name="local.context.reference" depends="">
         <echo message=""/>
         <echo message="Adding JNDI reference to local context"/>
-        <echo message="  tomcat.home : ${tomcat.home}"/>
+        <echo message="  tomcat.home   : ${tomcat.home}"/>
         <echo message="  context.file  : ${context.file}"/>
         <echo message="  property.name : ${property.name}"/>
         <echo message="  property.type : ${property.type}"/>
@@ -573,7 +495,7 @@
         <!--+
             | Update our context file, adding a reference to the JNDI property.
             +-->
-        <xslt style="${basedir}/xsl/global-property-reference.xsl"
+        <xslt style="${basedir}/xsl/webapp/global-property-reference.xsl"
             in="${tomcat.home}/webapps/${context.file}"
             out="${tomcat.home}/webapps/${context.file}.tmp">
             <outputproperty name="method" value="xml"/>
@@ -590,29 +512,6 @@
         <move overwrite="true" failonerror="false"
             file="${tomcat.home}/webapps/${context.file}.tmp"
             tofile="${tomcat.home}/webapps/${context.file}"/>
-    </target>
-
-    <!--+
-        | Configure our JNDI property.
-        | Using a property in a server context.
-        +-->
-    <target name="jndi.server.context" depends="">
-        <!--+
-            | Add our context to the server.xml.
-            +-->
-        <antcall target="server.context.insert">
-            <param name="context.path" value="/${webapp.name}"/>
-            <param name="context.base" value="${webapp.name}.war"/>
-        </antcall>
-        <!--+
-            | Add a property to our context.
-            +-->
-        <antcall target="server.context.property">
-            <param name="context.path"   value="/${webapp.name}"/>
-            <param name="property.name"  value="org.astrogrid.community.config"/>
-            <param name="property.type"  value="java.lang.String"/>
-            <param name="property.value" value="${config.home}/${config.name}"/>
-        </antcall>
     </target>
 
     <!-- ================ JNDI database resource tasks ================ -->
@@ -636,14 +535,14 @@
     <target name="server.global.resource" depends="">
         <echo message=""/>
         <echo message="Adding global JNDI resource to server config."/>
-        <echo message="  tomcat.home : ${tomcat.home}"/>
+        <echo message="  tomcat.home   : ${tomcat.home}"/>
         <echo message="  resource.name : ${resource.name}"/>
         <echo message="  resource.type : ${resource.type}"/>
         <echo message="  resource.auth : ${resource.auth}"/>
         <!--+
             | Add our global resource to the Tomcat server.xml.
             +-->
-        <xslt style="${basedir}/xsl/global-resource.xsl"
+        <xslt style="${basedir}/xsl/webapp/global-resource.xsl"
             in="${tomcat.home}/conf/server.xml"
             out="${tomcat.home}/conf/server.xml.tmp">
             <outputproperty name="method" value="xml"/>
@@ -667,7 +566,7 @@
     <target name="server.global.resource.params" depends="">
         <echo message=""/>
         <echo message="Adding global JNDI resource params to server config."/>
-        <echo message="  tomcat.home : ${tomcat.home}"/>
+        <echo message="  tomcat.home   : ${tomcat.home}"/>
         <echo message="  resource.name : ${resource.name}"/>
         <echo message="  database.url  : ${database.url}"/>
         <echo message="  database.user : ${database.user}"/>
@@ -677,7 +576,7 @@
         <!--+
             | Add our global resource params to the Tomcat server.xml.
             +-->
-        <xslt style="${basedir}/xsl/global-resource-params.xsl"
+        <xslt style="${basedir}/xsl/webapp/global-resource-params.xsl"
             in="${tomcat.home}/conf/server.xml"
             out="${tomcat.home}/conf/server.xml.tmp">
             <outputproperty name="method" value="xml"/>
@@ -698,13 +597,14 @@
             tofile="${tomcat.home}/conf/server.xml"/>
     </target>
 
-
     <!-- ================ JNDI configuration tasks ================ -->
 
     <!--+
         | Using global properties, with a context in the server config.
         +-->
     <target name="jndi.server.global" depends="">
+        <echo message=""/>
+        <echo message="Configuring system using global server properties."/>
         <!--+
             | Add our context to the server.xml.
             +-->
@@ -713,21 +613,21 @@
             <param name="context.base" value="${webapp.name}.war"/>
         </antcall>
         <!--+
-            | Add the community config path as a global property.
+            | Add the community ident path as a global property.
             +-->
         <antcall target="server.global.property">
-            <param name="property.name"  value="org.astrogrid.community.config"/>
+            <param name="property.name"  value="org.astrogrid.community.ident"/>
             <param name="property.type"  value="java.lang.String"/>
-            <param name="property.value" value="${config.home}/${config.name}"/>
+            <param name="property.value" value="${org.astrogrid.community.ident}"/>
         </antcall>
         <!--+
             | Add a reference to the config property to our context.
             +-->
         <antcall target="server.context.reference">
             <param name="context.path"  value="/${webapp.name}"/>
-            <param name="property.name" value="org.astrogrid.community.config"/>
+            <param name="property.name" value="org.astrogrid.community.ident"/>
             <param name="property.type" value="java.lang.String"/>
-            <param name="property.link" value="org.astrogrid.community.config"/>
+            <param name="property.link" value="org.astrogrid.community.ident"/>
         </antcall>
         <!--+
             | Add the database config as a global resource.
@@ -763,6 +663,8 @@
         | because the location of the context files has been moved.
         +-->
     <target name="jndi.local.context" depends="">
+        <echo message=""/>
+        <echo message="Configuring system using local context properties."/>
         <!--+
             | Create our context file.
             +-->
@@ -775,9 +677,9 @@
             +-->
         <antcall target="local.context.property">
             <param name="context.path"   value="/${webapp.name}"/>
-            <param name="property.name"  value="org.astrogrid.community.config"/>
+            <param name="property.name"  value="org.astrogrid.community.ident"/>
             <param name="property.type"  value="java.lang.String"/>
-            <param name="property.value" value="${config.home}/${config.name}"/>
+            <param name="property.value" value="${org.astrogrid.community.ident}"/>
         </antcall>
     </target>
 
@@ -785,13 +687,15 @@
         | Global property, local context.
         +-->
     <target name="jndi.local.global" depends="">
+        <echo message=""/>
+        <echo message="Configuring system using local context and global properties."/>
         <!--+
             | Add the community config property to our context.
             +-->
         <antcall target="server.global.property">
-            <param name="property.name"  value="org.astrogrid.community.config"/>
+            <param name="property.name"  value="org.astrogrid.community.ident"/>
             <param name="property.type"  value="java.lang.String"/>
-            <param name="property.value" value="${config.home}/${config.name}"/>
+            <param name="property.value" value="${org.astrogrid.community.ident}"/>
         </antcall>
         <!--+
             | Create our context file.
@@ -805,129 +709,70 @@
             +-->
         <antcall target="local.context.reference">
             <param name="context.path"  value="/${webapp.name}"/>
-            <param name="property.name" value="org.astrogrid.community.config"/>
+            <param name="property.name" value="org.astrogrid.community.ident"/>
             <param name="property.type" value="java.lang.String"/>
-            <param name="property.link" value="org.astrogrid.community.config"/>
+            <param name="property.link" value="org.astrogrid.community.ident"/>
         </antcall>
     </target>
 
     <!-- ================ Database tasks ================ -->
+
     <!--+
-        | Configure our database params.
+        | Install our database driver.
+        | This is required if we add the database config as a global resource.
         +-->
-    <target name="config.database" depends="">
-        <echo message="  Database url  : ${database.url}"/>
-        <echo message="  Database user : ${database.user}"/>
-        <echo message="  Database pass : ${database.pass}"/>
-        <!-- Create our database data directory -->
-        <mkdir dir="${data.location}"/>
-        <!-- Update our config file, filling in the correct values -->
-        <antcall target="config.xslt">
-            <param name="config.file"    value="${config.home}/astrogrid-community-config.xml"/>
-            <param name="property.name"  value="community.name"/>
-            <param name="property.value" value="${community.name}"/>
-        </antcall>
-        <antcall target="config.xslt">
-            <param name="config.file"    value="${config.home}/astrogrid-community-config.xml"/>
-            <param name="property.name"  value="database.name"/>
-            <param name="property.value" value="${data.name}"/>
+    <target name="database.install" depends="">
+        <echo message=""/>
+        <echo message="Installing database driver ...."/>
+        <copy verbose="true" toDir="${tomcat.home}/common/lib">
+            <fileset dir="${basedir}/lib">
+                <include name="hsqldb*.jar"/>
+            </fileset>
+        </copy>
+        <echo message=""/>
+        <echo message="Creating database data directory."/>
+        <echo message="  Path : ${database.home}"/>
+        <mkdir dir="${database.home}"/>
+    </target>
+
+    <!-- ================ Install task ================ -->
+
+    <!--+
+        | Install out service.
+        +-->
+    <target name="install" depends="">
+        <!--+
+            | Install our database driver.
+            +-->
+        <antcall target="database.install">
+            <param name="tomcat.version" value="${tomcat.version}"/>
+            <param name="tomcat.home"    value="${tomcat.home}"/>
+            <param name="database.home"  value="${database.home}"/>
         </antcall>
         <!--+
-            | Transform the database config
-        <xslt style="${project.home}/config/xsl/database.xsl"
-              in="${config.home}/${project.name}-database.xml"
-              out="${config.home}/${project.name}-database.xml.new">
-            <outputproperty name="method" value="xml"/>
-            <outputproperty name="indent" value="yes"/>
-            <param name="url"  expression="${database.url}"/>
-            <param name="user" expression="${database.user}"/>
-            <param name="pass" expression="${database.pass}"/>
-        </xslt>
+            | Install our webapp.
+            +-->
+        <antcall target="webapp.install">
+            <param name="tomcat.version" value="${tomcat.version}"/>
+            <param name="tomcat.home"    value="${tomcat.home}"/>
+        </antcall>
+        <!--+
+            | Install our JNDI properties.
+            +-->
+        <antcall target="jndi.server.global">
+            <param name="tomcat.version" value="${tomcat.version}"/>
+            <param name="tomcat.home"    value="${tomcat.home}"/>
+        </antcall>
+        <!--+
+            | Install our config
+            | TODO - integrate this with the other config(s).
+        <antcall target="config.install">
+            <param name="config.home" value="${config.home}"/>
+        </antcall>
             +-->
     </target>
 
-    <!--+
-        | Create our database tables.
-    <target name="init.database" depends="">
-        <echo message=""/>
-        <echo message="Creating Hqsldb tables ...."/>
-        <sql driver="${database.driver.class}"
-             url="${database.url}"
-             classpathref="install.classpath"
-             userid="${database.user}"
-             password="${database.pass}"
-             print="true"
-            >
-            <transaction src="${project.home}/config/sql/create.sql"/>
-        </sql>
-    </target>
-        +-->
-
-    <!--+
-        | Select all rows from our database tables.
-    <target name="database.select" depends="">
-        <sql driver="${database.driver.class}"
-             url="${database.url}"
-             classpathref="install.classpath"
-             userid="${database.user}"
-             password="${database.pass}"
-             print="true"
-            >
-            <![CDATA[
-                SELECT * FROM communities ;
-                SELECT * FROM accounts    ;
-                SELECT * FROM groups      ;
-                SELECT * FROM resources   ;
-                SELECT * FROM members     ;
-                SELECT * FROM permissions ;
-            ]]>
-        </sql>
-    </target>
-        +-->
-
-    <!--+
-        | Delete all rows from our database tables.
-    <target name="database.delete" depends="">
-        <sql driver="${database.driver.class}"
-             url="${database.url}"
-             classpathref="install.classpath"
-             userid="${database.user}"
-             password="${database.pass}"
-             print="true"
-            >
-            <![CDATA[
-                DELETE FROM groups      ;
-                DELETE FROM members     ;
-                DELETE FROM accounts    ;
-                DELETE FROM resources   ;
-                DELETE FROM communities ;
-                DELETE FROM permissions ;
-            ]]>
-        </sql>
-    </target>
-        +-->
-
-    <!--+
-        | Run our database loader.
-        | This will initialise the database contents based on your community name.
-        +-->
-    <target name="load.database" depends="">
-        <echo message=""/>
-        <echo message="Loading policy data ...."/>
-        <echo message="  Community name : ${community.name}"/>
-        <!-- Define our policy-loader task -->
-        <taskdef name="policy.loader" classname="org.astrogrid.community.policy.loader.PolicyLoader">
-            <classpath refid="install.classpath"/>
-        </taskdef>
-        <!-- Process our data files -->
-        <policy.loader>
-            <fileset dir="${project.home}/config/xml">
-                <include name="${community.name}.xml"/>
-            </fileset>
-        </policy.loader>
-    </target>
-
-    <!-- ================ Status tasks ================ -->
+    <!-- ================ Database tasks ================ -->
 
     <!--+
         | Run our service status test.
@@ -936,17 +781,62 @@
         <echo message=""/>
         <echo message="Polling service status ...."/>
         <echo message="  Endpoint : ${webapp.url}/services/PolicyService"/>
-        <!-- Define our Ant task -->
+        <!--+
+            | Initialise our Ant task.
+            +-->
         <taskdef name="service.status.task" classname="org.astrogrid.community.client.ant.ServiceStatusTask">
             <classpath refid="install.classpath"/>
         </taskdef>
-        <!-- Call our WebService -->
+        <!--+
+            | Call our WebService.
+            +-->
         <service.status.task
             address="${webapp.url}/services/PolicyService">
         </service.status.task>
     </target>
 
+    <!--+
+        | Reset our database.
+        +-->
+    <target name="database.reset" depends="">
+        <echo message=""/>
+        <echo message="Resetting database ...."/>
+        <!--+
+            | Initialise our Ant task.
+            +-->
+        <taskdef name="database.reset.task" classname="org.astrogrid.community.install.ant.DatabaseManagerTask">
+            <classpath refid="install.classpath"/>
+        </taskdef>
+        <!--+
+            | Call our WebService.
+            +-->
+        <database.reset.task
+            action="reset"
+            endpoint="${webapp.url}/services/DatabaseManager"
+            />
+    </target>
 
+    <!--+
+        | Load our database.
+        +-->
+    <target name="database.load" depends="">
+        <echo message=""/>
+        <echo message="Loading database ...."/>
+        <!--+
+            | Initialise our Ant task.
+            +-->
+        <taskdef name="database.load.task" classname="org.astrogrid.community.install.ant.CommunityLoaderTask">
+            <classpath refid="install.classpath"/>
+        </taskdef>
+        <!--+
+            | Call our WebService.
+            +-->
+        <database.load.task
+            data="file://${basedir}/config/community/${org.astrogrid.community.ident}.xml"
+            policyManager="${webapp.url}/services/PolicyManager"
+            securityManager="${webapp.url}/services/SecurityManager"
+            />
+    </target>
 
 </project>
 

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/GroupManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerTest.java,v $
+ *   Revision 1.3  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.2.4.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.2  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -135,8 +141,8 @@ public class GroupManagerTest
         // Try creating the Group.
         assertNotNull("Null group",
             groupManager.addGroup(
-				createLocal("test-group").toString()
-            	)
+                createLocal("test-group").toString()
+                )
             ) ;
         }
 
@@ -155,8 +161,8 @@ public class GroupManagerTest
         assertNotNull("Null group",
             groupManager.addGroup(
                 new GroupData(
-					createLocal("test-group").toString()
-                	)
+                    createLocal("test-group").toString()
+                    )
                 )
             ) ;
         }
@@ -175,15 +181,15 @@ public class GroupManagerTest
         // Try creating the Group.
         assertNotNull("Null group",
             groupManager.addGroup(
-				createLocal("test-group").toString()
-            	)
+                createLocal("test-group").toString()
+                )
             ) ;
         //
         // Try creating the same Group.
         try {
             groupManager.addGroup(
-				createLocal("test-group").toString()
-            	) ;
+                createLocal("test-group").toString()
+                ) ;
             fail("Expected CommunityPolicyException") ;
             }
         catch (CommunityPolicyException ouch)
@@ -230,8 +236,8 @@ public class GroupManagerTest
         // Try getting the details.
         try {
             groupManager.getGroup(
-				createLocal("unknown-group").toString()
-            	) ;
+                createLocal("unknown-group").toString()
+                ) ;
             fail("Expected CommunityPolicyException") ;
             }
         catch (CommunityPolicyException ouch)
@@ -254,14 +260,14 @@ public class GroupManagerTest
         //
         // Try creating the Group.
         GroupData created = groupManager.addGroup(
-			createLocal("test-group").toString()
-        	) ;
+            createLocal("test-group").toString()
+            ) ;
         assertNotNull("Null group", created) ;
         //
         // Try getting the details.
         GroupData found = groupManager.getGroup(
-			createLocal("test-group").toString()
-        	) ;
+            createLocal("test-group").toString()
+            ) ;
         assertNotNull("Null group", found) ;
         //
         // Check that they refer to the same group.
@@ -304,8 +310,8 @@ public class GroupManagerTest
         try {
             groupManager.setGroup(
                 new GroupData(
-					createLocal("unknown-group").toString()
-                	)
+                    createLocal("unknown-group").toString()
+                    )
                 ) ;
             fail("Expected CommunityPolicyException") ;
             }
@@ -329,8 +335,8 @@ public class GroupManagerTest
         //
         // Try creating the Group.
         GroupData group = groupManager.addGroup(
-			createLocal("test-group").toString()
-        	) ;
+            createLocal("test-group").toString()
+            ) ;
         assertNotNull("Null group", group) ;
         //
         // Change the details.
@@ -347,8 +353,8 @@ public class GroupManagerTest
         //
         // Try getting the details.
         group = groupManager.getGroup(
-			createLocal("test-group").toString()
-        	) ;
+            createLocal("test-group").toString()
+            ) ;
         assertNotNull("Null group", group) ;
         //
         // Check the details have been changed.
@@ -389,8 +395,8 @@ public class GroupManagerTest
         if (DEBUG_FLAG) System.out.println("GroupManagerTest:testDeleteUnknown()") ;
         try {
             groupManager.delGroup(
-				createLocal("unknown-group").toString()
-            	) ;
+                createLocal("unknown-group").toString()
+                ) ;
             fail("Expected CommunityPolicyException") ;
             }
         catch (CommunityPolicyException ouch)
@@ -413,14 +419,14 @@ public class GroupManagerTest
         //
         // Try creating the Group.
         GroupData created = groupManager.addGroup(
-			createLocal("test-group").toString()
-        	) ;
+            createLocal("test-group").toString()
+            ) ;
         assertNotNull("Null group", created) ;
         //
         // Try deleting the Group.
         GroupData deleted = groupManager.delGroup(
-			createLocal("test-group").toString()
-        	) ;
+            createLocal("test-group").toString()
+            ) ;
         assertNotNull("Null group", deleted) ;
         //
         // Check that the two objects represent the same Group.
@@ -440,14 +446,14 @@ public class GroupManagerTest
         //
         // Try creating the Group.
         GroupData created = groupManager.addGroup(
-			createLocal("test-group").toString()
-        	) ;
+            createLocal("test-group").toString()
+            ) ;
         assertNotNull("Null group", created) ;
         //
         // Try deleting the Group.
         GroupData deleted = groupManager.delGroup(
-			createLocal("test-group").toString()
-        	) ;
+            createLocal("test-group").toString()
+            ) ;
         assertNotNull("Null group", deleted) ;
         //
         // Check that the two objects represent the same Group.
@@ -456,8 +462,8 @@ public class GroupManagerTest
         // Try deleting the Group again.
         try {
             groupManager.delGroup(
-				createLocal("test-group").toString()
-            	) ;
+                createLocal("test-group").toString()
+                ) ;
             fail("Expected CommunityPolicyException") ;
             }
         catch (CommunityPolicyException ouch)

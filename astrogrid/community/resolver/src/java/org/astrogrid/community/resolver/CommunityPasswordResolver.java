@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityPasswordResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityPasswordResolver.java,v $
+ *   Revision 1.3  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.2.4.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.2  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -38,12 +44,12 @@ import org.astrogrid.community.resolver.exception.CommunityResolverException ;
  *
  */
 public class CommunityPasswordResolver
-	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	private static boolean DEBUG_FLAG = true ;
+    {
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    private static boolean DEBUG_FLAG = true ;
 
     /**
      * Public constructor, using the default Registry service.
@@ -51,7 +57,7 @@ public class CommunityPasswordResolver
      */
     public CommunityPasswordResolver()
         {
-		resolver = new SecurityServiceResolver() ;
+        resolver = new SecurityServiceResolver() ;
         }
 
     /**
@@ -61,14 +67,14 @@ public class CommunityPasswordResolver
      */
     public CommunityPasswordResolver(URL registry)
         {
-		resolver = new SecurityServiceResolver(registry) ;
+        resolver = new SecurityServiceResolver(registry) ;
         }
 
-	/**
-	 * Our SecurityServiceResolver resolver.
-	 *
-	 */
-	private SecurityServiceResolver resolver ;
+    /**
+     * Our SecurityServiceResolver resolver.
+     *
+     */
+    private SecurityServiceResolver resolver ;
 
     /**
      * Check an Account password.
@@ -84,30 +90,30 @@ public class CommunityPasswordResolver
      */
     public SecurityToken checkPassword(String account, String password)
         throws RegistryException, CommunityResolverException, CommunityServiceException, CommunitySecurityException, CommunityIdentifierException
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("CommunityPasswordResolver.checkPassword()") ;
-		if (DEBUG_FLAG) System.out.println("  Account : " + account) ;
-		//
-		// Check for null param.
-		if (null == account)
-			{
-			throw new CommunityIdentifierException(
-				"Null account"
-				) ;
-			}
-		//
-		// Parse the account ident into an ivorn.
-		CommunityIvornParser parser = new CommunityIvornParser(account) ;
-		//
-		// Resolve the ivorn into a SecurityServiceDelegate.
-		SecurityServiceDelegate delegate = resolver.resolve(parser) ;
-		//
-		// Ask the SecurityServiceDelegate to check the token.
-		return delegate.checkPassword(
-			account,
-			password
-			) ;
-		}
-	}
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CommunityPasswordResolver.checkPassword()") ;
+        if (DEBUG_FLAG) System.out.println("  Account : " + account) ;
+        //
+        // Check for null param.
+        if (null == account)
+            {
+            throw new CommunityIdentifierException(
+                "Null account"
+                ) ;
+            }
+        //
+        // Parse the account ident into an ivorn.
+        CommunityIvornParser parser = new CommunityIvornParser(account) ;
+        //
+        // Resolve the ivorn into a SecurityServiceDelegate.
+        SecurityServiceDelegate delegate = resolver.resolve(parser) ;
+        //
+        // Ask the SecurityServiceDelegate to check the token.
+        return delegate.checkPassword(
+            account,
+            password
+            ) ;
+        }
+    }

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/ivorn/CommunityIvornParserTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornParserTestCase.java,v $
+ *   Revision 1.5  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.4.4.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.4  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -364,26 +370,26 @@ public class CommunityIvornParserTestCase
             ) ;
         }
 
-	/**
-	 * Test a local Ivorn.
-	 *
-	 */
+    /**
+     * Test a local Ivorn.
+     *
+     */
     public void testLocalCommunity()
         throws Exception
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("testLocalCommunity") ;
-		//
-		// Check a local Ivorn
-		assertTrue(
-			"Didn't recognise local ident",
-	        new CommunityIvornParser(
-	            new Ivorn(
-	            	"ivo://org.astrogrid.local.community/frog"
-	            	)
-	            ).isLocal()
-			) ;
+        //
+        // Check a local Ivorn
+        assertTrue(
+            "Didn't recognise local ident",
+            new CommunityIvornParser(
+                new Ivorn(
+                    "ivo://org.astrogrid.local.community/frog"
+                    )
+                ).isLocal()
+            ) ;
         }
     }
 

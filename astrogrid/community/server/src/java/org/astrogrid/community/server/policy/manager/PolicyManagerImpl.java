@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.10  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.9.4.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.9  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -194,8 +200,8 @@ public class PolicyManagerImpl
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // If the ident is valid.
@@ -293,8 +299,8 @@ return null ;
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // If the ident is valid.
@@ -395,8 +401,8 @@ return null ;
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // If the ident is valid.
@@ -466,7 +472,7 @@ return null ;
      * @todo Use resolver to find the remote service.
      *
     public Object[] getRemoteAccounts(String name)
-		throws CommunityServiceException, CommunityIdentifierException
+        throws CommunityServiceException, CommunityIdentifierException
         {
         Object[] results = null ;
         //
@@ -540,8 +546,8 @@ return null ;
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // If the ident is valid.
@@ -641,8 +647,8 @@ return null ;
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // If the ident is valid.
@@ -742,8 +748,8 @@ return null ;
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // If the ident is valid.
@@ -911,48 +917,48 @@ return null ;
         if (null == account)
             {
             throw new CommunityIdentifierException(
-				"Null account"
-            	) ;
+                "Null account"
+                ) ;
             }
         //
         // Check for null group.
         if (null == group)
             {
             throw new CommunityIdentifierException(
-				"Null group"
-            	) ;
+                "Null group"
+                ) ;
             }
         //
         // If the group is local.
         if (group.isLocal())
             {
-	        //
-	        // Try loading the Account.
-			AccountData accountCheck = this.getAccount(account) ;
-	        if (DEBUG_FLAG) System.out.println("PASS : Account is found") ;
-	        //
-	        // Try loading the Group.
-			GroupData groupCheck = this.getGroup(group) ;
-	        if (DEBUG_FLAG) System.out.println("PASS : Group is found") ;
-	        //
-	        // If the group is a private group
-	        if (GroupData.SINGLE_TYPE.equals(groupCheck.getType()))
-	            {
-				throw new CommunityPolicyException(
-					"Can't add an Account to a private Group",
-					group.toString()
-					) ;
-	            }
-	        if (DEBUG_FLAG) System.out.println("PASS : Group is valid") ;
-	        //
-	        // Add the membership record.
-	        return groupManager.addGroupMember(account, group) ;
-			}
-		//
-		// If the group is not local.
-		else {
+            //
+            // Try loading the Account.
+            AccountData accountCheck = this.getAccount(account) ;
+            if (DEBUG_FLAG) System.out.println("PASS : Account is found") ;
+            //
+            // Try loading the Group.
+            GroupData groupCheck = this.getGroup(group) ;
+            if (DEBUG_FLAG) System.out.println("PASS : Group is found") ;
+            //
+            // If the group is a private group
+            if (GroupData.SINGLE_TYPE.equals(groupCheck.getType()))
+                {
+                throw new CommunityPolicyException(
+                    "Can't add an Account to a private Group",
+                    group.toString()
+                    ) ;
+                }
+            if (DEBUG_FLAG) System.out.println("PASS : Group is valid") ;
+            //
+            // Add the membership record.
+            return groupManager.addGroupMember(account, group) ;
+            }
+        //
+        // If the group is not local.
+        else {
 return null ;
-			}
+            }
         }
      */
 
@@ -999,16 +1005,16 @@ return null ;
         if (null == account)
             {
             throw new CommunityIdentifierException(
-				"Null account"
-            	) ;
+                "Null account"
+                ) ;
             }
         //
         // Check for null group.
         if (null == group)
             {
             throw new CommunityIdentifierException(
-				"Null group"
-            	) ;
+                "Null group"
+                ) ;
             }
         //
         // If the Group is local.
@@ -1023,10 +1029,10 @@ return null ;
             // If the group is an account only group.
             if (GroupData.SINGLE_TYPE.equals(check.getType()))
                 {
-				throw new CommunityPolicyException(
-					"Can't remove Account from a private Group",
-					group.toString()
-					) ;
+                throw new CommunityPolicyException(
+                    "Can't remove Account from a private Group",
+                    group.toString()
+                    ) ;
                 }
             if (DEBUG_FLAG) System.out.println("PASS : Group is valid") ;
             //
@@ -1037,7 +1043,7 @@ return null ;
         // If the Group is not local.
         else {
 return null ;
-			}
+            }
         }
      */
 
@@ -1077,8 +1083,8 @@ return null ;
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null group"
-            	) ;
+                "Null group"
+                ) ;
             }
         //
         // If the Group is local.

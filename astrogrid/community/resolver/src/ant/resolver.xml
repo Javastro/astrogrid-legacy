@@ -1,0 +1,213 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/ant/resolver.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: resolver.xml,v $
+    |   Revision 1.2  2004/03/30 01:40:03  dave
+    |   Merged development branch, dave-dev-200403242058, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/03/30 01:38:14  dave
+    |   Refactored resolver and install toolkits.
+    |
+    | </cvs:log>
+    |
+    | Resolver test tools.
+    |
+    |
+    +-->
+<project default="init" basedir="." name="community-resolver">
+
+    <!--+
+        | Prefix for system properties.
+        +-->
+    <property environment="env"/>
+
+    <!--+
+        | Load our local properties.
+        +-->
+    <property file="${basedir}/resolver.properties"/>
+
+    <!--+
+        | Default community ident.
+        +-->
+    <property name="org.astrogrid.community.ident" value="org.astrogrid.localhost"/>
+
+    <!--+
+        | Default registry endpoint.
+        +-->
+    <property name="org.astrogrid.registry.url" value="http://localhost:8080/astrogrid-registry-webapp/services/Registry"/>
+
+    <!--+
+        | Default configuration data.
+        +-->
+    <property name="registry.data"   value="${basedir}/config/registry"/>
+    <property name="community.data"  value="${basedir}/config/community"/>
+
+    <!--+
+        | Display our build settings.
+        +-->
+    <target name="init">
+        <echo message=""/>
+
+        <!-- Build timestamp -->
+        <tstamp>
+            <format property="build.time" pattern="yyyy.MM.dd.HH.mm.ss"/>
+            <format property="build.date" pattern="yyyy.MM.dd"/>
+        </tstamp>
+
+        <!-- Display the current settings -->
+        <echo message="os.name      : ${os.name}"/>
+        <echo message="os.arch      : ${os.arch}"/>
+        <echo message="os.version   : ${os.version}"/>
+        <echo message=""/>
+
+        <echo message="user.home    : ${user.home}"/>
+        <echo message=""/>
+
+        <echo message="java.version : ${java.version}"/>
+        <echo message="java.home    : ${java.home}"/>
+        <echo message="JAVA.HOME    : ${env.JAVA_HOME}"/>
+        <echo message=""/>
+
+        <echo message="ant.version  : ${ant.version}"/>
+        <echo message="ant.home     : ${ant.home}"/>
+        <echo message=""/>
+
+        <echo message="build.home     : ${basedir}"/>
+        <echo message="build.file     : ${ant.file}"/>
+        <echo message="build.date     : ${build.date}"/>
+        <echo message="build.time     : ${build.time}"/>
+        <echo message=""/>
+
+    </target>
+
+    <!--+
+        | The installation tools classpath.
+        +-->
+    <path id="install.classpath">
+        <fileset dir="jar">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <!-- ================ Resolver tasks ================ -->
+
+    <!--+
+        | Run our login test.
+        | Using the local registry XML files.
+        +-->
+    <target name="login.local" depends="">
+        <echo message=""/>
+        <echo message="Login test ...."/>
+        <!--+
+            | Initialise our Ant task.
+            +-->
+        <taskdef name="login.task" classname="org.astrogrid.community.resolver.ant.CommunityLoginTask">
+            <classpath refid="install.classpath"/>
+        </taskdef>
+        <!--+
+            | Call our WebService.
+            +-->
+        <login.task
+            properties="${basedir}/config/registry.properties"
+            account="ivo://${org.astrogrid.community.ident}/dave"
+            password="qwerty"
+            />
+    </target>
+
+    <!--+
+        | Run our token test.
+        | Using the local registry XML files.
+        +-->
+    <target name="token.local" depends="">
+        <echo message=""/>
+        <echo message="Token test ...."/>
+        <!--+
+            | Initialise our Ant tasks.
+            +-->
+        <taskdef name="login.task" classname="org.astrogrid.community.resolver.ant.CommunityLoginTask">
+            <classpath refid="install.classpath"/>
+        </taskdef>
+        <taskdef name="token.task" classname="org.astrogrid.community.resolver.ant.CommunityTokenTask">
+            <classpath refid="install.classpath"/>
+        </taskdef>
+        <!--+
+            | Login to get our first token.
+            +-->
+        <login.task
+            properties="${basedir}/config/registry.properties"
+            account="ivo://${org.astrogrid.community.ident}/dave"
+            password="qwerty"
+            />
+        <!--+
+            | Validate our token.
+            +-->
+        <token.task
+            properties="${basedir}/config/registry.properties"
+            />
+    </target>
+
+    <!--+
+        | Run our login test.
+        | Using a live registry endpoint.
+        +-->
+    <target name="login.live" depends="">
+        <echo message=""/>
+        <echo message="Login test ...."/>
+        <!--+
+            | Initialise our Ant task.
+            +-->
+        <taskdef name="login.task" classname="org.astrogrid.community.resolver.ant.CommunityLoginTask">
+            <classpath refid="install.classpath"/>
+        </taskdef>
+        <!--+
+            | Call our WebService.
+            +-->
+        <login.task
+            registry="${org.astrogrid.registry.url}"
+            account="ivo://${org.astrogrid.community.ident}/dave"
+            password="qwerty"
+            />
+    </target>
+
+    <!--+
+        | Run our token test.
+        | Using a live registry endpoint.
+        +-->
+    <target name="token.live" depends="">
+        <echo message=""/>
+        <echo message="Token test ...."/>
+        <!--+
+            | Initialise our Ant tasks.
+            +-->
+        <taskdef name="login.task" classname="org.astrogrid.community.resolver.ant.CommunityLoginTask">
+            <classpath refid="install.classpath"/>
+        </taskdef>
+        <taskdef name="token.task" classname="org.astrogrid.community.resolver.ant.CommunityTokenTask">
+            <classpath refid="install.classpath"/>
+        </taskdef>
+        <!--+
+            | Login to get our first token.
+            +-->
+        <login.task
+            registry="${org.astrogrid.registry.url}"
+            account="ivo://${org.astrogrid.community.ident}/dave"
+            password="qwerty"
+            />
+        <!--+
+            | Validate our token.
+            +-->
+        <token.task
+            registry="${org.astrogrid.registry.url}"
+            />
+    </target>
+
+</project>
+
+

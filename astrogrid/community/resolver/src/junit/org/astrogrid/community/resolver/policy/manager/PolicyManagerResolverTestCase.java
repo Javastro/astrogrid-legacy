@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/policy/manager/PolicyManagerResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerResolverTestCase.java,v $
+ *   Revision 1.7  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.6.2.1  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
  *   Revision 1.6  2004/03/24 16:56:25  dave
  *   Merged development branch, dave-dev-200403231641, into HEAD
  *
@@ -107,9 +113,9 @@ public class PolicyManagerResolverTestCase
         //
         // Create our Ivorn.
         Ivorn ivorn = CommunityAccountIvornFactory.createMock(
-        	"community",
-        	"frog"
-        	) ;
+            "community",
+            "frog"
+            ) ;
         if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
         //
         // Create our resolver.
@@ -130,20 +136,20 @@ public class PolicyManagerResolverTestCase
             PolicyManagerMockDelegate.class,
             delegate.getClass()
             ) ;
-		//
-		// Check that our service works.
-		assertNotNull(
+        //
+        // Check that our service works.
+        assertNotNull(
             "Null service status",
-			delegate.getServiceStatus()
-			) ;
-		//
-		// Try adding an account
-		assertNotNull(
+            delegate.getServiceStatus()
+            ) ;
+        //
+        // Try adding an account
+        assertNotNull(
             "Null account data",
-			delegate.addAccount(
-				ivorn.toString()
-				)
-			) ;
+            delegate.addAccount(
+                ivorn.toString()
+                )
+            ) ;
         }
 
     /**
@@ -159,8 +165,8 @@ public class PolicyManagerResolverTestCase
         //
         // Create our Ivorn.
         Ivorn ivorn = CommunityAccountIvornFactory.createLocal(
-        	"test-account"
-        	) ;
+            "test-account"
+            ) ;
         if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
         //
         // Create our resolver.
@@ -181,19 +187,19 @@ public class PolicyManagerResolverTestCase
             PolicyManagerSoapDelegate.class,
             delegate.getClass()
             ) ;
-		//
-		// Check that our service works.
-		assertNotNull(
+        //
+        // Check that our service works.
+        assertNotNull(
             "Null service status",
-			delegate.getServiceStatus()
-			) ;
-		//
-		// Try adding an account
-		assertNotNull(
+            delegate.getServiceStatus()
+            ) ;
+        //
+        // Try adding an account
+        assertNotNull(
             "Null account data",
-			delegate.addAccount(
-				ivorn.toString()
-				)
-			) ;
+            delegate.addAccount(
+                ivorn.toString()
+                )
+            ) ;
         }
     }

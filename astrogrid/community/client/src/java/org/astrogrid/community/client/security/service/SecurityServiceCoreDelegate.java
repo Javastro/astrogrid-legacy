@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/security/service/SecurityServiceCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceCoreDelegate.java,v $
+ *   Revision 1.7  2004/03/30 01:40:03  dave
+ *   Merged development branch, dave-dev-200403242058, into HEAD
+ *
+ *   Revision 1.6.2.2  2004/03/28 09:11:43  dave
+ *   Convert tabs to spaces
+ *
+ *   Revision 1.6.2.1  2004/03/28 02:00:55  dave
+ *   Added database management tasks.
+ *
  *   Revision 1.6  2004/03/24 16:56:25  dave
  *   Merged development branch, dave-dev-200403231641, into HEAD
  *
@@ -87,7 +96,7 @@ public class SecurityServiceCoreDelegate
      */
     protected void setSecurityService(SecurityService service)
         {
-		this.setCommunityService(service) ;
+        this.setCommunityService(service) ;
         this.service = service ;
         }
 
@@ -117,26 +126,26 @@ public class SecurityServiceCoreDelegate
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-				//
-				// Try converting the Exception.
-				convertServiceException(ouch) ;
-				convertSecurityException(ouch) ;
-				convertIdentifierException(ouch) ;
-				//
-				// If we get this far, then we don't know what it is.
-				throw new CommunityServiceException(
-					"WebService call failed - unexpected Exception type",
-					ouch
-					) ;
+                //
+                // Try converting the Exception.
+                convertServiceException(ouch) ;
+                convertSecurityException(ouch) ;
+                convertIdentifierException(ouch) ;
+                //
+                // If we get this far, then we don't know what it is.
+                throw new CommunityServiceException(
+                    "WebService call failed - " + ouch,
+                    ouch
+                    ) ;
                 }
             }
-		//
-		// If we don't have a valid service.
-		else {
-			throw new CommunityServiceException(
-				"Service not initialised"
-				) ;
-			}
+        //
+        // If we don't have a valid service.
+        else {
+            throw new CommunityServiceException(
+                "Service not initialised"
+                ) ;
+            }
         }
 
     /**
@@ -165,29 +174,29 @@ public class SecurityServiceCoreDelegate
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-				//
-				// Set the token staus.
-				token.setStatus(SecurityToken.INVALID_TOKEN) ;
-				//
-				// Try converting the Exception.
-				convertServiceException(ouch) ;
-				convertSecurityException(ouch) ;
-				convertIdentifierException(ouch) ;
-				//
-				// If we get this far, then we don't know what it is.
-				throw new CommunityServiceException(
-					"WebService call failed - unexpected Exception type",
-					ouch
-					) ;
+                //
+                // Set the token staus.
+                token.setStatus(SecurityToken.INVALID_TOKEN) ;
+                //
+                // Try converting the Exception.
+                convertServiceException(ouch) ;
+                convertSecurityException(ouch) ;
+                convertIdentifierException(ouch) ;
+                //
+                // If we get this far, then we don't know what it is.
+                throw new CommunityServiceException(
+                    "WebService call failed - " + ouch,
+                    ouch
+                    ) ;
                 }
             }
-		//
-		// If we don't have a valid service.
-		else {
-			throw new CommunityServiceException(
-				"Service not initialised"
-				) ;
-			}
+        //
+        // If we don't have a valid service.
+        else {
+            throw new CommunityServiceException(
+                "Service not initialised"
+                ) ;
+            }
         }
 
     /**
@@ -214,25 +223,25 @@ public class SecurityServiceCoreDelegate
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-				//
-				// Try converting the Exception.
-				convertServiceException(ouch) ;
-				convertSecurityException(ouch) ;
-				convertIdentifierException(ouch) ;
-				//
-				// If we get this far, then we don't know what it is.
-				throw new CommunityServiceException(
-					"WebService call failed - unexpected Exception type",
-					ouch
-					) ;
+                //
+                // Try converting the Exception.
+                convertServiceException(ouch) ;
+                convertSecurityException(ouch) ;
+                convertIdentifierException(ouch) ;
+                //
+                // If we get this far, then we don't know what it is.
+                throw new CommunityServiceException(
+                    "WebService call failed - " + ouch,
+                    ouch
+                    ) ;
                 }
             }
-		//
-		// If we don't have a valid service.
-		else {
-			throw new CommunityServiceException(
-				"Service not initialised"
-				) ;
-			}
+        //
+        // If we don't have a valid service.
+        else {
+            throw new CommunityServiceException(
+                "Service not initialised"
+                ) ;
+            }
         }
     }
