@@ -9,6 +9,7 @@
     </logo>
     <siteAddress>www.astrogrid.org</siteAddress>
     <siteDirectory>/var/www/software</siteDirectory>
+    <url>http://software.astrogrid.org/</url>
     <repository>
         <connection> scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid
             </connection>
