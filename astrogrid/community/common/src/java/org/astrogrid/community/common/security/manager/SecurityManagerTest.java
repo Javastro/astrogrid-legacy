@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/manager/SecurityManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerTest.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -32,159 +39,159 @@ import org.astrogrid.community.common.service.CommunityServiceTest ;
  *
  */
 public class SecurityManagerTest
-	extends CommunityServiceTest
-	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	private static boolean DEBUG_FLAG = true ;
+    extends CommunityServiceTest
+    {
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    private static boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Our test Account ident.
-	 *
-	 */
-	public static String TEST_ACCOUNT = "test-account" ;
+    /**
+     * Our test Account ident.
+     *
+     */
+    public static String TEST_ACCOUNT = "test-account" ;
 
-	/**
-	 * Our test password.
-	 *
-	 */
-	public static String TEST_PASSWORD = "test-password" ;
+    /**
+     * Our test password.
+     *
+     */
+    public static String TEST_PASSWORD = "test-password" ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public SecurityManagerTest()
-		{
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public SecurityManagerTest()
+        {
+        }
 
-	/**
-	 * Our target AccountManager.
-	 *
-	 */
-	private AccountManager accountManager ;
+    /**
+     * Our target AccountManager.
+     *
+     */
+    private AccountManager accountManager ;
 
-	/**
-	 * Get our target AccountManager.
-	 *
-	 */
-	public AccountManager getAccountManager()
-		{
-		return this.accountManager ;
-		}
+    /**
+     * Get our target AccountManager.
+     *
+     */
+    public AccountManager getAccountManager()
+        {
+        return this.accountManager ;
+        }
 
-	/**
-	 * Set our target AccountManager.
-	 *
-	 */
-	public void setAccountManager(AccountManager manager)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceTest.setAccountManager()") ;
-		if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
-		this.accountManager = manager ;
-		}
+    /**
+     * Set our target AccountManager.
+     *
+     */
+    public void setAccountManager(AccountManager manager)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.setAccountManager()") ;
+        if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
+        this.accountManager = manager ;
+        }
 
-	/**
-	 * Our target SecurityManager.
-	 *
-	 */
-	private SecurityManager securityManager ;
+    /**
+     * Our target SecurityManager.
+     *
+     */
+    private SecurityManager securityManager ;
 
-	/**
-	 * Get our target SecurityManager.
-	 *
-	 */
-	public SecurityManager getSecurityManager()
-		{
-		return this.securityManager ;
-		}
+    /**
+     * Get our target SecurityManager.
+     *
+     */
+    public SecurityManager getSecurityManager()
+        {
+        return this.securityManager ;
+        }
 
-	/**
-	 * Set our target SecurityManager.
-	 *
-	 */
-	public void setSecurityManager(SecurityManager manager)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityManagerTest.setSecurityManager()") ;
-		if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
-		//
-		// Set our SecurityManager reference.
-		this.securityManager = manager ;
-		//
-		// Set our CommunityService reference.
-		this.setCommunityService(securityManager) ;
-		}
+    /**
+     * Set our target SecurityManager.
+     *
+     */
+    public void setSecurityManager(SecurityManager manager)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityManagerTest.setSecurityManager()") ;
+        if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
+        //
+        // Set our SecurityManager reference.
+        this.securityManager = manager ;
+        //
+        // Set our CommunityService reference.
+        this.setCommunityService(securityManager) ;
+        }
 
-	/**
-	 * Check we can set an account password.
-	 *
-	 */
-	public void testSetPassword()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityManagerTest.testSetPassword()") ;
-		//
-		// Setup our test account.
-		AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
-		assertNotNull(
-			"addAccount returned null",
-			account
-			) ;
-		//
-		// Check that we can set a password.
-		assertTrue(
-			"setPassword returned false",
-			securityManager.setPassword(
-				account.getIdent(),
-				TEST_PASSWORD
-				)
-			) ;
-		}
+    /**
+     * Check we can set an account password.
+     *
+     */
+    public void testSetPassword()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityManagerTest.testSetPassword()") ;
+        //
+        // Setup our test account.
+        AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
+        assertNotNull(
+            "addAccount returned null",
+            account
+            ) ;
+        //
+        // Check that we can set a password.
+        assertTrue(
+            "setPassword returned false",
+            securityManager.setPassword(
+                account.getIdent(),
+                TEST_PASSWORD
+                )
+            ) ;
+        }
 
-	/**
-	 * Check we can change an account password.
-	 *
-	 */
-	public void testChangePassword()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityManagerTest.testChangePassword()") ;
-		//
-		// Setup our test account.
-		AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
-		assertNotNull(
-			"addAccount returned null",
-			account
-			) ;
-		//
-		// Check that we can set a password.
-		assertTrue(
-			"setPassword returned false",
-			securityManager.setPassword(
-				account.getIdent(),
-				TEST_PASSWORD
-				)
-			) ;
-		//
-		// Check that we can set the same password.
-		assertTrue(
-			"setPassword returned false",
-			securityManager.setPassword(
-				account.getIdent(),
-				TEST_PASSWORD
-				)
-			) ;
-		}
+    /**
+     * Check we can change an account password.
+     *
+     */
+    public void testChangePassword()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityManagerTest.testChangePassword()") ;
+        //
+        // Setup our test account.
+        AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
+        assertNotNull(
+            "addAccount returned null",
+            account
+            ) ;
+        //
+        // Check that we can set a password.
+        assertTrue(
+            "setPassword returned false",
+            securityManager.setPassword(
+                account.getIdent(),
+                TEST_PASSWORD
+                )
+            ) ;
+        //
+        // Check that we can set the same password.
+        assertTrue(
+            "setPassword returned false",
+            securityManager.setPassword(
+                account.getIdent(),
+                TEST_PASSWORD
+                )
+            ) ;
+        }
 
-	}
+    }
 

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/database/manager/DatabaseManagerDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerDelegate.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -27,49 +34,49 @@ import org.astrogrid.community.common.database.manager.DatabaseManager ;
  *
  */
 public interface DatabaseManagerDelegate
-	extends DatabaseManager
+    extends DatabaseManager
     {
-	/**
-	 * Get the current database name.
-	 *
-	 */
-	public String getDatabaseName() ;
+    /**
+     * Get the current database name.
+     *
+     */
+    public String getDatabaseName() ;
 
-	/**
-	 * Get our JDO configuration resource name.
-	 *
-	 */
-	public String getDatabaseConfigResource() ;
+    /**
+     * Get our JDO configuration resource name.
+     *
+     */
+    public String getDatabaseConfigResource() ;
 
-	/**
-	 * Get the database SQL script name.
-	 *
-	 */
-	public String getDatabaseScriptResource() ;
+    /**
+     * Get the database SQL script name.
+     *
+     */
+    public String getDatabaseScriptResource() ;
 
-	/**
-	 * Get the database configuration URL.
-	 *
-	 */
-	public String getDatabaseConfigUrl() ;
+    /**
+     * Get the database configuration URL.
+     *
+     */
+    public String getDatabaseConfigUrl() ;
 
-	/**
-	 * Get the database engine description.
-	 *
-	 */
-	public String getDatabaseDescription() ;
+    /**
+     * Get the database engine description.
+     *
+     */
+    public String getDatabaseDescription() ;
 
-	/**
-	 * Check the database tables.
-	 *
-	 */
-	public boolean checkDatabaseTables() ;
+    /**
+     * Check the database tables.
+     *
+     */
+    public boolean checkDatabaseTables() ;
 
-	/**
-	 * Reset our database tables.
-	 *
-	 */
-	public void resetDatabaseTables() ;
+    /**
+     * Reset our database tables.
+     *
+     */
+    public void resetDatabaseTables() ;
 
     /**
      * Service health check.

@@ -4,10 +4,20 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.7  2004/03/08 13:42:33  dave
+    |   Updated Maven goals.
+    |   Replaced tabs with Spaces.
+    |
+    |   Revision 1.6.2.2  2004/03/08 12:53:18  dave
+    |   Changed tabs to spaces
+    |
+    |   Revision 1.6.2.1  2004/03/08 12:10:05  dave
+    |   Modified Maven build scripts to use new AstroGrid goals
+    |
     |   Revision 1.6  2004/03/05 17:19:59  dave
     |   Merged development branch, dave-dev-200402211936, into HEAD
     |
@@ -135,91 +145,86 @@
         <attainGoal name="clean:clean"/>
     </goal>
 
-	<!--+
-		| Build and install our component jar.
-		+-->
-	<goal name="install-artifact">
-		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
-		<ant:echo message="Build version   : ${pom.currentVersion}"/>
-		<ant:echo message="Build directory : ${maven.build.dir}"/>
-		<!--+
-			| Build our jar.
-			+-->
-		<attainGoal name="jar:jar"/>
-		<!--+
-			| Install our jar.
-			+-->
-		<core:set var="astrogrid.artifact.type" value="jar"/>
-		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-		<attainGoal name="install-local"/>
-	</goal>
+    <!--+
+        | Build and install our component jar.
+        +-->
+    <goal name="install-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Build our jar.
+            +-->
+        <attainGoal name="jar:jar"/>
+        <!--+
+            | Install our jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="install-local"/>
+    </goal>
 
-	<!--+
-		| Build and install our snapshot jar.
-		+-->
-	<goal name="install-snapshot">
-		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
-		<ant:echo message="Build version   : ${pom.currentVersion}"/>
-		<ant:echo message="Build directory : ${maven.build.dir}"/>
-		<!--+
-			| Create our snapshot name.
-			+-->
-		<maven:snapshot project="${pom}"/>
-		<core:set var="maven.final.name" value="${snapshotSignature}"/>
-		<!--+
-			| Build our jar.
-			+-->
-		<attainGoal name="jar:jar"/>
-		<!--+
-			| Install our SNAPSHOT jar.
-			+-->
-		<core:set var="astrogrid.artifact.type" value="jar"/>
-		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-		<attainGoal name="install-local-snapshot"/>
-	</goal>
+    <!--+
+        | Build and install our snapshot jar.
+        +-->
+    <goal name="install-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our snapshot name.
+            +-->
+        <maven:snapshot project="${pom}"/>
+        <core:set var="maven.final.name" value="${snapshotSignature}"/>
+        <!--+
+            | Build our jar.
+            +-->
+        <attainGoal name="jar:jar"/>
+        <!--+
+            | Install our SNAPSHOT jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="install-local-snapshot"/>
+    </goal>
 
-	<!--+
-		| Build and deploy our component jar.
-		+-->
-	<goal name="deploy-artifact">
-		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
-		<ant:echo message="Build version   : ${pom.currentVersion}"/>
-		<ant:echo message="Build directory : ${maven.build.dir}"/>
-		<!--+
-			| Build our jar.
-			+-->
-		<attainGoal name="jar:jar"/>
-		<!--+
-			| Deploy our jar.
-			+-->
-		<core:set var="astrogrid.artifact.type" value="jar"/>
-		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-		<attainGoal name="deploy-local"/>
-	</goal>
+    <!--+
+        | Build and deploy our component jar.
+        +-->
+    <goal name="deploy-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our artifact jar.
+            +-->
+        <attainGoal name="install-artifact"/>
+        <!--+
+            | Deploy our jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="deploy-local"/>
+    </goal>
 
-	<!--+
-		| Build and deploy our snapshot jar.
-		+-->
-	<goal name="deploy-snapshot">
-		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
-		<ant:echo message="Build version   : ${pom.currentVersion}"/>
-		<ant:echo message="Build directory : ${maven.build.dir}"/>
-		<!--+
-			| Create our snapshot name.
-			+-->
-		<maven:snapshot project="${pom}"/>
-		<core:set var="maven.final.name" value="${snapshotSignature}"/>
-		<!--+
-			| Build our jar.
-			+-->
-		<attainGoal name="jar:jar"/>
-		<!--+
-			| Deploy our SNAPSHOT jar.
-			+-->
-		<core:set var="astrogrid.artifact.type" value="jar"/>
-		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-		<attainGoal name="deploy-local-snapshot"/>
-	</goal>
+    <!--+
+        | Build and deploy our snapshot jar.
+        +-->
+    <goal name="deploy-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our artifact jar.
+            +-->
+        <attainGoal name="install-snapshot"/>
+        <!--+
+            | Deploy our SNAPSHOT jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="deploy-local-snapshot"/>
+    </goal>
 
     <!--+
         | Build our component site.
@@ -255,53 +260,53 @@
         <!--+
             | Generate our DatabaseManager WSDL and stubs.
             +-->
-		<astro:service.generate
-			service.name="DatabaseManager"
-			service.wsdd="org/astrogrid/community/common/database/manager/deploy.wsdd"
-			service.class="org.astrogrid.community.server.database.manager.DatabaseManagerImpl"
-			service.interface="org.astrogrid.community.common.database.manager.DatabaseManager"
-			service.namespace="urn:manager.database.common.community.astrogrid.org"
-			/>
+        <astro:service.generate
+            service.name="DatabaseManager"
+            service.wsdd="org/astrogrid/community/common/database/manager/deploy.wsdd"
+            service.class="org.astrogrid.community.server.database.manager.DatabaseManagerImpl"
+            service.interface="org.astrogrid.community.common.database.manager.DatabaseManager"
+            service.namespace="urn:manager.database.common.community.astrogrid.org"
+            />
         <!--+
             | Generate our PolicyManager WSDL and stubs.
             +-->
-		<astro:service.generate
-			service.name="PolicyManager"
-			service.wsdd="org/astrogrid/community/common/policy/manager/deploy.wsdd"
-			service.class="org.astrogrid.community.server.policy.manager.PolicyManagerImpl"
-			service.interface="org.astrogrid.community.common.policy.manager.PolicyManager"
-			service.namespace="urn:manager.policy.common.community.astrogrid.org"
-			/>
+        <astro:service.generate
+            service.name="PolicyManager"
+            service.wsdd="org/astrogrid/community/common/policy/manager/deploy.wsdd"
+            service.class="org.astrogrid.community.server.policy.manager.PolicyManagerImpl"
+            service.interface="org.astrogrid.community.common.policy.manager.PolicyManager"
+            service.namespace="urn:manager.policy.common.community.astrogrid.org"
+            />
         <!--+
             | Generate our PolicyService WSDL and stubs.
             +-->
-		<astro:service.generate
-			service.name="PolicyService"
-			service.wsdd="org/astrogrid/community/common/policy/service/deploy.wsdd"
-			service.class="org.astrogrid.community.server.policy.service.PolicyServiceImpl"
-			service.interface="org.astrogrid.community.common.policy.service.PolicyService"
-			service.namespace="urn:service.policy.common.community.astrogrid.org"
-			/>
+        <astro:service.generate
+            service.name="PolicyService"
+            service.wsdd="org/astrogrid/community/common/policy/service/deploy.wsdd"
+            service.class="org.astrogrid.community.server.policy.service.PolicyServiceImpl"
+            service.interface="org.astrogrid.community.common.policy.service.PolicyService"
+            service.namespace="urn:service.policy.common.community.astrogrid.org"
+            />
         <!--+
             | Generate our SecurityManager WSDL and stubs.
             +-->
-		<astro:service.generate
-			service.name="SecurityManager"
-			service.wsdd="org/astrogrid/community/common/security/manager/deploy.wsdd"
-			service.class="org.astrogrid.community.server.security.manager.SecurityManagerImpl"
-			service.interface="org.astrogrid.community.common.security.manager.SecurityManager"
-			service.namespace="urn:manager.security.common.community.astrogrid.org"
-			/>
+        <astro:service.generate
+            service.name="SecurityManager"
+            service.wsdd="org/astrogrid/community/common/security/manager/deploy.wsdd"
+            service.class="org.astrogrid.community.server.security.manager.SecurityManagerImpl"
+            service.interface="org.astrogrid.community.common.security.manager.SecurityManager"
+            service.namespace="urn:manager.security.common.community.astrogrid.org"
+            />
         <!--+
             | Generate our SecurityService WSDL and stubs.
             +-->
-		<astro:service.generate
-			service.name="SecurityService"
-			service.wsdd="org/astrogrid/community/common/security/service/deploy.wsdd"
-			service.class="org.astrogrid.community.server.security.service.SecurityServiceImpl"
-			service.interface="org.astrogrid.community.common.security.service.SecurityService"
-			service.namespace="urn:service.security.common.community.astrogrid.org"
-			/>
+        <astro:service.generate
+            service.name="SecurityService"
+            service.wsdd="org/astrogrid/community/common/security/service/deploy.wsdd"
+            service.class="org.astrogrid.community.server.security.service.SecurityServiceImpl"
+            service.interface="org.astrogrid.community.common.security.service.SecurityService"
+            service.namespace="urn:service.security.common.community.astrogrid.org"
+            />
         <!--+
             | Add the Java files to our project source path.
             +-->
@@ -378,56 +383,56 @@
             | Create a Castor JDO config for our default database.
             | This is used by the DatabaseConfiguration tests.
             +-->
-		<astro:database.generate
-			database.files="default"
-			database.name="database"
-			database.xml="database.xml"
-			database.sql="database.sql"
-			mapping.xml="mapping.xml"
-			/>
+        <astro:database.generate
+            database.files="default"
+            database.name="database"
+            database.xml="database.xml"
+            database.sql="database.sql"
+            mapping.xml="mapping.xml"
+            />
         <!--+
             | Create a Castor JDO config for our default community database.
             | This is used by the local:://service tests.
             +-->
-		<astro:database.generate
-			database.files="default"
-			database.name="org.astrogrid.community.database"
-			database.xml="astrogrid-community-database.xml"
-			database.sql="astrogrid-community-database.sql"
-			mapping.xml="astrogrid-community-mapping.xml"
-			/>
+        <astro:database.generate
+            database.files="default"
+            database.name="org.astrogrid.community.database"
+            database.xml="astrogrid-community-database.xml"
+            database.sql="astrogrid-community-database.sql"
+            mapping.xml="astrogrid-community-mapping.xml"
+            />
         <!--+
             | Create a Castor JDO config for our test database(s).
             | This are used by the in-process service tests.
             +-->
-		<astro:database.generate
-			database.files="test-database-001"
-			database.name="test-database-001"
-			database.xml="test-database-001.xml"
-			database.sql="test-database-001.sql"
-			mapping.xml="test-mapping-001.xml"
-			/>
-		<astro:database.generate
-			database.files="test-database-002"
-			database.name="test-database-002"
-			database.xml="test-database-002.xml"
-			database.sql="test-database-002.sql"
-			mapping.xml="test-mapping-002.xml"
-			/>
-		<astro:database.generate
-			database.files="test-database-003"
-			database.name="test-database-003"
-			database.xml="test-database-003.xml"
-			database.sql="test-database-003.sql"
-			mapping.xml="test-mapping-003.xml"
-			/>
-		<astro:database.generate
-			database.files="test-database-004"
-			database.name="test-database-004"
-			database.xml="test-database-004.xml"
-			database.sql="test-database-004.sql"
-			mapping.xml="test-mapping-004.xml"
-			/>
+        <astro:database.generate
+            database.files="test-database-001"
+            database.name="test-database-001"
+            database.xml="test-database-001.xml"
+            database.sql="test-database-001.sql"
+            mapping.xml="test-mapping-001.xml"
+            />
+        <astro:database.generate
+            database.files="test-database-002"
+            database.name="test-database-002"
+            database.xml="test-database-002.xml"
+            database.sql="test-database-002.sql"
+            mapping.xml="test-mapping-002.xml"
+            />
+        <astro:database.generate
+            database.files="test-database-003"
+            database.name="test-database-003"
+            database.xml="test-database-003.xml"
+            database.sql="test-database-003.sql"
+            mapping.xml="test-mapping-003.xml"
+            />
+        <astro:database.generate
+            database.files="test-database-004"
+            database.name="test-database-004"
+            database.xml="test-database-004.xml"
+            database.sql="test-database-004.sql"
+            mapping.xml="test-mapping-004.xml"
+            />
     </preGoal>
 
     <!--+
@@ -450,11 +455,11 @@
         <!--+
             | Deploy our services.
             +-->
-		<astro:service.deploy service.name="DatabaseManager"/>
-		<astro:service.deploy service.name="PolicyManager"/>
-		<astro:service.deploy service.name="PolicyService"/>
-		<astro:service.deploy service.name="SecurityManager"/>
-		<astro:service.deploy service.name="SecurityService"/>
+        <astro:service.deploy service.name="DatabaseManager"/>
+        <astro:service.deploy service.name="PolicyManager"/>
+        <astro:service.deploy service.name="PolicyService"/>
+        <astro:service.deploy service.name="SecurityManager"/>
+        <astro:service.deploy service.name="SecurityService"/>
         <ant:echo message=""/>
     </preGoal>
 
@@ -465,12 +470,12 @@
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Cleaning up after JUnit tests"/>
-	    <!--+
-	        | Remove the server_config.wsdd from the project directory..
+        <!--+
+            | Remove the server_config.wsdd from the project directory..
         <ant:echo message=""/>
         <ant:echo message="PATCH - Deleting server-config.wsdd from project root."/>
-		<ant:delete file="./server-config.wsdd"/>
-	        +-->
+        <ant:delete file="./server-config.wsdd"/>
+            +-->
     </postGoal>
 
     <!--+
@@ -525,7 +530,7 @@
                 <include name="**/DatabaseManagerSoapBindingStub.java"/>
             </fileset>
         </ant:copy>
-	</goal>
+    </goal>
 
     <!--+
         | Generate our PolicyManager WSDL and stubs.
@@ -579,7 +584,7 @@
                 <include name="**/PolicyManagerSoapBindingStub.java"/>
             </fileset>
         </ant:copy>
-	</goal>
+    </goal>
 
     <!--+
         | Generate our PolicyService WSDL and stubs.
@@ -633,7 +638,7 @@
                 <include name="**/PolicyServiceSoapBindingStub.java"/>
             </fileset>
         </ant:copy>
-	</goal>
+    </goal>
 
     <!--+
         | Generate our SecurityManager WSDL and stubs.
@@ -687,7 +692,7 @@
                 <include name="**/SecurityManagerSoapBindingStub.java"/>
             </fileset>
         </ant:copy>
-	</goal>
+    </goal>
 
     <!--+
         | Generate our SecurityService WSDL and stubs.
@@ -741,14 +746,14 @@
                 <include name="**/SecurityServiceSoapBindingStub.java"/>
             </fileset>
         </ant:copy>
-	</goal>
+    </goal>
 
 
-	<goal name="test-goal">
-		<astro:debug.tag
-			message="FROG"
-			/>
-	</goal>
+    <goal name="test-goal">
+        <astro:debug.tag
+            message="FROG"
+            />
+    </goal>
 
 
 </project>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <document>
-	<properties>
+    <properties>
         <title>WebApp context</title>
-	</properties>
-	<body>
-		<section name="WebApp context">
-			<p>
-				One way to configure the JNDI properties is to add them to a separate context file.
-			</p>
+    </properties>
+    <body>
+        <section name="WebApp context">
+            <p>
+                One way to configure the JNDI properties is to add them to a separate context file.
+            </p>
             <subsection name="Context file">
                 <p>
                     The context file contains the <code>Context</code> element for the WebApp.
@@ -21,44 +21,44 @@
 </Context>
 ]]></source>
                 </p>
-	            <subsection name="Context path">
-	                <p>
-	                    The <code>path</code> attribute of the <code>Context</code> element configures the
-	                    external URL path for the WebApp.
-	                    <br/>
-	                    Setting the path to <code>/astrogrid-community</code> will set the external URL
-	                    for resources within the WebApp to the following.
+                <subsection name="Context path">
+                    <p>
+                        The <code>path</code> attribute of the <code>Context</code> element configures the
+                        external URL path for the WebApp.
+                        <br/>
+                        Setting the path to <code>/astrogrid-community</code> will set the external URL
+                        for resources within the WebApp to the following.
 <source><![CDATA[
 http://localhost/astrogrid-community/....
 ]]></source>
-	                </p>
-	            </subsection>
-	            <subsection name="Context docBase">
-	                <p>
-	                    The <code>docBase</code> attribute of the <code>Context</code> element configures the location Tomcat
-	                    will use to load the WebApp.
-	                    <p style="font-size:x-small;font-style:italic">
-							<img style="float:left;margin-right:5px" src="images/note.gif"/>
-	                        Note that setting this to point to a war file will mean that Tomcat will not unpack the war file.
-	                        <br/>
-	                        Tomcat will serve the WebApp content directly from the war file without unpacking it.
-	                    </p>
-	                </p>
-	            </subsection>
-			</subsection>
+                    </p>
+                </subsection>
+                <subsection name="Context docBase">
+                    <p>
+                        The <code>docBase</code> attribute of the <code>Context</code> element configures the location Tomcat
+                        will use to load the WebApp.
+                        <p style="font-size:x-small;font-style:italic">
+                            <img style="float:left;margin-right:5px" src="images/note.gif"/>
+                            Note that setting this to point to a war file will mean that Tomcat will not unpack the war file.
+                            <br/>
+                            Tomcat will serve the WebApp content directly from the war file without unpacking it.
+                        </p>
+                    </p>
+                </subsection>
+            </subsection>
             <subsection name="Context data">
                 <p>
-					The <code>Context</code> element can either contain the <code>Environment, Resource</code> and
-					<code>ResourceParams</code> elements required to configure the WebApp.
+                    The <code>Context</code> element can either contain the <code>Environment, Resource</code> and
+                    <code>ResourceParams</code> elements required to configure the WebApp.
                 </p>
                 <p>
-					Or, the <code>Context</code> element can contain <code>ResourceLink</code> elements referring to resources
-					defined in the <code>GlobalNamingResources</code> element of the Tomcat server configuration.
+                    Or, the <code>Context</code> element can contain <code>ResourceLink</code> elements referring to resources
+                    defined in the <code>GlobalNamingResources</code> element of the Tomcat server configuration.
                 </p>
-	            <subsection name="Config location">
-	                <p>
-	                    The <code>Environment</code> entry for the Community configuration file can be placed in the local
-	                    <code>Context</code> element.
+                <subsection name="Config location">
+                    <p>
+                        The <code>Environment</code> entry for the Community configuration file can be placed in the local
+                        <code>Context</code> element.
 <source><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
@@ -75,10 +75,10 @@ http://localhost/astrogrid-community/....
     ...
 </Context>
 ]]></source>
-	                </p>
-	                <p>
-	                    Alternatively, the <code>Context</code> element can contain a reference to a global <code>Environment</code>
-	                    entry in the <code>GlobalNamingResources</code> element of the Tomcat server configuration.
+                    </p>
+                    <p>
+                        Alternatively, the <code>Context</code> element can contain a reference to a global <code>Environment</code>
+                        entry in the <code>GlobalNamingResources</code> element of the Tomcat server configuration.
 <source><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
@@ -95,11 +95,11 @@ http://localhost/astrogrid-community/....
     ...
 </Context>
 ]]></source>
-	                </p>
-	            </subsection>
-	            <subsection name="Database resource">
-	                <p>
-	                    The <code>Resource</code> entry for the Community database can be placed in the local <code>Context</code> element.
+                    </p>
+                </subsection>
+                <subsection name="Database resource">
+                    <p>
+                        The <code>Resource</code> entry for the Community database can be placed in the local <code>Context</code> element.
 <source><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
@@ -116,10 +116,10 @@ http://localhost/astrogrid-community/....
     ...
 </Context>
 ]]></source>
-	                </p>
-	                <p>
-	                    Alternatively, the <code>Context</code> element can contain a reference to a global <code>Resource</code>
-	                    entry in the <code>GlobalNamingResources</code> element of the Tomcat server configuration.
+                    </p>
+                    <p>
+                        Alternatively, the <code>Context</code> element can contain a reference to a global <code>Resource</code>
+                        entry in the <code>GlobalNamingResources</code> element of the Tomcat server configuration.
 <source><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
@@ -137,11 +137,11 @@ http://localhost/astrogrid-community/....
     ...
 </Context>
 ]]></source>
-	                </p>
-	            </subsection>
-	            <subsection name="Database properties">
-	                <p>
-	                    The <code>ResourceParams</code> for the Community database can be placed in the local <code>Context</code> element.
+                    </p>
+                </subsection>
+                <subsection name="Database properties">
+                    <p>
+                        The <code>ResourceParams</code> for the Community database can be placed in the local <code>Context</code> element.
 <source><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
@@ -162,13 +162,13 @@ http://localhost/astrogrid-community/....
     </ResourceParams>
 </Context>
 ]]></source>
-	                </p>
-	                <p>
-	                    Alternatively, the <code>ResourceParams</code> for the Community database can be placed in the
-	                    <code>GlobalNamingResources</code> element of the Tomcat server configuration.
-	                </p>
-	            </subsection>
+                    </p>
+                    <p>
+                        Alternatively, the <code>ResourceParams</code> for the Community database can be placed in the
+                        <code>GlobalNamingResources</code> element of the Tomcat server configuration.
+                    </p>
+                </subsection>
             </subsection>
-		</section>
-	</body>
+        </section>
+    </body>
 </document>

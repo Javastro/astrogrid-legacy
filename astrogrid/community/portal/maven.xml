@@ -4,10 +4,17 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/portal/Attic/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.6  2004/03/08 13:42:33  dave
+    |   Updated Maven goals.
+    |   Replaced tabs with Spaces.
+    |
+    |   Revision 1.5.2.1  2004/03/08 12:53:18  dave
+    |   Changed tabs to spaces
+    |
     |   Revision 1.5  2004/03/05 17:19:59  dave
     |   Merged development branch, dave-dev-200402211936, into HEAD
     |
@@ -44,7 +51,7 @@
 
     <!--+
         | WARNING : THIS IS WAY OUT OF DATE ....
-		+-->
+        +-->
 
     <!--+
         | Import the goals from our parent project.

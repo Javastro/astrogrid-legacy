@@ -4,10 +4,20 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/05 17:20:00 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.7  2004/03/08 13:42:33  dave
+    |   Updated Maven goals.
+    |   Replaced tabs with Spaces.
+    |
+    |   Revision 1.6.2.2  2004/03/08 12:53:18  dave
+    |   Changed tabs to spaces
+    |
+    |   Revision 1.6.2.1  2004/03/08 12:10:05  dave
+    |   Modified Maven build scripts to use new AstroGrid goals
+    |
     |   Revision 1.6  2004/03/05 17:20:00  dave
     |   Merged development branch, dave-dev-200402211936, into HEAD
     |
@@ -123,31 +133,31 @@
     <!--+
         | Define our local tag library.
         +-->
-	<define:taglib uri="org.astrogrid.community">
+    <define:taglib uri="org.astrogrid.community">
         <!--+
             | Test tag, debug only.
             | Attrib : message - The debug message to print.
             |
             +-->
-		<define:tag name="debug.tag">
-			<ant:echo message="Message ${message}"/>
-		</define:tag>
+        <define:tag name="debug.tag">
+            <ant:echo message="Message ${message}"/>
+        </define:tag>
         <!--+
             | Deploy a service into the local Axis config.
             | Attrib : service.name eg. SecurityManager
             +-->
-		<define:tag name="service.deploy">
-	        <ant:echo message="Deploying ${service.name}"/>
-	        <ant:java classname="org.apache.axis.utils.Admin"
-	            dir="${axisDir}/WEB-INF"
-	            classpathref="maven.dependency.classpath"
-	            fork="true"
-	            >
-	            <arg value="server"/>
-	            <arg value="${wsddDir}/${service.name}.wsdd"/>
-	        </ant:java>
-		</define:tag>
-	</define:taglib>
+        <define:tag name="service.deploy">
+            <ant:echo message="Deploying ${service.name}"/>
+            <ant:java classname="org.apache.axis.utils.Admin"
+                dir="${axisDir}/WEB-INF"
+                classpathref="maven.dependency.classpath"
+                fork="true"
+                >
+                <arg value="server"/>
+                <arg value="${wsddDir}/${service.name}.wsdd"/>
+            </ant:java>
+        </define:tag>
+    </define:taglib>
 
     <!-- ================ Reactor goals ================ -->
 
@@ -168,23 +178,23 @@
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-		<!--+
-			| Build our war.
-			+-->
-		<attainGoal name="war:war"/>
-		<!--+
-			| Rename our war to include the version.
-			+-->
-		<ant:move
-			file="${maven.build.dir}/${maven.war.final.name}"
-			toFile="${maven.build.dir}/${maven.final.name}.war"
-			/>
-		<!--+
-			| Install our war.
-			+-->
-		<core:set var="astrogrid.artifact.type" value="war"/>
-		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-		<attainGoal name="install-local"/>
+        <!--+
+            | Build our war.
+            +-->
+        <attainGoal name="war:war"/>
+        <!--+
+            | Rename our war to include the version.
+            +-->
+        <ant:move
+            file="${maven.build.dir}/${maven.war.final.name}"
+            toFile="${maven.build.dir}/${maven.final.name}.war"
+            />
+        <!--+
+            | Install our war.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="war"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="install-local"/>
     </goal>
 
     <!--+
@@ -194,87 +204,68 @@
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-		<!--+
-			| Create our snapshot name.
-			| Need to do this here because the jar:snapshot only sets 'maven.final.name' locally.
-			+-->
-		<maven:snapshot project="${pom}"/>
-		<core:set var="maven.final.name" value="${snapshotSignature}"/>
-		<!--+
-			| Build our war.
-			+-->
-		<attainGoal name="war:war"/>
-		<!--+
-			| Rename our war to include the version.
-			+-->
-		<ant:move
-			file="${maven.build.dir}/${maven.war.final.name}"
-			toFile="${maven.build.dir}/${maven.final.name}.war"
-			/>
-		<!--+
-			| Install our SNAPSHOT jar.
-			+-->
-		<core:set var="astrogrid.artifact.type" value="war"/>
-		<core:set var="astrogrid.artifact.name" value="${maven.war.final.name}"/>
-		<attainGoal name="install-local-snapshot"/>
+        <!--+
+            | Create our snapshot name.
+            | Need to do this here because the jar:snapshot only sets 'maven.final.name' locally.
+            +-->
+        <maven:snapshot project="${pom}"/>
+        <core:set var="maven.final.name" value="${snapshotSignature}"/>
+        <!--+
+            | Build our war.
+            +-->
+        <attainGoal name="war:war"/>
+        <!--+
+            | Rename our war to include the version.
+            +-->
+        <ant:move
+            file="${maven.build.dir}/${maven.war.final.name}"
+            toFile="${maven.build.dir}/${maven.final.name}.war"
+            />
+        <!--+
+            | Install our SNAPSHOT jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="war"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.war.final.name}"/>
+        <attainGoal name="install-local-snapshot"/>
     </goal>
 
-	<!--+
-		| Build and deploy our component war.
-		+-->
-	<goal name="deploy-artifact">
-		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
-		<ant:echo message="Build version   : ${pom.currentVersion}"/>
-		<ant:echo message="Build directory : ${maven.build.dir}"/>
-		<!--+
-			| Build our war.
-			+-->
-		<attainGoal name="war:war"/>
-		<!--+
-			| Rename our war to include the version.
-			+-->
-		<ant:move
-			file="${maven.build.dir}/${maven.war.final.name}"
-			toFile="${maven.build.dir}/${maven.final.name}.war"
-			/>
-		<!--+
-			| Deploy our war.
-			+-->
-		<core:set var="astrogrid.artifact.type" value="war"/>
-		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-		<attainGoal name="deploy-local"/>
-	</goal>
+    <!--+
+        | Build and deploy our component war.
+        +-->
+    <goal name="deploy-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our artifact jar.
+            +-->
+        <attainGoal name="install-artifact"/>
+        <!--+
+            | Deploy our war.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="war"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="deploy-local"/>
+    </goal>
 
-	<!--+
-		| Build and deploy our snapshot war.
-		+-->
-	<goal name="deploy-snapshot">
-		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
-		<ant:echo message="Build version   : ${pom.currentVersion}"/>
-		<ant:echo message="Build directory : ${maven.build.dir}"/>
-		<!--+
-			| Create our snapshot name.
-			+-->
-		<maven:snapshot project="${pom}"/>
-		<core:set var="maven.final.name" value="${snapshotSignature}"/>
-		<!--+
-			| Build our war.
-			+-->
-		<attainGoal name="war:war"/>
-		<!--+
-			| Rename our war to include the version.
-			+-->
-		<ant:move
-			file="${maven.build.dir}/${maven.war.final.name}"
-			toFile="${maven.build.dir}/${maven.final.name}.war"
-			/>
-		<!--+
-			| Deploy our SNAPSHOT war.
-			+-->
-		<core:set var="astrogrid.artifact.type" value="war"/>
-		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-		<attainGoal name="deploy-local-snapshot"/>
-	</goal>
+    <!--+
+        | Build and deploy our snapshot war.
+        +-->
+    <goal name="deploy-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our artifact jar.
+            +-->
+        <attainGoal name="install-snapshot"/>
+        <!--+
+            | Deploy our SNAPSHOT war.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="war"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="deploy-local-snapshot"/>
+    </goal>
 
     <!--+
         | Build our project website.
@@ -358,11 +349,11 @@
             +-->
         <ant:echo message=""/>
         <ant:echo message="Deploying WebServices ..."/>
-		<local:service.deploy service.name="DatabaseManager"/>
-		<local:service.deploy service.name="PolicyManager"/>
-		<local:service.deploy service.name="PolicyService"/>
-		<local:service.deploy service.name="SecurityManager"/>
-		<local:service.deploy service.name="SecurityService"/>
+        <local:service.deploy service.name="DatabaseManager"/>
+        <local:service.deploy service.name="PolicyManager"/>
+        <local:service.deploy service.name="PolicyService"/>
+        <local:service.deploy service.name="SecurityManager"/>
+        <local:service.deploy service.name="SecurityService"/>
         <!--+
             | Copy our database configuration file into WEB-INF/classes.
             | This should override the database configuration in the server jar.
@@ -371,10 +362,10 @@
             <ant:fileset dir="src/config/database">
                 <include name="astrogrid-community-database.xml"/>
                 <!--+
-                	| No need to replace these....
+                    | No need to replace these....
                 <include name="astrogrid-community-mapping.xml"/>
                 <include name="astrogrid-community-database.sql"/>
-					+-->
+                    +-->
             </ant:fileset>
         </ant:copy>
     </postGoal>

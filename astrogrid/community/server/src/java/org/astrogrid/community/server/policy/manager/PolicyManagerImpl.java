@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.7  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.6.2.1  2004/03/08 12:53:18  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.6  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -234,26 +241,26 @@ public class PolicyManagerImpl
         super.setDatabaseConfiguration(config) ;
         //
         // Notify our local managers.
-		if (null != groupManager)
-			{
-			groupManager.setDatabaseConfiguration(config) ;
-			}
-		if (null != accountManager)
-			{
-			accountManager.setDatabaseConfiguration(config) ;
-			}
-		if (null != resourceManager)
-			{
-			resourceManager.setDatabaseConfiguration(config) ;
-			}
-		if (null != communityManager)
-			{
-			communityManager.setDatabaseConfiguration(config) ;
-			}
-		if (null != permissionManager)
-			{
-			permissionManager.setDatabaseConfiguration(config) ;
-			}
+        if (null != groupManager)
+            {
+            groupManager.setDatabaseConfiguration(config) ;
+            }
+        if (null != accountManager)
+            {
+            accountManager.setDatabaseConfiguration(config) ;
+            }
+        if (null != resourceManager)
+            {
+            resourceManager.setDatabaseConfiguration(config) ;
+            }
+        if (null != communityManager)
+            {
+            communityManager.setDatabaseConfiguration(config) ;
+            }
+        if (null != permissionManager)
+            {
+            permissionManager.setDatabaseConfiguration(config) ;
+            }
         }
      */
 
@@ -263,11 +270,11 @@ public class PolicyManagerImpl
      */
     private void initManagers()
         {
-		groupManager = new GroupManagerImpl(this) ;
-		accountManager = new AccountManagerImpl(this) ; 
-		resourceManager = new ResourceManagerImpl(this) ;
-		communityManager = new CommunityManagerImpl(this) ;
-		permissionManager = new PermissionManagerImpl(this) ;
+        groupManager = new GroupManagerImpl(this) ;
+        accountManager = new AccountManagerImpl(this) ; 
+        resourceManager = new ResourceManagerImpl(this) ;
+        communityManager = new CommunityManagerImpl(this) ;
+        permissionManager = new PermissionManagerImpl(this) ;
         }
 
     /**

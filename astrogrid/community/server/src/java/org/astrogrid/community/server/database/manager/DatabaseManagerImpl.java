@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/database/manager/Attic/DatabaseManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerImpl.java,v $
+ *   Revision 1.4  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.3.2.1  2004/03/08 12:53:18  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.3  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -75,122 +82,122 @@ public class DatabaseManagerImpl
         super(config) ;
         }
 
-	/**
-	 * Get the current database name.
-	 *
-	 */
-	public String getDatabaseName()
-		{
-		String result = null ;
-		if (null != this.getDatabaseConfiguration())
-			{
-			result = this.getDatabaseConfiguration().getDatabaseName() ;
-			}
-		return result ;
-		}
+    /**
+     * Get the current database name.
+     *
+     */
+    public String getDatabaseName()
+        {
+        String result = null ;
+        if (null != this.getDatabaseConfiguration())
+            {
+            result = this.getDatabaseConfiguration().getDatabaseName() ;
+            }
+        return result ;
+        }
 
-	/**
-	 * Get our JDO configuration resource name.
-	 *
-	 */
-	public String getDatabaseConfigResource()
-		{
-		String result = null ;
-		if (null != this.getDatabaseConfiguration())
-			{
-			result = this.getDatabaseConfiguration().getDatabaseConfigResource() ;
-			}
-		return result ;
-		}
+    /**
+     * Get our JDO configuration resource name.
+     *
+     */
+    public String getDatabaseConfigResource()
+        {
+        String result = null ;
+        if (null != this.getDatabaseConfiguration())
+            {
+            result = this.getDatabaseConfiguration().getDatabaseConfigResource() ;
+            }
+        return result ;
+        }
 
-	/**
-	 * Get the database SQL script name.
-	 *
-	 */
-	public String getDatabaseScriptResource()
-		{
-		String result = null ;
-		if (null != this.getDatabaseConfiguration())
-			{
-			result = this.getDatabaseConfiguration().getDatabaseScriptResource() ;
-			}
-		return result ;
-		}
+    /**
+     * Get the database SQL script name.
+     *
+     */
+    public String getDatabaseScriptResource()
+        {
+        String result = null ;
+        if (null != this.getDatabaseConfiguration())
+            {
+            result = this.getDatabaseConfiguration().getDatabaseScriptResource() ;
+            }
+        return result ;
+        }
 
-	/**
-	 * Get the database configuration URL.
-	 *
-	 */
-	public String getDatabaseConfigUrl()
-		{
-		String result = null ;
-		if (null != this.getDatabaseConfiguration())
-			{
-			URL url = this.getDatabaseConfiguration().getDatabaseConfigUrl() ;
-			if (null != url)
-				{
-				result = url.toString() ;
-				}
-			}
-		return result ;
-		}
+    /**
+     * Get the database configuration URL.
+     *
+     */
+    public String getDatabaseConfigUrl()
+        {
+        String result = null ;
+        if (null != this.getDatabaseConfiguration())
+            {
+            URL url = this.getDatabaseConfiguration().getDatabaseConfigUrl() ;
+            if (null != url)
+                {
+                result = url.toString() ;
+                }
+            }
+        return result ;
+        }
 
-	/**
-	 * Get the database engine description.
-	 *
-	 */
-	public String getDatabaseDescription()
-		{
-		String result = null ;
-		if (null != this.getDatabaseConfiguration())
-			{
-			JDO jdo = this.getDatabaseConfiguration().getDatabaseEngine() ;
-			if (null != jdo)
-				{
-				result = jdo.getDescription() ;
-				}
-			}
-		return result ;
-		}
+    /**
+     * Get the database engine description.
+     *
+     */
+    public String getDatabaseDescription()
+        {
+        String result = null ;
+        if (null != this.getDatabaseConfiguration())
+            {
+            JDO jdo = this.getDatabaseConfiguration().getDatabaseEngine() ;
+            if (null != jdo)
+                {
+                result = jdo.getDescription() ;
+                }
+            }
+        return result ;
+        }
 
-	/**
-	 * Check our database tables.
-	 *
-	 */
-	public boolean checkDatabaseTables()
-		{
-		boolean result = false ;
-		if (null != this.getDatabaseConfiguration())
-			{
-			try {
-				result = this.getDatabaseConfiguration().checkDatabaseTables() ;
-				}
-			catch (Exception ouch)
-				{
-	            logException(ouch, "DatabaseManagerImpl.checkDatabaseTables()") ;
-				}
-			}
-		return result ;
-		}
+    /**
+     * Check our database tables.
+     *
+     */
+    public boolean checkDatabaseTables()
+        {
+        boolean result = false ;
+        if (null != this.getDatabaseConfiguration())
+            {
+            try {
+                result = this.getDatabaseConfiguration().checkDatabaseTables() ;
+                }
+            catch (Exception ouch)
+                {
+                logException(ouch, "DatabaseManagerImpl.checkDatabaseTables()") ;
+                }
+            }
+        return result ;
+        }
 
-	/**
-	 * Create our database tables.
-	 * Use with care ... this may delete any existing data.
-	 *
-	 */
-	public void resetDatabaseTables()
-		{
-		if (null != this.getDatabaseConfiguration())
-			{
-			try {
-				this.getDatabaseConfiguration().resetDatabaseTables() ;
-				}
-			catch (Exception ouch)
-				{
-	            logException(ouch, "DatabaseManagerImpl.createDatabaseTables()") ;
-				}
-			}
-		}
+    /**
+     * Create our database tables.
+     * Use with care ... this may delete any existing data.
+     *
+     */
+    public void resetDatabaseTables()
+        {
+        if (null != this.getDatabaseConfiguration())
+            {
+            try {
+                this.getDatabaseConfiguration().resetDatabaseTables() ;
+                }
+            catch (Exception ouch)
+                {
+                logException(ouch, "DatabaseManagerImpl.createDatabaseTables()") ;
+                }
+            }
+        }
     }
 
 

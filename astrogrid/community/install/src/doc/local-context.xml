@@ -32,27 +32,27 @@
 </Server>
 ]]></source>
                 </p>
-	            <subsection name="Context path">
-	                <p>
-	                    The <code>path</code> attribute of the <code>Context</code> element configures the external URL path for the WebApp.
-	                    <br/>
-	                    Setting the path to <code>/astrogrid-community</code> will set the external URL for resources within the WebApp to the following.
+                <subsection name="Context path">
+                    <p>
+                        The <code>path</code> attribute of the <code>Context</code> element configures the external URL path for the WebApp.
+                        <br/>
+                        Setting the path to <code>/astrogrid-community</code> will set the external URL for resources within the WebApp to the following.
 <source><![CDATA[
 http://localhost/astrogrid-community/....
 ]]></source>
-	                </p>
-	            </subsection>
-	            <subsection name="Context docBase">
-	                <p>
-	                    The <code>docBase</code> attribute of the <code>Context</code> element configures the location Tomcat will use to load the WebApp.
-	                    <p style="font-size:x-small;font-style:italic">
-							<img style="float:left;margin-right:5px" src="images/note.gif"/>
-	                        Note that setting this to point to a war file will mean that Tomcat will not unpack the war file.
-	                        <br/>
-	                        Tomcat will serve the WebApp content directly from the war file without unpacking it.
-	                    </p>
-	                </p>
-	            </subsection>
+                    </p>
+                </subsection>
+                <subsection name="Context docBase">
+                    <p>
+                        The <code>docBase</code> attribute of the <code>Context</code> element configures the location Tomcat will use to load the WebApp.
+                        <p style="font-size:x-small;font-style:italic">
+                            <img style="float:left;margin-right:5px" src="images/note.gif"/>
+                            Note that setting this to point to a war file will mean that Tomcat will not unpack the war file.
+                            <br/>
+                            Tomcat will serve the WebApp content directly from the war file without unpacking it.
+                        </p>
+                    </p>
+                </subsection>
             </subsection>
             <subsection name="Config location">
                 <p>

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/service/database/manager/Attic/DatabaseManagerServiceTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:20:00 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerServiceTestCase.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:18  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:20:00  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -47,97 +54,97 @@ public class DatabaseManagerServiceTestCase
      */
     private static boolean DEBUG_FLAG = true ;
 
-	/*
-	 * Our DatabaseConfigurationFactory.
-	 *
-	 */
-	private DatabaseConfigurationFactory factory = new DatabaseConfigurationFactory() ;
+    /*
+     * Our DatabaseConfigurationFactory.
+     *
+     */
+    private DatabaseConfigurationFactory factory = new DatabaseConfigurationFactory() ;
 
-	/**
-	 * Our test database name.
-	 *
-	 */
-	public static final String TEST_DATABASE_NAME = "test-database-001" ;
+    /**
+     * Our test database name.
+     *
+     */
+    public static final String TEST_DATABASE_NAME = "test-database-001" ;
 
-	/**
-	 * The original user directory.
-	 *
-	 */
-	private String prev ;
+    /**
+     * The original user directory.
+     *
+     */
+    private String prev ;
 
-	/**
-	 * Setup our test.
-	 * Create a local DatabaseManager service to test.
-	 *
-	 */
-	public void setUp()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("DatabaseManagerServiceTestCase:setUp()") ;
-		if (DEBUG_FLAG) System.out.println("  User dir : " + System.getProperty("user.dir")) ;
+    /**
+     * Setup our test.
+     * Create a local DatabaseManager service to test.
+     *
+     */
+    public void setUp()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("DatabaseManagerServiceTestCase:setUp()") ;
+        if (DEBUG_FLAG) System.out.println("  User dir : " + System.getProperty("user.dir")) ;
 /*
  * This didn't work ....
-		//
-		// Keep the original user directory.
-		prev = System.getProperty("user.dir") ;
-		//
-		// Change to the new directory.
-		String frog = prev + "/target/axis/webapp/WEB-INF" ;
-		System.setProperty("user.dir", frog) ;
-		if (DEBUG_FLAG) System.out.println("  User dir : " + System.getProperty("user.dir")) ;
+        //
+        // Keep the original user directory.
+        prev = System.getProperty("user.dir") ;
+        //
+        // Change to the new directory.
+        String frog = prev + "/target/axis/webapp/WEB-INF" ;
+        System.setProperty("user.dir", frog) ;
+        if (DEBUG_FLAG) System.out.println("  User dir : " + System.getProperty("user.dir")) ;
  *
  */
-		this.setDatabaseManager(
-			createLocalService()
-			) ;
-		}
+        this.setDatabaseManager(
+            createLocalService()
+            ) ;
+        }
 
-	/**
-	 * Tear down the test.
-	 * Re-sets the current working directory.
-	 *
-	 */
-	public void tearDown()
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("DatabaseManagerServiceTestCase:tearDown()") ;
+    /**
+     * Tear down the test.
+     * Re-sets the current working directory.
+     *
+     */
+    public void tearDown()
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("DatabaseManagerServiceTestCase:tearDown()") ;
 /*
  * This didn't work ....
-		System.setProperty("user.dir", prev) ;
-		if (DEBUG_FLAG) System.out.println("  User dir : " + System.getProperty("user.dir")) ;
+        System.setProperty("user.dir", prev) ;
+        if (DEBUG_FLAG) System.out.println("  User dir : " + System.getProperty("user.dir")) ;
  *
  */
-		}
+        }
 
-	/**
-	 * Load our default database configuration.
-	 *
-	public DatabaseConfiguration loadDatabaseConfiguration()
-		throws Exception
-		{
-		return this.loadDatabaseConfiguration(TEST_DATABASE_NAME) ;
-		}
-	 */
+    /**
+     * Load our default database configuration.
+     *
+    public DatabaseConfiguration loadDatabaseConfiguration()
+        throws Exception
+        {
+        return this.loadDatabaseConfiguration(TEST_DATABASE_NAME) ;
+        }
+     */
 
-	/**
-	 * Create a local DatabaseManager service.
-	 *
-	 */
-	public DatabaseManager createLocalService()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("DatabaseManagerServiceTestCase:createLocalService()") ;
-		//
-		// Initialise the Axis 'local:' URL protocol.
-		Call.initialize() ;
-		//
-		// Create our local endpoint address.
-		URL endpoint = new URL("local:///DatabaseManager") ;
+    /**
+     * Create a local DatabaseManager service.
+     *
+     */
+    public DatabaseManager createLocalService()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("DatabaseManagerServiceTestCase:createLocalService()") ;
+        //
+        // Initialise the Axis 'local:' URL protocol.
+        Call.initialize() ;
+        //
+        // Create our local endpoint address.
+        URL endpoint = new URL("local:///DatabaseManager") ;
         //
         // Try creating a service locator.
         DatabaseManagerService locator = new DatabaseManagerServiceLocator() ;
@@ -150,11 +157,11 @@ public class DatabaseManagerServiceTestCase
         assertNotNull(
             "Null DatabaseManager service",
             service) ;
-		//
-		// Return the DatabaseManager service.
-		return service ;
-		}
+        //
+        // Return the DatabaseManager service.
+        return service ;
+        }
 
-	}
+    }
 
 

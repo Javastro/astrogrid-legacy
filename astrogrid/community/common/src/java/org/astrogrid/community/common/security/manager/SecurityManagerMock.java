@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/manager/SecurityManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerMock.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -31,41 +38,41 @@ import org.astrogrid.community.common.service.CommunityServiceMock ;
  *
  */
 public class SecurityManagerMock
-	extends CommunityServiceMock
-	implements SecurityManager
+    extends CommunityServiceMock
+    implements SecurityManager
     {
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	private static boolean DEBUG_FLAG = true ;
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    private static boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public SecurityManagerMock()
-		{
-		super() ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityManagerMock()") ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public SecurityManagerMock()
+        {
+        super() ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityManagerMock()") ;
+        }
 
-	/**
-	 * Set an account password.
-	 *
-	 */
-	public boolean setPassword(String ident, String value)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityManagerMock.setPassword()") ;
-		if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
-		if (DEBUG_FLAG) System.out.println("  Value : " + value) ;
-		//
-		// Always return true.
-		return true ;
-		}
+    /**
+     * Set an account password.
+     *
+     */
+    public boolean setPassword(String ident, String value)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityManagerMock.setPassword()") ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        if (DEBUG_FLAG) System.out.println("  Value : " + value) ;
+        //
+        // Always return true.
+        return true ;
+        }
 
     }

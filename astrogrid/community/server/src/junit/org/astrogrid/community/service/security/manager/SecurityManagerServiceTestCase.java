@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/service/security/manager/Attic/SecurityManagerServiceTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:20:00 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerServiceTestCase.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:18  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:20:00  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -46,135 +53,135 @@ import org.astrogrid.community.common.security.manager.SecurityManagerTest ;
  *
  */
 public class SecurityManagerServiceTestCase
-	extends SecurityManagerTest
-	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	private static boolean DEBUG_FLAG = true ;
+    extends SecurityManagerTest
+    {
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    private static boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Setup our test.
-	 * Creates the local services to test.
-	 *
-	 */
-	public void setUp()
-		throws Exception
-		{
-		//
-		// Create our test targets.
-		this.setDatabaseManager(
-			this.createDatabaseManager()
-			) ;
-		this.setAccountManager(
-			this.createPolicyManager()
-			) ;
-		this.setSecurityManager(
-			this.createSecurityManager()
-			) ;
-		//
-		// Reset our database tables.
-		this.resetDatabase() ;
-		}
+    /**
+     * Setup our test.
+     * Creates the local services to test.
+     *
+     */
+    public void setUp()
+        throws Exception
+        {
+        //
+        // Create our test targets.
+        this.setDatabaseManager(
+            this.createDatabaseManager()
+            ) ;
+        this.setAccountManager(
+            this.createPolicyManager()
+            ) ;
+        this.setSecurityManager(
+            this.createSecurityManager()
+            ) ;
+        //
+        // Reset our database tables.
+        this.resetDatabase() ;
+        }
 
-	/**
-	 * Create a local DatabaseManager service.
-	 *
-	 */
-	public DatabaseManager createDatabaseManager()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityManagerServiceTestCase:createDatabaseManager()") ;
-		//
-		// Initialise the Axis 'local:' URL protocol.
-		Call.initialize() ;
-		//
-		// Create our local endpoint address.
-		URL endpoint = new URL("local:///DatabaseManager") ;
-		//
-		// Try creating a service locator.
-		DatabaseManagerService locator = new DatabaseManagerServiceLocator() ;
-		assertNotNull(
-			"Null DatabaseManagerService locator",
-			locator) ;
-		//
-		// Try getting a local DatabaseManager service.
-		DatabaseManager service = locator.getDatabaseManager(endpoint) ;
-		assertNotNull(
-			"Null DatabaseManager service",
-			service) ;
-		//
-		// Return the DatabaseManager service.
-		return service ;
-		}
+    /**
+     * Create a local DatabaseManager service.
+     *
+     */
+    public DatabaseManager createDatabaseManager()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityManagerServiceTestCase:createDatabaseManager()") ;
+        //
+        // Initialise the Axis 'local:' URL protocol.
+        Call.initialize() ;
+        //
+        // Create our local endpoint address.
+        URL endpoint = new URL("local:///DatabaseManager") ;
+        //
+        // Try creating a service locator.
+        DatabaseManagerService locator = new DatabaseManagerServiceLocator() ;
+        assertNotNull(
+            "Null DatabaseManagerService locator",
+            locator) ;
+        //
+        // Try getting a local DatabaseManager service.
+        DatabaseManager service = locator.getDatabaseManager(endpoint) ;
+        assertNotNull(
+            "Null DatabaseManager service",
+            service) ;
+        //
+        // Return the DatabaseManager service.
+        return service ;
+        }
 
-	/**
-	 * Create a local PolicyManager (AccountManager) service.
-	 *
-	 */
-	public PolicyManager createPolicyManager()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityManagerServiceTestCase:createPolicyManager()") ;
-		//
-		// Initialise the Axis 'local:' URL protocol.
-		Call.initialize() ;
-		//
-		// Create our local endpoint address.
-		URL endpoint = new URL("local:///PolicyManager") ;
-		//
-		// Try creating a service locator.
-		PolicyManagerService locator = new PolicyManagerServiceLocator() ;
-		assertNotNull(
-			"Null AccountManagerService locator",
-			locator) ;
-		//
-		// Try getting a local PolicyManager service.
-		PolicyManager service = locator.getPolicyManager(endpoint) ;
-		assertNotNull(
-			"Null PolicyManager service",
-			service) ;
-		//
-		// Return the PolicyManager service.
-		return service ;
-		}
+    /**
+     * Create a local PolicyManager (AccountManager) service.
+     *
+     */
+    public PolicyManager createPolicyManager()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityManagerServiceTestCase:createPolicyManager()") ;
+        //
+        // Initialise the Axis 'local:' URL protocol.
+        Call.initialize() ;
+        //
+        // Create our local endpoint address.
+        URL endpoint = new URL("local:///PolicyManager") ;
+        //
+        // Try creating a service locator.
+        PolicyManagerService locator = new PolicyManagerServiceLocator() ;
+        assertNotNull(
+            "Null AccountManagerService locator",
+            locator) ;
+        //
+        // Try getting a local PolicyManager service.
+        PolicyManager service = locator.getPolicyManager(endpoint) ;
+        assertNotNull(
+            "Null PolicyManager service",
+            service) ;
+        //
+        // Return the PolicyManager service.
+        return service ;
+        }
 
-	/**
-	 * Create a local SecurityManager service.
-	 *
-	 */
-	public SecurityManager createSecurityManager()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityManagerServiceTestCase:createSecurityManager()") ;
-		//
-		// Initialise the Axis 'local:' URL protocol.
-		Call.initialize() ;
-		//
-		// Create our local endpoint address.
-		URL endpoint = new URL("local:///SecurityManager") ;
-		//
-		// Try creating a service locator.
-		SecurityManagerService locator = new SecurityManagerServiceLocator() ;
-		assertNotNull(
-			"Null SecurityManagerService locator",
-			locator) ;
-		//
-		// Try getting a local SecurityManager service.
-		SecurityManager manager = locator.getSecurityManager(endpoint) ;
-		assertNotNull(
-			"Null SecurityManager service",
-			manager) ;
-		//
-		// Return the SecurityManager service.
-		return manager ;
-		}
+    /**
+     * Create a local SecurityManager service.
+     *
+     */
+    public SecurityManager createSecurityManager()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityManagerServiceTestCase:createSecurityManager()") ;
+        //
+        // Initialise the Axis 'local:' URL protocol.
+        Call.initialize() ;
+        //
+        // Create our local endpoint address.
+        URL endpoint = new URL("local:///SecurityManager") ;
+        //
+        // Try creating a service locator.
+        SecurityManagerService locator = new SecurityManagerServiceLocator() ;
+        assertNotNull(
+            "Null SecurityManagerService locator",
+            locator) ;
+        //
+        // Try getting a local SecurityManager service.
+        SecurityManager manager = locator.getSecurityManager(endpoint) ;
+        assertNotNull(
+            "Null SecurityManager service",
+            manager) ;
+        //
+        // Return the SecurityManager service.
+        return manager ;
+        }
 
-	}
+    }

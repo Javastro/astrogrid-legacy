@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <document>
-	<properties>
-		<title>Tomcat context</title>
-	</properties>
-	<body>
-		<section name="Tomcat context">
-			<p>
-				Details about install toolkit ....
-			</p>
-			<subsection name="Global context">
-				<p>
-					Details about global context ....
-				</p>
-			</subsection>
-			<subsection name="Webapp context">
-				<p>
-					Details about webapp context ....
-				</p>
-			</subsection>
-		</section>
-	</body>
+    <properties>
+        <title>Tomcat context</title>
+    </properties>
+    <body>
+        <section name="Tomcat context">
+            <p>
+                Details about install toolkit ....
+            </p>
+            <subsection name="Global context">
+                <p>
+                    Details about global context ....
+                </p>
+            </subsection>
+            <subsection name="Webapp context">
+                <p>
+                    Details about webapp context ....
+                </p>
+            </subsection>
+        </section>
+    </body>
 </document>

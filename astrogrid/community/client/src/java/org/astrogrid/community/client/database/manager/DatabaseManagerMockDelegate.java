@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/database/manager/DatabaseManagerMockDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerMockDelegate.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -25,26 +32,26 @@ import org.astrogrid.community.common.database.manager.DatabaseManagerMock ;
  *
  */
 public class DatabaseManagerMockDelegate
-	extends DatabaseManagerCoreDelegate
-	implements DatabaseManagerDelegate
-	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	private static boolean DEBUG_FLAG = true ;
+    extends DatabaseManagerCoreDelegate
+    implements DatabaseManagerDelegate
+    {
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    private static boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public DatabaseManagerMockDelegate()
-		{
-		super() ;
-		//
-		// Set our DatabaseManager service.
-		this.setDatabaseManager(
-			new DatabaseManagerMock()
-			) ;
-		}
-	}
+    /**
+     * Public constructor.
+     *
+     */
+    public DatabaseManagerMockDelegate()
+        {
+        super() ;
+        //
+        // Set our DatabaseManager service.
+        this.setDatabaseManager(
+            new DatabaseManagerMock()
+            ) ;
+        }
+    }

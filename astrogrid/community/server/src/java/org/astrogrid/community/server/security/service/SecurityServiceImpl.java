@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/service/Attic/SecurityServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceImpl.java,v $
+ *   Revision 1.5  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.4.2.1  2004/03/08 12:53:18  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.4  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -130,45 +137,45 @@ public class SecurityServiceImpl
 // TODO - Replace this with a real implemetation.
 // Possibly refactor it into a helper class SecurityTokenGenerator ?
 //
-	/**
-	 * Our token instance counter.
-	 *
-	 */
-	private static int counter = 0 ;
+    /**
+     * Our token instance counter.
+     *
+     */
+    private static int counter = 0 ;
 
-	/**
-	 * Our sync object.
-	 *
-	 */
-	private static Object sync = new Object() ;
+    /**
+     * Our sync object.
+     *
+     */
+    private static Object sync = new Object() ;
 
-	/**
-	 * Generate a new token.
-	 * TODO - Refactor this using a helper.
-	 * @param ident - The Account ident.
-	 *
-	 */
-	protected SecurityToken createToken(String ident)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceImpl.createToken()") ;
-		String value = null ;
-		synchronized (sync)
-			{
-			value = "MOCK-TOKEN-" + counter++ ;
-			}
-		//
-		// Issue a new Security token to the account.
-		SecurityToken token = new SecurityToken(ident, value) ;
-		//
-		// Mark the token as valid.
-		token.setStatus(SecurityToken.VALID_TOKEN) ;
-		//
-		// Return the new token.
-		if (DEBUG_FLAG) System.out.println("  Token : " + token) ;
-		return token ;
-		}
+    /**
+     * Generate a new token.
+     * TODO - Refactor this using a helper.
+     * @param ident - The Account ident.
+     *
+     */
+    protected SecurityToken createToken(String ident)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceImpl.createToken()") ;
+        String value = null ;
+        synchronized (sync)
+            {
+            value = "MOCK-TOKEN-" + counter++ ;
+            }
+        //
+        // Issue a new Security token to the account.
+        SecurityToken token = new SecurityToken(ident, value) ;
+        //
+        // Mark the token as valid.
+        token.setStatus(SecurityToken.VALID_TOKEN) ;
+        //
+        // Return the new token.
+        if (DEBUG_FLAG) System.out.println("  Token : " + token) ;
+        return token ;
+        }
 
     /**
      * Check an Account password.
@@ -212,41 +219,41 @@ public class SecurityServiceImpl
             // Begin a new database transaction.
             database.begin();
 
-			//
-			// Try to load a matching PasswordData.
-			PasswordData match = (PasswordData) database.load(PasswordData.class, ident) ;
-			//
-			// If we found a matching password data.
-			if (null != match)
-				{
-				if (DEBUG_FLAG)System.out.println("  PASS : Got password data") ;
-				if (DEBUG_FLAG)System.out.println("    Account  : " + match.getAccount()) ;
-				if (DEBUG_FLAG)System.out.println("    Password : " + match.getPassword()) ;
-				//
-				// Check if the password matches.
-				if (pass.equals(match.getPassword()))
-					{
-					if (DEBUG_FLAG)System.out.println("  PASS : Password matches") ;
-					//
-					// Create our new SecurityToken.
-					token = this.createToken(ident) ;
-					if (null != token)
-						{
-						if (DEBUG_FLAG)System.out.println("  PASS : Got new token") ;
-						}
-					database.create(token);
-					}
-				//
-				// If the password don't match.
-				else {
-					if (DEBUG_FLAG)System.out.println("  FAIL : Password invalid") ;
-					}
-				}
-			//
-			// If we didn't find a match.
-			else {
-				if (DEBUG_FLAG)System.out.println("  FAIL : Password not in database") ;
-				}
+            //
+            // Try to load a matching PasswordData.
+            PasswordData match = (PasswordData) database.load(PasswordData.class, ident) ;
+            //
+            // If we found a matching password data.
+            if (null != match)
+                {
+                if (DEBUG_FLAG)System.out.println("  PASS : Got password data") ;
+                if (DEBUG_FLAG)System.out.println("    Account  : " + match.getAccount()) ;
+                if (DEBUG_FLAG)System.out.println("    Password : " + match.getPassword()) ;
+                //
+                // Check if the password matches.
+                if (pass.equals(match.getPassword()))
+                    {
+                    if (DEBUG_FLAG)System.out.println("  PASS : Password matches") ;
+                    //
+                    // Create our new SecurityToken.
+                    token = this.createToken(ident) ;
+                    if (null != token)
+                        {
+                        if (DEBUG_FLAG)System.out.println("  PASS : Got new token") ;
+                        }
+                    database.create(token);
+                    }
+                //
+                // If the password don't match.
+                else {
+                    if (DEBUG_FLAG)System.out.println("  FAIL : Password invalid") ;
+                    }
+                }
+            //
+            // If we didn't find a match.
+            else {
+                if (DEBUG_FLAG)System.out.println("  FAIL : Password not in database") ;
+                }
             //
             // Commit the database transaction.
             database.commit() ;
@@ -283,53 +290,53 @@ public class SecurityServiceImpl
      * @return A new SecurityToken if the original was valid.
      *
      */
-	public SecurityToken checkToken(SecurityToken original)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceImpl.checkToken()") ;
-		if (DEBUG_FLAG) System.out.println("  Token : " + original) ;
+    public SecurityToken checkToken(SecurityToken original)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceImpl.checkToken()") ;
+        if (DEBUG_FLAG) System.out.println("  Token : " + original) ;
 
-		SecurityToken result = null ;
-		Database    database = null ;
-		try {
-			//
-			// Open our database connection.
-			database = this.getDatabase() ;
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Try loading the original token from our database.
-			SecurityToken match = (SecurityToken) database.load(SecurityToken.class, original.getToken()) ;
-			if (DEBUG_FLAG)System.out.println("  PASS : Got matching token") ;
-			if (DEBUG_FLAG)System.out.println("  Token : " + match) ;
-			//
-			// If the match is still valid.
-			if (match.isValid())
-				{
-				if (DEBUG_FLAG)System.out.println("  PASS : Original is valid") ;
-				//
-				// Update the original token.
-				match.setStatus(SecurityToken.INVALID_TOKEN) ;
-				//
-				// Create a new token.
-				result = this.createToken(match.getAccount()) ;
-				database.create(result) ;
-				}
-			//
-			// If the original is no longer valied.
-			else {
-				if (DEBUG_FLAG)System.out.println("  FAIL : Original is not valid") ;
-				//
-				// TODO Throw an Exception ?
-				// Just set the response to null for now.
-				result = null ;
-				}
-			//
-			// Commit the database transaction.
-			database.commit() ;
-			}
+        SecurityToken result = null ;
+        Database    database = null ;
+        try {
+            //
+            // Open our database connection.
+            database = this.getDatabase() ;
+            //
+            // Begin a new database transaction.
+            database.begin();
+            //
+            // Try loading the original token from our database.
+            SecurityToken match = (SecurityToken) database.load(SecurityToken.class, original.getToken()) ;
+            if (DEBUG_FLAG)System.out.println("  PASS : Got matching token") ;
+            if (DEBUG_FLAG)System.out.println("  Token : " + match) ;
+            //
+            // If the match is still valid.
+            if (match.isValid())
+                {
+                if (DEBUG_FLAG)System.out.println("  PASS : Original is valid") ;
+                //
+                // Update the original token.
+                match.setStatus(SecurityToken.INVALID_TOKEN) ;
+                //
+                // Create a new token.
+                result = this.createToken(match.getAccount()) ;
+                database.create(result) ;
+                }
+            //
+            // If the original is no longer valied.
+            else {
+                if (DEBUG_FLAG)System.out.println("  FAIL : Original is not valid") ;
+                //
+                // TODO Throw an Exception ?
+                // Just set the response to null for now.
+                result = null ;
+                }
+            //
+            // Commit the database transaction.
+            database.commit() ;
+            }
         //
         // If anything went bang.
         catch (Exception ouch)
@@ -350,8 +357,8 @@ public class SecurityServiceImpl
             {
             closeConnection(database) ;
             }
-		return result ;
-		}
+        return result ;
+        }
 
     /**
      * Split a SecurityToken.
@@ -364,51 +371,51 @@ public class SecurityServiceImpl
      *
      */
     public Object[] splitToken(SecurityToken original, int count)
-		{
-		Vector   vector   = new Vector() ;
-		Database database = null ;
-		try {
-			//
-			// Open our database connection.
-			database = this.getDatabase() ;
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Try loading the original token from our database.
-			SecurityToken match = (SecurityToken) database.load(SecurityToken.class, original.getToken()) ;
-			if (DEBUG_FLAG)System.out.println("  PASS  : Got matching token") ;
-			if (DEBUG_FLAG)System.out.println("  Token : " + match) ;
-			//
-			// If the match is still valid.
-			if (match.isValid())
-				{
-				if (DEBUG_FLAG)System.out.println("  PASS : Original is valid") ;
-				//
-				// Update the original token.
-				match.setStatus(SecurityToken.INVALID_TOKEN) ;
-				//
-				// Create our new tokens.
-				for (int i = 0 ; i < count ; i++)
-					{
-					SecurityToken token = this.createToken(match.getAccount()) ;
-					database.create(token) ;
-					vector.add(token) ;
-					}
-				}
-			//
-			// If the original is no longer valied.
-			else {
-				if (DEBUG_FLAG)System.out.println("  FAIL : Original is not valid") ;
-				//
-				// TODO Throw an Exception ?
-				// Just set the response to null for now.
-				vector = null ;
-				}
-			//
-			// Commit the database transaction.
-			database.commit() ;
-			}
+        {
+        Vector   vector   = new Vector() ;
+        Database database = null ;
+        try {
+            //
+            // Open our database connection.
+            database = this.getDatabase() ;
+            //
+            // Begin a new database transaction.
+            database.begin();
+            //
+            // Try loading the original token from our database.
+            SecurityToken match = (SecurityToken) database.load(SecurityToken.class, original.getToken()) ;
+            if (DEBUG_FLAG)System.out.println("  PASS  : Got matching token") ;
+            if (DEBUG_FLAG)System.out.println("  Token : " + match) ;
+            //
+            // If the match is still valid.
+            if (match.isValid())
+                {
+                if (DEBUG_FLAG)System.out.println("  PASS : Original is valid") ;
+                //
+                // Update the original token.
+                match.setStatus(SecurityToken.INVALID_TOKEN) ;
+                //
+                // Create our new tokens.
+                for (int i = 0 ; i < count ; i++)
+                    {
+                    SecurityToken token = this.createToken(match.getAccount()) ;
+                    database.create(token) ;
+                    vector.add(token) ;
+                    }
+                }
+            //
+            // If the original is no longer valied.
+            else {
+                if (DEBUG_FLAG)System.out.println("  FAIL : Original is not valid") ;
+                //
+                // TODO Throw an Exception ?
+                // Just set the response to null for now.
+                vector = null ;
+                }
+            //
+            // Commit the database transaction.
+            database.commit() ;
+            }
         //
         // If anything went bang.
         catch (Exception ouch)
@@ -429,7 +436,7 @@ public class SecurityServiceImpl
             {
             closeConnection(database) ;
             }
-		return (null != vector) ? vector.toArray() : null ;
-		}
+        return (null != vector) ? vector.toArray() : null ;
+        }
 
     }

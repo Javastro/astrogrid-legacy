@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/data/SecurityToken.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityToken.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -58,24 +65,24 @@ public class SecurityToken
      */
     public SecurityToken(String value)
         {
-		if (null != value)
-			{
-	        //
-			// Split the string on delimiters.
-			String[] split = value.split(DELIMTER_STRING) ;
-			//
-			// If we have a Token value.
-			if (split.length > 0)
-				{
-				this.setToken(split[0]) ;
-				}
-			//
-			// If we have an Account ident.
-			if (split.length > 1)
-				{
-				this.setAccount(split[1]) ;
-				}
-			}
+        if (null != value)
+            {
+            //
+            // Split the string on delimiters.
+            String[] split = value.split(DELIMTER_STRING) ;
+            //
+            // If we have a Token value.
+            if (split.length > 0)
+                {
+                this.setToken(split[0]) ;
+                }
+            //
+            // If we have an Account ident.
+            if (split.length > 1)
+                {
+                this.setAccount(split[1]) ;
+                }
+            }
         }
 
     /**
@@ -112,9 +119,9 @@ public class SecurityToken
     public void setAccount(String value)
         {
         if (null == this.account)
-        	{
-        	this.account = value ;
-			}
+            {
+            this.account = value ;
+            }
         }
 
     /**
@@ -140,52 +147,52 @@ public class SecurityToken
     public void setToken(String value)
         {
         if (null == this.token)
-        	{
-        	this.token = value ;
-			}
+            {
+            this.token = value ;
+            }
         }
 
-	/**
-	 * The token status.
-	 *
-	 */
-	private int status ;
+    /**
+     * The token status.
+     *
+     */
+    private int status ;
 
-	/**
-	 * Get the token status.
-	 *
-	 */
-	public int getStatus()
-		{
-		return this.status ;
-		}
+    /**
+     * Get the token status.
+     *
+     */
+    public int getStatus()
+        {
+        return this.status ;
+        }
 
-	/**
-	 * Set the token status.
-	 *
-	 */
-	public void setStatus(int value)
-		{
-		this.status = value ;
-		}
+    /**
+     * Set the token status.
+     *
+     */
+    public void setStatus(int value)
+        {
+        this.status = value ;
+        }
 
-	/**
-	 * Chec the token status.
-	 *
-	 */
-	public boolean isValid()
-		{
-		return (this.status == VALID_TOKEN) ;
-		}
+    /**
+     * Chec the token status.
+     *
+     */
+    public boolean isValid()
+        {
+        return (this.status == VALID_TOKEN) ;
+        }
 
-	/**
-	 * Convert the token to a string.
-	 *
-	 */
-	public String toString()
-		{
-		return this.token + DELIMTER_STRING + this.account ;
-		}
+    /**
+     * Convert the token to a string.
+     *
+     */
+    public String toString()
+        {
+        return this.token + DELIMTER_STRING + this.account ;
+        }
 
     /*
      * Compare this with another SecurityToken.

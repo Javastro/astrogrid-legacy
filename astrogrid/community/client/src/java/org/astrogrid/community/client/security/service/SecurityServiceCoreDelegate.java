@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/security/service/SecurityServiceCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceCoreDelegate.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -34,45 +41,45 @@ import org.astrogrid.community.common.security.service.SecurityService ;
  *
  */
 public class SecurityServiceCoreDelegate
-	implements SecurityServiceDelegate
+    implements SecurityServiceDelegate
     {
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	private static boolean DEBUG_FLAG = true ;
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    private static boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public SecurityServiceCoreDelegate()
-		{
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public SecurityServiceCoreDelegate()
+        {
+        }
 
-	/**
-	 * Our SecurityService service.
-	 *
-	 */
-	private SecurityService service = null ;
+    /**
+     * Our SecurityService service.
+     *
+     */
+    private SecurityService service = null ;
 
-	/**
-	 * Get a reference to our SecurityService service.
-	 *
-	 */
-	protected SecurityService getSecurityService()
-		{
-		return this.service ;
-		}
+    /**
+     * Get a reference to our SecurityService service.
+     *
+     */
+    protected SecurityService getSecurityService()
+        {
+        return this.service ;
+        }
 
-	/**
-	 * Set our our SecurityService service.
-	 *
-	 */
-	protected void setSecurityService(SecurityService service)
-		{
-		this.service = service ;
-		}
+    /**
+     * Set our our SecurityService service.
+     *
+     */
+    protected void setSecurityService(SecurityService service)
+        {
+        this.service = service ;
+        }
 
     /**
      * Check an Account password.
@@ -81,29 +88,29 @@ public class SecurityServiceCoreDelegate
      * @return A valid SecurityToken if the ident and password are valid.
      *
      */
-	public SecurityToken checkPassword(String account, String pass)
-		{
-		SecurityToken result = null ;
-		//
-		// If we have a valid service reference.
-		if (null != this.service)
-			{
-			//
-			// Try calling the service method.
-			try {
-				result = this.service.checkPassword(account, pass) ;
-				}
-			//
-			// Catch anything that went BANG.
-			catch (RemoteException ouch)
-				{
-				//
-				// Unpack the RemoteException, and re-throw the real Exception.
-				//
-				}
-			}
-		return result ;
-		}
+    public SecurityToken checkPassword(String account, String pass)
+        {
+        SecurityToken result = null ;
+        //
+        // If we have a valid service reference.
+        if (null != this.service)
+            {
+            //
+            // Try calling the service method.
+            try {
+                result = this.service.checkPassword(account, pass) ;
+                }
+            //
+            // Catch anything that went BANG.
+            catch (RemoteException ouch)
+                {
+                //
+                // Unpack the RemoteException, and re-throw the real Exception.
+                //
+                }
+            }
+        return result ;
+        }
 
     /**
      * Validate a SecurityToken.
@@ -114,29 +121,29 @@ public class SecurityServiceCoreDelegate
      * @return A new SecurityToken if the original was valid.
      *
      */
-	public SecurityToken checkToken(SecurityToken token)
-		{
-		SecurityToken result = null ;
-		//
-		// If we have a valid service reference.
-		if (null != this.service)
-			{
-			//
-			// Try calling the service method.
-			try {
-				result = this.service.checkToken(token) ;
-				}
-			//
-			// Catch anything that went BANG.
-			catch (RemoteException ouch)
-				{
-				//
-				// Unpack the RemoteException, and re-throw the real Exception.
-				//
-				}
-			}
-		return result ;
-		}
+    public SecurityToken checkToken(SecurityToken token)
+        {
+        SecurityToken result = null ;
+        //
+        // If we have a valid service reference.
+        if (null != this.service)
+            {
+            //
+            // Try calling the service method.
+            try {
+                result = this.service.checkToken(token) ;
+                }
+            //
+            // Catch anything that went BANG.
+            catch (RemoteException ouch)
+                {
+                //
+                // Unpack the RemoteException, and re-throw the real Exception.
+                //
+                }
+            }
+        return result ;
+        }
 
     /**
      * Split a SecurityToken.
@@ -148,57 +155,57 @@ public class SecurityServiceCoreDelegate
      * @return An array of new tokens.
      *
      */
-	public Object[] splitToken(SecurityToken token, int count)
-		{
-		Object[] result = null ;
-		//
-		// If we have a valid service reference.
-		if (null != this.service)
-			{
-			//
-			// Try calling the service method.
-			try {
-				result = this.service.splitToken(token, count) ;
-				}
-			//
-			// Catch anything that went BANG.
-			catch (RemoteException ouch)
-				{
-				//
-				// Unpack the RemoteException, and re-throw the real Exception.
-				//
-				}
-			}
-		return result ;
-		}
+    public Object[] splitToken(SecurityToken token, int count)
+        {
+        Object[] result = null ;
+        //
+        // If we have a valid service reference.
+        if (null != this.service)
+            {
+            //
+            // Try calling the service method.
+            try {
+                result = this.service.splitToken(token, count) ;
+                }
+            //
+            // Catch anything that went BANG.
+            catch (RemoteException ouch)
+                {
+                //
+                // Unpack the RemoteException, and re-throw the real Exception.
+                //
+                }
+            }
+        return result ;
+        }
 
-	/**
-	 * Service health check.
-	 * @return ServiceStatusData with details of the Service status.
-	 * TODO -refactor this to a base class
-	 *
-	 */
-	public ServiceStatusData getServiceStatus()
-		{
-		ServiceStatusData result = null ;
-		//
-		// If we have a valid service reference.
-		if (null != this.service)
-			{
-			//
-			// Try calling the service method.
-			try {
-				result = this.service.getServiceStatus() ;
-				}
-			//
-			// Catch anything that went BANG.
-			catch (RemoteException ouch)
-				{
-				//
-				// Unpack the RemoteException, and re-throw the real Exception.
-				//
-				}
-			}
-		return result ;
-		}
-	}
+    /**
+     * Service health check.
+     * @return ServiceStatusData with details of the Service status.
+     * TODO -refactor this to a base class
+     *
+     */
+    public ServiceStatusData getServiceStatus()
+        {
+        ServiceStatusData result = null ;
+        //
+        // If we have a valid service reference.
+        if (null != this.service)
+            {
+            //
+            // Try calling the service method.
+            try {
+                result = this.service.getServiceStatus() ;
+                }
+            //
+            // Catch anything that went BANG.
+            catch (RemoteException ouch)
+                {
+                //
+                // Unpack the RemoteException, and re-throw the real Exception.
+                //
+                }
+            }
+        return result ;
+        }
+    }

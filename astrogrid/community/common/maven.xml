@@ -4,10 +4,20 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.6  2004/03/08 13:42:33  dave
+    |   Updated Maven goals.
+    |   Replaced tabs with Spaces.
+    |
+    |   Revision 1.5.2.2  2004/03/08 12:53:17  dave
+    |   Changed tabs to spaces
+    |
+    |   Revision 1.5.2.1  2004/03/08 12:10:05  dave
+    |   Modified Maven build scripts to use new AstroGrid goals
+    |
     |   Revision 1.5  2004/03/05 17:19:59  dave
     |   Merged development branch, dave-dev-200402211936, into HEAD
     |
@@ -84,92 +94,86 @@
         <attainGoal name="clean:clean"/>
     </goal>
 
-	<!--+
-		| Build and install our component jar.
-		+-->
-	<goal name="install-artifact">
-		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
-		<ant:echo message="Build version   : ${pom.currentVersion}"/>
-		<ant:echo message="Build directory : ${maven.build.dir}"/>
-		<!--+
-			| Build our jar.
-			+-->
-		<attainGoal name="jar:jar"/>
-		<!--+
-			| Install our jar.
-			+-->
-		<core:set var="astrogrid.artifact.type" value="jar"/>
-		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-		<attainGoal name="install-local"/>
-	</goal>
+    <!--+
+        | Build and install our component jar.
+        +-->
+    <goal name="install-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Build our jar.
+            +-->
+        <attainGoal name="jar:jar"/>
+        <!--+
+            | Install our jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="install-local"/>
+    </goal>
 
-	<!--+
-		| Build and install our snapshot jar.
-		+-->
-	<goal name="install-snapshot">
-		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
-		<ant:echo message="Build version   : ${pom.currentVersion}"/>
-		<ant:echo message="Build directory : ${maven.build.dir}"/>
-		<!--+
-			| Create our snapshot name.
-			+-->
-		<maven:snapshot project="${pom}"/>
-		<core:set var="maven.final.name" value="${snapshotSignature}"/>
-		<!--+
-			| Build our jar.
-			+-->
-		<attainGoal name="jar:jar"/>
-		<!--+
-			| Install our SNAPSHOT jar.
-			+-->
-		<core:set var="astrogrid.artifact.type" value="jar"/>
-		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-		<attainGoal name="install-local-snapshot"/>
-	</goal>
+    <!--+
+        | Build and install our snapshot jar.
+        +-->
+    <goal name="install-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our snapshot name.
+            +-->
+        <maven:snapshot project="${pom}"/>
+        <core:set var="maven.final.name" value="${snapshotSignature}"/>
+        <!--+
+            | Build our jar.
+            +-->
+        <attainGoal name="jar:jar"/>
+        <!--+
+            | Install our SNAPSHOT jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="install-local-snapshot"/>
+    </goal>
 
-	<!--+
-		| Build and deploy our component jar.
-		+-->
-	<goal name="deploy-artifact">
-		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
-		<ant:echo message="Build version   : ${pom.currentVersion}"/>
-		<ant:echo message="Build directory : ${maven.build.dir}"/>
-		<!--+
-			| Build our jar.
-			+-->
-		<attainGoal name="jar:jar"/>
-		<!--+
-			| Deploy our jar.
-			+-->
-		<core:set var="astrogrid.artifact.type" value="jar"/>
-		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-		<attainGoal name="deploy-local"/>
-	</goal>
+    <!--+
+        | Build and deploy our component jar.
+        +-->
+    <goal name="deploy-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our artifact jar.
+            +-->
+        <attainGoal name="install-artifact"/>
+        <!--+
+            | Deploy our jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="deploy-local"/>
+    </goal>
 
-	<!--+
-		| Build and deploy our snapshot jar.
-		+-->
-	<goal name="deploy-snapshot">
-		<ant:echo message="Build artifact  : ${pom.artifactId}"/>
-		<ant:echo message="Build version   : ${pom.currentVersion}"/>
-		<ant:echo message="Build directory : ${maven.build.dir}"/>
-		<!--+
-			| Create our snapshot name.
-			| Need to do this here because the jar:snapshot only sets 'maven.final.name' locally.
-			+-->
-		<maven:snapshot project="${pom}"/>
-		<core:set var="maven.final.name" value="${snapshotSignature}"/>
-		<!--+
-			| Build our jar.
-			+-->
-		<attainGoal name="jar:jar"/>
-		<!--+
-			| Deploy our SNAPSHOT jar.
-			+-->
-		<core:set var="astrogrid.artifact.type" value="jar"/>
-		<core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-		<attainGoal name="deploy-local-snapshot"/>
-	</goal>
+    <!--+
+        | Build and deploy our snapshot jar.
+        +-->
+    <goal name="deploy-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our artifact jar.
+            +-->
+        <attainGoal name="install-snapshot"/>
+        <!--+
+            | Deploy our SNAPSHOT jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="deploy-local-snapshot"/>
+    </goal>
 
     <!--+
         | Build our component site.
@@ -183,29 +187,29 @@
 
     <!-- ================ Component goals ================ -->
 
-	<!--+
-		| Build our mock objects.
-		| This don't work !!!
-		+-->
-	<goal name="mocks">
-		<!--+
-			| Define our Ant task.
-			+-->
-		<ant:taskdef name="mockmaker" classname="mockmaker.AntTask" classpathref="maven.dependency.classpath"/>
-		<!--+
-			| Create our target directory.
-			+-->
-		<ant:mkdir dir="${maven.build.dir}/mocks"/>
-		<!--+
-			| Try creating a MockObject ....
-			| Goes BANG, com.thoughtworks.qdox.JavaDocBuilder.addSource(Ljava/io/Reader;)V
-			+-->
-		<ant:mockmaker destdir="${maven.build.dir}/mocks">
-			<fileset dir="src/java">
-				<include name="**/DatabaseManager.java"/>
-			</fileset>
-		</ant:mockmaker>
-	</goal>
+    <!--+
+        | Build our mock objects.
+        | This don't work !!!
+        +-->
+    <goal name="mocks">
+        <!--+
+            | Define our Ant task.
+            +-->
+        <ant:taskdef name="mockmaker" classname="mockmaker.AntTask" classpathref="maven.dependency.classpath"/>
+        <!--+
+            | Create our target directory.
+            +-->
+        <ant:mkdir dir="${maven.build.dir}/mocks"/>
+        <!--+
+            | Try creating a MockObject ....
+            | Goes BANG, com.thoughtworks.qdox.JavaDocBuilder.addSource(Ljava/io/Reader;)V
+            +-->
+        <ant:mockmaker destdir="${maven.build.dir}/mocks">
+            <fileset dir="src/java">
+                <include name="**/DatabaseManager.java"/>
+            </fileset>
+        </ant:mockmaker>
+    </goal>
 
     <!--+
         | Setup our JUnit tests.

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/service/CommunityServiceMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceMock.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -28,44 +35,44 @@ import org.astrogrid.community.common.service.data.ServiceStatusData ;
  *
  */
 public class CommunityServiceMock
-	implements CommunityService
-	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	private static boolean DEBUG_FLAG = true ;
+    implements CommunityService
+    {
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    private static boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public CommunityServiceMock()
-		{
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public CommunityServiceMock()
+        {
+        }
 
-	/**
-	 * Our service status.
-	 *
-	 */
-	private ServiceStatusData serviceStatus = new ServiceStatusData() ;
+    /**
+     * Our service status.
+     *
+     */
+    private ServiceStatusData serviceStatus = new ServiceStatusData() ;
 
-	/**
-	 * Service health check.
-	 *
-	 */
-	public ServiceStatusData getServiceStatus()
-		{
-		return this.serviceStatus ;
-		}
+    /**
+     * Service health check.
+     *
+     */
+    public ServiceStatusData getServiceStatus()
+        {
+        return this.serviceStatus ;
+        }
 
-	/**
-	 * Set the service status.
-	 *
-	 */
-	public void setServiceStatus(ServiceStatusData value)
-		{
-		this.serviceStatus = value ;
-		}
+    /**
+     * Set the service status.
+     *
+     */
+    public void setServiceStatus(ServiceStatusData value)
+        {
+        this.serviceStatus = value ;
+        }
 
-	}
+    }

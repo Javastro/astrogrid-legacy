@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/service/SecurityServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceTest.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -37,122 +44,122 @@ import org.astrogrid.community.common.service.CommunityServiceTest ;
  *
  */
 public class SecurityServiceTest
-	extends CommunityServiceTest
-	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	private static boolean DEBUG_FLAG = true ;
+    extends CommunityServiceTest
+    {
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    private static boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Our test Account ident.
-	 *
-	 */
-	public static String TEST_ACCOUNT = "test-account" ;
+    /**
+     * Our test Account ident.
+     *
+     */
+    public static String TEST_ACCOUNT = "test-account" ;
 
-	/**
-	 * Our test password.
-	 *
-	 */
-	public static String TEST_PASSWORD = "test-password" ;
+    /**
+     * Our test password.
+     *
+     */
+    public static String TEST_PASSWORD = "test-password" ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public SecurityServiceTest()
-		{
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public SecurityServiceTest()
+        {
+        }
 
-	/**
-	 * Our target AccountManager.
-	 *
-	 */
-	private AccountManager accountManager ;
+    /**
+     * Our target AccountManager.
+     *
+     */
+    private AccountManager accountManager ;
 
-	/**
-	 * Get our target AccountManager.
-	 *
-	 */
-	public AccountManager getAccountManager()
-		{
-		return this.accountManager ;
-		}
+    /**
+     * Get our target AccountManager.
+     *
+     */
+    public AccountManager getAccountManager()
+        {
+        return this.accountManager ;
+        }
 
-	/**
-	 * Set our target AccountManager.
-	 *
-	 */
-	public void setAccountManager(AccountManager manager)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceTest.setAccountManager()") ;
-		if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
-		this.accountManager = manager ;
-		}
+    /**
+     * Set our target AccountManager.
+     *
+     */
+    public void setAccountManager(AccountManager manager)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.setAccountManager()") ;
+        if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
+        this.accountManager = manager ;
+        }
 
-	/**
-	 * Our target SecurityManager.
-	 *
-	 */
-	private SecurityManager securityManager ;
+    /**
+     * Our target SecurityManager.
+     *
+     */
+    private SecurityManager securityManager ;
 
-	/**
-	 * Get our target SecurityManager.
-	 *
-	 */
-	public SecurityManager getSecurityManager()
-		{
-		return this.securityManager ;
-		}
+    /**
+     * Get our target SecurityManager.
+     *
+     */
+    public SecurityManager getSecurityManager()
+        {
+        return this.securityManager ;
+        }
 
-	/**
-	 * Set our target SecurityManager.
-	 *
-	 */
-	public void setSecurityManager(SecurityManager manager)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceTest.setSecurityManager()") ;
-		if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
-		this.securityManager = manager ;
-		}
+    /**
+     * Set our target SecurityManager.
+     *
+     */
+    public void setSecurityManager(SecurityManager manager)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.setSecurityManager()") ;
+        if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
+        this.securityManager = manager ;
+        }
 
-	/**
-	 * Our target SecurityService.
-	 *
-	 */
-	private SecurityService securityService ;
+    /**
+     * Our target SecurityService.
+     *
+     */
+    private SecurityService securityService ;
 
-	/**
-	 * Get our target SecurityService.
-	 *
-	 */
-	public SecurityService getSecurityService()
-		{
-		return this.securityService ;
-		}
+    /**
+     * Get our target SecurityService.
+     *
+     */
+    public SecurityService getSecurityService()
+        {
+        return this.securityService ;
+        }
 
-	/**
-	 * Set our target SecurityService.
-	 *
-	 */
-	public void setSecurityService(SecurityService service)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceTest.setSecurityService()") ;
-		if (DEBUG_FLAG) System.out.println("  Service : " + service.getClass()) ;
-		//
-		// Set our SecurityService reference.
-		this.securityService = service ;
-		//
-		// Set our CommunityService reference.
-		this.setCommunityService(securityService) ;
-		}
+    /**
+     * Set our target SecurityService.
+     *
+     */
+    public void setSecurityService(SecurityService service)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.setSecurityService()") ;
+        if (DEBUG_FLAG) System.out.println("  Service : " + service.getClass()) ;
+        //
+        // Set our SecurityService reference.
+        this.securityService = service ;
+        //
+        // Set our CommunityService reference.
+        this.setCommunityService(securityService) ;
+        }
 
     /**
      * Check an Account password.
@@ -160,43 +167,43 @@ public class SecurityServiceTest
      */
     public void testCheckPassword()
         throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testCheckPassword()") ;
-		//
-		// Setup our test account.
-		AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
-		assertNotNull(
-			"addAccount returned null",
-			account
-			) ;
-		//
-		// Setup our test password.
-		assertTrue(
-			"setPassword returned false",
-			securityManager.setPassword(
-				account.getIdent(),
-				TEST_PASSWORD
-				)
-			) ;
-		//
-		// Check we can validate our password.
-		SecurityToken token = securityService.checkPassword(account.getIdent(), TEST_PASSWORD) ;
-		//
-		// Check that we got a token.
-		assertNotNull(
-			"checkPassword returned NULL",
-			token
-			) ;
-		//
-		// Check that the token has the right account.
-		assertEquals(
-			"Token has wrong account",
-			account.getIdent(),
-			token.getAccount()
-			) ;
-		}
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testCheckPassword()") ;
+        //
+        // Setup our test account.
+        AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
+        assertNotNull(
+            "addAccount returned null",
+            account
+            ) ;
+        //
+        // Setup our test password.
+        assertTrue(
+            "setPassword returned false",
+            securityManager.setPassword(
+                account.getIdent(),
+                TEST_PASSWORD
+                )
+            ) ;
+        //
+        // Check we can validate our password.
+        SecurityToken token = securityService.checkPassword(account.getIdent(), TEST_PASSWORD) ;
+        //
+        // Check that we got a token.
+        assertNotNull(
+            "checkPassword returned NULL",
+            token
+            ) ;
+        //
+        // Check that the token has the right account.
+        assertEquals(
+            "Token has wrong account",
+            account.getIdent(),
+            token.getAccount()
+            ) ;
+        }
 
     /**
      * Check an Account password (duplicate).
@@ -204,43 +211,43 @@ public class SecurityServiceTest
      */
     public void testCheckFrog()
         throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testCheckPassword()") ;
-		//
-		// Setup our test account.
-		AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
-		assertNotNull(
-			"addAccount returned null",
-			account
-			) ;
-		//
-		// Setup our test password.
-		assertTrue(
-			"setPassword returned false",
-			securityManager.setPassword(
-				account.getIdent(),
-				TEST_PASSWORD
-				)
-			) ;
-		//
-		// Check we can validate our password.
-		SecurityToken token = securityService.checkPassword(account.getIdent(), TEST_PASSWORD) ;
-		//
-		// Check that we got a token.
-		assertNotNull(
-			"checkPassword returned NULL",
-			token
-			) ;
-		//
-		// Check that the token has the right account.
-		assertEquals(
-			"Token has wrong account",
-			account.getIdent(),
-			token.getAccount()
-			) ;
-		}
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testCheckPassword()") ;
+        //
+        // Setup our test account.
+        AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
+        assertNotNull(
+            "addAccount returned null",
+            account
+            ) ;
+        //
+        // Setup our test password.
+        assertTrue(
+            "setPassword returned false",
+            securityManager.setPassword(
+                account.getIdent(),
+                TEST_PASSWORD
+                )
+            ) ;
+        //
+        // Check we can validate our password.
+        SecurityToken token = securityService.checkPassword(account.getIdent(), TEST_PASSWORD) ;
+        //
+        // Check that we got a token.
+        assertNotNull(
+            "checkPassword returned NULL",
+            token
+            ) ;
+        //
+        // Check that the token has the right account.
+        assertEquals(
+            "Token has wrong account",
+            account.getIdent(),
+            token.getAccount()
+            ) ;
+        }
 
 
     /**
@@ -249,96 +256,96 @@ public class SecurityServiceTest
      */
     public void testCheckToken()
         throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testCheckToken()") ;
-		//
-		// Setup our test account.
-		AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
-		assertNotNull(
-			"addAccount returned null",
-			account
-			) ;
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testCheckToken()") ;
+        //
+        // Setup our test account.
+        AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
+        assertNotNull(
+            "addAccount returned null",
+            account
+            ) ;
 //
 // This should fail.
 /*
  *
-		AccountData other = accountManager.addAccount(TEST_ACCOUNT) ;
-		assertNotNull(
-			"addAccount returned null",
-			other
-			) ;
+        AccountData other = accountManager.addAccount(TEST_ACCOUNT) ;
+        assertNotNull(
+            "addAccount returned null",
+            other
+            ) ;
  *
  */
-		//
-		// Setup our test password.
-		assertTrue(
-			"setPassword returned false",
-			securityManager.setPassword(
-				account.getIdent(),
-				TEST_PASSWORD
-				)
-			) ;
-		//
-		// Check we can validate our password.
-		SecurityToken original = securityService.checkPassword(account.getIdent(), TEST_PASSWORD) ;
-		//
-		// Check that we got a token.
-		assertNotNull(
-			"NULL original token",
-			original
-			) ;
-		//
-		// Check that the token has the right account.
-		assertEquals(
-			"Token has wrong account",
-			account.getIdent(),
-			original.getAccount()
-			) ;
-		//
-		// Check that we can validate our token
-		SecurityToken response = securityService.checkToken(original) ;
-		//
-		// Check that we got a token.
-		assertNotNull(
-			"NULL response token",
-			response
-			) ;
-		//
-		// Check that the token has the right account.
-		assertEquals(
-			"Token has wrong account",
-			account.getIdent(),
-			response.getAccount()
-			) ;
-		//
-		// Check that the two tokens have different values.
-		checkNotEqual(
-			"Token has same value",
-			original.getToken(),
-			response.getToken()
-			) ;
-		//
-		// Check that the two tokens are not equal.
-		checkNotEqual(
-			"Token are equal",
-			original,
-			response
-			) ;
-		//
-		// Check that the original is no longer valid.
-		assertNull(
-			"Original token still valid",
-			securityService.checkToken(original)
-			) ;
-		}
+        //
+        // Setup our test password.
+        assertTrue(
+            "setPassword returned false",
+            securityManager.setPassword(
+                account.getIdent(),
+                TEST_PASSWORD
+                )
+            ) ;
+        //
+        // Check we can validate our password.
+        SecurityToken original = securityService.checkPassword(account.getIdent(), TEST_PASSWORD) ;
+        //
+        // Check that we got a token.
+        assertNotNull(
+            "NULL original token",
+            original
+            ) ;
+        //
+        // Check that the token has the right account.
+        assertEquals(
+            "Token has wrong account",
+            account.getIdent(),
+            original.getAccount()
+            ) ;
+        //
+        // Check that we can validate our token
+        SecurityToken response = securityService.checkToken(original) ;
+        //
+        // Check that we got a token.
+        assertNotNull(
+            "NULL response token",
+            response
+            ) ;
+        //
+        // Check that the token has the right account.
+        assertEquals(
+            "Token has wrong account",
+            account.getIdent(),
+            response.getAccount()
+            ) ;
+        //
+        // Check that the two tokens have different values.
+        checkNotEqual(
+            "Token has same value",
+            original.getToken(),
+            response.getToken()
+            ) ;
+        //
+        // Check that the two tokens are not equal.
+        checkNotEqual(
+            "Token are equal",
+            original,
+            response
+            ) ;
+        //
+        // Check that the original is no longer valid.
+        assertNull(
+            "Original token still valid",
+            securityService.checkToken(original)
+            ) ;
+        }
 
-	/**
-	 * The default number of splits to test.
-	 *
-	 */
-	private static int SPLIT_COUNT = 3 ;
+    /**
+     * The default number of splits to test.
+     *
+     */
+    private static int SPLIT_COUNT = 3 ;
 
     /**
      * Check that we can split a SecurityToken.
@@ -346,90 +353,90 @@ public class SecurityServiceTest
      */
     public void testSplitToken()
         throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testSplitToken()") ;
-		//
-		// Setup our test account.
-		AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
-		assertNotNull(
-			"addAccount returned null",
-			account
-			) ;
-		//
-		// Setup our test password.
-		assertTrue(
-			"setPassword returned false",
-			securityManager.setPassword(
-				account.getIdent(),
-				TEST_PASSWORD
-				)
-			) ;
-		//
-		// Check we can validate our password.
-		SecurityToken original = securityService.checkPassword(account.getIdent(), TEST_PASSWORD) ;
-		//
-		// Check that we got a token.
-		assertNotNull(
-			"NULL original token",
-			original
-			) ;
-		//
-		// Check that the token has the right account.
-		assertEquals(
-			"Token has wrong account",
-			account.getIdent(),
-			original.getAccount()
-			) ;
-		//
-		// Check that we can validate our token
-		Object[] array = securityService.splitToken(original, SPLIT_COUNT) ;
-		//
-		// Check that we got a token.
-		assertNotNull(
-			"NULL token array",
-			array
-			) ;
-		//
-		// Check that we got the right number of tokens.
-		assertTrue(
-			"Wrong number of tokens",
-			(array.length == SPLIT_COUNT)
-			) ;
-		//
-		// Check each of the new tokens.
-		for (int i = 0 ; i < array.length ; i++)
-			{
-			SecurityToken token = (SecurityToken) array[i] ;
-			//
-			// Check that the token has the right account.
-			assertEquals(
-				"Token has wrong account",
-				account.getIdent(),
-				token.getAccount()
-				) ;
-			//
-			// Check that the token has a different value.
-			checkNotEqual(
-				"Token has same value",
-				original.getToken(),
-				token.getToken()
-				) ;
-			//
-			// Check that the token is not equal to our original.
-			checkNotEqual(
-				"Token are equal",
-				original,
-				token
-				) ;
-			}
-		//
-		// Check that the original is no longer valid.
-		assertNull(
-			"Original token still valid",
-			securityService.checkToken(original)
-			) ;
-		}
-	}
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testSplitToken()") ;
+        //
+        // Setup our test account.
+        AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
+        assertNotNull(
+            "addAccount returned null",
+            account
+            ) ;
+        //
+        // Setup our test password.
+        assertTrue(
+            "setPassword returned false",
+            securityManager.setPassword(
+                account.getIdent(),
+                TEST_PASSWORD
+                )
+            ) ;
+        //
+        // Check we can validate our password.
+        SecurityToken original = securityService.checkPassword(account.getIdent(), TEST_PASSWORD) ;
+        //
+        // Check that we got a token.
+        assertNotNull(
+            "NULL original token",
+            original
+            ) ;
+        //
+        // Check that the token has the right account.
+        assertEquals(
+            "Token has wrong account",
+            account.getIdent(),
+            original.getAccount()
+            ) ;
+        //
+        // Check that we can validate our token
+        Object[] array = securityService.splitToken(original, SPLIT_COUNT) ;
+        //
+        // Check that we got a token.
+        assertNotNull(
+            "NULL token array",
+            array
+            ) ;
+        //
+        // Check that we got the right number of tokens.
+        assertTrue(
+            "Wrong number of tokens",
+            (array.length == SPLIT_COUNT)
+            ) ;
+        //
+        // Check each of the new tokens.
+        for (int i = 0 ; i < array.length ; i++)
+            {
+            SecurityToken token = (SecurityToken) array[i] ;
+            //
+            // Check that the token has the right account.
+            assertEquals(
+                "Token has wrong account",
+                account.getIdent(),
+                token.getAccount()
+                ) ;
+            //
+            // Check that the token has a different value.
+            checkNotEqual(
+                "Token has same value",
+                original.getToken(),
+                token.getToken()
+                ) ;
+            //
+            // Check that the token is not equal to our original.
+            checkNotEqual(
+                "Token are equal",
+                original,
+                token
+                ) ;
+            }
+        //
+        // Check that the original is no longer valid.
+        assertNull(
+            "Original token still valid",
+            securityService.checkToken(original)
+            ) ;
+        }
+    }
 

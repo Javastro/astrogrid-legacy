@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/database/configuration/DatabaseConfiguration.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseConfiguration.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:18  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -433,25 +440,25 @@ public class DatabaseConfiguration
 // TODO - Change this to handle URLs as well.
 //
 
-	/**
-	 * Get our database SQL script resource name.
-	 *
-	 */
-	public String getDatabaseScriptResource()
-		{
-		return this.databaseScriptResource ;
-		}
+    /**
+     * Get our database SQL script resource name.
+     *
+     */
+    public String getDatabaseScriptResource()
+        {
+        return this.databaseScriptResource ;
+        }
 
-	/**
-	 * Set our database SQL script resource name.
-	 * @param resource - The resource name of our database SQL script.
-	 * TODO - Change this to handle URLs instead.
-	 *
-	 */
-	public void setDatabaseScriptResource(String resource)
-		{
-		this.databaseScriptResource = resource ;
-		}
+    /**
+     * Set our database SQL script resource name.
+     * @param resource - The resource name of our database SQL script.
+     * TODO - Change this to handle URLs instead.
+     *
+     */
+    public void setDatabaseScriptResource(String resource)
+        {
+        this.databaseScriptResource = resource ;
+        }
 
     /**
      * Create our database tables.
@@ -741,64 +748,64 @@ public class DatabaseConfiguration
         //
         // Try openning a connection to our database.
         Database database = this.getDatabase() ;
-		//
-		// Wrap everything in a try.
-		try {
-	        //
-	        // If we got a database connection.
-	        if (null != database)
-	            {
-	            database.begin() ;
-	            //
-	            // Try to read the database test data.
-	            OQLQuery query = database.getOQLQuery(
-	                "SELECT testdata FROM org.astrogrid.community.server.database.configuration.DatabaseConfigurationTestData testdata"
-	                ) ;
-	            QueryResults results = query.execute();
-	            if (null != results)
-	                {
-	                if (results.hasMore())
-	                    {
-	                    while (results.hasMore())
-	                        {
-	                        Object result = results.next() ;
-	                        if (result instanceof DatabaseConfigurationTestData)
-	                            {
-	                            if (DEBUG_FLAG)System.out.println("  PASS : got test data '" + result + "'") ;
-	                            healthy = true ;
-	                            }
-	                        else {
-	                            if (DEBUG_FLAG)System.out.println("  FAIL : unknown result type '" + result.getClass() + "'") ;
-	                            healthy = false ;
-	                            }
-	                        }
-	                    }
-	                else {
-	                    if (DEBUG_FLAG)System.out.println("  FAIL : empty results") ;
-	                    healthy = false ;
-	                    }
-	                }
-	            else {
-	                if (DEBUG_FLAG)System.out.println("  FAIL : null results") ;
-	                healthy = false ;
-	                }
-	            database.commit() ;
-	            database.close() ;
-	            }
-			//
-			// We don't have a database connecton.
-			else {
-				healthy = false ;
-				}
+        //
+        // Wrap everything in a try.
+        try {
+            //
+            // If we got a database connection.
+            if (null != database)
+                {
+                database.begin() ;
+                //
+                // Try to read the database test data.
+                OQLQuery query = database.getOQLQuery(
+                    "SELECT testdata FROM org.astrogrid.community.server.database.configuration.DatabaseConfigurationTestData testdata"
+                    ) ;
+                QueryResults results = query.execute();
+                if (null != results)
+                    {
+                    if (results.hasMore())
+                        {
+                        while (results.hasMore())
+                            {
+                            Object result = results.next() ;
+                            if (result instanceof DatabaseConfigurationTestData)
+                                {
+                                if (DEBUG_FLAG)System.out.println("  PASS : got test data '" + result + "'") ;
+                                healthy = true ;
+                                }
+                            else {
+                                if (DEBUG_FLAG)System.out.println("  FAIL : unknown result type '" + result.getClass() + "'") ;
+                                healthy = false ;
+                                }
+                            }
+                        }
+                    else {
+                        if (DEBUG_FLAG)System.out.println("  FAIL : empty results") ;
+                        healthy = false ;
+                        }
+                    }
+                else {
+                    if (DEBUG_FLAG)System.out.println("  FAIL : null results") ;
+                    healthy = false ;
+                    }
+                database.commit() ;
+                database.close() ;
+                }
+            //
+            // We don't have a database connecton.
+            else {
+                healthy = false ;
+                }
             }
-		//
-		// Catch anything that goes bang.
-		catch (PersistenceException ouch)
-			{
-			if (DEBUG_FLAG)System.out.println("Exception caught in checkDatabaseTables()") ;
-			if (DEBUG_FLAG)System.out.println("  Exception : " + ouch) ;
-			healthy = false ;
-			}
+        //
+        // Catch anything that goes bang.
+        catch (PersistenceException ouch)
+            {
+            if (DEBUG_FLAG)System.out.println("Exception caught in checkDatabaseTables()") ;
+            if (DEBUG_FLAG)System.out.println("  Exception : " + ouch) ;
+            healthy = false ;
+            }
         return healthy ;
         }
     }

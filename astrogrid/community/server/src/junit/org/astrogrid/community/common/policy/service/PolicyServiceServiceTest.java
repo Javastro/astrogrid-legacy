@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/common/policy/service/Attic/PolicyServiceServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:20:00 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceServiceTest.java,v $
+ *   Revision 1.5  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.4.2.1  2004/03/08 12:53:18  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.4  2004/03/05 17:20:00  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -130,7 +137,7 @@ public class PolicyServiceServiceTest
             service) ;
         //
         // Try using the service.
-		//
+        //
         }
     }
 

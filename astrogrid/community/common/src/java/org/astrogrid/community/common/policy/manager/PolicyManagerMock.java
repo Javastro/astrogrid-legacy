@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/PolicyManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerMock.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -39,32 +46,32 @@ import org.astrogrid.community.common.service.CommunityServiceMock ;
  *
  */
 public class PolicyManagerMock
-	extends CommunityServiceMock
-	implements PolicyManager
-	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	private static boolean DEBUG_FLAG = true ;
+    extends CommunityServiceMock
+    implements PolicyManager
+    {
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    private static boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public PolicyManagerMock()
-		{
-		super() ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerMock()") ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public PolicyManagerMock()
+        {
+        super() ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("PolicyManagerMock()") ;
+        }
 
-	/**
-	 * Our AccountManager.
-	 *
-	 */
-	private AccountManager accountManager = new AccountManagerMock() ;
+    /**
+     * Our AccountManager.
+     *
+     */
+    private AccountManager accountManager = new AccountManagerMock() ;
 
     /**
      * Create a new Account, given the Account ident.
@@ -72,9 +79,9 @@ public class PolicyManagerMock
      */
     public AccountData addAccount(String ident)
         throws RemoteException
-		{
-		return accountManager.addAccount(ident) ;
-		}
+        {
+        return accountManager.addAccount(ident) ;
+        }
 
     /**
      * Request an Account data, given the Account ident.
@@ -82,9 +89,9 @@ public class PolicyManagerMock
      */
     public AccountData getAccount(String ident)
         throws RemoteException
-		{
-		return accountManager.getAccount(ident) ;
-		}
+        {
+        return accountManager.getAccount(ident) ;
+        }
 
     /**
      * Update an Account data.
@@ -92,9 +99,9 @@ public class PolicyManagerMock
      */
     public AccountData setAccount(AccountData account)
         throws RemoteException
-		{
-		return accountManager.setAccount(account) ;
-		}
+        {
+        return accountManager.setAccount(account) ;
+        }
 
     /**
      * Delete an Account, given the Account name.
@@ -102,9 +109,9 @@ public class PolicyManagerMock
      */
     public AccountData delAccount(String ident)
         throws RemoteException
-		{
-		return accountManager.delAccount(ident) ;
-		}
+        {
+        return accountManager.delAccount(ident) ;
+        }
 
     /**
      * Request a list of local Accounts.
@@ -112,15 +119,15 @@ public class PolicyManagerMock
      */
     public Object[] getLocalAccounts()
         throws RemoteException
-		{
-		return accountManager.getLocalAccounts() ;
-		}
+        {
+        return accountManager.getLocalAccounts() ;
+        }
 
-	/**
-	 * Our GroupManager.
-	 *
-	 */
-	private GroupManager groupManager = new GroupManagerMock() ;
+    /**
+     * Our GroupManager.
+     *
+     */
+    private GroupManager groupManager = new GroupManagerMock() ;
 
     /**
      * Create a new Group, given the Group ident.
@@ -128,9 +135,9 @@ public class PolicyManagerMock
      */
     public GroupData addGroup(String ident)
         throws RemoteException
-		{
-		return groupManager.addGroup(ident) ;
-		}
+        {
+        return groupManager.addGroup(ident) ;
+        }
 
     /**
      * Request an Group data, given the Group ident.
@@ -138,9 +145,9 @@ public class PolicyManagerMock
      */
     public GroupData getGroup(String ident)
         throws RemoteException
-		{
-		return groupManager.getGroup(ident) ;
-		}
+        {
+        return groupManager.getGroup(ident) ;
+        }
 
     /**
      * Update an Group data.
@@ -148,9 +155,9 @@ public class PolicyManagerMock
      */
     public GroupData setGroup(GroupData group)
         throws RemoteException
-		{
-		return groupManager.setGroup(group) ;
-		}
+        {
+        return groupManager.setGroup(group) ;
+        }
 
     /**
      * Delete an Group, given the Group ident.
@@ -158,9 +165,9 @@ public class PolicyManagerMock
      */
     public GroupData delGroup(String ident)
         throws RemoteException
-		{
-		return groupManager.delGroup(ident) ;
-		}
+        {
+        return groupManager.delGroup(ident) ;
+        }
 
     /**
      * Request a list of local Groups.
@@ -168,9 +175,9 @@ public class PolicyManagerMock
      */
     public Object[] getLocalGroups()
         throws RemoteException
-		{
-		return groupManager.getLocalGroups() ;
-		}
+        {
+        return groupManager.getLocalGroups() ;
+        }
 
     /**
      * Get a list of local Groups that an Account belongs to, given the Account name.
@@ -178,15 +185,15 @@ public class PolicyManagerMock
      */
     public Object[] getLocalAccountGroups(String account)
         throws RemoteException
-		{
-		return groupManager.getLocalAccountGroups(account) ;
-		}
+        {
+        return groupManager.getLocalAccountGroups(account) ;
+        }
 
-	/**
-	 * Our CommunityManager.
-	 *
-	 */
-	private CommunityManager communityManager = new CommunityManagerMock() ;
+    /**
+     * Our CommunityManager.
+     *
+     */
+    private CommunityManager communityManager = new CommunityManagerMock() ;
 
     /**
      * Create a new Community.
@@ -194,9 +201,9 @@ public class PolicyManagerMock
      */
     public CommunityData addCommunity(String ident)
         throws RemoteException
-		{
-		return communityManager.addCommunity(ident) ;
-		}
+        {
+        return communityManager.addCommunity(ident) ;
+        }
 
     /**
      * Request an Community details.
@@ -204,9 +211,9 @@ public class PolicyManagerMock
      */
     public CommunityData getCommunity(String ident)
         throws RemoteException
-		{
-		return communityManager.getCommunity(ident) ;
-		}
+        {
+        return communityManager.getCommunity(ident) ;
+        }
 
     /**
      * Update an Community details.
@@ -214,9 +221,9 @@ public class PolicyManagerMock
      */
     public CommunityData setCommunity(CommunityData community)
         throws RemoteException
-		{
-		return communityManager.setCommunity(community) ;
-		}
+        {
+        return communityManager.setCommunity(community) ;
+        }
 
     /**
      * Delete an Community.
@@ -224,9 +231,9 @@ public class PolicyManagerMock
      */
     public CommunityData delCommunity(String ident)
         throws RemoteException
-		{
-		return communityManager.delCommunity(ident) ;
-		}
+        {
+        return communityManager.delCommunity(ident) ;
+        }
 
     /**
      * Request a list of Communitys.
@@ -234,15 +241,15 @@ public class PolicyManagerMock
      */
     public Object[] getCommunityList()
         throws RemoteException
-		{
-		return communityManager.getCommunityList() ;
-		}
+        {
+        return communityManager.getCommunityList() ;
+        }
 
-	/**
-	 * Our ResourceManager.
-	 *
-	 */
-	private ResourceManager resourceManager = new ResourceManagerMock() ;
+    /**
+     * Our ResourceManager.
+     *
+     */
+    private ResourceManager resourceManager = new ResourceManagerMock() ;
 
    /**
     * Create a new Resource.
@@ -250,9 +257,9 @@ public class PolicyManagerMock
     */
    public ResourceData addResource(String ident)
         throws RemoteException
-		{
-		return resourceManager.addResource(ident) ;
-		}
+        {
+        return resourceManager.addResource(ident) ;
+        }
 
    /**
     * Request an Resource details.
@@ -260,9 +267,9 @@ public class PolicyManagerMock
     */
    public ResourceData getResource(String ident)
         throws RemoteException
-		{
-		return resourceManager.getResource(ident) ;
-		}
+        {
+        return resourceManager.getResource(ident) ;
+        }
 
    /**
     * Update an Resource details.
@@ -270,9 +277,9 @@ public class PolicyManagerMock
     */
    public ResourceData setResource(ResourceData resource)
         throws RemoteException
-		{
-		return resourceManager.setResource(resource) ;
-		}
+        {
+        return resourceManager.setResource(resource) ;
+        }
 
    /**
     * Delete an Resource.
@@ -280,9 +287,9 @@ public class PolicyManagerMock
     */
    public boolean delResource(String ident)
         throws RemoteException
-		{
-		return resourceManager.delResource(ident) ;
-		}
+        {
+        return resourceManager.delResource(ident) ;
+        }
 
    /**
     * Request a list of Resources.
@@ -290,15 +297,15 @@ public class PolicyManagerMock
     */
    public Object[] getResourceList()
         throws RemoteException
-		{
-		return resourceManager.getResourceList() ;
-		}
+        {
+        return resourceManager.getResourceList() ;
+        }
 
-	/**
-	 * Our PermissionManager.
-	 *
-	 */
-	private PermissionManager permissionManager = new PermissionManagerMock() ;
+    /**
+     * Our PermissionManager.
+     *
+     */
+    private PermissionManager permissionManager = new PermissionManagerMock() ;
 
     /**
      * Create a new PolicyPermission.
@@ -306,9 +313,9 @@ public class PolicyManagerMock
      */
     public PolicyPermission addPermission(String resource, String group, String action)
         throws RemoteException
-		{
-		return permissionManager.addPermission(resource, group, action) ;
-		}
+        {
+        return permissionManager.addPermission(resource, group, action) ;
+        }
 
     /**
      * Request a PolicyPermission.
@@ -316,9 +323,9 @@ public class PolicyManagerMock
      */
     public PolicyPermission getPermission(String resource, String group, String action)
         throws RemoteException
-		{
-		return permissionManager.getPermission(resource, group, action) ;
-		}
+        {
+        return permissionManager.getPermission(resource, group, action) ;
+        }
 
     /**
      * Update a PolicyPermission.
@@ -326,9 +333,9 @@ public class PolicyManagerMock
      */
     public PolicyPermission setPermission(PolicyPermission permission)
         throws RemoteException
-		{
-		return permissionManager.setPermission(permission) ;
-		}
+        {
+        return permissionManager.setPermission(permission) ;
+        }
 
     /**
      * Delete a PolicyPermission.
@@ -336,67 +343,67 @@ public class PolicyManagerMock
      */
     public boolean delPermission(String resource, String group, String action)
         throws RemoteException
-		{
-		return permissionManager.delPermission(resource, group, action) ;
-		}
+        {
+        return permissionManager.delPermission(resource, group, action) ;
+        }
 
     /**
      * Request a list of Accounts, given a remote Community name.
      *
      */
     public Object[] getRemoteAccounts(String community)
-		{
-		// TODO - return something.
-		return null ;
-		}
+        {
+        // TODO - return something.
+        return null ;
+        }
 
     /**
      * Request a list of Groups, given a remote Community name.
      *
      */
     public Object[] getRemoteGroups(String community)
-		{
-		// TODO - return something.
-		return null ;
-		}
+        {
+        // TODO - return something.
+        return null ;
+        }
 
     /**
      * Add an Account to a Group, given the Account and Group names.
      *
      */
     public GroupMemberData addGroupMember(String account, String group)
-		{
-		// TODO - return something.
-		return null ;
-		}
+        {
+        // TODO - return something.
+        return null ;
+        }
 
     /**
      * Remove an Account from a Group, given the Account and Group names.
      *
      */
     public GroupMemberData delGroupMember(String account, String group)
-		{
-		// TODO - return something.
-		return null ;
-		}
+        {
+        // TODO - return something.
+        return null ;
+        }
 
     /**
      * Get a list of Group members, given the Group name.
      *
      */
     public Object[] getGroupMembers(String group)
-		{
-		// TODO - return something.
-		return null ;
-		}
+        {
+        // TODO - return something.
+        return null ;
+        }
 
     /**
      * Get a list of remote Groups that an Account belongs to, given the Account and Community names.
      *
      */
     public Object[] getRemoteAccountGroups(String account, String community)
-		{
-		// TODO - return something.
-		return null ;
-		}
+        {
+        // TODO - return something.
+        return null ;
+        }
     }

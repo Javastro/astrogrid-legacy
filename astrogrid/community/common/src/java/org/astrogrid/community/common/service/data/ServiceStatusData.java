@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/service/data/ServiceStatusData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ServiceStatusData.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.6.1  2004/03/08 12:53:17  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -48,29 +55,29 @@ public class ServiceStatusData
         this.configPath = value ;
         }
 
-	/**
-	 * Our database name.
-	 *
-	 */
-	private String databaseName ;
+    /**
+     * Our database name.
+     *
+     */
+    private String databaseName ;
 
-	/**
-	 * Get our database name.
-	 *
-	 */
-	public String getDatabaseName()
-		{
-		return this.databaseName ;
-		}
+    /**
+     * Get our database name.
+     *
+     */
+    public String getDatabaseName()
+        {
+        return this.databaseName ;
+        }
 
-	/**
-	 * Set our database name.
-	 *
-	 */
-	public void setDatabaseName(String name)
-		{
-		this.databaseName = name ;
-		}
+    /**
+     * Set our database name.
+     *
+     */
+    public void setDatabaseName(String name)
+        {
+        this.databaseName = name ;
+        }
 
 
     }

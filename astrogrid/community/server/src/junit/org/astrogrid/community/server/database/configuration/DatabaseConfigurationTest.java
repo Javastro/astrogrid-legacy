@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/database/configuration/DatabaseConfigurationTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:20:00 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseConfigurationTest.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:18  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:20:00  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -129,14 +136,14 @@ public class DatabaseConfigurationTest
         // Create a new database configuration.
         DatabaseConfiguration config = new DatabaseConfiguration("test-database-001") ;
         assertNotNull(
-        	"Null configuration",
-        	config) ;
+            "Null configuration",
+            config) ;
         //
         // Check the database name.
         assertEquals(
-        	"Wrong database name",
-        	config.getDatabaseName(),
-        	"test-database-001") ;
+            "Wrong database name",
+            config.getDatabaseName(),
+            "test-database-001") ;
         }
 
     /**
@@ -153,8 +160,8 @@ public class DatabaseConfigurationTest
         // Create a new database configuration with an invalid name.
         DatabaseConfiguration config = new DatabaseConfiguration("INVALID-NAME", "test-database-001.xml", null) ;
         assertNotNull(
-        	"Null configuration",
-        	config) ;
+            "Null configuration",
+            config) ;
         //
         // Try to create a new database connection.
         try {
@@ -181,12 +188,12 @@ public class DatabaseConfigurationTest
         // Create a new database configuration.
         DatabaseConfiguration config = new DatabaseConfiguration("test-database-001") ;
         assertNotNull(
-        	"Null configuration",
-        	config) ;
+            "Null configuration",
+            config) ;
         //
         // Create a new database connection.
         assertNotNull(
-        	"Null JDO database connection",
+            "Null JDO database connection",
             config.getDatabase()
             ) ;
         }
@@ -205,14 +212,14 @@ public class DatabaseConfigurationTest
         // Create a new database configuration.
         DatabaseConfiguration config = new DatabaseConfiguration("test-database-001") ;
         assertNotNull(
-        	"Null configuration",
-        	config) ;
+            "Null configuration",
+            config) ;
         //
         // Check our database engine.
         JDO engine = config.getDatabaseEngine() ;
         assertNotNull(
-        	"Null JDO database engine",
-        	engine) ;
+            "Null JDO database engine",
+            engine) ;
         }
 
     /**
@@ -232,7 +239,7 @@ public class DatabaseConfigurationTest
         //
         // Try checking the database tables.
         assertTrue(
-        	"Check database data returned false",
+            "Check database data returned false",
             config.checkDatabaseTables()
             ) ;
         }
@@ -251,12 +258,12 @@ public class DatabaseConfigurationTest
         // Create a new database configuration.
         DatabaseConfiguration config = new DatabaseConfiguration("test-database-002") ;
         assertNotNull(
-        	"Null configuration",
-        	config) ;
+            "Null configuration",
+            config) ;
         //
         // Try checking the database data.
         assertFalse(
-        	"Check database tables returned true",
+            "Check database tables returned true",
             config.checkDatabaseTables()
             ) ;
         //
@@ -265,7 +272,7 @@ public class DatabaseConfigurationTest
         //
         // Try checking the database tables.
         assertTrue(
-        	"Check database tables returned false",
+            "Check database tables returned false",
             config.checkDatabaseTables()
             ) ;
         }
@@ -284,18 +291,18 @@ public class DatabaseConfigurationTest
         // Create a new database configuration.
         DatabaseConfiguration alpha = new DatabaseConfiguration("test-database-003") ;
         assertNotNull(
-        	"Null configuration",
-        	alpha) ;
+            "Null configuration",
+            alpha) ;
         //
         // Create a new database connection.
         assertNotNull(
-        	"Null JDO database connection",
+            "Null JDO database connection",
             alpha.getDatabase()
             ) ;
         //
         // Check the database tables.
         assertFalse(
-        	"Check database tables returned true",
+            "Check database tables returned true",
             alpha.checkDatabaseTables()
             ) ;
         //
@@ -304,7 +311,7 @@ public class DatabaseConfigurationTest
         //
         // Check the database tables.
         assertTrue(
-        	"Check database tables returned false",
+            "Check database tables returned false",
             alpha.checkDatabaseTables()
             ) ;
 
@@ -314,13 +321,13 @@ public class DatabaseConfigurationTest
         //
         // Create a new database connection.
         assertNotNull(
-        	"Null JDO database connection",
+            "Null JDO database connection",
             beta.getDatabase()
             ) ;
         //
         // Try checking the database tables.
         assertFalse(
-        	"Check database tables returned true",
+            "Check database tables returned true",
             beta.checkDatabaseTables()
             ) ;
         //
@@ -329,7 +336,7 @@ public class DatabaseConfigurationTest
         //
         // Try checking the database tables.
         assertTrue(
-        	"Check database tables returned false",
+            "Check database tables returned false",
             beta.checkDatabaseTables()
             ) ;
         }

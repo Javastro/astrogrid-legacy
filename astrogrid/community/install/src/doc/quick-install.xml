@@ -36,7 +36,7 @@ ant -f install.xml install
             </subsection>
             <subsection name="Remote deploy">
                 <p style="font-size:x-small;font-style:italic;margin:20px">
-					<img style="float:left;margin-right:5px" src="images/note.gif"/>
+                    <img style="float:left;margin-right:5px" src="images/note.gif"/>
                     Remote deployment is not implemented in the current release.
                 </p>
                 <p>

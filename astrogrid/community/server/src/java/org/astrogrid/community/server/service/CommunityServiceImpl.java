@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/service/CommunityServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceImpl.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:18  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -78,7 +85,7 @@ import org.astrogrid.community.server.database.configuration.DatabaseConfigurati
  *
  */
 public class CommunityServiceImpl
-	implements CommunityService
+    implements CommunityService
     {
     /**
      * Switch for our debug statements.
@@ -117,26 +124,26 @@ public class CommunityServiceImpl
         //
         // Initialise our config properties.
         CommunityConfig.loadConfig() ;
-		//
-		// Create our database configuration factory.
-		DatabaseConfigurationFactory factory = new DatabaseConfigurationFactory() ;
+        //
+        // Create our database configuration factory.
+        DatabaseConfigurationFactory factory = new DatabaseConfigurationFactory() ;
         //
         // Load our default database configuration.
         try {
-        	this.setDatabaseConfiguration(
-            	factory.loadDatabaseConfiguration(
-            		DEFAULT_DATABASE_NAME,
-            		DEFAULT_DATABASE_XML,
-            		DEFAULT_DATABASE_SQL
-            		)
-	            ) ;
-			}
+            this.setDatabaseConfiguration(
+                factory.loadDatabaseConfiguration(
+                    DEFAULT_DATABASE_NAME,
+                    DEFAULT_DATABASE_XML,
+                    DEFAULT_DATABASE_SQL
+                    )
+                ) ;
+            }
         //
         // Catch anything that went BANG.
-		catch (Exception ouch)
-			{
-			this.logException(ouch, "Initialising default database configuration") ;
-			}
+        catch (Exception ouch)
+            {
+            this.logException(ouch, "Initialising default database configuration") ;
+            }
         }
 
     /**
@@ -175,11 +182,11 @@ public class CommunityServiceImpl
         //
         // Use our parent's database configuration 
         if (null != parent)
-        	{
-        	this.setDatabaseConfiguration(
-	        	parent.getDatabaseConfiguration()
-	        	) ;
-			}
+            {
+            this.setDatabaseConfiguration(
+                parent.getDatabaseConfiguration()
+                ) ;
+            }
         }
 
     /**
@@ -195,12 +202,12 @@ public class CommunityServiceImpl
         ServiceStatusData status =  new ServiceStatusData() ;
 
         status.setConfigPath(CommunityConfig.getProperty("config.location")) ;
-		if (DEBUG_FLAG) System.out.println("  Database config : " + databaseConfiguration) ;
-		if (null != databaseConfiguration)
-			{
-			if (DEBUG_FLAG) System.out.println("  Database name : " + databaseConfiguration.getDatabaseName()) ;
-			status.setDatabaseName(databaseConfiguration.getDatabaseName()) ;
-			}
+        if (DEBUG_FLAG) System.out.println("  Database config : " + databaseConfiguration) ;
+        if (null != databaseConfiguration)
+            {
+            if (DEBUG_FLAG) System.out.println("  Database name : " + databaseConfiguration.getDatabaseName()) ;
+            status.setDatabaseName(databaseConfiguration.getDatabaseName()) ;
+            }
 
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         return status ;

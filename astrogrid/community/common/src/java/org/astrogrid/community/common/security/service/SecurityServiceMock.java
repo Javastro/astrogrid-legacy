@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/service/SecurityServiceMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceMock.java,v $
+ *   Revision 1.3  2004/03/08 13:42:33  dave
+ *   Updated Maven goals.
+ *   Replaced tabs with Spaces.
+ *
+ *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -43,67 +50,67 @@ import org.astrogrid.community.common.service.CommunityServiceMock ;
  *
  */
 public class SecurityServiceMock
-	extends CommunityServiceMock
-	implements SecurityService
-	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	private static boolean DEBUG_FLAG = true ;
+    extends CommunityServiceMock
+    implements SecurityService
+    {
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    private static boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public SecurityServiceMock()
-		{
-		super() ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceMock()") ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public SecurityServiceMock()
+        {
+        super() ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceMock()") ;
+        }
 
-	/**
-	 * Our hash table of tokens.
-	 *
-	 */
-	protected static Map map = new HashMap() ;
+    /**
+     * Our hash table of tokens.
+     *
+     */
+    protected static Map map = new HashMap() ;
 
-	/**
-	 * Our token instance counter.
-	 *
-	 */
-	private static int counter = 0 ;
+    /**
+     * Our token instance counter.
+     *
+     */
+    private static int counter = 0 ;
 
-	/**
-	 * Our sync object.
-	 *
-	 */
-	private static Object sync = new Object() ;
+    /**
+     * Our sync object.
+     *
+     */
+    private static Object sync = new Object() ;
 
-	/**
-	 * Generate a new token.
-	 * @param ident - The Account ident.
-	 *
-	 */
-	protected SecurityToken createToken(String account)
-		{
-		String value = null ;
-		synchronized (sync)
-			{
-			value = "MOCK-TOKEN-" + counter++ ;
-			}
-		//
-		// Issue a new Security token to the account.
-		SecurityToken token = new SecurityToken(account, value) ;
-		//
-		// Add the token to our map.
-		map.put(token.getToken(), token) ;
-		//
-		// Return the new token.
-		return token ;
-		}
+    /**
+     * Generate a new token.
+     * @param ident - The Account ident.
+     *
+     */
+    protected SecurityToken createToken(String account)
+        {
+        String value = null ;
+        synchronized (sync)
+            {
+            value = "MOCK-TOKEN-" + counter++ ;
+            }
+        //
+        // Issue a new Security token to the account.
+        SecurityToken token = new SecurityToken(account, value) ;
+        //
+        // Add the token to our map.
+        map.put(token.getToken(), token) ;
+        //
+        // Return the new token.
+        return token ;
+        }
 
     /**
      * Check an Account password.
@@ -113,16 +120,16 @@ public class SecurityServiceMock
      *
      */
     public SecurityToken checkPassword(String ident, String value)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceMock.checkPassword()") ;
-		if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
-		if (DEBUG_FLAG) System.out.println("  Value : " + value) ;
-		//
-		// Just return a new token.
-		return this.createToken(ident) ;
-		}
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceMock.checkPassword()") ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        if (DEBUG_FLAG) System.out.println("  Value : " + value) ;
+        //
+        // Just return a new token.
+        return this.createToken(ident) ;
+        }
 
     /**
      * Validate a SecurityToken.
@@ -134,34 +141,34 @@ public class SecurityServiceMock
      *
      */
     public SecurityToken checkToken(SecurityToken original)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceMock.checkToken()") ;
-		if (DEBUG_FLAG) System.out.println("  Token : " + original) ;
-		//
-		// See if we still have the orginal
-		SecurityToken match = (SecurityToken) map.get(original.getToken()) ;
-		//
-		// If we do have the original.
-		if (null != match)
-			{
-			//
-			// Remove the original from our map
-			map.remove(match.getToken()) ;
-			//
-			// Generate a new token.
-			return this.createToken(original.getAccount()) ;
-			}
-		//
-		// If we don't have the original.
-		else {
-			//
-			// Throw an Exception ?
-			// Just return null for now.
-			return null ;
-			}
-		}
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceMock.checkToken()") ;
+        if (DEBUG_FLAG) System.out.println("  Token : " + original) ;
+        //
+        // See if we still have the orginal
+        SecurityToken match = (SecurityToken) map.get(original.getToken()) ;
+        //
+        // If we do have the original.
+        if (null != match)
+            {
+            //
+            // Remove the original from our map
+            map.remove(match.getToken()) ;
+            //
+            // Generate a new token.
+            return this.createToken(original.getAccount()) ;
+            }
+        //
+        // If we don't have the original.
+        else {
+            //
+            // Throw an Exception ?
+            // Just return null for now.
+            return null ;
+            }
+        }
 
     /**
      * Split a SecurityToken.
@@ -174,40 +181,40 @@ public class SecurityServiceMock
      *
      */
     public Object[] splitToken(SecurityToken original, int count)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("SecurityServiceMock.splitToken()") ;
-		if (DEBUG_FLAG) System.out.println("  Token : " + original) ;
-		if (DEBUG_FLAG) System.out.println("  Count : " + count) ;
-		//
-		// See if we still have the orginal
-		SecurityToken match = (SecurityToken) map.get(original.getToken()) ;
-		//
-		// If we do have the original.
-		if (null != match)
-			{
-			//
-			// Remove the original from our map
-			map.remove(match.getToken()) ;
-			//
-			// Generate a new set of tokens.
-			Vector vector = new Vector() ;
-			for (int i = 0 ; i < count ; i++)
-				{
-				vector.add(
-					this.createToken(original.getAccount())
-					) ;
-				}
-			return vector.toArray() ;
-			}
-		//
-		// If we don't have the original.
-		else {
-			//
-			// Throw an Exception ?
-			// Just return null for now.
-			return null ;
-			}
-		}
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceMock.splitToken()") ;
+        if (DEBUG_FLAG) System.out.println("  Token : " + original) ;
+        if (DEBUG_FLAG) System.out.println("  Count : " + count) ;
+        //
+        // See if we still have the orginal
+        SecurityToken match = (SecurityToken) map.get(original.getToken()) ;
+        //
+        // If we do have the original.
+        if (null != match)
+            {
+            //
+            // Remove the original from our map
+            map.remove(match.getToken()) ;
+            //
+            // Generate a new set of tokens.
+            Vector vector = new Vector() ;
+            for (int i = 0 ; i < count ; i++)
+                {
+                vector.add(
+                    this.createToken(original.getAccount())
+                    ) ;
+                }
+            return vector.toArray() ;
+            }
+        //
+        // If we don't have the original.
+        else {
+            //
+            // Throw an Exception ?
+            // Just return null for now.
+            return null ;
+            }
+        }
     }
