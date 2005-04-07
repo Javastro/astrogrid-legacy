@@ -37,6 +37,16 @@ details below and hit submit.
  <tr><td>Contact Email        <td> <input type="text" name="ContactEmail">
 </table>
 <p>
+<input type="checkbox" name="AuthorityResourceAdd"/>Add Authority Resource
+<br />
+The checkbox above is when you want to register a brand new Authority id to a registry to be managed. 
+You only need to do this the first time if ever.  In general you should not do this and should choose a Authority id that is already
+being managed at the Registry. <strong>Community is a little different, if your community identifier is different from your
+authority id you use in the registry, then check this box so your community identifier can be registered as a authoirtyid
+in the registry.</strong>
+</p>
+
+<p>
 <input name="button" value="Submit" type="submit">
 </p>
 </form>

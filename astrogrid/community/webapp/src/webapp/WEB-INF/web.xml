@@ -67,7 +67,7 @@
    <env-entry>
       <description>Community identifier</description>
       <env-entry-name>org.astrogrid.community.ident</env-entry-name>
-      <env-entry-value>@COMMUNITYID@</env-entry-value>
+      <env-entry-value>org.communityid.changethis</env-entry-value>
       <env-entry-type>java.lang.String</env-entry-type>
    </env-entry>
 

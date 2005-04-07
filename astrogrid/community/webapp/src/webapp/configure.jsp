@@ -44,6 +44,22 @@
                <li> 12.) Verify the XML looks correct and hit (Register). </li>
                <li> 13.) Your Setup is now complete you may begin adding accounts, groups, and others. </li>
             </ul>
+               	  <i>
+               	  Only the latest tomcat will let you change the value field past 70 characters.  You may go into your server.xml and change or in tomcat you may
+               	  go to tomcat/conf/Catalina/localhost/{context}.xml file and change the properties manually.  A restart of tomcat is not required in this method but
+               	  may take up to 30 seconds for tomcat to catch your new changes to this file.<br />
+               	  *A final note; if you do not see your file in there, then you need to go to the Administration GUI and just hit commit changes, servlet containers
+               	  such as tomcat only creates the file after a commit changes button is hit; only needs to be done this first time.
+               	  </i>               
+         </p>
+         <p>
+           <strong><i>Properties</i></strong>
+           <ul>
+           		<li>org.astrogrid.community.ident - community identifier, must be changed.</li>
+           		<li>org.astrogrid.community.default.vospace - default vospace identifier (normally a filemanger)</li>
+           		<li>org.astrogrid.registry.query.endpoint - regustry query endpoint normally.</li>
+           		<li>org.astrogrid.registry.admin.endpoint - your publishing registry to send your registry. (may be or may not be the same as the query endpoint)</li>
+           </ul>         
          </p>
          <p>
          <strong><i>Customize</i></strong>
@@ -58,8 +74,6 @@
             </ul>
          </p>
          </p>
-         
-         
          <p>
            <strong>Sample DataSource Config</strong><br />
            <table>

@@ -14,23 +14,7 @@
    xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" 
    xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" 
    xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
-<vor:Resource xsi:type="vg:Authority"  updated="2004-11-20T15:34:22Z" status="active">
- <title>Community Authority</title>
- <identifier>ivo://<%=communityid%></identifier>
- <curation>
-  <publisher>Community Publisher</publisher>
-  <contact>
-  	<name><%= request.getParameter("ContactName") %></name>
-   	<email><%= request.getParameter("ContactEmail") %></email>
-  </contact>
- </curation>
- <content>
-  <subject>The community authority for astrogrid.org</subject>
-  <description>This authority ID will be used to identify generic resources related to the Astrogrid consortium</description>
-  <referenceURL>http://www.astrogrid.org/</referenceURL>
-  <type>Archive</type>
- </content>
-</vor:Resource>
+   <%if("on".equals(request.getParameter("AuthorityResourceAdd"))) {%><%@ include file="AuthorityXML0.10.jsp" %><%}%>
 <vor:Resource xsi:type="vr:Service"  updated="2004-11-20T15:34:22Z" status="active">
  <title>Policy Manager Community Service</title>
  <identifier>ivo://<%=communityid%>/org.astrogrid.community.common.policy.manager.PolicyManager</identifier>

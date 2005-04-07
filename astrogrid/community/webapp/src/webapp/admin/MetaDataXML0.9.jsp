@@ -11,28 +11,7 @@
     xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
     xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <vr:Resource xsi:type="vg:AuthorityType"  updated="2004-11-20T15:34:22Z" status="active">
-        <Identifier>
-            <AuthorityID><%=communityid%></AuthorityID>
-            <ResourceKey>org.astrogrid.community</ResourceKey>
-        </Identifier>
-        <Title>Community Authority Resource</Title>
-        <ShortName>Community Authority</ShortName>
-        <Summary>
-            <Description>Authority Resource to define Community, Policy, and Security services</Description>
-            <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
-        </Summary>
-        <Curation>
-            <Publisher>
-                <Title>Community Publisher</Title>
-            </Publisher>
-            <Contact>
-                <Name><%= request.getParameter("ContactName") %></Name>
-                <Email><%= request.getParameter("ContactEmail") %></Email>
-            </Contact>
-        </Curation>
-        <Subject>Community</Subject>
-    </vr:Resource>
+    <%if("on".equals(request.getParameter("AuthorityResourceAdd"))) {%><%@ include file="AuthorityXML0.9.jsp" %><%}%>
  <vr:Resource xsi:type="vr:ServiceType"  updated="2004-11-20T15:34:22Z" status="active">
     <Identifier>
       <AuthorityID><%=communityid%></AuthorityID>
