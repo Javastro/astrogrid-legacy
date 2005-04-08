@@ -84,7 +84,7 @@
     <target name="download">
     	<echo>Downloading jes software....this may take some time...</echo>
     	<mkdir dir="${maven.local.repo}/${astrogrid.groupId}/wars/"/>
-        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${jes.war.name}" dest="${jes.war}" verbose="true" usetimestamp="true"/>
+        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${jes.war.name}" dest="${jes.war}" verbose="true" usetimestamp="true" ignoreerrors="true"/>
     </target>
 	
     <target name="deploy" depends="createTmpDir,checkTomcat,download,update-war,set-context-path,define-custom-tasks">
