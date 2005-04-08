@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2005/03/11 13:36:22 clq2 Exp $
+/*$Id: AllTests.java,v 1.3 2005/04/08 15:00:24 clq2 Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,14 +25,21 @@ public class AllTests {
         suite.addTestSuite(NodeDelegateTest.class);
         suite.addTestSuite(FileManagerClientTest.class);
         suite.addTestSuite(NodeTest.class);
-        suite.addTestSuite(FileManagerTreeClientTest.class);
-        suite.addTestSuite(FIleManagerAladinAdapterTest.class);
+//      suite.addTestSuite(FileManagerTreeClientTest.class);
+//      suite.addTestSuite(FIleManagerAladinAdapterTest.class);
         //$JUnit-END$
         return suite;
     }
 }
 /* 
  $Log: AllTests.java,v $
+ Revision 1.3  2005/04/08 15:00:24  clq2
+ dave-dev-200503181302 taking out old myspace links.
+
+ Revision 1.2.8.1  2005/03/18 14:20:18  dave
+ Removed references to MySpace from integration tests.
+ (two tests in datacenter still need modifying)
+
  Revision 1.2  2005/03/11 13:36:22  clq2
  with merges from filemanager
 

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.11 2004/11/24 19:49:22 clq2 Exp $
+/*$Id: AllTests.java,v 1.12 2005/04/08 15:00:24 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ public class AllTests {
         suite.addTest(org.astrogrid.installation.integration.AllTests.suite());
         suite.addTest(org.astrogrid.registry.integration.AllTests.suite());
         suite.addTest(org.astrogrid.community.integration.AllTests.suite());
-        suite.addTest(org.astrogrid.store.integration.AllTests.suite());    
+//      suite.addTest(org.astrogrid.store.integration.AllTests.suite());    
         suite.addTest(org.astrogrid.datacenter.integration.AllTests.suite()); 
         suite.addTest(org.astrogrid.applications.integration.AllTests.suite());   
         suite.addTest(org.astrogrid.applications.integration.commandline.AllTests.suite());
@@ -43,6 +43,13 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.12  2005/04/08 15:00:24  clq2
+dave-dev-200503181302 taking out old myspace links.
+
+Revision 1.11.42.1  2005/03/18 14:20:18  dave
+Removed references to MySpace from integration tests.
+(two tests in datacenter still need modifying)
+
 Revision 1.11  2004/11/24 19:49:22  clq2
 nww-itn07-659
 

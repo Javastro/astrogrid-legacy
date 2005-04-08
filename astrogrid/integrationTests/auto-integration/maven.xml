@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.142 2005/04/06 10:46:10 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.143 2005/04/08 15:00:24 clq2 Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -156,7 +156,7 @@
         <sleep seconds="2" />
         <attainGoal name="cea-http-deploy" />
         <sleep seconds="2" />
-        <attainGoal name="myspace-deploy" />
+<!--        <attainGoal name="myspace-deploy" /> -->
         <sleep seconds="2" />
         <attainGoal name="filestore-deploy" />
         <sleep seconds="2" />
@@ -196,7 +196,7 @@
         <sleep seconds="2" />
         <attainGoal name="cea-http-deploy" />
         <sleep seconds="2" />
-        <attainGoal name="myspace-deploy" />
+<!--        <attainGoal name="myspace-deploy" />-->
         <sleep seconds="2" />
         <attainGoal name="filestore-deploy" />
         <sleep seconds="2" />
@@ -227,7 +227,7 @@
         <attainGoal name="cea-http-undeploy" />
         <attainGoal name="reg-undeploy" />
 		<attainGoal name="exist-undeploy" />
-        <attainGoal name="myspace-undeploy" />
+<!--        <attainGoal name="myspace-undeploy" />-->
         <attainGoal name="filestore-undeploy" />
         <attainGoal name="pal-undeploy" />
         <attainGoal name="pal-fits-undeploy" />
@@ -248,7 +248,7 @@
         <attainGoal name="cea-http-undeploy" />
         <attainGoal name="reg-undeploy" />
 	    <attainGoal name="exist-undeploy" />
-        <attainGoal name="myspace-undeploy" />
+<!--        <attainGoal name="myspace-undeploy" />-->
         <attainGoal name="filestore-undeploy" />
         <attainGoal name="pal-undeploy" />
         <attainGoal name="pal-fits-undeploy" />
@@ -315,7 +315,7 @@
         <attainGoal name="setup-cea-server" />
         <attainGoal name="setup-cea-commandline" />
         <attainGoal name="setup-cea-http" />
-        <attainGoal name="setup-myspace" />
+<!--        <attainGoal name="setup-myspace" />-->
         <attainGoal name="setup-filestore" />
         <attainGoal name="setup-filemanager" />
         <attainGoal name="copy-test-resources" />
@@ -358,11 +358,11 @@
                 <include name="*.sh" />
         </chmod>
 </goal>
-
+<!--
 <goal name="setup-myspace" description="myspace setup">
     <echo>Configuring Myspace</echo>
 </goal>
-
+-->
 <goal name="setup-filestore" description="filestore setup">
     <echo>Configuring test data and repository for filestore one ....</echo>
     <mkdir dir="${work.dir}/filestore-one/repository"/>
@@ -768,7 +768,7 @@
 			
 	
 	
-
+<!--
 <goal name="myspace-deploy" >
         <copy todir="${temporary.dir}/myspace" filtering="true">
                 <fileset dir="contexts/myspace" />
@@ -782,7 +782,7 @@
           path="/astrogrid-mySpace-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-mySpace-${astrogrid.mySpace.version}.war"/>
 
 </goal>
-
+-->
 <goal name="filestore-deploy">
     <!--+
         | Deploy filestore one.
@@ -1092,14 +1092,14 @@
 	          path="/exist" />
 
 	</goal>	
-
+<!--
 <goal name="myspace-undeploy" >
 
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-mySpace-${pom.currentVersion}" />
 
 </goal>
-
+-->
 <goal name="filestore-undeploy" >
     <!--+
         | Deploy filestore one.

@@ -45,6 +45,7 @@
             <type>war</type>
             <properties/>
         </dependency>
+<!--
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-mySpace</artifactId>
@@ -52,6 +53,7 @@
             <type>war</type>
             <properties/>
         </dependency>
+-->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry</artifactId>
