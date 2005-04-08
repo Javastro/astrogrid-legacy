@@ -35,7 +35,7 @@
     <!--consider downloading this to the maven repository, rather than a temp folder-->
     <target name="downloadPortal">
     	<mkdir dir="${maven.local.repo}/${astrogrid.groupId}/wars/"/>
-        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${portal.war.name}" dest="${portal.war}" verbose="true" usetimestamp="true"/>
+        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${portal.war.name}" dest="${portal.war}" verbose="true" usetimestamp="true" ignoreerrors="true"/> <!--if it's not on the remote server, it might still be present locally-->
     	<touch file="${portal.war}" description="there's a bug in get, so we need to touch it to stop it being redownloaded"/>
     </target>
     <target name="install-portal" description="Install the AstroGrid Portal" depends="checkTomcat, checkRegistry, downloadPortal, portal-deploy">
