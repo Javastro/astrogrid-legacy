@@ -29,7 +29,7 @@
         font-style:italic;
         padding:5px;
     }
-	
+
     div.block, div.step{
             margin-top:5px;
         padding-left:5px;
@@ -178,7 +178,7 @@
 <xsl:template match="wf:for" name="for">
         <div class="block">
         <span class='ACTIVITY'>For</span>
-                <nobr><span class='VALUE'><xsl:value-of select="normalize-space(@var)" /></span> in <span class='VALUE'><xsl:value-of select="@values" /></span></nobr>
+                <nobr><span class='VALUE'><xsl:value-of select="normalize-space(@var)" /></span> in <span class='VALUE'><xsl:value-of select="@items" /></span></nobr>
                 <div class="sequence-children">
                         <xsl:apply-templates />
                 </div>
@@ -292,10 +292,10 @@
         </span>
         </nobr>
                 <div class="message-content">
-					<pre>
+                                        <pre>
                         <xsl:value-of select="cea:content" />
-					</pre>
-					<br />
+                                        </pre>
+                                        <br />
                 </div>
         </div>
 </xsl:template>
