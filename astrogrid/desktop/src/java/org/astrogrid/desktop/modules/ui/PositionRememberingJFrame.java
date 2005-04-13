@@ -1,0 +1,105 @@
+/*$Id: PositionRememberingJFrame.java,v 1.2 2005/04/13 12:59:18 nw Exp $
+ * Created on 04-Apr-2005
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.desktop.modules.ui;
+
+import org.astrogrid.desktop.modules.system.Configuration;
+import org.astrogrid.desktop.modules.system.UI;
+
+import java.awt.HeadlessException;
+import java.awt.Point;
+
+import javax.swing.JFrame;
+
+/** Extended jFrame baseclass that remembers positioning of the window.
+ * @author Noel Winstanley nw@jb.man.ac.uk 04-Apr-2005
+ *
+ */
+public class PositionRememberingJFrame extends JFrame {
+
+    /** Construct a new PositionRememberingJFrame
+     * @throws java.awt.HeadlessException
+     */
+    public PositionRememberingJFrame() throws HeadlessException {
+        super();
+        this.configuration = null;
+        this.ui = null;
+    }
+
+    public PositionRememberingJFrame(Configuration conf,UI ui) throws HeadlessException {
+        this.configuration = conf;
+        this.ui = ui;
+    }
+ 
+    
+    protected final Configuration configuration;
+    protected final UI ui;
+
+    protected void loadConfiguration() {
+        if (configuration != null) {
+            String xString = configuration.getKey(this.getClass().getName()+".x");
+            String yString = configuration.getKey(this.getClass().getName()+".y");
+            if (xString != null && yString != null){
+                try {
+                    int x = Integer.parseInt(xString);
+                    int y = Integer.parseInt(yString);
+                    this.setLocation(x,y);
+                    return;
+                } catch (NumberFormatException e) {
+                    // oh well, fall back then..
+                }
+            }
+        }
+        // fallback.
+        if (ui != null) {
+            this.setLocationRelativeTo(ui.getComponent());
+        }
+    }
+    
+    protected void saveConfiguration() {
+        if (configuration == null) {
+            return;
+        }
+        Point p = getLocationOnScreen();        
+        configuration.setKey(this.getClass().getName() + ".x","" + p.x);
+        configuration.setKey(this.getClass().getName()+".y","" + p.y);
+    }
+    
+    
+    /*
+    public void dispose() {
+        saveConfiguration();
+        super.dispose();
+    }*/
+    public void hide() {
+        saveConfiguration();
+        super.hide();
+    }
+    public void show() {
+        loadConfiguration();
+        super.show();
+    }
+}
+
+
+/* 
+$Log: PositionRememberingJFrame.java,v $
+Revision 1.2  2005/04/13 12:59:18  nw
+checkin from branch desktop-nww-998
+
+Revision 1.1.2.2  2005/04/05 11:42:40  nw
+tidied imports
+
+Revision 1.1.2.1  2005/04/04 16:43:48  nw
+made frames remember their previous positions.
+synchronized guiLogin, so only one login box ever comes up.
+made refresh action in jobmonitor more robust
+ 
+*/

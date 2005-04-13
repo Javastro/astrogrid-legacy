@@ -9,7 +9,7 @@
         <description><![CDATA[
           project impelemts a desktop service that other user applications can connect to
           to interact with astrogrid. Will support HTTP / XML-RPC / SOAP / Java-RMI eventually.
-		  Also acts as an infrastucture for launching gui apps and plugins.
+    Also acts as an infrastucture for launching gui apps and plugins.
          ]]></description>
         <shortDescription>AstroGrid Desktop</shortDescription>
         <build>
@@ -36,6 +36,8 @@
                                         <include>*.properties</include>
                                         <include>**/*.xml</include>
                                         <include>**/*.png</include>
+										<include>**/*.xsl</include>
+          <include>**/*.gif</include>
                                 </includes>
                         </resource>
                 </resources>
@@ -62,29 +64,71 @@
                 </properties>
         </dependency>
 
+<!-- container and aspects system --> 
         <dependency>
-                <!-- this one may already be present -->
                 <groupId>picocontainer</groupId>
                 <artifactId>picocontainer</artifactId>
-                <version>1.0</version>
+                <version>1.1</version>
                 <type>jar</type>
                 <properties>
                         <jnlp.jar>true</jnlp.jar>
                 </properties>
         </dependency>
+  <dependency>
+   <groupId>nanocontainer</groupId>
+   <artifactId>nanocontainer</artifactId>
+   <version>1.0-beta-4</version>
+   <type>jar</type>
+   <properties>
+     <jnlp.jar>true</jnlp.jar>
+    </properties>
+  </dependency>
+        <dependency>
+            <id>dynaop</id>
+            <version>1.0-beta</version>
+   <properties>
+     <jnlp.jar>true</jnlp.jar>
+    </properties>     
+        </dependency>
+        <dependency>
+            <id>aopalliance</id>
+            <version>1.0</version>
+   <properties>
+     <jnlp.jar>true</jnlp.jar>
+    </properties>     
+        </dependency>
+       <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-asm</artifactId>
+            <version>1.0</version>
+   <properties>
+     <jnlp.jar>true</jnlp.jar>
+    </properties>     
+        </dependency>
+        <dependency>
+            <id>oro</id>
+            <version>2.0.7</version><!-- nanocontainer project says 2.0.8, but we're on 2.0.7 at the moment -->
+   <properties>
+     <jnlp.jar>true</jnlp.jar>
+    </properties> 
+        </dependency> 
+<!-- also asm 1.4.3 ? but don't seemt to need it -->
+
+<!-- not used.    
+  <dependency>
+   <groupId>nanocontainer</groupId>
+   <artifactId>nanocontainer-swing</artifactId>
+   <version>1.0-beta-4</version>
+   <type>jar</type>
+   <properties>
+     <jnlp.jar>true</jnlp.jar>
+    </properties>
+    </dependency>    
+--> 
         <dependency>
                 <groupId>xmlrpc</groupId>
                 <artifactId>xmlrpc</artifactId>
                 <version>1.2-b1</version>
-                <type>jar</type>
-                <properties>
-                        <jnlp.jar>true</jnlp.jar>
-                </properties>
-        </dependency>
-        <dependency>
-                <artifactId>commons-attributes-api</artifactId>
-                <groupId>commons-attributes</groupId>
-                <version>2.1</version>
                 <type>jar</type>
                 <properties>
                         <jnlp.jar>true</jnlp.jar>
@@ -99,6 +143,15 @@
                         <jnlp.jar>true</jnlp.jar>
                 </properties>
         </dependency>
+ <dependency>
+  <artifactId>commons-digester</artifactId>
+  <groupId>commons-digester</groupId>
+  <version>1.6</version>
+  <type>jar</type>
+  <properties>
+   <jnlp.jar>true</jnlp.jar>
+  </properties>
+ </dependency>
         <dependency>
                 <artifactId>xstream</artifactId>
                 <groupId>xstream</groupId>
@@ -108,7 +161,7 @@
                         <jnlp.jar>true</jnlp.jar>
                 </properties>
         </dependency>
-        <dependency><!-- maybe already present. -->
+        <dependency>
                 <artifactId>commons-lang</artifactId>
                 <groupId>commons-lang</groupId>
                 <version>2.0</version>
@@ -125,13 +178,65 @@
                         <jnlp.jar>true</jnlp.jar>
                 </properties>
     </dependency>
+    <dependency>
+    	<artifactId>commons-httpclient</artifactId>
+	<groupId>commons-httpclient</groupId>
+	<version>2.0.1</version>
+                <properties>
+                        <jnlp.jar>true</jnlp.jar>
+                </properties>	
+    </dependency>
+ <dependency><!-- contains SwingWorker class, for executing things in background threads -->
+  <artifactId>concurrent</artifactId>
+  <groupId>concurrent</groupId>
+  <version>1.3.4</version>
+                  <properties>
+                        <jnlp.jar>true</jnlp.jar>
+                </properties>
+ </dependency>
+ <!-- gui fluff -->
+   <dependency><!-- look and feel -->
+ 	<artifactId>looks</artifactId>
+	<groupId>jgoodies</groupId>
+	<version>1.3.1</version>
+	<properties>
+		<jnlp.jar>true</jnlp.jar>
+	</properties>
+   </dependency>
+   <dependency>
+   	<groupId>l2fprod</groupId>
+	<artifactId>l2fprod-common-all</artifactId>
+	<version>0.1</version>
+	<properties>
+		<jnlp.jar>true</jnlp.jar>
+	</properties>
+    </dependency>
+	<!-- use all at the moment - sort out which ones are really needed after design is done
+   <dependency>
+   	<groupId>l2fprod</groupId>
+	<artifactId>l2fprod-common-sheet</artifactId>
+	<version>0.1</version>
+	<properties>
+		<jnlp.jar>true</jnlp.jar>
+	</properties>
+    </dependency>
 
-        <!-- only needed as part of the build -->
-        <dependency>
-                <artifactId>commons-attributes-plugin</artifactId>
-                <groupId>commons-attributes</groupId>
-                <version>2.1</version>
-                <type>plugin</type>
-        </dependency>
+   <dependency>
+   	<groupId>l2fprod</groupId>
+	<artifactId>l2fprod-common-buttonbar</artifactId>
+	<version>0.1</version>
+	<properties>
+		<jnlp.jar>true</jnlp.jar>
+	</properties>
+    </dependency>
+   <dependency>
+   	<groupId>l2fprod</groupId>
+	<artifactId>l2fprod-common-tasks</artifactId>
+	<version>0.1</version>
+	<properties>
+		<jnlp.jar>true</jnlp.jar>
+	</properties>
+    </dependency>        
+-->
     </dependencies>
 </project>

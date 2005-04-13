@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<!--can't dtd validate - need to replace with schema later.
+	<!DOCTYPE module PUBLIC "-//Astrogrid//DTD Desktop Module 1.0//EN" "file:///home/noel/eclipse/desktop/src/java/org/astrogrid/desktop/framework/descriptors/module-descriptor.dtd">
+-->
+<module name="externalApps">
+	<description>Launch Third-party applications</description>
+		<property>
+			<key>system.ui.menu.links</key>
+			<value>		
+				<link text="Launch Topcat"
+					icon="tc3.gif"
+					toolTipText="Webstart Starlink Topcat"
+					url="http://software.astrogrid.org/jnlp/beta/topcat/topcat.jnlp"/>
+				<link text="Launch Aladin"
+					icon="aladin.gif"
+					toolTipText="Webstart CDS Aladin"
+					url="http://software.astrogrid.org/jnlp/beta/aladin-avo/aladin-avo.jnlp"/>					
+			</value>
+		</property>		
+	<property>
+		<key>icon</key>
+		<value>package_utilities.png</value>
+	</property>				
+</module>

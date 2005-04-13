@@ -1,0 +1,126 @@
+/*$Id: RegistryImpl.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+ * Created on 02-Feb-2005
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.desktop.modules.ag;
+
+import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.store.Ivorn;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+
+import java.net.URISyntaxException;
+
+/**
+ * @author Noel Winstanley nw@jb.man.ac.uk 02-Feb-2005
+ * @todo add more operations, and more useful types..
+ *
+ */
+public class RegistryImpl implements Registry, UserLoginListener {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(RegistryImpl.class);
+
+    /** Construct a new Registry
+     * 
+     */
+    public RegistryImpl(Community community) {
+        super();
+        this.community = community;
+        community.addUserLoginListener(this);
+    }
+    protected final Community community;
+    private RegistryService reg;
+
+    protected RegistryService getReg() {
+        if (reg == null) {
+        reg = community.getEnv().getAstrogrid().createRegistryClient();
+        } 
+        return reg;
+    }
+    
+    public String resolveIdentifier(String ivorn) throws RegistryException, URISyntaxException {
+
+        if (ivorn.startsWith("ivo://")) {
+            return getReg().getEndPointByIdentifier(new Ivorn(ivorn));
+        } else {
+        return getReg().getEndPointByIdentifier(ivorn);
+        }
+
+    }
+    
+
+    public String getRecord(String ivorn) throws RegistryException, URISyntaxException {
+
+        Document dom = null;
+        if (ivorn.startsWith("ivo://")){
+            dom = getReg().getResourceByIdentifier(new Ivorn(ivorn));
+        } else {
+            dom=  getReg().getResourceByIdentifier(ivorn);
+        }
+        return XMLUtils.DocumentToString(dom);
+
+        
+    }
+
+    public String search(String xadql) throws RegistryException {
+
+        Document dom = getReg().searchFromSADQL(xadql);
+        return XMLUtils.DocumentToString(dom);
+
+    }
+
+    /**
+     * @see org.astrogrid.desktop.modules.ag.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     */
+    public void userLogin(UserLoginEvent e) {
+    }
+
+    /**
+     * @see org.astrogrid.desktop.modules.ag.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     */
+    public void userLogout(UserLoginEvent e) {
+        reg = null;
+    }
+    
+
+    
+}
+
+
+/* 
+$Log: RegistryImpl.java,v $
+Revision 1.2  2005/04/13 12:59:11  nw
+checkin from branch desktop-nww-998
+
+Revision 1.1.2.2  2005/04/04 08:49:27  nw
+working job monitor, tied into pw launcher.
+
+Revision 1.1.2.1  2005/03/22 12:04:03  nw
+working draft of system and ag components.
+
+Revision 1.1.2.1  2005/03/18 15:47:37  nw
+worked in swingworker.
+got community login working.
+
+Revision 1.1.2.1  2005/03/18 12:09:32  nw
+got framework, builtin and system levels working.
+
+Revision 1.2  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
+Revision 1.1  2005/02/21 11:25:07  nw
+first add to cvs
+ 
+*/

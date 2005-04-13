@@ -1,5 +1,5 @@
-/*$Id: Main.java,v 1.1 2005/02/21 11:25:07 nw Exp $
- * Created on 31-Jan-2005
+/*$Id: Main.java,v 1.2 2005/04/13 12:59:10 nw Exp $
+ * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -10,62 +10,83 @@
 **/
 package org.astrogrid.desktop;
 
-import org.astrogrid.desktop.protocol.http.HtmlServlet;
-import org.astrogrid.desktop.protocol.xmlrpc.XmlRpcServlet;
-import org.astrogrid.desktop.service.Services;
-import org.astrogrid.desktop.ui.Desktop;
+import org.astrogrid.desktop.framework.Bootloader;
+import org.astrogrid.desktop.framework.DefaultModuleRegistry;
+import org.astrogrid.desktop.framework.descriptors.DescriptorParser;
+import org.astrogrid.desktop.framework.descriptors.DigesterDescriptorParser;
 
-import java.io.IOException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.Startable;
+import org.picocontainer.defaults.DefaultPicoContainer;
 
-/** Main class of Desktop server - creates server, initializes services, registers protocols, fire up gui.
- * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
+import com.jgoodies.looks.Options;
+import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
+
+import javax.swing.UIManager;
+
+/** Main class of the desktop dashboard.
+ * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
-public class Main implements Runnable {
+public class Main implements Startable {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(Main.class);
 
-    /** Construct a new Server
-     * @throws IOException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
+    /** Construct a new Desktop
      * 
      */
-    public Main() throws Exception {
-        services = new Services();
-        server = new DesktopServer(services);
-        services.registerComponentInstance(server); //tying the knot..
+    public Main() {
+        super();
+        try {
+            UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
+            UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY,    Boolean.TRUE);            
+         } catch (Exception e) {
+             logger.warn("Failed to install plastic look and feel - oh well");
+             }
+        
+        pico = new DefaultPicoContainer();
+        pico.registerComponentImplementation(DefaultModuleRegistry.class);
+        pico.registerComponentImplementation(DescriptorParser.class,DigesterDescriptorParser.class);
+        pico.registerComponentImplementation(Bootloader.class);        
+    }
+
+    protected final MutablePicoContainer pico;
+
+    /**
+     * @see org.picocontainer.Startable#start()
+     */
+    public void start() {
+        pico.start();
+    }
+
+    /**
+     * @see org.picocontainer.Startable#stop()
+     */
+    public void stop() {
     }
     
-    protected final DesktopServer server;
-    protected final Services services;
-
-    public static void main(String[] args) {
-        
-        // create Server
-        Main m = null;
-        try {
-            m = new Main();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-        m.run();   
+    public static final void main(String[] args) {
+        Main d = new Main();
+        d.start();
     }
 
-    public void run() {
-        try {
-            services.start();
-            server.start();         
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 }
 
 
 /* 
 $Log: Main.java,v $
-Revision 1.1  2005/02/21 11:25:07  nw
-first add to cvs
+Revision 1.2  2005/04/13 12:59:10  nw
+checkin from branch desktop-nww-998
+
+Revision 1.1.4.2  2005/04/05 15:13:56  nw
+changed default look and feel.
+
+Revision 1.1.4.1  2005/03/18 12:09:31  nw
+got framework, builtin and system levels working.
  
 */

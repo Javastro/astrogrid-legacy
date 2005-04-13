@@ -2,10 +2,6 @@
 <!-- extension maven script -->
 <project xmlns:j="jelly:core" default="astrogrid-build-site" xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
 
-<!-- NB - this project uses metadata atrributes, which have to be compiled into sources
-using the commons-attributes maven plugin. This should just automagically happen, based on 
-a dependency on the commons-attributes-plugin, and a few keys set in project.properties.
--->
 
 
         <goal name="astrogrid-deploy-site">
@@ -20,7 +16,25 @@ a dependency on the commons-attributes-plugin, and a few keys set in project.pro
         <goal name="astrogrid-build-artifact" prereqs="jar:jar,war:war"/>
         <goal name="astrogrid-install-artifact" prereqs="jar:install,war:install"/>
 
-
+	<goal name="patch-bin">
+		<!-- overrides goal of same name in ancestor project.
+		this is intentionally left blank -->
+	</goal>
+     <goal name="patch-webapp">
+                <delete includeEmptyDirs="true">
+                        <fileset dir="${maven.build.dir}/${pom.artifactId}">
+                                <include name="WEB-INF/**" />
+                        </fileset>
+                </delete>
+                <!-- sign jars by hand - as maven jnlp task is flakey -->
+                <signjar alias="astrogrid" storepass="qwertyuiop">
+                        <fileset dir="${maven.build.dir}/${pom.artifactId}">
+                                <include name="*.jar" />
+                        </fileset>
+                </signjar>
+        </goal>
+	
+	
         <goal name="patch-jnlp">
                 <!--
                 add in link to astrogrid extension.

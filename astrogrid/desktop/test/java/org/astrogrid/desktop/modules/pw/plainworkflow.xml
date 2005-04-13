@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow name="template workflow"
+    xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1"
+    xmlns:v0="http://www.astrogrid.org/schema/ExecutionRecord/v1"
+    xmlns:v1="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
+    xmlns:v2="http://www.astrogrid.org/schema/Credentials/v1"
+    xmlns:v3="http://www.astrogrid.org/schema/CEATypes/v1" xmlns:x0="http://www.w3.org/2001/XMLSchema">
+    <sequence>
+        <set value="" var="x"/>
+    </sequence>
+    <Credentials>
+        <v2:Account>
+            <v2:Name>test</v2:Name>
+            <v2:Community>org.astrogrid.localhost</v2:Community>
+        </v2:Account>
+        <v2:Group>
+            <v2:Name>test</v2:Name>
+            <v2:Community>org.astrogrid.localhost</v2:Community>
+        </v2:Group>
+        <v2:SecurityToken/>
+    </Credentials>
+</workflow>

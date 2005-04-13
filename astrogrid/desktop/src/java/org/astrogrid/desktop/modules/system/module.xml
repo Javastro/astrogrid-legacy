@@ -1,0 +1,169 @@
+<?xml version="1.0" ?>
+<!--can't dtd validate - need to replace with schema later.
+	<!DOCTYPE module PUBLIC "-//Astrogrid//DTD Desktop Module 1.0//EN" "file:///home/noel/eclipse/desktop/src/java/org/astrogrid/desktop/framework/descriptors/module-descriptor.dtd">
+-->
+<module name="system">
+	<description>System Components</description>
+	<property>
+		 <key>system.webserver</key>
+		 <value>
+			<servlet name="xmlrpc" path="/xmlrpc" class="org.astrogrid.desktop.modules.system.XmlRpcServlet" />
+			<servlet name="html" path="/*" class="org.astrogrid.desktop.modules.system.HtmlServlet"/>	
+		</value>		
+		</property>	
+	<property>
+		<key>icon</key>
+		<value>gear.png</value>
+	</property>				
+	<component name="browser" 
+		implementationClass="org.astrogrid.desktop.modules.system.WebstartBrowserControl"
+		interfaceClass="org.astrogrid.desktop.modules.system.BrowserControl"		
+		>
+		<description>Control the default webbrowser</description>
+		
+		<method name="openURL">
+				<description>open a URL in the system webbrowser</description>
+				<return>
+					<description>nothing</description>
+				</return>
+				<parameter name="url">
+					<description>url of the page to display</description>
+				</parameter>
+		</method>	
+		<method name="openRelative">
+			<description>open a relative url in the system webbrowser</description>
+				<return>
+					<description>nothing</description>
+				</return>	
+				<parameter name="url">
+					<description>relative URL of the page to display (relative to webserver context)</description>
+				</parameter>						
+		</method>
+	</component>
+	
+	<component name="configuration"
+		implementationClass="org.astrogrid.desktop.modules.system.JavaPrefsConfiguration"
+		interfaceClass="org.astrogrid.desktop.modules.system.Configuration"
+		>
+		<description>manages connection settings and configuration</description>
+	<property>
+		<key>icon</key>
+		<value>properties.gif</value>
+	</property>		
+		<method name="list">
+			<description>list configuration entries</description>
+			<return><description>set of key-value pairs</description></return>
+	<property>
+		<key>icon</key>
+		<value>flatLayout.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Show Settings</value>
+			</property>					
+		</method>
+		<method name="listKeys">
+			<description>list configuration keys</description>
+	<property>
+		<key>icon</key>
+		<value>flatLayout.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>List configuration keys</value>
+			</property>				
+		</method>
+		<method name="setKey">
+			<description>set a configuration key</description>
+	<property>
+		<key>icon</key>
+		<value>editorpane_obj.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Change a setting</value>
+			</property>				
+			<return><description>success code</description>
+				<property>
+						<key>system.xmlrpc.type</key>
+						<value>boolean</value>
+					</property>
+				</return>
+			<parameter name="key"><description>key to set</description></parameter>
+			<parameter name="value"><description>value to set to </description></parameter>
+		</method>
+		<method name="getKey">
+			<description>get a value for a configuration key</description>
+	<property>
+		<key>icon</key>
+		<value>info_obj.gif</value>
+	</property>				
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Retrieve the value of a key</value>
+			</property>				
+			<return><description>key value</description></return>
+			<parameter name="key"><description>key to retreive value for</description></parameter>
+		</method>
+	</component>
+	
+	<component name="ui"
+		implementationClass="org.astrogrid.desktop.modules.system.UIImpl"
+		interfaceClass="org.astrogrid.desktop.modules.system.UI"
+		>
+		<description>Graphical User Interface</description>
+	<property>
+		<key>icon</key>
+		<value>view_detailed.png</value>
+	</property>				
+		<method name="show">
+			<description>Show the user interface</description>			
+		</method>
+		<method name="hide">
+			<description>Hide the user interface</description>
+	<property>
+		<key>icon</key>
+		<value>delete_obj.gif</value>
+	</property>						
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Hide GUI</value>
+			</property>
+		</method>
+
+	</component>
+	
+	<component name="webserver"
+		implementationClass="org.astrogrid.desktop.modules.system.JettyWebServer"
+		interfaceClass="org.astrogrid.desktop.modules.system.WebServer"
+		>
+			<description>desktop web server - register servlets with it via module parameter keys</description>
+	<property>
+		<key>icon</key>
+		<value>server.png</value>
+	</property>					
+			<method name="getUrlRoot">
+				<description>get url root of the webserver context</description>
+	<property>
+		<key>icon</key>
+		<value>info_obj.gif</value>
+	</property>						
+				<property>
+				<key>system.ui.menu.entry</key>
+				<value>Show Server Root</value>
+			</property>
+			</method>
+	</component>
+	
+	<!-- interceptor class -->
+	<component name="throbber"
+		implementationClass="org.astrogrid.desktop.modules.system.ThrobbingInterceptor"
+		interfaceClass="org.aopalliance.intercept.MethodInterceptor" >
+			<property>
+				<key>hidden.component</key>
+				<value>true</value>								
+			</property>						
+	</component>
+		
+
+</module>

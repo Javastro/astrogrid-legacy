@@ -1,0 +1,127 @@
+<?xml version="1.0" ?>
+<!--can't dtd validate - need to replace with schema later.
+	<!DOCTYPE module PUBLIC "-//Astrogrid//DTD Desktop Module 1.0//EN" "file:///home/noel/eclipse/desktop/src/java/org/astrogrid/desktop/framework/descriptors/module-descriptor.dtd">
+-->
+<module name="userInterface">
+	<description>Useful Widgets</description>
+	<property>
+		<key>icon</key>
+		<value>swtapp_obj.gif</value>
+	</property>	
+	<!-- todo - make each module a new namespace, so can have identically named components
+		at moment, fails in nasty ways
+		-->
+	<component name="parameterizedWorkflows" 
+		implementationClass="org.astrogrid.desktop.modules.pw.ParameterizedWorkflowLauncherImpl" 
+		interfaceClass="org.astrogrid.desktop.modules.pw.ParameterizedWorkflowLauncher" >
+		<description>Launch parameterized workflows</description>
+<property>
+		<key>icon</key>
+		<value>exec.png</value>
+	</property>				
+		<method name="run">
+			<description>Run the Parameterized Worflow Launcher</description>
+	<property>
+		<key>icon</key>
+		<value>run_tool.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Run...</value>
+			</property>			
+		
+		</method>
+		</component>		
+	<component name="registryBrowser" 
+		implementationClass="org.astrogrid.desktop.modules.ui.RegistryBrowserImpl" 
+		interfaceClass="org.astrogrid.desktop.modules.ui.RegistryBrowser" >
+		<description>Browse the registry</description>
+	<property>
+		<key>icon</key>
+		<value>java_lib_obj.gif</value>
+	</property>			
+		<method name="show">
+			<description>Run the Browser GUI </description>
+	<property>
+		<key>icon</key>
+		<value>run_tool.gif</value>
+	</property>				
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Run...</value>
+			</property>			
+		
+		</method>
+		<method name="hide">
+			<description>Hide the Browser GUI </description>
+
+		</method>		
+		</component>
+		<!-- not ready yet
+	<component name="vospaceBrowser" 
+		implementationClass="org.astrogrid.desktop.modules.ui.VospaceBrowserImpl" 
+		interfaceClass="org.astrogrid.desktop.modules.ui.VospaceBrowser" >
+		<description>Browse the registry</description>
+	<property>
+		<key>icon</key>
+		<value>repo_rep.gif</value>
+	</property>			
+		<method name="show">
+			<description>Run the Browser GUI </description>
+	<property>
+		<key>icon</key>
+		<value>run_tool.gif</value>
+	</property>				
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Run...</value>
+			</property>			
+		
+		</method>
+		<method name="open">
+			<description>Display a vospace location in the Browser </description>
+	<property>
+		<key>icon</key>
+		<value>run_tool.gif</value>
+	</property>				
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Open Location...</value>
+			</property>			
+			</method>
+		<method name="hide">
+			<description>Hide the Browser GUI </description>
+
+		</method>		
+		</component>		
+		-->
+			<component name="jobMonitor" 
+		implementationClass="org.astrogrid.desktop.modules.ui.JobMonitorImpl" 
+		interfaceClass="org.astrogrid.desktop.modules.ui.JobMonitor" >
+		<description>View progress of jobs</description>
+	<property>
+		<key>icon</key>
+		<value>thread_and_monitor_view.gif</value>
+	</property>				
+		<method name="show">
+			<description>Run the Monitor GUI </description>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Run..</value>
+	<property>
+		<key>icon</key>
+		<value>run_tool.gif</value>
+	</property>					
+			</property>			
+		
+		</method>
+		<method name="hide">
+			<description>Hide the Monitor GUI </description>
+
+		</method>		
+		<method name="refresh">
+			<description>Refresh the job list </description>
+
+		</method>			
+		</component>
+</module>

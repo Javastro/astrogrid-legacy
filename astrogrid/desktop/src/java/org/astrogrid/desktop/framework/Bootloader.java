@@ -1,0 +1,120 @@
+/*$Id: Bootloader.java,v 1.2 2005/04/13 12:59:12 nw Exp $
+ * Created on 15-Mar-2005
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.desktop.framework;
+
+import org.astrogrid.desktop.framework.descriptors.DescriptorParser;
+import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.picocontainer.PicoInitializationException;
+import org.picocontainer.Startable;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+/** loads the first core modules, and gets the system underway.
+ * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
+ *
+ */
+public class Bootloader implements Startable{
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(Bootloader.class);
+
+    /** Construct a new Bootloader
+     * 
+     */
+    public Bootloader(DefaultModuleRegistry reg,DescriptorParser parser) {
+        super();
+        this.reg = reg;
+        this.parser = parser;
+    }
+    protected final DefaultModuleRegistry reg;
+    protected final DescriptorParser parser;
+
+    /** load in the core modules...
+     * @see org.picocontainer.Startable#start()
+     */
+    public void start() {
+        registerModule("system","/org/astrogrid/desktop/modules/system/module.xml");
+        registerModule("astrogrid","/org/astrogrid/desktop/modules/ag/module.xml");
+        registerModule("ui","/org/astrogrid/desktop/modules/ui/module.xml");            
+        //registerModule("parameterized-workflows","/org/astrogrid/desktop/modules/pw/module.xml");
+        registerModule("scripting","/org/astrogrid/desktop/modules/scripting/module.xml");
+        registerModule("external","/org/astrogrid/desktop/modules/external/module.xml");  
+
+    }
+
+    /**
+     * @param is
+     * @throws IllegalStateException
+     */
+    private void registerModule(String name, String resourcePath) throws IllegalStateException {
+        logger.info("Looking for " + name + " - " + resourcePath);
+        InputStream is = this.getClass().getResourceAsStream(resourcePath);
+        if (is == null) {
+            logger.fatal("Cannot find module.xml for " + name + " module");
+            throw new PicoInitializationException("Cannot find module.xml for " + name + " module");
+        }      
+        ModuleDescriptor builtin = null;
+        try {
+            builtin = parser.parse(is);
+        } catch (IOException e) {
+            logger.fatal("Cannot read module xml for " + name +" module",e);
+            throw new PicoInitializationException("Cannot read module xml for " + name +" module",e);
+        } catch (SAXException e) {
+            logger.fatal("Cannot parse module.xml for " + name +"module",e);
+            throw new PicoInitializationException("Cannot parse module xml for " + name +" module",e);
+        }
+        reg.register(builtin);
+        logger.info("Registered " + name);
+    }
+
+    /**
+     * @see org.picocontainer.Startable#stop()
+     */
+    public void stop() {
+    }
+
+}
+
+
+/* 
+$Log: Bootloader.java,v $
+Revision 1.2  2005/04/13 12:59:12  nw
+checkin from branch desktop-nww-998
+
+Revision 1.1.2.7  2005/04/06 15:04:11  nw
+added new front end - more modern, with lots if icons.
+
+Revision 1.1.2.6  2005/04/04 08:49:27  nw
+working job monitor, tied into pw launcher.
+
+Revision 1.1.2.5  2005/04/01 19:03:10  nw
+beta of job monitor
+
+Revision 1.1.2.4  2005/03/30 12:48:22  nw
+added two more lttle modules
+
+Revision 1.1.2.3  2005/03/23 14:36:18  nw
+got pw working
+
+Revision 1.1.2.2  2005/03/18 15:47:37  nw
+worked in swingworker.
+got community login working.
+
+Revision 1.1.2.1  2005/03/18 12:09:31  nw
+got framework, builtin and system levels working.
+ 
+*/

@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<!DOCTYPE module PUBLIC "-//Astrogrid//DTD Desktop Module 1.0//EN" "file:///home/noel/eclipse/desktop/src/java/org/astrogrid/desktop/framework/descriptors/module-descriptor.dtd">
+<module name="test" >
+	<description>a test module</description>
+	
+	<component name="component1" 
+		interfaceClass="java.lang.CharSequence" 
+		implementationClass="java.lang.String">
+		<method name="list">
+		</method>
+		<method name="length">
+			<return name="len" type="java.lang.Integer">
+			</return>		
+		</method>
+	</component>
+
+</module>

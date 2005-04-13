@@ -1,0 +1,130 @@
+/*$Id: Vospace.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+ * Created on 22-Mar-2005
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+ **/
+package org.astrogrid.desktop.modules.ag;
+
+import org.astrogrid.community.common.exception.CommunityException;
+import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.filemanager.common.DuplicateNodeFault;
+import org.astrogrid.filemanager.common.FileManagerFault;
+import org.astrogrid.filemanager.common.NodeIvorn;
+import org.astrogrid.filemanager.common.NodeNotFoundFault;
+import org.astrogrid.filemanager.common.NodeTypes;
+import org.astrogrid.registry.RegistryException;
+import org.astrogrid.store.Ivorn;
+
+import org.apache.axis.types.URI.MalformedURIException;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.rmi.RemoteException;
+
+/**
+ * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
+ *
+ */
+public interface Vospace {
+    // access
+    NodeIvorn home() throws FileManagerFault, NodeNotFoundFault, RemoteException, RegistryException,
+            CommunityException, URISyntaxException;
+
+    FileManagerNode node(Ivorn ivorn) throws FileManagerFault, NodeNotFoundFault,
+            RegistryException, CommunityException, RemoteException, URISyntaxException;
+
+    boolean exists(Ivorn ivorn) throws FileManagerFault, RemoteException, RegistryException,
+            CommunityException, URISyntaxException;
+
+    NodeTypes getType(Ivorn ivorn) throws FileManagerFault, RemoteException, RegistryException,
+            CommunityException, URISyntaxException;
+
+    //creation
+    NodeIvorn newFolder(Ivorn parentIvorn, String name) throws IOException, FileManagerFault,
+            NodeNotFoundFault, DuplicateNodeFault, RemoteException, UnsupportedOperationException,
+            RegistryException, CommunityException, URISyntaxException;
+
+    NodeIvorn newFile(Ivorn parentIvorn, String name) throws FileManagerFault, NodeNotFoundFault,
+            DuplicateNodeFault, RemoteException, UnsupportedOperationException, RegistryException,
+            CommunityException, URISyntaxException;
+
+    // content
+    URL readContent(Ivorn ivorn) throws NodeNotFoundFault, FileManagerFault,
+            UnsupportedOperationException, MalformedURLException, RemoteException,
+            RegistryException, CommunityException, URISyntaxException;
+
+    /** @throws URISyntaxException
+     * @throws CommunityException
+     * @throws RegistryException
+     * @throws RemoteException
+     * @throws MalformedURLException
+     * @throws UnsupportedOperationException
+     * @throws FileManagerFault
+     * @throws NodeNotFoundFault
+     * @todo unsure whether this is correct */
+    URL writeContent(Ivorn ivorn) throws NodeNotFoundFault, FileManagerFault,
+            UnsupportedOperationException, MalformedURLException, RemoteException,
+            RegistryException, CommunityException, URISyntaxException;
+
+    void copyContentToURL(Ivorn ivorn, URL destination) throws NodeNotFoundFault, FileManagerFault,
+            UnsupportedOperationException, RemoteException, MalformedURIException,
+            RegistryException, CommunityException, URISyntaxException, FileNotFoundException, IOException;
+
+    void copyURLToContent(URL src, Ivorn ivorn) throws NodeNotFoundFault, FileManagerFault,
+            UnsupportedOperationException, RemoteException, MalformedURIException,
+            RegistryException, CommunityException, URISyntaxException, IOException;
+
+    //navigation
+    NodeIvorn getParent(Ivorn ivorn) throws FileManagerFault, NodeNotFoundFault, RemoteException,
+            RegistryException, CommunityException, URISyntaxException;
+    
+    FileManagerNode getParentNode(Ivorn ivorn) throws NodeNotFoundFault, FileManagerFault, RemoteException, RegistryException, CommunityException, URISyntaxException ;
+        
+    NodeIvorn[] getChildren(Ivorn ivorn) throws FileManagerFault, NodeNotFoundFault, RemoteException,
+            RegistryException, CommunityException, URISyntaxException;
+
+    FileManagerNode[] getChildrenNodes(Ivorn ivorn) throws FileManagerFault, NodeNotFoundFault,
+            RemoteException, RegistryException, CommunityException, URISyntaxException;
+
+    // metadata
+    void refresh(Ivorn ivorn) throws NodeNotFoundFault, FileManagerFault, RemoteException,
+            RegistryException, CommunityException, URISyntaxException;
+
+    // management
+    void delete(Ivorn ivorn) throws NodeNotFoundFault, FileManagerFault, RemoteException,
+            RegistryException, CommunityException, URISyntaxException;
+
+    void rename(Ivorn srcIvorn, String newName) throws FileManagerFault, NodeNotFoundFault,
+            RemoteException, RegistryException, CommunityException, URISyntaxException;
+
+    void move(Ivorn srcIvorn, Ivorn newParentIvorn, String newName) throws FileManagerFault,
+            NodeNotFoundFault, RemoteException, RegistryException, CommunityException,
+            URISyntaxException;
+
+    void changeStore(Ivorn srcIvorn, Ivorn storeIvorn) throws DuplicateNodeFault,
+            NodeNotFoundFault, FileManagerFault, RemoteException, RegistryException,
+            CommunityException, URISyntaxException;
+
+    void copy(Ivorn srcIvorn, Ivorn newParentIvorn, String newName) throws FileManagerFault,
+            NodeNotFoundFault, RemoteException, RegistryException, CommunityException,
+            URISyntaxException;
+
+}
+
+/* 
+ $Log: Vospace.java,v $
+ Revision 1.2  2005/04/13 12:59:11  nw
+ checkin from branch desktop-nww-998
+
+ Revision 1.1.2.2  2005/03/22 12:04:03  nw
+ working draft of system and ag components.
+ 
+ */
