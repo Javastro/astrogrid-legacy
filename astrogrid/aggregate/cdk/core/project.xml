@@ -61,6 +61,16 @@
                 <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+            </properties>
+        </dependency>		
 
         <!-- community -->
         <dependency>
