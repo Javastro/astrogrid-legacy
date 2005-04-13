@@ -1,4 +1,4 @@
-/*$Id: CachingNodeDelegate.java,v 1.2 2005/03/11 13:37:05 clq2 Exp $
+/*$Id: CachingNodeDelegate.java,v 1.3 2005/04/13 13:10:09 nw Exp $
  * Created on 16-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -101,8 +101,8 @@ public class CachingNodeDelegate extends VanillaNodeDelegate {
         super(fm, hints);
     }
     /** cache for nodes - hard references for keys, weak references for values. 
-     * @todo test this is correct - bit fuzzy on whether values should be SOFT or WEAK.*/
-    protected final Map cache = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.WEAK);
+     * @modified nww - corrected from WEAK to SOFT - otherwise it doesn't cache.*/
+    protected final Map cache = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
 
     public void clearCache() {
         this.cache.clear();
@@ -129,6 +129,9 @@ public class CachingNodeDelegate extends VanillaNodeDelegate {
 
 /*
  * $Log: CachingNodeDelegate.java,v $
+ * Revision 1.3  2005/04/13 13:10:09  nw
+ * fixed cache to use soft, rather than weak references
+ *
  * Revision 1.2  2005/03/11 13:37:05  clq2
  * new filemanager merged with filemanager-nww-jdt-903-943
  *
