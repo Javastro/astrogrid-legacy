@@ -82,6 +82,8 @@ public class CopyServlet extends HttpServlet
                }
                catch (IOException e) { /* ignore - if there's a problem here it's too late */ }
             }
+            public void pipeComplete() {
+            }
          };
          
          piper.pipe(in, out, listener);
