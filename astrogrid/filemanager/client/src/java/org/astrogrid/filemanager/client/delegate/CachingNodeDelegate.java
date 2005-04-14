@@ -1,4 +1,4 @@
-/*$Id: CachingNodeDelegate.java,v 1.3 2005/04/13 13:10:09 nw Exp $
+/*$Id: CachingNodeDelegate.java,v 1.4 2005/04/14 12:05:24 nw Exp $
  * Created on 16-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -112,6 +112,10 @@ public class CachingNodeDelegate extends VanillaNodeDelegate {
         return this.cache.size();
     }
     
+    public boolean isCached(NodeIvorn ivo) {
+        return cache.containsKey(ivo);
+    }
+    
     public String toString() {
         StringBuffer result =  new StringBuffer("[Caching NodeDelegate ");
         result.append(super.toString());
@@ -129,6 +133,10 @@ public class CachingNodeDelegate extends VanillaNodeDelegate {
 
 /*
  * $Log: CachingNodeDelegate.java,v $
+ * Revision 1.4  2005/04/14 12:05:24  nw
+ * another cache fix - enable to peek inside the cache.
+ * doesn't effect existing code.
+ *
  * Revision 1.3  2005/04/13 13:10:09  nw
  * fixed cache to use soft, rather than weak references
  *

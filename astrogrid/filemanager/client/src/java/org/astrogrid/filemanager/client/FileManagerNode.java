@@ -1,10 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerNode.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/03/11 13:37:06 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Author: nw $</cvs:author>
+ * <cvs:date>$Date: 2005/04/14 12:05:23 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerNode.java,v $
+ *   Revision 1.7  2005/04/14 12:05:23  nw
+ *   another cache fix - enable to peek inside the cache.
+ *   doesn't effect existing code.
+ *
  *   Revision 1.6  2005/03/11 13:37:06  clq2
  *   new filemanager merged with filemanager-nww-jdt-903-943
  *
@@ -95,6 +99,7 @@
  */
 package org.astrogrid.filemanager.client;
 
+import org.astrogrid.filemanager.client.delegate.NodeDelegate;
 import org.astrogrid.filemanager.common.DuplicateNodeFault;
 import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.filemanager.common.NodeNotFoundFault;
@@ -458,6 +463,16 @@ public interface FileManagerNode extends TreeNode{
     public void addObserver(Observer o);
     /** remove an observer from this node */
     public void deleteObserver(Observer o);
+    
+    /** method that peeks inside the implementation, and tells what's in the cache.
+     * useful for gui implementation - can tell whether a traversal is going to require a call to the server.
+     * @return if this node is a follder, true if (some) of it's children are in the cache.
+     *     if this node is a file, will return true;
+     */
+    public boolean isChildrenInCache();
+    
+    /** access the node delegate this node is working with- useful sometimes */
+    public NodeDelegate getNodeDelegate();
     
   
 

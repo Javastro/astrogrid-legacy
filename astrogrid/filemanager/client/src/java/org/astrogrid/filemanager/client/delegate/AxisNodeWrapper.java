@@ -1,4 +1,4 @@
-/*$Id: AxisNodeWrapper.java,v 1.2 2005/03/11 13:37:05 clq2 Exp $
+/*$Id: AxisNodeWrapper.java,v 1.3 2005/04/14 12:05:24 nw Exp $
  * Created on 16-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import org.astrogrid.filemanager.common.Attribute;
 import org.astrogrid.filemanager.common.Child;
 import org.astrogrid.filemanager.common.DuplicateNodeFault;
 import org.astrogrid.filemanager.common.FileManagerFault;
+import org.astrogrid.filemanager.common.Node;
 import org.astrogrid.filemanager.common.NodeIvorn;
 import org.astrogrid.filemanager.common.NodeName;
 import org.astrogrid.filemanager.common.NodeNotFoundFault;
@@ -657,12 +658,41 @@ public class AxisNodeWrapper extends Observable implements FileManagerNode, Node
         return -1;
     }
 
+    /**
+     * @see org.astrogrid.filemanager.client.FileManagerNode#isChildrenInCache()
+     */
+    public boolean isChildrenInCache() {
+        if (this.isFile()) {
+            return true;
+        }
+       Child[] children = bean.getChild();
+        if (children == null || children.length == 0) {
+            return true;
+        }
+        if (! (nodeDelegate instanceof CachingNodeDelegate)) {
+            return false;
+        }
+        CachingNodeDelegate n = (CachingNodeDelegate)nodeDelegate;
+        return n.isCached(children[0].getIvorn()); // only check for 1st child.
+    }
+
+    /**
+     * @see org.astrogrid.filemanager.client.FileManagerNode#getNodeDelegate()
+     */
+    public NodeDelegate getNodeDelegate() {
+        return nodeDelegate;
+    }
+
 
 }
 
 
 /* 
 $Log: AxisNodeWrapper.java,v $
+Revision 1.3  2005/04/14 12:05:24  nw
+another cache fix - enable to peek inside the cache.
+doesn't effect existing code.
+
 Revision 1.2  2005/03/11 13:37:05  clq2
 new filemanager merged with filemanager-nww-jdt-903-943
 
