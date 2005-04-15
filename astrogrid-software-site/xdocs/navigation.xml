@@ -54,7 +54,7 @@
         <item name="Development Process" href="/developerdocs/developmentprocess.html" collapse="true"/>
         <item name="Coding Standards" href="/developerdocs/standards.html"/>
         <item name="XML schemata" href="/schema/index.html"/>
-		<item name="Other Tips" href="/tips/index.html"/>
+		<item name="Other Tips" href="/tips/tips.html"/>
         </item>
         <!--item name="AstroGrid architecture" href="fillmein"/-->
 			  <!--item name="Writing AstroGrid compatable software" href="/developerdocs/"/-->
