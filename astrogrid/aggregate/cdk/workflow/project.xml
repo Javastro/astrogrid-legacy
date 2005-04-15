@@ -45,6 +45,37 @@
                                 <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
                         </properties>
                 </dependency>
+ <!-- random libraries that keep changing names, and get added to all proejcts except this one.. 
+	  dunno what they do .. -->
+   <dependency>
+      <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-pal-query</artifactId>
+            <version>${astrogrid.pal.version}</version>
+            <type>jar</type>
+                        <properties>
+                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
+                        </properties>
+        </dependency>	  
+     <!-- for writing XML -->
+       <dependency>
+          <artifactId>astrogrid-xml</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.xml.stable}</version>
+                        <properties>
+                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
+                        </properties>
+       </dependency>	  				
+	   <!-- harrumph - another one -->
+       <dependency>
+          <artifactId>astrogrid-utils</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.utils.stable}</version>
+                        <properties>
+                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
+                        </properties>
+       </dependency>	  		   
+	   
+	   
         <!-- external libs -->
                   <!-- helper for object models -->
                 <dependency>
