@@ -84,7 +84,11 @@
           <war.bundle>true</war.bundle>
         </properties>   	
    </dependency>
-  	
+      <dependency>
+          <artifactId>astrogrid-utils</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.utils.stable}</version>
+       </dependency>	
     
     <!-- Log4J-->
     <dependency>
