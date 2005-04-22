@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.84 2005/04/22 09:10:50 clq2 Exp $ -->
+<!-- $Id: project.xml,v 1.85 2005/04/22 14:18:40 clq2 Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
   <id>astrogrid-jes</id>
@@ -266,6 +266,9 @@
           <artifactId>astrogrid-utils</artifactId>
           <groupId>org.astrogrid</groupId>
           <version>${astrogrid.utils.stable}</version>
+		   <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>
        </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
