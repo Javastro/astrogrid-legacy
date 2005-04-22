@@ -223,7 +223,8 @@
             <version>${astrogrid.pal.version}</version>
             <type>jar</type>
         </dependency>    
-			
+	
+	  <dependency>
     	<artifactId>astrogrid-utils</artifactId>
           <groupId>org.astrogrid</groupId>
           <version>${astrogrid.utils.stable}</version>
