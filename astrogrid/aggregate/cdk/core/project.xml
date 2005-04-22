@@ -20,18 +20,6 @@
         </dependency>
 
 
-        <!-- myspace -->
-		<!--
-       <dependency>
-            <artifactId>astrogrid-store-client</artifactId>
-            <groupId>org.astrogrid</groupId>
-            <version>${astrogrid.mySpace.version}</version>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-                    <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
-	-->
 	
 		<!-- filemanager -->
 		<dependency>
@@ -131,6 +119,17 @@
             <groupId>xerces</groupId>
             <artifactId>xerces</artifactId>
             <version>2.4.0-patched</version>
+            <type>jar</type>
+            <url>http://xml.apache.org/</url>
+            <properties>
+                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.4.1</version>
             <type>jar</type>
             <url>http://xml.apache.org/</url>
             <properties>
