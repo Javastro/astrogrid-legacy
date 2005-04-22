@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.83 2005/04/20 11:56:12 clq2 Exp $ -->
+<!-- $Id: project.xml,v 1.84 2005/04/22 09:10:50 clq2 Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
   <id>astrogrid-jes</id>
@@ -261,6 +261,7 @@
               <war.bundle>true</war.bundle>
             </properties>
        </dependency>
+	   <!-- adding utils dependency for bug 1120, if roll back should be version 1.82 (version 1.83=1.84) becasue I accidently checked 1.83 in yesterday-->
        <dependency>
           <artifactId>astrogrid-utils</artifactId>
           <groupId>org.astrogrid</groupId>
