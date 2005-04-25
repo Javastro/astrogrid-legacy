@@ -1,4 +1,4 @@
-/*$Id: GroovySchedulerImpl.java,v 1.5 2004/11/05 16:52:42 jdt Exp $
+/*$Id: GroovySchedulerImpl.java,v 1.6 2005/04/25 12:13:54 clq2 Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,9 +17,12 @@ import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl;
+import org.astrogrid.jes.util.Cache;
 import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
+
+import org.exolab.castor.xml.Marshaller;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -54,11 +57,12 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
         super(factory);
         this.transformers = transformers;
         this.disp = dispatcher;
-        this.interpFactory = interpFactory;       
+        this.interpFactory = interpFactory;
     }
     protected final Transformers transformers;
     protected final Dispatcher disp;
     protected final GroovyInterpreterFactory interpFactory;
+    
     /** 
      * annotate the workflow with id numbers. then
      * compile the workflow into xml rules with embedded groovy scripts., deserialize this as interpreter, add as extension to workflow.
@@ -137,7 +141,6 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
     /**
      * @see org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl#updateStepStatus(org.astrogrid.workflow.beans.v1.Workflow, org.astrogrid.workflow.beans.v1.Step, org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase)
      *  do what parent, does, and then update corresponding state in interpreter too.
-     *     quite inefficient that we need to recreate interpreter for this. oh well, at least no script is called.
      */
     protected void updateStepStatus(Workflow wf, Step step, ExecutionPhase status) {
         super.updateStepStatus(wf, step, status);
@@ -197,6 +200,12 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
 
 /* 
 $Log: GroovySchedulerImpl.java,v $
+Revision 1.6  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.5.56.1  2005/04/12 17:08:15  nw
+caching to improve performance
+
 Revision 1.5  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

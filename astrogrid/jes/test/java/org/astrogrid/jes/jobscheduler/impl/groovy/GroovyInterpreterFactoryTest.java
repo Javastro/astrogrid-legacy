@@ -1,4 +1,4 @@
-/*$Id: GroovyInterpreterFactoryTest.java,v 1.4 2004/11/05 16:52:42 jdt Exp $
+/*$Id: GroovyInterpreterFactoryTest.java,v 1.5 2005/04/25 12:13:54 clq2 Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
 import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,7 @@ public class GroovyInterpreterFactoryTest extends TestCase {
         fac = new GroovyInterpreterFactory(new XStreamPickler(),new TemporaryBuffer());
         workflow = new Workflow();
         workflow.setJobExecutionRecord(new JobExecutionRecord());
+        workflow.getJobExecutionRecord().setJobId(new JobURN());
         interp = new GroovyInterpreter();
         Rule rule = new Rule();
         rule.setName("test rule");
@@ -67,6 +69,12 @@ public class GroovyInterpreterFactoryTest extends TestCase {
 
 /* 
 $Log: GroovyInterpreterFactoryTest.java,v $
+Revision 1.5  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.4.56.1  2005/04/12 17:08:33  nw
+caching to improve performance
+
 Revision 1.4  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

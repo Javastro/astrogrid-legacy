@@ -24,7 +24,7 @@
     xmlns="">workflow containing a single flow. - should indicate three steps to be executed in parallel.</description>
  <Credentials   xmlns:cred="http://www.astrogrid.org/schema/Credentials/v1"> 	
       <cred:Account>
-      		<cred:Name>nww</cred:Name>
+      		<cred:Name>nww74</cred:Name>
       		<cred:Community>jodrell</cred:Community>
       	</cred:Account>
       <cred:Group>

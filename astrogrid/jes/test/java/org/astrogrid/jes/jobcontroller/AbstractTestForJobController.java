@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForJobController.java,v 1.10 2004/11/05 16:52:42 jdt Exp $
+/*$Id: AbstractTestForJobController.java,v 1.11 2005/04/25 12:13:54 clq2 Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,12 +13,15 @@ package org.astrogrid.jes.jobcontroller;
 import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.jes.AbstractTestWorkflowInputs;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
-import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
+import org.astrogrid.jes.impl.workflow.CachingFileJobFactory;
+import org.astrogrid.jes.impl.workflow.FileJobFactoryImpl;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
 import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
+
+import org.apache.commons.transaction.file.ResourceManagerException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,7 +61,12 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
      * @return
      */
     protected AbstractJobFactoryImpl createJobFactory() {
-        return new InMemoryJobFactoryImpl();
+        try {
+            return new CachingFileJobFactory(new FileJobFactoryImpl.TestBaseDirectory());
+        } catch (Exception e) {
+            fail(e.getMessage());
+            return null; // can't be reached, but java doesn't know this.
+        }
     }
 
 
@@ -102,6 +110,16 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
 
 /* 
 $Log: AbstractTestForJobController.java,v $
+Revision 1.11  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.10.56.2  2005/04/11 16:31:14  nw
+updated version of xstream.
+added caching to job factory
+
+Revision 1.10.56.1  2005/04/11 13:57:56  nw
+altered to use fileJobFactory instead of InMemoryJobFactory - more realistic
+
 Revision 1.10  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

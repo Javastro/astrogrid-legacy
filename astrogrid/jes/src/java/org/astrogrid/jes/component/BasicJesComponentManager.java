@@ -1,4 +1,4 @@
-/*$Id: BasicJesComponentManager.java,v 1.6 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: BasicJesComponentManager.java,v 1.7 2005/04/25 12:13:54 clq2 Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,13 +13,13 @@ package org.astrogrid.jes.component;
 import org.astrogrid.component.ComponentManagerException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.component.descriptor.SimpleComponentDescriptor;
-import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.jes.component.production.GroovyComponentManager;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
-import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
+import org.astrogrid.jes.impl.workflow.CachingFileJobFactory;
+import org.astrogrid.jes.impl.workflow.FileJobFactoryImpl;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.Locator;
@@ -102,7 +102,10 @@ public class BasicJesComponentManager extends EmptyJesComponentManager {
                 }
             });
             
-        pico.registerComponentImplementation(AbstractJobFactoryImpl.class,InMemoryJobFactoryImpl.class); // could possibly get away with file here..
+    //    pico.registerComponentImplementation(AbstractJobFactoryImpl.class,InMemoryJobFactoryImpl.class); // could possibly get away with file here..
+    //    pico.registerComponentImplementation(NameGen.class,RandomNameGen.class);
+        pico.registerComponentImplementation(AbstractJobFactoryImpl.class,CachingFileJobFactory.class);
+        pico.registerComponentImplementation(FileJobFactoryImpl.BaseDirectory.class,FileJobFactoryImpl.TestBaseDirectory.class);
         pico.registerComponentImplementation(JobMonitor.class,org.astrogrid.jes.jobmonitor.JobMonitor.class);
         pico.registerComponentImplementation(ResultsListener.class,JesResultsListener.class);
         pico.registerComponentImplementation(JobController.class,org.astrogrid.jes.jobcontroller.JobController.class);
@@ -131,6 +134,16 @@ public class BasicJesComponentManager extends EmptyJesComponentManager {
 
 /* 
 $Log: BasicJesComponentManager.java,v $
+Revision 1.7  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.6.20.2  2005/04/11 16:31:14  nw
+updated version of xstream.
+added caching to job factory
+
+Revision 1.6.20.1  2005/04/11 13:57:58  nw
+altered to use fileJobFactory instead of InMemoryJobFactory - more realistic
+
 Revision 1.6  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 

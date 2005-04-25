@@ -6,6 +6,7 @@ import org.astrogrid.community.beans.v1.axis.Identifier;
 import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowString;
 import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowSummaryType;
+import org.astrogrid.jes.beans.v1.axis.executionrecord._workflowSummaryList;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobControllerServiceLocator;
@@ -35,6 +36,11 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
       this.timeout = timeout;
     }
     
+    /** used for testing */
+    public JobControllerDelegateImpl(JobController binding) {
+        this.theBinding = binding;
+    }
+    
     public JobURN submitWorkflow(Workflow j) throws JesDelegateException {
  
             
@@ -43,7 +49,7 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
             j.marshal(sw);
             sw.close();
             String req = sw.toString();
-            org.astrogrid.jes.delegate.v1.jobcontroller.JobController jc= getBinding(); 
+            JobController jc= getBinding(); 
             org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN axisURN = jc.submitWorkflow(new WorkflowString(req));
             JobURN result = new JobURN();
             result.setContent(axisURN.toString()); 
@@ -58,16 +64,21 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
 
     }
 
-    private org.astrogrid.jes.delegate.v1.jobcontroller.JobController getBinding() throws JesDelegateException {
+    private synchronized JobController getBinding() throws JesDelegateException {
+        if (theBinding == null) {
         try {
         JobControllerServiceSoapBindingStub binding = (JobControllerServiceSoapBindingStub)
             new JobControllerServiceLocator().getJobControllerService( new URL( this.getTargetEndPoint() ) );                        
         binding.setTimeout( this.getTimeout() ) ;   
-        return binding;
+        this.theBinding = binding;
         } catch (Exception e) {
             throw new JesDelegateException("Could not create service binding",e);
         }
+        }
+        return theBinding;
     }
+    
+    private JobController theBinding;
 
     /**
      * @see org.astrogrid.jes.delegate.JobController#cancelJob(org.astrogrid.workflow.beans.v1.execution.JobURN)
@@ -107,7 +118,8 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
             axisAcc.setCommunity(community);
             axisAcc.setName(name);
             
-            WorkflowSummaryType[] wl = jc.readJobList(axisAcc);
+            _workflowSummaryList l = jc.readJobList(axisAcc);
+            WorkflowSummaryType[] wl = l.getItem();
             if (wl == null) { // returns null if none found - change this to an empy array;
                 wl = new WorkflowSummaryType[]{};
             }
@@ -121,12 +133,15 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
             org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType[] result = new org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType[length];
             for (int i = 0; i < wl.length; i++) {
                 if (wl[i] != null) {
+                 //   System.err.println(wl[i].getStartTime());
+                 //   System.err.println(wl[i].getStatus());
                     result[i]= Axis2Castor.convert(wl[i]); 
                 }
             }
             return result;
             
         } catch (IOException e) {
+            e.printStackTrace();
             throw new JesDelegateException(e);
         }
     }

@@ -1,4 +1,4 @@
-/*$Id: InMemoryJobFactoryImpl.java,v 1.9 2004/07/30 15:42:34 nw Exp $
+/*$Id: InMemoryJobFactoryImpl.java,v 1.10 2005/04/25 12:13:54 clq2 Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
+import org.astrogrid.common.namegen.NameGen;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
@@ -29,12 +30,12 @@ import junit.framework.Test;
  * @author Noel Winstanley nw@jb.man.ac.uk 11-Feb-2004
  *
  */
-public class InMemoryJobFactoryImpl extends AbstractJobFactoryImpl implements ComponentDescriptor {
+ class InMemoryJobFactoryImpl extends AbstractJobFactoryImpl implements ComponentDescriptor {
     /** Construct a new InMemoryJobFactoryImpl
      * 
      */
-    public InMemoryJobFactoryImpl() {
-        super();
+    public InMemoryJobFactoryImpl(NameGen ng) {
+        super(ng);
         log.info("In Memory Job Factory");
     }
     protected Map m = new HashMap();
@@ -129,6 +130,12 @@ public class InMemoryJobFactoryImpl extends AbstractJobFactoryImpl implements Co
 
 /* 
 $Log: InMemoryJobFactoryImpl.java,v $
+Revision 1.10  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.9.120.1  2005/04/11 13:55:56  nw
+started using common-namegen
+
 Revision 1.9  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

@@ -1,4 +1,4 @@
-/*$Id: ListJobsStoreFailureTest.java,v 1.6 2004/12/03 14:47:40 jdt Exp $
+/*$Id: ListJobsStoreFailureTest.java,v 1.7 2005/04/25 12:13:54 clq2 Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.axis.Identifier;
 import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowSummaryType;
+import org.astrogrid.jes.beans.v1.axis.executionrecord._workflowSummaryList;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JesFault;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
 import org.astrogrid.jes.impl.workflow.MockJobFactoryImpl;
@@ -45,7 +46,7 @@ public class ListJobsStoreFailureTest extends AbstractTestForJobController {
      */
     protected void performTest(JobURN urn) throws Exception {
         try {
-        WorkflowSummaryType[] wl = jc.readJobList(acc);
+        _workflowSummaryList wl = jc.readJobList(acc);
         fail("expected to throw exception");
         } catch (JesFault e) {
         }
@@ -75,6 +76,12 @@ public class ListJobsStoreFailureTest extends AbstractTestForJobController {
 
 /* 
 $Log: ListJobsStoreFailureTest.java,v $
+Revision 1.7  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.6.42.1  2005/04/12 17:08:54  nw
+fix for listJobs bug
+
 Revision 1.6  2004/12/03 14:47:40  jdt
 Merges from workflow-nww-776
 

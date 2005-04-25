@@ -1,4 +1,4 @@
-/*$Id: MockJobFactoryImpl.java,v 1.8 2004/07/09 09:32:12 nw Exp $
+/*$Id: MockJobFactoryImpl.java,v 1.9 2005/04/25 12:13:54 clq2 Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,6 +39,7 @@ public class MockJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
      * @param willSucceed set to false to make methods throw.
      */
     public MockJobFactoryImpl(boolean willSucceed) {
+        super(new RandomNameGen());
         this.willSucceed = willSucceed;
     }
     protected boolean willSucceed;
@@ -121,6 +122,12 @@ public class MockJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
 
 /* 
 $Log: MockJobFactoryImpl.java,v $
+Revision 1.9  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.8.144.1  2005/04/11 13:57:53  nw
+altered to use fileJobFactory instead of InMemoryJobFactory - more realistic
+
 Revision 1.8  2004/07/09 09:32:12  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

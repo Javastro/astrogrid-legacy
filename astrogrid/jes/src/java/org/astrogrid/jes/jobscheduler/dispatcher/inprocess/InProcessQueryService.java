@@ -1,4 +1,4 @@
-/*$Id: InProcessQueryService.java,v 1.2 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: InProcessQueryService.java,v 1.3 2005/04/25 12:13:54 clq2 Exp $
  * Created on 07-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,9 +9,6 @@
  *
 **/
 package org.astrogrid.jes.jobscheduler.dispatcher.inprocess;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
@@ -27,10 +24,12 @@ import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
-import java.util.Observer;
 
 /** Query service that allows registration of inprocess listeners to cea applications.
  *  - if the urn 'jes:inprocess' is passed to one of the register*Listener methods, 
@@ -185,6 +184,12 @@ public class InProcessQueryService extends DefaultQueryService {
 }
 /* 
 $Log: InProcessQueryService.java,v $
+Revision 1.3  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.2.20.1  2005/04/11 13:56:30  nw
+organized imports
+
 Revision 1.2  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 

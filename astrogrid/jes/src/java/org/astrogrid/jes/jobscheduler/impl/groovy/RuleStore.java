@@ -1,4 +1,4 @@
-/*$Id: RuleStore.java,v 1.5 2004/11/29 20:00:24 clq2 Exp $
+/*$Id: RuleStore.java,v 1.6 2005/04/25 12:13:54 clq2 Exp $
  * Created on 05-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.codehaus.groovy.control.CompilationFailedException;
 
 import groovy.lang.Script;
@@ -158,6 +157,12 @@ public class RuleStore extends HashMap {
 
 /* 
 $Log: RuleStore.java,v $
+Revision 1.6  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.5.44.1  2005/04/11 13:56:48  nw
+no change
+
 Revision 1.5  2004/11/29 20:00:24  clq2
 jes-nww-714
 

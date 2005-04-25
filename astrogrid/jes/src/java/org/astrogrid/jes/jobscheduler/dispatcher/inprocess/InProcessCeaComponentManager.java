@@ -1,4 +1,4 @@
-/*$Id: InProcessCeaComponentManager.java,v 1.2 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: InProcessCeaComponentManager.java,v 1.3 2005/04/25 12:13:54 clq2 Exp $
  * Created on 07-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,22 +14,16 @@ import org.astrogrid.applications.component.EmptyCEAComponentManager;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.manager.CeaThreadPool;
 import org.astrogrid.applications.manager.DefaultMetadataService;
-import org.astrogrid.applications.manager.DefaultQueryService;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.MetadataService;
 import org.astrogrid.applications.manager.QueryService;
 import org.astrogrid.applications.manager.ThreadPoolExecutionController;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.config.Config;
-import org.astrogrid.config.FailbackConfig;
-import org.astrogrid.config.SimpleConfig;
 
 import org.picocontainer.MutablePicoContainer;
-import org.picocontainer.PicoContainer;
-import org.picocontainer.defaults.DefaultPicoContainer;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
-
 import junit.framework.Test;
 
 /** Set up a cea server for execution of in-process applications.
@@ -97,6 +91,12 @@ public class InProcessCeaComponentManager extends EmptyCEAComponentManager imple
 
 /* 
 $Log: InProcessCeaComponentManager.java,v $
+Revision 1.3  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.2.20.1  2005/04/11 13:56:30  nw
+organized imports
+
 Revision 1.2  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 

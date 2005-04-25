@@ -19,6 +19,7 @@ import org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN;
 import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowString;
 import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowSummaryType;
 import org.astrogrid.jes.beans.v1.axis.executionrecord._extension;
+import org.astrogrid.jes.beans.v1.axis.executionrecord._workflowSummaryList;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JesFault;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.JobFactory;
@@ -165,7 +166,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
     /**
      * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#readJobList(org.astrogrid.community.beans.v1.axis._Account)
      */
-    public WorkflowSummaryType[] readJobList(_Account arg0) throws JesFault {
+    public _workflowSummaryList readJobList(_Account arg0) throws JesFault {
         try {
         logger.debug("in read job list");
         Iterator i = factory.findUserJobs(Axis2Castor.convert(arg0));
@@ -185,6 +186,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
                 // decided not to transport any extensions back, for efficiency.
                 //item.setExtension(JesUtil.castor2Axis(jobExecutionRecord.getExtension()));
                 item.setExtension(new _extension[0]);
+                
                 if (jobExecutionRecord.getFinishTime() != null) { 
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(jobExecutionRecord.getFinishTime());
@@ -204,7 +206,10 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
             }
         }
 
-        return (WorkflowSummaryType[])itemList.toArray(new WorkflowSummaryType[]{});
+        WorkflowSummaryType[] arr =  (WorkflowSummaryType[])itemList.toArray(new WorkflowSummaryType[]{});
+        _workflowSummaryList result = new _workflowSummaryList();
+        result.setItem(arr);
+        return result;
         } catch (JesException e) {
             throw createFault("Failed to read workflow list",e);
         }

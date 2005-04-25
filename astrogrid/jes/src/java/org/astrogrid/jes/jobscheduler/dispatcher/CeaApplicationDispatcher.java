@@ -1,4 +1,4 @@
-/*$Id: CeaApplicationDispatcher.java,v 1.3 2005/04/01 10:24:19 nw Exp $
+/*$Id: CeaApplicationDispatcher.java,v 1.4 2005/04/25 12:13:54 clq2 Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.jes.jobscheduler.dispatcher;
 
-import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
@@ -162,6 +161,12 @@ public  class CeaApplicationDispatcher implements Dispatcher, ComponentDescripto
 
 /* 
 $Log: CeaApplicationDispatcher.java,v $
+Revision 1.4  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.3.4.1  2005/04/11 13:56:20  nw
+organized imports
+
 Revision 1.3  2005/04/01 10:24:19  nw
 improved logging of cea connect failures
 

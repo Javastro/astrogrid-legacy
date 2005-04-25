@@ -1,4 +1,4 @@
-/*$Id: DBJobFactoryImpl.java,v 1.8 2004/07/09 09:30:28 nw Exp $
+/*$Id: DBJobFactoryImpl.java,v 1.9 2005/04/25 12:13:54 clq2 Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
+import org.astrogrid.common.namegen.NameGen;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
@@ -49,8 +50,8 @@ public class DBJobFactoryImpl extends AbstractJobFactoryImpl implements Componen
      * @param ds datasource to connect to db
      * @param sql sql commands object to use to interact with db.
      */
-    public DBJobFactoryImpl(DataSource ds,SqlCommands sql) {
-        super();
+    public DBJobFactoryImpl(NameGen nameGen,DataSource ds,SqlCommands sql) {
+        super(nameGen);
         log.info("Database Job Factory");
         this.datasource = ds;
         this.sql = sql;
@@ -280,6 +281,12 @@ public class DBJobFactoryImpl extends AbstractJobFactoryImpl implements Componen
 
 /* 
 $Log: DBJobFactoryImpl.java,v $
+Revision 1.9  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.8.144.1  2005/04/11 13:55:56  nw
+started using common-namegen
+
 Revision 1.8  2004/07/09 09:30:28  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

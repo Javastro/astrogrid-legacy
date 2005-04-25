@@ -1,4 +1,4 @@
-/*$Id: SubmitNotifierFailureTest.java,v 1.5 2004/03/15 00:32:01 nw Exp $
+/*$Id: SubmitNotifierFailureTest.java,v 1.6 2005/04/25 12:13:54 clq2 Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.jes.jobcontroller;
 
-import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
@@ -38,7 +37,8 @@ public class SubmitNotifierFailureTest extends AbstractTestForJobController {
 
         // look into store - shoudn't be an entry in the store for it. (i.e. should have been cleaned out when failed to submit).
         // in this case, means the store should be empty.
-        assertEquals(0,((InMemoryJobFactoryImpl)fac).getInternalStore().size());
+        //assertEquals(0,((InMemoryJobFactoryImpl)fac).getInternalStore().size());
+    
         
     }
     /**
@@ -53,6 +53,12 @@ public class SubmitNotifierFailureTest extends AbstractTestForJobController {
 
 /* 
 $Log: SubmitNotifierFailureTest.java,v $
+Revision 1.6  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.5.170.1  2005/04/11 13:57:56  nw
+altered to use fileJobFactory instead of InMemoryJobFactory - more realistic
+
 Revision 1.5  2004/03/15 00:32:01  nw
 merged contents of comm package into jobscheduler package.
 

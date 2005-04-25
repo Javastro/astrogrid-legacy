@@ -1,4 +1,4 @@
-/*$Id: SsapDispatcher.java,v 1.2 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: SsapDispatcher.java,v 1.3 2005/04/25 12:13:54 clq2 Exp $
  * Created on 07-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,9 @@
 **/
 package org.astrogrid.jes.jobscheduler.dispatcher;
 
-import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.jobscheduler.Dispatcher;
-import org.astrogrid.jes.jobscheduler.dispatcher.inprocess.InProcessQueryService;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.workflow.beans.v1.Workflow;
 
 import junit.framework.Test;
 
@@ -67,6 +62,12 @@ public class SsapDispatcher  extends AbstractInProcessDispatcher implements    C
 
 /* 
 $Log: SsapDispatcher.java,v $
+Revision 1.3  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.2.20.1  2005/04/11 13:56:21  nw
+organized imports
+
 Revision 1.2  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 

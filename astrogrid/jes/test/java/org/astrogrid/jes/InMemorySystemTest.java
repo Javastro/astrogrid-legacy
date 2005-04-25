@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.24 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: InMemorySystemTest.java,v 1.25 2005/04/25 12:13:54 clq2 Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,23 +11,22 @@
 package org.astrogrid.jes;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.common.bean.Axis2Castor;
-import org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN;
-import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowString;
+import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.component.BasicJesComponentManager;
 import org.astrogrid.jes.component.JesComponentManager;
 import org.astrogrid.jes.component.JesComponentManagerFactory;
+import org.astrogrid.jes.delegate.impl.JobControllerDelegateImpl;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.dispatcher.ShortCircuitDispatcher;
 import org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreterFactory;
 import org.astrogrid.jes.jobscheduler.impl.groovy.GroovySchedulerImpl;
-import org.astrogrid.jes.testutils.io.FileResourceLoader;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
+import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
 
 import org.apache.axis.utils.XMLUtils;
 import org.exolab.castor.xml.MarshalException;
@@ -35,7 +34,6 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.alternatives.ImplementationHidingComponentAdapter;
-import org.picocontainer.alternatives.ImplementationHidingComponentAdapterFactory;
 import org.picocontainer.defaults.CachingComponentAdapter;
 import org.picocontainer.defaults.DefaultComponentAdapterFactory;
 import org.w3c.dom.Document;
@@ -47,6 +45,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Iterator;
 
@@ -57,8 +56,6 @@ import javax.xml.parsers.ParserConfigurationException;
  * tests behaviour. communication between components via direct method call - so no SOAP being tested here.
  * <p/>
  * tests that workflows fed into the system to get processed, and checks that all jobs in a workflow are executed.
- * @todo - this container 'ties the knot' - introduces a cyclic dependency. this used to work in an earlier version of picocontainer, 
- * which provided 'ImplementationHidingComponentAdapter'. However, this has gone away in the 1.0 release of pico. need to watch, and see what the replacement is.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Feb-2004
  *
  */
@@ -111,9 +108,17 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         super.setUp();
         JesComponentManager cm = new TestComponentManager();        
         JesComponentManagerFactory._setInstance(cm);
+    
     }
-        
-    protected static int WAIT_SECONDS = 20;
+        protected Account acc = new Account();        
+        {
+            acc.setCommunity("jodrell");
+            acc.setName("nww74");    
+        }
+    /** time to wait for scheduler to process job */
+    protected static int WAIT_SECONDS = 60;
+    /** time to wait for scheduler to complete writing back */
+    protected static int LAG_SECONDS = 1;
     
     protected JobController getController() throws Exception{
         return JesComponentManagerFactory.getInstance().getController();
@@ -125,19 +130,27 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
      * @see org.astrogrid.jes.AbstractTestWorkflowInputs#testIt(java.io.InputStream, int)
      */
     protected void testIt(InputStream is, int resourceNum) throws Exception {
+        // check we've an empty store.
+        org.astrogrid.jes.delegate.JobController controller = new JobControllerDelegateImpl(getController());
+        WorkflowSummaryType[] list = controller.listJobs(acc);
+        assertNotNull(list);
+        assertEquals(0,list.length);
         // parse the document, feed it into the system.
-        String docString = FileResourceLoader.streamToString(is);
-        assertNotNull(docString);
-        JobURN urn = getController().submitWorkflow(new WorkflowString(docString));
+        assertNotNull(is);
+        Workflow wf = Workflow.unmarshalWorkflow(new InputStreamReader(is));
+        org.astrogrid.workflow.beans.v1.execution.JobURN urn = controller.submitWorkflow(wf);
         assertNotNull(urn);
-
-        JobFactory fac = (JobFactory)JesComponentManagerFactory.getInstance().getContainer().getComponentInstanceOfType(JobFactory.class);       
-        // now wait for notification that the system has finished processing.
-        try {
+        // check it's in the system.
+        list = controller.listJobs(acc);
+        assertNotNull(list);
+        assertEquals(1,list.length);
+        
+     try {
         barrier.attemptBarrier(Sync.ONE_SECOND * WAIT_SECONDS);
+        Thread.sleep(Sync.ONE_SECOND * LAG_SECONDS);
         } catch (TimeoutException te) {
-            try {
-                Workflow job = fac.findJob(Axis2Castor.convert(urn));
+            try {                
+                Workflow job = controller.readJob(urn);
                 dumpDocument(job,"workflow-timeout");
             } catch (Exception e) {
                 System.out.println("everything's going wrong today");
@@ -147,7 +160,19 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         }
         assertFalse("timed out waiting for the scheduler to complete",barrier.broken()); // if this is false, meanst that we timed out - need to increase the duration?
          
-        Workflow job =  fac.findJob(Axis2Castor.convert(urn));
+        list = controller.listJobs(acc);
+        assertNotNull(list);
+        assertEquals(1,list.length);
+        /** @todo remove the next three lines later. .. */
+       // Document dom = XMLUtils.newDocument();
+        //Marshaller.marshal(list[0],dom);
+        //XMLUtils.PrettyDocumentToStream(dom,System.out);
+        
+        assertNotNull(list[0].getStartTime());
+        assertNotNull(list[0].getFinishTime());
+        assertEquals(ExecutionPhase.COMPLETED,list[0].getStatus());
+        
+        Workflow job = controller.readJob(urn);
         assertNotNull(job);
         dumpDocument(job,"workflow-output");
 
@@ -205,6 +230,15 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.25  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.24.20.2  2005/04/12 17:07:19  nw
+altered to check readJobList(), etc
+
+Revision 1.24.20.1  2005/04/11 13:57:56  nw
+altered to use fileJobFactory instead of InMemoryJobFactory - more realistic
+
 Revision 1.24  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 

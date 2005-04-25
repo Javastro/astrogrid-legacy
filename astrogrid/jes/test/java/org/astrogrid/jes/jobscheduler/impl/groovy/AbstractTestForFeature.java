@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForFeature.java,v 1.5 2004/12/03 14:47:40 jdt Exp $
+/*$Id: AbstractTestForFeature.java,v 1.6 2005/04/25 12:13:54 clq2 Exp $
  * Created on 08-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,8 @@ import org.astrogrid.common.bean.Castor2Axis;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
-import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
+import org.astrogrid.jes.impl.workflow.CachingFileJobFactory;
+import org.astrogrid.jes.impl.workflow.FileJobFactoryImpl;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
@@ -46,7 +47,7 @@ public abstract class AbstractTestForFeature extends TestCase{
     
     protected void setUp() throws Exception {
 
-        jobFactory = new InMemoryJobFactoryImpl();
+        jobFactory = new CachingFileJobFactory(new FileJobFactoryImpl.TestBaseDirectory());
         trans = new GroovyTransformers();
         disp = new MockDispatcher();
         interpFactory = new GroovyInterpreterFactory(new XStreamPickler(),new TemporaryBuffer());
@@ -197,6 +198,16 @@ public abstract class AbstractTestForFeature extends TestCase{
 
 /* 
 $Log: AbstractTestForFeature.java,v $
+Revision 1.6  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.5.42.2  2005/04/11 16:31:05  nw
+updated version of xstream.
+added caching to job factory
+
+Revision 1.5.42.1  2005/04/11 13:57:52  nw
+altered to use fileJobFactory instead of InMemoryJobFactory - more realistic
+
 Revision 1.5  2004/12/03 14:47:40  jdt
 Merges from workflow-nww-776
 

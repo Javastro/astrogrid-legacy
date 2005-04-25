@@ -1,4 +1,4 @@
-/*$Id: ForMultipleFeatureTest.java,v 1.2 2004/12/09 16:39:12 clq2 Exp $
+/*$Id: ForMultipleFeatureTest.java,v 1.3 2005/04/25 12:13:54 clq2 Exp $
  * Created on 09-Dec-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,11 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Dec-2004
@@ -89,6 +87,12 @@ public class ForMultipleFeatureTest extends ForManyFeatureTest {
 
 /* 
 $Log: ForMultipleFeatureTest.java,v $
+Revision 1.3  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.2.40.1  2005/04/11 13:57:52  nw
+altered to use fileJobFactory instead of InMemoryJobFactory - more realistic
+
 Revision 1.2  2004/12/09 16:39:12  clq2
 nww_jes_panic
 

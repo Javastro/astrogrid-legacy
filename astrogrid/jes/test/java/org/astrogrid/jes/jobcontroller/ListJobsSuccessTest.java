@@ -1,4 +1,4 @@
-/*$Id: ListJobsSuccessTest.java,v 1.6 2004/12/03 14:47:40 jdt Exp $
+/*$Id: ListJobsSuccessTest.java,v 1.7 2005/04/25 12:13:54 clq2 Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,17 +9,23 @@
  *
 **/
 package org.astrogrid.jes.jobcontroller;
+import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.community.beans.v1.axis.Identifier;
 import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowSummaryType;
+import org.astrogrid.jes.beans.v1.axis.executionrecord._workflowSummaryList;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
+
+import org.apache.axis.utils.XMLUtils;
+import org.exolab.castor.xml.Marshaller;
+import org.w3c.dom.Document;
 /** Test the listJobs method of the job controller
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Feb-2004
  *
  */
 public class ListJobsSuccessTest extends AbstractTestForJobController {
     public final static String COMMUNITY = "jodrell";
-    public final static String USERID = "nww";
+    public final static String USERID = "nww74";
     /**
      * Constructor for ListJobsTest.
      * @param arg0
@@ -43,23 +49,36 @@ public class ListJobsSuccessTest extends AbstractTestForJobController {
      * @see org.astrogrid.jes.jobcontroller.AbstractTest#performTest(org.astrogrid.jes.types.v1.SubmissionResponse)
      */
     protected void performTest(JobURN urn) throws Exception {
-        WorkflowSummaryType[]  rawArr = jc.readJobList(acc);
+        _workflowSummaryList  l = jc.readJobList(acc);
+        WorkflowSummaryType[] rawArr = l.getItem();
 
         assertNotNull(rawArr);
         // we're creating a new job controller each time, so should expect either 1 or 0 elements in the result list.
-        assertTrue(rawArr.length >= 0 && rawArr.length <= 1);
+
+        
+        assertEquals(1,rawArr.length);
         for (int i = 0; i < rawArr.length; i++) {
             assertNotNull(rawArr[i]);
             assertNotNull(rawArr[i].getJobId());
             assertNotNull(rawArr[i].getWorkflowName());
             assertNotNull(rawArr[i].getDescription());
-            assertNotNull(rawArr[i].getMessage());
+            assertNotNull(rawArr[i].getMessage());        
+            // now do same after converting to castor.
+            org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType castor = Axis2Castor.convert(rawArr[i]);
+            assertNotNull(castor);
+
         }
     }
 
 }
 /* 
 $Log: ListJobsSuccessTest.java,v $
+Revision 1.7  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.6.42.1  2005/04/12 17:08:54  nw
+fix for listJobs bug
+
 Revision 1.6  2004/12/03 14:47:40  jdt
 Merges from workflow-nww-776
 

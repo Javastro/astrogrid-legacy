@@ -28,7 +28,7 @@ public abstract class JobControllerDelegate extends AbstractDelegate implements 
     
     
         
-    /** @deprecated  implemented in terms of listJobs*/
+    /** @deprecated  just here for backwards compatabiltiy. implemented in terms of listJobs*/
     public final JobSummary[] readJobList(Account acc) throws JesDelegateException {
         WorkflowSummaryType[] arr = listJobs(acc);
         JobSummary[] results = new JobSummary[arr.length];

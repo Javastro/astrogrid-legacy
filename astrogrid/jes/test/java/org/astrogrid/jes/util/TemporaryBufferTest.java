@@ -1,4 +1,4 @@
-/*$Id: TemporaryBufferTest.java,v 1.2 2004/11/05 16:52:42 jdt Exp $
+/*$Id: TemporaryBufferTest.java,v 1.3 2005/04/25 12:13:54 clq2 Exp $
  * Created on 03-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,18 @@ package org.astrogrid.jes.util;
 
 import org.astrogrid.io.Piper;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -194,6 +205,12 @@ public class TemporaryBufferTest extends TestCase {
 
 /* 
 $Log: TemporaryBufferTest.java,v $
+Revision 1.3  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.2.56.1  2005/04/11 13:57:55  nw
+altered to use fileJobFactory instead of InMemoryJobFactory - more realistic
+
 Revision 1.2  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

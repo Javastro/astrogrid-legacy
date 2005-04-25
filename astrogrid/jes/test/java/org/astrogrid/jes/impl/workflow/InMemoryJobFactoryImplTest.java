@@ -1,4 +1,4 @@
-/*$Id: InMemoryJobFactoryImplTest.java,v 1.5 2004/07/09 09:32:12 nw Exp $
+/*$Id: InMemoryJobFactoryImplTest.java,v 1.6 2005/04/25 12:13:54 clq2 Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import junit.framework.TestSuite;
  */
 public class InMemoryJobFactoryImplTest extends AbstractTestWorkflowInputs {
     public static final String GROUP_ID = "jodrell";
-    public static final String USER_ID = "nww";
+    public static final String USER_ID = "nww74";
     /**
      * Constructor for InMemoryJobFactoryImplTest.
      * @param arg0
@@ -69,7 +69,7 @@ public class InMemoryJobFactoryImplTest extends AbstractTestWorkflowInputs {
         tests.addTest(new InMemoryJobFactoryImplTest("finallyTestUnknownJobs"));
         return new TestSetup(tests) {
             protected void setUp() throws Exception {
-                jf = new InMemoryJobFactoryImpl();
+                jf = new InMemoryJobFactoryImpl(new RandomNameGen());
             }
         };
     }
@@ -167,6 +167,15 @@ public class InMemoryJobFactoryImplTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemoryJobFactoryImplTest.java,v $
+Revision 1.6  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.5.144.2  2005/04/12 17:06:55  nw
+altered to check readJobList(), etc
+
+Revision 1.5.144.1  2005/04/11 13:57:53  nw
+altered to use fileJobFactory instead of InMemoryJobFactory - more realistic
+
 Revision 1.5  2004/07/09 09:32:12  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

@@ -1,4 +1,4 @@
-/*$Id: ListJobsUnknownFailureTest.java,v 1.2 2004/12/03 14:47:40 jdt Exp $
+/*$Id: ListJobsUnknownFailureTest.java,v 1.3 2005/04/25 12:13:54 clq2 Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.jes.jobcontroller;
 import org.astrogrid.community.beans.v1.axis.Identifier;
 import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowSummaryType;
+import org.astrogrid.jes.beans.v1.axis.executionrecord._workflowSummaryList;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 /** test behaviour on querying with unknown user.
@@ -38,9 +39,9 @@ public class ListJobsUnknownFailureTest extends AbstractTestForJobController {
      */
     protected void performTest(JobURN urn) throws Exception {
 
-        WorkflowSummaryType[] wl = jc.readJobList(acc);
+        _workflowSummaryList wl = jc.readJobList(acc);
         assertNotNull(wl);
-        assertEquals(0,wl.length);
+        assertEquals(0,wl.getItem().length);
     }
 
 }
@@ -48,6 +49,12 @@ public class ListJobsUnknownFailureTest extends AbstractTestForJobController {
 
 /* 
 $Log: ListJobsUnknownFailureTest.java,v $
+Revision 1.3  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.2.42.1  2005/04/12 17:08:54  nw
+fix for listJobs bug
+
 Revision 1.2  2004/12/03 14:47:40  jdt
 Merges from workflow-nww-776
 

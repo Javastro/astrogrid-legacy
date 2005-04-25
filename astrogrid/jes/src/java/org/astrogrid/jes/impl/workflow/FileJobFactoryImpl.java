@@ -1,4 +1,4 @@
-/*$Id: FileJobFactoryImpl.java,v 1.12 2004/12/03 14:47:41 jdt Exp $
+/*$Id: FileJobFactoryImpl.java,v 1.13 2005/04/25 12:13:54 clq2 Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
+import org.astrogrid.common.namegen.FileNameGen;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
@@ -17,8 +18,10 @@ import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
+import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.transaction.file.ResourceManagerException;
 import org.exolab.castor.xml.CastorException;
 
 import java.io.BufferedReader;
@@ -29,9 +32,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -39,9 +40,10 @@ import junit.framework.TestSuite;
 
 /** Implementation of JobFactory that stores xml documents on a filesystem.
  * @author Noel Winstanley nw@jb.man.ac.uk 11-Feb-2004
+ * @modified nww - looked at ways to optimize this class.
  *
  */
-public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements ComponentDescriptor{
+public abstract class FileJobFactoryImpl extends AbstractJobFactoryImpl implements ComponentDescriptor{
     /**
      * Commons Logger for this class
      */
@@ -57,14 +59,31 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
 
         File getDir();
     }
+    /** simple implementation of BaseDirectory, used for testing. */
+    public static class TestBaseDirectory implements BaseDirectory {
+        public File getDir() {
+            File f;
+            try {
+                f = File.createTempFile("jes-test-base-directory",".tmp");
+                f.delete();
+                f.mkdirs();
+                f.deleteOnExit();
+                return f;
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
+            } 
+        }
+    }
     private static final String WORKFLOW_SUFFIX = "-workflow.xml";
     /** Construct a new FileJobFactoryImpl
      *  Construct a new FileJobFactoryImpl
      * @param baseDir directory to store workflow documents in
      * @throws IOException if basedir inaccessible.
+     * @throws ResourceManagerException
+     * @throws IllegalArgumentException
      */
-    public FileJobFactoryImpl(BaseDirectory bd) throws IOException{
-        super();
+    public FileJobFactoryImpl(BaseDirectory bd) throws IOException, IllegalArgumentException, ResourceManagerException{
+        super(new FileNameGen(bd.getDir(),"jes"));
         log.info("File Store Job Factory");
         this.baseDir = bd.getDir();
         assert baseDir != null;
@@ -86,11 +105,11 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
         assert baseDir.canWrite();
     }
 
-    protected File mkOutputFile(Workflow j) {
+    protected final File mkOutputFile(Workflow j) {
         return mkOutputFile(j.getJobExecutionRecord().getJobId());
     }
     
-    protected File mkOutputFile(JobURN jobURN) {
+    protected final File mkOutputFile(JobURN jobURN) {
         return new File(baseDir,URLEncoder.encode(jobURN.getContent() + WORKFLOW_SUFFIX));
     }
 
@@ -144,18 +163,30 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
             }
         }
     }
+    
+    protected static final String SERVER_PREFIX = "jes:" + hostname + "/" ;
+    
+    protected final String mkPrefix(Account acc) {
+        StringBuffer buff = new StringBuffer()
+           .append(SERVER_PREFIX)
+           .append(acc.getName())
+           .append("@")
+           .append(acc.getCommunity())
+           .append("/");
+        return buff.toString();
+    }
     /**
      * @see org.astrogrid.jes.job.JobFactory#findUserJobs(java.lang.String, java.lang.String, java.lang.String)
      */
     public Iterator findUserJobs(final Account acc) throws JobException {
+
         File[] jobFiles = baseDir.listFiles(new FilenameFilter() {
-            final String searchString = URLEncoder.encode("jes:" + hostname + "/" + acc.getName() +"@" + acc.getCommunity() + "/");
+            final String searchString = URLEncoder.encode(mkPrefix(acc));
             public boolean accept(File dir, String name) { 
-                return name.startsWith(searchString);  
+                return name.startsWith(searchString);
             }
         });
-        List l = Arrays.asList(jobFiles);
-        final Iterator i = l.iterator();
+        final Iterator i = IteratorUtils.arrayIterator(jobFiles);
         return new Iterator() {
 
             public void remove() {
@@ -286,6 +317,19 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
 
 /* 
 $Log: FileJobFactoryImpl.java,v $
+Revision 1.13  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.12.42.3  2005/04/12 17:07:50  nw
+added cache to filestore
+
+Revision 1.12.42.2  2005/04/11 16:31:14  nw
+updated version of xstream.
+added caching to job factory
+
+Revision 1.12.42.1  2005/04/11 13:55:54  nw
+started using common-namegen
+
 Revision 1.12  2004/12/03 14:47:41  jdt
 Merges from workflow-nww-776
 

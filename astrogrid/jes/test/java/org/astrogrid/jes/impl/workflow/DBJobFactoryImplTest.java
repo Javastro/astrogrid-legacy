@@ -1,4 +1,4 @@
-/*$Id: DBJobFactoryImplTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: DBJobFactoryImplTest.java,v 1.3 2005/04/25 12:13:54 clq2 Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.jes.impl.workflow;
+
+import org.astrogrid.common.namegen.InMemoryNameGen;
 
 import org.hsqldb.jdbcDataSource;
 
@@ -71,7 +73,7 @@ public class DBJobFactoryImplTest extends InMemoryJobFactoryImplTest {
                     e.printStackTrace();
                     fail("Could not create database" + e.getMessage());
                 }                 
-                jf = new DBJobFactoryImpl(ds,cmd);
+                jf = new DBJobFactoryImpl(new InMemoryNameGen(),ds,cmd);
             }
         };
     }
@@ -80,6 +82,12 @@ public class DBJobFactoryImplTest extends InMemoryJobFactoryImplTest {
 
 /* 
 $Log: DBJobFactoryImplTest.java,v $
+Revision 1.3  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.2.174.1  2005/04/11 13:57:53  nw
+altered to use fileJobFactory instead of InMemoryJobFactory - more realistic
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

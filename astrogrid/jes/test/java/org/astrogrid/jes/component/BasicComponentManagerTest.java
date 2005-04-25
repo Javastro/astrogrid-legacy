@@ -1,4 +1,4 @@
-/*$Id: BasicComponentManagerTest.java,v 1.5 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: BasicComponentManagerTest.java,v 1.6 2005/04/25 12:13:54 clq2 Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,11 +13,7 @@ package org.astrogrid.jes.component;
 import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.jes.jobscheduler.dispatcher.inprocess.InProcessCeaComponentManager;
 
-import org.picocontainer.MutablePicoContainer;
-import org.picocontainer.PicoContainer;
 import org.picocontainer.PicoException;
-import org.picocontainer.defaults.DefaultPicoContainer;
-
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -92,6 +88,12 @@ public class BasicComponentManagerTest extends TestCase {
 
 /* 
 $Log: BasicComponentManagerTest.java,v $
+Revision 1.6  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.5.20.1  2005/04/11 13:57:58  nw
+altered to use fileJobFactory instead of InMemoryJobFactory - more realistic
+
 Revision 1.5  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 

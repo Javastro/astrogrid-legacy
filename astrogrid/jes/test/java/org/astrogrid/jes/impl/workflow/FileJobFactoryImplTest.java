@@ -1,4 +1,4 @@
-/*$Id: FileJobFactoryImplTest.java,v 1.3 2004/03/07 21:04:38 nw Exp $
+/*$Id: FileJobFactoryImplTest.java,v 1.4 2005/04/25 12:13:54 clq2 Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,7 +65,7 @@ public class FileJobFactoryImplTest extends InMemoryJobFactoryImplTest {
                         return baseDir;
                     }
                 };
-                jf = new FileJobFactoryImpl(finder);
+                jf = new CachingFileJobFactory(finder);
             }
         };
     }
@@ -75,6 +75,13 @@ public class FileJobFactoryImplTest extends InMemoryJobFactoryImplTest {
 
 /* 
 $Log: FileJobFactoryImplTest.java,v $
+Revision 1.4  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.3.170.1  2005/04/11 16:31:11  nw
+updated version of xstream.
+added caching to job factory
+
 Revision 1.3  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 

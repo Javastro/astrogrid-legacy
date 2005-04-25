@@ -1,4 +1,4 @@
-/*$Id: JesResultsListener.java,v 1.4 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: JesResultsListener.java,v 1.5 2005/04/25 12:13:54 clq2 Exp $
  * Created on 01-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,8 +18,6 @@ import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.rmi.RemoteException;
 
 import junit.framework.Test;
 
@@ -92,6 +90,12 @@ public class JesResultsListener implements ResultsListener, ComponentDescriptor 
 
 /* 
 $Log: JesResultsListener.java,v $
+Revision 1.5  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.4.20.1  2005/04/11 13:57:10  nw
+organized imports
+
 Revision 1.4  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 

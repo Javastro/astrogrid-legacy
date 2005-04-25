@@ -1,4 +1,4 @@
-/*$Id: XStreamPickler.java,v 1.8 2004/12/03 14:47:41 jdt Exp $
+/*$Id: XStreamPickler.java,v 1.9 2005/04/25 12:13:54 clq2 Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.XppDomDriver;
 
 import java.io.Reader;
 import java.io.Writer;
@@ -57,13 +58,15 @@ public class XStreamPickler implements Pickler , ComponentDescriptor{
      * <p>
      * but then got concerned about keeping a 3rd part object around indefinately- no idea how big it is, or whether it 
      * leaks. Decided to use a 'pooling' pattern - resuse each instance a few times, and then create a new one.
+     * <p>
+     * decided to try without this now - it's only a facade object afterall.
      */
 
-    private  SoftReference xstream = new SoftReference(createXstream());
+    private  final XStream xstream = createXstream();
     // number of times this xstream has been used.
-    private int useCount = 0;
+    //private int useCount = 0;
     // limit on number of uses.
-    private static final int USE_LIMIT = 500;
+    //private static final int USE_LIMIT = 500;
     /**
      * @see org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreterFactory.Pickler#marshallInterpreter(java.io.Writer, org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreter)
      */
@@ -91,8 +94,8 @@ public class XStreamPickler implements Pickler , ComponentDescriptor{
         return m;
     }
 
-    XStream getXstream() {
-        XStream x = (XStream)xstream.get();
+    final XStream getXstream() {
+        /*XStream x = (XStream)xstream.get();
         if (useCount++ > USE_LIMIT || x == null) {
             logger.info("re-creating xstream");
             useCount = 0;
@@ -100,10 +103,11 @@ public class XStreamPickler implements Pickler , ComponentDescriptor{
             x = createXstream();
             xstream = new SoftReference(x);
         }
-        return x;
+        return x;*/
+        return xstream;
     }
-    private XStream createXstream() {
-        XStream x = new XStream(new PureJavaReflectionProvider(),new DomDriver());
+    private final XStream createXstream() {
+        XStream x = new XStream(new PureJavaReflectionProvider(),new DomDriver()); 
         x.registerConverter(new RuleStoreConvertor(x.getClassMapper(),"class"));
         x.alias("interpreter",GroovyInterpreter.class);
         x.alias("rules",ArrayList.class);
@@ -184,6 +188,16 @@ public class XStreamPickler implements Pickler , ComponentDescriptor{
 
 /* 
 $Log: XStreamPickler.java,v $
+Revision 1.9  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.8.42.2  2005/04/12 17:08:15  nw
+caching to improve performance
+
+Revision 1.8.42.1  2005/04/11 16:31:14  nw
+updated version of xstream.
+added caching to job factory
+
 Revision 1.8  2004/12/03 14:47:41  jdt
 Merges from workflow-nww-776
 

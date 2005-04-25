@@ -1,4 +1,4 @@
-/*$Id: AbstractJobFactoryImpl.java,v 1.6 2004/07/09 09:30:28 nw Exp $
+/*$Id: AbstractJobFactoryImpl.java,v 1.7 2005/04/25 12:13:54 clq2 Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
+import org.astrogrid.common.namegen.NameGen;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.JobFactory;
@@ -21,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.net.InetAddress;
-import java.util.Random;
 
 /** Abstract base class for implementations of job factory.
  * @author Noel Winstanley nw@jb.man.ac.uk 11-Feb-2004
@@ -31,9 +31,10 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
     /** Construct a new JobFactoryImpl
      * 
      */
-    public AbstractJobFactoryImpl() {
-        super();
+    public AbstractJobFactoryImpl(NameGen nameGen) {
+        this.nameGen = nameGen;
     }
+    protected final NameGen nameGen;
     /**
      * @see org.astrogrid.jes.job.JobFactory#begin()
      * @deprecated - not transactional any more.
@@ -76,7 +77,7 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
             hostname="unavailable";
         }
     }
-    private static Random rand = new Random();
+
     /** generates a new job urn
      * 
      * @param job
@@ -88,17 +89,19 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
         StringBuffer
             buffer = new StringBuffer(128);
         Account acc = job.getCredentials().getAccount();
-        buffer
-            .append("jes:")
-            .append(hostname)
-            .append('/')         
-           .append( acc.getName() )
-           .append( '@' )
-           .append( acc.getCommunity() )
-           .append( '/' )          
-           .append( System.currentTimeMillis()) 
-           .append( ':' )
-           .append(Math.abs( rand.nextInt()));
+        try {
+            buffer
+                .append("jes:")
+                .append(hostname)
+                .append('/')         
+               .append( acc.getName() )
+               .append( '@' )
+               .append( acc.getCommunity() )
+               .append( '/' )    
+               .append(nameGen.next());
+        } catch (Exception e) {
+            throw new JobException("Failure in name generator");
+        }
         JobURN urn = new JobURN();
         urn.setContent(buffer.toString().trim());
         return urn;
@@ -111,6 +114,12 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
 
 /* 
 $Log: AbstractJobFactoryImpl.java,v $
+Revision 1.7  2005/04/25 12:13:54  clq2
+jes-nww-776-again
+
+Revision 1.6.144.1  2005/04/11 13:55:53  nw
+started using common-namegen
+
 Revision 1.6  2004/07/09 09:30:28  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions
