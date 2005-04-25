@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ResultListTypeDescriptor.java,v 1.10 2005/01/23 12:52:17 jdt Exp $
+ * $Id: ResultListTypeDescriptor.java,v 1.11 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.applications.beans.v1.cea.castor;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ResultListTypeDescriptor.
  * 
- * @version $Revision: 1.10 $ $Date: 2005/01/23 12:52:17 $
+ * @version $Revision: 1.11 $ $Date: 2005/04/25 12:09:29 $
  */
 public class ResultListTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

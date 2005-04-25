@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: WorkflowSummaryTypeDescriptor.java,v 1.3 2005/01/23 12:52:20 jdt Exp $
+ * $Id: WorkflowSummaryTypeDescriptor.java,v 1.4 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -19,9 +19,9 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class WorkflowSummaryTypeDescriptor.
  * 
- * @version $Revision: 1.3 $ $Date: 2005/01/23 12:52:20 $
+ * @version $Revision: 1.4 $ $Date: 2005/04/25 12:09:29 $
  */
-public class WorkflowSummaryTypeDescriptor extends org.astrogrid.workflow.beans.v1.execution.JobExecutionRecordTypeDescriptor {
+public class WorkflowSummaryTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
 
       //--------------------------/
@@ -55,7 +55,6 @@ public class WorkflowSummaryTypeDescriptor extends org.astrogrid.workflow.beans.
 
     public WorkflowSummaryTypeDescriptor() {
         super();
-        setExtendsWithoutFlatten(new org.astrogrid.workflow.beans.v1.execution.JobExecutionRecordTypeDescriptor());
         nsURI = "http://www.astrogrid.org/schema/ExecutionRecord/v1";
         xmlName = "workflow-summary-type";
         
@@ -66,8 +65,213 @@ public class WorkflowSummaryTypeDescriptor extends org.astrogrid.workflow.beans.
         org.exolab.castor.xml.FieldValidator               fieldValidator = null;
         //-- initialize attribute descriptors
         
+        //-- _startTime
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.util.Date.class, "_startTime", "startTime", org.exolab.castor.xml.NodeType.Attribute);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                WorkflowSummaryType target = (WorkflowSummaryType) object;
+                return target.getStartTime();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    WorkflowSummaryType target = (WorkflowSummaryType) object;
+                    target.setStartTime( (java.util.Date) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new java.util.Date();
+            }
+        } );
+        desc.setHandler( new org.exolab.castor.xml.handlers.DateFieldHandler(handler));
+        desc.setImmutable(true);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _startTime
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+        //-- _finishTime
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.util.Date.class, "_finishTime", "finishTime", org.exolab.castor.xml.NodeType.Attribute);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                WorkflowSummaryType target = (WorkflowSummaryType) object;
+                return target.getFinishTime();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    WorkflowSummaryType target = (WorkflowSummaryType) object;
+                    target.setFinishTime( (java.util.Date) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new java.util.Date();
+            }
+        } );
+        desc.setHandler( new org.exolab.castor.xml.handlers.DateFieldHandler(handler));
+        desc.setImmutable(true);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _finishTime
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+        //-- _status
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.class, "_status", "status", org.exolab.castor.xml.NodeType.Attribute);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                WorkflowSummaryType target = (WorkflowSummaryType) object;
+                return target.getStatus();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    WorkflowSummaryType target = (WorkflowSummaryType) object;
+                    target.setStatus( (org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return null;
+            }
+        } );
+        desc.setHandler( new org.exolab.castor.xml.handlers.EnumFieldHandler(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.class, handler));
+        desc.setImmutable(true);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _status
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
         //-- initialize element descriptors
         
+        //-- _jobId
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.workflow.beans.v1.execution.JobURN.class, "_jobId", "jobId", org.exolab.castor.xml.NodeType.Element);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                WorkflowSummaryType target = (WorkflowSummaryType) object;
+                return target.getJobId();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    WorkflowSummaryType target = (WorkflowSummaryType) object;
+                    target.setJobId( (org.astrogrid.workflow.beans.v1.execution.JobURN) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new org.astrogrid.workflow.beans.v1.execution.JobURN();
+            }
+        } );
+        desc.setHandler(handler);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/ExecutionRecord/v1");
+        desc.setRequired(true);
+        desc.setMultivalued(false);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _jobId
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        fieldValidator.setMinOccurs(1);
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+        //-- _extensionList
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.workflow.beans.v1.execution.Extension.class, "_extensionList", "extension", org.exolab.castor.xml.NodeType.Element);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                WorkflowSummaryType target = (WorkflowSummaryType) object;
+                return target.getExtension();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    WorkflowSummaryType target = (WorkflowSummaryType) object;
+                    target.addExtension( (org.astrogrid.workflow.beans.v1.execution.Extension) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new org.astrogrid.workflow.beans.v1.execution.Extension();
+            }
+        } );
+        desc.setHandler(handler);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/ExecutionRecord/v1");
+        desc.setMultivalued(true);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _extensionList
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        fieldValidator.setMinOccurs(0);
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+        //-- _messageList
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.cea.castor.MessageType.class, "_messageList", "message", org.exolab.castor.xml.NodeType.Element);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                WorkflowSummaryType target = (WorkflowSummaryType) object;
+                return target.getMessage();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    WorkflowSummaryType target = (WorkflowSummaryType) object;
+                    target.addMessage( (org.astrogrid.applications.beans.v1.cea.castor.MessageType) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new org.astrogrid.applications.beans.v1.cea.castor.MessageType();
+            }
+        } );
+        desc.setHandler(handler);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CEATypes/v1");
+        desc.setMultivalued(true);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _messageList
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        fieldValidator.setMinOccurs(0);
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
         //-- _workflowName
         desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_workflowName", "workflow-name", org.exolab.castor.xml.NodeType.Element);
         desc.setImmutable(true);
@@ -168,7 +372,7 @@ public class WorkflowSummaryTypeDescriptor extends org.astrogrid.workflow.beans.
      */
     public org.exolab.castor.mapping.ClassDescriptor getExtends()
     {
-        return super.getExtends();
+        return null;
     } //-- org.exolab.castor.mapping.ClassDescriptor getExtends() 
 
     /**
@@ -176,8 +380,6 @@ public class WorkflowSummaryTypeDescriptor extends org.astrogrid.workflow.beans.
      */
     public org.exolab.castor.mapping.FieldDescriptor getIdentity()
     {
-        if (identity == null)
-            return super.getIdentity();
         return identity;
     } //-- org.exolab.castor.mapping.FieldDescriptor getIdentity() 
 

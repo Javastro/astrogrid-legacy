@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Try.java,v 1.7 2005/01/23 12:52:04 jdt Exp $
+ * $Id: Try.java,v 1.8 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
  * the wrapped activity,
  *  the activity in the 'catch' block is executed.
  * 
- * @version $Revision: 1.7 $ $Date: 2005/01/23 12:52:04 $
+ * @version $Revision: 1.8 $ $Date: 2005/04/25 12:09:29 $
  */
 public class Try extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: AuthorityType.java,v 1.11 2005/01/23 12:52:26 jdt Exp $
+ * $Id: AuthorityType.java,v 1.12 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.registry.beans.resource.registry;
@@ -25,7 +25,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class AuthorityType.
  * 
- * @version $Revision: 1.11 $ $Date: 2005/01/23 12:52:26 $
+ * @version $Revision: 1.12 $ $Date: 2005/04/25 12:09:29 $
  */
 public class AuthorityType extends org.astrogrid.registry.beans.resource.ResourceType 
 implements java.io.Serializable

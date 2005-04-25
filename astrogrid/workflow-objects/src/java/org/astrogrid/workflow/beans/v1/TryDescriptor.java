@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: TryDescriptor.java,v 1.7 2005/01/23 12:52:11 jdt Exp $
+ * $Id: TryDescriptor.java,v 1.8 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class TryDescriptor.
  * 
- * @version $Revision: 1.7 $ $Date: 2005/01/23 12:52:11 $
+ * @version $Revision: 1.8 $ $Date: 2005/04/25 12:09:29 $
  */
 public class TryDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor {
 

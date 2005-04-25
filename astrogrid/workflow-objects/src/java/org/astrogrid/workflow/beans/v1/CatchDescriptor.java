@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CatchDescriptor.java,v 1.7 2005/01/23 12:52:10 jdt Exp $
+ * $Id: CatchDescriptor.java,v 1.8 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class CatchDescriptor.
  * 
- * @version $Revision: 1.7 $ $Date: 2005/01/23 12:52:10 $
+ * @version $Revision: 1.8 $ $Date: 2005/04/25 12:09:29 $
  */
 public class CatchDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

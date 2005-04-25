@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ExecutionPhase.java,v 1.31 2005/01/23 12:52:15 jdt Exp $
+ * $Id: ExecutionPhase.java,v 1.32 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.applications.beans.v1.cea.castor.types;
@@ -20,7 +20,7 @@ import org.exolab.castor.xml.Unmarshaller;
 /**
  * Enumeration of possible phases of job execution
  * 
- * @version $Revision: 1.31 $ $Date: 2005/01/23 12:52:15 $
+ * @version $Revision: 1.32 $ $Date: 2005/04/25 12:09:29 $
  */
 public class ExecutionPhase implements java.io.Serializable {
 

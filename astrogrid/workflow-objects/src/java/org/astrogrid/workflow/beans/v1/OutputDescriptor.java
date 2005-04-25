@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: OutputDescriptor.java,v 1.33 2005/01/23 12:52:01 jdt Exp $
+ * $Id: OutputDescriptor.java,v 1.34 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class OutputDescriptor.
  * 
- * @version $Revision: 1.33 $ $Date: 2005/01/23 12:52:01 $
+ * @version $Revision: 1.34 $ $Date: 2005/04/25 12:09:29 $
  */
 public class OutputDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

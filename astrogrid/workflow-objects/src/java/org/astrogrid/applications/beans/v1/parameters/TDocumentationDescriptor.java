@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: TDocumentationDescriptor.java,v 1.33 2005/01/23 12:51:53 jdt Exp $
+ * $Id: TDocumentationDescriptor.java,v 1.34 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class TDocumentationDescriptor.
  * 
- * @version $Revision: 1.33 $ $Date: 2005/01/23 12:51:53 $
+ * @version $Revision: 1.34 $ $Date: 2005/04/25 12:09:29 $
  */
 public class TDocumentationDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

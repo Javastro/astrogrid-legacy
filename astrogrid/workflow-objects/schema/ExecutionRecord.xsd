@@ -27,6 +27,18 @@
 					</xsd:complexContent>
 				</xsd:complexType>
 		</xsd:element>
+		
+		<xsd:element name="workflow-summary-list">
+			<xsd:annotation>
+				<xsd:documentation>A summary of an execution of a job</xsd:documentation>
+				</xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:element name="item" type="er:workflow-summary-type" minOccurs="0" maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:complexType>
+			
+		</xsd:element>
 							
 		<xsd:element name="extension">
 			<xsd:annotation>
@@ -92,20 +104,38 @@
                 <xsd:restriction base="xsd:string" />
         </xsd:simpleType>
 
-
+<!-- would like to have this one extend the other execution record types - but doesn't work
+	 - at least, not in axis 1.1 - so will inline everything -->
 			<xsd:complexType name="workflow-summary-type">
 			<xsd:annotation>
 				<xsd:documentation>summary record for a single execution of a job</xsd:documentation>
-			</xsd:annotation>				
-				<xsd:complexContent>
+			</xsd:annotation>		
+			<!-- think this should work..
+			<xsd:complexContent>	
 					<xsd:extension base="er:job-execution-record-type">
 						<xsd:sequence>
                        <xsd:element name="workflow-name" type="xsd:string" />
-							 <xsd:element name="description" type="xsd:string" />								
+							 <xsd:element name="description" type="xsd:string" />
 						</xsd:sequence>
-					</xsd:extension>
-				</xsd:complexContent>
-			</xsd:complexType>
-		
+						</xsd:extension>
+						</xsd:complexContent>
+		-->	
+			<xsd:sequence>
+				<xsd:element name="jobId" type="er:jobURN" minOccurs="1" maxOccurs="1"/>				
+				<xsd:element ref="er:extension" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="ceat:message" minOccurs="0" maxOccurs="unbounded"/>
+                       <xsd:element name="workflow-name" type="xsd:string" />
+							 <xsd:element name="description" type="xsd:string" />				
+			</xsd:sequence>
+			<xsd:attribute name="startTime" type="xsd:dateTime" use="optional">
+				<xsd:annotation><xsd:documentation>time execution started</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+			<xsd:attribute name="finishTime" type="xsd:dateTime" use="optional">
+				<xsd:annotation><xsd:documentation>time execution finished</xsd:documentation></xsd:annotation>				
+				</xsd:attribute>
+			<xsd:attribute name="status" type="ceat:execution-phase" use="optional" default="PENDING">
+				<xsd:annotation><xsd:documentation>current execution status</xsd:documentation></xsd:annotation>				
+				</xsd:attribute>						
+			</xsd:complexType>		
 
 </xsd:schema>

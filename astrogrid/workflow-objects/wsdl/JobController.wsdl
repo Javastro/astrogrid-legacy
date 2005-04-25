@@ -59,7 +59,7 @@
         <xsd:element name="readJobListResponse">
                 <xsd:complexType>
                         <xsd:sequence>
-                                <xsd:element name="item" type="er:workflow-summary-type" minOccurs="0" maxOccurs="unbounded" />
+                                <xsd:element ref="er:workflow-summary-list" />
                         </xsd:sequence>
                 </xsd:complexType>
         </xsd:element>

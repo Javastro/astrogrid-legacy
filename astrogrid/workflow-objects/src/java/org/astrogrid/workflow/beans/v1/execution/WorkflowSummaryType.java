@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: WorkflowSummaryType.java,v 1.3 2005/01/23 12:52:25 jdt Exp $
+ * $Id: WorkflowSummaryType.java,v 1.4 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -15,6 +15,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -24,9 +29,9 @@ import org.xml.sax.ContentHandler;
 /**
  * summary record for a single execution of a job
  * 
- * @version $Revision: 1.3 $ $Date: 2005/01/23 12:52:25 $
+ * @version $Revision: 1.4 $ $Date: 2005/04/25 12:09:29 $
  */
-public class WorkflowSummaryType extends org.astrogrid.workflow.beans.v1.execution.JobExecutionRecordType 
+public class WorkflowSummaryType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
 {
 
@@ -34,6 +39,37 @@ implements java.io.Serializable
       //--------------------------/
      //- Class/Member Variables -/
     //--------------------------/
+
+    /**
+     * time execution started
+     */
+    private java.util.Date _startTime;
+
+    /**
+     * time execution finished
+     */
+    private java.util.Date _finishTime;
+
+    /**
+     * current execution status
+     */
+    private org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase _status = org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.valueOf("PENDING");
+
+    /**
+     * Field _jobId
+     */
+    private org.astrogrid.workflow.beans.v1.execution.JobURN _jobId;
+
+    /**
+     * A string 'buffer' for holding further information, keyed by
+     * attribute - so execution record becomes a map.
+     */
+    private java.util.ArrayList _extensionList;
+
+    /**
+     * Field _messageList
+     */
+    private java.util.ArrayList _messageList;
 
     /**
      * Field _workflowName
@@ -52,12 +88,93 @@ implements java.io.Serializable
 
     public WorkflowSummaryType() {
         super();
+        setStatus(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.valueOf("PENDING"));
+        _extensionList = new ArrayList();
+        _messageList = new ArrayList();
     } //-- org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType()
 
 
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Method addExtension
+     * 
+     * @param vExtension
+     */
+    public void addExtension(org.astrogrid.workflow.beans.v1.execution.Extension vExtension)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        _extensionList.add(vExtension);
+    } //-- void addExtension(org.astrogrid.workflow.beans.v1.execution.Extension) 
+
+    /**
+     * Method addExtension
+     * 
+     * @param index
+     * @param vExtension
+     */
+    public void addExtension(int index, org.astrogrid.workflow.beans.v1.execution.Extension vExtension)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        _extensionList.add(index, vExtension);
+    } //-- void addExtension(int, org.astrogrid.workflow.beans.v1.execution.Extension) 
+
+    /**
+     * Method addMessage
+     * 
+     * @param vMessage
+     */
+    public void addMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType vMessage)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        _messageList.add(vMessage);
+    } //-- void addMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType) 
+
+    /**
+     * Method addMessage
+     * 
+     * @param index
+     * @param vMessage
+     */
+    public void addMessage(int index, org.astrogrid.applications.beans.v1.cea.castor.MessageType vMessage)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        _messageList.add(index, vMessage);
+    } //-- void addMessage(int, org.astrogrid.applications.beans.v1.cea.castor.MessageType) 
+
+    /**
+     * Method clearExtension
+     */
+    public void clearExtension()
+    {
+        _extensionList.clear();
+    } //-- void clearExtension() 
+
+    /**
+     * Method clearMessage
+     */
+    public void clearMessage()
+    {
+        _messageList.clear();
+    } //-- void clearMessage() 
+
+    /**
+     * Method enumerateExtension
+     */
+    public java.util.Enumeration enumerateExtension()
+    {
+        return new org.exolab.castor.util.IteratorEnumeration(_extensionList.iterator());
+    } //-- java.util.Enumeration enumerateExtension() 
+
+    /**
+     * Method enumerateMessage
+     */
+    public java.util.Enumeration enumerateMessage()
+    {
+        return new org.exolab.castor.util.IteratorEnumeration(_messageList.iterator());
+    } //-- java.util.Enumeration enumerateMessage() 
 
     /**
      * Note: hashCode() has not been overriden
@@ -75,6 +192,48 @@ implements java.io.Serializable
         if (obj instanceof WorkflowSummaryType) {
         
             WorkflowSummaryType temp = (WorkflowSummaryType)obj;
+            if (this._startTime != null) {
+                if (temp._startTime == null) return false;
+                else if (!(this._startTime.equals(temp._startTime))) 
+                    return false;
+            }
+            else if (temp._startTime != null)
+                return false;
+            if (this._finishTime != null) {
+                if (temp._finishTime == null) return false;
+                else if (!(this._finishTime.equals(temp._finishTime))) 
+                    return false;
+            }
+            else if (temp._finishTime != null)
+                return false;
+            if (this._status != null) {
+                if (temp._status == null) return false;
+                else if (!(this._status.equals(temp._status))) 
+                    return false;
+            }
+            else if (temp._status != null)
+                return false;
+            if (this._jobId != null) {
+                if (temp._jobId == null) return false;
+                else if (!(this._jobId.equals(temp._jobId))) 
+                    return false;
+            }
+            else if (temp._jobId != null)
+                return false;
+            if (this._extensionList != null) {
+                if (temp._extensionList == null) return false;
+                else if (!(this._extensionList.equals(temp._extensionList))) 
+                    return false;
+            }
+            else if (temp._extensionList != null)
+                return false;
+            if (this._messageList != null) {
+                if (temp._messageList == null) return false;
+                else if (!(this._messageList.equals(temp._messageList))) 
+                    return false;
+            }
+            else if (temp._messageList != null)
+                return false;
             if (this._workflowName != null) {
                 if (temp._workflowName == null) return false;
                 else if (!(this._workflowName.equals(temp._workflowName))) 
@@ -103,6 +262,125 @@ implements java.io.Serializable
     {
         return this._description;
     } //-- java.lang.String getDescription() 
+
+    /**
+     * Method getExtension
+     * 
+     * @param index
+     */
+    public org.astrogrid.workflow.beans.v1.execution.Extension getExtension(int index)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        //-- check bounds for index
+        if ((index < 0) || (index > _extensionList.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        
+        return (org.astrogrid.workflow.beans.v1.execution.Extension) _extensionList.get(index);
+    } //-- org.astrogrid.workflow.beans.v1.execution.Extension getExtension(int) 
+
+    /**
+     * Method getExtension
+     */
+    public org.astrogrid.workflow.beans.v1.execution.Extension[] getExtension()
+    {
+        int size = _extensionList.size();
+        org.astrogrid.workflow.beans.v1.execution.Extension[] mArray = new org.astrogrid.workflow.beans.v1.execution.Extension[size];
+        for (int index = 0; index < size; index++) {
+            mArray[index] = (org.astrogrid.workflow.beans.v1.execution.Extension) _extensionList.get(index);
+        }
+        return mArray;
+    } //-- org.astrogrid.workflow.beans.v1.execution.Extension[] getExtension() 
+
+    /**
+     * Method getExtensionCount
+     */
+    public int getExtensionCount()
+    {
+        return _extensionList.size();
+    } //-- int getExtensionCount() 
+
+    /**
+     * Returns the value of field 'finishTime'. The field
+     * 'finishTime' has the following description: time execution
+     * finished
+     * 
+     * @return the value of field 'finishTime'.
+     */
+    public java.util.Date getFinishTime()
+    {
+        return this._finishTime;
+    } //-- java.util.Date getFinishTime() 
+
+    /**
+     * Returns the value of field 'jobId'.
+     * 
+     * @return the value of field 'jobId'.
+     */
+    public org.astrogrid.workflow.beans.v1.execution.JobURN getJobId()
+    {
+        return this._jobId;
+    } //-- org.astrogrid.workflow.beans.v1.execution.JobURN getJobId() 
+
+    /**
+     * Method getMessage
+     * 
+     * @param index
+     */
+    public org.astrogrid.applications.beans.v1.cea.castor.MessageType getMessage(int index)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        //-- check bounds for index
+        if ((index < 0) || (index > _messageList.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        
+        return (org.astrogrid.applications.beans.v1.cea.castor.MessageType) _messageList.get(index);
+    } //-- org.astrogrid.applications.beans.v1.cea.castor.MessageType getMessage(int) 
+
+    /**
+     * Method getMessage
+     */
+    public org.astrogrid.applications.beans.v1.cea.castor.MessageType[] getMessage()
+    {
+        int size = _messageList.size();
+        org.astrogrid.applications.beans.v1.cea.castor.MessageType[] mArray = new org.astrogrid.applications.beans.v1.cea.castor.MessageType[size];
+        for (int index = 0; index < size; index++) {
+            mArray[index] = (org.astrogrid.applications.beans.v1.cea.castor.MessageType) _messageList.get(index);
+        }
+        return mArray;
+    } //-- org.astrogrid.applications.beans.v1.cea.castor.MessageType[] getMessage() 
+
+    /**
+     * Method getMessageCount
+     */
+    public int getMessageCount()
+    {
+        return _messageList.size();
+    } //-- int getMessageCount() 
+
+    /**
+     * Returns the value of field 'startTime'. The field
+     * 'startTime' has the following description: time execution
+     * started
+     * 
+     * @return the value of field 'startTime'.
+     */
+    public java.util.Date getStartTime()
+    {
+        return this._startTime;
+    } //-- java.util.Date getStartTime() 
+
+    /**
+     * Returns the value of field 'status'. The field 'status' has
+     * the following description: current execution status
+     * 
+     * @return the value of field 'status'.
+     */
+    public org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase getStatus()
+    {
+        return this._status;
+    } //-- org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase getStatus() 
 
     /**
      * Returns the value of field 'workflowName'.
@@ -153,6 +431,28 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
+     * Method removeExtension
+     * 
+     * @param vExtension
+     */
+    public boolean removeExtension(org.astrogrid.workflow.beans.v1.execution.Extension vExtension)
+    {
+        boolean removed = _extensionList.remove(vExtension);
+        return removed;
+    } //-- boolean removeExtension(org.astrogrid.workflow.beans.v1.execution.Extension) 
+
+    /**
+     * Method removeMessage
+     * 
+     * @param vMessage
+     */
+    public boolean removeMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType vMessage)
+    {
+        boolean removed = _messageList.remove(vMessage);
+        return removed;
+    } //-- boolean removeMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType) 
+
+    /**
      * Sets the value of field 'description'.
      * 
      * @param description the value of field 'description'.
@@ -161,6 +461,109 @@ implements java.io.Serializable
     {
         this._description = description;
     } //-- void setDescription(java.lang.String) 
+
+    /**
+     * Method setExtension
+     * 
+     * @param index
+     * @param vExtension
+     */
+    public void setExtension(int index, org.astrogrid.workflow.beans.v1.execution.Extension vExtension)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        //-- check bounds for index
+        if ((index < 0) || (index > _extensionList.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        _extensionList.set(index, vExtension);
+    } //-- void setExtension(int, org.astrogrid.workflow.beans.v1.execution.Extension) 
+
+    /**
+     * Method setExtension
+     * 
+     * @param extensionArray
+     */
+    public void setExtension(org.astrogrid.workflow.beans.v1.execution.Extension[] extensionArray)
+    {
+        //-- copy array
+        _extensionList.clear();
+        for (int i = 0; i < extensionArray.length; i++) {
+            _extensionList.add(extensionArray[i]);
+        }
+    } //-- void setExtension(org.astrogrid.workflow.beans.v1.execution.Extension) 
+
+    /**
+     * Sets the value of field 'finishTime'. The field 'finishTime'
+     * has the following description: time execution finished
+     * 
+     * @param finishTime the value of field 'finishTime'.
+     */
+    public void setFinishTime(java.util.Date finishTime)
+    {
+        this._finishTime = finishTime;
+    } //-- void setFinishTime(java.util.Date) 
+
+    /**
+     * Sets the value of field 'jobId'.
+     * 
+     * @param jobId the value of field 'jobId'.
+     */
+    public void setJobId(org.astrogrid.workflow.beans.v1.execution.JobURN jobId)
+    {
+        this._jobId = jobId;
+    } //-- void setJobId(org.astrogrid.workflow.beans.v1.execution.JobURN) 
+
+    /**
+     * Method setMessage
+     * 
+     * @param index
+     * @param vMessage
+     */
+    public void setMessage(int index, org.astrogrid.applications.beans.v1.cea.castor.MessageType vMessage)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        //-- check bounds for index
+        if ((index < 0) || (index > _messageList.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        _messageList.set(index, vMessage);
+    } //-- void setMessage(int, org.astrogrid.applications.beans.v1.cea.castor.MessageType) 
+
+    /**
+     * Method setMessage
+     * 
+     * @param messageArray
+     */
+    public void setMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType[] messageArray)
+    {
+        //-- copy array
+        _messageList.clear();
+        for (int i = 0; i < messageArray.length; i++) {
+            _messageList.add(messageArray[i]);
+        }
+    } //-- void setMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType) 
+
+    /**
+     * Sets the value of field 'startTime'. The field 'startTime'
+     * has the following description: time execution started
+     * 
+     * @param startTime the value of field 'startTime'.
+     */
+    public void setStartTime(java.util.Date startTime)
+    {
+        this._startTime = startTime;
+    } //-- void setStartTime(java.util.Date) 
+
+    /**
+     * Sets the value of field 'status'. The field 'status' has the
+     * following description: current execution status
+     * 
+     * @param status the value of field 'status'.
+     */
+    public void setStatus(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase status)
+    {
+        this._status = status;
+    } //-- void setStatus(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase) 
 
     /**
      * Sets the value of field 'workflowName'.

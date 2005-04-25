@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: HttpURLType.java,v 1.5 2005/01/23 12:51:18 jdt Exp $
+ * $Id: HttpURLType.java,v 1.6 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -25,7 +25,7 @@ import org.xml.sax.ContentHandler;
 /**
  * The URL for an http get or post service
  * 
- * @version $Revision: 1.5 $ $Date: 2005/01/23 12:51:18 $
+ * @version $Revision: 1.6 $ $Date: 2005/04/25 12:09:29 $
  */
 public class HttpURLType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

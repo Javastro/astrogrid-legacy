@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ForDescriptor.java,v 1.10 2005/01/23 12:52:06 jdt Exp $
+ * $Id: ForDescriptor.java,v 1.11 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ForDescriptor.
  * 
- * @version $Revision: 1.10 $ $Date: 2005/01/23 12:52:06 $
+ * @version $Revision: 1.11 $ $Date: 2005/04/25 12:09:29 $
  */
 public class ForDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor {
 

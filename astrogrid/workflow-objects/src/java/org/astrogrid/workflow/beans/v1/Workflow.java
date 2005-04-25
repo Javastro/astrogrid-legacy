@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Workflow.java,v 1.33 2005/01/23 12:52:03 jdt Exp $
+ * $Id: Workflow.java,v 1.34 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -30,7 +30,7 @@ import org.xml.sax.ContentHandler;
  * http://www.astrogrid.org/schema/AGWorkflow/v1
  *  
  * 
- * @version $Revision: 1.33 $ $Date: 2005/01/23 12:52:03 $
+ * @version $Revision: 1.34 $ $Date: 2005/04/25 12:09:29 $
  */
 public class Workflow extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

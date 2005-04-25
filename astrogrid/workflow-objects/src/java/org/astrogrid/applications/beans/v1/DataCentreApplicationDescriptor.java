@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: DataCentreApplicationDescriptor.java,v 1.33 2005/01/23 12:51:14 jdt Exp $
+ * $Id: DataCentreApplicationDescriptor.java,v 1.34 2005/04/25 12:09:29 clq2 Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class DataCentreApplicationDescriptor.
  * 
- * @version $Revision: 1.33 $ $Date: 2005/01/23 12:51:14 $
+ * @version $Revision: 1.34 $ $Date: 2005/04/25 12:09:29 $
  */
 public class DataCentreApplicationDescriptor extends org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor {
 
