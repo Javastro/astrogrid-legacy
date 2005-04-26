@@ -1,4 +1,4 @@
-/*$Id: VoSpaceClientWorkflowStore.java,v 1.2 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: VoSpaceClientWorkflowStore.java,v 1.3 2005/04/26 15:28:46 clq2 Exp $
  * Created on 14-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -79,7 +79,21 @@ public class VoSpaceClientWorkflowStore implements WorkflowStore {
          } catch (Exception e) {
              throw new WorkflowInterfaceException("ReadWorkflow",e);
         }             
+    }  
+    
+    /**
+     * @see org.astrogrid.portal.workflow.intf.WorkflowStore#readWorkflow(org.astrogrid.filemanager.client.FileManagerClient, org.astrogrid.store.Ivorn)
+     */
+    public Workflow readWorkflow( FileManagerClient fmc, Ivorn locationToReadFrom) throws WorkflowInterfaceException {
+        try {
+            FileManagerNode target = fmc.node(locationToReadFrom);
+            InputStream is= target.readContent();
+            return Workflow.unmarshalWorkflow(new InputStreamReader(is));
+         } catch (Exception e) {
+             throw new WorkflowInterfaceException("ReadWorkflow",e);
+        }             
     }    
+    
     /**
      * @see org.astrogrid.portal.workflow.intf.WorkflowStore#saveWorkflow(org.astrogrid.community.User, org.astrogrid.store.Ivorn, org.astrogrid.workflow.beans.v1.Workflow)
      */
@@ -138,11 +152,47 @@ public class VoSpaceClientWorkflowStore implements WorkflowStore {
         }
         
     }
+    
+    
+    /**
+     * @see org.astrogrid.portal.workflow.intf.WorkflowStore#saveWorkflow(org.astrogrid.store.Ivorn, java.lang.String, org.astrogrid.store.Ivorn, org.astrogrid.workflow.beans.v1.Workflow)
+     */
+    public FileManagerNode saveWorkflow(FileManagerClient fmc, Ivorn locationToSaveTo, Workflow workflow) throws WorkflowInterfaceException {
+        OutputStream os = null;
+        FileManagerNode target = null ; 
+        try {
+            
+             if (fmc.exists(locationToSaveTo) != null) {
+                 target = fmc.node(locationToSaveTo);
+             } else { // create it
+                 target = fmc.createFile(locationToSaveTo);
+             }             
+            os = target.writeContent();
+            workflow.marshal(new OutputStreamWriter(os));
+        } catch (Exception e) {
+            throw new WorkflowInterfaceException("SaveWorkflow",e);
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    // ignored
+                }
+            }
+        }
+        return target ;
+    }
 }
 
 
 /* 
 $Log: VoSpaceClientWorkflowStore.java,v $
+Revision 1.3  2005/04/26 15:28:46  clq2
+jl_wor_1085
+
+Revision 1.2.20.1  2005/04/14 10:04:17  jl99
+Read and write of workflows can now be passed an authenticated FileManagerClient.
+
 Revision 1.2  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 

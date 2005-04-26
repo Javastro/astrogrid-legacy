@@ -1,4 +1,4 @@
-/*$Id: WorkflowStore.java,v 1.7 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: WorkflowStore.java,v 1.8 2005/04/26 15:28:46 clq2 Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@ package org.astrogrid.portal.workflow.intf;
 
 import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
@@ -55,7 +57,7 @@ public interface WorkflowStore {
      * @param  locationToReadFrom ivorn location to read the workflow from.
      * @return workflow document object. will never return null
      * @throws WorkflowInterfaceException if document can't be loaded
-     * @deprecated use readWorkflow(userIvorn..)
+     * @deprecated use readWorkflow( FileManagerClient...)
      */
     Workflow readWorkflow(User user, Ivorn locationToReadFrom) throws WorkflowInterfaceException;
     
@@ -66,8 +68,19 @@ public interface WorkflowStore {
      * @param locationToReadFrom location to read document from
      * @return document object
      * @throws WorkflowInterfaceException
+     * @deprecated use readWorkflow( FileManagerClient...)
      */
     Workflow readWorkflow(Ivorn userId, String password, Ivorn locationToReadFrom) throws WorkflowInterfaceException;
+    
+   
+    
+    /** read workflow from the store.
+     * @param authenticated FileManagerClient
+     * @return document object
+     * @throws WorkflowInterfaceException
+     */
+    Workflow readWorkflow( FileManagerClient fileManagerClient, Ivorn locationToReadFrom) throws WorkflowInterfaceException;
+    
     
    /* Workflow readWorkflow( Account acc
                                        , String name ) throws WorkflowInterfaceException;
@@ -85,7 +98,7 @@ public interface WorkflowStore {
      * @param locationToSaveTo ivorn location to save the document
      * @param workflow workflow document to save
      * @throws WorkflowInterfaceException
-     * @deprecated use saveWorkflow(userIvorn,..)
+     * @deprecated use saveWorkflow( FileManagerClient...)
      */
     void saveWorkflow(User user,Ivorn locationToSaveTo,  Workflow workflow) throws WorkflowInterfaceException;
 
@@ -96,8 +109,18 @@ public interface WorkflowStore {
      * @param locationToSaveTo location to save workflow to 
      * @param workflow workflow documet.
      * @throws WorkflowInterfaceException
+     * @deprecated use saveWorkflow( FileManagerClient...)
      */
     void saveWorkflow(Ivorn userId,String password, Ivorn locationToSaveTo, Workflow workflow) throws WorkflowInterfaceException;
+    
+    
+    /** save workflow to myspace
+     * @param authenticated fileManagerClient
+     * @param locationToSaveTo location to save workflow to 
+     * @param workflow workflow document.
+     * @throws WorkflowInterfaceException
+     */
+    FileManagerNode saveWorkflow( FileManagerClient fileManagerClient, Ivorn locationToSaveTo, Workflow workflow) throws WorkflowInterfaceException;
     
   /*  void saveWorkflow( Account acc
                                       , Workflow workflow ) throws WorkflowInterfaceException;
@@ -110,6 +133,12 @@ public interface WorkflowStore {
 
 /* 
 $Log: WorkflowStore.java,v $
+Revision 1.8  2005/04/26 15:28:46  clq2
+jl_wor_1085
+
+Revision 1.7.20.1  2005/04/14 10:04:17  jl99
+Read and write of workflows can now be passed an authenticated FileManagerClient.
+
 Revision 1.7  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 
