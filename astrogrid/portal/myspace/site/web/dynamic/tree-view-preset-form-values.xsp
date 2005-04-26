@@ -65,9 +65,7 @@
 
 </xsp:logic>
 
-   <open-branches>
-      <xsp:expr>getOpenBranches()</xsp:expr>
-   </open-branches>
+   <open-branches><xsp:expr>getOpenBranches()</xsp:expr></open-branches>
 
 
 </xsp:page>

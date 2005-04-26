@@ -11,15 +11,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.rmi.RemoteException;
+//import java.rmi.RemoteException;
 
 import org.apache.log4j.Logger;
 
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.NodeIterator;
-import org.astrogrid.filemanager.common.NodeNotFoundFault;
-import org.astrogrid.filemanager.common.FileManagerFault;
+//import org.astrogrid.filemanager.common.NodeNotFoundFault;
+//import org.astrogrid.filemanager.common.FileManagerFault;
 
 // import org.astrogrid.filemanager.common.exception.*;
 import org.astrogrid.store.Ivorn;

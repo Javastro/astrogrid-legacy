@@ -135,7 +135,13 @@ public class MySpaceLoadAction extends AbstractAction {
       
       int targetIndex ;
 	  String adqlDocument = outputBuffer.toString();
-      targetIndex = adqlDocument.indexOf( "<?qb-sql-source ") + 16 ;
+      targetIndex = adqlDocument.indexOf( "<?qb-sql-source ") ;
+      if( targetIndex == -1 ) {
+          session.removeAttribute( AttributeKey.RESOURCE_ID ) ;
+          session.setAttribute( AttributeKey.ADQL_AS_STRING, "." ) ;
+          throw new IOException( "File [" + mySpaceName + "] is not an ADQL file."  ) ;
+      }
+      targetIndex = targetIndex + 16;
       String adqlSource = adqlDocument.substring( targetIndex
                                                 , adqlDocument.indexOf( "?>", targetIndex ) - 1  ) ; 
       targetIndex = adqlDocument.indexOf( "<?qb-registry-resources ") + 24 ;                                          

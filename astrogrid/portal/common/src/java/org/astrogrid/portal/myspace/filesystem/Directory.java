@@ -250,7 +250,7 @@ public class Directory extends Item {
         if( DEBUG_ENABLED ) {
             logger.debug( "Buffer size is: " + buffer.length() + 
                           "\nNumber of children in directory is: " + children.size() ) ;
-//            logger.debug( buffer.toString() ) ;
+            logger.debug( buffer.toString() ) ;
         }
         
         if( TRACE_ENABLED) logger.debug( "exit: Directory.toDirectoryViewXmlString()" );

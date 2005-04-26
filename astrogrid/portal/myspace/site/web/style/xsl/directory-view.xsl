@@ -6,6 +6,7 @@
 <!--
     xmlns:agp-myspace="http://astrogrid.org/xsp/myspace/1.0">
 -->
+  <xsl:param name="myspace-action"/>
 
   <xsl:output
       method="xml"
@@ -98,6 +99,22 @@ function matchedItemType( itemName ) {
        return  ;
 }
 
+function onLoad() {
+	// alert( "Watcha directory-view!" ) ;
+    if( getAction() == "myspace-new-directory" ) {
+       resetAction() ; 
+       top.tree.location.reload() ;     
+    }	   
+}
+
+function getAction() {
+    return document.getElementById('myspace-action').value ;
+}
+
+function resetAction() {
+    document.getElementById('myspace-action').value = "";
+}
+
 
     </script>
     
@@ -120,7 +137,14 @@ function matchedItemType( itemName ) {
             action="/astrogrid-portal/bare/mount/myspace/myspace-action"
             method="POST"
             enctype="multipart/form-data">
-          <input id="myspace-action" name="myspace-action" type="hidden"/>
+          <xsl:choose>
+             <xsl:when test="$myspace-action='myspace-new-directory'" >  
+                 <input id="myspace-action" name="myspace-action" type="hidden" value="myspace-new-directory"/>
+             </xsl:when>
+             <xsl:otherwise>
+                 <input id="myspace-action" name="myspace-action" type="hidden"/>             
+             </xsl:otherwise>
+          </xsl:choose>
           <input name="myspace-directory-view-path" id="myspace-directory-view-path" type="hidden"/>
           <input name="myspace-source-path" id="myspace-source-path" type="hidden"/>
           <input name="myspace-target-name" id="myspace-target-name" type="hidden"/>  

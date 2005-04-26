@@ -24,12 +24,14 @@
 		private static final boolean TRACE_ENABLED = true ;
 		private static final boolean DEBUG_ENABLED = true ;
 		
-		// REQUESTED_MODE reflects the context from which the micro-browser has been invoked.
-		// It should contain values like ...
-		// "save-query-file" "load-query-file" for save/read functions in Query Editor
-		// "save-workflow-file" "load-workflow-file" for save/read functions in Workflow Editor
-		// "choose-file-for-workflow" for selecting files as parameters in Workflow Editor
-		// The latter causes the micro-browser to display a "new" as well as an "open" button.
+		<!--+
+		    | REQUESTED_MODE reflects the context from which the micro-browser has been invoked.
+		    | It should contain values like ...
+		    | "save-query-file" "load-query-file" for save/read functions in Query Editor
+		    | "save-workflow-file" "load-workflow-file" for save/read functions in Workflow Editor
+		    | "choose-file-for-workflow" for selecting files as parameters in Workflow Editor
+		    | The latter causes the micro-browser to display a "new" as well as an "open" button.
+		    +-->
 		private static final String REQUESTED_MODE = "requested-mode" ;	
 		
         private static final String REQUEST_IVORN = "ivorn" ;			
@@ -46,74 +48,7 @@
 		private static final String MYSPACE_FIELD_VALUE = "myspace-field-value" ;	
 		private static final String MYSPACE_FORM_NAME = "myspace-form-name" ;	
 		private static final String MYSPACE_FORM_ACTION = "myspace-form-action" ;	
-		private static final String MYSPACE_PARENT_FUNC = "myspace-parent-func" ;										
-	
-	
-	
-	
-	
-		
-
-		public String formatAction() throws SAXException {
-        	if( TRACE_ENABLED ) trace( "micro-bottom-controls-xsp.formatAction() entry") ; 
-        	
-        	AttributesImpl xspAttr = new AttributesImpl() ;
-        	String requestedMode = null ;
-        	String actionString = null ;
-
-        	try {            
-
-                requestedMode = request.getParameter( REQUESTED_MODE ) ;
-                if( requestedMode == null || requestedMode.indexOf( "load" ) != -1 ) {
-                    actionString = "processOpen();" ;
-                }
-                else {
-                    actionString = "processSave();" ;
-                }
-        	}
-			catch(Exception e){
-		       if( DEBUG_ENABLED) debug ( "Exception thrown: " + e.getMessage() ) ;
-		    }
-        	
-        	finally {
-        		if( TRACE_ENABLED ) trace( "micro-bottom-controls-xsp.formatAction() exit") ; 
-        	}
-        	
-        	return actionString ;
-          
-		} // end of formatAction() 
-		
-		
-		public String formatActionDescription() throws SAXException {
-        	if( TRACE_ENABLED ) trace( "micro-bottom-controls-xsp.formatActionDescription() entry") ; 
-        	
-        	AttributesImpl xspAttr = new AttributesImpl() ;
-        	String requestedMode = null ;
-        	String descriptionString = null ;
-
-        	try {            
-
-                requestedMode = request.getParameter( REQUESTED_MODE ) ;
-                if( requestedMode == null || requestedMode.indexOf( "load" ) != -1 ) {
-                    descriptionString = "Open" ;
-                }
-                else {
-                    descriptionString = "Save" ;
-                }
-        	}
-			catch(Exception e){
-		       if( DEBUG_ENABLED) debug ( "Exception thrown: " + e.getMessage() ) ;
-		    }
-        	
-        	finally {
-        		if( TRACE_ENABLED ) trace( "micro-bottom-controls-xsp.formatActionDescription() exit") ; 
-        	}
-        	
-        	return descriptionString ;
-          
-		} // end of formatActionDescription() 		
-
-
+		private static final String MYSPACE_PARENT_FUNC = "myspace-parent-func" ;
 
 		public String formatModeButtons() throws SAXException {
         	if( TRACE_ENABLED ) trace( "micro-bottom-controls-xsp.formatModeButtons() entry") ; 
@@ -219,17 +154,6 @@
 </xsp:logic>  
  
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
     <ag-div>
       
       <ag-onload function="nofooter();"/>
@@ -239,22 +163,12 @@
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/extras.css"/>   
          
       <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
-
-      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
-      
-<!-- Script insertion from Pat begins here  -->      
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>    
       
 
 <script language="javascript">
 
-//function getFileName(){
-//	var fullpath = document.dire.localFile.value;
-	//alert(fullpath);
-//}
-
-
-
-
+<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function highlightTD(td){
 	td.style.border= "solid 1px #ffff00";
 }
@@ -263,7 +177,7 @@ function dehighlightTD(td){
 	var teedee = document.getElementById(td);
 	teedee.style.border= "solid 1px #008800";
 }
-
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
 function highlight(diese, tag){
 	diese.style.background = "#ffffff";
@@ -273,6 +187,8 @@ function dehighlight(diese, tag){
 	diese.style.background = "#dddddd";
 }
 
+
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function dehighlightDir(diese, tag){
 	diese.style.background = "#ddddff";
 	if(helpopen == 1){
@@ -288,7 +204,7 @@ function dehighlightDir(diese, tag){
 		*/
 	}
 }
-
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
 function triggerAction( action ) {
 
@@ -300,9 +216,11 @@ function triggerAction( action ) {
     if( action ) {
        if( action.length != 0) {
           top.directory.document.getElementById( PARAM_ACTION ).value = action ;
-          top.directory.document.getElementById( PARAM_DIRECTORY_VIEW_PATH ).value = getCurrent() ;     
-//          alert( "top.directory.document.getElementById( PARAM_DIRECTORY_VIEW_PATH ).value:\n" + 
-//                  top.directory.document.getElementById( PARAM_DIRECTORY_VIEW_PATH ).value  ) ;     
+          top.directory.document.getElementById( PARAM_DIRECTORY_VIEW_PATH ).value = getCurrent() ; 
+          <!--    
+          alert( "top.directory.document.getElementById( PARAM_DIRECTORY_VIEW_PATH ).value:\n" + 
+                  top.directory.document.getElementById( PARAM_DIRECTORY_VIEW_PATH ).value  ) ; 
+          -->    
        }
     }
     form.submit();
@@ -331,19 +249,19 @@ function getSelected(){
 }
 
 function setSelected( item ){
-    // alert( "setSelected:" + item ) ;
+    <!-- alert( "setSelected:" + item ) ; -->
     document.getElementById('selected').value = item ;
 }
 
 function resetSelected(){
-    // alert( "setSelected:" + item ) ;
+    <!-- alert( "setSelected:" + item ) ; -->
     document.getElementById('selected').value = "*** none ***" ;
 }
 
 
 function isSelected() {
     var name = getSelected() ;
-    // We do our best to detect "*** none ***" or some variant...
+    <!-- We do our best to detect "*** none ***" or some variant... -->
     if( name.length == 0 || name.indexOf("*") != -1 ) {
        return false ;
     } 
@@ -486,7 +404,6 @@ function cancelAction() {
 
 function finalizeProcessInParent( fileName ) { 
    // alert( "finalizeProcessInParent with fileName: " + fileName ) ;
-   // ivorn, agsl, fieldName, fieldValue, formName, formAction, parentFunction
    
    // Get all our control information ...
    // We have file name above. These are the required path and account space information...
@@ -647,9 +564,6 @@ function getFrame( frameName ) {
 
 </script>
       
-      
-      
-<!-- Script insertion from Pat ends here -->      
 
 	   <form id="myspace-explorer-form" action="." >
           <input id="myspace-agsl" name="myspace-agsl" type="hidden">

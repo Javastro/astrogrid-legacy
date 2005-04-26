@@ -11,8 +11,12 @@
 package org.astrogrid.portal.cocoon.workflow.design;
 
 import org.apache.log4j.Logger;  
+
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerNode;
    
 import org.astrogrid.portal.myspace.filesystem.Tree;
+import org.astrogrid.portal.myspace.filesystem.Directory ;
 import org.astrogrid.portal.common.session.AstrogridSessionFactory ;
 import org.astrogrid.portal.common.session.AstrogridSession ;
 import org.astrogrid.portal.common.session.AttributeKey ;
@@ -81,9 +85,8 @@ import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.environment.ObjectModelHelper;
-
+ 
 // import com.sun.rsasign.s;
-
 
 /**
  * A Cocoon action to handle our workflow design commands.
@@ -627,6 +630,7 @@ public class DesignAction extends AbstractAction {
 			debug( "ivornName: " + ivornName );
             Ivorn ivorn = null;
             AstrogridSession agSession = AstrogridSessionFactory.getSession(request.getSession(true));
+            FileManagerClient fmc = null ;
                                        
             try {
 
@@ -641,15 +645,34 @@ public class DesignAction extends AbstractAction {
                     debug( "workflow: " + workflow );
                     WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
                     debug( "wfStore: " + wfStore );
-                    wfStore.saveWorkflow( user, ivorn, workflow ) ;
+                    fmc = (FileManagerClient)agSession.getAttribute( AttributeKey.FILE_MANAGER_CLIENT ) ;
+                    FileManagerNode fileNode = wfStore.saveWorkflow( fmc, ivorn, workflow ) ;
                     
-                    // We need to force the tree to reload this directory...
-                    // Find the full directory path in Tree terms...
-                    String directoryPath = "home/" + request.getParameter( SAVE_WORKFLOW_IVORN_PARAMETER ) ;
-                    int separatorIndex = directoryPath.lastIndexOf( '/' ) ;
-                    directoryPath = directoryPath.substring( 0, separatorIndex + 1) ;
+                    // We need to wrap the file node if it doesn't already exist...
+                    // The following string manipulation code constructs a path
+                    // relative to the account space. For instance, taking...
+                    // org.astrogrid.localhost/frog#workflows/wf1
+                    // and changes it to this...
+                    // home/workflows/wf1
+                    String path = request.getParameter( SAVE_WORKFLOW_IVORN_PARAMETER ) ;
+                    path = "home/" + path.substring( path.indexOf( '#' ) + 1 ) ;
                     Tree tree = (Tree)agSession.getAttribute( AttributeKey.MYSPACE_TREE ) ;
-                    tree.refresh( tree.getDirectory(directoryPath) ) ;
+                    debug( "path: " + path ) ;
+                    
+                    Directory directory = null ;
+                    // If it already existed in the tree, we simply ignore it...
+                    if( tree.getFile( path ) == null ) {
+                        // otherwise we wrap it...
+                        path = path.substring( 0, path.lastIndexOf( '/' ) + 1) ;
+                        directory = tree.getDirectory( path ) ;
+                        if( directory != null ) {
+                            tree.constructFile( fileNode, directory ) ;
+                        }
+                        else {
+                            debug( "directory is null") ;
+                        }
+                    }
+                    
                 } 
                                
             }
@@ -684,6 +707,7 @@ public class DesignAction extends AbstractAction {
         private void readWorkflow() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflow() entry" ) ;
               
+            AstrogridSession agSession = AstrogridSessionFactory.getSession(request.getSession(true));
             String name = request.getParameter( WORKFLOW_NAME_PARAMETER );
             String ivornName = "ivo://" + request.getParameter( OPEN_WORKFLOW_IVORN_PARAMETER ) ;
             debug("workflow name: " + name) ;
@@ -702,7 +726,8 @@ public class DesignAction extends AbstractAction {
 //                if( workflow == null  || bConfirm == true ) {
 				if( true ) {
                     WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
-                    workflow = wfStore.readWorkflow( user, ivorn ) ;
+                    FileManagerClient fmc = (FileManagerClient)agSession.getAttribute( AttributeKey.FILE_MANAGER_CLIENT ) ;
+                    workflow = wfStore.readWorkflow( fmc, ivorn ) ;
  
                 } 
                 

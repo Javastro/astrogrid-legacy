@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.36 2005/03/29 22:07:56 clq2 Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.37 2005/04/26 15:27:47 clq2 Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/03/29 22:07:56 $</cvs:date>
- * <cvs:version>$Revision: 1.36 $</cvs:version>
+ * <cvs:date>$Date: 2005/04/26 15:27:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.37 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 
@@ -38,6 +38,7 @@ import org.astrogrid.portal.common.session.AstrogridSessionFactory;
 import org.astrogrid.portal.common.session.AstrogridSession ;
 import org.astrogrid.portal.common.session.AttributeKey ;
 import org.astrogrid.portal.myspace.filesystem.Tree;
+import org.astrogrid.portal.client.Screen ;
 // import org.astrogrid.portal.login.common.SessionKeys;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
@@ -79,6 +80,16 @@ public final class LoginAction extends AbstractAction {
      * Parameter names to look for in the request object.
      */
     public static final String PASS_PARAM = "pass";
+    
+    private static final String
+    	AVAILABLE_HEIGHT = "available-height",
+    	AVAILABLE_LEFT = "available-left",
+    	AVAILABLE_TOP = "available-top",
+    	AVAILABLE_WIDTH = "available-width",
+    	COLOR_DEPTH = "color-depth", 
+    	SCREEN_HEIGHT = "screen-height",
+    	PIXEL_DEPTH = "pixel-depth",
+    	SCREEN_WIDTH = "screen-width" ;
 
     /**
      * Logger
@@ -211,6 +222,10 @@ public final class LoginAction extends AbstractAction {
         //
         // Set the current account info in our request.
         request.setAttribute(USER_PARAM, user);
+        
+        // Retrieve details of the user's screen attributes from the request
+        // and store them in the session object...
+        session.setAttribute( AttributeKey.CLIENT_SCREEN, getScreenDetails( request, log ) ) ;
        
         // Retrieve FileManagerClient for MySpace access and store in session object...
         FileManagerClient fmc = null ;
@@ -276,10 +291,83 @@ public final class LoginAction extends AbstractAction {
             log = super.getLogger();
         }       
     }
+    
+    
+    private Screen getScreenDetails( Request request, Logger log ) {
+        Screen screen = null ;
+        int screenWidth, screenHeight, availableWidth, availableHeight ;
+    	int availableLeft, availableTop, colorDepth, pixelDepth ;
+    	
+//    	log.debug( "screen-width: " + request.getParameter( SCREEN_WIDTH ) ) ;
+//      log.debug( "screen-height: " + request.getParameter( SCREEN_HEIGHT ) ) ;
+//      log.debug( "available-width: " + request.getParameter( AVAILABLE_WIDTH ) ) ;
+//      log.debug( "available-height: " + request.getParameter( AVAILABLE_HEIGHT ) ) ;
+//      log.debug( "available-left: " + request.getParameter( AVAILABLE_LEFT ) ) ;
+//      log.debug( "available-top: " + request.getParameter( AVAILABLE_TOP ) ) ;
+//      log.debug( "color-depth: " + request.getParameter( COLOR_DEPTH ) ) ;
+//      log.debug( "pixel-depth: " + request.getParameter( PIXEL_DEPTH ) ) ;
+    	
+    	try { screenWidth = Integer.valueOf( request.getParameter( SCREEN_WIDTH ) ).intValue() ; }
+    	catch( NumberFormatException nfe ) { screenWidth = -1 ; }
+    
+    	try { screenHeight = Integer.valueOf( request.getParameter( SCREEN_HEIGHT ) ).intValue() ; }
+    	catch( NumberFormatException nfe ) { screenHeight = -1 ; }
+
+    	try { availableWidth = Integer.valueOf( request.getParameter( AVAILABLE_WIDTH ) ).intValue() ; }
+    	catch( NumberFormatException nfe ) { availableWidth = -1 ; }
+    
+    	try { availableHeight = Integer.valueOf( request.getParameter( AVAILABLE_HEIGHT ) ).intValue() ; }
+    	catch( NumberFormatException nfe ) { availableHeight = -1 ; }
+    
+    	try { availableLeft = Integer.valueOf( request.getParameter( AVAILABLE_LEFT ) ).intValue() ; }
+    	catch( NumberFormatException nfe ) { availableLeft = -1 ; }
+    
+    	try { availableTop = Integer.valueOf( request.getParameter( AVAILABLE_TOP ) ).intValue() ; }
+    	catch( NumberFormatException nfe ) { availableTop = -1 ; }
+
+    	try { colorDepth = Integer.valueOf( request.getParameter( COLOR_DEPTH ) ).intValue() ; }
+    	catch( NumberFormatException nfe ) { colorDepth = -1 ; }
+    
+    	try { pixelDepth = Integer.valueOf( request.getParameter( PIXEL_DEPTH ) ).intValue() ; }
+    	catch( NumberFormatException nfe ) { pixelDepth = -1 ; }
+    	
+//    	log.debug( "screenWidth: " + screenWidth 
+//    	         + "\nscreenHeight: " + screenHeight
+//    	         + "\navailableWidth: " + availableWidth
+//    	         + "\navailableHeight: " + availableHeight
+//    	         + "\navailableLeft: " + availableLeft
+//    	         + "\navailableTop: " + availableTop
+//    	         + "\ncolorDepth: " + colorDepth
+//    	         + "\npixelDepth: " + pixelDepth ) ;
+    
+    	screen = new Screen( screenWidth
+                       	   , screenHeight
+                           , availableWidth
+                           , availableHeight
+                           , availableLeft
+                           , availableTop
+                           , colorDepth
+                           , pixelDepth ) ;
+    
+        return screen ;  
+        
+    }
+    
+    
+    
+    
+    
+    
 }
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.37  2005/04/26 15:27:47  clq2
+ * por_jl_1046
+ *
+ * Revision 1.36.2.1  2005/04/05 15:13:18  jl99
+ * Added ability to retrieve details of the user's screen attributes and store them in the session object
+ *
  * Revision 1.36  2005/03/29 22:07:56  clq2
  * jl908 merge
  *

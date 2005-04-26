@@ -40,7 +40,7 @@ public class RefreshDirectoryHandler extends AbstractMySpaceHandler {
     if( path != null && path.length() > 0 ) {
         
        // First of all, if the branch is found we refresh it from MySpace...
-       // (It may not be found if the user has incorrectly changes the Current Location)
+       // (It may not be found if the user has incorrectly changed the Current Location)
         
        tree = context.getMySpaceTree() ;
        directory = tree.getDirectory( path ) ;

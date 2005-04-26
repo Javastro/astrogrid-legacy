@@ -33,8 +33,7 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-    
-            <dependency>
+        <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-pal-query</artifactId>
             <version>${astrogrid.pal.version}</version>
@@ -42,7 +41,44 @@
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
-        </dependency>    	
+        </dependency>   
+        
+        
+    <dependency>
+         <artifactId>astrogrid-pal-sky</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.pal.version}</version>
+           <properties>
+                <war.bundle>true</war.bundle>
+            </properties>              
+      </dependency>
+
+      <dependency>
+         <artifactId>astrogrid-pal-units</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.pal.version}</version>
+           <properties>
+                <war.bundle>true</war.bundle>
+            </properties>              
+      </dependency>
+
+      <dependency>
+         <artifactId>astrogrid-common</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.common.version}</version>
+           <properties>
+                <war.bundle>true</war.bundle>
+            </properties>              
+      </dependency>
+
+    <dependency>
+      <id>astrogrid-utils</id>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.utils.stable}</version>
+                 <properties>
+                <war.bundle>true</war.bundle>
+            </properties>     
+    </dependency>  	
     	
         <!-- for writing XML -->
        <dependency>
@@ -61,14 +97,6 @@
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>       	
-       </dependency>
-       <dependency>
-          <artifactId>astrogrid-utils</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.utils.stable}</version>
-		   <properties>
-            	<war.bundle>true</war.bundle>
-            </properties>
        </dependency>
     
         <dependency>

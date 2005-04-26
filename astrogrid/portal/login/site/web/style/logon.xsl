@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--+
-    |  $Id: logon.xsl,v 1.10 2005/03/01 13:23:26 clq2 Exp $
+    |  $Id: logon.xsl,v 1.11 2005/04/26 15:27:47 clq2 Exp $
     |  Transforms pages which simply display a message
     |
     +-->
@@ -30,7 +30,17 @@
     <xsl:element name="form">
       <xsl:attribute name = "method"><xsl:value-of select="@method"/></xsl:attribute> 
       <xsl:attribute name = "action"><xsl:value-of select="@action"/></xsl:attribute>
-      <input type="hidden" name="visited"/>
+      <xsl:attribute name = "id">login-form</xsl:attribute> 
+      <xsl:attribute name = "onSubmit">gatherScreenData()</xsl:attribute>                     
+      <input type="hidden" name="visited" id="visited"/>
+      <input type="hidden" name="available-height" id="available-height"/>
+      <input type="hidden" name="available-left" id="available-left"/>
+      <input type="hidden" name="available-top" id="available-top"/>
+      <input type="hidden" name="available-width" id="available-width"/>
+      <input type="hidden" name="color-depth" id="color-depth"/>
+      <input type="hidden" name="screen-height" id="screen-height"/>
+      <input type="hidden" name="pixel-depth" id="pixel-depth"/>       
+      <input type="hidden" name="screen-width" id="screen-width"/>                                         
       <center>
       <table border="0" cellpadding="4" cellspacing="0">
         <xsl:apply-templates/>
@@ -81,6 +91,12 @@
 		
 <!--+
     | $Log: logon.xsl,v $
+    | Revision 1.11  2005/04/26 15:27:47  clq2
+    | por_jl_1046
+    |
+    | Revision 1.10.14.1  2005/04/05 15:13:18  jl99
+    | Added ability to retrieve details of the user's screen attributes and store them in the session object
+    |
     | Revision 1.10  2005/03/01 13:23:26  clq2
     | upgrade to v10 registry
     |

@@ -1,19 +1,29 @@
 <?xml version="1.0"?>
-
-<xsl:stylesheet
-    version="1.0"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!--
     xmlns:agp-myspace="http://astrogrid.org/xsp/myspace/1.0">
 -->
 
-  <xsl:output
-      method="xml"
-      omit-xml-declaration="yes"/>
+  <xsl:output method="xml" omit-xml-declaration="yes"/>
 
   <xsl:template match="/">
   
+    <ag-div>
+<!--
+      <agComponentTitle>Directory View</agComponentTitle>
+-->
+      
+      <ag-onload function="nofooter();"/>
+
+      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
+      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
+      
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>  
+  
 <script language="javascript">
+
+<![CDATA[
     
 function test() {
 	alert( "test" ) ;
@@ -50,6 +60,8 @@ function refreshDirectoryView( path, branch ) {
     var status = directoryElement.getAttribute("status") ;
     //alert( "status: " + status ) ;
     var form ;
+    var mode ;
+    var url ;
     if( status == "NOT_LOADED" ) {
        form = document.getElementById( 'myspace-action-form' ); 
        if( form ) { 
@@ -63,7 +75,10 @@ function refreshDirectoryView( path, branch ) {
        }                   
     }
     else {
-       window.open( "/astrogrid-portal/bare/mount/myspace/micro-directory-view.xml?myspace-directory-view-path=" + path, "directory" ) ;
+       mode = document.getElementById( 'requested-mode' ).value ;
+       url = "/astrogrid-portal/bare/mount/myspace/micro-directory-view.xml?requested-mode=" + mode + "\x26myspace-directory-view-path=" + path ;
+       // alert( "hello url: " + url );
+       window.open( url, "directory" ) ;      
     }
 }
 
@@ -111,57 +126,53 @@ function matchedItemType( itemName ) {
        return  ;
 }
 
-
+]]>
 
 </script>
     
-    <ag-div>
-<!--
-      <agComponentTitle>Directory View</agComponentTitle>
--->
-      
-      <ag-onload function="nofooter();"/>
 
-      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
-      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
-      
-      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
-      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
 	
         <form
             id="myspace-action-form"
             name="myspace-action-form"
             action="/astrogrid-portal/bare/mount/myspace/myspace-micro-action"
             method="POST"
-            enctype="multipart/form-data">
-          <input id="myspace-action" name="myspace-action" type="hidden"/>
-          <input name="myspace-directory-view-path" id="myspace-directory-view-path" type="hidden"/>
-          <input name="myspace-source-path" id="myspace-source-path" type="hidden"/>
-          <input name="myspace-target-name" id="myspace-target-name" type="hidden"/>  
-          <input name="myspace-target-path" id="myspace-target-path" type="hidden"/>      
-          <input name="myspace-tree-view-path" id="myspace-tree-view-path" type="hidden"/>                            
-          
-          <div>
-                  
-            <table cellspacing="0" cellpadding="2" width="100%">
-               <thead>
-                  <tr>
-                     <th></th>
-                     <th align="left">Name</th>
-                     <th align="center">Size</th>
-                     <th align="left">Type</th>
-                     <th align="left">Date modified</th>
-                     <th align="left">Date created</th>
-                  </tr>
-               </thead>
-               <tbody align="left" valign="bottom">        
-                  <xsl:apply-templates/>
-               </tbody>
-            </table >
-          </div>
-        </form>
+            enctype="multipart/form-data"> 
+            <xsl:apply-templates select="directory/preset-form-values" />    
+            <div>                 
+               <table cellspacing="0" cellpadding="2" width="100%">
+                  <thead>
+                     <tr>
+                        <th></th>
+                        <th align="left">Name</th>
+                        <th align="center">Size</th>
+                        <th align="left">Type</th>
+                        <th align="left">Date modified</th>
+                        <th align="left">Date created</th>
+                     </tr>
+                  </thead>
+                  <tbody align="left" valign="bottom">        
+                     <xsl:apply-templates select="directory/directory-item" />
+                  </tbody>
+               </table >
+            </div>                          
+         </form>
+         
     </ag-div>
+    
   </xsl:template>
+  
+  
+  <xsl:template match="preset-form-values">
+       <input id="myspace-action" name="myspace-action" type="hidden"/>
+       <input name="myspace-directory-view-path" id="myspace-directory-view-path" type="hidden"/>
+       <input name="myspace-source-path" id="myspace-source-path" type="hidden"/>
+       <input name="myspace-target-name" id="myspace-target-name" type="hidden"/>  
+       <input name="myspace-target-path" id="myspace-target-path" type="hidden"/>      
+       <input name="myspace-tree-view-path" id="myspace-tree-view-path" type="hidden"/> 
+       <input name="requested-mode" id="requested-mode" type="hidden"><xsl:attribute name="value"><xsl:value-of select="mode"/></xsl:attribute></input>     
+  </xsl:template>
+  
 
   <xsl:template match="directory-item">
   

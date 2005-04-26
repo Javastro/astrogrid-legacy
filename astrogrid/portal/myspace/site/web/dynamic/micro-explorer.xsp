@@ -24,6 +24,8 @@
 		private static final boolean DEBUG_ENABLED = true ;
 		
 		private static final String BOTTOM_CONTROLS_URL = "/astrogrid-portal/bare/mount/myspace/micro-bottom-controls.xml" ;
+		private static final String TOP_CONTROLS_URL = "/astrogrid-portal/bare/mount/myspace/micro-top-controls.xml" ;
+		private static final String DIRECTORY_VIEW_URL = "/astrogrid-portal/bare/mount/myspace/micro-directory-view.xml" ;
 		private static final String FORM_NAME = "form_name" ;
 		private static final String FIELD_NAME = "field_name" ;
 		private static final String FIELD_VALUE = "field_value" ;
@@ -39,6 +41,62 @@
 		private static final String REQUESTED_MODE = "requested-mode" ;
 		
 		private static final String AMPERSAND = "&amp;" ;		
+
+		public String formatTopControlsRequest() throws SAXException {
+        	if( TRACE_ENABLED ) trace( "micro-explorer-xsp.formatTopControlsRequest() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        	StringBuffer buffer = null ;
+
+        	try { 
+        	
+        	    String requestedMode =  request.getParameter( REQUESTED_MODE ) ;       	           
+                buffer = new StringBuffer( 64 ) ;
+                buffer.append( TOP_CONTROLS_URL ) ;
+                if( requestedMode != null ) 
+                   buffer.append( '?' ).append( REQUESTED_MODE ).append( '=' ).append( requestedMode ) ;
+        	}
+			catch(Exception e){
+		       if( DEBUG_ENABLED) debug ( "Exception thrown: " + e.getMessage() ) ;
+		    }
+        	
+        	finally {
+        		if( TRACE_ENABLED ) trace( "micro-explorer-xsp.formatTopControlsRequest() exit") ; 
+        	}
+        	
+        	return buffer.toString() ;
+          
+		} 
+
+
+
+		public String formatDirectoryRequest() throws SAXException {
+        	if( TRACE_ENABLED ) trace( "micro-explorer-xsp.formatDirectoryRequest() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        	StringBuffer buffer = null ;
+
+        	try { 
+        	
+        	    String requestedMode =  request.getParameter( REQUESTED_MODE ) ;       	           
+                buffer = new StringBuffer( 64 ) ;
+                buffer.append( DIRECTORY_VIEW_URL ) ;
+                if( requestedMode != null ) 
+                   buffer.append( '?' ).append( REQUESTED_MODE ).append( '=' ).append( requestedMode ) ;
+        	}
+			catch(Exception e){
+		       if( DEBUG_ENABLED) debug ( "Exception thrown: " + e.getMessage() ) ;
+		    }
+        	
+        	finally {
+        		if( TRACE_ENABLED ) trace( "micro-explorer-xsp.formatDirectoryRequest() exit") ; 
+        	}
+        	
+        	return buffer.toString() ;
+          
+		} 
+
+
 
 		public String formatBottomControlsRequest() throws SAXException {
         	if( TRACE_ENABLED ) trace( "micro-explorer-xsp.formatBottomControlsRequest() entry") ; 
@@ -105,10 +163,10 @@
        </noframes>
 
        <frame name="top-controls" id="MicroControlsTopFrame" scrolling="no" bgcolor="#dddddd">
-          <xsp:attribute name="src">/astrogrid-portal/bare/mount/myspace/micro-top-controls.xml</xsp:attribute>
+          <xsp:attribute name="src"><xsp:expr>formatTopControlsRequest()</xsp:expr></xsp:attribute>
        </frame>      
        <frame marginwidth="1" frameborder="1"  marginheight="1" name="directory" id="MicroDirectoryViewFrame" scrolling="yes">
-          <xsp:attribute name="src">/astrogrid-portal/bare/mount/myspace/micro-directory-view.xml</xsp:attribute>
+          <xsp:attribute name="src"><xsp:expr>formatDirectoryRequest()</xsp:expr></xsp:attribute>
        </frame>
        <frame name="bottom-controls" id="MicroControlsBottomFrame" scrolling="no" bgcolor="#dddddd">
           <xsp:attribute name="src"><xsp:expr>formatBottomControlsRequest()</xsp:expr></xsp:attribute>

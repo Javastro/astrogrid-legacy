@@ -79,9 +79,7 @@ function refreshTreeView( path ) {
           <input name="myspace-src" id="myspace-src" type="hidden"/>
           <input name="myspace-dest" id="myspace-dest" type="hidden"/>
           <input name="myspace-tree-view-path" id="myspace-tree-view-path" type="hidden"/>
-          <input name="myspace-tree-open-branches" id="myspace-tree-open-branches" type="hidden" >
-             <xsl:attribute name="value"><xsl:value-of select="open-branches"/></xsl:attribute>
-          </input>
+          <input name="myspace-tree-open-branches" id="myspace-tree-open-branches" type="hidden" ><xsl:attribute name="value"><xsl:value-of select="open-branches"/></xsl:attribute></input>
 </xsl:template>
 
   <xsl:template match="myspace-tree">

@@ -27,12 +27,12 @@
 		private static final boolean TRACE_ENABLED = true ;
 		private static final boolean DEBUG_ENABLED = true ;
         
-        /*
-         * Returns the so-called path section of an Ivorn as a String.
-         * In this instance of the account space. So, given an account space Ivorn
-         * with string representation of ivo://star.le.ac.uk/jl99#something/something
-         * it should return star.le.ac.uk/jl99
-         */
+        <!--+
+            * Returns the so-called path section of an Ivorn as a String.
+            * In this instance of the account space. So, given an account space Ivorn
+            * with string representation of ivo://star.le.ac.uk/jl99#something/something
+            * it should return star.le.ac.uk/jl99
+            +-->
 		public String getAccountSpaceIvornPath() throws SAXException {
         	if( TRACE_ENABLED ) trace( "micro-top-controls-xsp.getAccountSpaceIvornPath() entry") ; 
         	
@@ -58,8 +58,48 @@
         	
         	return accountSpaceIvornPath ;
           
-		} // end of getAccountSpaceIvornPath() 
+		} 
 		
+		
+		public String getCurrentLocation() throws SAXException {
+        	if( TRACE_ENABLED ) trace( "micro-top-controls-xsp.getCurrentLocation() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        	Session session = request.getSession() ;
+        	String mode = request.getParameter( "requested-mode" ) ;
+        	// I think the currentLocation request may be a bum steer!
+        	String initialValue = request.getParameter( "currentLocation" ) ;
+        	
+        	if( mode == null || mode.length() == 0 || mode.indexOf( "main" ) != -1 ) {
+        	    ;
+        	}
+            else if( mode.indexOf( "query-file" ) != -1) {
+               // We have been invoked from the Query Editor...
+               if( initialValue == null ) {
+	               initialValue = (String)session.getAttribute( "AGO_QUERY_EDITOR_MB_VIEW" ) ;  
+               }
+            }
+            else if( mode.indexOf( "workflow-file" ) != -1) {
+               // We have been invoked from the Workflow Editor...
+               if( initialValue == null ) {
+	               initialValue = (String)session.getAttribute( "AGO_WORKFLOW_EDITOR_MB_VIEW" ) ;
+	           }
+            }
+            else if( mode.indexOf( "choose-file-for-workflow" ) != -1) {
+               // We have been invoked from the Workflow Editor when
+               // choosing a file as parameter in a workflow...
+               if( initialValue == null ) {
+	               initialValue = (String)session.getAttribute( "AGO_PARAMETER_SELECTOR_MB_VIEW" ) ;
+	           }
+            }
+            
+            if( initialValue == null ) {
+               initialValue = "home/" ;
+            }        	
+ 
+        	if( DEBUG_ENABLED ) debug( "currentLocation: " + initialValue ) ;
+            return initialValue ;        
+        }               				
 		
 		private static void trace( String traceString ) {
 			System.out.println( traceString ) ;
@@ -71,19 +111,7 @@
 
 </xsp:logic>  	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
- 
+
     <ag-div>
     
       <agPUBMessage>
@@ -97,9 +125,7 @@
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/extras.css"/>   
          
       <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
-      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
-      
-<!-- Script insertion from Pat begins here  -->      
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>     
       
 
 <script language="javascript">
@@ -120,165 +146,6 @@ var ACTION_UPLOAD_URL = "myspace-upload-url";
 var ACTION_RENAME_DIRECTORY = "myspace-rename-directory";
 var ACTION_DELETE_DIRECTORY = "myspace-delete-directory";
 var ACTION_NEW_DIRECTORY = "myspace-new-directory";
-
-var F = new Array();
-F[0] = "copyDestiny";
-F[1] = "moveDestiny";
-F[2] = "uploadLocal";
-F[3] = "uploadURL";
-F[4] = "verification";
-F[5] = "sortBy";
-F[6] = "shareWith";
-F[7] = "findIt";
-F[8] = "editDestiny";
-F[9] = "spaceKeeper";
-
-var helpopen = 0;
-function pasteFile(){
-	parent.opener.document.main.whKRFile.value = document.dire.d.value + "/"
-	+ document.dire.e.value;
-	parent.close();
-}
-
-
-
-
-
-
-
-
-function maxHelp(){
-	var framy = parent.document.getElementById("browser");
-	helpopen = 1;
-	if(framy != null){
-		framy.cols = "0, 0, *";
-	}
-}
-
-
-function vanilla(){
-	confirm("vanilla action");
-}
-
-function vanillaIce(){
-}
-
-
-function uploadLocal(este){
-	// closeThingsButShow("uploadLocal");
-	// whiteOutInputs();
-	// document.dire.e.style.background = "orange";
-	// document.dire.localFile.style.background = "yellow";
-    document.getElementById("uploadURL").style.display="none";
-	document.getElementById("uploadLocal").style.display="";
-
-	highlightTD(este);
-	dehighlightTD("uploadWebTD");
-}
-
-function uploadURL(este){
-	// whiteOutInputs();
-	// closeThingsButShow("uploadURL");
-	// document.dire.e.style.background = "orange";
-	// document.dire.URL.style.background = "yellow";
-	document.getElementById("uploadLocal").style.display="none";
-	document.getElementById("uploadURL").style.display="";
-
-	highlightTD(este);
-	dehighlightTD("uploadDesktopTD");
-}
-
-
-function _goUploadLocal(){
-	document.dire.e.style.background = "white";
-	document.dire.localFile.style.background = "white";
-
-	var dire = document.dire.d.value;
-	var dfile = document.dire.e.value;
-	var dpath = dire + "/" + dfile;
-	var spath = document.dire.localFile.value;
-	var ans = confirm("Uploading " + spath + " into " + dpath + " ?");
-	whiteOutInputs();
-	if(ans){
-		document.dire.action = "myWareHouse";
-		document.dire.target = "resultsFrame";
-		document.dire.p.value = dire;
-		document.dire.a.value = "string2msFile";
-		closeThingsButShow("verification");
-		document.dire.lock.value = "free";
-		document.dire.submit();
-	} else {
-		alert("Having second thoughts?");
-	}
-	dehighlightTD("uploadLocalTD");
-}
-
-
-
-
-function getFileName(){
-	var fullpath = document.dire.localFile.value;
-	alert(fullpath);
-}
-
-
-function blank(){
-	closeThings();
-}
-
-function sortBy(){
-	whiteOutInputs();
-	closeThingsButShow("sortBy");
-}
-
-
-
-function sharey(este){
-	whiteOutInputs();
-	closeThingsButShow("shareWith");
-	highlightTD(este);
-}
-
-
-function disclose(){
-	var framy = document.getElementById("destiny");
-	var ifram = document.getElementById("verification");
-	framy.style.display = "";
-	ifram.style.display = "none";
-}
-
-function whiteOutInputs(){
-	document.dire.d.style.background = "white";
-	document.dire.e.style.background = "white";
-	document.dire.e.style.background = "white";
-	document.dire.e.value = "";
-	document.dire.md.style.background = "white";
-	document.dire.cd.style.background = "white";
-}
-
-function renameFile(este){
-	closeThingsButShow("moveDestiny");
-/*	whiteOutInputs();*/
-	document.dire.lock.value = "locked";
-	var file = document.dire.e.value;
-	var dire = document.dire.d.value;
-	document.dire.e.value = dire + "/" + file;
-	document.dire.e.style.background = "yellow";
-	document.dire.md.style.background = "orange";
-	highlightTD(este);
-}
-
-function copyFile(este){
-	closeThingsButShow("copyDestiny");
-	document.dire.lock.value = "locked";
-	var file = document.dire.e.value;
-	var dire = document.dire.d.value;
-	document.dire.e.value = dire + "/" + file;
-	document.dire.e.style.background = "yellow";
-	document.dire.cd.style.background = "orange";
-	highlightTD(este);
-/*	whiteOutInputs();*/
-}
 
 function highlightTD(td){
 	td.style.border= "solid 1px #ffff00";
@@ -389,6 +256,8 @@ function triggerAction( action ) {
 
 
 function navigateUp() {
+    var mode ;
+    var url ;
     var path = new String( document.getElementById('currentLocation').value ) ;
     path = path.substring( 0, path.lastIndexOf('/') ) ;
     path = path.substring( 0, path.lastIndexOf('/')+1 ) ;
@@ -396,7 +265,9 @@ function navigateUp() {
        return ;
     setCurrent( path ) ;
     // document.getElementById('selected').value = "*** none ***" ;
-    window.open( "/astrogrid-portal/bare/mount/myspace/micro-directory-view.xml?" + PARAM_DIRECTORY_VIEW_PATH + "=" + path, "directory" ) ;   
+    mode = document.getElementById( 'requested-mode' ).value ;
+    url = "/astrogrid-portal/bare/mount/myspace/micro-directory-view.xml?requested-mode=" + mode + "\x26" + PARAM_DIRECTORY_VIEW_PATH + "=" + path ;
+    window.open( url, "directory" ) ;   
 }
 
 function setCurrent( directory ){
@@ -762,15 +633,15 @@ function getFrame( frameName ) {
 
 </script>
       
-      
-      
-<!-- Script insertion from Pat ends here -->      
 
 	    <form id="myspace-explorer-form" action="." >
 	    
           <input name="myspace-accountspace-ivornpath" id="myspace-accountspace-ivornpath" type="hidden">
              <xsp:attribute name="value"><xsp:expr>getAccountSpaceIvornPath()</xsp:expr></xsp:attribute>
-          </input>          
+          </input>                  
+          <input name="requested-mode" id="requested-mode" type="hidden">
+             <xsp:attribute name="value"><xsp-request:get-parameter name="requested-mode" default="main" as="string"/></xsp:attribute>
+          </input>       
       
           <div >
           
@@ -780,22 +651,32 @@ function getFrame( frameName ) {
                        Location:&#160;
                    </td>
                    <td align="left">
-                       <input name="currentLocation" id="currentLocation" size="60" style="background-color: #dddddd" value="home/"/>
+                       <input name="currentLocation" id="currentLocation" size="60" style="background-color: #dddddd" >
+                          <xsp:attribute name="value"><xsp:expr>getCurrentLocation()</xsp:expr></xsp:attribute>
+                       </input>
                    </td>
-                   <td id="upTD" align="center" class="naviButton"
-                       onmouseover="highlight(this, 'up')"
-                       onmouseout="dehighlight(this, 'up')" 
-                       onClick="navigateUp()"
-                       title="Navigate up one folder"
-                       nowrap="true">Up
+                   <td align="right">
+                   
+                       <table class="compact" width="10%">
+                           <tr>                              
+                              <td id="upTD" align="center" class="naviButton"
+                                  onmouseover="highlight(this, 'up')"
+                                  onmouseout="dehighlight(this, 'up')" 
+                                  onClick="navigateUp();"
+                                  title="Navigate up one folder"
+                                  nowrap="true">Up
+                              </td>
+                              <td id="newFolderTD" align="center" class="naviButton"
+                                  onmouseover="highlight(this, 'newFolder')"
+                                  onmouseout="dehighlight(this, 'newFolder')" 
+                                  onClick="newFolder();"
+                                  title="Create new folder in current location"
+                                  nowrap="true">New folder
+                              </td>
+                           </tr>
+                        </table>                   
+                   
                    </td>
-                   <td id="newFolderTD" align="center" class="naviButton"
-                       onmouseover="highlight(this, 'newFolder')"
-                       onmouseout="dehighlight(this, 'newFolder')" 
-                       onClick="newFolder()"
-                       title="Create new folder in current location"
-                       nowrap="true">New folder
-                   </td> 
                 </tr>         
              </table>
   

@@ -23,7 +23,12 @@ public final class AttributeKey {
        	ACOUNTSPACE_IVORN = new AttributeKey( "ivorn" ),
        	FILE_MANAGER_CLIENT = new AttributeKey( "AGO_FILEMANAGERCLIENT" ),
        	MYSPACE_TREE = new AttributeKey( "AGO_MYSPACETREE" ),
-        MYSPACE_TREE_OPEN_BRANCHES = new AttributeKey( "AGO_MYSPACETREE_OPENBRANCHES" ) ;
+        MYSPACE_TREE_OPEN_BRANCHES = new AttributeKey( "AGO_MYSPACETREE_OPENBRANCHES" ),
+        CLIENT_SCREEN = new AttributeKey( "AGO_CLIENT_SCREEN" ),
+    	QUERY_EDITOR_LAST_MICROBROWSER_VIEW = new AttributeKey( "AGO_QUERY_EDITOR_MB_VIEW" ),
+    	WORKFLOW_EDITOR_LAST_MICROBROWSER_VIEW = new AttributeKey( "AGO_WORKFLOW_EDITOR_MB_VIEW" ),
+    	PARAMETER_SELECTOR_LAST_MICROBROWSER_VIEW = new AttributeKey( "AGO_PARAMETER_SELECTOR_MB_VIEW" ),
+    	MYSPACE_LAST_VIEW = new AttributeKey( "AGO_MYSPACE_LAST_VIEW" ) ;
     
     // Section from query editor...
     public static final AttributeKey 

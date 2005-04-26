@@ -35,7 +35,7 @@ import org.astrogrid.portal.common.session.AttributeKey ;
 
 
 //bug 566 --clq2
-//import org.astrogrid.datacenter.sqlparser.Sql2Adql074;
+//import org.astrogrid.datacenter.sqlparser.Sql2Adql074; 
 import org.astrogrid.query.sql.Sql2Adql;
 
 import org.apache.avalon.framework.logger.ConsoleLogger;

@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.16 2005/03/29 22:07:56 clq2 Exp $
+    | CVS $Id: sitemap.xmap,v 1.17 2005/04/26 15:27:47 clq2 Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -302,7 +302,10 @@
           
       <map:match pattern="directory-view.xml">
         <map:generate type="directory-view-gen"/>
-        <map:transform src="web/style/xsl/directory-view.xsl"/>
+        <map:transform src="web/style/xsl/directory-view.xsl">
+           <map:parameter name="use-request-parameters" value="true"/>
+        </map:transform>
+        
         <map:serialize type="xml"/>
       </map:match> 
       
@@ -315,16 +318,22 @@
       <map:match pattern="myspace-action">
         <map:call resource="myspace-action-submit"/>
         <map:generate type="directory-view-gen"/>
-        <map:transform src="web/style/xsl/directory-view.xsl"/>
+        <map:transform src="web/style/xsl/directory-view.xsl">
+           <map:parameter name="use-request-parameters" value="true"/>
+        </map:transform>        
         <map:serialize type="xml"/>
       </map:match>          
-      
+   
       <map:match pattern="myspace-micro-action">
         <map:call resource="myspace-action-submit"/>
-        <map:generate type="directory-view-gen"/>
+        <map:aggregate element="directory" >
+           <map:part element="preset-form-values" src="cocoon:/micro-directory-preset-values"/>
+           <map:part src="cocoon:/micro-directory-view"/>
+        </map:aggregate>   
         <map:transform src="web/style/xsl/micro-directory-view.xsl"/>
         <map:serialize type="xml"/>
-      </map:match>              
+      </map:match>        
+                   
           
       <map:match pattern="storefile-properties">
         <map:generate type="storefile-properties-gen">
@@ -349,13 +358,28 @@
         <map:generate type="serverpages" src="web/dynamic/micro-top-controls.xsp"/>
         <map:serialize type="xml"/>
       </map:match>  
+   
       
-      <map:match pattern="micro-directory-view.xml">
-        <map:generate type="directory-view-gen"/>
+      <map:match pattern="micro-directory-view.xml" view="000">
+        <map:aggregate element="directory" >
+           <map:part element="preset-form-values" src="cocoon:/micro-directory-preset-values"/>
+           <map:part src="cocoon:/micro-directory-view"/>
+        </map:aggregate>   
         <map:transform src="web/style/xsl/micro-directory-view.xsl"/>
         <map:serialize type="xml"/>
-      </map:match>        
+      </map:match>   
       
+      <map:match pattern="micro-directory-preset-values">
+        <map:generate type="serverpages" src="web/dynamic/micro-directory-preset-form-values.xsp"/>
+        <map:serialize type="xml"/>
+      </map:match>
+        
+      <map:match pattern="micro-directory-view">
+        <map:generate type="directory-view-gen"/>
+        <map:serialize type="xml"/>
+      </map:match>      
+      
+    
       <map:match pattern="micro-bottom-controls.xml">
         <map:generate type="serverpages" src="web/dynamic/micro-bottom-controls.xsp"/>
         <map:serialize type="xml"/>

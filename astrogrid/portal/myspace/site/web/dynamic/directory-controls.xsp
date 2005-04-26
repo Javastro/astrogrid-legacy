@@ -9,6 +9,7 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xsp="http://apache.org/xsp"
 	xmlns:util="http://apache.org/xsp/util/2.0"
+	xmlns:log="http://apache.org/xsp/log/2.0"
     xmlns:jpath="http://apache.org/xsp/jpath/1.0"
 	xmlns:xsp-session="http://apache.org/xsp/session/2.0"
 	xmlns:xsp-request="http://apache.org/xsp/request/2.0">
@@ -22,6 +23,30 @@
 		
 		private static final boolean TRACE_ENABLED = true ;
 		private static final boolean DEBUG_ENABLED = true ;
+		
+		<!--+
+		    | Purpose: to echo back to the directory-controls window that it
+		    | it is being reloaded after the upload of a file. The uploaded file
+		    | should appear in the directory-view window, but wont unless it is
+		    | deliberately refreshed. The directory-controls will do this refresh
+		    | on receiving the echo back that we manufacture here!
+		    |
+		    | See the unLoad() JavaScript function in this module.
+		    |
+		    +-->
+		public String getAction() throws SAXException {
+        	if( TRACE_ENABLED ) trace( "directory-controls-xsp.getAction() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        	String actionValue = request.getParameter( "myspace-action" ) ;
+        	if( DEBUG_ENABLED ) debug( "myspace-action: " + actionValue ) ;
+        	if( actionValue == null )
+        	   return "" ;
+        	if( actionValue.indexOf("myspace-upload-file") == -1 ) {
+        	   return "" ;
+        	}
+            return "myspace-upload-file" ;        
+        }		
         
 		public String getSelected() throws SAXException {
         	if( TRACE_ENABLED ) trace( "directory-controls-xsp.getSelected() entry") ; 
@@ -51,11 +76,16 @@
         	if( TRACE_ENABLED ) trace( "directory-controls-xsp.getCurrentLocation() entry") ; 
         	
         	AttributesImpl xspAttr = new AttributesImpl() ;
+        	Session session = null ;
         	String initialValue = request.getParameter( "currentLocation" ) ;
-        	if( DEBUG_ENABLED ) debug( "currentLocation: " + initialValue ) ;
+        	if( initialValue == null ) {
+        	   session = request.getSession();
+        	   initialValue = (String)session.getAttribute( "AGO_MYSPACE_LAST_VIEW" ) ;
+        	}
         	if( initialValue == null ) {
         	   initialValue = "home/" ;
         	}
+        	if( DEBUG_ENABLED ) debug( "currentLocation: " + initialValue ) ;
             return initialValue ;        
         }               
         
@@ -71,25 +101,21 @@
             return initialValue ;
         }
          
-             
-        
-		private static void trace( String traceString ) {
-			System.out.println( traceString ) ;
+		private void trace( String traceString ) {
+			System.out.println( traceString ) ; 
+			<log:logger name="sitemap" />
+			<log:debug><xsp:expr>traceString</xsp:expr></log:debug>
 		}
 		
-		private static void debug( String traceString ) {
-			System.out.println( traceString ) ;
+		private void debug( String debugString ) {	
+			System.out.println( debugString ) ; 
+     		<log:logger name="sitemap" />			
+			<log:debug><xsp:expr>debugString</xsp:expr></log:debug>			
         }        
-        
-        	
+               	
 </xsp:logic>	
 	
 	
-	
-	
-	
-	
- 
     <ag-div>
       
       <ag-onload function="nofooter();"/>
@@ -99,12 +125,9 @@
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/extras.css"/>   
          
       <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
-
       <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
+   
       
-<!-- Script insertion from Pat begins here  -->      
-      
-
 <script language="javascript">
 
 var PARAM_ACTION = "myspace-action" ;
@@ -126,157 +149,18 @@ var ACTION_DELETE_DIRECTORY = "myspace-delete-directory";
 var ACTION_NEW_DIRECTORY = "myspace-new-directory";
 var ACTION_REFRESH_DIRECTORY = "myspace-refresh-directory";
 
-var F = new Array();
-F[0] = "copyDestiny";
-F[1] = "moveDestiny";
-F[2] = "uploadLocal";
-F[3] = "uploadURL";
-F[4] = "verification";
-F[5] = "sortBy";
-F[6] = "shareWith";
-F[7] = "findIt";
-F[8] = "editDestiny";
-F[9] = "spaceKeeper";
-
-var helpopen = 0;
-function pasteFile(){
-	parent.opener.document.main.whKRFile.value = document.dire.d.value + "/"
-	+ document.dire.e.value;
-	parent.close();
-}
-
-
-function maxHelp(){
-	var framy = parent.document.getElementById("browser");
-	helpopen = 1;
-	if(framy != null){
-		framy.cols = "0, 0, *";
-	}
-}
-
-
-function vanilla(){
-	confirm("vanilla action");
-}
-
-function vanillaIce(){
-}
-
-
 function uploadLocal(este){
-	// closeThingsButShow("uploadLocal");
-	// whiteOutInputs();
-	// document.dire.e.style.background = "orange";
-	// document.dire.localFile.style.background = "yellow";
     document.getElementById("uploadURL").style.display="none";
 	document.getElementById("uploadLocal").style.display="";
-
 	highlightTD(este);
 	dehighlightTD("uploadWebTD");
 }
 
 function uploadURL(este){
-	// whiteOutInputs();
-	// closeThingsButShow("uploadURL");
-	// document.dire.e.style.background = "orange";
-	// document.dire.URL.style.background = "yellow";
 	document.getElementById("uploadLocal").style.display="none";
 	document.getElementById("uploadURL").style.display="";
-
 	highlightTD(este);
 	dehighlightTD("uploadDesktopTD");
-}
-
-
-function _goUploadLocal(){
-	document.dire.e.style.background = "white";
-	document.dire.localFile.style.background = "white";
-
-	var dire = document.dire.d.value;
-	var dfile = document.dire.e.value;
-	var dpath = dire + "/" + dfile;
-	var spath = document.dire.localFile.value;
-	var ans = confirm("Uploading " + spath + " into " + dpath + " ?");
-	whiteOutInputs();
-	if(ans){
-		document.dire.action = "myWareHouse";
-		document.dire.target = "resultsFrame";
-		document.dire.p.value = dire;
-		document.dire.a.value = "string2msFile";
-		closeThingsButShow("verification");
-		document.dire.lock.value = "free";
-		document.dire.submit();
-	} else {
-		alert("Having second thoughts?");
-	}
-	dehighlightTD("uploadLocalTD");
-}
-
-
-
-
-function getFileName(){
-	var fullpath = document.dire.localFile.value;
-	alert(fullpath);
-}
-
-
-function blank(){
-	closeThings();
-}
-
-function sortBy(){
-	whiteOutInputs();
-	closeThingsButShow("sortBy");
-}
-
-
-
-function sharey(este){
-	whiteOutInputs();
-	closeThingsButShow("shareWith");
-	highlightTD(este);
-}
-
-
-function disclose(){
-	var framy = document.getElementById("destiny");
-	var ifram = document.getElementById("verification");
-	framy.style.display = "";
-	ifram.style.display = "none";
-}
-
-function whiteOutInputs(){
-	document.dire.d.style.background = "white";
-	document.dire.e.style.background = "white";
-	document.dire.e.style.background = "white";
-	document.dire.e.value = "";
-	document.dire.md.style.background = "white";
-	document.dire.cd.style.background = "white";
-}
-
-function renameFile(este){
-	closeThingsButShow("moveDestiny");
-/*	whiteOutInputs();*/
-	document.dire.lock.value = "locked";
-	var file = document.dire.e.value;
-	var dire = document.dire.d.value;
-	document.dire.e.value = dire + "/" + file;
-	document.dire.e.style.background = "yellow";
-	document.dire.md.style.background = "orange";
-	highlightTD(este);
-}
-
-function copyFile(este){
-	closeThingsButShow("copyDestiny");
-	document.dire.lock.value = "locked";
-	var file = document.dire.e.value;
-	var dire = document.dire.d.value;
-	document.dire.e.value = dire + "/" + file;
-	document.dire.e.style.background = "yellow";
-	document.dire.cd.style.background = "orange";
-	highlightTD(este);
-/*	whiteOutInputs();*/
 }
 
 function highlightTD(td){
@@ -289,59 +173,14 @@ function dehighlightTD(td){
 }
 
 
-function closeMe(){
-	parent.close();
-}
-
 function highlight(diese, tag){
 	diese.style.background = "#ffffff";
-//	if(helpopen == 1){
-//		var t = tag + "TD";
-//		var h = parent.editor.document.getElementById(t);
-//		if(h != null){
-//			h.style.display = "";
-//		} else {
-/*			alert(t + " is null");*/
-//		}
-//		var k = parent.editor.document.getElementById("defaultTD");
-//		if(k != null){
-//			k.style.display = "none";
-//		}
-//	}
 }
 
 function dehighlight(diese, tag){
 	diese.style.background = "#dddddd";
-//	if(helpopen == 1){
-// /*		var editor = parent.document.getElementById('editor');*/
-//		var h = parent.editor.document.getElementById(tag + "TD");
-//		if(h != null){
-//			h.style.display = "none";
-//		}
-//		/*
-//		var k = parent.editor.document.getElementById("defaultTD");
-//		if(k != null){
-//			k.style.display = "";
-//		}
-//		*/
-//	}
 }
 
-function dehighlightDir(diese, tag){
-	diese.style.background = "#ddddff";
-	if(helpopen == 1){
-		var h = parent.editor.document.getElementById(tag + "TD");
-		if(h != null){
-			h.style.display = "none";
-		}
-		/*
-		var k = parent.editor.document.getElementById("defaultTD");
-		if(k != null){
-			k.style.display = "";
-		}
-		*/
-	}
-}
 
 function setClipboard( mode ) {
     if( isSelected() == false || isCurrent() == false )
@@ -365,6 +204,7 @@ function resetClipboard() {
 
 
 function triggerAction( action ) {
+  <!-- alert( "triggerAction: " + action ) ; -->
 
   // top.directory.document.getElementById( 'myspace-action' ).value = action ;
   var doc = top.directory.document;
@@ -384,9 +224,6 @@ function triggerAction( action ) {
   window.close();
 }
 
-
-
-
 function navigateUp() {
     var path = new String( document.getElementById('currentLocation').value ) ;
     path = path.substring( 0, path.lastIndexOf('/') ) ;
@@ -396,6 +233,14 @@ function navigateUp() {
     setCurrent( path ) ;
     document.getElementById('selected').value = "*** none ***" ;
     window.open( "/astrogrid-portal/bare/mount/myspace/directory-view.xml?" + PARAM_DIRECTORY_VIEW_PATH + "=" + path, "directory" ) ;   
+}
+
+function getAction() {
+    return document.getElementById('myspace-action').value ;
+}
+
+function resetAction() {
+    document.getElementById('myspace-action').value = "";
 }
 
 function setCurrent( directory ){
@@ -452,7 +297,6 @@ function refreshFolder() {
 }
 
 
-
 function newFolder() {
     var folderName ;
     var reply ;
@@ -464,42 +308,45 @@ function newFolder() {
 	
 	if( folderName ) {	              
        top.directory.document.getElementById( PARAM_TARGET_NAME ).value = folderName ;
-       top.directory.document.getElementById( PARAM_TARGET_PATH ).value = getCurrent() ;
-       triggerAction( ACTION_NEW_DIRECTORY ) ;       
+       top.directory.document.getElementById( PARAM_TARGET_PATH ).value = getCurrent() ; 
+       triggerAction( ACTION_NEW_DIRECTORY ) ;
+       // top.tree.location.reload() ;             
     }	
     
-} // end newFolder()
+} <!-- end newFolder() -->
 
 
-// This action must be on this form!
+<!-- +
+     | This action must be on this form! 
+     + -->
 function goUploadFile() {
 
    var inputSource = document.getElementById("localFile").value ;
-   var separator = '\\' ;   // Default to Window's separator
+   var separator = '\\' ;   <!-- Default to Window's separator -->
    var originalFileName ;
    var newFileName ;
    var form ;
    
-   // Lack of input we take to mean Cancel...
+   <!-- Lack of input we take to mean Cancel... -->
    if( inputSource.length == 0 ) 
        return ;
     
-   // Establish the system separator by a simple heuristic...   
+   <!-- Establish the system separator by a simple heuristic... -->
    if( inputSource.lastIndexOf( separator ) == -1 )
       separator = '/' ;
        
-   // Find the file name...
+   <!-- Find the file name... -->
    originalFileName = inputSource.substring( inputSource.lastIndexOf( separator ) + 1 ) ;
-   // alert( originalFileName ) ;
+   <!-- alert( originalFileName ) ; -->
    
-   // Any problems and we assume Cancel...
+   <!-- Any problems and we assume Cancel... -->
    if( originalFileName.length == 0 ) 
        return ;
        
-   newFileName = newName( "Upload"                                    // option
-	                    , "Supply a new name for the uploaded file"   // title
-	                    , originalFileName                            // defaultName
-	                    , "File" ) ;                                  // type of source item 
+   newFileName = newName( "Upload"                                    <!-- option -->
+	                    , "Supply a new name for the uploaded file"   <!-- title -->
+	                    , originalFileName                            <!-- defaultName -->
+	                    , "File" ) ;                                  <!-- type of source item  -->
 	
    if( newFileName ) { 
        document.getElementById( PARAM_TARGET_NAME ).value = newFileName ;
@@ -507,12 +354,23 @@ function goUploadFile() {
        document.getElementById( PARAM_TARGET_PATH ).value = getCurrent() ;       
        document.getElementById( PARAM_ACTION ).value = ACTION_UPLOAD_FILE ;
        form = document.getElementById( 'myspace-action-form' );
-//          alert( "getElementById( PARAM_TARGET_NAME ).value: " + document.getElementById( PARAM_TARGET_NAME ).value +
-//                 "\ngetElementById( PARAM_SOURCE_NAME ).value: " + document.getElementById( PARAM_SOURCE_NAME ).value ) ;     
+       <!--
+          alert( "getElementById( PARAM_TARGET_NAME ).value: " + document.getElementById( PARAM_TARGET_NAME ).value +
+                 "\ngetElementById( PARAM_SOURCE_NAME ).value: " + document.getElementById( PARAM_SOURCE_NAME ).value ) ;     
+       -->
        form.submit();
        window.close();
    }  
      
+} <!-- end of goUploadFile() -->
+
+
+function onLoad() {
+	<!-- alert( "Watcha directory-controls!\n" + "getAction(): " + getAction() ) ; -->
+    if( getAction() == "myspace-upload-file" ) {
+       resetAction() ; 
+       refreshFolder() ;
+    }
 }
 
 
@@ -553,11 +411,7 @@ function goUploadURL() {
 }
 
 
-
-
-
 function paste() {
-
     //alert( "paste" ) ;
 
     var clipboardElement = document.getElementById('clipboard') ;
@@ -612,7 +466,6 @@ function paste() {
 	}      
    
 } // end of paste()
-
 
 
 function deleteIt() {
@@ -766,16 +619,14 @@ function newName( option, title, defaultName, itemType ) {
 
 </script>
       
-      
-      
-<!-- Script insertion from Pat ends here -->      
-
 	    <form
             id="myspace-action-form"
             action="/astrogrid-portal/bare/mount/myspace/directory-controls-action"
             method="POST"
             enctype="multipart/form-data">
-          <input id="myspace-action" name="myspace-action" type="hidden"/>
+          <input id="myspace-action" name="myspace-action" type="hidden">
+              <xsp:attribute name="value"><xsp:expr>getAction()</xsp:expr></xsp:attribute>
+          </input>
           <input id="myspace-target-name" name="myspace-target-name" type="hidden"/>
           <input id="myspace-target-path" name="myspace-target-path" type="hidden"/>
           <input id="myspace-source-name" name="myspace-source-name" type="hidden"/>
@@ -820,7 +671,7 @@ function newName( option, title, defaultName, itemType ) {
                                           onmouseout="dehighlight(this, 'moveIt')" 
                                           onClick="setClipboard( 'Move' )"
                                           title="Move selected file to clipboard"
-                                          nowrap="true">Move
+                                          nowrap="true">Cut
                                       </td>
                                       <td id="pasteItTD" align="center" class="naviButton"
                                           onmouseover="highlight(this, 'pasteIt')"

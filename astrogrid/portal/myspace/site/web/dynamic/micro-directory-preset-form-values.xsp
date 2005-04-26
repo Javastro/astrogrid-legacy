@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java" 
+		  create-session="true"
+		  xmlns:xsp="http://apache.org/xsp"
+		  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+  		  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>	
+		
+<xsp:structure>
+   <xsp:include>org.apache.cocoon.environment.Request</xsp:include>
+   <xsp:include>org.apache.cocoon.environment.Session</xsp:include>		
+</xsp:structure>
+
+   <mode><xsp-request:get-parameter name="requested-mode" default="main" as="string"/></mode>
+
+</xsp:page>
