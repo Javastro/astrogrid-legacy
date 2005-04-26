@@ -17,9 +17,10 @@ import org.astrogrid.portal.workflow.intf.*;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Group;
-import org.astrogrid.jes.delegate.JobSummary;
+//import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
+import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
 
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
@@ -104,6 +105,7 @@ public class JesAction extends AbstractAction {
 	public static final String CONFIRM_PARAM_TAG = "confirm";
     
     public static final String HTTP_JOBLIST_TAG = "job-list-tag" ,
+                               HTTP_JOBSUMMARY_TAG = "job-summary-tag" ,
 							   JOBURN_PARAMETER = "jobURN" ,
                                HTTP_WORKFLOW_TAG = "workflow-tag",
 	                           HTTP_WORKFLOW_STATUS_TAG = "workflow-staus-tag",
@@ -240,14 +242,17 @@ public class JesAction extends AbstractAction {
                 }  
 				else if( action.equals( ACTION_CANCEL_JOB ) ) {
 					this.cancelJob(); 
-					this.readJobList();
+					// this.readJobList();
+					this.readJobSummaryList();
 				}
 				else if( action.equals( ACTION_DELETE_JOB ) ) {
 					this.deleteJob() ;
-					this.readJobList();
+					// this.readJobList();
+					this.readJobSummaryList();
 				}                   
                 else if( action.equals( ACTION_READ_JOB_LIST ) ) {
-                    this.readJobList(); 
+                    // this.readJobList(); 
+                	this.readJobSummaryList();
                 }
 				else if( action.equals( ACTION_READ_JOB ) ) {
 					this.readJob(); 
@@ -366,50 +371,36 @@ public class JesAction extends AbstractAction {
             }
 			if( TRACE_ENABLED ) trace( "consistencyCheck()) exit" );
         }
-        
-        
-        private void readJobList() {
-            if( TRACE_ENABLED ) trace( "JesActionImpl.readJobList() entry" );
+         
+
+
+       /** add list of jobs for a particular user to session
+        * 
+        */               
+        private void readJobSummaryList() {
+            if( TRACE_ENABLED ) trace( "JesActionImpl.readJobSummaryList() entry" );
               
             try {
-                // For the moment this is where we have placed the door.
-                // If users cannot see a list, then they cannot do anything...
-//                this.checkPermissions( AUTHORIZATION_RESOURCE_JOB
-//                                     , AUTHORIZATION_ACTION_EDIT );
-                
                 JobExecutionService jes = workflowManager.getJobExecutionService();
-                JobSummary[] jobSummaries = jes.readJobList( credentials.getAccount() ) ;
-                Workflow[] workflows = new Workflow[ jobSummaries.length ]; 
+                WorkflowSummaryType[] workflowSummaries = jes.listJobs( credentials.getAccount() ) ;               
                 
-                for( int i=0; i<workflows.length; i++ ) {
-                	try 
-                	{                	
-                        workflows[i] = jes.readJob( jobSummaries[i].getJobURN() );
-                	}
-                	catch(Exception e) 
-                	{
-                		// bug # 673 - ignore error thrown by jes at this point and continue reading list
-						// org.astrogrid.jes.job.NotFoundException:
-                	}
-                }
-    
-                this.request.setAttribute( HTTP_JOBLIST_TAG, workflows );
+                this.request.setAttribute( HTTP_JOBSUMMARY_TAG, workflowSummaries );
             }
             catch( WorkflowInterfaceException wix ) {
                  this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
             }
             catch( Exception ex ) {
                 ex.printStackTrace() ;                
-                this.request.setAttribute(  ERROR_MESSAGE_PARAMETER, "permission denied" );
+                this.request.setAttribute(  ERROR_MESSAGE_PARAMETER, "unable to retrieve workflow summary info" );
                 
             }
             finally {
                 if( TRACE_ENABLED )
-                   trace( "JesActionImpl.readJobList() exit" );
+                   trace( "JesActionImpl.readJobSummaryList() exit" );
             }
                     
-        } // end of readJobList()   
-
+        } // end of readJobSummaryList()   
+        
 
 		private void cancelJob() {
 			if( TRACE_ENABLED ) trace( "JesActionImpl.cancelJob() entry" );

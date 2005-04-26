@@ -13,6 +13,7 @@
           +-->
       <xsl:template match="/">
          <ag-div>
+            <meta http-equiv="refresh" content="20" />
             <agComponentTitle>Job Monitor</agComponentTitle>
             <ag-script type="text/javascript" src="/astrogrid-portal/mount/workflow/workflow-functions.js"/>                                         
             <xsl:apply-templates/>               
@@ -33,6 +34,9 @@
                <xsl:choose>               
                  <xsl:when test="$show_job_link = 'true'">
                    <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">
+                   
+<!-- Removed toggle on jobid as refreshing page ignores more/less status
+
                     <div class="jobIdColumn" style="display: none;">
                        <xsl:attribute name="id">full_column_heading</xsl:attribute>               
                        <xsl:element name="a">  
@@ -59,14 +63,18 @@
                        </font>
                        <xsl:element name="/a"></xsl:element> 
                     </div>                                      
-                    Job ID   
+-->                
+
+                   Job ID   
                  </td>
                </xsl:when>
                <xsl:otherwise>
                  <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">Job ID</td>
                </xsl:otherwise>
-             </xsl:choose>               
-             <td style="color: blue; background-color: lightblue; text-align: center;">Delete/Cancel?</td> 
+             </xsl:choose>
+             <xsl:if test="$show_job_link = 'true'">                                    
+               <td style="color: blue; background-color: lightblue; text-align: center;">Delete/Cancel?</td> 
+             </xsl:if>                      
             </tr>
             <xsl:for-each select="//job">
                <tr>    
@@ -92,7 +100,7 @@
                         <xsl:otherwise>
                           <xsl:choose>
                             <xsl:when test="$show_job_link = 'true'">                        
-                             <div class="jobIdColumn" style="display: none;">                      
+                             <div class="jobIdColumn" >                      
                                 <xsl:attribute name="id">full_<xsl:value-of select="@jobid"/></xsl:attribute> 
                                 <xsl:element name="a">
                                    <xsl:attribute name="href">/astrogrid-portal/main/mount/workflow/agjobmanager-job-status.html?action=read-job&amp;jobURN=<xsl:value-of select="@jobid"/></xsl:attribute>
@@ -100,7 +108,7 @@
                                 <xsl:value-of select="@jobid"/>
                                 <xsl:element name="/a"></xsl:element>
                              </div>
-                             <div class="jobIdColumn">
+                             <div class="jobIdColumn" style="display: none;">
                                <xsl:attribute name="id">short_<xsl:value-of select="@jobid"/></xsl:attribute>
                                <xsl:element name="a">                  
                                   <xsl:attribute name="href">/astrogrid-portal/main/mount/workflow/agjobmanager-job-status.html?action=read-job&amp;jobURN=<xsl:value-of select="@jobid"/></xsl:attribute>
@@ -116,17 +124,22 @@
                               <xsl:value-of select="@jobid"/>
                            </div>
                            <div class="jobIdColumn">
-                             <xsl:attribute name="id">short_<xsl:value-of select="@jobid"/></xsl:attribute>
-                             ......<xsl:value-of select="@jobid-short"/>                          
+                                <xsl:element name="a">
+                                   <xsl:attribute name="href">/astrogrid-portal/main/mount/workflow/agjobmanager-job-status.html?action=read-job&amp;jobURN=<xsl:value-of select="@jobid"/></xsl:attribute>
+                                   <xsl:attribute name="target">_top</xsl:attribute>
+                                </xsl:element>
+                                <xsl:value-of select="@jobid-short"/>
+                                <xsl:element name="/a"></xsl:element>                         
                            </div>
                          </xsl:otherwise>
                         </xsl:choose>                                                   
                       </xsl:otherwise>                                                                 
                      </xsl:choose>                     
                      </td>
-                     <td align="center">
-                       <xsl:choose>                                      
-                          <xsl:when test="@status = 'ERROR'">  <!--  ERROR -->
+                     <xsl:if test="$show_job_link = 'true'">                     
+                       <td align="center">
+                         <xsl:choose>                                      
+                           <xsl:when test="@status = 'ERROR'">  <!--  ERROR -->
                               <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form" method="post">
                                   <xsl:element name="input">                              
                                       <xsl:attribute name="type">hidden</xsl:attribute>
@@ -160,7 +173,8 @@
                               </form>                        
                           </xsl:otherwise>
                       </xsl:choose>                                                                                                                                                                                      
-                  </td>                 
+                    </td>                 
+                  </xsl:if>
                </tr>
             </xsl:for-each>
          </table>                                                                                                                
