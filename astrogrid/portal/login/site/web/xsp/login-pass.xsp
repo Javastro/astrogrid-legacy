@@ -2,8 +2,8 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xsp/login-pass.xsp,v $</cvs:source>
     | <cvs:author>$Author: pjn3 $</cvs:author>
-    | <cvs:date>$Date: 2005/04/27 13:56:47 $</cvs:date>
-    | <cvs:version>$Revision: 1.16 $</cvs:version>
+    | <cvs:date>$Date: 2005/04/27 15:01:57 $</cvs:date>
+    | <cvs:version>$Revision: 1.17 $</cvs:version>
     |
     +-->
 <xsp:page language="java"
@@ -78,24 +78,24 @@ function toggle(yo, was){
 -->
   <table border="0" cellpadding="3">
   <tr><td valign="top">
-  <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalHelpPages','HELPW')" class="strongLink">FAQ</a>
+  <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/UsingScienceServices','HELPW')" class="strongLink">Science Services</a>
   </td><td valign="top">
   <span class="frontPageText">
-  Frequently Asked Questions from new and experienced users.
+  How to use the Redshift Maker and Solar Movie Maker.
   </span>
   </td></tr>
   <tr><td valign="top">
-  <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalHelpPages','HELPW')" class="strongLink">Cook-book</a>
+  <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalUsage','HELPW')" class="strongLink">Portal Usage</a>
   </td><td valign="top">
   <span class="frontPageText">
-  Using the AstroGrid tools:  science-oriented examples.
+  Help on building queries and workflows.
   </span>
   </td></tr>
   <tr><td valign="top">
-  <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalHelpPages','HELPW')" class="strongLink">How-to</a>
+  <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalCookBook','HELPW')" class="strongLink">Cook-book</a>
   </td><td valign="top">
   <span class="frontPageText">
-  Tips, tricks and tutorials.
+  Examples and tutorials.
   </span>
   </td></tr></table>
 
@@ -465,6 +465,9 @@ Locate Spectral data
 <!--+
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
+    |   Revision 1.17  2005/04/27 15:01:57  pjn3
+    |   Further link changes
+    |
     |   Revision 1.16  2005/04/27 13:56:47  pjn3
     |   Help links now point to wiki help
     |
