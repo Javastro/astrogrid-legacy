@@ -4,6 +4,11 @@
     <author email="jdt@roe.ac.uk">John Taylor</author>
   </properties>
   <body>
+  <release version="(Pending Integration)">
+        <action dev="jdt" type="add" > 
+            Some example new feature that I want merged.
+        </action>    
+   </release>    
   <release version="HEAD">
         <action dev="kmb" type="add" > 
             Added configuration pages to FileStore webapp.
