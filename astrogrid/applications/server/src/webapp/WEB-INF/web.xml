@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
 <web-app>
   <display-name>Astrogrid CEA Server</display-name>
+	<listener>
+		<listener-class>org.astrogrid.applications.component.LifecycleListener</listener-class>
+	</listener>
   <servlet>
     <servlet-name>AxisServlet</servlet-name>
     <display-name>Apache-Axis Servlet</display-name>
@@ -9,38 +14,11 @@
         org.apache.axis.transport.http.AxisServlet
     </servlet-class>
   </servlet>
-  <listener>
-	<listener-class>org.astrogrid.applications.component.LifecycleListener</listener-class>
-	</listener>
-<!-- Don't want this
-  <servlet>
-    <servlet-name>AdminServlet</servlet-name>
-    <display-name>Axis Admin Servlet</display-name>
-    <servlet-class>
-        org.apache.axis.transport.http.AdminServlet
-    </servlet-class>
-    <load-on-startup>100</load-on-startup>
-  </servlet>
-  -->
  <servlet>
     <servlet-name>JUnitEETestServlet</servlet-name>
     <description>JUnitEE test runner</description>
     <servlet-class>org.junitee.servlet.JUnitEEServlet</servlet-class>
   </servlet>
-<!-- or this either
-  <servlet>
-    <servlet-name>SOAPMonitorService</servlet-name>
-    <display-name>SOAPMonitorService</display-name>
-    <servlet-class>
-        org.apache.axis.monitor.SOAPMonitorService
-    </servlet-class>
-    <init-param>
-      <param-name>SOAPMonitorPort</param-name>
-      <param-value>5001</param-value>
-    </init-param>
-    <load-on-startup>100</load-on-startup>
-  </servlet>
--->
   <servlet>
       <servlet-name>cec-http</servlet-name>
       <description>
@@ -62,12 +40,7 @@
     <url-pattern>/servlet/AxisServlet</url-pattern>
   </servlet-mapping>
 
-  <!-- shouldn't enable this - we don't need it
-  <servlet-mapping>
-    <servlet-name>AxisServlet</servlet-name>
-    <url-pattern>*.jws</url-pattern>
-  </servlet-mapping>
--->
+
   <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
     <url-pattern>/services/*</url-pattern>
@@ -87,7 +60,6 @@
      <mime-type>text/xml</mime-type>
   </mime-mapping>
 
-
   <mime-mapping>
     <extension>xsd</extension>
     <mime-type>text/xml</mime-type>
@@ -96,18 +68,35 @@
   <welcome-file-list id="WelcomeFileList">
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.jsp</welcome-file>
-    <!--
-    <welcome-file>index.jws</welcome-file>
-    -->
   </welcome-file-list>
 
   <!-- edit this env entry to use a custom component manager - e.g. for a different cea implementation -->
   <env-entry>
-        <description>Class name of the component manager implementation to use</description>
-        <env-entry-name>cea.component.manager.class</env-entry-name>
-<!--        <env-entry-value>org.astrogrid.applications.component.JavaClassCEAComponentManager</env-entry-value>-->
+    <description>Class name of the component manager implementation to use</description>
+    <env-entry-name>cea.component.manager.class</env-entry-name>
 		<env-entry-value>org.astrogrid.applications.apps.AppsCEAComponentManager</env-entry-value>
-        <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-type>java.lang.String</env-entry-type>
   </env-entry>
+	
+	<env-entry>
+		<description>The service endpoint for querying the resource registry.</description>
+		<env-entry-name>org.astrogrid.registry.query.endpoint</env-entry-name>
+		<env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryQuery</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
 
+	<env-entry>
+		<description>The service endpoint for updating the resource registry.</description>
+		<env-entry-name>org.astrogrid.registry.admin.endpoint</env-entry-name>
+		<env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryUpdate</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+	
+	<env-entry>
+		<description>The version of the schema for resource documents: 0.9 or 0.10."</description>
+		<env-entry-name>org.astrogrid.registry.result.version</env-entry-name>
+		<env-entry-value>0.10</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+	
 </web-app>
