@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xsp/login-pass.xsp,v $</cvs:source>
-    | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/04/06 13:54:26 $</cvs:date>
-    | <cvs:version>$Revision: 1.15 $</cvs:version>
+    | <cvs:author>$Author: pjn3 $</cvs:author>
+    | <cvs:date>$Date: 2005/04/27 13:56:47 $</cvs:date>
+    | <cvs:version>$Revision: 1.16 $</cvs:version>
     |
     +-->
 <xsp:page language="java"
@@ -78,21 +78,21 @@ function toggle(yo, was){
 -->
   <table border="0" cellpadding="3">
   <tr><td valign="top">
-  <a href="javascript:newWindow('/astrogrid-portal/bare/mount/help/faq.hlp','HELPW')" class="strongLink">FAQ</a>
+  <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalHelpPages','HELPW')" class="strongLink">FAQ</a>
   </td><td valign="top">
   <span class="frontPageText">
   Frequently Asked Questions from new and experienced users.
   </span>
   </td></tr>
   <tr><td valign="top">
-  <a href="javascript:newWindow('/astrogrid-portal/bare/mount/help/cookbook.hlp','HELPW')" class="strongLink">Cook-book</a>
+  <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalHelpPages','HELPW')" class="strongLink">Cook-book</a>
   </td><td valign="top">
   <span class="frontPageText">
   Using the AstroGrid tools:  science-oriented examples.
   </span>
   </td></tr>
   <tr><td valign="top">
-  <a href="javascript:newWindow('/astrogrid-portal/bare/mount/help/howTo.hlp','HELPW')" class="strongLink">How-to</a>
+  <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalHelpPages','HELPW')" class="strongLink">How-to</a>
   </td><td valign="top">
   <span class="frontPageText">
   Tips, tricks and tutorials.
@@ -272,7 +272,7 @@ function toggle(yo, was){
   <iframe style="border: solid 0px white; background-color: transparent"
   marginWidth="0px" scrolling="yes" hspace="0px" vspace="0px" frameborder="no"
   allowtransparency="true" onload="setRelHeight(this, 100)"
-  src="/astrogrid-portal/veryBare/mount/workflow/agjobmanager-jes-homepage.html?action=read-job-list"
+  src="/astrogrid-portal/veryBare/mount/workflow/agjobmanager-jes.html?action=read-job-list"
   marginHeight="0px" border="0px" height="400px" width="98%"
   name="jobMonitorFrame">ag</iframe>
 </center>
@@ -465,11 +465,8 @@ Locate Spectral data
 <!--+
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
-    |   Revision 1.15  2005/04/06 13:54:26  clq2
-    |   pjn_1045/1054
-    |
-    |   Revision 1.14.8.1  2005/04/04 13:44:35  pjn3
-    |   joblist on homepage no longer contains nested links
+    |   Revision 1.16  2005/04/27 13:56:47  pjn3
+    |   Help links now point to wiki help
     |
     |   Revision 1.14  2005/03/31 10:01:01  pjn3
     |   links to webstart apps corrected
