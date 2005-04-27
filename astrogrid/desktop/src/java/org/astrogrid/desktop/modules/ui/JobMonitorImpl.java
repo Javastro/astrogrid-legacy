@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.2 2005/04/13 12:59:18 nw Exp $
+/*$Id: JobMonitorImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,17 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.Jobs;
+import org.astrogrid.acr.astrogrid.Portal;
+import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.UI;
+import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.Community;
-import org.astrogrid.desktop.modules.ag.Jobs;
-import org.astrogrid.desktop.modules.ag.Portal;
-import org.astrogrid.desktop.modules.ag.UserLoginEvent;
-import org.astrogrid.desktop.modules.ag.UserLoginListener;
-import org.astrogrid.desktop.modules.system.BrowserControl;
-import org.astrogrid.desktop.modules.system.Configuration;
-import org.astrogrid.desktop.modules.system.UI;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
@@ -264,17 +265,14 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     
   
     
-    /** worker thread that fetches job list 
-     * @todo - at moment jes returns incorrect list - need
-     * to fetchh each job on the list in full to fill in the gaps.
-     * inefficient - to fix on jes server side. */
+    /** worker thread that fetches job list */
    protected final class RefreshWorker extends BackgroundOperation {
         public RefreshWorker() {
             super("Refreshing job list");
         }
         protected Object construct() throws Exception {
             WorkflowSummaryType[] results = jobs.listSummaries();
-            
+            /* after bugfix jes-nww-776-agan, this is no longer necessary -makes things a lot faster.
             for (int i = 0; i < results.length; i++) {
                Workflow wf = jobs.getJob(results[i].getJobId());
                results[i].setFinishTime(wf.getJobExecutionRecord().getFinishTime());
@@ -282,6 +280,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                results[i].setStatus(wf.getJobExecutionRecord().getStatus());
                results[i].setDescription(wf.getDescription());
             }
+            */
             return results;
            
         }
@@ -455,7 +454,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         }
     }
     /**
-     * @see org.astrogrid.desktop.modules.ag.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogin(UserLoginEvent e) {
         if (timer != null && !timer.isRunning()) {
@@ -463,7 +462,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         }
     }
     /**
-     * @see org.astrogrid.desktop.modules.ag.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogout(UserLoginEvent e) {
         if (timer != null && timer.isRunning()) {
@@ -695,7 +694,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 
     /**
-     * @see org.astrogrid.desktop.modules.ui.JobMonitor#refresh()
+     * @see org.astrogrid.acr.ui.JobMonitor#refresh()
      */
     public void refresh() {
         // either refresh oursevles (if on event dsipatch thread), toehrwise invoke later.
@@ -716,6 +715,16 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.3  2005/04/27 13:42:40  clq2
+1082
+
+Revision 1.2.2.2  2005/04/25 19:49:35  nw
+changed job monitor to take advantage of fixed bug 776
+
+Revision 1.2.2.1  2005/04/25 11:18:50  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
 Revision 1.2  2005/04/13 12:59:18  nw
 checkin from branch desktop-nww-998
 

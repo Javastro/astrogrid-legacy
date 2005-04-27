@@ -1,4 +1,4 @@
-/*$Id: DefaultModuleRegistry.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: DefaultModuleRegistry.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,11 @@
 **/
 package org.astrogrid.desktop.framework;
 
+import org.astrogrid.acr.builtin.Module;
+import org.astrogrid.acr.builtin.ModuleRegistry;
+import org.astrogrid.acr.builtin.NewModuleEvent;
+import org.astrogrid.acr.builtin.NewModuleListener;
+import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
@@ -26,7 +31,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-/** Container for a set of modules.
+/** Default implementation fo a {@link ModuleRegistry}
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
  *
  */
@@ -48,7 +53,7 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
         notifyListeners(m); // probably haven't got any listeners yet.
     }
     
-    /**
+    /** constructs the builtin module - contains the registry itself, and the shutdown component. may add more later.
      * @return
      */
     private final Module buildBuiltinModule() {
@@ -86,6 +91,13 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
 
     protected final OrderedMap modules ;
     
+    /** register a new module
+     * 
+     * creates a module object from the descriptor, populates the module by registering components, 
+     * and then registers aspects - at the moment, just a progress interceptor that turn the GUI throbber on at the start of a method call, 
+     * and off again at the end.
+     * 
+     *  */
     public void register(ModuleDescriptor desc) {
         logger.info("Building module for " + desc.getName());
        // logger.debug(desc);
@@ -111,7 +123,7 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
         PointcutsFactory cuts = m1.getPointcutsFactory();
     //    m1.registerInterceptor(cuts.allClasses(),publicMethods(cuts),new LoggingInterceptor());
         m1.registerInterceptor(notBuiltinOrSystem(cuts),publicMethods(cuts),"throbber");
-        m1.start(); // order of these is important - as there may be reg listeners in m1        
+        m1.start(); // order of these is important - as there may be reg listeners in m1  - so need to start it before notifying listners.      
         modules.put(m1.getDescriptor().getName(),m1);
         notifyListeners(m1);
         
@@ -149,7 +161,7 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
     }
     
     /**
-     * @see org.astrogrid.desktop.framework.ModuleRegistry#addNewModuleListener(org.astrogrid.desktop.framework.NewModuleListener)
+     * @see org.astrogrid.acr.builtin.ModuleRegistry#addNewModuleListener(org.astrogrid.desktop.framework.NewModuleListener)
      */
     public void addNewModuleListener(NewModuleListener l) {
         listeners.add(l);
@@ -160,7 +172,7 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
     }
 
     /**
-     * @see org.astrogrid.desktop.framework.ModuleRegistry#removeNewModuleListener(org.astrogrid.desktop.framework.NewModuleListener)
+     * @see org.astrogrid.acr.builtin.ModuleRegistry#removeNewModuleListener(org.astrogrid.desktop.framework.NewModuleListener)
      */
     public void removeNewModuleListener(NewModuleListener l) {
         listeners.remove(l);
@@ -170,6 +182,16 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
 
 /* 
 $Log: DefaultModuleRegistry.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.2  2005/04/25 11:18:51  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
+Revision 1.2.2.1  2005/04/22 15:59:26  nw
+made a star documenting desktop.
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

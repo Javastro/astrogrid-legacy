@@ -1,4 +1,4 @@
-/*$Id: Bootloader.java,v 1.2 2005/04/13 12:59:12 nw Exp $
+/*$Id: Bootloader.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.InputStream;
 
-/** loads the first core modules, and gets the system underway.
+/** Parses a series of module descriptors to initially populate the registry.
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
@@ -43,24 +43,26 @@ public class Bootloader implements Startable{
     protected final DefaultModuleRegistry reg;
     protected final DescriptorParser parser;
 
-    /** load in the core modules...
+    /** load in the core modules.
      * @see org.picocontainer.Startable#start()
      */
     public void start() {
         registerModule("system","/org/astrogrid/desktop/modules/system/module.xml");
         registerModule("astrogrid","/org/astrogrid/desktop/modules/ag/module.xml");
         registerModule("ui","/org/astrogrid/desktop/modules/ui/module.xml");            
-        //registerModule("parameterized-workflows","/org/astrogrid/desktop/modules/pw/module.xml");
+        registerModule("dialogs","/org/astrogrid/desktop/modules/dialogs/module.xml");
         registerModule("scripting","/org/astrogrid/desktop/modules/scripting/module.xml");
         registerModule("external","/org/astrogrid/desktop/modules/external/module.xml");  
-
+        
     }
-
-    /**
-     * @param is
-     * @throws IllegalStateException
-     */
-    private void registerModule(String name, String resourcePath) throws IllegalStateException {
+    
+/**Parse and process a module descriptor
+ * 
+ * @param name name of this module - used to generate friendly error and log message
+ * @param resourcePath - classpath to this resource
+ * @throws IllegalStateException
+ */
+    private void registerModule(String name, String resourcePath) throws PicoInitializationException {
         logger.info("Looking for " + name + " - " + resourcePath);
         InputStream is = this.getClass().getResourceAsStream(resourcePath);
         if (is == null) {
@@ -92,6 +94,15 @@ public class Bootloader implements Startable{
 
 /* 
 $Log: Bootloader.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.2  2005/04/22 15:59:26  nw
+made a star documenting desktop.
+
+Revision 1.2.2.1  2005/04/22 10:53:19  nw
+added in dialogues module.
+
 Revision 1.2  2005/04/13 12:59:12  nw
 checkin from branch desktop-nww-998
 

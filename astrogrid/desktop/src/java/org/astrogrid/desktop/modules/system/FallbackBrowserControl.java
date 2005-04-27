@@ -1,4 +1,4 @@
-/*$Id: FallbackBrowserControl.java,v 1.2 2005/04/13 12:59:12 nw Exp $
+/*$Id: FallbackBrowserControl.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,9 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+
+import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.acr.system.UrlRoot;
 
 import java.net.URL;
 
@@ -31,7 +34,7 @@ public class FallbackBrowserControl implements BrowserControl {
 
     protected final UrlRoot root;
     /**
-     * @see org.astrogrid.desktop.modules.system.BrowserControl#openURL(java.lang.String)
+     * @see org.astrogrid.acr.system.BrowserControl#openURL(java.lang.String)
      */
     public void openURL(String stringUrl) throws Exception{
         URL url = new URL(stringUrl);
@@ -39,14 +42,14 @@ public class FallbackBrowserControl implements BrowserControl {
     }
 
     /**@todo implement
-     * @see org.astrogrid.desktop.modules.system.BrowserControl#openURL(java.net.URL)
+     * @see org.astrogrid.acr.system.BrowserControl#openURL(java.net.URL)
      */
     public void openURL(URL url) throws Exception {
        JOptionPane.showMessageDialog(null,"Please go to \n" + url.toString(),"Could not control browser",JOptionPane.INFORMATION_MESSAGE);
     }
     
     /**
-     * @see org.astrogrid.desktop.modules.system.BrowserControl#openRelative(java.lang.String)
+     * @see org.astrogrid.acr.system.BrowserControl#openRelative(java.lang.String)
      */
     public void openRelative(String relativeURL) throws Exception {
         URL url = new URL(root.getUrlRoot()+ relativeURL);
@@ -59,6 +62,13 @@ public class FallbackBrowserControl implements BrowserControl {
 
 /* 
 $Log: FallbackBrowserControl.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.1  2005/04/25 11:18:51  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
 Revision 1.2  2005/04/13 12:59:12  nw
 checkin from branch desktop-nww-998
 

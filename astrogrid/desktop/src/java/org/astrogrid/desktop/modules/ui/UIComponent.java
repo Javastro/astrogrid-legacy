@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.2 2005/04/13 12:59:18 nw Exp $
+/*$Id: UIComponent.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.desktop.modules.system.Configuration;
-import org.astrogrid.desktop.modules.system.UI;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.UI;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
 
+import java.awt.Component;
 import java.awt.HeadlessException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -58,7 +59,7 @@ public class UIComponent extends PositionRememberingJFrame {
      * 	
      * @return javax.swing.JPanel	
      */
-    protected JPanel getBottomPanel() {
+    public JPanel getBottomPanel() {
     	if (bottomPanel == null) {
     		bottomPanel = new JPanel();
     		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
@@ -109,8 +110,13 @@ public class UIComponent extends PositionRememberingJFrame {
     }
 
     protected void showError(String msg, Throwable e) {
-        logger.debug(msg,e); 
-        JOptionPane.showMessageDialog(this,msg + "\nCause\n" + e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+        showError(this,msg,e);
+    }
+    
+    // static variant - handy to have.
+    public static final void showError(Component parent,String msg, Throwable e) {
+        logger.info(msg,e); 
+        JOptionPane.showMessageDialog(parent,msg + "\nCause\n" + e,"Error",JOptionPane.ERROR_MESSAGE);        
     }
 
     /**
@@ -170,6 +176,19 @@ public class UIComponent extends PositionRememberingJFrame {
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.3  2005/04/27 13:42:40  clq2
+1082
+
+Revision 1.2.2.3  2005/04/25 11:18:51  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
+Revision 1.2.2.2  2005/04/22 10:55:32  nw
+implemented vospace file chooser dialogue.
+
+Revision 1.2.2.1  2005/04/15 13:00:45  nw
+got vospace browser working.
+
 Revision 1.2  2005/04/13 12:59:18  nw
 checkin from branch desktop-nww-998
 

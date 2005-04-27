@@ -1,4 +1,4 @@
-/*$Id: MethodDescriptor.java,v 1.2 2005/04/13 12:59:13 nw Exp $
+/*$Id: MethodDescriptor.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ public class MethodDescriptor extends Descriptor {
     
     protected final List parameterValues = new ArrayList();
         
+    /** get descriptor for the return value of this method */
     public ValueDescriptor getReturnValue() {
         return this.returnValue;
     }
@@ -43,6 +44,7 @@ public class MethodDescriptor extends Descriptor {
         parameterValues.add(desc);
     }
     
+    /** iterate over parameter descriptors  */
     public Iterator parameterIterator() {
         return parameterValues.iterator();
     }
@@ -65,6 +67,12 @@ public class MethodDescriptor extends Descriptor {
 
 /* 
 $Log: MethodDescriptor.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.1  2005/04/22 15:59:26  nw
+made a star documenting desktop.
+
 Revision 1.2  2005/04/13 12:59:13  nw
 checkin from branch desktop-nww-998
 

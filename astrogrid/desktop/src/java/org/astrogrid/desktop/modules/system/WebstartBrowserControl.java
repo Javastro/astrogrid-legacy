@@ -1,4 +1,4 @@
-/*$Id: WebstartBrowserControl.java,v 1.2 2005/04/13 12:59:12 nw Exp $
+/*$Id: WebstartBrowserControl.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.acr.system.UrlRoot;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 
 import org.apache.commons.beanutils.MethodUtils;
@@ -52,7 +54,7 @@ public class WebstartBrowserControl extends FallbackBrowserControl implements Br
 
 
     /**
-     * @see org.astrogrid.desktop.modules.system.BrowserControl#openURL(java.net.URL)
+     * @see org.astrogrid.acr.system.BrowserControl#openURL(java.net.URL)
      */
     public void openURL(URL url) throws Exception {
         if (basicService == null) {
@@ -70,6 +72,13 @@ public class WebstartBrowserControl extends FallbackBrowserControl implements Br
 
 /* 
 $Log: WebstartBrowserControl.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.1  2005/04/25 11:18:51  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
 Revision 1.2  2005/04/13 12:59:12  nw
 checkin from branch desktop-nww-998
 

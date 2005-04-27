@@ -10,7 +10,7 @@
 	</property>
 	<component name="community" 
 		implementationClass="org.astrogrid.desktop.modules.ag.CommunityImpl" 
-		interfaceClass="org.astrogrid.desktop.modules.ag.Community" >
+		interfaceClass="org.astrogrid.acr.astrogrid.Community" >
 		<description>User Authentication and Management</description>
 	<property>
 		<key>icon</key>
@@ -70,7 +70,7 @@
 	</component>
 	<component name="jobs" 
 		implementationClass="org.astrogrid.desktop.modules.ag.JobsImpl" 
-		interfaceClass="org.astrogrid.desktop.modules.ag.Jobs">
+		interfaceClass="org.astrogrid.acr.astrogrid.Jobs">
 		<description>Submit and manage workflows</description>
 	<property>
 		<key>icon</key>
@@ -190,7 +190,7 @@
 	
 	<component name="registry" 
 		implementationClass="org.astrogrid.desktop.modules.ag.RegistryImpl" 
-		interfaceClass="org.astrogrid.desktop.modules.ag.Registry" >
+		interfaceClass="org.astrogrid.acr.astrogrid.Registry" >
 		<description>Interrogate and browse the registry</description>
 	<property>
 		<key>icon</key>
@@ -270,7 +270,7 @@
 		</method>
 	</component>
 	<component name="applications" 
-		interfaceClass="org.astrogrid.desktop.modules.ag.Applications" 
+		interfaceClass="org.astrogrid.acr.astrogrid.Applications" 
 		implementationClass="org.astrogrid.desktop.modules.ag.ApplicationsImpl" 
 		>
 		<description>Query the application registry</description>
@@ -419,7 +419,7 @@
 	
 	<component name="vospace" 
 		implementationClass="org.astrogrid.desktop.modules.ag.VospaceImpl" 
-		interfaceClass="org.astrogrid.desktop.modules.ag.Vospace" >
+		interfaceClass="org.astrogrid.acr.astrogrid.Vospace" >
 		<description>Access remote storage</description>
 	<property>
 		<key>icon</key>
@@ -675,7 +675,7 @@
 	
 	<component name="portal"		
 		implementationClass="org.astrogrid.desktop.modules.ag.PortalImpl"
-		interfaceClass="org.astrogrid.desktop.modules.ag.Portal"
+		interfaceClass="org.astrogrid.acr.astrogrid.Portal"
 		>
 		<description>Ineract with the web portal</description>
 		<method name="openPage">

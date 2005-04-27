@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistry.java,v 1.12 2005/03/01 13:23:33 clq2 Exp $
+/*$Id: RegistryApplicationRegistry.java,v 1.13 2005/04/27 13:43:17 clq2 Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,8 @@ import java.net.URL;
 
 /** Implementation of ApplicationRegistry that resolves lookups using an astrogrid registry
  * <p>
- * @todo hacked at the moment to use the DOM-based queries. later use castor-object model ones.
+ * NB: this implements the applicationi registry against the 0.9 registry schema. see {@link org.astrogrid.portal.workflow.impl.RegistryV10ApplicationRegistry}
+ * for an implementation for the v10 registry schema. Factory chooses correct one depending on environment. 
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Mar-2004
  *
  */
@@ -54,6 +55,7 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
    /** construct a new RegistryApplicationRegistry
     * let registry-delegate self-configure */
    public RegistryApplicationRegistry() {
+     logger.info("Creating ApplicationRegistry for v0.9 registry entries");
      logger.info("Creating an astrogrid-backed application registry");
      logger.info("Letting delegate determine own endpoint");
      service = RegistryDelegateFactory.createQuery();
@@ -64,6 +66,7 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
      * @param endpoint endpoint for the astrogrid registry web service
      */
     public RegistryApplicationRegistry(URL endpoint) {
+        logger.info("Creating ApplicationRegistry for v0.9 registry entries");
         logger.info("Creating an astrogrid-backed application registry");
         service  = RegistryDelegateFactory.createQuery(endpoint);
         assert service != null;
@@ -217,6 +220,12 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
 
 /* 
 $Log: RegistryApplicationRegistry.java,v $
+Revision 1.13  2005/04/27 13:43:17  clq2
+1082
+
+Revision 1.12.24.1  2005/04/15 17:30:06  nw
+added registry implementation for v10.
+
 Revision 1.12  2005/03/01 13:23:33  clq2
 upgrade to v10 registry
 

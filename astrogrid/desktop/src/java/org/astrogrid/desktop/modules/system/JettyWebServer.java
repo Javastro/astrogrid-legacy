@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.2 2005/04/13 12:59:12 nw Exp $
+/*$Id: JettyWebServer.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.desktop.framework.ModuleRegistry;
-import org.astrogrid.desktop.framework.NewModuleEvent;
-import org.astrogrid.desktop.framework.NewModuleListener;
+import org.astrogrid.acr.builtin.ModuleRegistry;
+import org.astrogrid.acr.builtin.NewModuleEvent;
+import org.astrogrid.acr.builtin.NewModuleListener;
+import org.astrogrid.acr.system.UrlRoot;
+import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
 
 import org.apache.commons.digester.Digester;
@@ -140,7 +142,7 @@ public class JettyWebServer implements UrlRoot, Startable, WebServer, NewModuleL
     }
 
     /**
-     * @see org.astrogrid.desktop.framework.NewModuleListener#newModuleRegistered(org.astrogrid.desktop.framework.NewModuleEvent)
+     * @see org.astrogrid.acr.builtin.NewModuleListener#newModuleRegistered(org.astrogrid.desktop.framework.NewModuleEvent)
      */
     public void newModuleRegistered(NewModuleEvent e) {
         // scan for any modules declaring servlets..
@@ -167,6 +169,13 @@ public class JettyWebServer implements UrlRoot, Startable, WebServer, NewModuleL
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.1  2005/04/25 11:18:51  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
 Revision 1.2  2005/04/13 12:59:12  nw
 checkin from branch desktop-nww-998
 

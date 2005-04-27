@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: CommunityImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.acr.system.UI;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.resolver.exception.CommunityResolverException;
-import org.astrogrid.desktop.modules.system.BrowserControl;
-import org.astrogrid.desktop.modules.system.UI;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.ui.script.LoginFactory;
 import org.astrogrid.ui.script.ScriptEnvironment;
@@ -130,14 +133,14 @@ public class CommunityImpl implements Community  {
     protected Set listeners = new HashSet();
     
     /**
-     * @see org.astrogrid.desktop.modules.ag.Community#addUserLoginListener(org.astrogrid.desktop.modules.ag.UserLoginListener)
+     * @see org.astrogrid.acr.astrogrid.Community#addUserLoginListener(org.astrogrid.desktop.modules.ag.UserLoginListener)
      */
     public void addUserLoginListener(UserLoginListener l) {
         listeners.add(l);
     }
 
     /**
-     * @see org.astrogrid.desktop.modules.ag.Community#removeUserLoginListener(org.astrogrid.desktop.modules.ag.UserLoginListener)
+     * @see org.astrogrid.acr.astrogrid.Community#removeUserLoginListener(org.astrogrid.desktop.modules.ag.UserLoginListener)
      */
     public void removeUserLoginListener(UserLoginListener l) {
         listeners.remove(l);
@@ -149,6 +152,13 @@ public class CommunityImpl implements Community  {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.3  2005/04/27 13:42:40  clq2
+1082
+
+Revision 1.2.2.1  2005/04/25 11:18:51  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

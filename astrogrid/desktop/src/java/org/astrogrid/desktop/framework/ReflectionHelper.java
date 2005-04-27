@@ -1,4 +1,4 @@
-/*$Id: ReflectionHelper.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: ReflectionHelper.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,14 +13,12 @@ package org.astrogrid.desktop.framework;
 
 import java.lang.reflect.Method;
 
-/** Helpler for working with java.lang.reflect;
+/** Helpler methods for working for working with java.lang.reflect;
+ * @todo either add more here, or move this code elsewhere.
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
  */
 public class ReflectionHelper {
 
-    /** Construct a new MetadataHelper
-     * 
-     */
     private ReflectionHelper() {
         super();
     }
@@ -46,6 +44,12 @@ public class ReflectionHelper {
 
 /* 
 $Log: ReflectionHelper.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.1  2005/04/22 15:59:26  nw
+made a star documenting desktop.
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

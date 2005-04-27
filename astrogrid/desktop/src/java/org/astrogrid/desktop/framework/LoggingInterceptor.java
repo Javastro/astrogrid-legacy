@@ -1,4 +1,4 @@
-/*$Id: LoggingInterceptor.java,v 1.2 2005/04/13 12:59:12 nw Exp $
+/*$Id: LoggingInterceptor.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,8 +15,8 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** trial interceptor - logs entry and exit to component methods.
- * 
+/** trial AOP interceptor - logs entry and exit to component methods.
+ * not used.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2005
  *
  */
@@ -52,6 +52,12 @@ public class LoggingInterceptor implements MethodInterceptor{
 
 /* 
 $Log: LoggingInterceptor.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.1  2005/04/22 15:59:26  nw
+made a star documenting desktop.
+
 Revision 1.2  2005/04/13 12:59:12  nw
 checkin from branch desktop-nww-998
 

@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: VospaceImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.acr.astrogrid.Vospace;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerClientFactory;
@@ -68,12 +72,20 @@ public class VospaceImpl implements UserLoginListener, Vospace {
             // want to create my own file manager client, so can set up customprefs.
             BundlePreferences prefs = new BundlePreferences();
             prefs.setFetchParents(true);
-            prefs.setMaxExtraNodes(new Integer(100));
+            prefs.setMaxExtraNodes(new Integer(200));
             prefs.setPrefetchDepth(new Integer(3));
             FileManagerClientFactory fac = new FileManagerClientFactory(prefs);
             client = fac.login(env.getUserIvorn(),env.getPassword());
         } 
         return client;
+    }
+    
+    public FileManagerNode createFile(Ivorn ivorn) throws FileManagerFault, DuplicateNodeFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
+        return getClient().createFile(ivorn);
+    }
+    
+    public FileManagerNode createFolder(Ivorn ivorn) throws FileManagerFault, DuplicateNodeFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
+        return getClient().createFolder(ivorn);
     }
     
 
@@ -222,7 +234,7 @@ public class VospaceImpl implements UserLoginListener, Vospace {
 
 
     /**
-     * @see org.astrogrid.desktop.modules.ag.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogin(UserLoginEvent e) {
     }
@@ -230,7 +242,7 @@ public class VospaceImpl implements UserLoginListener, Vospace {
 
 
     /**
-     * @see org.astrogrid.desktop.modules.ag.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogout(UserLoginEvent e) {
         client = null;
@@ -251,6 +263,20 @@ public class VospaceImpl implements UserLoginListener, Vospace {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.3  2005/04/27 13:42:40  clq2
+1082
+
+Revision 1.2.2.3  2005/04/25 11:18:51  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
+Revision 1.2.2.2  2005/04/22 10:54:36  nw
+added missing methods to vospace.
+made a start at getting applications working again.
+
+Revision 1.2.2.1  2005/04/15 13:00:47  nw
+got vospace browser working.
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

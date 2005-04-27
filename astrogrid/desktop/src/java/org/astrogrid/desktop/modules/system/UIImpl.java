@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.2 2005/04/13 12:59:12 nw Exp $
+/*$Id: UIImpl.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.desktop.framework.Module;
-import org.astrogrid.desktop.framework.ModuleRegistry;
-import org.astrogrid.desktop.framework.NewModuleEvent;
-import org.astrogrid.desktop.framework.NewModuleListener;
+import org.astrogrid.acr.builtin.Module;
+import org.astrogrid.acr.builtin.ModuleRegistry;
+import org.astrogrid.acr.builtin.NewModuleEvent;
+import org.astrogrid.acr.builtin.NewModuleListener;
+import org.astrogrid.acr.builtin.Shutdown;
+import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.UI;
 import org.astrogrid.desktop.framework.ReflectionHelper;
-import org.astrogrid.desktop.framework.Shutdown;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.Descriptor;
 import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
@@ -126,6 +129,8 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
     protected final BrowserControl browser;
     protected final Shutdown shutdown;
     protected final ModuleRegistry reg;
+
+    private JMenuItem reportBugMenuItem;
     
 	/**
 	 * This method initializes this
@@ -231,6 +236,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
 			helpMenu.setText("Help");
 			helpMenu.add(getAgOverviewMenuItem());
             helpMenu.add(getHelpContentsMenuItem());
+            helpMenu.add(getReportBugMenuItem());
             helpMenu.add(new JSeparator());
 			helpMenu.add(getAboutMenuItem());
 		}
@@ -258,6 +264,23 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
 		}
 		return agOverviewMenuItem;
 	}
+    
+    private JMenuItem getReportBugMenuItem() {
+        if (reportBugMenuItem == null) {
+            reportBugMenuItem = new JMenuItem();
+            reportBugMenuItem .setText("Report a Bug / Request a Feature");
+            reportBugMenuItem .addActionListener(new java.awt.event.ActionListener() { 
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    try {                        
+                        browser.openURL("http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench");
+                    } catch (Exception ex) {
+                        logger.error(e);
+                    }
+                }
+            });
+        }
+        return    reportBugMenuItem ;
+    }
     
     private JMenuItem getHelpContentsMenuItem() {
         if (helpContentsMenuItem == null) {
@@ -366,7 +389,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
     }
 
     /**  listener to registry - inspects new modules, and publishes their methods.
-     * @see org.astrogrid.desktop.framework.NewModuleListener#newModuleRegistered(org.astrogrid.desktop.framework.NewModuleEvent)
+     * @see org.astrogrid.acr.builtin.NewModuleListener#newModuleRegistered(org.astrogrid.desktop.framework.NewModuleEvent)
      */
     public void newModuleRegistered(NewModuleEvent e) {
         final ModuleDescriptor md = e.getModule().getDescriptor();
@@ -600,7 +623,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
     /**
      * @throws InterruptedException
      * @throws InvocationTargetException
-     * @see org.astrogrid.desktop.modules.system.UI#startThrobbing()
+     * @see org.astrogrid.acr.system.UI#startThrobbing()
      */
     public  void startThrobbing() {
         SwingUtilities.invokeLater(new Runnable() {
@@ -612,7 +635,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
     /**
      * @throws InvocationTargetException
      * @throws InterruptedException
-     * @see org.astrogrid.desktop.modules.system.UI#stopThrobbing()
+     * @see org.astrogrid.acr.system.UI#stopThrobbing()
      */
     public synchronized void stopThrobbing() {
         SwingUtilities.invokeLater(new Runnable() {
@@ -622,7 +645,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
         });
     }
     /**
-     * @see org.astrogrid.desktop.modules.system.UI#setStatusMessage(java.lang.String)
+     * @see org.astrogrid.acr.system.UI#setStatusMessage(java.lang.String)
      */
     public void setStatusMessage(final String msg) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -651,7 +674,10 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
         java.util.List args =new ArrayList();
         for (Iterator i = md.parameterIterator(); i.hasNext(); ) {
             ValueDescriptor vd = (ValueDescriptor)i.next();
-            String result = JOptionPane.showInputDialog(this,"<html>Enter value for: " + vd.getName() + "<br><i>" + vd.getDescription() + "</i></html>","Enter value",JOptionPane.QUESTION_MESSAGE);
+            String result = JOptionPane.showInputDialog(this,"<html>Enter value for: " + vd.getName() + "<br>" + vd.getDescription(),"Enter value",JOptionPane.QUESTION_MESSAGE);
+            if (result == null) { // user hit cancel.
+                return;
+            }
             args.add(result);
         }
         SwingWorker worker = new InvokerWorker(component,md,(String[])args.toArray(new String[]{}));
@@ -769,7 +795,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
     }
 
     /**
-     * @see org.astrogrid.desktop.modules.system.UI#getComponent()
+     * @see org.astrogrid.acr.system.UI#getComponent()
      */
     public Component getComponent() {
         return this;
@@ -806,7 +832,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
 	}
 
     /**
-     * @see org.astrogrid.desktop.modules.system.UI#setLoggedIn(boolean)
+     * @see org.astrogrid.acr.system.UI#setLoggedIn(boolean)
      */
     public void setLoggedIn(boolean value) {
         getLoginLabel().setEnabled(value);
@@ -860,6 +886,19 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.3  2005/04/26 19:10:45  nw
+added bugreport menu item.
+
+Revision 1.2.2.2  2005/04/25 11:18:51  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
+Revision 1.2.2.1  2005/04/22 10:55:01  nw
+minor bugfix
+
 Revision 1.2  2005/04/13 12:59:12  nw
 checkin from branch desktop-nww-998
 

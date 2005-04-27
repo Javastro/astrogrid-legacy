@@ -17,7 +17,7 @@
 	</property>				
 	<component name="browser" 
 		implementationClass="org.astrogrid.desktop.modules.system.WebstartBrowserControl"
-		interfaceClass="org.astrogrid.desktop.modules.system.BrowserControl"		
+		interfaceClass="org.astrogrid.acr.system.BrowserControl"		
 		>
 		<description>Control the default webbrowser</description>
 		
@@ -43,7 +43,7 @@
 	
 	<component name="configuration"
 		implementationClass="org.astrogrid.desktop.modules.system.JavaPrefsConfiguration"
-		interfaceClass="org.astrogrid.desktop.modules.system.Configuration"
+		interfaceClass="org.astrogrid.acr.system.Configuration"
 		>
 		<description>manages connection settings and configuration</description>
 	<property>
@@ -109,7 +109,7 @@
 	
 	<component name="ui"
 		implementationClass="org.astrogrid.desktop.modules.system.UIImpl"
-		interfaceClass="org.astrogrid.desktop.modules.system.UI"
+		interfaceClass="org.astrogrid.acr.system.UI"
 		>
 		<description>Graphical User Interface</description>
 	<property>
@@ -135,7 +135,7 @@
 	
 	<component name="webserver"
 		implementationClass="org.astrogrid.desktop.modules.system.JettyWebServer"
-		interfaceClass="org.astrogrid.desktop.modules.system.WebServer"
+		interfaceClass="org.astrogrid.acr.system.WebServer"
 		>
 			<description>desktop web server - register servlets with it via module parameter keys</description>
 	<property>

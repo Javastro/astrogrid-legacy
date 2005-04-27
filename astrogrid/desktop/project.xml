@@ -5,13 +5,35 @@
     <extend>${basedir}/../aggregate/cdk/script/project.xml</extend>
         <artifactId>astrogrid-desktop</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
-        <name>Astrogrid Desktop</name>
+        <name>Astrogrid Workbench</name>
         <description><![CDATA[
-          project impelemts a desktop service that other user applications can connect to
-          to interact with astrogrid. Will support HTTP / XML-RPC / SOAP / Java-RMI eventually.
-    Also acts as an infrastucture for launching gui apps and plugins.
+                <p>
+                This project implements a desktop service which other client-side applications can connect with
+                to interact with astrogrid. At present supports HTTP / XML-RPC / Gui interfaces to astrogrid client-side components.
+                Plan to add Java-RMI imminently. Maybe CORBA later.
+                </p>
+                <p>
+                The client runtime provides a single sign-on, single-configuration, and single cache for interactions with astrogrid servers -
+                making implementation of client-side applications simpler.
+           </p>
+           <p>
+           The runtime provides client-side components for accessing the basic functionality of each of the astrogrid services -
+           myspace, registry, jes, cea, community. It also provides GUI components - simple dialogues that can be reused by client applications
+           to perform common tasks (myspace microbrowser, registry browser, etc). Finally, the runtime provides a series of simple GUI applications that
+           act as reference implementations for GUIs for the core features of astrogrid - myspace browser, job controller, registry browser. Others to follow - workflow
+           builder, query builder, cea invoker.
          ]]></description>
-        <shortDescription>AstroGrid Desktop</shortDescription>
+        <shortDescription>AstroGrid Workbench</shortDescription>
+        <packageGroups>
+                <packageGroup>
+                        <title>Astrogrid Client Runtime Public Interface</title>
+                        <packages>org.astrogrid.acr*</packages>
+                </packageGroup>
+                <packageGroup>
+                        <title>Implementation</title>
+                        <packages>org.astrogrid.desktop*</packages>
+                </packageGroup>
+        </packageGroups>
         <build>
                 <sourceDirectory>src/java</sourceDirectory>
                 <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
@@ -36,7 +58,7 @@
                                         <include>*.properties</include>
                                         <include>**/*.xml</include>
                                         <include>**/*.png</include>
-										<include>**/*.xsl</include>
+                                                                                <include>**/*.xsl</include>
           <include>**/*.gif</include>
                                 </includes>
                         </resource>
@@ -64,7 +86,7 @@
                 </properties>
         </dependency>
 
-<!-- container and aspects system --> 
+<!-- container and aspects system -->
         <dependency>
                 <groupId>picocontainer</groupId>
                 <artifactId>picocontainer</artifactId>
@@ -88,14 +110,14 @@
             <version>1.0-beta</version>
    <properties>
      <jnlp.jar>true</jnlp.jar>
-    </properties>     
+    </properties>
         </dependency>
         <dependency>
             <id>aopalliance</id>
             <version>1.0</version>
    <properties>
      <jnlp.jar>true</jnlp.jar>
-    </properties>     
+    </properties>
         </dependency>
        <dependency>
             <groupId>cglib</groupId>
@@ -103,18 +125,18 @@
             <version>1.0</version>
    <properties>
      <jnlp.jar>true</jnlp.jar>
-    </properties>     
+    </properties>
         </dependency>
         <dependency>
             <id>oro</id>
             <version>2.0.7</version><!-- nanocontainer project says 2.0.8, but we're on 2.0.7 at the moment -->
    <properties>
      <jnlp.jar>true</jnlp.jar>
-    </properties> 
-        </dependency> 
+    </properties>
+        </dependency>
 <!-- also asm 1.4.3 ? but don't seemt to need it -->
 
-<!-- not used.    
+<!-- not used.
   <dependency>
    <groupId>nanocontainer</groupId>
    <artifactId>nanocontainer-swing</artifactId>
@@ -123,8 +145,8 @@
    <properties>
      <jnlp.jar>true</jnlp.jar>
     </properties>
-    </dependency>    
---> 
+    </dependency>
+-->
         <dependency>
                 <groupId>xmlrpc</groupId>
                 <artifactId>xmlrpc</artifactId>
@@ -179,12 +201,12 @@
                 </properties>
     </dependency>
     <dependency>
-    	<artifactId>commons-httpclient</artifactId>
-	<groupId>commons-httpclient</groupId>
-	<version>2.0.1</version>
+        <artifactId>commons-httpclient</artifactId>
+        <groupId>commons-httpclient</groupId>
+        <version>2.0.1</version>
                 <properties>
                         <jnlp.jar>true</jnlp.jar>
-                </properties>	
+                </properties>
     </dependency>
  <dependency><!-- contains SwingWorker class, for executing things in background threads -->
   <artifactId>concurrent</artifactId>
@@ -196,47 +218,21 @@
  </dependency>
  <!-- gui fluff -->
    <dependency><!-- look and feel -->
- 	<artifactId>looks</artifactId>
-	<groupId>jgoodies</groupId>
-	<version>1.3.1</version>
-	<properties>
-		<jnlp.jar>true</jnlp.jar>
-	</properties>
+        <artifactId>looks</artifactId>
+        <groupId>jgoodies</groupId>
+        <version>1.3.1</version>
+        <properties>
+                <jnlp.jar>true</jnlp.jar>
+        </properties>
    </dependency>
-   <dependency>
-   	<groupId>l2fprod</groupId>
-	<artifactId>l2fprod-common-all</artifactId>
-	<version>0.1</version>
-	<properties>
-		<jnlp.jar>true</jnlp.jar>
-	</properties>
-    </dependency>
-	<!-- use all at the moment - sort out which ones are really needed after design is done
-   <dependency>
-   	<groupId>l2fprod</groupId>
-	<artifactId>l2fprod-common-sheet</artifactId>
-	<version>0.1</version>
-	<properties>
-		<jnlp.jar>true</jnlp.jar>
-	</properties>
+   <dependency><!-- swanky new widgets -->
+        <groupId>l2fprod</groupId>
+        <artifactId>l2fprod-common-all</artifactId>
+        <version>0.1</version>
+        <properties>
+                <jnlp.jar>true</jnlp.jar>
+        </properties>
     </dependency>
 
-   <dependency>
-   	<groupId>l2fprod</groupId>
-	<artifactId>l2fprod-common-buttonbar</artifactId>
-	<version>0.1</version>
-	<properties>
-		<jnlp.jar>true</jnlp.jar>
-	</properties>
-    </dependency>
-   <dependency>
-   	<groupId>l2fprod</groupId>
-	<artifactId>l2fprod-common-tasks</artifactId>
-	<version>0.1</version>
-	<properties>
-		<jnlp.jar>true</jnlp.jar>
-	</properties>
-    </dependency>        
--->
     </dependencies>
 </project>

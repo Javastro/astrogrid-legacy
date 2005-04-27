@@ -1,4 +1,4 @@
-/*$Id: ComponentDescriptor.java,v 1.2 2005/04/13 12:59:13 nw Exp $
+/*$Id: ComponentDescriptor.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,14 +27,17 @@ public class ComponentDescriptor extends Descriptor{
         super();
     }
     protected final Map methods = new HashMap();
+    /** retrieve the descriptor for a named method */
     public MethodDescriptor getMethod(String name) {
         return (MethodDescriptor)methods.get(name);
     }
     
+    /** add a method to the descriptor */
     public void addMethod(MethodDescriptor m) {
         methods.put(m.getName(),m);
     }
     
+    /** iterate over the method descriptors in this component */
     public Iterator methodIterator() {
         return methods.values().iterator();
     }
@@ -42,13 +45,15 @@ public class ComponentDescriptor extends Descriptor{
     protected Class interfaceClass;
     protected Class implementationClass;
     
-
+    /** return the implementation class for this component */
     public Class getImplementationClass() {
         return this.implementationClass;
     }
    public void setImplementationClass(Class implementationClass) {
         this.implementationClass = implementationClass;
     }
+
+   /** return the interface class for this component - which, must be implemented by the class returned by {@link #getImplementationClass()}*/   
     public Class getInterfaceClass() {
         return this.interfaceClass;
     }
@@ -85,6 +90,12 @@ public class ComponentDescriptor extends Descriptor{
 
 /* 
 $Log: ComponentDescriptor.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.1  2005/04/22 15:59:26  nw
+made a star documenting desktop.
+
 Revision 1.2  2005/04/13 12:59:13  nw
 checkin from branch desktop-nww-998
 

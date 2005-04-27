@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerFactory.java,v 1.11 2004/06/30 13:34:42 jl99 Exp $
+/*$Id: WorkflowManagerFactory.java,v 1.12 2005/04/27 13:43:17 clq2 Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.astrogrid.portal.workflow.impl.BasicWorkflowBuilder;
 import org.astrogrid.portal.workflow.impl.FileApplicationRegistry;
 import org.astrogrid.portal.workflow.impl.JesJobExecutionService;
 import org.astrogrid.portal.workflow.impl.RegistryApplicationRegistry;
+import org.astrogrid.portal.workflow.impl.RegistryV10ApplicationRegistry;
 import org.astrogrid.portal.workflow.impl.VoSpaceClientWorkflowStore;
 
 /** Factory that creates a new workflow manager
@@ -148,10 +149,22 @@ public class WorkflowManagerFactory {
         try {
             URL endpoint = conf.getUrl(WORKFLOW_APPLIST_REGISTRY_ENDPOINT_KEY);
             log.info(WORKFLOW_APPLIST_REGISTRY_ENDPOINT_KEY + " := " + endpoint.toString());
-            return new RegistryApplicationRegistry(endpoint);
+            if (conf.getString("org.astrogrid.registry.result.version","0.10").equals("0.9")) {
+                log.info("Creating v0.9 application registry");
+                return new RegistryApplicationRegistry(endpoint);
+            } else {
+                log.info("Creating v10 Application registry");
+                return new RegistryV10ApplicationRegistry(endpoint);
+            }
         }catch (PropertyNotFoundException e) {
             log.info("No registry endpoint specified, attempting to let registry delegate configure itself");
-            return new RegistryApplicationRegistry();
+            if (conf.getString("org.astrogrid.registry.result.version","0.10").equals("0.9")) {
+                log.info("Creating v0.9 application registry");
+                return new RegistryApplicationRegistry();
+            } else {
+                log.info("Creating v10 Application registry");
+                return new RegistryV10ApplicationRegistry();
+            }
         }
     }
 
@@ -166,6 +179,15 @@ public class WorkflowManagerFactory {
 
 /* 
 $Log: WorkflowManagerFactory.java,v $
+Revision 1.12  2005/04/27 13:43:17  clq2
+1082
+
+Revision 1.11.140.2  2005/04/22 11:01:27  nw
+will do the right thing - create a v10 or v9 registry - in all the right places.
+
+Revision 1.11.140.1  2005/04/15 17:30:07  nw
+added registry implementation for v10.
+
 Revision 1.11  2004/06/30 13:34:42  jl99
 Reorg of import statements to cover removal of unused MySpace delegate classes
 

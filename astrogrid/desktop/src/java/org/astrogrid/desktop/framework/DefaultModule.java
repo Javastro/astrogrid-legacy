@@ -1,4 +1,4 @@
-/*$Id: DefaultModule.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: DefaultModule.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.framework;
 
+import org.astrogrid.acr.builtin.Module;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
 
@@ -34,7 +35,26 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-/**
+/** Default implementation of a Module.
+ * <p>
+ * Extends AspectablePicoContainer - which is a standard pico container to which 'aspects' can be attached. Let me explain...
+ * <p>
+ * A picocontainer is a very small component manager that takes care of instantiating a bunch of objects of different classes, especially where 
+ * some objects need to be passed instances of other objects. It takes care of all the'wiring up' code that can be quite irritating to write by hand.
+ * Depending on how the objects are registered with the picocontainer, a new instance may
+ * be created on each request, a single instance may be repeatedly returned, or some other behaviour. Furthermore, once objects are reigstered in the
+ * container, you can do other things with them - retrieve all objects that support a particular interface, for example. 
+ * 
+ * <p>
+ * It is also possible to 'wrap' the objects in the container. A common wrapping is 'implementation hiding' - here a proxy instance of aninterface is dynamically generated
+ * that proxies all requests back to the implementation class - this prevents (possibly hostile) client code from casting from the public interface to a 
+ * known implementation class.
+ * <p>
+ * As well as implementation hiding, the AspectablePicoContainer allows 'aspects' (as defined in aspect oriented programming) to be applied to 
+ * objects and methods. An aspect is a way of adding functionality to existing code without having to extend classes - for example, you could write an aspect
+ * that logs the start and end of a method call, and apply it to all methods of an object to add logging, without having to extend the object directly.
+ * <p>
+ * 
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
  *
  */
@@ -61,7 +81,7 @@ class DefaultModule  implements AspectablePicoContainer, Module{
     }
 
     /**
-     * @see org.astrogrid.desktop.framework.Module#getDescriptor()
+     * @see org.astrogrid.acr.builtin.Module#getDescriptor()
      */
     public ModuleDescriptor getDescriptor() {
         return descriptor;
@@ -74,7 +94,7 @@ class DefaultModule  implements AspectablePicoContainer, Module{
     }
 
     /**
-     * @see org.astrogrid.desktop.framework.Module#getComponent(java.lang.String)
+     * @see org.astrogrid.acr.builtin.Module#getComponent(java.lang.String)
      */
     public Object getComponent(String componentName) {
         return this.getComponentInstance(componentName);
@@ -83,7 +103,7 @@ class DefaultModule  implements AspectablePicoContainer, Module{
 
 
     /**
-     * @see org.astrogrid.desktop.framework.Module#componentIterator()
+     * @see org.astrogrid.acr.builtin.Module#componentIterator()
      */
     public Iterator componentIterator() {
         final Iterator descriptions = descriptor.componentIterator();
@@ -230,7 +250,7 @@ class DefaultModule  implements AspectablePicoContainer, Module{
     }
 
     /**
-     * @see org.astrogrid.desktop.framework.Module#getChain()
+     * @see org.astrogrid.acr.builtin.Module#getChain()
      */
     public String getChain() {
         
@@ -241,6 +261,16 @@ class DefaultModule  implements AspectablePicoContainer, Module{
 
 /* 
 $Log: DefaultModule.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.2  2005/04/25 11:18:51  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
+Revision 1.2.2.1  2005/04/22 15:59:26  nw
+made a star documenting desktop.
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

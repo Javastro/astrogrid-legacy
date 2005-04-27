@@ -1,4 +1,4 @@
-/*$Id: Main.java,v 1.2 2005/04/13 12:59:10 nw Exp $
+/*$Id: Main.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 
 import javax.swing.UIManager;
 
-/** Main class of the desktop dashboard.
+/** Main class of the Astrogrid Workbench
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
@@ -36,7 +36,7 @@ public class Main implements Startable {
      */
     private static final Log logger = LogFactory.getLog(Main.class);
 
-    /** Construct a new Desktop
+    /** Construct a new workbench.
      * 
      */
     public Main() {
@@ -48,13 +48,15 @@ public class Main implements Startable {
              logger.warn("Failed to install plastic look and feel - oh well");
              }
         
+         // create initial container.
         pico = new DefaultPicoContainer();
         pico.registerComponentImplementation(DefaultModuleRegistry.class);
         pico.registerComponentImplementation(DescriptorParser.class,DigesterDescriptorParser.class);
         pico.registerComponentImplementation(Bootloader.class);        
     }
 
-    protected final MutablePicoContainer pico;
+    
+    private final MutablePicoContainer pico;
 
     /**
      * @see org.picocontainer.Startable#start()
@@ -80,6 +82,12 @@ public class Main implements Startable {
 
 /* 
 $Log: Main.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.1  2005/04/22 15:59:26  nw
+made a star documenting desktop.
+
 Revision 1.2  2005/04/13 12:59:10  nw
 checkin from branch desktop-nww-998
 

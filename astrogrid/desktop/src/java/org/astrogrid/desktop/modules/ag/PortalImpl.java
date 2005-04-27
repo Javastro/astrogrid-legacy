@@ -1,4 +1,4 @@
-/*$Id: PortalImpl.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: PortalImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,12 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.astrogrid.desktop.modules.system.BrowserControl;
-import org.astrogrid.desktop.modules.system.Configuration;
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.Portal;
+import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.ui.script.ScriptEnvironment;
 
 import org.apache.commons.httpclient.Cookie;
@@ -114,7 +118,7 @@ public class PortalImpl implements Portal, UserLoginListener {
 
 
     /**
-     * @see org.astrogrid.desktop.modules.ag.Portal#openPageWithParams(java.lang.String, java.util.Map)
+     * @see org.astrogrid.acr.astrogrid.Portal#openPageWithParams(java.lang.String, java.util.Map)
      */
     public void openPageWithParams(String path, Map args) throws Exception {        
         StringBuffer query = new StringBuffer();
@@ -137,7 +141,7 @@ public class PortalImpl implements Portal, UserLoginListener {
 
 
     /**
-     * @see org.astrogrid.desktop.modules.ag.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogin(UserLoginEvent e) {
     }
@@ -145,7 +149,7 @@ public class PortalImpl implements Portal, UserLoginListener {
 
 
     /**
-     * @see org.astrogrid.desktop.modules.ag.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogout(UserLoginEvent e) {
         session = null;
@@ -157,6 +161,13 @@ public class PortalImpl implements Portal, UserLoginListener {
 
 /* 
 $Log: PortalImpl.java,v $
+Revision 1.3  2005/04/27 13:42:40  clq2
+1082
+
+Revision 1.2.2.1  2005/04/25 11:18:51  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

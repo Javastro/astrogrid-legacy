@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: RegistryImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.Ivorn;
@@ -82,13 +86,13 @@ public class RegistryImpl implements Registry, UserLoginListener {
     }
 
     /**
-     * @see org.astrogrid.desktop.modules.ag.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogin(UserLoginEvent e) {
     }
 
     /**
-     * @see org.astrogrid.desktop.modules.ag.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogout(UserLoginEvent e) {
         reg = null;
@@ -101,6 +105,13 @@ public class RegistryImpl implements Registry, UserLoginListener {
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.3  2005/04/27 13:42:40  clq2
+1082
+
+Revision 1.2.2.1  2005/04/25 11:18:51  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

@@ -1,4 +1,4 @@
-/*$Id: AggregatePicoContainer.java,v 1.2 2005/04/13 12:59:12 nw Exp $
+/*$Id: AggregatePicoContainer.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/** picocontainer that aggregates together a bunch of picocontainers (or modules) into one whole.
+/**not used at present. unsure whether it will be useful later. 
+ * picocontainer that aggregates together a bunch of picocontainers (or modules) into one whole.
  * 
  * uses jakarta commons CollectionsUtils to make the iteration over the set of aggregated containers more concise.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
@@ -380,6 +381,12 @@ public class AggregatePicoContainer implements PicoContainer {
 
 /* 
 $Log: AggregatePicoContainer.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.1  2005/04/22 15:59:26  nw
+made a star documenting desktop.
+
 Revision 1.2  2005/04/13 12:59:12  nw
 checkin from branch desktop-nww-998
 

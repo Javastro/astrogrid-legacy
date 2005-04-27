@@ -1,4 +1,4 @@
-/*$Id: Descriptor.java,v 1.2 2005/04/13 12:59:13 nw Exp $
+/*$Id: Descriptor.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class Descriptor {
 
-    /** Construct a new AbstractDescriptor
+    /** Construct a new Descriptor
      * 
      */
     public Descriptor() {
@@ -45,7 +45,7 @@ public class Descriptor {
     public String getName() {
         return this.name;
     }
-    
+    /** helper method - returns {@link #getName} capitalized. later will break with spaces too */
     public String getUIName() {
         return StringUtils.capitalize(name);
     }
@@ -54,11 +54,13 @@ public class Descriptor {
         this.name = name;
     }
     
+    /** retrive an arbitrary attribute from the descriptor */
     public String getProperty(String key) {
         Object o = this.properties.get(key);
         return o == null? null : o.toString();
     }
     
+    /** retrieve an arbitrary attribute wrapped in &lt;value&gt; tags - sutable for further parsing */
     public String getPropertyDocument(String key) {
         String s = getProperty(key);
         return s == null ? null  : "<value>" + s + "</value>";
@@ -68,6 +70,7 @@ public class Descriptor {
         this.properties.put(key,value);
     }
     
+    /** iterate over all properties of the descriptor */
     public Iterator propertyIterator() {
         return properties.values().iterator();
     }
@@ -108,6 +111,12 @@ public class Descriptor {
 
 /* 
 $Log: Descriptor.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.1  2005/04/22 15:59:26  nw
+made a star documenting desktop.
+
 Revision 1.2  2005/04/13 12:59:13  nw
 checkin from branch desktop-nww-998
 

@@ -1,4 +1,4 @@
-/*$Id: BootloaderTest.java,v 1.2 2005/04/13 12:59:17 nw Exp $
+/*$Id: BootloaderTest.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.framework;
 
+import org.astrogrid.acr.builtin.Module;
 import org.astrogrid.desktop.framework.descriptors.DescriptorParser;
 import org.astrogrid.desktop.framework.descriptors.DigesterDescriptorParser;
 
@@ -49,6 +50,13 @@ public class BootloaderTest extends TestCase {
 
 /* 
 $Log: BootloaderTest.java,v $
+Revision 1.3  2005/04/27 13:42:41  clq2
+1082
+
+Revision 1.2.2.1  2005/04/25 11:18:51  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
 Revision 1.2  2005/04/13 12:59:17  nw
 checkin from branch desktop-nww-998
 

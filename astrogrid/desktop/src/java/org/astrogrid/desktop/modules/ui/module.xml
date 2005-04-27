@@ -12,8 +12,8 @@
 		at moment, fails in nasty ways
 		-->
 	<component name="parameterizedWorkflows" 
-		implementationClass="org.astrogrid.desktop.modules.pw.ParameterizedWorkflowLauncherImpl" 
-		interfaceClass="org.astrogrid.desktop.modules.pw.ParameterizedWorkflowLauncher" >
+		implementationClass="org.astrogrid.desktop.modules.ui.ParameterizedWorkflowLauncherImpl" 
+		interfaceClass="org.astrogrid.acr.ui.ParameterizedWorkflowLauncher" >
 		<description>Launch parameterized workflows</description>
 <property>
 		<key>icon</key>
@@ -34,7 +34,7 @@
 		</component>		
 	<component name="registryBrowser" 
 		implementationClass="org.astrogrid.desktop.modules.ui.RegistryBrowserImpl" 
-		interfaceClass="org.astrogrid.desktop.modules.ui.RegistryBrowser" >
+		interfaceClass="org.astrogrid.acr.ui.RegistryBrowser" >
 		<description>Browse the registry</description>
 	<property>
 		<key>icon</key>
@@ -57,14 +57,13 @@
 
 		</method>		
 		</component>
-		<!-- not ready yet
 	<component name="vospaceBrowser" 
 		implementationClass="org.astrogrid.desktop.modules.ui.VospaceBrowserImpl" 
-		interfaceClass="org.astrogrid.desktop.modules.ui.VospaceBrowser" >
+		interfaceClass="org.astrogrid.acr.ui.VospaceBrowser" >
 		<description>Browse the registry</description>
 	<property>
 		<key>icon</key>
-		<value>repo_rep.gif</value>
+		<value>filenav_nav.gif</value>
 	</property>			
 		<method name="show">
 			<description>Run the Browser GUI </description>
@@ -78,6 +77,7 @@
 			</property>			
 		
 		</method>
+		<!-- not implemented 
 		<method name="open">
 			<description>Display a vospace location in the Browser </description>
 	<property>
@@ -89,15 +89,16 @@
 				<value>Open Location...</value>
 			</property>			
 			</method>
+			-->
 		<method name="hide">
 			<description>Hide the Browser GUI </description>
 
 		</method>		
 		</component>		
-		-->
+		
 			<component name="jobMonitor" 
 		implementationClass="org.astrogrid.desktop.modules.ui.JobMonitorImpl" 
-		interfaceClass="org.astrogrid.desktop.modules.ui.JobMonitor" >
+		interfaceClass="org.astrogrid.acr.ui.JobMonitor" >
 		<description>View progress of jobs</description>
 	<property>
 		<key>icon</key>

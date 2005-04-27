@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.applications.beans.v1.Interface;
 import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
@@ -84,6 +88,7 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
          result.append("Application: ")
                 .append(descr.getName())
                 .append("\n")
+                //@todo doesn't work with v10. fix.
                 .append(
                         descr.getOriginalVODescription().getElementsByTagNameNS(vr,"Description").item(0).getFirstChild().getNodeValue())
                 .append("\n");
@@ -169,14 +174,14 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
 
 
     /**
-     * @see org.astrogrid.desktop.modules.ag.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogin(UserLoginEvent e) {
     }
 
 
     /** remove registry on user logout.
-     * @see org.astrogrid.desktop.modules.ag.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogout(UserLoginEvent e) {
         reg = null;
@@ -191,6 +196,17 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.3  2005/04/27 13:42:40  clq2
+1082
+
+Revision 1.2.2.2  2005/04/25 11:18:51  nw
+split component interfaces into separate package hierarchy
+- improved documentation
+
+Revision 1.2.2.1  2005/04/22 10:54:36  nw
+added missing methods to vospace.
+made a start at getting applications working again.
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

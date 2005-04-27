@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<!--can't dtd validate - need to replace with schema later.
+	<!DOCTYPE module PUBLIC "-//Astrogrid//DTD Desktop Module 1.0//EN" "file:///home/noel/eclipse/desktop/src/java/org/astrogrid/desktop/framework/descriptors/module-descriptor.dtd">
+-->
+<module name="dialogs">
+	<description>Reusable UI Dialogues</description>
+	<component name="resouceChooser" 
+		implementationClass="org.astrogrid.desktop.modules.dialogs.ResourceChooserImpl"
+		interfaceClass="org.astrogrid.acr.dialogs.ResourceChooser">
+		<description>Prompt the user to choose a local or remote file resource</description>
+		<method name="chooseResource">
+			<description>prompt the user to choose a resource </description>
+				<parameter name="title">
+						<description>Title to use in dialog</description>
+				</parameter>
+				<parameter name="enableMyspaceTab">
+					<description>whether myspace tab should be visible or not</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>boolean</value>
+				</property>
+				</parameter>					
+		
+		</method>
+		</component>
+</module>

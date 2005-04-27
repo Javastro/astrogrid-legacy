@@ -1,4 +1,4 @@
-/*$Id: DescriptorParser.java,v 1.2 2005/04/13 12:59:13 nw Exp $
+/*$Id: DescriptorParser.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
+/** Inerface to a descrptor parser - something that parses an input stream into a module descriptor.
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
@@ -28,6 +28,12 @@ public interface DescriptorParser {
 
 /* 
  $Log: DescriptorParser.java,v $
+ Revision 1.3  2005/04/27 13:42:41  clq2
+ 1082
+
+ Revision 1.2.2.1  2005/04/22 15:59:26  nw
+ made a star documenting desktop.
+
  Revision 1.2  2005/04/13 12:59:13  nw
  checkin from branch desktop-nww-998
 
