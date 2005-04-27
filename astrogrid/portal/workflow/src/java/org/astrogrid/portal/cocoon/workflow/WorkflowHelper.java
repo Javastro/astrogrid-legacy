@@ -44,7 +44,7 @@ public class WorkflowHelper {
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
     private static final boolean 
-        TRACE_ENABLED = true ;
+        TRACE_ENABLED = false ;
         
     private static Logger 
         logger = Logger.getLogger( Workflow.class ) ; 

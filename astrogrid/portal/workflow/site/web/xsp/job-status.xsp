@@ -45,6 +45,7 @@
       private static final boolean TRACE_ENABLED = false;
          
       private Workflow workflow = null;
+      int xpathCounter = 0;
       
       //=========================================================================================
       
@@ -654,24 +655,26 @@
         //====================================================================
         private String getXPathKey( AbstractActivity activity ) {    
             if( TRACE_ENABLED ) trace( "job-status-xsp.getXPathKey() entry") ;  
-            
-            String xpath = "";
-            
-            try {
-               if( workflow != null ) {
-                  xpath = workflow.getXPathFor( activity );
-               }   
-               trace( "xpath: " + xpath ) ;
-            }
-            catch( Exception ex ) {
-               ex.printStackTrace();
-            }
-            finally {
-                if( TRACE_ENABLED ) trace( "job-status-xsp.getXPathKey() exit") ;  
-            }
-            
-            return xpath;
-      
+                        
+            xpathCounter = xpathCounter + 1;
+//  bug# 959 - call to getXpathFor(activity) was very slow
+//  replaced with a simple counter which appears sufficient for 
+//  the status pages and is approx 10 times faster                         
+//            try {
+//               if( workflow != null ) {
+//                  xpath = workflow.getXPathFor( activity );
+//               }   
+//               if( TRACE_ENABLED ) trace( "xpath: " + xpath ) ;
+//            }
+//            catch( Exception ex ) {
+//               ex.printStackTrace();
+//            }
+//            finally {
+//                if( TRACE_ENABLED ) trace( "job-status-xsp.getXPathKey() exit") ;  
+//            }
+//            
+//            return xpath;
+          return "" + xpathCounter;      
         }        
         
         
@@ -720,7 +723,7 @@
 
 	  <xsp:logic>
 	  
-          if (workflow.getJobExecutionRecord() != null) {
+          if (workflow.getJobExecutionRecord() != null) {        
               executionRecordJob( workflow.getJobExecutionRecord() );
           }     
 
@@ -728,6 +731,7 @@
       
       <xsp:logic>
         if (workflow != null){      
+          xpathCounter = 0;        
         //========================================================================	      
           activityTree( workflow.getSequence() ) ;
         //========================================================================	

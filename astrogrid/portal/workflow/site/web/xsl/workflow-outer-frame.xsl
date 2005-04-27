@@ -6,7 +6,6 @@
        | Date:   Sept 2004
        +-->
 
-    <xsl:param name="image_path">/astrogrid-portal/mount/workflow/</xsl:param>  <!-- path to images -->
     <xsl:param name="activity_key" />    
     <xsl:param name="copy_activity_key" />
     <xsl:param name="display_parameter_values" />

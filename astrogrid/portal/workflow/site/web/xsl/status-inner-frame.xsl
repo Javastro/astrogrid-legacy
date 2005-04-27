@@ -6,7 +6,6 @@
        | Date:   Sept 2004
        +-->
        
-    <xsl:param name="image_path">/astrogrid-portal/mount/workflow/</xsl:param>  <!-- path to images -->
     <xsl:include href="display-parameters.xsl"/>
      
     <xsl:template match="workflow">
@@ -135,7 +134,7 @@
               <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed - not req'd with step -->
               </xsl:attribute>                    
                 <img width="70" height="25" border="0" alt="step">
-                  <xsl:attribute name="src"><xsl:value-of select="$image_path"/><xsl:value-of select="name()"/>.gif</xsl:attribute>
+                  <xsl:attribute name="src">/astrogrid-portal/mount/workflow/<xsl:value-of select="name()"/>.gif</xsl:attribute>
                   <xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
                   <xsl:attribute name="index"><xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
                   <xsl:attribute name="onMouseOver">
@@ -154,7 +153,7 @@
                         <tr>
                           <td valign="top">
                             <img width="20" height="20" alt="hide">
-                              <xsl:attribute name="src"><xsl:value-of select="$image_path"/>left_arrow.png</xsl:attribute>
+                              <xsl:attribute name="src">/astrogrid-portal/mount/workflow/left_arrow.png</xsl:attribute>
                               <xsl:attribute name="onClick">toggle('parameters:<xsl:value-of select="@key"/>');</xsl:attribute>                                                
                             </img>                                     
                           </td>
@@ -169,7 +168,7 @@
             
             <xsl:when test="name() = 'script'"> <!-- SCRIPT -->                                                         
               <img width="70" height="25" border="0" alt="script">
-                <xsl:attribute name="src"><xsl:value-of select="$image_path"/><xsl:value-of select="name()"/>.gif</xsl:attribute>
+                <xsl:attribute name="src">/astrogrid-portal/mount/workflow/<xsl:value-of select="name()"/>.gif</xsl:attribute>
                 <xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
                 <xsl:attribute name="index"><xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>                  
                 <xsl:attribute name="onMouseOver">
@@ -184,7 +183,7 @@
                     
             <xsl:otherwise> <!--  All OTHER ACTIVIIES -->            
               <img width="70" height="25" border="0">
-                <xsl:attribute name="src"><xsl:value-of select="$image_path"/><xsl:value-of select="name()"/>.gif</xsl:attribute>
+                <xsl:attribute name="src">/astrogrid-portal/mount/workflow/<xsl:value-of select="name()"/>.gif</xsl:attribute>
                 <xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
                 <xsl:attribute name="index"><xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>                  
                 <xsl:attribute name="alt"><xsl:value-of select="name()"/></xsl:attribute>
@@ -214,10 +213,10 @@
               <xsl:if test="count(ancestor::*) = $counter ">
                 <xsl:if test="count(following-sibling::*[not(name()='toolsAvailable')]) != 0">
                   <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
-                    <xsl:value-of select="$image_path"/>sequence_trunk.gif
+                    /astrogrid-portal/mount/workflow/sequence_trunk.gif
                   </xsl:attribute>
                   <img width="70" height="25" border="0">
-                    <xsl:attribute name="src"><xsl:value-of select="$image_path"/>sequence_trunk.gif</xsl:attribute>
+                    <xsl:attribute name="src">/astrogrid-portal/mount/workflow/sequence_trunk.gif</xsl:attribute>
                   </img>                                              
                 </xsl:if>     
               </xsl:if>                                                                       
@@ -234,15 +233,15 @@
             <xsl:when test="name() = 'toolsAvailable'"/>                                                      
               <xsl:when test="count(following-sibling::*[not(name()='toolsAvailable')]) != 0">                                         
                 <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
-                  <xsl:value-of select="$image_path"/>sequence_trunk.gif
+                  /astrogrid-portal/mount/workflow/sequence_trunk.gif
                 </xsl:attribute>
               <img width="70" height="25" border="0">
-                <xsl:attribute name="src"><xsl:value-of select="$image_path"/>arrow.gif</xsl:attribute>
+                <xsl:attribute name="src">/astrogrid-portal/mount/workflow/arrow.gif</xsl:attribute>
               </img>                                                          
             </xsl:when>
           <xsl:otherwise> <!-- if there are no following siblings then display bottom arrow image --> 
             <img width="70" height="25" border="0">
-              <xsl:attribute name="src"><xsl:value-of select="$image_path"/>arrow_bottom.gif</xsl:attribute>
+              <xsl:attribute name="src">/astrogrid-portal/mount/workflow/arrow_bottom.gif</xsl:attribute>
             </img>                   
           </xsl:otherwise>
         </xsl:choose>            

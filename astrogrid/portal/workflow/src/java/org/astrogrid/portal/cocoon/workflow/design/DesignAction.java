@@ -96,7 +96,7 @@ public class DesignAction extends AbstractAction {
 
   /** Compile-time switch used to turn tracing on/off. 
     * Set this to false to eliminate all trace statements within the byte code.*/
-  private static final boolean TRACE_ENABLED = true;
+  private static final boolean TRACE_ENABLED = false;
 
   /** Compile-time switch used to turn certain debugging statements on/off. 
     * Set this to false to eliminate these debugging statements within the byte code.*/

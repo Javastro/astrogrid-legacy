@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-    <xsl:param name="image_path">/astrogrid-portal/mount/workflow/</xsl:param>  <!-- path to images -->
     <xsl:param name="activity_key" />
     <xsl:param name="display_parameter_values" />
     <xsl:param name="display_tool_values" />

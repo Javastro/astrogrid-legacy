@@ -6,7 +6,6 @@
        | Date:   Sept 2004
        +-->
        
-  <xsl:param name="image_path">/astrogrid-portal/mount/workflow/</xsl:param>  <!-- path to images -->
   
     <xsl:include href="display-else.xsl"/> 
     <xsl:include href="display-executionRecord.xsl"/>    
