@@ -115,6 +115,48 @@
             </properties>
         </dependency>
 
+	<!-- supporting libraries for registry- don't understand what half of these do,
+		or whether they're needed - but include all for now, until this gets sorted out -->
+   <dependency>
+      <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-pal-query</artifactId>
+            <version>${astrogrid.pal.version}</version>
+            <type>jar</type>
+                <properties>
+                  <war.bundle>true</war.bundle>
+                </properties>
+        </dependency>
+
+        <!-- for writing XML -->
+       <dependency>
+          <artifactId>astrogrid-xml</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.xml.latest}</version>
+            <properties>
+              <war.bundle>true</war.bundle>
+            </properties>
+       </dependency>
+
+       <dependency><!-- dunno if this one is required -->
+          <artifactId>astrogrid-slinger-api</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.slinger.version}</version>
+            <properties>
+              <war.bundle>true</war.bundle>
+            </properties>
+       </dependency>
+	   <!-- adding utils dependency for bug 1120, if roll back should be version 1.82 (version 1.83=1.84) becasue I accidently checked 1.83 in yesterday-->
+       <dependency><!-- more crap -->
+          <artifactId>astrogrid-utils</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.utils.stable}</version>
+		   <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>
+       </dependency>		
+		
+		
+	<!-- 3rd party libs -->
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xerces</artifactId>
