@@ -22,6 +22,7 @@
            to perform common tasks (myspace microbrowser, registry browser, etc). Finally, the runtime provides a series of simple GUI applications that
            act as reference implementations for GUIs for the core features of astrogrid - myspace browser, job controller, registry browser. Others to follow - workflow
            builder, query builder, cea invoker.
+		   </p>
          ]]></description>
         <shortDescription>AstroGrid Workbench</shortDescription>
         <packageGroups>
