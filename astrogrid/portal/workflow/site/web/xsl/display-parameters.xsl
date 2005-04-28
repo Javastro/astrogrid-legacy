@@ -38,7 +38,7 @@
       <table border="2" cellpadding="0" cellspacing="0">
         <form name="parameter_form" id="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" target="workflowOuterFrame" method="post" >
         <tr>
-          <td align="center" colspan="6">
+          <td align="center" colspan="7">
             <div style="color: blue; background-color: lightblue; text-align: center;">
               Parameters for step:
               <xsl:choose>
@@ -64,7 +64,7 @@
         <xsl:choose>
           <xsl:when test="./tool/@tool-name != 'null'">                                    
             <xsl:if test="./tool/inputParam" >
-              <tr><td colspan="4">
+              <tr><td colspan="5">
                 <div style="color: blue; background-color: lightblue; text-align: center;">( input parameters for this task: )</div>
               </td></tr> 
               <xsl:for-each select="./tool/inputParam">
@@ -76,7 +76,7 @@
             </xsl:if>
 
               <xsl:if test="./tool/outputParam" >  <!-- Email tool has no output params, so don't display -->      
-                <tr><td colspan="4">
+                <tr><td colspan="5">
                   <div style="color: blue; background-color: lightblue; text-align: center;">( output parameters for this task: )</div>
                 </td></tr>                
                 <xsl:for-each select="./tool/outputParam">  
@@ -86,7 +86,7 @@
                 </xsl:for-each>
               </xsl:if>
               <tr>
-                <td colspan="5">
+                <td colspan="6">
                   <div style="display: none; color: blue;">
                     <xsl:attribute name="id">multiParamDiv<xsl:value-of select="@key"/></xsl:attribute> 
                     * task may contain more than one occurence of this parameter. <br />
@@ -95,7 +95,7 @@
                 </td>                        
               </tr>              
               <tr>
-                <td colspan="5">
+                <td colspan="6">
                   <div style="color: blue; background-color: lightblue; text-align: center;">
                     <input class="agActionButton" type="submit" value="Update parameter values" />                    
                   </div>
@@ -109,7 +109,7 @@
           </xsl:when>
           <xsl:otherwise>
             <tr>
-              <td colspan="5" > There is currently no task associated with this step </td>
+              <td colspan="6" > There is currently no task associated with this step </td>
               <td style="cursor: help; text-align: center">                                     
                 <xsl:element name="img">
                   <xsl:attribute name="src">/astrogrid-portal/mount/workflow/Help3.png</xsl:attribute>
@@ -119,7 +119,7 @@
               </td>              
             </tr>
             <tr>
-              <td colspan="6">
+              <td colspan="7">
                 <div style="display: none; color: blue;  text-align: left;">
                   <xsl:attribute name="id">helpDiv<xsl:value-of select="@key"/></xsl:attribute>                    
                     Select a <b>task</b> from the dropdown list (below). <br />
@@ -224,6 +224,23 @@
               </xsl:if>              
             </input>                        
           </td>
+
+          <td nowrap="true">
+            <xsl:if test="@param-cardinality-min='0'">
+              <xsl:attribute name="style">cursor: help</xsl:attribute>                                    
+              <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
+              <xsl:attribute name="onMouseOver">this.T_TITLE='Delete: '; this.T_WIDTH=250; this.T_DELAY=500; return escape('' +                                                            
+                                 'This parameter has min cardinality of 0 i.e. is optional and may be deleted. ' +
+                                 'Once deleted optional parameters are not passed on to the application, ' +
+                                 'if not deleted an empty value will be passed, ' +
+                                 'this may have a different meaning than not passing it at all. ');
+              </xsl:attribute>                                             
+              <input type="checkbox">
+                <xsl:attribute name="name">param_delete#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
+              </input>
+            </xsl:if>
+          </td>
+
         </tr>
         <input type="hidden">
           <xsl:attribute name="name">param-name#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>

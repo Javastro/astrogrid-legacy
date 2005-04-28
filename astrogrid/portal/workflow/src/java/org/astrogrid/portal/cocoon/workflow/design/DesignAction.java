@@ -181,6 +181,7 @@ public class DesignAction extends AbstractAction {
 	    SCRIPT_DESCRIPTION_PARAMETER = "script_description",
 	    SCRIPT_BODY_PARAMETER = "script_body",
 	    PARAM_INDIRECT = "param_indirect",
+	    PARAM_DELETE = "param_delete",
 	    FOR_ITEMS_PARAMETER = "for_item",
 	    FOR_VAR_PARAMETER = "for_get",
 	    IF_TEST_PARAMETER = "if_test",
@@ -1125,6 +1126,7 @@ public class DesignAction extends AbstractAction {
 		  Tool tool = null ;
 		  ParameterValue p = null ;
 	      boolean parameterIndirect = false;
+	      boolean parameterDelete = false;	      
 	      String paramCount = "" + i ;
               
 	      try {
@@ -1138,6 +1140,10 @@ public class DesignAction extends AbstractAction {
 			
 		       if (request.getParameter( PARAM_INDIRECT+"#input#"+paramCount ).equalsIgnoreCase("on") )
 			     parameterIndirect = true;
+       
+		       if ((request.getParameter( PARAM_DELETE+"#input#"+paramCount ) != null) 
+		       	&& (request.getParameter( PARAM_DELETE+"#input#"+paramCount ).equalsIgnoreCase("on") ))
+			     parameterDelete = true;		       
 		       
 		       // Bug # 1047 - if param is indirect we need to manually add the ivo://
 		       // DO NOT add ivo if ivorn contains http
@@ -1151,7 +1157,8 @@ public class DesignAction extends AbstractAction {
 		debug( "multi: parameterValue: " + i + ": " + parameterValue ) ;
 		debug( "multi: oldParameterValue: " + i + ": " + oldParameterValue ) ;
 		debug( "multi: activityKey: " + i + ": " + activityKey ) ;
-		debug( "multi: parameterIndirect: " + i + ": " + parameterIndirect  ) ;   
+		debug( "multi: parameterIndirect: " + i + ": " + parameterIndirect  ) ;
+		debug( "multi: parameterDelete: " + i + ": " + parameterDelete  ) ;
                             
 		if ( parameterName == null) {
 			debug( "parameterName is null" ) ;
@@ -1167,47 +1174,62 @@ public class DesignAction extends AbstractAction {
 			parameterValue = ivornValue ;          
 			debug( "parameterValue now: " + parameterValue ) ;
 		}
+
+	    step = locateStep( workflow, activityKey );
+	    tool = step.getTool() ;		
 		
-		if ( (parameterValue != null && parameterValue.length() > 0 ) || (oldParameterValue.length() > 0) )
-		{			
-		    step = locateStep( workflow, activityKey );
-		    tool = step.getTool() ;
+	    // Enhancement to delete optional input parameters
+	    if (parameterDelete) {
+	    	debug("Deleting parameter: " + parameterName );
+	    	debug("parameterValue is: " + parameterValue);
+	    		
+	    	WorkflowHelper.deleteInputParameter( tool
+	    										, parameterName
+												, parameterValue ) ;
+	    	
+	    }		
+		
+		else if ( (parameterValue != null && parameterValue.length() > 0 ) || (oldParameterValue.length() > 0) )
+		{
 		    ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
 		    ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
+		    		    
+		    
+		    	if (parameterValue.indexOf(PARAMATER_SEPARATOR_PARAM) == -1 ) // single parameter value
+                	{
+            	
+		            	WorkflowHelper.insertInputParameterValue( applDescription
+		            											, tool
+																, parameterName
+																, oldParameterValue
+																, parameterValue
+																, parameterIndirect ) ;
+                	}
+		    	else // multiple parameter values
+		    	{
+		    		while (parameterValue.indexOf(PARAMATER_SEPARATOR_PARAM) != -1)
+		    		{
+		    			String singleParamValue = parameterValue.substring( 0, parameterValue.indexOf(PARAMATER_SEPARATOR_PARAM ) );
+		    			parameterValue = parameterValue.substring(singleParamValue.length() + 2 , parameterValue.length() ) ;
 
-            if (parameterValue.indexOf(PARAMATER_SEPARATOR_PARAM) == -1 ) // single parameter value
-                {
-		            WorkflowHelper.insertInputParameterValue( applDescription
-					        							    , tool
-							        					    , parameterName
-									        			    , oldParameterValue
-											        	    , parameterValue
-												            , parameterIndirect ) ;
-                }
-            else // multiple parameter values
-            {
-            	while (parameterValue.indexOf(PARAMATER_SEPARATOR_PARAM) != -1)
-            	{
-                    String singleParamValue = parameterValue.substring( 0, parameterValue.indexOf(PARAMATER_SEPARATOR_PARAM ) );
-                    parameterValue = parameterValue.substring(singleParamValue.length() + 2 , parameterValue.length() ) ;
-
-					WorkflowHelper.insertInputParameterValue( applDescription
+		    			WorkflowHelper.insertInputParameterValue( applDescription
+		    													, tool
+																, parameterName
+																, ""
+																, singleParamValue.trim()
+																, parameterIndirect ) ;
+        		
+		    		}
+		    		// and the final value
+		    		WorkflowHelper.insertInputParameterValue( applDescription
 															, tool
 															, parameterName
 															, ""
-															, singleParamValue.trim()
-															, parameterIndirect ) ;
-        		
-            	}
-            	// and the final value
-				WorkflowHelper.insertInputParameterValue( applDescription
-														, tool
-														, parameterName
-														, ""
-														, parameterValue.trim()
-														, parameterIndirect ) ;            	
-            }
-		}				
+															, parameterValue.trim()
+															, parameterIndirect ) ;            	
+		    	}
+		    }
+		  				
 		}
 		catch( WorkflowInterfaceException wix ) {
 			wix.printStackTrace();
