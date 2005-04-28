@@ -1,4 +1,4 @@
-/*$Id: NodeIvornFactory.java,v 1.3 2005/04/28 20:42:04 clq2 Exp $
+/*$Id: NodeIvornFactory.java,v 1.4 2005/04/28 21:38:06 clq2 Exp $
  * Created on 18-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.filemanager.nodestore;
 
-import org.astrogrid.common.namegen.NameGen;
 import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.filemanager.common.NodeIvorn;
 import org.astrogrid.filemanager.common.ivorn.IvornFactory;
@@ -61,16 +60,9 @@ public class NodeIvornFactory {
      * @return
      * @throws FileManagerFault
      */
-    public NodeIvorn createNewNodeIvorn() throws FileManagerFault {      
-        try {
-        String ident = nameGen.next();
-        return new NodeIvorn(base + "#node-" + ident);        
-        } catch (Exception e) {
-            log.fatal("Sequence failure",e);
-            FileManagerFault f = new FileManagerFault("Sequence failure");
-            f.setFaultReason(e.getMessage());
-            throw f;                   
-        }
+    public NodeIvorn createNewNodeIvorn() throws FileManagerFault {        
+        String ident = nameGen.newUnique();
+        return new NodeIvorn(base + "#node-" + ident);
     }
 
 
@@ -89,11 +81,8 @@ public class NodeIvornFactory {
 
 /* 
 $Log: NodeIvornFactory.java,v $
-Revision 1.3  2005/04/28 20:42:04  clq2
-1035
-
-Revision 1.2.22.1  2005/04/11 11:30:58  nw
-refactored nameGen into a component component
+Revision 1.4  2005/04/28 21:38:06  clq2
+roll back before 1035
 
 Revision 1.2  2005/03/11 13:37:05  clq2
 new filemanager merged with filemanager-nww-jdt-903-943

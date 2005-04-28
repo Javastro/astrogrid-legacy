@@ -1,4 +1,4 @@
-/*$Id: TestFileManager.java,v 1.3 2005/04/28 20:42:04 clq2 Exp $
+/*$Id: TestFileManager.java,v 1.4 2005/04/28 21:38:06 clq2 Exp $
  * Created on 18-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,15 @@
 **/
 package org.astrogrid.filemanager.server;
 
-import org.astrogrid.common.namegen.FileNameGen;
-import org.astrogrid.common.namegen.NameGen;
 import org.astrogrid.filemanager.BaseTest;
 import org.astrogrid.filemanager.common.FileManagerPortType;
 import org.astrogrid.filemanager.datastore.DefaultStoreFacade;
 import org.astrogrid.filemanager.datastore.StoreFacade;
 import org.astrogrid.filemanager.nodestore.CautiousNodeStoreDecorator;
+import org.astrogrid.filemanager.nodestore.NameGen;
 import org.astrogrid.filemanager.nodestore.NodeIvornFactory;
 import org.astrogrid.filemanager.nodestore.NodeStore;
+import org.astrogrid.filemanager.nodestore.file.FileNameGen;
 import org.astrogrid.filemanager.nodestore.file.TransactionalFileNodeStore;
 import org.astrogrid.filestore.client.FileStoreMockDelegate;
 import org.astrogrid.filestore.common.exception.FileStoreServiceException;
@@ -76,7 +76,7 @@ public class TestFileManager extends CautiousFileManagerDecorator {
             File baseDir = config.getBaseDir();
             //          NameGen nameGen = new InMemoryNameGen();
             File nameGenDir = new File(baseDir,"nameGen");
-            NameGen nameGen = new FileNameGen(nameGenDir,TheFileManager.NODE_SEQUENCE_NAME);
+            NameGen nameGen = new FileNameGen(nameGenDir);        
 //          NodeStore store = new CautiousNodeStoreDecorator(new InMemoryNodeStore(new NodeIvornFactory( nameGen,config)));
 
             File nodeDir = new File(baseDir,"nodes");        
@@ -153,11 +153,8 @@ public class TestFileManager extends CautiousFileManagerDecorator {
 
 /* 
 $Log: TestFileManager.java,v $
-Revision 1.3  2005/04/28 20:42:04  clq2
-1035
-
-Revision 1.2.22.1  2005/04/11 11:30:59  nw
-refactored nameGen into a component component
+Revision 1.4  2005/04/28 21:38:06  clq2
+roll back before 1035
 
 Revision 1.2  2005/03/11 13:37:06  clq2
 new filemanager merged with filemanager-nww-jdt-903-943

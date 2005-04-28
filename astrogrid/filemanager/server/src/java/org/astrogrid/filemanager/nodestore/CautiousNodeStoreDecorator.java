@@ -1,4 +1,4 @@
-/*$Id: CautiousNodeStoreDecorator.java,v 1.3 2005/04/28 20:42:04 clq2 Exp $
+/*$Id: CautiousNodeStoreDecorator.java,v 1.4 2005/04/28 21:38:06 clq2 Exp $
  * Created on 17-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,7 +85,7 @@ public class CautiousNodeStoreDecorator implements NodeStore {
         }
         return returnTransaction;
     }
-    public void deleteNode(final Transaction t, final Node ident, final Node parent) throws NodeNotFoundFault,
+    public void deleteNode(Transaction t, Node ident, Node parent) throws NodeNotFoundFault,
             FileManagerFault {
         if (logger.isDebugEnabled()) {
             logger.debug("deleteNode(t = " + t + ", ident = " + ident + ", parent = " + parent
@@ -327,11 +327,8 @@ public class CautiousNodeStoreDecorator implements NodeStore {
 
 /* 
 $Log: CautiousNodeStoreDecorator.java,v $
-Revision 1.3  2005/04/28 20:42:04  clq2
-1035
-
-Revision 1.2.22.1  2005/04/27 11:15:25  nw
-fixed delete bug - a one-liner.
+Revision 1.4  2005/04/28 21:38:06  clq2
+roll back before 1035
 
 Revision 1.2  2005/03/11 13:37:05  clq2
 new filemanager merged with filemanager-nww-jdt-903-943

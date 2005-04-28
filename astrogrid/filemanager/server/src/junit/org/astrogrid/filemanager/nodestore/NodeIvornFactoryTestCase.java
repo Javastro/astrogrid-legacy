@@ -1,4 +1,4 @@
-/*$Id: NodeIvornFactoryTestCase.java,v 1.3 2005/04/28 20:42:04 clq2 Exp $
+/*$Id: NodeIvornFactoryTestCase.java,v 1.4 2005/04/28 21:38:06 clq2 Exp $
  * Created on 24-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,10 @@
 **/
 package org.astrogrid.filemanager.nodestore;
 
-import org.astrogrid.common.namegen.FileNameGen;
 import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.filemanager.common.NodeIvorn;
+import org.astrogrid.filemanager.nodestore.file.FileNameGen;
 import org.astrogrid.filemanager.server.HardCodedFileManagerConfig;
-import org.astrogrid.filemanager.server.TheFileManager;
 
 import java.io.File;
 import java.util.HashSet;
@@ -37,7 +36,7 @@ public class NodeIvornFactoryTestCase extends TestCase {
         baseDir.delete();
         baseDir.mkdir();
         baseDir.deleteOnExit();
-        fac = new NodeIvornFactory(new FileNameGen(baseDir,TheFileManager.NODE_SEQUENCE_NAME),new HardCodedFileManagerConfig());
+        fac = new NodeIvornFactory(new FileNameGen(baseDir),new HardCodedFileManagerConfig());
     }
     
     protected NodeIvornFactory fac;
@@ -59,11 +58,8 @@ public class NodeIvornFactoryTestCase extends TestCase {
 
 /* 
 $Log: NodeIvornFactoryTestCase.java,v $
-Revision 1.3  2005/04/28 20:42:04  clq2
-1035
-
-Revision 1.2.22.1  2005/04/11 11:30:59  nw
-refactored nameGen into a component component
+Revision 1.4  2005/04/28 21:38:06  clq2
+roll back before 1035
 
 Revision 1.2  2005/03/11 13:37:06  clq2
 new filemanager merged with filemanager-nww-jdt-903-943
