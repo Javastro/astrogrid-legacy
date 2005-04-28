@@ -765,6 +765,30 @@ public class DesignAction extends AbstractAction {
                   throw new ConsistencyException() ; 
                }
                else {
+               	
+               	
+               	// bug # 1100: ensure credentials of workflow match those of current user
+                
+                if ((workflow.getCredentials().getAccount().getName() != this.userid) || 
+                	(workflow.getCredentials().getAccount().getCommunity() != this.community) ||
+					(workflow.getCredentials().getGroup().getName() != this.userid) ||
+					(workflow.getCredentials().getGroup().getCommunity() != this.community) ) {
+                												
+                	Account account = new Account();
+                	account.setName( userid );
+                	account.setCommunity( community );
+                
+                	Group group = new Group();
+                	group.setName( this.userid );
+                	group.setCommunity( community );
+                        
+                	this.credentials = new Credentials();
+                	credentials.setAccount( account );
+                	credentials.setGroup( group );
+                	credentials.setSecurityToken( "dummy" );	
+                	workflow.setCredentials(credentials);
+                }
+                
                   JobExecutionService jes = this.workflowManager.getJobExecutionService();
                   jes.submitWorkflow( workflow ) ;
                }
