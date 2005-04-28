@@ -1,4 +1,4 @@
-/*$Id: TransactionalFileNodeStore.java,v 1.2 2005/03/11 13:37:05 clq2 Exp $
+/*$Id: TransactionalFileNodeStore.java,v 1.3 2005/04/28 20:42:04 clq2 Exp $
  * Created on 24-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.filemanager.nodestore.file;
 
+import org.astrogrid.common.namegen.CommonsLoggingFacade;
 import org.astrogrid.filemanager.common.AccountIdent;
 import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.filemanager.common.Node;
@@ -147,7 +148,7 @@ public class TransactionalFileNodeStore extends FileNodeStore {
     
     protected void doDeleteNode(Transaction t, Node node) throws FileManagerFault {
         try {
-            manager.deleteResource(t,node.getIvorn());
+            manager.deleteResource(getTxId(t),node.getIvorn());
         } catch (ResourceManagerException e) {
             logger.warn("could node delete record for " + node);
             FileManagerFault f = new FileManagerFault("Could not delete record for " + node);
@@ -226,6 +227,15 @@ public class TransactionalFileNodeStore extends FileNodeStore {
 
 /* 
 $Log: TransactionalFileNodeStore.java,v $
+Revision 1.3  2005/04/28 20:42:04  clq2
+1035
+
+Revision 1.2.22.2  2005/04/27 11:15:25  nw
+fixed delete bug - a one-liner.
+
+Revision 1.2.22.1  2005/04/11 11:30:58  nw
+refactored nameGen into a component component
+
 Revision 1.2  2005/03/11 13:37:05  clq2
 new filemanager merged with filemanager-nww-jdt-903-943
 

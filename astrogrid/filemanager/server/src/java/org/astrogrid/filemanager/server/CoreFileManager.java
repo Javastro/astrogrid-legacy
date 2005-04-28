@@ -1,4 +1,4 @@
-/*$Id: CoreFileManager.java,v 1.3 2005/03/31 14:59:29 dave Exp $
+/*$Id: CoreFileManager.java,v 1.4 2005/04/28 20:42:04 clq2 Exp $
  * Created on 16-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.filemanager.server;
 
-import org.astrogrid.filemanager.client.NodeMetadata;
 import org.astrogrid.filemanager.common.AccountIdent;
 import org.astrogrid.filemanager.common.BundlePreferences;
 import org.astrogrid.filemanager.common.DataLocation;
@@ -40,7 +39,6 @@ import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -562,6 +560,12 @@ public class CoreFileManager implements FileManagerPortType {
 
 /* 
 $Log: CoreFileManager.java,v $
+Revision 1.4  2005/04/28 20:42:04  clq2
+1035
+
+Revision 1.3.8.1  2005/04/11 11:30:59  nw
+refactored nameGen into a component component
+
 Revision 1.3  2005/03/31 14:59:29  dave
 Patch fix to enable overwriting of file with the same name.
 ** This needs to be refactored when we get time **

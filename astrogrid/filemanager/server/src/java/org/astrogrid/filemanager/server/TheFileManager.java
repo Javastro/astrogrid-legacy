@@ -1,4 +1,4 @@
-/*$Id: TheFileManager.java,v 1.3 2005/03/31 14:56:08 nw Exp $
+/*$Id: TheFileManager.java,v 1.4 2005/04/28 20:42:04 clq2 Exp $
  * Created on 28-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
 **/
 package org.astrogrid.filemanager.server;
 
+import org.astrogrid.common.namegen.FileNameGen;
+import org.astrogrid.common.namegen.NameGen;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.filemanager.common.FileManagerFault;
@@ -17,10 +19,8 @@ import org.astrogrid.filemanager.common.FileManagerPortType;
 import org.astrogrid.filemanager.datastore.DefaultStoreFacade;
 import org.astrogrid.filemanager.datastore.StoreFacade;
 import org.astrogrid.filemanager.nodestore.CautiousNodeStoreDecorator;
-import org.astrogrid.filemanager.nodestore.NameGen;
 import org.astrogrid.filemanager.nodestore.NodeIvornFactory;
 import org.astrogrid.filemanager.nodestore.NodeStore;
-import org.astrogrid.filemanager.nodestore.file.FileNameGen;
 import org.astrogrid.filemanager.nodestore.file.TransactionalFileNodeStore;
 import org.astrogrid.filestore.resolver.FileStoreDelegateResolver;
 import org.astrogrid.filestore.resolver.FileStoreDelegateResolverImpl;
@@ -49,6 +49,7 @@ public class TheFileManager extends SecurityGuardFileManagerDecorator {
     }
     
     public static final String FILEMANAGER_BASE_DIR_KEY  = "org.astrogrid.filemanager.basedir";
+    public static final String NODE_SEQUENCE_NAME = "node-ivorn-sequence";
     
     protected static final FileManagerPortType buildFileManager() {
         try {
@@ -73,7 +74,7 @@ public class TheFileManager extends SecurityGuardFileManagerDecorator {
         NodeStore nodeStore = null;
         
             logger.info("Creating nameGen");
-            NameGen nameGen = new FileNameGen(nameGenDir);   
+            NameGen nameGen = new FileNameGen(nameGenDir, NODE_SEQUENCE_NAME);   
             logger.info(nameGen);
             
             logger.info("Creating NodeStore");
@@ -110,6 +111,12 @@ public class TheFileManager extends SecurityGuardFileManagerDecorator {
 
 /* 
 $Log: TheFileManager.java,v $
+Revision 1.4  2005/04/28 20:42:04  clq2
+1035
+
+Revision 1.3.8.1  2005/04/11 11:30:58  nw
+refactored nameGen into a component component
+
 Revision 1.3  2005/03/31 14:56:08  nw
 improved error trapping
 
