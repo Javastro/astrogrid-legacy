@@ -50,7 +50,7 @@
 		    previously_selected_table=id;
 		    table_selected = true;		  
         }
-        if (footer) 
+        if (false) 
         {
             if(parent.document.getElementById("imgfootbar")!= null) 
             {

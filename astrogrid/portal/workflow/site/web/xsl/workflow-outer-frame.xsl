@@ -54,6 +54,13 @@
             }
         }
     }
+    
+    function removeFooter() {
+      if(document.getElementById("imgfootbar")!= null) 
+      {
+          document.getElementById("imgfootbar").style.display = "none";
+      }
+    }    
                     
       </script>      
       <script type="text/javascript">
@@ -61,6 +68,7 @@
       </script>            
           
        <ag-onload> 
+         <xsl:attribute name="function">removeFooter();</xsl:attribute>                 	
          <xsl:if test="$display_parameter_values = 'true'">            
            <xsl:attribute name="function">toggleInner('parameters:<xsl:value-of select="$activity_key"/>');</xsl:attribute>                 	
          </xsl:if>

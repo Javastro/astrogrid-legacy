@@ -3,22 +3,50 @@
     +-->
 <page>
 <agComponentTitle>
-	HOLDING PAGE FOR HELP.
+	Help.....
 </agComponentTitle>
 <content>
-    <p>
-    This is a holding page for the new HELP section.  PLEASE FIX ME!
-    </p>
 
     <p>
+    General
+    </p>
+    <p>
     <ul>
-    <li><a href="/astrogrid-portal/bare/mount/help/faq.faq">FAQ</a></li>
-    <li><a href="/astrogrid-portal/bare/mount/help/cookbook.ckb">Cookbook</a></li>
-    <li><a href="/astrogrid-portal/bare/mount/help/glossary.glo">Glossary</a></li>
+    <li><a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/ReleaseV1Pages')">AstroGrid Release V1.0 Introduction</a></li>
+    <li><a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/UsingScienceServices')">Using the Science Services</a></li>
+    <li><a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalUsage')">Using the Portal</a></li>
+    <li><a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalCookBook')">Cook-book: examples of portal usage</a></li>
+    <li><a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/ToolDocumentation')">Tool documentation</a></li>
     </ul>
     </p>
+    How-to:
+    <p>
+    <ul>
+    <li><a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/RedshiftMaker')">Photometric Redshifts</a></li>
+    <li><a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/MultipleCrossMatcher')">Catalogue Crossmatcher</a></li>
+    <li><a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/IterativeSExtractor')">SExtractor (source extraction tool)</a></li>
+    </ul>
+    </p>
+    Glossary
+    <p>
+    <ul>
+    <li><a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/WhatIsAVOTable')">VOTable</a></li>
+    </ul>
+    </p>
+    FAQ
+    <p>
+    <ul>
+    <li><a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/usingAG1')">Hints and tips</a></li>
+    </ul>
+    </p>
+    
 </content>
 </page>
+ 
+
+
+
+
 <!--+
     | <cvs:log>
     | </cvs:log>
