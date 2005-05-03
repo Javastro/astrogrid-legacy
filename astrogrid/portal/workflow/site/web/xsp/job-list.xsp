@@ -57,7 +57,7 @@
 					        <xsp:attribute name="time"><xsp:expr>ws.getStartTime()</xsp:expr></xsp:attribute>
 					        <xsp:attribute name="status"><xsp:expr>ws.getStatus()</xsp:expr></xsp:attribute>	
 					        <xsp:attribute name="jobid"><xsp:expr>ws.getJobId().getContent()</xsp:expr></xsp:attribute>
-					        <xsp:attribute name="jobid-short"><xsp:expr>ws.getJobId().getContent().substring((ws.getJobId().getContent().lastIndexOf("@")),(ws.getJobId().getContent().length()))</xsp:expr></xsp:attribute>															
+					        <xsp:attribute name="jobid-short"><xsp:expr>ws.getJobId().getContent().substring((ws.getJobId().getContent().lastIndexOf("@")+1),(ws.getJobId().getContent().length()))</xsp:expr></xsp:attribute>															
 	    			     </xsp:element>
 			          </content>
                   			
