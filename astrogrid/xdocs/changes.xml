@@ -93,7 +93,7 @@
         </action>
    </release>
 
-   <release version="1.0">
+   <release version="1.0" date="01/05/05" description="AG 1.0 Release">
         <action dev="pjn" type="fix" issue="748">
             Removed footer from workflow and job status pages; help links now temporarily point to wikki help page. Branch portal_pjn_748
         </action>	
@@ -135,7 +135,7 @@
             Same problmes of adding utils dependencies testing together. Branch jes_clq_1120/wf_clq_1120/por_clq_1120
         </action>	
    </release>
-   <release version="0.10.0">
+   <release version="0.10.0" date="11/04/05" description="Post NAM release">
         <action dev="clq" type="fix" issue="1079">
             Fixed storeclient/xml/status overwriting AG main site docs. Branch sc_clq_1079
         </action>
