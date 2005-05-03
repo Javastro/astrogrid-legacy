@@ -2,8 +2,8 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xsp/login-pass.xsp,v $</cvs:source>
     | <cvs:author>$Author: pjn3 $</cvs:author>
-    | <cvs:date>$Date: 2005/04/27 15:01:57 $</cvs:date>
-    | <cvs:version>$Revision: 1.17 $</cvs:version>
+    | <cvs:date>$Date: 2005/05/03 09:53:49 $</cvs:date>
+    | <cvs:version>$Revision: 1.18 $</cvs:version>
     |
     +-->
 <xsp:page language="java"
@@ -272,7 +272,7 @@ function toggle(yo, was){
   <iframe style="border: solid 0px white; background-color: transparent"
   marginWidth="0px" scrolling="yes" hspace="0px" vspace="0px" frameborder="no"
   allowtransparency="true" onload="setRelHeight(this, 100)"
-  src="/astrogrid-portal/veryBare/mount/workflow/agjobmanager-jes.html?action=read-job-list"
+  src="/astrogrid-portal/veryBare/mount/workflow/agjobmanager-jes-homepage.html?action=read-job-list"
   marginHeight="0px" border="0px" height="400px" width="98%"
   name="jobMonitorFrame">ag</iframe>
 </center>
@@ -465,6 +465,9 @@ Locate Spectral data
 <!--+
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
+    |   Revision 1.18  2005/05/03 09:53:49  pjn3
+    |   managed to over-write change to agjobmanager-jes-homepage link...
+    |
     |   Revision 1.17  2005/04/27 15:01:57  pjn3
     |   Further link changes
     |
