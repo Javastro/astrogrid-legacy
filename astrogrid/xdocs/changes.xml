@@ -41,9 +41,7 @@
 		<action dev="kmb" type="fix" issue="1004"> 
             (astrogrid/filestore) - A small change to the xml to add relationship elements to it now. Branch FS_KMB_1004_2
         </action> 
-		<action dev="nww" type="fix" issue="1035"> 
-            Fix for 'delete' and 'move' bugs. minor changes to filemanager-client and filemanager-server.bug. Branch filemanager-nww-1035
-        </action> 
+		
 		<action dev="jdt" type="fix" issue="1056"> 
             Added an about page to each war. Not going to rebuild just for this...
 			will let it be absorbed naturally as new builds take place. However if there are any problems building war files then this should be your first suspect! 
@@ -56,41 +54,10 @@
    </release>
     
   <release version="HEAD">
-        <action dev="kmb" type="add" > 
-            Added configuration pages to FileStore webapp.
-        </action>    
-        <action dev="jdt" type="add" > 
-            Created a graphical installer for the JES.  Download from <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>.
-        </action>
-        <action dev="jdt" type="add" issue="966"> 
-            Created a graphical installer for FileStore.  Download from <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>.
-        </action>            
-        <action dev="kmb" type="add">
-            New xmldb project for Registry.
-        </action>
-        <action dev="pah" type="fix" issue="910">
-            Added some logging to myspace and community
+	    <action dev="nww" type="fix" issue="1035"> 
+            Fix for 'delete' and 'move' bugs. minor changes to filemanager-client and filemanager-server.bug. Branch filemanager-nww-1035
         </action> 
-        <action dev="gtr" type="add" >
-            Created some jsp pages to allow admins to edit web.xmls when our components are deployed in Tomcat containers.
-            JSP pages have been put into the common project, but will need to be copied out by anyone that wants to 
-            use them in their wars.
-        </action>                    
-        <action dev="jdt" type="fix" issue="936">
-            Community now builds under Maven 1.0.2
-        </action>
-        <action dev="jdt" type="fix" issue="933">
-            Registry now builds under Maven 1.0.2
-        </action>
-        <action dev="jdt" type="add" issue="882"> 
-            Created a graphical installer for the portal.  Download from <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>.
-        </action>
-        <action dev="jdt" type="fix" issue="623"> 
-            Portal now undeploys cleanly.  (fixed as part of bug 882)
-        </action>
-        <action dev="jdt" type="fix" issue="909"> 
-            All config properties are now set in web.xml.  Obsolete properties removed.
-        </action>
+
    </release>
 
    <release version="1.0" date="01/05/05" description="AG 1.0 Release">
@@ -318,6 +285,41 @@
            1. Rationalising config properties
            2. Redirecting the logs to $CATALINA_HOME/logs to allow a clean uninstall on windows
            3. Creation of a graphical installer Note: the portal now requires the javaapp plugin for Maven. This can be installed by executing maven -Dmaven.repo.remote= http://www.ibiblio.org,http://maven-plugins.sf.net/maven -DartifactId=javaapp -DgroupId= maven-plugins -Dversion=1.3 plugin:download.
+        </action>
+		        <action dev="kmb" type="add" > 
+            Added configuration pages to FileStore webapp.
+        </action>    
+        <action dev="jdt" type="add" > 
+            Created a graphical installer for the JES.  Download from <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>.
+        </action>
+        <action dev="jdt" type="add" issue="966"> 
+            Created a graphical installer for FileStore.  Download from <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>.
+        </action>            
+        <action dev="kmb" type="add">
+            New xmldb project for Registry.
+        </action>
+        <action dev="pah" type="fix" issue="910">
+            Added some logging to myspace and community
+        </action> 
+        <action dev="gtr" type="add" >
+            Created some jsp pages to allow admins to edit web.xmls when our components are deployed in Tomcat containers.
+            JSP pages have been put into the common project, but will need to be copied out by anyone that wants to 
+            use them in their wars.
+        </action>                    
+        <action dev="jdt" type="fix" issue="936">
+            Community now builds under Maven 1.0.2
+        </action>
+        <action dev="jdt" type="fix" issue="933">
+            Registry now builds under Maven 1.0.2
+        </action>
+        <action dev="jdt" type="add" issue="882"> 
+            Created a graphical installer for the portal.  Download from <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>.
+        </action>
+        <action dev="jdt" type="fix" issue="623"> 
+            Portal now undeploys cleanly.  (fixed as part of bug 882)
+        </action>
+        <action dev="jdt" type="fix" issue="909"> 
+            All config properties are now set in web.xml.  Obsolete properties removed.
         </action>
    </release> 
    <release version="0.8.0">     
