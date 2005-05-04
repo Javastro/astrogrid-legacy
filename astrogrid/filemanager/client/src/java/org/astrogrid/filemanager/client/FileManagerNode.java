@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerNode.java,v $</cvs:source>
- * <cvs:author>$Author: nw $</cvs:author>
- * <cvs:date>$Date: 2005/04/14 12:05:23 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/05/04 08:37:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerNode.java,v $
+ *   Revision 1.8  2005/05/04 08:37:04  clq2
+ *   fixed deleting from portal
+ *
+ *   Revision 1.6.22.1  2005/05/03 10:41:50  nw
+ *   back-merged from latest in head - to make it easier for catherine to merge in.
+ *
  *   Revision 1.7  2005/04/14 12:05:23  nw
  *   another cache fix - enable to peek inside the cache.
  *   doesn't effect existing code.

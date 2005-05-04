@@ -1,4 +1,4 @@
-/*$Id: CachingNodeDelegate.java,v 1.4 2005/04/14 12:05:24 nw Exp $
+/*$Id: CachingNodeDelegate.java,v 1.5 2005/05/04 08:37:04 clq2 Exp $
  * Created on 16-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -133,6 +133,12 @@ public class CachingNodeDelegate extends VanillaNodeDelegate {
 
 /*
  * $Log: CachingNodeDelegate.java,v $
+ * Revision 1.5  2005/05/04 08:37:04  clq2
+ * fixed deleting from portal
+ *
+ * Revision 1.2.22.1  2005/05/03 10:41:50  nw
+ * back-merged from latest in head - to make it easier for catherine to merge in.
+ *
  * Revision 1.4  2005/04/14 12:05:24  nw
  * another cache fix - enable to peek inside the cache.
  * doesn't effect existing code.
