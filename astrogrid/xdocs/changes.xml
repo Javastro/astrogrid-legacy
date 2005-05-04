@@ -322,7 +322,7 @@
             All config properties are now set in web.xml.  Obsolete properties removed.
         </action>
    </release> 
-   <release version="0.8.0">     
+   <release version="0.8.0" date="02/02/04">     
         <action dev="pah" type="fix" issue="540"> 
             some very small config changes for the AVO demo
         </action>          
