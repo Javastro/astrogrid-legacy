@@ -8,9 +8,7 @@
         <action dev="jdt" type="add" > 
             Some example new feature that I want merged.
         </action> 
-        <action dev="pjn" type="fix" issue="930"> 
-           (astrogrid/portal/workflow) Jobs displayed in date order. Branch portalWF_pjn_930
-        </action>           
+                   
         <action dev="nww" type="fix" issue="1125"> 
             Fix int tests to use new filemanager. Should see improvments in the applications tests. Branch int-nww-1125
         </action> 
@@ -57,10 +55,12 @@
    </release>
     
   <release version="HEAD">
+	    <action dev="pjn" type="fix" issue="930"> 
+           (astrogrid/portal/workflow) Jobs displayed in date order. Branch portalWF_pjn_930
+        </action>
 	    <action dev="nww" type="fix" issue="1035"> 
             Fix for 'delete' and 'move' bugs. minor changes to filemanager-client and filemanager-server.bug. Branch filemanager-nww-1035
         </action> 
-
    </release>
 
    <release version="1.0" date="01/05/05" description="AG 1.0 Release">
