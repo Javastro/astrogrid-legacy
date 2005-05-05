@@ -77,6 +77,7 @@
              </xsl:if>                      
             </tr>
             <xsl:for-each select="//job">
+            <xsl:sort select="@time-order" data-type="number" order="descending" />
                <tr>    
                   <td nowrap="true"><xsl:value-of select="@name"/></td>
                   <td><xsl:value-of select="@description"/></td>
