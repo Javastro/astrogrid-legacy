@@ -19,6 +19,8 @@
 			All components will need to be rebuilt after this merge, which should have no side effects.
 			Branch maven_jdt_383:
         </action> 
+  </release>
+  <release version="(Undertests)">
 		<action dev="kmb" type="fix" issue="381"> 
             (astrogrid/common) - now uses InputSource? for newDocument(string) Fixed bug with certain characters in DOM. Branch Reg_KMB_381_WS
         </action> 
@@ -34,8 +36,6 @@
 		<action dev="kmb" type="fix" issue="972"> 
             Fixed how it queries on relationships on the registry for groupmembership area. Branch Comm_KMB_381_WS
         </action>
-  </release>
-  <release version="(Undertests)">
         <action dev="kmb" type="fix" issue="1008"> 
             (astrogrid/integrationTests/auto-integration) 
 			- bad branch name should have been a different number. Anyways small fixes to registry-entries. And added community stress test.
