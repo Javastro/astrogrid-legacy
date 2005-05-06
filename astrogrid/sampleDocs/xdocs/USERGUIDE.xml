@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="xxxw@yyy.zzz">Your Name Here</author>
+        <title>User Guide</title>
+</properties>
+
+<body>
+
+<section name="User Guide"><p>
+NOTE:  This might be a multi-page section.  If end-users don't use
+the component, this section will probably not be required.
+</p>
+<p>
+SUPPLY : Instructions for end-users on how to use your system.
+</p>
+<p>
+Basically, any useful component-specific user docs that exist or are 
+required should go here.  
+</p></section>
+
+</body>
+</document>

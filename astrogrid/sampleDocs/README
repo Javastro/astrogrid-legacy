@@ -1,0 +1,3 @@
+Use "maven site" in this directory to build the sample docs in ./target/docs;  
+you can view them via the index page found at ./target/docs/index.html.
+

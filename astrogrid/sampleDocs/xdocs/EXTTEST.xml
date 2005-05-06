@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="xxxw@yyy.zzz">Your Name Here</author>
+        <title>External testing</title>
+</properties>
+
+<body>
+
+<section name="External testing"><p>
+DESCRIBE: How to test the installed component "for real" as part of the
+AG infrastructure.  Ideally, you should provide a Java/Ant/Maven task for 
+this and describe how to use it and what its output should be.
+</p></section>
+
+</body>
+</document>

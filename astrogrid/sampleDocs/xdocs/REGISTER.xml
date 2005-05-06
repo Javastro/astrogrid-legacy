@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="xxxw@yyy.zzz">Your Name Here</author>
+        <title>Registration</title>
+</properties>
+
+<body>
+
+<section name="Registration"><p>
+DESCRIBE: How to register this component in the user's chosen registry
+(if the component has a self-registration function, describe how to
+find it and use it).
+</p>
+<p>
+DESCRIBE: How to adjust the registration data if the user is using
+a proxy server to expose this application (rather than the application's
+own address).
+</p>
+<p>
+DESCRIBE:  How to check that the registration was successful (e.g. how to
+find the relevant entry in the registry, and what its XML should look like).
+</p></section>
+
+</body>
+</document>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="xxxw@yyy.zzz">Your Name Here</author>
+        <title>Installation</title>
+</properties>
+
+<body>
+
+<section name="Prerequisites"><p>
+DESCRIBE: What needs to be installed before you can install this component
+ (e.g. tomcat, any special jars in tomcat etc)
+</p></section>
+
+<section name="Related components"><p>
+DESCRIBE: Any other AG components that you might need to install locally,
+or refer to when configuring this component (e.g. a Registry to register
+it in, a default FileStore etc).
+</p></section>
+
+<section name="Installation"><p>
+DESCRIBE: How to install the component using:
+</p>
+ <ul>
+ <li> Manual installation (how to drop-in the WAR)</li>
+ <li> Command-line installation tool (if a command-line installer exists)</li>
+ <li> GUI installation tool (if a GUI installer exists)</li>
+ </ul>
+</section>
+
+</body>
+</document>

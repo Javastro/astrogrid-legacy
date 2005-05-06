@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="xxxw@yyy.zzz">Your Name Here</author>
+        <title>Self-testing</title>
+</properties>
+
+<body>
+
+<section name="Self-testing"><p>
+DESCRIBE: How to invoke the component's self-tests (e.g. how to find 
+and use the relevant JSP page in the installed component), and what the 
+results of a successful self-test should look like (screenshot or example 
+text output).
+</p>
+<p>
+DESCRIBE:  What steps to take if the self-test fails.  Include a description
+of any common self-test failure modes, and suggest how to fix them.
+</p></section>
+
+</body>
+</document>
