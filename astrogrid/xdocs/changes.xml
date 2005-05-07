@@ -5,6 +5,13 @@
   </properties>
   <body>
   <release version="(Pending Integration)">
+        <action dev="jdt" type="add" issue="1012">
+            <b>cea_jdt_1012</b>
+            DO NOT MERGE YET.   Added some cea-cmdline tests for windows.  The windows tests will fail on Unix. 
+            Equally the Unix tests will fail on Windows, so we should get the same pass rate in both
+            environments.  Fixed the VOSpace tests - this may conflict with 1125 below...will resolve when
+            ready to merge.
+        </action>
         <action dev="jdt" type="add" > 
             Some example new feature that I want merged.
         </action> 
