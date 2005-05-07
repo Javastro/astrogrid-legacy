@@ -12,10 +12,7 @@
             environments.  Fixed the VOSpace tests - this may conflict with 1125 below...will resolve when
             ready to merge.
         </action>
-        <action dev="jdt" type="add" > 
-            Some example new feature that I want merged.
-        </action> 
-                   
+         
         <action dev="nww" type="fix" issue="1125"> 
             Fix int tests to use new filemanager. Should see improvments in the applications tests. Branch int-nww-1125
         </action> 
