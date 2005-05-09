@@ -88,6 +88,7 @@
             <item name="Publishers AstroGrid Library" href="pal/index.html"/>            
             <item name="Portal" href="portal/index.html"/>
             <item name="Registry" href="registry/index.html"/>
+			<item name="SampleDocs" href="sampleDocs/index.html"/>
             <item name="Scripting" href="scripting/index.html" />
             <item name="Security" href="security/index.html" />
             <item name="Slinger" href="slinger/index.html"/>  
@@ -134,6 +135,7 @@
 				<item name="Pal" href="log/maven-build-pal.log" />
                 <item name="Portal" href="log/maven-build-portal.log" />
                 <item name="Registry" href="log/maven-build-registry.log" />
+			    <item name="SampleDocs" href="log/maven-build-sampleDocs.log" />
                 <item name="Scripting" href="log/maven-build-scripting.log" />
                 <item name="Security" href="log/maven-build-security.log" />
                 <item name="Slinger" href="log/maven-build-slinger.log"/>  
