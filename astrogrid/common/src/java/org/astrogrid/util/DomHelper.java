@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.14 2004/09/08 17:30:06 mch Exp $
+   $Id: DomHelper.java,v 1.15 2005/05/09 15:08:03 clq2 Exp $
 
    (c) Copyright...
 */
@@ -19,6 +19,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
 
 
 /**
@@ -89,7 +90,9 @@ public class DomHelper
     */
    public static Document newDocument(String xmlDocument) throws ParserConfigurationException, SAXException, IOException
    {
-      return newDocument(new BufferedInputStream(new StringBufferInputStream(xmlDocument)));
+      //return newDocument(new BufferedInputStream(new StringBufferInputStream(xmlDocument)));
+      //return newDocument(new BufferedInputStream(new ByteArrayInputStream(xmlDocument.getBytes())));
+        return newDocument(new InputSource(new StringReader(xmlDocument)));
    }
 
    /**
@@ -115,6 +118,22 @@ public class DomHelper
          DocumentBuilder builder = dbf.newDocumentBuilder();
          return builder.parse(in);
    }
+   
+   /**
+    * Loads and returns the root DOM node (Element) from the given
+    * XML file
+    */
+   public static Document newDocument(InputSource in) throws ParserConfigurationException, SAXException, IOException
+   {
+         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+         //dbf.setValidating(true);
+         //dbf.setIgnoringElementContentWhitespace(true);  //not available in 1.3
+         dbf.setNamespaceAware(true);
+         
+         DocumentBuilder builder = dbf.newDocumentBuilder();
+         return builder.parse(in);
+   }   
+   
 
    /**
     * Creates an empty document
