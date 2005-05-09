@@ -36,16 +36,16 @@ Below you will find various configuration and installation instructions for your
     	   	<ul>
     			<li>1.) Download the latest copy of astrogrid-registry from <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/">Astrogrid repository</a>
     	            You may grab the latest copy as: <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-registry-SNAPSHOT.war">Latest Registry</a></li>
-    	        <li>2.) By default the registry uses the eXist XML database internally as default.  Below are other options on using eXist or other XMLDB databases.
-    	        <li>3.) You may rename the registry war file to anything you like.</li>
-    	        <li>4.) Deploy the registry war file into your servlet container normally by dropping them into the webapps directory or through
+    	        <li>2.) You may rename the registry war file to anything you like.</li>
+    	        <li>3.) Deploy the registry war file into your servlet container normally by dropping them into the webapps directory or through
     	            some type of manager interface.</li>
-    	        <li>5.) Go to your contexts environment entries in the Administration GUI of your servlet container (hence what was read from the web.xml).  
+    	        <li>4.) Go to your contexts environment entries in the Administration GUI of your servlet container (hence what was read from the web.xml).  
     	                All that really needs changing is the reg.amend.authorityid to your main AuthorityID used on this registry.  But you may wish to read the Properties section below to customize your installation.
-    	                <i>If your going to be a full registry you will need to change reg.amend.harvest to true.  Also depending on your context path/url you will need to change the reg.amend.oaipublish properties.
-    	                
+    	                <i>
+    	                If your going to be a full registry you will need to change reg.amend.harvest to true.  Also depending on your context path/url you will need to change the reg.amend.oaipublish properties.    	                
     	                </i>
     	         </li>
+    	        <li>5.) By default the registry uses the eXist XML database internally as default.  Below are other options on using eXist or other XMLDB databases.
     	        <li>6.) In general the installation of the registry is complete, but read below for the setup.</li>
     	   	</ul>
     	    Steps involved for Setup of Registry:
@@ -74,17 +74,20 @@ Below you will find various configuration and installation instructions for your
 			</p>
 			<p>
 			
-			Now more on the XML Databases:<br />
+			<strong>Now more on the XML Databases:</strong><br />
 			The registry uses the XMLDB:API to connect and query xml databases.  By default it uses an internal (in-process) xml databases known as eXist. eXist puts all the 
-			xml stored into the "{context}/WEB-INF/data" directory by default and reads this information from the "{context}/WEB-INF/exist.xml.  
+			xml stored into the "{context}/WEB-INF/data" directory by default and reads this information from the "{context}/WEB-INF/conf.xml.  
 			Below are other setup abilities that you might wish to do and has certain advantages.
 			<br />
-			<strong>Using eXist internally but different  configuration and data storage location</strong><br />
-			This has a big advantage in that your exist.xml and data directory are outside your deployed webapp; meaning you don't have to copy an older data directory into your webapp on a update of the registry.
+			<strong>Using eXist internally but different configuration and data storage location</strong><br />
+			This has a big advantage in that your conf.xml and data directory are outside your deployed webapp; meaning you don't have to copy an older data directory into your webapp on a update of the registry.  Or rely
+			on backups in the case of a accidental undeploy of a registry.  Plus the turn around time of updating the registry webapp is decreased to just a few minutes because there is no undeploying/deleting of a possible big
+			data directory.
 			Steps:
 			<ul>
-			  <li> Copy your current {context}/WEB-INF/exist.xml and {context}/WEB-INF/data (directory) into some other location on your computer.</li>
-			  <li> Now in your servlet containers GUI for Enviornment entries of the registry change "reg.custom.exist.configuration" to point to your exist.xml.</li>
+			  <li> Copy your current {context}/WEB-INF/conf.xml and {context}/WEB-INF/data (directory) into some other location on your computer.
+			       (Be sure the user running tomcat has write access in the directory and also be sure the conf.xml is located above the data directory just like it is in the WEB-INF directory.)</li>
+			  <li> Now in your servlet containers GUI for Enviornment entries of the registry change "reg.custom.exist.configuration" to point to your conf.xml (Windows OS may require a double "\\").</li>
 			  <li> That is all be sure you commit your changes on your servlet containers GUI. You might want to read the other property settings below.</li>
 			</ul>
 			<br />
@@ -113,8 +116,37 @@ Below you will find various configuration and installation instructions for your
 			<p>
 			<strong>Using another XMLDB:API database.</strong> <br />
 			This is untested at the moment and will add more here later.  But presumbly you can point to another XMLDB, but would require you to change the
-			"xmldb.uri" property.  And currently requires "/db" to be the main root collection after your "xmldb.uri"
+			"xmldb.uri" and "xmldb.driver" properties.  And currently requires "/db" to be the main root collection after your "xmldb.uri"
 <br /><br />			
+      <strong>
+        Going inside the exist:</strong>
+        <br />
+        <i>* If your using eXist, you may go into your {context}/WEB-INF directory and there you will see a file called "startclientexample.txt" for you to look at and shows how to
+        go into eXist in shell mode "-s" or gui client.</i>
+        <br />
+        In general this is what it says:<br />
+        *Run this in the WEB-INF directory.<br />
+        *if you have GUI ability drop the "-s" for a GUI client.<br />
+        <i>Internal/Embed--</i>
+        ***java -Djava.endorsed.dirs=\lib -jar start.jar client -s -ouri=xmldb:exist://   <br />
+        (if your conf.xml and data directory are outside the webapp which is advisable then a -Dexist.home=<directory of conf.xml> needs to be added as a parameter)<br />
+		  <i>External--</i>
+		  * The ouri should be what you have in your xmldb.uri property for the registry.<br />
+	     *here is an example of an exist on the same machine on port 9080<br />
+        ***java -Djava.endorsed.dirs=\lib -jar start.jar client -s -ouri=xmldb:exist://localhost:9080/exist/xmlrpc
+       <br />
+      <strong>
+       Other client and backup abilities direct to eXist
+      </strong>
+      <br />
+      * See <a href="http://exist.sourceforge.net/client.html">Exist Client Docs</a>.
+      <br /><i>Client--</i> 
+         Where you see client.sh or client.bat go to your WEB-INF directory and run (see above):<br />
+         java -Djava.endorsed.dirs=\lib -jar start.jar client
+       <br /><i>Backup--</i>
+          Where you see backup.sh or backup.bat go to your WEB-INF directory and run: <br />
+          java -Djava.endorsed.dirs=\lib -jar start.jar backup
+      <br />
 		<strong>
 		Below are a list of all the properties of the registry, most are custom and require no changing, but you might want to have a read through in case of another version of the registry schema or small tweaks you wisht to perform.:
 		</strong>

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.net.URL;
 import org.astrogrid.registry.common.InterfaceType;
 
-public class ServiceData {
+public class ResourceData {
     
     private Ivorn ivorn = null;
     
@@ -18,7 +18,7 @@ public class ServiceData {
     
     private URL accessURL = null;
     
-    public ServiceData() {
+    public ResourceData() {
         interfaceTypes = new ArrayList();
     }
     
@@ -67,8 +67,7 @@ public class ServiceData {
         sb.append("Ivon = " + getIvorn() + "\n");
         sb.append("Title = " + getTitle() + "\n");
         sb.append("Description = " + getDescription() + "\n");
-        sb.append("AccessURL = " + getAccessURL() + "\n");
-        
+        sb.append("AccessURL = " + getAccessURL() + "\n");        
         return sb.toString();
     }
     

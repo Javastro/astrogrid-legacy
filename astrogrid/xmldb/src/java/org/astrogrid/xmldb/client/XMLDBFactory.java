@@ -36,7 +36,6 @@ import org.xmldb.api.base.Database;
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.modules.XMLResource;
 import org.xmldb.api.modules.CollectionManagementService;
-import org.xml.sax.ContentHandler;
 import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.XMLDBException;
 import javax.xml.transform.OutputKeys;
@@ -343,6 +342,13 @@ public class XMLDBFactory {
         return coll.getResource(id);        
     }
     
+    public void removeResource(Collection coll, String id) throws XMLDBException {
+        Resource res = getResource(coll,id);
+        if(res != null)
+            coll.removeResource(res);
+        
+    }
+    
     /**
      * Method: storeXMLResource
      * Purpose: Store a XML based resource from a given node into a given collection. A random id will be assigned.
@@ -369,6 +375,33 @@ public class XMLDBFactory {
         objRes.setContentAsDOM(content);
         log.info("content is set now storing for id = " + id);
         coll.storeResource(objRes);
+    }
+    
+    /**
+     * Method: storeXMLResource
+     * Purpose: Store a XML based resource from a given xml string into a given collection. A random id will be assigned.
+     * @param Collection the given open collection to a paticular collection (like table) in the xmldb database.
+     * @param String a string of xml.  
+     * @throws XMLDBException if something is goes wrong in the storing mechanism. 
+     */  
+    public void storeXMLResource(Collection coll, String xml) throws XMLDBException {
+        storeXMLResource(coll,null,xml);
+    }
+    
+    /**
+     * Method: storeXMLResource
+     * Purpose: Store a XML based resource from a given xml string into a given collection.
+     * @param Collection the given open collection to a paticular collection (like table) in the xmldb database.
+     * @param id A given unique name to the XML resource (unique to the collection).
+     * @param String a string of xml. 
+     * @throws XMLDBException if something is goes wrong in the storing mechanism. 
+     */    
+    public void storeXMLResource(Collection coll, String id, String xml) throws XMLDBException {
+        log.info("enter storeXMLResource for id (if null then will be created) = " + id);
+        XMLResource objRes = (XMLResource)coll.createResource(id, "XMLResource");
+        objRes.setContent(xml);
+        log.info("content is set now storing for id = " + id);
+        coll.storeResource(objRes);        
     }
     
 

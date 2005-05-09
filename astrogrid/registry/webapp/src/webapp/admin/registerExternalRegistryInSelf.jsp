@@ -78,19 +78,21 @@ A default registry in AstroGrid is pre-set.
 RegistryAdminService serverAdmin = new RegistryAdminService();
 String domurl = getregs + "/getRegistriesXML.jsp?version=" + version;
 URL urlDom = new URL(domurl);
-System.out.println("the domurl = " + domurl);
+//System.out.println("the domurl = " + domurl);
 out.write("<p>getregs: " + getregs + "</p><br />");
 out.write("<p>url to grab registries : " + domurl + "</p><br />");
 Document doc = DomHelper.newDocument(urlDom);
-Document result = serverAdmin.updateResource(doc);
+//Document result = serverAdmin.updateResource(doc);
+serverAdmin.updateNoCheck(doc,version);
+
 out.write("<p>Attempt at grabbing registries from above url and updating the registry, any errors in the updating of this registry will be below<br /></p>");
-if (result != null) {
-  XMLUtils.ElementToWriter(result.getDocumentElement(), out);
-}
+//if (result != null) {
+//  XMLUtils.ElementToWriter(result.getDocumentElement(), out);
+//}
 out.write("<p><br /><br />Here were the entries attempted to be updated into the registry (Remember only the Resource elements are placed into the registry):<br /></p>");
-System.out.println("result not null");
+//System.out.println("result not null");
 if(doc != null) {
-	System.out.println("doc not null");
+	//System.out.println("doc not null");
       String testxml = DomHelper.DocumentToString(doc);
       testxml = testxml.replaceAll("<","&lt;");
       testxml = testxml.replaceAll(">","&gt;");

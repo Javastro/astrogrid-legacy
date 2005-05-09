@@ -89,24 +89,14 @@ public class RegistryAdminTest extends TestCase {
     public void testUpdateInvalidv0_9NotManaged() throws Exception {
         RegistryAdminService ras = new RegistryAdminService();
         Document doc = askQueryFromFile("InvalidEntry.xml");
-        try {
-            ras.Update(doc);
-        }catch(AxisFault af) {
-            System.out.println("Caught expected Exception, this entry is not managed" + af.toString());
-            return;
-        }
+        ras.Update(doc);
         fail("ERROR: Should have caught an invalid exception and it passed.");
     }
     
     public void testUpdateInvalidv0_10NotManaged() throws Exception {
         RegistryAdminService ras = new RegistryAdminService();
         Document doc = askQueryFromFile("InvalidEntryv10.xml");
-        try {
-            ras.Update(doc);
-        }catch(AxisFault af) {
-            System.out.println("Caught expected Exception, this entry is not managed" + af.toString());
-            return;
-        }
+        ras.Update(doc);
         fail("ERROR: Should have caught an invalid exception and it passed.");
     }
     
@@ -131,48 +121,28 @@ public class RegistryAdminTest extends TestCase {
     public void testUpdateAuthorityInvalidv0_9NotManaged() throws Exception {
         RegistryAdminService ras = new RegistryAdminService();
         Document doc = askQueryFromFile("AstrogridStandardAuthorityv0_9Invalid.xml");
-        try {
-            ras.Update(doc);
-        }catch(AxisFault af) {
-            System.out.println("Caught expected Exception, this entry is not managed" + af.toString());
-            return;
-        }
+        ras.Update(doc);
         fail("ERROR: Should have caught an invalid exception and it passed.");
     }
     
     public void testUpdateAuthorityInvalidv0_10NotManaged() throws Exception {
         RegistryAdminService ras = new RegistryAdminService();
         Document doc = askQueryFromFile("AstrogridStandardAuthorityv10Invalid.xml");
-        try {
-            ras.Update(doc);
-        }catch(AxisFault af) {
-            System.out.println("Caught expected Exception, this entry is not managed" + af.toString());
-            return;
-        }
+        ras.Update(doc);
         fail("ERROR: Should have caught an invalid exception and it passed.");
     }
     
     public void testUpdateRegistryInvalidv0_9MisMatch() throws Exception {
         RegistryAdminService ras = new RegistryAdminService();
         Document doc = askQueryFromFile("Cambridge0_9_RegInvalid.xml");
-        try {
-            ras.Update(doc);
-        }catch(AxisFault af) {
-            System.out.println("Caught expected Exception, this entry is not managed" + af.toString());
-            return;
-        }
+        ras.Update(doc);
         fail("ERROR: Should have caught an invalid exception and it passed.");
     }
     
     public void testUpdateRegistryInvalidv0_10MisMatch() throws Exception {
         RegistryAdminService ras = new RegistryAdminService();
         Document doc = askQueryFromFile("Cambridge0_10_RegInvalid.xml");
-        try {
-            ras.Update(doc);
-        }catch(AxisFault af) {
-            System.out.println("Caught expected Exception, this entry is not managed" + af.toString());
-            return;
-        }
+        ras.Update(doc);
         fail("ERROR: Should have caught an invalid exception and it passed.");
     }
     
@@ -180,24 +150,14 @@ public class RegistryAdminTest extends TestCase {
     public void testUpdateRegistryInvalidv0_9MissingAuth() throws Exception {
         RegistryAdminService ras = new RegistryAdminService();
         Document doc = askQueryFromFile("Cambridge0_9_RegInvalid2.xml");
-        try {
-            ras.Update(doc);
-        }catch(AxisFault af) {
-            System.out.println("Caught expected Exception, this entry is not managed" + af.toString());
-            return;
-        }
+        ras.Update(doc);
         fail("ERROR: Should have caught an invalid exception and it passed.");
     }
     
     public void testUpdateRegistryInvalidv0_10MissingAuth() throws Exception {
         RegistryAdminService ras = new RegistryAdminService();
         Document doc = askQueryFromFile("Cambridge0_10_RegInvalid2.xml");
-        try {
-            ras.Update(doc);
-        }catch(AxisFault af) {
-            System.out.println("Caught expected Exception, this entry is not managed" + af.toString());
-            return;
-        }
+        ras.Update(doc);
         fail("ERROR: Should have caught an invalid exception and it passed.");
     }
     
@@ -217,28 +177,16 @@ public class RegistryAdminTest extends TestCase {
     public void testUpdateOAIInvalidv0_10() throws Exception {
         RegistryAdminService ras = new RegistryAdminService();
         Document doc = askQueryFromFile("OAIHandlerInvalidv0_10.xml");
-        try {
-            ras.updateNoCheck(doc,"0.10");
-        }catch(AxisFault af) {
-            System.out.println("Caught expected Exception, this entry is not managed" + af.toString());
-            return;
-        }
+        ras.updateNoCheck(doc,"0.10");
         fail("ERROR: Should have caught an invalid exception and it passed.");        
     }
     
     public void testUpdateOAIInvalidv0_9() throws Exception {
         RegistryAdminService ras = new RegistryAdminService();
         Document doc = askQueryFromFile("OAIHandlerInvalidv0_9.xml");
-        try {
-            ras.updateNoCheck(doc,"0.9");
-        }catch(AxisFault af) {
-            System.out.println("Caught expected Exception, this entry is not managed" + af.toString());
-            return;
-        }
+        ras.updateNoCheck(doc,"0.9");
         fail("ERROR: Should have caught an invalid exception and it passed.");            
     }
-    
-    
        
     protected Document askQueryFromFile(String queryFile) throws Exception {
         assertNotNull(queryFile);

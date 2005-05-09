@@ -24,7 +24,6 @@ public class StressTester extends AbstractTestForIntegration {
 	private FileOutputStream fos = null;
 	private final String SYNCHRONEOUS_STYLE = "synchroneous";
 	private final String SEQUENTIAL_STYLE = "sequential";
-	private String fileName = null;
    public static Vector resultInfo = null;
    public static int threadsgoing;
 	   
@@ -36,18 +35,7 @@ public class StressTester extends AbstractTestForIntegration {
           resultInfo = new Vector();
       }//if
       resultInfo.clear();
-      threadsgoing = 0;
-      
-      /*
-		String fileRef = "WSTest-" + String.valueOf(Calendar.getInstance().getTimeInMillis()) + ".txt";
-		try {
-			File fi = new File(fileRef);
-			fi.createNewFile();
-			this.fileName = fileRef;
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-      */
+      threadsgoing = 0;     
 		setupAndParseXML(configFile);
 		setupThreadsAndSchedule();
 	}
@@ -85,11 +73,7 @@ public class StressTester extends AbstractTestForIntegration {
 		ArrayList webServices = cfr.getWebServices();
 		//System.out.println("The size of webservices = " + webServices.size());
 		int iActiveThreads = 0;
-		int normalThreadCount = 0;
 		Timer timer;
-      //now this variable can be ignored now, the activecount stuff
-      //just was not working.
-		normalThreadCount = Thread.activeCount();
 
       //okay set a time for 5 seconds in the future.
 		Calendar timerTime = Calendar.getInstance();
@@ -120,8 +104,7 @@ public class StressTester extends AbstractTestForIntegration {
                         //All of it should happen roughly 5 seconds in the future.
                         //that gives plenty of time for this for loop to go through and 
                         //schedule the amount of threads.
-								timer.schedule(new RunWebServiceTask(this.fileName,
-                                        st.getName(),
+								timer.schedule(new RunWebServiceTask(st.getName(),
                                         st.getFullClassName(),
                                         stc.getName(),
                                         stc.getLoop(),
@@ -136,12 +119,10 @@ public class StressTester extends AbstractTestForIntegration {
 							//while( (iActiveThreads = Thread.activeCount()) > normalThreadCount) {
                       while(threadsgoing > 0) {
 								try {
-									//System.out.println("the active threadcount1 now yielding = " + iActiveThreads + " and normalThreadCount = " + normalThreadCount);;
                            System.out.println("a. the threads currently going (Will sleep for 5 seconds if there are more than 0) = " + threadsgoing);
 									Thread.sleep(5000);
 								}catch(Exception e1){System.out.println(e1.toString());}
 							}//while
-                     //System.out.println("the activeCount = " + Thread.activeCount());
                      //Okay everything done for this round set a new timer for 5 seconds in the future.
 							timerTime = Calendar.getInstance();
 							timerTime.add(Calendar.SECOND,5);
@@ -154,7 +135,6 @@ public class StressTester extends AbstractTestForIntegration {
 						//while( (iActiveThreads = Thread.activeCount()) > normalThreadCount) {
                   while(threadsgoing > 0) {                        
 							try {
-                        //System.out.println("the active threadcount2 = " + iActiveThreads + " and normalThreadCount = " + normalThreadCount);
                         System.out.println("b. the threads currently going (Will sleep for 5 seconds if there are more than 0) = " + threadsgoing);
 								Thread.sleep(5000);                        
 							}catch(Exception e2){System.out.println(e2.toString());}
@@ -212,8 +192,7 @@ class RunWebServiceTask extends TimerTask {
 	FileOutputStream fos;
 	String fileName;
 	
-	public RunWebServiceTask(String fileName,
-                            String testName, 
+	public RunWebServiceTask(String testName, 
                             String fullClassName,
                             String methodTestName,
                             int loopCount,
@@ -225,7 +204,6 @@ class RunWebServiceTask extends TimerTask {
 		this.loopCount = loopCount;
 		this.threadLoopCount = threadLoopCount;
 		this.threadNumber = threadNumber;
-		//this.fileName = fileName;
 	}
 	
 	public void run() {
@@ -250,18 +228,6 @@ class RunWebServiceTask extends TimerTask {
 		String entry = testName + "-" + methodTestName + "-" + threadNumber + "-" + loopCount+",";
       StressTester.resultInfo.add(entry + " " + String.valueOf(duration));
       StressTester.threadsgoing--;
-      /*
-		try {
-			FileOutputStream fos = new FileOutputStream(fileName,true);
-			fos.write(entry.getBytes());
-			entry = String.valueOf(duration) + "\n";
-			fos.write(entry.getBytes());
-			fos.flush();
-			fos.close();
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-        */
 	}
 	
 	public String toString() {

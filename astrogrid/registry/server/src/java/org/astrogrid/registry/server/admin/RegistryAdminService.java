@@ -8,6 +8,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Attr;
 
+import org.astrogrid.store.Ivorn;
 import javax.security.auth.Subject;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
@@ -32,10 +33,14 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 import java.net.HttpURLConnection;
+import org.astrogrid.registry.server.SOAPFaultException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
@@ -43,7 +48,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.net.MalformedURLException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.axis.AxisFault;
+//import org.apache.axis.AxisFault;
 import junit.framework.AssertionFailedError;
 import java.text.SimpleDateFormat;
 import javax.security.auth.Subject;
@@ -126,12 +131,9 @@ public class RegistryAdminService {
     * @param update XML DOM containing Resource XML elements
     * @return Nothing is returned except an empty UpdateResponse element for conforming with SOAP standards
     * of a wrapped wsdl.
-    * @throws AxisFault if an error goes wrong trying to update into the
-    * XML database or parsing XML.
     */
-   public Document Update(Document update) throws AxisFault {
-      log.debug("start update");
-      
+   public Document Update(Document update) {
+      log.debug("start update");      
       return updateResource(update);
    }
    
@@ -146,13 +148,13 @@ public class RegistryAdminService {
     * @param update XML DOM containing Resource XML elements
     * @return Nothing is returned except an empty UpdateResponse element for conforming with SOAP standards
     * of a wrapped wsdl.
-    * @throws AxisFault if an error goes wrong trying to update into the
-    * XML database or parsing XML.
     */
-   public Document updateResource(Document update) throws AxisFault {
+   public Document updateResource(Document update) {
       log.debug("start updateResource");
       long beginUpdate = System.currentTimeMillis();
 
+      Document testStoreDOM = null;
+      String testStoreString = null;
       //get the main authority id for this registry.
       String authorityID = conf.getString("reg.amend.authorityid");
       
@@ -168,7 +170,7 @@ public class RegistryAdminService {
       boolean hasStyleSheet = false;            
       
       if(update == null) {
-          throw new AxisFault("Nothing on request 'null sent'");
+          return SOAPFaultException.createAdminSOAPFaultException("Nothing on request 'null sent'","Nothing on request 'null sent'");          
       }
       
       //Make a date. The registry automatically fills in the updated attribute for a Resource.
@@ -213,10 +215,11 @@ public class RegistryAdminService {
          xsDoc = update;
       }
 
+      //System.out.println("The xsDOC = " + DomHelper.DocumentToString(xsDoc));
       //Get all the Resource nodes.
       nl = xsDoc.getElementsByTagNameNS("*","Resource");
       if(nl.getLength() == 0) {
-          throw new AxisFault("No Resources Found to be updated");
+          return SOAPFaultException.createAdminSOAPFaultException("No Resources Found to be updated","No Resources Found to be updated");          
       }
       
       //is validation turned on.
@@ -236,7 +239,7 @@ public class RegistryAdminService {
               afe.printStackTrace();
               log.error("Error invalid document = " + afe.getMessage());
               if(conf.getBoolean("reg.amend.quiton.invalid",false)) {
-                  throw new AxisFault("Invalid update, document not valid " + afe.getMessage());
+                  return SOAPFaultException.createAdminSOAPFaultException("Invalid update, document not valid ",afe.getMessage());
               }//if              
           }//catch
       }//if
@@ -252,7 +255,7 @@ public class RegistryAdminService {
               populateManagedMaps(collectionName, versionNumber);
           }catch(XMLDBException xmldbe) {
               xmldbe.printStackTrace();
-              throw AxisFault.makeFault(xmldbe);              
+              return SOAPFaultException.createAdminSOAPFaultException(xmldbe.getMessage(),xmldbe);
           }          
       }else if(!manageAuths.isEmpty() && !manageAuths.containsKey(someTestAuth)) {
           //todo: I do not believe this is needed
@@ -262,7 +265,7 @@ public class RegistryAdminService {
               populateManagedMaps(collectionName, versionNumber);
           }catch(XMLDBException xmldbe) {
               xmldbe.printStackTrace();
-              throw AxisFault.makeFault(xmldbe);              
+              return SOAPFaultException.createAdminSOAPFaultException(xmldbe.getMessage(),xmldbe);              
           }
       }
       //printManagedAuthorities();
@@ -302,19 +305,28 @@ public class RegistryAdminService {
          //get the ident/authorityid and resource key elements.
          ident = RegistryDOMHelper.getAuthorityID((Element)nl.item(0));
          if(ident == null || ident.trim().length() <= 0) {
-             throw AxisFault.makeFault(new RegistryException("Could not find the AuthorityID from the Identifier"));
+             return SOAPFaultException.createAdminSOAPFaultException("Could not find the AuthorityID from the Identifier","Could not find the AuthorityID from the Identifier");             
          }//if
          log.info("here is the ident/authid = " + ident);         
          resKey = RegistryDOMHelper.getResourceKey((Element)nl.item(0));
          log.info("here is the reskey = " + resKey);
          //set the currentResource element.
          Element currentResource = (Element)nl.item(0);
+
+         
+         //System.out.println("element to string24 = " + DomHelper.ElementToString(currentResource));
+         NamedNodeMap attrNNMTest = currentResource.getAttributes();
+         for(int tt= 0;tt < attrNNMTest.getLength();tt++) {
+             Node attrNodeTest = attrNNMTest.item(tt);
+             //System.out.println("attrNodeTest nsuri= " + attrNodeTest.getNamespaceURI() + " node name = " + attrNodeTest.getNodeName() + " local name = " + attrNodeTest.getLocalName());
+         }
          
          //Sometimes there are other namespaces defined above the
          //Resource element so be sure this Resource element has a
          //those defined namespaces. Otherwise there could be a slight risk
          //of having invalid xml.
          Node parentNode = currentResource.getParentNode();
+
          if(parentNode != null && Node.ELEMENT_NODE == parentNode.getNodeType()) {
              //get the attributes.
              NamedNodeMap attrNNM = parentNode.getAttributes();
@@ -323,12 +335,17 @@ public class RegistryAdminService {
                  Node attrNode = attrNNM.item(k);
                  //log.info("attrNode getNodeName = " + attrNode.getNodeName() + " local name = " + attrNode.getLocalName());
                  //check if we don't have this attribute already.
-                 if(!currentResource.hasAttribute(attrNode.getNodeName()) && 
-                    !attrNode.getLocalName().equals(currentResource.getPrefix())) {
+                 //System.out.println("has asstribute for Node Name = " + attrNode.getNodeName() + " with ns = " + attrNode.getNamespaceURI() + " hasattr = " + currentResource.hasAttribute(attrNode.getNodeName()));
+                 //System.out.println("localname = " + attrNode.getLocalName() + " and currentResource pref = " + currentResource.getPrefix() );
+
+                 if(!currentResource.hasAttribute(attrNode.getNodeName()) &&
+                    !currentResource.hasAttributeNS(attrNode.getNamespaceURI(),attrNode.getLocalName())) {                 
                      //okay were only after namespaces. if it is xmlns then set it on our resource.
                      if(attrNode.getNodeName().indexOf("xmlns") != -1 ) {
-                         currentResource.setAttribute(attrNode.getNodeName(),
-                                                      attrNode.getNodeValue());
+                         //currentResource.setAttribute(attrNode.getNodeName(),
+                         //                             attrNode.getNodeValue());
+                         currentResource.setAttributeNS(attrNode.getNamespaceURI(),attrNode.getNodeName(),
+                                                        attrNode.getNodeValue());
                      }//else
                  }//if
              }//for
@@ -338,7 +355,6 @@ public class RegistryAdminService {
          currentResource.setAttribute("updated",updateDateString);
          //log.info("element to string = " + DomHelper.ElementToString(currentResource));
          
-
          //set a temporary identifier.
          tempIdent = ident;
          if(resKey != null && resKey.trim().length() > 0) tempIdent += "/" + resKey;
@@ -372,13 +388,25 @@ public class RegistryAdminService {
             //RegistryServerHelper.addStatusMessage("Entering new entry: " +  tempIdent);
             try {
                coll = xdb.openAdminCollection(collectionName);
-               xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);               
+               //String storeTestString2 = DomHelper.ElementToString((Element)root);
+               //System.out.println("THIS IS THE STORESTRINGNEW SAXWAY = " + storeTestString2);
+               xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",DomHelper.ElementToString((Element)root));
+               //testStoreString = DomHelper.ElementToString((Element)root);
+               //testStoreDOM = DomHelper.newDocument(testStoreString);
+               //log.info("storing the new way ident = " + tempIdent);
+               //System.out.println("storing the old way ident = " + tempIdent);
+               //xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);               
+               //xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",testStoreDOM);
                collStat = xdb.openAdminCollection("statv" + versionNumber.replace('.','_'));
                xdb.storeXMLResource(collStat,tempIdent.replaceAll("[^\\w*]","_") + ".xml",createStats(tempIdent));
             } catch(XMLDBException xdbe) {
                log.error(xdbe);
-               throw AxisFault.makeFault(xdbe);
-            }finally {
+               return SOAPFaultException.createAdminSOAPFaultException(xdbe.getMessage(),xdbe);
+            } catch(Exception e) {
+                log.error(e);
+                return SOAPFaultException.createAdminSOAPFaultException(e.getMessage(),e);                
+            }
+            finally {
                 try {
                     xdb.closeCollection(coll);
                     xdb.closeCollection(collStat);
@@ -410,7 +438,7 @@ public class RegistryAdminService {
                                 log.error("Error - mismatch: Tried to update a Registry Type that has this managed Authority: " + manageNodeVal +
                                     " with this main Identifiers Authority ID " + ident + " This mismatches with another Registry Type that ownes/manages " + 
                                     " this same authority id, other registry type authority id: " + tempAuthorityListVal.getOwner());
-                                throw AxisFault.makeFault(new RegistryException("Error - mismatch: Tried to update a Registry Type that has this managed Authority: " + manageNodeVal +
+                                return SOAPFaultException.createAdminSOAPFaultException("Mismatch on Authority id(s)",new RegistryException("Error - mismatch: Tried to update a Registry Type that has this managed Authority: " + manageNodeVal +
                                         " with this main Identifiers Authority ID " + ident + " This mismatches with another Registry Type that ownes/manages " + 
                                         " this same authority id, other registry type authority id: " + tempAuthorityListVal.getOwner()));
                             }//if
@@ -422,19 +450,24 @@ public class RegistryAdminService {
                         //printManagedAuthorities();
                         if(!managedAuthorityFound) {
                             log.error("Trying to update the main Registry Type for this Registry with no matching Managed AuthorityID with the Identifiers AuthorityID; The AuthorityID = " + ident);
-                            throw AxisFault.makeFault(new RegistryException("Trying to update the main Registry Type for this Registry with no matching Managed AuthorityID with the Identifiers AuthorityID; The AuthorityID = " + ident));
+                            return SOAPFaultException.createAdminSOAPFaultException("No matching authority id found",new RegistryException("Trying to update the main Registry Type for this Registry with no matching Managed AuthorityID with the Identifiers AuthorityID; The AuthorityID = " + ident));
                         }
                      //update this registry resource into our registry.
                      try {
                         coll = xdb.openAdminCollection(collectionName);
-                        xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);                        
+                        //xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);
+                          xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",DomHelper.ElementToString((Element)root));                        
+                        //String storeTestString3 = DomHelper.ElementToString((Element)root);
+                        //System.out.println("THIS IS THE STORESTRINGNEW SAXWAYREG = " + storeTestString3);
+                        //xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml","<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + storeTestString3);
+                        
                         collStat = xdb.openAdminCollection("statv" + versionNumber.replace('.','_'));
                         if(xdb.getResource(collStat,tempIdent.replaceAll("[^\\w*]","_") + ".xml") == null) {
                             xdb.storeXMLResource(collStat,tempIdent.replaceAll("[^\\w*]","_") + ".xml",createStats(tempIdent,false));
                         }
                      } catch(XMLDBException xdbe) {
                         log.error(xdbe);
-                        throw AxisFault.makeFault(xdbe);
+                        return SOAPFaultException.createAdminSOAPFaultException(xdbe.getMessage(),xdbe);
                      } finally {
                          try {
                              xdb.closeCollection(coll);
@@ -493,10 +526,11 @@ public class RegistryAdminService {
                                xdb.storeXMLResource(collStat,tempIdent.replaceAll("[^\\w*]","_") + ".xml",createStats(tempIdent));                        
                                
                                coll = xdb.openAdminCollection(collectionName);
-                               xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);                               
+                               //xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);
+                               xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",DomHelper.ElementToString((Element)root));
                            } catch(XMLDBException xdbe) {
                                log.error(xdbe);
-                               throw AxisFault.makeFault(xdbe);
+                               return SOAPFaultException.createAdminSOAPFaultException(xdbe.getMessage(),xdbe);                               
                            }finally {
                                 try {
                                     xdb.closeCollection(collStat);
@@ -522,10 +556,11 @@ public class RegistryAdminService {
                            elem.appendChild(resListForAuth.item(0));                           
                            try {
                                log.info("updating the new registy");
-                               xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",elem);                                            
+                               //xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",elem);
+                               xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",DomHelper.ElementToString((Element)elem));
                            } catch(XMLDBException xdbe) {
                                log.error(xdbe);
-                               throw AxisFault.makeFault(xdbe);
+                               return SOAPFaultException.createAdminSOAPFaultException(xdbe.getMessage(),xdbe);                               
                            } finally {
                                try {
                                    xdb.closeCollection(coll);
@@ -547,8 +582,8 @@ public class RegistryAdminService {
                      }//if      
                   }//elseif   
             if(addManageError) {
-               log.info("Error authority id not managed by this registry throwing AxisFault exception; the authority id = " + ident);
-               throw AxisFault.makeFault(new RegistryException("Trying to update an entry that is not managed by this Registry authority id = " + ident));               
+               log.info("Error authority id not managed by this registry throwing SOAPFault exception; the authority id = " + ident);
+               return SOAPFaultException.createAdminSOAPFaultException("AuthorityID not managed by this registry",new RegistryException("Trying to update an entry that is not managed by this Registry authority id = " + ident));
             }//if
          }//else
          log.info("Time taken to update an entry = " + 
@@ -574,6 +609,25 @@ public class RegistryAdminService {
       log.debug("end updateResource");
 
       return returnDoc;
+   }
+   
+   public void remove(String id, String versionNumber) throws RegistryException, XMLDBException {
+       String collectionName = "astrogridv" + versionNumber.replace('.','_');
+       Collection coll = xdb.openAdminCollection(collectionName);
+       if(versionNumber == null || versionNumber.trim().length() <= 0) {
+           versionNumber = RegistryDOMHelper.getDefaultVersionNumber();
+       }           
+       if(id == null || id.trim().length() <= 0) {
+           throw new RegistryException("Cannot have empty or null identifier");
+       }
+       String queryIvorn = id;
+       if(Ivorn.isIvorn(id)) { 
+           queryIvorn = id.substring(6);
+       }
+       
+       id = queryIvorn.replaceAll("[^\\w*]","_");
+       id += ".xml";
+       xdb.removeResource(coll,id);
    }
 
    /**
@@ -658,7 +712,7 @@ public class RegistryAdminService {
       NodeList nl = update.getElementsByTagNameNS("*","Resource");
       if(nl.getLength() == 0) {
           nl = update.getElementsByTagNameNS("*","resource");
-          System.out.println("the resource nl.getLength= " + nl.getLength());
+          //System.out.println("the resource nl.getLength= " + nl.getLength());
       }
       
       if(versionNumber == null) {
@@ -696,14 +750,14 @@ public class RegistryAdminService {
               populateManagedMaps(collectionName, versionNumber);
           }catch(XMLDBException xmldbe) {
               xmldbe.printStackTrace();
-              throw AxisFault.makeFault(xmldbe);              
+              log.error(xmldbe);
           }
       }else if(!manageAuths.isEmpty() && !manageAuths.containsKey(someTestAuth)) {
           try {
               populateManagedMaps(collectionName, versionNumber);
           }catch(XMLDBException xmldbe) {
               xmldbe.printStackTrace();
-              throw AxisFault.makeFault(xmldbe);              
+              log.error(xmldbe);              
           }
       }
       
@@ -773,22 +827,24 @@ public class RegistryAdminService {
                                     log.error("Error - mismatch: Tried to update a Registry Type that has this managed Authority: " + manageNodeVal +
                                         " with this main Identifiers Authority ID " + ident + " This mismatches with another Registry Type that ownes/manages " + 
                                         " this same authority id, other registry type authority id: " + tempAuthorityListVal.getOwner());
+                                    /*
                                     throw AxisFault.makeFault(new RegistryException("Error - mismatch: Tried to update a Registry Type that has this managed Authority: " + manageNodeVal +
                                             " with this main Identifiers Authority ID " + ident + " This mismatches with another Registry Type that ownes/manages " + 
                                             " this same authority id, other registry type authority id: " + tempAuthorityListVal.getOwner()));
+                                    */
                                }//if                           
                                if(manageNodeVal != null && manageNodeVal.trim().length() > 0) {
                                    manageAuths.put(tempAuthorityListKey, new AuthorityList(manageNodeVal,versionNumber,ident));
                                }//if
                            }//for
-                           
                      }//if
                  }//if
                  root = xsDoc.createElement("AstrogridResource");
                  root.appendChild(currentResource);
                  try {
                      coll = xdb.openAdminCollection(collectionName);
-                     xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);
+                     //xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);
+                     xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",DomHelper.ElementToString((Element)root));
                  } finally {
                      try {
                          xdb.closeCollection(coll);

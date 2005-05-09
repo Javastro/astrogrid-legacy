@@ -57,7 +57,7 @@
    		<servlet-class>org.astrogrid.registry.server.admin.ExistDatabaseManager</servlet-class>
 		<init-param>
 	        <param-name>configuration</param-name>
-        	<param-value>exist.xml</param-value>
+        	<param-value>conf.xml</param-value>
       	</init-param>
        	<init-param>
         	<param-name>basedir</param-name>

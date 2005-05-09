@@ -71,11 +71,12 @@ public class XSLHelper {
       
       logger
             .info("transformADQLToXQL(Node, String) - the file resource = ADQLToXQL-"
-                    + versionNumber + ".xsl");
-      Source xslSource = new StreamSource(loadStyleSheet(XSL_DIRECTORY + "ADQLToXQL-" + versionNumber + ".xsl"));
-      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-      
+                    + versionNumber + ".xsl");      
       try {
+         Source xslSource = new StreamSource(
+                  new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + "ADQLToXQL-" + versionNumber + ".xsl"),"UTF-8"));
+         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+          
          builderFactory.setNamespaceAware(true);
          DocumentBuilder builder = builderFactory.newDocumentBuilder();
          resultDoc = builder.newDocument();
@@ -93,8 +94,7 @@ public class XSLHelper {
          if (xqlResult.startsWith("<?")) {
             xqlResult = xqlResult.substring(xqlResult.indexOf("?>")+2);
          }
-         
-         
+                  
          xqlResult = xqlResult.replaceAll("&gt;", ">").replaceAll("&lt;", "<").replaceAll("&amp;","&");
          return xqlResult;
          //System.out.println("the resultwriter transform = " + sw.toString());
@@ -105,6 +105,8 @@ public class XSLHelper {
         logger.error("transformADQLToXQL(Node, String)", tce);
       }catch(TransformerException te) {
         logger.error("transformADQLToXQL(Node, String)", te);
+      }catch(UnsupportedEncodingException uee) {
+          logger.error(uee);
       }
       //@todo never return null on error
       return null;
@@ -125,13 +127,9 @@ public class XSLHelper {
       Source xmlSource = new DOMSource(doc);
       Document resultDoc = null;
       
-      ClassLoader loader = this.getClass().getClassLoader();
-      InputStream is = null;
-      is = loader.getResourceAsStream(XSL_DIRECTORY + fileName);
-      Source xslSource = new StreamSource(loadStyleSheet(XSL_DIRECTORY + fileName));
-            
-      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
       try {
+          Source xslSource = new StreamSource(new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + fileName),"UTF-8"));            
+          DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();          
          builderFactory.setNamespaceAware(true);
          DocumentBuilder builder = builderFactory.newDocumentBuilder();
          resultDoc = builder.newDocument();
@@ -149,6 +147,8 @@ public class XSLHelper {
         logger.error("transformToOAI(Node, String)", tce);
       }catch(TransformerException te) {
         logger.error("transformToOAI(Node, String)", te);
+      }catch(UnsupportedEncodingException uee) {
+          logger.error(uee);
       }
       //@todo never return null on error.
       return resultDoc;
@@ -165,45 +165,30 @@ public class XSLHelper {
     * @param responseElement An optional string to wrap around another element for web service methods.
     * @return XML document to be returned.
     */
-   public Document transformExistResult(Node doc, String versionNumber, String responseElement) {
+   public Document transformExistResult(Node doc, String versionNumber) throws
+       ParserConfigurationException, TransformerConfigurationException, TransformerException, UnsupportedEncodingException  {
+       
+       if(doc != null && (doc.getNodeName().indexOf("Fault") != -1 ||
+          (doc.hasChildNodes() && doc.getFirstChild().getNodeName().indexOf("Fault") != -1))) {
+           //okay it is a fault don't bother transforming, just return it.
+           //registry creates Faults with org.w3c.dom.Document so just typecast and return it.
+           return (Document)doc;
+       }
       
-      logger.info("THE DOC NODE IN TRANSFORM EXIST = " + doc.getNodeName() + " type = " + doc.getNodeType() + " and localname = " + doc.getLocalName() + " tostring = " + doc.toString() );
       Source xmlSource = new DOMSource(doc);
       Document resultDoc = null;
-      
-      ClassLoader loader = this.getClass().getClassLoader();
-      InputStream is = null;
-
-      is = loader.getResourceAsStream(XSL_DIRECTORY + "ExistRegistryResult" + versionNumber + ".xsl");
-      
-      Source xslSource = new StreamSource(loadStyleSheet(XSL_DIRECTORY + "ExistRegistryResult" + versionNumber + ".xsl"));
-      
-      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-      
-      try {
-         builderFactory.setNamespaceAware(true);
-         DocumentBuilder builder = builderFactory.newDocumentBuilder();
-         resultDoc = builder.newDocument();
-         //DocumentFragment df = resultDoc.createDocumentFragment();
-         TransformerFactory transformerFactory = TransformerFactory.newInstance();
-         
-         DOMResult result = new DOMResult(resultDoc);
-         Transformer transformer = transformerFactory.newTransformer(xslSource);
-         
-         transformer.transform(xmlSource,result);
-         if(responseElement != null && responseElement.trim().length() > 0) {
-             Element currentRoot = resultDoc.getDocumentElement();
-             Element root = resultDoc.createElementNS("http://www.astrogrid.org/registry/wsdl",responseElement);
-             root.appendChild(currentRoot);
-             resultDoc.appendChild(root);
-         }
-      }catch(ParserConfigurationException pce) {
-        logger.error("transformExistResult(Node, String, String)", pce);
-      }catch(TransformerConfigurationException tce) {
-        logger.error("transformExistResult(Node, String, String)", tce);
-      }catch(TransformerException te) {
-        logger.error("transformExistResult(Node, String, String)", te);
-      }
+      Source xslSource = new StreamSource(new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + "ExistRegistryResult" + versionNumber + ".xsl"),"UTF-8"));      
+      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();          
+      builderFactory.setNamespaceAware(true);
+      DocumentBuilder builder = builderFactory.newDocumentBuilder();
+      resultDoc = builder.newDocument();
+      //DocumentFragment df = resultDoc.createDocumentFragment();
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+       
+      DOMResult result = new DOMResult(resultDoc);
+      Transformer transformer = transformerFactory.newTransformer(xslSource);
+        
+      transformer.transform(xmlSource,result);
       return resultDoc;
    }
    
@@ -233,9 +218,9 @@ public class XSLHelper {
        String styleSheetName = "UpdateProcess_" + harvestName + versionNumber + ".xsl";
        logger.info("transformUpdate(Node, String) - the stylesheet name = "
             + styleSheetName);
-       Source xslSource = new StreamSource(loadStyleSheet(XSL_DIRECTORY + styleSheetName));
-       DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
        try {
+          Source xslSource = new StreamSource(new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + styleSheetName),"UTF-8"));
+          DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();           
           builderFactory.setNamespaceAware(true);
           DocumentBuilder builder = builderFactory.newDocumentBuilder();
           resultDoc = builder.newDocument();
@@ -253,6 +238,8 @@ public class XSLHelper {
         logger.error("transformUpdate(Node, String)", tce);
        }catch(TransformerException te) {
         logger.error("transformUpdate(Node, String)", te);
+       }catch(UnsupportedEncodingException uee) {
+           logger.error(uee);
        }
     logger
             .info("transformUpdate(Node, String) - THIS IS AFTER THE TRANSFORMUPDATE");

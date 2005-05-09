@@ -17,12 +17,14 @@ import org.astrogrid.registry.server.XQueryExecution;
 import org.astrogrid.registry.server.XSLHelper;
 import java.net.URL;
 
+import org.astrogrid.registry.server.SOAPFaultException;
+
 import java.net.MalformedURLException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.io.*;
-import org.apache.axis.AxisFault;
+//import org.apache.axis.AxisFault;
 import org.astrogrid.registry.RegistryException;
 //import org.astrogrid.registry.server.RegistryServerHelper;
 import org.astrogrid.registry.common.RegistryDOMHelper;
@@ -72,22 +74,23 @@ public class OAIService {
      * 
      * @param oaiServlet a url string 
      * @return OAI conformed DOM object of all the Resourced managed by this Registry.
-     * @throws - AxisFault containing exceptions that might have occurred setting up
-     * or querying the registry.
      */
-    private Document queryOAI(String oaiServlet) throws AxisFault {
+    private Document queryOAI(String oaiServlet) {
        try {
          log.info("the oaiservlet url = '" + oaiServlet + "'");
+         Document doc = DomHelper.newDocument(new URL(oaiServlet));
          return DomHelper.newDocument(new URL(oaiServlet));
         }catch(MalformedURLException me) {
-         throw new AxisFault("Incorrect url for calling oai servlet", me);
+         me.printStackTrace();
         }catch(ParserConfigurationException pce) {
-          throw new AxisFault("Parser Config error", pce);
+          pce.printStackTrace();
         }catch(SAXException sax) {
-          throw new AxisFault("SAX problem parsing xml" , sax);
+          sax.printStackTrace();
         }catch(IOException ioe) {
-          throw new AxisFault("IO Problem", ioe);
-        }    
+          ioe.printStackTrace();
+        }
+        //todo fix this, should nto return null.
+        return null;
     }
     
     /**
@@ -109,18 +112,25 @@ public class OAIService {
      * 
      * @param query actually this OAI mehtod requires nothing. 
      * @return XML DOM object conforming to the OAI Identify.
-     * @throws - AxisFault containing exceptions that might have occurred
-     *  calling the servlet/url.
      * @link http://www.openarchives.org 
      */
-    public Document Identify(Document query) throws AxisFault {
+    public Document Identify(Document query) {
        String oaiServlet = getOAIServletURL(query) + "?verb=Identify";
        Document resultDoc = queryOAI(oaiServlet);
-       Element currentRoot = resultDoc.getDocumentElement();
-       Element root = resultDoc.createElementNS("http://www.astrogrid.org/registry/wsdl","IdentifyResponse");
-       root.appendChild(currentRoot);
-       resultDoc.appendChild(root);
-       return resultDoc;
+       return addWrapperElement("http://www.astrogrid.org/registry/wsdl","IdentifyResponse",resultDoc);
+    }
+    
+    private Document addWrapperElement(String wrapNodeNS, 
+                                       String wrapNodeString,
+                                       Document resultDoc) {
+        if(resultDoc.getElementsByTagNameNS("*","error").getLength() > 0) {
+            return SOAPFaultException.createHarvestSOAPFaultException("OAI Error",resultDoc);
+        }
+        Element currentRoot = resultDoc.getDocumentElement();
+        Element root = resultDoc.createElementNS(wrapNodeNS,wrapNodeString);
+        root.appendChild(currentRoot);
+        resultDoc.appendChild(root);
+        return resultDoc;
     }
     
     /**
@@ -128,21 +138,15 @@ public class OAIService {
      * 
      * @param query contains an optional identifier string. 
      * @return XML DOM object conforming to the OAI ListMetadataFormats.
-     * @throws - AxisFault containing exceptions that might have occurred
-     *  calling the servlet/url.
      * @link http://www.openarchives.org 
      */
-    public Document ListMetadataFormats(Document query) throws AxisFault {
+    public Document ListMetadataFormats(Document query) {
        String oaiServlet = getOAIServletURL(query) + "?verb=ListMetadataFormats";       
        NodeList nl = null;
        if( (nl = query.getElementsByTagName("identifier")).getLength() > 0  )
             oaiServlet += "&identifier=" + nl.item(0).getFirstChild().getNodeValue(); 
        Document resultDoc = queryOAI(oaiServlet);
-       Element currentRoot = resultDoc.getDocumentElement();
-       Element root = resultDoc.createElementNS("http://www.astrogrid.org/registry/wsdl","ListMetadataFormatsResponse");
-       root.appendChild(currentRoot);
-       resultDoc.appendChild(root);
-       return resultDoc;
+       return addWrapperElement("http://www.astrogrid.org/registry/wsdl","ListMetadataFormatsResponse",resultDoc);
     }
     
     /**
@@ -150,12 +154,10 @@ public class OAIService {
      * 
      * @param query 
      * @return XML DOM object conforming to the OAI OAI-ListSets.
-     * @throws - AxisFault containing exceptions that might have occurred
-     *  calling the servlet/url.
      * @link http://www.openarchives.org 
      */   
-    public Document ListSets(Document query) throws AxisFault {
-     throw new AxisFault("Sorry but this method is currently not implemented");
+    public Document ListSets(Document query) {
+     return SOAPFaultException.createHarvestSOAPFaultException("List Sets not supporte yet","List Sets not supporte yet");
     }
     
     /**
@@ -163,12 +165,10 @@ public class OAIService {
      * 
      * @param query 
      * @return XML DOM object conforming to the OAI OAI-ResumeListSets.
-     * @throws - AxisFault containing exceptions that might have occurred
-     *  calling the servlet/url.
      * @link http://www.openarchives.org 
      */   
-    public Document ResumeListSets(Document query) throws AxisFault {
-       throw new AxisFault("Sorry but this method is currently not implemented");
+    public Document ResumeListSets(Document query) {
+        return SOAPFaultException.createHarvestSOAPFaultException("Resume List Sets not supporte yet","Resume List Sets not supporte yet");
     }
     
     /**
@@ -177,28 +177,21 @@ public class OAIService {
      * @param query contains an identifier string and metadataPrefix. The prefix
      * is defaulted to the standard registry ivo_vor if not given. 
      * @return XML DOM object conforming to the OAI GetRecord.
-     * @throws - AxisFault containing exceptions that might have occurred
-     *  calling the servlet/url.
      * @link http://www.openarchives.org 
      */   
-    public Document GetRecord(Document query) throws AxisFault {
+    public Document GetRecord(Document query) {
         String oaiServlet = getOAIServletURL(query) + "?verb=GetRecord";       
         NodeList nl = null;
         if( (nl = query.getElementsByTagName("identifier")).getLength() > 0  ) 
            oaiServlet += "&identifier=" + nl.item(0).getFirstChild().getNodeValue();
         else
-           throw new AxisFault("No Identifier given"); 
+            return SOAPFaultException.createHarvestSOAPFaultException("No Identifier given","No Identifier given"); 
         if( (nl = query.getElementsByTagName("metadataPrefix")).getLength() > 0  )
          oaiServlet += "&metadataPrefix=" + nl.item(0).getFirstChild().getNodeValue();
         else
          oaiServlet += "&metadataPrefix=ivo_vor";
         Document resultDoc = queryOAI(oaiServlet);
-        //wrap it with a response method element.
-        Element currentRoot = resultDoc.getDocumentElement();
-        Element root = resultDoc.createElementNS("http://www.astrogrid.org/registry/wsdl","GetRecordResponse");
-        root.appendChild(currentRoot);
-        resultDoc.appendChild(root);
-        return resultDoc;
+        return addWrapperElement("http://www.astrogrid.org/registry/wsdl","GetRecordResponse",resultDoc);
     }
     
     /**
@@ -206,11 +199,9 @@ public class OAIService {
      * 
      * @param query contains a metadataPrefix, and optional from and until 
      * @return XML DOM object conforming to the OAI ListIdentifiers.
-     * @throws - AxisFault containing exceptions that might have occurred
-     *  calling the servlet/url.
      * @link http://www.openarchives.org 
      */   
-    public Document ListIdentifiers(Document query) throws AxisFault {
+    public Document ListIdentifiers(Document query) {
        String oaiServlet = getOAIServletURL(query) + "?verb=ListIdentifiers";
        NodeList nl = null;      
        if( (nl = query.getElementsByTagName("metadataPrefix")).getLength() > 0  )
@@ -224,11 +215,7 @@ public class OAIService {
        if( (nl = query.getElementsByTagName("resumtptionToken")).getLength() > 0  )
            oaiServlet += "&resumptionToken=" + nl.item(0).getFirstChild().getNodeValue();       
        Document resultDoc = queryOAI(oaiServlet);
-       Element currentRoot = resultDoc.getDocumentElement();
-       Element root = resultDoc.createElementNS("http://www.astrogrid.org/registry/wsdl","ListIdentifiersResponse");
-       root.appendChild(currentRoot);
-       resultDoc.appendChild(root);
-       return resultDoc;
+       return addWrapperElement("http://www.astrogrid.org/registry/wsdl","ListIdentifiersResponse",resultDoc);
     
     }
     
@@ -238,15 +225,13 @@ public class OAIService {
      * 
      * @param query contains a metadataPrefix, optional from&until elements. 
      * @return XML DOM object conforming to the OAI ListRecords.
-     * @throws - AxisFault containing exceptions that might have occurred
-     *  calling the servlet/url.
      * @link http://www.openarchives.org 
      */   
-    public Document ListRecords(Document query) throws AxisFault {
+    public Document ListRecords(Document query) {
          String oaiServlet = getOAIServletURL(query) + "?verb=ListRecords";
          NodeList nl = null;        
          if( (nl = query.getElementsByTagName("metadataPrefix")).getLength() > 0  )
-          oaiServlet += "&metadataPrefix=" + nl.item(0).getNodeValue();
+          oaiServlet += "&metadataPrefix=" + nl.item(0).getFirstChild().getNodeValue();
          else
           oaiServlet += "&metadataPrefix=ivo_vor";
          if( (nl = query.getElementsByTagName("from")).getLength() > 0  ) 
@@ -256,11 +241,7 @@ public class OAIService {
          if( (nl = query.getElementsByTagName("resumtptionToken")).getLength() > 0  )
              oaiServlet += "&resumptionToken=" + nl.item(0).getFirstChild().getNodeValue();                
          Document resultDoc = queryOAI(oaiServlet);
-         Element currentRoot = resultDoc.getDocumentElement();
-         Element root = resultDoc.createElementNS("http://www.astrogrid.org/registry/wsdl","ListRecordsResponse");
-         root.appendChild(currentRoot);
-         resultDoc.appendChild(root);
-         return resultDoc;
+         return addWrapperElement("http://www.astrogrid.org/registry/wsdl","ListRecordsResponse",resultDoc);
     }
     
 }

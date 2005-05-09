@@ -6,7 +6,7 @@
                  org.astrogrid.community.server.policy.manager.ResourceManagerImpl,                 
                  org.astrogrid.community.server.policy.manager.PermissionManagerImpl,
                  org.astrogrid.community.resolver.policy.manager.PolicyManagerResolver,
-                 org.astrogrid.registry.client.query.ServiceData,
+                 org.astrogrid.registry.client.query.ResourceData,
                  org.astrogrid.store.Ivorn,
                  java.net.URI,
                  org.astrogrid.community.client.policy.manager.PolicyManagerDelegate,
@@ -64,7 +64,7 @@ Object[] groupMembers = pmi.getGroupMembers();
 Object[] resources = pmi.getResources();
 Object[] permissions = pmi.getPermissions();
 
-ServiceData[] communityServices = pmr.resolve();
+ResourceData[] communityServices = pmr.resolve();
 
 %>
 <html>
@@ -114,8 +114,8 @@ ServiceData[] communityServices = pmr.resolve();
             <strong>Communities:</strong>
             <select name="community">
                <% for(int i = 0;i < communityServices.length;i++) { %>
-                  <option value="<%= ((ServiceData)communityServices[i]).getIvorn() %>">
-                     <%= ((ServiceData)communityServices[i]).getTitle() %> -- <%= ((ServiceData)communityServices[i]).getIvorn().toUri().getAuthority() %>
+                  <option value="<%= ((ResourceData)communityServices[i]).getIvorn() %>">
+                     <%= ((ResourceData)communityServices[i]).getTitle() %> -- <%= ((ResourceData)communityServices[i]).getIvorn().toUri().getAuthority() %>
                   </option>
                <% } %>
             </select>            

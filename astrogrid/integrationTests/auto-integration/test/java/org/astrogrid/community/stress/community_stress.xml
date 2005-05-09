@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestWebServices>
+<!-- run a loop of 20 times querying a cds entry on exist -->
+<WebServiceTest name="CDSeXistBasicTest" fullclassname="org.astrogrid.registry.stress.QueryeXistStress" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStress" loop="3"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="CDSeXist3BasicTest" fullclassname="org.astrogrid.registry.stress.QueryeXist3Stress" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStress3" loop="3"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<!-- run a loop of 20 times querying a cds entry on exist -->
+<WebServiceTest name="CDSeXistBasicTest" fullclassname="org.astrogrid.registry.stress.QueryeXistStress" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStress" loop="20"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="CDSeXist3BasicTest" fullclassname="org.astrogrid.registry.stress.QueryeXist3Stress" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStress3" loop="20"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<!-- run a loop of 20 times querying a astrogrid entry on exist -->
+	<WebServiceTest name="astrogrideXistBasicTest" fullclassname="org.astrogrid.registry.stress.QueryeXist2Stress" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStress2" loop="20"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+	</WebServiceTest>
+<!-- run as if 5 users are querying at the exact same time for a CDS entry-->
+	<WebServiceTest name="CDSeXistBasicTestUsers" fullclassname="org.astrogrid.registry.stress.QueryeXistStress" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStress3" loop="1"  threadstyle="sequential">
+				<Thread number="5"  loop="1" threadstyle="synchroneous" />
+			</TestCase>
+		</Runnable>
+	</WebServiceTest>
+<!-- run as if 5 users are querying at the exact same time for an astrogrid entry -->
+	<WebServiceTest name="astrogrideXistBasicTestUsers" fullclassname="org.astrogrid.registry.stress.QueryeXist2Stress" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStress4" loop="1"  threadstyle="sequential">
+				<Thread number="5"  loop="1" threadstyle="synchroneous" />
+			</TestCase>
+		</Runnable>
+	</WebServiceTest
+</TestWebServices>

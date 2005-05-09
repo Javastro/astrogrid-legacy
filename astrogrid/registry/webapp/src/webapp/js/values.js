@@ -1,17 +1,11 @@
 var Xvalues = new Array();
 
-function inArray(oVal,oArray) {
-	for(var i=0;i<oArray.length;i++) {
-		if (oVal==oArray[i]) return true;
-	}
-	return false;
-}
-
 function  setFormValue(formControl,val) {
 		
-		var value = decode_utf8(val);
+	
+		var value = new String(decode_utf8(val));
 		var values = value.split(',');
-		
+				
 		switch (formControl.tagName) {
 		case 'INPUT':
 				switch (formControl.type) {
@@ -21,7 +15,7 @@ function  setFormValue(formControl,val) {
 						break;
 					case 'checkbox':
 					case 'radio':
-						if (inArray(formControl.value,values)) formControl.checked=true;
+						if (values.inArray(formControl.value)) formControl.checked=true;
 						break;
 					default:
 				}
@@ -34,7 +28,7 @@ function  setFormValue(formControl,val) {
 		case 'SELECT':
 			
 			for (var j=0;j<formControl.options.length;j++) {
-				if(inArray(formControl.item(j).value,values)) formControl.options[j].selected = true;
+				if(values.inArray(formControl.item(j).value)) formControl.options[j].selected = true;
 			}
 			
 			break;
@@ -48,14 +42,24 @@ function  setFormValue(formControl,val) {
 			}
 			break;
 		default:
-			//window.status += formControl.tagName + '(' +formControl.type + ')=' + node.nodeName + '|';
+			
 		}
 		
 		
 }
 
 function getFormValue(formControl,node) {
-		node = node.nodeType==2?node:node.firstChild;
+
+		if (node.nodeType==2) {
+			node = node;
+		} else {
+			if (node.hasChildNodes()) {
+				node = node.firstChild;
+			} else {
+				node = node.appendChild(node.ownerDocument.createTextNode(''));
+				//node = node.appendChild(document.createTextNode(''));
+			}
+		}
 		
 		switch (formControl.tagName) {
 		case 'INPUT':
@@ -97,6 +101,7 @@ function getFormValue(formControl,node) {
 				node.nodeValue = formControl.slider._value; 
 			} else {
 				node.nodeValue =  encode_utf8(formControl.outerHTML);
+				
 			}
 
 			break;

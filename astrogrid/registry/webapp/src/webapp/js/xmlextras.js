@@ -16,7 +16,8 @@ function getDomDocumentPrefix() {
 			o = new ActiveXObject(prefixes[i] + ".DomDocument");
 			return getDomDocumentPrefix.prefix = prefixes[i];
 		}
-		catch (ex) {};
+		catch (ex) {
+		};
 	}
 	
 	throw new Error("Could not find an installed XML parser");
@@ -26,7 +27,7 @@ function getXmlHttpPrefix() {
 	if (getXmlHttpPrefix.prefix)
 		return getXmlHttpPrefix.prefix;
 	
-	var prefixes = ["MSXML2", "Microsoft", "MSXML", "MSXML3"];
+	var prefixes = ["MSXML4","MSXML2", "Microsoft", "MSXML", "MSXML3","MSXML4"];
 	var o;
 	for (var i = 0; i < prefixes.length; i++) {
 		try {

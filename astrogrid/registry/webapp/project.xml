@@ -360,7 +360,16 @@
             	<war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        
+
+        <dependency>
+        	<id>excalibur-cli</id>
+            <version>1.0</version>
+            <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+
         <dependency>
        		<id>xml-apis</id>
           	<version>1.0.b2</version>
@@ -368,7 +377,8 @@
           		<war.bundle>true</war.bundle>
           	</properties>
         </dependency>
-        
+
+    	
         <dependency>
             <artifactId>commons-discovery</artifactId>
             <groupId>commons-discovery</groupId>
@@ -454,6 +464,29 @@
               	</properties>	        	
     	</dependency>
 
+        	<dependency>
+            	<groupId>exist</groupId>
+    	        <artifactId>libreadline-java</artifactId>
+        		<jar>libreadline-java.jar</jar>
+            	<type>jar</type>
+    	        <url>http://www.astrogrid.org/</url>
+                    <properties>
+                       	<war.bundle>true</war.bundle>
+                  	</properties>	        	
+        	</dependency>
+
+    	<dependency>
+        	<groupId>exist</groupId>
+	        <artifactId>jEdit-syntax</artifactId>
+    		<jar>jEdit-syntax.jar</jar>
+        	<type>jar</type>
+	        <url>http://www.astrogrid.org/</url>
+                <properties>
+                   	<war.bundle>true</war.bundle>
+              	</properties>	        	
+    	</dependency>
+
+    	
 	    <dependency>
     	    <groupId>exist</groupId>
         	<artifactId>jakarta-oro</artifactId>

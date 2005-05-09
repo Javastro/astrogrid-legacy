@@ -79,28 +79,3 @@ function Xtoggle(evt) {
 	}
 	oToggle.xcase.toggle(true);
 }
-
-/**
- * actions
- */
- 
-function Xreset(evt) {
-	alert('reset');
-}
-
-function Xinsert(evt) {
-	alert('insert');
-}
-
-function Xdelete(evt) {
-	alert('delete');
-}
-
-function Xaction(evt) {
-	alert('action');
-}
-
-function Xinstance() {
-	
-}
-

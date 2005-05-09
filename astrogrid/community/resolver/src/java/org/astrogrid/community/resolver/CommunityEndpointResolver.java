@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityEndpointResolver.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/02/18 19:48:31 $</cvs:date>
- * <cvs:version>$Revision: 1.16 $</cvs:version>
+ * <cvs:date>$Date: 2005/05/09 15:10:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.17 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityEndpointResolver.java,v $
+ *   Revision 1.17  2005/05/09 15:10:15  clq2
+ *   Kevin's commits
+ *
+ *   Revision 1.16.24.1  2005/04/29 07:53:53  KevinBenson
+ *   small changes to use this ResourceData object from the registry instead of this SErviceData which is what it was called before
+ *
  *   Revision 1.16  2005/02/18 19:48:31  clq2
  *   Reg_KMB_913 again merging again.
  *
@@ -64,7 +70,7 @@ import java.net.MalformedURLException ;
 import org.astrogrid.store.Ivorn ;
 import org.astrogrid.registry.client.RegistryDelegateFactory ;
 import org.astrogrid.registry.client.query.RegistryService ;
-import org.astrogrid.registry.client.query.ServiceData ;
+import org.astrogrid.registry.client.query.ResourceData ;
 
 import org.astrogrid.config.Config ;
 import org.astrogrid.config.SimpleConfig ;
@@ -312,7 +318,7 @@ public class CommunityEndpointResolver
      * @todo relies on ivorn.getPath()
      *
      */
-    public ServiceData[] resolve()
+    public ResourceData[] resolve()
         throws RegistryException, CommunityIdentifierException, CommunityResolverException
         {
         log.debug("") ;
@@ -321,10 +327,10 @@ public class CommunityEndpointResolver
 
         //
         // Lookup the service in the registry.
-        ServiceData []sd = null ;
+        ResourceData []rd = null ;
         try {
-            sd = registry.getResourcesByInterfaceType(
-                    new org.astrogrid.registry.common.CommunityInterfaceType()
+            rd = registry.getResourceDataByRelationship(
+                    new Ivorn("ivo://org.astrogrid/CommunityServerKind")
                 ) ;
             }
         catch (Throwable ouch)
@@ -339,12 +345,12 @@ public class CommunityEndpointResolver
             }
         //
         // If we found an entry in the Registry.
-        if (null != sd && sd.length > 0)
+        if (null != rd && rd.length > 0)
             {
             log.debug("PASS : Got service endpoints")  ;
             //
             // Convert it into an endpoint URL.
-            return sd;
+            return rd;
             }
         //
         // If we didn't get a service endpoint.

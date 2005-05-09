@@ -21,6 +21,10 @@
   <description>VoStore filestre service.</description>
   <referenceURL>http://www.ivoa.net/</referenceURL>
   <type>Archive</type>
+  <relationship>
+    <relationshipType>derived-from</relationshipType>
+        <relatedResource ivo-id="ivo://org.astrogrid/FileStoreKind">Filestore Kind</relatedResource>
+  </relationship>
  </content>
     <interface xsi:type="vs:WebService">
 		<accessURL use="full">@TOMCATROOT@/astrogrid-filestore-one-@VERSION@/services/FileStore</accessURL>

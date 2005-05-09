@@ -9,6 +9,7 @@ var Drag = {
 
 	init : function(o, minX, minY, maxX, maxY)
 	{
+		o.selectable = false;
 		o.addEventListener('mousedown',Drag.start,false);
 		o.root = o;
 
@@ -42,7 +43,8 @@ var Drag = {
 
 		document.addEventListener('mousemove',Drag.move,false);
 		document.addEventListener('mouseup',Drag.end,false);
-
+		window.addEventListener('resize',Drag.update, false);
+		
 		return false;
 	},
 
@@ -88,8 +90,11 @@ var Drag = {
 
 	addDropTarget : function(el) {
 		this.dropTargets[this.dropTargets.length] = new DropTarget(el, this);
-	}
+	},
 
+	update : function (e) {
+		//alert('update drag');
+	}
 };
 
 DropTarget = function(el, dragObj){

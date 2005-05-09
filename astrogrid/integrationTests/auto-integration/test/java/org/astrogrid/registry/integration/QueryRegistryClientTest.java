@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientTest.java,v 1.16 2005/02/22 21:02:58 clq2 Exp $
+/*$Id: QueryRegistryClientTest.java,v 1.17 2005/05/09 15:10:15 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.registry.integration;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.common.FileStoreInterfaceType;
 import org.astrogrid.registry.common.MyspaceInterfaceType;
-import org.astrogrid.registry.client.query.ServiceData;
+//import org.astrogrid.registry.client.query.ServiceData;
 
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;

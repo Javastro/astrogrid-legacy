@@ -8,6 +8,28 @@
  * Permission is hereby granted to use, copy, modify and distribute this
  * code for any purpose, without fee.
  *
+ * Revision 9: March 17, 2005
+ *   Namespace resolver tweaked so using the document node as the context
+ *   for namespace lookups is equivalent to using the document element.
+ *
+ * Revision 8: February 13, 2005
+ *   Handle implicit declaration of 'xmlns' namespace prefix.
+ *   Fixed bug when comparing nodesets.
+ *   Instance data can now be associated with a FunctionResolver, and
+ *     workaround for MSXML not supporting 'localName' and 'getElementById',
+ *     thanks to Grant Gongaware.
+ *   Fix a few problems when the context node is the root node.
+ *   
+ * Revision 7: February 11, 2005
+ *   Default namespace resolver fix from Grant Gongaware
+ *   <grant (at) gongaware.com>.
+ *
+ * Revision 6: February 10, 2005
+ *   Fixed bug in 'number' function.
+ *
+ * Revision 5: February 9, 2005
+ *   Fixed bug where text nodes not getting converted to string values.
+ *
  * Revision 4: January 21, 2005
  *   Bug in 'name' function, fix thanks to Bill Edney.
  *   Fixed incorrect processing of namespace nodes.
@@ -1123,6 +1145,7 @@ XPath.prototype.evaluate = function(c) {
 };
 
 XPath.XML_NAMESPACE_URI = "http://www.w3.org/XML/1998/namespace";
+XPath.XMLNS_NAMESPACE_URI = "http://www.w3.org/2000/xmlns/";
 
 // Expression ////////////////////////////////////////////////////////////////
 
@@ -1736,6 +1759,7 @@ PathExpr.prototype.evaluate = function(c) {
 						var n = {};
 						if (xpc.contextNode.nodeType == 1 /*Node.ELEMENT_NODE*/) {
 							n["xml"] = XPath.XML_NAMESPACE_URI;
+							n["xmlns"] = XPath.XMLNS_NAMESPACE_URI;
 							for (var m = xpc.contextNode; m != null && m.nodeType == 1 /*Node.ELEMENT_NODE*/; m = m.parentNode) {
 								for (var k = 0; k < m.attributes.length; k++) {
 									var attr = m.attributes.item(k);
@@ -1770,7 +1794,9 @@ PathExpr.prototype.evaluate = function(c) {
 						break;
 
 					case Step.PRECEDING:
-						var st = [ xpc.contextNode.ownerDocument ];
+						var st = xpc.contextNode.nodeType == 9 /*Node.DOCUMENT_NODE*/
+								? [ xpc.contextNode ]
+								: [ xpc.contextNode.ownerDocument ];
 						outer: while (st.length > 0) {
 							for (var m = st.pop(); m != null; ) {
 								if (m == xpc.contextNode) {
@@ -1868,7 +1894,10 @@ PathExpr.prototype.getOwnerElement = function(n) {
 		return n.selectSingleNode("..");
 	}
 	// Other DOM 1 implementations must use this egregious search
-	var elts = n.ownerDocument.getElementsByTagName("*");
+	var doc = n.nodeType == 9 /*Node.DOCUMENT_NODE*/
+			? n
+			: n.ownerDocument;
+	var elts = doc.getElementsByTagName("*");
 	for (var i = 0; i < elts.length; i++) {
 		var elt = elts.item(i);
 		var nnm = elt.attributes;
@@ -2155,7 +2184,7 @@ FunctionCall.prototype.evaluate = function(c) {
 		throw new Error("Unknown function " + this.functionName);
 	}
 	var a = [c].concat(this.arguments);
-	return f.apply(Functions, a);
+	return f.apply(c.functionResolver.thisArg, a);
 };
 
 // XString ///////////////////////////////////////////////////////////////////
@@ -2572,15 +2601,10 @@ XNodeSet.prototype.stringForNode = function(n) {
 	if (n.nodeType == 1 /*Node.ELEMENT_NODE*/) {
 		return this.stringForNodeRec(n);
 	}
-	if (n.nodeType == 2 /*Node.ATTRIBUTE_NODE*/
-		|| n.nodeType == 7 /*Node.PROCESSING_INSTRUCTION_NODE*/
-		|| n.nodeType == 8 /*Node.COMMENT_NODE*/) {
-		return n.nodeValue;
-	}
 	if (n.isNamespaceNode) {
 		return n.namespace;
 	}
-	return "<unknown node type in XNodeSet.stringForNode>";
+	return n.nodeValue;
 };
 
 XNodeSet.prototype.stringForNodeRec = function(n) {
@@ -2748,7 +2772,7 @@ XNodeSet.prototype.compareWithNodeSet = function(r, o) {
 		for (var j = 0; j < b.length; j++) {
 			var n2 = b[j];
 			var r = new XString(this.stringForNode(n2));
-			var res = o.operateString(l, r);
+			var res = o(l, r);
 			if (res.booleanValue()) {
 				return res;
 			}
@@ -2929,7 +2953,8 @@ FunctionResolver.prototype = new Object();
 FunctionResolver.prototype.constructor = FunctionResolver;
 FunctionResolver.superclass = Object.prototype;
 
-function FunctionResolver() {
+function FunctionResolver(thisArg) {
+	this.thisArg = thisArg != null ? thisArg : Functions;
 	this.functions = new Object();
 	this.addStandardFunctions();
 }
@@ -2989,9 +3014,16 @@ function NamespaceResolver() {
 NamespaceResolver.prototype.getNamespace = function(prefix, n) {
 	if (prefix == "xml") {
 		return XPath.XML_NAMESPACE_URI;
+	} else if (prefix == "xmlns") {
+		return XPath.XMLNS_NAMESPACE_URI;
 	}
-	while (n.parentNode != null && n.parentNode.nodeType == 1 /*Node.ELEMENT_NODE*/) {
-		var nnm = n.parentNode.attributes;
+	if (n.nodeType == 9 /*Node.DOCUMENT_NODE*/) {
+		n = n.documentElement;
+	} else if (n.nodeType != 1 /*Node.ELEMENT_NODE*/) {
+		n = n.parentNode;
+	}
+	while (n != null && n.nodeType == 1 /*Node.ELEMENT_NODE*/) {
+		var nnm = n.attributes;
 		for (var i = 0; i < nnm.length; i++) {
 			var a = nnm.item(i);
 			var aname = a.nodeName;
@@ -3049,8 +3081,16 @@ Functions.id = function() {
 	var ids = id.split(/[\x0d\x0a\x09\x20]+/);
 	var count = 0;
 	var ns = new XNodeSet();
+	var doc = c.contextNode.nodeType == 9 /*Node.DOCUMENT_NODE*/
+			? c.contextNode
+			: c.contextNode.ownerDocument;
 	for (var i = 0; i < ids.length; i++) {
-		var n = c.contextNode.ownerDocument.getElementById(ids[i]);
+		var n;
+		if (doc.getElementById) {
+			n = doc.getElementById(ids[i]);
+		} else {
+			n = Utilities.getElementById(doc, ids[i]);
+		}
 		if (n != null) {
 			ns.add(n);
 			count++;
@@ -3072,7 +3112,7 @@ Functions.localName = function() {
 	if (n == null) {
 		return new XString("");
 	}
-	return new XString(n.localName);
+	return new XString(n.localName ? n.localName : n.baseName);
 };
 
 Functions.namespaceURI = function() {
@@ -3319,10 +3359,10 @@ Functions.lang = function() {
 
 Functions.number = function() {
 	var c = arguments[0];
-	if (!(arguments.length == 2 || arguments.length == 3)) {
+	if (!(arguments.length == 1 || arguments.length == 2)) {
 		throw new Error("Function number expects (object?)");
 	}
-	if (arguments.length == 2) {
+	if (arguments.length == 1) {
 		return new XNumber(XNodeSet.prototype.stringForNode(c.contextNode));
 	}
 	return arguments[1].evaluate(c).number();
@@ -3780,4 +3820,22 @@ Utilities.instance_of = function(o, c) {
 		o = o.constructor.superclass;
 	}
 	return false;
+};
+
+Utilities.getElementById = function(n, id) {
+	// Note that this does not check the DTD to check for actual
+	// attributes of type ID, so this may be a bit wrong.
+	if (n.nodeType == 1 /*Node.ELEMENT_NODE*/) {
+		if (n.getAttribute("id") == id
+				|| n.getAttributeNS(null, "id") == id) {
+			return n;
+		}
+	}
+	for (var m = n.firstChild; m != null; m = m.nextSibling) {
+		var res = Utilities.getElementById(m, id);
+		if (res != null) {
+			return res;
+		}
+	}
+	return null;
 };

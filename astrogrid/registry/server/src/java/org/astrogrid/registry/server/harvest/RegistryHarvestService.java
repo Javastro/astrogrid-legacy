@@ -49,7 +49,7 @@ import org.astrogrid.registry.common.WSDLBasicInformation;
 import org.astrogrid.registry.common.XSLHelper;
 
 import java.net.MalformedURLException;
-import org.apache.axis.AxisFault;
+//import org.apache.axis.AxisFault;
 
 import org.astrogrid.xmldb.client.XMLDBFactory;
 
@@ -151,7 +151,7 @@ public class RegistryHarvestService {
                               if(resKey != null && resKey.trim().length() > 0) tempIdent += "/" + resKey;                              
                               XMLResource xmlr = (XMLResource)xdb.getResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml");
                               if(xmlr != null) {
-                                  Document statDoc = (Document)xmlr.getContentAsDOM();
+                                  Document statDoc = DomHelper.newDocument(xmlr.getContent().toString());
                                   dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
                               }
                           }catch(XMLDBException xdbe) {
@@ -164,7 +164,13 @@ public class RegistryHarvestService {
                               log.info("xmldb exception thrown when trying to obtain stat and date information. Continue on and do a full harvest of the Registry Type");
                               dateString = null;
                               //throw new RegistryException(ioe);
-                          } finally {
+                          } catch(ParserConfigurationException pce) {
+                              log.error(pce);
+                              dateString = null;
+                          } catch(SAXException sax) {
+                              log.error(sax);
+                              dateString = null;
+                          }finally {
                               try {
                                   xdb.closeCollection(coll);
                               }catch(XMLDBException xmldb) {
@@ -332,7 +338,7 @@ public class RegistryHarvestService {
                String value = "http://www.ivoa.net/xml/VOResource/v" + version;
                root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);
                if(dt != null) {
-                  childElem = doc.createElement("from");
+                  childElem = doc.createElementNS(nameSpaceURI,"from");
                   childElem.appendChild(doc.createTextNode(sdf.format(dt)));
                   root.appendChild(childElem);
                }//if               

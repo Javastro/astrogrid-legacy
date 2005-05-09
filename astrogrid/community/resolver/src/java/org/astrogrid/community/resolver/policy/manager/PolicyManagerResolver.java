@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/policy/manager/PolicyManagerResolver.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/05/09 15:10:16 $</cvs:date>
+ * <cvs:version>$Revision: 1.12 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerResolver.java,v $
+ *   Revision 1.12  2005/05/09 15:10:16  clq2
+ *   Kevin's commits
+ *
+ *   Revision 1.11.40.1  2005/04/29 07:53:53  KevinBenson
+ *   small changes to use this ResourceData object from the registry instead of this SErviceData which is what it was called before
+ *
  *   Revision 1.11  2005/01/07 14:14:25  jdt
  *   merged from Reg_KMB_787
  *
@@ -57,7 +63,7 @@ import org.astrogrid.community.common.policy.manager.PolicyManager ;
 import org.astrogrid.community.client.policy.manager.PolicyManagerDelegate ;
 import org.astrogrid.community.client.policy.manager.PolicyManagerMockDelegate ;
 import org.astrogrid.community.client.policy.manager.PolicyManagerSoapDelegate ;
-import org.astrogrid.registry.client.query.ServiceData ;
+import org.astrogrid.registry.client.query.ResourceData ;
 
 import org.astrogrid.community.resolver.CommunityEndpointResolver ;
 
@@ -171,7 +177,7 @@ public class PolicyManagerResolver
     */
     
     
-    public ServiceData[] resolve()
+    public ResourceData[] resolve()
     throws RegistryException, CommunityIdentifierException, CommunityResolverException {
      log.debug("") ;
      log.debug("----\"----") ;

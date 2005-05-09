@@ -557,105 +557,96 @@ public class QueryRegistry implements RegistryService {
        }
    }
       
-   public String getQueryForInterfaceType(String type, String version) {
+   public String getQueryForInterfaceType(String ident) {
        String selectQuery = null;
        
-       if("0.9".equals(version)) {
-       selectQuery = 
-           "<query><selectionSequence>"
-              + "<selection item='searchElements' itemOp='EQ' value='all'/>"
-              + "<selectionOp op='$and$'/>"               
-              + "<selection item='vr:RelatedResource/vr:Relationship' itemOp='EQ' value='derived-from'/>"
-              + "<selectionOp op='AND'/>"
-              + "<selection item='vr:RelatedResource/vr:RelatedTo/vr:Identifier/vr:ResourceKey' itemOp='EQ' value='"
-              + type
-              + "'/>";
-        selectQuery += "</selectionSequence></query>";
-       }else if("0.10".equals(version)) {
-           selectQuery = "<query><selectionSequence>"
-           + "<selection item='searchElements' itemOp='EQ' value='all'/>"
-           + "<selectionOp op='$and$'/>"               
-           + "<selection item='vr:relationship/vr:relationshipType' itemOp='EQ' value='derived-from'/>"
-           + "<selectionOp op='AND'/>"
-           + "<selection item='vr:relationship/vr:relatedResource/@ivo-id' itemOp='EQ' value='ivo://org.astrogrid/"
-           + type
-           + "'/>";
-           selectQuery += "</selectionSequence></query>";
-       }
-        return selectQuery;
+       selectQuery = "Select * from Registry where vr:content/vr:relationship/vr:relationshipType = 'derived-from' and " +
+                     "vr:content/vr:relationship/vr:relatedResource/@ivo-id = '" + ident + "'";
+       return selectQuery;
+   }
+      
+   public ResourceData getResourceDataByIdentifier(Ivorn ident) throws RegistryException {
+       return getResourceDataByIdentifier(ident.toRegistryString());
    }
    
-   
-   public URL[] getEndPointByInterfaceType(InterfaceType interfaceType) throws RegistryException {
-       return getEndPointByInterfaceType(interfaceType,reg_default_version);
+   public ResourceData getResourceDataByIdentifier(String ident) throws RegistryException {
+       return createSingleResourceData(getResourceByIdentifier(ident));
    }
    
-   public URL[] getEndPointByInterfaceType(InterfaceType interfaceType,String version) throws RegistryException {
-       ServiceData []sd = getResourcesByInterfaceType(interfaceType,version);
-       URL []serviceURL = new URL[sd.length];
-       for(int i = 0;i < sd.length;i++) {
-           serviceURL[i] = sd[i].getAccessURL();
-       }//for
-       return serviceURL;
-       
+   public ResourceData[] getResourceDataByRelationship(Ivorn ident) throws RegistryException  {
+       return getResourceDataByRelationship(ident.toRegistryString());
    }
-   
-   public ServiceData[] getResourcesByInterfaceType(InterfaceType interfaceType) throws RegistryException  {
-       return getResourcesByInterfaceType(interfaceType,reg_default_version);
-   }
-   
-   public ServiceData[] getResourcesByInterfaceType(InterfaceType interfaceType,String version) throws RegistryException  {
+      
+   public ResourceData[] getResourceDataByRelationship(String ident) throws RegistryException  {
       Document doc = null;
-      if (interfaceType == null) {
-         throw new RegistryException("No interfaceType defined");
-      }
-      String type = interfaceType.getInterfaceType();
       logger
-           .info("getResourcesByInterfaceType(InterfaceType) type - " + type);
+           .info("getResourcesByInterfaceType(InterfaceType) type - " + ident);
        
-      String selectQuery = getQueryForInterfaceType(type,version);
-      doc = submitQuery(selectQuery);          
+      String selectQuery = getQueryForInterfaceType(ident);
+      System.out.println("HERE IS THE SELECT QUERY = " + selectQuery);
+      //doc = submitQuery(selectQuery);
+      doc = searchFromSADQL(selectQuery);
          logger
              .info("getResourcesByInterfaceType(InterfaceType) - exiting getResourcesByInterfaceType");
          
-         return createServiceData(doc);
+         return createResourceData(doc);
    }
    
-   private ServiceData[] createServiceData(Document doc) {
+   private ResourceData createSingleResourceData(Document doc) {
+       return createResourceData(doc)[0]; 
+   }
+   
+   private ResourceData[] createResourceData(Document doc) {
        NodeList nl = doc.getElementsByTagNameNS("*","Resource");
-       ServiceData[] sd = new ServiceData[nl.getLength()];
+       System.out.println("the nl length of resource = " + nl.getLength());
+       ResourceData[] rd = new ResourceData[nl.getLength()];
        NodeList serviceNodes = null;
-       String authority = null;
        String resKey = null;
+       String ident = null;
        for(int i = 0;i < nl.getLength(); i++) {
-           sd[i] = new ServiceData();
-           serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","Title");
+           rd[i] = new ResourceData();
+           serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","title");
+           System.out.println("title length = " + serviceNodes.getLength());
            if(serviceNodes.getLength() > 0)
-               sd[i].setTitle(DomHelper.getValue((Element)serviceNodes.item(0)));
-           serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","Description");
+               rd[i].setTitle(DomHelper.getValue((Element)serviceNodes.item(0)));
+           serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","description");
            if(serviceNodes.getLength() > 0)
-               sd[i].setDescription(DomHelper.getValue((Element)serviceNodes.item(0)));
-           serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","AccessURL");
+               rd[i].setDescription(DomHelper.getValue((Element)serviceNodes.item(0)));
+           serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","accessURL");
            if(serviceNodes.getLength() > 0) {
                try {
-                   sd[i].setAccessURL(new URL(DomHelper.getValue((Element)serviceNodes.item(0))));
+                   rd[i].setAccessURL(new URL(DomHelper.getValue((Element)serviceNodes.item(0))));
                }catch(MalformedURLException mfe) {
                    logger.error(mfe);
                }
            }
-           serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","AuthorityID");
-           if(serviceNodes.getLength() > 0) {
-               authority = DomHelper.getValue((Element)serviceNodes.item(0));
-               serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","ResourceKey");
-               resKey = DomHelper.getValue((Element)serviceNodes.item(0));
-               if(resKey != null)
-                   sd[i].setIvorn(new Ivorn(authority, resKey,null));
-               else
-                   sd[i].setIvorn(new Ivorn(authority, null, null));
-           }//if
+           serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","identifier");
+           try{
+               rd[i].setIvorn(new Ivorn(DomHelper.getValue((Element)serviceNodes.item(0))));
+           }catch(java.net.URISyntaxException use) {
+               logger.error(use);
+           }
            //lets skip getting all the interface types for now.
-       }//fors
-       return sd;
+           /*
+           serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","relatedResource");           
+           if(serviceNodes.getLength() > 0 ) {               
+               for(int j = 0; j < serviceNodes.getLength();j++) {
+                 ident = ((Element)serviceNodes.item(j)).getAttribute("ivo-id");
+                 resKey = ident.substring(ident.lastIndexOf(ident.lastIndexOf("/")));
+                 //InterfaceType iType = (InterfaceType)Class.forName("org.astrogrid.registry.common." + resKey);
+                 //rd[i].addInterfaceType(iType);
+               }
+           } 
+           */          
+       }//for
+       printResourceData(rd);
+       return rd;
+   }
+   
+   private void printResourceData(ResourceData []rd) {
+       for(int i = 0;i < rd.length;i++) {
+           System.out.println("the rd[" + i + "] = " + rd.toString());
+       }
    }
 
    /**

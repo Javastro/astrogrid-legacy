@@ -50,6 +50,7 @@ import javax.wsdl.factory.WSDLFactory;
 import org.astrogrid.config.Config;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.util.DomHelper;
+import org.astrogrid.registry.client.query.ResourceData;
 
 
 /**
@@ -153,8 +154,12 @@ public interface RegistryService  {
     * @throws RegistryException
     */
    public Document getResourceByIdentifier(String ident) throws RegistryException;
+   public ResourceData getResourceDataByIdentifier(Ivorn ident) throws RegistryException;
    
-   public ServiceData[] getResourcesByInterfaceType(InterfaceType interfaceType) throws RegistryException;   
+   public ResourceData[] getResourceDataByRelationship(Ivorn ident) throws RegistryException;
+   public ResourceData[] getResourceDataByRelationship(String ident) throws RegistryException;   
+   
+
 
    /**
     * Method: getEndPointByIdentifier
@@ -176,6 +181,8 @@ public interface RegistryService  {
     */   
    public String getEndPointByIdentifier(String ident) throws RegistryException;
    
-   public URL[] getEndPointByInterfaceType(InterfaceType interfaceType) throws RegistryException;
+
+   
+   //public URL[] getEndPointByInterfaceType(InterfaceType interfaceType) throws RegistryException;
    
 }

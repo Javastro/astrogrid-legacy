@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/community/stress/CommunityLoadStressTest.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/02/14 13:46:27 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/05/09 15:10:07 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityLoadStressTest.java,v $
+ *   Revision 1.2  2005/05/09 15:10:07  clq2
+ *   Kevin's commits
+ *
+ *   Revision 1.1.38.1  2005/04/29 07:30:45  KevinBenson
+ *   Added some stress test and fixed this small bug with the community querying on relationships
+ *
  *   Revision 1.1  2005/02/14 13:46:27  jdt
  *   added a stress test for community accounts
  *
@@ -45,6 +51,11 @@ import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.common.policy.data.GroupData;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.client.query.ResourceData;
+import org.astrogrid.community.resolver.CommunityAccountResolver ;
+import org.astrogrid.community.resolver.policy.manager.PolicyManagerResolver;
+import org.astrogrid.community.resolver.security.manager.SecurityManagerResolver;
+
 
 /**
  * A utility to load Community data from an XML file.
@@ -71,13 +82,25 @@ public class CommunityLoadStressTest extends TestCase {
     public CommunityLoadStressTest()
             throws MalformedURLException {
 
-        String communityPolicyManagerUrl = SimpleConfig.getProperty("org.astrogrid.community.policymanager.url");
-        String communitySecurityManagerUrl = SimpleConfig.getProperty("org.astrogrid.community.securitymanager.url");
-        logger.debug("Creating delegate for PolicyManager at " + communityPolicyManagerUrl);
-        logger.debug("Creating delegate for SecurityManager at " + communitySecurityManagerUrl);
+        //String communityPolicyManagerUrl = SimpleConfig.getProperty("org.astrogrid.community.policymanager.url");
+        //String communitySecurityManagerUrl = SimpleConfig.getProperty("org.astrogrid.community.securitymanager.url");
+        //logger.debug("Creating delegate for PolicyManager at " + communityPolicyManagerUrl);
+        //logger.debug("Creating delegate for SecurityManager at " + communitySecurityManagerUrl);
 
-        policyManager = new PolicyManagerSoapDelegate(new URL(communityPolicyManagerUrl));
-        securityManager = new SecurityManagerSoapDelegate(new URL(communitySecurityManagerUrl));
+        //policyManager = new PolicyManagerSoapDelegate(new URL(communityPolicyManagerUrl));
+        //securityManager = new SecurityManagerSoapDelegate(new URL(communitySecurityManagerUrl));
+        try {
+            PolicyManagerResolver pmr = new PolicyManagerResolver();
+            ResourceData[] communityServices = pmr.resolve();
+            
+            SecurityManagerResolver smr = new SecurityManagerResolver();
+            policyManager = pmr.resolve(((ResourceData)communityServices[0]).getIvorn());
+            securityManager = smr.resolve(((ResourceData)communityServices[0]).getIvorn());
+        }catch(Exception e) {
+            e.printStackTrace();            
+            policyManager = null;
+            securityManager = null;
+        }
     }
 
     /**
@@ -168,6 +191,65 @@ public class CommunityLoadStressTest extends TestCase {
     }
 
     /**
+     * Upload our Community data.
+     *  
+     */
+    public void updateAccounts() throws RegistryException, CommunityServiceException, CommunitySecurityException,
+            CommunityIdentifierException, CommunityPolicyException {
+
+        logger.debug("upload() - CommunityLoadStressTest.upload()");
+
+        //
+        // Check for null manager.
+        if (null == this.policyManager) {
+            throw new CommunityServiceException("PolicyManager not configured");
+        }
+
+        //
+        // Process the Community Accounts.
+        Iterator iter;
+        iter = getAccounts().iterator();
+        while (iter.hasNext()) {
+            AccountData account = (AccountData) iter.next();
+            logger.debug("update() - ----");
+            logger.debug("update() - Account" + account.getIdent());
+            this.policyManager.setAccount(account);
+        }
+    }
+    
+    /**
+     * Upload our Community data.
+     *  
+     */
+    public void removeAccounts() throws RegistryException, CommunityServiceException, CommunitySecurityException,
+            CommunityIdentifierException, CommunityPolicyException {
+
+        logger.debug("upload() - CommunityLoadStressTest.upload()");
+
+        //
+        // Check for null manager.
+        if (null == this.policyManager) {
+            throw new CommunityServiceException("PolicyManager not configured");
+        }
+
+        //
+        // Process the Community Accounts.
+        Iterator iter;
+        iter = getAccounts().iterator();
+        for(int i = 0; i < MAXACCOUNTS;i++ ) {
+            if(i < (MAXACCOUNTS - 20))
+                iter.next();                    
+        }
+        while (iter.hasNext()) {
+            AccountData account = (AccountData) iter.next();
+            logger.debug("remove() - ----");
+            logger.debug("remove() - Account" + account.getIdent());
+            this.policyManager.delAccount(account.getIdent());
+        }
+    }
+    
+
+    /**
      * @return
      */
     private List getAccounts() {
@@ -195,5 +277,34 @@ public class CommunityLoadStressTest extends TestCase {
             CommunityIdentifierException, CommunityPolicyException, RegistryException {
         upload();
     }
-}
+    
+    /**
+     * Can we update a shedload of accounts without the computer catching fire?
+     * 
+     * @throws RegistryException
+     * @throws CommunityPolicyException
+     * @throws CommunityIdentifierException
+     * @throws CommunitySecurityException
+     * @throws CommunityServiceException
+     *  
+     */
+    public void testBigUpdate() throws CommunityServiceException, CommunitySecurityException,
+            CommunityIdentifierException, CommunityPolicyException, RegistryException {
+        updateAccounts();
+    }
 
+    /**
+     * Can we update a shedload of accounts without the computer catching fire?
+     * 
+     * @throws RegistryException
+     * @throws CommunityPolicyException
+     * @throws CommunityIdentifierException
+     * @throws CommunitySecurityException
+     * @throws CommunityServiceException
+     *  
+     */
+    public void testBigRemove() throws CommunityServiceException, CommunitySecurityException,
+            CommunityIdentifierException, CommunityPolicyException, RegistryException {
+        removeAccounts();
+    }
+}

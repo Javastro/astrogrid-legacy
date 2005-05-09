@@ -35,6 +35,10 @@
   <description>File Store service</description>
   <referenceURL>http://www.astrogrid.org</referenceURL>
   <type>BasicData</type>
+  <relationship>
+    <relationshipType>derived-from</relationshipType>
+        <relatedResource ivo-id="ivo://org.astrogrid/FileStoreKind">Filestore Kind</relatedResource>
+  </relationship>  
  </content>
     <interface xsi:type="vs:WebService">
 		<accessURL use="full"><%=fsService%></accessURL>

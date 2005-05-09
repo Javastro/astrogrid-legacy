@@ -38,7 +38,7 @@
   <p>In order to make another registry to mirror ("harvest") the contents of your registry, you must copy the <span style="font-style: italic;">registryType</span>
 registration from your registry into the other registry. This form
 copies that registration into a specific registry: that on AstroGrid's
-machine <span style="font-style: italic;">hydra</span>.<br>
+machine <span style="font-style: italic;">Galahad</span>.<br>
 </p>
 <input type="hidden" name="postrequest" value="true" />
 <select name="version">
@@ -48,7 +48,8 @@ machine <span style="font-style: italic;">hydra</span>.<br>
       ><%=al.get(k)%></option>  
    <%}%>
 </select>
-<p><input name="postregsubmit" value="Set up harvesting by hydra" type="submit"></p>
+<input name="regaddurl" type="text" value="http://galahad.star.le.ac.uk:8081/astrogrid-registry" />
+<p><input name="postregsubmit" value="Set up harvesting" type="submit"></p>
 </form>
 
 
@@ -60,7 +61,8 @@ machine <span style="font-style: italic;">hydra</span>.<br>
 	  String postregsubmit = request.getParameter("postregsubmit");
 	  String getregsubmit= request.getParameter("getregsubmit");
 	  String getregs = request.getParameter("getregs");
-	  String fullRegistryAddURL = "http://hydra.star.le.ac.uk:8080/astrogrid-registry/addResourceEntry.jsp";
+	  String regaddurl = request.getParameter("regaddurl");
+	  String fullRegistryAddURL = regaddurl + "/addResourceEntry.jsp";
 	  String regBas = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 	  regBas += "getRegistriesXML.jsp?version=" + version ;
 %>

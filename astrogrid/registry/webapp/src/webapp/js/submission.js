@@ -5,6 +5,7 @@ function Xsubmission (oAttributes) {
 	this.attributes = oAttributes;
 	
 	this.action = this.attributes['action'];
+	
 	this.method = this.attributes['method'];
 	this.replace = this.attributes['replace'];
 	this.parent = null;
@@ -13,10 +14,36 @@ function Xsubmission (oAttributes) {
 	this.element.addEventListener('click',this.sendHandler,false);
 }	
 
+Xsubmission.prototype.parseUrl = function(sUrl) {
+	myRegexp = new RegExp("(.+)\:\/\/(?:(?:(.+)\:(.+)\@)?([^\/]+))(?:\/([^\?]+))?(?:([^#]+))?(?:\#(.*))?");	
+
+	if (sUrl.match(myRegexp)) {
+		aUrl = sUrl.split(myRegexp);
+		
+		aUrl.shift();
+		aUrl.pop();
+	
+		aUrl['scheme'] = aUrl[0];
+	    aUrl['user'] = 	aUrl[1]; 		
+	    aUrl['pass'] = 	aUrl[2];
+	    aUrl['host'] = 	aUrl[3];
+	    aUrl['path'] = 	aUrl[4];
+	    
+	    aUrl[5] = aUrl[5].substring(1,aUrl[5].length); // enleve le ? parasite (bug expression reguliere)
+	    aUrl['query'] =  aUrl[5];
+	    
+	    aUrl['fragment'] = 	aUrl[6];
+    
+	}
+   return aUrl;
+}
+
 Xsubmission.prototype.sendHandler= function(evt) {
 	var httpRequest = new XMLHttpRequest(); 
 	var submission = evt.currentTarget.submission;
 	var responseReplace = submission.replace;
+	
+	//var parsedUrl = Xsubmission.parseUrl(submission.action);
 	
 	document.dispatchEvent(Xevents['xforms-submit']);
 	
@@ -51,6 +78,7 @@ Xsubmission.prototype.sendHandler= function(evt) {
 					}
 					break;
 				default:
+					myDebug.addLog('error','HTTP' + httpRequest.status);
 					document.dispatchEvent(Xevents['xforms-submit-error']);
 				}
 		}
@@ -68,19 +96,33 @@ Xsubmission.prototype.sendHandler= function(evt) {
 				// multipart not implemented yet
 				httpRequest.open('POST',  submission.action); 
 				httpRequest.setRequestHeader('Content-Type','multipart/form-data');
-  				httpRequest.send(submission.parent.asXform()); 
+				httpRequest.setRequestHeader('Referer',window.location.href);
+  				httpRequest.send(submission.parent.asXform());
+				break;
+
+			case 'urlencoded-post':
+				// this is a deprecated mehtod
+				httpRequest.open('POST',  submission.action); 
+				httpRequest.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+				httpRequest.setRequestHeader('Referer',window.location.href);
+  				httpRequest.send(submission.parent.asXform());
+  				
+  				
 				break;
 				
 			case 'multipart-post':
 				// multipart not implemented yet
 				httpRequest.open('POST', submission.action);
 				httpRequest.setRequestHeader('Content-Type','multipart/related');
+				httpRequest.setRequestHeader('Referer',window.location.href);
 				httpRequest.send(submission.parent.asMultipart());
 				break;
+
 			case 'post':
 			default:
 				httpRequest.open('POST',  submission.action); 
 				httpRequest.setRequestHeader('Content-Type','application/xml');
+				httpRequest.setRequestHeader('Referer',window.location.href);
   				httpRequest.send(submission.parent.asXml()); 
   				
 		}

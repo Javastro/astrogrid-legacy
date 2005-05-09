@@ -26,6 +26,12 @@
     <relationshipType>derived-from</relationshipType>
         <relatedResource ivo-id="ivo://org.astrogrid/MySpaceKind">Myspace Kind</relatedResource>
   </relationship>
+<!--
+  <relationship>
+    <relationshipType>derived-from</relationshipType>
+        <relatedResource ivo-id="ivo://org.astrogrid/FileManagerKind">Filemanager Kind</relatedResource>
+  </relationship>
+-->
  </content>
     <interface xsi:type="vs:WebService">
                 <accessURL use="full">@TOMCATROOT@/astrogrid-filemanager-one-@VERSION@/services/FileManagerPort</accessURL>

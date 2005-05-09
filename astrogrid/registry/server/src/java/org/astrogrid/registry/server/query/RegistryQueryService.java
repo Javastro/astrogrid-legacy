@@ -10,8 +10,13 @@ import javax.xml.parsers.DocumentBuilder;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+
 import org.xml.sax.InputSource;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import org.xml.sax.SAXException;
 import java.io.IOException;
 import org.astrogrid.util.DomHelper;
@@ -25,10 +30,11 @@ import java.net.MalformedURLException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.io.*;
-import org.apache.axis.AxisFault;
+//import org.apache.axis.AxisFault;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.server.harvest.RegistryHarvestService;
 import org.astrogrid.registry.server.RegistryServerHelper;
+import org.astrogrid.registry.server.SOAPFaultException;
 import org.astrogrid.registry.common.RegistryDOMHelper;
 import org.astrogrid.registry.server.QueryHelper;
 import org.astrogrid.xmldb.client.QueryService;
@@ -84,27 +90,79 @@ public class RegistryQueryService {
       }
    }
    
+   private Document processQueryResults(Node resultDoc, String versionNumber, String responseWrapper) {
+       Document doc = null;
+       //Okay nothing from the query
+       try {
+           if(resultDoc == null) {
+               if(responseWrapper != null) {
+                   return DomHelper.newDocument("<"+responseWrapper+">"+"</"+responseWrapper+">");
+               }else {
+                   return SOAPFaultException.createQuerySOAPFaultException("Nothing to return in the Soap body",
+                   "Nothing to return in the soap body, the query returned no resources.");
+               }//else
+           }//if
+           
+           //check if it is a Fault, if so just return the resultDoc;
+           if(resultDoc.getNodeName().indexOf("Fault") != -1 || 
+              resultDoc.getFirstChild().getNodeName().indexOf("Fault") != -1) {
+               //All Faults shoudl have been created by server.SOAPFaultException meaning a Document object.
+               return (Document)resultDoc;
+           }
+           XSLHelper xslHelper = new XSLHelper();
+           doc = xslHelper.transformExistResult(resultDoc, versionNumber);
+           
+           if(responseWrapper != null && responseWrapper.trim().length() > 0) {
+               Element currentRoot = doc.getDocumentElement();
+               Element root = doc.createElementNS("http://www.astrogrid.org/registry/wsdl",responseWrapper);
+               root.appendChild(currentRoot);
+               doc.appendChild(root);
+           }//if
+       }catch(ParserConfigurationException e) {
+         log.error(e);
+         doc = SOAPFaultException.createQuerySOAPFaultException(e.getMessage(),e);
+       }catch(TransformerConfigurationException e) {
+           log.error(e);
+           doc = SOAPFaultException.createQuerySOAPFaultException(e.getMessage(),e);
+       }catch(TransformerException e) {
+           log.error(e);
+           doc = SOAPFaultException.createQuerySOAPFaultException(e.getMessage(),e);
+       }catch(UnsupportedEncodingException e) {
+           log.error(e);
+           doc = SOAPFaultException.createQuerySOAPFaultException(e.getMessage(),e);
+       }catch(SAXException e) {
+           log.error(e);
+           doc = SOAPFaultException.createQuerySOAPFaultException(e.getMessage(),e);           
+       }catch(IOException e) {
+           log.error(e);
+           doc = SOAPFaultException.createQuerySOAPFaultException(e.getMessage(),e);           
+       }
+       return doc;
+   }
+   
    /**
     * Method: Search
     * Description: Web Service method to take ADQL DOM and perform a query on the
     * registry.  Takes in a DOM so it can handle multiple versions of ADQL.
     * 
     * @param query - DOM object containing ADQL. Which is xsl'ed into XQuery language for the query.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
     * @return - Resource DOM object of the Resources from the query of the registry. 
     * 
     */
-   public Document Search(Document query) throws AxisFault {
+   public Document Search(Document query) {
       log.debug("start Search");
       long beginQ = System.currentTimeMillis();
-      XSLHelper xslHelper = new XSLHelper();
-
       //get the version of Resources we are querying on.
       String versionNumber = getRegistryVersion(query);
 
       //transform the ADQL to an XQuery for the registry.
-      String xqlQuery = getQuery(query,versionNumber);
+      String xqlQuery = null;
+      
+      try {
+          xqlQuery = getQuery(query,versionNumber);
+      }catch(Exception e) {
+          return SOAPFaultException.createQuerySOAPFaultException(e.getMessage(),e.getMessage());
+      }
       log.info("The XQLQuery = " + xqlQuery);
       //perform the query and log how long it took to query.
       Node resultDoc = queryExist(xqlQuery,versionNumber);
@@ -114,8 +172,7 @@ public class RegistryQueryService {
       
       //To be correct we need to transform the results, with a correct response element 
       //for the soap message and for the right root element around the resources.
-      return xslHelper.transformExistResult(resultDoc,
-                                            versionNumber,"SearchResponse");
+      return processQueryResults(resultDoc,versionNumber,"SearchResponse");      
    }
 
    
@@ -126,14 +183,11 @@ public class RegistryQueryService {
     * name in the SOAP body. Currently Not in Use.
     *  
     * @param query - XQuery string to be used directly on the registry.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry. 
     * @return - Resource DOM object of the Resources from the query of the registry.
-    */
-   public Document XQLQuery(Document query) throws AxisFault {
+    
+   public Document XQLQuery(Document query) {
       log.debug("start Query");
       Document resultDoc = null;
-      try {
          //get the xquery.
          String xql = DomHelper.getNodeTextValue(query,"XQLString");
          log.debug("end Query");
@@ -141,11 +195,9 @@ public class RegistryQueryService {
          String versionNumber = getRegistryVersion(query);
          //query the eXist db.
          resultDoc = (Document)queryExist(xql,versionNumber);
-      }catch(IOException ioe) {
-         throw new AxisFault("IO problem", ioe);
-      }
       return resultDoc;
    }
+   */
 
    
    /**
@@ -157,16 +209,12 @@ public class RegistryQueryService {
    * 
    * @deprecated - It is still being used some, but will be factored away in a matter of a couple of weeks Jan 24,2005
    * @param query XML document object representing the query language used on the registry.
-   * @throws - AxisFault containing exceptions that might have occurred setting up
-   * or querying the registry.
    * @return XML docuemnt object representing the result of the query.
    * @author Kevin Benson 
    */
-   public Document submitQuery(Document query) throws AxisFault {
+   public Document submitQuery(Document query) {
       log.debug("start submitQuery");
       long beginQ = System.currentTimeMillis();
-      XSLHelper xslHelper = new XSLHelper();
-            
       String versionNumber = getRegistryVersion(query);
       //parse query right now actually does the query.
       String xql = XQueryExecution.createXQL(query,versionNumber);
@@ -178,7 +226,7 @@ public class RegistryQueryService {
 
       //To be correct we need to transform the results, with a correct response element 
       //for the soap message and for the right root element around the resources.
-      return xslHelper.transformExistResult(resultDoc,versionNumber,null);
+      return processQueryResults(resultDoc,versionNumber,null);
    }
    
    /**
@@ -188,11 +236,9 @@ public class RegistryQueryService {
     * version number in the properties.  The versionNumber comes from the vr namespace.
     * 
     * @param query actually normally empty/null and is ignored.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry. 
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document loadRegistry(Document query) throws AxisFault {
+   public Document loadRegistry(Document query) {
       log.debug("start loadRegistry");
       
       //get the default autority id for this registry.      
@@ -210,25 +256,22 @@ public class RegistryQueryService {
     * Which defines the AuthorityID's it manages and how to access the Registry.
     * 
     * @param version of the schema to be queryied on (the vr namespace); hence the collection
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry. 
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document loadMainRegistry(String versionNumber) throws AxisFault {
+   public Document loadMainRegistry(String versionNumber) {
        long beginQ = System.currentTimeMillis();       
 
        String xqlString = QueryHelper.queryForMainRegistry(versionNumber);
        log.info("XQL String = " + xqlString);
        Node resultDoc = queryExist(xqlString,versionNumber);
        
-       XSLHelper xslHelper = new XSLHelper();
        log.info("Time taken to complete loadRegistry on server = " +
                (System.currentTimeMillis() - beginQ));
        log.debug("end loadRegistry");
        
        //To be correct we need to transform the results, with a correct response element 
        //for the soap message and for the right root element around the resources.
-       return xslHelper.transformExistResult(resultDoc,versionNumber,null);
+       return processQueryResults(resultDoc,versionNumber,null);
    }
    
    /**
@@ -239,10 +282,8 @@ public class RegistryQueryService {
     * @param xqlString an XQuery to query the database
     * @param collectionName the location in the database to query (sort of like a table)
     * @return xml DOM object returned from the database, which are Resource elements
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
     */
-   private Node queryExist(String xqlString, String versionNumber) throws AxisFault {
+   private Node queryExist(String xqlString, String versionNumber) {
       log.debug("start queryExist");
       Collection coll = null;
       int tempIndex = 0;
@@ -262,7 +303,8 @@ public class RegistryQueryService {
           //xqlExpression = xqlExpression.replaceAll("__query__", xqlString);
           tempIndex = xqlExpression.indexOf("__query__");
           if(tempIndex == -1) {
-              throw AxisFault.makeFault(new RegistryException("XQL Expression has no placement for a Query"));
+              return SOAPFaultException.createQuerySOAPFaultException("XQL Expression has no placement for a Query",
+                                                                      "XQL Expression has no placement for a Query");
           }
           //todo: check into this again, for some reason could not do a replaceAll so currently placing
           //in the string the hard way.
@@ -277,31 +319,29 @@ public class RegistryQueryService {
           log.info("Total Query Time = " + (System.currentTimeMillis() - beginQ));
           log.info("Number of results found in query = " + rs.getSize());
           if(rs.getSize() == 0) {
-              NoResourcesFoundException nrfe = new NoResourcesFoundException("Nothing found with query = " + xqlExpression + " for collection = " + collectionName);
-              throw AxisFault.makeFault(nrfe);
+              return null;
           }
           Resource xmlr = rs.getMembersAsResource();
           return DomHelper.newDocument(xmlr.getContent().toString());
       }catch(XMLDBException xdbe) {
           xdbe.printStackTrace();
-          throw AxisFault.makeFault(xdbe);
+          return SOAPFaultException.createQuerySOAPFaultException(xdbe.getMessage(),xdbe);
       }catch(ParserConfigurationException pce) {
           pce.printStackTrace();
-          throw AxisFault.makeFault(pce);
+          return SOAPFaultException.createQuerySOAPFaultException(pce.getMessage(),pce);
       }catch(SAXException sax) {
           sax.printStackTrace();
-          throw AxisFault.makeFault(sax);
+          return SOAPFaultException.createQuerySOAPFaultException(sax.getMessage(),sax);
       }catch(IOException ioe) {
           ioe.printStackTrace();
-          throw AxisFault.makeFault(ioe);
-      }
-      finally {
+          return SOAPFaultException.createQuerySOAPFaultException(ioe.getMessage(),ioe);
+      } finally {
           try {
               xdb.closeCollection(coll);
           }catch(XMLDBException xmldb) {
               log.error(xmldb);
-          }
-      }
+          }//try
+      }//finally
    }
    
    /**
@@ -340,11 +380,9 @@ public class RegistryQueryService {
     * Once data is obtained called the other keywordQuery method below to perform the query.
     * 
     * @param query - The soap body of the web service call, containing sub elements of keywords.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document KeywordSearch(Document query) throws AxisFault {
+   public Document KeywordSearch(Document query) {
        log.debug("start keywordsearch");                   
        String keywords = null;
        String orValue = null;
@@ -352,7 +390,7 @@ public class RegistryQueryService {
            keywords = DomHelper.getNodeTextValue(query,"keywords");
            orValue = DomHelper.getNodeTextValue(query,"orValue");
        }catch(IOException ioe) {
-           throw new AxisFault("IO problem trying to get keywords and orValue");
+           return SOAPFaultException.createQuerySOAPFaultException("IO problem trying to get keywords and orValue",ioe);
        }
        String attrVersion = getRegistryVersion(query);
        boolean orKeywords = new Boolean(orValue).booleanValue();
@@ -368,11 +406,9 @@ public class RegistryQueryService {
     * @deprecated - No longer used, a version Number should always be passed in.
     * @param keywords - A string of keywords seperated by spaces.
     * @param orKeywords - Are the key words to be or'ed together
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
     * @return XML docuemnt object representing the result of the query.
     */   
-   public Document keywordQuery(String keywords, boolean orKeywords) throws AxisFault {
+   public Document keywordQuery(String keywords, boolean orKeywords) {
        return keywordQuery(keywords,orKeywords,RegistryDOMHelper.getDefaultVersionNumber());
    }
    
@@ -385,11 +421,9 @@ public class RegistryQueryService {
     * @param query - String of keywords seperated by spaces.
     * @param orKeywords - Are the key words to be or'ed together
     * @param version - The version number from vr namespace used to form the collection name and get the xpaths from the properties. 
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
     * @return XML docuemnt object representing the result of the query.
     */   
-   public Document keywordQuery(String keywords, boolean orKeywords, String version) throws AxisFault {
+   public Document keywordQuery(String keywords, boolean orKeywords, String version) {
        long beginQ = System.currentTimeMillis();
        if(version == null || version.trim().length() <= 0) {
            version = RegistryDOMHelper.getDefaultVersionNumber();
@@ -427,14 +461,13 @@ public class RegistryQueryService {
        xqlString += " return $x";
        
        Node resultDoc = queryExist(xqlString,versionNumber); 
-       XSLHelper xslHelper = new XSLHelper();
        log.info("Time taken to complete keywordsearch on server = " +
                (System.currentTimeMillis() - beginQ));
        log.debug("end keywordsearch");         
        
        //To be correct we need to transform the results, with a correct response element 
        //for the soap message and for the right root element around the resources.
-       return xslHelper.transformExistResult(resultDoc,
+       return processQueryResults(resultDoc,
                                              versionNumber,"KeywordSearchResponse");
    }
    
@@ -443,19 +476,16 @@ public class RegistryQueryService {
     * Description: Conventient method for the browse all jsp page which queries the entire
     * collection in the registry based on a version number.
     * @param versionNumber version number to form the collection(like a table) to query on.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document getAll(String versionNumber) throws AxisFault {
-       XSLHelper xslHelper = new XSLHelper();
+   public Document getAll(String versionNumber) {
        if(versionNumber == null || versionNumber.trim().length() <= 0) {
            versionNumber = RegistryDOMHelper.getDefaultVersionNumber();
        }
        
        String xqlString = QueryHelper.getAllQuery(versionNumber);
        Node resultDoc = queryExist(xqlString,versionNumber);
-       return xslHelper.transformExistResult(resultDoc,
+       return processQueryResults(resultDoc,
                versionNumber,"GetAllResponse");
    }
    
@@ -469,18 +499,16 @@ public class RegistryQueryService {
     * plainly I have seen it lose some elements.  After getting the identifier call GetResourcesByIdentifier(String,versionNumber).
     * 
     * @param query - A Soap body request containing an identifier element holding the identifier to be queries on.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document GetResourcesByIdentifier(Document query) throws AxisFault {
+   public Document GetResourcesByIdentifier(Document query) {
        log.debug("start GetResourcesByIdentifier");                   
        String ident = null;
        try {
            ident = DomHelper.getNodeTextValue(query,"identifier");
            log.info("found identifier in web service request = " + ident);
        }catch(IOException ioe) {
-           throw new AxisFault("IO problem trying to get identifier");
+           return SOAPFaultException.createQuerySOAPFaultException("IO problem trying to get identifier",ioe);
        }
        String attrVersion = getRegistryVersion(query);
        return getResourcesByIdentifier(ident,attrVersion);
@@ -496,17 +524,14 @@ public class RegistryQueryService {
  
     * @param ivorn - Identifier String.
     * @param versionNumber - version number to query on, if null use the default version number for the registry.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document getResourcesByIdentifier(String ivorn, String versionNumber) throws AxisFault {
-       XSLHelper xslHelper = new XSLHelper();
+   public Document getResourcesByIdentifier(String ivorn, String versionNumber) {
        if(versionNumber == null || versionNumber.trim().length() <= 0) {
            versionNumber = RegistryDOMHelper.getDefaultVersionNumber();
        }
        if(ivorn == null || ivorn.trim().length() <= 0) {
-           throw new AxisFault("Cannot have empty or null identifier");
+           return SOAPFaultException.createQuerySOAPFaultException("Cannot have empty or null identifier","Cannot have empty or null identifier");
        }
        String queryIvorn = ivorn;
        //this is a hack for now delete later.  Some old client delegates might not pass the ivorn
@@ -515,7 +540,7 @@ public class RegistryQueryService {
            queryIvorn = "ivo://" + ivorn;
        String xqlString = QueryHelper.queryForResource(queryIvorn,versionNumber);
        Node resultDoc = queryExist(xqlString,versionNumber);
-       return xslHelper.transformExistResult(resultDoc,
+       return processQueryResults(resultDoc,
                versionNumber,"GetResourcesByIdentifier");
    }
 
@@ -526,18 +551,16 @@ public class RegistryQueryService {
     * getResoruceByIdentifier(string,string).
     * 
     * @param query - soab body containing a identifier element for the identifier to query on.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document GetResourceByIdentifier(Document query) throws AxisFault {
+   public Document GetResourceByIdentifier(Document query) {
        log.debug("start GetResourcesByIdentifier");                   
        String ident = null;
        try {
            ident = DomHelper.getNodeTextValue(query,"identifier");
            log.info("found identifier in web service request = " + ident);
        }catch(IOException ioe) {
-           throw new AxisFault("IO problem trying to get identifier");
+           return SOAPFaultException.createQuerySOAPFaultException("IO problem trying to get identifier",ioe);
        }
        String attrVersion = getRegistryVersion(query);
        return getResourceByIdentifier(ident,attrVersion);
@@ -552,17 +575,14 @@ public class RegistryQueryService {
     * identifier, this is because the identifier is the primary key (or id) in the db.
     * 
     * @param query - soab body containing a identifier element for the identifier to query on.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document getResourceByIdentifier(String ivorn, String versionNumber) throws AxisFault {
-       XSLHelper xslHelper = new XSLHelper();
+   public Document getResourceByIdentifier(String ivorn, String versionNumber) {
        if(versionNumber == null || versionNumber.trim().length() <= 0) {
            versionNumber = RegistryDOMHelper.getDefaultVersionNumber();
        }
        if(ivorn == null || ivorn.trim().length() <= 0) {
-           throw new AxisFault("Cannot have empty or null identifier");
+           return SOAPFaultException.createQuerySOAPFaultException("Cannot have empty or null identifier","Cannot have empty or null identifier");
        }
        String queryIvorn = ivorn;
        if(Ivorn.isIvorn(ivorn)) { 
@@ -575,12 +595,21 @@ public class RegistryQueryService {
        Collection coll = null;
        try {
            coll = xdb.openCollection(collectionName);
-           XMLResource xmr = (XMLResource)xdb.getResource(coll,id + ".xml");           
-           return xslHelper.transformExistResult(xmr.getContentAsDOM(),
+           XMLResource xmr = (XMLResource)xdb.getResource(coll,id + ".xml");
+           return processQueryResults(DomHelper.newDocument(xmr.getContent().toString()),
                        versionNumber,"GetResourceByIdentifier");
        }catch(XMLDBException xdbe) {
-           throw AxisFault.makeFault(xdbe);
-       }finally {
+           return SOAPFaultException.createQuerySOAPFaultException(xdbe.getMessage(),xdbe);
+       }catch(ParserConfigurationException pce) {
+           pce.printStackTrace();
+           return SOAPFaultException.createQuerySOAPFaultException(pce.getMessage(),pce);
+       }catch(SAXException sax) {
+           sax.printStackTrace();
+           return SOAPFaultException.createQuerySOAPFaultException(sax.getMessage(),sax);
+       }catch(IOException ioe) {
+           ioe.printStackTrace();
+           return SOAPFaultException.createQuerySOAPFaultException(ioe.getMessage(),ioe);
+       } finally {
            try {
                xdb.closeCollection(coll);
            }catch(XMLDBException xmldb) {
@@ -589,15 +618,14 @@ public class RegistryQueryService {
        }
    }
    
-   public Document getResourcesByAnyIdentifier(String ivorn, String versionNumber) throws AxisFault {
-       XSLHelper xslHelper = new XSLHelper();
+   public Document getResourcesByAnyIdentifier(String ivorn, String versionNumber) {
        if(versionNumber == null || versionNumber.trim().length() <= 0) {
            versionNumber = RegistryDOMHelper.getDefaultVersionNumber();
        }
 
        String xqlString = QueryHelper.queryForAllResource(ivorn,versionNumber);
        Node resultDoc = queryExist(xqlString,versionNumber);
-       return xslHelper.transformExistResult(resultDoc,
+       return processQueryResults(resultDoc,
                versionNumber,"GetResourceByIdentifier");
    }
       
@@ -611,10 +639,8 @@ public class RegistryQueryService {
     * Axis Document style method.  At most it will contain nothing more than the method
     * name.
     * @return Resource entries of type Registries.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
     */
-   public Document GetRegistries(Document query) throws AxisFault {
+   public Document GetRegistries(Document query) {
       //DomHelper.DocumentToStream(query,System.out);
 
       String versionNumber = getRegistryVersion(query);
@@ -628,11 +654,9 @@ public class RegistryQueryService {
     * 
     * @param versionNumber - String table or collection
     * @return Resource entries of type Registries.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
     * @see org.astrogrid.registry.server.harvest.RegistryHarvestService
     */   
-   public Document getRegistriesQuery(String versionNumber) throws AxisFault {
+   public Document getRegistriesQuery(String versionNumber) {
        long beginQ = System.currentTimeMillis();
        if(versionNumber == null || versionNumber.trim().length() <= 0) {
            versionNumber = RegistryDOMHelper.getDefaultVersionNumber();
@@ -641,8 +665,7 @@ public class RegistryQueryService {
        //Get the Xquery String, from the properties.
        String xqlString = QueryHelper.queryForRegistries(versionNumber);             
        Node resultDoc = queryExist(xqlString,versionNumber);
-       XSLHelper xslHelper = new XSLHelper();
-       return xslHelper.transformExistResult(resultDoc,
+       return processQueryResults(resultDoc,
                versionNumber,"GetRegistriesResponse");       
    }
    
@@ -656,10 +679,8 @@ public class RegistryQueryService {
     * 
     * @param query ADQL DOM object 
     * @return xquery string
-    * @throws - AxisFault containing exceptions that might have occurred
-    *  calling the servlet/url.
     */   
-   private String getQuery(Document query,String resourceVersion) throws AxisFault {
+   private String getQuery(Document query,String resourceVersion) throws Exception {
        XSLHelper xslHelper = new XSLHelper();       
        NodeList nl = query.getElementsByTagNameNS("*","Select");
        //Get the main root element Select
@@ -677,7 +698,7 @@ public class RegistryQueryService {
        
        //throw an error if no version was found.
        if(adqlVersion == null || adqlVersion.trim().length() == 0) {
-           throw new AxisFault("Could not find a version of the ADQL");
+           throw new Exception("No ADQL version found");           
        }
        //get only the actual version number.
        adqlVersion = adqlVersion.substring(adqlVersion.lastIndexOf("v")+1);
@@ -715,5 +736,5 @@ public class RegistryQueryService {
        }
        return RegistryDOMHelper.getRegistryVersionFromNode(
                                    query.getDocumentElement());    
-   }      
+   }
 }

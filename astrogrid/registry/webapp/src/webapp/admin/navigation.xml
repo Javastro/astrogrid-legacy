@@ -22,6 +22,7 @@
       <h5>Admin</h5>
       <ul>
          <li><a href="clear_cache.jsp">Clear Cache</a>
+         <li><a href="removeResource.jsp">Remove Resource</a>
          <li><a href="editEntry_backdoor.jsp">Enter Resource (Back Door)</a>
          <li><a href="harvestResource.jsp">Harvest</a>
       </ul>

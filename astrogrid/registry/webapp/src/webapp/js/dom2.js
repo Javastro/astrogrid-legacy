@@ -72,6 +72,8 @@ if (!window.addEventListener && document.all /*(remove to enable partial (buggy)
 		if(!evt.target) evt.target = evt.srcElement || elt;
 		if(evt.bubbles == null) evt.bubbles = true;
 		if(evt.cancelable == null) evt.cancelable = true;
+		evt.cancelBubble = false;
+		evt.returnValue = true;
 		evt.stopPropagation = function() {evt.cancelBubble=true;};
 		evt.preventDefault = function() {evt.returnValue=false;};
 		if(!evt.relatedTarget) evt.relatedTarget = evt.fromElement || evt.toElement || null;

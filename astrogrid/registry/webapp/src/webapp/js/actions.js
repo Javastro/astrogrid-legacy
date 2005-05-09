@@ -1,26 +1,6 @@
 var Xactions = {
-	nodeSet: function(xPathString,xPathDoc) {
-		
-		//var xPathParser = new Dom3Xpath();
-		var xPathResolver = document.createNSResolver(xPathDoc.documentElement);	
-		var xPathResult = document.evaluate(xPathString, xPathDoc.documentElement, xPathResolver, 9, null);
 	
-		return xPathResult.singleNodeValue;
-		
-	},
-
 	_reset: function () {
-
-		var controls = _getElementsByTagNameNS("http://www.w3.org/2002/xforms","*");
-				
-		str='';
-		for(var j=0; j < controls.length; j++) {
-			str+=controls[j].tagName + ' ' + controls[j].getAttribute('xmlns') +'\n';
-			var model=controls[j].getAttribute('model')?controls[j].getAttribute('model'):0;
-			obj = this.nodeSet(controls[j].getAttribute('ref'),Xmodels[model]);
-						
-			if (obj) setFormValue(controls[j],obj.firstChild.nodeValue);
-		}
 		document.dispatchEvent(Xevents['xforms-reset']);
 	},
 
@@ -30,81 +10,84 @@ var Xactions = {
 	},
 	
 	_recalculate: function () {
-		Xvalues = new Array();
-		
-		var controls = _getElementsByTagNameNS("http://www.w3.org/2002/xforms","*");
-
-		str='';
-		for(var j=0; j < controls.length; j++) {
-			str+=controls[j].tagName + ' ' + controls[j].getAttribute('xmlns') +'\n';
-			obj = this.nodeSet(controls[j].getAttribute('ref'),Xmodels[0]);
-			if (obj) getFormValue(controls[j],obj);
-		}
-		
-		document.dispatchEvent(Xevents['xforms-recalculate']);
+		xforms.childModels[0]._recalculate();
 	},
 
 	recalculateHandler: function (evt) {	
-		var o = evt.target.control;
+		var o = evt.target;
 		Xactions._recalculate();
 	},
-	
+
+
+	_rebuild: function() {
+		xforms.childModels[0]._rebuild;
+	},
+
+	rebuildHandler: function (evt) {	
+		var o = evt.target;
+		Xactions._rebuild();
+	},
+
 	_refresh: function() {
-		document.dispatchEvent(Xevents['xforms-refresh']);
+		xforms.childModels[0]._refresh();
 	},
 	
 	refreshHandler: function (evt) {	
-		Xactions._refresh();
+		var o = evt.target;
+		Xactions._rebuild();
 	},
 
 	_revalidate: function () {
-		
-		var controls = _getElementsByTagNameNS("http://www.w3.org/2002/xforms","*");
-
-		str='';
-		for(var j=0; j < controls.length; j++) {
-			str+=controls[j].tagName + ' ' + controls[j].getAttribute('xmlns') +'\n';
-			if (controls[j].bind) controls[j].bind.validate();
-		}
-		
-		document.dispatchEvent(Xevents['xforms-revalidate']);
+		xforms.childModels[0]._revalidate();
 	},
 
 	revalidateHandler: function (evt) {	
-		var o = evt.target.control;
+		var o = evt.target;
 		Xactions._revalidate();	
 	},
 	
 	_delete: function () {	
-	
+		
 	},
 
 	deleteHandler: function (evt) {	
-		alert('delete');
+		var o = evt.target;
+		evt.stopPropagation();
+		evt.preventDefault();
+		var oXdelete = evt.currentTarget.xdelete;
+		oXdelete.parent.xdelete(oXdelete);
+		o.dispatchEvent(Xevents['xforms-delete']);
 	},
-
-	_insert: function () {	
 	
+	_insert: function () {	
+		
+		
 	},
 
 	insertHandler: function (evt) {	
-	
+		var o = evt.target;
+		evt.stopPropagation();
+		evt.preventDefault();
+		var oXinsert = evt.currentTarget.xinsert;
+		oXinsert.parent.xinsert(oXinsert);
+		o.dispatchEvent(Xevents['xforms-insert']);
 	},
-
+	
+	
 	_dispatch : function (oAttributes) {
-		
+		var target = document.getElementById(oAttributes['target']);
+		target.dispatchEvent(Xevents[oAttributes['name']]);
 	},
 		
 	dispatchHandler: function (evt) {
-		var o = evt.target;
-		o.dispatchEvent(Xevents[o.control.attributes['name']]);
+		var target = evt.target;
+		target.dispatchEvent(Xevents[target.control.attributes['name']]);
 	},
 
-	_setvalue: function(oAttributes) {
-		//obj = this.nodeSet(oAttributes['ref'],document);
-		//if (obj) alert('setvalue');
+	_setvalue: function(oAttributes,oValue) {
+		
 	},
-
+	
 	setvalueHandler: function (evt) {
 		var o = evt.target;
 	}

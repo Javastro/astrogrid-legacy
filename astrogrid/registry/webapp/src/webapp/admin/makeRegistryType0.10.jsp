@@ -4,6 +4,7 @@
    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
    xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" 
    xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" 
+   xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
    xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
 <vor:Resource xsi:type="vg:Registry"  updated="2004-11-20T15:34:22Z" status="active">
  <title><%= request.getParameter("Title") %></title>
@@ -21,7 +22,7 @@
   <referenceURL><%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %></referenceURL>
   <type>Archive</type>
  </content>
-    <interface xsi:type="WebService">
+    <interface xsi:type="vs:WebService">
       <accessURL use="full"><%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryHarvest</accessURL>
     </interface> 
    <vg:managedAuthority><%= request.getParameter("AuthorityID") %></vg:managedAuthority>
