@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.15 2005/03/30 15:19:19 nw Exp $
+/*$Id: RegistryToolLocator.java,v 1.16 2005/05/09 11:37:51 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,9 +32,12 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import junit.framework.Test;
 
@@ -63,49 +66,41 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
     /**
      * @see org.astrogrid.jes.jobscheduler.Locator#locateTool(org.astrogrid.workflow.beans.v1.Step)
      */    
-    public String[] locateTool(Tool tool) throws JesException{
+    public String[] locateTool(Tool tool) throws JesException{           
             String name =tool.getName();
+            logger.info("Locating service endpoints for cea application  " + name);            
+            // retrieve the cea application entry first - verify it exists.
             if (name == null ) {
-                throw reportError("Unnamed tool - cannot locate it");
-            }
-            logger.debug("retreiving tool location for " +name);
+                throw reportError("Unnamed application - cannot locate it");
+            }                        
             Document toolDocument;
             try {
                 toolDocument = delegate.getResourceByIdentifier(name);
-                if (logger.isDebugEnabled()) {
-                    StringWriter sw = new StringWriter();
-                    XMLUtils.PrettyDocumentToWriter(toolDocument,sw);
-                    logger.debug("ToolDocument\n" + sw.toString());
-                }
             }
             catch (RegistryException e) {
-                throw reportError("Could not get registry entry for tool " + name,e);
+                throw reportError("Could not find registry entry for cea application " + name,e);
             }            
-
+        // @todo not quite sure why we're doing this - already have the identifier of the cea application entry.    
         IdentifierType toolId = null;
-        try {            
+        try {           
             IdentifierType[] toolIds = getIdentifiers(toolDocument);
             if (toolIds.length == 0) {
-                throw reportError("No identifiers in registry entry for tool" + name);
+                throw reportError("No identifiers in registry entry for cea application" + name);
             }           
             toolId = toolIds[0];            
         } catch (CastorException e) {
-            throw reportError("Could not parse return document for tool" + name,e);
+            throw reportError("Could not parse return document for cea application" + name,e);
         }            
-            logger.debug("found tool: " + toolId.getAuthorityID() + " / " + toolId.getResourceKey());
-             
-            // now query registry for all entries the provide this.
+            logger.debug("found cea application: " + toolId.getAuthorityID() + " / " + toolId.getResourceKey());
+      //@todo use original application name in here instead..
+            
+            // now query registry for all entries the provide this tool.
             String queryString = buildQueryString(toolId);
-            logger.debug("Query to find services supporting this:" + queryString);
+            logger.debug("ADQL Query to find services " + queryString);
             Document results = null;
             try {
                //results = delegate.submitQuery(queryString);
                 results = delegate.searchFromSADQL(queryString);
-               if (logger.isDebugEnabled()) {
-                   StringWriter sw = new StringWriter();
-                   XMLUtils.PrettyDocumentToWriter(results,sw);
-                   logger.debug("Query Results\n" + sw.toString());
-               }
             } catch (RegistryException e) {
                 throw reportError("Failed to query registry for services providing tool " + name,e);
             }
@@ -113,7 +108,7 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
             IdentifierType[] serviceIds = null;
             try {
                 serviceIds = getIdentifiers(results);
-                logger.debug("Found " + serviceIds.length + " matching services");
+                logger.info("Found " + serviceIds.length + " matching cea services");
                 if (serviceIds.length == 0) {
                     throw reportError("Tool " + name + " has no known service providers");
                 }
@@ -121,8 +116,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
                 throw reportError("Failed to extract identifiers from query document",e);
             }
             
-            // see what endpoints we can extract from the services..
-            List endpoints = new ArrayList();            
+            // see what endpoints we can get from the services..
+            logger.debug("Resolving services to endpoints");
+            Set endpoints = new HashSet(); // using a set to handle duplicate endpoints.            
             for (int i = 0; i < serviceIds.length ; i++) {
                 String serviceName = serviceIds[i].getAuthorityID() + "/" + serviceIds[i].getResourceKey();
                 try {
@@ -139,22 +135,23 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
                     }
                     logger.debug("Service " + serviceName + " resolved to endpoint " + endpoint);
                 } catch (RegistryException e) {
-                    logger.warn("Query registry about " + serviceName + " failed",e);
+                    logger.warn("Resolvng endpoint for " + serviceName + " failed",e);
                 }
             }
             
-            // select an endpoint to use.
-            String[] endpointList = null;
+
             if (endpoints.size() == 0) {
                 throw reportError("No service providers for Tool " + name +" have a valid endpoint");
             } else if (endpoints.size() == 1) {
-                endpointList = new String[]{endpoints.get(0).toString()};
-            } else { // more than one alternative - shuffle them up.
-                Collections.shuffle(endpoints);
-                endpointList = (String[])endpoints.toArray(new String[endpoints.size()]);
+                logger.info("Service Endpoints for CEA application " + name + ": " + endpoints); 
+                return new String[]{endpoints.iterator().next().toString()};
+            } else {
+                logger.debug("More that one available service - shuffling..");
+                List endpointsList = new ArrayList(endpoints);
+                Collections.shuffle(endpointsList);
+                logger.info("Service Endpoints for CEA application " + name + ": " + endpointsList);                 
+                return (String[])endpointsList.toArray(new String[endpointsList.size()]);
             }
-            logger.debug("registry resolved to " + endpointList);
-            return endpointList;
     }
     
     
@@ -167,40 +164,11 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
         return new JesException(s);
     }    
     
-    /**
-     * @param toolId
-     */
-    
-    private final static String PRE_QUERY= "<query><selectionSequence>" +
-        "<selection item='searchElements' itemOp='EQ' value='vr:Resource'/>" +
-        "<selectionOp op='$and$'/>" +
-        /* don't bother with this for now - not nice to search in xsi:type anyway
-        "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
-        "<selectionOp op='AND'/>" +
-        */
-        "<selection item='cea:ManagedApplications/cea:ApplicationReference/vr:AuthorityID' itemOp='EQ' value='" ;
-    private final static String MID_QUERY = "'/>"  +
-        "<selectionOp op='AND'/>" +
-        "<selection item='cea:ManagedApplications/cea:ApplicationReference/vr:ResourceKey' itemOp='EQ' value='" ;
-    private final static String END_QUERY =  "'/>"  +                                           
-        /* don't think that we need these....
-         "<selectionOp op='OR'/>" +
-         "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
-         */
-        "</selectionSequence></query>";   
-    
+
     private String buildQueryString(IdentifierType toolId) {
         String queryString = "Select * from Registry where " +
         "cea:ManagedApplications/cea:ApplicationReference='ivo://" +
         toolId.getAuthorityID() + "/" + toolId.getResourceKey() + "'";
-        /*
-        StringBuffer sb = new StringBuffer(PRE_QUERY);
-        sb.append( toolId.getAuthorityID());
-        sb.append(MID_QUERY);
-        sb.append(toolId.getResourceKey());
-        sb.append(END_QUERY);
-        return sb.toString();
-        */
         return queryString;
  
     }
@@ -209,11 +177,13 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
      queries registry to get tool entry, extract details from this.
      */
     private IdentifierType[] getIdentifiers(Document doc)throws CastorException  {
+            logger.debug("Extracting Identifiers");
             NodeList nl = doc.getElementsByTagNameNS("*","Identifier");
             IdentifierType[] results = new IdentifierType[nl.getLength()];
             for (int i = 0; i < nl.getLength(); i++) {
-                results[i] = (IdentifierType)Unmarshaller.unmarshal(IdentifierType.class,nl.item(0));
-            }
+                results[i] = (IdentifierType)Unmarshaller.unmarshal(IdentifierType.class,nl.item(i));
+                logger.debug(results[i]);
+            }            
             return results;
     }    
         
@@ -247,6 +217,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.16  2005/05/09 11:37:51  nw
+fixed bug spotted by kona.
+
 Revision 1.15  2005/03/30 15:19:19  nw
 fixed type cast problem
 
