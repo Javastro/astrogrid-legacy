@@ -23,7 +23,20 @@
         </action> 
   </release>
   <release version="(Undertests)">
-		<action dev="kmb" type="fix" issue="381"> 
+				
+		<action dev="jdt" type="fix" issue="1056"> 
+            Added an about page to each war. Not going to rebuild just for this...
+			will let it be absorbed naturally as new builds take place. However if there are any problems building war files then this should be your first suspect! 
+			Contact jdt in case of problems.
+			Branch all_jdt_1056
+        </action>
+		<action dev="gtr" type="fix" issue="1027"> 
+            Changes to TableMetaDoc.xsd to make it match the DSA software. Branch dsa-gtr-1027
+        </action>
+   </release>
+    
+  <release version="HEAD">
+	    <action dev="kmb" type="fix" issue="381"> 
             (astrogrid/common) - now uses InputSource? for newDocument(string) Fixed bug with certain characters in DOM. Branch Reg_KMB_381_WS
         </action> 
 		<action dev="kmb" type="fix" issue="381"> 
@@ -46,19 +59,6 @@
 		<action dev="kmb" type="fix" issue="1004"> 
             (astrogrid/filestore) - A small change to the xml to add relationship elements to it now. Branch FS_KMB_1004_2
         </action> 
-		
-		<action dev="jdt" type="fix" issue="1056"> 
-            Added an about page to each war. Not going to rebuild just for this...
-			will let it be absorbed naturally as new builds take place. However if there are any problems building war files then this should be your first suspect! 
-			Contact jdt in case of problems.
-			Branch all_jdt_1056
-        </action>
-		<action dev="gtr" type="fix" issue="1027"> 
-            Changes to TableMetaDoc.xsd to make it match the DSA software. Branch dsa-gtr-1027
-        </action>
-   </release>
-    
-  <release version="HEAD">
 	    <action dev="pjn" type="fix" issue="930"> 
            (astrogrid/portal/workflow) Jobs displayed in date order. Branch portalWF_pjn_930
         </action>
