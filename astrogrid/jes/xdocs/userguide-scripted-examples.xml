@@ -8,7 +8,7 @@
 <body>
 <section name="Introduction">
 <p>
-	Will have some whole workflow documents here, showing how scripting features can be integrated into workflows.
+        Will have some whole workflow documents here, showing how scripting features can be integrated into workflows.
 </p>
 </section>
 
@@ -26,8 +26,8 @@
 
 
 <section name="Self-Modifiying Workflows">
-	<p> workflow scripts may add  dynamically parameter values to tool elements </p>
-	<source><![CDATA[
+        <p> workflow scripts may add  dynamically parameter values to tool elements </p>
+        <source><![CDATA[
 // access result of previous step
   votable = source.result;
 //create new parser

@@ -11,60 +11,60 @@
   <body>
 
 <section name="Introduction"><p>
-	The previous section shows how to write basic linear workflows. This chapter describes how to construct
-	workflows containing loops and branches.  Looping and conditional control constructs need some
-	way of testing and altering values - so we start by introducing <em>workflow variables</em>
-	</p>
-	
-	<p><em>This document is still a bit tangled at present - you may need to read the whole thing once before it starts to make sense</em></p>
-	</section>
+        The previous section shows how to write basic linear workflows. This chapter describes how to construct
+        workflows containing loops and branches.  Looping and conditional control constructs need some
+        way of testing and altering values - so we start by introducing <em>workflow variables</em>
+        </p>
+
+        <p><em>This document is still a bit tangled at present - you may need to read the whole thing once before it starts to make sense</em></p>
+        </section>
 
 <section name="Workflow Variables">
-	<p> A workflow may contain <em>workflow variables</em>  - named 
-		variables that contain  simple java objects and structures.
-		 Variables may be accessed and altered from <code>&lt;script&gt;</code> 
-		elements within the workflow document, and may also be referenced from script 
-		expressions in other workflow activities</p>
+        <p> A workflow may contain <em>workflow variables</em>  - named
+                variables that contain  simple java objects and structures.
+                 Variables may be accessed and altered from <code>&lt;script&gt;</code>
+                elements within the workflow document, and may also be referenced from script
+                expressions in other workflow activities</p>
 </section>
 
 <section name="Set">
-	<p> The <code>&lt;set&gt;</code>  activity  defines a new 
-		workflow variable, or updates the value of an existing variable. It has 
-		two attributes: <code>var</code> - the name of the workflow variable 
-		(required); <code>value</code> - the value to set this variable to 
-		(optional). </p>
-	<p> If no value is provided, the variable is created and set to 
-		<code>null</code> </p>
-	<p> The <code>value</code> attribute may be a straight literal string, or 
-		an script 
-		expression </p>
+        <p> The <code>&lt;set&gt;</code>  activity  defines a new
+                workflow variable, or updates the value of an existing variable. It has
+                two attributes: <code>var</code> - the name of the workflow variable
+                (required); <code>value</code> - the value to set this variable to
+                (optional). </p>
+        <p> If no value is provided, the variable is created and set to
+                <code>null</code> </p>
+        <p> The <code>value</code> attribute may be a straight literal string, or
+                an script
+                expression </p>
 </section>
 <section name="Unset">
-	<p> The <code>&lt;unset&gt;</code>  activity  deletes a 
-		workflow variable. It has one required attribute - <code>var</code> - 
-		the name of the workflow variable to delete. </p>
-	<p> If a workflow variable is referenced after it has been deleted, an exception is thrown.. </p>
+        <p> The <code>&lt;unset&gt;</code>  activity  deletes a
+                workflow variable. It has one required attribute - <code>var</code> -
+                the name of the workflow variable to delete. </p>
+        <p> If a workflow variable is referenced after it has been deleted, an exception is thrown.. </p>
 </section>
 <section name="Scope">
-	<p> <code>&lt;scope&gt;</code> is a container for activities 
-		that introduces a new nested scope for workflow variables. Any workflow 
-		variables defined within a nested scope are not visible outside that 
-		scope. Any attempts to reference such variables throws an exception</p>
+        <p> <code>&lt;scope&gt;</code> is a container for activities
+                that introduces a new nested scope for workflow variables. Any workflow
+                variables defined within a nested scope are not visible outside that
+                scope. Any attempts to reference such variables throws an exception</p>
 </section>
 <section name="Script Expressions">
-	<p> The value of certain attributes and elements may contain references to 
-		workflow variables and other scripting 
-		language expressions. These <strong>script expressions</strong> are 
-		delimited by <code>${..}</code>. Script expressions are interpreted as 
-		follows <ul> <li> If the entire content of an attribute / element is a 
-		script expression (with no further characters or whitespace) , then the 
-		java object that is the result of evaluating the expression is 
-		returned. </li> <li> Otherwise, if the attribute / element contains 
-		more than one script expression, or an expression plus other 
-		characters, each of the expressions is evaluated in turn, the results 
-		converted to Strings, and then concatenated together. </li> </ul> </p>
-	<subsection name="Examples">
-		<source><![CDATA[
+        <p> The value of certain attributes and elements may contain references to
+                workflow variables and other scripting
+                language expressions. These <strong>script expressions</strong> are
+                delimited by <code>${..}</code>. Script expressions are interpreted as
+                follows <ul> <li> If the entire content of an attribute / element is a
+                script expression (with no further characters or whitespace) , then the
+                java object that is the result of evaluating the expression is
+                returned. </li> <li> Otherwise, if the attribute / element contains
+                more than one script expression, or an expression plus other
+                characters, each of the expressions is evaluated in turn, the results
+                converted to Strings, and then concatenated together. </li> </ul> </p>
+        <subsection name="Examples">
+                <source><![CDATA[
 <!-- in the variable 'a' store the value 'hello world' (java.lang.String) -->
 <set var="a" value="hello world" />
 
@@ -99,68 +99,68 @@
 <set var="scheme" value="${u.scheme}" />
 
 ]]></source>
-	</subsection>
+        </subsection>
 </section>
 <section name="Script">
-	<p> The <code>&lt;script&gt;</code> element is an activity that executes 
-		some inline scripting code. This is a very versatile activity - some 
-		potential uses are <ul> <li> post-process the results received from a 
-		CEA tool (e.g. extracting fields from a VOTABLE) </li> <li> 
-		manipulating contents of workflow variables - computing values that 
-		can't easily be expressed as a simple script expression. </li> <li> 
-		dynamically adding parameters to subsequent calls to CEA tools </li> 
-		<li> interrogating astrogrid registries </li> <li> moving / copying / 
-		deleting files in VOSpace </li> <li> initiating / tracking progress / 
-		aborting other workflow jobs. </li> <li> Administrative functions - 
-		such as creating user accounts. </li> </ul> </p>
-	<p> The <code>script</code> element contains an optional 
-		<code>description</code> element and  a mandatory <code>body</code> element 
-		that contains the script text. When it is executed a <code>step-execution-record</code> element will be added
-		which records the execution of the script. </p>
-	<p> A script may reference workflow variables, reading and storing data in 
-		them. The changes to the workflow variables are visible further on in 
-		the workflow. A script may also define local variables, functions, etc. 
-		However, these are only available to the script itself - they are not 
-		visible to subsequent scripts or script expressions. Hence any result 
-		that is to be accessed later should be stored in a previously-defined 
-		workflow variable. </p>
+        <p> The <code>&lt;script&gt;</code> element is an activity that executes
+                some inline scripting code. This is a very versatile activity - some
+                potential uses are <ul> <li> post-process the results received from a
+                CEA tool (e.g. extracting fields from a VOTABLE) </li> <li>
+                manipulating contents of workflow variables - computing values that
+                can't easily be expressed as a simple script expression. </li> <li>
+                dynamically adding parameters to subsequent calls to CEA tools </li>
+                <li> interrogating astrogrid registries </li> <li> moving / copying /
+                deleting files in VOSpace </li> <li> initiating / tracking progress /
+                aborting other workflow jobs. </li> <li> Administrative functions -
+                such as creating user accounts. </li> </ul> </p>
+        <p> The <code>script</code> element contains an optional
+                <code>description</code> element and  a mandatory <code>body</code> element
+                that contains the script text. When it is executed a <code>step-execution-record</code> element will be added
+                which records the execution of the script. </p>
+        <p> A script may reference workflow variables, reading and storing data in
+                them. The changes to the workflow variables are visible further on in
+                the workflow. A script may also define local variables, functions, etc.
+                However, these are only available to the script itself - they are not
+                visible to subsequent scripts or script expressions. Hence any result
+                that is to be accessed later should be stored in a previously-defined
+                workflow variable. </p>
 </section>
 <section name="Scripting Language">
-	<p> The scripting language used within script expressions and 
-		<code>&lt;script&gt;</code> elements is Groovy - <a 
-		href="http://groovy.codehaus.org/"  >http://groovy.codehaus.org/</a>. Groovy describes itself 
-		as follows </p>
-	<blockquote>
-		<em> Groovy is a new agile dynamic language for the JVM combining lots 
-			of great features from languages like Python, Ruby and Smalltalk 
-			and making them available to the Java developers using a Java-like 
-			syntax. </em>
-		<br />
-		<em> Groovy is designed to help you get things done on the Java 
-			platform in a quicker, more concise and fun way - bringing the 
-			power of Python and Ruby inside the Java platform. </em>
-	</blockquote>
-	<p> Groovy is a superset of Java - Java expressions and statements are 
-		valid in Groovy scripts. The java-subset is sufficient for most 
-		purposes and should be manageable for anyone who's had experience with 
-		Java / C / C++ / JavaScript - the notation is the same. </p>
-	<p> However, Groovy does provide further language features and sugar, which 
-		make it more concise and easy to use - dynamic typing, <a 
-		href="http://groovy.codehaus.org/Collections" >native 
-		syntax for collections</a>, <a 
-		href="http://groovy.codehaus.org/Quick+Start" >closures 
-		and internal iterators</a>, <a 
-		href="http://groovy.codehaus.org/regex.html">regular 
-		expressions</a>, <a href="http://groovy.codehaus.org/GroovyMarkup" >support for generating xml</a>, <a 
-		href="http://groovy.codehaus.org/apidocs/groovy/util/XmlParser.html" >support for consuming xml</a> </p>
-	<p> There's also a handy reference card to print out - <a 
-		href="http://docs.codehaus.org/download/attachments/2715/groovy-reference-card.pdf" >http://docs.codehaus.org/download/attachments/2715/groovy-reference-card.pdf</a> 
-		</p>
+        <p> The scripting language used within script expressions and
+                <code>&lt;script&gt;</code> elements is Groovy - <a
+                href="http://groovy.codehaus.org/"  >http://groovy.codehaus.org/</a>. Groovy describes itself
+                as follows </p>
+        <blockquote>
+                <em> Groovy is a new agile dynamic language for the JVM combining lots
+                        of great features from languages like Python, Ruby and Smalltalk
+                        and making them available to the Java developers using a Java-like
+                        syntax. </em>
+                <br />
+                <em> Groovy is designed to help you get things done on the Java
+                        platform in a quicker, more concise and fun way - bringing the
+                        power of Python and Ruby inside the Java platform. </em>
+        </blockquote>
+        <p> Groovy is a superset of Java - Java expressions and statements are
+                valid in Groovy scripts. The java-subset is sufficient for most
+                purposes and should be manageable for anyone who's had experience with
+                Java / C / C++ / JavaScript - the notation is the same. </p>
+        <p> However, Groovy does provide further language features and sugar, which
+                make it more concise and easy to use - dynamic typing, <a
+                href="http://groovy.codehaus.org/Collections" >native
+                syntax for collections</a>, <a
+                href="http://groovy.codehaus.org/Quick+Start" >closures
+                and internal iterators</a>, <a
+                href="http://groovy.codehaus.org/regex.html">regular
+                expressions</a>, <a href="http://groovy.codehaus.org/GroovyMarkup" >support for generating xml</a>, <a
+                href="http://groovy.codehaus.org/apidocs/groovy/util/XmlParser.html" >support for consuming xml</a> </p>
+        <p> There's also a handy reference card to print out - <a
+                href="http://docs.codehaus.org/download/attachments/2715/groovy-reference-card.pdf" >http://docs.codehaus.org/download/attachments/2715/groovy-reference-card.pdf</a>
+                </p>
 
 </section>
 
 <section name="Examples"><p>
-	Print out a message (which gets captured into the execution record).</p>
+        Print out a message (which gets captured into the execution record).</p>
 <source><![CDATA[
 <script>
   <body>
@@ -184,11 +184,11 @@ using the STIL library.
       jes.error("previous step didn't produce expected number of results");
     } else {
    votable = results.get('votable'); // access result of previous step
-   parser = new XmlParser(); //create new parser 
+   parser = new XmlParser(); //create new parser
    nodes = parser.parseText(votable); //parse votable into node tree
    urlList = nodes.depthFirst().findAll{it.name() == 'STREAM'}.collect{it.value()}.flatten(); // filter node tree on 'STREAM', project value
 print(urlList); // show what we've found
-   
+
     }
   </body>
 </script>
@@ -196,15 +196,15 @@ print(urlList); // show what we've found
 </section>
 
 <section name="Conditional">
-	<p> The <code>&lt;if&gt;</code> element allows conditional execution. It 
-		has a required attribute <code>test</code>, which must contain a script 
-		expression that evaluates to a boolean. </p>
-	<p> The <code>if</code> element may have either or both a <code>then</code> 
-		and <code>else</code> child elements. Each contains an activity (or 
-		sequence of activities) that will be executed depending on the value of 
-		the <code>test</code> attribute </p>
-	<subsection name="Example">
-		<source><![CDATA[
+        <p> The <code>&lt;if&gt;</code> element allows conditional execution. It
+                has a required attribute <code>test</code>, which must contain a script
+                expression that evaluates to a boolean. </p>
+        <p> The <code>if</code> element may have either or both a <code>then</code>
+                and <code>else</code> child elements. Each contains an activity (or
+                sequence of activities) that will be executed depending on the value of
+                the <code>test</code> attribute </p>
+        <subsection name="Example">
+                <source><![CDATA[
 <set var="x" value="${1}" />
 <if test="${x > 0}">
   <then>
@@ -221,44 +221,44 @@ print(urlList); // show what we've found
   </else>
 </if>
 ]]></source>
-	</subsection>
+        </subsection>
 </section>
 
 <section name="While Loop">
-	<p> The <code>&lt;while&gt;</code> element expresses a while loop. It has a 
-		required attribute <code>test</code> which must contain a script 
-		expression that evaluates to a boolean. </p>
-	<p> Its body is an activity (or sequence / flow of activities) that will be 
-		executed for every time that the test evaluates to <code>true</code>. 
-		</p>
-	<subsection name="Example">
-	<p>	Repeatedly execute a step, until it returns at least one result value.</p>
-		<source><![CDATA[
+        <p> The <code>&lt;while&gt;</code> element expresses a while loop. It has a
+                required attribute <code>test</code> which must contain a script
+                expression that evaluates to a boolean. </p>
+        <p> Its body is an activity (or sequence / flow of activities) that will be
+                executed for every time that the test evaluates to <code>true</code>.
+                </p>
+        <subsection name="Example">
+        <p>     Repeatedly execute a step, until it returns at least one result value.</p>
+                <source><![CDATA[
 <while test="${results == null || results.size() < 1}">
    <step result-var="results">
       <!-- omitted -->
    </step>
 </while>
 ]]></source>
-	</subsection>
+        </subsection>
 </section>
 
 <section name="For Loop">
-	<p> The <code>&lt;for&amp;gt</code> element expresses a for loop. The 
-		structure of the for loop is similar to the for in Python (or for-each 
-		in Javascript) - it iterates over a sequence, rather than using an 
-		arithmetic expression like in Java / C / C++. </p>
-	<p> The <code>for</code> element has two required attributes: 
-		<code>items</code> which must evaluate to a list of items to iterate 
-		over; and <code>var</code> which provides the name of the loop variable 
-		to assign each element of the list to. The body of the <code>for</code> 
-		element is an activity (or sequence / flow of activites) that will be 
-		executed for each item on the list. </p>
-	<p> Groovy provides native syntactic support for quickly defining numeric 
-		sequences - <a href="http://groovy.codehaus.org/Collections" >http://groovy.codehaus.org/Collections</a> </p>
-	<subsection name="Examples">
-		<p>Count up to 10.</p>
-		<source><![CDATA[
+        <p> The <code>&lt;for&amp;gt</code> element expresses a for loop. The
+                structure of the for loop is similar to the for in Python (or for-each
+                in Javascript) - it iterates over a sequence, rather than using an
+                arithmetic expression like in Java / C / C++. </p>
+        <p> The <code>for</code> element has two required attributes:
+                <code>items</code> which must evaluate to a list of items to iterate
+                over; and <code>var</code> which provides the name of the loop variable
+                to assign each element of the list to. The body of the <code>for</code>
+                element is an activity (or sequence / flow of activites) that will be
+                executed for each item on the list. </p>
+        <p> Groovy provides native syntactic support for quickly defining numeric
+                sequences - <a href="http://groovy.codehaus.org/Collections" >http://groovy.codehaus.org/Collections</a> </p>
+        <subsection name="Examples">
+                <p>Count up to 10.</p>
+                <source><![CDATA[
 <for var="x" items="${1...10}> <!-- start ... finish is groovy syntax for numeric ranges -->
   <script>
    <body>
@@ -295,34 +295,34 @@ Call a CEA tool for each item in a list of urls (as was created in earlier examp
    </sequence>
 </for>
 ]]></source>
-	</subsection>
+        </subsection>
 </section>
 
 <section name="Parallel For Loop">
-	<p> The <code>&lt;parfor&gt;</code> element expresses a <strong>parallel 
-		for</strong> loop. It has the same structure as the <code>for</code> 
-		loop, but executes it's loop body simultaneously for each item in the 
-		<code>values</code> list. </p>
-	<p> This construct is useful for starting many CEA application exections in 
-		parallel. For example, the previous example could be altered to process 
-		each url in the list simulataneously by simply replacing the 
-		<code>for</code> element with a <code>parfor</code> element. </p>
+        <p> The <code>&lt;parfor&gt;</code> element expresses a <strong>parallel
+                for</strong> loop. It has the same structure as the <code>for</code>
+                loop, but executes it's loop body simultaneously for each item in the
+                <code>values</code> list. </p>
+        <p> This construct is useful for starting many CEA application exections in
+                parallel. For example, the previous example could be altered to process
+                each url in the list simulataneously by simply replacing the
+                <code>for</code> element with a <code>parfor</code> element. </p>
 </section>
 
 <section name="Error Handling">
-	<p> When an error occurs during the execution of an activity, the normal 
-		flow of control is interrupted. The error is recorded, and then 
-		propagates upwards. (as with exceptions in other languages). If it 
-		reaches the root <code>workflow</code> element, then execution of the 
-		workflow halts. </p>
-	<p> The workflow schema defines a <code>try</code> element that can be used 
-		to wrap activities and intercept errors. There is also a 
-		<code>catch</code> element, which can be used to define activities to 
-		execute only when an error occurs. </p>
-	<p> <strong>NB: </strong><code>try</code> and <code>catch</code> are not 
-		implemented at the moment (Iteration 7)</p>
+        <p> When an error occurs during the execution of an activity, the normal
+                flow of control is interrupted. The error is recorded, and then
+                propagates upwards. (as with exceptions in other languages). If it
+                reaches the root <code>workflow</code> element, then execution of the
+                workflow halts. </p>
+        <p> The workflow schema defines a <code>try</code> element that can be used
+                to wrap activities and intercept errors. There is also a
+                <code>catch</code> element, which can be used to define activities to
+                execute only when an error occurs. </p>
+        <p> <strong>NB: </strong><code>try</code> and <code>catch</code> are not
+                implemented at the moment (Iteration 7)</p>
 </section>
-	
+
   </body>
 </document>
 

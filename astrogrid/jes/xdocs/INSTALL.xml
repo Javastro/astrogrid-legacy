@@ -6,14 +6,27 @@
 </properties>
 <body>
 
-<section name="Installation"><p>
-Install the jes WAR file to your servlet container in the usual manner
+
+<section name="Prerequisites"><p>
+JDK, TOMCAT or another servlet container. Refer to these packages for installation instructions.
 </p></section>
 
-<section name="Configuration"><p>
-JES is configured via the standard <tt>org.astrogrid.config</tt> Package.
-See the <a href="astrogrid.properties">example configuration file</a> for the settings relatinig to JES.
+<section name="Related components"><p>
+JES resolves CEA applications to CEA servers by querying an Astrogrid REGISTRY.
+JES needs to be configured to know the endpoint of a registry.
+</p></section>
+
+<section name="Installation"><p>
 </p>
+ <dl>
+ <dt>Manual installation</dt>
+ <dd>Install the jes WAR file to your servlet container in the usual manner</dd>
+ <dt>Command-line installation tool</dt>
+ <dd>don't know - could john fill this in</dd>
+ <dt>GUI installation tool</dt>
+ <dd>don't know - could john fill this in.</dd>
+ </dl>
 </section>
+
 </body>
 </document>

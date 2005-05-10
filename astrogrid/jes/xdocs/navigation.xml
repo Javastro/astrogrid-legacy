@@ -6,41 +6,55 @@
   <body>
     <links>
        <item name="AstroGrid"       href="http://www.astrogrid.org"/>
-       <item name="Projects"        href="../index.html"/>
+       <item name="Components"        href="../index.html"/>
        <item name="Job Management"  href="index.html"/>
     </links>
-		
-     <menu name="Install">
-       <item name="Install" href="INSTALL.html"/>
-       <item name="Read me" href="README.html"/>
-       <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-jes-SNAPSHOT.war"/>
-       <item name="Sample Config" href="astrogrid.properties" />
+
+     <menu name="Administrator Quickstart">
+       <item name="Overview" href="index.html"/>
+       <item name="Download" href="DOWNLOAD.html"/>
+       <item name="Installation" href="INSTALL.html"/>
+       <item name="Configuration" href="CONFIGURE.html"/>
+       <item name="Self-testing" href="SELF-TEST.html"/>
+       <item name="Registration" href="REGISTER.html"/>
+       <item name="External testing" href="EXTTEST.html"/>
+       <item name="Upgrading" href="UPGRADE.html"/>
+       <item name="Uninstallation" href="UNINSTALL.html"/>
     </menu>
-	
-	<menu name="Workflow Userguide">
-		<item name="Introduction &amp; Overview" href="userguide-architecture.html" >
-			<item name="System Architecture" href="userguide-architecture.html" 		/>
-			<item name="FAQ" href="userguide-faq.html" />
-			<item name="Glossary" href="userguide-glossary.html" />
--		</item>
 
-		<item name="Workflow Documents" href="userguide-activities.html" >
-			<item name="Activities" href="userguide-activities.html" />
-			<item name="Control Logic, Variables &amp; Scripts" href="userguide-jescript.html" />
-			<item name="JEScript Objects" href="api-reference.html" />
-			<item name="Execution Results" href="userguide-running.html" />
-			<item name="Document Schema" href="userguide-workflowschema.html" />
--		</item>
+    <menu name="Administrator Reference">
+        <item name="Reference guide" href="REFERENCE.html"/>
+    </menu>
+        <menu name="Workflow Userguide">
+                <item name="Introduction &amp; Overview" href="userguide-architecture.html" >
+                        <item name="System Architecture" href="userguide-architecture.html"             />
+                        <item name="FAQ" href="userguide-faq.html" />
+                        <item name="Glossary" href="userguide-glossary.html" />
+-               </item>
 
-		<item name="Examples" href="userguide-examples.html">
-			<item name="Simple Examples" href="userguide-examples.html" />
-			<item name="Scripted Workflows" 
-				href="userguide-scripted-examples.html" />
-			<item name="JEScript Recipes" href="userguide-recipes.html" />
-		</item>
-		<item name="Workflow Userguide (pdf)" 
-			href="astrogrid-workflow-userguide.pdf" />
-	</menu>
+                <item name="Workflow Documents" href="userguide-activities.html" >
+                        <item name="Activities" href="userguide-activities.html" />
+                        <item name="Control Logic, Variables &amp; Scripts" href="userguide-jescript.html" />
+                        <item name="JEScript Objects" href="api-reference.html" />
+                        <item name="Execution Results" href="userguide-running.html" />
+                        <item name="Document Schema" href="userguide-workflowschema.html" />
+-               </item>
+
+                <item name="Examples" href="userguide-examples.html">
+                        <item name="Simple Examples" href="userguide-examples.html" />
+                        <item name="Scripted Workflows"
+                                href="userguide-scripted-examples.html" />
+                        <item name="JEScript Recipes" href="userguide-recipes.html" />
+                </item>
+                <item name="Workflow Userguide (pdf)"
+                        href="astrogrid-workflow-userguide.pdf" />
+        </menu>
+    <!-- remaining
+         <item name="Sample Config" href="astrogrid.properties" />
+    -->
+
+
+
 
   </body>
 </project>

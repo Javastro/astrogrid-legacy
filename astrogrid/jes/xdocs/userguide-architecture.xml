@@ -21,7 +21,7 @@
       to accomplish - it has a degree of complexity.</p>
 
       <p>A simple example of a workflow might consist of the
-      following steps: 
+      following steps:
       <ol>
         <li>Make a query against against one catalog (say a cone
         search of one area of the sky).</li>
@@ -56,7 +56,7 @@
       <p>We hold workflow designs as XML documents. This is a
       particularly verbose way of describing an individual
       workflow, but is convenient for its rigour. Examples are
-      shown 
+      shown
       <a href="userguide-examples.html">here</a>
 
       . There is no necessity to interact directly with a workflow
@@ -66,10 +66,10 @@
       probably useful. Workflow structure is described by its XML
       schema: every workflow document has to obey the rules
       embodied in the schema. The details of the workflow schema
-      are described 
+      are described
       <a href="userguide-workflowschema.html">here</a>
 
-      , but come back to this later. 
+      , but come back to this later.
       <br />
 
       <img src="workflow-system.jpg" />
@@ -93,7 +93,7 @@
       A good workflow may therefore be something of a capital
       investment, and worth sharing with others.</p>
 
-      <p>There are two aspects worth noting. 
+      <p>There are two aspects worth noting.
       <ol>
         <li>Workflows are involved in two processes: a design t ime
         process and an execution time process. A single workflow
@@ -121,7 +121,7 @@
       and tools metadata. A workflow design contains metadata or
       references to metadata within it.</p>
 
-      <p>We embody metadata within a workflow in various forms: 
+      <p>We embody metadata within a workflow in various forms:
       <ul>
         <li>As a query to be submitted against an astronomical
         archive</li>
@@ -178,10 +178,10 @@
       standard for formalizing the web-interface provided by all
       tools, no matter whether they are implemented as Java code,
       commandline applications, or another SOAP / HTTP-GET based
-      web service. The set of CEA applications may be split into 
+      web service. The set of CEA applications may be split into
       <em>datacenters</em>
 
-      and 
+      and
       <em>processing tools</em>
 
       . Datacenters support complex queries against astronomical

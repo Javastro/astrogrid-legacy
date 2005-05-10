@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+  <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+        <title>Configuration</title>
+</properties>
+
+<body>
+
+
+
+<!--
+<section name="Configuration"><p>
+JES is configured via the standard <tt>org.astrogrid.config</tt> Package.
+See the <a href="astrogrid.properties">example configuration file</a> for the settings relatinig to JES.
+</p>
+</section>
+-->
+
+<section name="Configuration"><p>
+DESCRIBE: Complete, step by step instructions for manually configuring
+the component.
+</p>
+<p>
+SUPPLY:  Sample configuration file(s) where relevant - make sure these
+are adequately commented if supplied, and make clear where they need
+to be placed/edited within the installed webapp.
+</p></section>
+
+</body>
+</document>

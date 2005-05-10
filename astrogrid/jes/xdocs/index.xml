@@ -6,14 +6,21 @@
 </properties>
 <body>
 
-<section name="Job Entry System"><p>
-Follow the links to the left for documentation.
+<section name="Overview"><p>
+The Astrogrid Job Execution System (JES) is a workflow engine: it executes science worflows which query datasets (DSA) , perform computations (CEA) and load and save results (Myspace).
 </p>
+<p>
+You might want to install a JES server to execute workflows developed by a local community of users. However, this isn't necessary - any other available jes server could be used.
+</p>
+<p>
+Of the server-side components of Astrogrid, JES is the most complex - it will or may interact with all other server-side AG components - Registry, Community, Filemanager, FileStore and CEA services.
+</p>
+</section>
 
-<subsection name="Important Build Note"><p>
+<section name="Build Note"><p>
 JES is built using <a href="http://maven.apache.org">Maven</a> and requires the installation of the
 optional <a href="http://maven-plugins.sourceforge.net/maven-javaapp-plugin/">javaapp plugin</a>.
 </p>
-</subsection></section>
+</section>
 </body>
 </document>
