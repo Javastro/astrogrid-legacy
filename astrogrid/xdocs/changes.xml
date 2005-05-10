@@ -11,9 +11,10 @@
             Equally the Unix tests will fail on Windows, so we should get the same pass rate in both
             environments.  Fixed the VOSpace tests - this may conflict with 1125 below...will resolve when
             ready to merge.
-        </action>
-         
-        <action dev="nww" type="fix" issue="1125"> 
+        </action>     
+  </release>
+  <release version="(Undertests)">
+		<action dev="nww" type="fix" issue="1125"> 
             Fix int tests to use new filemanager. Should see improvments in the applications tests. Branch int-nww-1125
         </action> 
 		 <action dev="jdt" type="fix" issue="383"> 
@@ -21,9 +22,6 @@
 			All components will need to be rebuilt after this merge, which should have no side effects.
 			Branch maven_jdt_383:
         </action> 
-  </release>
-  <release version="(Undertests)">
-				
 		<action dev="jdt" type="fix" issue="1056"> 
             Added an about page to each war. Not going to rebuild just for this...
 			will let it be absorbed naturally as new builds take place. However if there are any problems building war files then this should be your first suspect! 
