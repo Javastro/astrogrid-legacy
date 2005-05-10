@@ -471,12 +471,18 @@ width="100%">
 ><img src="/astrogrid-portal/x.gif" width="0" id="xfig"/>Examples:</span>
 </td>
 <td class="agInActiveSpan2" align="center" id="exampleExplanationTab1">
-<span onclick="openUp('exampleExplanation', 1, 6, 'paddington');"
->Cone Search (ivoa)</span>
+<span onclick="openUp('exampleExplanation', 1, 6, 'paddington');" >
+Example 1</span>
+<!--
+Cone Search (ivoa)</span>
+-->
 </td>
 <td class="agInActiveSpan2" align="center" id="exampleExplanationTab2">
-<span onclick="openUp('exampleExplanation', 2, 6, 'paddington');"
->Cone Search (roe)</span>
+<span onclick="openUp('exampleExplanation', 2, 6, 'paddington');" >
+Example 2</span>
+<!--
+Cone Search (roe)</span>
+-->
 </td>
 <td class="agInActiveSpan2" align="center" id="exampleExplanationTab3">
 <span onclick="openUp('exampleExplanation', 3, 6, 'paddington');"
@@ -484,13 +490,13 @@ width="100%">
 </td>
 <td class="agInActiveSpan2" align="center" id="exampleExplanationTab4">
 <span onclick="openUp('exampleExplanation', 4, 6, 'paddington');"
->Example 4</span>
+>Example 4 (solar)</span>
 </td>
-<!--
 <td class="agInActiveSpan2" align="center" id="exampleExplanationTab5">
 <span onclick="openUp('exampleExplanation', 5, 6, 'paddington');"
->Example 5</span>
+>Example 5 (solar)</span>
 </td>
+<!--
 -->
 <!--
 <td class="agInActiveSpan2" align="center" id="exampleExplanationTab6">
@@ -507,7 +513,7 @@ are formed.<p />
 Just click on the corresponding tab to see the example.<p />
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox1">
-<pre>
+<!--
 SELECT * FROM USNO AS u
 	WHERE REGION('CIRCLE J2000 12.34 -1.23 0.01')
 which retrieves all the data in that region, or 
@@ -515,20 +521,36 @@ which retrieves all the data in that region, or
 SELECT COUNT(*) FROM USNO AS u
 	WHERE REGION('CIRCLE J2000 12.34 -1.23 0.01')
 which retrieves a count of the number of sources located in the region
+-->
+<pre>
+SELECT * FROM  usnob_psc as u where u.B2Mag &gt; 21
 </pre>
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox2">
+<!--
 SELECT * FROM USNO AS u WHERE CIRCLE('J2000', 12.34, -1.23, 0.01)
+-->
+SELECT u.seqNo, u.ra, u.dec, u.B2Mag FROM usnob_psc  as u
+	where u.B2Mag &gt; 21
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox3">
-SELECT * FROM USNO as u where u.bmag2 &lt; 13
+<pre>
+SELECT * FROM twomass_psc as o where  (o.ra &gt; 56.25) and (o.ra &lt; 57.25) and
+		(o.dec &gt; 23.6167) and (o.dec &lt; 24.6167)
+</pre>
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox4">
-SELECT u.src, u.RA, u.Dec, u.bmag2 FROM USNO as u
-	where u.bmag2 &lt; 14
+<pre>
+SELECT * FROM eitdata AS T1 where T1.DATE_OBS &gt; "2002-07-28T01:00:00.000"
+  and T1.DATE_OBS &lt;= "2002-07-28T06:00:00.000" and T1.WAVELNTH = 195
+</pre>
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox5">
-SELECT * FROM USNO as u where u.bmag2 &lt; 15
+<pre>
+SELECT * FROM sgas_event AS s where s.nar>9850 and s.nar &lt; 9880
+	and s.xray_class &gt; 'M5'
+
+</pre>
 </div>
 </td>
 </tr>
