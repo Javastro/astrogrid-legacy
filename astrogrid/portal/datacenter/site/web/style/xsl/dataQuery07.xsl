@@ -541,8 +541,8 @@ SELECT * FROM twomass_psc as o where  (o.ra &gt; 56.25) and (o.ra &lt; 57.25) an
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox4">
 <pre>
-SELECT * FROM eitdata AS T1 where T1.DATE_OBS &gt; "2002-07-28T01:00:00.000"
-  and T1.DATE_OBS &lt;= "2002-07-28T06:00:00.000" and T1.WAVELNTH = 195
+SELECT * FROM eitdata AS T1 where T1.DATE_OBS &gt; '2002-07-28T01:00:00.000'
+  and T1.DATE_OBS &lt;= '2002-07-28T06:00:00.000' and T1.WAVELNTH = 195
 </pre>
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox5">
