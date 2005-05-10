@@ -4,32 +4,71 @@
   <title>Astrogrid JES Webapp</title>
 
   <body>
-     <menu name="Documentation">
-       <item name="Install" href="INSTALL.html"/>
-       <item name="Read me" href="README.html"/>
-       <item name="Sample Config" href="astrogrid.properties" />
-    </menu>
+      <links>
+       <item name="AstroGrid"       href="http://www.astrogrid.org"/>
+       <item name="Job Management"  href="http://www.astrogrid.org/maven/docs/HEAD/jes/index.html"/>
+    </links>
 
+   <menu name="Administrator Quickstart">
+       <item name="Overview" href="index.html"/>
+       <item name="Download" href="DOWNLOAD.html"/>
+       <item name="Installation" href="INSTALL.html"/>
+       <item name="Configuration" href="CONFIGURE.html"/>
+       <item name="Self-testing" href="SELF-TEST.html"/>
+       <item name="Registration" href="REGISTER.html"/>
+       <item name="External testing" href="EXTTEST.html"/>
+       <item name="Upgrading" href="UPGRADE.html"/>
+       <item name="Uninstallation" href="UNINSTALL.html"/>
+    </menu>
     <menu name="Installation Checks">
             <item name="Axis Check" href="happyaxis.jsp" />
             <item name="Installation Tests" href="TestServlet?suite=org.astrogrid.jes.component.JesComponentManagerFactory" />
                 <item name="Fingerprint" href="fingerprint.jsp" />
                 <item name="View web services" href="servlet/AxisServlet" />
                 <item name="HTML Jes Interface" href="query-form.html" />
-                    </menu>
+    </menu>
+
+    <menu name="Administrator Reference">
+        <item name="Reference guide" href="REFERENCE.html"/>
+    </menu>
+        <menu name="Workflow Userguide">
+                <item name="Introduction &amp; Overview" href="userguide-architecture.html" >
+                        <item name="System Architecture" href="userguide-architecture.html"             />
+                        <item name="FAQ" href="userguide-faq.html" />
+                        <item name="Glossary" href="userguide-glossary.html" />
+-               </item>
+
+                <item name="Workflow Documents" href="userguide-activities.html" >
+                        <item name="Activities" href="userguide-activities.html" />
+                        <item name="Control Logic, Variables &amp; Scripts" href="userguide-jescript.html" />
+                        <item name="JEScript Objects" href="api-reference.html" />
+                        <item name="Execution Results" href="userguide-running.html" />
+                        <item name="Document Schema" href="userguide-workflowschema.html" />
+-               </item>
+
+                <item name="Examples" href="userguide-examples.html">
+                        <item name="Simple Examples" href="userguide-examples.html" />
+                        <item name="Scripted Workflows"
+                                href="userguide-scripted-examples.html" />
+                        <item name="JEScript Recipes" href="userguide-recipes.html" />
+                </item>
+                <item name="Workflow Userguide (pdf)"
+                        href="astrogrid-workflow-userguide.pdf" />
+        </menu>
+
+
+
+
+
 
     <menu name="Resources">
             <item name="Schema" href="schema" />
         <item name="WSDL" href="wsdl" />
-        <item name="Sample Config File" href="astrogrid.properties" />
     </menu>
     <menu name="Development Documentation">
       <item name="javadoc" href="apidocs" />
       <item name="Formatted Source" href="xref" />
       <item name="Formatted Test Source" href="xref-test" />
     </menu>
-    <links>
-       <item name="AstroGrid" href="http://www.astrogrid.org"/>
-    </links>
   </body>
 </project>

@@ -7,7 +7,7 @@
 
 <body>
 
-section name="Self Testing"><p>
+<section name="Self Testing"><p>
 Once the JES webapplication is installed, navigate to the root page of the webapplication, and run the links in the 'Installation Checks' section to verify that the JES server is configured correctly.
 </p>
 
