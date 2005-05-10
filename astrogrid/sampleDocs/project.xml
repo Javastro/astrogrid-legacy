@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: project.xml,v 1.1 2005/05/10 07:51:15 clq2 Exp $ -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+    xsi:noNamespaceSchemaLocation="/../maven-base/xsd/maven-project.xsd">
+
+    <!--will eventually extend from /base when Maven RC3 installed-->
+
+    <extend>${basedir}/../maven-base/project.xml</extend>
+
+    <currentVersion>${astrogrid.sampleDocs.version}</currentVersion>
+
+    <id>astrogrid-sampleDocs</id>
+
+    <name>Astrogrid Sample Docs</name>
+
+    <description>Sample Docs for Astrogrid</description>
+
+    <shortDescription>AG Sample Docs</shortDescription>
+
+
+</project>
