@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.23 2004/11/24 19:49:22 clq2 Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.24 2005/05/10 16:33:12 clq2 Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,12 +21,15 @@ import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.portal.workflow.intf.JobExecutionService;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.portal.workflow.intf.WorkflowManager;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
+import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryList;
+import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
@@ -137,12 +140,12 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
             System.out.println(this.getClass().getName() + ": assigned URN is " + urn.getContent());
             //check its in the list.
             Thread.sleep(2000); // wait 2 secs, to just be safe.
-            JobSummary summaries[] = jes.readJobList(acc);
+            WorkflowSummaryType[] summaries  =  jes.listJobs(acc);
             softAssertNotNull("null job list returned", summaries);
             softAssertTrue("empty job list returned", summaries.length > 0);
             boolean found = false;
             for (int i = 0; i < summaries.length; i++) {
-                if (summaries[i].getJobURN().getContent().equals(urn.getContent())) {
+                if (summaries[i].getJobId().getContent().equals(urn.getContent())) {
                     found = true;
                 }
             }
@@ -162,12 +165,14 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
                     && w11.getJobExecutionRecord().getStatus().getType() >= ExecutionPhase.COMPLETED_TYPE) {
                     completed = true;
                     break;
-                }  
+                }  else {
+                    System.out.println(w11.getJobExecutionRecord().getStatus());
+                }
             }
             catch (WorkflowInterfaceException e1) {
                 // doesn't matter - we'll get it next time round.
             }
-            Thread.sleep(10 * 1000); // have a little breather - standoff for 10 seconds.   
+            Thread.sleep(30 * 1000); // have a little breather - standoff for 30 seconds.   
         }
         softAssertTrue("Job failed to complete in expected time",completed);
         // check results.        
@@ -220,16 +225,12 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
      */
     protected void writeWorkflowToVOSpace(String path, String name, Workflow workflow) {
         try {
-            ag.getWorkflowManager().getWorkflowStore().saveWorkflow(
-                user,
-                createUniqueIVORN(
-                    path,
-                    name,
-                    "work"
-                    ),
-                workflow
-                );
-        } catch (WorkflowInterfaceException e) {
+            Ivorn ivo = createUniqueIVORN(path,name,  "work" );
+            System.out.println(ivo.toString());
+            ag.createFileManagerClient(userIvorn,"qwerty").createFile(ivo);
+            // @todo - previous line is a work-around  - saveWorkflow should create the node if this is a new ivorn
+            ag.getWorkflowManager().getWorkflowStore().saveWorkflow(user,ivo, workflow);
+        } catch (Exception e) {
             System.err.println("Could not save workflow to myspace");
             e.printStackTrace(System.err);
         }
@@ -413,6 +414,12 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.24  2005/05/10 16:33:12  clq2
+1125
+
+Revision 1.23.64.1  2005/04/29 11:58:51  nw
+minor improvments.
+
 Revision 1.23  2004/11/24 19:49:22  clq2
 nww-itn07-659
 

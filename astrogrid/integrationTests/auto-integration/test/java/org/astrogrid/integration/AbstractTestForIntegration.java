@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.20 2004/11/30 15:39:32 clq2 Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.21 2005/05/10 16:33:13 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ import com.meterware.httpunit.WebResponse;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import junit.framework.TestCase;
@@ -127,7 +128,8 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
     public static final String USERNAME = "frog";
     public static final String AUTHORITYID = SimpleConfig.getProperty("org.astrogrid.registry.authorityid", "org.astrogrid.localhost");
     public static final String COMMUNITY = SimpleConfig.getProperty("org.astrogrid.community.ident", "org.astrogrid.localhost");
-    public static final String MYSPACE = AUTHORITYID + "/myspace";
+    // NWW - altered this - now points to filemanager.
+    public static final String MYSPACE = AUTHORITYID + "/filemanager-one" ; //"/myspace";
     public static final String TESTDSA = AUTHORITYID + "/pal-sample/ceaApplication";
     public static final String TESTAPP = AUTHORITYID + "/testapp";
     public static final String TESTAPP2 = AUTHORITYID + "/testap2"; //note it isn't double 'p'
@@ -141,9 +143,18 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
     public static final String HTTP_INVALID = AUTHORITYID+"/InvalidHttpApp";
     public static final String HTTP_HELLO_YOU = AUTHORITYID+"/HelloYouXMLHttpApp";
     
+    // NWW - altered to construct filemanager-style ivorns.
    protected Ivorn createIVORN(String path)
    {
-      return new Ivorn(MYSPACE,user.getUserId()+path);
+      try {
+        //return new Ivorn(MYSPACE,user.getUserId()+path);
+           return new Ivorn(userIvorn.toString() + "#" + path); //NWW -  I really hate this ivorn class - so irrational.
+    } catch (URISyntaxException e) {
+        e.printStackTrace();
+        fail(e.getMessage());
+        // won't ever get here.
+        return null;
+    }
    }
 
    /**
@@ -183,6 +194,12 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.21  2005/05/10 16:33:13  clq2
+1125
+
+Revision 1.20.64.1  2005/04/22 13:29:00  nw
+fixed reference to 'myspace' to point to new filemanager.
+
 Revision 1.20  2004/11/30 15:39:32  clq2
 nww-itn07-684b
 
