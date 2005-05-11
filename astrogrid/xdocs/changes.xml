@@ -13,10 +13,7 @@
             ready to merge.
         </action>     
   </release>
-  <release version="(Undertests)">
-	     <action dev="pfo" type="fix" issue="1106"> 
-            Taken out cicle from query example. Branch portal_pfo_1106
-        </action>
+  <release version="(Undertests)">     
 		 <action dev="jdt" type="fix" issue="383"> 
             Since we're now on maven 1.0.2 I've refactored the property files to remove common and duplicated stuff to maven-base. 
 			All components will need to be rebuilt after this merge, which should have no side effects.
@@ -34,6 +31,9 @@
    </release>
     
   <release version="HEAD">
+	   <action dev="pfo" type="fix" issue="1106"> 
+            Taken out cicle from query example. Branch portal_pfo_1106
+        </action>
 	    <action dev="nww" type="fix" issue="1125"> 
             Fix int tests to use new filemanager. Should see improvments in the applications tests. Branch int-nww-1125
         </action>
