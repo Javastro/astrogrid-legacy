@@ -106,10 +106,12 @@
         <menu name="Integration">
             <item name="Integration Testing" 
                 href="integrationTests/index.html"/>
-            <item name="Test Results" 
+            <item name="Test Results(tomcat.19)" 
                 href="integrationTests/junit-report.html"/>    
-		    <item name="Int Test Archive" 
+		    <item name="Int Test Archive(tomcat.19)" 
                 href="backupReports/integrationTests/"/>
+			<item name="Test Results(tomcat.28 head)"
+				href="integrationTests-tom28/junit-report.html"/>
         </menu>
 		<menu name="Deployment">
             <item name="main project" 
