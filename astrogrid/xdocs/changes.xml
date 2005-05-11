@@ -5,6 +5,10 @@
   </properties>
   <body>
   <release version="(Pending Integration)">
+	   <action dev="nww" type="add" issue="1111">
+		<b>desktop-nww-1111</b>
+		Lots of minor fixes and improvements to desktop - mostly suggested by Nick. Plus javadoc.
+		</action>
         <action dev="jdt" type="add" issue="1012">
             <b>cea_jdt_1012</b>
             DO NOT MERGE YET.   Added some cea-cmdline tests for windows.  The windows tests will fail on Unix. 
