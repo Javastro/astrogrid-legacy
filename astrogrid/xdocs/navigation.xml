@@ -111,7 +111,7 @@
 		    <item name="Int Test Archive(tomcat.19)" 
                 href="backupReports/integrationTests/"/>
 			<item name="Test Results(tomcat.28 head)"
-				href="integrationTests-tom28/junit-report.html"/>
+				href="integrationTests-tom28/docs/junit-report.html"/>
         </menu>
 		<menu name="Deployment">
             <item name="main project" 
