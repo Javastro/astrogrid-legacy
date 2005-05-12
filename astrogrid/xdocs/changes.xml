@@ -4,15 +4,7 @@
     <author email="jdt@roe.ac.uk">John Taylor</author>
   </properties>
   <body>
-  <release version="(Pending Integration)">
-	   <action dev="pjn3" type="add" issue="1157">
-		<b>portal_pjn_1157</b>
-		Parameterized workflows added to portal
-		</action>  
-	   <action dev="nww" type="add" issue="1111">
-		<b>desktop-nww-1111</b>
-		Lots of minor fixes and improvements to desktop - mostly suggested by Nick. Plus javadoc.
-		</action>
+  <release version="(Pending Integration)">   
         <action dev="jdt" type="add" issue="1012">
             <b>cea_jdt_1012</b>
             DO NOT MERGE YET.   Added some cea-cmdline tests for windows.  The windows tests will fail on Unix. 
@@ -21,24 +13,36 @@
             ready to merge.
         </action>     
   </release>
-  <release version="(Undertests)">     
+  <release version="(Undertests)">     	   
 		 <action dev="jdt" type="fix" issue="383"> 
             Since we're now on maven 1.0.2 I've refactored the property files to remove common and duplicated stuff to maven-base. 
 			All components will need to be rebuilt after this merge, which should have no side effects.
 			Branch maven_jdt_383:
-        </action> 
-		<action dev="jdt" type="fix" issue="1056"> 
-            Added an about page to each war. Not going to rebuild just for this...
-			will let it be absorbed naturally as new builds take place. However if there are any problems building war files then this should be your first suspect! 
-			Contact jdt in case of problems.
-			Branch all_jdt_1056
-        </action>
+        </action> 		
 		<action dev="gtr" type="fix" issue="1027"> 
             Changes to TableMetaDoc.xsd to make it match the DSA software. Branch dsa-gtr-1027
         </action>
    </release>
     
   <release version="HEAD">
+	   <action dev="pfo" type="fix" issue="1106">
+		 <b>portal_pfo_1106</b>
+		 taking out the excute button for now from query page since it's not working anyway. see bug 1172
+		</action> 
+	   <action dev="pjn3" type="add" issue="1157">
+		<b>portal_pjn_1157</b>
+		Parameterized workflows added to portal
+		</action>  
+	   <action dev="nww" type="add" issue="1111">
+		<b>desktop-nww-1111</b>
+		Lots of minor fixes and improvements to desktop - mostly suggested by Nick. Plus javadoc.
+		</action>
+		<action dev="jdt" type="fix" issue="1056"> 
+            Added an about page to each war. Not going to rebuild just for this...
+			will let it be absorbed naturally as new builds take place. However if there are any problems building war files then this should be your first suspect! 
+			Contact jdt in case of problems.
+			Branch all_jdt_1056
+        </action>
 	   <action dev="pfo" type="fix" issue="1106"> 
             Taken out cicle from query example. Branch portal_pfo_1106
         </action>
