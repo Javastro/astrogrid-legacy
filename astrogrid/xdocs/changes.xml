@@ -5,6 +5,10 @@
   </properties>
   <body>
   <release version="(Pending Integration)">
+	   <action dev="pjn3" type="add" issue="1157">
+		<b>portal_pjn_1157</b>
+		Parameterized workflows added to portal
+		</action>  
 	   <action dev="nww" type="add" issue="1111">
 		<b>desktop-nww-1111</b>
 		Lots of minor fixes and improvements to desktop - mostly suggested by Nick. Plus javadoc.
