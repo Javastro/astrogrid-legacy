@@ -400,7 +400,10 @@ onclick="popupBrowser('/astrogrid-portal/bare/mount/myspace/myspace-micro?ivorn=
 Save to MySpace</span>
 </td>
 <td align="right">
+<img src="/astrogrid-portal/x.gif" width="80" height="5"/>
+<!--
 <span class="agActionButton">Execute Query</span>
+-->
 </td>
 </tr>
 </table>
