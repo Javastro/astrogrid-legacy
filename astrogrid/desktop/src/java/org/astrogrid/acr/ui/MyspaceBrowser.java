@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowser.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: MyspaceBrowser.java,v 1.2 2005/05/12 15:37:42 clq2 Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,18 +19,31 @@ import org.astrogrid.store.Ivorn;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 
-/**
+/** A Basic Myspace Exploerer.
+ * @todo add methods to open a particular location in myspace, force a refreshm and to dispose the exploer
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Apr-2005
  *
  */
-public interface VospaceBrowser {
-    public void show(); // shows last, or default position.
+public interface MyspaceBrowser {
+    /** show the exploerer */
+    public void show(); 
+    /** hide the explorer */
     public void hide();
 }
 
 
 /* 
-$Log: VospaceBrowser.java,v $
+$Log: MyspaceBrowser.java,v $
+Revision 1.2  2005/05/12 15:37:42  clq2
+nww 1111
+
+Revision 1.1.2.2  2005/05/11 11:55:19  nw
+javadoc
+
+Revision 1.1.2.1  2005/05/09 14:51:02  nw
+renamed to 'myspace' and 'workbench'
+added confirmation on app exit.
+
 Revision 1.2  2005/04/27 13:42:41  clq2
 1082
 

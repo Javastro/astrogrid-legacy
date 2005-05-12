@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncher.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: ParameterizedWorkflowLauncher.java,v 1.3 2005/05/12 15:37:42 clq2 Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,25 @@
  **/
 package org.astrogrid.acr.ui;
 
-/**
+/**Launch parameterized workflows 
+ * 
+ * An aggregate application - ties together other gui and astrogird components to form an application. 
  * @author Noel Winstanley nw@jb.man.ac.uk 23-Mar-2005
  *
  */
 public interface ParameterizedWorkflowLauncher {
+    /** run the launcher */
     void run();
 }
 
 /* 
  $Log: ParameterizedWorkflowLauncher.java,v $
+ Revision 1.3  2005/05/12 15:37:42  clq2
+ nww 1111
+
+ Revision 1.2.8.1  2005/05/11 11:55:19  nw
+ javadoc
+
  Revision 1.2  2005/04/27 13:42:41  clq2
  1082
 

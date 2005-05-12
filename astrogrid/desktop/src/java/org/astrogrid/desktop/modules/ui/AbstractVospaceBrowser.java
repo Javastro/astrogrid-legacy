@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.2 2005/04/27 13:42:40 clq2 Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.3 2005/05/12 15:37:36 clq2 Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
  **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.astrogrid.Vospace;
+import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -438,7 +438,7 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
      * Construct a new AbstractVospaceBrowser
      *  
      */
-    public AbstractVospaceBrowser(Vospace vos) {
+    public AbstractVospaceBrowser(Myspace vos) {
         super();
         this.vos = vos;
     }
@@ -450,7 +450,7 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
      * @param ui
      * @throws HeadlessException
      */
-    public AbstractVospaceBrowser(Configuration conf, UI ui, Vospace vos) throws HeadlessException {
+    public AbstractVospaceBrowser(Configuration conf, UI ui, Myspace vos) throws HeadlessException {
         super(conf, ui);
         this.vos = vos;
     }
@@ -522,9 +522,9 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
         return folderTreeModel;
     }
 
-    private final Vospace vos;
+    private final Myspace vos;
     
-    public Vospace getVospace() {
+    public Myspace getVospace() {
         return vos;
     }
 
@@ -563,6 +563,13 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.3  2005/05/12 15:37:36  clq2
+ * nww 1111
+ *
+ * Revision 1.2.8.1  2005/05/09 14:51:02  nw
+ * renamed to 'myspace' and 'workbench'
+ * added confirmation on app exit.
+ *
  * Revision 1.2  2005/04/27 13:42:40  clq2
  * 1082
  *

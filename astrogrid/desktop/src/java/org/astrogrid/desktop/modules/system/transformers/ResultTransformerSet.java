@@ -1,4 +1,4 @@
-/*$Id: ResultTransformerSet.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: ResultTransformerSet.java,v 1.3 2005/05/12 15:37:46 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,15 +17,16 @@ import org.apache.commons.collections.Transformer;
  *
  */
 public interface ResultTransformerSet {
+    /** access transformer that will generate html */
     public abstract Transformer getHtmlTransformer();
 
-
+/** access transformer that will generate plaintext */
     public abstract Transformer getPlainTransformer();
 
-
+/** access transformer that will generate objects suitable for transport by apache's xmlrpc lib */
     public abstract Transformer getXmlrpcTransformer();
 
-
+/** access transformer that will generate xml */
     public abstract Transformer getXmlTransformer();
 
 
@@ -45,6 +46,12 @@ public interface ResultTransformerSet {
 
 /* 
  $Log: ResultTransformerSet.java,v $
+ Revision 1.3  2005/05/12 15:37:46  clq2
+ nww 1111
+
+ Revision 1.2.20.1  2005/05/11 14:25:24  nw
+ javadoc, improved result transformers for xml
+
  Revision 1.2  2005/04/13 12:59:11  nw
  checkin from branch desktop-nww-998
 

@@ -1,4 +1,4 @@
-/*$Id: IDTransformer.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: IDTransformer.java,v 1.3 2005/05/12 15:37:45 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.desktop.modules.system.transformers;
 
 import org.apache.commons.collections.Transformer;
 
-/**
+/** the identity transformation.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
  *
  */
@@ -42,6 +42,12 @@ public class IDTransformer implements Transformer {
 
 /* 
 $Log: IDTransformer.java,v $
+Revision 1.3  2005/05/12 15:37:45  clq2
+nww 1111
+
+Revision 1.2.20.1  2005/05/11 14:25:24  nw
+javadoc, improved result transformers for xml
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

@@ -1,4 +1,4 @@
-/*$Id: ThrobbingInterceptor.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: ThrobbingInterceptor.java,v 1.4 2005/05/12 15:37:42 clq2 Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.astrogrid.acr.system.UI;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
-/** interceptor that starts the throbber before processing a method.
+/** interceptor that starts the ui throbber before processing a method.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2005
  *
  */
@@ -38,9 +38,12 @@ public class ThrobbingInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         try {
             ui.startThrobbing();
+            // doesn't work - always shows 'getEnv' - need to have it so that is only sets Status message on first invoaction, not nested ones.
+            //ui.setStatusMessage("calling " + invocation.getMethod().getName());
             return invocation.proceed();
         } finally {
             ui.stopThrobbing();
+          //  ui.setStatusMessage("");
         }
     }
 
@@ -49,6 +52,12 @@ public class ThrobbingInterceptor implements MethodInterceptor {
 
 /* 
 $Log: ThrobbingInterceptor.java,v $
+Revision 1.4  2005/05/12 15:37:42  clq2
+nww 1111
+
+Revision 1.3.8.1  2005/05/11 14:25:23  nw
+javadoc, improved result transformers for xml
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

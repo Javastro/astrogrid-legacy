@@ -1,4 +1,4 @@
-/*$Id: ShutdownImpl.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: ShutdownImpl.java,v 1.4 2005/05/12 15:37:43 clq2 Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,15 +21,12 @@ import java.util.Map;
 /** implementation class for {@link Shutdown}
  * 
  * calls stop() on each module in the registry, before terminating.
- * @todo - dunno why this requires a reference to the registyr - doesn't seem to use it.
  *  */
 public class ShutdownImpl implements Shutdown {
-    private final DefaultModuleRegistry registry;
     private final Map modules;
 
-    public ShutdownImpl(DefaultModuleRegistry registry, Map modules) {
+    public ShutdownImpl(Map modules) {
         super();
-        this.registry = registry;
         this.modules = modules;
     }
 
@@ -45,6 +42,12 @@ public class ShutdownImpl implements Shutdown {
 
 /* 
 $Log: ShutdownImpl.java,v $
+Revision 1.4  2005/05/12 15:37:43  clq2
+nww 1111
+
+Revision 1.3.8.1  2005/05/11 14:25:25  nw
+javadoc, improved result transformers for xml
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

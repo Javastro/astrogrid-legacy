@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.4 2005/05/12 15:37:34 clq2 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,11 +13,11 @@ package org.astrogrid.desktop.modules.ui;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.acr.astrogrid.Vospace;
+import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.UI;
-import org.astrogrid.acr.ui.VospaceBrowser;
+import org.astrogrid.acr.ui.MyspaceBrowser;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserDialog;
@@ -61,7 +61,7 @@ import javax.swing.JToolBar;
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *  
  */
-public class VospaceBrowserImpl extends AbstractVospaceBrowser implements VospaceBrowser,
+public class VospaceBrowserImpl extends AbstractVospaceBrowser implements MyspaceBrowser,
         UserLoginListener {
 
     protected final class CopyAction extends AbstractAction implements FileAction /*, FolderAction @todo not supported on folders at the moment*/ {
@@ -514,7 +514,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Vospac
         initialize();
     }
 
-    public VospaceBrowserImpl(Configuration conf, UI ui, Vospace vos, Community comm, BrowserControl browser) {
+    public VospaceBrowserImpl(Configuration conf, UI ui, Myspace vos, Community comm, BrowserControl browser) {
         super(conf, ui,vos);
         this.browser = browser;
         comm.addUserLoginListener(this);
@@ -644,6 +644,13 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Vospac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.4  2005/05/12 15:37:34  clq2
+ * nww 1111
+ *
+ * Revision 1.3.8.1  2005/05/09 14:51:02  nw
+ * renamed to 'myspace' and 'workbench'
+ * added confirmation on app exit.
+ *
  * Revision 1.3  2005/04/27 13:42:40  clq2
  * 1082
  *

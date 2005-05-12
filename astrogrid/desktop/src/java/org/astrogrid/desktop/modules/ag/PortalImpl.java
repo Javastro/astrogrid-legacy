@@ -1,4 +1,4 @@
-/*$Id: PortalImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
+/*$Id: PortalImpl.java,v 1.4 2005/05/12 15:37:44 clq2 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
+/**nasty impleemtation - needs to be quite a hack to get the session cookie.
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *
  */
@@ -161,6 +161,12 @@ public class PortalImpl implements Portal, UserLoginListener {
 
 /* 
 $Log: PortalImpl.java,v $
+Revision 1.4  2005/05/12 15:37:44  clq2
+nww 1111
+
+Revision 1.3.8.1  2005/05/11 14:25:24  nw
+javadoc, improved result transformers for xml
+
 Revision 1.3  2005/04/27 13:42:40  clq2
 1082
 

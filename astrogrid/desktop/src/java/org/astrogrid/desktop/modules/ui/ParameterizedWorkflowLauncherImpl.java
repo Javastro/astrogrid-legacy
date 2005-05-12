@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.2 2005/04/27 13:42:40 clq2 Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.3 2005/05/12 15:37:37 clq2 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.astrogrid.Vospace;
+import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.JobMonitor;
@@ -62,13 +62,13 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
      * @throws SAXException
      * 
      */
-    public ParameterizedWorkflowLauncherImpl(Community community, JobMonitor monitor, Vospace vos,UI ui) throws MalformedURLException, IOException, SAXException {
+    public ParameterizedWorkflowLauncherImpl(Community community, JobMonitor monitor, Myspace vos,UI ui) throws MalformedURLException, IOException, SAXException {
         this(community,monitor,vos,ui,new URL(DEFAULT_INDEX_URL));       
     }
     
     public static final String DEFAULT_INDEX_URL = "http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/index.xml";
 
-    public ParameterizedWorkflowLauncherImpl(Community community,JobMonitor monitor,Vospace vos,UI ui,URL indexURL) throws IOException, SAXException{ 
+    public ParameterizedWorkflowLauncherImpl(Community community,JobMonitor monitor,Myspace vos,UI ui,URL indexURL) throws IOException, SAXException{ 
         URL[] list = getWorkflowList(indexURL);
     templates = loadWorkflows(list);        
     this.community = community;
@@ -77,7 +77,7 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
     this.vos = vos;
 }
        
-    protected final Vospace vos;
+    protected final Myspace vos;
     protected final WorkflowTemplate[] templates;
     protected final Community community;
     protected final UI ui;
@@ -217,6 +217,13 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.3  2005/05/12 15:37:37  clq2
+nww 1111
+
+Revision 1.2.8.1  2005/05/09 14:51:02  nw
+renamed to 'myspace' and 'workbench'
+added confirmation on app exit.
+
 Revision 1.2  2005/04/27 13:42:40  clq2
 1082
 

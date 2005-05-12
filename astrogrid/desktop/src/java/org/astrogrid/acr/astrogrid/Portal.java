@@ -1,4 +1,4 @@
-/*$Id: Portal.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: Portal.java,v 1.3 2005/05/12 15:37:42 clq2 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,23 +12,40 @@ package org.astrogrid.acr.astrogrid;
 
 import java.util.Map;
 
-/**
+/** Rudimentary interface into the portal
+ * <p>
+ * Portal to connect to is set in an environment variable. Later should be determined by some setting in the community entry for the currently 
+ * logged in user.
+ * <p>
+ * NB: this doesn't work very well - it has to spoof a login to the portal under the hood. May improve once we use the JDIC Browser integration classes.
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *
  */
 public interface Portal {
     /** open page in the portal 
-     * @throws MalformedURL, Excepti
-     * @throws ExceptiononException*/
+     * 
+     * @param path relative path to page in portal webapp to open.
+     * @throws Exception
+     */
     void openPage(String path) throws Exception;
     
     /** open a page in the portal, passing in a set of arguments 
-     * @throws Exception*/
+     * 
+     * @param path relative path to page in portal webapp to open.
+     * @param args map of key-value arguments
+     * @throws Exception
+     */
     void openPageWithParams(String path,Map args) throws Exception;
 }
 
 /* 
  $Log: Portal.java,v $
+ Revision 1.3  2005/05/12 15:37:42  clq2
+ nww 1111
+
+ Revision 1.2.8.1  2005/05/11 11:55:19  nw
+ javadoc
+
  Revision 1.2  2005/04/27 13:42:41  clq2
  1082
 

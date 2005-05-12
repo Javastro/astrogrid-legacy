@@ -1,4 +1,4 @@
-/*$Id: Vospace.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: Myspace.java,v 1.2 2005/05/12 15:37:39 clq2 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ import java.rmi.RemoteException;
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *
  */
-public interface Vospace {
+public interface Myspace {
     // access
     NodeIvorn home() throws FileManagerFault, NodeNotFoundFault, RemoteException, RegistryException,
             CommunityException, URISyntaxException;
@@ -124,7 +124,14 @@ public interface Vospace {
 }
 
 /* 
- $Log: Vospace.java,v $
+ $Log: Myspace.java,v $
+ Revision 1.2  2005/05/12 15:37:39  clq2
+ nww 1111
+
+ Revision 1.1.2.1  2005/05/09 14:51:02  nw
+ renamed to 'myspace' and 'workbench'
+ added confirmation on app exit.
+
  Revision 1.2  2005/04/27 13:42:41  clq2
  1082
 

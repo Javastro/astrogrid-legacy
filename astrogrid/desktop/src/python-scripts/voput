@@ -18,7 +18,7 @@ url = urlparse.urlunsplit(["file","",f.name,"",""])
 # create node if needed.
 if not s.astrogrid.vospace.exists(ivorn):
         # can't do much here - need a api method to creeate new ivorn.
-        #n = s.astrogrid.vospace.newFile(
+        #n = s.astrogrid.myspace.newFile(
 else :
-        s.astrogrid.vospace.copyURLToContent(url,ivorn)
+        s.astrogrid.myspace.copyURLToContent(url,ivorn)
 

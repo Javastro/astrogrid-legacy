@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: JettyWebServer.java,v 1.4 2005/05/12 15:37:42 clq2 Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.desktop.modules.system;
 import org.astrogrid.acr.builtin.ModuleRegistry;
 import org.astrogrid.acr.builtin.NewModuleEvent;
 import org.astrogrid.acr.builtin.NewModuleListener;
-import org.astrogrid.acr.system.UrlRoot;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
 
@@ -32,16 +31,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Random;
 
 /** Factory to create a webserver, listening to a random port, with a hashed key path.
- * @todo find a spare port
- * @todo remove 'helpful' root page.
+ * @todo remove helpful 'not found' page
  * @todo improve error reporting.
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
  *
  */
-public class JettyWebServer implements UrlRoot, Startable, WebServer, NewModuleListener{
+public class JettyWebServer implements Startable, WebServer, NewModuleListener{
     /**
      * Commons Logger for this class
      */
@@ -57,6 +57,8 @@ public class JettyWebServer implements UrlRoot, Startable, WebServer, NewModuleL
         server.addListener(new InetAddrPort(port));
        
         this.context = (ServletHttpContext) server.addContext(key);     
+        //catch-all context.
+
 
         this.context.getServletContext().setAttribute(WebServer.MODULE_REGISTRY,reg);
         
@@ -81,7 +83,7 @@ public class JettyWebServer implements UrlRoot, Startable, WebServer, NewModuleL
     public void start() {
         logger.info("Strarting webserver");
         try {
-            server.start();
+            server.start();        
         } catch (Exception e) {
             throw new PicoInitializationException("Could not start webserver",e);
         }
@@ -93,9 +95,33 @@ public class JettyWebServer implements UrlRoot, Startable, WebServer, NewModuleL
     protected String key;
     protected String urlRoot;
     protected final Digester dig;
-    //@todo implement
-    private void findSparePort() {
-        port= 8050;
+    
+    /** start of range of ports to scan to find a free available one. */
+    public final static int START_SCAN_PORT = 8001;
+    /** end of range of ports to scan */
+    public final static int END_SCAN_PORT = 8880;
+    private void findSparePort() throws Exception {
+        ServerSocket ss = null;
+        for (int i = START_SCAN_PORT; i < END_SCAN_PORT; i++) {
+            try {
+                ss = new ServerSocket(i);            
+                port = i;
+                logger.info("Webserver will listen on port " + port);
+                break;
+            } catch (IOException e) {    // oh well, that port is already taken. try another.
+            } finally {
+                if (ss != null) {
+                    try {
+                        ss.close();
+                    } catch (IOException e) {
+                        // ignore.
+                    }
+                }
+            }
+        } 
+        if (port == 0) {
+            throw new Exception("Could not find a free port");
+        }
     }
     /* generates a random string */
     private void genKey() {
@@ -169,6 +195,15 @@ public class JettyWebServer implements UrlRoot, Startable, WebServer, NewModuleL
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.4  2005/05/12 15:37:42  clq2
+nww 1111
+
+Revision 1.3.8.2  2005/05/11 11:55:30  nw
+removed unused interface.
+
+Revision 1.3.8.1  2005/05/09 15:45:33  nw
+implemented port scanning.
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

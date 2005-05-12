@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
+/*$Id: ApplicationsImpl.java,v 1.4 2005/05/12 15:37:44 clq2 Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,24 +16,52 @@ import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.applications.beans.v1.Interface;
 import org.astrogrid.applications.beans.v1.ParameterRef;
+import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
+import org.astrogrid.applications.delegate.CEADelegateException;
+import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.portal.workflow.intf.ToolValidationException;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
+import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.RegistrySearchException;
+import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.registry.client.query.ResourceData;
+import org.astrogrid.scripting.XMLHelper;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.util.DomHelper;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xpath.XPathAPI;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /** Application service.
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
@@ -54,44 +82,50 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
         community.addUserLoginListener(this);
     }
     protected final Community community;
-    protected ApplicationRegistry reg;
+    protected ApplicationRegistry appReg;
 
-
+    private CommonExecutionConnectorClient createCEADelegate(ResourceData rd) {
+        return community.getEnv().getAstrogrid().createCeaClient(rd.getAccessURL().toString());
+    }
+    private CommonExecutionConnectorClient createCEADelegate(String endpoint) {
+        return community.getEnv().getAstrogrid().createCeaClient(endpoint);
+    }
+    
+    private ApplicationRegistry getAppReg() throws WorkflowInterfaceException {
+        if (appReg == null) {
+         appReg = community.getEnv().getAstrogrid().getWorkflowManager().getToolRegistry();
+        }                        
+        return appReg;
+    }
+    private RegistryService reg;
+    private RegistryService getReg() {
+        if (reg == null) {
+            reg = community.getEnv().getAstrogrid().createRegistryClient();
+        }
+        return reg;
+    }
+    
     public String[] list() throws WorkflowInterfaceException {    
         return getAppReg().listApplications();
       
     }
 
-
-    private ApplicationRegistry getAppReg() throws WorkflowInterfaceException {
-        if (reg == null) {
-         reg = community.getEnv().getAstrogrid().getWorkflowManager().getToolRegistry();
-        } 
-        return reg;
-    }
-
-
     public ApplicationDescriptionSummary[] fullList() throws WorkflowInterfaceException {
         return getAppReg().listUIApplications();
     }
     
-
-    public String getRegEntry(String applicationName) throws WorkflowInterfaceException {
-        ApplicationDescription descr = getAppReg().getDescriptionFor(applicationName);
-        return XMLUtils.ElementToString(descr.getOriginalVODescription());
-    }
-
-    public String getInfo(String applicationName) throws WorkflowInterfaceException {
-        ApplicationDescription descr = getAppReg().getDescriptionFor(applicationName);
+  public String getInfo(Ivorn applicationName) throws WorkflowInterfaceException {
+        ApplicationDescription descr = getAppReg().getDescriptionFor(munge(applicationName));
+        logger.debug("Created application description");
         StringBuffer result = new StringBuffer();
-        String vr = "http://www.ivoa.net/xml/VOResource/v0.9";
+        String vr = "http://www.ivoa.net/xml/VOResource/v0.10";
          result.append("Application: ")
                 .append(descr.getName())
                 .append("\n")
-                //@todo doesn't work with v10. fix.
                 .append(
-                        descr.getOriginalVODescription().getElementsByTagNameNS(vr,"Description").item(0).getFirstChild().getNodeValue())
+                        descr.getOriginalVODescription().getElementsByTagNameNS(vr,"description").item(0).getFirstChild().getNodeValue())
                 .append("\n");
+         logger.debug("Added name and description");
          BaseParameterDefinition[] params = descr.getParameters().getParameter();
          for(int i = 0; i < params.length; i++) {
             BaseParameterDefinition param = params[i];
@@ -112,6 +146,7 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
          if (param.getOptionList() != null ) result.append("\n\t").append("option list :").append(param.getOptionList());         
 
          }
+         logger.debug("Added parameters");
            Interface[] ifaces = descr.getInterfaces().get_interface();
            for (int i = 0; i < ifaces.length; i++) {
                Interface iface = ifaces[i];
@@ -130,13 +165,18 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
                    result.append("\t ").append(p.getRef()).append("max ").append(p.getMaxoccurs()).append(", min ").append(p.getMinoccurs()).append("\n");
                }               
            }
-
+           logger.debug("Completed");
          return result.toString();
     }    
-    
- 
-    public Tool getToolTemplate(String applicationName, String interfaceName) throws WorkflowInterfaceException {
-        ApplicationDescription descr = getAppReg().getDescriptionFor(applicationName);
+   
+  // alter to impedance-match between whether ivo:// is expected or now.
+  // at moment, necessary to do this.
+  private String munge(Ivorn application) {
+      return application.toString().substring(6);// drops ivo:// prefix
+  }
+  
+    public Tool getToolTemplate(Ivorn applicationName, String interfaceName) throws WorkflowInterfaceException {
+        ApplicationDescription descr = getAppReg().getDescriptionFor(munge(applicationName));
         if (interfaceName != null && (! interfaceName.equals("default"))) {
             Interface[] ifaces = descr.getInterfaces().get_interface();
             Interface iface = null;
@@ -156,22 +196,178 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
     }
     
 
-    public boolean validateTool(String applicationName,Tool document) throws WorkflowInterfaceException, MarshalException, ValidationException, ToolValidationException {
-        ApplicationDescription descr = getAppReg().getDescriptionFor(applicationName);
+    public boolean validateTool(Tool document) throws WorkflowInterfaceException, MarshalException, ValidationException, ToolValidationException {
+        ApplicationDescription descr = getAppReg().getDescriptionFor(document.getName());
         descr.validate(document);
         return true;
 
     }
     
   
-    public boolean validateToolFile(String applicationName,URL toolDocumentURL) throws WorkflowInterfaceException, MarshalException, ValidationException, ToolValidationException, IOException {
-        ApplicationDescription descr = getAppReg().getDescriptionFor(applicationName);
+    public boolean validateToolFile(URL toolDocumentURL) throws WorkflowInterfaceException, MarshalException, ValidationException, ToolValidationException, IOException {
         Reader r = new InputStreamReader(toolDocumentURL.openStream());
         Tool tool = Tool.unmarshalTool(r);
-        descr.validate(tool);
-        return true;
-    }
+        return validateTool(tool);
 
+    }
+    /*
+     * XPath parsing cribbed from http://www.cafeconleche.org/books/xmljava/chapters/ch16s05.html
+     * 
+     */
+    public ResourceData[] listProvidersOf(Ivorn applicationName) throws RegistryException, ParserConfigurationException, TransformerException {
+        logger.debug("in listProviders");
+       try { // verify application exists
+           getReg().getResourceByIdentifier(applicationName);
+       } catch (RegistryException e) {
+           throw new RegistrySearchException("Application " + applicationName +" is not in the registry");
+       }
+       logger.debug("Verified applicaion exists");
+       // what about namespaces??
+        String query = "Select * from Registry where cea:ManagedApplications/cea:ApplicationReference='"
+            + applicationName + "'";
+        Document results = getReg().searchFromSADQL(query);
+        logger.debug("got  results");       
+        
+        DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
+        fac.setNamespaceAware(true);
+        DocumentBuilder builder = fac.newDocumentBuilder();
+        DOMImplementation impl = builder.getDOMImplementation();        
+       Document namespaceHolder = impl.createDocument("http://www.ivoa.net/xml/RegistryInterface/v0.1", "f:namespaceMapping",null);
+      
+       // Document namespaceHolder = DomHelper.newDocument();
+        Element namespaceNode = namespaceHolder.getDocumentElement();
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr","http://www.ivoa.net/xml/VOResource/v0.10");
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns","http://www.ivoa.net/xml/VOResource/v0.10");
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vor", "http://www.ivoa.net/xml/RegistryInterface/v0.1");
+        NodeList resources = XPathAPI.selectNodeList(results,"//vor:Resource",namespaceNode);
+        logger.debug("Found " + resources.getLength());
+        ResourceData[] resourceDatas= new ResourceData[resources.getLength()];
+        for (int i = 0; i < resourceDatas.length; i++) {
+            ResourceData rd = new ResourceData();
+            Element resource = (Element)resources.item(i);
+
+            try {
+                rd.setIvorn(new Ivorn(XPathAPI.eval(resource,"//vr:identifier",namespaceNode).str()));
+            } catch (URISyntaxException e1) {
+                logger.warn("URISyntaxException",e1);
+            } 
+            rd.setTitle(XPathAPI.eval(resource,"//vr:title",namespaceNode).str());
+            try {
+                String str = XPathAPI.eval(resource,"//vr:accessURL",namespaceNode).str().trim();
+                logger.debug("URL:" + str);
+                rd.setAccessURL(  new URL(str));
+            } catch (MalformedURLException e2) {
+                logger.warn("MalformedURLException",e2);
+            } 
+            rd.setDescription( XPathAPI.eval(resource,"//vr:description",namespaceNode).str());
+            resourceDatas[i] = rd;
+        }
+        return resourceDatas;
+
+    }
+    
+    
+    public String executeFile(URL toolFile) throws IOException, MarshalException, ValidationException, URISyntaxException, RegistryException, ParserConfigurationException, TransformerException, CEADelegateException {
+        Reader r = new InputStreamReader(toolFile.openStream());
+        Tool tool = Tool.unmarshalTool(r);        
+        return execute(tool);
+    }
+    
+   
+
+    
+    public String executeOnFile(URL toolFile, Ivorn server) throws IOException, MarshalException, ValidationException, RegistryException, ParserConfigurationException, TransformerException, URISyntaxException, CEADelegateException {
+        Reader r = new InputStreamReader(toolFile.openStream());
+        Tool tool = Tool.unmarshalTool(r);
+        return executeOn(tool,server);
+    } 
+    
+
+    public String execute(Tool document) throws URISyntaxException, RegistryException, ParserConfigurationException, TransformerException, CEADelegateException {
+        // munge name in document, if incorrect..
+        if (document.getName().startsWith("ivo://")) {
+            document.setName(document.getName().substring(6));
+        }
+        Ivorn application = new Ivorn("ivo://" + document.getName()); // urg.
+        logger.debug(application.toString());
+        logger.debug(document.getName());
+        
+        ResourceData[] arr = listProvidersOf(application);
+        if (arr.length == 0) {
+            throw new IllegalArgumentException(application +" has no registered providers");
+        }
+        List l =  Arrays.asList(arr);
+        Collections.shuffle(l);
+        ResourceData target = (ResourceData)l.get(0);
+        return doExecute(application, document, target);
+    }
+    
+    public String executeOn(Tool document, Ivorn server) throws RegistryException, ParserConfigurationException, TransformerException, URISyntaxException, CEADelegateException {
+        // munge name in document, if incorrect..
+        if (document.getName().startsWith("ivo://")) {
+            document.setName(document.getName().substring(6));
+        }        
+        Ivorn application = new Ivorn(document.getName());
+        ResourceData[] arr = listProvidersOf(application);
+        ResourceData target = null;
+        for (int i = 0; i < arr.length ; i++) {
+            if (arr[i].getIvorn().toString().equals(server.toString())) { // ivorn doesn't seem t define equals.
+                target = arr[i];
+                break;
+            }
+        }
+        if (target == null) {
+            throw new IllegalArgumentException(server + " does not provide application " + application);            
+        }
+        return doExecute(application, document, target);
+        
+    }   
+    // primitive implementation method.
+    private String doExecute(Ivorn application, Tool document, ResourceData server) throws CEADelegateException {
+        CommonExecutionConnectorClient delegate = createCEADelegate(server);
+        // fudge some kind of job id type. hope this will do.
+        JobIdentifierType jid = new JobIdentifierType(community.getEnv().getUserIvorn().toString() + application.toString());
+        String primId = delegate.init(document,jid);
+        if (!delegate.execute(primId)) {
+            throw new CEADelegateException("Failed to start application, for unknown reason");
+        }
+        return server.getIvorn().toString() + "#" + primId;
+        
+    }
+    
+    private Ivorn getService(String executionId) throws URISyntaxException {
+        int pos = executionId.indexOf('#');
+        return new Ivorn(executionId.substring(0,pos));
+    }
+    
+    private String getId(String executionId) {
+        int pos = executionId.indexOf('#');
+        return executionId.substring(pos+1);
+    }
+    
+ 
+    public boolean abort(String executionId) throws RegistryException, URISyntaxException, CEADelegateException {
+        String endpoint = getReg().getEndPointByIdentifier(getService(executionId));
+        CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);
+        return delegate.abort(getId(executionId));
+    }  
+    public ExecutionSummaryType getExecutionSummary(String executionId) throws RegistryException, URISyntaxException, CEADelegateException {
+        String endpoint = getReg().getEndPointByIdentifier(getService(executionId));
+        CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);
+        return delegate.getExecutionSumary(getId(executionId));   
+    }
+    public ResultListType getResults(String executionId) throws RegistryException, URISyntaxException, CEADelegateException {
+        String endpoint = getReg().getEndPointByIdentifier(getService(executionId));
+        CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);
+        return delegate.getResults(getId(executionId));
+    }
+    public MessageType getExecutionProgress(String executionId) throws CEADelegateException, RegistryException, URISyntaxException {
+        String endpoint = getReg().getEndPointByIdentifier(getService(executionId));
+        CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);
+        return delegate.queryExecutionStatus(getId(executionId));
+    }
+    
+    
 
     /**
      * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
@@ -184,18 +380,25 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
      * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogout(UserLoginEvent e) {
+        appReg = null;
         reg = null;
     }
-    
-
-
-    
+       
     
 }
 
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.4  2005/05/12 15:37:44  clq2
+nww 1111
+
+Revision 1.3.8.2  2005/05/12 12:42:48  nw
+finished core applications functionality.
+
+Revision 1.3.8.1  2005/05/12 01:14:33  nw
+got applications component half working.
+
 Revision 1.3  2005/04/27 13:42:40  clq2
 1082
 

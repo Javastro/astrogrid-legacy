@@ -1,4 +1,4 @@
-/*$Id: XmlDocumentResultTransformerSet.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: XmlDocumentResultTransformerSet.java,v 1.3 2005/05/12 15:37:44 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,8 @@
 package org.astrogrid.desktop.modules.system.transformers;
 
 
-/**
+/** set of transformers for xml documents
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
- *@todo add stlylesheet to render xml into html.
  */
 public class XmlDocumentResultTransformerSet extends DefaultResultTransformerSet {
 
@@ -25,7 +24,7 @@ public class XmlDocumentResultTransformerSet extends DefaultResultTransformerSet
         setXmlrpcTransformer(IDTransformer.getInstance());
         setXmlTransformer(IDTransformer.getInstance());
         setPlainTransformer(IDTransformer.getInstance());
-        setHtmlTransformer(IDTransformer.getInstance());
+        setHtmlTransformer(Xml2XhtmlTransformer.getInstance());
     }
     
 
@@ -34,6 +33,12 @@ public class XmlDocumentResultTransformerSet extends DefaultResultTransformerSet
 
 /* 
 $Log: XmlDocumentResultTransformerSet.java,v $
+Revision 1.3  2005/05/12 15:37:44  clq2
+nww 1111
+
+Revision 1.2.20.1  2005/05/11 14:25:23  nw
+javadoc, improved result transformers for xml
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

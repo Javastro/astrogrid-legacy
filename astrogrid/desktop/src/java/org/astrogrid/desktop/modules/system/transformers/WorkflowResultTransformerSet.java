@@ -1,4 +1,4 @@
-/*$Id: WorkflowResultTransformerSet.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: WorkflowResultTransformerSet.java,v 1.3 2005/05/12 15:37:45 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,13 @@
  *
 **/
 package org.astrogrid.desktop.modules.system.transformers;
+
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.TransformerUtils;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.stream.StreamSource;
 
 
 /** Special case for a workflow - apply a stylesheet to make it look all lovely.
@@ -22,13 +29,47 @@ public class WorkflowResultTransformerSet extends CastorDocumentResultTransforme
      */
     public WorkflowResultTransformerSet() {
         super();
+        setHtmlTransformer(
+                TransformerUtils.chainedTransformer(
+                        CastorDocumentXmlTransformer.getInstance() ,
+                        Workflow2XhtmlTransformer.getInstance()
+                        ));
     }
 
+    public static class Workflow2XhtmlTransformer extends Xml2XhtmlTransformer {
+        protected Workflow2XhtmlTransformer(Source styleSource) throws TransformerConfigurationException {
+            super(styleSource);
+    }
+        public static Source getStyleSource() {
+            return new StreamSource(WorkflowResultTransformerSet.class.getResourceAsStream("workflow.xsl"));
+        }
+        
+        private static Transformer theInstance;
+        public static Transformer getInstance() {
+            if (theInstance == null) {
+                try {
+                    Source styleSoutce = getStyleSource();
+                    theInstance = new Xml2XhtmlTransformer(styleSoutce);
+                } catch (Exception e) {
+                    logger.error("Could not load stylesheet ",e);
+                    theInstance = IDTransformer.getInstance();
+                }                
+            }
+            return theInstance;
+        }
+    }
+    
 }
 
 
 /* 
 $Log: WorkflowResultTransformerSet.java,v $
+Revision 1.3  2005/05/12 15:37:45  clq2
+nww 1111
+
+Revision 1.2.20.1  2005/05/11 14:25:23  nw
+javadoc, improved result transformers for xml
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

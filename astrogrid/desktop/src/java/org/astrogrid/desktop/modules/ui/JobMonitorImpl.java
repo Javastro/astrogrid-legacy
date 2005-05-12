@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
+/*$Id: JobMonitorImpl.java,v 1.4 2005/05/12 15:37:35 clq2 Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,12 +21,10 @@ import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
 
@@ -39,21 +37,18 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
@@ -349,7 +344,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
             super("View", IconHelper.loadIcon("Resource.gif"));
             this.putValue(SHORT_DESCRIPTION,"View this workflow transcript");
             this.setEnabled(false);
-            Source styleSource = new StreamSource(this.getClass().getResourceAsStream("workflow.xsl"));
+            Source styleSource = WorkflowResultTransformerSet.Workflow2XhtmlTransformer.getStyleSource();
             transformer = TransformerFactory.newInstance().newTransformer(styleSource);
             transformer.setOutputProperty(OutputKeys.METHOD,"html");
                     
@@ -715,6 +710,12 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.4  2005/05/12 15:37:35  clq2
+nww 1111
+
+Revision 1.3.8.1  2005/05/11 14:25:22  nw
+javadoc, improved result transformers for xml
+
 Revision 1.3  2005/04/27 13:42:40  clq2
 1082
 

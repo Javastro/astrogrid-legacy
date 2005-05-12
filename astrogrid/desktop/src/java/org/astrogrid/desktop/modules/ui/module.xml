@@ -8,6 +8,10 @@
 		<key>icon</key>
 		<value>swtapp_obj.gif</value>
 	</property>	
+	<property>
+		<key>priority</key>
+		<value>5</value>
+	</property>		
 	<!-- todo - make each module a new namespace, so can have identically named components
 		at moment, fails in nasty ways
 		-->
@@ -57,10 +61,10 @@
 
 		</method>		
 		</component>
-	<component name="vospaceBrowser" 
+	<component name="myspaceBrowser" 
 		implementationClass="org.astrogrid.desktop.modules.ui.VospaceBrowserImpl" 
-		interfaceClass="org.astrogrid.acr.ui.VospaceBrowser" >
-		<description>Browse the registry</description>
+		interfaceClass="org.astrogrid.acr.ui.MyspaceBrowser" >
+		<description>Browse Myspace</description>
 	<property>
 		<key>icon</key>
 		<value>filenav_nav.gif</value>

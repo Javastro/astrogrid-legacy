@@ -1,4 +1,4 @@
-/*$Id: Configuration.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: Configuration.java,v 1.3 2005/05/12 15:37:44 clq2 Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,40 +15,47 @@ import org.astrogrid.desktop.modules.ag.PortalImpl;
 import java.util.Map;
 import java.util.prefs.BackingStoreException;
 
-/**@
+/**Configuration component - allows other components (and the user) to set and retrieve key-value pairs, 
+ * which are automatically persisted between executions.
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
 public interface Configuration {
+    
+    /** list of keys that must be present in the configuration system
+     * @todo move this elsewhere
+     */
     public static final String[] REQUIRED_KEYS = { "org.astrogrid.registry.query.endpoint",
             "org.astrogrid.registry.admin.endpoint",
-            // don't think this one is needed."org.astrogrid.community.ident",
             "jes.job.controller.endpoint", 
             PortalImpl.PORTAL_ROOT_KEY
-            //not needed either.."org.astrogrid.community.default.vospace" 
             };
 
-    /**@@MethodDoc("setKey","set a configuration key")
-     @@.return ReturnDoc("Success code",rts=BooleanResultTransformerSet.getInstance())
-     @@.key ParamDoc("key","Key to set");
-     @@.value ParamDoc("value","Value to set to")
+    /** Set the value of a new or existing key
+     * 
+     * @param key name of key
+     * @param value new value of key
+     * @return ignore
      */
     public abstract boolean setKey(String key, String value);
-
-    /**@@MethodDoc("getKey","get a value for a confuguration key")
-     * @@.return ReturnDoc("Key value")
-     * @@.key ParamDoc("key","key to retrive value for")     
+    
+    /** get the value of a key
+     * 
+     * @param key the name of the key
+     * @return the associated value, or null
      */
     public abstract String getKey(String key);
 
-    /**@@MethodDoc("listKeys","list configutation keys")
-     * @@.return ReturnDoc("array of keys",rts=ArrayResultTransformerSet.getInstance())
-     * */
+   /** list the keys present in the store
+    * 
+    * @return an array of key names
+    * @throws BackingStoreException
+    */
     public abstract String[] listKeys() throws BackingStoreException;
 
-    /** @@MethodDoc("list","list configuration entries")
-     * @@.return ReturnDoc("map of key, value pairs",rts=StructResultTransformerSet.getInstance())
-     * @return
+    /** list the contents of the store
+     * 
+     * @return a map of key-value pairs.
      * @throws BackingStoreException
      */
     public abstract Map list() throws BackingStoreException;
@@ -56,6 +63,12 @@ public interface Configuration {
 
 /* 
  $Log: Configuration.java,v $
+ Revision 1.3  2005/05/12 15:37:44  clq2
+ nww 1111
+
+ Revision 1.2.8.1  2005/05/11 11:55:19  nw
+ javadoc
+
  Revision 1.2  2005/04/27 13:42:41  clq2
  1082
 

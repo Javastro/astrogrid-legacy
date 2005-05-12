@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: UIImpl.java,v 1.4 2005/05/12 15:37:42 clq2 Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,10 +25,13 @@ import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ValueDescriptor;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ui.PositionRememberingJFrame;
 
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.MethodUtils;
+import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.digester.AbstractObjectCreationFactory;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.lang.StringUtils;
@@ -57,8 +60,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -82,10 +91,10 @@ import com.l2fprod.common.swing.JButtonBar;
 import javax.swing.JSplitPane;
 import javax.swing.JPanel;
 import java.awt.CardLayout;
-/**
+/**Implementation of the UI component
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  */
-public class UIImpl extends PositionRememberingJFrame implements Startable,NewModuleListener, UI,InvocationHandler {
+public class UIImpl extends PositionRememberingJFrame implements Startable,UI,InvocationHandler {
 
     /**
      * Commons Logger for this class
@@ -95,10 +104,11 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
 	private javax.swing.JPanel jContentPane = null;
 
 	private JMenuBar appMenuBar = null;
-	private JMenu modulesMenu = null;
+	private ObservingJMenu modulesMenu = null;
 	private JMenu helpMenu = null;
 	private JMenuItem agOverviewMenuItem = null;
 	private JMenuItem aboutMenuItem = null;
+    private ModulesUIModel mum = null;
 	private JMenuItem modulesLinkMenuItem = null;
 	private JLabel statusLabel = null;
 	private JMenuItem exitMenuItem = null;
@@ -118,7 +128,6 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
         this.browser = browser;
         this.shutdown = sh;
         this.reg = reg;
-        reg.addNewModuleListener(this);  
         this.maybeRegisterSingleInstanceListener();
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -141,7 +150,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
 		this.setJMenuBar(getAppMenuBar());
 		this.setSize(500, 600);
 		this.setContentPane(getJContentPane());
-		this.setTitle("Astrogrid Dashboard");
+		this.setTitle("Astrogrid Workbench");
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e) {
@@ -214,15 +223,34 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
 	 */    
 	private JMenu getModulesMenu() {
 		if (modulesMenu == null) {
-			modulesMenu = new JMenu();
-			modulesMenu.setText("Modules");
-            modulesMenu.add(getModulesLinkMenuItem());
-            modulesMenu.add(new JSeparator());
-            modulesMenu.add(new JSeparator());
-			modulesMenu.add(getExitMenuItem());
+			modulesMenu = new ObservingJMenu();
+            getModulesUIModel().addObserver(modulesMenu);
 		}
 		return modulesMenu;
 	}
+    
+    private class ObservingJMenu extends JMenu implements Observer {
+
+        {
+            setText("Modules");
+            add(getModulesLinkMenuItem());
+            add(new JSeparator());
+            add(getExitMenuItem());            
+        }
+        /**
+         * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+         */
+        public void update(Observable o, Object arg) {
+            removeAll();
+            add(getModulesLinkMenuItem());
+            add(new JSeparator());
+            for (Iterator i = ((ModulesUIModel)o).menuIterator(); i.hasNext(); ) {
+                add((Component)i.next());
+            }
+            add(new JSeparator());
+            add(getExitMenuItem());            
+        }
+    }
 
 	/**
 	 * This method initializes jMenu2	
@@ -306,10 +334,10 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
 	private JMenuItem getAboutMenuItem() {
 		if (aboutMenuItem == null) {
 			aboutMenuItem = new JMenuItem();
-			aboutMenuItem.setText("About Astrogrid Desktop");
+			aboutMenuItem.setText("About Astrogrid Workbench");
 			aboutMenuItem.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
-                    JOptionPane.showMessageDialog(UIImpl.this,"Astrogrid Desktop v0.1\nhttp://software.astrogrid.org","About Astrogrid Desktop",JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(UIImpl.this,"Astrogrid Workbench v1.0\nhttp://software.astrogrid.org","About Astrogrid Workbench",JOptionPane.INFORMATION_MESSAGE);
 				}
 			});
 		}
@@ -346,10 +374,14 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
 		if (exitMenuItem == null) {
 			exitMenuItem = new JMenuItem();
 			exitMenuItem.setText("Exit");
+            exitMenuItem.setIcon(IconHelper.loadIcon("exit.png"));
 			exitMenuItem.addActionListener(new java.awt.event.ActionListener() { 
-				public void actionPerformed(java.awt.event.ActionEvent e) {   
-                    hide();
-                    shutdown.halt();
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+                    int result = JOptionPane.showConfirmDialog(UIImpl.this,"Exit Workbench - are you sure?","Exit?",JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION) {
+                        hide();
+                        shutdown.halt();
+                    }
 				}
 			});
 		}
@@ -388,108 +420,280 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
         });
     }
 
-    /**  listener to registry - inspects new modules, and publishes their methods.
-     * @see org.astrogrid.acr.builtin.NewModuleListener#newModuleRegistered(org.astrogrid.desktop.framework.NewModuleEvent)
-     */
-    public void newModuleRegistered(NewModuleEvent e) {
-        final ModuleDescriptor md = e.getModule().getDescriptor();
-        logger.info("Inspecting " + md.getName());
-        //create menu
-        final JMenu m = buildDescriptorMenu(md);
-        // create descriptor pane, and module group in it.
-        final JTaskPane taskPane = buildDescriptorPane(md);        
-        JTaskPaneGroup moduleGroup = new JTaskPaneGroup();
-        moduleGroup.setSpecial(true);
-        moduleGroup.setText(md.getUIName());        
-        taskPane.add(moduleGroup);
-        
-        addLinkActions(md, m, moduleGroup);
-        
-        // search for annotations in components..
-        for (Iterator i =md.componentIterator(); i.hasNext(); ) {
-            final ComponentDescriptor cd = (ComponentDescriptor)i.next();
-            JMenu c = buildDescriptorMenu(cd);
-            JTaskPaneGroup g = buildTaskPaneGroup(cd);
-            addLinkActions(cd, c,g);
-            
-            for (Iterator j = cd.methodIterator(); j.hasNext(); ) {
-                final MethodDescriptor methd = (MethodDescriptor)j.next();
-                if (methd.getProperty(MENU_ENTRY_KEY) != null ){                    
-                        Action act= new AbstractAction() {{
-                          putValue(Action.SHORT_DESCRIPTION,methd.getDescription());         
-                          String icon = methd.getProperty("icon");
-                          if (icon != null) {
-                              putValue(SMALL_ICON,IconHelper.loadIcon(icon));
-                          }
-                          //setName(methd.getProperty(MENU_ENTRY_KEY));
-                          putValue(NAME,methd.getProperty(MENU_ENTRY_KEY));
-                        }
-                        public void actionPerformed(ActionEvent e) {
-                            UIImpl.this.doCall(md,cd,methd);
-                        }};
-                        c.add(act);
-                        g.add(act);
-                }     
-            }// end for
-            if (c.getItemCount() > 0) {// add component menu, if any good.
-                m.add(c);
-                taskPane.add(g);
-                }
-        }        
-        if (m.getItemCount() > 0) { // add module menu, if anything on it.
-            final JMenu modules = getModulesMenu();
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    modules.add(m,modules.getItemCount()- 2); // want to add it at end - 2
-                    actionCards.add(taskPane,md.getName());
-                    getButtonBar().add(new ModuleButton(md));
-                }
-            });
-        }                
-    }
+
+
     
-    /**
-     * @param md
-     * @param m
-     * @param moduleGroup
+    /** model class for the ui - listens to new module events from the registry, builds menus from these new modules,
+     * and zap display objects when new menus need to be added. 
+     * @author Noel Winstanley nw@jb.man.ac.uk 09-May-2005
+     *
      */
-    private void addLinkActions(final Descriptor md, final JMenu m, JTaskPaneGroup moduleGroup) {
-        List l1 = new ArrayList();
-        if (md.getProperty(MENU_LINK_KEY) != null) {
-            dig.clear();
-            dig.push(l1);                       
-            try {
-                dig.parse(new StringReader(md.getPropertyDocument(MENU_LINK_KEY)));
-            } catch (IOException e1) {
-                logger.warn("IOException",e1);
-            } catch (SAXException e1) {
-                logger.warn("SAXException",e1);
+    public static class ModulesUIModel  extends Observable implements NewModuleListener {
+
+        private class MUMItem {
+            public final int priority;
+            public final String name;
+            public final JMenu menu;
+            public final ModuleButton button;
+            
+            public MUMItem(ModuleDescriptor md, JMenu menu) {
+                String str = md.getProperty("priority");
+                name = md.getName();
+                if (str == null) {
+                    priority = 10;
+                } else {
+                    priority =  Integer.parseInt(str);
+                }
+                this.menu = menu;
+                this.button = ui.new ModuleButton(md);
             }
         }
-        List l =  l1;
-        for (Iterator i = l.iterator(); i.hasNext(); ) {            
-            Action a = (Action)i.next();
-            m.add(a);            
-            moduleGroup.add(a);
+        
+        public ModulesUIModel(BrowserControl browser,JPanel actionCards, UIImpl ui) {
+            this.browser =browser;
+            this.actionCards = actionCards;
+            this.ui = ui;
+        }
+        
+        private final BrowserControl browser;
+        private final JPanel actionCards;
+        private final UIImpl ui;
+
+        /**
+         * @param md
+         * @param m
+         * @param moduleGroup
+         */
+        private void addLinkActions(final Descriptor md, final JMenu m, JTaskPaneGroup moduleGroup) {
+            List l1 = new ArrayList();
+            if (md.getProperty(MENU_LINK_KEY) != null) {
+                dig.clear();
+                dig.push(l1);                       
+                try {
+                    dig.parse(new StringReader(md.getPropertyDocument(MENU_LINK_KEY)));
+                } catch (IOException e1) {
+                    logger.warn("IOException",e1);
+                } catch (SAXException e1) {
+                    logger.warn("SAXException",e1);
+                }
+            }
+            List l =  l1;
+            for (Iterator i = l.iterator(); i.hasNext(); ) {            
+                Action a = (Action)i.next();
+                m.add(a);            
+                moduleGroup.add(a);
+            }
+        }
+
+        /**
+         * @param cd
+         * @return
+         */
+        private JTaskPaneGroup buildTaskPaneGroup(ComponentDescriptor cd) {
+            JTaskPaneGroup g = new JTaskPaneGroup();
+            g.setText(cd.getUIName());
+            g.setToolTipText(cd.getDescription());
+            String icon = cd.getProperty("icon");
+            g.setExpanded(false);        
+            if (icon != null) {
+                g.setIcon(IconHelper.loadIcon(icon));
+            }
+            return g;
+        }
+                
+        
+        /** Build a menu from a descriptor. - name, description, any link annotations.
+         * uses digester to do this work
+         * @param md
+         * @return
+         */
+        private JMenu buildDescriptorMenu(Descriptor md) {
+            JMenu m = new JMenu();
+            m.setName(md.getName());
+            m.setText(md.getUIName());
+            m.setToolTipText(md.getDescription());
+            String icon = md.getProperty("icon");
+            if (icon != null) {
+                m.setIcon(IconHelper.loadIcon(icon));
+            }        
+            return m;
+        }
+
+        /**
+         * @param md
+         * @return
+         */
+        private JTaskPane buildDescriptorPane(ModuleDescriptor md) {
+           return new JTaskPane();
+        }
+        
+        
+        /** digester used to parse menu descriptions  - 
+         * autimatically creates menu items for types of link, and adds them to the menu on top of the stack. */
+        protected final Digester dig = new Digester(){{
+            addFactoryCreate("*/link",new AbstractObjectCreationFactory() {
+                public Object createObject(Attributes arg0) throws Exception {
+                    return new LinkMenuAction();
+                }
+            });
+            addSetProperties("*/link");
+            addSetNext("*/link","add");
+            
+            addFactoryCreate("*/localLink",new AbstractObjectCreationFactory() {
+                public Object createObject(Attributes arg0) throws Exception {
+                    return new LocalLinkAction();
+                }
+            });
+            addSetProperties("*/localLink");
+            addSetNext("*/localLink","add");
+        }};
+        
+        /** class used to model a menu item that links to a local url */
+        public class LocalLinkAction extends AbstractAction {
+            public void setText(String text) {
+                putValue(Action.NAME,text);            
+            }
+            public void setIcon(String icon) {
+
+                putValue(Action.SMALL_ICON,IconHelper.loadIcon(icon));                   
+            }
+            public void setToolTipText(String tt) {
+                putValue(Action.SHORT_DESCRIPTION,tt);                   
+            }
+            private String path;
+            public void setPath(String path) {
+                this.path = path.trim();
+            }
+
+            public void actionPerformed(java.awt.event.ActionEvent e) {    
+                        try {
+                            browser.openRelative(path); 
+                        } catch (Exception ex) {
+                            logger.error(ex);
+                        }         
+            }
+        }
+        /** class used to model a menu item that links to aremote url */
+        public class LinkMenuAction extends AbstractAction {
+            public void setText(String text) {
+                putValue(Action.NAME,text);            
+            }
+            public void setIcon(String icon) {
+
+                putValue(Action.SMALL_ICON,IconHelper.loadIcon(icon));                   
+            }
+            public void setToolTipText(String tt) {
+                putValue(Action.SHORT_DESCRIPTION,tt);                   
+            }
+            private String url;
+            public void setUrl(String url) {
+                this.url = url.trim();
+            }
+            public void actionPerformed(java.awt.event.ActionEvent e) {    
+                        try {
+                            browser.openURL(url); 
+                        } catch (Exception ex) {
+                            logger.error(ex);
+                        }
+                    }                      
+        }
+        
+        /** configutation key that indicates a method should be made executable on the ui menu */
+        public static final String MENU_ENTRY_KEY = "system.ui.menu.entry";
+
+        /** configuration key that contains embedded xml that lists URLs to link to from the menu */
+        public static final String MENU_LINK_KEY = "system.ui.menu.links";
+        
+        /** sorted set of menus*/
+        private final SortedSet menuSet = new TreeSet(new Comparator() {
+
+            public int compare(Object o1, Object o2) {
+                MUMItem a = (MUMItem)o1;
+                MUMItem b = (MUMItem)o2;
+                return  a.priority == b.priority ? a.name.compareTo(b.name) : a.priority - b.priority;              
+            }
+        });
+        
+        public Iterator moduleButtonIterator() {
+            return IteratorUtils.transformedIterator(menuSet.iterator(),new Transformer() {
+                public Object transform(Object arg0) {
+                    return ((MUMItem)arg0).button;
+                }
+            });
+        }
+        
+        public Iterator menuIterator() {
+            return IteratorUtils.transformedIterator(menuSet.iterator(),new Transformer() {
+                public Object transform(Object arg0) {
+                    return ((MUMItem)arg0).menu;
+                }
+            });            
+        }
+        
+        
+        /**  listener to registry - inspects new modules, and publishes their methods.
+         * @see org.astrogrid.acr.builtin.NewModuleListener#newModuleRegistered(org.astrogrid.desktop.framework.NewModuleEvent)
+         */
+        public void newModuleRegistered(NewModuleEvent e) {
+            final ModuleDescriptor md = e.getModule().getDescriptor();
+            logger.info("Inspecting " + md.getName());
+            //create menu
+            final JMenu m = buildDescriptorMenu(md);
+            // create descriptor pane, and module group in it.
+            final JTaskPane taskPane = buildDescriptorPane(md);        
+            JTaskPaneGroup moduleGroup = new JTaskPaneGroup();
+            moduleGroup.setSpecial(true);
+            moduleGroup.setText(md.getUIName());        
+            taskPane.add(moduleGroup);
+            
+            addLinkActions(md, m, moduleGroup);
+            
+            // search for annotations in components..
+            for (Iterator i =md.componentIterator(); i.hasNext(); ) {
+                final ComponentDescriptor cd = (ComponentDescriptor)i.next();
+                JMenu c = buildDescriptorMenu(cd);
+                JTaskPaneGroup g = buildTaskPaneGroup(cd);
+                addLinkActions(cd, c,g);
+                
+                for (Iterator j = cd.methodIterator(); j.hasNext(); ) {
+                    final MethodDescriptor methd = (MethodDescriptor)j.next();
+                    if (methd.getProperty(MENU_ENTRY_KEY) != null ){                    
+                            Action act= new AbstractAction() {{
+                              putValue(Action.SHORT_DESCRIPTION,methd.getDescription());         
+                              String icon = methd.getProperty("icon");
+                              if (icon != null) {
+                                  putValue(SMALL_ICON,IconHelper.loadIcon(icon));
+                              }
+                              //setName(methd.getProperty(MENU_ENTRY_KEY));
+                              putValue(NAME,methd.getProperty(MENU_ENTRY_KEY));
+                            }
+                            public void actionPerformed(ActionEvent e) {
+                                ui.doCall(md,cd,methd);
+                            }};
+                            c.add(act);
+                            g.add(act);
+                    }     
+                }// end for
+                if (c.getItemCount() > 0) {// add component menu, if any good.
+                    m.add(c);
+                    taskPane.add(g);
+                    }
+            }        
+            if (m.getItemCount() > 0) { // add module menu, if anything on it.
+                menuSet.add(new MUMItem(md,m));
+ 
+                
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        actionCards.add(taskPane,md.getName());                        
+                        setChanged();
+                        notifyObservers();
+                    }
+                });
+            }                
         }
     }
-
-    /**
-     * @param cd
-     * @return
-     */
-    private JTaskPaneGroup buildTaskPaneGroup(ComponentDescriptor cd) {
-        JTaskPaneGroup g = new JTaskPaneGroup();
-        g.setText(cd.getUIName());
-        g.setToolTipText(cd.getDescription());
-        String icon = cd.getProperty("icon");
-        g.setExpanded(false);        
-        if (icon != null) {
-            g.setIcon(IconHelper.loadIcon(icon));
-        }
-        return g;
-    }
-
+    
 
     /**@todo change appearance on click - 'selected' */
     private class ModuleButton extends JButton {
@@ -509,115 +713,12 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
         }
     }
     
-    /** Build a menu from a descriptor. - name, description, any link annotations.
-     * uses digester to do this work
-     * @param md
-     * @return
-     */
-    private JMenu buildDescriptorMenu(Descriptor md) {
-        JMenu m = new JMenu();
-        m.setName(md.getName());
-        m.setText(md.getUIName());
-        m.setToolTipText(md.getDescription());
-        String icon = md.getProperty("icon");
-        if (icon != null) {
-            m.setIcon(IconHelper.loadIcon(icon));
-        }        
-        return m;
-    }
-
-    /**
-     * @param md
-     * @return
-     */
-    private JTaskPane buildDescriptorPane(ModuleDescriptor md) {
-       return new JTaskPane();
-    }
-    
-    
-    /** digester used to parse menu descriptions  - 
-     * autimatically creates menu items for types of link, and adds them to the menu on top of the stack. */
-    protected final Digester dig = new Digester(){{
-        addFactoryCreate("*/link",new AbstractObjectCreationFactory() {
-            public Object createObject(Attributes arg0) throws Exception {
-                return new LinkMenuAction();
-            }
-        });
-        addSetProperties("*/link");
-        addSetNext("*/link","add");
-        
-        addFactoryCreate("*/localLink",new AbstractObjectCreationFactory() {
-            public Object createObject(Attributes arg0) throws Exception {
-                return new LocalLinkAction();
-            }
-        });
-        addSetProperties("*/localLink");
-        addSetNext("*/localLink","add");
-    }};
-    
-    /** class used to model a menu item that links to a local url */
-    public class LocalLinkAction extends AbstractAction {
-        public void setText(String text) {
-            putValue(Action.NAME,text);            
-        }
-        public void setIcon(String icon) {
-
-            putValue(Action.SMALL_ICON,IconHelper.loadIcon(icon));                   
-        }
-        public void setToolTipText(String tt) {
-            putValue(Action.SHORT_DESCRIPTION,tt);                   
-        }
-        private String path;
-        public void setPath(String path) {
-            this.path = path.trim();
-        }
-
-        public void actionPerformed(java.awt.event.ActionEvent e) {    
-                    try {
-                        browser.openRelative(path); 
-                    } catch (Exception ex) {
-                        logger.error(ex);
-                    }         
-        }
-    }
-    /** class used to model a menu item that links to aremote url */
-    public class LinkMenuAction extends AbstractAction {
-        public void setText(String text) {
-            putValue(Action.NAME,text);            
-        }
-        public void setIcon(String icon) {
-
-            putValue(Action.SMALL_ICON,IconHelper.loadIcon(icon));                   
-        }
-        public void setToolTipText(String tt) {
-            putValue(Action.SHORT_DESCRIPTION,tt);                   
-        }
-        private String url;
-        public void setUrl(String url) {
-            this.url = url.trim();
-        }
-        public void actionPerformed(java.awt.event.ActionEvent e) {    
-                    try {
-                        browser.openURL(url); 
-                    } catch (Exception ex) {
-                        logger.error(ex);
-                    }
-                }                      
-    }
-    
-    /** configutation key that indicates a method should be made executable on the ui menu */
-    public static final String MENU_ENTRY_KEY = "system.ui.menu.entry";
-    /** configuration key that indicates that the result of a call to a method should be displayed in the browser */
-    public static final String DISPLAY_RESULT_BROWSER_KEY  = "system.ui.result.browser";
-    /** configuration key that contains embedded xml that lists URLs to link to from the menu */
-    public static final String MENU_LINK_KEY = "system.ui.menu.links";
-    
     // make throbber calls nest.
     
     private int throbberCallCount = 0;
 	private StatusBar statusBar = null;  //  @jve:decl-index=0:visual-constraint="413,168"
 	private JLabel loginLabel = null;  //  @jve:decl-index=0:visual-constraint="942,210"
-	private JButtonBar buttonBar = null;
+	private ObservingButtonBar buttonBar = null;
 	private JSplitPane jSplitPane = null;
 	private JPanel actionCards = null;
     /**
@@ -722,6 +823,9 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
                     return null;
                 }
         }
+        
+        /** configuration key that indicates that the result of a call to a method should be displayed in the browser */
+        public static final String DISPLAY_RESULT_BROWSER_KEY  = "system.ui.result.browser";
         protected void finished() {
                 try {
                 Object r = get();
@@ -740,15 +844,21 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
                         }
                         
                     } else {
-                    JOptionPane.showMessageDialog(UIImpl.this,r,"Result",JOptionPane.INFORMATION_MESSAGE);
+                    //@todo find way of displaying results in text box.
+                  //  JOptionPane.showMessageDialog(UIImpl.this,r,"Result",JOptionPane.INFORMATION_MESSAGE);
+                        ResultDialog rd = new ResultDialog(UIImpl.this,r);
+                        rd.show();
                     }
                 }
                 } catch (InterruptedException ex) {
                     logger.info("Method interrupted",ex);
                     showError("Method was interrupted, or timed out\n");
                 } catch (InvocationTargetException e) {
-                    Throwable  ex = e.getCause() == null ? e : e.getCause();
-                    logger.info("Exception executing method",ex);
+                    Throwable ex = e;
+                    do {
+                        ex = ex.getCause() == null ? ex : ex.getCause();
+                    } while (ex instanceof InvocationTargetException && ex.getCause() != null);
+                    logger.warn("Exception executing method",ex);
                     showError("Exception when executing method\n" + ex.getClass().getName() + "\n" + ex.getMessage());                          
                 }
          }
@@ -814,6 +924,15 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
 		}
 		return statusBar;
 	}
+    
+    private ModulesUIModel getModulesUIModel() {
+        if (mum == null) {
+            mum = new ModulesUIModel(browser,getActionCards(),this);
+            reg.addNewModuleListener(mum);
+        }
+        return mum;
+    }
+    
 	/**
 	 * This method initializes jLabel	
 	 * 	
@@ -842,14 +961,29 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
 	 * 	
 	 * @return com.l2fprod.common.swing.JButtonBar	
 	 */    
-	private JButtonBar getButtonBar() {
+	private ObservingButtonBar getButtonBar() {
 		if (buttonBar == null) {
-			buttonBar = new JButtonBar();
+			buttonBar = new ObservingButtonBar();    
+            getModulesUIModel().addObserver(buttonBar);
             buttonBar.setOrientation(JButtonBar.VERTICAL);
-
 		}
 		return buttonBar;
 	}
+    
+    private class ObservingButtonBar extends JButtonBar implements Observer {
+
+        public void update(Observable o, Object arg) {
+            this.removeAll();
+            for (Iterator i = ((ModulesUIModel)o).moduleButtonIterator(); i.hasNext(); ) {
+                ModuleButton mb = (ModuleButton)i.next();
+                if (this.getComponentCount() == 0) { // it's the first one - so fire this button.
+                    mb.doClick();
+                }
+                this.add(mb);                
+            }       
+        }
+    }
+    
 	/**
 	 * This method initializes jSplitPane	
 	 * 	
@@ -886,6 +1020,29 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,NewMo
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.4  2005/05/12 15:37:42  clq2
+nww 1111
+
+Revision 1.3.8.6  2005/05/12 12:42:48  nw
+finished core applications functionality.
+
+Revision 1.3.8.5  2005/05/11 14:25:22  nw
+javadoc, improved result transformers for xml
+
+Revision 1.3.8.4  2005/05/11 10:59:05  nw
+made results selectable, so can be copied and pasted.
+
+Revision 1.3.8.3  2005/05/09 17:49:51  nw
+refactored model into separate static class.
+
+Revision 1.3.8.2  2005/05/09 17:30:32  nw
+reordered modules for usability, removed most dangerous
+methods from the public ui.
+
+Revision 1.3.8.1  2005/05/09 14:51:02  nw
+renamed to 'myspace' and 'workbench'
+added confirmation on app exit.
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

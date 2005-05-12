@@ -1,4 +1,4 @@
-/*$Id: ModuleRegistry.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: ModuleRegistry.java,v 1.3 2005/05/12 15:37:42 clq2 Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.acr.builtin;
 
 import java.util.Iterator;
 
-/** A registry of modules.
+/** A registry of modules.- the core of the ACR
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
@@ -38,6 +38,12 @@ public interface ModuleRegistry {
 
 /* 
  $Log: ModuleRegistry.java,v $
+ Revision 1.3  2005/05/12 15:37:42  clq2
+ nww 1111
+
+ Revision 1.2.8.1  2005/05/11 11:55:19  nw
+ javadoc
+
  Revision 1.2  2005/04/27 13:42:41  clq2
  1082
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.4 2005/05/12 15:37:37 clq2 Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.Ivorn;
 
@@ -161,7 +162,7 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 	 * @throws TransformerConfigurationException
 	 */
 	private void initialize() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
-        Source styleSource = new StreamSource(this.getClass().getResourceAsStream("xml2xhtml.xsl"));
+        Source styleSource = Xml2XhtmlTransformer.getStyleSource();
         transformer = TransformerFactory.newInstance().newTransformer(styleSource);
          
 		this.setSize(500, 600);   
@@ -217,6 +218,12 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.4  2005/05/12 15:37:37  clq2
+nww 1111
+
+Revision 1.3.8.1  2005/05/11 14:25:22  nw
+javadoc, improved result transformers for xml
+
 Revision 1.3  2005/04/27 13:42:40  clq2
 1082
 

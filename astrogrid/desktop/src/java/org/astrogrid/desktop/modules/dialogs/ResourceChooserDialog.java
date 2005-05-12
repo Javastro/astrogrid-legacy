@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: ResourceChooserDialog.java,v 1.3 2005/05/12 15:37:38 clq2 Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
-import org.astrogrid.acr.astrogrid.Vospace;
-import org.astrogrid.acr.ui.VospaceBrowser;
+import org.astrogrid.acr.astrogrid.Myspace;
+import org.astrogrid.acr.ui.MyspaceBrowser;
 import org.astrogrid.desktop.modules.system.UIImpl;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -55,7 +55,7 @@ import javax.swing.JSplitPane;
  */
 public class ResourceChooserDialog extends JDialog {
     
-    public static URI chooseResource(Vospace vos) {
+    public static URI chooseResource(Myspace vos) {
         ResourceChooserDialog chooser = new ResourceChooserDialog(vos);
         chooser.show();
         URI u = chooser.getUri();
@@ -63,7 +63,7 @@ public class ResourceChooserDialog extends JDialog {
         return u;
     }
     
-    public static URI chooseResource(Vospace vos,boolean enableMySpaceTab) {
+    public static URI chooseResource(Myspace vos,boolean enableMySpaceTab) {
         ResourceChooserDialog chooser = new ResourceChooserDialog(vos,enableMySpaceTab);
         chooser.show();
         URI u = chooser.getUri();
@@ -71,7 +71,7 @@ public class ResourceChooserDialog extends JDialog {
         return u;        
     }
     
-    public static URI chooseResource(Vospace vos,String prompt, boolean enableMySpaceTab) {
+    public static URI chooseResource(Myspace vos,String prompt, boolean enableMySpaceTab) {
         ResourceChooserDialog chooser = new ResourceChooserDialog(vos,prompt,enableMySpaceTab);
         chooser.show();
         URI u = chooser.getUri();
@@ -128,7 +128,7 @@ public class ResourceChooserDialog extends JDialog {
 	}
     
     class VospaceChooser extends AbstractVospaceBrowser {
-        public VospaceChooser(Vospace vos) {
+        public VospaceChooser(Myspace vos) {
             super(vos);
         }
         protected CurrentNodeManager createCurrentNodeManager() {
@@ -281,21 +281,21 @@ public class ResourceChooserDialog extends JDialog {
 	/**
 	 * This is the default constructor
 	 */
-	public ResourceChooserDialog(Vospace vos) {
+	public ResourceChooserDialog(Myspace vos) {
 		this(vos,true);
     }
     
-    public ResourceChooserDialog(Vospace vos,boolean enableMySpace) {
+    public ResourceChooserDialog(Myspace vos,boolean enableMySpace) {
         this(vos,"Choose Resource",enableMySpace);
     }
     
-    public ResourceChooserDialog(Vospace vos,String prompt, boolean enableMySpace) {
+    public ResourceChooserDialog(Myspace vos,String prompt, boolean enableMySpace) {
         super();
         this.vos = vos;
         this.enableMySpace = enableMySpace;
 		initialize(prompt);
 	}
-    private final Vospace vos;
+    private final Myspace vos;
 	/**
 	 * This method initializes this
 	 * 
@@ -345,6 +345,13 @@ public class ResourceChooserDialog extends JDialog {
 
 /* 
 $Log: ResourceChooserDialog.java,v $
+Revision 1.3  2005/05/12 15:37:38  clq2
+nww 1111
+
+Revision 1.2.8.1  2005/05/09 14:51:02  nw
+renamed to 'myspace' and 'workbench'
+added confirmation on app exit.
+
 Revision 1.2  2005/04/27 13:42:41  clq2
 1082
 

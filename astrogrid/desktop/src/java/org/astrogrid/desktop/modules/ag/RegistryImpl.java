@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
+/*$Id: RegistryImpl.java,v 1.4 2005/05/12 15:37:43 clq2 Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.registry.client.query.ResourceData;
 import org.astrogrid.store.Ivorn;
 
 import org.apache.axis.utils.XMLUtils;
@@ -25,9 +26,8 @@ import org.w3c.dom.Document;
 
 import java.net.URISyntaxException;
 
-/**
+/** implementation of the registry component
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Feb-2005
- * @todo add more operations, and more useful types..
  *
  */
 public class RegistryImpl implements Registry, UserLoginListener {
@@ -73,14 +73,26 @@ public class RegistryImpl implements Registry, UserLoginListener {
         } else {
             dom=  getReg().getResourceByIdentifier(ivorn);
         }
-        return XMLUtils.DocumentToString(dom);
-
-        
+        return XMLUtils.DocumentToString(dom);        
     }
+    
 
-    public String search(String xadql) throws RegistryException {
+    /**
+     * @see org.astrogrid.acr.astrogrid.Registry#getResourceData(java.lang.String)
+     */
+    public ResourceData getResourceData(String ivorn) throws RegistryException, URISyntaxException {
+        if (ivorn.startsWith("ivo://")) {
+            return getReg().getResourceDataByIdentifier(new Ivorn(ivorn));
+        } else {
+            return getReg().getResourceDataByIdentifier(new Ivorn("ivo://" + ivorn));
+        }
+    }
+    
+    
 
-        Document dom = getReg().searchFromSADQL(xadql);
+    public String search(String adql) throws RegistryException {
+
+        Document dom = getReg().searchFromSADQL(adql);
         return XMLUtils.DocumentToString(dom);
 
     }
@@ -97,7 +109,6 @@ public class RegistryImpl implements Registry, UserLoginListener {
     public void userLogout(UserLoginEvent e) {
         reg = null;
     }
-    
 
     
 }
@@ -105,6 +116,15 @@ public class RegistryImpl implements Registry, UserLoginListener {
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.4  2005/05/12 15:37:43  clq2
+nww 1111
+
+Revision 1.3.8.2  2005/05/11 14:25:24  nw
+javadoc, improved result transformers for xml
+
+Revision 1.3.8.1  2005/05/11 09:52:45  nw
+exposed new registry methods
+
 Revision 1.3  2005/04/27 13:42:40  clq2
 1082
 

@@ -1,4 +1,4 @@
-/*$Id: UI.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: UI.java,v 1.3 2005/05/12 15:37:44 clq2 Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,32 +13,47 @@ package org.astrogrid.acr.system;
 import java.awt.Component;
 
 
-/**
+/** Main user interface component
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
  *
  */
 public interface UI{
     
+    /** show the user interface */
     public void show();
     
+    /** hide the user interface - ACR server will continue to run */
     public void hide();
     
+    /** get the AWT component that implements the user interface - used for centering new windows, dialogues, etc. */
     public Component getComponent();
     
-    
+    /** start the progress indicator throbbing */
     public void startThrobbing() ;
     
+    /** stop the progress indicator */
     public void stopThrobbing();
     
+    /** set the login indicator
+     * 
+     * @param value true to indicate logged in, false to indicate 'not logged in'
+     */
     public void setLoggedIn(boolean value);
         
     
+    /** set the status message */
     public void setStatusMessage(String msg);
     
 }
 
 /* 
  $Log: UI.java,v $
+ Revision 1.3  2005/05/12 15:37:44  clq2
+ nww 1111
+
+ Revision 1.2.8.1  2005/05/11 11:55:19  nw
+ javadoc
+
  Revision 1.2  2005/04/27 13:42:41  clq2
  1082
 

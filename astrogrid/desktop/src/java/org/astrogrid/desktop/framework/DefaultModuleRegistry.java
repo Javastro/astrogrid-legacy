@@ -1,4 +1,4 @@
-/*$Id: DefaultModuleRegistry.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: DefaultModuleRegistry.java,v 1.4 2005/05/12 15:37:43 clq2 Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 /** Default implementation fo a {@link ModuleRegistry}
+ * <p>
+ * Basically a big map.
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
  *
  */
@@ -59,7 +61,7 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
     private final Module buildBuiltinModule() {
         DefaultModule m = new DefaultModule();
         m.registerComponentInstance("modules",this);
-        m.registerComponentInstance("shutdown",new ShutdownImpl(this, modules));
+        m.registerComponentInstance("shutdown",new ShutdownImpl(modules));
         ModuleDescriptor md = new ModuleDescriptor();
         md.setName("builtin");
         md.setDescription("Builtin components");
@@ -182,6 +184,12 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
 
 /* 
 $Log: DefaultModuleRegistry.java,v $
+Revision 1.4  2005/05/12 15:37:43  clq2
+nww 1111
+
+Revision 1.3.8.1  2005/05/11 14:25:24  nw
+javadoc, improved result transformers for xml
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

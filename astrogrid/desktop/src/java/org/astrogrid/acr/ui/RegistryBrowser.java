@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowser.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: RegistryBrowser.java,v 1.3 2005/05/12 15:37:43 clq2 Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,27 @@
  **/
 package org.astrogrid.acr.ui;
 
-/**
+/** A rudimentary registry browser
+ * @todo improve browsing and linking methods - maybe easier once integrate JDIC.
+ * @todo add 'show resource' methods.
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Mar-2005
  *
  */
 public interface RegistryBrowser {
+    /**show the browser */
     public void show();
+    /** hide the browser */
     public void hide();
 }
 
 /* 
  $Log: RegistryBrowser.java,v $
+ Revision 1.3  2005/05/12 15:37:43  clq2
+ nww 1111
+
+ Revision 1.2.8.1  2005/05/11 11:55:19  nw
+ javadoc
+
  Revision 1.2  2005/04/27 13:42:41  clq2
  1082
 

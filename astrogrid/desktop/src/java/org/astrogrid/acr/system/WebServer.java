@@ -1,4 +1,4 @@
-/*$Id: WebServer.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: WebServer.java,v 1.3 2005/05/12 15:37:44 clq2 Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,21 +12,34 @@ package org.astrogrid.acr.system;
 
 import org.picocontainer.Startable;
 
-/**
+/** Interface into the ACR web server
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
-public interface WebServer  extends Startable, UrlRoot{
-    /** key that module registry is accessible from servlet context by */
+public interface WebServer  extends Startable{
+    /** key that module registry is accessible from servlet context by 
+     * @todo move elsehwere.
+     * */
     String MODULE_REGISTRY = "module-registry";
 
+    
     public abstract String getKey();
 
+    /** get the port the webserver is running on */
     public abstract int getPort();
+    
+    /** get the root url of the context the HTML interface is running on */
+    public abstract String getUrlRoot();
 }
 
 /* 
  $Log: WebServer.java,v $
+ Revision 1.3  2005/05/12 15:37:44  clq2
+ nww 1111
+
+ Revision 1.2.8.1  2005/05/11 11:55:19  nw
+ javadoc
+
  Revision 1.2  2005/04/27 13:42:41  clq2
  1082
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# list resource in vospace
+# list resource in myspace
 # usage : vols [options] [resource]
 # parameter : ivorn of resorce to list. if omitted, defaults to user's root homedir
 #options : see vols --help
@@ -41,12 +41,12 @@ s = x.Server(prefix + "xmlrpc")
 
 
 if len(args) > 0:
-        n = s.astrogrid.vospace.node(args[0])
+        n = s.astrogrid.myspace.node(args[0])
 else:
-        n = s.astrogrid.vospace.node(s.astrogrid.vospace.home())
+        n = s.astrogrid.myspace.node(s.astrogrid.myspace.home())
 
 if n['folder'] and not options.directory :
-        r = s.astrogrid.vospace.getChildrenNodes(n['nodeIvorn'])
+        r = s.astrogrid.myspace.getChildrenNodes(n['nodeIvorn'])
 else:
         r = [n]
 

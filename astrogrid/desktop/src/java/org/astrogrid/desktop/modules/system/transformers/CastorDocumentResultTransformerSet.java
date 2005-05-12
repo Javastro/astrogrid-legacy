@@ -1,4 +1,4 @@
-/*$Id: CastorDocumentResultTransformerSet.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: CastorDocumentResultTransformerSet.java,v 1.3 2005/05/12 15:37:45 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,16 @@
 **/
 package org.astrogrid.desktop.modules.system.transformers;
 
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.TransformerUtils;
+import org.exolab.castor.xml.Marshaller;
 
-/** @todo add stylesheed to render xml inito html.
+import java.io.StringWriter;
+
+
+/** 
+ * Generate resulls ffrom a castor object
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
  *
  */
@@ -21,10 +29,32 @@ public class CastorDocumentResultTransformerSet extends DefaultResultTransformer
      * 
      */
     public CastorDocumentResultTransformerSet() {
-        super();
-        setXmlrpcTransformer(TypeStructureTransformer.getInstance());
-        setPlainTransformer(TypeStructureTransformer.getInstance());
-        setHtmlTransformer(TypeStructureTransformer.getInstance());
+        super();     
+       // setPlainTransformer(TypeStructureTransformer.getInstance());
+        setPlainTransformer(CastorDocumentXmlTransformer.getInstance());
+        setXmlTransformer(CastorDocumentXmlTransformer.getInstance());
+        setHtmlTransformer(
+                TransformerUtils.chainedTransformer(
+                        CastorDocumentXmlTransformer.getInstance()
+                        ,Xml2XhtmlTransformer.getInstance())); 
+
+    }
+    
+    public static class CastorDocumentXmlTransformer implements Transformer {
+
+        private CastorDocumentXmlTransformer() { }
+        private static Transformer theInstance = new CastorDocumentXmlTransformer();
+        public  static Transformer getInstance() { return  theInstance;}
+        
+        public Object transform(Object arg0) {
+            try {
+            StringWriter sw = new StringWriter();
+           Marshaller.marshal(arg0,sw);
+           return sw.toString();
+            } catch (Exception e) {
+                throw new RuntimeException("Could not marshal castor document",e);
+            }
+        }
     }
     
 
@@ -33,6 +63,15 @@ public class CastorDocumentResultTransformerSet extends DefaultResultTransformer
 
 /* 
 $Log: CastorDocumentResultTransformerSet.java,v $
+Revision 1.3  2005/05/12 15:37:45  clq2
+nww 1111
+
+Revision 1.2.20.2  2005/05/12 12:42:48  nw
+finished core applications functionality.
+
+Revision 1.2.20.1  2005/05/11 14:25:24  nw
+javadoc, improved result transformers for xml
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

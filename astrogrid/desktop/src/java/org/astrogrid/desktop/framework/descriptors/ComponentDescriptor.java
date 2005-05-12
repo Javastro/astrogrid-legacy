@@ -1,4 +1,4 @@
-/*$Id: ComponentDescriptor.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: ComponentDescriptor.java,v 1.4 2005/05/12 15:37:33 clq2 Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.desktop.framework.descriptors;
+
+import org.apache.commons.collections.map.ListOrderedMap;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,7 +28,7 @@ public class ComponentDescriptor extends Descriptor{
     public ComponentDescriptor() {
         super();
     }
-    protected final Map methods = new HashMap();
+    protected final Map methods = new ListOrderedMap();
     /** retrieve the descriptor for a named method */
     public MethodDescriptor getMethod(String name) {
         return (MethodDescriptor)methods.get(name);
@@ -90,6 +92,12 @@ public class ComponentDescriptor extends Descriptor{
 
 /* 
 $Log: ComponentDescriptor.java,v $
+Revision 1.4  2005/05/12 15:37:33  clq2
+nww 1111
+
+Revision 1.3.8.1  2005/05/11 22:48:22  nw
+altered datastructure implementation, so order of insertion is preserved.
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

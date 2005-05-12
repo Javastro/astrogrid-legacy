@@ -1,4 +1,4 @@
-/*$Id: JobsImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
+/*$Id: JobsImpl.java,v 1.4 2005/05/12 15:37:43 clq2 Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-/** Job management service.
+/** Job management service.implementation
  */
 public class JobsImpl implements Jobs, UserLoginListener {
     /**
@@ -69,10 +69,7 @@ public class JobsImpl implements Jobs, UserLoginListener {
         return result;
     }
     
-    /**@@MethodDoc("fullList","list summaries for each job")
-     * @@.return ReturnDoc("List of workflow summaries",rts=ArrayResultTransformerSet.getInstance())
-     * @todo this method won't work at the moment - as underlying method doesn't return full info
-     */
+  
     public WorkflowSummaryType[] fullList() throws WorkflowInterfaceException {
         return getJes().listJobs(getAccount());
     }
@@ -139,6 +136,12 @@ public class JobsImpl implements Jobs, UserLoginListener {
 
 /* 
 $Log: JobsImpl.java,v $
+Revision 1.4  2005/05/12 15:37:43  clq2
+nww 1111
+
+Revision 1.3.8.1  2005/05/11 14:25:24  nw
+javadoc, improved result transformers for xml
+
 Revision 1.3  2005/04/27 13:42:40  clq2
 1082
 

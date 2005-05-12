@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
+/*$Id: VospaceImpl.java,v 1.4 2005/05/12 15:37:44 clq2 Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.desktop.modules.ag;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.acr.astrogrid.Vospace;
+import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerClientFactory;
@@ -44,10 +44,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.rmi.RemoteException;
 
-/**
+/** implementation of the vospace componet.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Feb-2005
  */
-public class VospaceImpl implements UserLoginListener, Vospace {
+public class VospaceImpl implements UserLoginListener, Myspace {
     
 
     /**
@@ -263,6 +263,16 @@ public class VospaceImpl implements UserLoginListener, Vospace {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.4  2005/05/12 15:37:44  clq2
+nww 1111
+
+Revision 1.3.8.2  2005/05/11 14:25:24  nw
+javadoc, improved result transformers for xml
+
+Revision 1.3.8.1  2005/05/09 14:51:02  nw
+renamed to 'myspace' and 'workbench'
+added confirmation on app exit.
+
 Revision 1.3  2005/04/27 13:42:40  clq2
 1082
 

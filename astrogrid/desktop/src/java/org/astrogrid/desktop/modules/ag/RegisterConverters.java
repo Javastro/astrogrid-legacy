@@ -1,4 +1,4 @@
-/*$Id: RegisterConverters.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: RegisterConverters.java,v 1.3 2005/05/12 15:37:44 clq2 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * registers all the converters used in the ag module.
+ * registers all the result converters used in the ag module.
  * 
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *  
@@ -84,6 +84,12 @@ public class RegisterConverters implements Startable {
 
 /*
  * $Log: RegisterConverters.java,v $
+ * Revision 1.3  2005/05/12 15:37:44  clq2
+ * nww 1111
+ *
+ * Revision 1.2.20.1  2005/05/11 14:25:24  nw
+ * javadoc, improved result transformers for xml
+ *
  * Revision 1.2  2005/04/13 12:59:11  nw
  * checkin from branch desktop-nww-998
  *

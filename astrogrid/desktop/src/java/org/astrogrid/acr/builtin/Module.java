@@ -1,4 +1,4 @@
-/*$Id: Module.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: Module.java,v 1.3 2005/05/12 15:37:42 clq2 Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.picocontainer.PicoContainer;
 
 import java.util.Iterator;
 
-/** A containr for a set of services. The result of instantiating a {@link org.astrogrid.desktop.framework.descriptors.ModuleDescriptor}
+/** A container for a set of services. The result of instantiating a {@link org.astrogrid.desktop.framework.descriptors.ModuleDescriptor}
  * 
  * Module extends PicoContainer, which is a generic library for component containers.
  * @see DefaultModule
@@ -47,6 +47,12 @@ public interface Module extends PicoContainer{
 
 /* 
 $Log: Module.java,v $
+Revision 1.3  2005/05/12 15:37:42  clq2
+nww 1111
+
+Revision 1.2.8.1  2005/05/11 11:55:19  nw
+javadoc
+
 Revision 1.2  2005/04/27 13:42:41  clq2
 1082
 

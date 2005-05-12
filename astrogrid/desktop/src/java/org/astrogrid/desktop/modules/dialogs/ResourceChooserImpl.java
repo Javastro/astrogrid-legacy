@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: ResourceChooserImpl.java,v 1.3 2005/05/12 15:37:38 clq2 Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
-import org.astrogrid.acr.astrogrid.Vospace;
+import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.dialogs.ResourceChooser;
 
 import java.net.URI;
@@ -21,10 +21,10 @@ import java.net.URI;
  */
 public class ResourceChooserImpl implements ResourceChooser {
 
-    public ResourceChooserImpl(Vospace vos) {
+    public ResourceChooserImpl(Myspace vos) {
         this.vos = vos;
     }
-    protected final Vospace vos;
+    protected final Myspace vos;
     public URI chooseResource(String title,boolean enableMySpace) {
         return ResourceChooserDialog.chooseResource(vos,title,enableMySpace);
     }
@@ -34,6 +34,13 @@ public class ResourceChooserImpl implements ResourceChooser {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.3  2005/05/12 15:37:38  clq2
+nww 1111
+
+Revision 1.2.8.1  2005/05/09 14:51:02  nw
+renamed to 'myspace' and 'workbench'
+added confirmation on app exit.
+
 Revision 1.2  2005/04/27 13:42:41  clq2
 1082
 
