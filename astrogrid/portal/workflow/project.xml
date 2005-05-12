@@ -158,7 +158,16 @@
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>                
-        </dependency>             
+        </dependency>
+        <dependency>
+                <artifactId>commons-beanutils</artifactId>
+                <groupId>commons-beanutils</groupId>
+                <version>1.6</version>
+                <type>jar</type>
+                <properties>
+                  <war.bundle>true</war.bundle>
+                </properties>
+        </dependency>                     
         
         
         
@@ -171,6 +180,18 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        
+            <dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+            <version>1.6</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+                                
+        
     </dependencies>
     <build>
         <sourceDirectory>src/java</sourceDirectory>

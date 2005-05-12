@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsp:page language="java"
+    xmlns:xsp="http://apache.org/xsp"
+    xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+    xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+    xmlns:util="http://apache.org/xsp/util/2.0"     
+    >
+    
+      <!--+
+      | Import any java classes here.
+      +-->
+
+    <xsp:structure>
+      <xsp:include>org.astrogrid.portal.cocoon.workflow.WorkflowTemplate</xsp:include>
+      <xsp:include>org.astrogrid.portal.workflow.intf.ApplicationDescription</xsp:include>
+      <xsp:include>org.astrogrid.applications.beans.v1.Interface</xsp:include>
+      <xsp:include>org.astrogrid.applications.beans.v1.parameters.ParameterValue</xsp:include>
+      <xsp:include>org.astrogrid.applications.beans.v1.ParameterRef</xsp:include>
+      <xsp:include>org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition</xsp:include>      
+      <xsp:include>org.astrogrid.workflow.beans.v1.Tool</xsp:include>  
+      <xsp:include>org.w3c.dom.Document</xsp:include> 
+      <xsp:include>org.astrogrid.util.DomHelper</xsp:include>
+      <xsp:include>org.exolab.castor.xml.Marshaller</xsp:include>
+      <xsp:include>java.io.StringWriter</xsp:include>
+      <xsp:include>org.apache.axis.utils.XMLUtils</xsp:include>
+    </xsp:structure>        
+ 
+<xsp:logic>
+		
+		private static final boolean TRACE_ENABLED = false ;
+
+		public void paramWfList ( WorkflowTemplate[] workflowTemplate ) throws SAXException {
+        	if( TRACE_ENABLED ) trace( "parameterizedWf.paramWfList() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        
+        	try {
+            
+                for( int i=0; i &lt; workflowTemplate.length; i++ ) {
+                    outputList( workflowTemplate[i], xspAttr ); 
+                }
+
+        	}
+			catch(Exception e){
+		       ; // some logging req'd
+		    }
+        	
+        	finally {
+        		if( TRACE_ENABLED ) trace( "parameterizedWf.paramWfList() exit") ;
+        	}
+          
+		} // end of list()
+		
+		private void outputList( WorkflowTemplate wt, AttributesImpl xspAttr ) throws SAXException {  	
+			if( TRACE_ENABLED ) trace( "parameterizedWf.outputList() entry") ;
+                    
+		    try {  	 	
+                       <xsp:element name="list">
+		 			      <xsp:attribute name="name"><xsp:expr>wt.getDesc().getName()</xsp:expr></xsp:attribute>
+		 			      <xsp:attribute name="desc"><xsp:expr>XMLUtils.getInnerXMLString(wt.getDesc().getOriginalVODescription())</xsp:expr></xsp:attribute>
+	    			     </xsp:element>
+			         		
+		    }
+		    catch(Exception ex) {
+		    	ex.printStackTrace() ;
+		    }
+        	finally {
+        		if( TRACE_ENABLED ) trace( "parameterizedWf.outputList() exit") ;
+        	}
+		
+		} // end of outputList()
+		
+
+		public void paramWfTemplate ( WorkflowTemplate wft ) throws SAXException {
+        	if( TRACE_ENABLED ) trace( "parameterizedWf.paramWfTemplate() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        
+        	try {
+                    outputTemplate( wft, xspAttr ); 
+
+        	}
+			catch(Exception e){
+		       ; // some logging req'd
+		    }
+        	
+        	finally {
+        		if( TRACE_ENABLED ) trace( "parameterizedWf.paramWfTemplate() exit") ;
+        	}
+          
+		} // end of list()
+		
+		private void outputTemplate( WorkflowTemplate wft, AttributesImpl xspAttr ) throws SAXException {  	
+			if( TRACE_ENABLED ) trace( "parameterizedWf.outputTemplate() entry") ;
+                    
+		    try {
+		        ApplicationDescription appDesc = wft.getDesc();
+		        
+                  <xsp:element name="paramWfTemplate">
+		 			<xsp:attribute name="name"><xsp:expr>appDesc.getName()</xsp:expr></xsp:attribute>
+		 			<xsp:attribute name="desc"><xsp:expr>XMLUtils.getInnerXMLString(appDesc.getOriginalVODescription())</xsp:expr></xsp:attribute>
+		 			  <xsp:logic>		     
+		        
+		        if (appDesc != null) {
+                    Tool tool = appDesc.createToolFromDefaultInterface();
+                    Interface iface = appDesc.getInterfaces().get_interface(0); // will always be the first, as we're using the default.
+                    for (int i = 0; i &lt; tool.getInput().getParameterCount(); i++) {
+                      ParameterValue v = tool.getInput().getParameter(i);
+                      BaseParameterDefinition def = appDesc.getDefinitionForValue(v,iface);                    
+                      displayInputParams(v,def);                    
+                    }
+                    for (int i = 0; i &lt; tool.getOutput().getParameterCount(); i++) {
+                      ParameterValue v = tool.getOutput().getParameter(i);
+                      BaseParameterDefinition def = appDesc.getDefinitionForValue(v,iface);
+                      displayOutputParams(v,def);
+                    } 
+               }          
+                     </xsp:logic>
+	    	</xsp:element>
+			        		
+		    }
+		    catch(Exception ex) {
+		    	ex.printStackTrace() ;
+		    }
+        	finally {
+        		if( TRACE_ENABLED ) trace( "parameterizedWf.outputTemplate() exit") ;
+        	}
+		
+		} // end of outputTemplate()	
+		
+          
+      //====================================================================
+      private void displayInputParams(ParameterValue v, BaseParameterDefinition def) throws SAXException {	
+         if( TRACE_ENABLED ) trace( "parameterizedWf.displayInputParams() entry");
+         
+         AttributesImpl xspAttr = new AttributesImpl();
+
+		 try {
+              <xsp:element name="InputParams">
+                 <xsp:attribute name="Name"><xsp:expr>v.getName()</xsp:expr></xsp:attribute>
+                 <xsp:attribute name="Value"><xsp:expr>v.getValue()</xsp:expr></xsp:attribute>
+                 <xsp:attribute name="UIName"><xsp:expr>def.getUI_Name()</xsp:expr></xsp:attribute>
+                 <xsp:attribute name="UIDesc"><xsp:expr>def.getUI_Description().getContent()</xsp:expr></xsp:attribute>                 
+                 <xsp:attribute name="Type"><xsp:expr>def.getType()</xsp:expr></xsp:attribute>
+                 <xsp:attribute name="UCD"><xsp:expr>def.getUCD()</xsp:expr></xsp:attribute>
+                 <xsp:attribute name="Units"><xsp:expr>def.getUnits()</xsp:expr></xsp:attribute>
+              </xsp:element>
+         }
+         finally {
+            xspAttr = null;
+            if( TRACE_ENABLED ) trace( "parameterizedWf.displayInputParams() exit");
+         }
+      } // end of displayInputParams()	
+      
+      //====================================================================
+      private void displayOutputParams(ParameterValue v, BaseParameterDefinition def) throws SAXException {	
+         if( TRACE_ENABLED ) trace( "parameterizedWf.displayOutputParams entry");
+         
+         AttributesImpl xspAttr = new AttributesImpl();
+
+		 try {
+              <xsp:element name="OutputParams">
+                 <xsp:attribute name="Name"><xsp:expr>v.getName()</xsp:expr></xsp:attribute>
+                 <xsp:attribute name="Value"><xsp:expr>v.getValue()</xsp:expr></xsp:attribute>
+                 <xsp:attribute name="UIName"><xsp:expr>def.getUI_Name()</xsp:expr></xsp:attribute>
+                 <xsp:attribute name="UIDesc"><xsp:expr>def.getUI_Description().getContent()</xsp:expr></xsp:attribute>                 
+                 <xsp:attribute name="Type"><xsp:expr>def.getType()</xsp:expr></xsp:attribute>
+                 <xsp:attribute name="UCD"><xsp:expr>def.getUCD()</xsp:expr></xsp:attribute>
+                 <xsp:attribute name="Units"><xsp:expr>def.getUnits()</xsp:expr></xsp:attribute>
+              </xsp:element>
+         }
+         finally {
+            xspAttr = null;
+            if( TRACE_ENABLED ) trace( "parameterizedWf.displayOutputParams exit");
+         }
+      } // end of displayOutputParams()      	
+		
+		
+		private static void trace( String traceString ) {
+			System.out.println( traceString ) ;
+		}
+		
+		private static void debug( String traceString ) {
+			System.out.println( traceString ) ;
+        }				
+		
+</xsp:logic>  
+
+  
+<paramWf>
+
+	<xsp:logic>
+        
+        try{
+           if( TRACE_ENABLED ) trace( "parameterizedWF.xsp: Retrieving WorkflowTemplate list") ;
+           
+           //================================================================================
+           WorkflowTemplate[] 
+               workflowTemplate = (WorkflowTemplate[])<xsp-session:get-attribute name="paramwf-list-tag" as="object"/>;
+                  
+           paramWfList( workflowTemplate ) ; 
+           
+                                        
+           //================================================================================
+
+           //================================================================================
+           if( TRACE_ENABLED ) trace( "parameterizedWF.xsp: Retrieving parameterized template") ;
+           
+           Object ob = <xsp-session:get-attribute name="paramwf-template-tag" as="object"/>;
+           if ( (ob != null) || (ob.toString() != "") ) {              
+               WorkflowTemplate wft = (WorkflowTemplate)ob;
+               paramWfTemplate( wft ) ;
+               <xsp-session:set-attribute name="paramwf-template-tag" value="null"/>
+           }                     
+           //================================================================================
+
+
+        }
+        catch(Exception e) {
+           if( TRACE_ENABLED ) {
+             trace( "parameterizedWF.xsp: Error retrieving from session:") ;
+             e.printStackTrace() ;
+           }
+        }         
+        finally {
+           if( TRACE_ENABLED ) trace( "parameterizedWF.xsp: Retrieving session object finish ") ;
+        }
+				
+	</xsp:logic>
+	<xsp:logic>
+	  <xsp:element name="messages">
+        <xsp:attribute name="paramWf_submit_message"><xsp:expr>(String)session.getAttribute("paramWf_submit_message")</xsp:expr></xsp:attribute>               
+        <xsp:attribute name="paramWf_error_message"><xsp:expr>(String)session.getAttribute("paramWf_error_message")</xsp:expr></xsp:attribute>               
+ 	  </xsp:element>
+ 	  <xsp-session:set-attribute name="paramWf_submit_message" value="none"/>
+   	  <xsp-session:set-attribute name="paramWf_error_message" value="none"/>
+	</xsp:logic>
+
+    </paramWf>
+      
+</xsp:page>
+

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xsp/login-pass.xsp,v $</cvs:source>
-    | <cvs:author>$Author: pjn3 $</cvs:author>
-    | <cvs:date>$Date: 2005/05/03 09:53:49 $</cvs:date>
-    | <cvs:version>$Revision: 1.18 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/05/12 16:07:29 $</cvs:date>
+    | <cvs:version>$Revision: 1.19 $</cvs:version>
     |
     +-->
 <xsp:page language="java"
@@ -160,6 +160,32 @@ function toggle(yo, was){
 
 </td>
 <td width="40px">  </td></tr>
+
+
+<tr>
+  <td width="280px" valign="top">
+    <div class="boxedLayout">
+      <h1>Parameterized Workflows</h1>
+        <table border="0" cellpadding="3">
+          <tr>
+            <td valign="top" title="Go to parameterized workflow page">
+              <a href="/astrogrid-portal/main/mount/workflow/agparameterizedWf.html?action=read-paramWf-list"                  
+                class="strongLink">Parameterized Workflows</a>
+            </td>
+            <td>
+              <div style="cursor: help"  title="e.g. Redshift maker, Solar movie maker..">
+                execute parameterized workflows
+              </div>        
+            </td>
+          </tr>    
+        </table>
+      </div>
+     </td>
+   <td width="40px">  
+ </td>
+</tr>
+
+
 <tr>
 <td width="280px" valign="top">
 
@@ -465,6 +491,12 @@ Locate Spectral data
 <!--+
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
+    |   Revision 1.19  2005/05/12 16:07:29  clq2
+    |   1157
+    |
+    |   Revision 1.18.2.1  2005/05/10 06:02:58  pjn3
+    |   Parameterized workflow link added
+    |
     |   Revision 1.18  2005/05/03 09:53:49  pjn3
     |   managed to over-write change to agjobmanager-jes-homepage link...
     |
