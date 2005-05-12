@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.3 2005/05/12 15:37:37 clq2 Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.4 2005/05/12 15:59:08 clq2 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -217,8 +217,8 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
-Revision 1.3  2005/05/12 15:37:37  clq2
-nww 1111
+Revision 1.4  2005/05/12 15:59:08  clq2
+nww 1111 again
 
 Revision 1.2.8.1  2005/05/09 14:51:02  nw
 renamed to 'myspace' and 'workbench'

@@ -2,7 +2,7 @@
 <!-- Copyright © 2002, 2003 Matthew West        
 	modified Noel Winstanley
 	  -->
-<!-- $Id: xml2xhtml.xsl,v 1.2 2005/05/12 15:37:45 clq2 Exp $ -->
+<!-- $Id: xml2xhtml.xsl,v 1.3 2005/05/12 15:59:13 clq2 Exp $ -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
                 xmlns:xalan="http://xml.apache.org/xslt"

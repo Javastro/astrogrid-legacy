@@ -1,4 +1,4 @@
-/*$Id: XmlDocumentResultTransformerSet.java,v 1.3 2005/05/12 15:37:44 clq2 Exp $
+/*$Id: XmlDocumentResultTransformerSet.java,v 1.4 2005/05/12 15:59:12 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,8 +33,8 @@ public class XmlDocumentResultTransformerSet extends DefaultResultTransformerSet
 
 /* 
 $Log: XmlDocumentResultTransformerSet.java,v $
-Revision 1.3  2005/05/12 15:37:44  clq2
-nww 1111
+Revision 1.4  2005/05/12 15:59:12  clq2
+nww 1111 again
 
 Revision 1.2.20.1  2005/05/11 14:25:23  nw
 javadoc, improved result transformers for xml

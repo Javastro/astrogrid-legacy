@@ -1,4 +1,4 @@
-/*$Id: IDTransformer.java,v 1.3 2005/05/12 15:37:45 clq2 Exp $
+/*$Id: IDTransformer.java,v 1.4 2005/05/12 15:59:13 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,8 +42,8 @@ public class IDTransformer implements Transformer {
 
 /* 
 $Log: IDTransformer.java,v $
-Revision 1.3  2005/05/12 15:37:45  clq2
-nww 1111
+Revision 1.4  2005/05/12 15:59:13  clq2
+nww 1111 again
 
 Revision 1.2.20.1  2005/05/11 14:25:24  nw
 javadoc, improved result transformers for xml

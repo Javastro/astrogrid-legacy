@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.4 2005/05/12 15:37:42 clq2 Exp $
+/*$Id: UIImpl.java,v 1.5 2005/05/12 15:59:10 clq2 Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -1020,8 +1020,8 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
 
 /* 
 $Log: UIImpl.java,v $
-Revision 1.4  2005/05/12 15:37:42  clq2
-nww 1111
+Revision 1.5  2005/05/12 15:59:10  clq2
+nww 1111 again
 
 Revision 1.3.8.6  2005/05/12 12:42:48  nw
 finished core applications functionality.

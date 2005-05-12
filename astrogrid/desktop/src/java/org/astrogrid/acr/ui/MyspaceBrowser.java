@@ -1,4 +1,4 @@
-/*$Id: MyspaceBrowser.java,v 1.2 2005/05/12 15:37:42 clq2 Exp $
+/*$Id: MyspaceBrowser.java,v 1.3 2005/05/12 15:59:10 clq2 Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,8 +34,8 @@ public interface MyspaceBrowser {
 
 /* 
 $Log: MyspaceBrowser.java,v $
-Revision 1.2  2005/05/12 15:37:42  clq2
-nww 1111
+Revision 1.3  2005/05/12 15:59:10  clq2
+nww 1111 again
 
 Revision 1.1.2.2  2005/05/11 11:55:19  nw
 javadoc

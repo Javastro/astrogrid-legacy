@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.2 2005/05/12 15:37:39 clq2 Exp $
+/*$Id: Myspace.java,v 1.3 2005/05/12 15:59:09 clq2 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -125,8 +125,8 @@ public interface Myspace {
 
 /* 
  $Log: Myspace.java,v $
- Revision 1.2  2005/05/12 15:37:39  clq2
- nww 1111
+ Revision 1.3  2005/05/12 15:59:09  clq2
+ nww 1111 again
 
  Revision 1.1.2.1  2005/05/09 14:51:02  nw
  renamed to 'myspace' and 'workbench'

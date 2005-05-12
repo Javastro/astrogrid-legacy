@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.4 2005/05/12 15:37:34 clq2 Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.5 2005/05/12 15:59:08 clq2 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -644,8 +644,8 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
- * Revision 1.4  2005/05/12 15:37:34  clq2
- * nww 1111
+ * Revision 1.5  2005/05/12 15:59:08  clq2
+ * nww 1111 again
  *
  * Revision 1.3.8.1  2005/05/09 14:51:02  nw
  * renamed to 'myspace' and 'workbench'

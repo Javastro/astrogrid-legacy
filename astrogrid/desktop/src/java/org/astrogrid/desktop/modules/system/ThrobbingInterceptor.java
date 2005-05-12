@@ -1,4 +1,4 @@
-/*$Id: ThrobbingInterceptor.java,v 1.4 2005/05/12 15:37:42 clq2 Exp $
+/*$Id: ThrobbingInterceptor.java,v 1.5 2005/05/12 15:59:10 clq2 Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,8 +52,8 @@ public class ThrobbingInterceptor implements MethodInterceptor {
 
 /* 
 $Log: ThrobbingInterceptor.java,v $
-Revision 1.4  2005/05/12 15:37:42  clq2
-nww 1111
+Revision 1.5  2005/05/12 15:59:10  clq2
+nww 1111 again
 
 Revision 1.3.8.1  2005/05/11 14:25:23  nw
 javadoc, improved result transformers for xml

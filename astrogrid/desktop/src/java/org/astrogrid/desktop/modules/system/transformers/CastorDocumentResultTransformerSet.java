@@ -1,4 +1,4 @@
-/*$Id: CastorDocumentResultTransformerSet.java,v 1.3 2005/05/12 15:37:45 clq2 Exp $
+/*$Id: CastorDocumentResultTransformerSet.java,v 1.4 2005/05/12 15:59:13 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,8 +63,8 @@ public class CastorDocumentResultTransformerSet extends DefaultResultTransformer
 
 /* 
 $Log: CastorDocumentResultTransformerSet.java,v $
-Revision 1.3  2005/05/12 15:37:45  clq2
-nww 1111
+Revision 1.4  2005/05/12 15:59:13  clq2
+nww 1111 again
 
 Revision 1.2.20.2  2005/05/12 12:42:48  nw
 finished core applications functionality.

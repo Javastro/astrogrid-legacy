@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.3 2005/05/12 15:37:41 clq2 Exp $
+/*$Id: Applications.java,v 1.4 2005/05/12 15:59:09 clq2 Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.acr.astrogrid;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
 import org.astrogrid.portal.workflow.intf.ToolValidationException;
@@ -140,12 +141,12 @@ public interface Applications {
     /** get results of the applicationi exeuction 
      * @param executionid id of application to query 
      * @return results of this execution*/
-    ResultListType getResults(String executionid) throws RegistryException, URISyntaxException,CEADelegateException;
+    ParameterValue[] getResults(String executionid) throws RegistryException, URISyntaxException,CEADelegateException;
     
     /** query progress of application execution 
      * @param executionId id of application to query 
-     * @return progress information about this execution */
-    MessageType getExecutionProgress(String executionId) throws RegistryException, URISyntaxException,CEADelegateException;
+     * @return progress information about this execution - a String 'Running', 'Pending', 'Completed', etc. */
+    String checkExecutionProgress(String executionId) throws RegistryException, URISyntaxException,CEADelegateException;
     
     
     
@@ -158,8 +159,11 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
- Revision 1.3  2005/05/12 15:37:41  clq2
- nww 1111
+ Revision 1.4  2005/05/12 15:59:09  clq2
+ nww 1111 again
+
+ Revision 1.2.8.4  2005/05/12 15:49:21  nw
+ litte lix
 
  Revision 1.2.8.3  2005/05/12 12:42:48  nw
  finished core applications functionality.

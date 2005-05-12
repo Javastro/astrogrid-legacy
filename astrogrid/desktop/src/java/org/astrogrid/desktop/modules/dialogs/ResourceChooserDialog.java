@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.3 2005/05/12 15:37:38 clq2 Exp $
+/*$Id: ResourceChooserDialog.java,v 1.4 2005/05/12 15:59:08 clq2 Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -345,8 +345,8 @@ public class ResourceChooserDialog extends JDialog {
 
 /* 
 $Log: ResourceChooserDialog.java,v $
-Revision 1.3  2005/05/12 15:37:38  clq2
-nww 1111
+Revision 1.4  2005/05/12 15:59:08  clq2
+nww 1111 again
 
 Revision 1.2.8.1  2005/05/09 14:51:02  nw
 renamed to 'myspace' and 'workbench'

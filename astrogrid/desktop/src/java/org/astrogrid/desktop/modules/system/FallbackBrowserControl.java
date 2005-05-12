@@ -1,4 +1,4 @@
-/*$Id: FallbackBrowserControl.java,v 1.4 2005/05/12 15:37:42 clq2 Exp $
+/*$Id: FallbackBrowserControl.java,v 1.5 2005/05/12 15:59:10 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,8 +62,8 @@ public class FallbackBrowserControl implements BrowserControl {
 
 /* 
 $Log: FallbackBrowserControl.java,v $
-Revision 1.4  2005/05/12 15:37:42  clq2
-nww 1111
+Revision 1.5  2005/05/12 15:59:10  clq2
+nww 1111 again
 
 Revision 1.3.8.1  2005/05/11 11:55:30  nw
 removed unused interface.

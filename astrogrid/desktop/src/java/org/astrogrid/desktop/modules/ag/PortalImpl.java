@@ -1,4 +1,4 @@
-/*$Id: PortalImpl.java,v 1.4 2005/05/12 15:37:44 clq2 Exp $
+/*$Id: PortalImpl.java,v 1.5 2005/05/12 15:59:12 clq2 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -161,8 +161,8 @@ public class PortalImpl implements Portal, UserLoginListener {
 
 /* 
 $Log: PortalImpl.java,v $
-Revision 1.4  2005/05/12 15:37:44  clq2
-nww 1111
+Revision 1.5  2005/05/12 15:59:12  clq2
+nww 1111 again
 
 Revision 1.3.8.1  2005/05/11 14:25:24  nw
 javadoc, improved result transformers for xml

@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.3 2005/05/12 15:59:13 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,7 +62,7 @@ public class TypeStructureTransformer implements Transformer {
         if (arg0 instanceof JobURN) { // simple castor type - just get value.
             return ((JobURN)arg0).getContent();
         }
-        if ( arg0 instanceof Workflow || arg0 instanceof Tool) { // special treatment for castor types..
+        if ( arg0 instanceof Workflow /*|| arg0 instanceof Tool*/) { // special treatment for castor types..
             try {
                 StringWriter sw = new StringWriter();
                 Marshaller.marshal(arg0,sw);
@@ -174,6 +174,12 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.3  2005/05/12 15:59:13  clq2
+nww 1111 again
+
+Revision 1.2.20.1  2005/05/12 15:49:21  nw
+litte lix
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

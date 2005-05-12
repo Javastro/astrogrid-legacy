@@ -682,7 +682,7 @@
 		</method>
 
 		
-		<method name="getExecutionProgress">
+		<method name="checkExecutionProgress">
 			<description>Query progress of an application execution</description>
 			<property>
 			<key>icon</key>
@@ -694,15 +694,6 @@
 			</property>	
 			<return>
 				<description>report on the progress of this application</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>struct</value>
-				</property>
-				<property>
-					<key>system.result.transformer</key>
-					<value>
-						org.astrogrid.desktop.modules.system.transformers.CastorDocumentResultTransformerSet</value>
-				</property>
 			</return>	
 			<parameter name="executionId">
 				<description>id of the application execution to query</description>
@@ -750,7 +741,7 @@
 				<description>results document for this application execution</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>struct</value>
+					<value>array</value>
 				</property>
 				<property>
 					<key>system.result.transformer</key>

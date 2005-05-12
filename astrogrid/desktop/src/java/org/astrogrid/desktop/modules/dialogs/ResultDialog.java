@@ -1,4 +1,4 @@
-/*$Id: ResultDialog.java,v 1.2 2005/05/12 15:37:38 clq2 Exp $
+/*$Id: ResultDialog.java,v 1.3 2005/05/12 15:59:08 clq2 Exp $
  * Created on 10-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -113,8 +113,8 @@ public class ResultDialog extends JDialog {
 
 /* 
 $Log: ResultDialog.java,v $
-Revision 1.2  2005/05/12 15:37:38  clq2
-nww 1111
+Revision 1.3  2005/05/12 15:59:08  clq2
+nww 1111 again
 
 Revision 1.1.2.2  2005/05/11 14:25:25  nw
 javadoc, improved result transformers for xml

@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.4 2005/05/12 15:37:44 clq2 Exp $
+/*$Id: ApplicationsImpl.java,v 1.5 2005/05/12 15:59:12 clq2 Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -354,17 +355,20 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
     public ExecutionSummaryType getExecutionSummary(String executionId) throws RegistryException, URISyntaxException, CEADelegateException {
         String endpoint = getReg().getEndPointByIdentifier(getService(executionId));
         CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);
-        return delegate.getExecutionSumary(getId(executionId));   
+        return delegate.getExecutionSumary(getId(executionId));
+        
     }
-    public ResultListType getResults(String executionId) throws RegistryException, URISyntaxException, CEADelegateException {
+    public ParameterValue[] getResults(String executionId) throws RegistryException, URISyntaxException, CEADelegateException {
         String endpoint = getReg().getEndPointByIdentifier(getService(executionId));
         CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);
-        return delegate.getResults(getId(executionId));
+        ResultListType results =  delegate.getResults(getId(executionId));
+        return results.getResult();
     }
-    public MessageType getExecutionProgress(String executionId) throws CEADelegateException, RegistryException, URISyntaxException {
+    public String checkExecutionProgress(String executionId) throws CEADelegateException, RegistryException, URISyntaxException {
         String endpoint = getReg().getEndPointByIdentifier(getService(executionId));
         CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);
-        return delegate.queryExecutionStatus(getId(executionId));
+        MessageType message =  delegate.queryExecutionStatus(getId(executionId));
+        return message.getPhase().toString();
     }
     
     
@@ -390,8 +394,11 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
 
 /* 
 $Log: ApplicationsImpl.java,v $
-Revision 1.4  2005/05/12 15:37:44  clq2
-nww 1111
+Revision 1.5  2005/05/12 15:59:12  clq2
+nww 1111 again
+
+Revision 1.3.8.3  2005/05/12 15:49:22  nw
+litte lix
 
 Revision 1.3.8.2  2005/05/12 12:42:48  nw
 finished core applications functionality.
