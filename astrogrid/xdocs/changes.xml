@@ -14,12 +14,6 @@
         </action>     
   </release>
   <release version="(Undertests)">     	
-	     <action dev="pjn" type="add" issue="1169">
-            <b>portalWF_pjn_1169</b>
-            1169 is a minor layout change and also removes a couple of stylesheet attributes that were causing transform 
-            errors that I spotted in the portal-core logs.
-            However this also includes fix for bug#931 which is more serious and relates to workflow builder/m-b interactions.
-         </action>    
 		 <action dev="jdt" type="fix" issue="383"> 
             Since we're now on maven 1.0.2 I've refactored the property files to remove common and duplicated stuff to maven-base. 
 			All components will need to be rebuilt after this merge, which should have no side effects.
@@ -31,6 +25,12 @@
    </release>
     
   <release version="HEAD">
+	   <action dev="pjn" type="add" issue="1169">
+            <b>portalWF_pjn_1169</b>
+            1169 is a minor layout change and also removes a couple of stylesheet attributes that were causing transform 
+            errors that I spotted in the portal-core logs.
+            However this also includes fix for bug#931 which is more serious and relates to workflow builder/m-b interactions.
+         </action> 
 	   <action dev="pfo" type="fix" issue="1106">
 		 <b>portal_pfo_1106</b>
 		 taking out the excute button for now from query page since it's not working anyway. see bug 1172
