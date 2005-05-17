@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!-- $Id: project.xml,v 1.1 2005/05/17 18:40:36 jdt Exp $ -->
+<project>
+    <pomVersion>3</pomVersion>
+    <name>Ant 1.6 Input Task etc</name>
+    <groupId>ant</groupId>
+    <artifactId>ant1.6tasks</artifactId>
+    <currentVersion>1.6</currentVersion>
+    <package>org.apache</package>
+    <description>This project bundles up the Ant 1.6 version
+        of the input task, for use in AGINAB</description>
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory/>
+    </build>
+    <dependencies>
+            <!--required to compile the Ant 1.6 input task-->
+        <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+    </dependencies>
+
+</project>
