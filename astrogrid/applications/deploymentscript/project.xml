@@ -1,0 +1,35 @@
+<project>
+    <extend>../../maven-base/project.xml</extend>
+    <artifactId>astrogrid-cea-deploy-script</artifactId>
+    <name>filemanager Installation Script</name>
+    <currentVersion>${astrogrid.applications.version}</currentVersion>
+    <description>This project contains everything necessary to install the application, when run as a stand-alone ant script. This is then bundled into a jar 
+        for installation on a webserver from where it can be accessed by other applications. </description>
+    <shortDescription>Subproject to hold ant scripts and resources specific to the filemanager installation</shortDescription>
+    <build>
+        <resources>
+            <resource>
+                <directory>ant</directory>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>catalina-ant</groupId>
+            <artifactId>catalina-ant</artifactId>
+            <version>5.0.18</version>
+            <properties/>
+        </dependency>
+      <!--required to use the Ant 1.6 input task instead of the Ant 1.5.3
+			one...this requirement will probably go away come Maven 1.1-->
+        <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant1.6tasks</artifactId>
+            <version>1.6</version>
+        </dependency> 
+    </dependencies>
+</project>

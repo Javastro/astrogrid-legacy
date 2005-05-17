@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.21 2005/05/10 16:33:13 clq2 Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.22 2005/05/17 23:07:54 jdt Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -133,6 +133,7 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
     public static final String TESTDSA = AUTHORITYID + "/pal-sample/ceaApplication";
     public static final String TESTAPP = AUTHORITYID + "/testapp";
     public static final String TESTAPP2 = AUTHORITYID + "/testap2"; //note it isn't double 'p'
+    public static final String WINTESTAPP = AUTHORITYID + "/wintestapp";
     public static final String HELLO_WORLD = AUTHORITYID + "/helloWorld";
     public static final String HELLO_YOU = AUTHORITYID + "/helloYou";
     public static final String SUM = AUTHORITYID + "/sum";
@@ -194,6 +195,9 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.22  2005/05/17 23:07:54  jdt
+merge from cea_jdt_1012
+
 Revision 1.21  2005/05/10 16:33:13  clq2
 1125
 

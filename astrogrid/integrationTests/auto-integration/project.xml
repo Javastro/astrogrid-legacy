@@ -26,25 +26,10 @@
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-cea-server</artifactId>
+            <artifactId>astrogrid-cea-deploy-script</artifactId>
             <version>${astrogrid.applications.version}</version>
-            <type>war</type>
             <properties/>
-        </dependency>
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-cea-commandline</artifactId>
-            <version>${astrogrid.applications.version}</version>
-            <type>war</type>
-            <properties/>
-        </dependency>
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-cea-http</artifactId>
-            <version>${astrogrid.applications.version}</version>
-            <type>war</type>
-            <properties/>
-        </dependency>
+        </dependency>        
 <!--
         <dependency>
             <groupId>org.astrogrid</groupId>

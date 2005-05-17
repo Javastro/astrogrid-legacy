@@ -1,0 +1,289 @@
+<project name="install" default="info" basedir=".">
+	<property file="default.properties"/>
+	<property name="cea.temporary.dir" value="cea-tmp"/>
+	
+	<property name="local.cea.war" value="${basedir}/cea.war"/>
+	
+	<!--Public Targets-->
+
+	<target name="save-config" description="Save this configuration for future use">
+        <input addProperty="input.saveProperties.file" defaultvalue="${antigen.home}/cea-installer.properties">Enter a file name for saving your current settings</input>
+        <echoproperties destfile="${input.saveProperties.file}" prefix="input." description="This file can then be reused for hands-free operation"/>
+    	<property name="properties.saved" value="true"/>
+    </target>
+	
+	<target name="load-config" description="Load a previously saved configuration">
+    	<input addProperty="input.loadProperties.file" defaultvalue="${antigen.home}/cea-installer.properties">Enter the filename of your previously saved settings</input>
+    	<property file="${input.loadProperties.file}"/>
+    </target>
+
+	<target name="install" description="Install cea" depends="deploy, copy-java-app, copy-registry-template">
+	        <echo>***The cea has been successfully installed***</echo>
+	    	<property name="cea.installed" value="true"/>	
+    </target>		
+	
+	<target name="register" description="Register this cea" depends="checkTomcat,set-context-path">
+		<property name="cea.register.fullurl" value="${input.tomcat.url}${input.cea.contextpath}/${cea.register.url}"/>
+		<property name="cea.viewregentry.fullurl" value="${input.tomcat.url}${input.cea.contextpath}/${cea.viewregentry.url}"/>
+		<echo>Registering the cea using the built-in JSP page ${cea.register.fullurl}...</echo>
+		<!--might need to pause for tomcat to sort itself out-->
+		<waitfor checkevery="5" checkeveryunit="second" maxwait="120" maxwaitunit="second" timeoutproperty="error.could-not-register">
+			<http url="${cea.register.fullurl}"/>
+		</waitfor>
+		<fail if="error.could-not-register" message="Failed to register.  Try accessing the ${cea.register.fullurl} page yourself in a browser"/>
+		<property name="cea.registered" value="true"/>
+	</target>
+	
+	<target name="remove" description="Remove cea" depends="checkTomcat, load-flavour-dependent-properties, undeploy">
+    	<sleep seconds="10" description="Allow Tomcat to catch up"/>
+        <echo>***The cea has been successfully removed***</echo>
+    	<property name="cea.uninstalled" value="true"/>
+	</target>
+	
+	
+	<!--Private Targets -->
+	<target name="choose-flavour" description="which cea to install?">
+		<echo>The CEA comes in three flavours:</echo>
+		<echo>   Java (manages applications written in Java)</echo>
+		<echo>   commandline (manages command-line applications)</echo>
+		<echo>   http (delegates to http services such as SIAP servers)</echo>		
+		<input addproperty="input.cea.flavour" validargs="commandline,http,Java" defaultvalue="commandline">Which flavour of CEA do you wish to (un)install?</input>
+	</target>
+	
+	<target name="set-flavour-dependent-properties" depends="load-flavour-dependent-properties, choose-flavour, get-vanilla-inputs, get-commandline-inputs, get-http-inputs"/>
+	
+	<target name="load-flavour-dependent-properties" depends="choose-flavour">
+		<condition property="cea.flavourdependentpropertiesfile" value="vanilla.properties">
+			<equals arg1="${input.cea.flavour}" arg2="Java"/>
+		</condition>
+		<condition property="cea.flavourdependentpropertiesfile" value="commandline.properties">
+			<equals arg1="${input.cea.flavour}" arg2="commandline"/>
+		</condition>
+		<condition property="cea.flavourdependentpropertiesfile" value="http.properties">
+			<equals arg1="${input.cea.flavour}" arg2="http"/>
+		</condition>		
+		<property file="${cea.flavourdependentpropertiesfile}"/>
+	</target>
+	
+	<!--anything vanilla specific-->
+	<target name="get-vanilla-inputs" depends="load-flavour-dependent-properties" if="cea.flavour.isvanilla">
+		<input addproperty="input.cea.mailserver" defaultvalue="localhost">Please enter the address of your smtp server</input>
+		<input addproperty="input.cea.javaclass.server.class" defaultvalue="org.astrogrid.applications.javaclass.SampleJavaClassApplications">Please enter the fully qualified name of the java class containing the static methods that provide the interface to your application</input>
+	</target>
+	<target name="copy-java-app" if="cea.vanilla.docopy" depends="get-shouldicopy,copy-java-classes,copy-java-jar">
+		
+	</target>
+	<target name="copy-java-classes" if="cea.vanilla.docopyjavaclass" depends="get-classorjar,get-tomcat-location,set-context-path,deploy">
+		<input addproperty="input.cea.vanilla.appclasses.dir" defaultvalue="${user.dir}">Please select the root directory containing the class files for your application</input>
+		<copy todir="${input.tomcat.location.dir}/webapps/${input.cea.contextpath}/WEB-INF/classes" >
+		    <fileset dir="${input.cea.vanilla.appclasses.dir}"/>
+        </copy>
+	</target>
+	<target name="copy-java-jar" if="cea.vanilla.docopyjavajar" depends="get-classorjar,get-tomcat-location,set-context-path,deploy">
+		<input addproperty="input.cea.vanilla.appjar.file" defaultvalue="${user.dir}">Please select the jar file containing your application</input>
+		<copy todir="${input.tomcat.location.dir}/webapps/${input.cea.contextpath}/WEB-INF/lib" file="${input.cea.vanilla.appjar.file}"/>
+	</target>	
+	<target name="get-classorjar" if="cea.vanilla.docopy" depends="get-shouldicopy">
+		<input addproperty="input.cea.install.javatype" defaultvalue="jar" validargs="jar,classes">Is your app packaged as a jar, or as a dir of classes?</input>
+		<condition property="cea.vanilla.docopyjavajar" value="yes">
+			<equals arg1="${input.cea.install.javatype}" arg2="jar"/>
+		</condition>	
+		<condition property="cea.vanilla.docopyjavaclass" value="yes">
+			<equals arg1="${input.cea.install.javatype}" arg2="classes"/>
+		</condition>		
+	</target>
+	<target name="get-shouldicopy" if="cea.flavour.isvanilla">
+		<input addproperty="input.cea.install.java" defaultvalue="yes" validargs="yes,no">Do you wish to install a custom java application?</input>
+		<condition property="cea.vanilla.docopy" value="yes">
+			<equals arg1="${input.cea.install.java}" arg2="yes"/>
+		</condition>
+	</target>
+	<target name="get-tomcat-location" if="cea.vanilla.docopy">
+		<input addProperty="input.tomcat.location.dir" defaultvalue="/usr/local/tomcat">Enter the location of your Tomcat installation</input>		
+	</target>	
+	<!--anything http specific-->
+	<target name="get-http-inputs" depends="load-flavour-dependent-properties" if="cea.flavour.ishttp">
+		
+	</target>
+	<!--anything cmdline specific-->
+	<target name="get-commandline-inputs" depends="load-flavour-dependent-properties" if="cea.flavour.iscommandline">
+		<input addproperty="input.cea.config.file" defaultvalue="${antigen.home}">Please locate the commandline config file for this cea</input>		
+	</target>	
+	
+	<target name="setup-working" description="Initialise the cea working dir" depends="get-working-dir">
+		<mkdir dir="${input.cea.working.dir}/work"/>		
+		<mkdir dir="${input.cea.working.dir}/store"/>
+        <chmod dir="${input.cea.working.dir}/work" perm="a+x">
+                <include name="*.sh" />
+        	    <include name="*.bat"/>
+        </chmod>		
+	</target>
+			
+	<target name="info">
+		<echo>cea installation script</echo>
+		<echoproperties></echoproperties>
+	</target>
+	
+
+		
+    <target name="checkTomcat" depends="fail-if-no-tomcat">
+		<input addProperty="input.tomcat.url" defaultvalue="http://127.0.0.1:8080">Please enter the URL of Tomcat on your system </input>    	
+        <input addProperty="input.tomcat.manager.user" defaultvalue="tomcat">Please enter the Tomcat manager username</input>
+        <input addProperty="input.tomcat.manager.pass" defaultvalue="tomcat">Please enter the Tomcat manager password</input>
+        <echo>Attempting to contact Tomcat Manager...</echo>
+        <tempfile property="page.check"/>
+        <property name="tomcat.manager.url" value="${input.tomcat.url}/manager"/>
+        <get src="${tomcat.manager.url}" dest="${page.check}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}"/>
+        <echo>...OK</echo>
+    </target>	
+
+	<target name="fail-if-no-tomcat">
+		<input addProperty="input.tomcat.present" validargs="continue,abort"> Please ensure that Tomcat is running on your system with the Manager app enabled</input>
+        <condition property="tomcat.present.true">
+	            <equals arg1="${input.tomcat.present}" arg2="continue"/>
+        </condition>
+        <fail message="Please start Tomcat and retry the installation" unless="tomcat.present.true"/>
+	</target>
+	
+    <target name="download" unless="offline" depends="load-flavour-dependent-properties,set-war-location">
+    	<echo>Downloading cea software....this may take some time...</echo>
+    	<mkdir dir="${cea.war.dir}"/>
+        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${cea.war.name}" dest="${cea.war}" verbose="true" usetimestamp="true" ignoreerrors="true"/>
+    	<touch file="${cea.war}"/> <!--temp fix to get task, which doesn't seem to work properly with usetimestamp option-->
+    </target>
+	
+	<target name="set-war-location" depends="load-flavour-dependent-properties">
+		<property name="cea.war.dir" value = "${maven.local.repo}/${astrogrid.groupId}/wars"/>
+		<property name="cea.war" value="${cea.war.dir}/${cea.war.name}"/>
+	</target>
+
+	
+    <target name="deploy" depends="define-custom-tasks,createTmpDir,checkTomcat,fail-if-no-tomcat,update-war,set-context-path">
+        <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
+            path="${input.cea.contextpath}" war="${local.cea.war}" />
+    </target>
+	
+	<target name="set-context-path" depends="load-flavour-dependent-properties">
+		<input addproperty="input.cea.contextpath" defaultvalue="${cea.webapp.defaultcontext}">Please enter the context path on the webserver for cea</input>
+	</target>
+	
+	<target name="get-input-properties" depends="checkTomcat,set-context-path,get-working-dir,checkRegistry,get-registry-key">
+		<property name="cea.service.endpoint.url" value="${input.tomcat.url}${input.cea.contextpath}/services/CommonExecutionConnectorService"/>
+		<property name="cea.ivorn" value="ivo://${input.cea.regauthority}/${input.cea.regkey}"/>
+		<echo>IVORN for this cea is ${cea.ivorn}</echo>		
+	</target>	
+	
+	<target name="get-registry-key">
+		<input addproperty="input.cea.regauthority" defaultvalue="org.astrogrid.localhost">Please enter the Authority under which this CEA is/will be registered.</input>
+		<input addproperty="input.cea.regkey" defaultvalue="${cea.regkey.default}">Please enter the registry key for this CEA server</input>
+	</target>
+	
+	<target name="get-working-dir">
+		<input addproperty="input.cea.working.dir" defaultvalue="${antigen.home}/cea/working">Please enter the location of your working directory</input>
+	</target>
+
+	
+    <target name="undeploy" depends="define-custom-tasks,checkTomcat,set-context-path">
+        <tomcat-remove url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
+            path="${input.cea.contextpath}"  />
+    </target>   
+
+    <target name="update-war" depends="set-war-location,download, get-input-properties, set-flavour-dependent-properties, set-context-path, get-working-dir,checkRegistry,copy-registry-template">
+        <filterset id="myfilter">
+
+            <filter token="CEA_WEBAPP" value="${input.cea.contextpath}"/>
+            <filter token="CEA_WORKING" value="${input.cea.working.dir}"/>  
+        	<!--Registry template file?-->
+        	<filter token="REG_UPDATE" value="${astrogrid.registry.update.endpoint}"/>
+        	<filter token="REG_QUERY" value="${astrogrid.registry.query.endpoint}"/>        
+        	<filter token="CEACMDCONFIG" value="${input.cea.config.file}"/> 
+        	<filter token="REGAUTHORITY" value="${input.cea.regauthority}"/>  
+        	
+        	<filter token="CEA_SERVICE_URL" value="${cea.service.endpoint.url}"/>
+        	<filter token="MAILHOST" value="${input.cea.mailserver}"/> 
+        	<filter token="JAVACLASS" value="${input.cea.javaclass.server.class}"/> 
+        	
+        	<filter token="CEARegistryTemplate" value="${cea.registry.template.file}"/>
+        	
+        </filterset>
+        <copy todir="${cea.temporary.dir}/cea">
+            <filterset refid="myfilter"/>
+            <fileset dir="${cea.context.dir}" />
+        </copy>
+        <copy file="${cea.war}" tofile="${local.cea.war}"/>
+    	<!--update the context.xml-->
+        <war update="yes" destfile="${local.cea.war}">
+            <metainf dir="${cea.temporary.dir}/cea" />
+        </war>
+    </target>
+
+	    
+    <target name="checkRegistry">
+        <input addProperty="input.astrogrid.registry.endpoint" defaultvalue="http://127.0.0.1:8080/astrogrid-registry-SNAPSHOT/">Please enter the URL of your registry</input>
+    	<property name="astrogrid.registry.endpoint" value="${input.astrogrid.registry.endpoint}"/>
+    	<property name="astrogrid.registry.update.endpoint" value="${astrogrid.registry.endpoint}${astrogrid.registry.update.offset}"/>
+    	<property name="astrogrid.registry.query.endpoint" value="${astrogrid.registry.endpoint}${astrogrid.registry.query.offset}"/>
+        <echo>Attempting to contact the registry...</echo>
+        <tempfile property="page.check"/>
+    	<waitfor checkevery="5" checkeveryunit="second" maxwait="120" maxwaitunit="second" timeoutproperty="error.could-not-getregistry">
+    		<http url="${astrogrid.registry.update.endpoint}" />
+    	</waitfor>
+    	<fail if="${error.could-not-getregistry}" message="Unable to contact registry - please check that you can access the url ${astrogrid.registry.update.endpoint}"/>
+        <echo>...OK</echo>
+    </target>
+    
+    	
+	    
+    <target name="createTmpDir">
+        <delete dir="${cea.temporary.dir}"/>
+        <mkdir dir="${cea.temporary.dir}"/>
+    </target>
+	
+	<target name="copy-registry-template" depends="set-war-location,download,get-working-dir,createTmpDir,get-registry-key">	
+		<property name="cea.registry.conf.dir" value="${input.cea.working.dir}/conf"/>
+		<mkdir dir="${cea.registry.conf.dir}"/>
+		<echo>Extracting registry template file ${cea.registry.template} from </echo>
+		<unwar src="${cea.war}"  dest="${cea.temporary.dir}" overwrite="true">
+		    <patternset>
+		        <include name="${cea.registry.template}"/>
+		    </patternset>
+		</unwar>	
+		<input addproperty="input.cea.username" defaultvalue="John Taylor">Please enter the contact name you wish to put in the registry</input>
+		<input addproperty="input.cea.useremail" defaultvalue="jdt@roe.ac.uk">Please enter the contact email you wish to put in the registry</input>		
+		<tstamp>
+			<format property="installation.time" pattern="yyyy-MM-dd"/>
+		</tstamp>
+		<!--Now apply filters to that file-->
+        <filterset id="regfilter">
+            <filter token="REGAUTHORITY" value="${input.cea.regauthority}"/>
+            <filter token="CommonExecutionArchitucture" value="${input.cea.regkey}"/>  
+            <filter token="CONTACT_NAME" value="${input.cea.username}"/>
+            <filter token="CONTACT_EMAIL" value="${input.cea.useremail}"/> 
+        	<filter token="TODAY" value="${installation.time}"/> 
+        </filterset>	
+		<property name="cea.registry.template.file" value="${cea.registry.conf.dir}/${cea.registry.template}"/>		
+		<copy file="${cea.temporary.dir}/${cea.registry.template}" tofile="${cea.registry.template.file}" overwrite="true">
+            <filterset refid="regfilter"/>			
+		</copy>
+
+		<echo>Registry Template File copied to ${cea.registry.template.file}</echo>
+	</target>
+
+
+	
+	<!-- The reason for making these optional is that they might be already
+	     set by an enclosing Maven script-->
+	<target name="define-custom-tasks" unless="custom.tasks.defined">
+		<!-- Configure the custom Ant tasks for the Manager application -->
+	    <taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" />
+	    <taskdef name="tomcat-install" classname="org.apache.catalina.ant.InstallTask" />
+	    <taskdef name="tomcat-list" classname="org.apache.catalina.ant.ListTask" />
+	    <taskdef name="tomcat-reload" classname="org.apache.catalina.ant.ReloadTask" />
+	    <taskdef name="tomcat-remove" classname="org.apache.catalina.ant.RemoveTask" />
+	    <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" />
+	    <taskdef name="tomcat-roles" classname="org.apache.catalina.ant.RolesTask" />
+	    <taskdef name="tomcat-start" classname="org.apache.catalina.ant.StartTask" />
+	    <taskdef name="tomcat-stop" classname="org.apache.catalina.ant.StopTask" />
+	    <taskdef name="tomcat-undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+	</target>
+</project>

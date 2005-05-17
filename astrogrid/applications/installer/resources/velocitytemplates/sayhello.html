@@ -1,0 +1,79 @@
+<h1>AstroGrid CEA Installer</h1>
+Version @VERSION@.   Built @NOW@.
+<h2>Introduction</h2>
+<br>
+This software will install the AstroGrid CEA component, allowing you to integrate applications with
+the AstroGrid architecture.<br>
+Please read the following information before commencing installation.<br>
+For information on this and other AstroGrid components see the
+software site <a href="http://software.astrogrid.org">http://software.astrogrid.org</a>.
+<h2>Prerequisites</h2>
+<ol>
+  <li>A target machine running Tomcat 5.0 or higher, with the Manager
+webapp enabled</li>
+  <li>Username and password for the Manager webapp</li>
+  <li>An AstroGrid Registry (for
+example: <tt>http://hydra.star.le.ac.uk:8080/astrogrid-registry</tt>
+)</li>
+  <li>Java jdk 1.4 (probably present if you are reading this!)</li>
+</ol>
+<h2>Installation</h2>
+This installer will guide you through the installation process, downloading any necessary software and
+prompting you for configuration options.  If you have previously installed CEA, you can use the installer
+to remove this instance, reinstall it, or register it.  You will be prompted to save your settings for future use.
+<br>
+<b>Important Note</b><br>
+If you are installing a CEA that is to be used and registered externally to the target machine you MUST
+replace the Tomcat URL of "http://127.0.0.1:8080" with the full externally visible URL when prompted. 
+See also <em>Using a proxy</em> below.
+<br>
+<h2>Flavours of CEA</h2>
+The CEA comes in three flavours, according to the type of application you wish to integrate with AstroGrid.  During installation you will be prompted for the flavour of CEA you wish to install.
+
+There are slight differences in the installation process for each, but in all cases you will be prompted for a working 
+directory that must be writable by Tomcat, and some details for the registry entry that will be created, should you decide to register.
+<h3>Java</h3>
+If you have an application written in Java the first step is to create a class containing static methods exposing the interface to AstroGrid.  You will be prompted for the fully qualified name
+of this class during installation, and the CEA will use reflection to construct the registry entry.  Your Java application should be packaged as a single jar file or as a single folder of classes.
+The installer will offer to copy your custom jar or class files into the correct location on Tomcat - if your application consists of several jar files then you should copy them by hand.<br>
+Note that by default, the Java CEA comes with some built-in applications such as sendmail, and these will be available in addition to your supplied application.
+<h3>Commandline</h3>
+Legacy applications should be packaged in such a way as to be executable from the commandline.  Before installing the CEA you should ensure that the commandline application is available and 
+functioning correctly, and that you have prepared a commandline configuration file describing the parameters it takes (see <a href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/integrationTests/auto-integration/work/cea/commandline/config/TestApplicationConfig.xml">http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/integrationTests/auto-integration/work/cea/commandline/config/TestApplicationConfig.xml</a>).
+You will be prompted for this file during installation.
+<h3>http</h3>
+The http CEA allows you to plug existing web-based applications into AstroGrid.  Currently this is limited to SIAP services.
+<h2>Self-registration</h2>
+The CEA can self-register, constructing the registry entry from the metadata for the applications it is serving.<br>  The installer will gather basic information such as contact details for 
+    the registry entry, but if you require more control over the registration process please see the CEA <a href="http://www.astrogrid.org/maven/docs/HEAD/applications/index.html">documentation</a>.
+Note:
+<ul>
+    <li>Until bug <a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1158">1158</a> is fixed, the registry entry is v0.9 only</li>
+<li>The http CEA needs to query the registry to discover which SIAP services it is proxying. These entries should be in place first, so that the     self-registration 
+    mechanism can correctly build the entry for the CEA server itself. See the registry entry for this <a 
+    href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/integrationTests/auto-integration/registry-entries/CEAHttpapps.xml">example service</a>. </li>
+</ul>
+<h2>Installing from behind a proxy/firewall</h2>
+The installer attempts to download any files it needs from the AstroGrid repository.  If you are behind a firewall or use an internet proxy cache
+see <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">Firewalls/proxies</a>.
+
+<h2>Using a proxy to access the CEA</h2>
+The CEA needs to know its own service URL in order to register itself properly.  Normally, this is not a problem
+since the URL can be constructed from the user-supplied Tomcat URL and context path.  However,
+if you wish to use a different URL to proxy this service then you must override that calculated by the installer.
+To do this, supply the overridden value on the commandline:<br>
+    <tt>java -jar (install.jar) -Dcea.service.endpoint.url=http://yourproxy/applicationpath/services/CommonExecutionConnectorService</tt>
+<h2>Install offline</h2>
+If you have previously run the installer and downloaded the necessary files to your local disk, then you can rerun the installer in offline mode by passing the offline=true properties to the installer<br>
+    <tt>java -jar (installer.jar) -Doffline=true</tt><br>
+Other useful properties you can override on the commandline are:
+<ul>
+    <li><tt>maven.local.repo=${user.home}/.maven/repository</tt> location for the installer to download files</li>
+    <li><tt>cea.war.name=astrogrid-cea-server-${version}.war</tt> the name of the war file to install</li>
+    
+</ul>
+<h2>License</h2>
+This software is released under the Academic Free License.
+
+Installation and use of the software implies acceptance of our License,
+full details may be found <a href="http://www.astrogrid.org/maven/docs/HEAD/applications/license.html">here</a>.

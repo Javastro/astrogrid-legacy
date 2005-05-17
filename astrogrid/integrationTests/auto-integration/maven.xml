@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.143 2005/04/08 15:00:24 clq2 Exp $ -->
+<!-- $Id: maven.xml,v 1.144 2005/05/17 23:07:54 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -39,8 +39,7 @@
 <property name="existurl" value="${tomcat.url}/exist/servlet/db"/>
 <!-- properties that should be overridden when deploying real components -->
 <property name="cea.app.id" value="testdsa" /><!--this is a property that will be set when installing a single cea application-->
-<property name="cea.cmd.config" value="file://${work.dir}/cea/commandline/config/TestApplicationConfig.xml"/>
-<property name="cea.reg.template" value="file://${work.dir}/cea/CEARegistryTemplate.xml"/>
+<property name="cea.cmd.config" value="${work.dir}/cea/commandline/config/TestApplicationConfig.xml"/>
 <property name="toolbasedir" value="${work.dir}/cea/commandline/work/" />
 <property name="registry.exclusions" value="examples/**" />
 
@@ -50,7 +49,9 @@
 <property name="aginab.filemanager1.contextpath" value="/astrogrid-filemanager-one-SNAPSHOT"/>
 <property name="aginab.portal.contextpath" value="/astrogrid-portal"/> <!--Do not change this one-->
 <property name="aginab.registry.contextpath" value="/astrogrid-registry-SNAPSHOT"/>
-
+<property name="aginab.ceajava.contextpath" value="/astrogrid-cea-server-SNAPSHOT"/>
+<property name="aginab.ceacmdline.contextpath" value="/astrogrid-cea-commandline-SNAPSHOT"/>
+<property name="aginab.ceahttp.contextpath" value="/astrogrid-cea-http-SNAPSHOT"/>
 
 <!--Component URLs-->
 <property name="aginab.jes.url" value="${tomcat.url}${aginab.jes.contextpath}/"/>
@@ -80,30 +81,28 @@
 <property name="config.webapp.name" value="astrogrid-autoconfiguration" />
 <property name="testdata.webapp.name" value="astrogrid-testdata"/>
 
-        <j:if test="${empty(context.getVariable('registry.authorityid'))}">
-                <j:set var="registry.authorityid" value="org.astrogrid.localhost"/>
-        </j:if>
+<j:if test="${empty(context.getVariable('registry.authorityid'))}">
+	<j:set var="registry.authorityid" value="org.astrogrid.localhost"/>
+</j:if>
 
-	    <property name="communityid" value="${registry.authorityid}" /> <!--NB in general it is *not* true that community=authority this is a temporary measure to start the refactoring of the code-->
-	
-        <!-- tokens to subst into config files -->
-        <filter token="WORKDIR" value="${work.dir}" />
-        <filter token="CONFIGPATH" value="${tomcat.url}/${config.webapp.name}" />
-        <filter token="TOMCATROOT" value="${tomcat.url}" />
-        <filter token="TOMCATLOC" value="${tomcat.location}" />
-        <filter token="REGAUTHORITY" value="${registry.authorityid}" />
-        <filter token="COMMUNITYID" value="${communityid}" />
+<property name="communityid" value="${registry.authorityid}" /> <!--NB in general it is *not* true that community=authority this is a temporary measure to start the refactoring of the code-->
 
-        <filter token="TOMCATPORT" value="${tomcat.port}"/>
-        <filter token="VERSION" value="${astrogrid.iteration}"/>
-        <filter token="MAILHOST" value="${mailhost}" />
-        <filter token="TOOLBASEDIR" value="${toolbasedir}"/> <!--this is the directory that is the root of CEA command line applications set it to the workdir for autointegration purposes-->
-        <filter token="CENTRALREGISTRY" value="${registry.endpoint}"/>
-        <filter token="TOMCATUSER" value="${tomcat.manager.username}"/>
-        <filter token="TOMCATPASS" value="${tomcat.manager.password}"/>
-		<filter token="CEAAPPID" value="${cea.app.id}"/>
-		<filter token="CEACMDCONFIG" value="${cea.cmd.config}" />
-		<filter token="CEAREGTEMPLATE" value="${cea.reg.template}" />
+<!-- tokens to subst into config files -->
+<filter token="WORKDIR" value="${work.dir}" />
+<filter token="CONFIGPATH" value="${tomcat.url}/${config.webapp.name}" />
+<filter token="TOMCATROOT" value="${tomcat.url}" />
+<filter token="TOMCATLOC" value="${tomcat.location}" />
+<filter token="REGAUTHORITY" value="${registry.authorityid}" />
+<filter token="COMMUNITYID" value="${communityid}" />
+
+<filter token="TOMCATPORT" value="${tomcat.port}"/>
+<filter token="VERSION" value="${astrogrid.iteration}"/>
+<filter token="MAILHOST" value="${mailhost}" />
+<filter token="TOOLBASEDIR" value="${toolbasedir}"/> <!--this is the directory that is the root of CEA command line applications set it to the workdir for autointegration purposes-->
+<filter token="CENTRALREGISTRY" value="${registry.endpoint}"/>
+<filter token="TOMCATUSER" value="${tomcat.manager.username}"/>
+<filter token="TOMCATPASS" value="${tomcat.manager.password}"/>
+<filter token="CEAAPPID" value="${cea.app.id}"/>
 
 <!-- setup -->
 <goal name="astrogrid-clean" prereqs="clean:clean">
@@ -312,10 +311,7 @@
         <attainGoal name="setup-exist" />
         <attainGoal name="setup-registry" />
         <attainGoal name="setup-community"/>
-        <attainGoal name="setup-cea-server" />
-        <attainGoal name="setup-cea-commandline" />
         <attainGoal name="setup-cea-http" />
-<!--        <attainGoal name="setup-myspace" />-->
         <attainGoal name="setup-filestore" />
         <attainGoal name="setup-filemanager" />
         <attainGoal name="copy-test-resources" />
@@ -344,25 +340,12 @@
         </chmod>
 </goal>
 
-<goal name="setup-cea-server">
-        <mkdir dir="${work.dir}/cea/java/store" />
-</goal>
-
 <goal name="setup-cea-http">
         <mkdir dir="${work.dir}/cea/http/store" />
 </goal>
 
-<goal name="setup-cea-commandline" description="setup specific to commandline cea server">
-        <mkdir dir="${work.dir}/cea/commandline/store" />
-        <chmod dir="${work.dir}/cea/commandline/work" perm="a+x">
-                <include name="*.sh" />
-        </chmod>
-</goal>
-<!--
-<goal name="setup-myspace" description="myspace setup">
-    <echo>Configuring Myspace</echo>
-</goal>
--->
+
+
 <goal name="setup-filestore" description="filestore setup">
     <echo>Configuring test data and repository for filestore one ....</echo>
     <mkdir dir="${work.dir}/filestore-one/repository"/>
@@ -637,9 +620,6 @@
 
 <!-- pregoals ///////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-  <preGoal name="java:compile">
-     <mkdir dir="${basedir}/target/classes" />     <!-- Clover fails if this dir is not present -->
-  </preGoal>
 
   <preGoal name="test:test-resources">
         <attainGoal name="copy-test-resources" />
@@ -703,48 +683,181 @@
 </goal>
 
 <!-- context- driven webapps ////////////////////////////////-->
+<!--
+    Deploy/Undeploy CEA
+    -->
 
-<goal name="cea-server-deploy"   >
-        <copy todir="${temporary.dir}/cea-server" filtering="true">
-                <fileset dir="contexts/cea-server" />
-        </copy>
-       <ag:maybe-enable-cougaar webapp="cea-server" />
-        <war update="true" destfile="${temporary.dir}/astrogrid-cea-server-${astrogrid.applications.version}.war">
-                <metainf dir="${temporary.dir}/cea-server"/>
-        </war>
+    <!--CEA deploy/undeploy is now handled by a self-contained Ant script in the CEA project itself.
+    Please see astrogrid/cea/deployment -->
+    
+    <!--Vanilla (Java) version-->
+<goal name="cea-server-deploy" prereqs="override-input-task,init,cea-init">
+        <ant dir="${cea.deployment.jar.unpacked}" target="install" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            <property name="input.cea.flavour" value="Java"/>
+            <property name="input.cea.contextpath" value="${aginab.ceajava.contextpath}"/>
+			<property name="input.cea.working.dir" value="${work.dir}/cea/java"/>
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>            
+			<property name="input.cea.regauthority" value="${registry.authorityid}"/>
+			<!--currently the following matches that in registry-entries/JavaAppsCEA.xml
+			When the self-reg is working properly with v0.10 the above file will no longer be needed-->
+            <property name="input.cea.regkey" value="JavaProviderCEC"/>
+     		<property name="input.cea.mailserver" value="${mailhost}"/>
+		    <property name="input.cea.javaclass.server.class" value="org.astrogrid.applications.javaclass.SampleJavaClassApplications"/>
+            
+            <!--The following entries are used by the CEA to generate a registry entry...however,
+            this entry is not used at the moment as it's v0.9-->
+			<property name="input.cea.username" value="John Taylor"/>
+			<property name="input.cea.useremail" value="jdt@roe.ac.uk"/>
 
-  <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-cea-server-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-cea-server-${astrogrid.applications.version}.war"/>
-
+            
+            <!--stick with the built-in apps-->
+            <property name="input.cea.install.java" value="no"/>
+      </ant>
+      <!--Self register.  Currently this only registers v0.9 of the schema, until bug 1159 is fixed-->
+      <ant dir="${cea.deployment.jar.unpacked}" target="register" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            <property name="input.cea.flavour" value="Java"/>
+            <property name="input.cea.contextpath" value="${aginab.ceajava.contextpath}"/>
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>            
+      </ant>      
 </goal>
 
-<goal name="cea-commandline-deploy" >
-    <copy todir="${temporary.dir}/cea-commandline" filtering="true">
-        <fileset dir="contexts/cea-commandline" />
-    </copy>
-    <echo> using config file ${cea.cmd.config} </echo>
-    <ag:maybe-enable-cougaar webapp="cea-commandline" />
-    <war update="true" destfile="${temporary.dir}/astrogrid-cea-commandline-${astrogrid.applications.version}.war">
-        <metainf dir="${temporary.dir}/cea-commandline"/>
-    </war>
-    <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" 
-        path="/astrogrid-cea-commandline-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-cea-commandline-${astrogrid.applications.version}.war"/>
+<goal name="cea-server-undeploy" prereqs="override-input-task,init,cea-init">
+        <ant dir="${cea.deployment.jar.unpacked}" target="remove" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            <property name="input.cea.flavour" value="Java"/>
+            <property name="input.cea.contextpath" value="${aginab.ceajava.contextpath}"/>
+    </ant>
 </goal>
 
-<goal name="cea-http-deploy" >
-        <copy todir="${temporary.dir}/cea-http" filtering="true">
-                <fileset dir="contexts/cea-http" />
-        </copy>
-       <ag:maybe-enable-cougaar webapp="cea-http" />
-        <war update="true" destfile="${temporary.dir}/astrogrid-cea-http-${astrogrid.applications.version}.war">
-                <metainf dir="${temporary.dir}/cea-http"/>
-        </war>
+    <!--Commandline version-->
+<goal name="cea-commandline-deploy" prereqs="override-input-task,init,cea-init">
+		<!--By moving the unwaring to a separate project, I've broken the cougaar setup.  Need to think about
+		best way of restoring it-->
+		<!--ag:maybe-enable-cougaar webapp="cea-server" /-->
+        <ant dir="${cea.deployment.jar.unpacked}" target="install" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            <property name="input.cea.flavour" value="commandline"/>
+            <property name="input.cea.contextpath" value="${aginab.ceacmdline.contextpath}"/>
+			<property name="input.cea.working.dir" value="${work.dir}/cea/commandline"/>
+			<property name="input.cea.config.file" value="${cea.cmd.config}"/>
+			
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>            
+			<property name="input.cea.regauthority" value="${registry.authorityid}"/>
+			<!--currently the following matches that in registry-entries/CEAEntriesv10.xml
+			When the self-reg is working properly with v0.10 the above file will no longer be needed-->
+            <property name="input.cea.regkey" value="cea-cmdline-test"/>
+     		<!--property name="input.cea.mailserver" value="${mailhost}"/-->
+		    
+            
+            <!--The following entries are used by the CEA to generate a registry entry...however,
+            this entry is not used at the moment as it's v0.9-->
+			<property name="input.cea.username" value="John Taylor"/>
+			<property name="input.cea.useremail" value="jdt@roe.ac.uk"/>
 
-  <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-cea-http-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-cea-http-${astrogrid.applications.version}.war"/>
-
+            
+      </ant>
+    
+      <!--Self register.  Currently this only registers v0.9 of the schema, until bug 1159 is fixed-->
+      <ant dir="${cea.deployment.jar.unpacked}" target="register" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            <property name="input.cea.flavour" value="commandline"/>
+            <property name="input.cea.contextpath" value="${aginab.ceacmdline.contextpath}"/>			
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>            
+     </ant>
 </goal>
 
+<goal name="cea-commandline-undeploy" prereqs="override-input-task,init,cea-init">
+        <ant dir="${cea.deployment.jar.unpacked}" target="remove" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            <property name="input.cea.flavour" value="commandline"/>
+            <property name="input.cea.contextpath" value="${aginab.ceacmdline.contextpath}"/>
+    </ant>
+</goal>
+
+<!--http version-->
+<goal name="cea-http-deploy" prereqs="override-input-task,init,cea-init">
+		<!--By moving the unwaring to a separate project, I've broken the cougaar setup.  Need to think about
+		best way of restoring it-->
+		<!--ag:maybe-enable-cougaar webapp="cea-server" /-->
+        <ant dir="${cea.deployment.jar.unpacked}" target="install" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            <property name="input.cea.flavour" value="http"/>
+            <property name="input.cea.contextpath" value="${aginab.ceahttp.contextpath}"/>
+			<property name="input.cea.working.dir" value="${work.dir}/cea/http"/>
+			
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>            
+			<property name="input.cea.regauthority" value="${registry.authorityid}"/>
+			<!--currently the following matches that in registry-entries/CEAEntriesv10.xml
+			When the self-reg is working properly with v0.10 the above file will no longer be needed-->
+            <property name="input.cea.regkey" value="TestHttpCEC"/>
+   
+            
+            <!--The following entries are used by the CEA to generate a registry entry...however,
+            this entry is not used at the moment as it's v0.9-->
+			<property name="input.cea.username" value="John Taylor"/>
+			<property name="input.cea.useremail" value="jdt@roe.ac.uk"/>
+      </ant>
+    
+      <!--Self register.  Currently this only registers v0.9 of the schema, until bug 1159 is fixed-->
+      <ant dir="${cea.deployment.jar.unpacked}" target="register" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            <property name="input.cea.flavour" value="http"/>
+            <property name="input.cea.contextpath" value="${aginab.ceahttp.contextpath}"/>			
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>            
+     </ant>
+</goal>
+
+<goal name="cea-http-undeploy" prereqs="override-input-task,init,cea-init">
+        <ant dir="${cea.deployment.jar.unpacked}" target="remove" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            <property name="input.cea.flavour" value="http"/>
+            <property name="input.cea.contextpath" value="${aginab.ceahttp.contextpath}"/>
+    </ant>
+</goal>
+
+<goal name="cea-init">
+   <property name="cea.deployment.jar.unpacked" value="${temporary.dir}/cea"/>
+   <unjar src="${temporary.dir}/astrogrid-cea-deploy-script-${astrogrid.applications.version}.jar" 
+    dest="${cea.deployment.jar.unpacked}"/>
+</goal>
 
 <goal name="reg-deploy" >
     	<copy todir="${temporary.dir}/registry" filtering="true">
@@ -768,21 +881,7 @@
 			
 	
 	
-<!--
-<goal name="myspace-deploy" >
-        <copy todir="${temporary.dir}/myspace" filtering="true">
-                <fileset dir="contexts/myspace" />
-        </copy>
-        <ag:maybe-enable-cougaar webapp="mySpace" />
-        <war update="true" destfile="${temporary.dir}/astrogrid-mySpace-${astrogrid.mySpace.version}.war">
-                <metainf dir="${temporary.dir}/myspace"/>
-        </war>
 
-  <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-mySpace-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-mySpace-${astrogrid.mySpace.version}.war"/>
-
-</goal>
--->
 <goal name="filestore-deploy">
     <!--+
         | Deploy filestore one.
@@ -959,6 +1058,8 @@
     <taskdef name="input" classname="org.apache.tools.ant1point6.taskdefs.Input" classpathref="maven.dependency.classpath"/>
     <property name="input.test" value="foo"/>
     <input addProperty="input.test">If this has worked, execution should continue at this point</input>
+    <echo>The Get Task in Ant 1.5.3 has a bug - it will often redownload files whose timestamps are the same as the existing file</echo>
+    <taskdef name="get" classname="org.apache.tools.ant1point6.taskdefs.Get" classpathref="maven.dependency.classpath"/>
 </goal>
 
 
@@ -978,7 +1079,7 @@
             <property name="input.astrogrid.jes.endpoint" value="${aginab.jes.url}"/>
             <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
             <property name="input.mail.admin" value="jdt@roe.ac.uk"/>
-            <property name="input.mail.server" value="127.0.0.1"/>
+            <property name="input.mail.server" value="${mailhost}"/>
             <property name="input.mail.from" value="donotreply@astrogrid.org"/>
             <property name="input.mail.user" value="astrogrid"/>
             <property name="input.mail.pass" value=""/>
@@ -1021,7 +1122,7 @@
       </ant>
 </goal>
 
-<goal name="jes-undeploy" >
+<goal name="jes-undeploy" prereqs="override-input-task,init,jes-init">
         <ant dir="${jes.deployment.jar.unpacked}" target="remove-jes" >
             <property name="tasks.already.set" value="yes"/>
             <property name="input.tomcat.present" value="continue"/>
@@ -1130,18 +1231,8 @@
         />
 </goal>
 
-<goal name="cea-server-undeploy" >
 
-  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-cea-server-${pom.currentVersion}" />
 
-</goal>
-<goal name="cea-commandline-undeploy" >
-
-  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-cea-commandline-${pom.currentVersion}" />
-
-</goal>
 <goal name="cea-http-undeploy" >
 
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"

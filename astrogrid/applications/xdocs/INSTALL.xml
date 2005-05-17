@@ -12,13 +12,13 @@
 
 <ul>
 	<li>
-		<a href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-commandline-SNAPSHOT.war">CommandLine</a>
+		<a href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-commandline-${astrogrid.cea.version}.war">CommandLine</a>
 	</li>
 	<li>
-		<a href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-http-SNAPSHOT.war">HTTP</a>
+		<a href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-http-${astrogrid.cea.version}.war">HTTP</a>
 	</li>
 	<li>
-		<a href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-server-SNAPSHOT.war">Bare server</a>
+		<a href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-server-${astrogrid.cea.version}.war">Bare server</a>
 	</li>
 </ul>
 

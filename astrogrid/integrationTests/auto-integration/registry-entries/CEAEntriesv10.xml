@@ -526,12 +526,12 @@
 <vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaApplicationType">
     	<title>TemplateEntry</title>
         <shortName>TemplateEntry</shortName>
-	   	<identifier>ivo://@REGAUTHORITY@/testap3</identifier>
+	   	<identifier>ivo://@REGAUTHORITY@/wintestapp</identifier>
  <curation>
   <publisher>Main Astrogrid Full Registry</publisher>
   <contact>
-   <name>Paul Harrison</name>
-   <email>pah@jb.man.ac.uk</email>
+   <name>John Taylor</name>
+   <email>jdt@roe.ac.uk</email>
   </contact>
  </curation>
  <content>
@@ -540,39 +540,82 @@
   <referenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</referenceURL>
   <type>Other</type>
  </content>
-        <cea:ApplicationDefinition>
-            <cea:Parameters>
-                <cea:ParameterDefinition name="p1" type="integer">
-                    <ceapd:UI_Name>String</ceapd:UI_Name>
-                    <ceapd:UI_Description>Text</ceapd:UI_Description>
-                    <ceapd:UCD>String</ceapd:UCD>
-                    <ceapd:DefaultValue>Text</ceapd:DefaultValue>
-                    <ceapd:Units>String</ceapd:Units>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="p2" type="integer">
-                    <ceapd:UI_Name>String</ceapd:UI_Name>
-                    <ceapd:UI_Description>Text</ceapd:UI_Description>
-                    <ceapd:UCD>String</ceapd:UCD>
-                    <ceapd:DefaultValue>Text</ceapd:DefaultValue>
-                    <ceapd:Units>String</ceapd:Units>
-                </cea:ParameterDefinition>
-            </cea:Parameters>
-            <cea:Interfaces>
-                <ceab:Interface name="ID000001">
-                    <ceab:input>
-                        <ceab:pref ref="p2" minoccurs="1" maxoccurs="1"/>
-                    </ceab:input>
-                    <ceab:output>
-                        <ceab:pref ref="p1" minoccurs="1" maxoccurs="1"/>
-                    </ceab:output>
-                </ceab:Interface>
-            </cea:Interfaces>
-        </cea:ApplicationDefinition>
-    </vor:Resource>
+ 	<cea:ApplicationDefinition>
+        <!--This is a windows application - it probably won't work on Un*x-->
+		<cea:Parameters>
+			<cea:ParameterDefinition name="name" type="text">
+				<ceapd:UI_Name>Name</ceapd:UI_Name>
+				<ceapd:UI_Description>This is the name to greet</ceapd:UI_Description>
+				<ceapd:DefaultValue>John</ceapd:DefaultValue>
+				<ceapd:Units></ceapd:Units>
+			</cea:ParameterDefinition>
+			<cea:ParameterDefinition name="output" type="text">
+				<ceapd:UI_Name>Output</ceapd:UI_Name>
+				<ceapd:UI_Description>The greeting</ceapd:UI_Description>
+			</cea:ParameterDefinition>
+		</cea:Parameters>
+		<cea:Interfaces>
+			<ceab:Interface name="I">
+				<ceab:input>
+					<ceab:pref ref="name"/>
+				</ceab:input>
+				<ceab:output>
+                    <ceab:pref ref="output"/>
+				</ceab:output>
+			</ceab:Interface>
+		</cea:Interfaces>
+	</cea:ApplicationDefinition>
+</vor:Resource>
+<vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaApplicationType">
+    <title>TemplateEntry</title>
+    <shortName>TemplateEntry</shortName>
+    <identifier>ivo://@REGAUTHORITY@/testap3</identifier>
+    <curation>
+        <publisher>Main Astrogrid Full Registry</publisher>
+        <contact>
+            <name>Paul Harrison</name>
+            <email>pah@jb.man.ac.uk</email>
+        </contact>
+    </curation>
+    <content>
+        <subject>TemplateEntry</subject>
+        <description>This is part of the astrogrid CEA.</description>
+        <referenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</referenceURL>
+        <type>Other</type>
+    </content>
+    <cea:ApplicationDefinition>
+        <cea:Parameters>
+            <cea:ParameterDefinition name="p1" type="integer">
+                <ceapd:UI_Name>String</ceapd:UI_Name>
+                <ceapd:UI_Description>Text</ceapd:UI_Description>
+                <ceapd:UCD>String</ceapd:UCD>
+                <ceapd:DefaultValue>Text</ceapd:DefaultValue>
+                <ceapd:Units>String</ceapd:Units>
+            </cea:ParameterDefinition>
+            <cea:ParameterDefinition name="p2" type="integer">
+                <ceapd:UI_Name>String</ceapd:UI_Name>
+                <ceapd:UI_Description>Text</ceapd:UI_Description>
+                <ceapd:UCD>String</ceapd:UCD>
+                <ceapd:DefaultValue>Text</ceapd:DefaultValue>
+                <ceapd:Units>String</ceapd:Units>
+            </cea:ParameterDefinition>
+        </cea:Parameters>
+        <cea:Interfaces>
+            <ceab:Interface name="ID000001">
+                <ceab:input>
+                    <ceab:pref ref="p2" minoccurs="1" maxoccurs="1"/>
+                </ceab:input>
+                <ceab:output>
+                    <ceab:pref ref="p1" minoccurs="1" maxoccurs="1"/>
+                </ceab:output>
+            </ceab:Interface>
+        </cea:Interfaces>
+    </cea:ApplicationDefinition>
+</vor:Resource>
     <vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaServiceType">
     	<title>TemplateEntry</title>
         <shortName>TemplateEntry</shortName>
-	   	<identifier>ivo://@REGAUTHORITY@/TemplateEntry</identifier>
+	   	<identifier>ivo://@REGAUTHORITY@/cea-cmdline-test</identifier>
  <curation>
   <publisher>Main Astrogrid Full Registry</publisher>
   <contact>
@@ -589,10 +632,11 @@
     <interface xsi:type="vs:WebService">
 		<accessURL use="full">@TOMCATROOT@/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</accessURL>
     </interface> 
-                      <cea:ManagedApplications>
+    <cea:ManagedApplications>
       <cea:ApplicationReference>ivo://@REGAUTHORITY@/testap2</cea:ApplicationReference>
       <cea:ApplicationReference>ivo://@REGAUTHORITY@/testapp</cea:ApplicationReference>
       <cea:ApplicationReference>ivo://@REGAUTHORITY@/testap3</cea:ApplicationReference>
-                </cea:ManagedApplications>
+      <cea:ApplicationReference>ivo://@REGAUTHORITY@/wintestapp</cea:ApplicationReference>      
+    </cea:ManagedApplications>
     </vor:Resource>
 </vor:VOResources>

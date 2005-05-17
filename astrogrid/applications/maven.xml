@@ -88,23 +88,15 @@ middle to commandline tests - no jar produced, no error messages. so written all
 </goal>
 <goal name="astrogrid-install-artifact">
    <echo message="Master Project: astrogrid-install-artifact"/>
-   <!--
+
    <maven:reactor
      basedir="${basedir}"
      postProcessing="false"
      includes="*/project.xml"
      goals="astrogrid-install-artifact"
      banner="installing artifacts"
-     ignoreFailures="true" />
-     -->
-     <maven:maven descriptor="${basedir}/client/project.xml"
-        goals="astrogrid-install-artifact" ignoreFailures="false" />
-     <maven:maven descriptor="${basedir}/server/project.xml"
-        goals="astrogrid-install-artifact" ignoreFailures="false" />
-     <maven:maven descriptor="${basedir}/commandline/project.xml"
-        goals="astrogrid-install-artifact" ignoreFailures="false" />
-     <maven:maven descriptor="${basedir}/http/project.xml"
-        goals="astrogrid-install-artifact" ignoreFailures="false" />
+     ignoreFailures="false" />
+
 
 </goal>
 
