@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.145 2005/05/18 10:03:05 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.146 2005/05/18 15:27:23 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -311,7 +311,6 @@
         <attainGoal name="setup-exist" />
         <attainGoal name="setup-registry" />
         <attainGoal name="setup-community"/>
-        <attainGoal name="setup-cea-http" />
         <attainGoal name="setup-filestore" />
         <attainGoal name="setup-filemanager" />
         <attainGoal name="copy-test-resources" />
