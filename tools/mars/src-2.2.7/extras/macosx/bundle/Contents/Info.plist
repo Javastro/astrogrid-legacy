@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleAllowMixedLocalizations</key>
+	<string>true</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>xml</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Mars configuration file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>JavaApplicationStub</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Mars 2.2.5 ©2004 Leapfrog R&amp;D LLC</string>
+	<key>CFBundleIconFile</key>
+	<string>mars.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.altara.mars</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Mars</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>Mkmw</string>
+	<key>CFBundleVersion</key>
+	<string>2.2.5</string>
+	<key>Java</key>
+	<dict>
+		<key>Arguments</key>
+		<string>--home /Library/Leapfrog/Mars</string>
+		<key>ClassPath</key>
+		<string>$JAVAROOT/mars.jar</string>
+		<key>JVMVersion</key>
+		<string>1.4+</string>
+		<key>MainClass</key>
+		<string>org.altara.mars.Main</string>
+	</dict>
+</dict>
+</plist>

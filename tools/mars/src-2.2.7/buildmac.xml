@@ -1,0 +1,31 @@
+<project name="Mars.app" default="bundle">
+  <target name="bundle">
+    <property name="macpkg" value="${dist}/macpkg/root"/>
+    <property name="macrsrc" value="${dist}/macpkg/rsrc"/>
+    <property name="macapp" value="${macpkg}/Applications/Mars.app"/>
+    <property name="maclib" value="${macpkg}/Library/Leapfrog/Mars"/>
+
+    <!-- set up bundle heirarchy -->
+    <copy todir="${macapp}">
+      <fileset dir="extras/macosx/bundle"/>
+    </copy>
+    <!-- snag the stub -->
+    <copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" 
+	  todir="${macapp}/Contents/MacOS"/>
+    <exec executable="chmod">
+      <arg line="755 ${macapp}/Contents/MacOS/JavaApplicationStub"/>
+    </exec>
+    <!-- add the jarfile -->
+    <copy file="${dist}/mars.jar" 
+	  todir="${macapp}/Contents/Resources/Java"/>
+    <!-- add plugins and extensions  -->
+    <copy todir="${maclib}">
+      <fileset dir="${dist}" includes="mars-def.xml"/>
+      <fileset dir="${dist}/extras" includes="*.jar"/>
+    </copy>
+    <!-- copy packagemaker resources -->
+    <copy todir="${macrsrc}">
+      <fileset dir="extras/macosx/pkgrsrc"/>
+    </copy>
+ </target>
+ </project>

@@ -1,0 +1,57 @@
+<mdef:definition xmlns:mdef="http://www.altara.org/mars/xmlns/def/">
+    <mdef:svctype name="http" defaultPort="80">
+        <mdef:param name="host" label="Hostname" default="%%(remote-hostname)"/>
+        <mdef:param name="url" label="Path" default="/"/>
+	<mdef:script>
+            <mdef:send>HEAD<mdef:space/><mdef:param name="url"/><mdef:space/>HTTP/1.1<mdef:crlf/>Host:<mdef:space/><mdef:param name="host"/><mdef:crlf/>User-agent: MARS/<mdef:version/><mdef:crlf/><mdef:crlf/></mdef:send>
+            <mdef:fail><mdef:regex pattern="HTTP/1.\d [45]\d{2}"/></mdef:fail>
+            <mdef:expect><mdef:regex pattern="HTTP/1.\d [123]\d{2}"/></mdef:expect>
+        </mdef:script>
+    </mdef:svctype>
+    <mdef:svctype name="http-regexp" defaultPort="80">
+        <mdef:param name="host" label="Hostname" default="%%(remote-hostname)"/>
+        <mdef:param name="url" label="Path" default="/"/>
+	<mdef:param name="okPattern" label="Regexp (success)" default="^.*$"/>
+	<mdef:param name="failPattern" label="Regexp (failure)" default=""/>
+	<mdef:script>
+            <mdef:send>GET<mdef:space/><mdef:param name="url"/><mdef:space/>HTTP/1.1<mdef:crlf/>Host:<mdef:space/><mdef:param name="host"/><mdef:crlf/>User-agent: MARS/<mdef:version/><mdef:crlf/><mdef:crlf/></mdef:send>
+            <mdef:fail><mdef:regex pattern="HTTP/1.\d [45]\d{2}"/></mdef:fail>
+            <mdef:expect><mdef:regex pattern="HTTP/1.\d [123]\d{2}"/></mdef:expect>
+	    <mdef:fail><mdef:regex name="failPattern"/></mdef:fail>
+	    <mdef:expect><mdef:regex name="okPattern"/></mdef:expect>
+        </mdef:script>
+    </mdef:svctype>
+    <mdef:svctype name="ssh" defaultPort="22">
+        <mdef:script>
+            <mdef:expect>SSH</mdef:expect>
+        </mdef:script>
+    </mdef:svctype>
+    <mdef:svctype name="ftp" defaultPort="21">
+        <mdef:script>
+            <mdef:expect>220</mdef:expect>
+        </mdef:script>
+    </mdef:svctype>
+    <mdef:svctype name="smtp" defaultPort="25">
+        <mdef:script>
+            <mdef:expect>220</mdef:expect>
+            <mdef:send>QUIT<mdef:crlf/></mdef:send>
+            <mdef:expect>221</mdef:expect>
+        </mdef:script>
+    </mdef:svctype>
+    <mdef:svctype name="imap" defaultPort="143">
+        <mdef:script>
+            <mdef:expect>OK</mdef:expect>
+        </mdef:script>
+    </mdef:svctype>
+    <mdef:svctype name="pop3" defaultPort="110">
+        <mdef:script>
+            <mdef:expect>+OK</mdef:expect>
+            <mdef:send>QUIT<mdef:crlf/></mdef:send>
+            <mdef:expect>+OK</mdef:expect>
+        </mdef:script>
+    </mdef:svctype>
+    <mdef:svctype name="tcp-connect" defaultPort="7">
+        <mdef:script>
+	</mdef:script>
+    </mdef:svctype>
+</mdef:definition>

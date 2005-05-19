@@ -1,0 +1,660 @@
+\documentclass{article}
+\usepackage{url}
+\usepackage[all]{xy}
+\usepackage{graphicx}
+
+\newcommand{\filename}[1]{{\tt #1}}
+\newcommand{\cmdline}[1]{{\tt #1}}
+\newcommand{\identifier}[1]{{\tt #1}}
+\newcommand{\guiitem}[1]{{\sf #1}}
+\newcommand{\xelement}[1]{{\tt <#1>}} 
+\newcommand{\archc}[1]{*+<12pt>[F-:<12pt>]{\txt{#1}}}
+\newcommand{\archto}[2]{\ar@/^/[#1]^{\txt{\scriptsize #2}}}
+\newcommand{\openclasstable}{\begin{description}}
+\newcommand{\closeclasstable}{\end{description}}
+\newcommand{\classdesc}[2]{ \item[\identifier{#1}]{#2} }
+
+\title{Mars 2.2.6 Hacker's Guide}
+\author{Brian Trammell\\
+\url{brian@lfrd.com}\\
+{\small \sl Leapfrog Research and Development, LLC}}
+\date{March 1, 2004}
+
+\begin{document}
+\sloppy
+\maketitle
+
+\begin{abstract}
+Describes technical aspects of the Mars network status monitor, and provides a
+guide for programmers wishing to extend Mars through the probe extension and
+plugin frameworks.
+\end{abstract}
+
+\tableofcontents
+
+\section{The Mars Configuration File}
+\label{sec_marsconfig}
+\begin{center}
+\begin{figure*}
+\begin{verbatim}
+<mars:model xmlns:mars="http://www.altara.org/mars/xmlns/model/">  
+  <mars:hostlist>  
+    <mars:host
+        name="Display name"
+        address="DNS name or IP address">
+      <mars:service
+          name="Display name"
+          port="TCP/UDP port"
+          svctype="http|smtp|ftp|imap|pop3|ssh|tcp-connect"
+          timeout="timeout in milliseconds"
+          period="minimum wait time in milliseconds"
+          notac="number of attempts before notification, 0-3">
+        <mars:parameter name="name">value</mars:parameter>
+        ... additional parameters, if any ...
+        ... currently, only svctype http has a parameter, url, 
+        ... for the path to check on the web server ...
+      </mars:service>
+      ... additional services ...
+    </mars:host>
+    ... additional hosts ...
+  </mars:hostlist>
+  ... plugin config elements, currently: ...
+  <mars:swingnotify
+      enabled="true or false"
+      notifyBackUp="notify service back up, true or false"
+      beep="audible notification, true or false"/>
+  <mars:mailnotify
+      enabled="true or false"
+      notifyBackUp="notify service back up, true or false"
+      server="DNS name or IP address of SMTP server to use"
+      address="List of comma-separated recipient addresses"
+      fromAddress="Origin address (optional)"/>
+   <mars:csvlog
+      enabled="true or false"
+      logfile="path to logfile"/>
+</mars:model>
+\end{verbatim}
+\caption{Mars configuration file structure}
+\label{fig_marsconfig}
+\end{figure*}
+\end{center}
+
+Though Mars was designed to be quick and easy to set up, using the Swing user
+interface to configure many services on many hosts can get tedious, especially
+if each host has many similar services.  In this case, creating a Mars
+configuration file directly can be useful. 
+
+The configuration file format fairly closely follows the data model as visible
+from the host/service tree - a hostlist contains hosts, which each contain
+services. The format of the file is given in figure \ref{fig_marsconfig}.
+
+Mars itself is a good generator of example files; just create a simple
+configuration, then open up the resulting XML file in your favorite text
+editor.
+
+\section{The Probe Definition File}
+\label{sec_marsdef}
+\begin{center}
+\begin{figure*}
+\begin{verbatim}
+<mdef:definition xmlns:mdef="http://www.altara.org/mars/xmlns/def/">
+  <mdef:svctype
+      name="service type name"
+      defaultPort="default TCP port">
+    <mdef:param
+        name="parameter name"
+        label="parameter display label"
+        default="default value or default variable"/>
+    ... additional parameters, if any ...
+    <mdef:script>
+      ... see text for script syntax ...
+    </mdef:script>
+  </mdef:svctype>
+  ... additional service types ...
+</mdef:definition>
+\end{verbatim}
+\caption{Mars probe definition file structure}
+\label{fig_probedef}
+\end{figure*}
+\end{center}	
+
+Simple text-based TCP protocol probes are defined in the
+\filename{mars-def.xml} file.  On startup, Mars searches for this file
+in the Mars home directory, which is the current working directory by
+default, though this can be changed using the \cmdline{--home}
+command-line option. If a \filename{mars-def.xml} file cannot be found
+in the Mars home directory, Mars falls back to a default version of
+the file stored in the \filename{mars.jar} archive itself.
+
+This file's format is a little more complex than the config file's.  Broadly
+speaking, the definition file lists a collection of service types, each of
+which has a list of parameters and a script that defines the protocol used by
+the service. The structure is shown in figure \ref{fig_probedef}.
+
+Each parameter has a name, by which it will be referenced in a
+\xelement{mdef:param} element within the script; a label, which will be shown
+to the user in the service editor; and a default, which is used as the
+parameter's value if the user leaves it blank. The default may be any constant
+string, or a default variable. The only currently supported default variable is
+\identifier{\%\%(remote-hostname)}, which resolves to the DNS name or IP
+address of the host on which the service is running.
+
+Scripts are series of ``send'', ``expect'', and ``fail''
+instructions, contained in \xelement{mdef:send}, \xelement{mdef:expect}, and
+\xelement{mdef:fail} elements, respectively. If a dialogue with a server
+matches all of a script's expect instructions in order without matching any
+fail instructions, the probe succeeds.  The probe may time out waiting for an
+expect. If a fail instruction matches, the probe fails with a status of ``bad
+reply''. Fail instructions must be immediately followed by an expect
+instruction, as fail instructions ``expire'' when the expect instruction
+immediately following them successfully matches.
+
+Each send instruction contains mixed content. The following elements are valid
+within send instructions:
+
+\begin{description}
+\item[\xelement{mdef:param name}] expands to the value of the named parameter
+as set for each service instance.
+\item[\xelement{mdef:remote-hostname}] expands to the address of the host being
+probed.
+\item[\xelement{mdef:local-hostname}] expands to the hostname of the local
+interface from which the probe is being run.
+\item[\xelement{mdef:version}] expands to the Mars version number. This is
+useful for signaling Mars' version to protocols that care about that sort of
+thing; it is used to accurately report Mars' version on HTTP probes via the
+\identifier{User-agent} request header.
+\item[\xelement{mdef:space}] encodes a single space. This is useful for adding
+leading or trailing spaces to mixed string content, as whitespace can be
+otherwise normalized away.
+\item[\xelement{mdef:crlf}] likewise encodes a newline sequence.
+\end{description}
+
+Each expect or fail instruction contains either a literal text string
+or an \xelement{mdef:regex} element. These \identifier{regex}
+elements match the Perl-compatible regular expression defined in the
+\identifier{pattern} attribute, or filled in from the service
+parameter named in the \identifier{name} attribute
+
+As with the config file, it's probably best to look over the
+\filename{mars-def.xml} file itself to get the big picture.
+
+\section{Building Mars}
+The Mars build system, contained in the files \filename{build.xml},
+\filename{buildext.xml}, and \filename{buildmac.xml}, is based on
+Apache Ant 1.5. The following targets are the most commonly used in
+building Mars.
+
+\begin{description} 
+\item[all] (the default target) compiles any (changed) source files in
+  the \filename{org} and \filename{gnu} directories, stages any
+  unstaged \filename{.jar} files in \filename{lib} into
+  \filename{lib/staging}, and creates or updates the \filename{.jar}
+  files in the distribution directory (\filename{mars-2.2.4}). It also
+  builds any optional extensions in the \filename{extras} directory
+  named by the \identifier{extras} property (see below), and places
+  them in the \filename{extras} directory in \filename{mars-2.2.4}.
+\item[dist] runs \identifier{veryclean} (see below), then
+  \identifier{all}, then makes a \filename{mars-2.2.4.tar.gz} binary
+  distribution. On Mac OS X, this target also builds a Mac OS X
+  installer package image in \filename{mars-2.2.4/macpkg}, suitable
+  for use with the Package Maker specification file
+  \filename{extras/macosx/Mars.pmsp}.
+\item[clean] removes the distribution and object directories.
+\item[veryclean] additionally removes the \filename{lib/staging}
+  directory, where jarfiles in the \filename{lib} directory are staged
+  for inclusion into \filename{mars.jar} and
+  \filename{mars-j14.jar}. Use this to force the
+  \filename{lib/staging} directory to be rebuilt when you change
+  \filename{.jar} files in the \filename{lib} directory. This almost
+  never happens.
+\end{description}
+
+The \identifier{extras} property used by the build system (set on the
+Ant command line with \cmdline{-Dextras=a,b,c,...}) is a
+comma-separated list of extras to build during the \identifier{all}
+target. The following values are supported:
+
+\begin{description}
+\item[all] Build all extras.
+\item[https] Build the HTTPS probe extension. This extension requires
+  JSSE to be installed on Java versions earlier than 1.4.
+\item[jdbc] Build the JDBC probe extension.
+\item[xmpp] Build the XMPP (Jabber) notification plugin.
+\item[cdebug] Build the Client Debugger plugin.
+\item[mailnotify] Build the SMTP notification plugin.
+\item[swingnotify] Build the UI notification plugin.
+\item[csvlog] Build the CSV logging plugin.
+\end{description}
+
+The Mac OS X Integration plugin is always built by default on Mac OS
+X. Note that this implies that building Mars on Mac OS X requires Java
+1.4.
+
+\section{Building Probe Extensions}
+
+Some services protocols' may not be expressible in the probe definition file,
+especially non-text-based or non-TCP services. These probes may be implemented
+as probe extensions to be dynamically loaded at started, much like plugins are.
+To implement a probe extension:
+
+\begin{enumerate}
+\item Implement a subclass of \identifier{Probe}. You should only need
+  to implement a single method, \identifier{doProbe()}, which will
+  take information about the service to probe via the protected
+  \identifier{service} instance variable, probe the specified service,
+  and return a \identifier{Status} instance describing the status of
+  the service. See \identifier{SendExpectProbe} and
+  \identifier{SendExpectClient}, which implement the probe
+  infrastructure used by the probe definition file mechanism, for an
+  example of a probe.
+\item You should instrument your probe for the Client Debugger. This
+  will allow you to verify your probe's functionality and allow users
+  to view details your probe's operation in real time. Instrument your
+  probe as follows:
+  \begin{enumerate}
+    \item At the beginning of \identifier{doProbe()}, call static
+      method \identifier{Debug.getDebugger()} to get a new
+      \identifier{ClientDebugger} instance. This method takes a single
+      argument, a string which will be displayed to the user to
+      identify this debug session. Try to use a string which will
+      allow the user to distinguish multiple instances of your probe
+      running concurrently.
+    \item Each time you send data, pass the data (or some textual abstract
+      representation of it) to your \identifier{ClientDebugger}'s
+      \identifier{send()} method.
+    \item Each time you receive data, pass the data (or some textual abstract
+      representation of it) to your \identifier{ClientDebugger}'s
+      \identifier{receive()} method.
+    \item To notify of status not related to sending or receiving
+      (for example, some decision your probe makes), use
+      \identifier{ClientDebugger}'s \identifier{message()} method.
+      \item When your probe completes, be sure to \identifier{close()}
+        the \identifier{ClientDebugger}. This must be done or the
+        debug session information will never be removed from the
+        active sessions list. This call usually goes in a
+        \identifier{finally} block within your probe.
+  \end{enumerate}
+\item Implement a subclass of \identifier{ProbeFactory} to create
+  instances of your new probe, and to describe the parameters your
+  probe requires to Mars. You will need to implement three methods:
+  \begin{description}
+  \item[A constructor] which calls \identifier{ProbeFactory()} with the
+    name of the service type monitored by your probe. This service type
+    name will be exposed to the user via the \guiitem{Type} menu in the
+    service editor.
+  \item[\identifier{createProbe(Service)}]creates a new probe instance
+    to monitor the specified service.
+  \item[\identifier{getDefaultPort()}] returns the default port used by
+    the service.
+  \end{description}
+  If your probe takes any service parameters, you will also need to
+  implement the following three methods:
+  \begin{description}
+  \item[\identifier{getServiceParamNames()}] returns an array of Strings
+    containing the service parameter names required by this service
+    type.
+  \item[\identifier{getServiceParamLabels()}] returns an array of
+    Strings containing the service parameter labels to be shown in the
+    user interface, corresponding by position to the service parameter
+    names.
+  \item[\identifier{getServiceParamDefault(String)}] returns a String
+    containing the default value for the named parameter.
+  \end{description}
+\item Place your probe and probe factory classes, along with any
+  support classes they require, into a \filename{.jar} file. This
+  file's name must begin with the string \filename{probe\_}, and its
+  manifest must contain a key \identifier{MarsProbeFactoryClass} whose
+  value names your \identifier{ProbeFactory} subclass.  You can place
+  multiple probes into a single \filename{.jar}; simply name each
+  \identifier{ProbeFactory} subclass in the
+  \identifier{MarsProbeFactoryClass} separated by commas.
+\item Place this file in the Mars distribution directory, and start
+  Mars. Mars should detect your probe extension(s) on startup, and
+  they should be available on the \guiitem{Type} menu in the service
+  editor.
+\end{enumerate}
+
+\section{Building Plugins}
+
+As probe extensions provide new inputs to Mars' monitoring engine, plugins
+provide a way to add new outputs. Each plugin can be configured to receive
+information about the results of each probe run, or about changes to each
+service's status. 
+
+Plugins receive status information via events recieved through three
+interfaces, \identifier{ProbeListener},
+\identifier{StatusChangeListener}, and
+\identifier{NotificationListener}.  Plugin housekeeping tasks are
+managed through a fourth interface, \identifier{Plugin}. Your plugin
+class must implement \identifier{Plugin}, and at least one of the
+three listener interfaces. Your class will not need to register as a
+listener over these interfaces; the plugin framework handles this for
+you as long as you have implement at least one of the interfaces.
+
+The \identifier{ProbeListener} interface defines a single method,
+\identifier{probeRun(ProbeEvent)}, which is called by the controller
+every time a probe is run, even when the service status has
+changed. The \identifier{ProbeEvent} instance passed to this method
+contains information about the service that was probed via the
+\identifier{getService()} method, and information about that service's
+current status via the \identifier{getNewStatus()} method.
+
+The \identifier{StatusChangeListener} interface also defines a single
+method, \identifier{statusChanged(StatusChangeEvent)}, which is called
+by the controller every time a service's status changes.
+\identifier{StatusChangeEvent} is a subclass of
+\identifier{ProbeEvent} supporting one additional method,
+\identifier{getOldStatus()}, which returns the previous status of the
+service.
+
+The \identifier{NotificationListener} interface defines the
+\identifier{notifyStatusChanged(StatusChangeEvent)} method, which is
+called as specified by each service's notification retry count
+(\identifier{notac}) field after a service's status changes. The
+\identifier{StatusChangeEvent} instance is the same one that would
+have been sent via \identifier{statusChanged()} when the service's
+status initially changed.
+
+Plugin configuration is done via editor panels displayed through the
+\guiitem{Plugins} menu, and configuration data is stored
+along with the host/service tree in the Mars configuration file. The
+\identifier{Plugin} interface defines methods your plugin must implement to
+support these configuration functions:
+
+\begin{description}
+\item[A constructor] taking no arguments, which should create a new instance of
+your plugin with a default configuration. The plugins shipped with Mars
+configure themselves with empty values assigned to each configuration parameter
+and a global ``enabled'' flag set to off, to ensure that the user must
+configure the plugin before its first run.
+\item[\identifier{getConfig()}] returns a JDOM \identifier{Element} containing
+all of the configuration information in an XML element suitable for inclusion
+in the configuration file.
+\item[\identifier{setConfig(Element)}] takes in a JDOM \identifier{Element},
+previously returned by \identifier{getConfig()} and written to a configuration
+file, and configures the plugin based on its attributes and contents.
+\item[\identifier{getElementName()}] returns the configuration element name
+within the Mars configuration XML namespace used by this plugin to identify its
+configuration. 
+\item[\identifier{getDisplayName()}] returns a string to be displayed in the
+plugins list in the Mars main window's \guiitem{Config} tab.
+\item[\identifier{getEditor()}] returns a \identifier{JComponent}
+implementation of the \identifier{Editor} interface used to configure the
+plugin via the user interface. Editors are often inner classes extending
+\identifier{JPanel}. They must provide the following methods:
+\begin{description}
+\item[A constructor] that builds the editor panel's user interface and fills in
+fields with values from the plugin's present configuration.
+\item[\identifier{commit()}] configures the plugin based on the information in
+the editor's editable fields. It may throw any \identifier{Exception} to
+signify illegal input.
+\item[\identifier{getEditorTitle()}] return a string to use as the editor
+dialog's title.
+\end{description}
+\end{description}
+
+As of Mars 2.2.6, plugins may now request a tab in the Mars main
+window. This facility is designed for alternate visualization plugins.
+To use this facility, your plugin must implement the
+\identifier{Displayable} interface. \identifier{Displayable} defines a
+single method, \identifier{setPluginDisplay()}, which Mars will call
+when the user interface starts up (after configuration if a
+configuration file is specified on the command line; see below). This
+method takes a single argument, an instance of
+\identifier{PluginDisplay} which your plugin will use to control its
+tab in the user interface. This class has the following methods:
+
+\begin{description}
+\item[\identifier{setComponent()}] takes a \identifier{JComponent}
+  instance to display in the plugin's tab.
+\item[\identifier{setTitle()}] set's the plugin's tab's title.
+\item[\identifier{show()}] makes your plugin's tab visible (call this
+  when your plugin is enabled).
+\item[\identifier{hide()}] makes your plugin's tab invisible (call this
+  when your plugin is disabled).
+\end{description}
+
+You must set the plugin's tab's component and title before calling
+\identifier{snow()}; otherwise, a runtime exception will result.  See
+the source code of the Client Debugger in \filename{extras/cdebug} for
+an example.
+
+The \identifier{Displayable} interface is also used as a hint to Mars
+that it should not attempt to load your plugin in ``headless''
+(\identifier{\mbox{-}\mbox{-}nogui}) mode; if your plugin uses the
+user interface but does not need its own tab (as the
+\identifier{SwingNotifyPlugin} does), you can implement
+\identifier{Displayable} but make your \identifier{setPluginDisplay()}
+method a no-op.
+
+Additionally, if your plugin class has an ``enabled'' state (as all
+the included notification plugins do), you may implement the
+\identifier{Enableable} interface to ensure that your plugin's enable
+state is properly displayed in the \guiitem{Plugins}
+menu. \identifier{Enableable} defines a single method,
+\identifier{isEnabled()}, which returns \identifier{true} if the
+plugin is presently enabled, \identifier{false} otherwise.
+
+When a new Mars configuration file is loaded, each plugin is configured
+according to the following protocol:
+
+\begin{enumerate}
+\item The plugin registry calls \identifier{getElementName()} on the
+  plugin to determine the name of the XML element it uses for
+  configuration.
+\item If the configuration file contains that element, it passes that
+  element to the plugin via \identifier{setConfig()}.
+\item If no element of the given name exists in the configuration
+  file, the plugin is {\em not} reconfigured. This allows older config
+  files to be loaded with new plugins without resetting the plugin
+  configuration.
+\end{enumerate}
+
+Note that the only time Mars calls your plugin's \identifier{setConfig()} is
+when a configuration file is loaded that contains an element in the Mars
+namespace with the element name returned by your \identifier{getElementName()}
+method. In particular, this means that your plugin {\em will not be configured}
+when Mars starts up without a configuration file. Your plugin's no-argument
+constructor must leave the plugin in a state in which it will not crash or
+cause other adverse effects for Mars.
+
+Have a look at the source for \identifier{SwingNotifyPlugin} for an example of
+a simple plugin.
+
+To package your plugin for dynamic loading, place your plugin class
+along with any support classes it requires into a \filename{.jar}
+file. The file's name must begin with the string
+\filename{plugin\_}. and its manifest must contain a key
+\identifier{MarsPluginClass} which names your implementation of
+\identifier{Plugin}. You can place multiple plugins into a single
+\filename{.jar}; simply name each \identifier{Plugin} subclass in the
+\identifier{MarsPluginClass} separated by commas.
+
+Place this file in the Mars distribution directory, and start
+Mars. Mars should detect your plugin(s) on startup, and you should be
+able to configure them via the \guiitem{Plugins} menu.
+
+\section{Architecture Overview}
+\label{sec_archdes}
+\begin{center}
+\begin{figure*}
+\begin{displaymath}
+\xymatrix{
+    \archc{Swing UI\\{\small \sl (view)}}
+        \archto{rr}{edit}
+        \archto{rdd}{control} & & 
+    \archc{Host/Service Tree\\{\small \sl (model)}}
+        \archto{ll}{display} \\
+    & & \\
+    \archc{Plugins} &
+    \archc{Engine\\{\small \sl (controller)}}
+        \archto{l}{notify}
+        \archto{luu}{notify}
+        \archto{ruu}{update}
+        \archto{r}{run} &
+    \archc{Probes}
+        \archto{l}{status} 
+}
+\end{displaymath}
+\caption{Mars architecture overview}
+\label{fig_arch}
+\end{figure*}
+\end{center}
+
+Mars is built along the lines of a straight MVC architecture. Information about
+hosts and services lives in a Model (the \identifier{Host},
+\identifier{Service}, and \identifier{Status} classes), which is edited and
+displayed by a View (the Swing user interface in
+\identifier{org.altara.mars.swingui} and the plugin extension framework), and
+updated by the asynchronously-running Controller (the classes in
+\identifier{org.altara.mars.engine}) which invokes probes (defined in the probe
+definition file and the probe extension framework) to determine status
+information. This general arrangement is shown in figure \ref{fig_arch}.
+
+\section{Class reference}
+
+The tables that follow list all the classes that make up Mars. This list
+should suffice to get you started hacking away at Mars, by answering the the
+frequent and essential questions ``where does feature {\sl x} live?'' and
+``what does {\sl y} do?''. 
+
+\subsection{Data Model}
+Core data model classes in \identifier{org.altara.mars}:
+\openclasstable
+\classdesc{Main}{the entry point to Mars. It parses the command line,
+initializes and manages access to plugins, probes, and the model, and contains
+system-wide constants.}
+\classdesc{MarsModel}{is the root of the host/service tree; it contains the
+host list, and distributes host/service tree change notifications to the user
+interface.}
+\classdesc{Host}{represents a host Mars is monitoring.}
+\classdesc{Service}{represents a service Mars is monitoring.}
+\classdesc{Status}{represents the status of a service at a given point in time.}
+\classdesc{ProbeFactory}{is an interface implemented by concrete factories that
+can create probes for a given service type. It also contains a registry of such
+factories, and handles dynamic loading of probe extensions at startup.}
+\classdesc{MarsModelListener}{is an interface implemented by objects interested
+in edits to the MarsModel tree.}
+\classdesc{InvalidDocumentException}{is thrown during configuration file
+loading if the file is not a proper Mars configuration file.}
+\classdesc{InvalidServiceTypeException}{is thown during configuration file
+loading if a service's type is not supported by any probe.}
+\closeclasstable
+
+\subsection{Monitoring Engine}
+Monitoring engine classes in \identifier{org.altara.mars.engine}:
+\openclasstable
+\classdesc{Controller}{coordinates the activities of the engine. It distributes
+event notifications, and manages the queue of pending probes and probe worker
+threads.}
+\classdesc{ProbeWorker}{runs Probes in separate threads.}
+\classdesc{Probe}{is the abstract superclass of all probes; classes which know
+how to speak a given protocol or set of protocols, and determine the status of
+a remote service.}
+\classdesc{SendExpectProbe}{is a thin wrapper around
+\identifier{SendExpectClient} used to probe text-based TCP/IP services. This is
+sufficient for all probes defined via the probe definition XML file.}
+\classdesc{SendExpectClient}{is a simple text-based TCP/IP client that knows
+how to send strings and expect strings in return. It is instrumented to return
+a Status so it can be used as a probe; it's also used by the mail notification
+plugin for a simple SMTP client.}
+\classdesc{XmlProbeFactory}{parses the probe definition file and sets up a
+\identifier{SendExpectProbe} for each service it finds.}
+\classdesc{ProbeListener}{is implemented by any object interested in probe run
+notifications.}
+\classdesc{ProbeEvent}{is sent to each \identifier{ProbeListener} to notify of
+a \identifier{Probe}'s being run.}
+\classdesc{StatusChangeListener}{is implemented by any object interested in
+service status change notifications.}
+\classdesc{StatusChangeEvent}{is sent to each \identifier{StatusChangeListener}
+to notify of a service status change.}
+\classdesc{Notifier}{manages the firing of \identifier{NotificationEvents}.}
+\classdesc{Debug}{contains static proxy methods for various debuggers}
+\classdesc{ClientDebugger}{defines methods for network client debugging (these are implemented by the Client Debugger plugin)}
+\closeclasstable
+
+\subsection{User Interface}
+User interface classes in \identifier{org.altara.mars.swingui}:
+\openclasstable
+\classdesc{MarsView}{implements the Mars main window.}
+\classdesc{MarsAbstractRenderer}{provides common support to each Mars
+  renderer class.}
+\classdesc{ServiceTreeRenderer}{renders the nodes in the host/service tree.}
+\classdesc{ServiceTreeChangeAdapter}{ensures that events received by
+  the host/service tree run in the Swing dispatch thread.}
+\classdesc{ServiceTreeContextMenuSupport}{implements the service tree
+  context menu.}
+\classdesc{ServiceTreeKeyActionSupport}{implements the service tree
+  keyboard editing functions.}
+\classdesc{FaultListModel}{implements a list model for the fault
+  list. This is necessary to support fault hiding.}
+\classdesc{FaultListRenderer}{renders the items in the fault list.}
+\classdesc{FaultListContextMenuSupport}{implements the fault list
+  context menu.}
+\classdesc{DetailListModel}{implements the service details panel.}
+\classdesc{ChangeListModel}{implements the change list in the
+  \guiitem{History} tab.}
+\classdesc{ChangeListRenderer}{renders the items in the change list.}
+\classdesc{ChangeListPanel}{implements the \guiitem{History} panel.}
+\classdesc{PluginMenu}{implements the \guiitem{Plugins} menu.}
+\classdesc{Editor}{is implemented by Mars property editors: the host,
+  service, and the plugin configuration editors.}
+\classdesc{EditorDialog}{displays an Editor in a dialog and handles
+  error reporting.}
+\classdesc{HostEditorPanel}{implements the host editor.}
+\classdesc{ServiceEditorPanel}{implements the service editor.}
+\classdesc{ServiceTypeComboBox}{implements the \guiitem{Type} menu in
+  the service editor.}
+\classdesc{ServiceParamEditor}{implements the parameters pane in the
+  service editor.}
+\classdesc{ProbeThreadAdapter}{ensures that events sent to a
+  \identifier{ProbeListener} are handled within the Swing dispatch
+  thread.}
+\classdesc{StatusChangeThreadAdapter}{ensures that events sent to a
+  \identifier{StatusChangeListener} are handled within the Swing
+  dispatch thread.}
+
+\closeclasstable
+
+\subsection{Plugins}
+Plugins and support classes in \identifier{org.altara.mars.plugin}:
+\openclasstable
+\classdesc{Plugin}{is implemented by all plugins to provide plugin housekeeping
+services.}
+\classdesc{Enableable}{is implemented by plugins with an ``enabled'' state.}
+\classdesc{Displayable}{is implemented by plugins that use the Swing user 
+interface or display their own tab in the Mars main window.}
+\classdesc{PluginDisplay}{is used by each \identifier{Displayable} plugin to 
+control its tab in the Mars main window.}
+\classdesc{PluginRegistry}{manages loading, instantiating, and configuring
+plugins.}
+\closeclasstable
+
+\subsection{Utility classes}
+Utility classes in \identifier{org.altara.util}:
+\openclasstable
+\classdesc{Queue}{implements a queue atop \identifier{LinkedList}.}
+\classdesc{Worker}{provides a managable interface to a thread for
+  running a repetitive task; it makes up for the unsafety of the
+  \identifier{Thread} control methods.}
+\classdesc{StatusView}{provides an interface for views with status
+  bars or logs. It is used to implement the startup log in the Mars
+  splash screen, and the Mars main window status bar.}
+\classdesc{ExtensionLoader}{dynamically loads classes from
+  \filename{.jar} files in a given directory.}
+\classdesc{LoadExceptionHandler}{is implemented by classes that can
+  handle exceptions during the extension loading process.}
+\classdesc{IconService}{loads icons from a .jar file.}
+\classdesc{ContextMenuSupport}{provides common support for context
+  menus on Swing components.}
+\classdesc{ListContextMenuSupport}{implements context menus on Swing
+  \identifier{JList}s.}
+\classdesc{TreeContextMenuSupport}{implements context menus on Swing
+  \identifier{JTree}s.}
+\classdesc{KeyActionSupport}{implements keyboard shortcuts on
+  arbitrary Swing or AWT components.}
+\classdesc{TreeKeyActionSupport}{implements keyboard shortcuts on
+  Swing \identifier{JTree}s.}
+
+\closeclasstable
+\end{document}

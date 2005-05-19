@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<project default="install">
+
+  <property name="pbase" value="extras/${name}"/>
+  <property name="psrc" value="${pbase}/src"/>
+  <property name="pobj" value="${pbase}/obj"/>
+  <property name="pinst" value="${dist}/extras"/>
+  <property name="plib" value="${pbase}/lib"/>
+
+  <path id="compile.classpath">
+    <pathelement path="${obj}"/>
+    <pathelement path="${pobj}"/>
+    <fileset dir="${lib}" includes="*.jar"/>
+  </path>
+
+  <target name="init">
+    <tstamp/>
+    <condition property="mfattr" value="MarsPluginClass">
+      <contains substring="plugin" string="${type}"/>
+    </condition>
+    <condition property="mfattr" value="MarsProbeFactoryClass">
+      <contains substring="probe" string="${type}"/>
+    </condition>
+    <condition property="pjar" value="plugin_${name}.jar">
+      <contains substring="plugin" string="${type}"/>
+    </condition>
+    <condition property="pjar" value="probe_${name}.jar">
+      <contains substring="probe" string="${type}"/>
+    </condition>
+    <condition property="pdolib" value="1">
+      <available file="${plib}"/>
+    </condition>
+  </target>
+
+  <target name="stagelib" depends="init" if="pdolib">
+    <mkdir dir="${pobj}"/>
+    <unjar dest="${pobj}">
+      <fileset dir="${plib}" includes="*.jar"/>
+    </unjar>
+  </target>
+
+  <target name="compile" depends="init,stagelib">
+    <mkdir dir="${pobj}"/>
+    <javac srcdir="${psrc}" destdir="${pobj}"
+	   debug="on" deprecation="on"
+	   classpathref="compile.classpath"/>
+  </target>
+  
+  <target name="jar" depends="compile">
+    <jar destfile="${pbase}/${pjar}">
+      <fileset dir="${pobj}" includes="**/*.class"/>
+      <manifest>
+	<attribute name="${mfattr}" value="${class}"/>
+      </manifest>
+    </jar>
+  </target>
+  
+  <target name="install" depends="jar">
+    <mkdir dir="${pinst}"/>
+    <copy todir="${pinst}">
+      <fileset dir="${pbase}" includes="${pjar}"/>
+    </copy>
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="${pobj}"/>
+    <delete file="${pbase}/${pjar}"/>
+  </target>
+</project>

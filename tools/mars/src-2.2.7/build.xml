@@ -1,0 +1,373 @@
+<?xml version="1.0"?>
+<project name="Mars2" default="all">
+
+  <property name="version" value="2.2.7"/>
+  <property name="src" value="."/>
+  <property name="obj" value="obj"/>
+  <property name="dist" value="mars-${version}"/>
+  <property name="lib" value="lib"/>
+  <property name="libstage" value="${lib}/staging"/>
+  <property name="mainclass" value="org.altara.mars.Main"/>
+  
+  <path id="compile.classpath">
+    <fileset dir="${lib}" includes="*.jar"/>
+  </path>
+
+  <target name="init">
+    <tstamp>
+      <format property="releasedate" pattern="MMMM d, yyyy"/>
+    </tstamp>
+    <buildnumber/>
+    <condition property="enable-macosx" value="1">
+      <and>
+	<os family="mac"/>
+	<os family="unix"/>
+      </and>
+    </condition>
+    <condition property="enable-cdebug" value="1">
+      <or>
+	<contains string="${extras}" substring="cdebug"/>
+	<contains string="${extras}" substring="all"/>	
+      </or>
+    </condition>
+    <condition property="enable-xmpp" value="1">
+      <or>
+	<contains string="${extras}" substring="xmpp"/>
+	<contains string="${extras}" substring="all"/>	
+      </or>
+    </condition>
+    <condition property="enable-https" value="1">
+      <or>
+	<contains string="${extras}" substring="https"/>
+	<contains string="${extras}" substring="all"/>	
+      </or>
+    </condition>
+    <condition property="enable-jdbc" value="1">
+      <or>
+	<contains string="${extras}" substring="jdbc"/>
+	<contains string="${extras}" substring="all"/>	
+      </or>
+    </condition>
+    <condition property="enable-swingnotify" value="1">
+      <or>
+	<contains string="${extras}" substring="swingnotify"/>
+	<contains string="${extras}" substring="all"/>	
+      </or>
+    </condition>
+    <condition property="enable-mailnotify" value="1">
+      <or>
+	<contains string="${extras}" substring="mailnotify"/>
+	<contains string="${extras}" substring="all"/>	
+      </or>
+    </condition>
+    <condition property="enable-csvlog" value="1">
+      <or>
+	<contains string="${extras}" substring="csvlog"/>
+	<contains string="${extras}" substring="all"/>	
+      </or>
+    </condition>
+    <condition property="enable-xmlsnap" value="1">
+      <or>
+	<contains string="${extras}" substring="xmlsnap"/>
+	<contains string="${extras}" substring="all"/>	
+      </or>
+    </condition>
+  </target>
+
+  <target name="writeversion" depends="init">
+    <delete file="${src}/org/altara/mars/Version.java"/>
+    <copy file="${src}/org/altara/mars/Version.java.in"
+	  tofile="${src}/org/altara/mars/Version.java"/>
+    <replace file="${src}/org/altara/mars/Version.java"
+	     token="@version@" value="${version}"/>
+    <replace file="${src}/org/altara/mars/Version.java"
+	     token="@buildnumber@" value="${build.number}"/>
+    <replace file="${src}/org/altara/mars/Version.java"
+	     token="@releasedate@" value="${releasedate}"/>
+  </target>
+
+  <target name="compile" depends="init, writeversion">
+        <mkdir dir="${obj}"/>
+    <javac srcdir="${src}/gnu" destdir="${obj}"
+            debug="on" classpathref="compile.classpath"/>
+    <javac srcdir="${src}/org" destdir="${obj}"
+            debug="on" classpathref="compile.classpath"/>
+  </target>
+
+  <target name="clean" depends="init">
+    <delete file="mars-${version}.tar.gz"/>
+    <delete dir="${dist}"/>
+    <delete dir="${obj}"/>
+  </target>
+
+  <target name="veryclean" depends="clean, extras-clean">
+    <delete dir="${libstage}"/>
+  </target>
+
+  <target name="distdir">
+    <mkdir dir="${dist}"/>
+  </target>
+
+  <target name="checkstage">
+    <available file="${libstage}" property="libs_already_staged"/>
+  </target>
+
+  <target name="stagelib" depends="init,checkstage" unless="libs_already_staged">
+    <mkdir dir="${libstage}"/>
+    <unjar dest="${libstage}">
+      <fileset dir="${lib}" includes="*.jar"/>
+    </unjar>
+  </target>
+
+  <target name="bigjar" depends="compile,stagelib,distdir">
+    <jar destfile="${dist}/mars-j13.jar">
+      <fileset dir="${libstage}" includes="**/*.class"/>
+      <fileset dir="${obj}" includes="gnu/getopt/**/*.class"/>
+      <fileset dir="${obj}" includes="org/altara/util/*.class"/>
+      <fileset dir="${obj}" includes="org/altara/mars/*.class"/>
+      <fileset dir="${obj}" includes="org/altara/mars/engine/*.class"/>
+      <fileset dir="${obj}" includes="org/altara/mars/swingui/*.class"/>
+      <fileset dir="${obj}" includes="org/altara/mars/plugin/*.class"/>
+      <fileset dir="${src}" includes="gnu/getopt/**/*.properties"/>
+      <fileset dir="${src}" includes="org/altara/**/*.gif"/>
+      <fileset dir="${src}" includes="org/altara/mars/**/*.xml"/>
+      <manifest>
+        <attribute name="Main-Class" value="${mainclass}"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="littlejar" depends="compile,stagelib,distdir">
+    <jar destfile="${dist}/mars.jar">
+      <fileset dir="${libstage}" includes="org/apache/oro/**/*.class"/>
+      <fileset dir="${libstage}" includes="org/jdom/**/*.class"/>
+      <fileset dir="${obj}" includes="gnu/getopt/**/*.class"/>
+      <fileset dir="${obj}" includes="org/altara/util/*.class"/>
+      <fileset dir="${obj}" includes="org/altara/mars/*.class"/>
+      <fileset dir="${obj}" includes="org/altara/mars/engine/*.class"/>
+      <fileset dir="${obj}" includes="org/altara/mars/swingui/*.class"/>
+      <fileset dir="${obj}" includes="org/altara/mars/plugin/*.class"/>
+      <fileset dir="${src}" includes="gnu/getopt/**/*.properties"/>
+      <fileset dir="${src}" includes="org/altara/**/*.gif"/>
+      <fileset dir="${src}" includes="org/altara/mars/**/*.xml"/>
+      <manifest>
+        <attribute name="Main-Class" value="${mainclass}"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="alljar" depends="bigjar,littlejar"/>
+
+<!-- Client Debugger plugin -->
+
+  <target name="cdebug-plugin" depends="compile,distdir" if="enable-cdebug">
+    <ant antfile="buildext.xml" target="install">
+      <property name="name" value="cdebug"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.cdebug.ClientDebuggerPlugin"/>
+    </ant>
+  </target>
+
+  <target name="cdebug-plugin-clean" depends="init" if="enable-cdebug">
+    <ant antfile="buildext.xml" target="clean">
+      <property name="name" value="cdebug"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.cdebug.ClientDebuggerPlugin"/>
+    </ant>
+  </target>
+
+<!-- Mac OS X Integration plugin -->
+
+  <target name="macosx-plugin" depends="compile,distdir" if="enable-macosx">
+    <ant antfile="buildext.xml" target="install">
+      <property name="name" value="macosx"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.mac.MacIntegrationPlugin"/>
+    </ant>
+  </target>
+
+  <target name="macosx-plugin-clean" depends="init" if="enable-macosx">
+    <ant antfile="buildext.xml" target="clean">
+      <property name="name" value="macosx"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.mac.MacIntegrationPlugin"/>
+    </ant>
+  </target>
+
+<!-- XMPP Notification plugin -->
+
+  <target name="xmpp-plugin" depends="compile,distdir" if="enable-xmpp">
+    <ant antfile="buildext.xml" target="install">
+      <property name="name" value="xmpp"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.xmppnotify.XmppNotifyPlugin"/>
+    </ant>
+  </target>
+
+  <target name="xmpp-plugin-clean" depends="init" if="enable-xmpp">
+    <ant antfile="buildext.xml" target="clean">
+      <property name="name" value="xmpp"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.xmppnotify.XmppNotifyPlugin"/>
+    </ant>
+  </target>
+
+<!-- UI Notification plugin -->
+
+  <target name="swingnotify-plugin" depends="compile,distdir" if="enable-swingnotify">
+    <ant antfile="buildext.xml" target="install">
+      <property name="name" value="swingnotify"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.swingnotify.SwingNotifyPlugin"/>
+    </ant>
+  </target>
+
+  <target name="swingnotify-plugin-clean" depends="init" if="enable-swingnotify">
+    <ant antfile="buildext.xml" target="clean">
+      <property name="name" value="swingnotify"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.swingnotify.SwingNotifyPlugin"/>
+    </ant>
+  </target>
+
+<!-- Mail Notification plugin -->
+
+  <target name="mailnotify-plugin" depends="compile,distdir" if="enable-mailnotify">
+    <ant antfile="buildext.xml" target="install">
+      <property name="name" value="mailnotify"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.mailnotify.MailNotifyPlugin"/>
+    </ant>
+  </target>
+
+  <target name="mailnotify-plugin-clean" depends="init" if="enable-mailnotify">
+    <ant antfile="buildext.xml" target="clean">
+      <property name="name" value="mailnotify"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.mailnotify.MailNotifyPlugin"/>
+    </ant>
+  </target>
+
+<!-- CSV Logger plugin -->
+
+  <target name="csvlog-plugin" depends="compile,distdir" if="enable-csvlog">
+    <ant antfile="buildext.xml" target="install">
+      <property name="name" value="csvlog"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.csvlog.CSVLogPlugin"/>
+    </ant>
+  </target>
+
+  <target name="csvlog-plugin-clean" depends="init" if="enable-csvlog">
+    <ant antfile="buildext.xml" target="clean">
+      <property name="name" value="csvlog"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.csvlog.CSVLogPlugin"/>
+    </ant>
+  </target>
+
+<!-- XML Snapshot plugin -->
+
+  <target name="xmlsnap-plugin" depends="compile,distdir" if="enable-xmlsnap">
+    <ant antfile="buildext.xml" target="install">
+      <property name="name" value="xmlsnap"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.xmlsnap.XMLSnapshotPlugin"/>
+    </ant>
+  </target>
+
+  <target name="xmlsnap-plugin-clean" depends="init" if="enable-xmlsnap">
+    <ant antfile="buildext.xml" target="clean">
+      <property name="name" value="xmlsnap"/>
+      <property name="type" value="plugin"/>
+      <property name="class" value="org.altara.mars.plugin.xmlsnap.XMLSnapshotPlugin"/>
+    </ant>
+  </target>
+
+<!-- HTTPS Probe -->
+
+  <target name="https-probe" depends="compile,distdir" if="enable-https">
+    <ant antfile="buildext.xml" target="install">
+      <property name="name" value="https"/>
+      <property name="type" value="probe"/>
+      <property name="class" value="net.pixelfreak.monitoringTools.HTTPSProbeFactory"/>
+    </ant>
+  </target>
+
+  <target name="https-probe-clean" depends="clean" if="enable-https">
+    <ant antfile="buildext.xml" target="clean">
+      <property name="name" value="https"/>
+      <property name="type" value="probe"/>
+      <property name="class" value="net.pixelfreak.monitoringTools.HTTPSProbeFactory"/>
+    </ant>
+  </target>
+
+<!-- JDBC Probe -->
+
+  <target name="jdbc-probe" depends="compile,distdir" if="enable-jdbc">
+    <ant antfile="buildext.xml" target="install">
+      <property name="name" value="jdbc"/>
+      <property name="type" value="probe"/>
+      <property name="class" value="org.altara.mars.probe.jdbc.JdbcProbeFactory"/>
+    </ant>
+  </target>
+
+  <target name="jdbc-probe-clean" depends="clean" if="enable-jdbc">
+    <ant antfile="buildext.xml" target="clean">
+      <property name="name" value="jdbc"/>
+      <property name="type" value="probe"/>
+      <property name="class" value="org.altara.mars.probe.jdbc.JdbcProbeFactory"/>
+    </ant>
+  </target>
+
+  <target name="extras" depends="xmpp-plugin,
+				 cdebug-plugin,
+				 macosx-plugin, 
+				 swingnotify-plugin, 
+				 mailnotify-plugin, 
+				 csvlog-plugin, 
+				 xmlsnap-plugin, 
+				 https-probe, 
+				 jdbc-probe"/>
+
+  <target name="extras-clean" depends="xmpp-plugin-clean,
+				       cdebug-plugin-clean,
+				       macosx-plugin-clean, 
+				       swingnotify-plugin-clean, 
+				       mailnotify-plugin-clean, 
+				       csvlog-plugin-clean, 
+				       xmlsnap-plugin-clean, 
+				       https-probe-clean, 
+				       jdbc-probe-clean"/>
+
+
+  <target name="all" depends="alljar,extras">
+    <copy todir="${dist}">
+      <fileset dir="${src}/org/altara/mars/engine"
+        includes="mars-def.xml"/>
+    </copy>
+  </target>
+
+  <target name="macosx-bundle" depends="all" if="enable-macosx">
+    <ant antfile="buildmac.xml" target="bundle"/>
+  </target>
+      
+  <target name="dist" depends="veryclean,all,extras, macosx-bundle">
+    <copy todir="${dist}/doc">
+      <fileset dir="${src}/doc" includes="COPYING* LICENSE* *.pdf"/>
+    </copy>
+    <tar tarfile="mars-${version}.tar">
+      <tarfileset dir=".">
+	<include name="${dist}/*.jar"/>
+	<include name="${dist}/*.xml"/>
+	<include name="${dist}/doc/**"/>
+	<include name="${dist}/extras/https/**"/>
+	<include name="${dist}/extras/jdbc/**"/>
+	<include name="${dist}/extras/xmpp/**"/>
+	<include name="${dist}/extras/cdebug/**"/>
+      </tarfileset>
+    </tar>
+    <gzip zipfile="mars-${version}.tar.gz" src="mars-${version}.tar"/>
+    <delete file="mars-${version}.tar"/>
+  </target>
+</project>
