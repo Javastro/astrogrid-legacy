@@ -32,8 +32,11 @@
             <item name="Itn04" href="http://wiki.astrogrid.org/bin/view/Astrogrid/SoftwareRelease"/>
             </item>
 		</menu>
+        <menu name="Grid Status">
+            <item name="Deployed sites" href="http://wiki.astrogrid.org/bin/view/Deploy/DeployedComponents" /> 
+            <item name="Site status" href="/monitor/status.xml"/>
+		</menu>        
 		<menu name="Client Applications">
-			<!-- nasty, but only way to have img and text at same time -->
 				<item name="Web Start" href="/jnlp/index.html"  />		
 				<item name="Client Development Kits" href="/cdk.html"  />						
         </menu>
@@ -58,8 +61,8 @@
 		<item name="Other Tips" href="/tips/tips.html"/>
         </item>
         <!--item name="AstroGrid architecture" href="fillmein"/-->
-			  <!--item name="Writing AstroGrid compatable software" href="/developerdocs/"/-->
-				<item name="How to change these docs" href="/about.html"/>
+        <!--item name="Writing AstroGrid compatable software" href="/developerdocs/"/-->
+		<item name="How to change these docs" href="/about.html"/>
 		</menu>
 		<menu name="Further Information">
 			<item name="Main site" href="http://www.astrogrid.org"/>

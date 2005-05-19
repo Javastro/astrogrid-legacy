@@ -1,32 +1,27 @@
 <?xml version="1.0"?>
 <document>
     <properties>
-        <title>Overview of AstroGrid</title>
+        <title>Welcome to AstroGrid</title>
         <author email="jdt@roe.ac.uk">John Taylor</author>
     </properties>
     <body>
-        <section name="Overview of AstroGrid">
-            <p> The AstroGrid project (<a href="http://www.astrogrid.org/">http://www.astrogrid.org/</a>) aims to 
-                produce a working datagrid for key selected databases, with associated data-mining facilities, by late 
-                2004. It is part of the world-wide drive towards the concept of a Virtual Observatory (VO), and can be 
-                seen as the UK contribution to this vision. However in various ways it is both wider and more focussed 
-                than other initiatives. It is wider in that it covers astronomy, solar physics, and space plasma (solar 
-                terrestrial) physics, and covers all wavelengths from radio to X-ray. The project is also part of a 
-                coherent UK e-science programme, with links to projects in particle physics, bio-informatics, and basic 
-                grid technology development. </p>
-            <p> AstroGrid is however focused in that it aims to develop something recognisably like a working VO on a 
-                short timescale, so that science can start getting done and technological lessons can be learned. This 
-                requires concentrating on selected datasets. Our priority is to develop a virtual observatory 
-                capability to support efficient and effective exploitation of key astronomical data sets of importance 
-                to the UK community: for example data from WFCAM, VISTA, XMM-SSC, e-MERLIN, SOHO and Cluster. It seems 
-                clear that good data curation, archive management, and data-mining services all need to be closely 
-                linked together. AstroGrid is therefore a partnership formed by UK archive centres and astronomical 
-                computer scientists. </p>
+        <section name="Welcome to the AstroGrid Software Site">
+            <p> This site hosts comprehensive information on AstroGrid software, including how to obtain and use the software, tutorials, background 
+                information on the science cases driving the software development, and <a href="faq.html">frequently-asked questions</a>. For more general 
+                information on AstroGrid and Virtual Observatories please see <a href="http://www.astrogrid.org/">http://www.astrogrid.org/</a>.</p>
         </section>
-        <section name="Further Information">
-            <p> The links on the left of the page offer comprehensive information on AstroGrid software, including how to obtain 
-                and use the software, tutorials, background information on the science cases driving the software 
-                development, and <a href="faq.html">frequently-asked questions</a>. </p>
+        <section name="Latest Software News">
+            <subsection name="AstroGrid 1.0 is released">
+                <p> The AstroGrid team in pleased to announce the release of <a href="http://www.astrogrid.org/maven/docs/1.0/">version 1.0.0</a>. For further 
+                    information please see <a 
+                    href="http://wiki.astrogrid.org/bin/view/Astrogrid/ReleaseV1Pages">http://wiki.astrogrid.org/bin/view/Astrogrid/ReleaseV1Pages</a> </p>
+            </subsection>
+            <subsection name="Site Monitoring">
+                <p>
+                    The status of the main AstroGrid sites is now monitored and published on this <a href="monitor/status.xml">site</a>.                    
+                </p>
+            </subsection>
         </section>
+        
     </body>
 </document>
