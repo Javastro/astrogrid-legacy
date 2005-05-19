@@ -5,15 +5,7 @@
   </properties>
   <body>
   <release version="(Pending Integration)">         
-        <action dev="jdt" type="add" issue="1012">
-            <b>cea_jdt_1012</b>
-            DO NOT MERGE YET. 
-            Created Installers for the CEA apps and plumbed them into AGINAB.
-            Added some cea-cmdline tests for windows.  The windows tests will fail on Unix. 
-            Equally the Unix tests will fail on Windows, so we should get the same pass rate in both
-            environments.  Fixed the VOSpace tests - this may conflict with 1125 below...will resolve when
-            ready to merge.
-        </action>     
+    
   </release>
   <release version="(Undertests)">     	
 		 <action dev="jdt" type="fix" issue="383"> 
@@ -27,6 +19,13 @@
    </release>
     
   <release version="HEAD">
+        <action dev="jdt" type="add" issue="1012">
+            <b>cea_jdt_1012</b>
+            Created Installers for the CEA apps and plumbed them into AGINAB.
+            Added some cea-cmdline tests for windows.  The windows tests will fail on Unix. 
+            Equally the Unix tests will fail on Windows, so we should get the same pass rate in both
+            environments. 
+        </action> 
 	   <action dev="pjn" type="add" issue="1169">
             <b>portalWF_pjn_1169</b>
             1169 is a minor layout change and also removes a couple of stylesheet attributes that were causing transform 
