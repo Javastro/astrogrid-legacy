@@ -23,10 +23,11 @@
 				+--> 
             <item name="Installers" href="/installers.html" collapse="true">
                 <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?P=*.jar"/>
-                <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?P=astrogrid-filestore-installer*-1.0*-b*.jar"/>
-                <item name="FileManager" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?P=astrogrid-filemanager-installer*-1.0*-b*.jar"/>
-                <item name="JES" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?P=astrogrid-jes-installer*-1.0*-b*.jar"/>    
-                <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?P=astrogrid-portal-installer*-1.0*-b*.jar"/>                
+                <item name="Applications" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?P=astrogrid-cea-installer*.jar"/>
+                <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?P=astrogrid-filestore-installer*.jar"/>
+                <item name="FileManager" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?P=astrogrid-filemanager-installer*.jar"/>
+                <item name="JES" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?P=astrogrid-jes-installer*.jar"/>    
+                <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?P=astrogrid-portal-installer*.jar"/>                
             </item>    
             <item name="Server Applications" href="/server.html" collapse="true">
                 <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*-1.0*-b*.war"/>
