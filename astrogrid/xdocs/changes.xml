@@ -8,17 +8,17 @@
     
   </release>
   <release version="(Undertests)">     	
-		 <action dev="jdt" type="fix" issue="383"> 
-            Since we're now on maven 1.0.2 I've refactored the property files to remove common and duplicated stuff to maven-base. 
-			All components will need to be rebuilt after this merge, which should have no side effects.
-			Branch maven_jdt_383:
-        </action> 		
 		<action dev="gtr" type="fix" issue="1027"> 
             Changes to TableMetaDoc.xsd to make it match the DSA software. Branch dsa-gtr-1027
         </action>
    </release>
     
   <release version="HEAD">
+	     <action dev="jdt" type="fix" issue="383"> 
+            Since we're now on maven 1.0.2 I've refactored the property files to remove common and duplicated stuff to maven-base. 
+			All components will need to be rebuilt after this merge, which should have no side effects.
+			Branch maven_jdt_383:
+        </action>
         <action dev="jdt" type="add" issue="1012">
             <b>cea_jdt_1012</b>
             Created Installers for the CEA apps and plumbed them into AGINAB.
