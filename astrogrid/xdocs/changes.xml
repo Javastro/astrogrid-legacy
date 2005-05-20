@@ -4,10 +4,18 @@
     <author email="jdt@roe.ac.uk">John Taylor</author>
   </properties>
   <body>
-  <release version="(Pending Integration)">         
-    
+  <release version="(In progress)">  
+        <action dev="jdt" type="fix" issue="1182">
+            <b>AstroGrid</b> Changes to all Installers to ensure they work offline.            
+        </action>       
+  </release>    
+  <release version="(Pending Integration)">  
+		<action dev="jdt" type="fix" issue="1180"> 
+            <b>Applications</b> and <b>integrationTests</b> <em>cea_jdt_1180</em> Minor bug fixes to installer and build. Also fixes bug 
+            1182 for CEA.
+        </action> 
   </release>
-  <release version="(Undertests)">     	
+  <release version="(Undertest)">     		
 		<action dev="gtr" type="fix" issue="1027"> 
             Changes to TableMetaDoc.xsd to make it match the DSA software. Branch dsa-gtr-1027
         </action>
