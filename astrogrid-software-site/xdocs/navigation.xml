@@ -22,7 +22,8 @@
             <item name="Releases" href="/downloaddocs/releases.html" collapse="true"> 
             <!--item name="Itn07 Snapshot" href="http://www.astrogrid.org/maven/docs/SNAPSHOT/"/-->
             <item name="Head" href="http://www.astrogrid.org/maven/docs/HEAD/"/>
-			<item name="Version 1.0 Release" href="http://www.astrogrid.org/maven/docs/1.0/"/>
+			<item name="V1.1 Release" href="http://www.astrogrid.org/maven/docs/1.1/"/>
+			<item name="V1.0 Release" href="http://www.astrogrid.org/maven/docs/1.0/"/>
 			<item name="Itn10 Release" href="http://www.astrogrid.org/maven/docs/0.10.0/"/>
             <item name="Itn08 Release" href="http://www.astrogrid.org/maven/docs/0.8.0/"/>
             <item name="Itn07 Release" href="http://www.astrogrid.org/maven/docs/0.7.0/"/>
