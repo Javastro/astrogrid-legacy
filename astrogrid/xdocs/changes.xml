@@ -14,6 +14,10 @@
    </release>
     
   <release version="HEAD">
+
+   </release>
+
+   <release version="1.1" date="20/05/05" description="AG 1.1 Release">
 	     <action dev="jdt" type="fix" issue="383"> 
             Since we're now on maven 1.0.2 I've refactored the property files to remove common and duplicated stuff to maven-base. 
 			All components will need to be rebuilt after this merge, which should have no side effects.
@@ -84,9 +88,8 @@
         </action>
 	    <action dev="nww" type="fix" issue="1035"> 
             Fix for 'delete' and 'move' bugs. minor changes to filemanager-client and filemanager-server.bug. Branch filemanager-nww-1035
-        </action> 
+        </action> 	
    </release>
-
    <release version="1.0" date="01/05/05" description="AG 1.0 Release">
         <action dev="pjn" type="fix" issue="748">
             Removed footer from workflow and job status pages; help links now temporarily point to wikki help page. Branch portal_pjn_748
