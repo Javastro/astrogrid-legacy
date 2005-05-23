@@ -5,3 +5,5 @@ tests.log
 bin
 junit*.properties
 velocity.log
+posttranstrans.xml
+pretrans.xml

@@ -36,7 +36,7 @@
     
     <!-- Goals to install and remove the component from a web-server-->
     <goal name="install" description="Use this goal to run the ant script and deploy the cea" prereqs="override-input-task,jar">
-        <ant dir="${maven.build.dest}" target="info" >
+        <ant dir="${maven.build.dest}" target="install" >
             <property name="custom.tasks.defined" value="yes"/>
         </ant>
     </goal>

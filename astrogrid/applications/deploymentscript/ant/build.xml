@@ -40,6 +40,7 @@
     	<property name="cea.uninstalled" value="true"/>
 	</target>
 	
+	<target name="install-and-register" depends="install,register" description="convenience target for AGINAB"/>
 	
 	<!--Private Targets -->
 	<target name="choose-flavour" description="which cea to install?">
@@ -148,8 +149,8 @@
     <target name="download" unless="offline" depends="load-flavour-dependent-properties,set-war-location">
     	<echo>Downloading cea software....this may take some time...</echo>
     	<mkdir dir="${cea.war.dir}"/>
-        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${cea.war.name}" dest="${cea.war}" verbose="true" usetimestamp="true" ignoreerrors="true"/>
-    	<touch file="${cea.war}"/> <!--temp fix to get task, which doesn't seem to work properly with usetimestamp option-->
+    	<property name="cea.continueifnodownload" value="false"/> <!--can be overridden in AGINAB to allow use of local files-->
+        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${cea.war.name}" dest="${cea.war}" verbose="true" usetimestamp="true" ignoreerrors="${cea.continueifnodownload}"/>
     </target>
 	
 	<target name="set-war-location" depends="load-flavour-dependent-properties">

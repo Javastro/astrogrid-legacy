@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.146 2005/05/18 15:27:23 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.147 2005/05/23 21:51:50 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -694,8 +694,11 @@
     
     <!--Vanilla (Java) version-->
 <goal name="cea-server-deploy" prereqs="override-input-task,init,cea-init">
-        <ant dir="${cea.deployment.jar.unpacked}" target="install" >
+      <!--Self register.  Currently this only registers v0.9 of the schema, until bug 1159 is fixed-->
+        <ant dir="${cea.deployment.jar.unpacked}" target="install-and-register" >
             <property name="custom.tasks.defined" value="yes"/>
+            <property name="cea.continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
             <property name="input.tomcat.present" value="continue"/>
             <property name="input.tomcat.url" value="${tomcat.url}"/>
             <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
@@ -720,17 +723,6 @@
             <!--stick with the built-in apps-->
             <property name="input.cea.install.java" value="no"/>
       </ant>
-      <!--Self register.  Currently this only registers v0.9 of the schema, until bug 1159 is fixed-->
-      <ant dir="${cea.deployment.jar.unpacked}" target="register" >
-            <property name="custom.tasks.defined" value="yes"/>
-            <property name="input.tomcat.present" value="continue"/>
-            <property name="input.tomcat.url" value="${tomcat.url}"/>
-            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
-            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
-            <property name="input.cea.flavour" value="Java"/>
-            <property name="input.cea.contextpath" value="${aginab.ceajava.contextpath}"/>
-            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>            
-      </ant>      
 </goal>
 
 <goal name="cea-server-undeploy" prereqs="override-input-task,init,cea-init">
@@ -750,8 +742,11 @@
 		<!--By moving the unwaring to a separate project, I've broken the cougaar setup.  Need to think about
 		best way of restoring it-->
 		<!--ag:maybe-enable-cougaar webapp="cea-server" /-->
-        <ant dir="${cea.deployment.jar.unpacked}" target="install" >
+      <!--Self register.  Currently this only registers v0.9 of the schema, until bug 1159 is fixed-->
+        <ant dir="${cea.deployment.jar.unpacked}" target="install-and-register" >
             <property name="custom.tasks.defined" value="yes"/>
+            <property name="cea.continueifnodownload" value="true"/> <!-- allow use of local files-->
+
             <property name="input.tomcat.present" value="continue"/>
             <property name="input.tomcat.url" value="${tomcat.url}"/>
             <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
@@ -776,18 +771,6 @@
 
             
       </ant>
-    
-      <!--Self register.  Currently this only registers v0.9 of the schema, until bug 1159 is fixed-->
-      <ant dir="${cea.deployment.jar.unpacked}" target="register" >
-            <property name="custom.tasks.defined" value="yes"/>
-            <property name="input.tomcat.present" value="continue"/>
-            <property name="input.tomcat.url" value="${tomcat.url}"/>
-            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
-            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
-            <property name="input.cea.flavour" value="commandline"/>
-            <property name="input.cea.contextpath" value="${aginab.ceacmdline.contextpath}"/>			
-            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>            
-     </ant>
 </goal>
 
 <goal name="cea-commandline-undeploy" prereqs="override-input-task,init,cea-init">
@@ -807,8 +790,13 @@
 		<!--By moving the unwaring to a separate project, I've broken the cougaar setup.  Need to think about
 		best way of restoring it-->
 		<!--ag:maybe-enable-cougaar webapp="cea-server" /-->
-        <ant dir="${cea.deployment.jar.unpacked}" target="install" >
+
+    
+      <!--Self register.  Currently this only registers v0.9 of the schema, until bug 1159 is fixed-->
+        <ant dir="${cea.deployment.jar.unpacked}" target="install-and-register" >
             <property name="custom.tasks.defined" value="yes"/>
+            <property name="cea.continueifnodownload" value="true"/> <!-- allow use of local files-->
+
             <property name="input.tomcat.present" value="continue"/>
             <property name="input.tomcat.url" value="${tomcat.url}"/>
             <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
@@ -829,18 +817,6 @@
 			<property name="input.cea.username" value="John Taylor"/>
 			<property name="input.cea.useremail" value="jdt@roe.ac.uk"/>
       </ant>
-    
-      <!--Self register.  Currently this only registers v0.9 of the schema, until bug 1159 is fixed-->
-      <ant dir="${cea.deployment.jar.unpacked}" target="register" >
-            <property name="custom.tasks.defined" value="yes"/>
-            <property name="input.tomcat.present" value="continue"/>
-            <property name="input.tomcat.url" value="${tomcat.url}"/>
-            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
-            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
-            <property name="input.cea.flavour" value="http"/>
-            <property name="input.cea.contextpath" value="${aginab.ceahttp.contextpath}"/>			
-            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>            
-     </ant>
 </goal>
 
 <goal name="cea-http-undeploy" prereqs="override-input-task,init,cea-init">

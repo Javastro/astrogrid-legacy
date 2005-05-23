@@ -2,10 +2,11 @@
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
 <!-- NWW: no - not gone mad. but reactor tag doesn't seem to want to work. just finishes in the
-middle to commandline tests - no jar produced, no error messages. so written all out in full for now -->
+middle to commandline tests - no jar produced, no error messages. so written all out in full for now 
+	JDT: seems to work OK now - perhaps Maven 1.0.2 fixed it-->
 <goal name="astrogrid-deploy-snapshot">
    <echo message="Master Project: astrogrid-deploy-snapshot"/>
-   <!--
+   
    <maven:reactor
      basedir="${basedir}"
      postProcessing="false"
@@ -13,7 +14,7 @@ middle to commandline tests - no jar produced, no error messages. so written all
      goals="astrogrid-deploy-snapshot"
      banner="Deploying snapshots"
      ignoreFailures="true" />
-     -->
+   <!--
      <maven:maven descriptor="${basedir}/client/project.xml"
         goals="astrogrid-deploy-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/server/project.xml"
@@ -21,11 +22,11 @@ middle to commandline tests - no jar produced, no error messages. so written all
      <maven:maven descriptor="${basedir}/commandline/project.xml"
         goals="astrogrid-deploy-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/http/project.xml"
-        goals="astrogrid-deploy-snapshot" ignoreFailures="false" />
+        goals="astrogrid-deploy-snapshot" ignoreFailures="false" />-->
 </goal>
 <goal name="astrogrid-install-snapshot">
    <echo message="Master Project: astrogrid-install-snapshot"/>
-   <!--
+   
    <maven:reactor
      basedir="${basedir}"
      postProcessing="false"
@@ -33,7 +34,7 @@ middle to commandline tests - no jar produced, no error messages. so written all
      goals="astrogrid-install-snapshot"
      banner="installing snapshots"
      ignoreFailures="true" />
-     -->
+   <!--
      <maven:maven descriptor="${basedir}/client/project.xml"
         goals="astrogrid-install-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/server/project.xml"
@@ -42,11 +43,12 @@ middle to commandline tests - no jar produced, no error messages. so written all
         goals="astrogrid-install-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/http/project.xml"
         goals="astrogrid-install-snapshot" ignoreFailures="false" />
+        -->
 </goal>
 
 <goal name="astrogrid-build-snapshot">
         <echo message="Master Project: astrogrid-build-snapshot" />
-        <!--
+
    <maven:reactor
      basedir="${basedir}"
      postProcessing="false"
@@ -54,7 +56,7 @@ middle to commandline tests - no jar produced, no error messages. so written all
      goals="astrogrid-build-snapshot"
      banner="building snapshots"
      ignoreFailures="true" />
-     -->
+     <!--
      <maven:maven descriptor="${basedir}/client/project.xml"
         goals="astrogrid-build-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/server/project.xml"
@@ -63,12 +65,13 @@ middle to commandline tests - no jar produced, no error messages. so written all
         goals="astrogrid-build-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/http/project.xml"
         goals="astrogrid-build-snapshot" ignoreFailures="false" />
+        -->
 </goal>
 
 <!-- artifact -->
 <goal name="astrogrid-deploy-artifact">
    <echo message="Master Project: astrogrid-deploy-artifact"/>
-   <!--
+   
    <maven:reactor
      basedir="${basedir}"
      postProcessing="false"
@@ -76,7 +79,7 @@ middle to commandline tests - no jar produced, no error messages. so written all
      goals="astrogrid-deploy-artifact"
      banner="Deploying artifacts"
      ignoreFailures="true" />
-     -->
+   <!--
      <maven:maven descriptor="${basedir}/client/project.xml"
         goals="astrogrid-deploy-artifact" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/server/project.xml"
@@ -85,6 +88,7 @@ middle to commandline tests - no jar produced, no error messages. so written all
         goals="astrogrid-deploy-artifact" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/http/project.xml"
         goals="astrogrid-deploy-artifact" ignoreFailures="false" />
+        -->
 </goal>
 <goal name="astrogrid-install-artifact">
    <echo message="Master Project: astrogrid-install-artifact"/>
@@ -102,7 +106,7 @@ middle to commandline tests - no jar produced, no error messages. so written all
 
 <goal name="astrogrid-build-artifact">
         <echo message="Master Project: astrogrid-build-artifact" />
-   <!--
+
    <maven:reactor
      basedir="${basedir}"
      postProcessing="false"
@@ -110,7 +114,7 @@ middle to commandline tests - no jar produced, no error messages. so written all
      goals="astrogrid-build-artifact"
      banner="building artifacts"
      ignoreFailures="true" />
-     -->
+	<!--
      <maven:maven descriptor="${basedir}/client/project.xml"
         goals="astrogrid-build-artifact" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/server/project.xml"
@@ -119,6 +123,7 @@ middle to commandline tests - no jar produced, no error messages. so written all
         goals="astrogrid-build-artifact" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/http/project.xml"
         goals="astrogrid-build-artifact" ignoreFailures="false" />
+        -->
 </goal>
 
 
