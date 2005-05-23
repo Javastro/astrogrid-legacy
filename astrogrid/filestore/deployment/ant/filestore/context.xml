@@ -15,7 +15,16 @@
         name="@FILESTORE_NAME@.repository"
         override="false" type="java.lang.String"
         value="@FILESTORE_REPO@"/>
+     
+     <Environment
+        name="org.astrogrid.registry.admin.endpoint"
+        override="false" type="java.lang.String"
+        value="@REGADMIN@"/>
         
+      <Environment
+        name="org.astrogrid.registry.query.endpoint"
+        override="false" type="java.lang.String"
+        value="@REGQUERY@"/>     
         
         
         <!--	
