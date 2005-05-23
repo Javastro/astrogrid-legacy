@@ -6,13 +6,13 @@
   <body>
   <release version="(In progress)">  
         <action dev="jdt" type="fix" issue="1182">
-            <b>AstroGrid</b> Changes to all Installers to ensure they work offline.            
+            <b>astrogrid/</b> Changes to all Installers to ensure they work offline.            
         </action>       
   </release>    
   <release version="(Pending Integration)">  
 		<action dev="jdt" type="fix" issue="1180"> 
-            <b>Applications</b> and <b>integrationTests</b> <em>cea_jdt_1180</em> Minor bug fixes to installer and build. Also fixes bug 
-            1182 for CEA.
+            <b>astrogrid/applications</b> and <b>astrogrid/integrationTests</b> <em>cea_jdt_1180</em> Minor bug fixes to installer and build. Also fixes bug 
+            1182 (for CEA only).
         </action> 
   </release>
   <release version="(Undertest)">     		
