@@ -207,11 +207,11 @@
         	<filter token="CEARegistryTemplate" value="${cea.registry.template.file}"/>
         	
         </filterset>
-        <copy todir="${cea.temporary.dir}/cea">
+        <copy todir="${cea.temporary.dir}/cea" overwrite="true">
             <filterset refid="myfilter"/>
             <fileset dir="${cea.context.dir}" />
         </copy>
-        <copy file="${cea.war}" tofile="${local.cea.war}"/>
+        <copy file="${cea.war}" tofile="${local.cea.war}" overwrite="true"/>
     	<!--update the context.xml-->
         <war update="yes" destfile="${local.cea.war}">
             <metainf dir="${cea.temporary.dir}/cea" />
