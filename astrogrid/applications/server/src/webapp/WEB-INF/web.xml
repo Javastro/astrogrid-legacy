@@ -80,14 +80,14 @@
 	
 	<env-entry>
 		<description>The service endpoint for querying the resource registry.</description>
-		<env-entry-name>org.astrogrid.registry.query.endpoint</env-entry-name>
+		<env-entry-name>registry.query.endpoint</env-entry-name>
 		<env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryQuery</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
 
 	<env-entry>
 		<description>The service endpoint for updating the resource registry.</description>
-		<env-entry-name>org.astrogrid.registry.admin.endpoint</env-entry-name>
+		<env-entry-name>registry.admin.endpoint</env-entry-name>
 		<env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryUpdate</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
