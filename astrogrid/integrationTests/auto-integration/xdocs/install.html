@@ -19,12 +19,12 @@ frequently. </P>
 	<LI><P>JRE or <A HREF="http://java.sun.com/j2se/1.4.2/download.html">JDK</A>
 	1.4.x</P>
 	<LI><P><A HREF="http://maven.apache.org/start/download.html">Maven</A>
-	1.0.0 or better</P>
+	1.0.2 or better</P>
 	<LI><P><A HREF="http://apache.rmplc.co.uk/dist/jakarta/tomcat-5/v5.0.25/">Tomcat</A>
-	5.x with a user of role <A HREF="http://jakarta.apache.org/tomcat/tomcat-5.0-doc/manager-howto.html#Configuring Manager Application Access">manager</A>
+	5.0.19 with a user of role (AG compatibility with tomcat 5.0.28 is still under going tests)<A HREF="http://jakarta.apache.org/tomcat/tomcat-5.0-doc/manager-howto.html#Configuring Manager Application Access">manager</A>
 	enabled</P>
 </UL>
-<H2>Procedure to install the latest snapshot</H2>
+<H2>Procedure to install the latest HEAD</H2>
 <UL>
 	<LI><P>Checkout <A HREF="http://www.astrogrid.org/viewcvs/astrogrid/integrationTests/auto-integration/">astrogrid/integrationTests/auto-integration</A>
 	from CVS 
@@ -174,11 +174,14 @@ meantime.</P>
         the tests in your builds against recent baselines, and thus track down any unexpected test failures.  </P>
 	</UL>
 </UL>
+<H2>KNOWN Issues for deploying current system as AGINAB and get arounds:</H2>
+<P>At the moment running deploy-all on a vanilla tomcat, it will fail at setting up community due to a commonly used jar file (hsqldb-1.7.1.jar) need to be copied into 
+under tomcat/common/lib, one can get around this by running maven setup after running maven deploy-all</P>
 <P>
 <HR/>
 </P>
 <P>This documentation was generated using Maven's <A HREF="http://maven.apache.org/reference/plugins/html2xdoc/">html2xdoc</A>
 goal.</P>
-<P>John Taylor 19th June 2004</P>
+<P>John Taylor 19th June 2004, updated by CLQ 24 May 2005</P>
 </BODY>
 </HTML>
