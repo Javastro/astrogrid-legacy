@@ -10,7 +10,9 @@
         </action>       
   </release>    
   <release version="(Pending Integration)">  
-
+        <action dev="mch" type="fix" > 
+            <b>MCH-v1</b> v1.0 release for datacenter, slinger and xml projects. 
+        </action> 
   </release>
   <release version="(Undertest)">  
 		<action dev="jdt" type="fix" issue="1180"> 
@@ -27,7 +29,7 @@
 
    </release>
 
-   <release version="1.1" date="20/05/05" description="AG 1.1 Release">
+   <release version="1.0.1" date="20/05/05" description="AG 1.0.1 Release">
 	     <action dev="jdt" type="fix" issue="383"> 
             Since we're now on maven 1.0.2 I've refactored the property files to remove common and duplicated stuff to maven-base. 
 			All components will need to be rebuilt after this merge, which should have no side effects.
