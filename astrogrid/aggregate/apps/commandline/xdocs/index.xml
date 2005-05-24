@@ -52,10 +52,10 @@
     <dl>
     <dt><code>org.astrogrid.community.ident</code></dt>
         <dd>The identifier of the local community. For example <code>org.astrogrid.release</code></dd>
-    <dt><code>org.astrogrid.registry.query.endpoint</code></dt>
+    <dt><code>registry.query.endpoint</code></dt>
         <dd>Endpoint of the registry query service. For example
         <code>http://katatjuta.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/services/RegistryQuery</code></dd>
-    <dt><code>org.astrogrid.registry.admin.endpoint</code></dt>
+    <dt><code>registry.admin.endpoint</code></dt>
         <dd>Endpoint of the registry admin service. For example
         <code>http://katatjuta.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/services/RegistryAdmin</code></dd>
     <dt><code>jes.job.controller.endpoint</code></dt>
