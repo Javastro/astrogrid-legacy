@@ -14,6 +14,8 @@
     xmlns:artifact="artifact"		
 	default="astrogrid-install-snapshot"
     >
+	
+	<property name="webapp.docs" location="${basedir}/target/webapp-docs" />	
 
     <!--+
         | Primary goals are :
@@ -227,6 +229,7 @@
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Pre-processing for webapp task"/>
+        <attainGoal name="site-webapp"/>
         <attainGoal name="init.axis"/>
         <ant:echo message="Modifying war:webapp location"/>
         <ant:echo message="  Before : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
@@ -311,7 +314,11 @@
             </fileset>
         </ant:copy>
     	
-			
+        <ant:copy verbose="false" todir="${axisDir}/docs" overwrite="false">
+        	<fileset dir="${webapp.docs}">
+            </fileset>
+        </ant:copy>
+    	
     	<!--
         <ant:mkdir dir="${axisDir}/WEB-INF/classes"/>
         <ant:copy verbose="false"
@@ -373,6 +380,53 @@
         <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
         <ant:echo message="Maven classes directory : ${maven.junit.dir}"/>
     </preGoal>
+	
+	<goal name="site-webapp"
+	        description="generate webapp docs to a temp direcotry, for inclusion later in webapp - work around for a bug that stops build">
+
+	        <echo> generating webapp site into ${webapp.docs}" </echo>
+	        <!-- first merge two doc sets - site xdocs take precendence  -->
+	        <property name="tmp.docs" location="${basedir}/target/webapp-docs-src" />
+	        <mkdir dir="${tmp.docs}" />
+		<!--
+	        <copy todir="${tmp.docs}">
+	                <fileset dir="${basedir}/site-xdocs" />
+	        </copy>
+	    -->
+	        <copy overwrite="false" todir="${tmp.docs}">
+	                <fileset dir="${basedir}/xdocs" />
+	        </copy>
+	        <!-- now copy in schema and stuff extracted by grab-schema-->
+			<!--
+	        <copy overwrite="false" todir="${tmp.docs}">
+	                <fileset dir="${working.dir}" />
+	        </copy>
+			-->
+	        <core:set var="maven.docs.dest" value="${webapp.docs}" />
+	        <core:set var="maven.docs.src" value="${tmp.docs}" />
+	        <core:set var="maven.xdoc.poweredby.title" value="Provided by Astrogrid" />
+	        <core:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
+	        <core:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
+	        <core:set var="maven.ui.banner.background" value="#FF0000" />
+	        <core:set var="maven.ui.banner.foreground" value="#000000" />
+	        <mkdir dir="${webapp.docs}" />
+	        <!-- <attainGoal name="site:generate" /> -->
+
+	        <attainGoal name="xdoc:generate-from-pom" />
+
+		    <!--
+	        <attainGoal name="javadoc:generate" />
+	        -->
+	        <!--<attainGoal name="maven-jxr-plugin:report" /> - seems to fail at the moment. odd -->
+			
+	        <attainGoal name="xdoc" />
+	        
+
+	        <!-- todo - sort out custom navigation bit -->
+
+	</goal>
+
+	
 	
 
 </project>

@@ -2,11 +2,17 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/05/25 16:29:44 $</cvs:date>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.14  2005/05/25 16:29:44  clq2
+    |   with doc temp
+    |
+    |   Revision 1.13.48.1  2005/05/23 09:30:04  KevinBenson
+    |   new documentation template for the community to be consistent for all of astrogrid.
+    |
     |   Revision 1.13  2005/01/07 14:14:25  jdt
     |   merged from Reg_KMB_787
     |
@@ -77,10 +83,11 @@
         +-->
     <description>
         <![CDATA[
-            Very helpfull set of packages that deals with interaction with a Registry.  Allows a client component to only 
-    	    setup a Registry endpoint and use the Resolver packages to obtain the needed client delegates and even perform
-    	    particular web service tasks.  Resolver package will also parse Registry identifiers known as Ivorns and Community 
-    	    Account identifiers also in a ivorn format to obtain the needed delegates or perform the needed tasks.
+            Very helpfull set of packages that deals with interaction with a Registry and resolving ivorns.  Allows a client component to only 
+          setup a Registry endpoint and use the Resolver packages to obtain the needed client delegates and even perform
+          particular web service tasks.  Resolver package will also parse Registry identifiers known as Ivorns and Community 
+          Account identifiers also in a ivorn format to obtain the needed delegates or perform the needed tasks.  This jar is intended to be 
+          bundled with other astrogrid software components namely the community-client.
         ]]>
     </description>
 

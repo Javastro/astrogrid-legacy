@@ -2,11 +2,17 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/02/18 17:14:55 $</cvs:date>
-    | <cvs:version>$Revision: 1.23 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/05/25 16:29:43 $</cvs:date>
+    | <cvs:version>$Revision: 1.24 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.24  2005/05/25 16:29:43  clq2
+    |   with doc temp
+    |
+    |   Revision 1.23.34.1  2005/05/23 09:30:05  KevinBenson
+    |   new documentation template for the community to be consistent for all of astrogrid.
+    |
     |   Revision 1.23  2005/02/18 17:14:55  jdt
     |   merge with community_pah_910
     |
@@ -80,6 +86,8 @@
     default="astrogrid-rebuild-snapshot"
     >
 
+
+    <property name="webapp.docs" location="${basedir}/target/webapp-docs" />   
     <!--+
         | Import the goals from our parent project.
         | Looks like this gets included anyway, possibly because our project inherits from ../maven.project.xml ?
@@ -230,6 +238,7 @@
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Pre-processing for webapp task"/>
+        <attainGoal name="site-webapp"/>
         <!--+
             | Initialise the Axis webapp.
             +-->
@@ -282,10 +291,20 @@
                 <include name="**/*.wsdd"/>
             </fileset>
         </ant:copy>
+        
+        
+        
         <!--+
             | Initialise our classpaths.
             +-->
         <attainGoal name="init.classpath"/>
+        
+        <ant:copy verbose="false" todir="${axisDir}/docs" overwrite="false">
+         <fileset dir="${webapp.docs}">
+            </fileset>
+        </ant:copy>
+        
+        
         <!--+
             | Deploy our services.
             +-->
@@ -321,7 +340,7 @@
         +-->
         <!--+
             | Patch the web.xml to fix the DTD
-			Now gets replaced anyways
+         Now gets replaced anyways
         <ant:replace
             token="web-app_2.2.dtd"
             value="web-app_2_2.dtd"
@@ -330,8 +349,8 @@
         <!--+
             | Validate our existing web.xml
            
-		<ant:xmlvalidate file="${axisDir}/WEB-INF/web.xml"/>
-		 +-->
+      <ant:xmlvalidate file="${axisDir}/WEB-INF/web.xml"/>
+       +-->
     </postGoal>
 
     <!--+
@@ -353,5 +372,51 @@
         <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
         <ant:echo message=""/>
     </preGoal>
+    
+   <goal name="site-webapp"
+           description="generate webapp docs to a temp direcotry, for inclusion later in webapp - work around for a bug that stops build">
+
+           <echo> generating webapp site into ${webapp.docs}" </echo>
+           <!-- first merge two doc sets - site xdocs take precendence  -->
+           <property name="tmp.docs" location="${basedir}/target/webapp-docs-src" />
+           <mkdir dir="${tmp.docs}" />
+      <!--
+           <copy todir="${tmp.docs}">
+                   <fileset dir="${basedir}/site-xdocs" />
+           </copy>
+       -->
+           <copy overwrite="false" todir="${tmp.docs}">
+                   <fileset dir="${basedir}/xdocs" />
+           </copy>
+           <!-- now copy in schema and stuff extracted by grab-schema-->
+         <!--
+           <copy overwrite="false" todir="${tmp.docs}">
+                   <fileset dir="${working.dir}" />
+           </copy>
+         -->
+           <core:set var="maven.docs.dest" value="${webapp.docs}" />
+           <core:set var="maven.docs.src" value="${tmp.docs}" />
+           <core:set var="maven.xdoc.poweredby.title" value="Provided by Astrogrid" />
+           <core:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
+           <core:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
+           <core:set var="maven.ui.banner.background" value="#FF0000" />
+           <core:set var="maven.ui.banner.foreground" value="#000000" />
+           <mkdir dir="${webapp.docs}" />
+           <!-- <attainGoal name="site:generate" /> -->
+
+           <attainGoal name="xdoc:generate-from-pom" />
+
+          <!--
+           <attainGoal name="javadoc:generate" />
+           -->
+           <!--<attainGoal name="maven-jxr-plugin:report" /> - seems to fail at the moment. odd -->
+         
+           <attainGoal name="xdoc" />
+           
+
+           <!-- todo - sort out custom navigation bit -->
+
+   </goal>
+    
 
 </project>

@@ -11,14 +11,14 @@
    <div id='menuServer'>
       <h5>Setup</h5>
       <ul>
-		 <li><a href="selfRegisterForm.jsp" >Register Metadata</a></li>
-		 <li><a href="ResetDB.jsp" >Reset DB</a></li>
+       <li><a href="selfRegisterForm.jsp" >Register Metadata</a></li>
+       <li><a href="ResetDB.jsp" >Reset DB</a></li>
       </ul>
    </div>
    <div id='menuConfig'>
       <h5>Administration</h5>
       <ul>
-		 <li><a href="index.jsp" >Home</a></li>
+       <li><a href="index.jsp" >Home</a></li>
          <li><a href="AccountAdmin.jsp" >Account</a></li>
          <li><a href="GroupAdmin.jsp" >Group</a></li>
          <li><a href="GroupMemberAdmin.jsp" >Group Members</a></li>
@@ -32,6 +32,12 @@
          <li><a href="fingerprint.jsp" >Fingerprint</a></li>
       </ul>
    </div>
+   <div id='menuDocs'>
+      <h5>Documentation</h5>
+      <ul>
+         <li><a href="../docs/index.html" >Docs</a>
+      </ul>
+   </div>   
 
 </div>
 </div>

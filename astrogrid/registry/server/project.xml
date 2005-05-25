@@ -47,116 +47,9 @@
     <description>
         <![CDATA[
 	<p>
-		Server Area for the installation of the Registry.  This area contains
-    	the Web Service Interface for querying, harvesting and Updating the
-    	registry.  <b>*Warning - The methods use a Document type style and has
-    	only been tested under Axis deployment.</b>
-    	The information is stored in a xml database known as eXist.
-    	See <a href="http://exist.sourceforge.net">eXist</a> for more information.
-    	The Registry is also OAI conformant and has defined OAI Web Service 
-    	interface methods for OAI. See <a href="http://www.openarchives.org">oai</a>.
+    	<b>Please see the "webapp" documentation for more information on the registry.</p>
 		<br />
 	</p>
-	<section name="Interface">
-		<p>
-			Web Service Interface methods:
-			<ul>
-				<li>update(Resource schema) - updates the Registry with one to many Resources.</li>
-				<li>harvestResource(Resource schema) - return all resource information modified from a particular date.</li>
-				<li>submitQuery(old Astrogrid XML Criteria) - Query for entries based on a particular criteria.</li>
-				<li>loadRegistry - just returns the Registry Resource metadata entry for this defined registry.</li>
-    			<li>Search(Adql) - queries based on ADQL, can handle multiple versions of ADQL.</li>
-    			<li>GetRegistries - queries for all registries known.</li>
-    			<li>Identify - OAI-Identify, identify information for the registry.</li>
-    			<li>ListMetadataFormats - OAI-ListMetadataFormats.</li>
-    			<li>ListIdentifiers - OAI-ListIdentifiers, lists all the registry identifiers.</li>
-    			<li>ResumeListIdentifiers - OAI-ListIdentifiers, resumes a list (paging).</li>
-    			<li>ListRecords - OAI-ListRecords, List all the metadata in the registry.</li>
-    			<li>ResumeListRecords - OAI-ResumeListRecords, resumes a list (paging).</li>
-    			<li>GetRecord - OAI-GetRecord, get a specific entry.</li>
-			</ul>
-		</p>
-	</section>
-	<section name="More on Queries">
-		<p>
-			The queries conform to a new ivoa standard to take in ADQL.  The Registry can handle multi-versioned ADQL
-    	    currently 0.7.3, 0.7.4, soon to be 0.8.1.  Many client components of Astrogrid though still use an old style
-    	    xml schema and syntax for itn06 and will change to the ADQL in itn07. See <a href="http://www.ivoa.net">More on ADQL/VOQL</a>
-			When ADQL is received then XSL stylesheets are called based on that ADQL version to tranform it to XQuery
-    	    language for quering the XML database.  On the older style query syntax then it is just
-    	    regulary parsed for now into XQuery as well.
-    		Example Queries:
-		</p>
-	</section>
-    	<section name="eXist">
-         	<p>
-        		Registry uses an eXist xml database for storing and querying the resources of the Registry. 
-        	    You can download eXist from <a href="http://exist.sourceforge.net">eXist website</a>. You can
-        	    also download it from <a href="http://www.astrogrid.org/maven/exist">eXist from Astrogrid</a>
-         	    For security purposes,
-        	    it is better to install the eXist as a server installation on another port
-        	    that is not accessible to outside computers, but still accessible to 
-        	    the registry installation.  This is completely optional though, and for ease of installation 
-        	    throughout astrogrid it is normally installed as a war file.<br />
-        	    Changes to be made once eXist is installed:<br />
-        	    See <a href="http://exist.sourceforge.net/configuration.html">Config for eXist</a>.  Change
-        	    the cacheSize to something bigger if this is going to be a full Registry. 
-        	    Finally set the match-tagging-elements and match-tagging-attributes to "no".  In Astrogrid
-        	    these changes are already in place, but change the cacheSize to something more appropriate.
-        	</p>
-        	<p>
-        		It is recommended to have the exist location end in "exist" hence http://server.com/exist is the location.  This
-        	    is not required, but if you wish to view exist manually it can be easier.
-        	</p>
-        </section>
-	<section name="Builds">
-		<p>
-			The registry allows you to build at the top level or at it's sub-project level.  
-			Here are the maven goals for building the registry.
-			<ul>
-				<li>astrogrid-clean - cleans out and removes all previous builds.</li>
-				<li>astrogrid-install-snapshot - Builds all the necessry jar and war files.</li>
-				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
-				<li>astrogrid-install-artifact - Builds and deploys the artifact onto the repository.</li>    	
-				<li>astrogrid-deploy-artifact - Builds and deploys the artifact onto the repository.</li>    	
-				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
-			</ul>
-		</p>
-	</section>
-	<section name="Deployment/Installation">
-		<p>
-			This only builds the server jar and is expected to be bundled up with a war file.  
-			See the WebApp portion of the registry which bundles up the full server installation into a war file.
-			After a build a jar file is produced in the "target"
-			directory.  When ever it is bundled with another component, it is expected to have in the System properties or
-			JNDI a key value of "org.astrogrid.config.url" pointing to a config file.  An example config file is given in
-			cvs under the config directory as config.prop.  
-			Currently the config file only requires properties:
-			<ul>
-    		  <li>org.astrogrid.registry.authorityid - required, the main authority id for this registry. Should be the same authorityid used on the main Registry type Resource.</li>
-			  <li>org.astrogrid.registry.version - required, a version number of the current main IVOA registry schema, slowly being factored out.</li>
-			  <li>exist.db.url - required, eXist url property pointing to the root location of the eXist XML database.</li>
-			  <li>exist.query.returncount - optional, the return count number (defaults to 25 if not given).</li>
-    		  <li>oai.servlet.url - required, the url to the servlet for the OAI, OAICat type servlet.</li>
-		  	  <li>org.astrogrid.registry.harvest.daemon.interval-hours - required, See webapp section for more on this servlet.  For harvesting other registries, the time intervals for automatic harvests to be started.</li>
-	  	  	  <li>declare.namespace.0_9 - recommended, namespaces to be declared on the queries in xquery type form meaning seperated by ";"</li>
-		      <li>keyword.query.path.0_9 - required, the xpaths to elements to be used on the keyword search comma seperated.</li>
-	          <li>identifier.path.hasauthorityid.0_9 - required, is the key (identifier) split up, normally only 0_9 will be true</li>
-			</ul>
-    		Example of config properties:
-    		<ul>
-    		  <li>org.astrogrid.registry.authorityid=org.astrogrid.leicester</li>
-			  <li>exist.db.url=http://localhost:8080/exist</li>
-			  <li>exist.query.returncount=25</li>
-			  <li>oai.servlet.url=http://localhost:8080/astrogrid-registry-snapshot/OAIHandler</li>
-		      <li>org.astrogrid.registry.version=0_9</li>
-		  	  <li>org.astrogrid.registry.harvest.daemon.interval-hours=1</li>
-	  	      <li>declare.namespace.0_9=declare namespace vr = "http://www.ivoa.net/xml/VOResource/v0.9"; declare namespace vc = "http://www.ivoa.net/xml/VOCommunity/v0.2"; declare namespace vg = "http://www.ivoa.net/xml/VORegistry/v0.2"; declare namespace vs = "http://www.ivoa.net/xml/VODataService/v0.4"; declare namespace vt = "http://www.ivoa.net/xml/VOTable/v0.1"; declare namespace cs = "http://www.ivoa.net/xml/ConeSearch/v0.2"; declare namespace sia = "http://www.ivoa.net/xml/SIA/v0.6"; declare namespace cea="http://www.ivoa.net/xml/CEAService/v0.1"; declare namespace ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1";</li>
-		      <li>keyword.query.path.0_9=vr:Summary/vr:Description, vr:Title, vr:Subject</li>
-	          <li>identifier.path.hasauthorityid.0_9=true</li>
-    		</ul>
-		</p>
-	</section>	
 		]]>        
     </description>
 
@@ -222,13 +115,21 @@
           <artifactId>astrogrid-community-resolver</artifactId>
           <version>${astrogrid.community.version}</version>
         </dependency>
-
+    	
         <dependency>
-          <groupId>org.astrogrid</groupId>
-          <type>jar</type>
-          <artifactId>astrogrid-registry-client-lite</artifactId>
-          <version>${astrogrid.registry.version}</version>
-        </dependency>        	  
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
+            <version>${astrogrid.registry.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+    	
+        <dependency>
+           <artifactId>astrogrid-utils</artifactId>
+           <groupId>org.astrogrid</groupId>
+           <version>${astrogrid.utils.stable}</version>
+        </dependency>
+    	
     	        
         <dependency>
         	<artifactId>commons-jxpath</artifactId>
@@ -369,6 +270,28 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
+    	
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-pal-query</artifactId>
+            <version>${astrogrid.pal.version}</version>
+            <type>jar</type>
+        </dependency>    	
+    	
+        <dependency>
+           <artifactId>astrogrid-xml</artifactId>
+           <groupId>org.astrogrid</groupId>
+           <version>${astrogrid.xml.stable}</version>
+         <properties>
+             <war.bundle>true</war.bundle>
+         </properties>       	
+        </dependency>
+    	
+            <dependency>
+               <artifactId>astrogrid-slinger-api</artifactId>
+               <groupId>org.astrogrid</groupId>
+               <version>${astrogrid.slinger.version}</version>
+            </dependency>
 	   	
     	<dependency>
         	<groupId>exist</groupId>

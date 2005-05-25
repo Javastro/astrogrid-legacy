@@ -60,7 +60,7 @@ are available.
          (SimpleConfig.getSingleton().getString("reg.custom.exist.configuration",null) == null ||
           SimpleConfig.getSingleton().getString("reg.custom.exist.configuration").trim().length() == 0)) {
           out.write("<br /><font color='green'>Your registry is in embed/internal mode with the data storage inside your webapp. It is advisable" +
-          " to have the data storage outside your webapp, read the configure page to see how this is done.</font>");
+          " to have the data storage outside your webapp, read the configure page to see how this is done in the documentation area.</font>");
       
       }
       

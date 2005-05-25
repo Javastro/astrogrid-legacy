@@ -10,6 +10,12 @@
          <li><a href='/manager/reload?path=<%= request.getContextPath() %>'>Restart</a>
       </ul>
    </div>
+   <div id='menuDocs'>
+      <h5>Documentation</h5>
+      <ul>
+         <li><a href="docs/index.html" >Docs</a>
+      </ul>
+   </div>   
 </div>
 </div>
 

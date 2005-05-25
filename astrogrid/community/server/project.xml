@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/project.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/03/18 22:59:23 $</cvs:date>
-    | <cvs:version>$Revision: 1.21 $</cvs:version>
+    | <cvs:date>$Date: 2005/05/25 16:29:44 $</cvs:date>
+    | <cvs:version>$Revision: 1.22 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.22  2005/05/25 16:29:44  clq2
+    |   with doc temp
+    |
+    |   Revision 1.21.24.1  2005/05/23 09:30:05  KevinBenson
+    |   new documentation template for the community to be consistent for all of astrogrid.
+    |
     |   Revision 1.21  2005/03/18 22:59:23  clq2
     |   dave-dev-200503150513
     |
@@ -94,11 +100,7 @@
     <description>
         <![CDATA[
             Server side of the Community and implemenation of the various Web Service methods.  See the Webapp portion though
-    	    on the deployment and setup of the community.
-    	    Currently the Community classes use Castor (a JDO type library) allowing the connection to most any kind of database,
-            but currently all tests have been using HSQLDB as the database of choice for the community.  In the Webapp section is
-    	    the explanation of the configuration of the community web service that describes about configuration files in case you
-    	    wish to change over databases or make other small changes to the mappings.    	
+          on the deployment and setup of the community.
         ]]>
     </description>
 
@@ -162,13 +164,41 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
-        <dependency>
+
+    	<dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-filestore-client</artifactId>
             <version>${astrogrid.filestore.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
+    	
+        <dependency>
+           <artifactId>astrogrid-utils</artifactId>
+           <groupId>org.astrogrid</groupId>
+           <version>${astrogrid.utils.stable}</version>
+        </dependency>
+    	    	
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-pal-query</artifactId>
+            <version>${astrogrid.pal.version}</version>
+            <type>jar</type>
+        </dependency>    	
+    	
+        <!-- for writing XML -->
+       <dependency>
+          <artifactId>astrogrid-xml</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.xml.stable}</version>
+       </dependency>
+
+       <dependency>
+          <artifactId>astrogrid-slinger-api</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.slinger.version}</version>
+       </dependency>
+    	    	
         <dependency>
             <id>commons-collections</id>
             <version>3.0</version>
@@ -203,7 +233,7 @@
             <type>jar</type>
             <url>http://www.hsqldb.org/</url>
         </dependency>
-    	
+      
         <!--+
             | The Registry common classes.
             +-->
@@ -216,19 +246,19 @@
             <properties>
                 <jar.fileset>true</jar.fileset>
             </properties>
-        </dependency>    	
-    	
+        </dependency>      
+      
         <!--+
             | The Community resolver components.
             +-->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-	        <version>${pom.currentVersion}</version>
+           <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
-    	
+      
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-community-client</artifactId>
@@ -238,8 +268,8 @@
             <properties>
                 <jar.fileset>true</jar.fileset>
             </properties>
-        </dependency>    	
-       	
+        </dependency>      
+         
     </dependencies>
 
     <!--+

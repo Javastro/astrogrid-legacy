@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/03/18 22:59:23 $</cvs:date>
- * <cvs:version>$Revision: 1.23 $</cvs:version>
+ * <cvs:date>$Date: 2005/05/25 16:29:41 $</cvs:date>
+ * <cvs:version>$Revision: 1.24 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.24  2005/05/25 16:29:41  clq2
+ *   with doc temp
+ *
+ *   Revision 1.23.24.1  2005/05/23 09:30:05  KevinBenson
+ *   new documentation template for the community to be consistent for all of astrogrid.
+ *
  *   Revision 1.23  2005/03/18 22:59:23  clq2
  *   dave-dev-200503150513
  *
@@ -276,14 +282,15 @@ public class AccountManagerImpl
 				log.debug("Creating community account") ;
                 database.create(account);
 				log.debug("Ok - Created community account") ;
-/*
- * Problems reported with group membership when running on windows.
+
+// * Problems reported with group membership when running on windows.
                 //
                 // Try creating the group in the database.
                 database.create(group);
                 //
                 // Try adding the account to the groups.
                 database.create(groupmember);
+/*                
 // TODO BUG
 // Not sure why this one fails the tests.
 // Something about invalid primary key.

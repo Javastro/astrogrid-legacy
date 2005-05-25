@@ -39,175 +39,9 @@
     <description>
         <![CDATA[
 	<p>
-		This is the main project to build a war file for deployment and that can be just dropped into a server.  It bundles the Axis
-    	web service toolkit along with all the necessary jar file dependencies such as astrogrid-registry-server.jar all into this
-    	war file.  It also bundles together two servlets that handle the OAI and a harvest daemeon.  See the deployment section below
-    	for configuring the registry.  The Registry is now more mulit-versioned where if necessary you can fairly easily by adding
-    	properties have the registry handle more than one version.
+    	Welcome to the Registry Webapp Documentation.  In the menu on the left hand side you should find all that you need to know about
+    	installing the registry.
 	</p>
-	<section name="Builds">
-		<p>			
-			Here are the maven goals for building the registry, it has a one extra goal compared to the other sub-projects.
-			<ul>
-				<li>astrogrid-clean - cleans out and removes all previous builds.</li>
-				<li>astrogrid-install-snapshot - Builds all the necessry jar and war files for the snapshot.</li>
-				<li>astrogrid-install-artifact - Builds all the necessry jar and war files for the artifact.</li>    	
-				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
-				<li>astrogrid-deploy-artifact - Builds and deploys the artifact onto the repository.</li>    	
-				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
-			</ul>
-		</p>
-	</section>
-    <section name="More on the Servlets">
-    	<p>
-	    	<b>OAI</b> -- The toolkit used for this is the OAICat toolkit.  
-    	    See the tools section under <a href="http://www.openarchives.org">OAI</a>.  
-    		With a few modifications to this toolkit and extensions, the astrogrid servlet will 
-    	    query the eXist xml database for all the resources managed by this registry.  Then with
-    		xsl will transform it to a OAI xml, where it gives it to the OAICat toolkit for handling
-    	    any of the OAI tasks such as certain verbs.  Modify the oaicat.properties file for the
-    	    Identification verb. Location http://..../OAIHandlerv0_9
-    		OAI verbs handled by astrogrid:
-    	    <ul>
-    			<li>Identify</li>
-    			<li>ListRecords</li>
-				<li>ResumeListRecords - resumptionTokens can be used, but expect not to</li>    	
-    			<li>GetRecord</li>
-    			<li>ListMetaDataFormats</li>
-    			<li>ListIdentifiers</li>
-    			<li>ResumeListIdentifiers - resumptionTokens can be used, but expect not to</li>
-    		</ul>
-    		<i>One final note in the web.xml file located in src/webapp you can define more OAI
-    	       servlets to handle multiple versions by adding the param "registry.version"</i>
-    		<br />
-    		<b>Harvest Daemon</b> -- The harvest daemon will automatically kick off harvests or you may
-    	    go to the servet web site to kick off manual harvests or even replication. Location http://..../RegistryHarvest
-    	</p>
-    </section>
-   	<section name="eXist">
-     	<p>
-    		Registry uses an eXist xml database for storing and querying the resources of the Registry. 
-    	    You can download eXist from <a href="http://exist.sourceforge.net">eXist website</a>. You can
-    	    also download it from <a href="http://www.astrogrid.org/maven/exist">eXist from Astrogrid</a>. 
-    		You may install either a war version or server side version, but it is more advisable to use a different port, inside the
-    	    'zips' directory in Astrogrid you will see a pre-configured one for 9080 and 1080 ports.
-     	    For security purposes,
-    	    it is better to install the eXist as a server installation on another port
-    	    that is not accessible to outside computers, but still accessible to 
-    	    the registry installation.  This is completely optional though, and for ease of installation 
-    	    throughout astrogrid it is normally installed as a war file.<br />
-    	    Changes to be made once eXist is installed:<br />
-    	    See <a href="http://exist.sourceforge.net/configuration.html">Config for eXist</a>.
-    	    Finally set the match-tagging-elements and match-tagging-attributes to "no". Also the cacheSize attribute could be a 
-    	    benefit to increase on the performance of queries, but it is not required. In Astrogrid
-    	    these changes are already in place, but change the cacheSize to something more appropriate. Changing the
-    	    match-tagging atributes should shortly be factored out and the Registry can turn off (set to "no") on the
-    	    queries to the database.
-    	</p>
-    	<p>
-    		It is recommended to have the exist location end in "exist" hence http://server.com/exist is the location.  This
-    	    is not required, but if you wish to view exist manually it can be easier.
-    	</p>
-    </section>
-	<section name="Deployment/Installation">
-		<p>			
-    	   	Here we list the steps involved to deploy the registry (and eXist) onto a servlet container.  An 
-    	   	assumption is made that you know basic knowledge of servlet containers such as tomcat. <br />
-    	    There are 2 types of installation one in conjunction with "Astrogird in a Box" and then a standard
-    	    installation instructions.  
-    	    <br />
-    	    Steps involved in "Astrogrid in a Box":
-    	    <ul>
-    	       <li>1.) First you must have maven installed on your system. And CVS synced up to 
-    				astrogrid/registry and astrogrid/maven-base.
-		   	   </li>
-    	       <li>2.) Set in your build.properties a registry.authorityid to the main authority id you will be using.</li>
-    	       <li>3.) You may optionally as well set a astrogrid.iteration property to another previous version the default if not
-    	               placed in the properties file is SNAPSHOT.</li>
-    	       <li>4.) In the auto-integration/registry-entries modify the ARegistry.xml file with the desired information, you don't 
-    	               need to change the AuthorityID.</li>
-    	       <li>5.) Now delete or modify any other entries in that registry-entries directory.</li>
-    	       <li>6.) Be sure your servlet container (currently Astrogrid in a Box is only compatible with Tomcat 5 and above) is started.</li>
-    	       <li>7.) Run "maven reg-deploy" then "maven setup".</li>
-    	       <li>8.) Change the astrogrid.properties and optionally the oaicat.properties in your new installed registry located in the "regdeployedarea"/WEB-INF/classes.
-    	               See the properties section a the bottom of this section for a guide or look at the comments in the properties file themselves.</li>
-    	       <li>9.) Your main part of the registry is complete. Skip to number 3 in the "Setup Steps" below for being a full registry or registering yourself with another registry.</li>
-    	    </ul>
-    	    <br /> 
-    	    Now for the Standard Installation:
-    	   	Steps involved:
-    	   	<ul>
-    			<li>1.) Download the latest copy of astrogrid-registry from <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/">Astrogrid repository</a>
-    	            You may grab the latest copy as: <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-registry-SNAPSHOT.war">Latest Registry</a></li>
-    	        <li>2.) Also download the exist war <a href="http://www.astrogrid.org/maven/exist">here</a>
-    	            <i>See exist section above for more available options</i></li>
-    	        <li>3.) You may rename the registry war file to anything you like, it is advisable to keep the exist one as exist to use
-    	            the cocoon features of browsing, but this is not required.</li>
-    	        <li>4.) Deploy the registry war file into your servlet container normally by dropping them into the webapps directory or through
-    	            some type of manager interface. Same goes for eXist war file if you want to run eXist in webapp mode.</li>
-    	        <li>5.) Finally go to the registry deployed area and go to its /WEB-INF/classes and edit the astrogrid.properties  The properties
-                    files should be well commented to guide you, the main registry properties are below.</li>
-    	        <li>6.) In general the installation of the registry is complete, but read below for the setup.  
-    				It is advisable to restart your servlet container, to be certain the properties files are picked up..</li>
-    	   	</ul>
-    	    Steps involved for Setup of Registry:
-    	    <ul>
-    			<li>1.) Go to the registry jsp page of "/admin/index.jsp" and do the first registration process to register
-    	        this registry.
-    			</li>
-		        <li>If you are setting up a local Registry and do not need a Full Registry and DO NOT WANT TO BE HARVESTED BY OTHER REGISTRIES then stop here, all your
-			        entries are complete and other client apps may submit Resources to this registry as long as it is a AuthorityID
-			        managed by this Registry.  You will find in the same "admin/index.html" an add resource link for adding more
-    	            resources.
-    			</li>
-		        <li>Now it is time to register your new Registry to the rest of the world.</li>
-      			<li>2.) Do the Second link on "/admin/index.jsp" for registering your registry to a full registry.
-    			</li>
-        		<li>Now if your not planning on being a Full Registry then stop here.
-    			</li>
-        		<li>3.)Finally do the Third link on "/admin/index.jsp" to become a full registry by grabbing all the
-    	               registry types of a full registry.
-    			</li>
-        		<li>4.) Now the next time your harvest cycle happens it will begin harvesting these Registries, the first time
-        			it will harvest with no Date, and then after that it will harvest by date.  Optionally there is a "/admin/harvestResource.jsp" to perform
-    	            harvests on individual Registries; or optionally kick-off a full harvest at "/RegistryHarvest" servlet.
-    			</li>
-        		<li>You're done.</li>    			
-    	    </ul>
-			<br />
-
-    	    See the properties below, you may point to another OAI web based instance if you like.
-    		<i>Below are the properties and examples from the registry-server documentation plus some additions for the servlets, 
-    	       which are needed for the installation of the registry.</i>
-		Currently the config file only requires properties:
-		<ul>
-		  <li>org.astrogrid.registry.authorityid - required, the main authority id for this registry. Should be the same authorityid used on the main Registry type Resource.</li>
-		  <li>org.astrogrid.registry.version - required, a version number of the current main IVOA registry schema, slowly being factored out.</li>
-		  <li>exist.db.url - required, eXist url property pointing to the root location of the eXist XML database.</li>
-		  <li>exist.query.returncount - optional, the return count number (defaults to 25 if not given).</li>
-		  <li>oai.servlet.url - required, the url to the servlet for the OAI, OAICat type servlet, Does not have to be a servlet could point to oai cgi,perl or other web based implementation.</li>
-    	  <li>org.astrogrid.registry.harvest.daemon.interval-hours - required, for harvesting other registries, the time intervals for automatic harvests to be started.</li>
-	  	  <li>registry.harvest.enabled - required, Does this registry do harvesting of other registries.</li>
-	  	  <li>declare.namespace.0_9 - recommended, namespaces to be declared on the queries in xquery type form meaning seperated by ";"</li>
-		  <li>keyword.query.path.0_9 - required, the xpaths to elements to be used on the keyword search comma seperated.</li>
-  	      <li>identifier.path.hasauthorityid.0_9 - required, is the key (identifier) split up, normally only 0_9 will be true</li>
-		</ul>
-		Example of config properties:
-		<ul>
-		  <li>org.astrogrid.registry.authorityid=org.astrogrid.leicester</li>
-		  <li>exist.db.url=http://localhost:8080/exist</li>
-		  <li>exist.query.returncount=25</li>
-		  <li>oai.servlet.url=http://server.com:8080/astrogrid-registry-real/OAIHandlerv0_9</li>
-	      <li>org.astrogrid.registry.version=0_9</li>
-    	  <li>org.astrogrid.registry.harvest.daemon.interval-hours=1</li>
-	  	  <li>registry.harvest.enabled=true required, Does this registry do harvesting of other registries.</li>
-	  	  <li>registry.harvest.onload - optional, Start a harvest when servlet container starts.  Recommend false.</li>
-	  	  <li>declare.namespace.0_9=declare namespace vr = "http://www.ivoa.net/xml/VOResource/v0.9"; declare namespace vc = "http://www.ivoa.net/xml/VOCommunity/v0.2"; declare namespace vg = "http://www.ivoa.net/xml/VORegistry/v0.2"; declare namespace vs = "http://www.ivoa.net/xml/VODataService/v0.4"; declare namespace vt = "http://www.ivoa.net/xml/VOTable/v0.1"; declare namespace cs = "http://www.ivoa.net/xml/ConeSearch/v0.2"; declare namespace sia = "http://www.ivoa.net/xml/SIA/v0.6"; declare namespace cea="http://www.ivoa.net/xml/CEAService/v0.1"; declare namespace ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1";</li>
-		  <li>keyword.query.path.0_9=vr:Summary/vr:Description, vr:Title, vr:Subject</li>
-	      <li>identifier.path.hasauthorityid.0_9=true</li>
-		</ul>
-		</p>
-	</section>
 		]]>        
     </description>
 
@@ -249,6 +83,27 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+    	
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
+            <version>${astrogrid.registry.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+    	
+        <dependency>
+           <artifactId>astrogrid-utils</artifactId>
+           <groupId>org.astrogrid</groupId>
+           <version>${astrogrid.utils.stable}</version>
+ 		   <properties>
+             	<war.bundle>true</war.bundle>
+             </properties>
+        </dependency>
+    	
     	
         <dependency>
             <groupId>org.astrogrid</groupId>
