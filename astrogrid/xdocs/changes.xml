@@ -22,9 +22,7 @@
 		<action dev="gtr" type="fix" issue="1027"> 
             Changes to TableMetaDoc.xsd to make it match the DSA software. Branch dsa-gtr-1027
             Waiting for a big merge from mch before proceeding.
-        </action>
-   </release>      
-  <release version="(Pending Integration)">  
+        </action> 
         <action dev="mch" type="fix" > 
             <b>MCH-v1</b> v1.0 release for datacenter, slinger and xml projects. (awaiting for root tag from Martin)
         </action> 
