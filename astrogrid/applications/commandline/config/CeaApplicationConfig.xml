@@ -180,7 +180,7 @@
 					<pref ref="PhotoImage"/>
 					<pref ref="config_file"/>
 					<pref ref="PARAMETERS_NAME"/>
-					<pref ref="FILTER_NAME"/>
+					<pref ref="FILTER_NAME" minoccurs="0"/>
 					<pref ref="ANALYSIS_THRESH" minoccurs="0"/>
 					<pref ref="IMAGE_BAND" />
 				</input>
@@ -194,7 +194,7 @@
 					<pref ref="PhotoImage"/>
 					<pref ref="config_file"/>
 					<pref ref="PARAMETERS_NAME"/>
-					<pref ref="FILTER_NAME"/>
+					<pref ref="FILTER_NAME" minoccurs="0"/>
 					<pref ref="ANALYSIS_THRESH" minoccurs="0"/>
 					<pref ref="MAG_ZEROPOINT" minoccurs="0"/>
 					<pref ref="SEEING_FWHM" minoccurs="0"/>
