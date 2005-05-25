@@ -10,15 +10,7 @@
         </action>       
   </release>
   <release version="(Pending Integration)">  
-	    <action dev="kmb" type="fix" > 
-            Doc_Template_KMB_May112005 - docs template for astrogrid/registry
-        </action> 
-		<action dev="kmb" type="fix" > 
-            Doc_Template_KMB_May112005Comm - docs template for astrogrid/community
-        </action> 
-		<action dev="pjn" type="fix" issue="1191"> 
-            portalWF_pjn_1191 - fixes for parameter indirect flag in workflow builder
-        </action>        		
+	            		
 		<action dev="gtr" type="fix" issue="1027"> 
             Changes to TableMetaDoc.xsd to make it match the DSA software. Branch dsa-gtr-1027
             Waiting for a big merge from mch before proceeding.
@@ -28,6 +20,15 @@
         </action> 
   </release>
   <release version="(Undertest)">  
+	    <action dev="kmb" type="fix" > 
+            Doc_Template_KMB_May112005 - docs template for astrogrid/registry
+        </action> 
+		<action dev="kmb" type="fix" > 
+            Doc_Template_KMB_May112005Comm - docs template for astrogrid/community
+        </action> 
+		<action dev="pjn" type="fix" issue="1191"> 
+            portalWF_pjn_1191 - fixes for parameter indirect flag in workflow builder
+        </action>
 		<action dev="jdt" type="fix" issue="1180"> 
             <b>astrogrid/applications</b> and <b>astrogrid/integrationTests</b> <em>cea_jdt_1180</em> Minor bug fixes to installer and build. Also fixes bug 
             1182 (for CEA only).
