@@ -131,8 +131,8 @@
           <xsl:choose>                                      
                                                                                                           
             <xsl:when test="name() = 'step'"> <!-- STEP -->                                     
-              <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed - not req'd with step -->
-              </xsl:attribute>                    
+<!--              <xsl:attribute name="background">   prevent gaps appearing in 'trunk' when parameters are viewed - not req'd with step 
+              </xsl:attribute>      -->
                 <img width="70" height="25" border="0" alt="step">
                   <xsl:attribute name="src">/astrogrid-portal/mount/workflow/<xsl:value-of select="name()"/>.gif</xsl:attribute>
                   <xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
@@ -212,7 +212,8 @@
             <xsl:for-each select="ancestor::*">    <!-- Display vertical sequence image in relevant column -->                                                            
               <xsl:if test="count(ancestor::*) = $counter ">
                 <xsl:if test="count(following-sibling::*[not(name()='toolsAvailable')]) != 0">
-                  <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
+                <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
+                  <xsl:attribute name="background">  
                     /astrogrid-portal/mount/workflow/sequence_trunk.gif
                   </xsl:attribute>
                   <img width="70" height="25" border="0">
@@ -232,7 +233,8 @@
           <xsl:choose>
             <xsl:when test="name() = 'toolsAvailable'"/>                                                      
               <xsl:when test="count(following-sibling::*[not(name()='toolsAvailable')]) != 0">                                         
-                <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
+              <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
+                <xsl:attribute name="background">  
                   /astrogrid-portal/mount/workflow/sequence_trunk.gif
                 </xsl:attribute>
               <img width="70" height="25" border="0">

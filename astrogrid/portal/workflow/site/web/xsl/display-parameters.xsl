@@ -180,7 +180,7 @@
               <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
               <xsl:if test="$direction = 'output'">
                 <xsl:attribute name="onFocus">                
-                               javascript:document.getElementById('<xsl:value-of select="$indirect-id"/>').checked = 'true'; 
+                               javascript:document.getElementById('<xsl:value-of select="$indirect-id"/>').checked = 'true';
                 </xsl:attribute> 
               </xsl:if>             
             </input>                                                                    
@@ -191,7 +191,11 @@
             <input type="hidden">
               <xsl:attribute name="name">ivorn-value#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
               <xsl:attribute name="id"><xsl:value-of select="$ivorn-id"/></xsl:attribute>
-            </input>                                                                                                
+            </input>
+            <input type="hidden">
+              <xsl:attribute name="name">original-indirect-value#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
+              <xsl:attribute name="value"><xsl:value-of select="@param-indirect" /></xsl:attribute>
+            </input>                                                                                                            
           </td>                            
           <td align="center">
             <input class="agActionButton" name="myspace-name" type="button" value="Browse...">
@@ -255,9 +259,8 @@
           <xsl:attribute name="value"><xsl:value-of select="$direction"/></xsl:attribute>
         </input>                                        
         <input type="hidden">
-            <xsl:attribute name="name">param_indirect#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
-            <xsl:attribute name="id">param_indirect#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
-            <xsl:attribute name="value">false</xsl:attribute>
+            <xsl:attribute name="name">param_indirect_changed#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
+            <xsl:attribute name="id">param_indirect_changed#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
         </input>                               
     </xsl:template>
 

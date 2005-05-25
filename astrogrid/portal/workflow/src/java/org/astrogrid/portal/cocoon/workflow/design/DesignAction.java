@@ -170,6 +170,7 @@ public class DesignAction extends AbstractAction {
 	    PARAM_NAME_PARAMETER = "param-name",
 	    PARAM_VALUE_PARAMETER = "param-value",
         ORIG_PARAM_VALUE_PARAMETER = "original-param-value",
+        ORIG_INDIRECT_VALUE_PARAMETER = "original-indirect-value",
         IVORN_VALUE_PARAMETER = "ivorn-value",        
         DIRECTION_PARAMETER = "direction",
 	    SET_VALUE_PARAMETER = "set-value",
@@ -1150,23 +1151,31 @@ public class DesignAction extends AbstractAction {
 		  Tool tool = null ;
 		  ParameterValue p = null ;
 	      boolean parameterIndirect = false;
-	      boolean parameterDelete = false;	      
+	      boolean oldIndirectValue = false;
+	      boolean parameterDelete = false; 
 	      String paramCount = "" + i ;
               
 	      try {
 			   // Tool should already have been inserted into step
 			
-			   String oldParameterValue = request.getParameter( ORIG_PARAM_VALUE_PARAMETER+"#input#"+paramCount );						
+			   String oldParameterValue = request.getParameter( ORIG_PARAM_VALUE_PARAMETER+"#input#"+paramCount );
+			   oldIndirectValue = request.getParameter( ORIG_INDIRECT_VALUE_PARAMETER+"#input#"+paramCount ).equalsIgnoreCase("true");	   
 		       String parameterName = request.getParameter( PARAM_NAME_PARAMETER+"#input#"+paramCount ) ;				    					
 		       String parameterValue = request.getParameter( PARAM_VALUE_PARAMETER+"#input#"+paramCount ) ;
 		       String activityKey = request.getParameter( ACTIVITY_KEY_PARAMETER+"#input#"+paramCount ) ;
 		       String ivornValue = request.getParameter( IVORN_VALUE_PARAMETER+"#input#"+paramCount ) ;
 			
-		       if (request.getParameter( PARAM_INDIRECT+"#input#"+paramCount ).equalsIgnoreCase("on") )
-			     parameterIndirect = true;
+		       if ((request.getParameter( PARAM_INDIRECT+"#input#"+paramCount ) != null)
+		       		&& (request.getParameter( PARAM_INDIRECT+"#input#"+paramCount ).equalsIgnoreCase("on") )) 
+		       	        parameterIndirect = true;
+		       
+		       // prevent passing empty string to CEA as value for indirect location
+		       if (parameterIndirect && (parameterValue.length() <= 0 || parameterValue == null)) {
+		       	   parameterIndirect = false;
+		       }
        
 		       if ((request.getParameter( PARAM_DELETE+"#input#"+paramCount ) != null) 
-		       	&& (request.getParameter( PARAM_DELETE+"#input#"+paramCount ).equalsIgnoreCase("on") ))
+		       	&& (request.getParameter( PARAM_DELETE+"#input#"+paramCount ).equalsIgnoreCase("on") )) 
 			     parameterDelete = true;		       
 		       
 		       // Bug # 1047 - if param is indirect we need to manually add the ivo://
@@ -1213,7 +1222,10 @@ public class DesignAction extends AbstractAction {
 	    	
 	    }		
 		
-		else if ( (parameterValue != null && parameterValue.length() > 0 ) || (oldParameterValue.length() > 0) )
+	    // Bug #1191: it was possible to change just the indirect flag and have this change ignored
+		else if ( (parameterValue != null && parameterValue.length() > 0 ) || 
+				  (oldParameterValue.length() > 0) || 
+				  (oldIndirectValue != parameterIndirect))
 		{
 		    ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
 		    ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );

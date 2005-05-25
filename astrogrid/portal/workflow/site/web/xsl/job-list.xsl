@@ -107,7 +107,7 @@
                                    <xsl:attribute name="href">/astrogrid-portal/main/mount/workflow/agjobmanager-job-status.html?action=read-job&amp;jobURN=<xsl:value-of select="@jobid"/></xsl:attribute>
                                 </xsl:element>
                                 <xsl:value-of select="@jobid"/>
-                                <xsl:element name="/a"></xsl:element>
+<!--                                <xsl:element name="/a"></xsl:element>           -->
                              </div>
                              <div class="jobIdColumn" style="display: none;">
                                <xsl:attribute name="id">short_<xsl:value-of select="@jobid"/></xsl:attribute>
@@ -116,7 +116,7 @@
                                   <xsl:attribute name="class">jobIdColumn</xsl:attribute>              
                                </xsl:element>
                                   ......<xsl:value-of select="@jobid-short"/>
-                               <xsl:element name="/a"></xsl:element>                                                       
+<!--                               <xsl:element name="/a"></xsl:element>                     -->
                             </div>
                           </xsl:when>
                           <xsl:otherwise>
@@ -130,7 +130,7 @@
                                    <xsl:attribute name="target">_top</xsl:attribute>
                                 </xsl:element>
                                 ......<xsl:value-of select="@jobid-short"/>
-                                <xsl:element name="/a"></xsl:element>                         
+<!--                                <xsl:element name="/a"></xsl:element>                         -->
                            </div>
                          </xsl:otherwise>
                         </xsl:choose>                                                   

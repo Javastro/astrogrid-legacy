@@ -165,8 +165,8 @@
                   </xsl:attribute>
                 </ag-onload>
               </xsl:if>                                      
-              <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed - not req'd with step -->
-              </xsl:attribute>                    
+<!--              <xsl:attribute name="background">   prevent gaps appearing in 'trunk' when parameters are viewed - not req'd with step 
+              </xsl:attribute>   -->
               <xsl:element name="img">
                 <xsl:attribute name="src">/astrogrid-portal/mount/workflow/<xsl:value-of select="name()"/>.gif</xsl:attribute>
                 <xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
