@@ -14,19 +14,11 @@
             <em>aginab_jdt_1177</em> Plumbed the FileStore and FileManager installers into AGINAB. The GUI installers and AGINAB now use the same script for
             deployment, which has got to be a good thing. 
             </action>
-
-        <action dev="mch" type="fix" > 
-            <b>MCH-v1</b> v1.0 release for datacenter, slinger and xml projects. (awaiting for root tag from Martin)
-        </action> 
   </release>
-  <release version="(Undertest)">  
-	    <action dev="kmb" type="fix" > 
-            Doc_Template_KMB_May112005 - docs template for astrogrid/registry
-        </action> 
-		<action dev="kmb" type="fix" > 
-            Doc_Template_KMB_May112005Comm - docs template for astrogrid/community
-        </action> 
-		
+  <release version="(Undertest)">  	
+	    <action dev="mch" type="fix" > 
+            <b>MCH-v1</b> v1.0 release for datacenter, slinger and xml projects. (awaiting for root tag from Martin)
+        </action> 	
 		<action dev="jdt" type="fix" issue="1180"> 
             <b>astrogrid/applications</b> and <b>astrogrid/integrationTests</b> <em>cea_jdt_1180</em> Minor bug fixes to installer and build. Also fixes bug 
             1182 (for CEA only).
@@ -38,6 +30,12 @@
    </release>
     
   <release version="HEAD">
+	    <action dev="kmb" type="fix" > 
+            Doc_Template_KMB_May112005 - docs template for astrogrid/registry
+        </action> 
+		<action dev="kmb" type="fix" > 
+            Doc_Template_KMB_May112005Comm - docs template for astrogrid/community
+        </action> 
 	     <action dev="pjn" type="fix" issue="1191"> 
             portalWF_pjn_1191 - fixes for parameter indirect flag in workflow builder
          </action>
