@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParserTest.java,v 1.2 2005/03/21 18:31:51 mch Exp $
+ * $Id: SqlParserTest.java,v 1.3 2005/05/27 16:21:18 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,7 +18,7 @@ import org.xml.sax.SAXException;
 
 
 /**
- * Tests SQL - ADQL translator. Doesn't actually check the results properly...
+ * Tests SQL - ADQL translator.
  */
 
 public class SqlParserTest extends TestCase   {

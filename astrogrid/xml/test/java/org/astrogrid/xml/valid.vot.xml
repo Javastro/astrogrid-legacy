@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<VOTABLE xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xmlns='http://www.ivoa.net/xml/VOTable/v1.1'
+         xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://www.ivoa.net/xml/VOTable/VOTable-1.1.xsd'
+         version='1.1'>
+<RESOURCE>
+<TABLE>
+<FIELD name='RA' ID='TEST:TABLE.RA'  ucd='POS_EQ_RA_MAIN' datatype='float' unit='deg' />
+<FIELD name='ID' ID='TEST:TABLE.ID'  ucd='ID' datatype='char' arraysize='*' unit='' />
+<DATA>
+<TABLEDATA>
+<TR><TD>0.0</TD><TD>0</TD></TR>
+<TR><TD>0.3183098861837907</TD><TD>1</TD></TR>
+<TR><TD>0.6366197723675814</TD><TD>2</TD></TR>
+<TR><TD>0.954929658551372</TD><TD>3</TD></TR>
+<TR><TD>1.2732395447351628</TD><TD>4</TD></TR>
+<TR><TD>1.5915494309189535</TD><TD>5</TD></TR>
+<TR><TD>1.909859317102744</TD><TD>6</TD></TR>
+<TR><TD>2.228169203286535</TD><TD>7</TD></TR>
+<TR><TD>2.5464790894703255</TD><TD>8</TD></TR>
+<TR><TD>2.864788975654116</TD><TD>9</TD></TR>
+<TR><TD>3.183098861837907</TD><TD>10</TD></TR>
+<TR><TD>3.5014087480216975</TD><TD>11</TD></TR>
+</TABLEDATA>
+</DATA>
+</TABLE>
+</RESOURCE>
+</VOTABLE>

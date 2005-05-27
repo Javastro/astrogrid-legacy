@@ -1,4 +1,4 @@
-/*$Id: IndexQueryFitsTest.java,v 1.2 2005/03/22 22:47:29 KevinBenson Exp $
+/*$Id: IndexQueryFitsTest.java,v 1.3 2005/05/27 16:21:07 clq2 Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -10,31 +10,24 @@
 package org.astrogrid.datacenter.queriers.fits;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.account.LoginAccount;
-//import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.fits.FitsTestSupport;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.fitsserver.fits.FitsQuerierPlugin;
-import org.astrogrid.fitsserver.setup.IndexGenerator;
-import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.adql.AdqlQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.slinger.targets.NullTarget;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
+import org.astrogrid.xml.DomHelper;
 import org.astrogrid.xmldb.client.XMLDBFactory;
 import org.w3c.dom.Document;
-import org.astrogrid.util.DomHelper;
-import java.io.*;
-import org.xmldb.api.base.Collection;
-import org.astrogrid.cfg.ConfigFactory;
 
 /** Test the Fits processing classes
  */
@@ -64,7 +57,7 @@ public class IndexQueryFitsTest extends TestCase
            System.out.println("database registered now set the query plugin");
            registeredDB = true;
        }//if
-       ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());   
+       ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
    }
 
    /** Check to see the right plugin is made */
@@ -81,7 +74,7 @@ public class IndexQueryFitsTest extends TestCase
       
       Document doc = askQueryFromFile("ADQLQueryForFits1ForIndex.xml");
       StringWriter sw = new StringWriter();
-      Querier querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, AdqlQueryMaker.makeQuery(doc.getDocumentElement(), TargetMaker.makeTarget(sw), ReturnTable.VOTABLE), this);
+      Querier querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, AdqlQueryMaker.makeQuery(doc.getDocumentElement(), new WriterTarget(sw), ReturnTable.VOTABLE), this);
       querier.ask();
       String results = sw.toString();
       System.out.println("THE RESULTS OF QUERY = " +  results);
@@ -98,7 +91,7 @@ public class IndexQueryFitsTest extends TestCase
        
        //Document queryDoc = DomHelper.newDocument(new File(queryFile));
        return queryDoc;
-   }    
+   }
 
 
    
@@ -115,7 +108,6 @@ public class IndexQueryFitsTest extends TestCase
 
    public static void main(String args[]) throws IOException
    {
-      org.astrogrid.log.Log.logToConsole();
       junit.textui.TestRunner.run(suite());
    }
 
@@ -125,6 +117,15 @@ public class IndexQueryFitsTest extends TestCase
 
 /*
  $Log: IndexQueryFitsTest.java,v $
+ Revision 1.3  2005/05/27 16:21:07  clq2
+ mchv_1
+
+ Revision 1.2.14.2  2005/05/13 10:13:45  mch
+ 'some fixes'
+
+ Revision 1.2.14.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.2  2005/03/22 22:47:29  KevinBenson
  changed back to commonconfig stuff.
 

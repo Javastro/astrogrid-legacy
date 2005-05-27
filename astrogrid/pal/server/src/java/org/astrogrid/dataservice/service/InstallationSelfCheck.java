@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.4 2005/03/22 12:57:37 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,15 +12,14 @@ package org.astrogrid.dataservice.service;
 
 
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
-import java.net.URL;
 import java.security.Principal;
 import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.TestCase;
-import org.astrogrid.account.LoginAccount;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.api.nvocone.NvoConeSearcher;
 import org.astrogrid.dataservice.impl.roe.SssImagePlugin;
@@ -29,15 +28,18 @@ import org.astrogrid.dataservice.queriers.QuerierPlugin;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.dataservice.service.skynode.v074.SkyNodeService;
 import org.astrogrid.dataservice.service.soap.AxisDataService_v06;
+import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.adql.Adql074Writer;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.sql.SqlParser;
+import org.astrogrid.slinger.targets.NullTarget;
 import org.astrogrid.slinger.targets.TargetIdentifier;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.xml.DomHelper;
+import org.astrogrid.xml.Validator;
 import org.xml.sax.SAXException;
 
 /** Unit test for checking an installation - checks location of config files, etc.
@@ -97,14 +99,17 @@ public class InstallationSelfCheck extends TestCase {
       
       StringWriter sw = new StringWriter(); //although we throw away the results
       DataServer server = new DataServer();
-      server.askQuery(testPrincipal,makeTestQuery(TargetMaker.makeTarget(sw), ReturnTable.VOTABLE), this);
+      server.askQuery(testPrincipal,makeTestQuery(new WriterTarget(sw), ReturnTable.VOTABLE), this);
+
+      //check that the response is a valid votable
+      Validator.isValid(new ByteArrayInputStream(sw.toString().getBytes()));
    }
 
    /** Checks that we can submit ADQL through the AxisDataService, again an internal check */
    public void testAxisServiceClassAdql() throws Throwable {
       
       AxisDataService_v06 server = new AxisDataService_v06();
-      Query testQuery = makeTestQuery(TargetMaker.makeTarget(""), ReturnTable.VOTABLE);
+      Query testQuery = makeTestQuery(new NullTarget(), ReturnTable.VOTABLE);
       String adql = Adql074Writer.makeAdql(testQuery);
       String votable = server.askAdql(DomHelper.newDocument(adql).getDocumentElement(), ReturnTable.VOTABLE);
       assertNotNull(votable);
@@ -114,7 +119,7 @@ public class InstallationSelfCheck extends TestCase {
    public void testAxisServiceClassCount() throws Throwable {
       
       AxisDataService_v06 server = new AxisDataService_v06();
-      Query testQuery = makeTestQuery(TargetMaker.makeTarget(""), ReturnTable.VOTABLE);
+      Query testQuery = makeTestQuery(new NullTarget(), ReturnTable.VOTABLE);
       String adql = Adql074Writer.makeAdql(testQuery);
       long count = server.askCount(DomHelper.newDocument(adql).getDocumentElement());
    }
@@ -202,35 +207,19 @@ public class InstallationSelfCheck extends TestCase {
    }
     */
 
-   /** Checks that the CEA interface works OK.  Except that again CEA wouldn't be
-    * straightforward to use like any other SOAP service, oh no.
-   public void testCeaSoapBinding() throws Throwable {
-      
-      
-      //construct SOAP client
-      SkyNodeSoap skyNodeClient = new SkyNodeLocator().getSkyNodeSoap(new URL(endpoint));
-
-      //make call
-      VOData vodata = skyNodeClient.performQuery(adql, "VOTABLE");
-
-      //check results
-      assertNotNull(vodata);
-   }
-    */
-   
    /**
     * Checks metadata is OK
     */
-   public void testMetadata() throws IOException {
-      VoDescriptionServer.getVoDescription();
+   public void testMetadata() throws IOException, SAXException, ParserConfigurationException {
+      String vodesc = VoDescriptionServer.makeVoDescription();
+      Validator.isValid(new ByteArrayInputStream(vodesc.getBytes()));
    }
    
    /** For running standalone, so it can be used from an IDE for quick tests against services */
    public static void main(String[] args) {
       //temporary for testing SSA Image Plugin
       ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, SssImagePlugin.class.getName());
-      ServletHelper.setUrlStem("http://grendel12.roe.ac.uk:8080/pal-sss");
-//      ServletHelper.setUrlStem("http://localhost.roe.ac.uk:8080/pal-samples");
+      ServletHelper.setUrlStem("http://localhost.roe.ac.uk:8080/pal-samples");
       
       junit.textui.TestRunner.run(InstallationSelfCheck.class);
    }
@@ -239,6 +228,15 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.5  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.4.16.2  2005/05/03 14:02:32  mch
+ some validating fixes
+
+ Revision 1.4.16.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.4  2005/03/22 12:57:37  mch
  naughty bunch of changes
 

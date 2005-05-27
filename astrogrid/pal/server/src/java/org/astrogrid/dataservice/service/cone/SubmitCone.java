@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.4 2005/03/31 15:06:16 mch Exp $
+ * $Id: SubmitCone.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.cone;
@@ -13,11 +13,11 @@ import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
 import org.astrogrid.dataservice.metadata.queryable.SearchGroup;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
+import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.condition.CircleCondition;
 import org.astrogrid.query.returns.ReturnSpec;
-import org.astrogrid.slinger.mime.MimeTypes;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.webapp.DefaultServlet;
 
 /**
@@ -50,7 +50,7 @@ public class SubmitCone extends DefaultServlet {
          if (tableDef.getTarget() == null) {
             //if a target is not given, we do an asynchronous (ask) Query to the response
             //stream.
-            tableDef.setTarget(TargetMaker.makeTarget(response.getWriter(), false));
+            tableDef.setTarget(new WriterTarget(response.getWriter(), false));
             
             if (ServletHelper.isCountReq(request)) {
                long count = server.askCount(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");

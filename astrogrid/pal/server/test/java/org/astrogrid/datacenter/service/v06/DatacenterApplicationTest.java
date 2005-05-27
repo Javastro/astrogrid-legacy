@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.4 2005/03/21 18:45:55 mch Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.5 2005/05/27 16:21:04 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,9 +18,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import junit.framework.Assert;
+import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.account.LoginAccount;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
@@ -32,16 +32,17 @@ import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.manager.observer.AbstractProgressListener;
 import org.astrogrid.applications.manager.observer.AbstractResultsListener;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
-import org.astrogrid.community.User;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.community.User;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
-import org.astrogrid.tableserver.test.PrecannedPlugin;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.cea.DatacenterApplication;
 import org.astrogrid.dataservice.service.cea.DatacenterApplicationDescription;
 import org.astrogrid.io.Piper;
+import org.astrogrid.io.account.LoginAccount;
+import org.astrogrid.tableserver.VoTableTestHelper;
+import org.astrogrid.tableserver.test.PrecannedPlugin;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -51,7 +52,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Jul-2004
  *
  */
-public class DatacenterApplicationTest extends ServerTestCase {
+public class DatacenterApplicationTest extends TestCase {
    /**
     * Commons Logger for this class
     */
@@ -88,10 +89,9 @@ public class DatacenterApplicationTest extends ServerTestCase {
                                  }
                            });
       appDesc = new DatacenterApplicationDescription("test",ds,env,new DirectExecutor());
-      user = new User();
       tool = new Tool();
       populateTool(tool);
-      app = (DatacenterApplication)appDesc.initializeApplication("test",user,tool);
+      app = (DatacenterApplication)appDesc.initializeApplication("test",new User(),tool);
       runListener = new TestRunListener();
       resultListener  = new TestResultListener();
       app.addObserver(runListener);
@@ -101,7 +101,6 @@ public class DatacenterApplicationTest extends ServerTestCase {
    private static final String SAMPLE_QUERY_RESOURCE = "sample-query.xml";
    protected DataServer ds;
    protected ApplicationDescriptionEnvironment env;
-   protected User user;
    protected Tool tool;
    protected DatacenterApplicationDescription appDesc;
    protected DatacenterApplication app;
@@ -183,7 +182,7 @@ public class DatacenterApplicationTest extends ServerTestCase {
       assertEquals("Result",rl.getResult(0).getName());
       String votableString = rl.getResult(0).getValue();
       assertNotNull("Votable returned is null", votableString);
-      assertIsVotable(votableString);
+      VoTableTestHelper.assertIsVotable(votableString);
       
    }
    
@@ -254,6 +253,18 @@ public class DatacenterApplicationTest extends ServerTestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
+ Revision 1.5  2005/05/27 16:21:04  clq2
+ mchv_1
+
+ Revision 1.4.16.3  2005/05/13 10:13:45  mch
+ 'some fixes'
+
+ Revision 1.4.16.2  2005/05/03 19:35:01  mch
+ fixes to tests
+
+ Revision 1.4.16.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.4  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 

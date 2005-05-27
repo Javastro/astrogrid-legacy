@@ -1,5 +1,5 @@
 /*
- * $Id: XsvTableWriter.java,v 1.7 2005/03/31 15:06:16 mch Exp $
+ * $Id: XsvTableWriter.java,v 1.8 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.security.Principal;
 import java.util.Date;
 import org.apache.commons.logging.Log;
-import org.astrogrid.slinger.mime.MimeTypes;
+import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 
@@ -35,9 +35,12 @@ public class XsvTableWriter extends AsciiTableSupport {
     * Construct this wrapping the given stream.  Values on a line will be separated with the given string
     */
    public XsvTableWriter(TargetIdentifier target, String title, String variableSeperator, Principal user) throws IOException {
-      target.setMimeType(getMimeType(), user);
-      printOut = new PrintWriter(new BufferedWriter(target.resolveWriter(user)));
+      target.setMimeType(getMimeType());
+      printOut = new PrintWriter(new BufferedWriter(target.openWriter()));
       separator = variableSeperator;
+   }
+   
+   public void open() {
    }
    
    /** Closes writer
@@ -149,6 +152,15 @@ public class XsvTableWriter extends AsciiTableSupport {
 
 /*
  $Log: XsvTableWriter.java,v $
+ Revision 1.8  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.7.8.2  2005/05/13 16:56:32  mch
+ 'some changes'
+
+ Revision 1.7.8.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.7  2005/03/31 15:06:16  mch
  Fixes and workarounds for null values, misisng metadoc columns
 

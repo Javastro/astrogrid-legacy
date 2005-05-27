@@ -1,4 +1,4 @@
-/*$Id: AsuTwigMaker.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+/*$Id: AsuTwigMaker.java,v 1.3 2005/05/27 16:21:02 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,12 +14,12 @@ import org.astrogrid.query.condition.*;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import org.astrogrid.io.mime.MimeNames;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryTraverser;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.sql.SqlParser;
-import org.astrogrid.slinger.mime.MimeNames;
 
 /** Makes an ASU URL 'twig' that can be attached to a URL stem to query
  * an ASU-compatible server.  Actually I think there is only one ASU-compatible
@@ -194,6 +194,12 @@ public class AsuTwigMaker extends QueryTraverser  {
 
 /*
  $Log: AsuTwigMaker.java,v $
+ Revision 1.3  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.2.16.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.2  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 

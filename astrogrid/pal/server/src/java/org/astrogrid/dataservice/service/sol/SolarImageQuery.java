@@ -1,5 +1,5 @@
 /*
- * $Id: SolarImageQuery.java,v 1.1 2005/03/21 18:34:46 mch Exp $
+ * $Id: SolarImageQuery.java,v 1.2 2005/05/27 16:21:13 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.sol;
@@ -9,15 +9,15 @@ import java.util.Date;
 import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.account.LoginAccount;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
+import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.condition.CircleCondition;
 import org.astrogrid.query.returns.ReturnImage;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.webapp.DefaultServlet;
 
 /**
@@ -64,11 +64,11 @@ public class SolarImageQuery extends DefaultServlet {
             throw new IllegalArgumentException("Specify either image or table format, not both.  Given="+formatParam);
          }
          if (isImage) {
-            returnSpec = new ReturnImage(TargetMaker.makeTarget(response.getWriter()), format);
+            returnSpec = new ReturnImage(new WriterTarget(response.getWriter()), format);
          }
          else {
             //default as well as if format given
-            returnSpec = new ReturnTable(TargetMaker.makeTarget(response.getWriter()), format);
+            returnSpec = new ReturnTable(new WriterTarget(response.getWriter()), format);
          }
          
          try {

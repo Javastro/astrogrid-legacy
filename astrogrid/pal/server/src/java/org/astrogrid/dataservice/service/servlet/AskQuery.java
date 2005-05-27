@@ -1,5 +1,5 @@
 /*
- * $Id: AskQuery.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: AskQuery.java,v 1.2 2005/05/27 16:20:53 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.query.Query;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.webapp.DefaultServlet;
 
 /**
@@ -40,7 +40,7 @@ public class AskQuery extends DefaultServlet {
          if (query.getTarget() == null) {
             //no target, return results to browser with the first mime type requested (will assume it can be done...)
             response.setContentType(query.getResultsDef().getFormat());
-            query.getResultsDef().setTarget(TargetMaker.makeTarget(response.getWriter(), false));
+            query.getResultsDef().setTarget(new WriterTarget(response.getWriter(), false));
             server.askQuery(user, query, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via AskQuery servlet");
          }
          else {

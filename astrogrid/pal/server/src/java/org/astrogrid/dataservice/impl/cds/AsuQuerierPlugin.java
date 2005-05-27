@@ -1,4 +1,4 @@
-/*$Id: AsuQuerierPlugin.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+/*$Id: AsuQuerierPlugin.java,v 1.3 2005/05/27 16:21:02 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,21 +17,21 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.security.Principal;
 import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.account.LoginAccount;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.DefaultPlugin;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.dataservice.queriers.RawPipeResults;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
-import org.astrogrid.io.ProgressMonitorInputStream;
+import org.astrogrid.io.MonitoredInputStream;
 import org.astrogrid.io.StreamProgressListener;
+import org.astrogrid.io.account.LoginAccount;
+import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.sql.SqlParser;
-import org.astrogrid.slinger.mime.MimeTypes;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.xml.sax.SAXException;
 
 /** Datacenter querier SPI that performs queries against ASU-compatible services -
@@ -79,7 +79,7 @@ public class AsuQuerierPlugin extends DefaultPlugin
          public void setStreamClosed() { }
       };
       
-      in = new ProgressMonitorInputStream(in, 1000, listener);
+      in = new MonitoredInputStream(in, 1000, listener);
       
       RawPipeResults results = new RawPipeResults(querier, in, query.getResultsDef().getFormat());
       
@@ -164,7 +164,7 @@ public class AsuQuerierPlugin extends DefaultPlugin
          StringWriter sw = new StringWriter();
          Query query = SqlParser.makeQuery(
             "SELECT * FROM ELAIS WHERE CIRCLE('J2000',7.5,-42,1)",
-            TargetMaker.makeTarget(sw),
+            new WriterTarget(sw),
             "VOTABLE");
          Querier querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, query, "dirtytest");
          querier.ask();
@@ -173,7 +173,7 @@ public class AsuQuerierPlugin extends DefaultPlugin
 
       {
          StringWriter sw = new StringWriter();
-         Query query = SimpleQueryMaker.makeConeQuery(20,30,6, TargetMaker.makeTarget(sw));
+         Query query = SimpleQueryMaker.makeConeQuery(20,30,6, new WriterTarget(sw));
          Querier querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, query, "dirtytest");
          querier.ask();
          System.out.println(sw.toString());
@@ -183,7 +183,7 @@ public class AsuQuerierPlugin extends DefaultPlugin
          StringWriter sw = new StringWriter();
          Query query = SqlParser.makeQuery(
             "SELECT ELAIS.Jmag, ELAIS.Kmag FROM ELAIS WHERE CIRCLE('J2000',7.5,-42,1) AND ((ELAIS.Jmag >= 5 OR ELAIS.Kmag > 5) )",//OR ELAIS.COOKED LIKE 'TRUE')",
-            TargetMaker.makeTarget(sw),
+            new WriterTarget(sw),
             "VOTABLE");
          Querier querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, query, "dirtytest");
          querier.ask();
@@ -196,6 +196,12 @@ public class AsuQuerierPlugin extends DefaultPlugin
 
 /*
  $Log: AsuQuerierPlugin.java,v $
+ Revision 1.3  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.2.16.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.2  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 

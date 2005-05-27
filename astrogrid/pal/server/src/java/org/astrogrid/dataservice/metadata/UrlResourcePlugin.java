@@ -1,5 +1,5 @@
 /*
- * $Id: UrlResourcePlugin.java,v 1.5 2005/03/21 18:45:55 mch Exp $
+ * $Id: UrlResourcePlugin.java,v 1.6 2005/05/27 16:21:05 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,7 +73,10 @@ public class UrlResourcePlugin extends ProxyResourceSupport implements VoResourc
          }
          catch (MetadataException me) {
             log.error("Error in metadata file "+urls[u],me);
-            throw new MetadataException(me.getMessage()+" in file "+urls[u],me.getCause());
+            //add information
+            MetadataException me2 = new MetadataException(me.getMessage()+" in file "+urls[u],me.getCause());
+            me2.setStackTrace(me.getStackTrace());
+            throw me2;
          }
       }
       return resources.toString();

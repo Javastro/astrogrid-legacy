@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManagerTest.java,v 1.4 2005/03/21 18:45:55 mch Exp $
+/*$Id: DatacenterCEAComponentManagerTest.java,v 1.5 2005/05/27 16:21:04 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,12 @@
 **/
 package org.astrogrid.datacenter.service.v06;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
 import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.applications.component.JavaClassCEAComponentManagerTest;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.dataservice.metadata.VoDescriptionServer;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.dataservice.service.cea.DatacenterCEAComponentManager;
 
@@ -27,6 +29,10 @@ public class DatacenterCEAComponentManagerTest extends JavaClassCEAComponentMana
    public void setUp() throws Exception {
       ConfigFactory.getCommonConfig().setProperty(VoResourceSupport.AUTHID_KEY, "org.astrogrid.test");
       ConfigFactory.getCommonConfig().setProperty(VoResourceSupport.RESKEY_KEY, "test_dsa");
+      //need to set in both old and new configs unfortunately at the moment
+      SimpleConfig.getSingleton().setProperty(VoResourceSupport.AUTHID_KEY, "org.astrogrid.test");
+      SimpleConfig.getSingleton().setProperty(VoResourceSupport.RESKEY_KEY, "test_dsa");
+      //for some wierd CEAy test reason this needs to be after the above
       super.setUp();
    }
    /** Construct a new DatacenterCEAComponentManagerTest
@@ -42,36 +48,22 @@ public class DatacenterCEAComponentManagerTest extends JavaClassCEAComponentMana
         return new DatacenterCEAComponentManager();
     }
 
+   /**
+    * Assembles and returns a test suite made up of all the testXxxx() methods
+    * of this class.
+    */
+   public static Test suite() {
+      // Reflection is used here to add all the testXXX() methods to the suite.
+      return new TestSuite(DatacenterCEAComponentManagerTest.class);
+   }
+   
+   /**
+    * Runs the test case.
+    */
+   public static void main(String args[]) {
+      junit.textui.TestRunner.run(suite());
+   }
+    
 }
 
 
-/*
-$Log: DatacenterCEAComponentManagerTest.java,v $
-Revision 1.4  2005/03/21 18:45:55  mch
-Naughty big lump of changes
-
-Revision 1.3  2005/03/08 18:05:57  mch
-updating resources to v0.10
-
-Revision 1.2  2005/02/28 18:47:05  mch
-More compile fixes
-
-Revision 1.1.1.1  2005/02/17 18:37:35  mch
-Initial checkin
-
-Revision 1.1.1.1  2005/02/16 17:11:25  mch
-Initial checkin
-
-Revision 1.3  2004/11/09 18:02:57  mch
-DatacenterCEAComponentManagerTest.java
-
-Revision 1.2  2004/11/09 17:42:22  mch
-Fixes to tests after fixes for demos, incl adding closable to targetIndicators
-
-Revision 1.1  2004/09/28 15:11:33  mch
-Moved server test directory to pal
-
-Revision 1.1  2004/07/13 17:11:32  nw
-first draft of an itn06 CEA implementation for datacenter
- 
-*/

@@ -1,5 +1,5 @@
 /*
- * $Id: ProxyResourceSupport.java,v 1.4 2005/03/21 18:45:55 mch Exp $
+ * $Id: ProxyResourceSupport.java,v 1.5 2005/05/27 16:21:18 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -60,7 +60,7 @@ public class ProxyResourceSupport extends VoResourceSupport {
     */
    public String makeLocal(Document doc) throws IOException {
       
-      String rootElementName = doc.getDocumentElement().getNodeName();
+      String rootElementName = doc.getDocumentElement().getLocalName(); //get without namespace
       
       //if the root element is a resource, return that
       if (rootElementName.equals("Resource"))  {
@@ -68,9 +68,9 @@ public class ProxyResourceSupport extends VoResourceSupport {
          return DomHelper.ElementToString(doc.getDocumentElement()) ;
       }
       //if the root element is a vodescription, return all resource elements
-      else if (rootElementName.equals("VODescription"))  {
+      else if (rootElementName.equals("VOResources"))  {
          StringBuffer localRes = new StringBuffer();
-         NodeList voResources = doc.getElementsByTagName("Resource");
+         NodeList voResources = doc.getElementsByTagNameNS("*", "Resource");
          if (voResources.getLength()==0)  {
             throw new MetadataException("No <Resource> elements in document ");
          }
@@ -85,7 +85,7 @@ public class ProxyResourceSupport extends VoResourceSupport {
          return localRes.toString();
       }
       else  {
-         throw new MetadataException("No 'Resource' or 'VODescription' element in metadata");
+         throw new MetadataException("Root element is "+rootElementName+"; not 'Resource' or 'VOResources' in metadata");
       }
    }
    

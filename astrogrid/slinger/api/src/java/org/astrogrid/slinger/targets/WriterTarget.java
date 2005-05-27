@@ -1,5 +1,5 @@
 /*
- * $Id: WriterTarget.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: WriterTarget.java,v 1.2 2005/05/27 16:21:01 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -46,7 +46,7 @@ public class WriterTarget implements TargetIdentifier {
    }
 
    /** Normal writer resolver; returns a NoCloseWriter wrapper if doClose is false */
-   public Writer resolveWriter(Principal user)  {
+   public Writer openWriter()  {
       if (doClose) {
          return out;
       }
@@ -57,8 +57,8 @@ public class WriterTarget implements TargetIdentifier {
 
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
-   public OutputStream resolveOutputStream(Principal user) {
-      return new WriterStream(resolveWriter(user));
+   public OutputStream openOutputStream() {
+      return new WriterStream(openWriter());
    }
    
    public String toString() {
@@ -66,12 +66,18 @@ public class WriterTarget implements TargetIdentifier {
    }
    
    /** Used to set the mime type of the data about to be sent to the target. Does nothing. */
-   public void setMimeType(String mimeType, Principal user) {
+   public void setMimeType(String mimeType) {
    }
    
 }
 /*
  $Log: WriterTarget.java,v $
+ Revision 1.2  2005/05/27 16:21:01  clq2
+ mchv_1
+
+ Revision 1.1.20.1  2005/04/21 17:09:03  mch
+ incorporated homespace etc into URLs
+
  Revision 1.1  2005/02/14 20:47:38  mch
  Split into API and webapp
 

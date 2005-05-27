@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.3 2005/03/10 16:42:55 mch Exp $
+/*$Id: QuerierManagerTest.java,v 1.4 2005/05/27 16:21:02 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,20 +9,20 @@
  *
  **/
 package org.astrogrid.datacenter.queriers;
-import org.astrogrid.account.LoginAccount;
-import org.astrogrid.datacenter.ServerTestCase;
+import junit.framework.TestCase;
 import org.astrogrid.dataservice.queriers.Querier;
-import org.astrogrid.tableserver.test.SampleStarsPlugin;
+import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.NullTarget;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 
 /**
  * test behaviours the querier manager.
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Nov-2003
  *
  */
-public class QuerierManagerTest extends ServerTestCase {
+public class QuerierManagerTest extends TestCase {
    
    Querier s1 = null;
    Querier s2 = null;
@@ -67,6 +67,15 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /*
  $Log: QuerierManagerTest.java,v $
+ Revision 1.4  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.3.24.2  2005/05/03 19:35:01  mch
+ fixes to tests
+
+ Revision 1.3.24.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.3  2005/03/10 16:42:55  mch
  Split fits, sql and xdb
 

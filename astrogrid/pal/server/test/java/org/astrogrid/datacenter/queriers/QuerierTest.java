@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.4 2005/03/21 18:45:55 mch Exp $
+ * $Id: QuerierTest.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,20 +10,21 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.account.LoginAccount;
-import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierListener;
 import org.astrogrid.dataservice.queriers.status.QuerierComplete;
 import org.astrogrid.dataservice.queriers.status.QuerierError;
 import org.astrogrid.dataservice.queriers.status.QuerierProcessingResults;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
-import org.astrogrid.tableserver.test.SampleStarsPlugin;
+import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.QueryState;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
+import org.astrogrid.tableserver.VoTableTestHelper;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 
@@ -33,7 +34,7 @@ import org.w3c.dom.Document;
  * @author M Hill
  */
 
-public class QuerierTest extends ServerTestCase {
+public class QuerierTest extends TestCase {
 
    protected Querier querier;
    protected MockListener listener;
@@ -116,9 +117,8 @@ public class QuerierTest extends ServerTestCase {
       System.out.println(listener.statusList); // test on something here?
       
       //and results should have already produce a valid xml document in the StringWriter sw
-      Document doc = DomHelper.newDocument(sw.toString());
-      assertNotNull("results return null",doc);
-      assertIsVotable(doc);
+      assertNotNull("results return null",sw.toString());
+      Document doc = VoTableTestHelper.assertIsVotable(sw.toString());
       
       //does a quick check for certain elements
       assertTrue(doc.getElementsByTagName("TR").getLength() > 1);

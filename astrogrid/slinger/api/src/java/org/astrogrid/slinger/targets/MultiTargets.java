@@ -1,5 +1,5 @@
 /*
- * $Id: MultiTargets.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: MultiTargets.java,v 1.2 2005/05/27 16:21:01 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,15 +28,15 @@ public class MultiTargets implements TargetIdentifier  {
    }
 
    /** Returns an OutputStreamWrapper around the resolved stream */
-   public Writer resolveWriter(Principal user) throws IOException {
-      return new OutputStreamWriter(resolveOutputStream(user));
+   public Writer openWriter() throws IOException {
+      return new OutputStreamWriter(openOutputStream());
    }
 
-   public OutputStream resolveOutputStream(Principal user) throws IOException {
+   public OutputStream openOutputStream() throws IOException {
 
       OutputStream[] outs = new OutputStream[targets.length];
       for (int i = 0; i < targets.length; i++) {
-         outs[i] = targets[i].resolveOutputStream(user);
+         outs[i] = targets[i].openOutputStream();
       }
       return new MultiCastOutputStream(outs);
    }
@@ -51,14 +51,20 @@ public class MultiTargets implements TargetIdentifier  {
    }
    
    /** Used to set the mime type of the data about to be sent to the target. Does nothing. */
-   public void setMimeType(String mimeType, Principal user) throws IOException {
+   public void setMimeType(String mimeType) throws IOException {
       for (int i = 0; i < targets.length; i++) {
-         targets[i].setMimeType(mimeType, user);
+         targets[i].setMimeType(mimeType);
       }
    }
 }
 /*
  $Log: MultiTargets.java,v $
+ Revision 1.2  2005/05/27 16:21:01  clq2
+ mchv_1
+
+ Revision 1.1.20.1  2005/04/21 17:09:03  mch
+ incorporated homespace etc into URLs
+
  Revision 1.1  2005/02/14 20:47:38  mch
  Split into API and webapp
 

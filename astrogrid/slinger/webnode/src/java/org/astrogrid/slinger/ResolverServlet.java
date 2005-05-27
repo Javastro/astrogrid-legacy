@@ -1,18 +1,17 @@
 
 package org.astrogrid.slinger;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.Principal;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.account.LoginAccount;
-import org.astrogrid.io.Piper;
+import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.slinger.Slinger;
 import org.astrogrid.slinger.sources.SourceIdentifier;
-import org.astrogrid.slinger.sources.SourceMaker;
+import org.astrogrid.slinger.sourcetargets.UrlSourceTarget;
 import org.astrogrid.slinger.targets.HttpResponseTarget;
 
 /**
@@ -42,16 +41,10 @@ public class ResolverServlet extends HttpServlet
       
       String sourceUri = request.getParameter("SourceUri");
       if (sourceUri != null) {
-         try {
-            SourceIdentifier source = SourceMaker.makeSource(sourceUri);
-            HttpResponseTarget target = new HttpResponseTarget(response);
-         
-            Slinger.sling(source, target, getUser(request));
-            
-         }
-         catch (URISyntaxException e) {
-            throw new ServletException(e+", SourceUri="+sourceUri);
-         }
+         SourceIdentifier source = new UrlSourceTarget(new URL(sourceUri));
+         HttpResponseTarget target = new HttpResponseTarget(response);
+      
+         Slinger.sling(source, target);
       }
    }
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleSpectraQuery.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: SimpleSpectraQuery.java,v 1.2 2005/05/27 16:21:06 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.ssap;
@@ -7,13 +7,13 @@ package org.astrogrid.dataservice.service.ssap;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.account.LoginAccount;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
+import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.condition.CircleCondition;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.webapp.DefaultServlet;
 
 /**
@@ -35,7 +35,7 @@ public class SimpleSpectraQuery extends DefaultServlet {
          if (format == null) format = request.getParameter("format");
    
          try {
-            server.askQuery(LoginAccount.ANONYMOUS, new Query(circleCon, new ReturnTable(TargetMaker.makeTarget(response.getWriter()), format)), this);
+            server.askQuery(LoginAccount.ANONYMOUS, new Query(circleCon, new ReturnTable(new WriterTarget(response.getWriter()), format)), this);
          } catch (Throwable e) {
             doError(response, "SSAP error (RA="+circleCon.getRa()+", DEC="+circleCon.getDec()+", SIZE="+circleCon.getRadius()+", FORMAT="+format+")", e);
          }

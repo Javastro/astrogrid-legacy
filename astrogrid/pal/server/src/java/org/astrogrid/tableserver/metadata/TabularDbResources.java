@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.7 2005/03/31 12:10:28 mch Exp $
+ * $Id: TabularDbResources.java,v 1.8 2005/05/27 16:21:14 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,7 +17,7 @@ import org.astrogrid.tableserver.metadata.TableInfo;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 
 /**
- * Generates Resource elements for tabular sky services.
+ * Generates VoResource elements for tabular sky services.
  */
 
 public class TabularDbResources extends VoResourceSupport implements VoResourcePlugin  {
@@ -61,9 +61,19 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
             tabularDb.append(
                "<column>"+
                   "<name>"+columns[c].getName()+"</name>"+
-                  "<description>"+XmlPrinter.transformSpecials(columns[c].getDescription())+"</description>"+
-                  "<datatype>"+VoTypes.getVoType(columns[c].getJavaType())+"</datatype>"
+                  "<description>"+XmlPrinter.transformSpecials(columns[c].getDescription())+"</description>"
             );
+            String datatype = VoTypes.getVoType(columns[c].getJavaType());
+            if (datatype.equals("char")) {
+               tabularDb.append(
+                     "<datatype arraysize='*'>char</datatype>"
+               );
+            }
+            else {
+               tabularDb.append(
+                     "<datatype>"+datatype+"</datatype>"
+               );
+            }
          
             if ((columns[c].getUcd("1") != null) && (columns[c].getUcd("1").trim().length()>0)) {
                tabularDb.append(

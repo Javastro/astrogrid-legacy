@@ -1,4 +1,4 @@
-/*$Id: KeywordMaker.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+/*$Id: KeywordMaker.java,v 1.2 2005/05/27 16:21:20 clq2 Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,6 +47,11 @@ public class KeywordMaker  {
       Condition c = query.getCriteria();
       keywords = new Hashtable();
       addKeywordPair(c);
+   }
+
+   /** Returns the list of keywords */
+   public Enumeration getKeywords() {
+      return keywords.keys();
    }
 
    /** case insensitive lookup */
@@ -141,8 +146,14 @@ public class KeywordMaker  {
 
 /*
 $Log: KeywordMaker.java,v $
-Revision 1.1  2005/02/17 18:37:34  mch
-*** empty log message ***
+Revision 1.2  2005/05/27 16:21:20  clq2
+mchv_1
+
+Revision 1.1.1.1.24.1  2005/05/13 16:56:29  mch
+'some changes'
+
+Revision 1.1.1.1  2005/02/17 18:37:34  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:23  mch
 Initial checkin

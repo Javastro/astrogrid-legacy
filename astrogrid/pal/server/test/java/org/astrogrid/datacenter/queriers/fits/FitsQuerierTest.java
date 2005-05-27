@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.9 2005/03/21 18:45:55 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.10 2005/05/27 16:21:07 clq2 Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -10,29 +10,24 @@
 package org.astrogrid.datacenter.queriers.fits;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.account.LoginAccount;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.datacenter.fits.FitsTestSupport;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.fitsserver.fits.FitsQuerierPlugin;
-import org.astrogrid.fitsserver.setup.IndexGenerator;
-import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.adql.AdqlQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.slinger.targets.NullTarget;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
+import org.astrogrid.xml.DomHelper;
 import org.astrogrid.xmldb.client.XMLDBFactory;
 import org.w3c.dom.Document;
-import org.astrogrid.xml.DomHelper;
-import java.io.*;
 import org.xmldb.api.base.Collection;
 
 /** Test the Fits processing classes
@@ -107,7 +102,7 @@ public class FitsQuerierTest extends TestCase
       
       Document doc = askQueryFromFile("ADQLQueryForFits1.xml");
       StringWriter sw = new StringWriter();
-      Querier querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, AdqlQueryMaker.makeQuery(doc.getDocumentElement(), TargetMaker.makeTarget(sw), ReturnTable.VOTABLE), this);
+      Querier querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, AdqlQueryMaker.makeQuery(doc.getDocumentElement(), new WriterTarget(sw), ReturnTable.VOTABLE), this);
       querier.ask();
       String results = sw.toString();
       System.out.println("THE RESULTS OF QUERY = " +  results);
@@ -150,6 +145,12 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.10  2005/05/27 16:21:07  clq2
+ mchv_1
+
+ Revision 1.9.16.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.9  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 

@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.6 2005/03/31 15:06:16 mch Exp $
+ * $Id: HtmlTableWriter.java,v 1.7 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.security.Principal;
 import java.util.Date;
 import org.apache.commons.logging.Log;
-import org.astrogrid.slinger.mime.MimeTypes;
+import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 
@@ -31,15 +31,23 @@ public class HtmlTableWriter extends AsciiTableSupport {
    
    ColumnInfo[] cols = null;
    
+   String title = null;
+   String comment = null;
+   
    /**
     * Construct this wrapping the given stream.  Writes out the first few tags
     */
-   public HtmlTableWriter(TargetIdentifier target, String title, String comment, Principal user) throws IOException {
+   public HtmlTableWriter(TargetIdentifier target, String aTitle, String aComment, Principal user) throws IOException {
       
-      target.setMimeType(MimeTypes.HTML, user);
+      target.setMimeType(MimeTypes.HTML);
       
-      printOut = new PrintWriter(new BufferedWriter(target.resolveWriter(user)));
+      printOut = new PrintWriter(new BufferedWriter(target.openWriter()));
       
+      this.title = aTitle;
+      this.comment = aComment;
+   }
+   
+   public void open() {
       printOut.println("<HTML>");
       
       printOut.println("<HEAD>");
@@ -51,16 +59,6 @@ public class HtmlTableWriter extends AsciiTableSupport {
       if (comment != null) {
          printOut.println("<P>"+comment+"</P>");
       }
-   }
-   
-   /** Closes writer - writes out the closing tags and closes wrapped stream
-    */
-   public void close() {
-      
-      printOut.println("</BODY>");
-      
-      printOut.println("</HTML>");
-      printOut.close();
    }
    
    /** Produces text/html */
@@ -173,6 +171,16 @@ public class HtmlTableWriter extends AsciiTableSupport {
       printOut.println("<p>"+rows+" Rows</p>");
    }
 
+   /** Closes writer - writes out the closing tags and closes wrapped stream
+    */
+   public void close() {
+      
+      printOut.println("</BODY>");
+      
+      printOut.println("</HTML>");
+      printOut.close();
+   }
+   
    
    /** Abort writes out a line to show the table is incomplete */
    public void abort() {
@@ -185,6 +193,15 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 /*
  $Log: HtmlTableWriter.java,v $
+ Revision 1.7  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.6.8.2  2005/05/13 16:56:32  mch
+ 'some changes'
+
+ Revision 1.6.8.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.6  2005/03/31 15:06:16  mch
  Fixes and workarounds for null values, misisng metadoc columns
 

@@ -2,7 +2,7 @@
     import="java.util.*, java.io.*,
     org.astrogrid.dataservice.metadata.*,
     org.astrogrid.dataservice.service.DataServer,
-    org.astrogrid.ucd.UcdDictionary,
+    org.astrogrid.ucd.*,
     org.w3c.dom.*, org.astrogrid.xml.* " %>
 
 <head>
@@ -50,8 +50,8 @@ empty you will receive all the columns in your results.
             <td><b>Return?</b></td>
             <td><b>Column</b></td>
             <td><b>Units</b></td>
-            <td><b><a href='<%= UcdDictionary.UCD1REF %>'>UCD1</a></b></td>
-            <td><b><a href='<%= UcdDictionary.UCD1PREF %>'>UCD1+</a></b></td>
+            <td><b><a href='<%= Ucd1Dictionary.REF %>'>UCD1</a></b></td>
+            <td><b><a href='<%= Ucd1PlusDictionary.REF %>'>UCD1+</a></b></td>
             <td><b>Description</b></td>
          </tr>
 

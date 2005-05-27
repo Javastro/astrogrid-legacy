@@ -1,149 +1,114 @@
 /**
- * $Id: Validator.java,v 1.1 2005/03/22 13:03:34 mch Exp $
+ * $Id: Validator.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
  *
  */
 
 package org.astrogrid.xml;
 
-import java.io.*;
-import org.xml.sax.*;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Vector;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import org.apache.xerces.parsers.SAXParser;
+import org.apache.xerces.util.XMLCatalogResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.ParserAdapter;
 
-/** Just checks to see if the given XML file is valid, throwing exceptions as usual if not */
+/** Parsers a document to see if it is well formed and/or valid.  Throws exceptions
+ * when not.  This could eb written as unit test helper, but there are issues then
+ * about including unit test code in the main source code. */
 
-public class Validator implements ContentHandler, ErrorHandler {
+public class Validator  {
    
    
-   PrintWriter out = null;
+   /** A convenience routine for checking that the given stream contains a
+    * well-formed XML document - ie it is parsable - but does not check against schema.
+    * Throws exceptions if there is a problem. */
+   public static void isWellFormed(InputStream xml) throws SAXException, IOException {
+
+      try {
+         SAXParserFactory spf = SAXParserFactory.newInstance();
+         spf.setValidating(false);
+         XMLReader parser = new ParserAdapter(spf.newSAXParser().getParser());
    
-   public Validator(Writer givenOut) {
-      this.out = new PrintWriter(givenOut);
-   }
-   
-   public void skippedEntity(String name) throws SAXException {
-   }
-   
-   /**
-    * Begin the scope of a prefix-URI Namespace mapping.
-    */
-   public void startPrefixMapping(String prefix, String uri) throws SAXException {
-      // TODO
-   }
-   
-   /**
-    * End the scope of a prefix-URI mapping.
-    */
-   public void endPrefixMapping(String prefix) throws SAXException {
-      // TODO
-   }
-   
-   /**
-    * Receive notification of the beginning of an element.
-    */
-   public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
-      out.print("Element: <"+qName);
-      for (int i = 0; i < atts.getLength(); i++) {
-         out.print(" "+atts.getQName(i)+"='"+atts.getValue(i)+"' ");
+         parser.parse(new InputSource(xml));
       }
-      out.println(">");
-   }
-   
-   /**
-    * Receive notification of the beginning of a document.
-    */
-   public void startDocument() throws SAXException {
-   }
-   
-   /**
-    * Receive notification of a processing instruction.
-    */
-   public void processingInstruction(String target, String data) throws SAXException {
-   }
-   
-   /**
-    * Receive notification of character data.
-    */
-   public void characters(char[] ch, int start, int length) throws SAXException {
-      if (length>0) {
-         out.println("String: '"+new String(ch, start, length)+"'");
+      catch (ParserConfigurationException pce) {
+         throw new RuntimeException("JRE not configured correctly; "+pce, pce);
       }
    }
-   
-   /**
-    * Receive notification of the end of a document.
+
+   /** A convenience routine for checking that the given stream contains a
+    * valid xml document - ie it conforms to its schema.  Returns null if it
+    * is fine, otherwise the error recorder that contains the list of errors/warnings
     */
-   public void endDocument() throws SAXException {
-      out.println("--- COMPLETE! ----");
+   public static ErrorRecorder isValid(InputStream xml) throws SAXException, IOException {
+      ErrorRecorder recorder = isValidUsingXerces(xml);
+      if (recorder.hasErrors() || recorder.hasWarnings()) {
+         return recorder;
+      }
+
+      return null;
    }
    
-   /**
-    * Receive notification of a recoverable error.
-    */
-   public void error(SAXParseException exception) throws SAXException {
-      out.println("ERROR: "+exception);
-   }
-   
-   /**
-    * Receive notification of the end of an element.
-    */
-   public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
-      // TODO
-   }
-   
-   /**
-    * Receive notification of a warning.
-    */
-   public void warning(SAXParseException exception) throws SAXException {
-      out.println("WARNING: "+exception);
-   }
-   
-   /**
-    * Receive notification of a non-recoverable error.
-    */
-   public void fatalError(SAXParseException exception) throws SAXException {
-      out.println("FATAL: "+exception);
-   }
-   
-   /**
-    * Receive notification of ignorable whitespace in element content.
-    */
-   public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-   }
-   
-   /**
-    * Receive an object for locating the origin of SAX document events.
-    */
-   public void setDocumentLocator(Locator locator) {
+   /** This validates the given stream using the JAXP version
+    * - ie it uses the parserfactory, however this just seems to give a
+    * DTD validator */
+   private static ErrorRecorder isValidUsingFactory(InputStream xml) throws SAXException, IOException {
+
+      try {
+         // set up catalog so that local schema copies are used instead of remote ones
+         // if possible
+         String[] catalogs = new String[] { ""+Validator.class.getResource("catalog.xml") };
+         XMLCatalogResolver resolver = new XMLCatalogResolver();
+         resolver.setPreferPublic(true);
+         resolver.setCatalogList(catalogs);
+         
+         SAXParserFactory spf = SAXParserFactory.newInstance();
+         spf.setValidating(true);
+         
+         XMLReader parser = new ParserAdapter(spf.newSAXParser().getParser());
+
+         parser.setEntityResolver(resolver);
+         
+         ErrorRecorder recorder = new ErrorRecorder();
+         parser.setErrorHandler(recorder);
+         parser.parse(new InputSource(xml));
+         
+         return recorder;
+      }
+      catch (ParserConfigurationException pce) {
+         throw new RuntimeException("JRE not configured correctly; "+pce, pce);
+      }
+
    }
 
-   /** A convenience routine for validating any given filename, output going to the given Writer */
-   public static void validate(InputStream source, Writer out) throws ParserConfigurationException, SAXException, IOException {
-      Validator v = new Validator(out);
+   /** This validates the given stream using the Xerces library */
+   private static ErrorRecorder isValidUsingXerces(InputStream xml) throws SAXException, IOException {
 
-      XMLReader parser;
-      SAXParserFactory spf = SAXParserFactory.newInstance();
-      spf.setValidating(true);
-      SAXParser sp = spf.newSAXParser();
-      parser = new ParserAdapter(sp.getParser());
-
-      parser.setContentHandler(v);
-      parser.setErrorHandler(v);
-      parser.parse(new InputSource(source));
-
-      out.flush();
-   }
-
-   /**
-    *
-    */
-   public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
-//    String filename = args[0];
-      validate(new FileInputStream("/home/mch/tmp/pal-ssa.metadata.xml"), new OutputStreamWriter(System.out));
+      // set up catalog so that local schema copies are used instead of remote ones
+      // if possible
+      String[] catalogs = new String[] { ""+Validator.class.getResource("catalog.xml") };
+      XMLCatalogResolver resolver = new XMLCatalogResolver();
+      resolver.setPreferPublic(true);
+      resolver.setCatalogList(catalogs);
       
+      SAXParser parser = new SAXParser();
+      parser.setFeature("http://xml.org/sax/features/validation", true);
+      parser.setProperty("http://apache.org/xml/properties/internal/entity-resolver", resolver);
+      
+      ErrorRecorder recorder = new ErrorRecorder();
+      parser.setErrorHandler(recorder);
+      parser.parse(new InputSource(xml));
+
+      return recorder;
    }
+
 }
 

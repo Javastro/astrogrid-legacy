@@ -1,5 +1,5 @@
 /*
- * $Id: SourceIdentifier.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: SourceIdentifier.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,28 +18,35 @@ import java.security.Principal;
  * Essentially TargetIndicators provide a suitably typed and validated way of
  * passing around where things might come from, rather than having to pass around
  * Strings to indicate Identifiers, and separate methods to handle Readers/Streams.
- *
+ * <p>
+ * For those implementations that need secure access, include the right stuff in
+ * the constructor [it used to be in the methods]
  */
 
 public interface SourceIdentifier  {
 
 
-   /** All targets must be able to resolve to a reader. The user is required
-    * for permissions */
-   public Reader resolveReader(Principal user) throws IOException;
+   /** All sources must be able to resolve to a reader.  */
+   public Reader openReader() throws IOException;
    
-   /** All targets must be able to resolve to a stream.  The user is required
-    * for permissioning. */
-   public InputStream resolveInputStream(Principal user) throws IOException;
+   /** All sources must be able to resolve to a stream.   */
+   public InputStream openInputStream() throws IOException;
    
    /** Used to get the mime type of the data about to be read.  Note that many
     * implementations (such as disk files?) do not have this
     * capability, and so often this will
-    * do nothing. */
-   public String getMimeType(Principal user) throws IOException;
+    * do nothing. Return null if unknown */
+   public String getMimeType() throws IOException;
+   
 }
 /*
  $Log: SourceIdentifier.java,v $
+ Revision 1.2  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.1.20.1  2005/04/21 17:09:03  mch
+ incorporated homespace etc into URLs
+
  Revision 1.1  2005/02/14 20:47:38  mch
  Split into API and webapp
 

@@ -1,5 +1,5 @@
 /*
- * $Id: BrowserAskQuery.java,v 1.3 2005/03/31 15:06:16 mch Exp $
+ * $Id: BrowserAskQuery.java,v 1.4 2005/05/27 16:20:54 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
+import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.query.Query;
-import org.astrogrid.slinger.mime.MimeTypes;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.webapp.DefaultServlet;
 
 /**
@@ -48,7 +48,7 @@ public class BrowserAskQuery extends DefaultServlet {
             if (query.getTarget() == null) {
                //no target, return results to browser with the first mime type requested (will assume it can be done...)
                //the table writer should do this: response.setContentType(query.getResultsDef().getFormat());
-               query.getResultsDef().setTarget(TargetMaker.makeTarget(response.getWriter(), false));
+               query.getResultsDef().setTarget(new WriterTarget(response.getWriter(), false));
                server.askQuery(user, query, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via BrowserAskQuery servlet");
             }
             else {

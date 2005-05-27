@@ -1,4 +1,4 @@
-/*$Id: MicrosoftSqlMaker.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+/*$Id: MicrosoftSqlMaker.java,v 1.2 2005/05/27 16:21:19 clq2 Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,10 @@
 package org.astrogrid.tableserver.jdbc.sqlserver;
 
 import java.io.IOException;
-import org.astrogrid.tableserver.jdbc.StdSqlMaker;
 import org.astrogrid.query.Query;
+import org.astrogrid.tableserver.jdbc.CountSqlWriter;
+import org.astrogrid.tableserver.jdbc.StdSqlMaker;
+import org.astrogrid.tableserver.jdbc.StdSqlWriter;
 
 /**
  * Produces Microsoft SQL-Server SQL
@@ -20,13 +22,25 @@ import org.astrogrid.query.Query;
 public class MicrosoftSqlMaker extends StdSqlMaker {
 
    /**
-    * Constructs an SQL statement for the given ADQL.
+    * Constructs an SQL statement for the given ADQL document by getting the
+    * (super) ADQL/sql and replacing the region
     */
    public String makeSql(Query query) throws IOException {
-
+      
       MicrosoftSqlWriter sqlMaker = new MicrosoftSqlWriter();
       query.acceptVisitor(sqlMaker);
+      
       return sqlMaker.getSql();
+   }
+   
+   /**
+    * Constructs an SQL count statement for the given Query.
+    */
+   public String makeCountSql(Query query) throws IOException {
+
+      MicrosoftCountSqlWriter countWriter = new MicrosoftCountSqlWriter();
+      query.acceptVisitor(countWriter);
+      return countWriter.getSql();
    }
 
 }
@@ -34,6 +48,15 @@ public class MicrosoftSqlMaker extends StdSqlMaker {
 
 /*
 $Log: MicrosoftSqlMaker.java,v $
+Revision 1.2  2005/05/27 16:21:19  clq2
+mchv_1
+
+Revision 1.1.24.2  2005/05/13 16:56:32  mch
+'some changes'
+
+Revision 1.1.24.1  2005/04/29 16:55:47  mch
+prep for type-fix for postgres
+
 Revision 1.1  2005/03/10 16:42:55  mch
 Split fits, sql and xdb
 

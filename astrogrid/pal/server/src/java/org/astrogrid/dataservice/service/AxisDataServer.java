@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.2 2005/03/11 15:17:52 mch Exp $
+ * $Id: AxisDataServer.java,v 1.3 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,7 +17,7 @@ import org.apache.axis.AxisFault;
 import org.apache.axis.MessageContext;
 import org.apache.axis.server.AxisServer;
 import org.apache.axis.transport.http.HTTPConstants;
-import org.astrogrid.account.LoginAccount;
+import org.astrogrid.io.account.LoginAccount;
 
 /**
  * A class for serving data through an Axis webservice implementation.  Implementations
@@ -138,6 +138,12 @@ public class AxisDataServer extends DataServer {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.3  2005/05/27 16:21:02  clq2
+mchv_1
+
+Revision 1.2.24.1  2005/04/21 17:20:51  mch
+Fixes to output types
+
 Revision 1.2  2005/03/11 15:17:52  mch
 removed calls to deprecated setFault
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.6 2005/03/22 17:25:34 mch Exp $ -->
+<!-- $Id: project.xml,v 1.7 2005/05/27 16:21:20 clq2 Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -23,39 +23,28 @@
     <dependencies>
 
       <dependency>
-         <artifactId>astrogrid-pal-sky</artifactId>
-         <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.pal.latest}</version>
-      </dependency>
-
-      <dependency>
          <artifactId>astrogrid-pal-units</artifactId>
          <groupId>org.astrogrid</groupId>
          <version>${astrogrid.pal.latest}</version>
       </dependency>
-
+<!--
       <dependency>
          <artifactId>astrogrid-common</artifactId>
          <groupId>org.astrogrid</groupId>
          <version>${astrogrid.common.version}</version>
       </dependency>
-
+-->
       <dependency>
          <artifactId>astrogrid-config</artifactId>
          <groupId>org.astrogrid</groupId>
          <version>${astrogrid.config.stable}</version>
       </dependency>
 
-    <dependency>
-      <id>astrogrid-utils</id>
-      <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.utils.stable}</version>
-    </dependency>
-
+      <!-- for TypeSafeEnumerator (pre JDK 1.5) -->
       <dependency>
-         <artifactId>astrogrid-pal-errors</artifactId>
+         <id>astrogrid-utils</id>
          <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.pal.latest}</version>
+         <version>${astrogrid.utils.stable}</version>
       </dependency>
 
       <dependency>
@@ -78,6 +67,7 @@
          <version>${astrogrid.xml.stable}</version>
       </dependency>
 
+      <!-- for identifying targets -->
       <dependency>
          <artifactId>astrogrid-slinger-api</artifactId>
          <groupId>org.astrogrid</groupId>
@@ -86,53 +76,23 @@
 
     </dependencies>
    
-    <build>
-        <!--+
-            | The location of our Java source code.
-            +-->
-        <sourceDirectory>src/java</sourceDirectory>
-        <!--+
-            | The location of our JUnit source code.
-
-        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
-            +-->
-
-        <resources>
-            <resource>
-               <directory>${basedir}/src</directory>
-              <includes>
-                  <include>xsl/*.xsl</include>
-               <!--
-                  <include>schema/*.xsd</include>
-                  <include>schema/**/*.xsd</include>
-                  -->
-              </includes>
-            </resource>
-        </resources>
-
-        <!--+
-            | Our JUnit test classes.
-            +-->
-        <unitTest>
-            <!--+
-                | Which tests to include.
-                +-->
-            <includes>
-                <include>**/*Test.java</include>
-            </includes>
-            
-            <resources>
-                <resource>
-                     <directory>${basedir}/src/junit</directory>
-                 <includes>
-                     <include>**/*.xml</include>
-                 </includes>
-                </resource>
-            </resources>
-         
-        </unitTest>
+   <build>
+     <resources>
+       <resource>
+         <directory>${basedir}/src/java/</directory>
+         <includes>
+           <include>**/*.xml</include>
+         </includes>
+       </resource>
+       <resource>
+         <directory>${basedir}/test/java/</directory>
+         <includes>
+           <include>**/*.xml</include>
+         </includes>
+       </resource>
+     </resources>
     </build>
-
+ 
 
 </project>
 

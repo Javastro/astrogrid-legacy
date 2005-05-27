@@ -1,10 +1,11 @@
 /*
- * $Id: SubmitQuery.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: SubmitQuery.java,v 1.2 2005/05/27 16:20:54 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.Principal;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +19,7 @@ import org.astrogrid.query.QueryException;
 import org.astrogrid.query.adql.AdqlQueryMaker;
 import org.astrogrid.query.sql.SqlParser;
 import org.astrogrid.slinger.sources.SourceIdentifier;
-import org.astrogrid.slinger.sources.SourceMaker;
+import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 import org.astrogrid.webapp.DefaultServlet;
 import org.xml.sax.SAXException;
 
@@ -72,9 +73,9 @@ public class SubmitQuery extends DefaultServlet {
       
       //has the adql been given as a URI to read?
       if (adqlUri != null) {
-         SourceIdentifier source = SourceMaker.makeSource(adqlUri);
+         SourceIdentifier source = URISourceTargetMaker.makeSourceTarget(adqlUri);
          
-         query = AdqlQueryMaker.makeQuery(source.resolveInputStream(user));
+         query = AdqlQueryMaker.makeQuery(source.openInputStream());
       }
       else if (adqlSql != null) {
          query = SqlParser.makeQuery(adqlSql);

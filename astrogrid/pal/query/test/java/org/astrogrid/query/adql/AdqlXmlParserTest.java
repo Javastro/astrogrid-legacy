@@ -1,18 +1,19 @@
 /*
- * $Id: AdqlXmlParserTest.java,v 1.2 2005/03/10 20:19:21 mch Exp $
+ * $Id: AdqlXmlParserTest.java,v 1.3 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.query.adql;
 
+import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.adql.AdqlXml074Parser;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.sourcetargets.UrlSourceTarget;
 
 
 /**
@@ -22,8 +23,7 @@ import org.astrogrid.slinger.targets.TargetMaker;
 public class AdqlXmlParserTest extends TestCase   {
 
    public void testSimple() throws Exception {
-      Query q = SimpleQueryMaker.makeConeQuery(30.0, -80.0, 0.1, TargetMaker.makeTarget("homespace:him@there"), "VOTABLE");
-      String adql = Adql074Writer.makeAdql(q);
+      Query q = SimpleQueryMaker.makeConeQuery(30.0, -80.0, 0.1, new UrlSourceTarget(new URL("ftp://ftp.etc.etc/path/path")), "VOTABLE");      String adql = Adql074Writer.makeAdql(q);
       AdqlXml074Parser.makeQuery( adql);
    }
    
@@ -60,6 +60,15 @@ public class AdqlXmlParserTest extends TestCase   {
 
 /*
  $Log: AdqlXmlParserTest.java,v $
+ Revision 1.3  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.2.24.2  2005/05/13 16:56:29  mch
+ 'some changes'
+
+ Revision 1.2.24.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.2  2005/03/10 20:19:21  mch
  Fixed tests more metadata fixes
 

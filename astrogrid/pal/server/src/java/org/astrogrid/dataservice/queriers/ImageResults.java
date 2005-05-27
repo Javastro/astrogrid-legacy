@@ -1,5 +1,5 @@
 /*
- * $Id: ImageResults.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: ImageResults.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -66,8 +66,8 @@ public class ImageResults
          }
          else {
             InputStream in = imageUrl.openStream();
-            returns.getTarget().setMimeType("image", user);
-            OutputStream out = returns.getTarget().resolveOutputStream(user);
+            returns.getTarget().setMimeType("image");
+            OutputStream out = returns.getTarget().openOutputStream();
             
             Piper.bufferedPipe(in, out);
          }

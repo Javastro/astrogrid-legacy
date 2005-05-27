@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.5 2005/03/31 09:43:09 mch Exp $
+/*$Id: FitsResultsTest.java,v 1.6 2005/05/27 16:21:07 clq2 Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -15,15 +15,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.account.LoginAccount;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.UrlListResults;
 import org.astrogrid.dataservice.queriers.status.QuerierProcessingResults;
+import org.astrogrid.io.account.LoginAccount;
+import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.slinger.mime.MimeTypes;
-import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.slinger.targets.WriterTarget;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.xml.DomHelper;
 import org.xml.sax.SAXException;
 
@@ -39,6 +39,8 @@ public class FitsResultsTest extends TestCase
    Querier testQuerier = null;
                             
    public void setUp() throws IOException {
+      SampleStarsPlugin.initConfig(); //this isn't the right plugin for fits results, but it keeps the Querier bit happy
+                               
        testQuerier = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30, 40, 6), this);
        testQuerier.setStatus(new QuerierProcessingResults(testQuerier.getStatus()));
       fixedResults = new UrlListResults(testQuerier, exampleUrls);
@@ -91,6 +93,15 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
+ Revision 1.6  2005/05/27 16:21:07  clq2
+ mchv_1
+
+ Revision 1.5.10.2  2005/05/13 16:56:32  mch
+ 'some changes'
+
+ Revision 1.5.10.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.5  2005/03/31 09:43:09  mch
  Some fixes
 

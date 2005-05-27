@@ -1,12 +1,12 @@
 /*
- * $Id: ReturnSpec.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: ReturnSpec.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.query.returns;
 
-import org.astrogrid.slinger.mime.MimeNames;
+import org.astrogrid.io.mime.MimeNames;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 
 
@@ -105,8 +105,14 @@ public abstract class ReturnSpec  {
 }
 /*
  $Log: ReturnSpec.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.1.1.1.24.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:23  mch
  Initial checkin

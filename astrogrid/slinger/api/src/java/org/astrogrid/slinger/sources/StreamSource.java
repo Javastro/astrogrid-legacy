@@ -1,5 +1,5 @@
 /*
- * $Id: StreamSource.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: StreamSource.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,11 +29,11 @@ public class StreamSource implements SourceIdentifier  {
    }
 
    /** Returns an InputStreamReader around the resolved stream */
-   public Reader resolveReader(Principal user)  {
-      return new InputStreamReader(resolveInputStream(user));
+   public Reader openReader()  {
+      return new InputStreamReader(openInputStream());
    }
 
-   public InputStream resolveInputStream(Principal user) {
+   public InputStream openInputStream() {
       return in;
    }
    
@@ -45,12 +45,18 @@ public class StreamSource implements SourceIdentifier  {
    public boolean isForwardable() { return false; }
    
    /** Unknown - so returns null */
-   public String getMimeType(Principal user) {
+   public String getMimeType() {
       return null;
    }
 }
 /*
  $Log: StreamSource.java,v $
+ Revision 1.2  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.1.20.1  2005/04/21 17:09:03  mch
+ incorporated homespace etc into URLs
+
  Revision 1.1  2005/02/14 20:47:38  mch
  Split into API and webapp
 

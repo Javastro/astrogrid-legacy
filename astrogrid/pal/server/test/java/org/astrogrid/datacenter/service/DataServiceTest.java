@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.4 2005/03/21 18:45:55 mch Exp $
+/*$Id: DataServiceTest.java,v 1.5 2005/05/27 16:21:21 clq2 Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,19 +12,21 @@ package org.astrogrid.datacenter.service;
 import java.io.StringWriter;
 import java.security.Principal;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.account.LoginAccount;
-import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.dataservice.queriers.status.QuerierAborted;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
-import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.DataServiceStatus;
+import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.NullTarget;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.status.TaskStatus;
+import org.astrogrid.tableserver.VoTableTestHelper;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -34,7 +36,7 @@ import org.w3c.dom.NodeList;
  * at the back, including copying stuff to myspace and getting results back
  * to the front end.
  */
-public class DataServiceTest extends ServerTestCase {
+public class DataServiceTest extends TestCase {
 
    protected DataServer server;
 
@@ -56,23 +58,23 @@ public class DataServiceTest extends ServerTestCase {
        server = new DataServer();
        
 //       query1 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
-      query1 = SimpleQueryMaker.makeConeQuery(0, 89, 10);
+      query1 = SimpleQueryMaker.makeConeQuery(0, 89, 5);
        
-       query2 = SimpleQueryMaker.makeConeQuery(30,30,6);
+       //this one needs to be small enough that it does not hit the return-limit
+       query2 = SimpleQueryMaker.makeConeQuery(30,30,3);
        
-      query1 = SimpleQueryMaker.makeConeQuery(90, -90, 10);
+      query1 = SimpleQueryMaker.makeConeQuery(90, -90, 5);
 //       query3 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
     }
 
     public void testConeSearch() throws Throwable {
        
       StringWriter sw = new StringWriter();
-       query2.setResultsDef(new ReturnTable(TargetMaker.makeTarget(sw), "VOTABLE"));
+       query2.setResultsDef(new ReturnTable(new WriterTarget(sw), "VOTABLE"));
        server.askQuery(TESTPrincipal, query2, this);
        String results = sw.toString();
 
-       Document doc = DomHelper.newDocument(results);
-       assertIsVotableResultsResponse(doc);
+       VoTableTestHelper.assertIsVotable(results);
     }
     
    /**
@@ -82,12 +84,12 @@ public class DataServiceTest extends ServerTestCase {
    {
       //submit query
       StringWriter sw = new StringWriter();
-       query1.setResultsDef(new ReturnTable(TargetMaker.makeTarget(sw), "VOTABLE"));
+       query1.setResultsDef(new ReturnTable(new WriterTarget(sw), "VOTABLE"));
       server.askQuery(TESTPrincipal, query1, this);
       String result = sw.toString();
        
       assertNotNull(result);
-      assertIsVotableResultsResponse(result);
+      VoTableTestHelper.assertIsVotable(result);
       
    }
 
@@ -95,10 +97,10 @@ public class DataServiceTest extends ServerTestCase {
     * Tests the status */
    public void testStatus() throws Throwable {
       //submit queries
-      query2.setResultsDef(new ReturnTable(TargetMaker.makeTarget(""), "VOTABLE"));
+      query2.setResultsDef(new ReturnTable(new NullTarget(), "VOTABLE"));
       server.submitQuery(TESTPrincipal, query2, this);
 
-      query1.setResultsDef(new ReturnTable(TargetMaker.makeTarget(""), "VOTABLE"));
+      query1.setResultsDef(new ReturnTable(new NullTarget(), "VOTABLE"));
       server.submitQuery(TESTPrincipal, query1, this);
 
       DataServiceStatus status = DataServer.getStatus();
@@ -115,21 +117,22 @@ public class DataServiceTest extends ServerTestCase {
       
       //now do same query but get full results (to check count is equal)
       StringWriter sw = new StringWriter();
-      query2.setResultsDef(new ReturnTable(TargetMaker.makeTarget(sw)));
+      query2.setResultsDef(new ReturnTable(new WriterTarget(sw)));
       server.askQuery(TESTPrincipal, query2, this);
       
       Document votDoc = DomHelper.newDocument(sw.toString());
       NodeList rows = votDoc.getElementsByTagNameNS("*", "TR");
       
-      assertEquals("askQuery returns different result to askCount", count, rows.getLength());
+      assertTrue("askQuery returns different result ("+rows.getLength()+") to askCount ("+count+")", rows.getLength() == count);
       
    }
    
     
     public void testAbort() throws Throwable {
       Query query = SimpleQueryMaker.makeConeQuery(30,30,180);
-      query.setResultsDef(new ReturnTable(TargetMaker.makeTarget("")));
+      query.setResultsDef(new ReturnTable(new NullTarget()));
       String qid = server.submitQuery(TESTPrincipal, query, this);
+      Thread.currentThread().sleep(500); //give a moment for the other thread to kick off
       server.abortQuery(TESTPrincipal, qid);
       Thread.currentThread().sleep(5000); //give it time
       QuerierStatus status = server.getQueryStatus(TESTPrincipal, qid);
@@ -158,6 +161,24 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.5  2005/05/27 16:21:21  clq2
+mchv_1
+
+Revision 1.4.16.5  2005/05/13 16:56:32  mch
+'some changes'
+
+Revision 1.4.16.4  2005/05/13 10:13:45  mch
+'some fixes'
+
+Revision 1.4.16.3  2005/05/04 10:24:33  mch
+fixes to tests
+
+Revision 1.4.16.2  2005/05/03 19:35:01  mch
+fixes to tests
+
+Revision 1.4.16.1  2005/04/21 17:20:51  mch
+Fixes to output types
+
 Revision 1.4  2005/03/21 18:45:55  mch
 Naughty big lump of changes
 

@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+ * $Id: ServletHelper.java,v 1.3 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,14 +16,14 @@ import java.security.Principal;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.account.LoginAccount;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.io.account.LoginAccount;
+import org.astrogrid.io.mime.MimeNames;
 import org.astrogrid.query.condition.CircleCondition;
 import org.astrogrid.query.returns.ReturnImage;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.slinger.mime.MimeNames;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 
 /**
  * A set of dataserver methods for helping serving data in HTML form, eg for servlets
@@ -158,14 +158,14 @@ public class ServletHelper
       else {
          String targetUri = request.getParameter("TargetURI");   //direction - eg URI
          if ((targetUri != null) && (targetUri.trim().length()>0)) {
-               
+
             try {
-               returnSpec.setTarget(TargetMaker.makeTarget(targetUri));
+               returnSpec.setTarget(URISourceTargetMaker.makeSourceTarget(targetUri));
             }
             catch (URISyntaxException e) {
                throw new IllegalArgumentException("Invalid target: "+targetUri+" ("+e+")");
             }
-            catch (IOException e) {
+            catch (MalformedURLException e) {
                throw new IllegalArgumentException("Invalid target: "+targetUri+" ("+e+")");
             }
          }

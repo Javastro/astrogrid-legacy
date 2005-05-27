@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableFitsWriter.java,v 1.2 2005/03/30 21:51:25 mch Exp $
+ * $Id: VoTableFitsWriter.java,v 1.3 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,6 +28,10 @@ public class VoTableFitsWriter extends VoTableWriter {
       
    }
    
+   /** Opens writer - does nothing */
+   public void open() {
+   }
+   
    /** Start body - writes out header and preps col array */
    public void startTable(ColumnInfo[] cols) throws IOException {
    }
@@ -39,7 +43,7 @@ public class VoTableFitsWriter extends VoTableWriter {
       printOut.println("<TABLE>");
       printOut.println("<DATA><FITS>");
       
-      printOut.println("   <STREAM>"+colValues[0]+"</STREAM>");
+      printOut.println("   <STREAM href='"+colValues[0]+"' />");
       
       printOut.println("</FITS></DATA>");
       printOut.println("</TABLE>");
@@ -55,6 +59,15 @@ public class VoTableFitsWriter extends VoTableWriter {
 
 /*
  $Log: VoTableFitsWriter.java,v $
+ Revision 1.3  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.2.10.2  2005/05/13 16:56:32  mch
+ 'some changes'
+
+ Revision 1.2.10.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.2  2005/03/30 21:51:25  mch
  Fix to return Votable fits list for url list
 

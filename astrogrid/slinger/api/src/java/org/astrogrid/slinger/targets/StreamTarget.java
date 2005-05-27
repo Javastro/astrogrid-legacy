@@ -1,5 +1,5 @@
 /*
- * $Id: StreamTarget.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: StreamTarget.java,v 1.2 2005/05/27 16:21:01 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,8 +14,7 @@ import java.io.Writer;
 import java.security.Principal;
 
 /**
- * Used to indicate the target where the results are to be sent when that target
- * is a given stream.
+ * Used where the target is a stream, eg http response objects
  *
  */
 
@@ -28,11 +27,11 @@ public class StreamTarget implements TargetIdentifier  {
    }
 
    /** Returns an OutputStreamWrapper around the resolved stream */
-   public Writer resolveWriter(Principal user)  {
-      return new OutputStreamWriter(resolveOutputStream(user));
+   public Writer openWriter()  {
+      return new OutputStreamWriter(openOutputStream());
    }
 
-   public OutputStream resolveOutputStream(Principal user) {
+   public OutputStream openOutputStream() {
       return out;
    }
    
@@ -42,11 +41,20 @@ public class StreamTarget implements TargetIdentifier  {
    
    
    /** Used to set the mime type of the data about to be sent to the target. Does nothing. */
-   public void setMimeType(String mimeType, Principal user) {
+   public void setMimeType(String mimeType) {
    }
 }
 /*
  $Log: StreamTarget.java,v $
+ Revision 1.2  2005/05/27 16:21:01  clq2
+ mchv_1
+
+ Revision 1.1.20.2  2005/05/03 14:10:54  mch
+ slinger
+
+ Revision 1.1.20.1  2005/04/21 17:09:03  mch
+ incorporated homespace etc into URLs
+
  Revision 1.1  2005/02/14 20:47:38  mch
  Split into API and webapp
 

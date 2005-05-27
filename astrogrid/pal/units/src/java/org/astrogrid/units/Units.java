@@ -1,5 +1,5 @@
 /*
- * $Id: Units.java,v 1.4 2005/03/22 12:57:37 mch Exp $
+ * $Id: Units.java,v 1.5 2005/05/27 16:21:15 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,8 +9,11 @@ package org.astrogrid.units;
 
 /**
  * Describes the units attached to a value.  At the moment this is pretty much
- * a placeholder
+ * a placeholder that handles only single unit equations (such as 'deg' and 'ms').
+ * In concept this could contain a the unit equation, probably as
+ * a string, but perhaps as an object graph.
  * <p>
+ *
  * @author M Hill
  */
 
@@ -18,6 +21,8 @@ public class Units
 {
    String unitEquation = ""; // eg "km s-1"
    
+   /** Construct from the given unit equation - at the moment this should only
+    * be a single simple unit */
    public Units(String unitEq) {
       
       if (unitEq == null) {
@@ -39,15 +44,18 @@ public class Units
       return unitEquation;
    }
    
+   /** Will return the dimensional equation of this units */
    public String getDimEq() {
       return "(TBD)";
    }
    
+   /** Will return the scale to convert between the dimensional equation of this
+    units and the units equation. */
    public String getDimScale() {
       return "(TBD)";
    }
 
-   /** Will eventually returns true if the given units are equivelent - eg km s-1 and km/s, but
+   /** Will eventually return true if the given units are equivelent - eg km s-1 and km/s, but
     * not if they are different. For the moment just does string.tolowercase.equals */
    public boolean equals(Object o) {
       return this.toString().toLowerCase().equals(o.toString().toLowerCase());

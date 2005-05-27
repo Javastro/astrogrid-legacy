@@ -1,5 +1,5 @@
 /*
- * $Id: UrlListResults.java,v 1.4 2005/03/30 21:51:25 mch Exp $
+ * $Id: UrlListResults.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -60,6 +60,8 @@ public class UrlListResults extends TableResults {
    /** Subclasses implement suitable ways of writing their results to the given TableWriter    */
    public void writeTable(TableWriter tableWriter, QuerierStatus statusToUpdate) throws IOException {
 
+      tableWriter.open();
+      
       //need to do some better work on the metadata...
       
       tableWriter.startTable(new ColumnInfo[] {});

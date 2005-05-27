@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlHelper.java,v 1.2 2005/03/08 18:05:57 mch Exp $
+ * $Id: HtmlHelper.java,v 1.3 2005/05/27 16:21:22 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,7 @@ import java.security.Principal;
 import java.util.Enumeration;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import org.astrogrid.account.LoginAccount;
+import org.astrogrid.io.account.LoginAccount;
 
 /**
  * A set of methods for helping serving data in HTML form, eg for servlets

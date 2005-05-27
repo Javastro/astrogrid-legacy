@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.9 2005/03/31 16:09:40 mch Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.10 2005/05/27 16:21:14 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -72,7 +72,8 @@ public class TableMetaDocInterpreter
 
    /** Returns the element describing the catalog (group of tables, not necessarily
     * a sky catalog) with the given ID/name.
-    * Looks through all the elements so that it can check case insensitively.
+    * Looks through all the elements so that it can check case insensitively. If
+    * null is given, assumes the first one.
     */
    public Element getCatalogElement(String catalogName) {
 
@@ -124,7 +125,8 @@ public class TableMetaDocInterpreter
       return makeTableInfo(getTableElement(getCatalogElement(catalog), table));
    }
 
-   /** Return column info with the given name/id in the given table name/id */
+   /** Return column info with the given name/id in the given table name/id.  Ignores
+    * the catalog for now */
    public Element getColumnElement(String catalog, String table, String column)  {
       
       //assertions
@@ -194,14 +196,14 @@ public class TableMetaDocInterpreter
                      foundTable = tableName;
                   }
                   else {
-                     throw new MetadataException("Column "+column+" found more than once");
+                     throw new TooManyColumnsException("Column "+column+" found more than once");
                   }
                }
             }
          }
       }
       if (foundCol == null) {
-         throw new MetadataException("Column "+column+" not found in any table");
+         return null; //throw new MetadataException("Column "+column+" not found in any table");
       }
       else {
          return makeColumnInfo(foundTable, foundCol);

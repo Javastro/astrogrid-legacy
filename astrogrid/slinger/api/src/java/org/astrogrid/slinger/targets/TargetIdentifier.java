@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIdentifier.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: TargetIdentifier.java,v 1.2 2005/05/27 16:21:01 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,21 +29,27 @@ public interface TargetIdentifier  {
 
    /** All targets must be able to resolve to a writer. The user is required
     * for permissions */
-   public Writer resolveWriter(Principal user) throws IOException;
+   public Writer openWriter() throws IOException;
    
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
-   public OutputStream resolveOutputStream(Principal user) throws IOException;
+   public OutputStream openOutputStream() throws IOException;
    
    /** Used to set the mime type of the data about to be sent to the target. *Must*
     * be set before any data is set, as some targets cannot cope with it afterwards.
     * Note that many target implementations (such as disk files?) do not have this
     * capability, and so often this will
     * do nothing. */
-   public void setMimeType(String mimeType, Principal user) throws IOException;
+   public void setMimeType(String mimeType) throws IOException;
 }
 /*
  $Log: TargetIdentifier.java,v $
+ Revision 1.2  2005/05/27 16:21:01  clq2
+ mchv_1
+
+ Revision 1.1.20.1  2005/04/21 17:09:03  mch
+ incorporated homespace etc into URLs
+
  Revision 1.1  2005/02/14 20:47:38  mch
  Split into API and webapp
 

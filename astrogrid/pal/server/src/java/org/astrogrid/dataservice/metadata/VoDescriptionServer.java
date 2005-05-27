@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.9 2005/03/23 17:24:48 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.10 2005/05/27 16:21:05 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,11 +7,12 @@
 package org.astrogrid.dataservice.metadata;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.net.URISyntaxException;
 import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.cfg.PropertyNotFoundException;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.cfg.PropertyNotFoundException;
 import org.astrogrid.dataservice.metadata.queryable.QueryableResourceReader;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.dataservice.service.cea.CeaResources;
@@ -19,14 +20,13 @@ import org.astrogrid.dataservice.service.cone.ConeResources;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
-import org.astrogrid.slinger.vospace.IVORN;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import java.net.URISyntaxException;
+import org.astrogrid.slinger.ivo.IVORN;
 
 /**
  * Assembles the various VoResource elements provided by the plugins, and
@@ -97,12 +97,13 @@ public class VoDescriptionServer {
             }
             
             String configAuth = ConfigFactory.getCommonConfig().getString(VoResourceSupport.AUTHID_KEY);
+            String rawId = DomHelper.getValueOf(idNode).trim();
             IVORN id = null;
             try {
-               id = new IVORN(DomHelper.getValueOf(idNode));
+               id = new IVORN(rawId);
             }
             catch (URISyntaxException e) {
-               throw new MetadataException("<identifier> '"+id+"' is not a valid IVORN ");
+               throw new MetadataException("<identifier> '"+rawId+"' is not a valid IVORN: "+e);
             }
             
             if (!id.getAuthority().startsWith(configAuth)) {

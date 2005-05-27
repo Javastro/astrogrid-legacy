@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.2 2005/05/27 16:21:05 clq2 Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,8 +22,6 @@ import org.astrogrid.query.Query;
 public class StdSqlMaker implements SqlMaker  {
 
    
-   private static final Log log = LogFactory.getLog(StdSqlMaker.class);
-   
    /**
     * Constructs an SQL statement for the given ADQL document by getting the
     * (super) ADQL/sql and replacing the region
@@ -41,14 +39,9 @@ public class StdSqlMaker implements SqlMaker  {
     */
    public String makeCountSql(Query query) throws IOException {
 
-      //get ordinary SQL
-      String sql = makeSql(query);
-      
-      //remove anything between SELECT and FROM and replace with COUNT(*)
-      int selectIdx = sql.indexOf("SELECT");
-      int fromIdx = sql.indexOf("FROM");
-      String countSql = sql.substring(0,selectIdx+6)+" COUNT(*) "+sql.substring(fromIdx);
-      return countSql;
+      CountSqlWriter countWriter = new CountSqlWriter();
+      query.acceptVisitor(countWriter);
+      return countWriter.getSql();
    }
    
 }
@@ -56,6 +49,15 @@ public class StdSqlMaker implements SqlMaker  {
 
 /*
  $Log: StdSqlMaker.java,v $
+ Revision 1.2  2005/05/27 16:21:05  clq2
+ mchv_1
+
+ Revision 1.1.24.2  2005/05/13 16:56:32  mch
+ 'some changes'
+
+ Revision 1.1.24.1  2005/04/29 16:55:47  mch
+ prep for type-fix for postgres
+
  Revision 1.1  2005/03/10 16:42:55  mch
  Split fits, sql and xdb
 

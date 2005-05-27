@@ -1,9 +1,0 @@
-<!-- Example metadata file -->
-<Resource >
-  <identifier>
-     ivo://org.astrogrid/test/test/test/etc
-  </identifier>
-  <SomeRandom>Element</SomeRandom>
-</Resource>
-
-

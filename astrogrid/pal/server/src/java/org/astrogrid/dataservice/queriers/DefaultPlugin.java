@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultPlugin.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+ * $Id: DefaultPlugin.java,v 1.3 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,12 +10,11 @@ package org.astrogrid.dataservice.queriers;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.security.Principal;
-import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.xml.DomHelper;
 import org.xml.sax.SAXException;
 
@@ -39,7 +38,7 @@ public abstract class DefaultPlugin implements QuerierPlugin {
     * the functionality. */
    public long getCountFromResults(Principal user, Query query, Querier querier) throws IOException {
       StringWriter sw = new StringWriter();
-      query.setResultsDef(new ReturnTable(TargetMaker.makeTarget(sw), ReturnTable.VOTABLE));
+      query.setResultsDef(new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
       askQuery(user, query, querier);
       try {
          return DomHelper.newDocument(sw.toString()).getElementsByTagName("TR").getLength();
@@ -54,6 +53,12 @@ public abstract class DefaultPlugin implements QuerierPlugin {
 }
 /*
  $Log: DefaultPlugin.java,v $
+ Revision 1.3  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.2.16.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.2  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 

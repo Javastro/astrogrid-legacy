@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.RawPipeResults;
-import org.astrogrid.slinger.mime.MimeTypes;
+import org.astrogrid.io.mime.MimeTypes;
 
 /**
  * A results wrapper around an XML document stream
@@ -45,6 +45,12 @@ public class XmlResults extends RawPipeResults {
 
 /*
 $Log$
+Revision 1.2  2005/05/27 16:21:18  clq2
+mchv_1
+
+Revision 1.1.24.1  2005/04/21 17:20:51  mch
+Fixes to output types
+
 Revision 1.1  2005/03/10 16:42:55  mch
 Split fits, sql and xdb
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.8 2005/03/31 12:10:28 mch Exp $
+ * $Id: SqlResults.java,v 1.9 2005/05/27 16:21:04 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,7 +15,6 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.DatacenterException;
-import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.TableResults;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
@@ -25,6 +24,7 @@ import org.astrogrid.query.condition.Expression;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.tableserver.metadata.TooManyColumnsException;
 import org.astrogrid.tableserver.out.TableWriter;
 
 /**
@@ -102,30 +102,42 @@ public class SqlResults extends TableResults {
       
       try
       {
+         tableWriter.open();
+         
          //list columns
          ResultSetMetaData metadata = sqlResults.getMetaData();
          
          //NB metadata columns start at 1 (not zero)
          int numCols = metadata.getColumnCount();
          ColumnInfo[] cols = new ColumnInfo[numCols];
-         Expression[] colDefs = ((ReturnTable) querier.getQuery().getResultsDef()).getColDefs();
+         Expression[] colDefs = ((ReturnTable) querier.getQuery().getResultsDef()).getColDefs(); //columns defined by querier
          TableMetaDocInterpreter interpreter = new TableMetaDocInterpreter();
          for (int i=1;i<=numCols;i++)
          {
             //now need to look up other things from resource metadata
             if (colDefs == null) {
-               //erm. what do we do now?  eg *?
+               //columsn for the result set are not defined (eg select *). So we
+               //must try getting the tablename from the metadata, but this is not
+               //always supported, then guess
                try {
-                  cols[i-1] = interpreter.guessColumn(querier.getQuery().getScope(), metadata.getColumnName(i));
+                  String table = metadata.getTableName(i);
+                  if (table.trim().length()==0) {
+                     throw new SQLException("metadata returns empty table name");
+                  }
+                  cols[i-1] = interpreter.getColumn(null, table, metadata.getColumnName(i));
                }
-               catch (MetadataException me) {
-                  log.error(me+" guessing which column "+metadata.getColumnName(i)+" belongs to which table");
-                  //but carry on outputting nothing useful for this one
-               }
-               if (cols[i-1] == null) {
-                  cols[i-1] = new ColumnInfo();
-                  cols[i-1].setName(metadata.getColumnName(i));
-                  cols[i-1].setId("?."+metadata.getColumnName(i));
+               catch (SQLException se) {
+                  log.debug("Trying to get table name for column "+metadata.getColumnName(i));
+                  try {
+                     cols[i-1] = interpreter.guessColumn(querier.getQuery().getScope(), metadata.getColumnName(i));
+                  }
+                  catch (TooManyColumnsException me) {
+                     log.error(me+" guessing which column "+metadata.getColumnName(i)+" belongs to which table");
+                     //but carry on with a dummy table name
+                     cols[i-1] = new ColumnInfo();
+                     cols[i-1].setName(metadata.getColumnName(i));
+                     cols[i-1].setId("?."+metadata.getColumnName(i));
+                  }
                }
             }
             else if (colDefs[i-1] instanceof ColumnReference) {
@@ -139,20 +151,24 @@ public class SqlResults extends TableResults {
             }
             else {
                //should probably throw an exception...
-               throw new IllegalArgumentException("Column Definition "+colDefs[i-1]+" is not a ColumnReference; not suitable for SQL data");
+               throw new IllegalArgumentException("Column Definition "+colDefs[i-1]+" is not a ColumnReference; don't know how to describe it");
             }
-            cols[i-1].setBackType(""+metadata.getColumnType(i)); //read direct from sql metadata
-            try {
-               cols[i-1].setJavaType(Class.forName(metadata.getColumnClassName(i))); //read from sql metadata and convert
+
+            //so we've got some metadata information - fill in some other bits
+            if (cols[i-1] != null) {
+               cols[i-1].setBackType(""+metadata.getColumnType(i)); //read direct from sql metadata
+               try {
+                  //some dbs don't implement this function
+                  cols[i-1].setJavaType(Class.forName(metadata.getColumnClassName(i))); //read from sql metadata and convert
+               }
+               catch (ClassNotFoundException cnfe) {
+                  log.error(cnfe+" for column "+i,cnfe);
+               }
+               catch (SQLException se) {
+                  //log but carry on; eg postgres drivers don't seem to have implemented getColumnClassName
+                  log.debug(se+" trying to get column class name for column "+i);
+               }
             }
-            catch (ClassNotFoundException cnfe) {
-               log.error(cnfe+" for column "+i,cnfe);
-            }
-            catch (SQLException se) {
-               //log but carry on; eg postgres drivers don't seem to have implemented getColumnClassName
-               log.error(se+" for column "+i,se);
-            }
-            
          }
          tableWriter.startTable(cols);
 
@@ -166,16 +182,18 @@ public class SqlResults extends TableResults {
 
             for (int i=1;i<=numCols;i++)
             {
-               try {
-                  colValues[i-1] = sqlResults.getString(i);
-               }
-               catch (SQLException se) {
-                  log.error(se+" reading value of column "+i+" row "+row,se);
-                  colValues[i-1] = se.toString();
-               }
-               catch (Exception se) {
-                  log.error(se+" reading value of column "+i+" row "+row,se);
-                  colValues[i-1] = se.toString();
+               if (cols[i-1] != null) { //if there is no column metadata, then it wasn't found in the metadoc and shouldn't be displayed
+                  try {
+                     colValues[i-1] = sqlResults.getString(i);
+                  }
+                  catch (SQLException se) {
+                     log.error(se+" reading value of column "+i+" row "+row,se);
+                     colValues[i-1] = se.toString();
+                  }
+                  catch (Exception se) {
+                     log.error(se+" reading value of column "+i+" row "+row,se);
+                     colValues[i-1] = se.toString();
+                  }
                }
             }
             tableWriter.writeRow(colValues);
@@ -231,6 +249,21 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.9  2005/05/27 16:21:04  clq2
+ mchv_1
+
+ Revision 1.8.10.4  2005/05/13 16:56:32  mch
+ 'some changes'
+
+ Revision 1.8.10.3  2005/05/04 10:24:33  mch
+ fixes to tests
+
+ Revision 1.8.10.2  2005/05/03 19:35:01  mch
+ fixes to tests
+
+ Revision 1.8.10.1  2005/04/29 16:55:47  mch
+ prep for type-fix for postgres
+
  Revision 1.8  2005/03/31 12:10:28  mch
  Fixes and workarounds for null values, misisng metadoc columns
 

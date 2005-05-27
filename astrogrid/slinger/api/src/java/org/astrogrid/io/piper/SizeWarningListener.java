@@ -1,5 +1,5 @@
 /**
- * $Id: SizeWarningListener.java,v 1.2 2005/04/01 01:29:54 mch Exp $
+ * $Id: SizeWarningListener.java,v 1.3 2005/05/27 16:21:02 clq2 Exp $
  *
  */
 
@@ -7,13 +7,14 @@ package org.astrogrid.io.piper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import java.io.InputStream;
 
 /**
  * Warns if the size of the piped data seems excessive
  */
 
 
-public class SizeWarningListener implements PiperProgressListener {
+public class SizeWarningListener implements PipeListener {
    
     /** Logger for this class   */
     private static final Log logger = LogFactory.getLog(SizeWarningListener.class);
@@ -24,11 +25,19 @@ public class SizeWarningListener implements PiperProgressListener {
    /** used to step up the warning levels */
    private int step = 1;
    
+   String name = null;
+   
+   /** Called when the pipe starts */
+   public void pipeStarted(InputStream givenIn, String aName, int streamSize) {
+      name = aName;
+   }
+   
+   
    /** Called when a block has been piped */
    public void blockPiped(long bytesRead) {
       if(bytesRead > step * EXCESSIVE_SIZE_WARNING_LEVEL)
       {
-          logger.warn("piper has read "+ bytesRead+" bytes");
+          logger.warn("piper has read "+ bytesRead+" bytes from "+name);
           step++;
       }
    }
@@ -36,5 +45,9 @@ public class SizeWarningListener implements PiperProgressListener {
    /** Does nothing */
    public void pipeComplete() {}
    
+   /** Called when an Exception occurs */
+   public void thrown(Throwable th) {
+      // doe snothing
+   }
 }
 

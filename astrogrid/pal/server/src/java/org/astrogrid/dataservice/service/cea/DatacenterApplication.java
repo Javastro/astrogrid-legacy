@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+/*$Id: DatacenterApplication.java,v 1.3 2005/05/27 16:21:08 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,11 +14,10 @@ import EDU.oswego.cs.dl.util.concurrent.Executor;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.Principal;
-import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.account.LoginAccount;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
@@ -30,18 +29,20 @@ import org.astrogrid.dataservice.queriers.QuerierListener;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.dataservice.service.AxisDataServer;
 import org.astrogrid.dataservice.service.DataServer;
+import org.astrogrid.io.account.LoginAccount;
+import org.astrogrid.io.mime.MimeNames;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryState;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.adql.AdqlQueryMaker;
-import org.astrogrid.slinger.mime.MimeNames;
+import org.astrogrid.slinger.sourcetargets.HomespaceSourceTarget;
+import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 import org.astrogrid.slinger.targets.TargetIdentifier;
-import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.slinger.targets.WriterTarget;
-import org.astrogrid.slinger.vospace.HomespaceName;
-import org.astrogrid.slinger.vospace.IVOSRN;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.xml.sax.SAXException;
+import org.astrogrid.slinger.homespace.HomespaceName;
+import org.astrogrid.slinger.ivo.IVORN;
 
 /** Represents a query running against the datacenter.
  * <p />
@@ -139,13 +140,15 @@ public class DatacenterApplication extends AbstractApplication implements Querie
                throw new CeaException("ResultTarget is indirect but value is empty");
             }
             
-            String targetUri = transformTarget(resultTarget.getValue()); //special botch for old vs new homespaces etc
+            //special botch for converting ivo:// to homespace:// etc
+            String targetUri = transformTarget(resultTarget.getValue());
             
-            ti = TargetMaker.makeTarget(targetUri);
+            ti = URISourceTargetMaker.makeSourceTarget(targetUri);
          } else {
             //direct-to-cea target, so results must get written to a string to be inserted into the
-            //parametervalue when complete (see queryStatusChanged)
-            ti = TargetMaker.makeTarget(new StringWriter(), true); //close stream when finished writing to it
+            //parametervalue when complete.  See queryStatusChanged for what happens to the results
+            //when the query is complete
+            ti = new WriterTarget(new StringWriter(), true); //close stream when finished writing to it
          }
 
          String resultsFormat = MimeNames.getMimeType( findInputParameterAdapter(DatacenterApplicationDescription.FORMAT).process().toString());
@@ -180,7 +183,14 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     * cannot resolve it, turns it into a homespacename
     */
    public String transformTarget(String targetUri) throws IllegalArgumentException, URISyntaxException {
-      if (!IVOSRN.isIvorn(targetUri)) { return targetUri; } //some other URI
+      
+      int hashIdx = targetUri.indexOf("#");
+      String key = targetUri.substring(0,hashIdx).substring(6);
+      int slashIdx = key.indexOf("/");
+
+      /* just assume it's a homespace ivorn for now
+      
+      if (!IVORN.isIvorn(targetUri)) { return targetUri; } //some other URI
 
       int hashIdx = targetUri.indexOf("#");
       if (hashIdx == -1) {
@@ -192,20 +202,18 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          
          //check it can't be resolved
          try {
-            new IVOSRN(targetUri).resolve();
+            new IVORN(targetUri).resolve();
             //it resolved OK, so it's a real IVORN.  Leave unchanged
             return targetUri;
          }
          catch (IOException rre) { } //carry on, it's not resolvable (normally), so...
-         
-         //assume any exception means it can't be found.  Can't do much better than that at the mo anyway
-         String ind = key.substring(slashIdx+1); //individual
-         String com = key.substring(0,slashIdx); //community
-         HomespaceName homespace = new HomespaceName(ind+"@"+com, targetUri.substring(hashIdx+1));
+       */
+         //assume any exception means it can't be found, so it must be a 'homespace' id.  Can't do much better than that at the mo anyway
+         HomespaceName homespace = HomespaceName.fromIvorn(targetUri);
          logger.info("Converting incoming '"+targetUri+"' to '"+homespace+"'");
          return homespace.toURI();
-      }
-      return targetUri;
+//      }
+//      return targetUri;
    }
          
    /** Implemented by calling abot on the querier object - so if the underlyng database back end supports abort, the cec does too
@@ -248,27 +256,6 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          
       } else if (state.equals(QueryState.RUNNING_RESULTS)) {
          this.setStatus(Status.WRITINGBACK);
-         /* this is all handled by the target indicators and the 'finish' below
-          final ParameterAdapter result = (ParameterAdapter)outputParameterAdapters().next();
-          //necessary to perform write-back in separate thread - as we don't know what thread is calling this callback
-          // and it mustn't be the same one as is going to write out the output - otherwise we'll deadlock on the pipe.
-          Runnable worker = new Runnable() {
-          public void run() {
-          try {
-          CEATargetIndicator ti = (CEATargetIndicator)querier.getQuery().getTarget();
-          result.writeBack(ti);
-          setStatus(Status.COMPLETED); // now the application has completed..
-          } catch (CeaException e) {
-          reportError("Failed to write back parameter values",e);
-          }
-          }
-          };
-          try {
-          exec.execute(worker);
-          }catch (InterruptedException e) {
-          reportMessage("couldn't start worker thread to read results");
-          }
-          */
       } else if (state.equals(QueryState.ABORTED)) {
          this.reportMessage(qs.toString());
          this.setStatus(Status.ERROR); // this is the convention.
@@ -282,7 +269,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
             //if the results were to be directed to CEA, they will be stored in a StringWriter in
             //the WriterTarget
             WriterTarget target = (WriterTarget) querier.getQuery().getTarget();
-            StringWriter sw = (StringWriter) target.resolveWriter(acc);
+            StringWriter sw = (StringWriter) target.openWriter();
             result.setValue(sw.toString() );
          }
 
@@ -316,6 +303,21 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.3  2005/05/27 16:21:08  clq2
+ mchv_1
+
+ Revision 1.2.16.4  2005/05/16 14:10:54  mch
+ use new fromIvorn method
+
+ Revision 1.2.16.3  2005/05/13 16:56:31  mch
+ 'some changes'
+
+ Revision 1.2.16.2  2005/04/25 14:41:14  mch
+ better comment
+
+ Revision 1.2.16.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.2  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 

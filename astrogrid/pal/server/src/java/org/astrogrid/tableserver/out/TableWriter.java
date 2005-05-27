@@ -1,5 +1,5 @@
 /*
- * $Id: TableWriter.java,v 1.1 2005/03/21 18:45:55 mch Exp $
+ * $Id: TableWriter.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,6 +22,9 @@ public interface TableWriter {
    * array; use setColumnMetadata(array) to set the size */
 //   public void setColumnMetadata(int col, ColumnInfo columnInfo) throws IOException;
 
+   /** Starts the writer */
+   public void open() throws IOException;
+   
    /** Sets all the column details  */
    public void startTable(ColumnInfo[] colInfo) throws IOException;
 

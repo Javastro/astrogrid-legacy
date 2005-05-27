@@ -1,0 +1,91 @@
+/*$Id: ValidatorTest.java,v 1.2 2005/05/27 16:21:16 clq2 Exp $
+ * Created on 28-Nov-2003
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
+ *
+ **/
+package org.astrogrid.xml;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import javax.xml.parsers.ParserConfigurationException;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.astrogrid.xml.Validator;
+import org.xml.sax.SAXException;
+
+/**
+ * tests the xml validator
+ *
+ */
+public class ValidatorTest extends TestCase  {
+   
+   /** Checks that the catalog is valid */
+   public void testCatalog() throws IOException, SAXException {
+      URL cat = Validator.class.getResource("catalog.xml");
+
+      assert cat != null : "Catalog not found";  //throws error rather than fail
+      
+      if (Validator.isValid(cat.openStream()) != null) {
+         throw new SAXException("Catalog is invalid");
+      }
+   }
+   
+   
+   /** checks that valid votable parses OK */
+   public void testValid() throws IOException, SAXException {
+      
+      URL okVoTable = ValidatorTest.class.getResource("valid.vot.xml");
+      
+      assert okVoTable != null : "Test votable not found"; //throws error rather than fail
+      
+      assertNull("Validator incorrectly finds errors in "+okVoTable, Validator.isValid(okVoTable.openStream()));
+   }
+   
+   /** checks that invalid votable fails */
+   public void testInvalid() throws IOException, SAXException {
+      
+      URL badVoTable = ValidatorTest.class.getResource("invalid.vot.xml");
+      
+      assert badVoTable != null : "Test votable not found"; //throws error rather than fail
+      
+      assertNull("Validator incorrectly finds no errors in invalid xml document at "+badVoTable, Validator.isValid(badVoTable.openStream()));
+   }
+   
+   /** checks that badly formed votable fails */
+   public void testBadForm() throws IOException {
+      
+      URL badVoTable = ValidatorTest.class.getResource("badform.vot.xml");
+      
+      assert badVoTable != null : "Test votable not found"; //throws error rather than fail
+      
+      try {
+         Validator.isWellFormed(badVoTable.openStream());
+         
+         fail("Validator incorrectly passes "+badVoTable);
+      }
+      catch (SAXException se) {
+         //that's ok, expected that
+         System.out.println("Good, found deliberate error: "+se); //for visual checks that we got it right.
+      }
+   }
+   
+   public static void main(String[] args) {
+      junit.textui.TestRunner.run(suite());
+   }
+   
+    public static Test suite() {
+        // Reflection is used here to add all the testXXX() methods to the suite.
+        return new TestSuite(ValidatorTest.class);
+    }
+   
+}
+
+
+

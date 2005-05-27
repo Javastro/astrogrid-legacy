@@ -1,5 +1,5 @@
 /*
- * $Id: FMCompleterStream.java,v 1.1 2005/03/28 01:48:09 mch Exp $
+ * $Id: FMCompleterStream.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
  */
 
 package org.astrogrid.slinger.agfm;
@@ -15,7 +15,6 @@ import org.astrogrid.filemanager.client.FileManagerNode;
  * is closed.  This wraps that up in the close() operation so it looks like
  * any other stream
  */
-
 
 public class FMCompleterStream extends FilterOutputStream {
    

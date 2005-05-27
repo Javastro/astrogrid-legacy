@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.3 2005/05/27 16:21:04 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -82,8 +82,11 @@ public class JdbcPlugin extends DefaultPlugin {
          jdbcConnection = getJdbcConnection();
          Statement statement = jdbcConnection.createStatement();
 
+         //limit to number of rows returned
          if (query.getLocalLimit() >0) { statement.setMaxRows((int) query.getLocalLimit()); }
-//some problem with this on SSA         statement.setQueryTimeout(ConfigFactory.getCommonConfig().getInt(TIMEOUT, 30*60)); //default to half an hour
+         
+         //set timeout - 0 = no limit
+         statement.setQueryTimeout(ConfigFactory.getCommonConfig().getInt(TIMEOUT, 30*60)); //default to half an hour
 
          querier.getStatus().addDetail("Submitted to JDBC at "+new Date());
          

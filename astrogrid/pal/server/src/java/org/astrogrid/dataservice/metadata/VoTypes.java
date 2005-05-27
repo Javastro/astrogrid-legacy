@@ -1,51 +1,75 @@
 /*
- * $Id: VoTypes.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+ * $Id: VoTypes.java,v 1.3 2005/05/27 16:21:05 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.dataservice.metadata;
 
+import java.util.Date;
+
 
 /**
  * Defines Data types for the Virtual Observatory, and useful translation methods.
  * These are primarily based on the types defined for VOTables.
- * However I've fiddled a bit to simplify the set down to something useful. Complex
- * numbers are special cases of vectors (ie arrays), so I've removed those.  I've also
- * assumed (heh heh) that Precision and data size are not part of type, and so I've
- * removed those.
  *
  * @author M Hill
  */
 
-import java.util.Date;
-import org.astrogrid.tableserver.out.VoTableWriter;
-
 public class VoTypes  {
    
-   public final static String FLOAT     = VoTableWriter.TYPE_FLOAT;
-   public final static String INT       = VoTableWriter.TYPE_INT;
-   public final static String BOOLEAN   = VoTableWriter.TYPE_BOOLEAN;
-   public final static String CHAR      = VoTableWriter.TYPE_CHAR;
-//   public final static String DATE_CHAR = "date.string"; //date as a string
-   public final static String DATE      = "date";   //date as seconds since/before 1970
+   //the long to the short of it...
+   public final static String LONG      = "long";
+   public final static String BOOLEAN   = "boolean";
+   public final static String BIT       = "bit";
+   public final static String UBYTE     = "unsignedByte";
+   public final static String CHAR      = "char";
+   public final static String UNICHAR   = "unicodeChar";
+   public final static String DOUBLE    = "double";
+   public final static String FLOAT     = "float";
+   public final static String DOUBLECOMPLEX = "doubleComplex";
+   public final static String FLOATCOMPLEX  = "floatComplex";
+   public final static String INT       = "int";
+   public final static String SHORT     = "short";
    
    public final static String[] TYPES = new String[] {
-      BOOLEAN, CHAR, FLOAT, INT, DATE
+      LONG, BOOLEAN, BIT, UBYTE, CHAR, UNICHAR, DOUBLE, FLOAT, DOUBLECOMPLEX, FLOATCOMPLEX, INT, SHORT
    };
    
-   /**Returns the VO Type for the given java class type */
+   
+   /**Returns the 'VO Type' for the given java class.  NOTE that this is not
+    * sufficient for Votable, which needs the arraysize also set for strings
+    */
    public static String getVoType(Class javatype) {
       if (javatype == null) {
          throw new IllegalArgumentException("Null type given to work out VoType");
       }
-      else if (javatype == String.class)  {  return CHAR;    }
-      else if (javatype == Integer.class) {  return INT;     }
-      else if (javatype == Long.class)    {  return INT;    }
-      else if (javatype == Float.class)   {  return FLOAT;   }
-      else if (javatype == Double.class) {   return FLOAT;  }
-      else if (javatype == Boolean.class) {  return BOOLEAN;    }
-      else if (javatype == Date.class)    {  return DATE;    }
+      else if (javatype == String.class)  {  return "datatype='"+CHAR+"' arraysize='*'";    }
+      else if (javatype == Integer.class) {  return "datatype='"+INT+"'";     }
+      else if (javatype == Long.class)    {  return "datatype='"+INT+"'";    }
+      else if (javatype == Float.class)   {  return "datatype='"+FLOAT+"'";   }
+      else if (javatype == Double.class) {   return "datatype='"+FLOAT+"'";  }
+      else if (javatype == Boolean.class) {  return "datatype='"+BOOLEAN+"'";    }
+      else if (javatype == Date.class)    {  return "datatype='"+CHAR+"' arraysize='*'";    }
+      else {
+         throw new IllegalArgumentException("Don't know what VOType the java class "+javatype+" maps to");
+      }
+   }
+
+   /**Returns the VO Type as a string of two attributes (datatype and arraysize)
+    * for the given java class type.
+    */
+   public static String getVoTableTypeAttributes(Class javatype) {
+      if (javatype == null) {
+         throw new IllegalArgumentException("Null type given to work out VoType");
+      }
+      else if (javatype == String.class)  {  return "datatype='"+CHAR+"' arraysize='*'";    }
+      else if (javatype == Integer.class) {  return "datatype='"+INT+"'";     }
+      else if (javatype == Long.class)    {  return "datatype='"+INT+"'";    }
+      else if (javatype == Float.class)   {  return "datatype='"+FLOAT+"'";   }
+      else if (javatype == Double.class) {   return "datatype='"+FLOAT+"'";  }
+      else if (javatype == Boolean.class) {  return "datatype='"+BOOLEAN+"'";    }
+      else if (javatype == Date.class)    {  return "datatype='"+CHAR+"' arraysize='*'";    }
       else {
          throw new IllegalArgumentException("Don't know what VOType the java class "+javatype+" maps to");
       }
@@ -56,14 +80,18 @@ public class VoTypes  {
       if (votype == null) {
          throw new IllegalArgumentException("Null type given to work out JavaType");
       }
-      else if (votype.equals(CHAR)) { return String.class;  }
-      else if (votype.equals(INT)) { return Long.class; }
-      else if (votype.equals(FLOAT)) { return Double.class; }
+      else if (votype.equals(LONG))    { return Long.class; }
       else if (votype.equals(BOOLEAN)) { return Boolean.class; }
-      else if (votype.equals(DATE)) { return Date.class; }
-      //for older resources (based on VOTable types)
-      else if (votype.equals(VoTableWriter.TYPE_DOUBLE)) { return Double.class; }
-      else if (votype.equals(VoTableWriter.TYPE_LONG)) { return Long.class; }
+      else if (votype.equals(BIT))     { return Boolean.class; }
+      else if (votype.equals(UBYTE))   { return Integer.class; }
+      else if (votype.equals(CHAR))    { return String.class;  }
+      else if (votype.equals(UNICHAR)) { return Long.class; }
+      else if (votype.equals(DOUBLE))  { return Double.class; }
+      else if (votype.equals(FLOAT))   { return Double.class; }
+      else if (votype.equals(INT))     { return Long.class; }
+      else if (votype.equals(SHORT))   { return String.class;  }
+//      else if (votype.equals(DOUBLECOMPLEX)) { return Long.class; }
+//      else if (votype.equals(FLOATCOMPLEX))   { return String.class;  }
       else {
          throw new IllegalArgumentException("Don't know what java type the VOType '"+votype+"' maps to");
       }
@@ -73,6 +101,12 @@ public class VoTypes  {
 
 /*
  $Log: VoTypes.java,v $
+ Revision 1.3  2005/05/27 16:21:05  clq2
+ mchv_1
+
+ Revision 1.2.16.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.2  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 

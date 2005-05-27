@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.4 2005/03/21 18:45:55 mch Exp $
+ * $Id: PalProxyPlugin.java,v 1.5 2005/05/27 16:21:01 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,6 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.Date;
-import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 import org.astrogrid.dataservice.metadata.v0_10.ProxyResourceSupport;
@@ -24,11 +23,7 @@ import org.astrogrid.dataservice.queriers.VotableInResults;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.adql.Adql074Writer;
-import org.astrogrid.slinger.SRI;
-import org.astrogrid.xml.DomHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
+import org.astrogrid.slinger.sourcetargets.UrlSourceTarget;
 
 /**
  * A plugin that passes the query on to a remote PAL installation
@@ -111,7 +106,7 @@ public class PalProxyPlugin extends DefaultPlugin implements VoResourcePlugin {
                       "&Format="+URLEncoder.encode("VOTABLE", "UTF-8")
                     );
 
-      if (!(query.getTarget() instanceof SRI)) {
+      if (!(query.getTarget() instanceof UrlSourceTarget)) {
          proxyResults = true; //has to proxy non-forwardable targets, eg streams
       }
       
@@ -120,7 +115,7 @@ public class PalProxyPlugin extends DefaultPlugin implements VoResourcePlugin {
          out.writeBytes("&TargetResponse="+URLEncoder.encode("true", "UTF-8"));
       }
       else {
-         out.writeBytes("&TargetURI="+URLEncoder.encode( ((SRI) query.getTarget()).toURI().toString(), "UTF-8"));
+         out.writeBytes("&TargetURI="+URLEncoder.encode( ((UrlSourceTarget) query.getTarget()).toURI().toString(), "UTF-8"));
       }
       out.flush();
       out.close();

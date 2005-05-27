@@ -1,5 +1,5 @@
 /*
- * $Id: StringSource.java,v 1.1 2005/03/23 15:29:42 mch Exp $
+ * $Id: StringSource.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,13 +26,13 @@ public class StringSource implements SourceIdentifier {
       this.s = sourceString;
    }
 
-   public Reader resolveReader(Principal user)  {
+   public Reader openReader()  {
       return new StringReader(s);
    }
 
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
-   public InputStream resolveInputStream(Principal user) {
+   public InputStream openInputStream() {
       return new ByteArrayInputStream(s.getBytes());
    }
    
@@ -44,13 +44,19 @@ public class StringSource implements SourceIdentifier {
    public boolean isForwardable() { return false; }
    
    /** Used to set the mime type of the data about to be sent to the target. Does nothing. */
-   public String getMimeType(Principal user) {
+   public String getMimeType() {
       return null;
    }
    
 }
 /*
  $Log: StringSource.java,v $
+ Revision 1.2  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.1.10.1  2005/04/21 17:09:03  mch
+ incorporated homespace etc into URLs
+
  Revision 1.1  2005/03/23 15:29:42  mch
  added command-line Slinger, rationalised copy, send, get etc
 

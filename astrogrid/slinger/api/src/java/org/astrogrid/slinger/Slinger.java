@@ -1,35 +1,30 @@
 /*
- * $Id: Slinger.java,v 1.4 2005/03/28 01:48:09 mch Exp $
+ * $Id: Slinger.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.slinger;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
+
 import java.net.URISyntaxException;
-import java.security.Principal;
-import org.astrogrid.account.LoginAccount;
+import java.net.URL;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.io.Piper;
+import org.astrogrid.io.piper.PipeListener;
+import org.astrogrid.io.piper.StreamPiper;
 import org.astrogrid.slinger.sources.SourceIdentifier;
-import org.astrogrid.slinger.sources.SourceMaker;
 import org.astrogrid.slinger.sources.StringSource;
+import org.astrogrid.slinger.sourcetargets.UrlSourceTarget;
 import org.astrogrid.slinger.targets.EmailTarget;
+import org.astrogrid.slinger.targets.StreamTarget;
 import org.astrogrid.slinger.targets.TargetIdentifier;
-import org.astrogrid.slinger.targets.TargetMaker;
-import org.astrogrid.slinger.targets.UrlTarget;
 import org.astrogrid.slinger.targets.WriterTarget;
-import org.astrogrid.slinger.vospace.IVORN;
 
 
 /**
- * Something to do with sending things. Not really properly thought out yet
+ * Connects sources and targets and pipes between them. Like StreamPiper but deals
+ * with SourceIdentifiers and TargetIdentifiers.
  *
  */
 
@@ -47,67 +42,77 @@ public class Slinger  {
     *
     * @throws IOException if the operation fails for any reason
     */
-   public static void testConnection(TargetIdentifier target, Principal user) throws IOException {
+   public static void testConnection(TargetIdentifier target) throws IOException {
       
       if (target instanceof EmailTarget) {
          ((EmailTarget) target).testServer();
       }
 
       // test to see that the agsl for the results is valid
-      if ( (target instanceof UrlTarget) || (target instanceof IVORN) || (target instanceof SRL) ) {
-
-         Writer out = target.resolveWriter(user);
+      if ( (target instanceof UrlSourceTarget) ) {
 
          try {
-            out.write("This is a test file to make sure we can create a file at the target before we start, so our query results are not lost");
+            Writer out = target.openWriter();
+//          out.write("This is a connection test");
+            out.close();
          }
-         catch (IOException se) {
+         catch (IOException ioe) {
             //rethrow with more info
-            throw new IOException("Test to write to '"+target+"' failed: "+se.getMessage());
+            throw renewIOException(", writing to '"+target+"'", ioe);
          }
-         //erm
-         /*
-         try {
-            store.delete(target.resolveAgsl().getPath());
-         }
-         catch (StoreException se) {
-            //log it but don't fail
-            LogFactory.getLog(Slinger.class).error("Could not delete test file",se);
-         }
-          */
       }
    }
 
-   /** Pipes source to target.  What this *should* do is where appropriate,
-    * forward the source to the target (or v.v).  For example, myspace can
-    * directly access URLs so that the sling doesn't have to happen through
-    * this machine
+   /** Convenience routine for creating IOExceptions from existing IOExceptions and
+    * a message and throwing them.  This compensates for the lack of IOException(msg, cause)
+    * constructor, which can make rethrowing IOExceptions with extra information
+    * rather tedious. The stack trace here will be the same as the original exception */
+   public static IOException renewIOException(String appendMsg, IOException ioe) throws IOException {
+      IOException newIoe = new IOException(ioe.getMessage()+appendMsg);
+      newIoe.setStackTrace(ioe.getStackTrace());
+      return newIoe;
+   }
+
+   /** Convenience routine for creating IOExceptions from other exceptions as 'causes'.
+    * This compensates for the lack of IOException(msg, cause)
+    * constructor, which can make rethrowing IOExceptions with extra information
+    * rather tedious. The stack trace here will be the same as the original exception */
+   public static IOException newIOException(String appendMsg, Exception cause)  {
+      IOException newIoe = new IOException(appendMsg);
+      newIoe.initCause(cause);
+      return newIoe;
+   }
+   
+   /** Pipes source to target <i>through this machine</i>.  More sophisticated
+    * remote slings (ie, where this machine tells another server to get the
+    * data direct) will require a different interface :-)
     * */
-   public static void sling(SourceIdentifier source, TargetIdentifier target, Principal user) throws IOException {
+   public static void sling(SourceIdentifier source, TargetIdentifier target) throws IOException {
       
-      target.setMimeType(source.getMimeType(user), user);
+      target.setMimeType(source.getMimeType());
       
-      InputStream in = source.resolveInputStream(user);
-      OutputStream out = target.resolveOutputStream(user);
+      InputStream in = new BufferedInputStream(source.openInputStream());
+      OutputStream out = new BufferedOutputStream(target.openOutputStream());
       
-      Piper.bufferedPipe(in, out);
+      StreamPiper piper = new StreamPiper();
+      piper.pipe(in, out, null);
+
       in.close();
       out.close();
    }
 
-   /** Spawns a thread that reads the data from the source and sends it to the
-    * target
+   /** Spawns a pipe to do the equivelent of 'sling' to read all the data from
+    * the source and send it to the target.  Returns the StreamPiper that is
+    * doing the work, so that you can cancel it if need be.
     * */
-   public static void spawnSling(SourceIdentifier source, TargetIdentifier target, Principal user) throws IOException {
+   public static StreamPiper spawnSling(SourceIdentifier source, TargetIdentifier target, PipeListener listener) throws IOException {
       
-      target.setMimeType(source.getMimeType(user), user);
+      target.setMimeType(source.getMimeType());
       
-      InputStream in = source.resolveInputStream(user);
-      OutputStream out = target.resolveOutputStream(user);
+      InputStream in = new BufferedInputStream(source.openInputStream());
+      OutputStream out = new BufferedOutputStream(target.openOutputStream());
       
-      Piper.bufferedPipe(in, out);
-      in.close();
-      out.close();
+      return StreamPiper.spawnPipe(in, out, listener, StreamPiper.DEFAULT_BLOCK_SIZE);
    }
 
    /** Convenience routine returns true if this application is configured to serve local
@@ -124,40 +129,39 @@ public class Slinger  {
       System.out.println(" SEND <text> <target ID>");
    }
    
-   /** For quick tests/debug */
+   /** Command line use & debug */
    public static void main(String[] args) throws IOException, URISyntaxException
    {
-      SimpleConfig.getSingleton().setProperty("org.astrogrid.registry.query.endpoint", "http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery");
+//      ConfigFactory.getCommonConfig().setProperty("org.astrogrid.registry.query.endpoint", "http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery");
       
-      String id = "homespace:DSATEST1@uk.ac.le.star#MartinsTestTree.txt";
-      System.out.println("Testing out...");
-      Slinger.sling(new StringSource("Some text"), TargetMaker.makeTarget(id), LoginAccount.ANONYMOUS);
-      System.out.println("...Reading back...");
-      StringWriter sw = new StringWriter();
-      Slinger.sling(SourceMaker.makeSource(id), new WriterTarget(sw), LoginAccount.ANONYMOUS);
-      System.out.println("...Done: "+sw.toString());
-      /*
       if (args.length<=1) {
-         printHelp();
+//         printHelp();
+         URL id = new URL("homespace:DSATEST1@uk.ac.le.star#MartinsTestTree.txt");
+         System.out.println("Testing out...");
+         Slinger.sling(new StringSource("Some text"), new UrlSourceTarget(id));
+         System.out.println("...Reading back...");
+         StringWriter sw = new StringWriter();
+         Slinger.sling(new UrlSourceTarget(id), new WriterTarget(sw));
+         System.out.println("...Done: "+sw.toString());
       }
       else if (args[0].trim().toLowerCase().equals("get")) {
-         SourceIdentifier source = SourceMaker.makeSource(args[1]);
+         SourceIdentifier source = new UrlSourceTarget(new URL(args[1]));
          TargetIdentifier target = new StreamTarget(System.out);
-         sling(source, target, LoginAccount.ANONYMOUS);
+         sling(source, target);
       }
       else {
          if (args.length<=2) {
             printHelp();
          }
          else if (args[0].trim().toLowerCase().equals("copy")) {
-            SourceIdentifier source = SourceMaker.makeSource(args[1]);
-            TargetIdentifier target = TargetMaker.makeTarget(args[2]);
-            sling(source, target, LoginAccount.ANONYMOUS);
+            SourceIdentifier source = new UrlSourceTarget(new URL(args[1]));
+            TargetIdentifier target = new UrlSourceTarget(new URL(args[2]));
+            sling(source, target);
          }
          else if (args[0].trim().toLowerCase().equals("send")) {
             SourceIdentifier source = new StringSource(args[1]);
-            TargetIdentifier target = TargetMaker.makeTarget(args[2]);
-            sling(source, target, LoginAccount.ANONYMOUS);
+            TargetIdentifier target = new UrlSourceTarget(new URL(args[2]));
+            sling(source, target);
          }
          else {
             printHelp();
@@ -169,6 +173,15 @@ public class Slinger  {
 
 /*
  $Log: Slinger.java,v $
+ Revision 1.5  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.4.10.2  2005/05/13 10:12:55  mch
+ 'some fixes'
+
+ Revision 1.4.10.1  2005/04/21 17:09:03  mch
+ incorporated homespace etc into URLs
+
  Revision 1.4  2005/03/28 01:48:09  mch
  Added socket source/target, and makeFile instead of outputChild
 

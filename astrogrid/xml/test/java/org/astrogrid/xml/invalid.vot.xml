@@ -1,0 +1,27 @@
+<!-- this votable has 'units' instead of 'unit' -->
+<VOTABLE version='1.1' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+             xmlns='http://www.ivoa.net/xml/VOTable/v1.1'
+             xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://www.ivoa.net/xml/VOTable/VOTable-1.1.xsd'>
+<RESOURCE>
+<TABLES>
+<FIELD name='hef_id' ID='hessi_flare.hef_id'  datatype='int' units='' />
+<FIELD name='time_start' ID='hessi_flare.time_start' arraysize='*'  datatype='char' units='' />
+<FIELD name='time_peak' ID='hessi_flare.time_peak'  arraysize='*' datatype='char' units='' />
+<FIELD name='time_end' ID='hessi_flare.time_end'  arraysize='*' datatype='char' units='' />
+<FIELD name='nar' ID='hessi_flare.nar'  datatype='int' units='' />
+<FIELD name='x_arcsec' ID='hessi_flare.x_arcsec'  datatype='float' units='' />
+<FIELD name='y_arcsec' ID='hessi_flare.y_arcsec'  datatype='float' units='' />
+<FIELD name='radial_arcsec' ID='hessi_flare.radial_arcsec'  datatype='float' units='' />
+<FIELD name='duration' ID='hessi_flare.duration'  datatype='int' units='' />
+<FIELD name='count_sec_peak' ID='hessi_flare.count_sec_peak'  datatype='int' units='' />
+<FIELD name='total_count' ID='hessi_flare.total_count'  datatype='int' units='' />
+<FIELD name='energy_kev' ID='hessi_flare.energy_kev'  datatype='int' units='' />
+<FIELD name='flare_number' ID='hessi_flare.flare_number'  datatype='int' units='' />
+<DATA>
+<TABLEDATA>
+<TR><TD>2450</TD><TD>2002-07-28 05:54:04</TD><TD>2002-07-28 05:56:18</TD><TD>2002-07-28 06:00:52</TD><TD>0</TD><TD>72</TD><TD>-376</TD><TD>382</TD><TD>408</TD><TD>46</TD><TD>45326</TD><TD>12</TD><TD>2072805</TD></TR>
+</TABLEDATA>
+</DATA>
+</TABLES>
+</RESOURCE>
+</VOTABLE>

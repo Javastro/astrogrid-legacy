@@ -1,5 +1,5 @@
 /*
- * $Id: TraceWindow.java,v 1.1 2005/02/15 18:33:20 mch Exp $
+ * $Id: TraceWindow.java,v 1.2 2005/05/27 16:21:17 clq2 Exp $
  */
 
 package org.astrogrid.io.trace;
@@ -371,8 +371,8 @@ public class TraceWindow extends JFrame {
          //    System.out.println("Trouble deleting first line(s) of trace window");
       } /**/
       
-      ivjByteArea.append("" + AsciiCodes.CR + AsciiCodes.LF);
-      ivjTextArea.append("" + AsciiCodes.CR + AsciiCodes.LF);
+      ivjByteArea.append("\n");
+      ivjTextArea.append("\n");
       
    }
    /**
@@ -403,6 +403,12 @@ public class TraceWindow extends JFrame {
 }
 /*
  * $Log: TraceWindow.java,v $
+ * Revision 1.2  2005/05/27 16:21:17  clq2
+ * mchv_1
+ *
+ * Revision 1.1.20.1  2005/04/21 17:09:03  mch
+ * incorporated homespace etc into URLs
+ *
  * Revision 1.1  2005/02/15 18:33:20  mch
  * multiproject-ed
  *

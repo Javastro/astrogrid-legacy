@@ -1,5 +1,5 @@
 /*
- * $Id: FallbackTargets.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: FallbackTargets.java,v 1.2 2005/05/27 16:21:01 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -31,18 +31,18 @@ public class FallbackTargets implements TargetIdentifier  {
    }
 
    /** Returns an OutputStreamWrapper around the resolved stream */
-   public Writer resolveWriter(Principal user) throws IOException {
-      return new OutputStreamWriter(resolveOutputStream(user));
+   public Writer openWriter() throws IOException {
+      return new OutputStreamWriter(openOutputStream());
    }
 
-   public OutputStream resolveOutputStream(Principal user) throws IOException {
+   public OutputStream openOutputStream() throws IOException {
       if (validTarget != null) {
          try {
-            return validTarget.resolveOutputStream(user);
+            return validTarget.openOutputStream();
          } catch (IOException ioe) {
             //didn't work - try again from the beginning
             validTarget = null;
-            return resolveOutputStream(user);
+            return openOutputStream();
          }
       }
       else {
@@ -52,7 +52,7 @@ public class FallbackTargets implements TargetIdentifier  {
          String errors = "";
          while ((t<targets.length) && (out == null)) {
             try {
-               out = targets[t].resolveOutputStream(user);
+               out = targets[t].openOutputStream();
             }
             catch (IOException ioe) {
                errors = errors + ioe.getMessage()+" connecting to "+targets[t]+", ";
@@ -77,14 +77,20 @@ public class FallbackTargets implements TargetIdentifier  {
    public boolean isForwardable() { return false; }
    
    /** Used to set the mime type of the data about to be sent to the target. Does nothing. */
-   public void setMimeType(String mimeType, Principal user) throws IOException {
+   public void setMimeType(String mimeType) throws IOException {
       if (validTarget != null) {
-         validTarget.setMimeType(mimeType, user);
+         validTarget.setMimeType(mimeType);
       }
    }
 }
 /*
  $Log: FallbackTargets.java,v $
+ Revision 1.2  2005/05/27 16:21:01  clq2
+ mchv_1
+
+ Revision 1.1.20.1  2005/04/21 17:09:03  mch
+ incorporated homespace etc into URLs
+
  Revision 1.1  2005/02/14 20:47:38  mch
  Split into API and webapp
 

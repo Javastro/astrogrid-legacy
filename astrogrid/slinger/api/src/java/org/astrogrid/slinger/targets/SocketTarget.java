@@ -1,5 +1,5 @@
 /*
- * $Id: SocketTarget.java,v 1.1 2005/03/28 01:48:09 mch Exp $
+ * $Id: SocketTarget.java,v 1.2 2005/05/27 16:21:01 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,12 +29,12 @@ public class SocketTarget implements TargetIdentifier {
    }
 
    /** opens output stream to the URL */
-   public OutputStream resolveOutputStream(Principal user) throws IOException {
+   public OutputStream openOutputStream() throws IOException {
       return socket.getOutputStream();
    }
 
    /** Used to set the mime type of the data about to be sent to the target. . */
-   public void setMimeType(String mimeType, Principal user) throws IOException {
+   public void setMimeType(String mimeType) throws IOException {
    }
 
    public String toString() {
@@ -42,14 +42,20 @@ public class SocketTarget implements TargetIdentifier {
    }
 
    /** Resolves writer as a wrapper around resolved outputstream */
-   public Writer resolveWriter(Principal user) throws IOException {
-      return new OutputStreamWriter(resolveOutputStream(user));
+   public Writer openWriter() throws IOException {
+      return new OutputStreamWriter(openOutputStream());
    }
    
    
 }
 /*
  $Log: SocketTarget.java,v $
+ Revision 1.2  2005/05/27 16:21:01  clq2
+ mchv_1
+
+ Revision 1.1.10.1  2005/04/21 17:09:03  mch
+ incorporated homespace etc into URLs
+
  Revision 1.1  2005/03/28 01:48:09  mch
  Added socket source/target, and makeFile instead of outputChild
 

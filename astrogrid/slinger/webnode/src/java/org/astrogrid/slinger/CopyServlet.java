@@ -4,21 +4,21 @@ package org.astrogrid.slinger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.Principal;
 import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.account.LoginAccount;
-import org.astrogrid.io.piper.PiperProgressListener;
+import org.astrogrid.io.account.LoginAccount;
+import org.astrogrid.io.mime.MimeTypes;
+import org.astrogrid.io.piper.DefaultPipeListener;
+import org.astrogrid.io.piper.PipeListener;
 import org.astrogrid.io.piper.StreamPiper;
-import org.astrogrid.slinger.mime.MimeTypes;
 import org.astrogrid.slinger.sources.SourceIdentifier;
-import org.astrogrid.slinger.sources.SourceMaker;
+import org.astrogrid.slinger.sourcetargets.UrlSourceTarget;
 import org.astrogrid.slinger.targets.TargetIdentifier;
-import org.astrogrid.slinger.targets.TargetMaker;
 
 /**
  * A servlet that takes source and target URIs and pipes them, sending status
@@ -54,49 +54,41 @@ public class CopyServlet extends HttpServlet
          response.sendError(response.SC_BAD_REQUEST, "TargetUri or SourceUri empty");
       }
       
-      try
-      {
-         response.setContentType(MimeTypes.PLAINTEXT);
+      response.setContentType(MimeTypes.PLAINTEXT);
 
-         Date start = new Date();
-         
-         SourceIdentifier source = SourceMaker.makeSource(sourceUri);
-         response.getWriter().write("Source: "+source+"\n");
-         
-         TargetIdentifier target = TargetMaker.makeTarget(targetUri);
-         response.getWriter().write("Target: "+target+"\n");
+      Date start = new Date();
+      
+      SourceIdentifier source = new UrlSourceTarget(new URL(sourceUri));
+      response.getWriter().write("Source: "+source+"\n");
+      
+      TargetIdentifier target = new UrlSourceTarget(new URL(targetUri));
+      response.getWriter().write("Target: "+target+"\n");
 
-         Principal user = getUser(request);
-         response.getWriter().write("User: "+user.getName()+"\n");
+      Principal user = getUser(request);
+      response.getWriter().write("User: "+user.getName()+"\n");
 
-         StreamPiper piper = new StreamPiper();
-         response.getWriter().write("Piping, please wait (each dot is "+piper.getBlockSize()+" bytes)\n");
+      StreamPiper piper = new StreamPiper();
+      response.getWriter().write("Piping, please wait (each dot is "+piper.getBlockSize()+" bytes)\n");
 
-         InputStream in = source.resolveInputStream(user);
-         OutputStream out = target.resolveOutputStream(user);
+      InputStream in = source.openInputStream();
+      OutputStream out = target.openOutputStream();
 
-         PiperProgressListener listener = new PiperProgressListener() {
-            public void blockPiped(long bytes) {
-               try {
-                  response.getWriter().write(".");
-               }
-               catch (IOException e) { /* ignore - if there's a problem here it's too late */ }
+      PipeListener listener = new DefaultPipeListener() {
+         public void blockPiped(long bytes) {
+            try {
+               response.getWriter().write(".");
             }
-            public void pipeComplete() {
-            }
-         };
+            catch (IOException e) { /* ignore - if there's a problem here it's too late */ }
+         }
+      };
+      
+      piper.pipe(in, out, listener);
+      
+      in.close();
+      out.close();
+      response.getWriter().write("\nDone in "+(new Date().getTime() - start.getTime())+"s");
+      response.getWriter().flush();
          
-         piper.pipe(in, out, listener);
-         
-         in.close();
-         out.close();
-         response.getWriter().write("\nDone in "+(new Date().getTime() - start.getTime())+"s");
-         response.getWriter().flush();
-         
-      }
-      catch (URISyntaxException e) {
-         throw new ServletException(e+", SourceUri="+sourceUri+", TargetUri="+targetUri, e);
-      }
    }
 }
 

@@ -1,0 +1,165 @@
+<project>
+    <extend>${basedir}/../../maven-base/project.xml</extend>
+    <artifactId>astrogrid-slinger</artifactId>
+    <currentVersion>${astrogrid.slinger.version}</currentVersion>
+    <name>Astrogrid Slinger Standalone</name>
+    <description>
+    This project takes the Slinger API and all the libraries that it dependends
+    on and repackages it as a single jar so that it can be used as a
+    standalone application and as a single include for other applications.
+    </description>
+    <shortDescription>Slinger API and dependent packages in standalone jar</shortDescription>
+    <dependencies>
+
+        <dependency>
+            <artifactId>astrogrid-slinger-api</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.slinger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>maven-plugins</groupId>
+            <artifactId>maven-javaapp-plugin</artifactId>
+            <version>1.3</version>
+            <type>plugin</type>
+        </dependency>
+
+        <!-- need common for the old User and Ivorns for FileManager -->
+        <dependency>
+            <artifactId>astrogrid-common</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.common.version}</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>astrogrid-config</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.config.stable}</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>astrogrid-utils</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.utils.stable}</version>
+        </dependency>
+
+
+      <!-- Astrogrid fileManager client -->
+       <dependency>
+            <artifactId>astrogrid-filemanager-client</artifactId>
+            <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filemanager.version}</version>
+       </dependency>
+      
+       <dependency>
+            <artifactId>astrogrid-filemanager-contract</artifactId>
+            <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filemanager.version}</version>
+       </dependency>
+
+       <dependency>
+            <artifactId>astrogrid-filestore-client</artifactId>
+            <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filestore.version}</version>
+       </dependency>
+
+       <dependency>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filestore.version}</version>
+       </dependency>
+
+       <!-- JavaMail for TargetIndicators -->
+       <dependency>
+         <id>JavaMail</id>
+         <version>UNKNOWN</version>
+         <jar>JavaMail.jar</jar>
+       </dependency>
+
+
+       <!-- for resolving -->
+       <dependency>
+          <artifactId>astrogrid-registry-client-lite</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.registry.version}</version>
+       </dependency>
+
+       <dependency>
+         <artifactId>astrogrid-registry-common</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.registry.version}</version>
+       </dependency>
+    
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+             <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+           <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+
+        <dependency>
+            <artifactId>commons-collections</artifactId>
+            <groupId>commons-collections</groupId>
+            <version>3.0</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>commons-discovery</artifactId>
+            <groupId>commons-discovery</groupId>
+            <version>20030211.213356</version>
+        </dependency>
+
+
+         <!-- for logging -->
+        <dependency>
+            <artifactId>log4j</artifactId>
+            <groupId>log4j</groupId>
+            <version>1.2.4</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
+        </dependency>
+
+       <!-- axis, for myspace client -->
+       <dependency>
+         <id>axis</id>
+         <version>1.1</version>
+       </dependency>
+       <dependency>
+         <id>jaxrpc-api</id>
+         <version>1.0.3</version>
+       </dependency>
+       <dependency>
+         <id>jax-qname</id>
+         <version>UNKNOWN</version>
+         <jar>jax-qname.jar</jar>
+       </dependency>
+
+       <dependency>
+         <id>saaj</id>
+         <version>UNKNOWN</version>
+         <jar>saaj.jar</jar>
+       </dependency>
+
+
+    </dependencies>
+</project>

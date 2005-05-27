@@ -1,5 +1,5 @@
 /*
- * $Id: StreamPiper.java,v 1.4 2005/04/03 22:29:15 mch Exp $
+ * $Id: StreamPiper.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -10,8 +10,6 @@
 
 package org.astrogrid.io.piper;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -50,9 +48,12 @@ public class StreamPiper
     * Reads all the bytes from the given input stream
     * and sends them to the given output stream.  Remember that it is much
     * more efficient to use Buffered streams.  The PiperListener, if given,
-    * is called when a blocksize number of bytes are piped.
+    * is called each time a blocksize number of bytes are piped.
+    * <p>Note that this routine does not close either stream.
+    * <p>Note also that if you have a wrapping stream (eg BufferedStream) you may
+    * need to call that stream's flush method
     */
-   public void pipe(InputStream in, OutputStream out, PiperProgressListener listener) throws IOException
+   public void pipe(InputStream in, OutputStream out, PipeListener listener) throws IOException
    {
       byte[] block = new byte[blockSize];
       int total = 0;
@@ -67,11 +68,12 @@ public class StreamPiper
             listener.blockPiped(total);
          }
       }
+      out.flush();
    }
 
 
    /** Spawns a thread that pipes the two streams - ie an asynchronous pipe */
-   public static StreamPiper spawnPipe(final InputStream in, final OutputStream out, final SpawnedPiperListener listener, int blockSize) {
+   public static StreamPiper spawnPipe(final InputStream in, final OutputStream out, final PipeListener listener, int blockSize) {
       
       final StreamPiper piper = new StreamPiper(blockSize);
       
@@ -81,26 +83,21 @@ public class StreamPiper
                try {
                   piper.pipe(in, out, listener);
                }
-               catch (IOException ioe) {
-                  if (listener != null) {
-                     listener.ioException(ioe);
-                  }
-               }
                catch (Throwable th) {
                   if (listener != null) {
-                     listener.throwable(th);
+                     listener.thrown(th);
                   }
                }
                finally {
                   try {
                      in.close();
                   } catch (IOException e) {
-                     listener.ioException(e);
+                     listener.thrown(e);
                   }
                   try {
                      out.close();
                   } catch (IOException e) {
-                     listener.ioException(e);
+                     listener.thrown(e);
                   }
                }
                listener.pipeComplete();
@@ -117,9 +114,15 @@ public class StreamPiper
 }
 
 /* $Log: StreamPiper.java,v $
- * Revision 1.4  2005/04/03 22:29:15  mch
- * check for null listener
+ * Revision 1.5  2005/05/27 16:21:02  clq2
+ * mchv_1
  *
+/* Revision 1.4.6.1  2005/04/21 17:09:03  mch
+/* incorporated homespace etc into URLs
+/*
+/* Revision 1.4  2005/04/03 22:29:15  mch
+/* check for null listener
+/*
 /* Revision 1.3  2005/04/01 01:29:54  mch
 /* Extended pipe listeners, and added new extensions for guessing mime types
 /*

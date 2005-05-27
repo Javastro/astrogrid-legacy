@@ -1,20 +1,19 @@
 /*
- * $Id: TableMetaDocRenderer.java,v 1.4 2005/03/30 15:52:15 mch Exp $
+ * $Id: TableMetaDocRenderer.java,v 1.5 2005/05/27 16:21:13 clq2 Exp $
  */
 package org.astrogrid.tableserver.metadata;
 
 import java.io.IOException;
+import org.astrogrid.dataservice.metadata.MetadataException;
+import org.astrogrid.dataservice.service.DataServer;
+import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableInfo;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
-import org.astrogrid.dataservice.service.DataServer;
-import org.astrogrid.dataservice.service.ServletHelper;
-import org.astrogrid.ucd.UcdDictionary;
+import org.astrogrid.ucd.Ucd1Dictionary;
+import org.astrogrid.ucd.Ucd1PlusDictionary;
 import org.astrogrid.units.UnitDictionary;
-import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.astrogrid.dataservice.metadata.MetadataException;
 
 
 /**
@@ -63,8 +62,8 @@ public class TableMetaDocRenderer {
                   "<th><a href='"+ UnitDictionary.UNIT_REF+"'>Units</a></th>"+
                   "<th>Dim Eq</th>"+
                   "<th>Scale</th>"+
-                  "<th><a href='"+ UcdDictionary.UCD1REF+"'>UCD1</a></th>"+
-                  "<th><a href='"+ UcdDictionary.UCD1PREF+"'>UCD1+</a></th>"+
+                  "<th><a href='"+ Ucd1Dictionary.REF+"'>UCD1</a></th>"+
+                  "<th><a href='"+ Ucd1PlusDictionary.REF+"'>UCD1+</a></th>"+
                   "<th>Error</th>"+
                   "<th>Description</th>"+
                   "<th>Links</th>"+

@@ -5,7 +5,7 @@
        org.astrogrid.io.*,
        org.apache.commons.logging.LogFactory,
        java.security.Principal,
-       org.astrogrid.account.LoginAccount,
+       org.astrogrid.io.account.LoginAccount,
        org.astrogrid.status.*,
        org.astrogrid.dataservice.queriers.status.*,
        org.astrogrid.dataservice.service.*"

@@ -1,5 +1,5 @@
 /*
- * $Id: TableResults.java,v 1.8 2005/03/31 15:06:16 mch Exp $
+ * $Id: TableResults.java,v 1.9 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,10 +19,8 @@ import org.astrogrid.dataservice.queriers.status.QuerierProcessingResults;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.slinger.SRI;
+import org.astrogrid.slinger.sourcetargets.UrlSourceTarget;
 import org.astrogrid.slinger.targets.TargetIdentifier;
-import org.astrogrid.slinger.vospace.HomespaceName;
-import org.astrogrid.slinger.vospace.IVOSRN;
 import org.astrogrid.tableserver.out.FilteredTableWriter;
 import org.astrogrid.tableserver.out.HtmlTableWriter;
 import org.astrogrid.tableserver.out.TableWriter;
@@ -140,24 +138,11 @@ public abstract class TableResults implements QueryResults
       
       String s = "Results sent as table ("+format+") to ";
 
-      if (returns.getTarget() instanceof SRI) {
-         s =s+"<a href='ViewFile?"+((SRI) target).toURI()+"'>"+target+"</a>";
+      if (target instanceof UrlSourceTarget) {
+         s =s+"<a href='ViewFile?"+((UrlSourceTarget) target).toURI()+"'>"+target+"</a>";
       }
       else {
          s =s+target;
-      }
-      //show resolving down
-      if (target instanceof IVOSRN) {
-         s = s + " -> "+((IVOSRN) target).resolve();
-      }
-      try {
-         if (target instanceof HomespaceName) {
-               s = s + " -> "+( (HomespaceName) target).resolveIvosrn();
-               s = s + " -> "+((HomespaceName) target).toLocation(user);
-         }
-      }
-      catch (Exception e) {
-         log.error(e+" resolving "+target+" for adding to status ",e);
       }
 
       status.addDetail(s);

@@ -1,5 +1,5 @@
 /*
- * $Id: UnitDictionary.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+ * $Id: UnitDictionary.java,v 1.3 2005/05/27 16:21:15 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Used to access/use UCDs
+ * Used to lookup units and their meanings.  Just a place-holder at the moment.
  * <p>
  * @author M Hill
  */

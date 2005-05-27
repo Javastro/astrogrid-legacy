@@ -3,7 +3,7 @@
 <%@ page import="java.io.*,
        org.w3c.dom.*,
        org.astrogrid.io.*,
-       org.astrogrid.ucd.UcdDictionary,
+       org.astrogrid.ucd.Ucd1Dictionary,
        org.astrogrid.units.UnitDictionary,
        org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator,
        org.astrogrid.dataservice.metadata.*,

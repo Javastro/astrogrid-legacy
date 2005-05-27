@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.6 2005/03/31 09:43:09 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.7 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,15 +17,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.account.LoginAccount;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.dataservice.queriers.TableResults;
+import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.NullTarget;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.tableserver.jdbc.JdbcConnections;
 import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
 import org.astrogrid.tableserver.out.VoTableWriter;
@@ -80,7 +80,7 @@ public class SampleStarsPluginTest extends TestCase {
       QuerierManager manager = QuerierManager.getManager("DummyTest");
 
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, TargetMaker.makeTarget(sw), ReturnTable.VOTABLE), this);
+      Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new WriterTarget(sw), ReturnTable.VOTABLE), this);
       manager.askQuerier(q);
       String results = sw.toString();
       Document resultsDom = DomHelper.newDocument(sw.toString());

@@ -1,14 +1,14 @@
 /*
- * $Id: ReturnTable.java,v 1.3 2005/03/30 21:51:25 mch Exp $
+ * $Id: ReturnTable.java,v 1.4 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.query.returns;
 
+import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.query.condition.Expression;
 import org.astrogrid.query.condition.NumericExpression;
-import org.astrogrid.slinger.mime.MimeTypes;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 
 
@@ -107,6 +107,12 @@ public class ReturnTable  extends ReturnSpec {
 }
 /*
  $Log: ReturnTable.java,v $
+ Revision 1.4  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.3.10.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.3  2005/03/30 21:51:25  mch
  Fix to return Votable fits list for url list
 

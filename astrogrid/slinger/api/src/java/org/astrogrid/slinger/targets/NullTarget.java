@@ -1,5 +1,5 @@
 /*
- * $Id: NullTarget.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: NullTarget.java,v 1.2 2005/05/27 16:21:01 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.security.Principal;
-import org.astrogrid.slinger.SRI;
 import org.astrogrid.io.NullOutputStream;
 
 /**
@@ -20,7 +18,7 @@ import org.astrogrid.io.NullOutputStream;
  *
  */
 
-public class NullTarget implements SRI, TargetIdentifier
+public class NullTarget implements TargetIdentifier
 {
    
    public static final String NULL_TARGET_URI = "target:NullOut";
@@ -35,21 +33,27 @@ public class NullTarget implements SRI, TargetIdentifier
 
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
-   public OutputStream resolveOutputStream(Principal user)  {
+   public OutputStream openOutputStream()  {
       return new NullOutputStream();
    }
    
    /** Resolves writer as a wrapper around resolved outputstream */
-   public Writer resolveWriter(Principal user) throws IOException {
-      return new OutputStreamWriter(resolveOutputStream(user));
+   public Writer openWriter() throws IOException {
+      return new OutputStreamWriter(openOutputStream());
    }
    
    /** Used to set the mime type of the data about to be sent to the target. Does nothing. */
-   public void setMimeType(String mimeType, Principal user) {
+   public void setMimeType(String mimeType) {
    }
 }
 /*
  $Log: NullTarget.java,v $
+ Revision 1.2  2005/05/27 16:21:01  clq2
+ mchv_1
+
+ Revision 1.1.20.1  2005/04/21 17:09:03  mch
+ incorporated homespace etc into URLs
+
  Revision 1.1  2005/02/14 20:47:38  mch
  Split into API and webapp
 

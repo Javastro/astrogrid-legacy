@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.8 2005/03/29 15:15:39 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.9 2005/05/27 16:21:02 clq2 Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -22,7 +22,7 @@
 
     <dependencies>
 
-        <!-- need common for the old User and Ivorns -->
+        <!-- need common for the old User and Ivorns for FileManager -->
         <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>org.astrogrid</groupId>
@@ -41,26 +41,6 @@
             <version>${astrogrid.utils.stable}</version>
         </dependency>
 
-       <!-- axis, for myspace client -->
-       <dependency>
-         <id>axis</id>
-         <version>1.1</version>
-       </dependency>
-       <dependency>
-         <id>jaxrpc-api</id>
-         <version>1.0.3</version>
-       </dependency>
-       <dependency>
-         <id>jax-qname</id>
-         <version>UNKNOWN</version>
-         <jar>jax-qname.jar</jar>
-       </dependency>
-
-       <dependency>
-         <id>saaj</id>
-         <version>UNKNOWN</version>
-         <jar>saaj.jar</jar>
-       </dependency>
 
       <!-- Astrogrid fileManager client -->
        <dependency>
@@ -95,7 +75,7 @@
        </dependency>
 
 
-       <!-- for VoSpaceResolver -->
+       <!-- for resolving -->
        <dependency>
           <artifactId>astrogrid-registry-client-lite</artifactId>
           <groupId>org.astrogrid</groupId>
@@ -162,11 +142,28 @@
        <dependency>
           <id>servletapi</id>
           <version>2.3</version>
-          <properties>
-            <uberjar.bundle>false</uberjar.bundle>
-          </properties>
        </dependency>
 
+       <!-- axis, for myspace client -->
+       <dependency>
+         <id>axis</id>
+         <version>1.1</version>
+       </dependency>
+       <dependency>
+         <id>jaxrpc-api</id>
+         <version>1.0.3</version>
+       </dependency>
+       <dependency>
+         <id>jax-qname</id>
+         <version>UNKNOWN</version>
+         <jar>jax-qname.jar</jar>
+       </dependency>
+
+       <dependency>
+         <id>saaj</id>
+         <version>UNKNOWN</version>
+         <jar>saaj.jar</jar>
+       </dependency>
     </dependencies>
 
 </project>

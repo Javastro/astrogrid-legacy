@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.3 2005/03/22 12:57:37 mch Exp $
+ * $Id: AxisDataService_v06.java,v 1.4 2005/05/27 16:21:16 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.dataservice.service.soap;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 import javax.xml.rpc.server.ServiceLifecycle;
@@ -20,7 +21,8 @@ import org.astrogrid.query.Query;
 import org.astrogrid.query.adql.Adql074Writer;
 import org.astrogrid.query.adql.AdqlQueryMaker;
 import org.astrogrid.query.sql.SqlParser;
-import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.status.DefaultTaskStatus;
 import org.astrogrid.status.ServiceStatus;
 import org.astrogrid.xml.DomHelper;
@@ -67,7 +69,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          StringWriter sw = new StringWriter();
          Query query = AdqlQueryMaker.makeQuery(adql);
          query.getResultsDef().setFormat(requestedFormat);
-         query.getResultsDef().setTarget(TargetMaker.makeTarget(sw));
+         query.getResultsDef().setTarget(new WriterTarget(sw));
          server.askQuery(server.getUser(), query, server.getSource()+" via AxisDataService06.askAdql");
          return sw.toString();
       }
@@ -91,7 +93,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          }
          Query query = AdqlQueryMaker.makeQuery(adql);
          query.getResultsDef().setFormat(requestedFormat);
-         query.getResultsDef().setTarget(TargetMaker.makeTarget(target));
+         query.getResultsDef().setTarget(URISourceTargetMaker.makeSourceTarget(target));
          server.askQuery(server.getUser(), query, server.getSource()+" via AxisDataService06.askAdql");
          return target.toString();
       }
@@ -155,7 +157,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
       try {
          Query query = AdqlQueryMaker.makeQuery(adql);
          query.getResultsDef().setFormat(requestedFormat);
-         query.getResultsDef().setTarget(TargetMaker.makeTarget(resultsTarget));
+         query.getResultsDef().setTarget(URISourceTargetMaker.makeSourceTarget(resultsTarget));
          return server.submitQuery(server.getUser(), query, server.getSource()+" via AxisDataService06.submitAdql");
       }
       catch (MalformedURLException mue) {
@@ -258,6 +260,15 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
 /*
 $Log: AxisDataService_v06.java,v $
+Revision 1.4  2005/05/27 16:21:16  clq2
+mchv_1
+
+Revision 1.3.16.2  2005/05/13 16:56:31  mch
+'some changes'
+
+Revision 1.3.16.1  2005/04/21 17:20:51  mch
+Fixes to output types
+
 Revision 1.3  2005/03/22 12:57:37  mch
 naughty bunch of changes
 

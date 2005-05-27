@@ -1,5 +1,5 @@
 /*
- * $Id: StilStarTableWriter.java,v 1.3 2005/03/30 19:01:08 mch Exp $
+ * $Id: StilStarTableWriter.java,v 1.4 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,7 @@ package org.astrogrid.tableserver.out;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Vector;
-import org.astrogrid.slinger.mime.MimeNames;
+import org.astrogrid.io.mime.MimeNames;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import uk.ac.starlink.table.AbstractStarTable;
 import uk.ac.starlink.table.RowSequence;
@@ -42,6 +42,10 @@ public class StilStarTableWriter extends AbstractStarTable implements TableWrite
    public StilStarTableWriter(StarTableWriter writer, OutputStream target) throws IOException {
       starWriter = writer;
       this.out = target;
+   }
+   
+   /** Opens writer = does nothing */
+   public void open() {
    }
    
    /** Closes writer - does nothing
@@ -184,6 +188,15 @@ public class StilStarTableWriter extends AbstractStarTable implements TableWrite
 
 /*
  $Log: StilStarTableWriter.java,v $
+ Revision 1.4  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.3.10.2  2005/05/13 16:56:32  mch
+ 'some changes'
+
+ Revision 1.3.10.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.3  2005/03/30 19:01:08  mch
  fixes to results format
 

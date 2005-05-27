@@ -15,7 +15,7 @@
   <div class='xleft'>(PAL) Sky Catalogue Service</div>
   <div class='xright'>
     <a href='http://www.astrogrid.org'>AstroGrid</a>
-    | <!-- need to import servlet helper everywhere <a href='<%= ServletHelper.getUrlStem() %>'> <%= DataServer.getDatacenterName() %> </a> -->
+    | <a href='<%= org.astrogrid.dataservice.service.ServletHelper.getUrlStem() %>'> <%= org.astrogrid.dataservice.service.DataServer.getDatacenterName() %> </a>
     | <a href='http://www.astrogrid.org/maven/docs/HEAD/pal/index.html'>Latest PAL</a>
   </div>
   <div class='clear'></div> <!-- switch off left right stuff -->

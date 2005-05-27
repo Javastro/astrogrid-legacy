@@ -1,4 +1,4 @@
-/*$Id: IndexGeneratorTest.java,v 1.13 2005/03/22 22:47:29 KevinBenson Exp $
+/*$Id: IndexGeneratorTest.java,v 1.14 2005/05/27 16:21:08 clq2 Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -25,7 +25,7 @@ import org.astrogrid.datacenter.fits.FitsTestSupport;
 import org.astrogrid.fitsserver.setup.IndexGenerator;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.fitsserver.fits.FitsQuerierPlugin;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import java.io.File;
@@ -156,6 +156,12 @@ public class IndexGeneratorTest extends TestCase
 
 /*
  $Log: IndexGeneratorTest.java,v $
+ Revision 1.14  2005/05/27 16:21:08  clq2
+ mchv_1
+
+ Revision 1.13.14.1  2005/05/13 10:13:45  mch
+ 'some fixes'
+
  Revision 1.13  2005/03/22 22:47:29  KevinBenson
  changed back to commonconfig stuff.
 

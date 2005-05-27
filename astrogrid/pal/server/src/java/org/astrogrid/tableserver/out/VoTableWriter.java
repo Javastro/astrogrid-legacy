@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.4 2005/03/30 21:51:25 mch Exp $
+ * $Id: VoTableWriter.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,9 @@ import java.io.Writer;
 import java.security.Principal;
 import java.util.Date;
 import org.apache.commons.logging.Log;
-import org.astrogrid.slinger.mime.MimeTypes;
+import org.astrogrid.dataservice.metadata.StdDataTypes;
+import org.astrogrid.dataservice.metadata.VoTypes;
+import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 
@@ -36,34 +38,23 @@ public class VoTableWriter implements TableWriter {
    
    protected ColumnInfo[] cols = null;
    
-   public final static String TYPE_LONG      = "long";
-   public final static String TYPE_BOOLEAN   = "boolean";
-   public final static String TYPE_BIT       = "bit";
-   public final static String TYPE_UBYTE     = "unsignedByte";
-   public final static String TYPE_CHAR      = "char";
-   public final static String TYPE_UNICHAR   = "unicodeChar";
-   public final static String TYPE_DOUBLE    = "double";
-   public final static String TYPE_FLOAT     = "float";
-   public final static String TYPE_DOUBLECOMPLEX = "doubleComplex";
-   public final static String TYPE_FLOATCOMPLEX  = "floatComplex";
-   public final static String TYPE_INT       = "int";
-   public final static String TYPE_SHORT     = "short";
-   
-   public final static String[] TYPES = new String[] {
-      TYPE_LONG, TYPE_BOOLEAN, TYPE_BIT, TYPE_UBYTE, TYPE_CHAR, TYPE_UNICHAR, TYPE_DOUBLE, TYPE_FLOAT, TYPE_DOUBLECOMPLEX, TYPE_FLOATCOMPLEX, TYPE_INT, TYPE_SHORT
-   };
-   
    /**
-    * Construct this wrapping the given stream.  Writes out the first few tags
+    * Construct this wrapping the given stream.
     */
    public VoTableWriter(TargetIdentifier target, String title, Principal user) throws IOException {
       
-      target.setMimeType(MimeTypes.VOTABLE, user);
+      target.setMimeType(MimeTypes.VOTABLE);
       
-      printOut = new PrintWriter(new BufferedWriter(target.resolveWriter(user)));
-      
-//         printOut.println("<!DOCTYPE VOTABLE SYSTEM 'http://us-vo.org/xml/VOTable.dtd'>");
-         printOut.println("<VOTABLE version='1.0'>");
+      printOut = new PrintWriter(new BufferedWriter(target.openWriter()));
+   }
+   
+   public void open() {
+      printOut.println("<?xml version='1.0' encoding='UTF-8'?>");
+      printOut.println("<VOTABLE xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  "
+                        +"xmlns='http://www.ivoa.net/xml/VOTable/v1.1'  "
+                        +"xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://www.ivoa.net/xml/VOTable/VOTable-1.1.xsd'  "
+                        +"version='1.1'"
+                        +">");
          
          /* don't know where to find this info - in the netadata I expect
           <DEFINITIONS>
@@ -89,76 +80,38 @@ public class VoTableWriter implements TableWriter {
       return MimeTypes.VOTABLE;
    }
    
-   /**Returns the VOTable type for the given java class type */
-   public static String getVoTableType(Class javatype) {
-      if (javatype == String.class) {        return TYPE_CHAR;    }
-      else if (javatype == Integer.class) {  return TYPE_INT;     }
-      else if (javatype == Long.class)    {  return TYPE_INT;    }
-      else if (javatype == Float.class)   {  return TYPE_FLOAT;   }
-      else if (javatype == Double.class) {   return TYPE_FLOAT;  }
-      else if (javatype == Boolean.class) {  return TYPE_BOOLEAN;    }
-      else if (javatype == Date.class)    {  return TYPE_FLOAT;    }
-      else {
-         log.error("Don't know what VOtable type the java class "+javatype+" maps to, returning string");
-         return TYPE_CHAR;
-      }
-   }
-   
    
    /** Start body - writes out header and preps col array */
-   public void startTable(ColumnInfo[] cols) throws IOException {
+   public void startTable(ColumnInfo[] colinfo) throws IOException {
+      
+      this.cols = colinfo;
       
       printOut.println("<TABLE>");
          
       for (int i = 0; i < cols.length; i++) {
-         if (cols[i] == null) {
-            throw new IllegalArgumentException("No information for column "+i);
-         }
-      
-         printOut.print("<FIELD name='"+cols[i].getName()+"' ");
-         if (cols[i].getId() != null) printOut.print("ID='"+cols[i].getId()+"' ");
-         if (cols[i].getUcd("1") != null) printOut.print(" ucd='"+cols[i].getUcd("1")+"' ");
+         if (cols[i] != null) { // null columns if it's not been found in the metadoc
          
-         //type
-         if (cols[i].getPublicType() != null) {
-            //do some checking on data types
-            String type = null;
-            for (int t = 0; t < TYPES.length; t++)
-            {
-               if (cols[i].getPublicType().equals(TYPES[t])) {
-                  type = TYPES[t]; //found a match
-               }
-            }
-            if (type == null) {
-               //nothign found, try converting from common types
-               if (cols[i].getPublicType().toLowerCase().equals("real")) {
-                  type = TYPE_FLOAT;
-               }
-               else if (cols[i].getPublicType().toLowerCase().equals("smallint")) {
-                  type = TYPE_INT;
-               }
-               else if (cols[i].getPublicType().toLowerCase().equals("varchar")) {
-                  type = TYPE_CHAR;
-               }
-            }
-         
-            if (type==null) {
-               type = getVoTableType(cols[i].getJavaType());
-            }
+            printOut.print("<FIELD name='"+cols[i].getName()+"' ");
+            if (cols[i].getId() != null) printOut.print("ID='"+cols[i].getId()+"' ");
+            if (cols[i].getUcd("1") != null) printOut.print(" ucd='"+cols[i].getUcd("1")+"' ");
             
-            if (type != null) {
-               printOut.print(" datatype='"+type+"'");
+            //Create the votable type attributes from the metadoc type. Convert using java class as the medium
+            if (cols[i].getPublicType() != null) {
+               Class colType = StdDataTypes.getJavaType(cols[i].getPublicType());
+               printOut.print(VoTypes.getVoTableTypeAttributes(colType));
             }
+   
+            //units
+            if (cols[i].getJavaType() == Date.class) {
+               printOut.print(" unit='s' ");
+            }
+            else {
+               if ((cols[i].getUnits() != null) && (cols[i].getUnits().toString().trim().length()>0)) {
+                  printOut.print(" unit='"+cols[i].getUnits()+"' ");
+               }
+            }
+            printOut.println("/>");
          }
-
-         //units
-         if (cols[i].getJavaType() == Date.class) {
-            printOut.print(" units='s' ");
-         }
-         else {
-            if (cols[i].getUnits() != null) printOut.print(" units='"+cols[i].getUnits()+"' ");
-         }
-         printOut.println("/>");
       }
 
       printOut.flush(); //so something comes back to the browser quickly
@@ -174,11 +127,13 @@ public class VoTableWriter implements TableWriter {
       
       printOut.print("<TR>");
       for (int i=0;i<colValues.length;i++) {
-         if (colValues[i] instanceof Date) {
-            printOut.print("<TD>"+ (float) (((Date) colValues[i]).getTime()/1000) +"</TD>");
-         }
-         else {
-            printOut.print("<TD>"+colValues[i]+"</TD>");
+         if (cols[i] != null) { //skip columns with no metadata
+            if (colValues[i] instanceof Date) {
+               printOut.print("<TD>"+ (float) (((Date) colValues[i]).getTime()/1000) +"</TD>");
+            }
+            else {
+               printOut.print("<TD>"+colValues[i]+"</TD>");
+            }
          }
       }
       printOut.println("</TR>");
@@ -220,6 +175,18 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.5  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.4.10.3  2005/05/13 16:56:32  mch
+ 'some changes'
+
+ Revision 1.4.10.2  2005/04/28 17:14:49  mch
+ fix to not add 'unit' if unit is empty
+
+ Revision 1.4.10.1  2005/04/21 17:20:51  mch
+ Fixes to output types
+
  Revision 1.4  2005/03/30 21:51:25  mch
  Fix to return Votable fits list for url list
 

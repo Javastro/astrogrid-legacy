@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+/*$Id: DatacenterApplicationDescriptionTest.java,v 1.3 2005/05/27 16:21:03 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,7 +61,7 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
     
     public void testMetadata() throws ParameterNotInInterfaceException {
         ApplicationInterface[] ifaces = appDesc.getInterfaces();
-        assertEquals("Unexpected number of interfaces",2,ifaces.length);
+        assertEquals("Unexpected number of interfaces (cone search may be disabled) ",2,ifaces.length);
         for (int i = 0; i < ifaces.length; i++) {
             ApplicationInterface iface = ifaces[i];
             // minimum for all interfaces.
@@ -75,6 +75,12 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
 
 /*
 $Log: DatacenterApplicationDescriptionTest.java,v $
+Revision 1.3  2005/05/27 16:21:03  clq2
+mchv_1
+
+Revision 1.2.24.1  2005/05/03 19:35:01  mch
+fixes to tests
+
 Revision 1.2  2005/02/28 18:47:05  mch
 More compile fixes
 

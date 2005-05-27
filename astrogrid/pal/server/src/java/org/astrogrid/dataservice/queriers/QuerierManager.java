@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: QuerierManager.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,10 +16,9 @@ import java.util.Hashtable;
 import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.status.QuerierQueued;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
-import org.astrogrid.dataservice.queriers.status.StatusLogger;
-import org.astrogrid.status.TaskStatus;
 
 /** Manages the construction and initialization of Queriers, and maintains a
  * collection of current Queriers. It might run queues or something... later...
@@ -61,7 +60,7 @@ public class QuerierManager implements QuerierListener {
    private Hashtable closedQueriers = new Hashtable();
 
    /** Maximum number of simultaneous queriers allowed */
-   private int maxQueriers = 20;
+   private int maxQueriers = 5;
    
    /** Special ID used to create a test querier for testing getStatus,. etc */
    public final static String TEST_QUERIER_ID = "TestQuerier:";
@@ -133,6 +132,9 @@ public class QuerierManager implements QuerierListener {
    /** Constructor. Protected because we want to force people to use the factory method   */
    protected QuerierManager(String givenId) {
       this.managerId = givenId;
+      
+      maxQueriers = ConfigFactory.getCommonConfig().getInt("datacenter.max.queries",4);
+      
    }
    
    /** Factory method - checks to see if the givenId already exists and returns that if so */
@@ -344,8 +346,14 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/05/27 16:21:02  clq2
+ mchv_1
+
+ Revision 1.1.1.1.24.1  2005/05/13 16:56:29  mch
+ 'some changes'
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

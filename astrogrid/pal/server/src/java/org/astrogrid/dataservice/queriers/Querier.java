@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.4 2005/03/29 16:34:04 mch Exp $
+ * $Id: Querier.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,7 +16,6 @@ import org.apache.commons.logging.Log;
 import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.query.Query;
 import org.astrogrid.slinger.Slinger;
-import org.astrogrid.slinger.StoreException;
 
 /**
  * Represents a single running query.
@@ -115,12 +114,7 @@ public class Querier implements Runnable, PluginListener {
       
       if (query.getResultsDef() != null) //some things like askCount have no results definition
       {
-         try {
-            Slinger.testConnection(query.getTarget(), user);
-         }
-         catch (IOException ioe) {
-            throw new StoreException("Unreachable Target '"+query.getTarget()+"': "+ioe.getMessage(),ioe);
-         }
+         Slinger.testConnection(query.getTarget()); //throws IOException if fails
       }
 
       

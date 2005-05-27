@@ -1,5 +1,5 @@
 /*
- * $Id: StdSqlWriter.java,v 1.7 2005/04/01 10:33:52 mch Exp $
+ * $Id: StdSqlWriter.java,v 1.8 2005/05/27 16:21:04 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,9 +15,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigException;
 import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
-import org.astrogrid.dataservice.metadata.queryable.QueryableResourceReader;
 import org.astrogrid.dataservice.metadata.queryable.SearchField;
 import org.astrogrid.dataservice.metadata.queryable.SearchGroup;
+import org.astrogrid.geom.Angle;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryVisitor;
 import org.astrogrid.query.adql.Adql074Writer;
@@ -25,7 +25,8 @@ import org.astrogrid.query.adql.AdqlXml074Parser;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.sql.SqlParser;
-import org.astrogrid.geom.Angle;
+import org.astrogrid.tableserver.metadata.TableInfo;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.units.Units;
 import org.xml.sax.SAXException;
 
@@ -66,10 +67,7 @@ public class StdSqlWriter implements QueryVisitor {
       visitLimit(query.getLocalLimit());
       
       //-- FROM ---
-      if (query.getScope() != null) {
-         
-         visitScope(query.getScope());
-      }
+      visitScope(query.getScope());
 
       //-- WHERE --
       if (query.getCriteria() != null) {
@@ -95,7 +93,23 @@ public class StdSqlWriter implements QueryVisitor {
 
       current = from;
 
-      // we just duplicate alias names as table names for now
+      //if there is no scope given, we default to all the tables in the database
+      if ((scope == null) || (scope.length==0)) {
+         try {
+            TableMetaDocInterpreter interpreter = new TableMetaDocInterpreter();
+            TableInfo[] tables = interpreter.getTables(interpreter.getCatalogs()[0]);
+            scope = new String[tables.length];
+            for (int i = 0; i < tables.length; i++) {
+               scope[i] = tables[i].getName();
+            }
+         }
+         catch (IOException ioe) {
+            log.error(ioe+" loading metadoc", ioe);
+            throw new RuntimeException(ioe);
+         }
+      }
+      
+      // list out the table names.  We don't use aliases as this stage - use table names in the query
       for (int i = 0; i < scope.length; i++) {
       /*
          String alias = scope[i];
@@ -273,24 +287,39 @@ public class StdSqlWriter implements QueryVisitor {
 
       ConeConfigQueryableResource queryable = new ConeConfigQueryableResource();
 
+      String[] circleScope = query.getScope();
+      
+      //if no scope has been given, it's a 'blanket' cone search, so we set the
+      //scope to all the spatial group table names.
+      if ((circleScope == null) || (circleScope.length == 0)) {
+         SearchGroup[] tables = queryable.getSpatialGroups();
+         String[] names = new String[tables.length];
+         for (int i = 0; i < tables.length; i++) {
+            names[i] = tables[i].getName();
+         }
+         circleScope = names;
+      }
+      
       //go through spatial groups checking against scope looking to see if any of them have any spatial fields
       SearchGroup[] tables = queryable.getSpatialGroups();
       boolean spatialFound = false; //marker that we've found at least one to search on
       for (int i = 0; i < tables.length; i++)
       {
-         //is this table in scope?
-         for (int j = 0; j < query.getScope().length; j++)
+         //scope given, so look through only those for the ones that may be spatial
+         for (int j = 0; j < circleScope.length; j++)
          {
-            if (tables[i].getId().equals(query.getScope()[j])) {
-               if (spatialFound) { //a previous one was found, so add an OR to search this one too
-                  current.append(" OR ");
-               }
-               spatialFound = true; // found one
+            if (tables[i].getId().equals(circleScope[j])) {
                SearchField[] cols = queryable.getSpatialFields(tables[i]);
-
-               //assume, for the moment, that we get two columns, the first is RA and the
-               //second is DEC
-               current.append(makeSqlCircleCondition(cols[0], cols[1], ra, dec, radius));
+               if (cols != null) {
+                  if (spatialFound) { //a previous one was found, so add an OR to search this one too
+                     current.append(" OR ");
+                  }
+                  spatialFound = true; // found one
+   
+                  //assume, for the moment, that we get two columns, the first is RA and the
+                  //second is DEC
+                  current.append(makeSqlCircleCondition(cols[0], cols[1], ra, dec, radius));
+               }
             }
          }
       }
@@ -317,15 +346,14 @@ public class StdSqlWriter implements QueryVisitor {
       //'haversine' distance formulae.  The correct one to use...
       if (funcsInRads) {
          return
-            /* @todo - note that the (float) typecasts are for postgres that can't cope with subtracting double precisions from single */
             makeSqlBoundsCondition(raCol, decCol, ra, dec, radius) + " AND "+
             "("+
             "(2 * ASIN( SQRT( "+
             //surround dec with extra brackets in order to cope with negative decs
-            "POWER( SIN( ("+decColRad+" - ("+ (float) dec.asRadians()+") ) / 2 ) ,2) + "+
+            "POWER( SIN( ("+decColRad+" - ("+ dec.asRadians()+") ) / 2 ) ,2) + "+
             "COS("+dec.asRadians()+") * COS("+decColRad+") * "+
-            "POWER( SIN( ("+raColRad+" - "+(float) ra.asRadians()+") / 2 ), 2) "+
-            "))) < "+(float) radius.asRadians()+
+            "POWER( SIN( ("+raColRad+" - "+ ra.asRadians()+") / 2 ), 2) "+
+            "))) < "+radius.asRadians()+
             ")";
       }
       else {
@@ -456,6 +484,15 @@ public class StdSqlWriter implements QueryVisitor {
 
 /*
  $Log: StdSqlWriter.java,v $
+ Revision 1.8  2005/05/27 16:21:04  clq2
+ mchv_1
+
+ Revision 1.7.6.2  2005/05/04 10:24:33  mch
+ fixes to tests
+
+ Revision 1.7.6.1  2005/04/29 16:55:47  mch
+ prep for type-fix for postgres
+
  Revision 1.7  2005/04/01 10:33:52  mch
  more temporary fixes for postgres
 

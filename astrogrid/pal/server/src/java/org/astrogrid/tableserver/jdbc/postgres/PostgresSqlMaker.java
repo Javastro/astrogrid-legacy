@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+/*$Id: PostgresSqlMaker.java,v 1.2 2005/05/27 16:21:06 clq2 Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,9 @@
 package org.astrogrid.tableserver.jdbc.postgres;
 
 import java.io.IOException;
-import org.astrogrid.tableserver.jdbc.StdSqlMaker;
 import org.astrogrid.query.Query;
+import org.astrogrid.tableserver.jdbc.CountSqlWriter;
+import org.astrogrid.tableserver.jdbc.StdSqlMaker;
 
 /**
  * Produced Postgres-specific SQL.  This means:
@@ -26,34 +27,40 @@ import org.astrogrid.query.Query;
 public class PostgresSqlMaker extends StdSqlMaker {
 
    /**
-    * Constructs an SQL statement for the given ADQL.
+    * Constructs an SQL statement for the given ADQL document by getting the
+    * (super) ADQL/sql and replacing the region
     */
    public String makeSql(Query query) throws IOException {
       
-      String stdSql = super.makeSql(query);
+      PostgresSqlWriter sqlMaker = new PostgresSqlWriter();
+      query.acceptVisitor(sqlMaker);
       
-      String postgresSql = stdSql.replaceAll("<>","&&");
-      
-      return postgresSql;
-   }
-
-   /**
-    * Constructs an SQL statement for the given ADQL.
-    */
-   public String makeCountSql(Query query) throws IOException {
-      
-      String stdSql = super.makeCountSql(query);
-      
-      String postgresSql = stdSql.replaceAll("<>","&&");
-      
-      return postgresSql;
+      return sqlMaker.getSql();
    }
    
+   /**
+    * Constructs an SQL count statement for the given Query.
+    */
+   public String makeCountSql(Query query) throws IOException {
+
+      PostgresCountSqlWriter countWriter = new PostgresCountSqlWriter();
+      query.acceptVisitor(countWriter);
+      return countWriter.getSql();
+   }
 }
 
 
 /*
 $Log: PostgresSqlMaker.java,v $
+Revision 1.2  2005/05/27 16:21:06  clq2
+mchv_1
+
+Revision 1.1.24.2  2005/05/13 16:56:32  mch
+'some changes'
+
+Revision 1.1.24.1  2005/04/29 16:55:47  mch
+prep for type-fix for postgres
+
 Revision 1.1  2005/03/10 16:42:55  mch
 Split fits, sql and xdb
 
