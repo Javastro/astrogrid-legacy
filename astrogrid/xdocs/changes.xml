@@ -4,6 +4,12 @@
     <author email="jdt@roe.ac.uk">John Taylor</author>
   </properties>
   <body>
+  <release version="(Pending Integration)">
+  	<action dev="gtr" type="add" issue="1208">
+  	  <b>astrogrid/applications</b> Branch <em>cea-gtr-1208</em>. Enhancements to the JSPs for test-running an 
+  	  application that support indirect input parameters.
+  	</action>
+  </release>
   <release version="(In progress)">  
         <action dev="jdt" type="fix" issue="1182">
             <b>astrogrid/</b> Changes to all Installers to ensure they work offline.            
