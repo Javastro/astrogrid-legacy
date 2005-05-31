@@ -5,6 +5,9 @@
   </properties>
   <body>
   <release version="(Pending Integration)">
+  	<action dev="pjn" type="fix" issue="1193">
+  	  Branch <em>portalWF_1193_pjn</em> Fix for orig. bug #942 which has been over-written at some point since Feb.
+  	</action>
   	<action dev="gtr" type="add" issue="1208">
   	  <b>astrogrid/applications</b> Branch <em>cea-gtr-1208</em>. Enhancements to the JSPs for test-running an 
   	  application that support indirect input parameters.
