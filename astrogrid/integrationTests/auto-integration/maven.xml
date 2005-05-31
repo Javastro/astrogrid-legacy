@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.147 2005/05/23 21:51:50 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.148 2005/05/31 11:44:30 clq2 Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -1298,6 +1298,9 @@
                         <include name="astrogrid-*.xml"/>
                 </fileset>
                 <fileset dir="${tomcat.location}/logs" >
+                        <include name="*"/>
+                </fileset>
+				<fileset dir="./tmp" >
                         <include name="*"/>
                 </fileset>
         </delete>
