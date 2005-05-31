@@ -4,30 +4,27 @@
     <author email="jdt@roe.ac.uk">John Taylor</author>
   </properties>
   <body>
-  <release version="(Pending Integration)">
-  	<action dev="pjn" type="fix" issue="1193">
-  	  Branch <em>portalWF_1193_pjn</em> Fix for orig. bug #942 which has been over-written at some point since Feb.
-  	</action>
-  	<action dev="gtr" type="add" issue="1208">
-  	  <b>astrogrid/applications</b> Branch <em>cea-gtr-1208</em>. Enhancements to the JSPs for test-running an 
-  	  application that support indirect input parameters.
-  	</action>
-  </release>
-  <release version="(In progress)">  
-        <action dev="jdt" type="fix" issue="1182">
-            <b>astrogrid/</b> Changes to all Installers to ensure they work offline.            
-        </action>       
-  </release>
+ 
   <release version="(Pending Integration)">  
         <action dev="jdt" type="fix" issue="1177"> <b>astrogrid/filestore</b>, <b>astrogrid/filemanager</b>and <b>astrogrid/integrationTests</b> 
             <em>aginab_jdt_1177</em> Plumbed the FileStore and FileManager installers into AGINAB. The GUI installers and AGINAB now use the same script for
             deployment, which has got to be a good thing. 
             </action>
+			<action dev="gtr" type="add" issue="1208">
+  	  <b>astrogrid/applications</b> Branch <em>cea-gtr-1208</em>. Enhancements to the JSPs for test-running an 
+  	  application that support indirect input parameters.
+  	</action>
+  </release>
+   <release version="(In progress)">  
+        <action dev="jdt" type="fix" issue="1182">
+            <b>astrogrid/</b> Changes to all Installers to ensure they work offline.            
+        </action>       
   </release>
   <release version="(Undertest)">  	
-	    <action dev="mch" type="fix" > 
-            <b>MCH-v1</b> v1.0 release for datacenter, slinger and xml projects. (awaiting for root tag from Martin)
-        </action> 	
+	    <action dev="pjn" type="fix" issue="1193">
+  	  Branch <em>portalWF_1193_pjn</em> Fix for orig. bug #942 which has been over-written at some point since Feb.
+  	   </action>
+	     	
 		<action dev="jdt" type="fix" issue="1180"> 
             <b>astrogrid/applications</b> and <b>astrogrid/integrationTests</b> <em>cea_jdt_1180</em> Minor bug fixes to installer and build. Also fixes bug 
             1182 (for CEA only).
@@ -39,6 +36,9 @@
    </release>
     
   <release version="HEAD">
+	    <action dev="mch" type="fix" > 
+            <b>MCH-v1</b> v1.0 release for datacenter, slinger and xml projects. (awaiting for root tag from Martin)
+        </action>
 	    <action dev="kmb" type="fix" > 
             Doc_Template_KMB_May112005 - docs template for astrogrid/registry
         </action> 
