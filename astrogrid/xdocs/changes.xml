@@ -6,6 +6,10 @@
   <body>
  
   <release version="(Pending Integration)">  
+    <action dev="pjn3" type="fix" issue="1200">
+  	  <b>astrogrid/workflow + portal resources</b> Branch <em>portalRE_pjn_1200 + workflow_pjn_1200</em>
+  	  Only active tasks returned from registry in both workflow builder and resource browser. 
+  	</action>
         <action dev="jdt" type="fix" issue="1177"> <b>astrogrid/filestore</b>, <b>astrogrid/filemanager</b>and <b>astrogrid/integrationTests</b> 
             <em>aginab_jdt_1177</em> Plumbed the FileStore and FileManager installers into AGINAB. The GUI installers and AGINAB now use the same script for
             deployment, which has got to be a good thing. 
