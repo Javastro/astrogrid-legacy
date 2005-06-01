@@ -4,7 +4,11 @@
     <author email="jdt@roe.ac.uk">John Taylor</author>
   </properties>
   <body>
- 
+    <!--release version="(In progress)">  
+        <action dev="jdt" type="fix" issue="1182">
+            <b>astrogrid/</b> Changes to all Installers to ensure they work offline.            
+        </action>       
+  </release-->
   <release version="(Pending Integration)">  
     <action dev="pjn3" type="fix" issue="1200">
   	  <b>astrogrid/workflow + portal resources</b> Branch <em>portalRE_pjn_1200 + workflow_pjn_1200</em>
@@ -19,11 +23,7 @@
   	  application that support indirect input parameters.
   	</action>
   </release>
-   <release version="(In progress)">  
-        <action dev="jdt" type="fix" issue="1182">
-            <b>astrogrid/</b> Changes to all Installers to ensure they work offline.            
-        </action>       
-  </release>
+
   <release version="(Undertest)">  	
 	    <action dev="pjn" type="fix" issue="1193">
   	  Branch <em>portalWF_1193_pjn</em> Fix for orig. bug #942 which has been over-written at some point since Feb.
