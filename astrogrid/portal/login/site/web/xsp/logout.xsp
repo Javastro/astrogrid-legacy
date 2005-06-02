@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:id>$Id: logout.xsp,v 1.5 2004/11/22 13:56:11 clq2 Exp $</cvs:id>
-    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:id>$Id: logout.xsp,v 1.6 2005/06/02 11:24:34 kea Exp $</cvs:id>
+    | <cvs:author>$Author: kea $</cvs:author>
     |
     +-->
 <xsp:page language="java" 
@@ -17,7 +17,7 @@
 </content>
 <xsp-session:invalidate/>
 <script language="javascript">
-top.location = "/astrogrid-portal";
+top.location = "/astrogrid-portal/";
 </script>
 </page>
 
@@ -25,6 +25,10 @@ top.location = "/astrogrid-portal";
 <!--+
     | <cvs:log>
     |   $Log: logout.xsp,v $
+    |   Revision 1.6  2005/06/02 11:24:34  kea
+    |   Added trailing "/" to portal logout redirect URL, so that it functions
+    |   properly when used in conjunction with apache proxying.
+    |
     |   Revision 1.5  2004/11/22 13:56:11  clq2
     |   pfo_portalLogin_718
     |
