@@ -1,4 +1,4 @@
-/*$Id: CommunityStress.java,v 1.2 2005/05/09 15:10:07 clq2 Exp $
+/*$Id: CommunityStress.java,v 1.3 2005/06/02 21:13:32 pah Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.registry.stress;
+package org.astrogrid.community.stress;
 
 import org.astrogrid.registry.RegistryException;
 
