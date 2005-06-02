@@ -72,7 +72,7 @@
 			</item-->
             <!--leave me for now-->
         </menu>
-        <menu name="Astrogrid Components">
+        <menu name="Software Documentation">
             <item name="AstroGrid Components" href="/server.html" collapse="true">
                 <item name="Common Execution Architecture (CEA)" href="applications/index.html"/>
                 <item name="eXist" href="eXist/index.html"/>
