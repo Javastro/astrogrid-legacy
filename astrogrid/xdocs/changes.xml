@@ -10,11 +10,12 @@
         </action>       
   </release-->
   <release version="(Pending Integration)">  
-	<action dev="nww" type="add" issue="1111(again)">
-		<b>desktop-nww-1111</b> and <b>workflow-nww-1111</b> - added Applications component to ACR, and Applications Launcher Proglet.
-		This branch has already been merged into head once - hope merging it again doesn't cause trouble .
-	</action>
-    <action dev="pjn3" type="add" issue="1218">
+	
+    
+  </release>
+
+  <release version="(Undertest)">  
+	    <action dev="pjn3" type="add" issue="1218">
   	  <b>portal_pjn_1218</b> - Astrogrid status added to homepage plus ability to take portal 'out of action'
   	</action>
     <action dev="pjn3" type="fix" issue="1200">
@@ -28,10 +29,11 @@
 			<action dev="gtr" type="add" issue="1208">
   	  <b>astrogrid/applications</b> Branch <em>cea-gtr-1208</em>. Enhancements to the JSPs for test-running an 
   	  application that support indirect input parameters.
-  	</action>
-  </release>
-
-  <release version="(Undertest)">  	
+  	</action>	
+	    <action dev="nww" type="add" issue="1111(again)">
+		<b>desktop-nww-1111</b> and <b>workflow-nww-1111</b> - added Applications component to ACR, and Applications Launcher Proglet.
+		This branch has already been merged into head once - hope merging it again doesn't cause trouble .
+	   </action>
 	    <action dev="pjn" type="fix" issue="1193">
   	  Branch <em>portalWF_1193_pjn</em> Fix for orig. bug #942 which has been over-written at some point since Feb.
   	   </action>
