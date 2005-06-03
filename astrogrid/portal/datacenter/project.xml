@@ -43,7 +43,7 @@
             </properties>
         </dependency>   
         
-        
+    <!-- pal-sky jar has been removed by Martin, the classes within the jar is not avaliable anymore    
     <dependency>
          <artifactId>astrogrid-pal-sky</artifactId>
          <groupId>org.astrogrid</groupId>
@@ -52,6 +52,7 @@
                 <war.bundle>true</war.bundle>
             </properties>              
       </dependency>
+	  -->
 
       <dependency>
          <artifactId>astrogrid-pal-units</artifactId>
