@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>AstroGrid Portal</title>
+        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+    </properties>
+    <body>
+        <section name="AstroGrid Portal">
+
+            <p> 
+							<img align="right" src="../images/portal-login.png" />
+The portal is a web interface to astrogrid services.
+			<ul>
+			<li><a href="http://wiki.astrogrid.org/bin/view/Astrogrid/UsingAGV1" >Overview</a></li>
+			<li><a href="http://wiki.astrogrid.org/bin/view/Astrogrid/PortalUsage">Userguide</a></li>
+			<li><a href="http://wiki.astrogrid.org/bin/view/Astrogrid/usingAG1">Tips</a></li>
+			<li><a href="http://wiki.astrogrid.org/bin/view/Astrogrid/AstroGridPortals">Available Portals</a></li>		
+			</ul>
+				</p>
+						<br clear="right" />				
+        </section>
+        
+    </body>
+</document>

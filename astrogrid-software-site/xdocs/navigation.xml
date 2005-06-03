@@ -1,75 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="AstroGrid">
-	<title>AstroGrid Project</title>
-	<body>
-		<links>
-			<item name="Overview" href="/index.html"/>
-			<item name="Users" href="/userdocs/index.html"/>
-			<item name="Developers" href="/developerdocs/index.html"/>
-			<item name="Releases" href="http://www.astrogrid.org/maven/build"/>
-		</links>
-		<menu name="Overview">
-			<item name="Introduction" href="/index.html"/>
-			<item name="Latest news" href="http://news.astrogrid.org/"/>
-			<item name="FAQ" href="/faq.html"/>
-            <item name="Getting an account" href="http://wiki.astrogrid.org/bin/view/Astrogrid/BetaTesting"/>
-			<item name="Contacts" href="/team-list.html"/>
-			<item name="Reporting Bugs" href="/issue-tracking.html"/>
-			<item name="About this documentation" href="/about.html"/>
-			<item name="Broken Links" href="mailto:jdt@roe.ac.uk"/>            
-		</menu>
-        <menu name="Download">
-            <item name="Releases" href="/downloaddocs/releases.html" collapse="true"> 
-            <!--item name="Itn07 Snapshot" href="http://www.astrogrid.org/maven/docs/SNAPSHOT/"/-->
-            <item name="Head" href="http://www.astrogrid.org/maven/docs/HEAD/"/>
-			<item name="V1.1 Release" href="http://www.astrogrid.org/maven/docs/1.1/"/>
-			<item name="V1.0 Release" href="http://www.astrogrid.org/maven/docs/1.0/"/>
-			<item name="Itn10 Release" href="http://www.astrogrid.org/maven/docs/0.10.0/"/>
-            <item name="Itn08 Release" href="http://www.astrogrid.org/maven/docs/0.8.0/"/>
-            <item name="Itn07 Release" href="http://www.astrogrid.org/maven/docs/0.7.0/"/>
-            <item name="Itn06 Release" href="http://www.astrogrid.org/maven/docs/0.6.0/"/>
-            <item name="Itn05 Release" href="http://www.astrogrid.org/maven/docs/Itn05_release/"/>
-            <item name="Itn04_1" href="http://www.astrogrid.org/maven/docs/Itn04_1_release/"/>
-            <item name="Itn04" href="http://wiki.astrogrid.org/bin/view/Astrogrid/SoftwareRelease"/>
-            </item>
-		</menu>
-        <menu name="Grid Status">
-            <item name="Deployed sites" href="http://wiki.astrogrid.org/bin/view/Deploy/DeployedComponents" /> 
-            <item name="Site status" href="/monitor/status.xml"/>
-		</menu>        
-		<menu name="Client Applications">
-				<item name="Web Start" href="/jnlp/index.html"  />		
-				<item name="Client Development Kits" href="/cdk.html"  />						
-        </menu>
-		<menu name="Users and Installers">
-			<item name="Installing AstroGrid software" href="/userdocs/index.html" collapse="true">
-				<item name="Download" href="/userdocs/download.html"/>
-				<item name="Installation" href="/userdocs/install.html"/>
-			</item>
-			<item name="Using AstroGrid software" href="/userdocs/use.html" collapse="true">
-				<item name="Userguide" href="/comingsoon.html"/>
-				<item name="Tutorials" href="/comingsoon.html"/>
-				<item name="Science Cases" href="http://wiki.astrogrid.org/bin/view/Astrogrid/ScienceProblems"/>	
-			</item>
-		</menu>
-		<menu name="Developers">
-			<item name="Information for Developers" href="/developerdocs/index.html" collapse="true">
-				<item name="Obtaining source code" href="/cvs-usage.html"/>
-      	<item name="Build AstroGrid from source" href="/developerdocs/buildingastrogrid.html"/>
-        <item name="Development Process" href="/developerdocs/developmentprocess.html" collapse="true"/>
-        <item name="Coding Standards" href="/developerdocs/standards.html"/>
-        <item name="XML schemata" href="/schema/index.html"/>
-		<item name="Other Tips" href="/tips/tips.html"/>
-        </item>
-        <!--item name="AstroGrid architecture" href="fillmein"/-->
-        <!--item name="Writing AstroGrid compatable software" href="/developerdocs/"/-->
-		<item name="How to change these docs" href="/about.html"/>
-		</menu>
-		<menu name="Further Information">
-			<item name="Main site" href="http://www.astrogrid.org"/>
-			<item name="Wiki" href="http://wiki.astrogrid.org"/>
-			<item name="Forum" href="http://forum.astrogrid.org"/>
-		</menu>
-        <search/>
-	</body>
+  <title>AstroGrid Project</title>
+
+  <body>
+    <links>
+      <item name="Overview" href="/index.html" />
+
+      <item name="Users" href="/userdocs/index.html" />
+
+      <item name="Installers" href="/installdocs/index.html" />
+
+      <item name="Developers" href="/developerdocs/index.html" />
+
+      <item name="Releases" href="http://www.astrogrid.org/maven/build" />
+    </links>
+
+    <menu name="Overview">
+      <item name="Introduction" href="/index.html" />
+
+      <item name="FAQ" href="/faq.html" />
+
+      <item name="Contacts" href="/team-list.html" />
+
+      <item name="Reporting Bugs" href="/issue-tracking.html" />
+    </menu>
+
+    <menu name="Users">
+      <item name="Getting an account"
+      href="http://wiki.astrogrid.org/bin/view/Astrogrid/ReleaseV1Pages#Username_password_and_community" />
+
+      <item name="Accessing AstroGrid" href="/userdocs/use.html" collapse="true">
+        <item name="Portal (web)" href="/userdocs/portal.html" />
+
+        <item name="Workbench (GUI)" href="/userdocs/workbench.html" />
+        <item name="Other GUI Applications" href="/jnlp/other.html" />
+		<item name="Java Webstart Userguide" href="/jnlp/userguide.html" />
+      </item>
+
+      <item name="Userguide" href="http://wiki.astrogrid.org/bin/view/Astrogrid/PortalHelpPages"/>
+
+      <item name="Tutorials" collapse="true" href="comingsoon.html">
+		<item name="Movie Maker" href="http://wiki.astrogrid.org/bin/view/Astrogrid/MovieMaker" />
+		<item name="Redshift Maker" href="http://wiki.astrogrid.org/bin/view/Astrogrid/RedshiftMaker" />
+	</item>
+
+      <item name="Science Cases"
+      href="http://wiki.astrogrid.org/bin/view/Astrogrid/ScienceProblems" />
+    </menu>
+
+    <menu name="Installers">
+      <item name="Installing AstroGrid software" href="/userdocs/index.html"
+      collapse="true">
+        <item name="Download" href="/userdocs/download.html" />
+
+        <item name="Installation" href="/userdocs/install.html" />
+      </item>
+
+      <item name="Releases" href="/downloaddocs/releases.html" collapse="true">
+<!--item name="Itn07 Snapshot" href="http://www.astrogrid.org/maven/docs/SNAPSHOT/"/-->
+        <item name="Head" href="http://www.astrogrid.org/maven/docs/HEAD/" />
+
+        <item name="V1.1 Release"
+        href="http://www.astrogrid.org/maven/docs/1.1/" />
+
+        <item name="V1.0 Release"
+        href="http://www.astrogrid.org/maven/docs/1.0/" />
+
+        <item name="Itn10 Release"
+        href="http://www.astrogrid.org/maven/docs/0.10.0/" />
+
+        <item name="Itn08 Release"
+        href="http://www.astrogrid.org/maven/docs/0.8.0/" />
+
+        <item name="Itn07 Release"
+        href="http://www.astrogrid.org/maven/docs/0.7.0/" />
+
+        <item name="Itn06 Release"
+        href="http://www.astrogrid.org/maven/docs/0.6.0/" />
+
+        <item name="Itn05 Release"
+        href="http://www.astrogrid.org/maven/docs/Itn05_release/" />
+
+        <item name="Itn04_1"
+        href="http://www.astrogrid.org/maven/docs/Itn04_1_release/" />
+
+        <item name="Itn04"
+        href="http://wiki.astrogrid.org/bin/view/Astrogrid/SoftwareRelease" />
+      </item>
+    </menu>
+
+    <menu name="Developers">
+      <item name="Information for Developers" href="/developerdocs/index.html"
+      collapse="true">
+	  <item name="Astrogrid Client Runtime" href="/acr.html" />
+        <item name="Client Development Kits" href="/cdk.html" />
+        <item name="Obtaining source code" href="/cvs-usage.html" />
+
+        <item name="Build AstroGrid from source"
+        href="/developerdocs/buildingastrogrid.html" />
+
+        <item name="Development Process"
+        href="/developerdocs/developmentprocess.html" collapse="true" />
+
+        <item name="Coding Standards" href="/developerdocs/standards.html" />
+
+        <item name="XML schemata" href="/schema/index.html" />
+
+        <item name="Other Tips" href="/tips/tips.html" />
+      </item>
+
+<!--item name="AstroGrid architecture" href="fillmein"/-->
+<!--item name="Writing AstroGrid compatable software" href="/developerdocs/"/-->
+    </menu>
+
+    <menu name="Grid Status">
+      <item name="Deployed sites"
+      href="http://wiki.astrogrid.org/bin/view/Deploy/DeployedComponents" />
+
+      <item name="Site status" href="/monitor/status.xml" />
+    </menu>
+
+    <menu name="Further Information">
+      <item name="Main site" href="http://www.astrogrid.org" />
+
+      <item name="Latest news" href="http://news.astrogrid.org/" />
+
+      <item name="Wiki" href="http://wiki.astrogrid.org" />
+
+      <item name="Forum" href="http://forum.astrogrid.org" />
+    </menu>
+
+    <menu name="About this documentation">
+      <item name="Editing" href="/about.html" />
+
+      <item name="Broken Links" href="mailto:jdt@roe.ac.uk" />
+    </menu>
+
+    <search />
+  </body>
 </project>
+

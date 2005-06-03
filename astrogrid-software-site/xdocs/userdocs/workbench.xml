@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>AstroGrid Workbench</title>
+        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+    </properties>
+    <body>
+        <section name="AstroGrid Workbench">
+<p>
+	<img src="../images/workbench.png" align="right"/>
+	The Workbench is a desktop application that interacts with AstroGrid services. It provides 
+	<ul>
+		<li>a suite of utility applications for working with myspace, cea, workflow, etc</li>
+		<li>a simple API for calling AstroGrid services from scripts and other programs</li>
+	</ul>
+More information in the  <a href="http://wiki.astrogrid.org/bin/view/Astrogrid/AstrogridDesktop">Wiki Overview</a>
+and more user docs to come.
+</p>	
+		<p>The Workbench can be launched by clicking the links below.
+		<ul>
+			<li><a href="../jnlp/astrogrid-desktop/astrogrid-desktop.jnlp">Launch Application (Stable Version)</a></li>
+			<li><a href="../jnlp/beta/astrogrid-desktop/astrogrid-desktop.jnlp">Launch Application (Beta Version)</a></li>
+		</ul>			
+		The workbench is launched using Java WebStart technology 
+		- if you experience problems, see the <a href="../jnlp/userguide.html">Web Start Userguide</a>.		
+</p>
+<p>
+	The following sections illustrate some of the utility applications provided by the Workbench.
+</p>
+<br clear="right" />
+<subsection name="MySpace Browser">
+	<p>
+		<img src="../images/myspace-browser.png" align="right"/>		
+		The MySpace browser lets you see the contents of your MySpace store, copy, move &amp; delete files, 
+		and upload or download data to your MySpace.
+		</p>
+		<br clear="right" />
+	</subsection>
+<subsection name="CEA Application Launcher">
+	<p>
+		<img src="../images/app-launcher.png" align="right"/>
+		The Appliction launcher lets you browse a list of published remote applications and data sources, 
+		and then simply execute one by providing a few parameters.
+		</p>
+		<br clear="right" />		
+	</subsection>
+<subsection name="Job Monitor">
+	<p>
+		<img src="../images/jobmonitor.png" align="right"/>
+		Lets you monitor the progress of running workflows and remote applications. New workflows can
+		be submitted for execution, and the results of completed ones viewed and then deleted.
+		</p>
+		<br clear="right" />		
+	</subsection>	
+</section>
+        
+    </body>
+</document>
