@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+  <!--+
+      | Contains status message to be displayed on users homepage.
+      | Default status message will be displayed unless anounceMessage value contains
+      | text, in which case that message will be displayed.
+      +-->
+  <status>
+    <statusMessage value="There are presently no planned outages of the Astrogrid system" />
+    <announceMessage value="" />
+  </status>
+

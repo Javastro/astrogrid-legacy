@@ -100,7 +100,7 @@ public class DesignAction extends AbstractAction {
 
   /** Compile-time switch used to turn certain debugging statements on/off. 
     * Set this to false to eliminate these debugging statements within the byte code.*/
-  private static final boolean DEBUG_ENABLED = true;
+  private static final boolean DEBUG_ENABLED = false;
 
 	private static Logger logger = Logger.getLogger(DesignAction.class);
         
@@ -164,6 +164,7 @@ public class DesignAction extends AbstractAction {
 	    TOOL_LIST_PARAMETER = "tool-list",
 	    USER_TOOL_LIST_PARAMETER = "user-tool-list",
 	    TOOL_NAME_PARAMETER = "tool_name",
+	    ORIG_TOOL_NAME_PARAMETER = "orig_tool_name",
 		STEP_KEY_PARAMETER = "step-key",
         ERROR_MESSAGE_PARAMETER = "ErrorMessage",
         LOCATION_PARAMETER = "location",
@@ -832,7 +833,7 @@ public class DesignAction extends AbstractAction {
 			   throw new ConsistencyException() ;		   	
 		   }
 			
-			trace("Toolname: " + toolName) ;  
+             if ( TRACE_ENABLED ) trace("Toolname: " + toolName) ;  
 			// createToolFromDefaultInterface() if no interface present
 			if (toolName.indexOf("#") == -1)
 			{
@@ -2063,19 +2064,55 @@ public class DesignAction extends AbstractAction {
 				String stepName = request.getParameter( STEP_NAME_PARAMETER ) ;
 				String stepVar = request.getParameter( STEP_VAR_PARAMETER ) ;				
 				String stepDescription = request.getParameter( STEP_DESCRIPTION_PARAMETER ) ;
-                                
+				String origToolName = request.getParameter( ORIG_TOOL_NAME_PARAMETER ) ;
+				
 				if ( xpathKey == null) {
 					debug( "xpathKey is null" ) ;
 				}
-
-				step = locateStep( workflow, xpathKey ); 
-				step.setName( stepName );				
-				if (!(stepVar.length() <= 0 || stepVar == null)) // the resultVar must contain a valid string, it cannot be empty so do not set if no value present.
-				  step.setResultVar( stepVar ) ;
-				step.setDescription( stepDescription );
 				
-				tool = this.createTool( toolName ) ;
-				step.setTool( tool );
+				step = locateStep( workflow, xpathKey );				
+				
+                //	Only insert new tool if user has changed chosen tool, or if origToolName = null
+				if ( origToolName.equals(null) || origToolName.equalsIgnoreCase("null"))
+				{					
+					step.setName( stepName );				
+					if (!(stepVar.length() <= 0 || stepVar == null)) // the resultVar must contain a valid string, it cannot be empty so do not set if no value present.
+					  step.setResultVar( stepVar ) ;
+					step.setDescription( stepDescription );
+					
+					tool = this.createTool( toolName ) ;
+					step.setTool( tool );
+					String tempName = toolName ;
+					if (tempName.indexOf("#") != -1)
+						tempName = tempName.substring(0,tempName.indexOf("#")).trim() ;					
+				    session.setAttribute( ORIG_TOOL_NAME_PARAMETER, tempName ) ;				  
+				}
+				// if tool hasn't changed don't insert but update step details
+				else if( origToolName.equalsIgnoreCase( toolName ) ) 
+				{				
+				  step.setName( stepName ) ;
+				  if (!(stepVar.length() <= 0 || stepVar == null)) // the resultVar must contain a valid string, it cannot be empty so do not set if no value present.
+				    step.setResultVar( stepVar ) ;
+				  step.setDescription( stepDescription );
+				  String tempName = toolName ;
+				  if (tempName.indexOf("#") != -1)
+					tempName = tempName.substring(0,tempName.indexOf("#")).trim() ;
+				  session.setAttribute( ORIG_TOOL_NAME_PARAMETER, tempName ) ;
+				} 
+				else
+				// insert tool and update step details
+				{								
+				  tool = this.createTool( toolName ) ;			
+				  step.setTool( tool ) ;
+				  step.setName( stepName ) ;
+				  if (!(stepVar.length() <= 0 || stepVar == null)) // the resultVar must contain a valid string, it cannot be empty so do not set if no value present.
+				    step.setResultVar( stepVar ) ;
+				  step.setDescription( stepDescription );
+				  String tempName = toolName ;
+				  if (tempName.indexOf("#") != -1)
+					tempName = tempName.substring(0,tempName.indexOf("#")).trim() ;
+				  session.setAttribute( ORIG_TOOL_NAME_PARAMETER, tempName ) ;
+				} 
 				updateUserToolList( toolName );				
 				
 			}

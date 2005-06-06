@@ -1,0 +1,48 @@
+<html>
+  <!--+
+      | This page can be displayed if you need to make your portal unavailable, yet still 
+      | give a user access to other available portals. To use:
+      |  1) There is no need to stop Tomcat.
+      |  2) Alter the sitemap (astrogrid-portal/mount/login/sitemap.xmap) following
+      |     the instructions there (see: PORTAL TEMPORARILY UNAVAILABLE: start)
+      | The 'standard' Astrogrid welcome page will be displayed containing a list of links to other portals.
+      +-->
+	  <!--
+		| this page shoule be placed under tomcat/webapps/astrogrid-portal/mount/login, at the moment it's not, should look into it for the reason
+		| meantime I will merge it and do the copy now - Catherine
+		-->
+  <head>
+    <title>Astrogrid Portal Login</title>
+    <style type="text/css">
+      body {background: url("/astrogrid-portal/loginBackground.jpg");
+            background-repeat: no-repeat;
+            background-color: black;}
+    </style>
+  </head>
+  <body>
+    <table>
+      <tr height="120">
+        <td></td>
+      </tr>
+    </table>
+    <table border="0" style="background-color: transparent;">
+      <tr>
+        <td width="155"></td>
+        <td>
+          <table cellspacing="1" cellpadding="1" border="1" style="background-color: white;">       
+            <tr>
+              <td style="color: MidnightBlue">
+                <h2>Portal temporarily unavailable.</h2>
+              </td>
+            </tr>
+          <tr><td>This Astrogrid portal is currently unavailable, please use one of the following:</td></tr> 
+          <tr><td><a href="http://cadairidris.star.le.ac.uk:8080/astrogrid-portal/main/mount/login/login-form">Cadairidris</a>: portal located at Leicester.</td></tr>  
+          <tr><td><a href="http://cadairidris.star.le.ac.uk:8080/astrogrid-portal/main/mount/login/login-form">Cadairidris</a>: portal located at Leicester.</td></tr>
+          <tr><td><a href="http://cadairidris.star.le.ac.uk:8080/astrogrid-portal/main/mount/login/login-form">Cadairidris</a>: portal located at Leicester.</td></tr>
+          <tr><td><a href="http://cadairidris.star.le.ac.uk:8080/astrogrid-portal/main/mount/login/login-form">Cadairidris</a>: portal located at Leicester.</td></tr>
+        </table>
+      </td>
+    </tr>
+    </table>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--+
-    |  $Id: info.xsl,v 1.6 2004/12/07 16:26:04 clq2 Exp $
+    |  $Id: info.xsl,v 1.7 2005/06/06 14:20:45 clq2 Exp $
     |  Transforms pages which simply display a message
     |
     +-->
@@ -28,6 +28,21 @@
      </div>
      <xsl:apply-templates/>
   </xsl:template>
+  
+  <xsl:template match="status">
+    <div id="statusBoxContent">
+      <xsl:choose>
+        <xsl:when test="announceMessage/@value != ''">
+          <xsl:value-of select="anounceMessage/@value"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="statusMessage/@value"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </div>
+    <xsl:apply-templates/>
+  </xsl:template>
+ 
 
   <xsl:template match="@*|node()">
 	<xsl:copy>
@@ -41,6 +56,16 @@
 		
 <!--+
     | $Log: info.xsl,v $
+    | Revision 1.7  2005/06/06 14:20:45  clq2
+    | portal_pjn_1218 and
+    | portalWF_1193_pjn
+    |
+    | Revision 1.6.94.2  2005/06/03 09:48:51  pjn3
+    | spelling error!
+    |
+    | Revision 1.6.94.1  2005/06/02 11:47:07  pjn3
+    | Status message added
+    |
     | Revision 1.6  2004/12/07 16:26:04  clq2
     | portal_kea_719
     |

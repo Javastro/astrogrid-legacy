@@ -2,29 +2,25 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xsp/login-pass.xsp,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/05/12 16:07:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.19 $</cvs:version>
+    | <cvs:date>$Date: 2005/06/06 14:20:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.20 $</cvs:version>
     |
     +-->
-<xsp:page language="java"
+  <xsp:page language="java"
         create-session="true"
         xmlns:xsp="http://apache.org/xsp"
+        xmlns:util="http://apache.org/xsp/util/2.0"
         xmlns:xsp-session="http://apache.org/xsp/session/2.0"
         xmlns:xsp-request="http://apache.org/xsp/request/2.0"
         >
-
-
  
     <!--+
         |	The page content element.
         |	You have succesfully logged in. <BR/>
         +-->
 
-        <page>
-	<!--
-<xsp-session:set-attribute name="user"><xsp:expr><xsp-request:get-attribute name="user"/></xsp:expr></xsp-session:set-attribute>
--->
-<xsp:logic>
+    <page>
+      <xsp:logic>
         String profile, uzi, user;
         int     lastSlash, length;
 
@@ -38,274 +34,225 @@
                 lastSlash++;
         }
         uzi = (String) user.substring(lastSlash, length);
-<xsp-session:set-attribute name="uzer"><xsp:expr>uzi</xsp:expr></xsp-session:set-attribute>
-</xsp:logic>
+      <xsp-session:set-attribute name="uzer"><xsp:expr>uzi</xsp:expr></xsp-session:set-attribute>
+    </xsp:logic>
 
-<agComponentTitle>Welcome to AstroGrid: <xsp:expr>uzi</xsp:expr> </agComponentTitle>
-<!-- , <xsp:expr><xsp-request:get-attribute name="user"/></xsp:expr> -->
+    <agComponentTitle>Welcome to AstroGrid: <xsp:expr>uzi</xsp:expr> </agComponentTitle>
+      <content>
+        <script language="javascript">
+          function toggle(yo, was){
+	        var what = document.getElementById(was);
 
-            <content>
-<script language="javascript">
-function toggle(yo, was){
-	var what = document.getElementById(was);
+	        if(what.style.display == ""){
+		      what.style.display = "none";
+	        } else {
+		      what.style.display = "";
+	        }
+	        nofooter();
+          }
+        </script>
+        <table class="agSmaller" width="95%" cellspacing="4" cellpadding="4" border="0">
+          <tr valign="top">
+            <td width="280px" >
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+              
+                <!-- ASTROGRID HELP -->
+                <tr><td>
+                  <div class="boxedLayout">
+                    <h1>Help</h1>
+                    <table border="0" cellpadding="3">
+                      <tr>
+                        <td valign="top">
+                          <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/UsingScienceServices','HELPW')" class="strongLink">Science Services</a>
+                        </td><td valign="top">
+                          <span class="frontPageText">
+                            How to use the Redshift Maker and Solar Movie Maker.
+                         </span>
+                       </td></tr>
+                       <tr>
+                         <td valign="top">
+                           <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalUsage','HELPW')" class="strongLink">Portal Usage</a>
+                         </td>
+                         <td valign="top">
+                           <span class="frontPageText">
+                             Help on building queries and workflows.
+                           </span>
+                         </td>
+                       </tr>
+                       <tr>
+                         <td valign="top">
+                           <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalCookBook','HELPW')" class="strongLink">Cook-book</a>
+                         </td>
+                         <td valign="top">
+                           <span class="frontPageText">
+                             Examples and tutorials.
+                           </span>
+                         </td>
+                       </tr>
+                     </table>
 
-	if(what.style.display == ""){
-		what.style.display = "none";
-	} else {
-		what.style.display = "";
-	}
-	nofooter();
-}
-</script>
-<table class="agSmaller" width="95%" cellspacing="4" cellpadding="4" border="0">
-<tr valign="top">
-<td width="280px" >
-<table width="100%" cellpadding="0" cellspacing="0" border="0">
-<tr><td>
+                   <div class="boxedLayoutFoot">
+                     <table border="0" cellpadding="2">
+                       <tr>
+                         <td>
+                           <agHint id="test">
+                             See? We can put any text to guide you in these boxes.<p />
+                             Click the button again to close this box.
+                           </agHint>
+                         </td>
+                         <td>
+                           <span class="frontPageText">
+                             <em>Click on buttons like this for context-related help.</em>
+                           </span>
+                         </td>
+                       </tr>
+                     </table>
+                   </div>
+                 </div>
 
-<div class="boxedLayout">
-<h1>Help</h1>
-<!--
-  <span class="agCompositeTitle">Help:</span>
-  <a href="javascript:newWindow('/astrogrid-portal/bare/mount/help/faq.hlp','HELPW')" class="agCompositeTitle">FAQ</a>
-  <span class="agCompositeTitle">-</span>
-  <a
-  href="javascript:newWindow('/astrogrid-portal/bare/mount/help/cookbook.hlp','HELPW')" class="agCompositeTitle">CookBook</a>
-  <span class="agCompositeTitle">-</span>
-  <a
-  href="javascript:newWindow('/astrogrid-portal/bare/mount/help/howTo.hlp','HELPW')" class="agCompositeTitle">How-to</a>
-  <break />
--->
-  <table border="0" cellpadding="3">
-  <tr><td valign="top">
-  <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/UsingScienceServices','HELPW')" class="strongLink">Science Services</a>
-  </td><td valign="top">
-  <span class="frontPageText">
-  How to use the Redshift Maker and Solar Movie Maker.
-  </span>
-  </td></tr>
-  <tr><td valign="top">
-  <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalUsage','HELPW')" class="strongLink">Portal Usage</a>
-  </td><td valign="top">
-  <span class="frontPageText">
-  Help on building queries and workflows.
-  </span>
-  </td></tr>
-  <tr><td valign="top">
-  <a href="javascript:newWindow('http://wiki.astrogrid.org/bin/view/Astrogrid/PortalCookBook','HELPW')" class="strongLink">Cook-book</a>
-  </td><td valign="top">
-  <span class="frontPageText">
-  Examples and tutorials.
-  </span>
-  </td></tr></table>
+               </td>
+               <td width="40px">  
+               </td>
+             </tr>
 
-  <div class="boxedLayoutFoot">
-  <table border="0" cellpadding="2">
-  <tr><td>
-  <agHint id="test">
-  See? We can put any text to guide you in these boxes.<p />
-  Click the button again to close this box.
-  </agHint>
-  </td><td>
-  <span class="frontPageText">
-  <em>Click on buttons like this for context-related help.</em>
-  </span>
-  </td></tr>
-  </table>
-  </div>
+             <!-- ASTROGRID PARAMETERIZED WORKFLOWS -->
+             <tr>
+               <td width="280px" valign="top">
+                 <div class="boxedLayout">
+                   <h1>Parameterized Workflows</h1>
+                     <table border="0" cellpadding="3">
+                       <tr>
+                         <td valign="top" title="Go to parameterized workflow page">
+                           <a href="/astrogrid-portal/main/mount/workflow/agparameterizedWf.html?action=read-paramWf-list"                  
+                                   class="strongLink">Parameterized Workflows</a>
+                         </td>
+                         <td>
+                           <div style="cursor: help"  title="e.g. Redshift maker, Solar movie maker..">
+                                execute parameterized workflows
+                           </div>        
+                         </td>
+                       </tr>    
+                     </table>
+                   </div>
+                 </td>
+               <td width="40px">  
+             </td>
+           </tr>
 
-<!--
-  <tr><td colspan="2" bgcolor="#aaaaaa">
-  <img src="/astrogrid-portal/x.gif" width="50" height="1"/>
-  </td></tr>
--->
+           <!-- ASTROGRID WEBSTART APPLICATIONS -->
+           <tr>
+             <td width="280px" valign="top">
+               <div class="boxedLayout">
+                 <h1>Webstart Applications</h1>
+                   <table border="0" cellpadding="3">
+                     <tr>
+                       <td valign="top" title="Launch application">
+                         <a href="http://software.astrogrid.org/jnlp/beta/astrogrid-desktop/astrogrid-desktop.jnlp"                  
+                                  class="strongLink">Workbench</a>
+                       </td>
+                       <td>
+                         Integrates astrogrid into the desktop: 
+                         allows astrogrid services to be easily called from user applications and scripts; 
+                         <div style="cursor: help" 
+                              title="will include Redshift maker, Solar movie maker..">
+                           create parameterized workflows.
+                         </div>        
+                       </td>
+                     </tr>    
+                     <tr>
+                       <td valign="top" title="Launch application">
+                         <a href="http://software.astrogrid.org/jnlp/beta/aladin-avo/aladin-avo.jnlp"
+                            class="strongLink">Aladin</a> 
+                       </td>
+                       <td>
+                         The <a onclick="javascript:window.open(' http://aladin.u-strasbg.fr/aladin.gml');" class="strongLink">Aladin Interactive Sky Atlas</a> application,
+                         developed by <a onclick="javascript:window.open('http://cdsweb.u-strasbg.fr/');" class="strongLink">CDS</a> application,
+                         bundled with a plugin to read and write files in VOSpace.        
+                       </td>
+                     </tr>
+                     <tr>
+                       <td valign="top" title="Launch application">
+                         <a href="http://software.astrogrid.org/jnlp/beta/topcat/topcat.jnlp" 
+                                  class="strongLink">Topcat</a>
+                       </td>
+                       <td>
+                         <a onclick="javascript:window.open('http://www.star.bris.ac.uk/~mbt/topcat/');" class="strongLink">Topcat</a> - the Tool for OPerations on Catalogues And Tables, developed by 
+                         <a onclick="javascript:window.open('http://www.starlink.ac.uk');" class="strongLink">Starlink UK</a>, 
+                           bundled with a plugin to read and write files in VOSpace.
+                       </td>
+                     </tr>    
+                   </table>
+                 </div>
+               </td>
+               <td width="40px">  
+               </td>
+             </tr>
+             <tr>
+               <td width="280px" valign="top">
+               </td>
+               <td width="40px">  
+               </td>
+             </tr>
 
-  <!--
-  <tr><td>
-  <img src="/astrogrid-portal/SubmitGreen.gif" width="50"
-  height="20"/>
-  </td><td>
-  Green buttons, vertical bars or horizontal bars can be clicked to move
-  ahead towards the next step.
-  </td></tr>
-
-  <tr><td colspan="2" bgcolor="#aaaaaa">
-  <img src="/astrogrid-portal/x.gif" width="50" height="1"/>
-  </td></tr>
-
-  <tr><td>
-  <agExplain item="Glossary" />
-  </td><td>
-  Text highlighted this way is another way for us to give you short
-  explanations.
-  </td></tr>
-
-  <tr><td colspan="2" bgcolor="#aaaaaa">
-  <img src="/astrogrid-portal/x.gif" width="50" height="1"/>
-  </td></tr>
-  -->
-<!--
-  <tr><td>
-  <a
-  href="javascript:popupBrowser('/astrogrid-portal/bare/mount/help/faq.faq',700, 300)" style="text-decoration: none">FAQ</a> &amp;<br />
-  <a
-  href="javascript:popupBrowser('/astrogrid-portal/lean/mount/help/cookbook.ckb',700, 300)" style="text-decoration: none" >Cookbook</a>
-  </td><td>
-  Visit these sections for tutorials, examples and tips.
-  </td></tr>
-
-  </table>
--->
-</div>
-
-</td>
-<td width="40px">  </td></tr>
-
-
-<tr>
-  <td width="280px" valign="top">
-    <div class="boxedLayout">
-      <h1>Parameterized Workflows</h1>
-        <table border="0" cellpadding="3">
-          <tr>
-            <td valign="top" title="Go to parameterized workflow page">
-              <a href="/astrogrid-portal/main/mount/workflow/agparameterizedWf.html?action=read-paramWf-list"                  
-                class="strongLink">Parameterized Workflows</a>
+             <!-- ASTROGRID STATUS -->
+             <tr>
+               <td width="280px" valign="top">
+                 <div class="boxedLayout">
+                   <h1>Astrogrid Status</h1>
+                     <table border="0" cellpadding="3">
+                       <tr>
+                         <td>
+                           <xsp:logic>
+	                         String tomcat;
+	                         tomcat = java.lang.System.getProperty("catalina.home");
+	                         tomcat += "/webapps/astrogrid-portal/mount/login/xml/statusPage.xml";
+ 	                         <util:include-file>
+	                           <util:name><xsp:expr>tomcat</xsp:expr></util:name>
+	                         </util:include-file>
+                           </xsp:logic>                               
+                         </td>
+                       </tr>    
+                     </table>
+                   </div>
+                 </td>
+               <td width="40px">  
+             </td>
+           </tr>
+              
+              <!-- ASTROGRID ADMIN -->
+              <tr>
+                <td width="280px" valign="top"> 
+                <!-- NOTE:  The boxedLayout div for the Administration section below is in the iframe
+                     content because having it outside the iframe was inserting lots of blank space. -->
+                  <iframe style="border: solid 0px white; background-color: transparent"
+                  marginWidth="0px" scrolling="no" hspace="0px" vspace="0px" frameborder="no"
+                  allowtransparency="true"
+                  src="/astrogrid-portal/bare/mount/scenarios/admini.scn"
+                  marginHeight="0px" border="0px" height="100" width="100%"
+                  name="adminiFrame">ag</iframe>
+                </td>
+                <td width="40px">  
+                </td>
+              </tr>
+            </table>
+          </td>
+          
+          <!-- ASTROGRID CURRENT JOBS -->
+          <td rowspan="3">
+            <div class="boxedLayout">
+              <h1>Current jobs</h1>
+                <center>
+                  <iframe style="border: solid 0px white; background-color: transparent"
+                  marginWidth="0px" scrolling="yes" hspace="0px" vspace="0px" frameborder="no"
+                  allowtransparency="true" onload="setRelHeight(this, 100)"
+                  src="/astrogrid-portal/veryBare/mount/workflow/agjobmanager-jes-homepage.html?action=read-job-list"
+                  marginHeight="0px" border="0px" height="400px" width="98%"
+                  name="jobMonitorFrame">ag</iframe>
+                </center>
+              </div>  
             </td>
-            <td>
-              <div style="cursor: help"  title="e.g. Redshift maker, Solar movie maker..">
-                execute parameterized workflows
-              </div>        
-            </td>
-          </tr>    
+          </tr>
         </table>
-      </div>
-     </td>
-   <td width="40px">  
- </td>
-</tr>
-
-
-<tr>
-<td width="280px" valign="top">
-
-
-<div class="boxedLayout">
-  <h1>Webstart Applications</h1>
-    <table border="0" cellpadding="3">
-    <tr>
-      <td valign="top"
-          title="Launch application">
-        <a href="http://software.astrogrid.org/jnlp/beta/astrogrid-desktop/astrogrid-desktop.jnlp"                  
-           class="strongLink">Workbench</a>
-      </td>
-      <td>
-        Integrates astrogrid into the desktop: 
-        allows astrogrid services to be easily called from user applications and scripts; 
-        <div style="cursor: help" 
-              title="will include Redshift maker, Solar movie maker..">
-          create parameterized workflows.
-        </div>        
-      </td>
-    </tr>    
-      <tr>
-        <td valign="top"
-            title="Launch application">
-          <a href="http://software.astrogrid.org/jnlp/beta/aladin-avo/aladin-avo.jnlp"
-             class="strongLink">Aladin</a> 
-        </td>
-        <td>
-           The <a onclick="javascript:window.open(' http://aladin.u-strasbg.fr/aladin.gml');" class="strongLink">Aladin Interactive Sky Atlas</a> application,
-            developed by <a onclick="javascript:window.open('http://cdsweb.u-strasbg.fr/');" class="strongLink">CDS</a> application,
-            bundled with a plugin to read and write files in VOSpace.        
-        </td>
-    </tr>
-    <tr>
-      <td valign="top"
-          title="Launch application">
-        <a href="http://software.astrogrid.org/jnlp/beta/topcat/topcat.jnlp" 
-           class="strongLink">Topcat</a>
-      </td>
-      <td>
-        <a onclick="javascript:window.open('http://www.star.bris.ac.uk/~mbt/topcat/');" class="strongLink">Topcat</a> - the Tool for OPerations on Catalogues And Tables, developed by 
-        <a onclick="javascript:window.open('http://www.starlink.ac.uk');" class="strongLink">Starlink UK</a>, 
-        bundled with a plugin to read and write files in VOSpace.
-      </td>
-    </tr>    
-  </table>
-</div>
-
-</td>
-<td width="40px">  </td></tr>
-<tr>
-<td width="280px" valign="top">
-
-
-
-<!-- NOTE:  The boxedLayout div for the Example Tasks section below is in the iframe
- content because having it outside the iframe was inserting lots of blank space. -->
-<!--
-<div class="boxedLayout">
-  <h1>Example Tasks</h1>
--->
-<!-- Note: Example tasks removed and now included as parameterized workflows from within Dashboard 
-  <iframe style="border: solid 0px white; background-color: transparent"
-  marginWidth="0px" scrolling="no" hspace="0px" vspace="0px" frameborder="no"
-  allowtransparency="true" 
-  src="/astrogrid-portal/bare/mount/scenarios/tinyScenarii.scn"
-  marginHeight="0px" border="0px" height="120" width="100%" name="scenariiFrame">ag</iframe>
--->  
-<!--
-</div>
--->
-
-
-</td>
-<td width="40px">  </td></tr>
-<tr>
-<td width="280px" valign="top">
-<!-- NOTE:  The boxedLayout div for the Administration section below is in the iframe
- content because having it outside the iframe was inserting lots of blank space. -->
-<!--
-<div class="boxedLayout">
-<h1>Administration</h1>
--->
-<!--
-  <div class="agSectionTitle">Administration</div><break />
--->
-  <iframe style="border: solid 0px white; background-color: transparent"
-  marginWidth="0px" scrolling="no" hspace="0px" vspace="0px" frameborder="no"
-  allowtransparency="true"
-  src="/astrogrid-portal/bare/mount/scenarios/admini.scn"
-  marginHeight="0px" border="0px" height="100" width="100%"
-  name="adminiFrame">ag</iframe>
-<!--
-</div>
--->
-</td>
-<td width="40px">  </td></tr>
-</table>
-
-</td>
-<td rowspan="3">
-
-<div class="boxedLayout">
-<h1>Current jobs</h1>
-<!--
-  <div class="agSectionTitle">Job monitor</div>
--->
-<center>
-  <iframe style="border: solid 0px white; background-color: transparent"
-  marginWidth="0px" scrolling="yes" hspace="0px" vspace="0px" frameborder="no"
-  allowtransparency="true" onload="setRelHeight(this, 100)"
-  src="/astrogrid-portal/veryBare/mount/workflow/agjobmanager-jes-homepage.html?action=read-job-list"
-  marginHeight="0px" border="0px" height="400px" width="98%"
-  name="jobMonitorFrame">ag</iframe>
-</center>
-</div>  
-</td>
-</tr>
-</table>
 
 <!--
 src="/astrogrid-portal/bare/mount/scenarios/jobMonitor.scn"
@@ -491,6 +438,13 @@ Locate Spectral data
 <!--+
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
+    |   Revision 1.20  2005/06/06 14:20:45  clq2
+    |   portal_pjn_1218 and
+    |   portalWF_1193_pjn
+    |
+    |   Revision 1.19.20.1  2005/06/02 11:48:11  pjn3
+    |   Staus message added, plus major tidy of code
+    |
     |   Revision 1.19  2005/05/12 16:07:29  clq2
     |   1157
     |

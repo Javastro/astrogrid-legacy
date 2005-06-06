@@ -2,8 +2,8 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2004/12/07 16:26:04 $</cvs:date>
-    | <cvs:version>$Revision: 1.20 $</cvs:version>
+    | <cvs:date>$Date: 2005/06/06 14:20:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.21 $</cvs:version>
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 <!-- ======================== Components ================================ -->
@@ -73,8 +73,26 @@
        | Main pipeline.
        +-->
       <map:pipeline>
+      
+      <!-- PORTAL TEMPORARILY UNAVAILABLE: start 
+           1) Uncomment the following 4 lines
+           2) Uncomment the line: <map:match pattern="login-form-unavailable">
+           3) Comment out the line following: <map:match pattern="login-form">
+       
+        <map:match pattern="login-form">       
+            <map:generate src="portalOutage.html" />
+            <map:serialize type="html" />                                                
+        </map:match>      
+      -->
+      
       <!-- Login page -->
-         <map:match pattern="login-form">
+      <!-- PORTAL TEMPORARILY UNAVAILABLE: Uncomment the following line: -->      
+      <!-- <map:match pattern="login-form-unavailable"> -->
+      <!-- PORTAL TEMPORARILY UNAVAILABLE: Comment out the following line: -->      
+      <map:match pattern="login-form">  
+      
+      <!-- PORTAL TEMPORARILY UNAVAILABLE: end -->
+      
          <!--+
              | If we are not logged in, display the login form.
              +-->
@@ -84,9 +102,7 @@
                <!--validation succeeded-->
                <map:act type="astro-login">
                   <!--login successful-->
-<!--
-                  <map:generate type="serverpages" src="xsp/login-pass.xsp" />
--->
+
                   <map:generate type="serverpages" src="xsp/pseudo-login.xsp" />
                   <map:transform type="xslt" src="style/info.xsl" />
                   <map:serialize type="xml" />
@@ -228,6 +244,13 @@
 <!--+
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
+    |   Revision 1.21  2005/06/06 14:20:45  clq2
+    |   portal_pjn_1218 and
+    |   portalWF_1193_pjn
+    |
+    |   Revision 1.20.94.1  2005/06/03 08:58:27  pjn3
+    |   Link and comments to include portalOutage page
+    |
     |   Revision 1.20  2004/12/07 16:26:04  clq2
     |   portal_kea_719
     |
