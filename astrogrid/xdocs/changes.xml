@@ -10,7 +10,9 @@
         </action>       
   </release-->
   <release version="(Pending Integration)">  
-	
+    <action dev="pjn3" type="add" issue="1217">
+  	  <b>portal_pjn_1217</b> - Webstart applications page added with more information.
+  	</action>	
     
   </release>
 
