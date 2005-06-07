@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: maven.xml,v 1.5 2005/06/07 23:43:41 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.6 2005/06/07 23:50:45 nw Exp $ -->
 <!-- extension maven script -->
 <project  xmlns:deploy="deploy"  xmlns:j="jelly:core">
 	<!-- astrogrid goals for nightly build -->
@@ -39,7 +39,11 @@
       <attainGoal name="faq"/>
 	</preGoal>
 	
-	<!-- copy war files into jnlp folder, and unpackage each of them -->
+	<!-- copy war files into jnlp folder, and unpackage each of them 
+	
+	todo - move this out of release project, and into aggregate project.
+	
+	-->
 	
 	<postGoal name="xdoc:copy-user-resources">
 		                <deploy:copy-deps todir="${maven.docs.dest}/jnlp" />

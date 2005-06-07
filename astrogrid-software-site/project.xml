@@ -8,7 +8,10 @@
     /images/glossy-release-1.1.png
     </logo>
     <siteAddress>www.astrogrid.org</siteAddress>
-    <siteDirectory>/var/www/software</siteDirectory>
+    <!-- NB - change this to /var/www/software to do final release. 
+     at moment set to in-progress - gives us a preview
+    -->
+    <siteDirectory>/var/www/software/in-progress</siteDirectory>
     <url>http://software.astrogrid.org/</url>
     <repository>
         <connection> scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid
@@ -23,7 +26,7 @@
     <dependencies>
     <!-- things that we need to fetch and unpack  - jnlp packages only.
 
-todo - move this functionality into the individual projects themselves.    
+todo - move thisfunction into othe aggregate project - commented out here for now. 
     	<dependency>
     		<artifactId>astrogrid-cdk-core</artifactId>
     		<groupId>org.astrogrid</groupId>
