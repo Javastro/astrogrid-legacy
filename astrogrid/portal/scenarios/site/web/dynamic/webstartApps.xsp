@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: $</cvs:source>
+    | <cvs:author>$Author: pjn3 $</cvs:author>
+    | <cvs:date>$Date: $</cvs:date>
+    | <cvs:version>$Revision: $</cvs:version>
+    |
+    +-->
+  <xsp:page language="java"
+        xmlns:xsp="http://apache.org/xsp"
+        xmlns:util="http://apache.org/xsp/util/2.0"
+        xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+        xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+        >
+
+    <page>
+      <content>
+            
+      </content>
+    </page>
+  </xsp:page>

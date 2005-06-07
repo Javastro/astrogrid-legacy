@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.3 2004/12/03 21:16:00 clq2 Exp $
+    | CVS $Id: sitemap.xmap,v 1.4 2005/06/07 16:55:57 clq2 Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -273,6 +273,13 @@
         </map:select>
 
         <map:call resource="test-results"/>
+      </map:match>
+
+      <!-- Webstart Apps match added here rather than creating a whole branch for 1 page -->
+      <map:match pattern="webstartApps">
+          <map:generate type="serverpages" src="web/dynamic/webstartApps.xsp" />
+          <map:transform type="xslt" src="web/style/xsl/webstartApps.xsl" />
+          <map:serialize type="xml" />
       </map:match>
       
       <!-- xml -->

@@ -4,11 +4,11 @@
     version="1.0"
     xmlns="http://www.astrogrid.org/portal"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
-	xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.4"
+        xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
+        xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.4"
     xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1"
     xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-    xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"	>
+    xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"     >
 
     <xsl:output
       method="xml"
@@ -109,13 +109,16 @@
       var url = "/astrogrid-portal/main/mount/datacenter/variablesFromMB.html?action=getTable&amp;uniqueID=";
       url = url + identifier;
       var safe_url = url.substring(0,url.indexOf("amp;"));
-      safe_url = safe_url + url.substring(url.indexOf("amp;")+4, url.length);      
-	  parent.window.close();
-	  parent.opener.parent.location.href = safe_url;
-	  parent.opener.parent.focus();     
-	}    
+      safe_url = safe_url + url.substring(url.indexOf("amp;")+4, url.length);
+        var safer_URL = safe_url.replace(/+/g, "%2B");
+
+          parent.window.close();
+/*        parent.opener.parent.location.href = safe_url; */
+          parent.opener.parent.location.href = safer_URL;
+          parent.opener.parent.focus();     
+        }    
     
-	    
+            
    </script>       
         
         <xsl:apply-templates/>
@@ -436,51 +439,51 @@
       
       
     <!-- XML TO HTML -->
-	<!-- Default node handler, convert to HTML and apply templates -->
-	<xsl:template match="*" name="xml-html" mode="showxml">
-		<br/> 
-		<!--Indent by number of parent nodes -->
-		<xsl:for-each select="ancestor::*">
-			<xsl:text>....</xsl:text>
-		</xsl:for-each>
-		<!-- Open the element -->
-		<xsl:text>&lt;</xsl:text>
-		<!-- Add the element name -->
-		<xsl:value-of select="name()"/>
-		<!-- Copy all of the node attributes -->
-		<xsl:for-each select="attribute::*">
-			<xsl:text>.</xsl:text>
-			<xsl:value-of select="name()"/>
-			<xsl:text>=</xsl:text>
-			<xsl:text>&quot;</xsl:text>
-			<xsl:value-of select="."/>
-			<xsl:text>&quot;</xsl:text>
-		</xsl:for-each>
-		<!-- If this node does not have any child nodes -->
-		<xsl:if test="count(child::node()) + count(child::text()) + count(child::comment()) = 0">
-			<!-- Close the element -->
-			<xsl:text>/&gt;</xsl:text>				
-		</xsl:if>
-		<!-- If this node does have some child nodes -->
-		<xsl:if test="count(child::node()) + count(child::text()) + count(child::comment()) > 0">
-			<!-- Close the element -->
-			<xsl:text>&gt;</xsl:text>			
-			<!-- Add the element content -->
-			<xsl:apply-templates mode="showxml"/>
-			<br/> 
-			<!--Indent by number of parent nodes -->
-			<xsl:for-each select="ancestor::*">
-				<xsl:text>....</xsl:text>
-			</xsl:for-each>
-			<!-- Open the element -->
-			<xsl:text>&lt;</xsl:text>
-			<xsl:text>/</xsl:text>
-			<!-- Add the element name -->
-			<xsl:value-of select="name()"/>
-			<!-- Close the element -->
-			<xsl:text>&gt;</xsl:text>
-		</xsl:if>
-	</xsl:template>    
+        <!-- Default node handler, convert to HTML and apply templates -->
+        <xsl:template match="*" name="xml-html" mode="showxml">
+                <br/> 
+                <!--Indent by number of parent nodes -->
+                <xsl:for-each select="ancestor::*">
+                        <xsl:text>....</xsl:text>
+                </xsl:for-each>
+                <!-- Open the element -->
+                <xsl:text>&lt;</xsl:text>
+                <!-- Add the element name -->
+                <xsl:value-of select="name()"/>
+                <!-- Copy all of the node attributes -->
+                <xsl:for-each select="attribute::*">
+                        <xsl:text>.</xsl:text>
+                        <xsl:value-of select="name()"/>
+                        <xsl:text>=</xsl:text>
+                        <xsl:text>&quot;</xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:text>&quot;</xsl:text>
+                </xsl:for-each>
+                <!-- If this node does not have any child nodes -->
+                <xsl:if test="count(child::node()) + count(child::text()) + count(child::comment()) = 0">
+                        <!-- Close the element -->
+                        <xsl:text>/&gt;</xsl:text>                              
+                </xsl:if>
+                <!-- If this node does have some child nodes -->
+                <xsl:if test="count(child::node()) + count(child::text()) + count(child::comment()) > 0">
+                        <!-- Close the element -->
+                        <xsl:text>&gt;</xsl:text>                       
+                        <!-- Add the element content -->
+                        <xsl:apply-templates mode="showxml"/>
+                        <br/> 
+                        <!--Indent by number of parent nodes -->
+                        <xsl:for-each select="ancestor::*">
+                                <xsl:text>....</xsl:text>
+                        </xsl:for-each>
+                        <!-- Open the element -->
+                        <xsl:text>&lt;</xsl:text>
+                        <xsl:text>/</xsl:text>
+                        <!-- Add the element name -->
+                        <xsl:value-of select="name()"/>
+                        <!-- Close the element -->
+                        <xsl:text>&gt;</xsl:text>
+                </xsl:if>
+        </xsl:template>    
           
           
     
@@ -496,4 +499,3 @@
     </xsl:template>
     
 </xsl:stylesheet>
-

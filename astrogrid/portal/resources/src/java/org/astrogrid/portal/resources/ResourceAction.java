@@ -38,8 +38,8 @@ import org.astrogrid.store.Ivorn;
 
 /**
  * @author Phil Nicolson (pjn3@star.le.ac.uk) Jan 05
- * @version $Name:  $Revision: 1.9 $Date:
- * @version $Name:  $Revision: 1.9 $Date:
+ * @version $Name:  $Revision: 1.10 $Date:
+ * @version $Name:  $Revision: 1.10 $Date:
  */
 public class ResourceAction extends AbstractAction {
 
@@ -398,7 +398,7 @@ public class ResourceAction extends AbstractAction {
                     sqlQuery += keywordjoin;
                 }
                 
-                sqlQuery += " vr:content/vr:subject = '" + keyword[i].trim() + "'";
+                sqlQuery += " vr:content/vr:subject = '" + keyword[i].trim() + "' ";
               
               }
               
