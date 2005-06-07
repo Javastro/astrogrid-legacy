@@ -10,6 +10,9 @@
         </action>       
   </release-->
   <release version="(Pending Integration)">  
+    <action dev="pfo" type="add" issue="1217">
+  	  <b>portal_pjn_1225</b> - microbrowserResults.xsl change to handle tables with '+' in their name
+  	</action>
     <action dev="pjn3" type="add" issue="1217">
   	  <b>portal_pjn_1217</b> - Webstart applications page added with more information.
   	</action>
