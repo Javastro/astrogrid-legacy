@@ -1,11 +1,11 @@
 <project>
 <!--pointless comment-->
-    <extend>${basedir}/../astrogrid/maven-base/project.xml</extend>
+    <extend>${basedir}/../maven-base/project.xml</extend>
     <artifactId>astrogrid-software-site</artifactId>
     <name>AstroGrid</name>
     <shortDescription>AstroGrid Software Site</shortDescription>
     <logo>
-    /images/cooltext2024040.png
+    /images/glossy-release-1.1.png
     </logo>
     <siteAddress>www.astrogrid.org</siteAddress>
     <siteDirectory>/var/www/software</siteDirectory>
@@ -20,9 +20,10 @@
     </repository>
     <build/>
     <properties/>
-    <!-- things that we need to fetch and unpack  - jnlp packages only.
-    distros, etc can be linked directly into the repository. -->
     <dependencies>
+    <!-- things that we need to fetch and unpack  - jnlp packages only.
+
+todo - move this functionality into the individual projects themselves.    
     	<dependency>
     		<artifactId>astrogrid-cdk-core</artifactId>
     		<groupId>org.astrogrid</groupId>
@@ -59,23 +60,19 @@
     		<type>war</type>
     		<version>${astrogrid.aggregate.version}</version>
     	</dependency>
+    	-->
     	<dependency>
     		<artifactId>astrogrid-contracts</artifactId>
     		<groupId>org.astrogrid</groupId>
     		<type>jar</type>
     		<version>${astrogrid.contracts.version}</version>
     		<properties>
-    			<!-- This property tells the unpack-schema goal
-    			     (custom goal in maven.xml)
-    			     to process this jar. -->
     			<jar-with-schema>true</jar-with-schema>
     		</properties>
     	</dependency>
     </dependencies>
     <reports>
-        <report>maven-license-plugin</report>
-        <!-- because life is short enough already...
-        <report>maven-linkcheck-plugin </report>
-        -->
+        <report>maven-license-plugin</report>  
+        <report>maven-linkcheck-plugin </report>        
     </reports>
 </project>

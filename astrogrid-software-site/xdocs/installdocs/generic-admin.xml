@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>General Administration Instructions</title>
+        <author email="enter">Your Name</author>
+    </properties>
+    <body>
+                <section name="General Administration Instructions">
+                        <subsection name="Logging">
+                        <p>
+        text
+                        </p>
+                        </subsection>
+                        <subsection name="AstroGrid configuration system">
+                        </subsection>
+                </section>
+
+    </body>
+</document>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>User Manual</title>
+        <author email="enter">Your Name</author>
+    </properties>
+    <body>
+		<section name="User Manual Front Page">
+			<p>
+	text
+			</p>
+		</section>
+         
+    </body>
+</document>

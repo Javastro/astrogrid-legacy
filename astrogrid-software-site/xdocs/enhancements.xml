@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>Bugs &amp; Enhancements</title>
+        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+    </properties>
+    <body>
+		<section name="Reporting Bugs">
+			<p>
+		short description of how to report a bug in bugzilla.
+			</p>
+		</section>
+		<section name="Requesting Enhancements">
+			<p>
+				email address? or into bugzilla too?
+			</p>
+		</section>
+         
+    </body>
+</document>

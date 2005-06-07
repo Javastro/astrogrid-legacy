@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<faqs title="Frequently Asked Questions">
+<faqs title="Frequently Asked Questions - OBSOLETE - REWRITE">
     <part id="general">
         <title>General</title>
         <faq id="general-what">

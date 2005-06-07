@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>Related Projects</title>
+        <author email="enter">Your Name</author>
+    </properties>
+    <body>
+		<section name="Related Projects">
+			<p>
+	links to CDS, topcat, NVO, etc
+			</p>
+		</section>
+         
+    </body>
+</document>

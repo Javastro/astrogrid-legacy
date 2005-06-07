@@ -5,8 +5,38 @@
         <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
     </properties>
     <body>
-        <section name="Java Webstart Userguide">
+        <section name="Java Webstart Userguide - work in progress">
 
+	<subsection name="What is Java Web Start?">
+		<p>
+	<a href="">Java Web Start</a> is a mechanism for program delivery through a standard Web server. 
+	Initiated through the browser, these programs are deployed to the client and executed outside the scope of the browser. 
+	Once deployed, the programs do not need to be downloaded again, and they can automatically download updates on startup 
+	without requiring the user to go through the whole installation process again. 
+	</p>
+	<p>
+Since these programs run outside the browser, you might think they can freely perform operations - but that is not the case. 
+They continue to run within a restricted container, or sandbox. 
+ Since Java Web Start runs on top of the Java 2 platform, you also have access to the underlying security architecture. 
+</p>
+<p>
+To use Java Web Start, you only need to install the client piece.
+You may not already 
+users probably don't. In that case, when someone without Java Web Start tries to initiate a JNLP-packaged application, t
+he user is prompted to install Java Web Start. Once installed, with a possible reboot, the user can then go on and run the desired program. 		
+</p>
+	</subsection>
+   <subsection name="Install Java Web Start">
+	<p>
+To see Java Web Start in action, 
+you can visit a set of five demonstration applications that Sun has available: Draw, The SwingSet Demo, Military Game, 
+A Simple Notepad, and Application Manager. 
+If you don't have Java Web Start previously installed, click on any of the Launch buttons to be redirected to a download page 
+where you can download Web Start for your platform. 
+Java Web Start itself is only about 1 MB. However, it requires the Java Runtime Environment (JRE), so if a 
+you (or a user) don't have a JRE, the download size increases accordingly, to just under 6 MB on Microsoft Windows platforms. 
+</p>		
+	</subsection>
 <p>
 	TODO:
   requires that <a href="http://java.sun.com/products/javawebstart/">Java Web Start</a>

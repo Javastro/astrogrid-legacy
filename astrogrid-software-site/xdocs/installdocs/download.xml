@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>Downloading AstroGrid Software</title>
+        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+    </properties>
+    <body>
+                <section name="Downloading AstroGrid Software">
+                        <p>
+        Link to repository.
+        general remarks about webapps vs installers.
+                        </p>
+        <subsection name="Self-contained Installers">
+<p> Some AstroGrid components are now available as self-contained installer applications. These are executable jar
+    files that manage the downloading, configuration and installation of the component. For further information see the <a
+    href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">Installers</a> page. </p>
+    <p><b>TODO - inline this documentation</b></p>
+    </subsection>
+                </section>
+
+    </body>
+</document>

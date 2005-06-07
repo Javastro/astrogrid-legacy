@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>Information for Developers</title>
+        <author email="nw@jb.man.ac.uk">nw@jb.man.ac.uk</author>
+    </properties>
+    <body>
+                <section name="Information for Developers">
+                        <p>
+        <i>point script-kiddy astronomers at acr,<br/>
+        client developers to cdk. <br />
+        give eager contributors
+        info on how to get and compile the source and contribute to astrogrid</i>
+                        </p>
+                </section>
+
+    </body>
+</document>

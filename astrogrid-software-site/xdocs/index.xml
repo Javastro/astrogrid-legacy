@@ -1,10 +1,24 @@
 <?xml version="1.0"?>
 <document>
     <properties>
-        <title>Welcome to AstroGrid</title>
+        <title>AstroGrid Release 1.1</title>
         <author email="jdt@roe.ac.uk">John Taylor</author>
+        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
     </properties>
     <body>
+		<section name="AstroGrid Release 1.1">
+			<p>
+			blurbs
+			<br />
+			Depending on their role, direct reader to 
+			<blockquote>
+				<a href="userdocs/index.html"><img src="images/48x48/personal.png" align="middle"/>Use AstroGrid</a><br />
+				<a href="installdocs/index.html"><img src="images/48x48/package.png" align="middle"/>Download and Install AstroGrid Services</a><br />
+				<a href="developerdocs/index.html"><img src="images/48x48/package_editors.png" align="middle"/>Develop against AstroGrid</a><br />
+			</blockquote>
+			</p>
+		</section>
+		<!-- older stuff - doubt needed now.
         <section name="Welcome to the AstroGrid Software Site">
             <p> This site hosts comprehensive information on AstroGrid software, including how to obtain and use the software, tutorials, background 
                 information on the science cases driving the software development, and <a href="faq.html">frequently-asked questions</a>. For more general 
@@ -22,6 +36,6 @@
                 </p>
             </subsection>
         </section>
-        
+        -->
     </body>
 </document>
