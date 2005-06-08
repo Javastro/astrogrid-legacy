@@ -29,9 +29,9 @@ More information:
 </p>	
 		<p>The Workbench can be launched by clicking the links below.
 		<ul>
-			<li><a href="../jnlp/astrogrid-desktop/astrogrid-desktop.jnlp"><b>Launch Application (Stable Release)</b></a> - recommended</li>
-			<li><a href="../jnlp/beta/astrogrid-desktop/astrogrid-desktop.jnlp">Launch Application (Latest Beta Release)</a> - for access to latest features</li>			
-			<li><a href="../jnlp/test/astrogrid-desktop/astrogrid-desktop.jnlp">Launch Application (Latest Test  Version)</a> - for testing only</li>
+			<li><a href="http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp"><b>Launch Application (Stable Release)</b></a> - recommended</li>
+			<li><a href="http://software.astrogrid.org/jnlp/beta/astrogrid-desktop/astrogrid-desktop.jnlp">Launch Application (Latest Beta Release)</a> - for access to latest features</li>			
+			<li><a href="http://software.astrogrid.org/jnlp/test/astrogrid-desktop/astrogrid-desktop.jnlp">Launch Application (Latest Test  Version)</a> - for testing only</li>
 		</ul>			
 		The workbench is launched using Java WebStart technology, which requires Java to be installed on your machine.
 		<ul>

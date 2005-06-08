@@ -10,14 +10,14 @@
 <p>
 	The <a href="http://aladin.u-strasbg.fr/aladin.gml">Aladin Interactive Sky Atlas</a> application, developed by <a href="http://cdsweb.u-strasbg.fr/">CDS</a>, bundled with a plugin to read and write files in VOSpace.
 	</p>
-<p><a href="aladin-avo/aladin-avo.jnlp"><strong>Launch Application</strong></a></p>
+<p><a href="http://software.astrogrid.org/jnlp/aladin-avo/aladin-avo.jnlp"><strong>Launch Application</strong></a></p>
 </subsection>
 <subsection name="Topcat - Starlink UK">
 <p>
 	<a href="http://www.starlink.ac.uk/topcat">Topcat</a> -  the Tool for OPerations on Catalogues And Tables, developed by <a href="http://www.starlink.ac.uk">Starlink UK</a>, bundled with a plugin to 
 	read and write files in VOSpace.
 </p>
-<p><a href="topcat/topcat.jnlp"><strong>Launch Application</strong></a></p>
+<p><a href="http://software.astrogrid.org/jnlp/topcat/topcat.jnlp"><strong>Launch Application</strong></a></p>
 
 </subsection>
         </section>
