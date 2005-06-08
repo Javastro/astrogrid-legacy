@@ -15,16 +15,7 @@
   </release>
 
   <release version="(Undertest)">  
-	<action dev="pfo" type="add" issue="1217">
-  	  <b>portal_pjn_1225</b> - microbrowserResults.xsl change to handle tables with '+' in their name
-  	</action>
-    <action dev="pjn3" type="add" issue="1217">
-  	  <b>portal_pjn_1217</b> - Webstart applications page added with more information.
-  	</action>
-    <action dev="pjn3" type="add" issue="1226">
-  	  <b>portalRE_pjn_1226</b> - the smallest branch ever! - single missing space in ResourceAction.java causing SAXParseException
-  	  when muliple keyword search attempted when looking for catalogs.
-  	</action>  	    
+		    
     <action dev="pjn3" type="fix" issue="1200">
   	  <b>astrogrid/workflow + portal resources</b> Branch <em>portalRE_pjn_1200 + workflow_pjn_1200</em>
   	  Only active tasks returned from registry in both workflow builder and resource browser. 
@@ -36,12 +27,7 @@
 			<action dev="gtr" type="add" issue="1208">
   	  <b>astrogrid/applications</b> Branch <em>cea-gtr-1208</em>. Enhancements to the JSPs for test-running an 
   	  application that support indirect input parameters.
-  	</action>	
-	    <action dev="nww" type="add" issue="1111(again)">
-		<b>desktop-nww-1111</b> and <b>workflow-nww-1111</b> - added Applications component to ACR, and Applications Launcher Proglet.
-		This branch has already been merged into head once - hope merging it again doesn't cause trouble .
-	   </action>
-	    	     	
+  	</action>		    	     	
 		<action dev="jdt" type="fix" issue="1180"> 
             <b>astrogrid/applications</b> and <b>astrogrid/integrationTests</b> <em>cea_jdt_1180</em> Minor bug fixes to installer and build. Also fixes bug 
             1182 (for CEA only).
@@ -53,6 +39,23 @@
    </release>
     
   <release version="HEAD">
+	    <action dev="dave" type="fix" issue="xxxx">
+  	      <b>dave-dev-200506071500</b> - Fixed double(), power() and circle() in PostgreSQL SQL writer.
+     	</action>
+	    <action dev="nww" type="add" issue="1111(again)">
+		<b>desktop-nww-1111</b> and <b>workflow-nww-1111</b> - added Applications component to ACR, and Applications Launcher Proglet.
+		This branch has already been merged into head once - hope merging it again doesn't cause trouble .
+	   </action>
+	    <action dev="pfo" type="add" issue="1217">
+  	      <b>portal_pjn_1225</b> - microbrowserResults.xsl change to handle tables with '+' in their name
+  	    </action>
+        <action dev="pjn3" type="add" issue="1217">
+  	      <b>portal_pjn_1217</b> - Webstart applications page added with more information.
+  	    </action>
+        <action dev="pjn3" type="add" issue="1226">
+  	      <b>portalRE_pjn_1226</b> - the smallest branch ever! - single missing space in ResourceAction.java causing SAXParseException
+  	      when muliple keyword search attempted when looking for catalogs.
+  	    </action>  
 	    <action dev="pjn" type="fix" issue="1193">
   	      Branch <em>portalWF_1193_pjn</em> Fix for orig. bug #942 which has been over-written at some point since Feb.
   	   </action>
