@@ -1,4 +1,4 @@
-/*$Id: FallbackBrowserControl.java,v 1.5 2005/05/12 15:59:10 clq2 Exp $
+/*$Id: FallbackBrowserControl.java,v 1.6 2005/06/08 14:51:59 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.desktop.modules.system;
 
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 
 import java.net.URL;
 
@@ -41,11 +42,12 @@ public class FallbackBrowserControl implements BrowserControl {
         openURL(url);
     }
 
-    /**@todo implement
+    /**
      * @see org.astrogrid.acr.system.BrowserControl#openURL(java.net.URL)
      */
     public void openURL(URL url) throws Exception {
-       JOptionPane.showMessageDialog(null,"Please go to \n" + url.toString(),"Could not control browser",JOptionPane.INFORMATION_MESSAGE);
+       ResultDialog rd = new ResultDialog(null,"Cannot control browser\n Please go to \n" + url.toString());
+       rd.show();
     }
     
     /**
@@ -62,8 +64,11 @@ public class FallbackBrowserControl implements BrowserControl {
 
 /* 
 $Log: FallbackBrowserControl.java,v $
-Revision 1.5  2005/05/12 15:59:10  clq2
-nww 1111 again
+Revision 1.6  2005/06/08 14:51:59  clq2
+1111
+
+Revision 1.3.8.2  2005/06/02 14:34:32  nw
+first release of application launcher
 
 Revision 1.3.8.1  2005/05/11 11:55:30  nw
 removed unused interface.

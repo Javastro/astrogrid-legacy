@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.4 2005/05/12 15:59:08 clq2 Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.5 2005/06/08 14:51:59 clq2 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
 import org.astrogrid.desktop.modules.dialogs.ParameterEditorDialog;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserDialog;
+import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.scripting.Toolbox;
@@ -121,7 +122,8 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
             writer.close();
         }
         JobURN id = submit(wf);
-        JOptionPane.showMessageDialog(null,"New job created : Job ID is \n" + id.getContent(),"Job Submitted",JOptionPane.INFORMATION_MESSAGE);
+        ResultDialog rd = new ResultDialog(null,"Workflow Submitted \nJob ID is \n" + id.getContent());
+        rd.show();
         monitor.show(); // brings monitor to the front, if not already there.
         monitor.refresh();
 
@@ -188,7 +190,7 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
     /** prompt user in some way to fill in fields in the template 
      * returns null to indicate canceled operation.*/
     protected Tool editParameters(WorkflowTemplate wft) {
-        ParameterEditorDialog editor = new ParameterEditorDialog(wft.getDesc(),null);
+        ParameterEditorDialog editor = new ParameterEditorDialog(vos,wft.getDesc(),null);
         editor.show();
         return editor.getTool();
     }
@@ -217,8 +219,11 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
-Revision 1.4  2005/05/12 15:59:08  clq2
-nww 1111 again
+Revision 1.5  2005/06/08 14:51:59  clq2
+1111
+
+Revision 1.2.8.2  2005/06/02 14:34:33  nw
+first release of application launcher
 
 Revision 1.2.8.1  2005/05/09 14:51:02  nw
 renamed to 'myspace' and 'workbench'

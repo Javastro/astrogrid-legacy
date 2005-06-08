@@ -4,7 +4,7 @@
 -->
 <module name="dialogs">
 	<description>Reusable UI Dialogues</description>
-	<component name="resouceChooser" 
+	<component name="resourceChooser" 
 		implementationClass="org.astrogrid.desktop.modules.dialogs.ResourceChooserImpl"
 		interfaceClass="org.astrogrid.acr.dialogs.ResourceChooser">
 		<description>Prompt the user to choose a local or remote file resource</description>
@@ -23,4 +23,19 @@
 		
 		</method>
 		</component>
+<component name="toolEditor" 
+		implementationClass="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl"
+		interfaceClass="org.astrogrid.acr.dialogs.ToolEditor">
+		<description>Display a graphical editor for a CEA tool call document</description>
+		<method name="editTool">
+			<description>display editor</description>
+				<parameter name="tool">
+						<description>Document to display in editor</description>
+				</parameter>
+		<return>
+			<description>An edited copy of this document</description>
+			</return>		
+		
+		</method>
+		</component>		
 </module>

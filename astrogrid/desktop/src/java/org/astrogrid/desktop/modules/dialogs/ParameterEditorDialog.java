@@ -1,4 +1,4 @@
-/*$Id: ParameterEditorDialog.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: ParameterEditorDialog.java,v 1.3 2005/06/08 14:51:59 clq2 Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,27 +10,42 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
+import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.applications.beans.v1.Interface;
+import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
+import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.javasource.JConstructor;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.util.Arrays;
+import java.util.Enumeration;
 
+import javax.swing.AbstractAction;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 /**
@@ -43,11 +58,12 @@ public class ParameterEditorDialog extends JDialog {
      */
     private static final Log logger = LogFactory.getLog(ParameterEditorDialog.class);
 
-	private javax.swing.JPanel jContentPane = null;
+	private JPanel jContentPane = null;
 	private JPanel buttonBox = null;
 	private JButton executeButton = null;
 	private JButton cancelButton = null;
-	private JPanel parametersBox = null;
+    private ParametersPanel parametersPanel = null;
+
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -68,14 +84,15 @@ public class ParameterEditorDialog extends JDialog {
 	 */    
 	private JButton getExecuteButton() {
 		if (executeButton == null) {
-			executeButton = new JButton();
-			executeButton.setText("Execute");
-			executeButton.setToolTipText("Submit the workflow for execution");
-			executeButton.addActionListener(new java.awt.event.ActionListener() { 
-				public void actionPerformed(java.awt.event.ActionEvent e) {    
-                    dispose(); // causes dialogue to return
-				}
-			});
+			executeButton = new JButton() {{
+			        setText("Execute");
+			        setToolTipText("Submit the workflow for execution");
+			        addActionListener(new java.awt.event.ActionListener() { 
+			            public void actionPerformed(java.awt.event.ActionEvent e) {    
+			                dispose(); // causes dialogue to return
+			            }
+			        });
+            }};
 		}
 		return executeButton;
 	}
@@ -86,51 +103,51 @@ public class ParameterEditorDialog extends JDialog {
 	 */    
 	private JButton getCancelButton() {
 		if (cancelButton == null) {
-			cancelButton = new JButton();
-			cancelButton.setText("Cancel");
-			cancelButton.addActionListener(new java.awt.event.ActionListener() { 
-				public void actionPerformed(java.awt.event.ActionEvent e) {    
-                    tool  = null; // we've canceled, so don't return anything.
-                    dispose();
-				}
-			});
+			cancelButton = new JButton() {{
+			    setText("Cancel");
+			    addActionListener(new java.awt.event.ActionListener() { 
+			        public void actionPerformed(java.awt.event.ActionEvent e) {    
+			            tool  = null; // we've canceled, so don't return anything.
+			            dispose();
+			        }
+			    });
+            }};
 		}
 		return cancelButton;
 	}
 
-	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
-	private JPanel getParametersBox() {
-		if (parametersBox == null) {
-			parametersBox = new JPanel();
-            GridLayout l = new GridLayout();
-            l.setColumns(2);
-            l.setRows(0);
-            
-            parametersBox.setLayout(l);
-		}
-		return parametersBox;
-	}
-          public static void main(String[] args) {
-    }
+
 	/**
 	 * This is the default constructor
 	 */
 	public ParameterEditorDialog() {
 		super();
         desc = null;
+        resourceChooser = null;
 		initialize();
 	}
     
-    public ParameterEditorDialog(ApplicationDescription desc, Component component) {
+    public ParameterEditorDialog(Myspace myspace,ApplicationDescription desc, Component component) {
         super();
         this.desc = desc;
+        resourceChooser = new ResourceChooserDialog(myspace);
         this.setLocationRelativeTo(component);
-        initialize();
+        initialize();       
     }
+    
+    public ParameterEditorDialog(Myspace myspace,ApplicationDescription desc, Component component,boolean allowIndirect) {
+        super();
+        this.desc = desc;
+        resourceChooser = new ResourceChooserDialog(myspace);
+        this.setLocationRelativeTo(component);
+        this.allowIndirect = allowIndirect;
+        initialize();       
+        
+    }
+    
+    private boolean allowIndirect;
+    
+    protected final ResourceChooserDialog resourceChooser;
     protected final ApplicationDescription desc;
     protected Tool tool;
     
@@ -144,97 +161,20 @@ public class ParameterEditorDialog extends JDialog {
 	private void initialize() {
 		this.setTitle("Parameter Editor");
 		this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-		this.setSize(300, 333);
+		this.setSize(500, 333);
         this.setModal(true);
 		this.setContentPane(getJContentPane());
         if (desc != null) {
             tool = desc.createToolFromDefaultInterface();
             topLabel.setText(desc.getName());
             Interface iface = desc.getInterfaces().get_interface(0); // will always be the first, as we're using the default.
-           for (int i = 0; i < tool.getInput().getParameterCount(); i++) {
-               ParameterValue v = tool.getInput().getParameter(i);
-               BaseParameterDefinition def = desc.getDefinitionForValue(v,iface);
-              addField(v,def);
-           }
-           for (int i = 0; i < tool.getOutput().getParameterCount(); i++) {
-               ParameterValue v = tool.getInput().getParameter(i);
-               BaseParameterDefinition def = desc.getDefinitionForValue(v,iface);
-              addField(v,def);
-           }           
+            getParametersPanel().populate(tool,desc);
         }
 		this.setVisible(false);
 	}
     
-    
-    private String mkToolTip(BaseParameterDefinition def) {
-        StringBuffer result = new StringBuffer();
-        result.append("<html>");
-        result.append(def.getUI_Description().getContent());
-        result.append("<dl>");
-        if (def.getUCD() != null && def.getUCD().trim().length() > 0) 
-                result.append("<dt><b>").append("UCD").append("</b></dt><dd>").append(def.getUCD()).append("</dd>");
-        if (def.getUnits() != null && def.getUnits().trim().length() > 0) 
-                result.append("<dt><b>").append("Units").append("</b></dt><dd>").append(def.getUnits()).append("</dd>");
-        if (def.getType() != null) 
-            result.append("<dt><b>").append("Type").append("</b></dt><dd>").append(def.getType()).append("</dd>");
-        if (def.getSubType() != null && def.getSubType().trim().length() > 0) 
-                result.append("<dt><b>").append("Subtype").append("</b></dt><dd>").append(def.getSubType()).append("</dd>");
-        if (def.getAcceptEncodings() != null && def.getAcceptEncodings().trim().length() > 0) 
-                 result.append("<dt><b>").append("Encodings").append("</b></dt><dd>").append(def.getAcceptEncodings()).append("</dd>");        
-        if (def.getOptionList() != null) 
-                result.append("<dt><b>").append("One of").append("</b></dt><dd>").append(Arrays.asList(def.getOptionList().getOptionVal())).append("</dd>");        
-                
-        result.append("</dl></html>");
-        logger.debug(result.toString());
-        return result.toString();
-    }
-    
-	/** add a field into the builder.
-     * @param v
-     * @param def
-     */
-    private void addField(final ParameterValue v, BaseParameterDefinition def) {
-        JLabel fieldName = new JLabel();
-        fieldName.setText(def.getUI_Name());
-        JTextField input = new JTextField();
-        fieldName.setToolTipText(mkToolTip(def));
-        input.setText(def.getDefaultValue());
-        input.setColumns(40);
-        JPanel b = getParametersBox();
-        b.add(fieldName);
-        b.add(input);
-        
-        // funny work-around - listen to all changes to document, so are immediately reflected in the tool model.
-        input.getDocument().addDocumentListener(new DocumentListener() {
 
-            public void changedUpdate(DocumentEvent e) {
-                Document d = e.getDocument();
-                try {
-                    v.setValue(d.getText(0,d.getLength()));
-                } catch (BadLocationException e1) {
-                    logger.error("BadLocationException",e1);
-                }
-            }
-
-            public void insertUpdate(DocumentEvent e) {
-                Document d = e.getDocument();
-                try {
-                    v.setValue(d.getText(0,d.getLength()));
-                } catch (BadLocationException e1) {
-                    logger.error("BadLocationException",e1);
-                }                
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-                Document d = e.getDocument();
-                try {
-                    v.setValue(d.getText(0,d.getLength()));
-                } catch (BadLocationException e1) {
-                    logger.error("BadLocationException",e1);
-                }                
-            }
-        });
-    }
+   
     /**
 	 * This method initializes jContentPane
 	 * 
@@ -242,26 +182,41 @@ public class ParameterEditorDialog extends JDialog {
 	 */
 	private javax.swing.JPanel getJContentPane() {
 		if(jContentPane == null) {
-			topLabel = new JLabel();
-			jContentPane = new javax.swing.JPanel();
-			jContentPane.setLayout(new java.awt.BorderLayout());
-			jContentPane.add(getButtonBox(), java.awt.BorderLayout.SOUTH);
-			jContentPane.add(topLabel, java.awt.BorderLayout.NORTH);
-            Box b = Box.createVerticalBox();
-            b.add(getParametersBox());
-            b.add(Box.createVerticalGlue());
-			jContentPane.add(b, java.awt.BorderLayout.CENTER);
+		    jContentPane = new JPanel(){{
+		        setLayout(new java.awt.BorderLayout());
+		        add(getButtonBox(), java.awt.BorderLayout.SOUTH);            
+		        topLabel = new JLabel();
+		        add(topLabel, java.awt.BorderLayout.NORTH);   
+		        add(getParametersPanel(),BorderLayout.CENTER);
+            }};
 		}
 		return jContentPane;
 	}
     public Tool getTool() {
-        return this.tool;
+        return getParametersPanel().getTool();
     }
+    
+    public ParametersPanel getParametersPanel() {
+        if (parametersPanel == null) {
+            //@todo this in not general - quick hack
+            parametersPanel = new ParametersPanel(resourceChooser,allowIndirect);;
+        }
+        return parametersPanel;
+    }
+    
+  
+   
 }  //  @jve:decl-index=0:visual-constraint="10,10"
 
 
 /* 
 $Log: ParameterEditorDialog.java,v $
+Revision 1.3  2005/06/08 14:51:59  clq2
+1111
+
+Revision 1.2.8.1  2005/06/02 14:34:32  nw
+first release of application launcher
+
 Revision 1.2  2005/04/27 13:42:41  clq2
 1082
 

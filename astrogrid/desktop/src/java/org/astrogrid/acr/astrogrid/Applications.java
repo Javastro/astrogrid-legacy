@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.4 2005/05/12 15:59:09 clq2 Exp $
+/*$Id: Applications.java,v 1.5 2005/06/08 14:51:59 clq2 Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,10 @@ package org.astrogrid.acr.astrogrid;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CEADelegateException;
+import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
 import org.astrogrid.portal.workflow.intf.ToolValidationException;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
@@ -33,7 +35,8 @@ import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-/**
+/** Interface to the CEA system
+ * @todo decide whether to use ivorns, or string names,
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2005
  *
  */
@@ -48,6 +51,12 @@ public interface Applications {
      * @throws WorkflowInterfaceException*/
     ApplicationDescriptionSummary[] fullList() throws WorkflowInterfaceException;
 
+    /** get the application descrption for a named application */
+    public ApplicationDescription getApplicationDescription(String name) throws WorkflowInterfaceException ;
+    /** get the description for an application description */
+    public String getInfoFor(ApplicationDescription descr) ;
+        
+    
    /** access formatted iniformation about an application 
  * @param applicationName
  * @return formatted, human-readable information about the application
@@ -159,8 +168,11 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
- Revision 1.4  2005/05/12 15:59:09  clq2
- nww 1111 again
+ Revision 1.5  2005/06/08 14:51:59  clq2
+ 1111
+
+ Revision 1.2.8.5  2005/06/02 14:34:33  nw
+ first release of application launcher
 
  Revision 1.2.8.4  2005/05/12 15:49:21  nw
  litte lix

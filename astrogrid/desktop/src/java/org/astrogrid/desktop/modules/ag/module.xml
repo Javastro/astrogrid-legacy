@@ -693,7 +693,7 @@
 				<value>Query Execution Progress</value>								
 			</property>	
 			<return>
-				<description>report on the progress of this application</description>
+				<description>report on the progress of this application</description>			
 			</return>	
 			<parameter name="executionId">
 				<description>id of the application execution to query</description>
@@ -714,7 +714,7 @@
 				<description>summary of this application</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>struct</value>
+					<value>string</value>
 				</property>
 				<property>
 					<key>system.result.transformer</key>

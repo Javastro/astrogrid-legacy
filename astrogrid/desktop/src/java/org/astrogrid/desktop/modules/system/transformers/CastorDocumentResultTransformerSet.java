@@ -1,4 +1,4 @@
-/*$Id: CastorDocumentResultTransformerSet.java,v 1.4 2005/05/12 15:59:13 clq2 Exp $
+/*$Id: CastorDocumentResultTransformerSet.java,v 1.5 2005/06/08 14:51:59 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ public class CastorDocumentResultTransformerSet extends DefaultResultTransformer
         super();     
        // setPlainTransformer(TypeStructureTransformer.getInstance());
         setPlainTransformer(CastorDocumentXmlTransformer.getInstance());
+        setXmlrpcTransformer(CastorDocumentXmlTransformer.getInstance());
         setXmlTransformer(CastorDocumentXmlTransformer.getInstance());
         setHtmlTransformer(
                 TransformerUtils.chainedTransformer(
@@ -63,8 +64,11 @@ public class CastorDocumentResultTransformerSet extends DefaultResultTransformer
 
 /* 
 $Log: CastorDocumentResultTransformerSet.java,v $
-Revision 1.4  2005/05/12 15:59:13  clq2
-nww 1111 again
+Revision 1.5  2005/06/08 14:51:59  clq2
+1111
+
+Revision 1.2.20.3  2005/06/02 14:34:32  nw
+first release of application launcher
 
 Revision 1.2.20.2  2005/05/12 12:42:48  nw
 finished core applications functionality.

@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.3 2005/05/12 15:59:13 clq2 Exp $
+/*$Id: TypeStructureTransformer.java,v 1.4 2005/06/08 14:51:59 clq2 Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
@@ -62,7 +63,7 @@ public class TypeStructureTransformer implements Transformer {
         if (arg0 instanceof JobURN) { // simple castor type - just get value.
             return ((JobURN)arg0).getContent();
         }
-        if ( arg0 instanceof Workflow /*|| arg0 instanceof Tool*/) { // special treatment for castor types..
+        if ( arg0 instanceof Workflow || arg0 instanceof Tool) { // special treatment for castor types..
             try {
                 StringWriter sw = new StringWriter();
                 Marshaller.marshal(arg0,sw);
@@ -81,6 +82,7 @@ public class TypeStructureTransformer implements Transformer {
         }
         
         if (arg0 instanceof URL
+                || arg0 instanceof URI
                 || arg0 instanceof Ivorn 
                 || arg0 instanceof org.astrogrid.filemanager.common.Ivorn 
                 || arg0 instanceof NodeIvorn) {
@@ -138,7 +140,6 @@ public class TypeStructureTransformer implements Transformer {
         for (int i =0; i < props.length; i++) {            
             String name = props[i].getName();
             // @todo find way to break the cycles here for filemanagerNode.
-            System.out.println(name);
             if (name == null || "class".equals(name)) { // don't want to persist this one - causes an infinite loop.
                 continue;
             } // don't want the following either.
@@ -174,8 +175,11 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
-Revision 1.3  2005/05/12 15:59:13  clq2
-nww 1111 again
+Revision 1.4  2005/06/08 14:51:59  clq2
+1111
+
+Revision 1.2.20.2  2005/06/02 14:34:32  nw
+first release of application launcher
 
 Revision 1.2.20.1  2005/05/12 15:49:21  nw
 litte lix

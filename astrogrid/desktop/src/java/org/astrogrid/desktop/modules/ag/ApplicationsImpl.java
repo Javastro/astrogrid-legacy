@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.5 2005/05/12 15:59:12 clq2 Exp $
+/*$Id: ApplicationsImpl.java,v 1.6 2005/06/08 14:51:59 clq2 Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CEADelegateException;
@@ -115,9 +116,18 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
         return getAppReg().listUIApplications();
     }
     
+    public ApplicationDescription getApplicationDescription(String name) throws WorkflowInterfaceException {
+        return getAppReg().getDescriptionFor(name);
+    }
+    
+    
   public String getInfo(Ivorn applicationName) throws WorkflowInterfaceException {
         ApplicationDescription descr = getAppReg().getDescriptionFor(munge(applicationName));
         logger.debug("Created application description");
+        return getInfoFor(descr);
+  }
+  
+  public String getInfoFor(ApplicationDescription descr) {      
         StringBuffer result = new StringBuffer();
         String vr = "http://www.ivoa.net/xml/VOResource/v0.10";
          result.append("Application: ")
@@ -308,7 +318,7 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
         if (document.getName().startsWith("ivo://")) {
             document.setName(document.getName().substring(6));
         }        
-        Ivorn application = new Ivorn(document.getName());
+        Ivorn application = new Ivorn("ivo://" + document.getName()); // gah
         ResourceData[] arr = listProvidersOf(application);
         ResourceData target = null;
         for (int i = 0; i < arr.length ; i++) {
@@ -367,8 +377,12 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
     public String checkExecutionProgress(String executionId) throws CEADelegateException, RegistryException, URISyntaxException {
         String endpoint = getReg().getEndPointByIdentifier(getService(executionId));
         CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);
-        MessageType message =  delegate.queryExecutionStatus(getId(executionId));
-        return message.getPhase().toString();
+        /** returns wrong type when erred - so try something different for now.. 
+        MessageType message =  delegate.queryExecutionStatus(getId(executionId));       
+        return message.getPhase();
+        */
+        ExecutionSummaryType s = delegate.getExecutionSumary(getId(executionId));
+        return s.getStatus().toString();
     }
     
     
@@ -394,8 +408,11 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
 
 /* 
 $Log: ApplicationsImpl.java,v $
-Revision 1.5  2005/05/12 15:59:12  clq2
-nww 1111 again
+Revision 1.6  2005/06/08 14:51:59  clq2
+1111
+
+Revision 1.3.8.4  2005/06/02 14:34:32  nw
+first release of application launcher
 
 Revision 1.3.8.3  2005/05/12 15:49:22  nw
 litte lix

@@ -99,17 +99,17 @@
 
 		</method>		
 		</component>		
-		
-			<component name="jobMonitor" 
-		implementationClass="org.astrogrid.desktop.modules.ui.JobMonitorImpl" 
-		interfaceClass="org.astrogrid.acr.ui.JobMonitor" >
-		<description>View progress of jobs</description>
+
+	<component name="applicationLauncher" 
+		implementationClass="org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl" 
+		interfaceClass="org.astrogrid.acr.ui.ApplicationLauncher" >
+		<description>Launch CEA Applications</description>
 	<property>
 		<key>icon</key>
-		<value>thread_and_monitor_view.gif</value>
+		<value>thread_view.gif</value>
 	</property>				
 		<method name="show">
-			<description>Run the Monitor GUI </description>
+			<description>Run the Launcher GUI </description>
 			<property>
 				<key>system.ui.menu.entry</key>
 				<value>Run..</value>
@@ -119,6 +119,49 @@
 	</property>					
 			</property>			
 		
+		</method>
+		<method name="hide">
+			<description>Hide the Monitor GUI </description>
+
+		</method>		
+	
+		</component>		
+		
+			<component name="jobMonitor" 
+		implementationClass="org.astrogrid.desktop.modules.ui.JobMonitorImpl" 
+		interfaceClass="org.astrogrid.acr.ui.JobMonitor" >
+		<description>View progress of jobs</description>
+	<property>
+		<key>icon</key>
+		<value>thread_and_monitor_view.gif</value>
+	</property>		
+	  <method name="displayApplicationTab">
+			<descripiption>bring the application tab uppermost</descripiption>
+		</method>
+		<method name="displayJesTab">
+			<description>bring the jes tab uppermost</description>
+		</method>		
+		<method name="addApplication">
+			<description>Add an application to be monitored</description>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Add application</value>			
+			</property>			
+			<property>
+		<key>icon</key>
+		<value>add_obj.gif</value>
+	</property>					
+			</method>
+		<method name="show">
+			<description>Run the Monitor GUI </description>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Run..</value>			
+			</property>			
+			<property>
+		<key>icon</key>
+		<value>run_tool.gif</value>
+	</property>		
 		</method>
 		<method name="hide">
 			<description>Hide the Monitor GUI </description>

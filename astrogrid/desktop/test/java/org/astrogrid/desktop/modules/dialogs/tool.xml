@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<v0:tool interface="adql" name="astrogrid.mssl/trace_dsa"
+    xmlns:v0="http://www.astrogrid.org/schema/AGWorkflow/v1"
+    xmlns:v1="http://www.astrogrid.org/schema/ExecutionRecord/v1"
+    xmlns:v2="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
+    xmlns:v3="http://www.astrogrid.org/schema/Credentials/v1"
+    xmlns:v4="http://www.astrogrid.org/schema/CEATypes/v1" xmlns:x0="http://www.w3.org/2001/XMLSchema">
+    <v0:input>
+        <v0:parameter name="Query">
+            <v2:value>Query</v2:value>
+        </v0:parameter>
+        <v0:parameter name="Format">
+            <v2:value>VOTABLE</v2:value>
+        </v0:parameter>
+    </v0:input>
+    <v0:output>
+        <v0:parameter indirect="true" name="Result">
+            <v2:value/>
+        </v0:parameter>
+    </v0:output>
+</v0:tool>

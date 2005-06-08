@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.4 2005/05/12 15:59:08 clq2 Exp $
+/*$Id: ResourceChooserDialog.java,v 1.5 2005/06/08 14:51:59 clq2 Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -98,7 +98,7 @@ public class ResourceChooserDialog extends JDialog {
 	private JTextField getUrlField() {
 		if (urlField == null) {
 			urlField = new JTextField();
-            urlField.setEditable(false);
+            urlField.setEditable(true);
             urlField.setColumns(50);
 
 		}
@@ -345,8 +345,11 @@ public class ResourceChooserDialog extends JDialog {
 
 /* 
 $Log: ResourceChooserDialog.java,v $
-Revision 1.4  2005/05/12 15:59:08  clq2
-nww 1111 again
+Revision 1.5  2005/06/08 14:51:59  clq2
+1111
+
+Revision 1.2.8.2  2005/06/02 14:34:32  nw
+first release of application launcher
 
 Revision 1.2.8.1  2005/05/09 14:51:02  nw
 renamed to 'myspace' and 'workbench'

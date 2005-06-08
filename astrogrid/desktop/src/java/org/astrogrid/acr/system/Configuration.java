@@ -1,4 +1,4 @@
-/*$Id: Configuration.java,v 1.4 2005/05/12 15:59:12 clq2 Exp $
+/*$Id: Configuration.java,v 1.5 2005/06/08 14:51:59 clq2 Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,12 +59,20 @@ public interface Configuration {
      * @throws BackingStoreException
      */
     public abstract Map list() throws BackingStoreException;
+
+    /** remove a previously defined key.
+     * @param string
+     */
+    public abstract void removeKey(String string);
 }
 
 /* 
  $Log: Configuration.java,v $
- Revision 1.4  2005/05/12 15:59:12  clq2
- nww 1111 again
+ Revision 1.5  2005/06/08 14:51:59  clq2
+ 1111
+
+ Revision 1.2.8.2  2005/06/02 14:34:32  nw
+ first release of application launcher
 
  Revision 1.2.8.1  2005/05/11 11:55:19  nw
  javadoc

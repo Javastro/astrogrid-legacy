@@ -1,4 +1,4 @@
-/*$Id: ResultDialog.java,v 1.3 2005/05/12 15:59:08 clq2 Exp $
+/*$Id: ResultDialog.java,v 1.4 2005/06/08 14:51:59 clq2 Exp $
  * Created on 10-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -79,6 +79,7 @@ public class ResultDialog extends JDialog {
     public ResultDialog(Component parentComponent, Object message) {
         this();
         getResultDisplay().setText(message.toString());
+        getResultDisplay().setCaretPosition(0);
         setLocationRelativeTo(parentComponent);
     }
     
@@ -113,8 +114,11 @@ public class ResultDialog extends JDialog {
 
 /* 
 $Log: ResultDialog.java,v $
-Revision 1.3  2005/05/12 15:59:08  clq2
-nww 1111 again
+Revision 1.4  2005/06/08 14:51:59  clq2
+1111
+
+Revision 1.1.2.3  2005/06/02 14:34:32  nw
+first release of application launcher
 
 Revision 1.1.2.2  2005/05/11 14:25:25  nw
 javadoc, improved result transformers for xml

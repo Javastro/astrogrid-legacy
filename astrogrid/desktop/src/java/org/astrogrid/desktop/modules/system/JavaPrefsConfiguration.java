@@ -1,4 +1,4 @@
-/*$Id: JavaPrefsConfiguration.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: JavaPrefsConfiguration.java,v 1.4 2005/06/08 14:51:59 clq2 Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -78,6 +78,13 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
         return true;
     }
     
+    /**
+     * @see org.astrogrid.acr.system.Configuration#removeKey(java.lang.String)
+     */
+    public void removeKey(String key) {
+        userPrefs.remove(key);
+    }
+    
     /**@@MethodDoc("getKey","get a value for a confuguration key")
      * @@.return ReturnDoc("Key value")
      * @@.key ParamDoc("key","key to retrive value for")     
@@ -132,11 +139,19 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
     public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
         this.userPrefs.addPreferenceChangeListener(pcl);
     }
+
+ 
 }
 
 
 /* 
 $Log: JavaPrefsConfiguration.java,v $
+Revision 1.4  2005/06/08 14:51:59  clq2
+1111
+
+Revision 1.3.8.1  2005/06/02 14:34:32  nw
+first release of application launcher
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 
