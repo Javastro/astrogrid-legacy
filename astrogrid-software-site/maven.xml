@@ -1,89 +1,90 @@
 <?xml version="1.0"?>
-<!-- $Id: maven.xml,v 1.6 2005/06/07 23:50:45 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.7 2005/06/08 14:36:50 nw Exp $ -->
 <!-- extension maven script -->
 <project  xmlns:deploy="deploy"  xmlns:j="jelly:core">
-	<!-- astrogrid goals for nightly build -->
-	<goal name="astrogrid-clean" prereqs="clean"/>
-	<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
-		<attainGoal name="site:sshdeploy"/>
-	</goal>
-	<goal name="astrogrid-build-site">
-		<attainGoal name="site"/>
-	</goal>
-	<goal name="astrogrid-deploy-snapshot">
-		<echo message="nothing to do"/>
-	</goal>
-	<goal name="astrogrid-build-snapshot">
-		<echo message="nothing to do"/>
-	</goal>
-	<goal name="astrogrid-install-snapshot">
-		<echo message="nothing to do"/>
-	</goal>
-	<goal name="astrogrid-deploy-artifact">
-		<echo message="nothing to do"/>
-	</goal>
-	<goal name="astrogrid-build-artifact">
-		<echo message="nothing to do"/>
-	</goal>
-	<goal name="astrogrid-install-artifact">
-		<echo message="nothing to do"/>
-	</goal>
-	<!--
-	  This pregoal takes any simple html docs in the xdocs folder and turns them into xdoc xml,
-	  before they are turned back into maven-style html docs.  Why?  html is easier to write in
-	  a WYSIWIG editor than xdoc xml
-	   - for some maybe. I'd prefer to use xdoc, and leave html as is.
+        <!-- astrogrid goals for nightly build -->
+        <goal name="astrogrid-clean" prereqs="clean"/>
+        <goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
+                <attainGoal name="site:sshdeploy"/>
+        </goal>
+        <goal name="astrogrid-build-site">
+                <attainGoal name="pdf" />
+                <attainGoal name="site"/>
+        </goal>
+        <goal name="astrogrid-deploy-snapshot">
+                <echo message="nothing to do"/>
+        </goal>
+        <goal name="astrogrid-build-snapshot">
+                <echo message="nothing to do"/>
+        </goal>
+        <goal name="astrogrid-install-snapshot">
+                <echo message="nothing to do"/>
+        </goal>
+        <goal name="astrogrid-deploy-artifact">
+                <echo message="nothing to do"/>
+        </goal>
+        <goal name="astrogrid-build-artifact">
+                <echo message="nothing to do"/>
+        </goal>
+        <goal name="astrogrid-install-artifact">
+                <echo message="nothing to do"/>
+        </goal>
+        <!--
+          This pregoal takes any simple html docs in the xdocs folder and turns them into xdoc xml,
+          before they are turned back into maven-style html docs.  Why?  html is easier to write in
+          a WYSIWIG editor than xdoc xml
+           - for some maybe. I'd prefer to use xdoc, and leave html as is.
      -->
-	<preGoal name="xdoc:jelly-transform">
+        <preGoal name="xdoc:jelly-transform">
       <attainGoal name="html2xdoc"/>
       <attainGoal name="faq"/>
-	</preGoal>
-	
-	<!-- copy war files into jnlp folder, and unpackage each of them 
-	
-	todo - move this out of release project, and into aggregate project.
-	
-	-->
-	
-	<postGoal name="xdoc:copy-user-resources">
-		                <deploy:copy-deps todir="${maven.docs.dest}/jnlp" />
-		                <!-- for each file, need to create subdir, and then unwar into that subdir - why is nothing ever easy? -->		                
-				        <fileScanner var="wars">
-		    	            <fileset dir="${maven.docs.dest}/jnlp">
-	            	            <include name="*.war" />
-		            	    </fileset>
-			        	</fileScanner><!-- (-[^-]*\d[^-]*-)|(.war) -->
-				        <j:forEach var="war" items="${wars.iterator()}">	<!-- ${war} will contain a java.io.File -->
-				        	<j:set var="warPrefix" value='${war.getName().replaceAll("(-[^-]*\d[^-]*)|(\.war)","")}' /><!-- take the version number off the warfile name - assumes each part of a version num will have at least one digit.-->
-				        	<mkdir dir="${maven.docs.dest}/jnlp/${warPrefix}" />
-				        	<unwar src="${war}" dest="${maven.docs.dest}/jnlp/${warPrefix}" />
-				        </j:forEach>
-				        <!-- clean up -->
-				        <delete>
-				        	<fileset dir="${maven.docs.dest}/jnlp">
-				        		<include name="*.war" />
-				        	</fileset>
-				        </delete>
-	</postGoal>
-	
-	<!-- When the site has been built, add to it XML schemata which we need to publish at fixed URLs. -->
-	<postGoal name="site">
-		<attainGoal name="unpack-schema"/>
-	</postGoal>
-	
-	<!-- Extract the XML schemata from jars specified in the POM and add them to the web site. -->
-	<goal name="unpack-schema">
-		<j:forEach var="item" items="${pom.artifacts}">
-			<j:if test="${item.dependency.getProperty('jar-with-schema')=='true'}">
-				<unjar src="${item.path}" dest="${maven.docs.dest}">
-					<patternset>
-						<include name="schema"/>
-						<include name="schema/*"/>
-						<include name="schema/**/*"/>
-					</patternset>
-				</unjar>
-			</j:if>
-		</j:forEach>
+        </preGoal>
+
+        <!-- copy war files into jnlp folder, and unpackage each of them
+
+        todo - move this out of release project, and into aggregate project.
+
+        -->
+
+        <postGoal name="xdoc:copy-user-resources">
+                                <deploy:copy-deps todir="${maven.docs.dest}/jnlp" />
+                                <!-- for each file, need to create subdir, and then unwar into that subdir - why is nothing ever easy? -->
+                                        <fileScanner var="wars">
+                                    <fileset dir="${maven.docs.dest}/jnlp">
+                                    <include name="*.war" />
+                                    </fileset>
+                                        </fileScanner><!-- (-[^-]*\d[^-]*-)|(.war) -->
+                                        <j:forEach var="war" items="${wars.iterator()}">        <!-- ${war} will contain a java.io.File -->
+                                                <j:set var="warPrefix" value='${war.getName().replaceAll("(-[^-]*\d[^-]*)|(\.war)","")}' /><!-- take the version number off the warfile name - assumes each part of a version num will have at least one digit.-->
+                                                <mkdir dir="${maven.docs.dest}/jnlp/${warPrefix}" />
+                                                <unwar src="${war}" dest="${maven.docs.dest}/jnlp/${warPrefix}" />
+                                        </j:forEach>
+                                        <!-- clean up -->
+                                        <delete>
+                                                <fileset dir="${maven.docs.dest}/jnlp">
+                                                        <include name="*.war" />
+                                                </fileset>
+                                        </delete>
+        </postGoal>
+
+        <!-- When the site has been built, add to it XML schemata which we need to publish at fixed URLs. -->
+        <postGoal name="site">
+                <attainGoal name="unpack-schema"/>
+        </postGoal>
+
+        <!-- Extract the XML schemata from jars specified in the POM and add them to the web site. -->
+        <goal name="unpack-schema">
+                <j:forEach var="item" items="${pom.artifacts}">
+                        <j:if test="${item.dependency.getProperty('jar-with-schema')=='true'}">
+                                <unjar src="${item.path}" dest="${maven.docs.dest}">
+                                        <patternset>
+                                                <include name="schema"/>
+                                                <include name="schema/*"/>
+                                                <include name="schema/**/*"/>
+                                        </patternset>
+                                </unjar>
+                        </j:if>
+                </j:forEach>
   </goal>
-	
+
 </project>

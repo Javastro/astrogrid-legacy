@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="AstroGrid">
   <title>AstroGrid Project</title>
-
+<!-- navigation descriptor for pdf file.
+try to keep in synch with navigation.xml
+-->
   <body>
-    <links>
-      <item name="Top" href="/index.html" />
-      <item name="Users" href="/userdocs/index.html" />
-      <item name="Installers" href="/installdocs/index.html" />
-      <item name="Developers" href="/developerdocs/index.html" />
-    </links>
+
 
 <!--
         Top menu
@@ -169,30 +166,7 @@
       <item name="Contacts" href="/team-list.html" />
     </menu><!-- end further information -->
 
-<!--
-        other stuff,not part of the document - meta documentation
-        -->
 
-    <menu name="Other Formats">
-      <item name="PDF" href="/astrogrid-release-1.1.pdf" />
-    </menu>
-
-    <menu name="Previous Releases">
-<!-- blank for now - on later releases will have links back to previous releases -->
-    </menu>
-
-    <menu name="About this documentation">
-      <item name="Editing" href="/about.html" />
-      <item name="Linkcheck Report" href="/linkcheck.html" />
-      <item name="Corrections &amp; Broken Links"
-      href="mailto:clq@star.le.ac.uk" />
-    </menu>
-
-    <menu name="Grid Status">
-      <item name="Deployed sites" target="_blank"
-      href="http://wiki.astrogrid.org/bin/view/Deploy/DeployedComponents" />
-      <item name="Site status" href="/monitor/status.xml" target="_blank" />
-    </menu>
   </body>
 </project>
 
