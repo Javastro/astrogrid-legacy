@@ -38,18 +38,18 @@ import org.astrogrid.store.Ivorn;
 
 /**
  * @author Phil Nicolson (pjn3@star.le.ac.uk) Jan 05
- * @version $Name:  $Revision: 1.10 $Date:
- * @version $Name:  $Revision: 1.10 $Date:
+ * @version $Name:  $Revision: 1.11 $Date:
+ * @version $Name:  $Revision: 1.11 $Date:
  */
 public class ResourceAction extends AbstractAction {
 
   /** Compile-time switch used to turn tracing on/off. 
    * Set this to false to eliminate all trace statements within the byte code.*/
-  private static final boolean TRACE_ENABLED = true;
+  private static final boolean TRACE_ENABLED = false;
 
   /** Compile-time switch used to turn certain debugging statements on/off. 
    * Set this to false to eliminate these debugging statements within the byte code.*/
-  private static final boolean DEBUG_ENABLED = true;
+  private static final boolean DEBUG_ENABLED = false;
 
   private static Log log = LogFactory.getLog("ResourceAction");     
 
@@ -456,13 +456,15 @@ public class ResourceAction extends AbstractAction {
         taskJoin = request.getParameter( PARAM_TASK_JOIN ).trim();        
 
         // Lets build up the XML for a query.
-        sqlQuery = " Select * from Registry where ( ( @xsi:type = 'cea:CeaApplicationType' or ";
-        sqlQuery += " @xsi:type = 'cea:CeaHttpApplicationType' )";
+        sqlQuery = " Select * from Registry where ( @xsi:type = 'cea:CeaApplicationType' or ";
+        sqlQuery += " @xsi:type = 'cea:CeaHttpApplicationType' ";
+        sqlQuery += ") and (@status = 'active'";
+                
         
 		// is this an empty search?
 		if ( authorityId.length() > 0 || taskTitle.length() > 0 || description.length() > 0 )
 		{				
-        sqlQuery += " and (";
+        sqlQuery += " and (";       
 
           if ( authorityId.length() > 0 ) 
           {
@@ -487,8 +489,9 @@ public class ResourceAction extends AbstractAction {
 		
           sqlQuery += ")";
 		}		                 	
-          
+		         
 		sqlQuery += ")"; // End of query
+trace("xxxxx sql: " + sqlQuery);		
 		
       }
       catch(Exception ex){

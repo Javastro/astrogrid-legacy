@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistry.java,v 1.13 2005/04/27 13:43:17 clq2 Exp $
+/*$Id: RegistryApplicationRegistry.java,v 1.14 2005/06/09 16:33:56 clq2 Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,8 +89,9 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
     */
     
     public final static String LIST_QUERY_STRING= "Select * from Registry where " +
-    " @xsi:type = 'cea:CeaApplicationType' or " +
-    " @xsi:type = 'cea:CeaHttpApplicationType'";
+    " (@xsi:type = 'cea:CeaApplicationType' or " +
+    " @xsi:type = 'cea:CeaHttpApplicationType') " +
+    " and @status = 'active'";
     
     public String[] listApplications() throws WorkflowInterfaceException {
         try {
@@ -220,6 +221,12 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
 
 /* 
 $Log: RegistryApplicationRegistry.java,v $
+Revision 1.14  2005/06/09 16:33:56  clq2
+1120
+
+Revision 1.13.4.1  2005/06/01 14:22:52  pjn3
+LIST_QUERY_STRING now includes check for status = active
+
 Revision 1.13  2005/04/27 13:43:17  clq2
 1082
 
