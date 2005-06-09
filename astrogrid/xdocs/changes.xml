@@ -15,7 +15,9 @@
   </release>
 
   <release version="(Undertest)">  
-		    
+	<action dev="dave" type="fix" issue="xxxx">
+  	      <b>dave-dev-200506081212</b> - Bug fixes to the pal metadata generator.No external side effects expected.
+     	</action>	    
     <action dev="pjn3" type="fix" issue="1200">
   	  <b>astrogrid/workflow + portal resources</b> Branch <em>portalRE_pjn_1200 + workflow_pjn_1200</em>
   	  Only active tasks returned from registry in both workflow builder and resource browser. 
