@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.10 2005/03/29 19:53:40 mch Exp $
+ * $Id: VoResourceSupport.java,v 1.11 2005/06/09 08:53:58 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -70,9 +70,10 @@ public class VoResourceSupport {
 
    /** Constructs  a VoResource opening tag with the given resource type */
    public String makeVoResourceElement(String vorType, String namespaces) {
-      return "<"+VORESOURCE_ELEMENT+
-         " xmlns:vor='http://www.ivoa.net/xml/VOResource/v0.10' "+
-         " xmlns='http://www.ivoa.net/xml/VOResource/v0.10' "+
+      return "<" + VORESOURCE_ELEMENT + " " +
+         "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
+         "xmlns:vor='http://www.ivoa.net/xml/VOResource/v0.10' "+
+         "xmlns='http://www.ivoa.net/xml/VOResource/v0.10' "+
          namespaces+
          " status='active' updated='"+toRegistryForm(new Date())+"' xsi:type='"+vorType+"'"+
          ">";
@@ -134,6 +135,8 @@ public class VoResourceSupport {
    
    /** Converts date to string suitable for registry */
    public String toRegistryForm(Date givenDate) {
+/*
+ *
       //deprecated methods
       //long minsOffset = aDate.getTimezoneOffset();
       //Date gmtDate = new Date( aDate.getTime() + aDate.getTimezoneOffset());
@@ -152,10 +155,15 @@ public class VoResourceSupport {
       TimeZone localZone = localCalender.getTimeZone();
       Calendar ukcalender = new GregorianCalendar(Locale.ENGLISH);
       TimeZone gmtZone = TimeZone.getTimeZone("GMT");
-
-      return "";
-   }
-  
+ *
+ */
+      //
+      // Copied from registry code (probably won't work outside the UK).
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+      return sdf.format(
+          new Date()
+          );
+    }
 }
 
 

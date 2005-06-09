@@ -1,5 +1,5 @@
 /*
- * $Id: VoTypes.java,v 1.3 2005/05/27 16:21:05 clq2 Exp $
+ * $Id: VoTypes.java,v 1.4 2005/06/09 08:53:58 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -36,6 +36,29 @@ public class VoTypes  {
       LONG, BOOLEAN, BIT, UBYTE, CHAR, UNICHAR, DOUBLE, FLOAT, DOUBLECOMPLEX, FLOATCOMPLEX, INT, SHORT
    };
    
+
+   /**
+    * Returns a VODataService <datatype> fragment for the given java class.
+    * Patch fix - Full description needs the arraysize.
+    *
+    */
+   public static String getVoTypeXml(Class javatype) {
+      if (javatype == null) {
+         throw new IllegalArgumentException("Null type given to work out VoType");
+      }
+      else if (javatype == String.class)  {  return "<dataType arraysize='*'>" + CHAR    + "</dataType>"; }
+      else if (javatype == Integer.class) {  return "<dataType>"               + INT     + "</dataType>"; }
+      else if (javatype == Long.class)    {  return "<dataType>"               + INT     + "</dataType>"; }
+      else if (javatype == Float.class)   {  return "<dataType>"               + FLOAT   + "</dataType>"; }
+      else if (javatype == Double.class)  {  return "<dataType>"               + FLOAT   + "</dataType>"; }
+      else if (javatype == Boolean.class) {  return "<dataType>"               + BOOLEAN + "</dataType>"; }
+      else if (javatype == Date.class)    {  return "<dataType arraysize='*'>" + CHAR    + "</dataType>"; }
+      else {
+         throw new IllegalArgumentException("Don't know what VOType the java class "+javatype+" maps to");
+      }
+   }
+
+
    
    /**Returns the 'VO Type' for the given java class.  NOTE that this is not
     * sufficient for Votable, which needs the arraysize also set for strings
@@ -101,6 +124,14 @@ public class VoTypes  {
 
 /*
  $Log: VoTypes.java,v $
+ Revision 1.4  2005/06/09 08:53:58  clq2
+ 200506081212
+
+ Revision 1.3.6.1  2005/06/09 01:31:57  dave
+ Fixed bugs in the metedata generator(s).
+ Note - updated Date patch may not work in other timezones.
+ Note - <resource> element may not be the right one.
+
  Revision 1.3  2005/05/27 16:21:05  clq2
  mchv_1
 

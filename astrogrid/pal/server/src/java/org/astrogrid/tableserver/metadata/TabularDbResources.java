@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.8 2005/05/27 16:21:14 clq2 Exp $
+ * $Id: TabularDbResources.java,v 1.9 2005/06/09 08:53:58 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,10 +30,12 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
       TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
 
       StringBuffer tabularDb = new StringBuffer(
-         makeVoResourceElement("tdb:TabularDB",
-                                 "xmlns:vod='http://www.ivoa.net/xml/VODataService/v0.5' "+
-                                 "xmlns:tdb ='urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3' ")+
-         makeCore("TDB")+
+         makeVoResourceElement(
+             "tdb:TabularDB",
+             "xmlns:vod='http://www.ivoa.net/xml/VODataService/v0.5' "+
+             "xmlns:tdb ='urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3' "
+             ) +
+         makeCore("TDB") +
          "<tdb:db>"
       );
       
@@ -63,6 +65,16 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
                   "<name>"+columns[c].getName()+"</name>"+
                   "<description>"+XmlPrinter.transformSpecials(columns[c].getDescription())+"</description>"
             );
+
+         //
+         // Patch fix - Moved the xml fragment generation to VoTypes.
+         // Todo - Need acces to the column size for strings.
+         // Todo - Need to create a VoType format for dates.
+         tabularDb.append(
+             VoTypes.getVoTypeXml(columns[c].getJavaType())
+             );
+/*
+ *
             String datatype = VoTypes.getVoType(columns[c].getJavaType());
             if (datatype.equals("char")) {
                tabularDb.append(
@@ -74,7 +86,8 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
                      "<datatype>"+datatype+"</datatype>"
                );
             }
-         
+ *
+ */         
             if ((columns[c].getUcd("1") != null) && (columns[c].getUcd("1").trim().length()>0)) {
                tabularDb.append(
                   "<ucd>"+columns[c].getUcd("1")+"</ucd>"

@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.7 2005/03/24 17:50:48 mch Exp $
+ * $Id: CeaResources.java,v 1.8 2005/06/09 08:53:58 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -31,8 +31,11 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
    public String getVoResource() throws IOException {
 
       String ceaService =
-         makeVoResourceElement("cea:CeaServiceType",
-                              "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.2' ")+
+         makeVoResourceElement(
+             "cea:CeaServiceType",
+             "xmlns:vs='http://www.ivoa.net/xml/VODataService/v0.5' " +
+             "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.2' "
+             ) +
          makeCore("ceaService")+
          "<interface xsi:type='vs:WebService'>"+
             "<accessURL use='full'>"+
@@ -49,10 +52,12 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
       
 
       String ceaApplication =
-         makeVoResourceElement("cea:CeaApplicationType",
-                                 "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.2' "+
-                                 "xmlns:ceapd='http://www.astrogrid.org/schema/AGParameterDefinition/v1' "+
-                                 "xmlns:ceab='http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1' ")+
+         makeVoResourceElement(
+             "cea:CeaApplicationType",
+             "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.2' "   +
+             "xmlns:ceapd='http://www.astrogrid.org/schema/AGParameterDefinition/v1' " +
+             "xmlns:ceab='http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1' "
+             ) +
          makeCore("ceaApplication")+
          "<cea:ApplicationDefinition>"+
             "<cea:Parameters>"+

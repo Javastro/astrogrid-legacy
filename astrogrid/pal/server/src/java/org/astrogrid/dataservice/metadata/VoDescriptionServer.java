@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.10 2005/05/27 16:21:05 clq2 Exp $
+ * $Id: VoDescriptionServer.java,v 1.11 2005/06/09 08:53:58 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -44,13 +44,21 @@ public class VoDescriptionServer {
    
    public static final String QUERYABLE_PLUGIN = "datacenter.queryable.plugin";
    public final static String RESOURCE_PLUGIN_KEY = "datacenter.resource.plugin";
-   
+
+/*   
    public final static String VODESCRIPTION_ELEMENT =
-               "<VOResources  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "+
-                              "xmlns:vor='http://www.ivoa.net/xml/VOResource/v0.10' "+
-                              "xmlns='http://www.ivoa.net/xml/VOResource/v0.10' "+  //default namespace
-                    ">";
-   public final static String VODESCRIPTION_ELEMENT_END ="</VOResources>";
+               "<VOResources " +
+                   "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
+                   "xmlns:vor='http://www.ivoa.net/xml/VOResource/v0.10' " +
+                   "xmlns='http://www.ivoa.net/xml/VOResource/v0.10' " + //default namespace
+                   ">";
+ */
+
+   //
+   // Patch fix - found by experimenting with current registry.
+   // Probably not the right element, but it works.
+   public final static String VODESCRIPTION_ELEMENT     = "<resources>" ;
+   public final static String VODESCRIPTION_ELEMENT_END = "</resources>" ;
 
 
    /**
@@ -250,9 +258,14 @@ public class VoDescriptionServer {
       }
 
       //add the standard ones - cea, cone etc
-      if (!ceaDone) { checkAndAppendResource(vod, new CeaResources()); }
-      checkAndAppendResource(vod, new ConeResources());
-//      addResources(vod, new SkyNodeResourceServer());
+      if (!ceaDone)
+          {
+          checkAndAppendResource(vod, new CeaResources());
+          }
+//
+// Removed cone for now - XML syntax is wrong.
+//    checkAndAppendResource(vod, new ConeResources());
+//    addResources(vod, new SkyNodeResourceServer());
       
       //finish vod element
       vod.append(VODESCRIPTION_ELEMENT_END);

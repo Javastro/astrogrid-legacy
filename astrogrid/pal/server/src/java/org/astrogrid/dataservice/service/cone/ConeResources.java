@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.7 2005/03/24 17:50:48 mch Exp $
+/*$Id: ConeResources.java,v 1.8 2005/06/09 08:53:58 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,10 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
    public String getVoResource() throws IOException {
 
       String cone =
-         makeVoResourceElement("ServiceType", "")+
+         makeVoResourceElement(
+             "ServiceType",
+             ""
+             )+
          makeCore("cone")+
       
         //"<Subject>Stars</Subject>"+ //etc
@@ -53,6 +56,14 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: ConeResources.java,v $
+ Revision 1.8  2005/06/09 08:53:58  clq2
+ 200506081212
+
+ Revision 1.7.22.1  2005/06/09 01:31:57  dave
+ Fixed bugs in the metedata generator(s).
+ Note - updated Date patch may not work in other timezones.
+ Note - <resource> element may not be the right one.
+
  Revision 1.7  2005/03/24 17:50:48  mch
  Fixed various resource bits
 
