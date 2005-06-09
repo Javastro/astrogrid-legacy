@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Project</title>
+
+  <body>
+    <links>
+       <item name="AstroGrid"            href="http://www.astrogrid.org"/>
+       <item name="Components"           href="../index.html"/>
+       <item name="Portal"               href="admin-quickstart/index.html"/>
+    </links>
+       
+    <menu name="Administrator Quickstart">
+       <item name="Overview" href="admin-quickstart/index.html"/>
+       <item name="Download" href="admin-quickstart/download.html"/>
+       <item name="Installation" href="admin-quickstart/install.html"/>
+       <item name="Configuration" href="admin-quickstart/configure.html"/>
+       <item name="Upgrading" href="admin-quickstart/upgrade.html"/>
+       <item name="Uninstallation" href="admin-quickstart/uninstall.html"/>
+    </menu>
+   
+    <menu name="Administrator Reference">
+	<item name="Reference guide" href="admin-reference/reference.html"/>
+    </menu>
+
+    <menu name="User Guide">
+	<item name="Introduction" href="userguide/introduction.html"/>
+	<item name="Logon" href="userguide/logon.html"/>	
+	<item name="Home Page" href="userguide/homepage.html"/>
+	<item name="MySpace Explorer" href="userguide/myspace-explorer.html"/>	
+	<item name="Resource Browser" href="userguide/resource-browser.html"/>	
+	<item name="Query Editor" href="userguide/query-editor.html"/>	
+	<item name="Workflow Editor" href="userguide/workflow-editor.html"/>	
+	<item name="Job Monitor" href="userguide/job-monitor.html"/>					
+    </menu>
+
+  </body>
+</project>

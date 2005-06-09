@@ -1,14 +1,54 @@
-<?xml version="1.0"?>
-
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <document>
-    <properties>
-        <title>Portal Pages</title>
+<properties>
+        <author email="jl99@star.le.ac.uk">Jeff Lusted</author>
         <author email="jdt@roe.ac.uk">John Taylor</author>
-    </properties>
-    <body>
-        <section name="Installing the Portal">
+        <title>Installation</title>
+</properties>
+
+<body>
+There are in fact few software prerequisites for installing the portal.
+However, as the portal is the web-based user-interface to Astrogrid services, 
+related Astrogrid components need to be installed and configuration undertaken before the portal becomes usable.
+Also, a user requires a userid within an existing community and an allocation of file space within the MySpace 
+virtual file system before an effective logon can be achieved.
+
+<section name="Prerequisites">
+<p>
+
+<ul> 
+<li>JDK1.4 or above</li> 
+<li>A suitable web container. Astrogrid was developed using <a ref="http://jakarta.apache.org/tomcat/">Tomcat. </a>
+A Tomcat version 5.0+ is the recommendation.</li> 
+</ul>
+
+</p>
+</section>
+
+<section name="Related components"><p>
+A fully functioning portal depends on all components within Astrogrid being deployed. 
+These components do not have to be colocated with the portal. It is indeed likely 
+that over time there will be multiple deployments of each component.  
+
+<ul> 
+<li>Registry</li> 
+<li>Community</li> 
+<li>JES - the Job Execution System, which manages workflows at execution time.</li> 
+<li>CEA - the Common Execution Architecture, which mediates between Astrogrid and astronomical applications,
+including data collections.</li>
+<li>PAL - the Publishers Astrogrid Library. Coloqually an instance of PAL could be thought of as a datacenter.</li>
+<li>The MySpace virtual file system. Two components are involved here: File Manager and File Store.</li>   
+</ul>
+
+The portal will function provided it is configured to point to its local community, a registry against which
+it can make queries, and a JES against which it can submit workflows for execution. Any further details that are
+required regarding applications, data collections and MySpace are gained from having access to the registry.
+
+</p></section>
+
+<section name="Installation">            
             <subsection name="The Portal Installer"> 
-                <p> <img src="img/astrogridIntro.jpg" align="LEFT" border="30"/>
+                <p> <img src="../img/astrogridIntro.jpg" align="LEFT" border="30"/>
                     If you are using Tomcat 5.0+ as your web container, then AstroGrid supplies an installer 
                     application. This is a self-executing jar file that prompts the user for any required configuration settings It also gives you the option 
                     to save your settings for reuse should you wish to reinstall the portal. Further information can be found on the <a 
@@ -50,8 +90,8 @@
                     <li>workflow.applist=registry (Instructs the portal to get the list of applications from the registry)</li> </ul> If values are not given 
                     for these properties, the defaults in square brackets are used instead. </p>
             </subsection>
-        </section>
-        <section name = "Building the Portal">
+</section>
+<section name = "Building the Portal">
             <subsection name="Prequisites">
                 <p> <ul> <li>JDK1.4 or above</li> <li><a href="http://maven.apache.org/">Maven</a></li> <li>The Maven javaapp plugin</li> </ul> To install the 
                     javaapp plugin type:<br/> <tt>maven -Dmaven.repo.remote=http://www.ibiblio.org/maven,http://maven-plugins.sf.net/maven 
@@ -70,7 +110,7 @@
                     </verbatim>
                 </p>
             </subsection>
-            
-        </section>
-    </body>
+</section>
+
+</body>
 </document>

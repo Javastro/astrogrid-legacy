@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="xxxw@yyy.zzz">Your Name Here</author>
+        <title>Upgrading</title>
+</properties>
+
+<body>
+
+<section name="Upgrading"><p>
+DESCRIBE: How to upgrade an already-installed component using:
+</p>
+ <ul>
+ <li> Manual installation (how to drop-in the WAR)</li>
+ <li> Command-line installation tool (if a command-line installer exists)</li>
+ <li> GUI installation tool (if a GUI installer exists)</li>
+ </ul>
+<p>If existing configuration data needs to be manually backed up before
+the upgrade, explain how to do this, and how to restore the original settings
+in the upgraded application.
+</p>
+</section>
+
+
+</body>
+</document>
