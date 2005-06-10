@@ -14,14 +14,7 @@
     
   </release>
 
-  <release version="(Undertest)">  
-	<action dev="dave" type="fix" issue="xxxx">
-  	      <b>dave-dev-200506081212</b> - Bug fixes to the pal metadata generator.No external side effects expected.
-     	</action>	    
-    <action dev="pjn3" type="fix" issue="1200">
-  	  <b>astrogrid/workflow + portal resources</b> Branch <em>portalRE_pjn_1200 + workflow_pjn_1200</em>
-  	  Only active tasks returned from registry in both workflow builder and resource browser. 
-  	</action>
+  <release version="(Undertest)">  	    
         <action dev="jdt" type="fix" issue="1177"> <b>astrogrid/filestore</b>, <b>astrogrid/filemanager</b>and <b>astrogrid/integrationTests</b> 
             <em>aginab_jdt_1177</em> Plumbed the FileStore and FileManager installers into AGINAB. The GUI installers and AGINAB now use the same script for
             deployment, which has got to be a good thing. 
@@ -41,6 +34,16 @@
    </release>
     
   <release version="HEAD">
+	     <action dev="dave" type="fix" issue="xxxx">
+  	      <b>dave-dev-200506100249</b> Changes to navigate and header
+     	</action>
+	    <action dev="pjn3" type="fix" issue="1200">
+  	  <b>astrogrid/workflow + portal resources</b> Branch <em>portalRE_pjn_1200 + workflow_pjn_1200</em>
+  	  Only active tasks returned from registry in both workflow builder and resource browser. 
+  	</action>
+	    <action dev="dave" type="fix" issue="xxxx">
+  	      <b>dave-dev-200506081212</b> - Bug fixes to the pal metadata generator.No external side effects expected.
+     	</action>
 	    <action dev="dave" type="fix" issue="xxxx">
   	      <b>dave-dev-200506071500</b> - Fixed double(), power() and circle() in PostgreSQL SQL writer.
      	</action>
