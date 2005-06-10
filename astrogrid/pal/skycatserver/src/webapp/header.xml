@@ -6,7 +6,8 @@
          </a>
       </td><td>
          <a href='http://www.astrogrid.org/maven/docs/HEAD/pal/index.html' id='projectLogo'>
-         <img border='0' alt='SkyCatServer' src='SkyCatLogo.gif' align='right'></img>
+         SkyCatServer
+         <!-- img border='0' alt='SkyCatServer' src='SkyCatLogo.gif' align='right'></img -->
          </a>
       </td>
    </tr></table>

@@ -8,35 +8,35 @@
          <li><a href="docs/configure.jsp">Configure</a>
          <li><a href="installChecks.jsp">Installation Checks</a>
          <li><a href="TestServlet?suite=org.astrogrid.dataservice.service.InstallationSelfCheck">Self Test</a>
-         <li><a href="client-dist/astrogrid-datacenter-client-SNAPSHOT.zip">Java client API</a>
+         <!-- li><a href="client-dist/astrogrid-datacenter-client-SNAPSHOT.zip">Java client API</a -->
       </ul>
    </div>
    <div id='menuQuery'>
       <h5>Query</h5>
       <ul>
          <li><a href="coneForm.jsp" >Cone Search</a>
-         <li><a  href="queryBuilder-1-SelectFrom.jsp" >Build Query</a>
+         <!-- li><a  href="queryBuilder-1-SelectFrom.jsp" >Build Query</a -->
          <li><a href="adqlSqlForm.jsp" >Ask Adql/Sql Query</a>
          <li><a  href="adqlXmlForm.jsp" >Ask Adql/Xml Query</a>
-         <!-- li><a  href="translateAdql.jsp" >Translate ADQL/SQL to XML</a> -->
-         <li><a  href="adql">Examples</a>
+         <!-- li><a  href="translateAdql.jsp" >Translate ADQL/SQL to XML</a -->
+         <!-- li><a  href="adql">Examples</a -->
       </ul>
    </div>
    <div id='menuServer'>
       <h5>Server</h5>
       <ul>
-         <li><a href="serverStatus.jsp">Status</a>
+         <!-- li><a href="serverStatus.jsp">Status</a -->
          <li><a href="viewMetadata.jsp">Metadata</a> (<a href='GetMetadata'>XML</a>)
          <li><a href="admin/">Admin</a>
          <li><a href="admin/fingerprint.jsp">Fingerprint</a>
       </ul>
    </div>
-   <div id='menuStores'>
+   <!-- div id='menuStores'>
       <h5>Stores</h5>
       <ul>
          <li><a href="StoreBrowser">Browse</a>
       </ul>
-   </div>
+   </div -->
    <div id='menuDevelop'>
       <h5>Develop</h5>
       <ul>
