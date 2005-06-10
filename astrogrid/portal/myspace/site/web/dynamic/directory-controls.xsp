@@ -534,7 +534,7 @@ function showProperties() {
     //alert( "showProperties" )  ;
     var path = getCurrent() + getSelected() ;
     //window.open( "/astrogrid-portal/bare/mount/myspace/storefile-properties?" + PARAM_SOURCE_PATH + "=" + path ) ;
-    window.open( "/astrogrid-portal/bare/mount/myspace/storefile-properties?" + PARAM_SOURCE_PATH + "=" + path, 'AG-Properties', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=no, width=650, height=400' ) ; 
+    window.open( "/astrogrid-portal/bare/mount/myspace/storefile-properties?" + PARAM_SOURCE_PATH + "=" + path, 'AGProperties', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=no, width=650, height=400' ) ; 
        
    
 }
