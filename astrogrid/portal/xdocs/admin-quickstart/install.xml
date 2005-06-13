@@ -50,9 +50,12 @@ required regarding applications, data collections and MySpace are gained from ha
             <subsection name="The Portal Installer"> 
                 <p> <img src="../img/astrogridIntro.jpg" align="LEFT" border="30"/>
                     If you are using Tomcat 5.0+ as your web container, then AstroGrid supplies an installer 
-                    application. This is a self-executing jar file that prompts the user for any required configuration settings It also gives you the option 
-                    to save your settings for reuse should you wish to reinstall the portal. Further information can be found on the <a 
-                    href="http://software.astrogrid.org/userdocs/install.html">software site</a>. <br/>
+                    application. This is a self-extracting jar file that will manage required downloads, prompt the user for any required configuration
+                    settings It also gives you the option 
+                    to save settings for reuse should you wish to reinstall the portal. Further information can be found on the <a 
+                    href="http://software.astrogrid.org/userdocs/install.html">software site</a>. Having downloaded
+                    the installer, execute it by running from the directory that contains the installer:<br/>
+                    java -jar [installer's jar file name]<br/>
                  If you are not using Tomcat, or you are using it, but are the sort of person who likes the challenge of working in the dark, on your 
                     knees, with a hand-tied behind your back, please follow the instructions below.
                     <br clear="all"/>
