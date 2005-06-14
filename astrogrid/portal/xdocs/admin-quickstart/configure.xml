@@ -14,6 +14,7 @@
 <li><a href="#Setup_Parameters">Setup Parameters</a></li>
 <li><a href="#Control_Parameters">Control Parameters</a></li>
 <li><a href="#Maintenance">Maintenance</a></li>
+<li><a href="#Logging">Logging</a></li>
 </ul>
 </p>
 </section>
@@ -226,7 +227,57 @@ The relevant section of the sitemap is given below.
 
 </p>
 </subsection>
+<a href="#Admin_Quick_Config_Contents">Go to Contents</a>
+</section>
 
+<section name="Logging"><p>
+Application logging is controlled by the log4j properties file. You can choose your overall logging level
+between the following settings, which give increasing amounts of detail.
+<ul>
+<li>OFF</li>
+<li>FATAL</li>
+<li>ERROR</li>
+<li>WARN</li>
+<li>INFO</li>
+<li>DEBUG</li>
+</ul>
+<br/>
+The rootCategory setting will control the level and the log files produced. For maximum performance, set your 
+root level to OFF. However, a more sensible level would be WARN, which will log all warning, error and fatal messages.
+An extract from the log4j.properties file is given below. Look for the file on path:<br/>
+[Tomcat directory]/webapps/astrogrid-portal/WEB-INF/classes/log4j.properties
+<source>
+# Change OFF to DEBUG for more detailed logging
+log4j.rootCategory=OFF, CONSOLE, LONGLOG
+
+#### CONSOLE is set to be a ConsoleAppender using a PatternLayout.
+log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
+log4j.appender.CONSOLE.Threshold=DEBUG
+log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout
+log4j.appender.CONSOLE.layout.ConversionPattern=%-5p [%t] %c{1}/%L: %m%n
+
+# Set the enterprise logger
+log4j.logger.org.apache.axis.enterprise=FATAL, CONSOLE
+
+# ignore debug axis messages
+log4j.category.org.apache.axis=WARN, CONSOLE
+
+# CONSOLE goes to catalina.out
+log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
+log4j.appender.CONSOLE.Threshold=DEBUG
+log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout
+log4j.appender.CONSOLE.layout.ConversionPattern=%-4r [%t] %C{1}/%M/%L %p %m%n
+
+# LONGLOG is a file logger that records info-level info
+log4j.appender.LONGLOG=org.apache.log4j.FileAppender
+log4j.appender.LONGLOG.File=portal.log
+log4j.appender.LONGLOG.Append=true
+log4j.appender.LONGLOG.Threshold=DEBUG
+log4j.appender.LONGLOG.layout=org.apache.log4j.PatternLayout
+log4j.appender.LONGLOG.layout.ConversionPattern=%d{dd-MM-yy HH:mm:ss} %-4r [%t] %-5p - %m%n
+  
+</source>
+</p>
 <a href="#Admin_Quick_Config_Contents">Go to Contents</a>
 </section>
 
