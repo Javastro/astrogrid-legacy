@@ -24,11 +24,7 @@
 			<action dev="gtr" type="add" issue="1208">
   	  <b>astrogrid/applications</b> Branch <em>cea-gtr-1208</em>. Enhancements to the JSPs for test-running an 
   	  application that support indirect input parameters.
-  	</action>		    	     	
-		<action dev="jdt" type="fix" issue="1180"> 
-            <b>astrogrid/applications</b> and <b>astrogrid/integrationTests</b> <em>cea_jdt_1180</em> Minor bug fixes to installer and build. Also fixes bug 
-            1182 (for CEA only).
-        </action>        		
+  	</action>		    	     	       		
 		<action dev="gtr" type="fix" issue="1027"> 
             Changes to TableMetaDoc.xsd to make it match the DSA software. Branch dsa-gtr-1027
             Waiting for a big merge from mch before proceeding.
@@ -36,6 +32,10 @@
    </release>
     
   <release version="HEAD">
+	     <action dev="jdt" type="fix" issue="1180"> 
+            <b>astrogrid/applications</b> and <b>astrogrid/integrationTests</b> <em>cea_jdt_1180</em> Minor bug fixes to installer and build. Also fixes bug 
+            1182 (for CEA only). Already merged.
+        </action> 
 	     <action dev="dave" type="fix" issue="xxxx">
   	      <b>dave-dev-200506100249</b> Changes to navigate and header
      	</action>
