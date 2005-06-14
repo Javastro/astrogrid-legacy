@@ -110,21 +110,123 @@ forgotten password details.
 
 <section name="Control Parameters"><p>
 All are contained in the web.xml file.
-<ol type="1">
-<li>Session Timeout.</li>
-<li>Download File Size Limitation.</li>
-</ol>
 </p>
+<subsection name="Session Timeout"><p>
+Users logon to the portal for session. The session is an important control idea and is essential for maintaining
+a usable conversation with the user. When a user logs out the session is terminated. As users are not forced to
+log out and the session may well tie up scarce resources, there is a timeout value. If no interaction takes 
+place at all for the value of the timeout setting, the session is terminated automatically. It can also occur if
+the system encounters severe shortages of resources, particularly memory. The default is set to one hour.
+<source><![CDATA[
+  <session-config>
+    <session-timeout>60</session-timeout>
+  </session-config>
+]]></source>
+</p>
+</subsection>
+
+<subsection name="Upload File Size Limitation"><p>
+Within the MySpace Explorer a user has the ability to upload files from their local file system or desktop into 
+MySpace. The file is physically copied into MySpace. There is an upper limit to the size of files that can be
+uploaded. By default this is set to ten million bytes. Setting this is a balancing act between resource uses.
+For example, it is possible to set it high enough for the session to time out. 
+<source><![CDATA[
+  <init-param>
+    <param-name>upload-max-size</param-name>
+    <param-value>10000000</param-value>
+  </init-param>
+]]></source>
+</p>
+</subsection>
+
 <a href="#Admin_Quick_Config_Contents">Go to Contents</a>
 </section>
 
 <section name="Maintenance"><p>
-None are contained in the web.xml file.
-<ol type="1">
-<li>Portal Outage Information.</li>
-<li>Portal Redirection Information.</li>
-</ol>
+There are certain simple settings that can be edited to give information to users when planned outages of 
+the portal are known, and to direct users to other Astrogrid portals if their favoured one is not available.
 </p>
+<subsection name="Astrogrid Status"><p>
+The portal displays a standard status message on a user's home page, to the effect that there are no planned outages
+of the portal (see example below). The message is contained in a file associated with login. The path is:<br/>
+[Tomcat directory]/webapps/astrogrid-portal/mount/login/xml/statusPage.xml
+<br/>
+Usually the page contains an empty announce message. If you enter an announce message, this will automatically display
+on the users' home pages in place of the standard message. There is no need to stop and start Tomcat.
+<source><![CDATA[
+  <status>
+    <statusMessage value="There are presently no planned outages of the Astrogrid system" />
+    <announceMessage value="" />
+  </status>
+]]></source>
+</p>
+</subsection>
+
+<subsection name="Portal Redirection Information"><p>
+Normally when you type in the portal's url in a browser, the login page is displayed and users login. If for 
+maintenance reasons you wish to point users to another Astrogrid portal, there is a replacement login display which
+can be edited with the requisite details. The process is two-staged:
+<ol type="1">
+<li>Edit the replacement page, giving the required alternative site urls.</li>
+<li>Edit the login site map, which will direct all users to the replacement page.</li>
+</ol>
+<br/>
+The path to the replacement page is:<br/>
+[Tomcat directory]/webapps/astrogrid-portal/mount/login/portalOutage.html
+<br/>
+An extract from this page is given below.
+<source><![CDATA[
+        <td>
+          <table cellspacing="1" cellpadding="1" border="1" style="background-color: white;">       
+            <tr>
+              <td style="color: MidnightBlue">
+                <h2>Portal temporarily unavailable.</h2>
+              </td>
+            </tr>
+          <tr><td>This Astrogrid portal is currently unavailable, please use one of the following:</td></tr> 
+          <tr><td><a href="http://cadairidris.star.le.ac.uk:8080/astrogrid-portal/main/mount/login/login-form">Cadairidris</a>: portal located at Leicester.</td></tr>  
+          <tr><td><a href="http://cadairidris.star.le.ac.uk:8080/astrogrid-portal/main/mount/login/login-form">Cadairidris</a>: portal located at Leicester.</td></tr>
+          <tr><td><a href="http://cadairidris.star.le.ac.uk:8080/astrogrid-portal/main/mount/login/login-form">Cadairidris</a>: portal located at Leicester.</td></tr>
+          <tr><td><a href="http://cadairidris.star.le.ac.uk:8080/astrogrid-portal/main/mount/login/login-form">Cadairidris</a>: portal located at Leicester.</td></tr>
+        </table>
+      </td>
+]]></source>
+
+<br/>
+The path to the login sitemap is:<br/>
+[Tomcat directory]/webapps/astrogrid-portal/mount/login/sitemap.xmap
+<br/>
+The relevant section of the sitemap is given below.
+<source><![CDATA[
+   <map:pipelines>
+   <!--+
+       | Main pipeline.
+       +-->
+      <map:pipeline>
+      
+      <!-- PORTAL TEMPORARILY UNAVAILABLE: start 
+           1) Uncomment the following 4 lines
+           2) Uncomment the line: <map:match pattern="login-form-unavailable">
+           3) Comment out the line following: <map:match pattern="login-form">
+       
+        <map:match pattern="login-form">       
+            <map:generate src="portalOutage.html" />
+            <map:serialize type="html" />                                                
+        </map:match>      
+      -->
+      
+      <!-- Login page -->
+      <!-- PORTAL TEMPORARILY UNAVAILABLE: Uncomment the following line: -->      
+      <!-- <map:match pattern="login-form-unavailable"> -->
+      <!-- PORTAL TEMPORARILY UNAVAILABLE: Comment out the following line: -->      
+      <map:match pattern="login-form">  
+      
+      <!-- PORTAL TEMPORARILY UNAVAILABLE: end -->
+]]></source>
+
+</p>
+</subsection>
+
 <a href="#Admin_Quick_Config_Contents">Go to Contents</a>
 </section>
 
