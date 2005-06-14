@@ -1,16 +1,42 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <document>
 <properties>
-        <author email="xxxw@yyy.zzz">Your Name Here</author>
+        <author email="jl99@star.le.ac.uk">Jeff Lusted</author>
         <title>Configuration</title>
 </properties>
 
 <body>
 
 <section name="Configuration"><p>
-DESCRIBE: Complete, step by step instructions for manually configuring 
-the component.  
+Configuration parameters are mostly contained in astrogrid portal's web.xml file. If you are running Tomcat, the path 
+will be:<br/>
+[Tomcat directory]/webapps/astrogrid-portal/WEB-INF/web.xml<br/>
 </p>
+<subsection name="Setup Parameters"><p>
+All are contained in the web.xml file. The setup parameters come in three sets:
+<ol type="1">
+<li>Registry Configuration.</li>
+<li>Workflow Configuration</li>
+<li>Email Configuration</li>
+</ol>
+</p>
+</subsection>
+<subsection name="Control Parameters"><p>
+All are contained in the web.xml file.
+<ol type="1">
+<li>Session Timeout.</li>
+<li>Download File Size Limitation.</li>
+</ol>
+</p>
+</subsection>
+<subsection name="Maintenance Parameters"><p>
+None are contained in the web.xml file.
+<ol type="1">
+<li>Portal Outage Information.</li>
+<li>Portal Redirection Information.</li>
+</ol>
+</p>
+</subsection>
 <p>
 SUPPLY:  Sample configuration file(s) where relevant - make sure these
 are adequately commented if supplied, and make clear where they need 
