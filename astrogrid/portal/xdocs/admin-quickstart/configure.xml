@@ -7,41 +7,126 @@
 
 <body>
 
-<section name="Configuration"><p>
-Configuration parameters are mostly contained in astrogrid portal's web.xml file. If you are running Tomcat, the path 
-will be:<br/>
-[Tomcat directory]/webapps/astrogrid-portal/WEB-INF/web.xml<br/>
+<section name="Admin Quick Config Contents">
+<p>
+<ul>
+<li><a href="#Introduction">Introduction</a></li>
+<li><a href="#Setup_Parameters">Setup Parameters</a></li>
+<li><a href="#Control_Parameters">Control Parameters</a></li>
+<li><a href="#Maintenance">Maintenance</a></li>
+</ul>
 </p>
-<subsection name="Setup Parameters"><p>
-All are contained in the web.xml file. The setup parameters come in three sets:
-<ol type="1">
-<li>Registry Configuration.</li>
-<li>Workflow Configuration</li>
-<li>Email Configuration</li>
-</ol>
+</section>
+
+<section name="Introduction"><p>
+Configuration parameters are mostly contained in astrogrid portal's web.xml file. 
+If you are running Tomcat, the path will be:<br/>
+[Tomcat directory]/webapps/astrogrid-portal/WEB-INF/web.xml<br/>
+The setup parameters are recorded in a file if you use the portal installer to manage
+the install process. If you upgrade using the portal installer, you have the opportunity
+to restore these setup values from the file. 
+<br/>PLEASE NOTE this does not apply to other parameters! If you have changed any of the
+default values for other parameters, you must record these manually and re-edit the respective files when
+you reinstall. 
+</p>
+<a href="#Admin_Quick_Config_Contents">Go to Contents</a>
+</section>
+
+<section name="Setup Parameters"><p>
+All are contained in the web.xml file. The setup parameters come in three sets detailed in the following three topics.
+</p>
+<subsection name="Registry Configuration"><p>
+The portal requires a registry endpoint in order to send queries to the registry.
+<source><![CDATA[
+<env-entry>
+    <env-entry-name>org.astrogrid.registry.query.endpoint</env-entry-name>
+    <env-entry-value>http://myregistry.org/services/RegistryQuery</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>Endpoint for Registry Query Service</description>
+</env-entry>
+]]></source>
 </p>
 </subsection>
-<subsection name="Control Parameters"><p>
+
+<subsection name="Workflow Configuration"><p>
+The portal requires the endpoint of a JES instance. The Job Execution Sytem (sometime also referred to as
+the Job Enty System), manages the execution of workflows. Executing workflows are known as jobs. The portal
+will send a workflow to the JES instance for execution.
+<source><![CDATA[
+  <env-entry>
+    <env-entry-name>workflow.jes.endpoint</env-entry-name>
+    <env-entry-value>http://myjes.org/services/JobControllerService</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>Endpoint for Job Execution System Service</description>
+  </env-entry>
+]]></source>
+</p>
+</subsection>
+
+<subsection name="Email Configuration"><p>
+The portal requires some email settings to manage requests for user registration and also for the situation when a user has
+forgotten password details.
+<source><![CDATA[
+ <env-entry>
+    <env-entry-name>emailserver.address</env-entry-name>
+    <env-entry-value>127.0.0.1</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>The address of your local smtp server</description>
+  </env-entry>
+
+  <env-entry>
+    <env-entry-name>emailserver.user</env-entry-name>
+    <env-entry-value>astrogrid</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>Username from which you can send admin mail</description>
+  </env-entry>
+
+  <env-entry>
+    <env-entry-name>emailserver.password</env-entry-name>
+    <env-entry-value>astrogrid</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>Password for Username from which you can send admin mail</description>
+  </env-entry>
+ 
+ <env-entry>
+    <env-entry-name>emailserver.from</env-entry-name>
+    <env-entry-value>admin@astrogrid.org</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>Return address for admin mail</description>
+  </env-entry>
+
+  <env-entry>
+    <env-entry-name>astrogrid.portal.admin.email</env-entry-name>
+    <env-entry-value>jdt@roe.ac.uk</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>Destination for admin mail</description>
+  </env-entry>
+ 
+]]></source>
+</p>
+</subsection>
+<a href="#Admin_Quick_Config_Contents">Go to Contents</a>
+</section>
+
+<section name="Control Parameters"><p>
 All are contained in the web.xml file.
 <ol type="1">
 <li>Session Timeout.</li>
 <li>Download File Size Limitation.</li>
 </ol>
 </p>
-</subsection>
-<subsection name="Maintenance Parameters"><p>
+<a href="#Admin_Quick_Config_Contents">Go to Contents</a>
+</section>
+
+<section name="Maintenance"><p>
 None are contained in the web.xml file.
 <ol type="1">
 <li>Portal Outage Information.</li>
 <li>Portal Redirection Information.</li>
 </ol>
 </p>
-</subsection>
-<p>
-SUPPLY:  Sample configuration file(s) where relevant - make sure these
-are adequately commented if supplied, and make clear where they need 
-to be placed/edited within the installed webapp.
-</p></section>
+<a href="#Admin_Quick_Config_Contents">Go to Contents</a>
+</section>
 
 </body>
 </document>
