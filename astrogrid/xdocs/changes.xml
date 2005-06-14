@@ -11,7 +11,9 @@
   </release-->
   <release version="(Pending Integration)">  
     		
-    
+  	<action dev="gtr" type="add" issue="1208">
+  		<b>Most components</b> Branch <em>registry-gtr-1188</em>. JNDI keys shortened so they fit Tomcat's interface.
+  	</action>		    
   </release>
 
   <release version="(Undertest)">  	    
