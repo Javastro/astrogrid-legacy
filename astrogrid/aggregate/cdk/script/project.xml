@@ -3,7 +3,7 @@
     <extend>${basedir}/../workflow/project.xml</extend>
 
     <id>astrogrid-cdk-scripting</id>
-    <name>Scripting Client Developer Kit (SCDK)</name>
+    <name>Scripting CDK</name>
     <description>Astrogrid Scripting Client Developer Kit</description>
     <shortDescription>Scripting CDK</shortDescription>
     <dependencies>
@@ -13,6 +13,7 @@
        <version>${astrogrid.scripting.version}</version>
                 <properties>
                     <jnlp.jar>${shall.bundle.script}</jnlp.jar>
+		    <dist.bundle>true</dist.bundle>		    
                 </properties>
     </dependency>
     <!-- scripting uses externalValue classes - currently in cea server. will factor out later into a smaller package -->
@@ -22,6 +23,7 @@
                 <version>${astrogrid.applications.version}</version>
                 <properties>
                     <jnlp.jar>${shall.bundle.script}</jnlp.jar>
+		    <dist.bundle>true</dist.bundle>		    
                 </properties>
         </dependency>
         <!-- helper libraries -->
@@ -32,6 +34,7 @@
                 <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
                 <properties>
                     <jnlp.jar>${shall.bundle.script}</jnlp.jar>
+		    <dist.bundle>true</dist.bundle>		    
                 </properties>
         </dependency>
     <dependency>
@@ -40,16 +43,9 @@
       <version>3.8</version>
       <properties>
                     <jnlp.jar>${shall.bundle.script}</jnlp.jar>
+		    <dist.bundle>true</dist.bundle>		    
       </properties>
     </dependency>
 
     </dependencies>
-         <build>
-
-        <sourceDirectory/>
-
-        <unitTestSourceDirectory/>
-
-        <unitTest/>
-    </build>
 </project>

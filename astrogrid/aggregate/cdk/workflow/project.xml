@@ -2,8 +2,8 @@
 <project>
     <extend>${basedir}/../core/project.xml</extend>
     <id>astrogrid-cdk-workflow</id>
-    <name>Workflow Client Developer Kit (WCDK)</name>
-    <description>Workflow CDK</description>
+    <name>Workflow CDK</name>
+    <description>Astrogrid Workflow Client Developer Kit</description>
     <shortDescription>Workflow CDK</shortDescription>
     <dependencies>
         <!-- workflow objects -->
@@ -14,6 +14,7 @@
                         <url>http://www.astrogrid.org/</url>
                         <properties>
                                 <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
+				<dist.bundle>true</dist.bundle>
                         </properties>
                 </dependency>
         <!-- jes -->
@@ -24,6 +25,7 @@
                         <url>http://www.astrogrid.org/</url>
                         <properties>
                                 <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
+				<dist.bundle>true</dist.bundle>				
                         </properties>
                     </dependency>
                 <dependency>
@@ -32,6 +34,7 @@
                            <version>${astrogrid.workflowobjects.version}</version>
                         <url>http://www.astrogrid.org/</url>
                         <properties>
+				<dist.bundle>true</dist.bundle>			
                                 <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
                         </properties>
                 </dependency>
@@ -42,40 +45,12 @@
                            <version>${astrogrid.applications.version}</version>
                         <url>http://www.astrogrid.org/</url>
                         <properties>
+				<dist.bundle>true</dist.bundle>	
                                 <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
                         </properties>
                 </dependency>
- <!-- random libraries that keep changing names, and get added to all proejcts except this one.. 
-	  dunno what they do .. -->
-   <dependency>
-      <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-pal-query</artifactId>
-            <version>${astrogrid.pal.version}</version>
-            <type>jar</type>
-                        <properties>
-                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
-                        </properties>
-        </dependency>	  
-     <!-- for writing XML -->
-       <dependency>
-          <artifactId>astrogrid-xml</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.xml.stable}</version>
-                        <properties>
-                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
-                        </properties>
-       </dependency>	  				
-	   <!-- harrumph - another one -->
-       <dependency>
-          <artifactId>astrogrid-utils</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.utils.stable}</version>
-                        <properties>
-                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
-                        </properties>
-       </dependency>	  		   
-	   
-	   
+	  
+
         <!-- external libs -->
                   <!-- helper for object models -->
                 <dependency>
@@ -94,6 +69,7 @@
                         <version>0.9.5-xml</version>
                         <url>http://castor.exolab.org/</url>
                         <properties>
+				<dist.bundle>true</dist.bundle>			
                                 <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
                         </properties>
                 </dependency>
@@ -102,6 +78,7 @@
                 <version>1.3</version>
                 <url>http://jakarta.apache.org/commons/</url>
                         <properties>
+				<dist.bundle>true</dist.bundle>			
                                 <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
                         </properties>
                 </dependency>

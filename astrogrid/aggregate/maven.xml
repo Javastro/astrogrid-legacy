@@ -31,25 +31,6 @@ this with signing with proper astrogrid certificates
 </goal>
 
 <goal name="astrogrid-build-artifact" prereqs="setup-keystore">
-<!-- using reactor now. more manageable.
-        <maven:maven descriptor="${basedir}/cdk/core/project.xml"
-                goals="astrogrid-build-artifact" ignoreFailures="false" />
-        <maven:maven descriptor="${basedir}/apps/aladin-avo/project.xml"
-                goals="astrogrid-build-artifact" ignoreFailures="false" />
--->
-        <maven:reactor
-                basedir="${basedir}"
-                goals="astrogrid-build-artifact"
-                ignoreFailures="false"
-                includes="${maven.multiproject.includes}"
-        />
-</goal>
-
-<goal name="astrogrid-build-snapshot"  prereqs="setup-keystore">
-<!--
-        <maven:maven descriptor="${basedir}/cdk/core/project.xml"
-                goals="astrogrid-build-snapshot" ignoreFailures="false" />
--->
         <maven:reactor
                 basedir="${basedir}"
                 goals="astrogrid-build-artifact"
@@ -59,44 +40,8 @@ this with signing with proper astrogrid certificates
 </goal>
 
 
-<goal name="astrogrid-install-snapshot"  prereqs="setup-keystore">
-        <!--<maven:maven descriptor="${basedir}/cdk/core/project.xml"
-                goals="astrogrid-install-snapshot" ignoreFailures="false" />-->
-        <maven:reactor
-                basedir="${basedir}"
-                goals="astrogrid-install-artifact"
-                ignoreFailures="false"
-                includes="${maven.multiproject.includes}"
-        />
-</goal>
-
-
-<goal name="astrogrid-install-artifact"  prereqs="setup-keystore">
-        <!--<maven:maven descriptor="${basedir}/cdk/core/project.xml"
-                goals="astrogrid-install-artifact" ignoreFailures="false" />-->
-        <maven:reactor
-                basedir="${basedir}"
-                goals="astrogrid-install-artifact"
-                ignoreFailures="false"
-                includes="${maven.multiproject.includes}"
-        />
-</goal>
-
-
-<goal name="astrogrid-deploy-snapshot"  prereqs="setup-keystore">
-        <!--<maven:maven descriptor="${basedir}/cdk/core/project.xml"
-                goals="astrogrid-deploy-snapshot" ignoreFailures="false" />-->
-        <maven:reactor
-                basedir="${basedir}"
-                goals="astrogrid-deploy-artifact"
-                ignoreFailures="false"
-                includes="${maven.multiproject.includes}"
-        />
-</goal>
 
 <goal name="astrogrid-deploy-artifact"  prereqs="setup-keystore">
-        <!--<maven:maven descriptor="${basedir}/cdk/core/project.xml"
-                goals="astrogrid-deploy-artifact" ignoreFailures="false" />-->
         <maven:reactor
                 basedir="${basedir}"
                 goals="astrogrid-deploy-artifact"
@@ -104,6 +49,30 @@ this with signing with proper astrogrid certificates
                 includes="${maven.multiproject.includes}"
         />
 </goal>
+
+<!-- multiproject goals to publish all as jnlp 
+     warning - doing these willy-nilly is going to cause users a lot
+     of downloads. better to just publish individual projects
+     -->
+<goal name="publish-jnlp" description="Publish all jnlp libs and apps at release URLs">
+	<maven:reactor basedir="${basedir}" goals="publish-jnlp" ignoreFailures="false"
+		       includes="${maven.multiproject.includes}"
+	/>
+</goal>
+
+<goal name="publish-beta-jnlp" description="Publish all jnlp libs and apps at beta URLS">
+	<maven:reactor basedir="${basedir}" goals="publish-jnlp" ignoreFailures="false"
+		       includes="${maven.multiproject.includes}"
+		       />
+</goal>
+
+<goal name="publish-alpha-jnlp" description="Publish all jnlp libs and apps at alpha URLS">
+	<maven:reactor basedir="${basedir}" goals="publish-jnlp" ignoreFailures="false"
+		       includes="${maven.multiproject.includes}"
+		       />
+</goal>
+
+
 
 
 

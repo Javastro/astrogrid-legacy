@@ -1,66 +1,34 @@
 <?xml version="1.0"?>
 <!-- extension maven script - extends workflow and core cdk maven.xmls. -->
-<project default="astrogrid-build-site" xmlns:j="jelly:core" xmlns:deploy="deploy" xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
+<project  xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
 
-        <goal name="astrogrid-deploy-site">
-            <echo message="Please deploy the site docs from the base aggregate project"/>
-        </goal>
-        <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,dist:deploy-bin-snapshot,war:deploy-snapshot"/>
 
-        <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,dist:build-bin,war:war">
-                <echo>NB - no goal exists to build dist snapshot - called dist:build-bin instead</echo>
-                <echo>NB - no goal exists to build war snapshot - called war:war instead </echo>
-        </goal>
-        <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,dist:build-bin,war:install-snapshot">
-                <echo>NB - no goal exist to install dist - calling dist:build-bin instead</echo>
-        </goal>
-        <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:deploy-bin,war:deploy"/>
-        <goal name="astrogrid-build-artifact" prereqs="jar:jar,dist:build-bin,war:war"/>
-        <goal name="astrogrid-install-artifact" prereqs="jar:install,dist:build-bin,war:install">
-                <echo>NB - no goal exist to install dist - calling dist:build-bin instead</echo>
-        </goal>
-
-<!-- set up dist to do what we want -->
-        <goal name="patch-bin">
-                        <deploy:copy-deps todir="${maven.dist.bin.assembly.dir}"
-                        excludes="commons-jelly-tags-xml,commons-jelly-tags-jsl"/>
-        </goal>
-
-        <goal name="patch-jnlp">
-                <!--  alter jnlp to depend on workflow cdk extension
-                -->
-             ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-             <jsl:stylesheet var="patch">
-			   <jsl:template match="jar[starts-with(@href,'astrogrid-cdk-scripting')]"> <!-- gah- ${pom.artifactId} won't work here -->
-                </jsl:template>
-                <jsl:template match="jar[not(starts-with(@href,'astrogrid-cdk-scripting')]">
-                        <jxml:copyOf select="." />
-                </jsl:template>             
-                <jsl:template match="information|security|application-desc|component-desc|property"> <!-- deliberately omitted j2se - as an extension descriptor shouldn't specify this -->
-                        <jxml:copyOf select="." />
-                </jsl:template>
-                <jsl:template match="jnlp|@*">
-                                <jxml:copy>
-                                        <jsl:applyTemplates select="@* | node()" />
-                                </jxml:copy>
-                </jsl:template>
-                <jsl:template match="resources">
-                                <jxml:copy>
-                                        <jxml:element name="extension">
-                                                <jxml:attribute name="name">Astrogrid Workflow CDK</jxml:attribute>
-                                                <jxml:attribute name="href">http://software.astrogrid.org/jnlp/astrogrid-cdk-workflow/astrogrid-cdk-workflow.jnlp</jxml:attribute>
-                                        </jxml:element>
-                                        <jsl:applyTemplates select="@* | node()" />
-                                </jxml:copy>
-                </jsl:template>
-             </jsl:stylesheet>
-             <!-- read in original jnlp -->
-             <jxml:parse var="originalJNLP" xml="file://${basedir}/target/${pom.artifactId}/${pom.artifactId}.jnlp" />
-             <!-- apply stylesheet -->
-             <j:file name="${maven.build.dir}/${pom.artifactId}/${pom.artifactId}.jnlp">
-                <jsl:style stylesheet="${patch}" select="$originalJNLP" />
-             </j:file>
-        </goal>
+<goal name="define-stylesheet">
+	<jsl:stylesheet var="patch">
+			<jsl:template match="jar[starts-with(@href,'astrogrid-cdk-')]"> <!-- gah- ${pom.artifactId} won't work here -->
+		</jsl:template>
+		<jsl:template match="jar[not(starts-with(@href,'astrogrid-cdk-')]">
+			<jxml:copyOf select="." />
+		</jsl:template>             
+		<jsl:template match="information|security|application-desc|component-desc|property"> <!-- deliberately omitted j2se - as an extension descriptor shouldn't specify this -->
+			<jxml:copyOf select="." />
+		</jsl:template>
+		<jsl:template match="jnlp|@*">
+				<jxml:copy>
+					<jsl:applyTemplates select="@* | node()" />
+				</jxml:copy>
+		</jsl:template>
+		<jsl:template match="resources">
+			<jxml:copy>
+				<jxml:element name="extension">
+					<jxml:attribute name="name">Astrogrid Workflow CDK${jnlpVersion}</jxml:attribute>
+					<jxml:attribute name="href">http://software.astrogrid.org/jnlp/${subPath}astrogrid-cdk-workflow/astrogrid-cdk-workflow.jnlp</jxml:attribute>
+				</jxml:element>
+				<jsl:applyTemplates select="@* | node()" />
+			</jxml:copy>
+		</jsl:template>
+	</jsl:stylesheet>
+	</goal>
 
 
 </project>

@@ -1,303 +1,478 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-    <extend>${basedir}/../../../maven-base/project.xml</extend>
-    <currentVersion>${astrogrid.aggregate.version}</currentVersion>
-    <id>astrogrid-cdk-core</id>
-    <name>Core Client Developer Kit (CDK)</name>
-    <description>Core Client Developer Kit</description>
-    <shortDescription>Core CDK</shortDescription>
-    <dependencies>
+  <extend>${basedir}/../../../maven-base/project.xml</extend>
 
-        <!-- shared libarary -->
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-common</artifactId>
-            <version>${astrogrid.common.version}</version>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-                <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
+  <currentVersion>${astrogrid.aggregate.version}</currentVersion>
 
+  <id>astrogrid-cdk-core</id>
 
-	
-		<!-- filemanager -->
-		<dependency>
-			<artifactId>astrogrid-filemanager-client</artifactId>
-			<groupId>org.astrogrid</groupId>
-			<version>${astrogrid.filemanager.version}</version>
-            <properties>
-                    <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-			</dependency>			
-		<dependency>
-			<artifactId>astrogrid-filemanager-contract</artifactId>
-			<groupId>org.astrogrid</groupId>
-			<version>${astrogrid.filemanager.version}</version>
-            <properties>
-                    <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-			</dependency>		
-		<!-- filestore -->
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-filestore-client</artifactId>
-            <version>${astrogrid.filestore.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-                <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-filestore-common</artifactId>
-            <version>${astrogrid.filestore.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-                <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>		
+  <name>Core CDK</name>
 
-        <!-- community -->
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-common</artifactId>
-            <version>${astrogrid.community.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
+  <description>Astrogrid Core Client Developer Kit</description>
 
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-client</artifactId>
-            <version>${astrogrid.community.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
+  <shortDescription>Core CDK</shortDescription>
 
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-resolver</artifactId>
-                <version>${astrogrid.community.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
-
-        <!-- registry - don't think we need all this for the lite version -->
-        <dependency>
-            <artifactId>astrogrid-registry-common</artifactId>
-            <groupId>org.astrogrid</groupId>
-            <version>${astrogrid.registry.version}</version>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
-
-        <dependency>
-            <artifactId>astrogrid-registry-client-lite</artifactId>
-         <groupId>org.astrogrid</groupId>
-            <version>${astrogrid.registry.version}</version>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
-
-	<!-- supporting libraries for registry- don't understand what half of these do,
-		or whether they're needed - but include all for now, until this gets sorted out -->
-   <dependency>
+  <dependencies>
+<!-- shared libarary -->
+    <dependency>
       <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-pal-query</artifactId>
-            <version>${astrogrid.pal.version}</version>
-            <type>jar</type>
-                <properties>
-                  <war.bundle>true</war.bundle>
-                </properties>
-        </dependency>
 
-        <!-- for writing XML -->
-       <dependency>
-          <artifactId>astrogrid-xml</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.xml.latest}</version>
-            <properties>
-              <war.bundle>true</war.bundle>
-            </properties>
-       </dependency>
+      <artifactId>astrogrid-common</artifactId>
 
-       <dependency><!-- dunno if this one is required -->
-          <artifactId>astrogrid-slinger-api</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.slinger.version}</version>
-            <properties>
-              <war.bundle>true</war.bundle>
-            </properties>
-       </dependency>
-	   <!-- adding utils dependency for bug 1120, if roll back should be version 1.82 (version 1.83=1.84) becasue I accidently checked 1.83 in yesterday-->
-       <dependency><!-- more crap -->
-          <artifactId>astrogrid-utils</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.utils.stable}</version>
-		   <properties>
-            	<war.bundle>true</war.bundle>
-            </properties>
-       </dependency>		
-		
-		
-	<!-- 3rd party libs -->
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xerces</artifactId>
-            <version>2.4.0-patched</version>
-            <type>jar</type>
-            <url>http://xml.apache.org/</url>
-            <properties>
-                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
+      <version>${astrogrid.common.version}</version>
 
-        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-            <version>2.4.1</version>
-            <type>jar</type>
-            <url>http://xml.apache.org/</url>
-            <properties>
-                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
+      <url>http://www.astrogrid.org/</url>
 
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <version>1.0.b2-patched</version>
-            <type>jar</type>
-            <url>http://xml.apache.org/</url>
-            <properties>
-                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
-       <dependency>
-            <artifactId>axis</artifactId>
-            <groupId>axis</groupId>
-            <version>1.1</version>
-            <url>http://ws.apache.org/axis/</url>
-            <properties>
-                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
-        <dependency>
-            <artifactId>jax-qname</artifactId>
-            <groupId>jax-qname</groupId>
-            <version>UNKNOWN</version>
-            <jar>jax-qname.jar</jar>
-            <url>http://ws.apache.org/axis/</url>
-            <properties>
-                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
-        <dependency>
-            <artifactId>jaxrpc-api</artifactId>
-            <groupId>jaxrpc-api</groupId>
-            <version>1.0.3</version>
-            <url>http://ws.apache.org/axis/</url>
-            <properties>
-                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
 
-        <dependency>
-            <artifactId>saaj-api</artifactId>
-            <groupId>saaj-api</groupId>
-            <version>1.1.1</version>
-            <url>http://ws.apache.org/axis/</url>
-            <properties>
-                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
-        <dependency>
-            <artifactId>wsdl4j</artifactId>
-            <groupId>wsdl4j</groupId>
-            <jar>wsdl4j.jar</jar>
-            <url>http://ws.apache.org/axis/</url>
-            <properties>
-                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
+<!-- filemanager -->
+    <dependency>
+      <artifactId>astrogrid-filemanager-client</artifactId>
 
-        <dependency>
-            <artifactId>commons-discovery</artifactId>
-            <groupId>commons-discovery</groupId>
-            <version>20030211.213356fixed1</version>
-            <url>http://jakarta.apache.org/commons/</url>
-            <properties>
-                <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
+      <groupId>org.astrogrid</groupId>
 
-        <dependency>
-            <artifactId>commons-logging</artifactId>
-            <groupId>commons-logging</groupId>
-            <version>1.0.3</version>
-            <url>http://jakarta.apache.org/commons/</url>
-            <properties>
-                <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
+      <version>${astrogrid.filemanager.version}</version>
 
-	    <dependency>
-	      <id>log4j</id>
-    	  <version>1.2.8</version>
-            <properties>
-                <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-            </properties>
-        </dependency>
-	
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
-        <dependency>
-                <artifactId>commons-collections</artifactId>
-                <groupId>commons-collections</groupId>
-                <version>3.1</version>
-                <url>http://jakarta.apache.org/commons/</url>
-                <properties>
-                    <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-                </properties>
-        </dependency>
-        <!-- stuff required in maven build -->
-        <dependency>
-            <groupId>commons-jelly</groupId>
-            <artifactId>commons-jelly-tags-jsl</artifactId>
-            <version>20030211.143151</version>
-            <properties/>
-        </dependency>
-        <dependency>
-            <groupId>commons-jelly</groupId>
-            <artifactId>commons-jelly-tags-xml</artifactId>
-            <version>20030211.142705</version>
-            <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
-            <properties/>
-        </dependency>
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>astrogrid-filemanager-contract</artifactId>
+
+      <groupId>org.astrogrid</groupId>
+
+      <version>${astrogrid.filemanager.version}</version>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+<!-- filestore -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+
+      <artifactId>astrogrid-filestore-client</artifactId>
+
+      <version>${astrogrid.filestore.version}</version>
+
+      <type>jar</type>
+
+      <url>http://www.astrogrid.org/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+
+      <artifactId>astrogrid-filestore-common</artifactId>
+
+      <version>${astrogrid.filestore.version}</version>
+
+      <type>jar</type>
+
+      <url>http://www.astrogrid.org/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+<!-- community -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+
+      <artifactId>astrogrid-community-common</artifactId>
+
+      <version>${astrogrid.community.version}</version>
+
+      <type>jar</type>
+
+      <url>http://www.astrogrid.org/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+
+      <artifactId>astrogrid-community-client</artifactId>
+
+      <version>${astrogrid.community.version}</version>
+
+      <type>jar</type>
+
+      <url>http://www.astrogrid.org/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+
+      <artifactId>astrogrid-community-resolver</artifactId>
+
+      <version>${astrogrid.community.version}</version>
+
+      <type>jar</type>
+
+      <url>http://www.astrogrid.org/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>astrogrid-registry-common</artifactId>
+
+      <groupId>org.astrogrid</groupId>
+
+      <version>${astrogrid.registry.version}</version>
+
+      <url>http://www.astrogrid.org/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>astrogrid-registry-client-lite</artifactId>
+
+      <groupId>org.astrogrid</groupId>
+
+      <version>${astrogrid.registry.version}</version>
+
+      <url>http://www.astrogrid.org/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+<!-- supporting libraries for registry- don't understand what half of these do,
+                or whether they're needed in the core- but include all for now, until this gets sorted out -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+
+      <artifactId>astrogrid-pal-query</artifactId>
+
+      <version>${astrogrid.pal.version}</version>
+
+      <type>jar</type>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+<!-- for writing XML -->
+    <dependency>
+      <artifactId>astrogrid-xml</artifactId>
+
+      <groupId>org.astrogrid</groupId>
+
+      <version>${astrogrid.xml.stable}</version>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+<!-- dunno if this one is required -->
+      <artifactId>astrogrid-slinger-api</artifactId>
+
+      <groupId>org.astrogrid</groupId>
+
+      <version>${astrogrid.slinger.version}</version>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+<!-- more crap -->
+      <artifactId>astrogrid-utils</artifactId>
+
+      <groupId>org.astrogrid</groupId>
+
+      <version>${astrogrid.utils.stable}</version>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+<!-- 3rd party libs -->
+    <dependency>
+      <groupId>xerces</groupId>
+
+      <artifactId>xerces</artifactId>
+
+      <version>2.4.0-patched</version>
+
+      <type>jar</type>
+
+      <url>http://xml.apache.org/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>xalan</groupId>
+
+      <artifactId>xalan</artifactId>
+
+      <version>2.4.1</version>
+
+      <type>jar</type>
+
+      <url>http://xml.apache.org/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>xml-apis</groupId>
+
+      <artifactId>xml-apis</artifactId>
+
+      <version>1.0.b2-patched</version>
+
+      <type>jar</type>
+
+      <url>http://xml.apache.org/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>axis</artifactId>
+
+      <groupId>axis</groupId>
+
+      <version>1.1</version>
+
+      <url>http://ws.apache.org/axis/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>jax-qname</artifactId>
+
+      <groupId>jax-qname</groupId>
+
+      <version>UNKNOWN</version>
+
+      <jar>jax-qname.jar</jar>
+
+      <url>http://ws.apache.org/axis/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>jaxrpc-api</artifactId>
+
+      <groupId>jaxrpc-api</groupId>
+
+      <version>1.0.3</version>
+
+      <url>http://ws.apache.org/axis/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>saaj-api</artifactId>
+
+      <groupId>saaj-api</groupId>
+
+      <version>1.1.1</version>
+
+      <url>http://ws.apache.org/axis/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>wsdl4j</artifactId>
+
+      <groupId>wsdl4j</groupId>
+
+      <jar>wsdl4j.jar</jar>
+
+      <url>http://ws.apache.org/axis/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-discovery</artifactId>
+
+      <groupId>commons-discovery</groupId>
+
+      <version>20030211.213356fixed1</version>
+
+      <url>http://jakarta.apache.org/commons/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-logging</artifactId>
+
+      <groupId>commons-logging</groupId>
+
+      <version>1.0.3</version>
+
+      <url>http://jakarta.apache.org/commons/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <id>log4j</id>
+
+      <version>1.2.8</version>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-collections</artifactId>
+
+      <groupId>commons-collections</groupId>
+
+      <version>3.1</version>
+
+      <url>http://jakarta.apache.org/commons/</url>
+
+      <properties>
+        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
+        <dist.bundle>true</dist.bundle>
+      </properties>
+    </dependency>
+
+<!-- stuff required in maven build -->
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-jsl</artifactId>
+
+      <version>20030211.143151</version>
+
+      <properties />
+    </dependency>
+
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-xml</artifactId>
+
+      <version>20030211.142705</version>
+
+      <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
+
+      <properties />
+    </dependency>
   </dependencies>
-    <build>
 
-        <sourceDirectory/>
+  <build>
+    <sourceDirectory />
 
-        <unitTestSourceDirectory/>
+    <unitTestSourceDirectory />
 
-        <unitTest/>
-    </build>
-
+    <unitTest />
+  </build>
 </project>
+

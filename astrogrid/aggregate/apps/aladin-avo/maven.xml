@@ -1,82 +1,117 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project default="astrogrid-build-site" xmlns:j="jelly:core" xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
-
-        <goal name="astrogrid-deploy-site">
-            <echo message="Please deploy the site docs from the base myspace project"/>
-        </goal>
-        <goal name="astrogrid-deploy-snapshot" prereqs="war:deploy-snapshot"/>
-        <goal name="astrogrid-build-snapshot" prereqs="war:war">
-                <echo>NB - no goal exists to build war snapshot - called war:war instead </echo>
-        </goal>
-        <goal name="astrogrid-install-snapshot" prereqs="war:install-snapshot"/>
-        <goal name="astrogrid-deploy-artifact" prereqs="war:deploy"/>
-        <goal name="astrogrid-build-artifact" prereqs="war:war"/>
-        <goal name="astrogrid-install-artifact" prereqs="war:install"/>
-
-
-        <preGoal name="jnlp:init">
-                <!-- set jnlp to run into same dir as is later used for war -->
-                <j:set var="maven.jnlp.dir" value="${maven.build.dir}/${pom.artifactId}" />
-        </preGoal>
-
-        <postGoal name="war:webapp">
-                <attainGoal name="jnlp:generate-jnlp" />
-                <delete includeEmptyDirs="true">
-                        <fileset dir="${maven.build.dir}/${pom.artifactId}">
-                                <include name="WEB-INF/**" />
-                                <include name="${pom.artifactId}*.jar" />
-                        </fileset>
-                </delete>
-                <!-- sign jars by hand - as maven jnlp task is flakey -->
-                <signjar alias="astrogrid" storepass="qwertyuiop">
-                        <fileset dir="${maven.build.dir}/${pom.artifactId}">
-                                <include name="*.jar" />
-                        </fileset>
-                </signjar>
-                <attainGoal name="patch-jnlp" />
-        </postGoal>
-
-        <goal name="patch-jnlp">
-                <!-- remove dependency on dummy jar - as breaks jnlp
-                a bit convoluted - as template priorities, and jxml:if appears to be broken ..
-                and there's a barrier between jelly variables and expressions in jsl..
-                upshot is that the stylesheet becomes more brittle - need to watch it.
-
-                add in link to astrogrid extension.
-                -->
-             ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-             <jsl:stylesheet var="patch">
-                <jsl:template match="jar[starts-with(@href,'aladin-avo')]"> <!-- gah- ${pom.artifactId} won't work here -->
-                </jsl:template>
-                <jsl:template match="jar[not(starts-with(@href,'aladin-avo')]">
-                        <jxml:copyOf select="." />
-                </jsl:template>
-                <jsl:template match="information|security|application-desc|j2se|property">
-                        <jxml:copyOf select="." />
-                </jsl:template>
-                <jsl:template match="jnlp|@*">
-                                <jxml:copy>
-                                        <jsl:applyTemplates select="@* | node()" />
-                                </jxml:copy>
-                </jsl:template>
-                <jsl:template match="resources">
-                                <jxml:copy>
-                                        <jxml:element name="extension">
-                                                <jxml:attribute name="name">Astrogrid Core CDK</jxml:attribute>
-                                                <jxml:attribute name="href">http://software.astrogrid.org/jnlp/astrogrid-cdk-core/astrogrid-cdk-core.jnlp</jxml:attribute>
-                                        </jxml:element>
-                                        <jsl:applyTemplates select="@* | node()" />
-                                </jxml:copy>
-                </jsl:template>
-             </jsl:stylesheet>
-             <!-- read in original jnlp -->
-             <jxml:parse var="originalJNLP" xml="file://${basedir}/target/${pom.artifactId}/${pom.artifactId}.jnlp" />
-             <!-- apply stylesheet -->
-             <j:file name="${maven.build.dir}/${pom.artifactId}/${pom.artifactId}.jnlp">
-                <jsl:style stylesheet="${patch}" select="$originalJNLP" />
-             </j:file>
-        </goal>
-
-
+<project  xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
+	
+	
+	<goal name="astrogrid-deploy-site">
+		<echo message="Please deploy the site docs from the base aggregate project"/>
+	</goal>
+	
+	<goal name="astrogrid-deploy-artifact" prereqs="publish-beta-jnlp">
+		<echo>Published JNLP as Beta. After installation testing run
+			'maven publish-jnlp' on this project to publish the release version
+		</echo>
+	</goal>
+	<goal name="astrogrid-build-artifact" prereqs="beta,release,jnlp"/>
+	
+	<!-- publishing goals -->
+	
+	<goal name="publish-jnlp" 
+	      description="Publish the release configuration of this JNLP at the release URL"
+	      prereqs="release,jnlp,site:sshdeploy" />
+	<goal name="publish-beta-jnlp" 
+	      description="Publish the beta configuration of this JNLP at the beta URL"
+	      prereqs="beta,release,jnlp,site:sshdeploy"/>
+	<goal name="publish-alpha-jnlp" 
+	      description="Publish the alpha configuration of this JNLP at the alpha url"
+	      prereqs="alpha,release,jnlp,site:sshdeploy"/>
+	
+	<!-- zap values in pom, to adjust publish location -->
+	<goal name="release">
+		<j:set var="_dir" value="/var/www/software/jnlp/${subPath}${pom.artifactId}/"/>
+		${pom.setSiteDirectory(_dir)}
+		<echo>Publish location set to ${pom.siteDirectory}</echo>
+	</goal>
+	
+	<goal name="beta">
+		<j:set var="subPath" value="beta/" />
+		<j:set var="jnlpVersion" value=" (BETA)" />
+	</goal>
+	
+	<goal name="alpha">
+		<j:set var="subPath" value="alpha/" />
+		<j:set var="jnlpVersion" value=" (ALPHA)" />
+	</goal>
+	
+	
+	<!-- set up jnlp -  munge jnlp -->
+	<postGoal name="jnlp:generate-jnlp">
+		<delete>
+			<fileset dir="${maven.jnlp.dir}">
+				<include name="${pom.artifactId}-${pom.currentVersion}.jar" />
+			</fileset>
+		</delete>
+		<copy todir="${maven.jnlp.dir}">
+			<fileset dir="${basedir}/src/webapp" />
+		</copy>
+		
+		
+		
+		<signjar alias="astrogrid" storepass="qwertyuiop">
+			<fileset dir="${maven.jnlp.dir}">
+				<include name="*.jar" />
+			</fileset>
+                </signjar>		
+		<attainGoal name="define-stylesheet" />
+		<attainGoal name="patch-jnlp" />
+	</postGoal>
+	
+	<goal name="define-stylesheet">
+		<jsl:stylesheet var="patch">
+		
+			<jsl:template match="jar[starts-with(@href,'aladin-avo-')]"> <!-- gah- ${pom.artifactId} won't work here -->
+			</jsl:template>
+			<jsl:template match="jar[not(starts-with(@href,'aladin-avo-')]">
+				<jxml:copyOf select="." />
+			</jsl:template>      		
+			<jsl:template match="information|j2se|security|application-desc|component-desc|property"> 
+				<jxml:copyOf select="." />
+			</jsl:template>
+			<jsl:template match="jnlp|@*">
+				<jxml:copy>
+					<jsl:applyTemplates select="@* | node()" />
+				</jxml:copy>
+			</jsl:template>
+			<jsl:template match="resources">
+				<jxml:copy>
+					<jxml:element name="extension">
+						<jxml:attribute name="name">Astrogrid Core CDK${jnlpVersion}</jxml:attribute>
+						<jxml:attribute name="href">http://software.astrogrid.org/jnlp/${subPath}astrogrid-cdk-core/astrogrid-cdk-core.jnlp</jxml:attribute>
+					</jxml:element>
+					<jsl:applyTemplates select="@* | node()" />
+				</jxml:copy>
+			</jsl:template>			
+		</jsl:stylesheet>	
+	</goal>
+	
+	<goal name="patch-jnlp">
+		<echo>Patching JNLP file</echo>
+		<!-- remove dependency on dummy jar - as breaks jnlp
+		     a bit convoluted - as template priorities, and jxml:if appears to be broken ..
+		     and there's a barrier between jelly variables and expressions in jsl..
+		     upshot is that the stylesheet becomes more brittle - need to watch it.
+		     -->
+		${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+		
+		<!-- read in original jnlp -->
+		<jxml:parse var="originalJNLP" xml="file://${maven.jnlp.dir}/${pom.artifactId}.jnlp" />
+		<!-- apply stylesheet -->
+		<j:file name="${maven.jnlp.dir}/${pom.artifactId}.jnlp">
+			<jsl:style stylesheet="${patch}" select="$originalJNLP" />
+		</j:file>
+	</goal>
+	
+	
 </project>
+
+

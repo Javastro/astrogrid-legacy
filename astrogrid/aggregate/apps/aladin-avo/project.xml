@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.8 2005/04/27 23:28:17 nw Exp $ -->
+<!-- $Id: project.xml,v 1.9 2005/06/14 17:48:43 nw Exp $ -->
 <project>
     <extend>${basedir}/../../../maven-base/project.xml</extend>
     <currentVersion>${astrogrid.aggregate.version}</currentVersion>
     <id>aladin-avo</id>
     <name>CDS Aladin (AVO Demonstration)</name>
     <description>Package of Aladin with Myspace Plugin for the AVO</description>
-    <shortDescription>Package of Aladin with Myspace Plugin for the AVO</shortDescription>
+    <shortDescription>Aladin Interactive Software Sky Atlas</shortDescription>
     <dependencies>
 
         <dependency>
