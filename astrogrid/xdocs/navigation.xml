@@ -73,7 +73,7 @@
             <!--leave me for now-->
         </menu>
         <menu name="Software Documentation">
-            <item name="AstroGrid Components" href="/server.html" collapse="true">
+            <item name="AstroGrid Components" href="/server.html" collapse="false">
                 <item name="Common Execution Architecture (CEA)" href="applications/index.html"/>
                 <item name="Community" href="community/index.html"/>
                 <item name="eXist" href="eXist/index.html"/>
@@ -84,7 +84,7 @@
                 <item name="Portal" href="portal/index.html"/>
                 <item name="Registry" href="registry/index.html"/>                                  
             </item>
-            <item name="Shared Libraries" href="/delegate.html" collapse="true">
+            <item name="Shared Libraries" href="/delegate.html" collapse="false">
                 <item name="Common" href="common/index.html"/>
                 <item name="Config" href="config/index.html"/>
                 <item name="Contracts" href="astrogrid-contracts/index.html"/>
@@ -101,7 +101,7 @@
                 <item name="Xml" href="xml/index.html"/>
                 <item name="XmlDb" href="xmldb/index.html"/>                
             </item>
-            <item name="Other" href="/delegate.html" collapse="true"> <!--change me-->
+            <item name="Other" href="/delegate.html" collapse="false"> <!--change me-->
                 <item name="Aggregate" href="aggregate/index.html"/>
                 <item name="Desktop" href="desktop/index.html"/>
                 <item name="SampleDocs" href="sampleDocs/index.html"/>
