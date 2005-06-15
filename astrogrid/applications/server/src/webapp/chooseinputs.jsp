@@ -22,38 +22,45 @@
 </head>
 <body bgcolor=#ffffff>
 <%
-	String selectedApp = request.getParameter("application");
-	String selectedInterface = request.getParameter("interface");
+  String selectedApp = request.getParameter("application");
+  String selectedInterface = request.getParameter("interface");
 %>
 
 
 
 <h1>Test Application</h1>
-Selected application: <%=selectedApp%>:<%=selectedInterface%>
+<p>Selected application: <%=selectedApp%>:<%=selectedInterface%></p>
 <%
-    ApplicationDescription description = (ApplicationDescription) session.getValue("descriptionObj");
-    ApplicationInterface ifc = description.getInterface(selectedInterface);    
-    session.putValue("interfaceObj", ifc);
-  %>
-   <h2>Inputs: </h2>
-   <form action="runapp.jsp">
-   <%
-   		String[] inputs = ifc.getArrayofInputs();
-   		for (int i=0;i<inputs.length;++i) {
-   			String input = inputs[i];
-   			out.print(input+ "("+description.getParameterDescription(input).getDisplayName()+")"+": "+description.getParameterDescription(input).getDisplayDescription()+"<br/>");
-   %>
-   			<textarea rows="3" cols="40" name="<%=input%>"><%=description.getParameterDescription(input).getDefaultValue()%></textarea><br/>
-   <%
-   		}
-   %>
-   		<input type="submit" value="execute"/>
-   </form>
+  ApplicationDescription description = (ApplicationDescription) session.getValue("descriptionObj");
+  ApplicationInterface ifc = description.getInterface(selectedInterface);    
+  session.putValue("interfaceObj", ifc);
+%>
+
+<h2>Inputs: </h2>
+<form action="runapp.jsp">
+<%
+  String[] inputs = ifc.getArrayofInputs();
+  for (int i=0;i<inputs.length;++i) {
+    String input = inputs[i];  // Name of text-entry control for value/URL
+    String inputIndirect = input + "Indirect"; // Name of checkbox control for indirection
+    String displayName = description.getParameterDescription(input).getDisplayName();
+    String paramDescription = description.getParameterDescription(input).getDisplayDescription();
+%>
+	<p>
+		<%=input%> (<%=displayName%>): <%=paramDescription%><br/>
+		Indirect?<input type="checkbox" name="<%=inputIndirect%>"/><br/>
+		(If indirect, enter the URL for the parameter value below; otherwise enter the value.)<br/>
+   		<textarea rows="3" cols="40" name="<%=input%>"><%=description.getParameterDescription(input).getDefaultValue()%></textarea><br/>
+	</p>
+<%
+  }
+%>
+   	
+	<input type="submit" value="execute"/>
+</form>
    
-   <a href="chooseapp.jsp">Choose another app</a>
-   
-   <h2>Outputs:</h2>
-   <%
+<h2>Outputs:</h2>
+<%
    		String[] outputs = ifc.getArrayofOutputs();
    		for (int i=0;i<outputs.length;++i) {
    			out.println(outputs[i]+"<br/>");

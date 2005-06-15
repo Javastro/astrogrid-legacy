@@ -40,6 +40,9 @@
 	   		ParameterValue pv= new ParameterValue();
 	   		pv.setName(inputs[i]);
 	   		pv.setValue(request.getParameter(inputs[i]));
+			String indirectionParameter = inputs[i] + "Indirect";
+			pv.setIndirect(request.getParameter(indirectionParameter) != null);
+                        
 	   		input.addParameter(pv);
    		}
 
@@ -105,7 +108,8 @@ function refresh()
 		Input input = tool.getInput();
 		ParameterValue[] pvis = input.getParameter();
    		for (int i=0;i<pvis.length;++i) {
-			out.print(pvis[i].getName()+":- "+pvis[i].getValue()+"<BR/>");
+			String indirection = (pvis[i].getIndirect())? "indirect" : "direct";
+			out.print(pvis[i].getName()+":- " + pvis[i].getValue()+ " (" + indirection +")<br/>");
    		}
 		out.print("<h2>Outputs</h2>");
 		Output output = tool.getOutput();
