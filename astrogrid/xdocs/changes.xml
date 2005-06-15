@@ -11,38 +11,41 @@
   </release-->
   <release version="(Pending Integration)">  
     		
-  	<action dev="gtr" type="add" issue="1188">
-  		<b>Most components</b> Branch <em>registry-gtr-1188</em>. JNDI keys shortened so they fit Tomcat's interface.
-  	</action>		    
+  			    
   </release>
 
-  <release version="(Undertest)">  	    
+  <release version="(Undertest)">  
+	    <action dev="gtr" type="add" issue="1188">
+  		<b>Most components</b> Branch <em>registry-gtr-1188</em>. JNDI keys shortened so they fit Tomcat's interface.
+  	</action>	    
         <action dev="jdt" type="fix" issue="1177"> <b>astrogrid/filestore</b>, <b>astrogrid/filemanager</b>and <b>astrogrid/integrationTests</b> 
             <em>aginab_jdt_1177</em> Plumbed the FileStore and FileManager installers into AGINAB. The GUI installers and AGINAB now use the same script for
             deployment, which has got to be a good thing. 
             </action>
-			<action dev="gtr" type="add" issue="1208">
-  	  <b>astrogrid/applications</b> Branch <em>cea-gtr-1208</em>. Enhancements to the JSPs for test-running an 
-  	  application that support indirect input parameters.
-  	</action>		    	     	       		
-		<action dev="gtr" type="fix" issue="1027"> 
-            Changes to TableMetaDoc.xsd to make it match the DSA software. Branch dsa-gtr-1027
-            Waiting for a big merge from mch before proceeding.
-        </action>
+					    	     	       		
+		
    </release>
     
   <release version="HEAD">
-	     <action dev="jdt" type="fix" issue="1180"> 
+	    <action dev="gtr" type="add" issue="1208">
+  	        <b>astrogrid/applications</b> Branch <em>cea-gtr-1208</em>. Enhancements to the JSPs for test-running an 
+  	        application that support indirect input parameters.
+  	    </action>
+	    <action dev="gtr" type="fix" issue="1027"> 
+            Changes to TableMetaDoc.xsd to make it match the DSA software. Branch dsa-gtr-1027
+            Waiting for a big merge from mch before proceeding.
+        </action>
+	    <action dev="jdt" type="fix" issue="1180"> 
             <b>astrogrid/applications</b> and <b>astrogrid/integrationTests</b> <em>cea_jdt_1180</em> Minor bug fixes to installer and build. Also fixes bug 
             1182 (for CEA only). Already merged.
         </action> 
-	     <action dev="dave" type="fix" issue="xxxx">
+	    <action dev="dave" type="fix" issue="xxxx">
   	      <b>dave-dev-200506100249</b> Changes to navigate and header
      	</action>
 	    <action dev="pjn3" type="fix" issue="1200">
-  	  <b>astrogrid/workflow + portal resources</b> Branch <em>portalRE_pjn_1200 + workflow_pjn_1200</em>
-  	  Only active tasks returned from registry in both workflow builder and resource browser. 
-  	</action>
+  	    <b>astrogrid/workflow + portal resources</b> Branch <em>portalRE_pjn_1200 + workflow_pjn_1200</em>
+  	    Only active tasks returned from registry in both workflow builder and resource browser. 
+  	    </action>
 	    <action dev="dave" type="fix" issue="xxxx">
   	      <b>dave-dev-200506081212</b> - Bug fixes to the pal metadata generator.No external side effects expected.
      	</action>
