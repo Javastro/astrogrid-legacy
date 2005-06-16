@@ -24,7 +24,7 @@
            builder, query builder, cea invoker.
 		   </p>
          ]]></description>
-        <shortDescription>AstroGrid Workbench</shortDescription>
+        <shortDescription>AstroGrid Workbench and Client Runtime</shortDescription>
         <packageGroups>
                 <packageGroup>
                         <title>Astrogrid Client Runtime Public Interface</title>

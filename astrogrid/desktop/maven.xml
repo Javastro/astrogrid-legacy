@@ -1,45 +1,13 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core" default="astrogrid-build-site" xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
+<project xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
 
+         <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,publish-beta-jnlp"/>	
+        <goal name="astrogrid-build-artifact" prereqs="jar,beta,release,jnlp"/>
 
-
-        <goal name="astrogrid-deploy-site">
-            <echo message="Please deploy the site docs from the base myspace project"/>
-        </goal>
-        <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,war:deploy-snapshot"/>
-        <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,war:war">
-                <echo>NB - no goal exists to build war snapshot - called war:war instead </echo>
-        </goal>
-        <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,war:install-snapshot"/>
-        <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy"/>
-        <goal name="astrogrid-build-artifact" prereqs="jar:jar,war:war"/>
-        <goal name="astrogrid-install-artifact" prereqs="jar:install,war:install"/>
-
-	<goal name="patch-bin">
-		<!-- overrides goal of same name in ancestor project.
-		this is intentionally left blank -->
-	</goal>
-     <goal name="patch-webapp">
-                <delete includeEmptyDirs="true">
-                        <fileset dir="${maven.build.dir}/${pom.artifactId}">
-                                <include name="WEB-INF/**" />
-                        </fileset>
-                </delete>
-                <!-- sign jars by hand - as maven jnlp task is flakey -->
-                <signjar alias="astrogrid" storepass="qwertyuiop">
-                        <fileset dir="${maven.build.dir}/${pom.artifactId}">
-                                <include name="*.jar" />
-                        </fileset>
-                </signjar>
-        </goal>
 	
 	
-        <goal name="patch-jnlp">
-                <!--
-                add in link to astrogrid extension.
-                -->
-             ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+        <goal name="define-stylesheet">
              <jsl:stylesheet var="patch">
                 <jsl:template match="information|jar|security|application-desc|j2se|property">
                         <jxml:copyOf select="." />
@@ -52,22 +20,13 @@
                 <jsl:template match="resources">
                         <jxml:copy>
                                 <jxml:element name="extension">
-                                        <jxml:attribute name="name">Astrogrid Script CDK</jxml:attribute>
-                                        <jxml:attribute name="href">http://software.astrogrid.org/jnlp/astrogrid-cdk-scripting/astrogrid-cdk-scripting.jnlp</jxml:attribute>
-                                        <!-- for dev only
-                                        <jxml:attribute name="href">http://localhost:8080/astrogrid-cdk-workflow/astrogrid-cdk-workflow.jnlp</jxml:attribute>
-                                        -->
+                                        <jxml:attribute name="name">Astrogrid Script CDK${jnlpVersion}</jxml:attribute>
+                                        <jxml:attribute name="href">http://software.astrogrid.org/jnlp/${subPath}astrogrid-cdk-scripting/astrogrid-cdk-scripting.jnlp</jxml:attribute>
                                 </jxml:element>
                                 <jsl:applyTemplates select="@* | node()" />
                         </jxml:copy>
                 </jsl:template>
              </jsl:stylesheet>
-             <!-- read in original jnlp -->
-             <jxml:parse var="originalJNLP" xml="file://${basedir}/target/${pom.artifactId}/${pom.artifactId}.jnlp" />
-             <!-- apply stylesheet -->
-             <j:file name="${maven.build.dir}/${pom.artifactId}/${pom.artifactId}.jnlp">
-                <jsl:style stylesheet="${patch}" select="$originalJNLP" />
-             </j:file>
         </goal>
 
 
