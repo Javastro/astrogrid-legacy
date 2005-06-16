@@ -234,10 +234,8 @@
               <xsl:attribute name="style">cursor: help</xsl:attribute>                                    
               <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
               <xsl:attribute name="onMouseOver">this.T_TITLE='Delete: '; this.T_WIDTH=250; this.T_DELAY=500; return escape('' +                                                            
-                                 'This parameter has min cardinality of 0 i.e. is optional and may be deleted. ' +
-                                 'Once deleted optional parameters are not passed on to the application, ' +
-                                 'if not deleted an empty value will be passed, ' +
-                                 'this may have a different meaning than not passing it at all. ');
+                                 'Check this box to delete this parameter.  Leaving it blank passes an empty '+
+                                 'value which may have a different effect from no parameter at all.');
               </xsl:attribute>                                             
               <input type="checkbox">
                 <xsl:attribute name="name">param_delete#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
