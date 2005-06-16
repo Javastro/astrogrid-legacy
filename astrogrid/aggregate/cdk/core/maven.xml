@@ -62,10 +62,10 @@
          </postGoal>
 
 
-
+	 
 <!-- set up jnlp - remove artifical jar, sign jars, munge jnlp -->
         <postGoal name="jnlp:generate-jnlp">
-                <j:if test="${keepProjectJars!='true'}">
+                <j:if test="${keepProjectJars.getValue()!='true'}">
                     <delete>
                         <fileset dir="${maven.jnlp.dir}">
                                 <include name="${pom.artifactId}*.jar" />
