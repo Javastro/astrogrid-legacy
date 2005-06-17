@@ -1,73 +1,87 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="file://localhost/home/noel/.eclipse/astrogrid-software-site/xdoc-dtd/xdoc.css" type="text/css"?>
 <document>
-    <properties>
-        <title>AstroGrid Workbench</title>
-        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
-    </properties>
-    <body>
-        <section name="AstroGrid Workbench">
-<p>
-	<img border="1" src="../images/workbench.png" align="right"/>
-	The Workbench is a desktop application that interacts with AstroGrid services. It provides 
-	<ul>
-		<li>Utility applications that <ul>
-			<li>Browse, read and write  MySpace</li>
-			<li>Launch Parameterized Workflows</li>
-			<li>Launch remote (CEA) applications</li>
-			<li>Monitor and control workflows and applications</li>
-			<li>View registry entries</li>
-		</ul></li>		
-			
-		<li>a simple API for calling AstroGrid services from scripts and other programs</li>
-	</ul>
-More information: 
-	<ul>
-		<li><a href="http://wiki.astrogrid.org/bin/view/Astrogrid/AstrogridDesktop">Wiki Overview</a></li>
-		<li><a href="http://www.astrogrid.org/maven/docs/HEAD/desktop/index.html">Project Documentation</a></li>
-		<li><i>user docs to come</i></li>
+  <properties>
+    <title>AstroGrid Workbench</title>
+    <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+  </properties>
+  <body>
+    <section name="AstroGrid Workbench"><img align="right" alt="" border="1" src="../images/workbench.png"/>
+		<ul><li><a href="#Launch_the_Workbench">Launch the Workbench</a></li>
+		   <li><a href="#Workbench_Features">Workbench Features</a></li>
+		   <li><a href="#Userguide">Userguide</a></li>
+		   <li><a href="#Links">Links</a></li>
 		</ul>
-</p>	
-		<p>The Workbench can be launched by clicking the links below.
-		<ul>
-			<li><a href="http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp"><b>Launch Application (Stable Release)</b></a> - recommended</li>
-			<li><a href="http://software.astrogrid.org/jnlp/beta/astrogrid-desktop/astrogrid-desktop.jnlp">Launch Application (Latest Beta Release)</a> - for access to latest features</li>			
-			<li><a href="http://software.astrogrid.org/jnlp/test/astrogrid-desktop/astrogrid-desktop.jnlp">Launch Application (Latest Test  Version)</a> - for testing only</li>
-		</ul>			
-		The workbench is launched using Java WebStart technology, which requires Java to be installed on your machine.
-		<ul>
-			<li><a href="http://java.com/en/download/manual.jsp"><img src="../images/get_java_blue-button.gif"/><br/>Download and Install Java</a> </li>
-			<li>if you experience problems, see the <a href="../jnlp/userguide.html">Web Start Userguide</a></li>
-		</ul>
+	    
+	    <p>The Workbench is a desktop GUI application that interacts with AstroGrid services. It provides  <ul>
+          <li>Utility applications that <ul>
+              <li>Browse, read and write MySpace</li>
+              <li>Launch Parameterized Workflows</li>
+              <li>Launch remote (CEA) applications</li>
+              <li>Monitor and control workflows and applications</li>
+              <li>View registry entries</li>
+            </ul></li>
+          <li>a simple programmer's interface for working with AstroGrid services. This interface can be accessed from scripts and other programs via HTTP or XML/RPC.</li>
+        </ul> 
 </p>
-<p>
-	The following sections illustrate some of the utility applications provided by the Workbench.
-</p>
+
 <br clear="right" />
-<subsection name="MySpace Browser">
-	<p>
-		<img border="1" src="../images/myspace-browser.png" align="right"/>		
-		The MySpace browser lets you see the contents of your MySpace store, copy, move &amp; delete files, 
-		and upload or download data to your MySpace.
-		</p>
-		<br clear="right" />
-	</subsection>
-<subsection name="CEA Application Launcher">
-	<p>
-		<img border="1" src="../images/app-launcher.png" align="right"/>
-		The Appliction launcher lets you browse a list of published remote applications and data sources, 
-		and then simply execute one by providing a few parameters.
-		</p>
-		<br clear="right" />		
-	</subsection>
-<subsection name="Job Monitor">
-	<p>
-		<img  border="1" src="../images/jobmonitor.png" align="right"/>
-		Enables you monitor the progress of running workflows and remote applications. New workflows can
-		be submitted for execution, and the results of completed ones viewed and then deleted.
-		</p>
-		<br clear="right" />		
-	</subsection>	
+<subsection name="Launch the Workbench"><p>
+ We provide two versions of the Workbench: a <i>stable</i> version, published once per release; and a <i>beta</i> version, which is published more often, may provide more features, but which is less well tested.</p>
+      <p>
+	      The workbench is written in the <a href="http://java.sun.com">Java</a> programming language.
+	      Provided you already have Java installed on your machine, click one of the links below to 
+	      launch the workbench using <a href="http://java.sun.com/products/javawebstart/">Java WebStart</a>
+<dl>
+          <dt><a href="http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp"><b>Launch AstroGrid Workbench</b> (Stable Version)</a></dt>
+	  <dd><a href="http://software.astrogrid.org/jnlp/astrogrid-desktop/index.html">Release Notes</a></dd>
+          <dt><a href="http://software.astrogrid.org/jnlp/beta/astrogrid-desktop/astrogrid-desktop.jnlp"><b>Launch AstroGrid Workbench</b> (Latest Beta Version)</a></dt>
+	  <dd><a href="http://software.astrogrid.org/jnlp/beta/astrogrid-desktop/index.html">Release Notes</a></dd>
+  </dl>
+</p>
+<hr />
+  <p><b> Problems? </b>
+  	<ul>
+          <li>You need to have Java 1.4 or 1.5 (preferred) installed <br/><a href="http://java.com/en/download/manual.jsp"><img alt="" src="../images/get_java_blue-button.gif"/><br/>Download and Install Java</a> </li>
+          <li>If you have Java installed but experience problems launching the workbench, see our <a href="../jnlp/userguide.html">Web Start Userguide</a></li>
+	  <li>We test each release of the Workbench on a range of different machine configurations. Check <a href="http://wiki.astrogrid.org/bin/view/Astrogrid/WorkbenchWebstartTesting">this list</a> to verify that the Workbench has been run on a machine similar to yours</li>
+		  
+        </ul> 
+</p>
+</subsection>
 </section>
-        
-    </body>
+  <section name="Workbench Features">
+      <p> The following sections illustrate some of the features of the Workbench. </p>
+      <br clear="right"/>
+      <subsection name="MySpace Browser">
+        <p> <img align="right" alt="" border="1" src="../images/myspace-browser.png"/>  The MySpace browser lets you see the contents of your MySpace store, copy, move &amp; delete files,  and upload or download data to your MySpace. </p>
+        <br clear="right"/>
+      </subsection>
+      <subsection name="CEA Application Launcher">
+        <p> <img align="right" alt="" border="1" src="../images/app-launcher.png"/> The Appliction launcher lets you browse a list of published remote applications and data sources,  and then simply execute one by providing a few parameters. </p>
+        <br clear="right"/>
+      </subsection>
+      <subsection name="Job Monitor">
+        <p> <img align="right" alt="" border="1" src="../images/jobmonitor.png"/> Enables you monitor the progress of running workflows and remote applications. New workflows can be submitted for execution, and the results of completed ones viewed and then deleted. </p>
+        <br clear="right"/>
+      </subsection>
+    </section>
+    <section name="Userguide"><p>
+		    in progress.
+		    <!-- add webstart link to doc viewer -->
+	    </p></section>
+    <section name="Links">
+	    <dl>
+  <!-- rubbish to factor into user or dev guides 
+	    <dt><a href="http://wiki.astrogrid.org/bin/view/Astrogrid/AstrogridDesktop">Wiki Overview</a></li>-->
+	    <dt><a href="http://www.astrogrid.org/maven/docs/HEAD/desktop/user-faq.html">FAQ</a></dt>
+	    <dd>Frequently Asked Questions and Answers</dd>
+	    <dt><a href="http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench">Feedback</a></dt>
+		<dd>File a bug or feature request about the Workbench</dd>
+		<dt><a href="http://www.astrogrid.org/maven/docs/HEAD/desktop/index.html">Workbench Developement Site</a></dt>
+		<dd>In-depth information for plugin and script developers</dd>
+
+	</dl>    
+</section>
+  </body>
 </document>
