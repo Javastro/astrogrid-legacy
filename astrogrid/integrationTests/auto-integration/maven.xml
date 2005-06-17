@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.150 2005/06/17 21:21:38 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.151 2005/06/17 22:27:21 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -161,7 +161,7 @@
         
         <!--temporary: registry must be set up before the installer-based components can
             install and self -register...this is temporary till the registry installer is ready-->
-        <attainGoal name="setup-registry"/>
+        <attainGoal name="self-register-registry"/>
         <sleep seconds="1"/>
         
         <attainGoal name="jes-deploy" />
@@ -213,7 +213,7 @@
         
         <!--temporary: registry must be set up before the installer-based components can
             install and self -register...this is temporary till the registry installer is ready-->
-        <attainGoal name="setup-registry"/>
+        <attainGoal name="self-register-registry"/>
         <sleep seconds="1"/>
         
         <attainGoal name="jes-deploy" />
@@ -439,6 +439,25 @@
 
 </goal>
 
+<goal name="self-register-registry" description="just the registry entries for the reg itself">
+            <copy todir="${temporary.dir}/registry-entries" filtering="true">
+                <fileset dir="registry-entries">
+                        <include name="**/ARegistry.xml" />						
+                        <include name="**/ARegistryv10.xml" />
+                        <include name="**/AstrogridStandardAuthority.xml" />
+                        <include name="**/AuthorityTest.xml"/>
+                </fileset>
+            </copy>
+                
+            <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+			
+            <ag:register file="${temporary.dir}/registry-entries/ARegistry.xml" />
+			<ag:register file="${temporary.dir}/registry-entries/ARegistryv10.xml" />
+            <ag:register file="${temporary.dir}/registry-entries/AstrogridStandardAuthority.xml" />
+            <ag:register file="${temporary.dir}/registry-entries/AuthorityTest.xml" />
+    
+</goal>
+
 <goal name="setup-registry" description="populate the registry" >
         <echo>Configuring Registry</echo>
         <!-- expand tokens -->
@@ -453,18 +472,13 @@
                 <path>
                         <fileset dir="${temporary.dir}/registry-entries">
 							<exclude name="**/ARegistry.xml" />
+                            <exclude name="**/ARegistryv10.xml" />
+                            <exclude name="**/AstrogridStandardAuthority.xml" />
+                            <exclude name="**/AuthorityTest.xml" />
 						</fileset>
                 </path>
         </pathconvert>
-            <util:tokenize var="entryListr" delim=" ">${entriesr}</util:tokenize>
-
-            <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-			        <j:if test="${not('yes' == (context.getVariable('registry.dontuploadregistrytypeentry')))}">			
-                        <ag:register file="${temporary.dir}/registry-entries/ARegistry.xml" />
-					</j:if>
-                        <ag:register file="${temporary.dir}/registry-entries/ARegistryv10.xml" />
-                        <ag:register file="${temporary.dir}/registry-entries/AstrogridStandardAuthority.xml" />
-                        <ag:register file="${temporary.dir}/registry-entries/AuthorityTest.xml" />
+        <util:tokenize var="entryListr" delim=" ">${entriesr}</util:tokenize>
 						
 
                 <waitfor maxwait="10" maxwaitunit="second" checkevery="500">
