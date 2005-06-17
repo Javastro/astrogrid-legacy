@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.6 2005/06/16 12:55:36 nw Exp $
+/*$Id: UIImpl.java,v 1.7 2005/06/17 12:06:14 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -337,7 +337,8 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
 			aboutMenuItem.setText("About Astrogrid Workbench");
 			aboutMenuItem.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
-                    JOptionPane.showMessageDialog(UIImpl.this,"Astrogrid Workbench v1.0.2-beta-1\nhttp://software.astrogrid.org","About Astrogrid Workbench",JOptionPane.INFORMATION_MESSAGE);
+                    String version = System.getProperty("workbench.version");
+                    JOptionPane.showMessageDialog(UIImpl.this,"Astrogrid Workbench v" + version +"\nhttp://software.astrogrid.org/userdocs/workbench.html","About Astrogrid Workbench",JOptionPane.INFORMATION_MESSAGE);
 				}
 			});
 		}
@@ -1020,6 +1021,10 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.7  2005/06/17 12:06:14  nw
+added changelog, made start on docs.
+fixed race condition.
+
 Revision 1.6  2005/06/16 12:55:36  nw
 updated build process to use new aggregate projects.
 

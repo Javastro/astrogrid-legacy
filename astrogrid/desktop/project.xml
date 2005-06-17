@@ -6,25 +6,22 @@
         <artifactId>astrogrid-desktop</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Astrogrid Workbench</name>
-        <description><![CDATA[
-                <p>
-                This project implements a desktop service which other client-side applications can connect with
-                to interact with astrogrid. At present supports HTTP / XML-RPC / Gui interfaces to astrogrid client-side components.
-                Plan to add Java-RMI imminently. Maybe CORBA later.
-                </p>
-                <p>
-                The client runtime provides a single sign-on, single-configuration, and single cache for interactions with astrogrid servers -
+        <description>
+	 	The Workbench is a suite of client-side components for accessing AstroGrid services - a registry browser,
+		myspace manager, job controller and application invoker. It is layered upon the AstroGrid Client Runtime (ACR).
+                
+                The (ACR) is a desktop service which other client-side applications can connect with
+                to interact with astrogrid. At present the ACR provides HTTP / XML-RPC / Gui interfaces to astrogrid client-side components.
+                Plan to add Java-RMI imminently.
+		
+		Using the ACR expert users can write programs and scripts in the language of their choice (for example Python, Perl, Bash, C)
+		that interact with AstroGrid services.
+                
+               The ACR provides a single sign-on, single-configuration, and single cache for interactions with astrogrid servers -
                 making implementation of client-side applications simpler.
-           </p>
-           <p>
-           The runtime provides client-side components for accessing the basic functionality of each of the astrogrid services -
-           myspace, registry, jes, cea, community. It also provides GUI components - simple dialogues that can be reused by client applications
-           to perform common tasks (myspace microbrowser, registry browser, etc). Finally, the runtime provides a series of simple GUI applications that
-           act as reference implementations for GUIs for the core features of astrogrid - myspace browser, job controller, registry browser. Others to follow - workflow
-           builder, query builder, cea invoker.
-		   </p>
-         ]]></description>
+		  </description>
         <shortDescription>AstroGrid Workbench and Client Runtime</shortDescription>
+
         <packageGroups>
                 <packageGroup>
                         <title>Astrogrid Client Runtime Public Interface</title>
@@ -35,6 +32,7 @@
                         <packages>org.astrogrid.desktop*</packages>
                 </packageGroup>
         </packageGroups>
+	
         <build>
                 <sourceDirectory>src/java</sourceDirectory>
                 <unitTestSourceDirectory>test/java</unitTestSourceDirectory>

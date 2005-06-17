@@ -1,4 +1,4 @@
-/*$Id: Main.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: Main.java,v 1.4 2005/06/17 12:06:14 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import org.astrogrid.desktop.framework.descriptors.DigesterDescriptorParser;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.nanocontainer.integrationkit.PicoCompositionException;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Startable;
 import org.picocontainer.defaults.DefaultPicoContainer;
@@ -24,6 +25,7 @@ import org.picocontainer.defaults.DefaultPicoContainer;
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 /** Main class of the Astrogrid Workbench
@@ -56,13 +58,18 @@ public class Main implements Startable {
     }
 
     
-    private final MutablePicoContainer pico;
+    protected final MutablePicoContainer pico;
 
     /**
      * @see org.picocontainer.Startable#start()
+     * starts the pico container - but on the swing event dispatch thread.
      */
     public void start() {
-        pico.start();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                pico.start();
+            }
+        });
     }
 
     /**
@@ -82,6 +89,10 @@ public class Main implements Startable {
 
 /* 
 $Log: Main.java,v $
+Revision 1.4  2005/06/17 12:06:14  nw
+added changelog, made start on docs.
+fixed race condition.
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

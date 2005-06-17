@@ -1,0 +1,36 @@
+<document>
+	<!-- see http://maven.apache.org/reference/plugins/changes/index.html 
+	     
+	     action - type="add|fix|remove|update"
+	     	     - issue="bug-id"
+	     -->
+	<properties>
+		<title>Workbench / ACR Changes</title>
+		<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+	</properties>
+	<head>
+		<link rel="alternate" title="RSS" 
+		  href="changes.rss" type="application/rss+xml"/>		
+	</head>
+<body>
+	
+	<release version="1.0.2-alpha-2" date="Unreleased">
+		<action dev="nw" type="add">
+			Added changes report
+		</action>
+		<action dev="nw" type="add">
+			Bundled set of docs into jnlp site
+		</action>
+		<action dev="nw" type="fix" issue="1186">
+			Fixed Race condition on startup
+		</action>
+	</release>
+	<release version="1.0.2-beta-1" date="2005-06-16">
+		<description>Beta Release</description>
+		<action dev="nw" type="add">
+			Added CEA Application Launcher GUI
+		</action>
+	</release>
+	
+</body>
+</document>

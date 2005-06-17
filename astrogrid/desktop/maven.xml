@@ -5,7 +5,53 @@
          <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,publish-beta-jnlp"/>	
         <goal name="astrogrid-build-artifact" prereqs="jar,beta,release,jnlp"/>
 
+	<goal name="astrogrid-build-site" prereqs="site" />
 	
+	<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
+		<attainGoal name="site:sshdeploy" />
+	</goal>
+	
+	<postGoal name="site">
+		<attainGoal name="javadoc-acr-api" />
+	</postGoal>
+	
+
+	
+	<!-- generate the mini site into the jnlp bundle -->
+	<postGoal name="jnlp:generate-jnlp">
+		<attainGoal name="changes:report" />
+		<move file="${maven.gen.docs}/changes-report.xml" tofile="${maven.gen.docs}/index.xml" />
+		<j:set var="maven.docs.src" value="${basedir}/jnlp-xdocs" />
+		<echo>${maven.docs.src}</echo>
+		<attainGoal name="xdoc:transform" />
+		<attainGoal name="javadoc-acr-api" />
+	</postGoal>
+	
+	<goal name="javadoc-acr-api">
+		<!-- irritating that we have to enumerate all the ones we don't 
+		     want - wildcards don't seem to work -->
+		<j:set var="maven.javadoc.excludepackagenames" 
+		       value="org.astrogrid.desktop,
+		       org.astrogrid.desktop.framework,
+		       org.astrogrid.desktop.framework.descriptors,
+		       org.astrogrid.desktop.icons,
+		       org.astrogrid.desktop.modules.ag,
+		       org.astrogrid.desktop.modules.dialogs,
+		       org.astrogrid.desktop.modules.system,
+		       org.astrogrid.desktop.modules.system.converters,
+		       org.astrogrid.desktop.modules.system.transformers,
+		       org.astrogrid.desktop.modules.ui
+		       
+		       " />
+		<j:set var="maven.javadoc.destdir"
+		       value="${maven.docs.dest}/acr-apidocs"/>
+		<j:set var="maven.javadoc.public"
+		       value="true"/>
+		<j:set var="maven.javadoc.protected"
+		       value="false"/>
+
+		<attainGoal name="javadoc:generate" />
+	</goal>
 	
         <goal name="define-stylesheet">
              <jsl:stylesheet var="patch">
