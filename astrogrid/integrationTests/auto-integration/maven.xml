@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.149 2005/06/01 10:57:38 clq2 Exp $ -->
+<!-- $Id: maven.xml,v 1.150 2005/06/17 21:21:38 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -47,17 +47,28 @@
 <property name="aginab.jes.contextpath" value="/astrogrid-jes-SNAPSHOT"/>
 <property name="aginab.filestore1.contextpath" value="/astrogrid-filestore-one-SNAPSHOT"/>
 <property name="aginab.filemanager1.contextpath" value="/astrogrid-filemanager-one-SNAPSHOT"/>
+<property name="aginab.filestore2.contextpath" value="/astrogrid-filestore-two-SNAPSHOT"/>
+<property name="aginab.filemanager2.contextpath" value="/astrogrid-filemanager-two-SNAPSHOT"/>
 <property name="aginab.portal.contextpath" value="/astrogrid-portal"/> <!--Do not change this one-->
 <property name="aginab.registry.contextpath" value="/astrogrid-registry-SNAPSHOT"/>
 <property name="aginab.ceajava.contextpath" value="/astrogrid-cea-server-SNAPSHOT"/>
 <property name="aginab.ceacmdline.contextpath" value="/astrogrid-cea-commandline-SNAPSHOT"/>
 <property name="aginab.ceahttp.contextpath" value="/astrogrid-cea-http-SNAPSHOT"/>
 
+<!--Derived Properties that are used in more than one component-->
 <!--Component URLs-->
 <property name="aginab.jes.url" value="${tomcat.url}${aginab.jes.contextpath}/"/>
 <property name="aginab.portal.url" value="${tomcat.url}${aginab.portal.contextpath}/"/>
 <property name="aginab.registry.url" value="${tomcat.url}${aginab.registry.contextpath}/"/>
-		
+
+<!--Registry Keys and IVORNS-->
+<property name="aginab.filemanager1.regkey" value="filemanager-one"/>
+<property name="aginab.filemanager2.regkey" value="filemanager-two"/>
+
+<property name="aginab.filestore1.regkey" value="filestore-one"/>
+<property name="aginab.filestore1.ivorn" value="ivo://${registry.authorityid}/${aginab.filestore1.regkey}"/>
+<property name="aginab.filestore2.regkey" value="filestore-two"/>
+<property name="aginab.filestore2.ivorn" value="ivo://${registry.authorityid}/${aginab.filestore2.regkey}"/>		
 <!--+
     | need to rationalize the use of the astrogrid.iteration - pah
     | better name would be astrogrid.release - i.e. it is intended to be SNAPSHOT for the current iteration and the iteration TAG for preious ones
@@ -147,6 +158,12 @@
         <sleep seconds="4" />
         <attainGoal name="exist-deploy" />
         <sleep seconds="4" />	
+        
+        <!--temporary: registry must be set up before the installer-based components can
+            install and self -register...this is temporary till the registry installer is ready-->
+        <attainGoal name="setup-registry"/>
+        <sleep seconds="1"/>
+        
         <attainGoal name="jes-deploy" />
         <sleep seconds="2" />
         <attainGoal name="cea-server-deploy" />
@@ -155,12 +172,18 @@
         <sleep seconds="2" />
         <attainGoal name="cea-http-deploy" />
         <sleep seconds="2" />
-<!--        <attainGoal name="myspace-deploy" /> -->
+
         <sleep seconds="2" />
-        <attainGoal name="filestore-deploy" />
+        <attainGoal name="filestore-one-deploy" />
         <sleep seconds="2" />
-        <attainGoal name="filemanager-deploy" />
+        <attainGoal name="filestore-two-deploy" />
         <sleep seconds="2" />
+        
+        <attainGoal name="filemanager-one-deploy" />
+        <sleep seconds="2" />
+        <attainGoal name="filemanager-two-deploy" />
+        <sleep seconds="2" />        
+        
         <attainGoal name="pal-deploy" />
         <sleep seconds="4" />
         <attainGoal name="pal-fits-deploy" />
@@ -185,8 +208,14 @@
         <sleep seconds="2" />
         <attainGoal name="reg-deploy" />
         <sleep seconds="4" />
-	    <attainGoal name="exist-deploy" />
-    	<sleep seconds="4" />
+        <attainGoal name="exist-deploy" />
+        <sleep seconds="4" />	
+        
+        <!--temporary: registry must be set up before the installer-based components can
+            install and self -register...this is temporary till the registry installer is ready-->
+        <attainGoal name="setup-registry"/>
+        <sleep seconds="1"/>
+        
         <attainGoal name="jes-deploy" />
         <sleep seconds="2" />
         <attainGoal name="cea-server-deploy" />
@@ -195,12 +224,18 @@
         <sleep seconds="2" />
         <attainGoal name="cea-http-deploy" />
         <sleep seconds="2" />
-<!--        <attainGoal name="myspace-deploy" />-->
+
         <sleep seconds="2" />
-        <attainGoal name="filestore-deploy" />
+        <attainGoal name="filestore-one-deploy" />
         <sleep seconds="2" />
-        <attainGoal name="filemanager-deploy" />
+        <attainGoal name="filestore-two-deploy" />
         <sleep seconds="2" />
+        
+        <attainGoal name="filemanager-one-deploy" />
+        <sleep seconds="2" />
+        <attainGoal name="filemanager-two-deploy" />
+        <sleep seconds="2" />        
+        
         <attainGoal name="pal-deploy" />
         <sleep seconds="4" />
         <attainGoal name="pal-fits-deploy" />
@@ -227,7 +262,14 @@
         <attainGoal name="reg-undeploy" />
 		<attainGoal name="exist-undeploy" />
 <!--        <attainGoal name="myspace-undeploy" />-->
-        <attainGoal name="filestore-undeploy" />
+        <attainGoal name="filestore-one-undeploy" />
+        <sleep seconds="2" />
+        <attainGoal name="filestore-two-undeploy" />
+        <sleep seconds="2" />
+        <attainGoal name="filemanager-one-undeploy" />
+        <sleep seconds="2" />
+        <attainGoal name="filemanager-two-undeploy" />
+        <sleep seconds="2" />        
         <attainGoal name="pal-undeploy" />
         <attainGoal name="pal-fits-undeploy" />
         <attainGoal name="pal-sec-undeploy" />
@@ -248,7 +290,14 @@
         <attainGoal name="reg-undeploy" />
 	    <attainGoal name="exist-undeploy" />
 <!--        <attainGoal name="myspace-undeploy" />-->
-        <attainGoal name="filestore-undeploy" />
+        <attainGoal name="filestore-one-undeploy" />
+        <sleep seconds="2" />
+        <attainGoal name="filestore-two-undeploy" />
+        <sleep seconds="2" />
+        <attainGoal name="filemanager-one-undeploy" />
+        <sleep seconds="2" />
+        <attainGoal name="filemanager-two-undeploy" />
+        <sleep seconds="2" />        
         <attainGoal name="pal-undeploy" />
         <attainGoal name="pal-fits-undeploy" />
         <attainGoal name="pal-sec-undeploy" />
@@ -311,8 +360,6 @@
         <attainGoal name="setup-exist" />
         <attainGoal name="setup-registry" />
         <attainGoal name="setup-community"/>
-        <attainGoal name="setup-filestore" />
-        <attainGoal name="setup-filemanager" />
         <attainGoal name="copy-test-resources" />
 </goal>
 
@@ -337,35 +384,12 @@
         <chmod dir="${work.dir}" perm="a+rw" type="file">
                 <include name="**/*" />
         </chmod>
+        <!--In particular, the test apps must be executable in Un*x-->
         <chmod dir="${work.dir}" perm="a+rwx" type="file">
                 <include name="**/*.sh" />
-        </chmod>
-        
+        </chmod>        
 </goal>
 
-
-
-
-
-
-<goal name="setup-filestore" description="filestore setup">
-    <echo>Configuring test data and repository for filestore one ....</echo>
-    <mkdir dir="${work.dir}/filestore-one/repository"/>
-    <mkdir dir="${work.dir}/filestore-one/data"/>
-    <copy todir="${work.dir}/filestore-one/data">
-        <fileset dir="work/filestore/data"/>
-    </copy>
-    <echo>Configuring test data and repository for filestore two ....</echo>
-    <mkdir dir="${work.dir}/filestore-two/repository"/>
-    <mkdir dir="${work.dir}/filestore-two/data"/>
-    <copy todir="${work.dir}/filestore-two/data">
-        <fileset dir="work/filestore/data"/>
-    </copy>
-</goal>
-
-<goal name="setup-filemanager" description="filestore setup">
-    <echo>Configuring filemanager ....</echo>
-</goal>
 
 <goal name="setup-community" description="Community setup">
     <echo>Configuring community database ....</echo>
@@ -837,6 +861,189 @@
     dest="${cea.deployment.jar.unpacked}"/>
 </goal>
 
+
+<!--
+    Deploy/Undeploy FileStore
+    -->
+<goal name="filestore-one-deploy" prereqs="override-input-task,init,filestore-init">
+      <ant dir="${filestore.deployment.jar.unpacked}" target="install-and-register" inheritAll="false" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            
+            <property name="input.filestore.working.dir" value="${work.dir}/filestore-one/repository/"/>
+            <property name="input.filestore.contextpath" value="${aginab.filestore1.contextpath}"/>
+			<property name="input.filestore.regauthority" value="${registry.authorityid}"/>
+			<property name="input.filestore.regkey" value="${aginab.filestore1.regkey}"/>
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
+      </ant>
+      
+      <echo>Configuring test data and repository for filestore one ....</echo>
+
+     <copy todir="${work.dir}/filestore-one/repository">
+        <fileset dir="work/filestore/data"/>
+     </copy>
+</goal>
+<goal name="filestore-one-undeploy" prereqs="override-input-task,init,filestore-init">
+      <ant dir="${filestore.deployment.jar.unpacked}" target="remove" inheritAll="false" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            
+            <property name="input.filestore.working.dir" value="${work.dir}/filestore-one/repository/"/>
+            <property name="input.filestore.contextpath" value="${aginab.filestore1.contextpath}"/>
+			<property name="input.filestore.regauthority" value="${registry.authorityid}"/>
+			<property name="input.filestore.regkey" value="${aginab.filestore1.regkey}"/>
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
+      </ant>
+</goal>
+<goal name="filestore-two-deploy" prereqs="override-input-task,init,filestore-init">
+      <ant dir="${filestore.deployment.jar.unpacked}" target="install-and-register" inheritAll="false" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            
+            <property name="input.filestore.working.dir" value="${work.dir}/filestore-two/repository/"/>
+            <property name="input.filestore.contextpath" value="${aginab.filestore2.contextpath}"/>
+			<property name="input.filestore.regauthority" value="${registry.authorityid}"/>
+			<property name="input.filestore.regkey" value="${aginab.filestore2.regkey}"/>
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
+      </ant>
+      <echo>Configuring test data and repository for filestore two ....</echo>
+      <copy todir="${work.dir}/filestore-two/repository">
+        <fileset dir="work/filestore/data"/>
+      </copy>
+</goal>
+<goal name="filestore-two-undeploy" prereqs="override-input-task,init,filestore-init">    
+      <ant dir="${filestore.deployment.jar.unpacked}" target="remove" inheritAll="false" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            
+            <property name="input.filestore.working.dir" value="${work.dir}/filestore-two/repository/"/>
+            <property name="input.filestore.contextpath" value="${aginab.filestore2.contextpath}"/>
+			<property name="input.filestore.regauthority" value="${registry.authorityid}"/>
+			<property name="input.filestore.regkey" value="${aginab.filestore2.regkey}"/>
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
+      </ant>
+</goal>
+
+
+
+<goal name="filestore-init">
+   <property name="filestore.deployment.jar.unpacked" value="${temporary.dir}/filestore"/>
+   <unjar src="${temporary.dir}/astrogrid-filestore-deploy-script-${astrogrid.filestore.version}.jar" 
+    dest="${filestore.deployment.jar.unpacked}"/>
+</goal>
+
+<!--
+    Deploy/Undeploy FileManager
+    -->
+<goal name="filemanager-one-deploy" prereqs="override-input-task,init,filemanager-init">
+      <ant dir="${filemanager.deployment.jar.unpacked}" target="install-and-register" inheritAll="false" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+           
+            <property name="input.filestore.ivorn" value="${aginab.filestore1.ivorn}"/>
+            <property name="input.filemanager.contextpath" value="${aginab.filemanager1.contextpath}"/>
+			<property name="input.filemanager.regauthority" value="${registry.authorityid}"/>
+			<property name="input.filemanager.regkey" value="${aginab.filemanager1.regkey}"/>
+            <property name="input.filemanager.working.dir" value="${work.dir}/filemanager-one/repository/"/>
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
+            <property name="input.contact.name" value="AGINAB"/>
+            <property name="input.contact.email" value="anon@astrogrid.org"/>
+      </ant>
+</goal>
+<goal name="filemanager-one-undeploy" prereqs="override-input-task,init,filemanager-init">
+      <ant dir="${filemanager.deployment.jar.unpacked}" target="remove" inheritAll="false" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+           
+            <property name="input.filestore.ivorn" value="${aginab.filestore1.ivorn}"/>
+            <property name="input.filemanager.contextpath" value="${aginab.filemanager1.contextpath}"/>
+			<property name="input.filemanager.regauthority" value="${registry.authorityid}"/>
+			<property name="input.filemanager.regkey" value="${aginab.filemanager1.regkey}"/>
+            <property name="input.filemanager.working.dir" value="${work.dir}/filemanager-one/repository/"/>
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
+            <property name="input.contact.name" value="AGINAB"/>
+            <property name="input.contact.email" value="anon@astrogrid.org"/>      
+      </ant>
+</goal>
+<goal name="filemanager-two-deploy" prereqs="override-input-task,init,filemanager-init">
+      <ant dir="${filemanager.deployment.jar.unpacked}" target="install-and-register" inheritAll="false" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+           
+            <property name="input.filestore.ivorn" value="${aginab.filestore2.ivorn}"/>
+            <property name="input.filemanager.contextpath" value="${aginab.filemanager2.contextpath}"/>
+			<property name="input.filemanager.regauthority" value="${registry.authorityid}"/>
+			<property name="input.filemanager.regkey" value="${aginab.filemanager2.regkey}"/>
+            <property name="input.filemanager.working.dir" value="${work.dir}/filemanager-two/repository/"/>
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
+            <property name="input.contact.name" value="AGINAB"/>
+            <property name="input.contact.email" value="anon@astrogrid.org"/>      
+       </ant>
+
+
+</goal>
+<goal name="filemanager-two-undeploy" prereqs="override-input-task,init,filemanager-init">    
+      <ant dir="${filemanager.deployment.jar.unpacked}" target="install-and-register" inheritAll="false" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+           
+            <property name="input.filestore.ivorn" value="${aginab.filestore2.ivorn}"/>
+            <property name="input.filemanager.contextpath" value="${aginab.filemanager2.contextpath}"/>
+			<property name="input.filemanager.regauthority" value="${registry.authorityid}"/>
+			<property name="input.filemanager.regkey" value="${aginab.filemanager2.regkey}"/>
+            <property name="input.filemanager.working.dir" value="${work.dir}/filemanager-two/repository/"/>
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
+            <property name="input.contact.name" value="AGINAB"/>
+            <property name="input.contact.email" value="anon@astrogrid.org"/>      
+       </ant>
+</goal>
+
+<goal name="filemanager-init">
+   <property name="filemanager.deployment.jar.unpacked" value="${temporary.dir}/filemanager"/>
+   <unjar src="${temporary.dir}/astrogrid-filemanager-deploy-script-${astrogrid.filemanager.version}.jar" 
+    dest="${filemanager.deployment.jar.unpacked}"/>
+</goal>
+
 <goal name="reg-deploy" >
     	<copy todir="${temporary.dir}/registry" filtering="true">
             <fileset dir="contexts/registry" />
@@ -860,115 +1067,6 @@
 	
 	
 
-<goal name="filestore-deploy">
-    <!--+
-        | Deploy filestore one.
-        +-->
-    <j:set var="filestore.name" value="filestore-one"/>
-    <attainGoal name="filestore-deploy-sub"/>
-    <!--+
-        | Deploy filestore two.
-        +-->
-    <j:set var="filestore.name" value="filestore-two"/>
-    <attainGoal name="filestore-deploy-sub"/>
-</goal>
-
-<goal name="filestore-deploy-sub">
-    <echo>Deploying ${filestore.name} ....</echo>
-    <!--+
-        | Setup the params.
-        +-->
-    <j:set var="filestore.webapp"    value="astrogrid-${filestore.name}-${pom.currentVersion}"/>
-    <filter token="FILESTORE_NAME"   value="org.astrogrid.${filestore.name}"/>
-    <filter token="FILESTORE_WEBAPP" value="${filestore.webapp}"/>
-    <!--+
-        | Make a copy of the war file.
-        +-->
-    <copy filtering="false"
-        file="${temporary.dir}/astrogrid-filestore-${astrogrid.filestore.version}.war"
-        toFile="${temporary.dir}/${filestore.webapp}.war"
-        />
-    <!--+
-        | Copy the context file.
-        +-->
-    <copy todir="${temporary.dir}/${filestore.name}" filtering="true">
-        <fileset dir="contexts/filestore"/>
-    </copy>
-    <ag:maybe-enable-cougaar webapp="${filestore.name}" />
-    <!--+
-        | Update the war file.
-        +-->
-    <war update="true" destfile="${temporary.dir}/${filestore.webapp}.war">
-        <metainf dir="${temporary.dir}/${filestore.name}"/>
-    </war>
-    <!--+
-        | Deploy the war file into Tomcat.
-        +-->
-    <tomcat-deploy
-        update="true"
-        url="${tomcat.manager.url}"
-        username="${tomcat.manager.username}"
-        password="${tomcat.manager.password}"
-        path="/${filestore.webapp}"
-        war="file:///${temporary.dir}/${filestore.webapp}.war"
-        />
-</goal>
-
-<goal name="filemanager-deploy">
-    <!--+
-        | Deploy FileManager one.
-        +-->
-    <j:set var="filemanager.name" value="filemanager-one"/>
-    <attainGoal name="filemanager-deploy-sub"/>
-    <!--+
-        | Deploy FileManager two.
-        +-->
-    <j:set var="filemanager.name" value="filemanager-two"/>
-    <attainGoal name="filemanager-deploy-sub"/>
-</goal>
-
-<goal name="filemanager-deploy-sub">
-    <echo>Deploying ${filemanager.name} ....</echo>
-    <!--+
-        | Setup the params.
-        +-->
-    <j:set var="filemanager.webapp"    value="astrogrid-${filemanager.name}-${pom.currentVersion}"/>
-    <filter token="FILEMANAGER_NAME"   value="org.astrogrid.${filemanager.name}"/>
-    <filter token="FILEMANAGER_WEBAPP" value="${filemanager.webapp}"/>
-    <!--+
-        | Make a copy of the war file.
-        +-->
-    <copy filtering="false"
-        file="${temporary.dir}/astrogrid-filemanager-${astrogrid.filemanager.version}.war"
-        toFile="${temporary.dir}/${filemanager.webapp}.war"
-        />
-    <!--+
-        | Copy the context file.
-        +-->
-    <copy todir="${temporary.dir}/${filemanager.name}" filtering="true">
-        <fileset dir="contexts/filemanager"/>
-    </copy>
-<!--+
-    <ag:maybe-enable-cougaar webapp="${filemanager.name}" />
-    +-->
-    <!--+
-        | Update the war file.
-        +-->
-    <war update="true" destfile="${temporary.dir}/${filemanager.webapp}.war">
-        <metainf dir="${temporary.dir}/${filemanager.name}"/>
-    </war>
-    <!--+
-        | Deploy the war file into Tomcat.
-        +-->
-    <tomcat-deploy
-        update="true"
-        url="${tomcat.manager.url}"
-        username="${tomcat.manager.username}"
-        password="${tomcat.manager.password}"
-        path="/${filemanager.webapp}"
-        war="file:///${temporary.dir}/${filemanager.webapp}.war"
-        />
-</goal>
 
 <goal name="pal-deploy" >
         <copy todir="${temporary.dir}/pal" filtering="true">
@@ -1171,45 +1269,6 @@
 	          path="/exist" />
 
 	</goal>	
-<!--
-<goal name="myspace-undeploy" >
-
-  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-mySpace-${pom.currentVersion}" />
-
-</goal>
--->
-<goal name="filestore-undeploy" >
-    <!--+
-        | Deploy filestore one.
-        +-->
-    <j:set var="filestore.name" value="filestore-one"/>
-    <attainGoal name="filestore-undeploy-sub"/>
-    <!--+
-        | Deploy filestore two.
-        +-->
-    <j:set var="filestore.name" value="filestore-two"/>
-    <attainGoal name="filestore-undeploy-sub"/>
-</goal>
-
-<goal name="filestore-undeploy-sub" >
-    <echo>UnDeploying ${filestore.name} ....</echo>
-    <!--+
-        | Setup the params.
-        +-->
-    <j:set var="filestore.webapp"    value="astrogrid-${filestore.name}-${pom.currentVersion}"/>
-    <!--+
-        | Undeploy the webapp.
-        +-->
-    <tomcat-remove
-        url="${tomcat.manager.url}"
-        username="${tomcat.manager.username}"
-        password="${tomcat.manager.password}"
-        path="/${filestore.webapp}"
-        />
-</goal>
-
-
 
 <goal name="cea-http-undeploy" >
 

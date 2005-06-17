@@ -15,8 +15,12 @@
         name="@FILEMANAGER_NAME@.basedir"
         override="false" type="java.lang.String"
         value="@FILEMANAGER_REPO@"/>
+     <Environment
+        name="org.astrogrid.registry.query.endpoint"
+        override="false" type="java.lang.String"
+        value="@REG_QUERY_ENDPOINT@"/>       
     <Environment
         name="org.astrogrid.registry.result.version"
         override="false" type="java.lang.String"
-        value="0.10"/>
+        value="0.9"/>
 </Context>

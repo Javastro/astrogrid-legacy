@@ -1,6 +1,6 @@
 <project name="install" default="info" basedir=".">
 	<property file="default.properties"/>
-	<property name="temporary.dir" value="tmp"/>
+	<property name="temporary.dir" value="filemgr-tmp"/>
 	<property name="filemanager.war" value="${maven.local.repo}/${astrogrid.groupId}/wars/${filemanager.war.name}"/>
 	<property name="local.filemanager.war" value="${basedir}/filemanager.war"/>
 	
@@ -49,7 +49,8 @@
     	<property name="filemanager.uninstalled" value="true"/>
 	</target>
 	
-	
+	<target name="install-and-register" description="Convenience Target for AGINAB" depends="install,register"/>
+
 	<!--Private Targets -->
 	<target name="setup-repository" description="Initialise the filemanager repository" depends="get-working-dir">
 		<mkdir dir="${input.filemanager.working.dir}"/>		
@@ -85,12 +86,11 @@
         <fail message="Please start Tomcat and retry the installation" unless="tomcat.present.true"/>
 	</target>
 	
-    <target name="download">
+    <target name="download" unless="offline">
     	<echo>Downloading filemanager software....this may take some time...</echo>
     	<mkdir dir="${maven.local.repo}/${astrogrid.groupId}/wars/"/>
-        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${filemanager.war.name}" dest="${filemanager.war}" verbose="true" usetimestamp="true"/>
-		<!--Due to firewall, assume war bundled with installer-->
-    	<!--copy file="${filemanager.war.name}" toFile="${filemanager.war}"/-->   	
+    	<property name="continueifnodownload" value="false"/> <!--normlly stop here, if we can't download-->
+        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${filemanager.war.name}" dest="${filemanager.war}" verbose="true" usetimestamp="true" ignoreerrors="${continueifnodownload}"/>
     </target>
 
 	
@@ -109,13 +109,14 @@
             path="${input.filemanager.contextpath}"  />
     </target>   
 
-    <target name="update-war" depends="download, input-filemanager-settings, set-context-path, get-registry-keys,get-working-dir">
+    <target name="update-war" depends="download, input-filemanager-settings, set-context-path, get-registry-keys,get-working-dir,checkRegistry">
         <filterset id="myfilter">
             <filter token="FILEMANAGER_NAME"   value="${input.filemanager.name}"/>
             <filter token="FILEMANAGER_WEBAPP" value="${input.filemanager.contextpath}"/>
             <filter token="FILEMANAGER_IVORN"   value="${filemanager.ivorn}"/>
             <filter token="FILESTORE_IVORN"   value="${input.filestore.ivorn}"/>        	
-            <filter token="FILEMANAGER_REPO" value="${input.filemanager.working.dir}"/>        	
+            <filter token="FILEMANAGER_REPO" value="${input.filemanager.working.dir}"/>    
+	    	<filter token="REG_QUERY_ENDPOINT" value="${astrogrid.registry.query.endpoint}"/>
         </filterset>
     	<echo>This filemanager is being installed with the following settings:</echo>
     	<echo>Name: ${input.filemanager.name}</echo>
@@ -123,6 +124,7 @@
     	<echo>IVORN: ${filemanager.ivorn}</echo>
     	<echo>Default FileStore ivorn: ${input.filestore.ivorn}</echo>    		
     	<echo>FileManager Repository ${input.filemanager.working.dir}</echo>
+    	<echo>Registry query endpoint ${astrogrid.registry.update.endpoint}</echo>
         <copy todir="${temporary.dir}/filemanager">
             <filterset refid="myfilter"/>
             <fileset dir="context" />
@@ -150,6 +152,8 @@
         <input addProperty="input.astrogrid.registry.endpoint" defaultvalue="http://127.0.0.1:8080/astrogrid-registry-SNAPSHOT/">Please enter the URL of your registry</input>
     	<property name="astrogrid.registry.endpoint" value="${input.astrogrid.registry.endpoint}"/>
     	<property name="astrogrid.registry.update.endpoint" value="${astrogrid.registry.endpoint}${astrogrid.registry.update.offset}"/>
+    	<property name="astrogrid.registry.query.endpoint" value="${astrogrid.registry.endpoint}${astrogrid.registry.query.offset}"/>
+    	    	
         <echo>Attempting to contact the registry...</echo>
         <tempfile property="page.check"/>
         <get src="${astrogrid.registry.update.endpoint}" dest="${page.check}"/>
@@ -157,19 +161,6 @@
     </target>
     
     	
-	<target name="check-installed-ok" depends="checkTomcat">
-    	<waitfor maxwait="30" maxwaitunit="second" checkevery="2000" timeoutproperty="installation.failed">
-    	    <http url="${input.tomcat.url}${input.filemanager.contextpath}"/>
-    	</waitfor>
-    	<fail if="installation.failed">Installation failed for some reason.  Please retry</fail>
-	</target>
-	
-	<target name="check-uninstalled-ok" depends="checkTomcat">
-    	<waitfor maxwait="6" maxwaitunit="second" checkevery="2000" timeoutproperty="uninstallation.failed">
-    	    <http url="${input.tomcat.url}${input.filemanager.contextpath}"/>
-    	</waitfor>
-    	<fail unless="uninstallation.failed">Uninstallation failed for some reason.  Please retry</fail>
-	</target>	
 	    
     <target name="createTmpDir">
         <delete dir="${temporary.dir}"/>

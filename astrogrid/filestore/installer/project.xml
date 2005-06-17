@@ -31,6 +31,9 @@
             <artifactId>maven-javaapp-plugin</artifactId>
             <version>1.3</version>
             <type>plugin</type>
+            <properties>
+                <uberjar.bundle>false</uberjar.bundle>
+            </properties>
         </dependency> 
         <dependency>
             <groupId>${pom.groupId}</groupId>

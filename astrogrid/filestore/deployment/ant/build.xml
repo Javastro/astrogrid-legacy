@@ -1,6 +1,6 @@
 <project name="install" default="info" basedir=".">
 	<property file="default.properties"/>
-	<property name="temporary.dir" value="tmp"/>
+	<property name="temporary.dir" value="filestore-tmp"/>
 	<property name="filestore.war" value="${maven.local.repo}/${astrogrid.groupId}/wars/${filestore.war.name}"/>
 	<property name="local.filestore.war" value="${basedir}/filestore.war"/>
 
@@ -35,7 +35,7 @@
 	    	<property name="filestore.installed" value="true"/>
     </target>		
 	
-	<target name="register" description="Register this FileStore" depends="define-custom-tasks,checkRegistry, get-registry-keys,set-context-path">
+	<target name="register" description="Register this FileStore" depends="define-custom-tasks,checkRegistry, get-registry-keys,set-context-path, checkRegistry">
 		<echo>Registering the FileStore...</echo>
 		<echo>Registering ${input.filestore.regkey} under authority ${input.filestore.regauthority} with service URL ${filestore.service.url}</echo>
         <tempfile property="filestore.regentry"/>
@@ -57,6 +57,8 @@
         <echo>***The FileStore has been successfully removed***</echo>
     	<property name="filestore.uninstalled" value="true"/>
 	</target>
+	
+	<target name="install-and-register" description="convenience target for AGINAB" depends="install,register"/>
 	
 	
 	<!--Private Targets -->
@@ -91,10 +93,11 @@
         <fail message="Please start Tomcat and retry the installation" unless="tomcat.present.true"/>
 	</target>
 	
-    <target name="download">
+    <target name="download" unless="offline">
     	<echo>Downloading FileStore software....this may take some time...</echo>
     	<mkdir dir="${maven.local.repo}/${astrogrid.groupId}/wars/"/>
-		<get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${filestore.war.name}" dest="${filestore.war}" verbose="true" usetimestamp="true"/>
+    	<property name="continueifnodownload" value="false"/> <!--normlly stop here, if we can't download-->
+		<get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${filestore.war.name}" dest="${filestore.war}" verbose="true" usetimestamp="true" ignoreerrors="${continueifnodownload}"/>
     </target>
 	
     <target name="deploy" depends="define-custom-tasks,createTmpDir,checkTomcat,download,update-war,set-context-path">
@@ -113,13 +116,15 @@
             path="${input.filestore.contextpath}"  />
     </target>   
 
-    <target name="update-war" depends="download, input-settings, set-context-path, get-registry-keys,get-working-dir">
+    <target name="update-war" depends="download, input-settings, set-context-path, get-registry-keys,get-working-dir,checkRegistry">
         <filterset id="myfilter">
             <filter token="FILESTORE_NAME"   value="${input.filestore.name}"/>
             <filter token="FILESTORE_WEBAPP" value="${input.filestore.contextpath}"/>
             <filter token="FILESTORE_IVORN"   value="${filestore.ivorn}"/>
             <filter token="FILESTORE_URL" value="${filestore.url}"/>
             <filter token="FILESTORE_REPO" value="${input.filestore.working.dir}"/>        	
+            <filter token="REGADMIN" value="${astrogrid.registry.update.endpoint}"/>        	
+            <filter token="REGQUERY" value="${astrogrid.registry.query.endpoint}"/>        	            	
         </filterset>
     	<echo>This filestore is being installed with the following settings:</echo>
     	<echo>Name: ${input.filestore.name}</echo>
@@ -153,9 +158,11 @@
         <input addProperty="input.astrogrid.registry.endpoint" defaultvalue="http://127.0.0.1:8080/astrogrid-registry-SNAPSHOT/">Please enter the URL of your registry</input>
     	<property name="astrogrid.registry.endpoint" value="${input.astrogrid.registry.endpoint}"/>
     	<property name="astrogrid.registry.update.endpoint" value="${astrogrid.registry.endpoint}${astrogrid.registry.update.offset}"/>
+    	<property name="astrogrid.registry.query.endpoint" value="${astrogrid.registry.endpoint}${astrogrid.registry.query.offset}"/>
         <echo>Attempting to contact the registry...</echo>
-        <tempfile property="page.check"/>
-        <get src="${astrogrid.registry.update.endpoint}" dest="${page.check}"/>
+    	<waitfor maxwait="60" maxwaitunit="second" checkevery="10" checkeveryunit="second">
+    	    <http url="${astrogrid.registry.update.endpoint}"/>
+    	</waitfor>    	
         <echo>...OK</echo>
     </target>
     
@@ -175,7 +182,7 @@
 	</target>	
 	    
     <target name="createTmpDir">
-        <delete dir="${temporary.dir}"/>
+    	<delete dir="${temporary.dir}"/>
         <mkdir dir="${temporary.dir}"/>
     </target>
  

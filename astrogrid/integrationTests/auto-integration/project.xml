@@ -29,7 +29,19 @@
             <artifactId>astrogrid-cea-deploy-script</artifactId>
             <version>${astrogrid.applications.version}</version>
             <properties/>
-        </dependency>        
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-deploy-script</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <properties/>
+        </dependency>                 
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filemanager-deploy-script</artifactId>
+            <version>${astrogrid.filemanager.version}</version>
+            <properties/>
+        </dependency>         
 <!--
         <dependency>
             <groupId>org.astrogrid</groupId>
@@ -206,27 +218,8 @@
             <version>SNAPSHOT</version>
             <properties/>
         </dependency>
-        <!--+
-            | FileStore WebApp.
-            +-->
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-filestore</artifactId>
-            <version>${astrogrid.filestore.version}</version>
-            <type>war</type>
-            <url>http://www.astrogrid.org/</url>
-        </dependency>
-        <!--+
-            | FileManager WebApp.
-            +-->
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-filemanager</artifactId>
-            <version>${astrogrid.filemanager.version}</version>
-            <type>war</type>
-            <url>http://www.astrogrid.org/</url>
-        </dependency>
-        <!--required to use the Ant 1.6 input task instead of the Ant 1.5.3
+
+        <!--required to use the Ant 1.6 input and get tasks instead of the Ant 1.5.3
 			one...this requirement will probably go away come Maven 1.1-->
         <dependency>
             <groupId>ant</groupId>

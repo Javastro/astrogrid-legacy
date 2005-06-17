@@ -15,6 +15,7 @@ webapp enabled</li>
 example: <tt>http://hydra.star.le.ac.uk:8080/astrogrid-registry</tt>
 )</li>
   <li>Java jdk 1.4 (probably present if you are reading this!)</li>
+  <li>A connection to the internet if this is the first time you have run the installer</li>
 </ol>
 <h2>Installation</h2>
 This installer will guide you through the installation process, downloading any necessary software and
@@ -24,6 +25,19 @@ to remove this instance, reinstall it, or register it.
 <b>Important Note</b><br>
 If you are installing a FileStore that is to be used and registered externally to the target machine you MUST
 replace the Tomcat URL of "http://127.0.0.1:8080" with the full externally visible URL when prompted.
+
+<h2>Installing from behind a proxy/firewall</h2>
+The installer attempts to download any files it needs from the AstroGrid repository.  If you are behind a firewall or use an internet proxy cache
+see <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">Firewalls/proxies</a>.
+<h2>Install offline</h2>
+If you have previously run the installer and downloaded the necessary files to your local disk, then you can rerun the installer in offline mode by passing the offline=true properties to the installer<br>
+    <tt>java -jar (installer.jar) -Doffline=true</tt><br>
+Other useful properties you can override on the commandline are:
+<ul>
+    <li><tt>maven.local.repo=${user.home}/.maven/repository</tt> location for the installer to download files</li>
+    <li><tt>filestore.war.name=astrogrid-filestore-${version}.war</tt> the name of the war file to install</li>
+    
+</ul>
 
 <h2>License</h2>
 This software is released under the Academic Free License.
