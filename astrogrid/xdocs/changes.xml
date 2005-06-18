@@ -18,15 +18,16 @@
 	    <action dev="gtr" type="add" issue="1188">
   		<b>Most components</b> Branch <em>registry-gtr-1188</em>. JNDI keys shortened so they fit Tomcat's interface.
   	</action>	    
-        <action dev="jdt" type="fix" issue="1177"> <b>astrogrid/filestore</b>, <b>astrogrid/filemanager</b>and <b>astrogrid/integrationTests</b> 
-            <em>aginab_jdt_1177</em> Plumbed the FileStore and FileManager installers into AGINAB. The GUI installers and AGINAB now use the same script for
-            deployment, which has got to be a good thing. 
-            </action>
+
 					    	     	       		
 		
    </release>
     
   <release version="HEAD">
+        <action dev="jdt" type="fix" issue="1177"> <b>astrogrid/filestore</b>, <b>astrogrid/filemanager</b>and <b>astrogrid/integrationTests</b> 
+            <em>aginab_jdt_1177</em> Plumbed the FileStore and FileManager installers into AGINAB. The GUI installers and AGINAB now use the same script for
+            deployment, which has got to be a good thing. 
+        </action>    
 	    <action dev="gtr" type="add" issue="1208">
   	        <b>astrogrid/applications</b> Branch <em>cea-gtr-1208</em>. Enhancements to the JSPs for test-running an 
   	        application that support indirect input parameters.
