@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.151 2005/06/17 22:27:21 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.152 2005/06/18 11:47:22 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -372,6 +372,20 @@
                 <exclude name="**/filestore/data/*"/>
             </fileset>
         </copy>
+        
+        <!--some test data for the filestore--> 
+        <echo>Configuring test data for filestore one ....</echo>
+        <mkdir dir="${work.dir}/filestore-one/data"/>
+        <copy todir="${work.dir}/filestore-one/data">
+            <fileset dir="work/filestore/data"/>
+        </copy>
+        <echo>Configuring test data for filestore two ....</echo>
+        <mkdir dir="${work.dir}/filestore-two/data"/>
+        <copy todir="${work.dir}/filestore-two/data">
+            <fileset dir="work/filestore/data"/>
+        </copy>
+
+        
         <!-- make everything world-accessible - necessary as tomcat may be running as different user to
         whoever is executing this script
 
