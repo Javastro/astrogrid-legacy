@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.6 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: JobMonitorImpl.java,v 1.7 2005/06/20 16:56:40 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
@@ -573,8 +574,8 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     
     /** production constructor 
      * @throws Exception*/
-    public JobMonitorImpl(Community community,Portal portal, BrowserControl browser, UI ui, Configuration conf, Jobs jobs, Applications applications) throws Exception {
-        super(conf,ui);
+    public JobMonitorImpl(Community community,Portal portal, BrowserControl browser, UI ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications) throws Exception {
+        super(conf,hs,ui);
         this.browser = browser;
         this.portal = portal;
         this.jobs = jobs;
@@ -957,6 +958,9 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.7  2005/06/20 16:56:40  nw
+fixes for 1.0.2-beta-2
+
 Revision 1.6  2005/06/08 14:51:59  clq2
 1111
 

@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.4 2005/05/12 15:59:08 clq2 Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.5 2005/06/20 16:56:40 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponent.BackgroundOperation;
@@ -450,8 +451,8 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
      * @param ui
      * @throws HeadlessException
      */
-    public AbstractVospaceBrowser(Configuration conf, UI ui, Myspace vos) throws HeadlessException {
-        super(conf, ui);
+    public AbstractVospaceBrowser(Configuration conf, HelpServer hs,UI ui, Myspace vos) throws HeadlessException {
+        super(conf, hs,ui);
         this.vos = vos;
     }
 
@@ -563,6 +564,9 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.5  2005/06/20 16:56:40  nw
+ * fixes for 1.0.2-beta-2
+ *
  * Revision 1.4  2005/05/12 15:59:08  clq2
  * nww 1111 again
  *

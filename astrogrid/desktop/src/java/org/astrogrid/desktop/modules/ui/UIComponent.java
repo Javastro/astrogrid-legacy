@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.3 2005/04/27 13:42:40 clq2 Exp $
+/*$Id: UIComponent.java,v 1.4 2005/06/20 16:56:40 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.system.UI;
 
 import org.apache.commons.logging.Log;
@@ -46,10 +47,12 @@ public class UIComponent extends PositionRememberingJFrame {
      * @param ui
      * @throws HeadlessException
      */
-    public UIComponent(Configuration conf, UI ui) throws HeadlessException {
-        super(conf, ui);
+    public UIComponent(Configuration conf,HelpServer hs, UI ui) throws HeadlessException {
+        super(conf,hs, ui);
     }
 
+    
+    
     private JPanel bottomPanel = null;
     private JLabel bottomLabel = null;
     private JProgressBar progressBar = null;
@@ -176,6 +179,9 @@ public class UIComponent extends PositionRememberingJFrame {
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.4  2005/06/20 16:56:40  nw
+fixes for 1.0.2-beta-2
+
 Revision 1.3  2005/04/27 13:42:40  clq2
 1082
 

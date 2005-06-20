@@ -55,9 +55,40 @@
 	
         <goal name="define-stylesheet">
              <jsl:stylesheet var="patch">
-                <jsl:template match="information|jar|security|application-desc|j2se|property">
+                <jsl:template match=
+		  "jar|security|extension|application-desc|j2se|property|title|vendor|description|homepage|icon|offline-allowed|shortcut|association|related-content">
                         <jxml:copyOf select="." />
                 </jsl:template>
+		<jsl:template match="information">
+			<jxml:copy>
+				<jxml:element name="related-content">
+					<jxml:attribute name="href">index.html</jxml:attribute>
+					<jxml:element name="title">Release Notes</jxml:element>
+				</jxml:element>
+				<jxml:element name="related-content">
+					<jxml:attribute name="href">http://software.astrogrid.org/userdocs/workbench.html</jxml:attribute>
+					<jxml:element name="title">Home Page</jxml:element>
+				</jxml:element>
+				<jxml:element name="related-content">
+					<jxml:attribute name="href">http://www.astrogrid.org/maven/docs/HEAD/desktop/index.html</jxml:attribute>
+					<jxml:element name="title">Development Site</jxml:element>
+				</jxml:element>				
+				<jxml:element name="related-content">
+					<jxml:attribute name="href">acr-apidocs/index.html</jxml:attribute>
+					<jxml:element name="title">ACR API Docs</jxml:element>
+				</jxml:element>	
+				<jxml:element name="related-content">
+					<jxml:attribute name="href">http://www.astrogrid.org/maven/docs/HEAD/desktop/user-faq.html</jxml:attribute>
+					<jxml:element name="title">FAQ</jxml:element>
+				</jxml:element>					
+				<jxml:element name="related-content">
+					<jxml:attribute name="href">http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench</jxml:attribute>
+					<jxml:element name="title">Report Bugs</jxml:element>
+				</jxml:element>		
+			
+				<jsl:applyTemplates select="@* | node()" />
+			</jxml:copy>
+		</jsl:template>
                 <jsl:template match="jnlp|@*">
                                 <jxml:copy>
                                         <jsl:applyTemplates select="@* | node()" />

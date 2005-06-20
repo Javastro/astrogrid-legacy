@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.7 2005/06/17 12:06:14 nw Exp $
+/*$Id: UIImpl.java,v 1.8 2005/06/20 16:56:40 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import org.astrogrid.acr.builtin.NewModuleListener;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
@@ -123,8 +124,8 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
     }
     
     /** this is the production constructor */
-    public UIImpl(BrowserControl browser,ModuleRegistry reg, Shutdown sh, Configuration conf) {     
-        super(conf,null);
+    public UIImpl(BrowserControl browser,ModuleRegistry reg, Shutdown sh, Configuration conf, HelpServer help) {     
+        super(conf,help,null);
         this.browser = browser;
         this.shutdown = sh;
         this.reg = reg;
@@ -316,11 +317,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
             helpContentsMenuItem.setText("Help Contents");
             helpContentsMenuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    try {
-                        browser.openURL("http://software.astrogrid.org");
-                    } catch (Exception ex) {
-                        logger.error(e);
-                    }
+                    help.showHelp();
                 }
             });
         } 
@@ -1021,6 +1018,9 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.8  2005/06/20 16:56:40  nw
+fixes for 1.0.2-beta-2
+
 Revision 1.7  2005/06/17 12:06:14  nw
 added changelog, made start on docs.
 fixed race condition.

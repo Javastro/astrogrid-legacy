@@ -13,7 +13,16 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-	
+	<release version="1.0.2-beta-2" date="2005-06-20">
+		<action dev="nw" type="update">
+			Based on 1.0.2-alpha-2
+		</action>		
+	</release>
+	<release version="1.0.2-eso" date="2005-06-20">
+		<action dev="nw" type="update">
+			Based on 1.0.2-alpha-2
+		</action>
+	</release>
 	<release version="1.0.2-alpha-2" date="Unreleased">
 		<action dev="nw" type="add">
 			Added changes report
@@ -22,7 +31,23 @@
 			Bundled set of docs into jnlp site
 		</action>
 		<action dev="nw" type="fix" issue="1186">
-			Fixed Race condition on startup
+			Fixed Race condition on startup - reliable, but
+			perceived startup is now slower.
+		</action>
+		<action dev="nw" type="add">
+			Added cheezy splash screen to hide startup time.
+			Better graphics needed.
+		</action>
+		<action dev="nw" type="add">
+			Added JavaHelp browser - now need to write helpset.
+		</action>
+		<action dev="nw" type="fix">
+			Moved large jars into jnlp extensions - should improve download
+			time for desktop updates
+		</action>
+		<action dev="nw" type="fix">
+			Added bounds checking for position-remembering windows
+			Should mean that all windows are visible onscreen
 		</action>
 	</release>
 	<release version="1.0.2-beta-1" date="2005-06-16">

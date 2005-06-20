@@ -19,6 +19,29 @@
 		<key>priority</key>
 		<value>100</value>
 	</property>	
+	<component name="help" 
+		implementationClass="org.astrogrid.desktop.modules.system.HelpServerImpl"
+		interfaceClass="org.astrogrid.acr.system.HelpServer">
+		<description>Display application help</description>
+		<method name="showHelp">
+							<return>
+					<description>nothing</description>
+				</return>
+		</method>
+		<method name="showHelpForTarget">
+							<return>
+					<description>nothing</description>
+				</return>
+				<parameter name="target">
+					<description>target in helpset to display</description>
+				</parameter>				
+		</method>
+		<method name="showHelpFromFocus">
+							<return>
+					<description>nothing</description>
+				</return>
+		</method>
+	</component>
 	<component name="browser" 
 		implementationClass="org.astrogrid.desktop.modules.system.WebstartBrowserControl"
 		interfaceClass="org.astrogrid.acr.system.BrowserControl"		

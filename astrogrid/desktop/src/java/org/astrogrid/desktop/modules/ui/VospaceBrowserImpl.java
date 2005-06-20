@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.5 2005/05/12 15:59:08 clq2 Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.6 2005/06/20 16:56:40 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.MyspaceBrowser;
 import org.astrogrid.community.common.exception.CommunityException;
@@ -514,8 +515,8 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         initialize();
     }
 
-    public VospaceBrowserImpl(Configuration conf, UI ui, Myspace vos, Community comm, BrowserControl browser) {
-        super(conf, ui,vos);
+    public VospaceBrowserImpl(Configuration conf, HelpServer hs,UI ui, Myspace vos, Community comm, BrowserControl browser) {
+        super(conf, hs,ui,vos);
         this.browser = browser;
         comm.addUserLoginListener(this);
         initialize();
@@ -644,6 +645,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.6  2005/06/20 16:56:40  nw
+ * fixes for 1.0.2-beta-2
+ *
  * Revision 1.5  2005/05/12 15:59:08  clq2
  * nww 1111 again
  *

@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.5 2005/05/12 15:59:08 clq2 Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.6 2005/06/20 16:56:40 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -143,8 +144,8 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 		initialize();
 	}
     
-    public RegistryBrowserImpl(Community community, UI ui,Configuration conf) throws TransformerConfigurationException, TransformerFactoryConfigurationError {
-        super(conf,ui);
+    public RegistryBrowserImpl(Community community, HelpServer hs,UI ui,Configuration conf) throws TransformerConfigurationException, TransformerFactoryConfigurationError {
+        super(conf,hs,ui);
         this.community = community;
         
         initialize();
@@ -218,6 +219,9 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.6  2005/06/20 16:56:40  nw
+fixes for 1.0.2-beta-2
+
 Revision 1.5  2005/05/12 15:59:08  clq2
 nww 1111 again
 

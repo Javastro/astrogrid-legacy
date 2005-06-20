@@ -65,25 +65,6 @@
         </build>
 
         <dependencies>
-        <dependency>
-                <groupId>jetty</groupId>
-                <artifactId>org.mortbay.jetty</artifactId>
-                <version>5.1.2</version>
-                <type>jar</type>
-                <properties>
-                        <jnlp.jar>true</jnlp.jar>
-                </properties>
-        </dependency>
-        <dependency>
-                <!-- need to test whether this one is really used -->
-                <groupId>jetty</groupId>
-                <artifactId>org.mortbay.jmx</artifactId>
-                <version>5.1.2</version>
-                <type>jar</type>
-                <properties>
-                        <jnlp.jar>true</jnlp.jar>
-                </properties>
-        </dependency>
 
 <!-- container and aspects system -->
         <dependency>
@@ -135,17 +116,6 @@
         </dependency>
 <!-- also asm 1.4.3 ? but don't seemt to need it -->
 
-<!-- not used.
-  <dependency>
-   <groupId>nanocontainer</groupId>
-   <artifactId>nanocontainer-swing</artifactId>
-   <version>1.0-beta-4</version>
-   <type>jar</type>
-   <properties>
-     <jnlp.jar>true</jnlp.jar>
-    </properties>
-    </dependency>
--->
         <dependency>
                 <groupId>xmlrpc</groupId>
                 <artifactId>xmlrpc</artifactId>
@@ -191,14 +161,7 @@
                         <jnlp.jar>true</jnlp.jar>
                 </properties>
         </dependency>
-    <dependency>
-      <artifactId>servletapi</artifactId>
-      <groupId>servletapi</groupId>
-      <version>2.3</version>
-                <properties>
-                        <jnlp.jar>true</jnlp.jar>
-                </properties>
-    </dependency>
+
     <dependency>
         <artifactId>commons-httpclient</artifactId>
         <groupId>commons-httpclient</groupId>
@@ -215,23 +178,73 @@
                         <jnlp.jar>true</jnlp.jar>
                 </properties>
  </dependency>
+ 
+ <dependency>
+	 <artifactId>jhelpaction</artifactId>
+	 <groupId>jhelpaction</groupId>
+	 <version>unknown</version>
+	 <jar>jhelpaction.jar</jar>
+	 <properties>
+		 <jnlp.jar>true</jnlp.jar>
+                </properties>	 
+ </dependency>
+ 
+ <!-- following libs are packaged up as separate jnlp extensions - so reference here,
+      for build time, but don't package in desktop jnlp -->
+ <!-- jetty webserver -->
+ <dependency>
+	 <groupId>jetty</groupId>
+	 <artifactId>org.mortbay.jetty</artifactId>
+	 <version>5.1.2</version>
+	 <type>jar</type>
+	 <properties>
+		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+		 <jnlp.extension.dir>/jnlp/jetty</jnlp.extension.dir>
+		 <jnlp.extension.jnlp>jetty.jnlp</jnlp.extension.jnlp>
+	 </properties>
+ </dependency>
+ <dependency>
+	 <!-- need to test whether this one is really used -->
+	 <groupId>jetty</groupId>
+	 <artifactId>org.mortbay.jmx</artifactId>
+	 <version>5.1.2</version>
+	 <type>jar</type>
+	 
+ </dependency>
+ <dependency>
+	 <artifactId>servletapi</artifactId>
+	 <groupId>servletapi</groupId>
+	 <version>2.3</version>	
+    </dependency>
+ 
  <!-- gui fluff -->
    <dependency><!-- look and feel -->
         <artifactId>looks</artifactId>
         <groupId>jgoodies</groupId>
         <version>1.3.1</version>
         <properties>
-                <jnlp.jar>true</jnlp.jar>
+		<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+		<jnlp.extension.dir>/jnlp/gui</jnlp.extension.dir>
+	<jnlp.extension.jnlp>gui.jnlp</jnlp.extension.jnlp>
         </properties>
    </dependency>
    <dependency><!-- swanky new widgets -->
         <groupId>l2fprod</groupId>
         <artifactId>l2fprod-common-all</artifactId>
         <version>0.1</version>
-        <properties>
-                <jnlp.jar>true</jnlp.jar>
-        </properties>
     </dependency>
+<!-- online help system -->
 
+ <dependency>
+	 <artifactId>jh</artifactId>
+	 <groupId>javahelp</groupId>
+	 <version>2.0.02</version>
+	 <properties>
+		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+		 <jnlp.extension.dir>/jnlp/javahelp</jnlp.extension.dir>
+	<jnlp.extension.jnlp>javahelp.jnlp</jnlp.extension.jnlp>
+	 </properties>
+	 <jar>jh.jar</jar>
+ </dependency>
     </dependencies>
 </project>
