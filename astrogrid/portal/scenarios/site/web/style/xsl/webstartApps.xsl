@@ -43,18 +43,16 @@
           }
         }
       </script>    
-      <agComponentTitle>Astrogrid Webstart applications</agComponentTitle>    
-      <p/>
+      <agComponentTitle>Astrogrid Webstart applications</agComponentTitle> 
       <ul>
-        <li><a class="strongLink" onClick="show_div('apps')" style="cursor: help">What are webstart applications?</a></li>
-        <li><a class="strongLink" onClick="show_div('hap')" style="cursor: help">What will happen when I select one?</a></li>
-        <li><a class="strongLink" onClick="show_div('req')" style="cursor: help">System requirements.</a></li>
-        <li><a class="strongLink" onClick="show_div('faq')" style="cursor: help">Frequently asked questions.</a></li>
+        <li><a class="strongLink" onClick="nofooter(); show_div('apps')" style="cursor: help">What are webstart applications?</a></li>
+        <li><a class="strongLink" onClick="nofooter(); show_div('hap')" style="cursor: help">What will happen when I select one?</a></li>
+        <li><a class="strongLink" onClick="nofooter(); show_div('req')" style="cursor: help">System requirements.</a></li>
+        <li><a class="strongLink" onClick="nofooter(); show_div('faq')" style="cursor: help">Frequently asked questions.</a></li>
        </ul>
-       <p/>
-       <table cellpadding="5" cellspacing="5" border="0">
+       <table cellpadding="3" cellspacing="3" border="0">
          <tr>
-           <td width="10"></td>
+           <td width="5"></td>
            <td title="Launch Workbench application">
              <a href="http://software.astrogrid.org/jnlp/beta/astrogrid-desktop/astrogrid-desktop.jnlp">
                <img src="/astrogrid-portal/mount/scenarios/workbench.gif" 
@@ -63,13 +61,14 @@
                     alt="workbench"/>
              </a>
            </td>
-           <td>Integrates astrogrid into the desktop.<br/> 
+           <td><font size="-1">Integrates astrogrid into the desktop.<br/> 
                Allows astrogrid services to be easily called from user applications and scripts;
+               </font>
            </td>
-           <td width="10%"></td>                                 
+           <td width="5"></td>                                 
          </tr>
          <tr>
-           <td width="10"></td>
+           <td width="5"></td>
            <td title="Launch Aladin application">
              <a href="http://software.astrogrid.org/jnlp/beta/aladin-avo/aladin-avo.jnlp">
                <img src="/astrogrid-portal/mount/scenarios/avo.gif" 
@@ -78,15 +77,16 @@
                     alt="aladin"/>
              </a>
            </td>         
-           <td>
+           <td><font size="-1">
              <b>Aladin</b> is an interactive software sky atlas allowing the user to visualize digitized images of any part of the sky, to superimpose entries from astronomical catalogs or personal user data files, and to interactively access related data and information from the SIMBAD, NED, VizieR, or other archives for all known objects in the field.
              Aladin is particularly useful for multi-spectral cross-identifications of astronomical sources, observation preparation and quality control of new data sets.
              The Aladin sky atlas is available in three modes: a simple previewer, a Java applet interface and a Java Standalone application.
+             </font>
            </td>
-           <td width="10%"></td>                                 
+           <td width="5"></td>                                 
          </tr>
          <tr>
-           <td width="10"></td>
+           <td width="5"></td>
            <td title="Launch Topcat application">
              <a href="http://software.astrogrid.org/jnlp/beta/topcat/topcat.jnlp">
                <img src="/astrogrid-portal/mount/scenarios/topcat.gif" 
@@ -95,14 +95,15 @@
                     alt="topcat"/>
              </a>
            </td>
-           <td>
+           <td><font size="-1">
              <b>Topcat</b> is an interactive graphical viewer and editor for tabular data. It has been designed for use with astronomical tables such as object catalogues, but is not restricted to astronomical applications.
              It understands a number of different astronomically important formats (including FITS and VOTable) and more formats can be added. It offers a variety of ways to view and analyse tables, 
              including a browser for the cell data themselves, viewers for information about table and column metadata, and facilities for plotting, calculating statistics and joining tables using flexible matching algorithms.
              Using a powerful and extensible Java-based expression language new columns can be defined and row subsets selected for separate analysis. Table data and metadata can be edited and the resulting modified table can be written out in a wide range of output formats.
              The program is written in pure Java and available under the GNU General Public Licence. It has been developed by the Starlink project in the UK. Its underlying table processing facilities are provided by STIL. 
+             </font>
            </td>
-           <td width="10%"></td>                                 
+           <td width="5"></td>                                 
          </tr>                  
        </table>
        <p /> 
@@ -112,6 +113,7 @@
          <table>
            <tr>
              <td>
+             <font size="-1">
               Java Web Start is an application-deployment technology that gives you the power to launch full-featured applications with a single click from your Web browser.
               You can download and launch applications, such as the Astrogrid workbench or Aladin, without going through complicated installation procedures. <br/>
               Java Web Start includes the security features of the Java 2 platform, so the integrity of your data and files is never compromised. In addition, Java Web Start technology enables you to use the latest Java 2 technology with any browser.<br/>
@@ -129,6 +131,7 @@
                However, traditional applications also have a number of problems. In particular, applications are often complicated to install, and even worse to upgrade.
                For companies that maintain hundreds or even thousands of desktop computers for their employees, keeping software up-to-date on these computers is typically a major headache. These problems have encouraged many companies to look into using HTML-based applications because of their simple and cost-effective deployment.
                Java Web Start technology, the innovative technology for deploying applications based on the Java 2 platform, enables you to launch full-featured applications via any browser, on any platform, from anywhere on the Web, in a secure fashion. It provides the best of both worlds: The ease of deployment and use of HTML, as well as the power and flexibility of a full-fledged application.
+               </font>
              </td>
            </tr>
          </table>
@@ -144,10 +147,12 @@
            </tr>
            <tr>
              <td colspan="2">
+             <font size="-1">
                When you choose one of the Webstart Applications a security warning dialog box will appear.
                The security warning dialog box warns the user that an application has requested unrestricted access, and asks the user to accept this request or not. 
                The dialog shows information about the origin of the code based on the certificate used to sign the code. This is so the user can make an informed decision on whether to trust the application or not.
                To run the chosen application click yes and the application will load and run.
+               </font>
              </td>
            </tr>           
            <tr>
@@ -155,6 +160,7 @@
                <img src="/astrogrid-portal/mount/scenarios/jaws.flowchart.jpg" alt="webstart image"/>
              </td>
              <td>
+             <font size="-1">
                The figure shows how Java Web Start technology works both from a user and technical perspective:
                The yellow arrow shows the user experience. A single click on a link launches a full-featured Java technology-based application, which may never have been present on the local computer before.<br />             
                What really happens behind the scenes is shown by the gray arrows:
@@ -169,6 +175,7 @@
                As of JAWS 1.4.2, JNLP URLs are also directly openable from the JAWS Application Manager and can be bookmarked. Moreover, they may be .html or .jnlp files.
                The steps described above are very similar to how other helper applications such as Real Audio or Acrobat Reader work. Java Web Start technology makes the Java 2 platform available to the browser, so you can launch any web-based application simply and securely.
                The only prerequisite is to download and install Java Web Start software on the client machine. This is a one-time download and, once done, installing and upgrading applications might be a thing of the past.                                          
+               </font>
              </td>
            </tr>
          </table>       
@@ -179,11 +186,13 @@
          <table>
            <tr>
              <td>
+               <font size="-1">
                The latest version of Java Web Start is contained in the Java 2 Platform, Standard Edition 5.0.
                <p/>
                Any client system that supports the Java 2 platform can use Java Web Start. Java Web Start works with virtually all browsers.
                <p/>
                If you do not have Java Webstart installed it can be downloaded <a href="http://java.sun.com/products/javawebstart/downloads/index.html" target="new">here</a>.
+               </font>
              </td>
            </tr>
          </table>       
@@ -194,7 +203,9 @@
          <table>
            <tr>
              <td>
+             <font size="-1">
                A comprehensive FAQ can be found <a href="http://java.sun.com/j2se/1.5.0/docs/guide/javaws/developersguide/faq.html" target="new">here</a>.
+               </font>
              </td>
            </tr>
          </table>
