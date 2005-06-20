@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>${basedir}/../../../maven-base/project.xml</extend>
+
+  <currentVersion>${astrogrid.aggregate.version}</currentVersion>
+
+  <id>jetty</id>
+
+  <name>Jetty Webserver Libraries</name>
+
+  <description>Jetty Webserver and it's prerequisites bundled as a JNLP Extension</description>
+
+  <shortDescription>Jetty Webserver</shortDescription>
+
+  <dependencies>
+	  <dependency>
+		  <groupId>jetty</groupId>
+		  <artifactId>org.mortbay.jetty</artifactId>
+		  <version>5.1.2</version>
+		  <type>jar</type>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>
+		  </properties>
+	  </dependency>
+	  <dependency>
+		  <!-- need to test whether this one is really used -->
+		  <groupId>jetty</groupId>
+		  <artifactId>org.mortbay.jmx</artifactId>
+		  <version>5.1.2</version>
+		  <type>jar</type>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>
+		  </properties>
+        </dependency>
+	<dependency>
+		<artifactId>servletapi</artifactId>
+		<groupId>servletapi</groupId>
+		<version>2.3</version>
+		<properties>
+			<jnlp.jar>true</jnlp.jar>
+		</properties>
+    </dependency>	
+<!-- stuff required in maven build -->
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-jsl</artifactId>
+
+      <version>20030211.143151</version>
+
+      <properties />
+    </dependency>
+
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-xml</artifactId>
+
+      <version>20030211.142705</version>
+
+      <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
+
+      <properties />
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory />
+
+    <unitTestSourceDirectory />
+
+    <unitTest />
+  </build>
+</project>
+

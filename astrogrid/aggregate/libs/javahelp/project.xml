@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>${basedir}/../../../maven-base/project.xml</extend>
+
+  <currentVersion>${astrogrid.aggregate.version}</currentVersion>
+
+  <id>javahelp</id>
+
+  <name>JavaHelp System Libraries</name>
+
+  <description>JavaHelp bundled as a JNLP Extension</description>
+
+  <shortDescription>JavaHelp Libraries</shortDescription>
+
+  <dependencies>
+
+	  <dependency>
+		  <artifactId>jh</artifactId>
+		  <groupId>javahelp</groupId>
+		  <version>2.0.02</version>
+		  <properties>			 
+			  <jnlp.jar>true</jnlp.jar>			  
+		  </properties>
+		  <jar>jh.jar</jar>
+ </dependency>
+<!-- stuff required in maven build -->
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-jsl</artifactId>
+
+      <version>20030211.143151</version>
+
+      <properties />
+    </dependency>
+
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-xml</artifactId>
+
+      <version>20030211.142705</version>
+
+      <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
+
+      <properties />
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory />
+
+    <unitTestSourceDirectory />
+
+    <unitTest />
+  </build>
+</project>
+

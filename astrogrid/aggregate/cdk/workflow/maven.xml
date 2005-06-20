@@ -14,7 +14,7 @@
 	<jsl:template match="jar[not(starts-with(@href,'astrogrid-cdk-')]">
 		<jxml:copyOf select="." />
 	</jsl:template>
-	<jsl:template match="information|security|application-desc|component-desc|property"> <!-- deliberately omitted j2se - as an extension descriptor shouldn't specify this -->
+	<jsl:template match="information|security|application-desc|component-desc|property|extension"> <!-- deliberately omitted j2se - as an extension descriptor shouldn't specify this -->
 		<jxml:copyOf select="." />
 	</jsl:template>
 	<jsl:template match="jnlp|@*">

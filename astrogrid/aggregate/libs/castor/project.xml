@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>${basedir}/../../../maven-base/project.xml</extend>
+
+  <currentVersion>${astrogrid.aggregate.version}</currentVersion>
+
+  <id>object-models</id>
+
+  <name>Axis Object Models Libraries</name>
+
+  <description>Castor and it's prerequisites bundled as a JNLP Extension</description>
+
+  <shortDescription>Castor Libraries</shortDescription>
+
+  <dependencies>
+
+	  <!-- helper for object models -->
+	  <dependency>
+		  <artifactId>commons-jxpath</artifactId>
+		  <groupId>commons-jxpath</groupId>
+		  <url>http://jakarta.apache.org/commons/</url>
+		  <version>1.1-patched</version>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>
+		  </properties>
+	  </dependency>
+	  <!-- required by castor -->
+	  <dependency>
+		  <artifactId>castor</artifactId>
+		  <groupId>castor</groupId>
+		  <version>0.9.5-xml</version>
+		  <url>http://castor.exolab.org/</url>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>			
+		  </properties>
+	  </dependency>
+	  <dependency>
+		  <id>regexp</id>
+		  <version>1.3</version>
+		  <url>http://jakarta.apache.org/commons/</url>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>			
+		  </properties>
+                </dependency>
+		!-- stuff required in maven build -->
+		<dependency>
+			<groupId>commons-jelly</groupId>
+			
+			<artifactId>commons-jelly-tags-jsl</artifactId>
+			
+			<version>20030211.143151</version>
+			
+			<properties />
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-jelly</groupId>
+			
+			<artifactId>commons-jelly-tags-xml</artifactId>
+			
+			<version>20030211.142705</version>
+			
+			<url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
+			
+			<properties />
+    </dependency>		
+  </dependencies>
+
+  <build>
+    <sourceDirectory />
+
+    <unitTestSourceDirectory />
+
+    <unitTest />
+  </build>
+</project>
+

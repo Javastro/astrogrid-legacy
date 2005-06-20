@@ -246,7 +246,7 @@
       </properties>
     </dependency>
 
-<!-- 3rd party libs -->
+<!-- 3rd party libs - all defined in their own extension-->
     <dependency>
       <groupId>xerces</groupId>
 
@@ -259,8 +259,6 @@
       <url>http://xml.apache.org/</url>
 
       <properties>
-        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-
         <dist.bundle>true</dist.bundle>
       </properties>
     </dependency>
@@ -277,7 +275,7 @@
       <url>http://xml.apache.org/</url>
 
       <properties>
-        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+
 
         <dist.bundle>true</dist.bundle>
       </properties>
@@ -295,7 +293,6 @@
       <url>http://xml.apache.org/</url>
 
       <properties>
-        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
         <dist.bundle>true</dist.bundle>
       </properties>
@@ -311,8 +308,9 @@
       <url>http://ws.apache.org/axis/</url>
 
       <properties>
-        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-
+	      <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+	      <jnlp.extension.dir>/jnlp/soap</jnlp.extension.dir>
+	<jnlp.extension.jnlp>soap.jnlp</jnlp.extension.jnlp>
         <dist.bundle>true</dist.bundle>
       </properties>
     </dependency>
@@ -329,7 +327,6 @@
       <url>http://ws.apache.org/axis/</url>
 
       <properties>
-        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
         <dist.bundle>true</dist.bundle>
       </properties>
@@ -345,7 +342,6 @@
       <url>http://ws.apache.org/axis/</url>
 
       <properties>
-        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
         <dist.bundle>true</dist.bundle>
       </properties>
@@ -361,7 +357,6 @@
       <url>http://ws.apache.org/axis/</url>
 
       <properties>
-        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
         <dist.bundle>true</dist.bundle>
       </properties>
@@ -377,7 +372,6 @@
       <url>http://ws.apache.org/axis/</url>
 
       <properties>
-        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
         <dist.bundle>true</dist.bundle>
       </properties>
@@ -393,7 +387,6 @@
       <url>http://jakarta.apache.org/commons/</url>
 
       <properties>
-        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
         <dist.bundle>true</dist.bundle>
       </properties>
@@ -409,7 +402,6 @@
       <url>http://jakarta.apache.org/commons/</url>
 
       <properties>
-        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
         <dist.bundle>true</dist.bundle>
       </properties>
@@ -421,7 +413,6 @@
       <version>1.2.8</version>
 
       <properties>
-        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
         <dist.bundle>true</dist.bundle>
       </properties>
@@ -437,7 +428,6 @@
       <url>http://jakarta.apache.org/commons/</url>
 
       <properties>
-        <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
         <dist.bundle>true</dist.bundle>
       </properties>

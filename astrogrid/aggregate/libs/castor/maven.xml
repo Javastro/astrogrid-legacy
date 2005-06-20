@@ -6,12 +6,12 @@
             <echo message="Please deploy the site docs from the base aggregate project"/>
         </goal>
 
-        <goal name="astrogrid-deploy-artifact" prereqs="dist:deploy-bin,publish-beta-jnlp">
+        <goal name="astrogrid-deploy-artifact" prereqs="publish-beta-jnlp">
                 <echo>Published JNLP as Beta. After installation testing run
                 'maven publish-jnlp' on this project to publish the release version
                 </echo>
         </goal>
-        <goal name="astrogrid-build-artifact" prereqs="dist:build-bin,beta,release,jnlp"/>
+        <goal name="astrogrid-build-artifact" prereqs="beta,release,jnlp"/>
 
 <!-- publishing goals -->
 
@@ -43,24 +43,6 @@
 </goal>
 
 
-<!-- set up dist to do what we want -->
-        <!-- remove artificial jar, but add in dependencies -->
-        <postGoal name="dist:prepare-bin-filesystem">
-                <j:if test="${keepProjectJars!='true'}">
-                    <delete>
-                        <fileset dir="${maven.dist.bin.assembly.dir}">
-                                <include name="*.jar" />
-                        </fileset>
-                    </delete>
-                </j:if>
-                <j:forEach var="lib" items="${pom.artifacts}">
-                        <j:set var="dep" value="${lib.dependency}"/>
-                                <j:if test="${dep.getProperty('dist.bundle')=='true'}">
-                                        <copy todir="${maven.dist.bin.assembly.dir}" file="${lib.path}"/>
-                                </j:if>
-                </j:forEach>
-         </postGoal>
-
 
 	 
 <!-- set up jnlp - remove artifical jar, sign jars, munge jnlp -->
@@ -68,33 +50,28 @@
                 <j:if test="${keepProjectJars.getValue()!='true'}">
                     <delete>
                         <fileset dir="${maven.jnlp.dir}">
-                                <include name="${pom.artifactId}*.jar" />
+                                <include name="${pom.artifactId}-${pom.currentVersion}.jar" />
                         </fileset>
                     </delete>
                 </j:if>
-		<copy todir="${maven.jnlp.dir}">
-			<fileset dir="${basedir}/src/webapp" />
-		</copy>
                 <!-- sign jars by hand - as maven jnlp task is flakey - todo - check whether maven task is still a problem -->
                 <signjar alias="astrogrid" storepass="qwertyuiop">
                         <fileset dir="${maven.jnlp.dir}">
                                 <include name="*.jar" />
                         </fileset>
-                </signjar>		
+                </signjar>				
 		<attainGoal name="define-stylesheet" />
                 <attainGoal name="patch-jnlp" />
         </postGoal>
 
   <goal name="define-stylesheet">
-	  <!-- override this to use an alternate stylesheet -->
-	  <echo>defining stylesheet for core CDK</echo>
 	<jsl:stylesheet var="patch">
-		<jsl:template match="jar[starts-with(@href,'astrogrid-cdk-')]"> <!-- gah- ${pom.artifactId} won't work here -->
+		<jsl:template match="jar[starts-with(@href,'object-models')]"> <!-- gah- ${pom.artifactId} won't work here -->
 		</jsl:template>
-		<jsl:template match="jar[not(starts-with(@href,'astrogrid-cdk-')]">
+		<jsl:template match="jar[not(starts-with(@href,'object-models'))]">
 			<jxml:copyOf select="." />
 		</jsl:template>
-		<jsl:template match="information|security|application-desc|component-desc|property|extension"> <!-- deliberately omitted j2se - as an extension descriptor shouldn't specify this -->
+		<jsl:template match="information|security|application-desc|component-desc|property"> <!-- deliberately omitted j2se - as an extension descriptor shouldn't specify this -->
 			<jxml:copyOf select="." />
 		</jsl:template>
 		<jsl:template match="jnlp|resources|@*">

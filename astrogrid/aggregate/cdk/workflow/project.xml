@@ -59,7 +59,7 @@
                         <url>http://jakarta.apache.org/commons/</url>
                         <version>1.1-patched</version>
                         <properties>
-                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
+				<dist.bundle>true</dist.bundle>
                         </properties>
                 </dependency>
                 <!-- required by castor -->
@@ -69,8 +69,10 @@
                         <version>0.9.5-xml</version>
                         <url>http://castor.exolab.org/</url>
                         <properties>
-				<dist.bundle>true</dist.bundle>			
-                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
+				<dist.bundle>true</dist.bundle>	
+				<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+				<jnlp.extension.dir>/jnlp/object-models</jnlp.extension.dir>
+				<jnlp.extension.jnlp>object-models.jnlp</jnlp.extension.jnlp>				
                         </properties>
                 </dependency>
                <dependency>
@@ -79,7 +81,6 @@
                 <url>http://jakarta.apache.org/commons/</url>
                         <properties>
 				<dist.bundle>true</dist.bundle>			
-                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
                         </properties>
                 </dependency>
     </dependencies>
