@@ -9,7 +9,12 @@
             <b>astrogrid/</b> Changes to all Installers to ensure they work offline.            
         </action>       
   </release-->
-  <release version="(Pending Integration)">  
+  <release version="(Pending Integration)">
+  	<action dev="gtr" type="fix" issue="1255">
+  		<b>astrogrid/contracts</b>, branch <em>contracts-gtr-1255</em>. More XML schemata added to the
+  		contracts project so that they can be published in the software site. After this branch is merged,
+  		please rebuild the software site so that it picks up the new schemata from the updated contracts jar.
+  	</action>
     		
   			    
   </release>
