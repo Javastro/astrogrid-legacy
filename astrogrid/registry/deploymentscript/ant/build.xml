@@ -9,7 +9,8 @@
 	<!--Public Targets-->
 
 	<target name="save-config" description="Save this configuration for future use">
-        <input addProperty="input.saveProperties.file" defaultvalue="${antigen.home}/registry-installer.properties">
+		<echo>Saving configuration</echo>
+        <input addProperty="input.saveProperties.file" defaultvalue="${user.home}/.registry-installer.properties">
             Enter a file name for saving your current settings
         </input>
         <echoproperties destfile="${input.saveProperties.file}" prefix="input." description="This file can then be reused for hands-free operation"/>
@@ -17,6 +18,7 @@
     </target>
 	
 	<target name="load-config" description="Load a previously saved configuration">
+		<echo>Loading saved configuration</echo>
     	<input addProperty="input.loadProperties.file" defaultvalue="${user.home}/registry-installer.properties">
             Enter the filename of your previously saved settings
         </input>
@@ -24,11 +26,12 @@
     </target>
 
 	<target name="install" description="Install an AstroGrid registry" depends="info,checkTomcat, download, deploy">
-	        <echo>***The registry has been successfully installed***</echo>
+	        <echo>The registry has been successfully installed.</echo>
 	    	<property name="registry.installed" value="true"/>
     </target>		
 	
 	<target name="register" description="Self-register this registry" depends="info,define-custom-tasks, get-registry-keys,set-context-path">
+		<echo>Registering the registry with itself</echo>
 		<input addproperty="input.reg.title" defaultvalue="A registry">Enter a title for the registry</input>
 		<input addproperty="input.reg.contact.name" defaultvalue="Kevin Benson">Enter a contact name for the registry</input>
 		<input addproperty="input.reg.contact.email" defaultvalue="kmb@mssl.foo.bar">Enter a contact email for the registry</input>			
@@ -54,7 +57,7 @@
 			<filterset refid="regfilter"/>
 		</copy>
 
-		<echo>Waiting for ${astrogrid.registry.update.endpoint} to become available</echo>
+		<echo>Waiting ...</echo><!-- for ${astrogrid.registry.update.endpoint} to become available</echo-->
 		<sleep seconds="10"/>
     	<waitfor maxwait="60" maxwaitunit="second" checkevery="10" checkeveryunit="second">
     	    <http url="${astrogrid.registry.update.endpoint}"/>
@@ -65,7 +68,8 @@
 	</target>
 	
 	<target name="add-authid" description="Add a managed authority ID" depends="info,define-custom-tasks, set-context-path">
-		<input addproperty="input.reg.managedauthority" defaultvalue="org.astrogrid">What is the authority you wish to manage?</input>
+		<echo>Adding another managed authority</echo>
+		<input addproperty="input.reg.managedauthority" defaultvalue="org.astrogrid">What is the additional authority you wish to manage?</input>
 		<input addproperty="input.reg.managedauthority.title" defaultvalue="Astrogrid Standard Authority">Enter a title for the authority</input>
 		<input addproperty="input.reg.managedauthority.shorttitle" defaultvalue="AG-AT-ST">Enter a short title for the authority</input>		
 		<input addproperty="input.reg.contact.name" defaultvalue="Kevin Benson">Enter a contact name for the registry entry</input>
@@ -92,7 +96,7 @@
 			<filterset refid="authfilter"/>
 		</copy>
 
-		<echo>Waiting for ${astrogrid.registry.update.endpoint} to become available</echo>
+		<echo>Waiting...</echo><!-- for ${astrogrid.registry.update.endpoint} to become available</echo-->
 		<sleep seconds="10"/>
     	<waitfor maxwait="60" maxwaitunit="second" checkevery="10" checkeveryunit="second">
     	    <http url="${astrogrid.registry.update.endpoint}"/>
@@ -103,7 +107,7 @@
 	
 	<target name="remove" description="Remove an existing AstroGrid registry" depends="info, checkTomcat,  undeploy">
     	<sleep seconds="10" description="Allow Tomcat to catch up"/>
-        <echo>***The registry has been successfully removed***</echo>
+        <echo>The registry has been successfully removed</echo>
     	<property name="registry.uninstalled" value="true"/>
 	</target>
 	
@@ -113,7 +117,7 @@
 	<!--Private Targets -->
 
 	<target name="info">
-		<echo>This is the AstroGrid Registry Installation Script</echo>
+		<echo>This is the AstroGrid Registry Installer</echo>
 	</target>
 	
 		
@@ -132,7 +136,7 @@
 	</target>
 
 	<target name="fail-if-no-tomcat">
-		<input addProperty="input.tomcat.present" validargs="continue,abort">Ensure Tomcat is running on your system with the Manager app enabled.</input>
+		<input addProperty="input.tomcat.present" validargs="continue,abort">Ensure Tomcat is running on your target system with the Manager app enabled.</input>
         <condition property="tomcat.present.true">
 	            <equals arg1="${input.tomcat.present}" arg2="continue"/>
         </condition>
