@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.8 2005/06/20 16:56:40 nw Exp $
+/*$Id: UIImpl.java,v 1.9 2005/06/22 08:48:51 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -155,7 +155,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e) {
-                int code = JOptionPane.showConfirmDialog(UIImpl.this,"This closes the user interface. Do you with  the desktop server to continue to run in the background?", 
+                int code = JOptionPane.showConfirmDialog(UIImpl.this,"This closes the user interface. Do you want  the desktop server to continue to run in the background?", 
                         "Closing GUI",JOptionPane.INFORMATION_MESSAGE);
                 switch(code) {
                     case JOptionPane.YES_OPTION:
@@ -222,7 +222,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
 	 * 	
 	 * @return javax.swing.JMenu	
 	 */    
-	private JMenu getModulesMenu() {
+	public JMenu getModulesMenu() {
 		if (modulesMenu == null) {
 			modulesMenu = new ObservingJMenu();
             getModulesUIModel().addObserver(modulesMenu);
@@ -258,7 +258,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
 	 * 	
 	 * @return javax.swing.JMenu	
 	 */    
-	private JMenu getHelpMenu() {
+	public JMenu getHelpMenu() {
 		if (helpMenu == null) {
 			helpMenu = new JMenu();
 			helpMenu.setName("");
@@ -416,6 +416,11 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
                 dispose();
             }
         });
+    }
+    
+    public void show() {
+        super.show();
+        requestFocus();
     }
 
 
@@ -1018,6 +1023,9 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.9  2005/06/22 08:48:51  nw
+latest changes - for 1.0.3-beta-1
+
 Revision 1.8  2005/06/20 16:56:40  nw
 fixes for 1.0.2-beta-2
 

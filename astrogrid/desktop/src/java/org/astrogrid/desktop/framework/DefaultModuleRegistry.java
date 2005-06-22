@@ -1,4 +1,4 @@
-/*$Id: DefaultModuleRegistry.java,v 1.5 2005/05/12 15:59:11 clq2 Exp $
+/*$Id: DefaultModuleRegistry.java,v 1.6 2005/06/22 08:48:52 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,17 +18,24 @@ import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
+import org.astrogrid.desktop.modules.system.Check;
 
 import org.apache.commons.collections.OrderedMap;
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nanocontainer.aop.ClassPointcut;
 import org.nanocontainer.aop.MethodPointcut;
 import org.nanocontainer.aop.PointcutsFactory;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /** Default implementation fo a {@link ModuleRegistry}
@@ -38,6 +45,7 @@ import java.util.Set;
  *
  */
 public class DefaultModuleRegistry implements MutableModuleRegistry {
+    private static final String IMPLEMENTATIONS_KEY = "implementations";
     /**
      * Commons Logger for this class
      */
@@ -118,7 +126,15 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
         for (Iterator i = desc.componentIterator(); i.hasNext(); ) {
             ComponentDescriptor c = (ComponentDescriptor)i.next();
             logger.info("Processing " + c.getName());                        
-            m1.registerComponentImplementation(c.getName(),c.getImplementationClass());     
+            if (c.getImplementationClass() != null) {
+                m1.registerComponentImplementation(c.getName(),c.getImplementationClass());
+            } else { // got a conditional component of some sort
+                logger.info("Checking conditional component " + c.getName());
+                Class impl  = selectImplementation(c);
+                if (impl != null) { // as there may be no suitable implementation
+                    m1.registerComponentImplementation(c.getName(),impl);
+                }
+            }
         }
         
         // register interceptors.
@@ -130,6 +146,66 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
         notifyListeners(m1);
         
     }
+    /** method to handle case where there's more than one possible implementation of a component
+     *  - and the right one needs to be chosen depending on some condition */
+    private Class selectImplementation(ComponentDescriptor c) {
+        String configDoc = c.getPropertyDocument(IMPLEMENTATIONS_KEY);
+        if (configDoc == null) {
+            logger.warn("Component " + c.getName() + " seems to have no implementation at all");
+            return null;
+        }
+        implementationDigester.clear();
+        implementationDigester.push(new ArrayList());
+        try {            
+            List alternatives = (List)implementationDigester.parse(new StringReader(configDoc));
+            for (Iterator i = alternatives.iterator();i.hasNext(); ) {
+                Implementation im = (Implementation)i.next();
+                try {
+                    if ( ((Check)im.getCheckClass().newInstance()).check()) {
+                        return Class.forName(im.getImplementationClass());
+                    }
+                } catch (InstantiationException e1) {
+                    logger.warn("InstantiationException",e1);
+                } catch (IllegalAccessException e1) {
+                    logger.warn("IllegalAccessException",e1);
+                } catch (ClassNotFoundException e1) {
+                    logger.warn("ClassNotFoundException",e1);
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Could not parse implementations for " + c.getName() ,e);
+        } catch (SAXException e) {
+            logger.error("Could not parse implementations for " + c.getName(),e);
+        }
+        logger.info("Failed to find suitable implementation for " + c.getName());
+        return null;
+      
+    }
+    /** digester to parse block of implementation alternatives */
+    private final Digester implementationDigester = new Digester() {{
+        addObjectCreate("*/implementation",Implementation.class);
+        addSetProperties("*/implementation");
+        addSetNext("*/implementation","add");
+    }};
+    
+    /** class representing an implementation alternative */
+    public static class Implementation {
+        private Class checkClass;
+        private String implementationClass;
+        public Class getCheckClass() {
+            return this.checkClass;
+        }
+        public void setCheckClass(Class checkClass) {
+            this.checkClass = checkClass;
+        }
+        public String getImplementationClass() {
+            return this.implementationClass;
+        }
+        public void setImplementationClass(String implementationClass) {
+            this.implementationClass = implementationClass;
+        }
+    }
+    
     
     /** @todo refine to public methods */
     private MethodPointcut publicMethods(PointcutsFactory cuts) {
@@ -184,6 +260,9 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
 
 /* 
 $Log: DefaultModuleRegistry.java,v $
+Revision 1.6  2005/06/22 08:48:52  nw
+latest changes - for 1.0.3-beta-1
+
 Revision 1.5  2005/05/12 15:59:11  clq2
 nww 1111 again
 

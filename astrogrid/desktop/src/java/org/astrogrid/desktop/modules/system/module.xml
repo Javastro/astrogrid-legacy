@@ -170,6 +170,38 @@
 			</method>
 	</component>
 	
+	<component name="systray"		
+		interfaceClass="org.astrogrid.acr.system.SystemTray"
+		>
+		<property>
+			<key>implementations</key>
+			<value>
+				<implementation 
+					checkClass="org.astrogrid.desktop.modules.system.CheckJDICSystemTrayPresent"
+					implementationClass="org.astrogrid.desktop.modules.system.JDICSystemTray" />
+			</value>
+		</property>
+		<description>System Tray Icon - only available on some platforms</description>
+	   <method name="displayErrorMessage">
+		  <description>Display an error message in the system tray</description>
+			<return><description>nothing</description></return>
+			<parameter name="caption"><description>caption for message</description></parameter>
+			<parameter name="message"><description>text of message</description></parameter>		
+	  </method>
+	   <method name="displayInfoMessage">
+		  <description>Display an information message in the system tray</description>
+			<return><description>nothing</description></return>
+			<parameter name="caption"><description>caption for message</description></parameter>
+			<parameter name="message"><description>text of message</description></parameter>		
+	  </method>
+	   <method name="displayWarningMessage">
+		  <description>Display an warning message in the system tray</description>
+			<return><description>nothing</description></return>
+			<parameter name="caption"><description>caption for message</description></parameter>
+			<parameter name="message"><description>text of message</description></parameter>		
+	  </method>	  	  
+	</component>
+	
 	<!-- interceptor class -->
 	<component name="throbber"
 		implementationClass="org.astrogrid.desktop.modules.system.ThrobbingInterceptor"

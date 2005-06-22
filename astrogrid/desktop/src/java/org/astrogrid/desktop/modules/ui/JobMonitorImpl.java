@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.7 2005/06/20 16:56:40 nw Exp $
+/*$Id: JobMonitorImpl.java,v 1.8 2005/06/22 08:48:52 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
+import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
@@ -390,15 +391,60 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
             for (int i = 0; i < applicationsTableModel.getRowCount(); i++) {
                 ExecutionSummaryType e = applicationsTableModel.getRow(i);
                 // updating status inplace in the model - but not firing notification.
-                e.setStatus(ExecutionPhase.valueOf(           applications.checkExecutionProgress(e.getExecutionId())));
+                ExecutionPhase newPhase = ExecutionPhase.valueOf(       applications.checkExecutionProgress(e.getExecutionId()));
+                if (e.getStatus() == null || newPhase.getType() != e.getStatus().getType()) {
+                    e.setStatus(   newPhase    );                    
+                    if (tray != null && e.getStatus().getType() < ExecutionPhase.COMPLETED_TYPE) {
+                        switch(newPhase.getType()) {
+                            case ExecutionPhase.COMPLETED_TYPE:
+                                tray.displayInfoMessage("Application Complete",e.getApplicationName());
+                                break;
+                                case ExecutionPhase.ERROR_TYPE:
+                                    tray.displayWarningMessage("Application Error",e.getApplicationName());
+                                break;                        
+                        }
+                    }
+                }
             }
             return results;
            
         }
-        protected void doFinished(Object o) {         
-                jobsTableModel.setList((WorkflowSummaryType[])o);
+        protected void doFinished(Object o) {   
+               WorkflowSummaryType[] latest = (WorkflowSummaryType[])o;
+               if (tray != null) { // no point if the tray isn't available.
+                   alertCompleted(latest);
+               }
+                jobsTableModel.setList(latest);
                 applicationsTableModel.fireTableDataChanged();
         } 
+        /** if the system tray is present, popup alertrts when jobs complete */
+       protected void alertCompleted(WorkflowSummaryType[] latest) {
+           for (int i =0; i < jobsTableModel.getRowCount(); i++) {
+               WorkflowSummaryType current = jobsTableModel.getRow(i);
+               if (current.getStatus().getType() < ExecutionPhase.COMPLETED_TYPE) {
+                   WorkflowSummaryType updated = findSummaryFor(current.getJobId(),latest);
+                   if (updated == null) {
+                       continue;
+                   }
+                   switch (updated.getStatus().getType()) {
+                       case ExecutionPhase.COMPLETED_TYPE:
+                           tray.displayInfoMessage("Workflow Complete",current.getWorkflowName());
+                           break;
+                       case ExecutionPhase.ERROR_TYPE:
+                           tray.displayWarningMessage("Workflow Error",current.getWorkflowName());
+                           break;
+                   }
+                   }                   
+               }           
+       }
+       protected WorkflowSummaryType findSummaryFor(JobURN urn,WorkflowSummaryType[] l) {
+           for (int i = 0; i < l.length; i++) {
+               if (l[i].getJobId().equals(urn)) {
+                   return l[i];
+               }
+           }
+               return null;                          
+       }
         protected void doAlways() {
                 //remove reference to self.
                 refreshWorker = null;
@@ -530,6 +576,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     }
 
     protected final BrowserControl browser;
+    protected final SystemTray tray;
     protected Action submitAction;
     protected Action cancelAction;
     protected final Jobs jobs;
@@ -570,16 +617,24 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         this.portal = null;
         this.jobs = null;
         this.applications = null;
+        this.tray = null;
 	}
     
-    /** production constructor 
+    /** production constructor - for platforms without system tray
      * @throws Exception*/
     public JobMonitorImpl(Community community,Portal portal, BrowserControl browser, UI ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications) throws Exception {
+        this(community,portal,browser,ui,hs,conf,jobs,applications,null);
+ 
+    }
+    
+    /** constructor for platforms with system tray */
+    public JobMonitorImpl(Community community,Portal portal, BrowserControl browser, UI ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, SystemTray tray) throws Exception {
         super(conf,hs,ui);
         this.browser = browser;
         this.portal = portal;
         this.jobs = jobs;
         this.applications = applications;
+        this.tray = tray;
         //this.community = community;
         community.addUserLoginListener(this);
         initialize();
@@ -958,6 +1013,9 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.8  2005/06/22 08:48:52  nw
+latest changes - for 1.0.3-beta-1
+
 Revision 1.7  2005/06/20 16:56:40  nw
 fixes for 1.0.2-beta-2
 

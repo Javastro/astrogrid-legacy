@@ -1,4 +1,4 @@
-/*$Id: ThrobbingInterceptor.java,v 1.5 2005/05/12 15:59:10 clq2 Exp $
+/*$Id: ThrobbingInterceptor.java,v 1.6 2005/06/22 08:48:52 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.system;
 
 
+import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.UI;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -25,12 +26,20 @@ public class ThrobbingInterceptor implements MethodInterceptor {
     /** Construct a new ThrobbingInterceptor
      * 
      */
-    public ThrobbingInterceptor(UI ui) {
+    public ThrobbingInterceptor(UI ui) {// constructor called when no tray available
         super();
         this.ui = ui;
+        this.tray = null;
+    }
+    
+    public ThrobbingInterceptor(UI ui,SystemTray tray) {// constructor called when tray is available
+        super();
+        this.ui = ui;
+        this.tray = tray;
     }
     
     protected final UI ui;
+    protected final SystemTray tray;
 
     /**
      * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
@@ -40,9 +49,15 @@ public class ThrobbingInterceptor implements MethodInterceptor {
             ui.startThrobbing();
             // doesn't work - always shows 'getEnv' - need to have it so that is only sets Status message on first invoaction, not nested ones.
             //ui.setStatusMessage("calling " + invocation.getMethod().getName());
+            if (tray != null) {
+                tray.startThrobbing();
+            }               
             return invocation.proceed();
         } finally {
             ui.stopThrobbing();
+            if (tray != null) {
+                tray.stopThrobbing();
+            }
           //  ui.setStatusMessage("");
         }
     }
@@ -52,6 +67,9 @@ public class ThrobbingInterceptor implements MethodInterceptor {
 
 /* 
 $Log: ThrobbingInterceptor.java,v $
+Revision 1.6  2005/06/22 08:48:52  nw
+latest changes - for 1.0.3-beta-1
+
 Revision 1.5  2005/05/12 15:59:10  clq2
 nww 1111 again
 

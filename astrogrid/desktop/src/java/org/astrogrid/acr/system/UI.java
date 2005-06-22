@@ -1,4 +1,4 @@
-/*$Id: UI.java,v 1.4 2005/05/12 15:59:12 clq2 Exp $
+/*$Id: UI.java,v 1.5 2005/06/22 08:48:52 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 package org.astrogrid.acr.system;
 
 import java.awt.Component;
+
+import javax.swing.JMenu;
 
 
 /** Main user interface component
@@ -44,10 +46,18 @@ public interface UI{
     /** set the status message */
     public void setStatusMessage(String msg);
     
+    /** access the help menu */
+    public JMenu getHelpMenu();
+   /** access the main modules menu */
+    public JMenu getModulesMenu();
+    
 }
 
 /* 
  $Log: UI.java,v $
+ Revision 1.5  2005/06/22 08:48:52  nw
+ latest changes - for 1.0.3-beta-1
+
  Revision 1.4  2005/05/12 15:59:12  clq2
  nww 1111 again
 

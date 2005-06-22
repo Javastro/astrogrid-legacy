@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.4 2005/06/20 16:56:40 nw Exp $
+/*$Id: UIComponent.java,v 1.5 2005/06/22 08:48:52 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,15 +19,21 @@ import org.apache.commons.logging.LogFactory;
 
 import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BoxLayout;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 
 /** abstract baseclass for ui components.
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Apr-2005
@@ -119,7 +125,23 @@ public class UIComponent extends PositionRememberingJFrame {
     // static variant - handy to have.
     public static final void showError(Component parent,String msg, Throwable e) {
         logger.info(msg,e); 
-        JOptionPane.showMessageDialog(parent,msg + "\nCause\n" + e,"Error",JOptionPane.ERROR_MESSAGE);        
+        JLabel l = new JLabel();
+        l.setText("<html><b>" + msg +"</b></html");
+        JEditorPane resultDisplay = new JEditorPane();
+        resultDisplay.setEditable(false);
+        resultDisplay.setContentType("text/html");
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        resultDisplay.setText("<html><b>Cause</b><br><pre>" + sw+ "</pre></html>");
+        resultDisplay.setCaretPosition(0);
+        JPanel p = new JPanel();
+        p.setLayout(new BorderLayout());
+        p.add(l,BorderLayout.NORTH);
+        JScrollPane js = new JScrollPane(resultDisplay);
+        js.setPreferredSize(new Dimension(400,150));                          
+        p.add(js,BorderLayout.SOUTH);
+ 
+        JOptionPane.showMessageDialog(parent,p,"Error",JOptionPane.ERROR_MESSAGE);        
     }
 
     /**
@@ -179,6 +201,9 @@ public class UIComponent extends PositionRememberingJFrame {
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.5  2005/06/22 08:48:52  nw
+latest changes - for 1.0.3-beta-1
+
 Revision 1.4  2005/06/20 16:56:40  nw
 fixes for 1.0.2-beta-2
 

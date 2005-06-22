@@ -1,4 +1,4 @@
-/*$Id: ParameterEditorDialog.java,v 1.3 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: ParameterEditorDialog.java,v 1.4 2005/06/22 08:48:52 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,6 +63,7 @@ public class ParameterEditorDialog extends JDialog {
 	private JButton executeButton = null;
 	private JButton cancelButton = null;
     private ParametersPanel parametersPanel = null;
+    private Tool tool;
 
 	/**
 	 * This method initializes jPanel	
@@ -107,7 +108,7 @@ public class ParameterEditorDialog extends JDialog {
 			    setText("Cancel");
 			    addActionListener(new java.awt.event.ActionListener() { 
 			        public void actionPerformed(java.awt.event.ActionEvent e) {    
-			            tool  = null; // we've canceled, so don't return anything.
+			            tool  = null; // we've canceled, so don't return anything.                        
 			            dispose();
 			        }
 			    });
@@ -149,7 +150,7 @@ public class ParameterEditorDialog extends JDialog {
     
     protected final ResourceChooserDialog resourceChooser;
     protected final ApplicationDescription desc;
-    protected Tool tool;
+   // protected Tool tool;
     
     
 	private JLabel topLabel = null;
@@ -193,7 +194,8 @@ public class ParameterEditorDialog extends JDialog {
 		return jContentPane;
 	}
     public Tool getTool() {
-        return getParametersPanel().getTool();
+        // @todo test this - need to check we get null on cancel now.
+        return tool;
     }
     
     public ParametersPanel getParametersPanel() {
@@ -211,6 +213,9 @@ public class ParameterEditorDialog extends JDialog {
 
 /* 
 $Log: ParameterEditorDialog.java,v $
+Revision 1.4  2005/06/22 08:48:52  nw
+latest changes - for 1.0.3-beta-1
+
 Revision 1.3  2005/06/08 14:51:59  clq2
 1111
 

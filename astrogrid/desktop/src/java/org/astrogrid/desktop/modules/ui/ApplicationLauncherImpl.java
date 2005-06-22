@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.2 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.3 2005/06/22 08:48:52 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,9 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.Myspace;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.HelpServer;
+import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.ApplicationLauncher;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.applications.beans.v1.Interface;
@@ -27,6 +30,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Element;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -36,6 +40,8 @@ import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -79,15 +85,20 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
         return currentApplication;
     }
     private final static         String vr = "http://www.ivoa.net/xml/VOResource/v0.10";
-    private void setCurrentApplication(ApplicationDescription descr) {        
+    private void setCurrentApplication(ApplicationDescription descr) {
+        if (descr == null) {
+            logger.warn("Attempted to set to null application description - must have been an error in parsing reg entry");
+            return;
+        }
         logger.debug("Setting current application tp " + descr);
         this.currentApplication = descr;
         // now need to change display
         JEditorPane infoDisplay2 = getInfoDisplay();
         //infoDisplay2.setText(apps.getInfoFor(currentApplication));
-        infoDisplay2.setText("<html>" + 
-                currentApplication.getOriginalVODescription().getElementsByTagNameNS(vr,"description").item(0).getFirstChild().getNodeValue()
-                + "</html");
+        Element e = (Element)currentApplication.getOriginalVODescription().getElementsByTagNameNS(vr,"description").item(0);
+        infoDisplay2.setText("<html>" 
+                + e == null || e.getFirstChild() == null ? "<i>No Description available</i>" : e.getFirstChild().getNodeValue()
+                + "</html>");
         infoDisplay2.setCaretPosition(0);
         
         // change interface list.
@@ -156,11 +167,21 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
         }
 
         public void actionPerformed(ActionEvent e) {
-            final Tool t = getParametersPane().getTool();
+            // @todo HACK going to clone this tool document, rather than passing a reference - as it's getting butchered later on,
+            // which means that you can't run the same app twice. easiest to clone the tool document for now - and find out what's going wrong later
+            // it's that cursed Ivorn class really.
+
+            
+            final Tool tOrig = getParametersPane().getTool();
             (new BackgroundOperation("Executing..") {
 
                 protected Object construct() throws Exception {
                     logger.debug("Executing");
+                    // HACK - taking a copy.
+                    StringWriter sw = new StringWriter();
+                    tOrig.marshal(sw);
+                    sw.close();
+                    Tool t = Tool.unmarshalTool(new StringReader(sw.toString()));
                     ResourceData[] services = apps.listProvidersOf(new Ivorn(t.getName()));
                     logger.debug("resolved app to " + services.length + " servers");
                     if (services.length > 1) {
@@ -184,7 +205,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
                 protected void doFinished(Object o) {
                     ResultDialog rd = new ResultDialog(ApplicationLauncherImpl.this,"ExecutionId : " + o);
                     rd.show();                   
-                    monitor.addApplication(t.getName(),o.toString());
+                    monitor.addApplication(tOrig.getName(),o.toString());
                     monitor.displayApplicationTab();
                     monitor.show();
                 }
@@ -352,9 +373,13 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
                                 return apps.getApplicationDescription(selected.getName());                           
                             }
                             protected void doFinished(Object o) {
-                                setCurrentApplication((ApplicationDescription)o);
-                                getExecuteAction().setEnabled(true);                               
-                                getSaveAction().setEnabled(true);
+                                if (o != null) {
+                                    setCurrentApplication((ApplicationDescription)o);
+                                    getExecuteAction().setEnabled(true);                               
+                                    getSaveAction().setEnabled(true);
+                                } else {
+                                    showError(ApplicationLauncherImpl.this,"Failed to parse registry entry",null);
+                                }
                             }
                         }).start();                                           
                     }
@@ -509,13 +534,15 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 	 * This is the default constructor
 	 */
 	public ApplicationLauncherImpl() {
+        super();
         this.apps = null;
         this.monitor =null;
         this.myspace = null;
 		initialize();
 	}
     
-    public ApplicationLauncherImpl(Applications apps,JobMonitor monitor, Myspace myspace) {
+    public ApplicationLauncherImpl(Applications apps,JobMonitor monitor, Myspace myspace, HelpServer hs, Configuration conf, UI ui) {
+        super(conf,hs,ui);
         this.apps = apps;
         this.monitor = monitor;
         this.myspace =myspace;
@@ -550,6 +577,9 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.3  2005/06/22 08:48:52  nw
+latest changes - for 1.0.3-beta-1
+
 Revision 1.2  2005/06/08 14:51:59  clq2
 1111
 

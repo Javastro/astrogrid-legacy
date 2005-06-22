@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.6 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: ApplicationsImpl.java,v 1.7 2005/06/22 08:48:52 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -234,7 +234,7 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
        }
        logger.debug("Verified applicaion exists");
        // what about namespaces??
-        String query = "Select * from Registry where cea:ManagedApplications/cea:ApplicationReference='"
+        String query = "Select * from Registry where @status = 'active' and cea:ManagedApplications/cea:ApplicationReference='"
             + applicationName + "'";
         Document results = getReg().searchFromSADQL(query);
         logger.debug("got  results");       
@@ -258,19 +258,20 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
             Element resource = (Element)resources.item(i);
 
             try {
-                rd.setIvorn(new Ivorn(XPathAPI.eval(resource,"//vr:identifier",namespaceNode).str()));
+                rd.setIvorn(new Ivorn(XPathAPI.eval(resource,"vr:identifier",namespaceNode).str()));
+                System.err.println(rd.getIvorn());
             } catch (URISyntaxException e1) {
                 logger.warn("URISyntaxException",e1);
             } 
-            rd.setTitle(XPathAPI.eval(resource,"//vr:title",namespaceNode).str());
+            rd.setTitle(XPathAPI.eval(resource,"vr:title",namespaceNode).str());
             try {
-                String str = XPathAPI.eval(resource,"//vr:accessURL",namespaceNode).str().trim();
+                String str = XPathAPI.eval(resource,"vr:interface/vr:accessURL",namespaceNode).str().trim();
                 logger.debug("URL:" + str);
                 rd.setAccessURL(  new URL(str));
             } catch (MalformedURLException e2) {
                 logger.warn("MalformedURLException",e2);
             } 
-            rd.setDescription( XPathAPI.eval(resource,"//vr:description",namespaceNode).str());
+            rd.setDescription( XPathAPI.eval(resource,"vr:content/vr:description",namespaceNode).str());
             resourceDatas[i] = rd;
         }
         return resourceDatas;
@@ -408,6 +409,9 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.7  2005/06/22 08:48:52  nw
+latest changes - for 1.0.3-beta-1
+
 Revision 1.6  2005/06/08 14:51:59  clq2
 1111
 
