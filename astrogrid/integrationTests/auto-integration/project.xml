@@ -53,9 +53,8 @@
 -->
         <dependency>
             <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-registry</artifactId>
+            <artifactId>astrogrid-registry-deploy-script</artifactId>
             <version>${astrogrid.registry.version}</version>
-            <type>war</type>
             <properties/>
         </dependency>
         <dependency>

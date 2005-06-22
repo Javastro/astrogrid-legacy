@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document><properties><title>Integration Testing</title></properties><body><section name="Integration Testing"><p>
+AstroGrid components are continuously integrated and tested using a Maven script that has to come to be known
+as AGINAB (AstroGrid-IN-A-Box).  As well as being used for testing, AGINAB is also a handy way to quickly 
+deploy and configure a test set of AstroGrid components on a single machine.   
+</p><p>
+For the latest integration test results and instructions on how you can use AGINAB please follow the links to the left.
+</p><p>John Taylor 25th October 2004</p></section></body></document>

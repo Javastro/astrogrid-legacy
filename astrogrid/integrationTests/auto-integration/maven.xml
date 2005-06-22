@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.152 2005/06/18 11:47:22 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.153 2005/06/22 20:33:23 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -32,7 +32,7 @@
         <!--use immutability in the next three lines...-->
 <!-- this will not work on windows      <property name="tomcat.host" value="${env.HOSTNAME}"/> unix
         <property name="tomcat.host" value="${env.COMPUTERNAME}"/>  windows -->
-    <property name="tomcat.host" value="localhost"/><!--default-->
+<property name="tomcat.host" value="localhost"/><!--default-->
 <property name="tomcat.port" value="8080"/>
 <property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
 <property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
@@ -128,13 +128,6 @@
         <mkdir dir="${temporary.dir}" />
         <deploy:copy-deps todir="${temporary.dir}" />
 <!-- important to do this before the original gets patched -->
-        <copy file="${temporary.dir}/pal-${astrogrid.datacenter.version}.war"
-                      tofile="${temporary.dir}/pal-fits-${astrogrid.datacenter.version}.war" />
-
-        <copy file="${temporary.dir}/pal-${astrogrid.datacenter.version}.war"
-                      tofile="${temporary.dir}/pal-sec-${astrogrid.datacenter.version}.war" />
-        <copy file="${temporary.dir}/pal-${astrogrid.datacenter.version}.war"
-                              tofile="${temporary.dir}/pal-cds-${astrogrid.datacenter.version}.war" />
     	<copy file="${temporary.dir}/astrogrid-community-${astrogrid.community.version}.war"
           tofile="${temporary.dir}/astrogrid-community-two-${astrogrid.community.version}.war" />
 </goal>
@@ -149,21 +142,13 @@
 </goal>
 
 <goal name="deploy-all" prereqs="init">
-                <echo>*** Deploying all webapps...</echo>
+        <echo>*** Deploying all webapps...</echo>
         <attainGoal name="common-libs-deploy" />
         <attainGoal name="configuration-deploy" />
         <attainGoal name="testdata-deploy"/>
         <sleep seconds="2" />
-        <attainGoal name="reg-deploy" />
+        <attainGoal name="registry-deploy" />
         <sleep seconds="4" />
-        <attainGoal name="exist-deploy" />
-        <sleep seconds="4" />	
-        
-        <!--temporary: registry must be set up before the installer-based components can
-            install and self -register...this is temporary till the registry installer is ready-->
-        <attainGoal name="self-register-registry"/>
-        <sleep seconds="1"/>
-        
         <attainGoal name="jes-deploy" />
         <sleep seconds="2" />
         <attainGoal name="cea-server-deploy" />
@@ -178,19 +163,9 @@
         <sleep seconds="2" />
         <attainGoal name="filestore-two-deploy" />
         <sleep seconds="2" />
-        
         <attainGoal name="filemanager-one-deploy" />
         <sleep seconds="2" />
         <attainGoal name="filemanager-two-deploy" />
-        <sleep seconds="2" />        
-        
-        <attainGoal name="pal-deploy" />
-        <sleep seconds="4" />
-        <attainGoal name="pal-fits-deploy" />
-        <sleep seconds="4" />
-        <attainGoal name="pal-sec-deploy" />
-        <sleep seconds="4" />
-        <attainGoal name="pal-cds-deploy" />
         <sleep seconds="2" />
         <attainGoal name="community-deploy"/>
         <sleep seconds="2" />
@@ -206,16 +181,8 @@
         <attainGoal name="configuration-deploy" />
         <attainGoal name="testdata-deploy"/>
         <sleep seconds="2" />
-        <attainGoal name="reg-deploy" />
+        <attainGoal name="registry-deploy" />
         <sleep seconds="4" />
-        <attainGoal name="exist-deploy" />
-        <sleep seconds="4" />	
-        
-        <!--temporary: registry must be set up before the installer-based components can
-            install and self -register...this is temporary till the registry installer is ready-->
-        <attainGoal name="self-register-registry"/>
-        <sleep seconds="1"/>
-        
         <attainGoal name="jes-deploy" />
         <sleep seconds="2" />
         <attainGoal name="cea-server-deploy" />
@@ -230,20 +197,10 @@
         <sleep seconds="2" />
         <attainGoal name="filestore-two-deploy" />
         <sleep seconds="2" />
-        
         <attainGoal name="filemanager-one-deploy" />
         <sleep seconds="2" />
         <attainGoal name="filemanager-two-deploy" />
         <sleep seconds="2" />        
-        
-        <attainGoal name="pal-deploy" />
-        <sleep seconds="4" />
-        <attainGoal name="pal-fits-deploy" />
-        <sleep seconds="4" />
-        <attainGoal name="pal-sec-deploy" />
-        <sleep seconds="4" />
-        <attainGoal name="pal-cds-deploy" />
-        <sleep seconds="2" />
         <attainGoal name="community-deploy"/>
         <sleep seconds="2" />
 	    <!--attainGoal name="community-deploy-two"/-->
@@ -259,8 +216,7 @@
         <attainGoal name="cea-server-undeploy" />
         <attainGoal name="cea-commandline-undeploy" />
         <attainGoal name="cea-http-undeploy" />
-        <attainGoal name="reg-undeploy" />
-		<attainGoal name="exist-undeploy" />
+        <attainGoal name="registry-undeploy" />
 <!--        <attainGoal name="myspace-undeploy" />-->
         <attainGoal name="filestore-one-undeploy" />
         <sleep seconds="2" />
@@ -270,10 +226,6 @@
         <sleep seconds="2" />
         <attainGoal name="filemanager-two-undeploy" />
         <sleep seconds="2" />        
-        <attainGoal name="pal-undeploy" />
-        <attainGoal name="pal-fits-undeploy" />
-        <attainGoal name="pal-sec-undeploy" />
-        <attainGoal name="pal-cds-undeploy" />
         <attainGoal name="community-undeploy" />
 	    <!--attainGoal name="community-two-undeploy" /-->	
         <attainGoal name="portal-undeploy" />
@@ -287,8 +239,7 @@
         <attainGoal name="cea-server-undeploy" />
         <attainGoal name="cea-commandline-undeploy" />
         <attainGoal name="cea-http-undeploy" />
-        <attainGoal name="reg-undeploy" />
-	    <attainGoal name="exist-undeploy" />
+        <attainGoal name="registry-undeploy" />
 <!--        <attainGoal name="myspace-undeploy" />-->
         <attainGoal name="filestore-one-undeploy" />
         <sleep seconds="2" />
@@ -298,10 +249,6 @@
         <sleep seconds="2" />
         <attainGoal name="filemanager-two-undeploy" />
         <sleep seconds="2" />        
-        <attainGoal name="pal-undeploy" />
-        <attainGoal name="pal-fits-undeploy" />
-        <attainGoal name="pal-sec-undeploy" />
-        <attainGoal name="pal-cds-undeploy" />
         <attainGoal name="community-undeploy" />
 	    <!--attainGoal name="community-two-undeploy" /-->	
 </goal>
@@ -326,16 +273,6 @@
 <goal name="astrogrid-deploy-site" description="Deploy the site docs for the test project" >
         <maven:maven descriptor="${basedir}/tests-project.xml" goals="site:deploy" />
 </goal>
-<!--+
-    | This pregoal takes any simple html docs in the xdocs folder and turns them into xdoc xml,
-    | before they are turned back into maven-style html docs.  Why?  html is easier to write in
-    | a WYSIWIG editor than xdoc xml
-    |
-    | I think using this means that the  documents all turn out in the same maven style (plus navigation bars, etc)
-    +-->
-<preGoal name="xdoc:jelly-transform">
-    <attainGoal name="html2xdoc"/>
-</preGoal>
 
 <goal name="ui-int-test"  description="run integration tests in ui runner">
         <maven:maven descriptor="${basedir}/tests-project.xml" goals="test:ui" />
@@ -357,8 +294,7 @@
         <echo>*** Configuring...</echo>
         <attainGoal name="community-toolkit"/>
         <attainGoal name="setup-working-dir" />
-        <attainGoal name="setup-exist" />
-        <attainGoal name="setup-registry" />
+        <attainGoal name="populate-registry" />
         <attainGoal name="setup-community"/>
         <attainGoal name="copy-test-resources" />
 </goal>
@@ -412,7 +348,7 @@
     <attainGoal name="community-register"/>
     -->
 </goal>
-
+<!--
 <goal name="setup-exist" description="PUT documents in eXist">
          <echo>Configuring eXist entries</echo>
                 <delete dir="${temporary.dir}/exist-entries" />
@@ -421,7 +357,7 @@
                         <include name="**/*.xml" />
                 </fileset>
         </copy>
-        <!-- now upload each one -->
+        <!- now upload each one ->
         <pathconvert property="entries" pathsep=" ">
                 <path>
                         <fileset dir="${temporary.dir}/exist-entries"/>
@@ -452,28 +388,9 @@
         <echo>Finsihed setting up eXist</echo>
 
 </goal>
-
-<goal name="self-register-registry" description="just the registry entries for the reg itself">
-            <copy todir="${temporary.dir}/registry-entries" filtering="true">
-                <fileset dir="registry-entries">
-                        <include name="**/ARegistry.xml" />						
-                        <include name="**/ARegistryv10.xml" />
-                        <include name="**/AstrogridStandardAuthority.xml" />
-                        <include name="**/AuthorityTest.xml"/>
-                </fileset>
-            </copy>
-                
-            <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-			
-            <ag:register file="${temporary.dir}/registry-entries/ARegistry.xml" />
-			<ag:register file="${temporary.dir}/registry-entries/ARegistryv10.xml" />
-            <ag:register file="${temporary.dir}/registry-entries/AstrogridStandardAuthority.xml" />
-            <ag:register file="${temporary.dir}/registry-entries/AuthorityTest.xml" />
-    
-</goal>
-
-<goal name="setup-registry" description="populate the registry" >
-        <echo>Configuring Registry</echo>
+-->
+<goal name="populate-registry" description="populate the registry" >
+        <echo>Populating Registry</echo>
         <!-- expand tokens -->
         <copy todir="${temporary.dir}/registry-entries" filtering="true">
                 <fileset dir="registry-entries">
@@ -485,22 +402,23 @@
         <pathconvert property="entriesr" pathsep=" ">
                 <path>
                         <fileset dir="${temporary.dir}/registry-entries">
-							<exclude name="**/ARegistry.xml" />
-                            <exclude name="**/ARegistryv10.xml" />
-                            <exclude name="**/AstrogridStandardAuthority.xml" />
-                            <exclude name="**/AuthorityTest.xml" />
+							<exclude name="**/AuthorityTest.xml"/>
 						</fileset>
                 </path>
         </pathconvert>
         <util:tokenize var="entryListr" delim=" ">${entriesr}</util:tokenize>
-						
+        <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
 
+        <!--upload this one first - I don't know why (jdt)-->
+        <ag:register file="${temporary.dir}/registry-entries/AuthorityTest.xml" />
+						
+<!--
                 <waitfor maxwait="10" maxwaitunit="second" checkevery="500">
                 <http url="${tomcat.url}/exist/xmldb/db/?xpath=%2F%2F*%3AResource%5B*%3AIdentifier%2F*%3AResourceKey%2Ftext%28%29+%3D+%27org.astrogrid.registry.RegistryService%27%5D"/>
                 </waitfor>
-
+-->
+        <!--now the rest-->
         <j:forEach var="entryr" items="${entryListr}">
-
             <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
                      <ag:register file="${entryr}" />
         </j:forEach>
@@ -736,7 +654,7 @@
                         path="/${testdata.webapp.name}" war="file:///${temporary.dir}/${testdata.webapp.name}.war" />
 </goal>
 
-<!-- context- driven webapps ////////////////////////////////-->
+<!-- Deploy and register AstroGrid components using their own deployment scripts -->
 <!--
     Deploy/Undeploy CEA
     -->
@@ -789,10 +707,10 @@
     </ant>
 </goal>
 
-    <!--Commandline version-->
+<!--Commandline version-->
 <goal name="cea-commandline-deploy" prereqs="override-input-task,init,cea-init">
 		<!--By moving the unwaring to a separate project, I've broken the cougaar setup.  Need to think about
-		best way of restoring it-->
+		best way of restoring it (jdt)-->
 		<!--ag:maybe-enable-cougaar webapp="cea-server" /-->
       <!--Self register.  Currently this only registers v0.9 of the schema, until bug 1159 is fixed-->
         <ant dir="${cea.deployment.jar.unpacked}" target="install-and-register" >
@@ -889,6 +807,7 @@
     dest="${cea.deployment.jar.unpacked}"/>
 </goal>
 
+<!-- FileStore deploy/undeploy is now handled by a self-contained Ant script in the FileStore project itself.    Please see astrogrid/filestore/deployment -->
 
 <!--
     Deploy/Undeploy FileStore
@@ -972,13 +891,13 @@
       </ant>
 </goal>
 
-
-
 <goal name="filestore-init">
    <property name="filestore.deployment.jar.unpacked" value="${temporary.dir}/filestore"/>
    <unjar src="${temporary.dir}/astrogrid-filestore-deploy-script-${astrogrid.filestore.version}.jar" 
     dest="${filestore.deployment.jar.unpacked}"/>
 </goal>
+
+<!--FileManager deploy/undeploy is now handled by a self-contained Ant script in the FileManager project itself.  Please see astrogrid/filemanager/deployment -->
 
 <!--
     Deploy/Undeploy FileManager
@@ -1072,30 +991,78 @@
     dest="${filemanager.deployment.jar.unpacked}"/>
 </goal>
 
-<goal name="reg-deploy" >
-    	<copy todir="${temporary.dir}/registry" filtering="true">
-            <fileset dir="contexts/registry" />
-	    </copy>
-
-    	<ag:maybe-enable-cougaar webapp="registry" />
-
-	    <war update="true" destfile="${temporary.dir}/astrogrid-registry-${astrogrid.registry.version}.war">
-    		<metainf dir="${temporary.dir}/registry"/>
-	    </war>
-
-          <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-registry-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-registry-${astrogrid.registry.version}.war"/>
-</goal>
-	
+<!--	
 	<goal name="exist-deploy" >
 	          <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
 	     path="/exist" war="file:///${temporary.dir}/exist-SNAPSHOT.war"/>
 	</goal>
-			
-	
+-->		
+<!--Registry deploy/undeploy is now handled by a self-contained Ant script in the registry project itself.
+    Please see astrogrid/registry/deployment -->
+
+<!--
+    Deploy/Undeploy Registry
+    -->			
+<goal name="registry-deploy" prereqs="override-input-task, registry-init">
+    
+      <ant dir="${registry.deployment.jar.unpacked}" target="install-and-register" inheritAll="true" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+           
+      </ant>
+      <ant dir="${registry.deployment.jar.unpacked}" target="add-authid" inheritAll="true" >
+            <property name="custom.tasks.defined" value="yes"/>
+            
+            <property name="input.reg.managedauthority" value="org.astrogrid"/>
+            <property name="input.reg.managedauthority.title" value="Astrogrid Standard Authority"/>
+            <property name="input.reg.managedauthority.shorttitle" value="AG-AT-ST"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+      </ant>
+      <ant dir="${registry.deployment.jar.unpacked}" target="add-authid" inheritAll="true" >
+            <property name="custom.tasks.defined" value="yes"/>
+            
+            <property name="input.reg.managedauthority" value="roe.ac.uk"/>
+            <property name="input.reg.managedauthority.title" value="Astrogrid Standard Authority"/>
+            <property name="input.reg.managedauthority.shorttitle" value="AG-AT-ST"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+      </ant>
+</goal>			
+<goal name="registry-undeploy" prereqs="override-input-task, registry-init">
+      <ant dir="${registry.deployment.jar.unpacked}" target="remove" inheritAll="true" >
+            <property name="custom.tasks.defined" value="yes"/>
+            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+           
+       </ant>   
+</goal>	
+<goal name="registry-init" prereqs="init">
+   <property name="registry.deployment.jar.unpacked" value="${temporary.dir}/registry"/>
+   <unjar src="${temporary.dir}/astrogrid-registry-deploy-script-${astrogrid.registry.version}.jar" 
+    dest="${registry.deployment.jar.unpacked}" overwrite="true"/>
+    
+    <!--Set some properties that will be common to the registry deploy/undeploy-->
+    <!--Could add more, but these properties are "permanent" and will affect every other subsequent goal
+        so for now restrict to registry specific ones -->
+    <property name="input.registry.contextpath" value="${aginab.registry.contextpath}"/>
+    <property name="input.registry.public.url" value="${aginab.registry.url}"/>
+    <property name="input.registry.regauthority" value="${registry.authorityid}"/>
+    <property name="input.reg.title" value="Test AGINAB Registry"/>
+    <property name="input.reg.contact.name" value="AGINAB"/>
+    <property name="input.reg.contact.email" value="anon@astrogrid.org"/>           
+
+</goal>		
 	
 
-
+<!--
 <goal name="pal-deploy" >
         <copy todir="${temporary.dir}/pal" filtering="true">
                 <fileset dir="contexts/pal" />
@@ -1109,8 +1076,9 @@
           path="/astrogrid-pal-${pom.currentVersion}" war="file:///${temporary.dir}/pal-${astrogrid.datacenter.version}.war"/>
 
 </goal>
-
+-->
 <!-- NOEL - cougaar taglib won't work with these pal wars - pal uses a different naming pattern. arse -->
+<!--
 <goal name="pal-fits-deploy" >
                 <copy file="${temporary.dir}/pal-${astrogrid.datacenter.version}.war"
                       tofile="${temporary.dir}/pal-fits-${astrogrid.datacenter.version}.war" />
@@ -1155,16 +1123,8 @@
                   path="/astrogrid-pal-cds-${pom.currentVersion}" war="file:///${temporary.dir}/pal-cds-${astrogrid.datacenter.version}.war"/>
 
         </goal>
+-->
 
-
-<goal name="override-input-task">
-    <echo>The Input Task in Ant 1.5.3 hangs when a property has already been set...overriding with that from Ant 1.6</echo>
-    <taskdef name="input" classname="org.apache.tools.ant1point6.taskdefs.Input" classpathref="maven.dependency.classpath"/>
-    <property name="input.test" value="foo"/>
-    <input addProperty="input.test">If this has worked, execution should continue at this point</input>
-    <echo>The Get Task in Ant 1.5.3 has a bug - it will often redownload files whose timestamps are the same as the existing file</echo>
-    <taskdef name="get" classname="org.apache.tools.ant1point6.taskdefs.Get" classpathref="maven.dependency.classpath"/>
-</goal>
 
 
 <!--
@@ -1285,25 +1245,13 @@
 	</goal>
 
 <!-- undeploy ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<goal name="reg-undeploy" >
-
-  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-registry-${pom.currentVersion}" />
-</goal>
-	
+<!--	
 	<goal name="exist-undeploy" >
 
 	  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
 	          path="/exist" />
 
 	</goal>	
-
-<goal name="cea-http-undeploy" >
-
-  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-cea-http-${pom.currentVersion}" />
-
-</goal>
 
 
 <goal name="pal-undeploy" >
@@ -1333,7 +1281,7 @@
                   path="/astrogrid-pal-cds-${pom.currentVersion}" />
 
 </goal>
-
+-->
 <goal name="configuration-undeploy" >
 
         <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
@@ -1370,6 +1318,16 @@
 	        path="/astrogrid-community-two-${pom.currentVersion}" />
 
 	</goal>	
+
+
+<goal name="override-input-task">
+    <echo>The Input Task in Ant 1.5.3 hangs when a property has already been set...overriding with that from Ant 1.6</echo>
+    <taskdef name="input" classname="org.apache.tools.ant1point6.taskdefs.Input" classpathref="maven.dependency.classpath"/>
+    <property name="input.test" value="foo"/>
+    <input addProperty="input.test">If this has worked, execution should continue at this point</input>
+    <echo>The Get Task in Ant 1.5.3 has a bug - it will often redownload files whose timestamps are the same as the existing file</echo>
+    <taskdef name="get" classname="org.apache.tools.ant1point6.taskdefs.Get" classpathref="maven.dependency.classpath"/>
+</goal>
 
 <goal name="CLEANTOMCAT" description="run this to clean out tomcat directories if tomcat not running - will clean the tmp and working directories">
         <echo message="Cleaning out files in ${tomcat.location}"/>

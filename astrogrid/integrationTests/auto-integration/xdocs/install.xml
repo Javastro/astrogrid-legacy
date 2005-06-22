@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document><properties><title>AGINAB</title></properties><body><section name="Installing Astrogrid using AGINAB (Astrogrid In A Box)"><p>AGINAB allows you to install and configure a standard set of
+Astrogrid components on any Un*x machine. All Astrogrid developers
+should have their own local copy for testing work, and reinstall it
+frequently. </p><subsection name="Prerequisites"><ul>
+	<li><p>JRE or <a href="http://java.sun.com/j2se/1.4.2/download.html">JDK</a>
+	1.4.x</p>
+	</li><li><p><a href="http://maven.apache.org/start/download.html">Maven</a>
+	1.0.2 or better</p>
+	</li><li><p><a href="http://apache.rmplc.co.uk/dist/jakarta/tomcat-5/v5.0.25/">Tomcat</a>
+	5.0.19 with a user of role (AG compatibility with tomcat 5.0.28 is still under going tests)<a href="http://jakarta.apache.org/tomcat/tomcat-5.0-doc/manager-howto.html#Configuring Manager Application Access">manager</a>
+	enabled</p>
+</li></ul></subsection><subsection name="Procedure to install the latest HEAD"><ul>
+	<li><p>Checkout <a href="http://www.astrogrid.org/viewcvs/astrogrid/integrationTests/auto-integration/">astrogrid/integrationTests/auto-integration</a>
+	from CVS 
+	</p></li><li><p>Checkout <a href="http://www.astrogrid.org/viewcvs/astrogrid/maven-base">astrogrid/maven-base</a>
+	from CVS    
+	</p></li><li><p>Create a file <a href="build.properties">~/build.properties</a>
+	and edit the following properties to be appropriate for your local
+	set up:</p>
+	<ul>
+		<li><p style="margin-bottom: 0cm"><font face="Courier, monospace">tomcat.manager.username=manager_username</font>
+				</p>
+		</li><li><p style="margin-bottom: 0cm"><font face="Courier, monospace">tomcat.manager.password=manager_password</font>
+				</p>
+		</li><li><p style="margin-bottom: 0cm"><font face="Courier, monospace">tomcat.host=grendel03.roe.ac.uk</font>
+				</p>                
+		</li><li><p style="margin-bottom: 0cm"><font face="Courier, monospace">work.dir=C:/Java/ag-integration-work</font>
+				</p>
+		</li><li><p style="margin-bottom: 0cm"><font face="Courier, monospace">tomcat.location=C:/Java/ApacheSoftwareFoundation/Tomcat5.0</font>
+				</p>
+		</li><li><p style="margin-bottom: 0cm"><font face="Courier, monospace">tomcat.common.lib.dir=${tomcat.location}/common/lib</font>
+				</p>
+		</li><li><p style="margin-bottom: 0cm"><font face="Courier, monospace">tomcat.port=8080</font>
+				</p>
+		</li><li><p style="margin-bottom: 0cm"><font face="Courier, monospace">registry.authorityid=org.astrogrid.localhost</font>
+				</p>
+		</li><li><p style="margin-bottom: 0cm"><font face="Courier, monospace">version=SNAPSHOT</font>
+				</p>
+	</li></ul>
+</li></ul><p style="margin-bottom: 0cm"><br></br>
+</p><p>
+    In <font face="Courier, monospace">astrogrid/integrationTests/auto-integration</font>
+</p><ul>
+	<li><p>If you have previously installed Astrogrid execute:</p>
+	<ul>
+		<li><p><font face="Courier, monospace">maven undeploy-all</font></p>
+	</li></ul>
+	</li><li><p>To install a new set of components execute:</p>
+	<ul>
+		<li><p><font face="Courier, monospace">maven deploy-all</font></p>
+	</li></ul>
+	</li><li><p>To test the installation execute:</p>
+	<ul>
+		<li><p><font face="Courier, monospace">maven astrogrid-build-site</font></p>
+	</li></ul>
+	</li><li><p>Compare the documentation generated in your <a href="junit-report.html">target/docs</a>
+	directory with that published on the <a href="http://www.astrogrid.org/maven/docs/snapshot/integrationTests/junit-report.html">Astrogrid
+	site</a>.</p>
+	</li><li><p>You can access your installed portal at
+	<a href="http://127.0.0.1:8080/astrogrid-portal/">http://127.0.0.1:8080/astrogrid-portal/</a>
+	and use the pre-installed user "frog", pw "qwerty",
+	community "org.astrogrid.localhost"</p>
+</li></ul></subsection><subsection name="Tips"><ul>
+	<li><p>AGINAB downloads a number of large files. Make sure you're on
+	a fast network the first time you run it</p>
+	</li><li><p>If you have installed Astrogrid once and wish to reinstall it
+	without a new set of downloads then execute maven with the -o switch</p>
+	</li><li><p>To install a single component such as the portal, execute</p>
+	<ul>
+		<li><p><font face="Courier, monospace">maven init portal-deploy</font></p>
+	</li></ul>
+</li></ul><ul>
+	<ul>
+		<li><p><font face="Courier, monospace">In general:</font></p>
+		<ul>
+			<li><p><font face="Courier, monospace">maven init
+			X-deploy/X-undeploy where
+			X=myspace/jes/apps/reg/myspace-store/pal/portal/community</font></p>
+		</li></ul>
+	</li></ul>
+</ul><ul>
+	<li><p>Configuration properties you may wish to play with can be
+	found in webapps/astrogrid-configuration/AstroGridConfig.properties
+	. These should be edited <i>before</i> AGINAB is run (you may edit
+	them afterwards by tracking down the deployed properties file in
+	your Tomcat installation.)</p>
+	</li><li><p>Sometimes Tomcat does not clean up after itself properly when
+	the undeploy-all goal is run. To make doubly sure that you are
+	starting clean, shut down Tomcat and execute</p>
+	<ul>
+		<li><p><font face="Courier, monospace">maven CLEANTOMCAT</font></p>
+	</li></ul>
+    </li><li><p>If Community fails to set itself up following a clean installation of Tomcat, it could be because it has failed
+        to find the hsqldb database driver jar.  Stop/start Tomcat and repeat the maven deploy-all command.</p></li>
+</ul></subsection><subsection name="Testing a component before committing to CVS"><p>Major fixes to a component should be integration tested before
+being committed to CVS. This is straightforward to do:</p><ul>
+	<ul>
+		<li><p><font face="Courier, monospace">cd</font> to the root AGINAB
+		folder</p>
+		</li><li><p>Execute</p>
+		<ul>
+			<li><p><font face="Courier, monospace">maven undeploy-all</font></p>
+			</li><li><p><font face="Courier, monospace">maven eclipse-int-test</font></p>
+		</li></ul>
+	</li></ul>
+</ul><p>This will remove any existing components, and download the latest
+component binaries from Uluru to your local repository.  The second
+call to maven is simply a hack to force it to download the binaries
+that are later needed for the testing stage.</p><ul>
+	<ul>
+		<li><p><font face="Courier, monospace">cd</font> to the root of the
+		component you wish to test</p>
+	</li></ul>
+</ul><ul>
+	<ul>
+		<li><p>Execute:</p>
+		<ul>
+			<li><p><font face="Courier, monospace">maven
+			astrogrid-install-snapshot</font></p>
+		</li></ul>
+	</li></ul>
+</ul><p>This installs a copy of the component with your fixes in your
+local repository.</p><ul>
+	<ul>
+		<li><p><font face="Courier, monospace">cd</font> to the root AGINAB
+		folder</p>
+		</li><li><p>Execute</p>
+		<ul>
+			<li><p><font face="Courier, monospace">maven -o deploy-all</font></p>
+			</li><li><p><font face="Courier, monospace">maven -o
+			astrogrid-build-site</font></p>
+		</li></ul>
+	</li></ul>
+</ul><p>The -o (offline) switch prevents maven overwriting your updated
+component with any newer one that may have been built by Uluru in the
+meantime.</p><ul>
+	<ul>
+		<li><p>Compare the tests generated in your <a href="junit-report.html">target/docs</a>
+		directory with that published on the <a href="http://www.astrogrid.org/maven/docs/SNAPSHOT/integrationTests/junit-report.html">Astrogrid
+		site</a>.  In particular, examine the regression report at <a href="junit-full/index.html">junit-full/index.html</a> which will allow you to compare
+        the tests in your builds against recent baselines, and thus track down any unexpected test failures.  </p>
+	</li></ul>
+</ul></subsection><subsection name="KNOWN Issues for deploying current system as AGINAB and get arounds:"><p>At the moment running deploy-all on a vanilla tomcat, it will fail at setting up community due to a commonly used jar file (hsqldb-1.7.1.jar) need to be copied into 
+under tomcat/common/lib, one can get around this by running maven setup after running maven deploy-all</p><p>
+</p></subsection></section><section name=""><p>This documentation was generated using Maven's <a href="http://maven.apache.org/reference/plugins/html2xdoc/">html2xdoc</a>
+goal.</p><p>John Taylor 19th June 2004, updated by CLQ 24 May 2005</p></section></body></document>
