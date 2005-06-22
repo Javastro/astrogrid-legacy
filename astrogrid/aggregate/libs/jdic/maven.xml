@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project  xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
+
+        <goal name="astrogrid-deploy-site">
+            <echo message="Please deploy the site docs from the base aggregate project"/>
+        </goal>
+
+        <goal name="astrogrid-deploy-artifact" prereqs="publish-jnlp"/>
+        <goal name="astrogrid-build-artifact" prereqs="release,jnlp"/>
+
+<!-- publishing goals -->
+
+<goal name="publish-jnlp" 
+      description="Publish the release configuration of this JNLP at the release URL"
+      prereqs="release,jnlp,site:sshdeploy" />
+
+<!-- zap values in pom, to adjust publish location -->
+<goal name="release">
+        <j:set var="_dir" value="/var/www/software/jnlp/${subPath}${pom.artifactId}/"/>
+        ${pom.setSiteDirectory(_dir)}
+        <echo>Publish location set to ${pom.siteDirectory}</echo>
+</goal>
+
+<goal name="beta">
+        <j:set var="subPath" value="beta/" />
+        <j:set var="jnlpVersion" value=" (BETA)" />
+</goal>
+
+<goal name="alpha">
+        <j:set var="subPath" value="alpha/" />
+        <j:set var="jnlpVersion" value=" (ALPHA)" />
+</goal>
+
+
+
+	 
+<!-- set up jnlp - remove artifical jar, sign jars, copy in hand-written jnlp -->
+        <postGoal name="jnlp:generate-jnlp">
+                <j:if test="${keepProjectJars.getValue()!='true'}">
+                    <delete>
+                        <fileset dir="${maven.jnlp.dir}">
+                                <include name="${pom.artifactId}-${pom.currentVersion}.jar" />
+                        </fileset>
+                    </delete>
+                </j:if>
+                <!-- sign jars by hand - as maven jnlp task is flakey - todo - check whether maven task is still a problem -->		
+                <signjar alias="astrogrid" storepass="qwertyuiop">
+                        <fileset dir="${maven.jnlp.dir}">
+                                <include name="*.jar" />
+                        </fileset>
+                </signjar>
+		<copy todir="${maven.jnlp.dir}" file="${basedir}/desktop-integration.jnlp" overwrite="true"/>
+        </postGoal>
+
+</project>
