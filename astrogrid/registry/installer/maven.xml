@@ -1,292 +1,48 @@
 <?xml version="1.0" ?>
-
-<!-- to use:
-  check that tomcat is 'clean' and running - ie has no astrogrid components
-  installed that will interfere with the deployment (use maven undeploy-all then
-  manually check that it's worked).
-
-   Run 'maven deploy-all'.  If it completes successfully, run 'maven int-test'.
-
-   The deployer checks the astrogrid repository and your local one as normal to find the latest wars to
-   deploy, so if you have local changes to a component you will need to rebuild that component separately.
-   When the auto builds happen, the astrogrid repository version will become 'newer' and you will need to
-   rebuild your locally changed component.
-   Alternatively, run this script with the -o switch which instructs maven to build offline
-   -->
-
-<!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:util="jelly:util" xmlns:deploy="deploy" default="jar:jar">
-
-
-<property name="tomcat.host" value="localhost"/>
-<property name="tomcat.port" value="8080"/>
-<property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
-<property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
-
-<!-- other, non-configurable properties -->
-
-<!-- temp dir - used for mangling files, etc -->
-<property name="temporary.dir" location="${basedir}/tmp" />
-<property name="config.webapp.name" value="astrogrid-configuration" />
-
-        <j:if test="${context.getVariable('registry.authorityid') == null}">
-                <j:set var="registry.authorityid" value="org.astrogrid.localhost"/>
-        </j:if>
-
-        <!-- tokens to subst into config files -->
-        <filter token="WORKDIR" value="${work.dir}" />
-        <filter token="CONFIGPATH" value="${tomcat.url}/${config.webapp.name}" />
-        <filter token="TOMCATROOT" value="${tomcat.url}" />
-        <filter token="TOMCATLOC" value="${tomcat.location}" />
-        <filter token="REGAUTHORITY" value="${registry.authorityid}" />
-
-<!-- setup -->
-<goal name="init" prereqs="tomcat-declare-tasks">
-        <echo>AuthorityID used: ${registry.authorityid}</echo>
-        <delete dir="${temporary.dir}" />
-        <mkdir dir="${temporary.dir}" />
-        <deploy:copy-deps todir="${temporary.dir}" />
-</goal>
-
-<!-- main goals //////////////////////////////////////////////////////////////////////////////////// -->
-<goal name="cycle"
- description="deprecated: timing issues. call undeploy-all, deploy-all, setup, int-test by hand.">
-        <echo>Deprecated: problems with timing / memory load. call undeploy-all, deploy-all, int-test by hand individually</echo>
-        <attainGoal name="reg-undeploy" />
-        <attainGoal name="reg-deploy" />
- </goal>
-
-<goal name="list" prereqs="init" description="list deployed webapps">
-        <tomcat-list url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" />
-</goal>
-
-<goal name="astrogrid-build-site" description="Build the site docs for the test project">
-        <maven:maven descriptor="${basedir}/tests-project.xml" goals="clean,site" />
-</goal>
-
-<goal name="astrogrid-deploy-site" description="Deploy the site docs for the test project" >
-        <maven:maven descriptor="${basedir}/tests-project.xml" goals="site:deploy" />
-</goal>
-
-<goal name="ui-int-test"  description="run integration tests in ui runner">
-        <maven:maven descriptor="${basedir}/tests-project.xml" goals="test:ui" />
-</goal>
-
-<goal name="scripting-gui"  description="run javascript gui">
-        <maven:maven descriptor="${basedir}/tests-project.xml" goals="run-scripting-gui" />
-</goal>
-
-<goal name="style-workflows" description="apply presentation stylesheet to all workflows">
-                  <!--declare the transformer factory to use -->
-        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-        <xslt style="${basedir}/build/workflow.xsl" destdir="${work.dir}/styled-workflows" basedir="${work.dir}/jes" />
-</goal>
-
-<!-- Working direcotry //////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-<goal name="setup" description="configure webapps and working dir">
-        <echo>*** Configuring...</echo>
-        <attainGoal name="community-toolkit"/>
-        <attainGoal name="setup-registry" />
-</goal>
-
-	<goal name="setup-registry" description="populate the registry">
-	        <echo>Configuring Registry</echo>
-	        <!-- expand tokens -->
-	        <copy todir="${temporary.dir}/registry-entries" filtering="true">
-	                <fileset dir="registry-entries">
-	                        <include name="**/*.xml" />
-	                </fileset>
-	        </copy>
-	        <!-- now upload each one -->
-	        <pathconvert property="entriesr" pathsep=" ">
-	                <path>
-	                        <fileset dir="${temporary.dir}/registry-entries"/>
-	                </path>
-	        </pathconvert>
-	            <util:tokenize var="entryListr" delim=" ">${entriesr}</util:tokenize>
-
-	            <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-	            <ant target="register" antfile="register.xml" >
-	        `       <property name="registry.entry" value="${temporary.dir}/registry-entries/astrogridv0_9/ARegistry.xml"/>
-	            </ant>
-
-	                <waitfor maxwait="10" maxwaitunit="second" checkevery="500">
-	                <http url="${tomcat.url}/exist/xmldb/db/?xpath=%2F%2F*%3AResource%5B*%3AIdentifier%2F*%3AResourceKey%2Ftext%28%29+%3D+%27org.astrogrid.registry.RegistryService%27%5D"/>
-	                </waitfor>
-
-	        <j:forEach var="entryr" items="${entryListr}">
-
-	            <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-	            <ant target="register" antfile="register.xml" >
-	        `       <property name="registry.entry" value="${entryr}"/>
-	            </ant>
-
-	        </j:forEach>
-	</goal>
-
-<!--+
-    | Unpack our Community install toolkit.
-    +-->
-<goal name="community-toolkit">
-        <echo message=""/>
-        <echo message="Installing community toolkit ...."/>
-        <!--+
-            | Unpack our toolkit.
-            +-->
-        <unzip src="${temporary.dir}/astrogrid-community-install-SNAPSHOT.zip" dest="${temporary.dir}/community"/>
-        <!--+
-            | Set the community ident.
-            +-->
-        <propertyfile
-            file="${temporary.dir}/community/install.properties">
-            <entry key="org.astrogrid.community.ident"
-                value="${registry.authorityid}"/>
-        </propertyfile>
-</goal>
-
-
-<!--+
-    | Wait for the Community service to respond.
-    +-->
-<goal name="community-wait">
-    <echo message="Waiting for Community webapp .."/>
-    <echo message="  URL : ${tomcat.url}/astrogrid-community/happyaxis.jsp"/>
-    <waitfor maxwait="10" maxwaitunit="second" checkevery="500">
-        <http url="${tomcat.url}/astrogrid-community"/>
-    </waitfor>
-</goal>
-
-<!--+
-    | Upload a Registry Entry to the local service.
-    +-->
-<goal name="registry.upload.test">
-    <echo message="Uploading Registry Entry .."/>
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:ant="jelly:ant" 
+    xmlns:deploy="deploy" xmlns:util="jelly:util" xmlns:doc="doc">
+ 
+ <preGoal name="java:jar-resources">
+  	<filter token="VERSION" value="${pom.currentVersion}"/>
+    <tstamp>
+            <format property="now" pattern="dd/MMM/yyyy HH:mm"/>
+    </tstamp>
+    <filter token="NOW" value="${now}"/>
+ </preGoal>
+ 
+    <preGoal name="javaapp:jar">
+	    <!--Bundle the deployment script into the jar as a jar-->
+	    <property name="scriptjar" value="astrogrid-registry-deploy-script-${pom.currentVersion}.jar"/>    
+	    <deploy:copy-deps todir="target/deps" />
+	    <copy toDir="${maven.javaapp.app.dir}/antscript" file="target/deps/${scriptjar}"/>
+    </preGoal>  
 
     <!--+
-        | Fix the Maven JAXP properties.
+        | Build and install our artifact 
         +-->
-    <echo message="Fixing JAXP properties ...."/>
-    <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-    <echo message=""/>
+    <goal name="astrogrid-install-artifact">
+    	<attainGoal name="javaapp:install"/>
+    </goal>
 
-    <ant
-        target="register"
-        antfile="register.xml"
-        >
-        <property name="registry.entry" value="tmp/community/config/service/policy.manager.xml"/>
-        </ant>
-</goal>
+    <!--+
+        | Build and install our snapshot 
+        +-->
+    <goal name="astrogrid-install-snapshot">
+        	<attainGoal name="javaapp:install-snapshot"/>
+    </goal>
 
-<!-- pregoals ///////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!--+
+        | Build and deploy our artifact 
+        +-->
+    <goal name="astrogrid-deploy-artifact">
+        	<attainGoal name="javaapp:deploy"/>
+    </goal>
 
-  <preGoal name="java:compile">
-     <mkdir dir="${basedir}/target/classes" />     <!-- Clover fails if this dir is not present -->
-  </preGoal>
-
-  <preGoal name="test:test-resources">
-            <echo>Copying global config file across to the client / test code</echo>
-          <copy file="webapps/astrogrid-configuration/AstroGridConfig.properties" tofile="test/java/astrogrid.properties" filtering="true" overwrite="true" />
-  </preGoal>
-
-
-<goal name="run-scripting-gui" description="don't call directly - use scripting-gui goal">
-        <mkdir dir="${temporary.dir}/client" />
-        <copy todir="${temporary.dir}/client" filtering="true">
-                <fileset dir="client-config" />
-        </copy>
-        <!-- classname="org.mozilla.javascript.tools.shell.Main" for command-line version -->
-        <java classname="org.mozilla.javascript.tools.debugger.Main"
-                fork="true" classpathref="maven.dependency.classpath"
-                dir="${temporary.dir}/client">
-        </java>
-</goal>
-
-<postGoal name="maven-junit-report-plugin:report">
-        <attainGoal name="full-junit-report" />
-</postGoal>
-<goal name="full-junit-report">
-        <mkdir dir="${basedir}/target/docs/junit-full" />
-       ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-        <junitreport todir="${basedir}/target">
-                <fileset dir="${basedir}/target/test-reports">
-                        <include name="TEST-*.xml" />
-                </fileset>
-                <report format="frames" styledir="${basedir}/build" todir="${basedir}/target/docs/junit-full" />
-        </junitreport>
-</goal>
-
-
-<!-- deployment //////////////////////////////////////////////////////////////////////// -->
-	<goal name="reg-deploy"   prereqs="init" >
-		<copy todir="${temporary.dir}/registry" filtering="true" overwrite="true">
-	            <fileset dir="webapps/astrogrid-configuration/registry">
-	            	<include name="astro*.prop*"/>
-	            </fileset>
-	    </copy>
-
-	    <war update="true" destfile="${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war">
-			<classes dir="${temporary.dir}/registry"/>
-	    </war>
-		
-	    <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-         path="/astrogrid-registry-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war"/>
-
-
-        <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-	     path="/exist" war="file:///${temporary.dir}/exist-SNAPSHOT.war"/>
-
-	</goal>
-
-<!-- undeploy ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<goal name="reg-undeploy" >
-  <j:catch>
-  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-registry-SNAPSHOT" />
-  </j:catch>
-  <j:catch>
-  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/exist" />
-  </j:catch>
-</goal>
-
-<goal name="CLEANTOMCAT" description="run this to clean out tomcat directories if tomcat not running">
-	<delete includeEmptyDirs="true" defaultexcludes="false" >
-		<fileset dir="${tomcat.home}/webapps" >
-			<include name="astrogrid-*/**"/>
-			<include name="exist*/**"/>
-	   </fileset>
-		<fileset dir="${tomcat.home}/work/Catalina/localhost" >
-			<include name="*/**"/>
-	   </fileset>
-		<fileset dir="${tomcat.home}/conf/Catalina/localhost" >
-			<include name="astrogrid-*.xml"/>
-	   </fileset>
-		<fileset dir="${tomcat.home}/logs" >
-			<include name="*"/>
-	   </fileset>	   
-	</delete>
-</goal>
-
-<!-- boilerplate below here /////////////////////////////////////////////////////////////////////////////////////////////-->
-
-  <goal name="axis-declare-tasks">
-     <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
-  </goal>
-
-<!-- tomcat tools -->
-<goal name="tomcat-declare-tasks">
-   <!-- Configure the custom Ant tasks for the Manager application -->
-  <taskdef name="tomcat-deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-install"   classname="org.apache.catalina.ant.InstallTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-list"      classname="org.apache.catalina.ant.ListTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-reload"    classname="org.apache.catalina.ant.ReloadTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-remove"    classname="org.apache.catalina.ant.RemoveTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-roles"     classname="org.apache.catalina.ant.RolesTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-start"     classname="org.apache.catalina.ant.StartTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-stop"      classname="org.apache.catalina.ant.StopTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="maven.dependency.classpath"/>
-</goal>
+    <!--+
+        | Build and deploy our snapshot 
+        +-->
+    <goal name="astrogrid-deploy-snapshot">
+        	<attainGoal name="javaapp:deploy-snapshot"/>
+    </goal>
 
 </project>

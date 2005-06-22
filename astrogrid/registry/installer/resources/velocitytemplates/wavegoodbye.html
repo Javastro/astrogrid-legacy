@@ -1,0 +1,31 @@
+<h1>AstroGrid Registry Installer</h1>
+The 
+#if ($registry_installed=="true" && $registry_uninstalled=="true")
+reinstallation
+#elseif ($registry_installed=="true")
+installation
+#elseif ($registry_uninstalled=="true")
+uninstallation
+#end 
+process is now complete.
+<br>
+#if ($registry_installed=="true")
+The registry may now be accessed from <a href="$input_registry_public_url">$input_registry_public_url</a>.  This page
+offers you links to check the installation and configure the registry.
+<br>
+#end
+#if ($registry_registered=="true")
+The registry has been self-registered.  
+#end
+
+#if ($properties_saved=="true")
+Your configuration properties have been saved to $input_saveProperties_file.  These may be reused
+by reloading them when prompted by the installer or by executing this installer
+from the commandline<BR>
+<tt>
+    java -jar (installer) -p $input_saveProperties_file
+</tt><br>
+#end
+
+For further information consult the AstroGrid website <a href="http://www.astrogrid.org">http://www.astrogrid.org</a> or
+email <a href="mailto:jdt@roe.ac.uk">jdt@roe.ac.uk</a>.

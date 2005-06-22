@@ -1,9 +1,4 @@
-maven.log
-tmp
-build.properties
 target
+velocity.log
 .classpath
 .project
-velocity.log
-.checkstyle
-junit*.properties

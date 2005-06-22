@@ -1,75 +1,75 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.12 2005/02/18 12:08:08 clq2 Exp $ -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="maven-project.xsd">
-<!--    <extend>../../maven-base/project.xml</extend> -->
-    <extend>${basedir}/../maven/project.xml</extend>
-    <id>auto-registry-integration</id>
-    <name>Automated Integration Testing</name>
-	
-	
-	<description>
-    Automated integration testing. This project will install the astorgrid registry component
-    (someday) to a local tomcat5 server, and set up the required configuration and workfing
-    directories.
-    </description>
-
-    <build />
+<project>
+    <extend>../deploymentscript/project.xml</extend>
+    <artifactId>astrogrid-registry-installer</artifactId>
+    <name>Registry Installer</name>
+    <description>This project wraps the Ant deployment script in a graphical installer </description>
+    <shortDescription>This project wraps the Ant deployment script in a graphical installer</shortDescription>
+    <build>
+        <resources>
+            <resource>
+                <directory>resources</directory>
+                <includes>
+                    <include>**/*.html</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>resources</directory>
+                <includes>
+                    <include>**/*.jpg</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
     <dependencies>
         <dependency>
-                <artifactId>astrogrid-registry</artifactId>
-                <groupId>org.astrogrid</groupId>
-		        <version>${pom.currentVersion}</version>
-                <type>war</type>
-        </dependency>
-
-        <dependency>
-            <artifactId>catalina-ant</artifactId>
-            <groupId>catalina-ant</groupId>
-            <!--<version>4.1.24</version>-->
-            <version>5.0.18</version>
-        </dependency>
-        <!-- dunno if we need this here -->
-        <dependency>
-            <artifactId>junit</artifactId>
-            <groupId>junit</groupId>
-            <version>3.8</version>
+            <groupId>maven-plugins</groupId>
+            <artifactId>maven-javaapp-plugin</artifactId>
+            <version>1.3</version>
+            <type>plugin</type>
             <properties>
-                <war.bundle>true</war.bundle>
+                <uberjar.bundle>false</uberjar.bundle>
+            </properties>
+        </dependency>        
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-registry-deploy-script</artifactId>
+            <version>${pom.currentVersion}</version>
+            <properties>
+                <uberjar.bundle>false</uberjar.bundle>
             </properties>
         </dependency>
-
-
-        <!--+
-            | Community install tools Used currently for Registry upload.
-            +-->
         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-install</artifactId>
-            <version>${astrogrid.community.version}</version>
-            <type>zip</type>
-            <url>http://www.astrogrid.org/</url>
+            <groupId>ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.5.3-1</version>
         </dependency>
-        
         <dependency>
-            <groupId>exist</groupId>
-            <artifactId>exist</artifactId>
-	        <version>${astrogrid.eXist.version}</version>
-            <type>war</type>
-            <properties/>
+            <groupId>ant</groupId>
+            <artifactId>ant-optional</artifactId>
+            <version>1.5.3-1</version>
         </dependency>
-
-        <!--+
-            | Community install tools.
-            | Required for the Registry upload only.
-            +-->
         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-install</artifactId>
-            <version>${astrogrid.community.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
+            <groupId>antigen</groupId>
+            <artifactId>antigen-lib</artifactId>
+            <version>0.6-SNAPSHOT</version>
         </dependency>
-
+        <dependency>
+            <groupId>velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>
