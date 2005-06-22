@@ -26,9 +26,10 @@
                 <item name="CEA" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-cea-installer*.jar"/>
                 <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-filestore-installer*.jar"/>
                 <item name="FileManager" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-filemanager-installer*.jar"/>
-                <item name="JES" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-jes-installer*.jar"/>    
-                <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-portal-installer*.jar"/>                
-            </item>    
+                <item name="JES" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-jes-installer*.jar"/>
+                <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-portal-installer*.jar"/>
+                <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-registry-installer*.jar"/>
+            </item>
             <item name="AstroGrid Components" href="/server.html" collapse="true">
                 <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=*.war"/>
                 <item name="CEA" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-cea-*.war"/>
@@ -41,6 +42,8 @@
                 <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-portal-*.war"/>
                 <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-registry-*.war"/>
             </item>
+       </menu>
+       <menu name="Other Downloads">
             <item name="Webservice Delegates" href="/delegate.html" collapse="true">
                 <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-*.jar"/>
                 <item name="CEA" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-cea-client-*.jar"/>
@@ -67,10 +70,6 @@
             <item name="Deployment Scripts" href="/installers.html" collapse="true">
                 <item name="All" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-*-deploy*-*.jar"/>
             </item>            
-            <!--item name="Distributions" href="/downloaddocs/distributions.html" collapse="true">
-				<item name="Community - complete me" href=""/>
-			</item-->
-            <!--leave me for now-->
         </menu>
         <menu name="Software Documentation">
             <item name="AstroGrid Components" href="/server.html" collapse="false">
