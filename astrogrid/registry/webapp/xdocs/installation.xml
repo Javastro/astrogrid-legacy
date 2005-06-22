@@ -29,11 +29,14 @@
          </ul>
       </p>
       </subsection>
-      <subsection name="CommandLine installer">
-      <p>
-         Most of the work is in the configure page, for installation.  This step is quite easy take the war
- file and drop it into the webapps directory.
-      </p>
+      <subsection name="GUI Installer - Easy">
+        <p> The registry may also be installed using a GUI installer that downloads the necessary software, installs it and configures it, prompting the user 
+            for configuration settings. These may be saved to ease reinstallation. Currently, the installer only installs the registry in the simplest 
+            "internal database" mode, but this, and other configuration settings can be modified post-installation as described on the <a 
+            href="configure.html">configure</a> page.</p>
+            <p> To download the installer and for further information, including how to run it on headless machines, see the <a 
+                href="../../../installers.html">installers download page</a>. For further information on the configuration 
+                settings you will need to supply, run the installer and read the welcome page. </p>
       </subsection>
     </section>
    </body>
