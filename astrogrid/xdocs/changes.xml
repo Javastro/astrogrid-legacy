@@ -29,6 +29,10 @@
    </release>
     
   <release version="HEAD">
+        <action dev="jdt" type="add" issue="881"> 
+            Created a GUI installer for the registry, and plumbed it into AGINAB.
+            See <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">installers</a>
+        </action>    
         <action dev="jdt" type="fix" issue="1177"> <b>astrogrid/filestore</b>, <b>astrogrid/filemanager</b>and <b>astrogrid/integrationTests</b> 
             <em>aginab_jdt_1177</em> Plumbed the FileStore and FileManager installers into AGINAB. The GUI installers and AGINAB now use the same script for
             deployment, which has got to be a good thing. 
