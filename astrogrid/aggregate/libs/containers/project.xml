@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>${basedir}/../../../maven-base/project.xml</extend>
+
+  <currentVersion>${astrogrid.aggregate.version}</currentVersion>
+
+  <id>containers</id>
+
+  <name>Pico and Nano Containers with Aspect Extensions</name>
+
+  <description>Picocontainer, Nanocontainer and friends bundled as a JNLP Extension</description>
+
+  <shortDescription>Object Containers</shortDescription>
+
+  <dependencies>
+	  <dependency>
+		  <groupId>picocontainer</groupId>
+		  <artifactId>picocontainer</artifactId>
+		  <version>1.1</version>
+		  <type>jar</type>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>
+		  </properties>
+	  </dependency>
+	  <dependency>
+		  <groupId>nanocontainer</groupId>
+		  <artifactId>nanocontainer</artifactId>
+		  <version>1.0-beta-4</version>
+		  <type>jar</type>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>
+		  </properties>
+	  </dependency>
+	  <dependency>
+		  <id>dynaop</id>
+		  <version>1.0-beta</version>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>
+		  </properties>
+	  </dependency>
+	  <dependency>
+		  <id>aopalliance</id>
+		  <version>1.0</version>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>
+		  </properties>
+	  </dependency>
+	  <dependency>
+		  <groupId>cglib</groupId>
+		  <artifactId>cglib-asm</artifactId>
+		  <version>1.0</version>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>
+		  </properties>
+	  </dependency>
+	  <dependency>
+		  <id>oro</id>
+		  <version>2.0.7</version><!-- nanocontainer project says 2.0.8, but we're on 2.0.7 at the moment -->
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>
+		  </properties>
+	  </dependency>
+	  <!-- also asm 1.4.3 ? but don't seemt to need it -->
+
+<!-- stuff required in maven build -->
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-jsl</artifactId>
+
+      <version>20030211.143151</version>
+
+      <properties />
+    </dependency>
+
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-xml</artifactId>
+
+      <version>20030211.142705</version>
+
+      <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
+
+      <properties />
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory />
+
+    <unitTestSourceDirectory />
+
+    <unitTest />
+  </build>
+</project>
+
