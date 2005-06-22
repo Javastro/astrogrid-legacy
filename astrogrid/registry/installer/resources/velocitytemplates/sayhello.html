@@ -2,7 +2,7 @@
 Version @VERSION@.   Built @NOW@.
 <h2>Introduction</h2>
 <br>
-This software will install the AstroGrid Registry component.<br>
+This software will install the AstroGrid Registry component on a local or remote machine.<br>
 Please read the following information before commencing installation.<br>
 For information on this and other AstroGrid components see the
 software site <a href="http://software.astrogrid.org">http://software.astrogrid.org</a>.
@@ -23,18 +23,42 @@ webapp enabled</li>
 </ol>
 <h2>Installation</h2>
 This installer will guide you through the installation process, downloading any necessary software and
-prompting you for configuration options.  If you have previously installed a registry, you can use the installer
-to remove this instance or reinstall it.  You will be prompted to save your settings for future use.
+prompting you for configuration options.  After reading this page you will be presented with a number
+of check boxes to choose whether you want to remove an existing registry, (re) install it,
+self-register it, or add another managed authority (see below).  Any or all of these options 
+can be selected.
+<br>
+Next you will be prompted to confirm that Tomcat is running on the target machine, which may or may not 
+be the machine on which you are running the installer.  You will be prompted for information about the
+Tomcat server, and a context path for the registry installation.  The URL for your registry will be
+<br>
+<tt>
+http://(Tomcat URL)/context_path
+</tt>
 <br>
 <b>Important Note</b><br>
 If you are installing a Registry that is to be used and registered externally to the target machine you MUST
-replace the installer-generated public URL with the full externally visible URL when prompted. 
-
+replace the installer-generated public URL with the full externally visible URL when prompted.  This should be
+the URL of the registry via a proxy, if you are using one.
+<h2>Authority ID</h2>
+You must also choose an authority ID for your registry.  This is the unique key that will
+be used to identify your registry and identify registry entries published by your organisation.  
+It is possible to add other <em>Managed Authorities</em> for registry entries harvested
+from other registries.
 <br>
+If you have elected to self-register, or add another managed authority you will be prompted
+for information about your organisation, such as contact details.  These may be changed later
+by re-registering the registry.
 
 <h2>Self-registration</h2>
 Each registry must be registered with itself.  The installer can do this for you, or you can do it post installation using 
 the registry's jsp pages.  Detailed documentation on this may be found on the <a href="http://www.astrogrid.org/maven/docs/HEAD/registry/multiproject/astrogrid-registry/index.html">AstroGrid Software site</a>.
+
+<h2>Managed Authority IDs</h2>
+Each registry manages a set of one or more authority IDs, for example "org.astrogrid".  At
+the very least, the registry manages its own authority ID once it has self-registered.
+You may specify additional managed IDs using the installer, or through an installed registry's
+jsp pages.
 
 <h2>Installing from behind a proxy/firewall</h2>
 The installer attempts to download any files it needs from the AstroGrid repository.  If you are behind a firewall or use an internet proxy cache

@@ -3,8 +3,7 @@
     <artifactId>astrogrid-registry-deploy-script</artifactId>
     <name>Registry Installation Script</name>
     <organization/>
-    <description>This project contains everything necessary to install the application, when run as a stand-alone ant script. This is then bundled into a jar 
-        for installation on a webserver from where it can be accessed by other applications. </description>
+    <description>This project contains everything necessary to install the application, when run as a stand-alone ant script.  </description>
     <shortDescription>Subproject to hold ant scripts and resources specific to the registry installation</shortDescription>
     <repository/>
     <build>
