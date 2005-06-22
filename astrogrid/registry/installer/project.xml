@@ -18,6 +18,7 @@
                 <directory>resources</directory>
                 <includes>
                     <include>**/*.jpg</include>
+                    <include>**/*.png</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>
