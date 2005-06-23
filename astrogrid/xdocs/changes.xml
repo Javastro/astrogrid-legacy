@@ -16,11 +16,7 @@
   </release>
 
   <release version="(Undertest)">  
-	    <action dev="gtr" type="fix" issue="1255">
-  		<b>astrogrid/contracts</b>, branch <em>contracts-gtr-1255</em>. More XML schemata added to the
-  		contracts project so that they can be published in the software site. After this branch is merged,
-  		please rebuild the software site so that it picks up the new schemata from the updated contracts jar.
-  	</action>
+	    
 	    <action dev="gtr" type="add" issue="1188">
   		<b>Most components</b> Branch <em>registry-gtr-1188</em>. JNDI keys shortened so they fit Tomcat's interface.
   	</action>	    
@@ -30,6 +26,11 @@
    </release>
     
   <release version="HEAD">
+	    <action dev="gtr" type="fix" issue="1255">
+  		    <b>astrogrid/contracts</b>, branch <em>contracts-gtr-1255</em>. More XML schemata added to the
+  		    contracts project so that they can be published in the software site. After this branch is merged,
+  		    please rebuild the software site so that it picks up the new schemata from the updated contracts jar.
+  	    </action>
         <action dev="jdt" type="add" issue="881"> 
             Created a GUI installer for the registry, and plumbed it into AGINAB.
             See <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">installers</a>
