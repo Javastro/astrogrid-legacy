@@ -1,6 +1,8 @@
 <?xml version="1.0" ?>
 <!--can't dtd validate - need to replace with schema later.
 	<!DOCTYPE module PUBLIC "-//Astrogrid//DTD Desktop Module 1.0//EN" "file:///home/noel/eclipse/desktop/src/java/org/astrogrid/desktop/framework/descriptors/module-descriptor.dtd">
+	
+	small problem - points to release scripts, not beta scripts. oh well.
 -->
 <module name="scripting">
 	<description>Scripting</description>
@@ -10,7 +12,7 @@
 				<link text="Python Scripts"
 					icon="source_py.png"
 					toolTipText="download a zip of example python scripts"
-					url="http://wiki.astrogrid.org/pub/Astrogrid/AstrogridDesktop/python-scripts.zip"/>
+					url="http://software.astrogrid.org/jnlp/astrogrid-desktop/python-scripts.zip"/>
 			</value>
 		</property>		
 	<property>

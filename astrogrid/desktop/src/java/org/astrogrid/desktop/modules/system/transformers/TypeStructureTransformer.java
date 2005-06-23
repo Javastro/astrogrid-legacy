@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.4 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: TypeStructureTransformer.java,v 1.5 2005/06/23 09:08:26 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,8 +50,14 @@ public class TypeStructureTransformer implements Transformer {
      * 
      */
     private TypeStructureTransformer() {
-        super();
+        this(true);
     }
+    
+    private TypeStructureTransformer(boolean b) {
+        this.specialTreatmentForCastor = b;
+    }
+    
+    private final boolean specialTreatmentForCastor;
 
     /**@todo - may need to handle byte arrays.
      * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
@@ -63,7 +69,7 @@ public class TypeStructureTransformer implements Transformer {
         if (arg0 instanceof JobURN) { // simple castor type - just get value.
             return ((JobURN)arg0).getContent();
         }
-        if ( arg0 instanceof Workflow || arg0 instanceof Tool) { // special treatment for castor types..
+        if ( specialTreatmentForCastor && (arg0 instanceof Workflow || arg0 instanceof Tool)) { // special treatment for castor types..
             try {
                 StringWriter sw = new StringWriter();
                 Marshaller.marshal(arg0,sw);
@@ -166,8 +172,12 @@ public class TypeStructureTransformer implements Transformer {
     }
     
     private static final Transformer theInstance = new TypeStructureTransformer();
+    private static final Transformer castorIgnoringInstance = new TypeStructureTransformer(false);
     public static Transformer getInstance() {
         return theInstance;
+    }
+    public static Transformer getCastorIgnoringInstance() {
+        return castorIgnoringInstance;
     }
 
 }
@@ -175,6 +185,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.5  2005/06/23 09:08:26  nw
+changes for 1.0.3 release
+
 Revision 1.4  2005/06/08 14:51:59  clq2
 1111
 

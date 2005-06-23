@@ -13,6 +13,7 @@
 	
 	<postGoal name="site">
 		<attainGoal name="javadoc-acr-api" />
+		<attainGoal name="zip-scripts"/>
 	</postGoal>
 	
 
@@ -51,6 +52,15 @@
 		       value="false"/>
 
 		<attainGoal name="javadoc:generate" />
+	</goal>
+	<goal name="zip-scripts">
+	  <zip destfile="${maven.docs.dest}/python-scripts.zip">
+		  <fileset dir="${basedir}/src">
+			  <include name="python-scripts/*" />
+		  </fileset>
+	  </zip>
+	       
+	       
 	</goal>
 	
         <goal name="define-stylesheet">

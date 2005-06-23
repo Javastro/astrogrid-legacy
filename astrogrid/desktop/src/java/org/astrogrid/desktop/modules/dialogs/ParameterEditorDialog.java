@@ -1,4 +1,4 @@
-/*$Id: ParameterEditorDialog.java,v 1.4 2005/06/22 08:48:52 nw Exp $
+/*$Id: ParameterEditorDialog.java,v 1.5 2005/06/23 09:08:26 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -90,6 +90,7 @@ public class ParameterEditorDialog extends JDialog {
 			        setToolTipText("Submit the workflow for execution");
 			        addActionListener(new java.awt.event.ActionListener() { 
 			            public void actionPerformed(java.awt.event.ActionEvent e) {    
+                            tool = getParametersPanel().getTool();
 			                dispose(); // causes dialogue to return
 			            }
 			        });
@@ -194,11 +195,15 @@ public class ParameterEditorDialog extends JDialog {
 		return jContentPane;
 	}
     public Tool getTool() {
-        // @todo test this - need to check we get null on cancel now.
         return tool;
     }
     
-    public ParametersPanel getParametersPanel() {
+    public void populate(Tool t, ApplicationDescription desc) {
+        this.tool=t;
+        getParametersPanel().populate(t,desc);
+    }
+    
+    private ParametersPanel getParametersPanel() {
         if (parametersPanel == null) {
             //@todo this in not general - quick hack
             parametersPanel = new ParametersPanel(resourceChooser,allowIndirect);;
@@ -213,6 +218,9 @@ public class ParameterEditorDialog extends JDialog {
 
 /* 
 $Log: ParameterEditorDialog.java,v $
+Revision 1.5  2005/06/23 09:08:26  nw
+changes for 1.0.3 release
+
 Revision 1.4  2005/06/22 08:48:52  nw
 latest changes - for 1.0.3-beta-1
 

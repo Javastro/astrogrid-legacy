@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.5 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: Applications.java,v 1.6 2005/06/23 09:08:26 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,8 @@ import org.exolab.castor.xml.ValidationException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Hashtable;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -70,6 +72,9 @@ public interface Applications {
  * @throws WorkflowInterfaceException*/
     Tool getToolTemplate(Ivorn applicationName, String interfaceName)
             throws WorkflowInterfaceException;
+    
+    public Hashtable convertToolToStruct(Tool document) ;
+    public Tool convertStructToTool(Map struct) ;
     
   /**Validate a tool document against an application 
                 description 
@@ -168,6 +173,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.6  2005/06/23 09:08:26  nw
+ changes for 1.0.3 release
+
  Revision 1.5  2005/06/08 14:51:59  clq2
  1111
 

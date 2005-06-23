@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.7 2005/06/22 08:48:52 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.8 2005/06/23 09:08:26 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.applications.beans.v1.Input;
 import org.astrogrid.applications.beans.v1.Interface;
 import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
@@ -24,6 +25,7 @@ import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
+import org.astrogrid.desktop.modules.system.transformers.TypeStructureTransformer;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
@@ -37,6 +39,7 @@ import org.astrogrid.registry.client.query.ResourceData;
 import org.astrogrid.scripting.XMLHelper;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.util.DomHelper;
+import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.axis.utils.XMLUtils;
@@ -58,7 +61,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -206,6 +212,72 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
         
     }
     
+    public Hashtable convertToolToStruct(Tool document) {
+        /*
+        Object result = TypeStructureTransformer.getCastorIgnoringInstance().transform(document);
+        System.err.println(result.getClass().getName());
+        System.err.println(result);
+        return(Hashtable)result;
+        */
+        Hashtable result = new Hashtable();
+        result.put("interface",document.getInterface());
+        result.put("name",document.getName());
+        Hashtable inputs= new Hashtable();
+        Hashtable outputs = new Hashtable();
+        result.put("input",inputs);
+        for (int i = 0; i < document.getInput().getParameterCount(); i++) {
+            convertParameterToHash(inputs, document.getInput().getParameter(i));
+        }
+        result.put("output",outputs);
+        for (int i = 0; i < document.getOutput().getParameterCount(); i++) {
+            convertParameterToHash(outputs, document.getOutput().getParameter(i));
+        }        
+        return result;
+        
+    }
+    
+    private void convertParameterToHash(Hashtable collection,ParameterValue v) {
+        Hashtable result = new Hashtable();
+        collection.put(v.getName(),result);
+        result.put("value",v.getValue());
+        result.put("indirect",Boolean.valueOf( v.getIndirect()));
+    }
+    
+    private ParameterValue convertHashToParameter(String name,Map h) {
+        ParameterValue v= new ParameterValue();
+        v.setName(name);
+        v.setIndirect(((Boolean)h.get("indirect")).booleanValue());
+        v.setValue(h.get("value").toString());
+        return v;
+    }
+
+    private ParameterValue[] convertParams(Map inputHash) {
+        ParameterValue[] arr = new ParameterValue[inputHash.size()];
+        Iterator i = inputHash.entrySet().iterator();
+        for (int ix = 0; ix < arr.length; ix++) {
+            Map.Entry e =(Map.Entry) i.next();
+            arr[ix] =convertHashToParameter(e.getKey().toString(),(Map)e.getValue());                        
+        }
+        return arr;
+    }
+    
+    public Tool convertStructToTool(Map struct) {
+        System.err.println(struct);
+        Tool t = new Tool();
+        t.setName(struct.get("name").toString());
+        t.setInterface(struct.get("interface").toString());
+        org.astrogrid.workflow.beans.v1.Input input = new org.astrogrid.workflow.beans.v1.Input();
+        
+        Map paramHash= (Map)struct.get("input");
+        input.setParameter(convertParams(paramHash));
+        t.setInput(input);
+        
+        Output output = new Output();
+        paramHash = (Map)struct.get("output");               
+       output.setParameter(convertParams(paramHash));
+        t.setOutput(output);
+        return t;
+    }
 
     public boolean validateTool(Tool document) throws WorkflowInterfaceException, MarshalException, ValidationException, ToolValidationException {
         ApplicationDescription descr = getAppReg().getDescriptionFor(document.getName());
@@ -409,6 +481,9 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.8  2005/06/23 09:08:26  nw
+changes for 1.0.3 release
+
 Revision 1.7  2005/06/22 08:48:52  nw
 latest changes - for 1.0.3-beta-1
 

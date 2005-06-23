@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.1 2005/06/20 16:56:40 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.2 2005/06/23 09:08:26 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,8 +16,7 @@ import org.picocontainer.Startable;
 
 import com.jstatcom.component.JHelpAction;
 
-import java.awt.event.ActionEvent;
-
+import javax.help.SwingHelpUtilities;
 import javax.swing.Action;
 
 /** Implementation of the help server.
@@ -32,12 +31,17 @@ public class HelpServerImpl implements Startable, HelpServer{
     public HelpServerImpl() {
         super();
     }
-   /** @todo change this to point to the desktop helpset */
-    private static String HELPSET_PATH = "helpset/JHelpDev.hs";
+    private static String HELPSET_PATH = "/helpset/desktop-helpset.xml";
     /** loads the helpset in a background thread.
      * @see org.picocontainer.Startable#start()
      */
     public void start() {
+        // if jdic browser is available, set help browser to use that.
+        Check jdic  = new CheckJDICBrowserPresent();
+        if (jdic.check()) {
+            SwingHelpUtilities.setContentViewerUI
+                ("javax.help.plaf.basic.BasicNativeContentViewerUI");
+        }
         JHelpAction.startHelpWorker(HELPSET_PATH);
     }
 
@@ -78,6 +82,9 @@ public class HelpServerImpl implements Startable, HelpServer{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.2  2005/06/23 09:08:26  nw
+changes for 1.0.3 release
+
 Revision 1.1  2005/06/20 16:56:40  nw
 fixes for 1.0.2-beta-2
  

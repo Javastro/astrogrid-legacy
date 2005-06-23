@@ -67,55 +67,7 @@
         <dependencies>
 
 <!-- container and aspects system -->
-        <dependency>
-                <groupId>picocontainer</groupId>
-                <artifactId>picocontainer</artifactId>
-                <version>1.1</version>
-                <type>jar</type>
-                <properties>
-                        <jnlp.jar>true</jnlp.jar>
-                </properties>
-        </dependency>
-  <dependency>
-   <groupId>nanocontainer</groupId>
-   <artifactId>nanocontainer</artifactId>
-   <version>1.0-beta-4</version>
-   <type>jar</type>
-   <properties>
-     <jnlp.jar>true</jnlp.jar>
-    </properties>
-  </dependency>
-        <dependency>
-            <id>dynaop</id>
-            <version>1.0-beta</version>
-   <properties>
-     <jnlp.jar>true</jnlp.jar>
-    </properties>
-        </dependency>
-        <dependency>
-            <id>aopalliance</id>
-            <version>1.0</version>
-   <properties>
-     <jnlp.jar>true</jnlp.jar>
-    </properties>
-        </dependency>
-       <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-asm</artifactId>
-            <version>1.0</version>
-   <properties>
-     <jnlp.jar>true</jnlp.jar>
-    </properties>
-        </dependency>
-        <dependency>
-            <id>oro</id>
-            <version>2.0.7</version><!-- nanocontainer project says 2.0.8, but we're on 2.0.7 at the moment -->
-   <properties>
-     <jnlp.jar>true</jnlp.jar>
-    </properties>
-        </dependency>
-<!-- also asm 1.4.3 ? but don't seemt to need it -->
-
+ 
         <dependency>
                 <groupId>xmlrpc</groupId>
                 <artifactId>xmlrpc</artifactId>
@@ -125,24 +77,7 @@
                         <jnlp.jar>true</jnlp.jar>
                 </properties>
         </dependency>
-        <dependency>
-                <artifactId>commons-beanutils</artifactId>
-                <groupId>commons-beanutils</groupId>
-                <version>1.6</version>
-                <type>jar</type>
-                <properties>
-                        <jnlp.jar>true</jnlp.jar>
-                </properties>
-        </dependency>
- <dependency>
-  <artifactId>commons-digester</artifactId>
-  <groupId>commons-digester</groupId>
-  <version>1.6</version>
-  <type>jar</type>
-  <properties>
-   <jnlp.jar>true</jnlp.jar>
-  </properties>
- </dependency>
+
         <dependency>
                 <artifactId>xstream</artifactId>
                 <groupId>xstream</groupId>
@@ -152,15 +87,7 @@
                         <jnlp.jar>true</jnlp.jar>
                 </properties>
         </dependency>
-        <dependency>
-                <artifactId>commons-lang</artifactId>
-                <groupId>commons-lang</groupId>
-                <version>2.0</version>
-                <type>jar</type>
-                <properties>
-                        <jnlp.jar>true</jnlp.jar>
-                </properties>
-        </dependency>
+ 
 
     <dependency>
         <artifactId>commons-httpclient</artifactId>
@@ -170,14 +97,7 @@
                         <jnlp.jar>true</jnlp.jar>
                 </properties>
     </dependency>
- <dependency><!-- contains SwingWorker class, for executing things in background threads -->
-  <artifactId>concurrent</artifactId>
-  <groupId>concurrent</groupId>
-  <version>1.3.4</version>
-                  <properties>
-                        <jnlp.jar>true</jnlp.jar>
-                </properties>
- </dependency>
+
  
  <dependency>
 	 <artifactId>jhelpaction</artifactId>
@@ -191,6 +111,43 @@
  
  <!-- following libs are packaged up as separate jnlp extensions - so reference here,
       for build time, but don't package in desktop jnlp -->
+ <!-- container and aspect systems -->
+ <dependency>
+	 <groupId>picocontainer</groupId>
+	 <artifactId>picocontainer</artifactId>
+	 <version>1.1</version>
+	 <type>jar</type>
+	 <properties>
+		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+		 <jnlp.extension.dir>/jnlp/containers</jnlp.extension.dir>
+		 <jnlp.extension.jnlp>containers.jnlp</jnlp.extension.jnlp>
+	 </properties>
+ </dependency>
+ <dependency>
+	 <groupId>nanocontainer</groupId>
+	 <artifactId>nanocontainer</artifactId>
+	 <version>1.0-beta-4</version>
+	 <type>jar</type>
+ </dependency>
+ <dependency>
+	 <id>dynaop</id>
+	 <version>1.0-beta</version>
+ </dependency>
+ <dependency>
+	 <id>aopalliance</id>
+	 <version>1.0</version>
+ </dependency>
+ <dependency>
+	 <groupId>cglib</groupId>
+	 <artifactId>cglib-asm</artifactId>
+	 <version>1.0</version>
+ </dependency>
+ <dependency>
+	 <id>oro</id>
+	 <version>2.0.7</version><!-- nanocontainer project says 2.0.8, but we're on 2.0.7 at the moment -->
+ </dependency>
+ <!-- also asm 1.4.3 ? but don't seemt to need it -->
+ 
  <!-- jetty webserver -->
  <dependency>
 	 <groupId>jetty</groupId>
@@ -217,7 +174,7 @@
 	 <version>2.3</version>	
     </dependency>
  
- <!-- gui fluff -->
+ <!-- gui fluff and concurrent stuff-->
    <dependency><!-- look and feel -->
         <artifactId>looks</artifactId>
         <groupId>jgoodies</groupId>
@@ -233,6 +190,11 @@
         <artifactId>l2fprod-common-all</artifactId>
         <version>0.1</version>
     </dependency>
+    <dependency><!-- contains SwingWorker class, for executing things in background threads -->
+	    <artifactId>concurrent</artifactId>
+	    <groupId>concurrent</groupId>
+	    <version>1.3.4</version>
+ </dependency>    
 <!-- online help system -->
 
  <dependency>
@@ -246,5 +208,52 @@
 	 </properties>
 	 <jar>jh.jar</jar>
  </dependency>
+ <!-- commons digester (and collectins and beanutils) -->
+ <dependency>
+	 <artifactId>commons-digester</artifactId>
+	 <groupId>commons-digester</groupId>
+	 <version>1.6</version>
+	 <type>jar</type>
+	 <properties>
+		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+		 <jnlp.extension.dir>/jnlp/digester</jnlp.extension.dir>
+		 <jnlp.extension.jnlp>digester.jnlp</jnlp.extension.jnlp>
+	 </properties>	 
+ </dependency>
+ <dependency>
+	 <artifactId>commons-beanutils</artifactId>
+	 <groupId>commons-beanutils</groupId>
+	 <version>1.6</version>
+	 <type>jar</type>
+ </dependency>
+ <dependency>
+	 <artifactId>commons-lang</artifactId>
+	 <groupId>commons-lang</groupId>
+	 <version>2.0</version>
+	 <type>jar</type>
+        </dependency>
+ <!-- JDIC components - a bit tricky, because of binary nature.. -->
+ <dependency>
+	 <artifactId>jdic</artifactId>
+	 <groupId>jdic</groupId>
+	 <version>0.9</version>
+	 <properties>
+		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+		 <jnlp.extension.dir>/jnlp/desktop-integration</jnlp.extension.dir>
+		 <jnlp.extension.jnlp>desktop-integration.jnlp</jnlp.extension.jnlp>
+	 </properties>
+ </dependency>
+ <dependency>
+	 <artifactId>jdic_stub_${os.name}</artifactId>
+	 <groupId>jdic</groupId>
+	 <version>0.9</version>
+ </dependency>
+ <!-- NB - this is the jar of native libs, that needs to be locally installed. -->
+ <dependency>
+	 <artifactId>jdic_native_${os.name}_${os.arch}</artifactId>
+	 <groupId>jdic</groupId>
+	 <version>0.9</version>
+ </dependency>
+
     </dependencies>
 </project>

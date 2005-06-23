@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.2 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: ToolEditorImpl.java,v 1.3 2005/06/23 09:08:26 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,8 +42,9 @@ public class ToolEditorImpl implements ToolEditor {
     public Tool editTool(Tool t) throws WorkflowInterfaceException {
         ApplicationDescription desc = apps.getApplicationDescription(t.getName());
         ParameterEditorDialog d = new ParameterEditorDialog(myspace,null,null,true);
-        d.getParametersPanel().populate(t,desc);
+        d.populate(t,desc);
         d.show();
+        d.requestFocus();
         return d.getTool();
     }
 
@@ -52,6 +53,9 @@ public class ToolEditorImpl implements ToolEditor {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.3  2005/06/23 09:08:26  nw
+changes for 1.0.3 release
+
 Revision 1.2  2005/06/08 14:51:59  clq2
 1111
 

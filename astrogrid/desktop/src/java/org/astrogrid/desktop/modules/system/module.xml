@@ -202,6 +202,113 @@
 	  </method>	  	  
 	</component>
 	
+	<component name="apihelp"
+		implementationClass="org.astrogrid.desktop.modules.system.ApiHelpImpl"
+		interfaceClass="org.astrogrid.acr.system.ApiHelp">
+		<description>
+			Introspection component that lists available modules, components and their methods and provides documentation for these.
+		</description>
+		<method name="listMethods">
+			<description>
+			   This method may be used to enumerate the methods implemented by the XML-RPC server.
+               It requires no parameters. 
+
+		  </description>
+			<return>
+				<description>It returns an array of strings, each of which is the name of a method implemented by the server.</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>	
+				</return>	  
+		  </method>
+		  <method name="listModules">
+			<description>
+					    This method may be used to enumerate the modules implemented by the XML-RPC server.
+                        It requires no parameters. 
+			</description>
+			<return>
+				<description>It returns an array of strings, each of which is the name of a moduleimplemented by the server.</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>	
+				</return>	  			
+		</method>
+		<method name="listComponentsOfModule">
+			<description>
+				This method may be used to enumerate the components implemented by a module the XML-RPC server.
+                 This method takes one paramter,the name of a module 
+
+			</description>
+	<return>
+				<description>It returns an array of strings, each of which is the name of a component  implemented by the server.</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>	
+				</return>	  					
+				<parameter name="module"><description>name of module to list components for</description></parameter>
+		</method>
+		<method name="listMethodsOfComponent">
+			<description>
+						This method may be used to enumerate the methods implemented by a component in the XML-RPC server.
+                        This method takes one parameter, the module-qualified name of a component (i.e. 'module.component') 
+				</description>
+	<return>
+				<description>It returns an array of strings, each of which is the name of a method mplemented by the server.</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>	
+				</return>	  		
+				<parameter name="component"><description>component to list methods for</description></parameter>				
+		</method>
+		<method name="methodSignature">			
+			<description>
+						This method takes one parameter, the name of a method implemented by the XML-RPC server.
+     
+			</description>
+			<return>
+				<description>I                        It returns an array of possible signatures for this method. A signature is an array of types. 
+                        The first of these types is the return type of the method, the rest are parameters.
+                        Multiple signatures (ie. overloading) are permitted: this is the reason that an array of signatures are returned by this method.
+						                   Signatures themselves are restricted to the top level parameters expected by a method.
+                        For instance if a method expects one array of structs as a parameter, and it returns a string, its signature is simply 'string, array'
+                        If it expects three integers, its signature is 'string, int, int, int'.
+						</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>	
+				</return>	  		
+							<parameter name="methodname"><description>name of method</description></parameter>						
+		</method>
+		<method name="methodHelp">
+			<description>
+						This method takes one parameter, the module-qualified name of a method (i.e. 'module.component.method') implemented by the XML-RPC server.
+                        It returns a documentation string describing the use of that method.
+                        If no such string is available, an empty string is returned.			
+			</description>
+							<parameter name="methodname"><description>name of method</description></parameter>				
+		</method>
+		<method name="moduleHelp">
+			<description>
+						This method takes one parameter, the name of a module provided by the XML-RPC server.
+                        It returns a documentation string describing the use of that module. 
+                        If no such string is available, an empty string is returned.			
+			</description>
+							<parameter name="modulename"><description>name of module</description></parameter>				
+		</method>
+		<method name="componentHelp">
+			<description>
+						This method takes one parameter, the module-qualified name of a component (i.e. 'module.component') implemented by the XML-RPC server.
+                        It returns a documentation string describing the use of that component. 
+                        If no such string is available, an empty string is returned.				
+			</description>
+							<parameter name="componentname"><description>name of component</description></parameter>				
+		</method>						
+	</component>
 	<!-- interceptor class -->
 	<component name="throbber"
 		implementationClass="org.astrogrid.desktop.modules.system.ThrobbingInterceptor"

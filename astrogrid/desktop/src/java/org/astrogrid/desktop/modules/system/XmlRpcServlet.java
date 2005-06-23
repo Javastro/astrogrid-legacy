@@ -1,4 +1,4 @@
-/*$Id: XmlRpcServlet.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: XmlRpcServlet.java,v 1.4 2005/06/23 09:08:26 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.system;
 
 import org.astrogrid.acr.builtin.Module;
 import org.astrogrid.acr.builtin.ModuleRegistry;
+import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
@@ -81,18 +82,7 @@ public class XmlRpcServlet extends HttpServlet {
          PrintWriter out = response.getWriter();
         out.println("<html><body><a href='./.' >up</a><h1>XMLRPC Server</h1>");
         out.println("To call service, use POST");
-        out.println("<h2>Available Services</h2><ul>");
-        try {
-        SystemXmlRpcHandler system = (SystemXmlRpcHandler)xmlrpc.getHandlerMapping().getHandler("system.listMethods");
-        for (Iterator i = system.listMethods().iterator(); i.hasNext(); ) {
-            out.println("<li>");
-            out.println(i.next());
-            out.println("</li>");
-        }
-        out.println("</ul>");
-        } catch (Exception e) {
-            throw new ServletException(e);
-        }
+
         out.println("</body></html>");        
 }
     /** the server implemntation that this servlet exposes */
@@ -231,7 +221,6 @@ public class XmlRpcServlet extends HttpServlet {
     return conv != null ? conv : DefaultConverter.getInstance();        
     }
         
-    public static final String XMLRPC_TYPE_KEY = "system.xmlrpc.type";
     public static final String RESULT_TRANSFORMER="system.result.transformer";
     public static final String PARAMETER_CONVERTER="system.parameter.converter";
    
@@ -242,159 +231,29 @@ public class XmlRpcServlet extends HttpServlet {
          */
         private static final Log logger = LogFactory.getLog(SystemXmlRpcHandler.class);
 
-        public SystemXmlRpcHandler(ModuleRegistry reg) {
-            this.reg= reg;
+        public SystemXmlRpcHandler(ModuleRegistry reg) {            
+            apiHelp = (ApiHelp)reg.getModule("system").getComponentInstanceOfType(ApiHelp.class);
         }
-        protected final ModuleRegistry reg;
+        protected final ApiHelp apiHelp;
         /**
          * @see org.apache.xmlrpc.XmlRpcHandler#execute(java.lang.String, java.util.Vector)
          */
         public Object execute(String arg0, Vector arg1) throws Exception {
             if ("system.listMethods".equalsIgnoreCase(arg0)) {
-                return listMethods();
+                return (Vector)apiHelp.listMethods();
             }
             if ("system.methodSignature".equalsIgnoreCase(arg0)) {
-                return methodSignature(arg1.get(0).toString());
+                return (Vector)apiHelp.methodSignature(arg1.get(0).toString());
             }
             if ("system.methodHelp".equalsIgnoreCase(arg0)){
-                return methodHelp(arg1.get(0).toString());
-            }
+                return apiHelp.methodHelp(arg1.get(0).toString());
+            }    
             throw new XmlRpcException(0,"Unknown operation " + arg0);
         }
         
+    }
+   
         
-        public Vector listMethods() {
-            Vector result = new Vector();
-            result.add("system.listMethods");
-            result.add("system.methodSignature");
-            result.add("system.methodHelp");
-            for (Iterator i = reg.moduleIterator(); i.hasNext(); ) {
-                Module m = (Module)i.next();
-                for(Iterator j = m.getDescriptor().componentIterator(); j.hasNext(); ) {
-                    ComponentDescriptor cd = (ComponentDescriptor)j.next();
-                    for (Iterator k = cd.methodIterator(); k.hasNext(); ) {
-                        MethodDescriptor md = (MethodDescriptor)k.next();
-                        result.add(m.getDescriptor().getName() + "." + cd.getName() + "." + md.getName());
-                    }
-                }
-            }
-            return result;
-        }
-        
-        public Vector methodSignature(String methodName) throws XmlRpcException {
-            Vector sigs = new Vector();
-            Vector sig = new Vector();
-            sigs.add(sig);
-            String[] names = methodName.split("\\.");
-            if (names[0].equalsIgnoreCase("system")) {
-                if (names[1].equalsIgnoreCase("listMethods")) {
-                    sig.add("array");
-                    sig.add("string");
-                    return sig;
-                }
-                if (names[1].equalsIgnoreCase("methodSignature")) {
-                    sig.add("array");
-                    sig.add("string");
-                    return sig;
-                }
-                if (names[1].equalsIgnoreCase("methodHelp")) {
-                    sig.add("string");
-                    sig.add("string");
-                    return sig;
-                }
-            }
-                Module m = reg.getModule(names[0]);
-                if (m == null) {
-                    throw new XmlRpcException(100, "Unknown module " + names[0]);
-                }
-                ComponentDescriptor cd = m.getDescriptor().getComponent(names[1]);
-                if (cd == null) {
-                    throw new XmlRpcException(101,"Unknown component " + names[1]);
-                }                
-                MethodDescriptor md = cd.getMethod(names[2]);
-                if (md == null) {
-                    throw new XmlRpcException(102,"Unknown method "+ names[2]);
-                }                
-                sig.add(getXMLRPCType(md.getReturnValue()));
-                for (Iterator i = md.parameterIterator(); i.hasNext();) {
-                    sig.add(getXMLRPCType( ((ValueDescriptor)i.next())));
-                }       
-            
-            return sigs;
-        }
-        
-        protected String getXMLRPCType(ValueDescriptor vd) {
-            String type = vd.getProperty(XMLRPC_TYPE_KEY);
-            return type == null ? "string" : type.trim();
-        }
-
-        public String methodHelp(String methodName) throws XmlRpcException {
-            String[] names = methodName.split("\\.");
-            if (names[0].equalsIgnoreCase("system")) {
-                if (names[1].equalsIgnoreCase("listMethods")) {
-                    return "This method may be used to enumerate the methods implemented by the XML-RPC server.\n" +
-                            " It requires no parameters. \n" +
-                            "It returns an array of strings, each of which is the name of a method implemented by the server.";                    
-                }
-                if (names[1].equalsIgnoreCase("methodSignature")) {
-                    return "This method takes one parameter, the name of a method implemented by the XML-RPC server.\n" +
-                            "It returns an array of possible signatures for this method. A signature is an array of types. \n" +
-                            "The first of these types is the return type of the method, the rest are parameters.\n" +
-                            "Multiple signatures (ie. overloading) are permitted: this is the reason that an array of signatures are returned by this method.\n" +
-                            "Signatures themselves are restricted to the top level parameters expected by a method. \n" +
-                            "For instance if a method expects one array of structs as a parameter, and it returns a string, its signature is simply 'string, array'.\n" +
-                            " If it expects three integers, its signature is 'string, int, int, int'.";
-                }
-                if (names[1].equalsIgnoreCase("methodHelp")) {
-                    return "This method takes one parameter, the name of a method implemented by the XML-RPC server.\n" +
-                            " It returns a documentation string describing the use of that method. \n" +
-                            "If no such string is available, an empty string is returned.";
-                }         
-            } 
-            Module m = reg.getModule(names[0]);
-            if (m == null) {
-                throw new XmlRpcException(100, "Unknown module " + names[0]);
-            }
-            ComponentDescriptor cd = m.getDescriptor().getComponent(names[1]);
-            if (cd == null) {
-                throw new XmlRpcException(101,"Unknown component " + names[1]);
-            }                
-            MethodDescriptor md = cd.getMethod(names[2]);
-            if (md == null) {
-                throw new XmlRpcException(102,"Unknown method "+ names[2]);
-            }
-         
-            StringBuffer result = new StringBuffer();
-            result.append("Module ")
-                    .append(m.getDescriptor().getName())
-                    .append("\n\t")
-                    .append(m.getDescriptor().getDescription())                       
-                    .append("\nComponent ")
-                    .append(cd.getName())
-                    .append("\n\t")
-                    .append(cd.getDescription())
-                    .append("\nMethod ")
-                    .append(md.getName())
-                    .append("\n\t")
-                    .append(md.getDescription());
-            for (Iterator i = md.parameterIterator(); i.hasNext(); ) {
-                ValueDescriptor vd = (ValueDescriptor)i.next();
-                result.append("\n")
-                        .append(vd.getName())
-                        .append(" : ")
-                        .append(getXMLRPCType(vd))
-                        .append("\n")
-                        .append(vd.getDescription());                                
-            }           
-            result.append("\n")
-                    .append(md.getReturnValue().getName())
-                    .append(" : ")
-                    .append(getXMLRPCType(md.getReturnValue()))
-                    .append("\n")
-                    .append(md.getReturnValue().getDescription());
-            return result.toString();
-            }
-        }        
     }
     
 
@@ -402,6 +261,9 @@ public class XmlRpcServlet extends HttpServlet {
 
 /* 
 $Log: XmlRpcServlet.java,v $
+Revision 1.4  2005/06/23 09:08:26  nw
+changes for 1.0.3 release
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

@@ -150,7 +150,9 @@
 			<property>
 		<key>icon</key>
 		<value>add_obj.gif</value>
-	</property>					
+	</property>			
+			<parameter name="name"><description>Descriptive name of the application</description></parameter>
+			<parameter name="executionId"><description>ExecutionID for this application</description></parameter>		
 			</method>
 		<method name="show">
 			<description>Run the Monitor GUI </description>

@@ -531,6 +531,29 @@
 					default interface</description>
 			</parameter>
 		</method>
+		<method name="convertToolToStruct">
+			<return><description>datastructure</description>
+			<description>convert a tool xml document to a datastructure that 
+				may be more easy to manipulate in your language
+				</description>				
+			<property>
+					<key>system.xmlrpc.type</key>
+					<value>struct</value>
+				</property>
+			</return>				
+			<parameter name="tool"><description>Tool document to convert</description></parameter>
+		</method>
+		<method name="convertStructToTool">
+			<description>inverse of convertToolToStruct</description>
+			<return><description>a tool document</description></return>
+			<parameter name="struct"><description>datastructure representing a tool</description>
+		<property>
+					<key>system.xmlrpc.type</key>
+					<value>struct</value>
+				</property>				
+				</parameter>
+			
+		</method>
 		<method name="validateTool">
 			<description>Validate a tool document against an application 
 				description</description>		
