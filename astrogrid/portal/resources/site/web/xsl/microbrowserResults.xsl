@@ -110,7 +110,7 @@
       url = url + identifier;
       var safe_url = url.substring(0,url.indexOf("amp;"));
       safe_url = safe_url + url.substring(url.indexOf("amp;")+4, url.length);
-        var safer_URL = safe_url.replace(/+/g, "%2B");
+        var safer_URL = safe_url.replace(/\+/g, "%2B");
 
           parent.window.close();
 /*        parent.opener.parent.location.href = safe_url; */
