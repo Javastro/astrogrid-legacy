@@ -13,8 +13,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-	<release version="1.0.3">
-		Based on 1.0.3-beta-2
+	<release version="1.0.3" date="2005-06-23">
+		<action dev="nw" type="update">
+			Based on 1.0.3-beta-2
+		</action>
 	</release>
 	<release version="1.0.3-beta-2" date="2005-06-23">
 		<action dev="nw" type="add">

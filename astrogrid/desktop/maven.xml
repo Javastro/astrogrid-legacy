@@ -13,7 +13,7 @@
 	
 	<postGoal name="site">
 		<attainGoal name="javadoc-acr-api" />
-		<attainGoal name="zip-scripts"/>
+
 	</postGoal>
 	
 
@@ -26,6 +26,7 @@
 		<echo>${maven.docs.src}</echo>
 		<attainGoal name="xdoc:transform" />
 		<attainGoal name="javadoc-acr-api" />
+		<attainGoal name="zip-scripts"/>		
 	</postGoal>
 	
 	<goal name="javadoc-acr-api">
