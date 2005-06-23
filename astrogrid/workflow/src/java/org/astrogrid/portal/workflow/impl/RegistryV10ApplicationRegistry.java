@@ -1,4 +1,4 @@
-/*$Id: RegistryV10ApplicationRegistry.java,v 1.3 2005/06/08 14:52:24 clq2 Exp $
+/*$Id: RegistryV10ApplicationRegistry.java,v 1.4 2005/06/23 08:00:32 nw Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,6 +37,7 @@ import java.net.URL;
 
 /** implementaiton of ApplicationRegistry against a v10 registry schema.
  * @todo handle namespaces better.
+ * @todo rewrite to not use castor.
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2005
  *
  */
@@ -67,8 +68,9 @@ public RegistryV10ApplicationRegistry(URL endpoint) {
 protected final RegistryService service;
 
 public final static String LIST_QUERY_STRING= "Select * from Registry where " +
-" @xsi:type = 'cea:CeaApplicationType' or " +
-" @xsi:type = 'cea:CeaHttpApplicationType'";
+" (@xsi:type = 'cea:CeaApplicationType' or " +
+" @xsi:type = 'cea:CeaHttpApplicationType')" +
+" and @status = 'active'";
     /**
      * 
      * @see org.astrogrid.portal.workflow.intf.ApplicationRegistry#listApplications()
@@ -114,13 +116,17 @@ public final static String LIST_QUERY_STRING= "Select * from Registry where " +
             if (nl.getLength() == 0) {                
                 throw new WorkflowInterfaceException("Registry entry for '" + applicationName + "' has no ApplicationDefinition Element");
             }
-            Element n = (Element)nl.item(0);
-          
+            Element n = (Element)nl.item(0);            
             n.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance"); // bug-fix work around.
             logger.debug(XMLUtils.ElementToString(n));
+            
+            //@todo rewrite this to not use castor.
+            
             ApplicationDefinition def = (ApplicationDefinition) Unmarshaller.unmarshal(ApplicationDefinition.class,n);
+           
             logger.debug("Castor-Parsed the Application Definition");
             // now mangle across to the required types.
+         
             ApplicationBase appBase = new ApplicationBase();
             appBase.setName(applicationName);
             appBase.setInterfaces(def.getInterfaces());
@@ -188,6 +194,9 @@ public final static String LIST_QUERY_STRING= "Select * from Registry where " +
 
 /* 
 $Log: RegistryV10ApplicationRegistry.java,v $
+Revision 1.4  2005/06/23 08:00:32  nw
+fixed error on v10 list applications query - just needed ( )
+
 Revision 1.3  2005/06/08 14:52:24  clq2
 1111
 
