@@ -73,7 +73,7 @@
             </item>            
         </menu>
         <menu name="Software Documentation">
-            <item name="Latest changes" href="/changes.html"/>
+            <item name="Latest changes" href="/changes-report.html"/>
             <item name="AstroGrid Components" href="/server.html" collapse="false">
                 <item name="Common Execution Architecture (CEA)" href="applications/index.html"/>
                 <item name="Community" href="community/index.html"/>
