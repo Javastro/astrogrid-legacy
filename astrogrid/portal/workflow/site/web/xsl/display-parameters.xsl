@@ -71,6 +71,7 @@
                 <xsl:sort select="@param-name"/> 
                 <xsl:call-template name="parameter">                                     
                   <xsl:with-param name="direction">input</xsl:with-param>
+                  <xsl:with-param name="key"><xsl:value-of select="./../../@key"/></xsl:with-param>
                 </xsl:call-template>                              
               </xsl:for-each>
             </xsl:if>
@@ -82,6 +83,7 @@
                 <xsl:for-each select="./tool/outputParam">  
                   <xsl:call-template name="parameter">
                     <xsl:with-param name="direction">output</xsl:with-param>
+                    <xsl:with-param name="key"><xsl:value-of select="./../../@key"/></xsl:with-param>
                   </xsl:call-template>
                 </xsl:for-each>
               </xsl:if>
@@ -139,7 +141,8 @@
           | Match the parameter element.
           +-->
     <xsl:template name="parameter">
-      <xsl:param name="direction"/>      
+      <xsl:param name="direction"/>
+      <xsl:param name="key"/>      
           <tr>
             <td>
               <xsl:attribute name="style">cursor: help</xsl:attribute>                                    
@@ -170,9 +173,9 @@
               </ag-onload>                
             </xsl:if>                                                    
           </td>
-          <xsl:variable name="ivorn-id"><xsl:value-of select="count(preceding-sibling::*)"/>ivorn</xsl:variable>
-          <xsl:variable name="agsl-id"><xsl:value-of select="count(preceding-sibling::*)"/>agsl</xsl:variable>
-          <xsl:variable name="indirect-id"><xsl:value-of select="count(preceding-sibling::*)"/>param</xsl:variable>
+          <xsl:variable name="ivorn-id"><xsl:value-of select="$key"/><xsl:value-of select="count(preceding-sibling::*)"/>ivorn</xsl:variable>
+          <xsl:variable name="agsl-id"><xsl:value-of select="$key"/><xsl:value-of select="count(preceding-sibling::*)"/>agsl</xsl:variable>
+          <xsl:variable name="indirect-id"><xsl:value-of select="$key"/><xsl:value-of select="count(preceding-sibling::*)"/>param</xsl:variable>
           <td>
             <input type="text" size="50">
               <xsl:attribute name="name">param-value#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>                
