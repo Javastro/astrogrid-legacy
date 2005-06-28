@@ -262,6 +262,7 @@
         <input type="hidden">
             <xsl:attribute name="name">param_indirect_changed#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
             <xsl:attribute name="id">param_indirect_changed#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
+            <xsl:attribute name="value">false</xsl:attribute>
         </input>                               
     </xsl:template>
 
