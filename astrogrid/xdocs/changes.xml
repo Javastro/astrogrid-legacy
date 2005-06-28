@@ -16,7 +16,7 @@ returned in OAI and not die badly on invalid harvesting of other registries.
         </action>    
   </release>
 
-  <release version="(Undertest)">  
+  
 	    
 	    <action dev="gtr" type="add" issue="1188">
   		<b>Most components</b> Branch <em>registry-gtr-1188</em>. JNDI keys shortened so they fit Tomcat's interface.
@@ -27,6 +27,13 @@ returned in OAI and not die badly on invalid harvesting of other registries.
    </release>
     
   <release version="HEAD">
+	    <release version="(Undertest)">  
+		<action dev="dave" type="add" issue="xxx" version"1.0.1-b006pl">
+  		    <b>pal</b> Branch <em>dave-dev-200506281816</em>. One change to a property in default.properties in pal/skycatserver.
+  	    </action>	
+	    <action dev="dave" type="add" issue="xxx" version"1.0.1-b005pl">
+  		    <b>pal</b> Branch <em>dave-dev-200506281451</em>. Small change to the metadata tools in PAL, no external side effects expected.
+  	    </action>
 	    <action dev="gtr" type="fix" issue="1255">
   		    <b>astrogrid/contracts</b>, branch <em>contracts-gtr-1255</em>. More XML schemata added to the
   		    contracts project so that they can be published in the software site. After this branch is merged,
