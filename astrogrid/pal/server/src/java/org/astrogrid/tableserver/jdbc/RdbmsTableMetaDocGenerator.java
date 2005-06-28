@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsTableMetaDocGenerator.java,v 1.4 2005/03/30 15:18:55 mch Exp $
+ * $Id: RdbmsTableMetaDocGenerator.java,v 1.5 2005/06/28 15:56:34 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -100,9 +100,11 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
    /**
     * Writes the metadata to the given stream.  Writes just one catalog for now */
    public void writeTableMetaDoc(Writer out) throws IOException {
-      
-      out.write("<DatasetDescription targetNamespace='urn:astrogrid:schema:TableMetaDoc:v1'>\n");
-      
+//
+// ZRQ
+// Moved this to an XML tag.      
+//    out.write("<DatasetDescription targetNamespace='urn:astrogrid:schema:TableMetaDoc:v1'>\n");
+
       Connection connection = null;
       try {
          connection = JdbcPlugin.getJdbcConnection();
@@ -110,8 +112,11 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
          DatabaseMetaData metadata = connection.getMetaData();
 
          XmlAsciiWriter xw = new XmlAsciiWriter(out, false);
-
-         XmlPrinter catTag = xw.newTag("Catalog");
+//
+// ZRQ
+// Added the root tag to the XML writer. 
+         XmlPrinter rootTag = xw.newTag("DatasetDescription", new String[] {"targetNamespace='urn:astrogrid:schema:TableMetaDoc:v1'"});
+         XmlPrinter catTag = rootTag.newTag("Catalog");
 
          //get all tables
          ResultSet tables = metadata.getTables(null, null, "%", null);
@@ -143,9 +148,13 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
                   colTag.writeTag("Units", " "); //for humans
                   colTag.writeTag("DimEq", " "); //Dimension Equation
                   colTag.writeTag("Scale", " "); //Scaling Factor for dimension equation
-                  colTag.writeTag("UCD", " ");
-                  colTag.writeTag("UcdPlus", " ");
-//                  colTag.writeTag("ErrorColumn", " ");
+//                colTag.writeTag("UCD", " ");
+//                colTag.writeTag("UcdPlus", " ");
+// ZRQ Needs version="..."
+                  colTag.writeTag("UCD", new String[] {"version='1'"} ," ");
+                  colTag.writeTag("UCD", new String[] {"version='1+'"} ," ");
+
+                  colTag.writeTag("ErrorColumn", " ");
                   //botch look for spatial coordinates
                   if (colName.toLowerCase().equals("ra")) {
                      colTag.writeTag("SkyPolarCoord", "RA");
@@ -161,6 +170,7 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
             }
          }
          catTag.close();
+         rootTag.close();
          xw.close();
          
          connection.close();
@@ -168,8 +178,12 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
       catch (SQLException e) {
          throw new DatabaseAccessException("Could not get metadata: "+e,e);
       }
-      out.write("</DatasetDescription>\n");
-      out.flush();
+//
+// ZRQ root tag should get closed now.
+//    finally {
+//       out.write("</DatasetDescription>\n");
+//       out.flush();
+//    }
    }
    
    
