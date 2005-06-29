@@ -42,7 +42,7 @@
                 <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-portal-*.war"/>
                 <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-registry-*.war"/>
             </item>
-            <item name="Client Developer Kit" href="http://www.astrogrid.org/maven/org.astrogrid/distributions/?C=M&O=D&P=*.*"/>
+            <item name="Client Developer Kit" href="http://www.astrogrid.org/maven/org.astrogrid/distributions/?C=M&amp;O=D&amp;P=*.*"/>
        </menu>
        <menu name="Other Downloads">
             <item name="Webservice Delegates" href="/delegate.html" collapse="true">
