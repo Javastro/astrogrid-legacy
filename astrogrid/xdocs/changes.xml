@@ -13,25 +13,21 @@
         <action dev="kmb" type="add" issue="xforms+1235"> 
             <b>astrogrid/registry</b> Branch <em>Reg_KMB_Xforms2_Jun01</em>. Mainly added xforms plus small correction on harvesting and OAI areas to correct duplicates being
 returned in OAI and not die badly on invalid harvesting of other registries.
-        </action>    
-  </release>
+        </action>        	    
+</release>
 
-  
-	    
-	    <action dev="gtr" type="add" issue="1188">
+<release version="(Undertest)">  
+	<action dev="gtr" type="add" issue="1188">
   		<b>Most components</b> Branch <em>registry-gtr-1188</em>. JNDI keys shortened so they fit Tomcat's interface.
-  	</action>	    
-
-					    	     	       		
-		
-   </release>
+  	</action>
+</release>
     
   <release version="HEAD">
-	    <release version="(Undertest)">  
-		<action dev="dave" type="add" issue="xxx" version"1.0.1-b006pl">
+	    
+		<action dev="dave" type="add" issue="xxx" version="1.0.1-b006pl">
   		    <b>pal</b> Branch <em>dave-dev-200506281816</em>. One change to a property in default.properties in pal/skycatserver.
   	    </action>	
-	    <action dev="dave" type="add" issue="xxx" version"1.0.1-b005pl">
+	    <action dev="dave" type="add" issue="xxx" version="1.0.1-b005pl">
   		    <b>pal</b> Branch <em>dave-dev-200506281451</em>. Small change to the metadata tools in PAL, no external side effects expected.
   	    </action>
 	    <action dev="gtr" type="fix" issue="1255">
