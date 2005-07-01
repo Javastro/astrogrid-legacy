@@ -15,7 +15,7 @@
             sure that they work offline.  You should see changes to aginab, and the deployment and installer folders of
             all components except community.  The changes are minor and shouldn't affect integration tests.
         </action>      
-        <action dev="kmb" type="add" issue="xforms+1235"> 
+        <action dev="kmb" type="add" issue="1235"> 
             <b>astrogrid/registry</b> Branch <em>Reg_KMB_Xforms2_Jun01</em>. Mainly added xforms plus small correction on harvesting and OAI areas to correct duplicates being
 returned in OAI and not die badly on invalid harvesting of other registries.
         </action>        	    
