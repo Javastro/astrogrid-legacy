@@ -10,14 +10,7 @@
         </action>       
   </release-->
   <release version="(Pending Integration)">
-	<action dev="pah" type="fix" issue="559">
-		Make all of the CEA servers self register with v10 compliant schema - This involved
-		<ul><li>workflow objects - wfo_pah_559b</li>
-        <li>applications - cea_pah_559c </li>
-        <li>jes - jes_pah_559b</li>
-         <li>integration project - int_pah_559b</li>
-		</ul>
-	</action>
+
 		
         <action dev="jdt" type="add" issue="1182"> 
             <b>astrogrid</b> Branch <em>aginab_jdt_1182</em>  Minor changes to all the install scripts to make
@@ -46,7 +39,14 @@ returned in OAI and not die badly on invalid harvesting of other registries.
 </release>
     
   <release version="HEAD">
-	    
+        <action dev="pah" type="fix" issue="559">
+            Make all of the CEA servers self register with v10 compliant schema - This involved
+            <ul><li>workflow objects - wfo_pah_559b</li>
+            <li>applications - cea_pah_559c </li>
+            <li>jes - jes_pah_559b</li>
+            <li>integration project - int_pah_559b</li>
+            </ul>
+        </action>	    
 		<action dev="dave" type="add" issue="xxx" version="1.0.1-b006pl">
   		    <b>pal</b> Branch <em>dave-dev-200506281816</em>. One change to a property in default.properties in pal/skycatserver.
   	    </action>	
