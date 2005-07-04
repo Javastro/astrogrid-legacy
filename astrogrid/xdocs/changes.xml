@@ -10,6 +10,15 @@
         </action>       
   </release-->
   <release version="(Pending Integration)">
+	<action dev="pah" type="fix" issue="559">
+		Make all of the CEA servers self register with v10 compliant schema - This involved
+		<ul><li>workflow objects - wfo_pah_559b</li>
+        <li>applications - cea_pah_559c </li>
+        <li>jes - jes_pah_559b</li>
+         <li>integration project - int_pah_559b</li>
+		</ul>
+	</action>
+		
         <action dev="jdt" type="add" issue="1182"> 
             <b>astrogrid</b> Branch <em>aginab_jdt_1182</em>  Minor changes to all the install scripts to make
             sure that they work offline.  You should see changes to aginab, and the deployment and installer folders of
