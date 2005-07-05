@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.153 2005/06/22 20:33:23 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.154 2005/07/05 10:54:36 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -130,59 +130,28 @@
 <!-- important to do this before the original gets patched -->
     	<copy file="${temporary.dir}/astrogrid-community-${astrogrid.community.version}.war"
           tofile="${temporary.dir}/astrogrid-community-two-${astrogrid.community.version}.war" />
+	
+	<!-- this needs to be done earlier with the new installers -->		
+	<attainGoal name="setup-working-dir" />
+		  
 </goal>
 
 <!-- main goals //////////////////////////////////////////////////////////////////////////////////// -->
-<goal name="cycle"
- description="deprecated: timing issues. call undeploy-all, deploy-all, setup, int-test by hand.">
-         <echo>Deprecated: problems with timing / memory load. call undeploy-all, deploy-all, int-test by hand individually</echo>
-        <attainGoal name="undeploy-all" />
-        <attainGoal name="deploy-all" />
-        <attainGoal name="int-test" />
-</goal>
-
-<goal name="deploy-all" prereqs="init">
-        <echo>*** Deploying all webapps...</echo>
-        <attainGoal name="common-libs-deploy" />
-        <attainGoal name="configuration-deploy" />
-        <attainGoal name="testdata-deploy"/>
-        <sleep seconds="2" />
-        <attainGoal name="registry-deploy" />
-        <sleep seconds="4" />
-        <attainGoal name="jes-deploy" />
-        <sleep seconds="2" />
-        <attainGoal name="cea-server-deploy" />
-        <sleep seconds="2" />
-        <attainGoal name="cea-commandline-deploy" />
-        <sleep seconds="2" />
-        <attainGoal name="cea-http-deploy" />
-        <sleep seconds="2" />
-
-        <sleep seconds="2" />
-        <attainGoal name="filestore-one-deploy" />
-        <sleep seconds="2" />
-        <attainGoal name="filestore-two-deploy" />
-        <sleep seconds="2" />
-        <attainGoal name="filemanager-one-deploy" />
-        <sleep seconds="2" />
-        <attainGoal name="filemanager-two-deploy" />
-        <sleep seconds="2" />
-        <attainGoal name="community-deploy"/>
-        <sleep seconds="2" />
-        <!--attainGoal name="community-deploy-two"/>
-        <sleep seconds="2" /-->        
-        <attainGoal name="portal-deploy" />
-        <sleep seconds="4" />
-        <attainGoal name="setup" />
+<goal name="deploy-all" prereqs="init,deploy-all-except-portal">
+	<!-- refactored setup into this as cannot install all the apps until the registry is in place -->
+                <echo>*** Deploying all webapps...</echo>
+         <attainGoal name="portal-deploy" />
 </goal>
 <goal name="deploy-all-except-portal" prereqs="init" description="deploy all webapps except the portal, setup environment.">
-        <echo>*** Deploying all webapps except the portal...</echo>
         <attainGoal name="common-libs-deploy" />
         <attainGoal name="configuration-deploy" />
+		<attainGoal name="copy-test-resources" />
         <attainGoal name="testdata-deploy"/>
         <sleep seconds="2" />
         <attainGoal name="registry-deploy" />
         <sleep seconds="4" />
+		<attainGoal name="populate-registry" />
+
         <attainGoal name="jes-deploy" />
         <sleep seconds="2" />
         <attainGoal name="cea-server-deploy" />
@@ -203,9 +172,9 @@
         <sleep seconds="2" />        
         <attainGoal name="community-deploy"/>
         <sleep seconds="2" />
+		<attainGoal name="community-toolkit"/>
+        <attainGoal name="setup-community"/>
 	    <!--attainGoal name="community-deploy-two"/-->
-    	<sleep seconds="2" />
-        <attainGoal name="setup" />
 </goal>
 
 <goal name="undeploy-all" prereqs="init" description="undeploy all webapps">
@@ -289,15 +258,6 @@
 </goal>
 
 <!-- Working direcotry //////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-<goal name="setup" description="configure webapps and working dir">
-        <echo>*** Configuring...</echo>
-        <attainGoal name="community-toolkit"/>
-        <attainGoal name="setup-working-dir" />
-        <attainGoal name="populate-registry" />
-        <attainGoal name="setup-community"/>
-        <attainGoal name="copy-test-resources" />
-</goal>
 
 <goal name="setup-working-dir" description="create working dir, copy across templates">
         <echo>Setting up working directory</echo>
@@ -665,6 +625,8 @@
     <!--Vanilla (Java) version-->
 <goal name="cea-server-deploy" prereqs="override-input-task,init,cea-init">
       <!--Self register.  Currently this only registers v0.9 of the schema, until bug 1159 is fixed-->
+  ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+ 
         <ant dir="${cea.deployment.jar.unpacked}" target="install-and-register" >
             <property name="custom.tasks.defined" value="yes"/>
             <property name="cea.continueifnodownload" value="true"/> <!-- allow use of local files-->
@@ -712,9 +674,9 @@
 		<!--By moving the unwaring to a separate project, I've broken the cougaar setup.  Need to think about
 		best way of restoring it (jdt)-->
 		<!--ag:maybe-enable-cougaar webapp="cea-server" /-->
-      <!--Self register.  Currently this only registers v0.9 of the schema, until bug 1159 is fixed-->
-        <ant dir="${cea.deployment.jar.unpacked}" target="install-and-register" >
-            <property name="custom.tasks.defined" value="yes"/>
+ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+         <ant dir="${cea.deployment.jar.unpacked}" target="install-and-register" >
+	        <property name="custom.tasks.defined" value="yes"/>
             <property name="cea.continueifnodownload" value="true"/> <!-- allow use of local files-->
 
             <property name="input.tomcat.present" value="continue"/>
@@ -761,8 +723,7 @@
 		best way of restoring it-->
 		<!--ag:maybe-enable-cougaar webapp="cea-server" /-->
 
-    
-      <!--Self register.  Currently this only registers v0.9 of the schema, until bug 1159 is fixed-->
+  ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
         <ant dir="${cea.deployment.jar.unpacked}" target="install-and-register" >
             <property name="custom.tasks.defined" value="yes"/>
             <property name="cea.continueifnodownload" value="true"/> <!-- allow use of local files-->
@@ -1137,7 +1098,7 @@
         <ant dir="${portal.deployment.jar.unpacked}" target="install-portal" >
             <property name="tasks.already.set" value="yes"/>
             <property name="input.tomcat.present" value="yes"/>
-            <property name="input.tomcat.url" value="${tomcat.manager.url}"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
             <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
             <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
             <property name="input.astrogrid.jes.endpoint" value="${aginab.jes.url}"/>
@@ -1176,7 +1137,7 @@
         <ant dir="${jes.deployment.jar.unpacked}" target="install-jes" >
             <property name="tasks.already.set" value="yes"/>
             <property name="input.tomcat.present" value="continue"/>
-            <property name="input.tomcat.url" value="${tomcat.manager.url}"/>
+            <property name="input.tomcat.url" value="${tomcat.url}"/>
             <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
             <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
             <property name="input.jes.working.dir" value="${work.dir}/jes"/>

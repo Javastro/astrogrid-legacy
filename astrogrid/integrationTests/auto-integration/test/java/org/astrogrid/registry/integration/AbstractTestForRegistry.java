@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractTestForRegistry.java,v 1.5 2005/02/22 21:02:58 clq2 Exp $
+ * $Id: AbstractTestForRegistry.java,v 1.6 2005/07/05 10:54:36 jdt Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,6 +20,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.astrogrid.common.bean.v1.Namespaces;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.registry.client.query.RegistryService;
@@ -33,6 +34,8 @@ import org.astrogrid.registry.common.RegistryValidator;
 import org.astrogrid.registry.common.RegistrySchemaMap;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
@@ -95,8 +98,14 @@ public abstract class AbstractTestForRegistry extends TestCase {
   // useful reg-specific assertions.
    /** assert a document conforms to the vodescription schema */
    public void assertVODescription(Document doc) {
-       //AstrogridAssert.assertSchemaValid(doc,"VODescription",RegistrySchemaMap.ALL);
-       RegistryValidator.isValid(doc,"VODescription");
+//      // this is how a client would validate the response from the registry.
+//      NodeList nl = doc.getElementsByTagNameNS(Namespaces.REGINTERFACE,"VODescription");
+//      assertTrue("did not find any VODescription in registry response",nl.getLength() >0);
+//      Element el = (Element) nl.item(0);
+//      AstrogridAssert.assertSchemaValid(el,"VODescription",SchemaMap.ALL);
+      
+      //this line is the registries own validator, which is really cheating needs to be validated independently as above (as a client would do).
+      RegistryValidator.isValid(doc,"VODescription");
    }
    
 

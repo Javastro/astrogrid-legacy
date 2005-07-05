@@ -11,11 +11,12 @@
    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
    xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" 
    xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" 
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+   xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v0.1 ../../../../workflow-objects/schema/externalSchema/v10/RegistryInterface-v0.1.xsd">
 	<!--A Genuine SIAP service - Guy's recently announced INT WFS service at Cambridge-->
 	<vor:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaHttpApplicationType">
     	<title>INTWideFieldSurveySIAP</title>
-        <shortName>INTWideFieldSurveySIAP</shortName>
+        <shortName>INT_WFS_SIAP</shortName>
 	   	<identifier>ivo://@REGAUTHORITY@/INTWideFieldSurveySIAP</identifier>
  <vr:curation>
   <vr:publisher>Main Astrogrid Full Registry</vr:publisher>
@@ -121,7 +122,7 @@
 					<ceapd:UI_Description>The result of the cross match</ceapd:UI_Description>
 				</cea:ParameterDefinition>
 			</cea:Parameters>
-			<Interfaces>
+			<cea:Interfaces>
 				<ceab:Interface name="simple">
 					<ceab:input>
 						<ceab:pref ref="coordTab1"/>
@@ -133,36 +134,11 @@
 						<ceab:pref ref="output"/>
 					</ceab:output>
 				</ceab:Interface>
-			</Interfaces>
+			</cea:Interfaces>
 		</cea:ApplicationDefinition>
 		<cea:CeaHttpAdapterSetup>
 			<!--This needs to have the end point better adapted....-->
 			<ceab:URL>http://cdsws.u-strasbg.fr/xmatch/XMatchFrontend</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
-	</vor:Resource>
-	<vor:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaServiceType">
-    	<title>RealHttpCEC</title>
-        <shortName>RealHttpCEC</shortName>
-	   	<identifier>ivo://@REGAUTHORITY@/RealHttpCEC</identifier>
- <vr:curation>
-  <vr:publisher>Main Astrogrid Full Registry</vr:publisher>
-  <vr:contact>
-   <vr:name>Paul Harrison</vr:name>
-   <vr:email>pah@jb.man.ac.uk</vr:email>
-  </vr:contact>
- </vr:curation>
- <vr:content>
-  <vr:subject>cea</vr:subject>
-  <vr:description>cea real http service</vr:description>
-  <vr:referenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</vr:referenceURL>
-  <vr:type>Other</vr:type>
- </vr:content>
-    <interface xsi:type="vs:WebService">
-		<accessURL use="full">@TOMCATROOT@/astrogrid-cea-http-@VERSION@/services/CommonExecutionConnectorService</accessURL>
-    </interface> 
-                <cea:ManagedApplications>
-            <cea:ApplicationReference>ivo://@REGAUTHORITY@/INTWideFieldSurveySIAP</cea:ApplicationReference>
-            <cea:ApplicationReference>ivo://@REGAUTHORITY@/CDS.XMatch</cea:ApplicationReference>
-                </cea:ManagedApplications>
 	</vor:Resource>
 </vor:VOResources>

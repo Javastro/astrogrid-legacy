@@ -1,4 +1,4 @@
-/*$Id: ServerInstallationTest.java,v 1.9 2004/11/24 19:49:22 clq2 Exp $
+/*$Id: ServerInstallationTest.java,v 1.10 2005/07/05 10:54:36 jdt Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,7 +75,7 @@ public class ServerInstallationTest extends AbstractTestForCEA {
         assertNotNull(entry);
         System.out.println(entry);
        
-        AstrogridAssert.assertSchemaValid(entry,"VODescription",SchemaMap.ALL);
+        AstrogridAssert.assertSchemaValid(entry,"VOResources",SchemaMap.ALL);
 
     }
 
@@ -85,6 +85,12 @@ public class ServerInstallationTest extends AbstractTestForCEA {
 
 /* 
 $Log: ServerInstallationTest.java,v $
+Revision 1.10  2005/07/05 10:54:36  jdt
+int_pah_559b
+
+Revision 1.9.78.1  2005/06/08 22:17:32  pah
+make http applications v10 compliant
+
 Revision 1.9  2004/11/24 19:49:22  clq2
 nww-itn07-659
 

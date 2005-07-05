@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.19 2005/03/14 22:03:53 clq2 Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.20 2005/07/05 10:54:36 jdt Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,13 +45,19 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForSimple
         Step s = (Step)wf.getSequence().getActivity(0);
         assertStepCompleted(s);
         ResultListType res = getResultOfStep(s);
-        softAssertEquals("there should be 2 results",2,res.getResultCount());
+        softAssertEquals("wrong number of results",3,res.getResultCount());
         String value =((ParameterValue)res.findXPathValue("result[name='P3']")).getValue();
         softAssertTrue("result doesn't contain expected value",value.indexOf(CommandLineProviderServerInfo.TEST_CONTENTS) != -1);
     }
 }
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.20  2005/07/05 10:54:36  jdt
+int_pah_559b
+
+Revision 1.19.42.1  2005/06/09 21:18:23  pah
+now returns 3 results
+
 Revision 1.19  2005/03/14 22:03:53  clq2
 auto-integration-nww-994
 

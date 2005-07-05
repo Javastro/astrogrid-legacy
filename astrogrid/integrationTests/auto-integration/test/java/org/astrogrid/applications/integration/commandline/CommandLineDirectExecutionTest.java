@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDirectExecutionTest.java,v 1.5 2004/11/24 19:49:22 clq2 Exp $
+ * $Id: CommandLineDirectExecutionTest.java,v 1.6 2005/07/05 10:54:36 jdt Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -48,7 +48,7 @@ public class CommandLineDirectExecutionTest extends AbstractRunTestForCEA {
 
 protected void checkResults(ResultListType results) throws Exception {
     assertNotNull(results);
-    softAssertEquals("should be 2 results",2,results.getResultCount());
+    softAssertEquals("should be 3 results",3,results.getResultCount());
     ParameterValue result = (ParameterValue)results.findXPathValue("result[name='P3']");
     assertNotNull(result);
     String value = result.getValue();

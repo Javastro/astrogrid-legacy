@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineFileIndirectExecutionTest.java,v 1.5 2004/11/24 19:49:22 clq2 Exp $
+ * $Id: CommandLineFileIndirectExecutionTest.java,v 1.6 2005/07/05 10:54:36 jdt Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -77,7 +77,7 @@ public class CommandLineFileIndirectExecutionTest extends AbstractRunTestForCEA 
  */
 protected void checkResults(ResultListType results) throws Exception {
     assertNotNull(results);
-    softAssertEquals("more than one result returned",2,results.getResultCount());
+    softAssertEquals("three results should be returned",3,results.getResultCount());
     ParameterValue result= (ParameterValue)results.findXPathValue("result[name='P3']");
     //TODO should really test P2 output also.
     assertNotNull(result);

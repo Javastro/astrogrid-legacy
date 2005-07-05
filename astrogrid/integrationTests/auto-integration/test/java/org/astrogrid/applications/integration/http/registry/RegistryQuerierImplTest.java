@@ -1,4 +1,4 @@
-/* $Id: RegistryQuerierImplTest.java,v 1.2 2004/09/02 11:18:09 jdt Exp $
+/* $Id: RegistryQuerierImplTest.java,v 1.3 2005/07/05 10:54:36 jdt Exp $
  * Created on Aug 5, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,8 +21,12 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.beans.v1.types.ApplicationKindType;
+import org.astrogrid.applications.description.registry.RegistryQueryLocator;
 import org.astrogrid.applications.http.registry.RegistryQuerierImpl;
+import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.beans.cea.CeaHttpApplicationType;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.query.RegistryService;
 
 /**
  * JUnit Test
@@ -44,7 +48,14 @@ public class RegistryQuerierImplTest extends TestCase {
         }
        
 
-        RegistryQuerierImpl querier = new RegistryQuerierImpl();
+        RegistryQuerierImpl querier = new RegistryQuerierImpl(new RegistryQueryLocator(){
+           /* (non-Javadoc)
+          * @see org.astrogrid.applications.description.registry.RegistryQueryLocator#getClient()
+          */
+         public RegistryService getClient() throws RegistryException {
+            return RegistryDelegateFactory.createQuery();
+         }
+        });
         Collection allApps = querier.getHttpApplications();
         log.debug("testListApplications() - All Apps details:");
         Iterator it = allApps.iterator();

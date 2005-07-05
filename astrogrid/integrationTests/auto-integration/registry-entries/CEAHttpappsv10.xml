@@ -11,8 +11,8 @@
    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
    xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" 
    xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" 
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
- <vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaHttpApplicationType">
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v0.1 ../../../workflow-objects/schema/externalSchema/v10/RegistryInterface-v0.1.xsd">
+ <vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaHttpApplicationType" >
     	<title>HelloWorldHttpApp</title>
         <shortName>Hello App</shortName>
 	   	<identifier>ivo://@REGAUTHORITY@/HelloWorldHttpApp</identifier>
@@ -292,32 +292,5 @@
 			<ceab:URL>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
     </vor:Resource>
- <vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaServiceType">
-    	<title>TestHttpCEC</title>
-        <shortName>TestHttpCEC</shortName>
-	   	<identifier>ivo://@REGAUTHORITY@/TestHttpCEC</identifier>
- <curation>
-  <publisher>Main Astrogrid Full Registry</publisher>
-  <contact>
-   <name>Paul Harrison</name>
-   <email>pah@jb.man.ac.uk</email>
-  </contact>
- </curation>
- <content>
-  <subject>TestHttpCEC</subject>
-  <description>A Commandline Execution Controller that will run most of the applications that Astrogrid has configured/wrapped so far.</description>
-  <referenceURL>http://www.astrogrid.org/maven/build/snapshot/applications/</referenceURL>
-  <type>Other</type>
- </content>
-    <interface xsi:type="vs:WebService">
-		<accessURL use="full">@TOMCATROOT@/astrogrid-cea-http-@VERSION@/services/CommonExecutionConnectorService</accessURL>
-    </interface> 
-                <cea:ManagedApplications>
-            <cea:ApplicationReference>ivo://@REGAUTHORITY@/HelloWorldHttpApp</cea:ApplicationReference>
-            <cea:ApplicationReference>ivo://@REGAUTHORITY@/HelloYouXMLHttpApp</cea:ApplicationReference>
-            <cea:ApplicationReference>ivo://@REGAUTHORITY@/AdderHttpGetApp</cea:ApplicationReference>
-            <cea:ApplicationReference>ivo://@REGAUTHORITY@/AdderHttpPostApp</cea:ApplicationReference>
-            <cea:ApplicationReference>ivo://@REGAUTHORITY@/InvalidHttpApp</cea:ApplicationReference>
-                </cea:ManagedApplications>
-        </vor:Resource>
+ 
 </vor:VOResources>
