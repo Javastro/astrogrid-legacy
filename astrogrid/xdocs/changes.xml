@@ -10,6 +10,10 @@
         </action>       
   </release-->
         <release version="(Pending Integration)">
+            <action dev="jdt" type="add" issue="1275"> Improvements to the Registry Deployment Script - the installer now
+                offers the user the option of storing the data outside the registry webapp, and also configures harvesting
+                <b>astrogrid/registry</b> and 
+                <b>astrogrid/integrationTests</b> </action>
             <action dev="jdt" type="add" issue="1182"> <b>astrogrid</b> Branch <em>aginab_jdt_1182</em> Minor changes to all the install scripts to make sure 
                 that they work offline. You should see changes to aginab, and the deployment and installer folders of all components except community. The 
                 changes are minor and shouldn't affect integration tests. </action>
