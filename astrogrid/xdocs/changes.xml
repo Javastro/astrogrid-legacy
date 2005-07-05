@@ -1,557 +1,284 @@
 <document>
-  <properties>
-    <title>Changes since previous release</title>
-    <author email="jdt@roe.ac.uk">John Taylor</author>
-  </properties>
-  <body>
-    <!--release version="(In progress)">  
+    <properties>
+        <title>Changes since previous release</title>
+        <author email="jdt@roe.ac.uk">John Taylor</author>
+    </properties>
+    <body>
+        <!--release version="(In progress)">  
         <action dev="jdt" type="fix" issue="1182">
             <b>astrogrid/</b> Changes to all Installers to ensure they work offline.            
         </action>       
   </release-->
-  <release version="(Pending Integration)">
-
-		
-        <action dev="jdt" type="add" issue="1182"> 
-            <b>astrogrid</b> Branch <em>aginab_jdt_1182</em>  Minor changes to all the install scripts to make
-            sure that they work offline.  You should see changes to aginab, and the deployment and installer folders of
-            all components except community.  The changes are minor and shouldn't affect integration tests.
-        </action>      
-        <action dev="kmb" type="add" issue="1235"> 
-            <b>astrogrid/registry</b> Branch <em>Reg_KMB_Xforms2_Jun01</em>. Mainly added xforms plus small correction on harvesting and OAI areas to correct duplicates being
-returned in OAI and not die badly on invalid harvesting of other registries.
-        </action>  
-        <action dev="jl" type="add" issue="1173"> 
-            <b>astrogrid/portal</b> Branch <em>por-jl-1173</em>. Partly dependent upon bug 1279, in that filestores created during
-            an aginab build need to register with a relationship set within the registry.
-            <ul>
-               <li>Refinements to MySpace Explorer controls</li>
-               <li>Password change</li>
-               <li>Ability to move files between filestores</li>
-            </ul>
-        </action>               	    
-</release>
-
-<release version="(Undertest)">  
-	<action dev="gtr" type="add" issue="1188">
-  		<b>Most components</b> Branch <em>registry-gtr-1188</em>. JNDI keys shortened so they fit Tomcat's interface.
-  	</action>
-</release>
-    
-  <release version="HEAD">
-        <action dev="pah" type="fix" issue="559">
-            Make all of the CEA servers self register with v10 compliant schema - This involved
-            <ul><li>workflow objects - wfo_pah_559b</li>
-            <li>applications - cea_pah_559c </li>
-            <li>jes - jes_pah_559b</li>
-            <li>integration project - int_pah_559b</li>
-            </ul>
-        </action>	    
-		<action dev="dave" type="add" issue="xxx" version="1.0.1-b006pl">
-  		    <b>pal</b> Branch <em>dave-dev-200506281816</em>. One change to a property in default.properties in pal/skycatserver.
-  	    </action>	
-	    <action dev="dave" type="add" issue="xxx" version="1.0.1-b005pl">
-  		    <b>pal</b> Branch <em>dave-dev-200506281451</em>. Small change to the metadata tools in PAL, no external side effects expected.
-  	    </action>
-	    <action dev="gtr" type="fix" issue="1255">
-  		    <b>astrogrid/contracts</b>, branch <em>contracts-gtr-1255</em>. More XML schemata added to the
-  		    contracts project so that they can be published in the software site. After this branch is merged,
-  		    please rebuild the software site so that it picks up the new schemata from the updated contracts jar.
-  	    </action>
-        <action dev="jdt" type="add" issue="881"> 
-            Created a GUI installer for the registry, and plumbed it into AGINAB.
-            See <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">installers</a>
-        </action>    
-        <action dev="jdt" type="fix" issue="1177"> <b>astrogrid/filestore</b>, <b>astrogrid/filemanager</b>and <b>astrogrid/integrationTests</b> 
-            <em>aginab_jdt_1177</em> Plumbed the FileStore and FileManager installers into AGINAB. The GUI installers and AGINAB now use the same script for
-            deployment, which has got to be a good thing. 
-        </action>    
-	    <action dev="gtr" type="add" issue="1208">
-  	        <b>astrogrid/applications</b> Branch <em>cea-gtr-1208</em>. Enhancements to the JSPs for test-running an 
-  	        application that support indirect input parameters.
-  	    </action>
-	    <action dev="gtr" type="fix" issue="1027"> 
-            Changes to TableMetaDoc.xsd to make it match the DSA software. Branch dsa-gtr-1027
-            Waiting for a big merge from mch before proceeding.
-        </action>
-	    <action dev="jdt" type="fix" issue="1180"> 
-            <b>astrogrid/applications</b> and <b>astrogrid/integrationTests</b> <em>cea_jdt_1180</em> Minor bug fixes to installer and build. Also fixes bug 
-            1182 (for CEA only). Already merged.
-        </action> 
-	    <action dev="dave" type="fix" issue="xxxx">
-  	      <b>dave-dev-200506100249</b> Changes to navigate and header
-     	</action>
-	    <action dev="pjn3" type="fix" issue="1200">
-  	    <b>astrogrid/workflow + portal resources</b> Branch <em>portalRE_pjn_1200 + workflow_pjn_1200</em>
-  	    Only active tasks returned from registry in both workflow builder and resource browser. 
-  	    </action>
-	    <action dev="dave" type="fix" issue="xxxx">
-  	      <b>dave-dev-200506081212</b> - Bug fixes to the pal metadata generator.No external side effects expected.
-     	</action>
-	    <action dev="dave" type="fix" issue="xxxx">
-  	      <b>dave-dev-200506071500</b> - Fixed double(), power() and circle() in PostgreSQL SQL writer.
-     	</action>
-	    <action dev="nww" type="add" issue="1111(again)">
-		<b>desktop-nww-1111</b> and <b>workflow-nww-1111</b> - added Applications component to ACR, and Applications Launcher Proglet.
-		This branch has already been merged into head once - hope merging it again doesn't cause trouble .
-	   </action>
-	    <action dev="pfo" type="add" issue="1217">
-  	      <b>portal_pjn_1225</b> - microbrowserResults.xsl change to handle tables with '+' in their name
-  	    </action>
-        <action dev="pjn3" type="add" issue="1217">
-  	      <b>portal_pjn_1217</b> - Webstart applications page added with more information.
-  	    </action>
-        <action dev="pjn3" type="add" issue="1226">
-  	      <b>portalRE_pjn_1226</b> - the smallest branch ever! - single missing space in ResourceAction.java causing SAXParseException
-  	      when muliple keyword search attempted when looking for catalogs.
-  	    </action>  
-	    <action dev="pjn" type="fix" issue="1193">
-  	      Branch <em>portalWF_1193_pjn</em> Fix for orig. bug #942 which has been over-written at some point since Feb.
-  	   </action>
-	    <action dev="pjn3" type="add" issue="1218">
-  	     <b>portal_pjn_1218</b> - Astrogrid status added to homepage plus ability to take portal 'out of action'
-  	    </action>
-	    <action dev="mch" type="fix" > 
-            <b>MCH-v1</b> v1.0 release for datacenter, slinger and xml projects. (awaiting for root tag from Martin)
-        </action>
-	    <action dev="kmb" type="fix" > 
-            Doc_Template_KMB_May112005 - docs template for astrogrid/registry
-        </action> 
-		<action dev="kmb" type="fix" > 
-            Doc_Template_KMB_May112005Comm - docs template for astrogrid/community
-        </action> 
-	     <action dev="pjn" type="fix" issue="1191"> 
-            portalWF_pjn_1191 - fixes for parameter indirect flag in workflow builder
-         </action>
-
-   </release>
-
-   <release version="1.0.1" date="20/05/05" description="AG 1.0.1 Release">
-	     <action dev="jdt" type="fix" issue="383"> 
-            Since we're now on maven 1.0.2 I've refactored the property files to remove common and duplicated stuff to maven-base. 
-			All components will need to be rebuilt after this merge, which should have no side effects.
-			Branch maven_jdt_383:
-        </action>
-        <action dev="jdt" type="add" issue="1012">
-            <b>cea_jdt_1012</b>
-            Created Installers for the CEA apps and plumbed them into AGINAB.
-            Added some cea-cmdline tests for windows.  The windows tests will fail on Unix. 
-            Equally the Unix tests will fail on Windows, so we should get the same pass rate in both
-            environments. 
-        </action> 
-	   <action dev="pjn" type="add" issue="1169">
-            <b>portalWF_pjn_1169</b>
-            1169 is a minor layout change and also removes a couple of stylesheet attributes that were causing transform 
-            errors that I spotted in the portal-core logs.
-            However this also includes fix for bug#931 which is more serious and relates to workflow builder/m-b interactions.
-         </action> 
-	   <action dev="pfo" type="fix" issue="1106">
-		 <b>portal_pfo_1106</b>
-		 taking out the excute button for now from query page since it's not working anyway. see bug 1172
-		</action> 
-	   <action dev="pjn3" type="add" issue="1157">
-		<b>portal_pjn_1157</b>
-		Parameterized workflows added to portal
-		</action>  
-	   <action dev="nww" type="add" issue="1111">
-		<b>desktop-nww-1111</b>
-		Lots of minor fixes and improvements to desktop - mostly suggested by Nick. Plus javadoc.
-		</action>
-		<action dev="jdt" type="fix" issue="1056"> 
-            Added an about page to each war. Not going to rebuild just for this...
-			will let it be absorbed naturally as new builds take place. However if there are any problems building war files then this should be your first suspect! 
-			Contact jdt in case of problems.
-			Branch all_jdt_1056
-        </action>
-	   <action dev="pfo" type="fix" issue="1106"> 
-            Taken out cicle from query example. Branch portal_pfo_1106
-        </action>
-	    <action dev="nww" type="fix" issue="1125"> 
-            Fix int tests to use new filemanager. Should see improvments in the applications tests. Branch int-nww-1125
-        </action>
-	    <action dev="kmb" type="fix" issue="381"> 
-            (astrogrid/common) - now uses InputSource? for newDocument(string) Fixed bug with certain characters in DOM. Branch Reg_KMB_381_WS
-        </action> 
-		<action dev="kmb" type="fix" issue="381"> 
-            (astrogrid/registry) - fixed several small bugs plus fixed relationship query now. Added removeResource ability. Fixed major bug with embedded eXist. Branch Reg_KMB_381_WS
-        </action> 
-		<action dev="kmb" type="fix" issue="381"> 
-            (astrogrid/registry/webapp) - Yes I know a sub-branch below registry in the webapp directory. Small changes to jsp pages and added removeResource. Xforms stuff is in there, but still hidden because it does not still quite work. Branch Reg_KMB_381_Xforms
-        </action> 
-		<action dev="kmb" type="fix" issue="972"> 
-            (astrogrid/xmldb) - Small change to add removeResource and a few other storage type methods. Branch Reg_KMB_972
-        </action> 
-		<action dev="kmb" type="fix" issue="972"> 
-            Fixed how it queries on relationships on the registry for groupmembership area. Branch Comm_KMB_381_WS
-        </action>
-        <action dev="kmb" type="fix" issue="1008"> 
-            (astrogrid/integrationTests/auto-integration) 
-			- bad branch name should have been a different number. Anyways small fixes to registry-entries. And added community stress test.
-			Branch Reg_Comm_1008_Factor
-        </action>    
-		<action dev="kmb" type="fix" issue="1004"> 
-            (astrogrid/filestore) - A small change to the xml to add relationship elements to it now. Branch FS_KMB_1004_2
-        </action> 
-	    <action dev="pjn" type="fix" issue="930"> 
-           (astrogrid/portal/workflow) Jobs displayed in date order. Branch portalWF_pjn_930
-        </action>
-	    <action dev="nww" type="fix" issue="1035"> 
-            Fix for 'delete' and 'move' bugs. minor changes to filemanager-client and filemanager-server.bug. Branch filemanager-nww-1035
-        </action> 	
-   </release>
-   <release version="1.0" date="01/05/05" description="AG 1.0 Release">
-        <action dev="pjn" type="fix" issue="748">
-            Removed footer from workflow and job status pages; help links now temporarily point to wikki help page. Branch portal_pjn_748
-        </action>	
-        <action dev="pjn" type="fix" issue="1100">
-            Ensure workflow credentials match user credentials on submit, set to those of current user if different. Branch portalWF_1100_pjn
-        </action>		
-		<action dev="pjn" type="fix" issue="860">
-            Ability to delete optional parameters. Branch portalWF_pjn_860
-        </action>
-		<action dev="nww" type="fix" issue="1082">
-          Fix for 2 parameterized-workflow-builder bugs; 
-		  fixes to make list-applications work with reg v10; 
-		  added 'change store' 'copy' 'move' and 'rename' to vospace browser; 
-		  split interfaces into separate packages, javadocs bug;
-		  also rebuilt filemanger for it to take common 1035. Branch desktop-nww-1082 and workflow-nww-1082
-        </action>
-		<action dev="pjn" type="fix" issue="959">
-            Major speed improvement to job status pages, plus removed some more trace. Branch portalWF_pjn_959
-        </action>
-		<action dev="gtr" type="fix" issue="1074">
-            Declares environment entities in web.xml and adds activation-1.0.2.jar to the WAR. Branch applications-gtr-1074
-        </action>
-		<action dev="jl" type="fix" issue="1085">
-            Improvements to MySpace Explorer to ensure views were updated to show latest file activity of user. Branch wor-jl-1085
-        </action>
-		<action dev="jl" type="fix" issue="1046">
-            Improvements to MySpace Explorer to ensure views were updated to show latest file activity of user. Branch por-jl-1046 (1046 is dependent upon 1085.)
-        </action>
-		<action dev="pjn" type="fix" issue="766">
-            Changes to use Noels fix (jes-nww-776-again), plus changes to front page job list to remove delete/cancel buttons, plus bug #771. Branch portal_pjn_766_again
-        </action>
-		<action dev="nww" type="fix" issue="776">
-            Fix for displaying list of jobs efficiently (jes-delegate and jes-server). Also some performance tweaks to the jes server. NB - this requires the common-nww-1035 to be merged first. Branch jes-nww-776-again and workflow-objects-nww-776-again
-        </action>
-		<action dev="nww" type="fix" issue="1035">
-            Moved some common classes from filemanager to common (nameGen package)., so they can be reused in jes. Not expected to break anything. Filemanager client needs to be rebuilt at the same time. Branch common-nww-1035
-        </action>
-		<action dev="clq" type="fix" issue="1120">
-            Same problmes of adding utils dependencies testing together. Branch jes_clq_1120/wf_clq_1120/por_clq_1120
-        </action>	
-   </release>
-   <release version="0.10.0" date="11/04/05" description="Post NAM release">
-        <action dev="clq" type="fix" issue="1079">
-            Fixed storeclient/xml/status overwriting AG main site docs. Branch sc_clq_1079
-        </action>
-		<action dev="dave" type="remove">
-            Removed MySpace related tests from integration. Branch dave-dev-200503181302
-        </action>
-		<action dev="kmb" type="add" issue="1008">
-            In astrogrid/community/webapp, added new JSP and web.xml files. Branch Comm_KMB_1008_2
-        </action>
-	    <action dev="dave" type="fix" issue="1059">
-            Fixed FileManager web.xml config settings. Branch dave-dev-200504041023
-        </action>
-		<action dev="jdt" type="fix" issue="1033">
-            slight tweak to the installer to make it less confusing. No effect on int tests. Branch Filestore_jdt_1033
-        </action>
-		<action dev="pjn" type="fix" issue="1045">
-            trace turned off in worflow xsp's (job-list and job-status) Branch portalWF_pjn_1045
-        </action>
-		<action dev="pjn" type="fix" issue="1054">
-            links to workflow in current jobs list on homepage removed (login-pass.xsp, workflow sitemap and job-list.xsl). Branch portal_pjn_1054
-        </action>
-		<action dev="jdt" type="fix" issue="1062">
-            The last test run's results are now saved, so even if you don't stick the baseline in cvs,you can immediately see if anything has changed since last time you ran aginab. Branch aginab_jdt_1062.
-        </action>
-		<action dev="kmb" type="fix" issue="972">
-            In astrogrid/registry, ONLY .JSP AND .WSDL files should be merged. Branch Reg_KMB_972_2
-        </action>
-		<action dev="jl" type="fix" issue="908">
-            Portal myspace update and etc. Branch por-jl-908
-        </action>
-		<action dev="pjn" type="fix" issue="1047">
-            DesignAction changed to add missing ivo:// to indirect ivorns. Branch portalWF_pjn_1047
-        </action>
-		<action dev="kmb" type="fix" issue="972">
-            In astrogrid/registry; harvest bug fixed, commenting better now; in astrogrid/xmldb; small tweak to let a user get right at a XQueryService? or XPathQueryService?. Branch Reg_KMB_972
-        </action>
-		<action dev="mch" type="add" >
-            Rebuilds of PAL and slinger
-        </action>
-		<action dev="jdt" type="fix" issue="1044">
-            Adding wsdd from workflow-objects to wars. Branch pal_jdt_1044
-        </action>
-		<action dev="pjn" type="fix" issue="1040">
-            New webstart links; only affects login-pass.xsp.  Branch portalLogin_pjn_1040
-        </action>
-		<action dev="kmb" type="add" issue="1007">
-            Filemanager jsp. Branch FM_KMB_1007
-        </action>
-		<action dev="jdt" type="add" issue="1031">
-            Added an installer. Branch FMGR_JDT_1031
-        </action>
-		<action dev="jdt" type="fix" issue="1021">
-            Adjustments to the schema for configuring catalogues inside DSA. This is important for the current deployments. Branch dsa-gtr-1021
-        </action>
-		<action dev="jdt" type="fix" issue="1022">
-            Added a subproject to create a single jar from all the dependencies. Branch Slinger_jdt_1022
-        </action>
-		<action dev="kmb" type="fix" issue="1004">
-            Filestore jsp. Branch FS_KMB_1004
-        </action>
-		<action dev="kmb" type="fix" issue="1005">
-            Added a deployment script and installer, integration tests should be unaffected. Branch JES_jdt_1005
-        </action>
-		<action dev="dave" type="fix">
-            Community to register home space with FileManager;
-            Changes to Community server and webapp;
-            Changes to FileManager? test;
-            Added new integration test. Branch dave-dev-200503150513
-        </action>
-		<action dev="jdt" type="add" issue="966">
-            FileStore? Installer. No impact expected on Int Tests, since I've just added a couple of subprojects to build the installer and deployment script. Branch FLSTR_JDT_966
-        </action>
-		<action dev="kmb" type="add" issue="972">
-            For integrationTests some entries changed for registry v10 upgrade.  Branch Reg_KMB_972
-        </action>
-		<action dev="nww" type="fix" issue="986">
-            Upgraded jes to use groovy-beta-10 - which claims to fix some memory leaks. No impact expected on integration tests. Branch jes-nww-986
-        </action>
-		<action dev="kmb" type="fix" issue="972">
-            For registry and portal fixes a small harvest bug, it should work fine with TabularDB now. Branch Reg_KMB_972
-        </action>
-		<action dev="kmb" type="add" >
-            Registry to v1.0.
-        </action>
-		<action dev="nww" type="fix" issue="994">
-            Adjusted int tests for cea and jes to use FileManager. Branch auto-integration-nww-994
-        </action>
-		<action dev="dave" type="fix" issue="991">
-            Installation instructions for FileStore, also added a test suite for deployed services (see deploy sub-project). Branch dave-dev-200503140252
-        </action>
-		<action dev="nww" type="fix" issue="686">
-            Infrastructure for dispatching other kinds of step / random select of servers to dispatch to / upgrade picocontainer to 1.1 / moved from myspace to filemanager. Branch jes-nww-686
-        </action>
-		<action dev="nww" type="fix" issue="686">
-            Small tweak to support jes-nww-686. Branch common-nww-686
-        </action>
-		<action dev="nww" type="fix" issue="996">
-            Moves workflow over to using filemanager. Branch workflow-nww-996
-        </action>
-		<action dev="nww" type="fix" issue="995">
-            Moves scripting over to using filemanager. Branch scripting-nww-995
-        </action>
-		<action dev="nww" type="fix" issue="994">
-            Moved cea over to using fileManager. Branch cea-nww-994
-        </action>
-		<action dev="pjn" type="fix" issue="838">
-            Added webstart applications link to home page (login-pass.xsp and minor tweak to microbrowserResults.xsl). Branch portalWEBSTART_pjn_838
-        </action>
-		<action dev="nww" type="fix" issue="975">
-            Removed bogus dependency on astrogird-datacenter-client. Adjusted one deprecatred class so it won't be missed. Don't expect it to effect anything else. Branch scripting-nww-975
-        </action>
-		<action dev="nww/jdt" type="fix" issue="903/943">
-            Refactored client and server, implemented persistence for node metadata, node caching on client, bundling on server, 
-			getIvorn() returns homespace-style Ivorns, WSDL-based SOAP (to be moved into contracts later), deprecated and implemented Aladin Adapter interfaces.
-			Branch filemanager-nww-jdt-903-943
-		</action>
-		<action dev="nww" type="fix" issue="965">
-			Alterations to config for filestores, new integration tests. Branch Auto-integration-nww-965
-		</action>
-		<action dev="nww" type="fix" issue="965">
-			Minor change to a mock to support filemanager build. Branch filestore-nww-965
-		</action>
-		<action dev="jl" type="fix" issue="904">
-			JavaScript fix aimed at Windows IE6. 
-			MySpace micro-browser should now work. 
-			(BTW...I've not bothered to include testing for files created with folders of the same name. I've tried but cannot reproduce the error now. Some extra checking should/needs to be included, but this part will be rewritten soon in any case.) 
-			[accidently committed to head by jeff - small changes] Branch por-jl-904
-		</action>
-		<action dev="pjn" type="add" issue="979">
-			Branch portalRESOURCE_pjn_979
-		</action>
-		<action dev="pjn" type="fix" issue="720">
-			Shift to new resource browser style for microbrowsers. Branch portalWF_pjn_720
-		</action>
-		<action dev="gtr" type="add" issue="945">
-			First release of contracts project. 
-			Please merge only astrogrid/contracts and astrogrid-software-site; 
-			no other parts of CVS need to change. Note that the build of the software site now has a dependency on the astrogrid-contracts jar in order to publish the schemata. 
-			The contracts project needs to be added to the scheduled build and to be given a version number in the maven-base properties.
-            Branch gtr-contracts-BZ945
-		</action>
-		<action dev="pjn" type="fix" issue="942">
-			Prevent parameters being removed when step details change. Branch portalWF_PJN_942
-		</action>
-		<action dev="kmb" type="fix" issue="889">
-			Branch REG_kmb_889/REG_kmb_889_2
-		</action>
-		<action dev="kmb" type="fix" issue="913">
-			Community (changes to web.xml from KMB); had to change LoginAction see version 1.35. Branch Reg_KMB_913
-		</action>
-		<action dev="pah" type="fix" issue="910">
-			Some changes to the logging to make it easier to obtain usage metrics via a script from the log files. Branch community_pah_910
-		</action>
-		<action dev="pah" type="fix" issue="910">
-			Some changes to the logging to make it easier to obtain usage metrics via a script from the log files. Branch  myspace_pah_910
-		</action>
-		<action dev="grt" type="fix" issue="879">
-			Viewer and editor for web.xml. Branch  GTR-properties-BZ879
-		</action>
-		<action dev="dave" type="fix">
-			Filemanager - Fixed failing server tests; 
-            Modified client and mock implementations to enable Portal dev on a full mock service.
-            Added full mock test sample, in example project.
-            Changes to FileManager? client and server, added FileManager example.
-            List of changed files is here, no conflicts expected
-            Build logs from local integration build docs and logs
-            Integration test results on local machine results.
-			Branch  dave-dev-200502010902
-		</action>
-		<action dev="nww" type="fix" issue="903">
-			Branch  filemanager-nww-903
-		</action>
-		<action dev="jdt" type="fix" issue="936">
-			Community webapp not building under Maven 1.0.2. Branch COMM_JDT_936.
-		</action>
-		<action dev="jdt" type="fix" issue="933">
-			Registry not building under Maven 1.0.2 due to mismatch between package and directory structure. Temporary fix. Branch POR_JDT_933
-		</action>
-	    <action dev="jdt" type="fix" issue="882"> 
-           1. Rationalising config properties
-           2. Redirecting the logs to $CATALINA_HOME/logs to allow a clean uninstall on windows
-           3. Creation of a graphical installer Note: the portal now requires the javaapp plugin for Maven. This can be installed by executing maven -Dmaven.repo.remote= http://www.ibiblio.org,http://maven-plugins.sf.net/maven -DartifactId=javaapp -DgroupId= maven-plugins -Dversion=1.3 plugin:download.
-        </action>
-		        <action dev="kmb" type="add" > 
-            Added configuration pages to FileStore webapp.
-        </action>    
-        <action dev="jdt" type="add" > 
-            Created a graphical installer for the JES.  Download from <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>.
-        </action>
-        <action dev="jdt" type="add" issue="966"> 
-            Created a graphical installer for FileStore.  Download from <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>.
-        </action>            
-        <action dev="kmb" type="add">
-            New xmldb project for Registry.
-        </action>
-        <action dev="pah" type="fix" issue="910">
-            Added some logging to myspace and community
-        </action> 
-        <action dev="gtr" type="add" >
-            Created some jsp pages to allow admins to edit web.xmls when our components are deployed in Tomcat containers.
-            JSP pages have been put into the common project, but will need to be copied out by anyone that wants to 
-            use them in their wars.
-        </action>                    
-        <action dev="jdt" type="fix" issue="936">
-            Community now builds under Maven 1.0.2
-        </action>
-        <action dev="jdt" type="fix" issue="933">
-            Registry now builds under Maven 1.0.2
-        </action>
-        <action dev="jdt" type="add" issue="882"> 
-            Created a graphical installer for the portal.  Download from <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>.
-        </action>
-        <action dev="jdt" type="fix" issue="623"> 
-            Portal now undeploys cleanly.  (fixed as part of bug 882)
-        </action>
-        <action dev="jdt" type="fix" issue="909"> 
-            All config properties are now set in web.xml.  Obsolete properties removed.
-        </action>
-   </release> 
-   <release version="0.8.0" date="02/02/04">     
-        <action dev="pah" type="fix" issue="540"> 
-            some very small config changes for the AVO demo
-        </action>          
-        <action dev="jdt" type="fix" issue="902"> 
-            An update to cea-http (ie SIAP applications), required following changes to the registry.
-        </action>    
-        <action dev="nww" type="add" issue="890"> 
-            A fix to the myspace interface requested by the Aladin team.
-             </action>    
-        <action dev="jl" type="fix" issue="670"> MySpace Explorer changes aimed largely at (1) eliminating errant nesting of folders. There appear to be three 
-            sources for this error. Two have been eliminated. The other (introducing a file on the same level as a folder with the same name) I am raising 
-            another bug for. But also included...(2) Tidied up headings and field names on micro-browser. and (3) Partly strengthened the error checking on the 
-            m-b aswell. </action>
-        <action dev="kmb" type="fix" issue="787">
-            Pending....
-        </action>    
-        <action dev="jdt" type="fix" issue="858">
-            Build problem in eXist for maven 1.0.1+
-        </action>
-        <action dev="kmb" type="add" issue="605">
-            registry entries should be validated by a schema
-        </action>
-        <action dev="kmb" type="add" issue="613">
-            Need to add eXist permissiong with username and passwords more restrictive on 
-the updates.
-        </action>        
-        <action dev="kmb" type="add" issue="728">
-            Misc updates to community and registry.
-        </action>   
-    </release> 
-   <release version="0.7.0" date="20/12/04" description="The release demonstrated at the AstroGrid consortium meeting">
-        <action dev="kea" type="fix" issue="862">
-            Cosmetic tweak to portal
-        </action>
-        <action dev="gps" type="fix" issue="724">
-            myspace browser perf. enhancements
-        </action>
-        <action dev="pfo" type="fix" issue="845">
-            Pat's fixes for metadata WFS and registry browse
-        </action>
-        <action dev="pjn" type="fix" issue="839">
-        </action>      
-    </release>
-    <release version="Baseline-20041208" date="7/12/04">
-        <action dev="nw" type="fix" issue="776">
-            Summary objects return more data.
-        </action>
-        <action dev="mch" type="add">
-            New <a href="slinger">Slinger </a> project.
-        </action>  
-        <action dev="nw" type="fix" issue="805">
-            Added some VOTable arithmetic
-        </action>              
-    </release>
-    <release  version="0.7-b001g,0.7-b001h,0.7-b000r" date="25/11/04" description="FileManager Project Integrated">
-      <action dev="dave" type="add"  >
-        FileManager project integrated into AGINAB
-      </action>
-      <action dev="jdt" type="remove"  issue="781">
-        Second community.  Deploying the second community was causing setup problems.  Some tests associated
-        with the second community have obviously regressed.
-      </action>
-    </release>     
-    <release  date="23/11/04" description="New projects">
-      <action dev="nw" type="add"  >
-        New Aggregate project.
-      </action>
-      <action dev="dave" type="add"  >
-        New FileManager project.
-      </action>
-      <action dev="mch" type="add"  >
-        New Slinger project.
-      </action>                            
-    </release>    
-    <release version="astrogrid-portal-SNAPSHOT" date="16/11/04" description="head rebuild">
-      <action dev="rtp" type="fix" issue="683" >
-        Browsing for Tools picks up Extraneous Material
-      </action>              
-    </release>
-    <release version="0.6.0" date="14/11/04" description="Iteration 6 Release">
-      <action dev="jdt" type="add" >
-        The iteration 6 release offers a large number of enhancements and fixes over iteration 5, including:
-        <ul>
-            <li>A graphical query builder</li>
-            <li>SIAP services</li>
-            <li>An enhanced mySpace Explorer</li>
-            <li>Real datasets in AGINAB</li>
-            <li>more.....</li>
-        </ul>
-      </action>                   
-    </release>
-  </body>
+        <release version="(Pending Integration)">
+            <action dev="jdt" type="add" issue="1182"> <b>astrogrid</b> Branch <em>aginab_jdt_1182</em> Minor changes to all the install scripts to make sure 
+                that they work offline. You should see changes to aginab, and the deployment and installer folders of all components except community. The 
+                changes are minor and shouldn't affect integration tests. </action>
+            <action dev="kmb" type="add" issue="1235"> <b>astrogrid/registry</b> Branch <em>Reg_KMB_Xforms2_Jun01</em>. Mainly added xforms plus small 
+                correction on harvesting and OAI areas to correct duplicates being returned in OAI and not die badly on invalid harvesting of other registries. 
+                </action>
+            <action dev="jl" type="add" issue="1173"> <b>astrogrid/portal</b> Branch <em>por-jl-1173</em>. Partly dependent upon bug 1279, in that filestores 
+                created during an aginab build need to register with a relationship set within the registry. <ul> <li>Refinements to MySpace Explorer 
+                controls</li> <li>Password change</li> <li>Ability to move files between filestores</li> </ul> </action>
+        </release>
+        <release version="(Undertest)">
+            <action dev="gtr" type="add" issue="1188"> <b>Most components</b> Branch <em>registry-gtr-1188</em>. JNDI keys shortened so they fit Tomcat's 
+                interface. </action>
+        </release>
+        <release version="HEAD">
+            <action dev="pah" type="fix" issue="559"> Make all of the CEA servers self register with v10 compliant schema - This involved <ul><li>workflow 
+                objects - wfo_pah_559b</li> <li>applications - cea_pah_559c </li> <li>jes - jes_pah_559b</li> <li>integration project - int_pah_559b</li> </ul> 
+                </action>
+            <action dev="dave" type="add" issue="xxx" version="1.0.1-b006pl"> <b>pal</b> Branch <em>dave-dev-200506281816</em>. One change to a property in 
+                default.properties in pal/skycatserver. </action>
+            <action dev="dave" type="add" issue="xxx" version="1.0.1-b005pl"> <b>pal</b> Branch <em>dave-dev-200506281451</em>. Small change to the metadata 
+                tools in PAL, no external side effects expected. </action>
+            <action dev="gtr" type="fix" issue="1255"> <b>astrogrid/contracts</b>, branch <em>contracts-gtr-1255</em>. More XML schemata added to the contracts 
+                project so that they can be published in the software site. After this branch is merged, please rebuild the software site so that it picks up 
+                the new schemata from the updated contracts jar. </action>
+            <action dev="jdt" type="add" issue="881"> Created a GUI installer for the registry, and plumbed it into AGINAB. See <a 
+                href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">installers</a> </action>
+            <action dev="jdt" type="fix" issue="1177"> <b>astrogrid/filestore</b>, <b>astrogrid/filemanager</b>and <b>astrogrid/integrationTests</b> 
+                <em>aginab_jdt_1177</em> Plumbed the FileStore and FileManager installers into AGINAB. The GUI installers and AGINAB now use the same script 
+                for deployment, which has got to be a good thing. </action>
+            <action dev="gtr" type="add" issue="1208"> <b>astrogrid/applications</b> Branch <em>cea-gtr-1208</em>. Enhancements to the JSPs for test-running an 
+                application that support indirect input parameters. </action>
+            <action dev="gtr" type="fix" issue="1027"> Changes to TableMetaDoc.xsd to make it match the DSA software. Branch dsa-gtr-1027 Waiting for a big 
+                merge from mch before proceeding. </action>
+            <action dev="jdt" type="fix" issue="1180"> <b>astrogrid/applications</b> and <b>astrogrid/integrationTests</b> <em>cea_jdt_1180</em> Minor bug 
+                fixes to installer and build. Also fixes bug 1182 (for CEA only). Already merged. </action>
+            <action dev="dave" type="fix" issue="xxxx"> <b>dave-dev-200506100249</b> Changes to navigate and header </action>
+            <action dev="pjn3" type="fix" issue="1200"> <b>astrogrid/workflow + portal resources</b> Branch <em>portalRE_pjn_1200 + workflow_pjn_1200</em> Only 
+                active tasks returned from registry in both workflow builder and resource browser. </action>
+            <action dev="dave" type="fix" issue="xxxx"> <b>dave-dev-200506081212</b> - Bug fixes to the pal metadata generator.No external side effects 
+                expected. </action>
+            <action dev="dave" type="fix" issue="xxxx"> <b>dave-dev-200506071500</b> - Fixed double(), power() and circle() in PostgreSQL SQL writer. </action>
+            <action dev="nww" type="add" issue="1111(again)"> <b>desktop-nww-1111</b> and <b>workflow-nww-1111</b> - added Applications component to ACR, and 
+                Applications Launcher Proglet. This branch has already been merged into head once - hope merging it again doesn't cause trouble . </action>
+            <action dev="pfo" type="add" issue="1217"> <b>portal_pjn_1225</b> - microbrowserResults.xsl change to handle tables with '+' in their name </action>
+            <action dev="pjn3" type="add" issue="1217"> <b>portal_pjn_1217</b> - Webstart applications page added with more information. </action>
+            <action dev="pjn3" type="add" issue="1226"> <b>portalRE_pjn_1226</b> - the smallest branch ever! - single missing space in ResourceAction.java 
+                causing SAXParseException when muliple keyword search attempted when looking for catalogs. </action>
+            <action dev="pjn" type="fix" issue="1193"> Branch <em>portalWF_1193_pjn</em> Fix for orig. bug #942 which has been over-written at some point since 
+                Feb. </action>
+            <action dev="pjn3" type="add" issue="1218"> <b>portal_pjn_1218</b> - Astrogrid status added to homepage plus ability to take portal 'out of action' 
+                </action>
+            <action dev="mch" type="fix" > <b>MCH-v1</b> v1.0 release for datacenter, slinger and xml projects. (awaiting for root tag from Martin) </action>
+            <action dev="kmb" type="fix" > Doc_Template_KMB_May112005 - docs template for astrogrid/registry </action>
+            <action dev="kmb" type="fix" > Doc_Template_KMB_May112005Comm - docs template for astrogrid/community </action>
+            <action dev="pjn" type="fix" issue="1191"> portalWF_pjn_1191 - fixes for parameter indirect flag in workflow builder </action>
+        </release>
+        <release version="1.0.1" date="20/05/05" description="AG 1.0.1 Release">
+            <action dev="jdt" type="fix" issue="383"> Since we're now on maven 1.0.2 I've refactored the property files to remove common and duplicated stuff 
+                to maven-base. All components will need to be rebuilt after this merge, which should have no side effects. Branch maven_jdt_383: </action>
+            <action dev="jdt" type="add" issue="1012"> <b>cea_jdt_1012</b> Created Installers for the CEA apps and plumbed them into AGINAB. Added some 
+                cea-cmdline tests for windows. The windows tests will fail on Unix. Equally the Unix tests will fail on Windows, so we should get the same pass 
+                rate in both environments. </action>
+            <action dev="pjn" type="add" issue="1169"> <b>portalWF_pjn_1169</b> 1169 is a minor layout change and also removes a couple of stylesheet 
+                attributes that were causing transform errors that I spotted in the portal-core logs. However this also includes fix for bug#931 which is more 
+                serious and relates to workflow builder/m-b interactions. </action>
+            <action dev="pfo" type="fix" issue="1106"> <b>portal_pfo_1106</b> taking out the excute button for now from query page since it's not working 
+                anyway. see bug 1172 </action>
+            <action dev="pjn3" type="add" issue="1157"> <b>portal_pjn_1157</b> Parameterized workflows added to portal </action>
+            <action dev="nww" type="add" issue="1111"> <b>desktop-nww-1111</b> Lots of minor fixes and improvements to desktop - mostly suggested by Nick. Plus 
+                javadoc. </action>
+            <action dev="jdt" type="fix" issue="1056"> Added an about page to each war. Not going to rebuild just for this... will let it be absorbed naturally 
+                as new builds take place. However if there are any problems building war files then this should be your first suspect! Contact jdt in case of 
+                problems. Branch all_jdt_1056 </action>
+            <action dev="pfo" type="fix" issue="1106"> Taken out cicle from query example. Branch portal_pfo_1106 </action>
+            <action dev="nww" type="fix" issue="1125"> Fix int tests to use new filemanager. Should see improvments in the applications tests. Branch 
+                int-nww-1125 </action>
+            <action dev="kmb" type="fix" issue="381"> (astrogrid/common) - now uses InputSource? for newDocument(string) Fixed bug with certain characters in 
+                DOM. Branch Reg_KMB_381_WS </action>
+            <action dev="kmb" type="fix" issue="381"> (astrogrid/registry) - fixed several small bugs plus fixed relationship query now. Added removeResource 
+                ability. Fixed major bug with embedded eXist. Branch Reg_KMB_381_WS </action>
+            <action dev="kmb" type="fix" issue="381"> (astrogrid/registry/webapp) - Yes I know a sub-branch below registry in the webapp directory. Small 
+                changes to jsp pages and added removeResource. Xforms stuff is in there, but still hidden because it does not still quite work. Branch 
+                Reg_KMB_381_Xforms </action>
+            <action dev="kmb" type="fix" issue="972"> (astrogrid/xmldb) - Small change to add removeResource and a few other storage type methods. Branch 
+                Reg_KMB_972 </action>
+            <action dev="kmb" type="fix" issue="972"> Fixed how it queries on relationships on the registry for groupmembership area. Branch Comm_KMB_381_WS 
+                </action>
+            <action dev="kmb" type="fix" issue="1008"> (astrogrid/integrationTests/auto-integration) - bad branch name should have been a different number. 
+                Anyways small fixes to registry-entries. And added community stress test. Branch Reg_Comm_1008_Factor </action>
+            <action dev="kmb" type="fix" issue="1004"> (astrogrid/filestore) - A small change to the xml to add relationship elements to it now. Branch 
+                FS_KMB_1004_2 </action>
+            <action dev="pjn" type="fix" issue="930"> (astrogrid/portal/workflow) Jobs displayed in date order. Branch portalWF_pjn_930 </action>
+            <action dev="nww" type="fix" issue="1035"> Fix for 'delete' and 'move' bugs. minor changes to filemanager-client and filemanager-server.bug. Branch 
+                filemanager-nww-1035 </action>
+        </release>
+        <release version="1.0" date="01/05/05" description="AG 1.0 Release">
+            <action dev="pjn" type="fix" issue="748"> Removed footer from workflow and job status pages; help links now temporarily point to wikki help page. 
+                Branch portal_pjn_748 </action>
+            <action dev="pjn" type="fix" issue="1100"> Ensure workflow credentials match user credentials on submit, set to those of current user if different. 
+                Branch portalWF_1100_pjn </action>
+            <action dev="pjn" type="fix" issue="860"> Ability to delete optional parameters. Branch portalWF_pjn_860 </action>
+            <action dev="nww" type="fix" issue="1082"> Fix for 2 parameterized-workflow-builder bugs; fixes to make list-applications work with reg v10; added 
+                'change store' 'copy' 'move' and 'rename' to vospace browser; split interfaces into separate packages, javadocs bug; also rebuilt filemanger 
+                for it to take common 1035. Branch desktop-nww-1082 and workflow-nww-1082 </action>
+            <action dev="pjn" type="fix" issue="959"> Major speed improvement to job status pages, plus removed some more trace. Branch portalWF_pjn_959 
+                </action>
+            <action dev="gtr" type="fix" issue="1074"> Declares environment entities in web.xml and adds activation-1.0.2.jar to the WAR. Branch 
+                applications-gtr-1074 </action>
+            <action dev="jl" type="fix" issue="1085"> Improvements to MySpace Explorer to ensure views were updated to show latest file activity of user. 
+                Branch wor-jl-1085 </action>
+            <action dev="jl" type="fix" issue="1046"> Improvements to MySpace Explorer to ensure views were updated to show latest file activity of user. 
+                Branch por-jl-1046 (1046 is dependent upon 1085.) </action>
+            <action dev="pjn" type="fix" issue="766"> Changes to use Noels fix (jes-nww-776-again), plus changes to front page job list to remove delete/cancel 
+                buttons, plus bug #771. Branch portal_pjn_766_again </action>
+            <action dev="nww" type="fix" issue="776"> Fix for displaying list of jobs efficiently (jes-delegate and jes-server). Also some performance tweaks 
+                to the jes server. NB - this requires the common-nww-1035 to be merged first. Branch jes-nww-776-again and workflow-objects-nww-776-again 
+                </action>
+            <action dev="nww" type="fix" issue="1035"> Moved some common classes from filemanager to common (nameGen package)., so they can be reused in jes. 
+                Not expected to break anything. Filemanager client needs to be rebuilt at the same time. Branch common-nww-1035 </action>
+            <action dev="clq" type="fix" issue="1120"> Same problmes of adding utils dependencies testing together. Branch 
+                jes_clq_1120/wf_clq_1120/por_clq_1120 </action>
+        </release>
+        <release version="0.10.0" date="11/04/05" description="Post NAM release">
+            <action dev="clq" type="fix" issue="1079"> Fixed storeclient/xml/status overwriting AG main site docs. Branch sc_clq_1079 </action>
+            <action dev="dave" type="remove"> Removed MySpace related tests from integration. Branch dave-dev-200503181302 </action>
+            <action dev="kmb" type="add" issue="1008"> In astrogrid/community/webapp, added new JSP and web.xml files. Branch Comm_KMB_1008_2 </action>
+            <action dev="dave" type="fix" issue="1059"> Fixed FileManager web.xml config settings. Branch dave-dev-200504041023 </action>
+            <action dev="jdt" type="fix" issue="1033"> slight tweak to the installer to make it less confusing. No effect on int tests. Branch 
+                Filestore_jdt_1033 </action>
+            <action dev="pjn" type="fix" issue="1045"> trace turned off in worflow xsp's (job-list and job-status) Branch portalWF_pjn_1045 </action>
+            <action dev="pjn" type="fix" issue="1054"> links to workflow in current jobs list on homepage removed (login-pass.xsp, workflow sitemap and 
+                job-list.xsl). Branch portal_pjn_1054 </action>
+            <action dev="jdt" type="fix" issue="1062"> The last test run's results are now saved, so even if you don't stick the baseline in cvs,you can 
+                immediately see if anything has changed since last time you ran aginab. Branch aginab_jdt_1062. </action>
+            <action dev="kmb" type="fix" issue="972"> In astrogrid/registry, ONLY .JSP AND .WSDL files should be merged. Branch Reg_KMB_972_2 </action>
+            <action dev="jl" type="fix" issue="908"> Portal myspace update and etc. Branch por-jl-908 </action>
+            <action dev="pjn" type="fix" issue="1047"> DesignAction changed to add missing ivo:// to indirect ivorns. Branch portalWF_pjn_1047 </action>
+            <action dev="kmb" type="fix" issue="972"> In astrogrid/registry; harvest bug fixed, commenting better now; in astrogrid/xmldb; small tweak to let a 
+                user get right at a XQueryService? or XPathQueryService?. Branch Reg_KMB_972 </action>
+            <action dev="mch" type="add" > Rebuilds of PAL and slinger </action>
+            <action dev="jdt" type="fix" issue="1044"> Adding wsdd from workflow-objects to wars. Branch pal_jdt_1044 </action>
+            <action dev="pjn" type="fix" issue="1040"> New webstart links; only affects login-pass.xsp. Branch portalLogin_pjn_1040 </action>
+            <action dev="kmb" type="add" issue="1007"> Filemanager jsp. Branch FM_KMB_1007 </action>
+            <action dev="jdt" type="add" issue="1031"> Added an installer. Branch FMGR_JDT_1031 </action>
+            <action dev="jdt" type="fix" issue="1021"> Adjustments to the schema for configuring catalogues inside DSA. This is important for the current 
+                deployments. Branch dsa-gtr-1021 </action>
+            <action dev="jdt" type="fix" issue="1022"> Added a subproject to create a single jar from all the dependencies. Branch Slinger_jdt_1022 </action>
+            <action dev="kmb" type="fix" issue="1004"> Filestore jsp. Branch FS_KMB_1004 </action>
+            <action dev="kmb" type="fix" issue="1005"> Added a deployment script and installer, integration tests should be unaffected. Branch JES_jdt_1005 
+                </action>
+            <action dev="dave" type="fix"> Community to register home space with FileManager; Changes to Community server and webapp; Changes to FileManager? 
+                test; Added new integration test. Branch dave-dev-200503150513 </action>
+            <action dev="jdt" type="add" issue="966"> FileStore? Installer. No impact expected on Int Tests, since I've just added a couple of subprojects to 
+                build the installer and deployment script. Branch FLSTR_JDT_966 </action>
+            <action dev="kmb" type="add" issue="972"> For integrationTests some entries changed for registry v10 upgrade. Branch Reg_KMB_972 </action>
+            <action dev="nww" type="fix" issue="986"> Upgraded jes to use groovy-beta-10 - which claims to fix some memory leaks. No impact expected on 
+                integration tests. Branch jes-nww-986 </action>
+            <action dev="kmb" type="fix" issue="972"> For registry and portal fixes a small harvest bug, it should work fine with TabularDB now. Branch 
+                Reg_KMB_972 </action>
+            <action dev="kmb" type="add" > Registry to v1.0. </action>
+            <action dev="nww" type="fix" issue="994"> Adjusted int tests for cea and jes to use FileManager. Branch auto-integration-nww-994 </action>
+            <action dev="dave" type="fix" issue="991"> Installation instructions for FileStore, also added a test suite for deployed services (see deploy 
+                sub-project). Branch dave-dev-200503140252 </action>
+            <action dev="nww" type="fix" issue="686"> Infrastructure for dispatching other kinds of step / random select of servers to dispatch to / upgrade 
+                picocontainer to 1.1 / moved from myspace to filemanager. Branch jes-nww-686 </action>
+            <action dev="nww" type="fix" issue="686"> Small tweak to support jes-nww-686. Branch common-nww-686 </action>
+            <action dev="nww" type="fix" issue="996"> Moves workflow over to using filemanager. Branch workflow-nww-996 </action>
+            <action dev="nww" type="fix" issue="995"> Moves scripting over to using filemanager. Branch scripting-nww-995 </action>
+            <action dev="nww" type="fix" issue="994"> Moved cea over to using fileManager. Branch cea-nww-994 </action>
+            <action dev="pjn" type="fix" issue="838"> Added webstart applications link to home page (login-pass.xsp and minor tweak to 
+                microbrowserResults.xsl). Branch portalWEBSTART_pjn_838 </action>
+            <action dev="nww" type="fix" issue="975"> Removed bogus dependency on astrogird-datacenter-client. Adjusted one deprecatred class so it won't be 
+                missed. Don't expect it to effect anything else. Branch scripting-nww-975 </action>
+            <action dev="nww/jdt" type="fix" issue="903/943"> Refactored client and server, implemented persistence for node metadata, node caching on client, 
+                bundling on server, getIvorn() returns homespace-style Ivorns, WSDL-based SOAP (to be moved into contracts later), deprecated and implemented 
+                Aladin Adapter interfaces. Branch filemanager-nww-jdt-903-943 </action>
+            <action dev="nww" type="fix" issue="965"> Alterations to config for filestores, new integration tests. Branch Auto-integration-nww-965 </action>
+            <action dev="nww" type="fix" issue="965"> Minor change to a mock to support filemanager build. Branch filestore-nww-965 </action>
+            <action dev="jl" type="fix" issue="904"> JavaScript fix aimed at Windows IE6. MySpace micro-browser should now work. (BTW...I've not bothered to 
+                include testing for files created with folders of the same name. I've tried but cannot reproduce the error now. Some extra checking 
+                should/needs to be included, but this part will be rewritten soon in any case.) [accidently committed to head by jeff - small changes] Branch 
+                por-jl-904 </action>
+            <action dev="pjn" type="add" issue="979"> Branch portalRESOURCE_pjn_979 </action>
+            <action dev="pjn" type="fix" issue="720"> Shift to new resource browser style for microbrowsers. Branch portalWF_pjn_720 </action>
+            <action dev="gtr" type="add" issue="945"> First release of contracts project. Please merge only astrogrid/contracts and astrogrid-software-site; no 
+                other parts of CVS need to change. Note that the build of the software site now has a dependency on the astrogrid-contracts jar in order to 
+                publish the schemata. The contracts project needs to be added to the scheduled build and to be given a version number in the maven-base 
+                properties. Branch gtr-contracts-BZ945 </action>
+            <action dev="pjn" type="fix" issue="942"> Prevent parameters being removed when step details change. Branch portalWF_PJN_942 </action>
+            <action dev="kmb" type="fix" issue="889"> Branch REG_kmb_889/REG_kmb_889_2 </action>
+            <action dev="kmb" type="fix" issue="913"> Community (changes to web.xml from KMB); had to change LoginAction see version 1.35. Branch Reg_KMB_913 
+                </action>
+            <action dev="pah" type="fix" issue="910"> Some changes to the logging to make it easier to obtain usage metrics via a script from the log files. 
+                Branch community_pah_910 </action>
+            <action dev="pah" type="fix" issue="910"> Some changes to the logging to make it easier to obtain usage metrics via a script from the log files. 
+                Branch myspace_pah_910 </action>
+            <action dev="grt" type="fix" issue="879"> Viewer and editor for web.xml. Branch GTR-properties-BZ879 </action>
+            <action dev="dave" type="fix"> Filemanager - Fixed failing server tests; Modified client and mock implementations to enable Portal dev on a full 
+                mock service. Added full mock test sample, in example project. Changes to FileManager? client and server, added FileManager example. List of 
+                changed files is here, no conflicts expected Build logs from local integration build docs and logs Integration test results on local machine 
+                results. Branch dave-dev-200502010902 </action>
+            <action dev="nww" type="fix" issue="903"> Branch filemanager-nww-903 </action>
+            <action dev="jdt" type="fix" issue="936"> Community webapp not building under Maven 1.0.2. Branch COMM_JDT_936. </action>
+            <action dev="jdt" type="fix" issue="933"> Registry not building under Maven 1.0.2 due to mismatch between package and directory structure. 
+                Temporary fix. Branch POR_JDT_933 </action>
+            <action dev="jdt" type="fix" issue="882"> 1. Rationalising config properties 2. Redirecting the logs to $CATALINA_HOME/logs to allow a clean 
+                uninstall on windows 3. Creation of a graphical installer Note: the portal now requires the javaapp plugin for Maven. This can be installed by 
+                executing maven -Dmaven.repo.remote= http://www.ibiblio.org,http://maven-plugins.sf.net/maven -DartifactId=javaapp -DgroupId= maven-plugins 
+                -Dversion=1.3 plugin:download. </action>
+            <action dev="kmb" type="add" > Added configuration pages to FileStore webapp. </action>
+            <action dev="jdt" type="add" > Created a graphical installer for the JES. Download from <a 
+                href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>. </action>
+            <action dev="jdt" type="add" issue="966"> Created a graphical installer for FileStore. Download from <a 
+                href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>. </action>
+            <action dev="kmb" type="add"> New xmldb project for Registry. </action>
+            <action dev="pah" type="fix" issue="910"> Added some logging to myspace and community </action>
+            <action dev="gtr" type="add" > Created some jsp pages to allow admins to edit web.xmls when our components are deployed in Tomcat containers. JSP 
+                pages have been put into the common project, but will need to be copied out by anyone that wants to use them in their wars. </action>
+            <action dev="jdt" type="fix" issue="936"> Community now builds under Maven 1.0.2 </action>
+            <action dev="jdt" type="fix" issue="933"> Registry now builds under Maven 1.0.2 </action>
+            <action dev="jdt" type="add" issue="882"> Created a graphical installer for the portal. Download from <a 
+                href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>. </action>
+            <action dev="jdt" type="fix" issue="623"> Portal now undeploys cleanly. (fixed as part of bug 882) </action>
+            <action dev="jdt" type="fix" issue="909"> All config properties are now set in web.xml. Obsolete properties removed. </action>
+        </release>
+        <release version="0.8.0" date="02/02/04">
+            <action dev="pah" type="fix" issue="540"> some very small config changes for the AVO demo </action>
+            <action dev="jdt" type="fix" issue="902"> An update to cea-http (ie SIAP applications), required following changes to the registry. </action>
+            <action dev="nww" type="add" issue="890"> A fix to the myspace interface requested by the Aladin team. </action>
+            <action dev="jl" type="fix" issue="670"> MySpace Explorer changes aimed largely at (1) eliminating errant nesting of folders. There appear to be 
+                three sources for this error. Two have been eliminated. The other (introducing a file on the same level as a folder with the same name) I am 
+                raising another bug for. But also included...(2) Tidied up headings and field names on micro-browser. and (3) Partly strengthened the error 
+                checking on the m-b aswell. </action>
+            <action dev="kmb" type="fix" issue="787"> Pending.... </action>
+            <action dev="jdt" type="fix" issue="858"> Build problem in eXist for maven 1.0.1+ </action>
+            <action dev="kmb" type="add" issue="605"> registry entries should be validated by a schema </action>
+            <action dev="kmb" type="add" issue="613"> Need to add eXist permissiong with username and passwords more restrictive on the updates. </action>
+            <action dev="kmb" type="add" issue="728"> Misc updates to community and registry. </action>
+        </release>
+        <release version="0.7.0" date="20/12/04" description="The release demonstrated at the AstroGrid consortium meeting">
+            <action dev="kea" type="fix" issue="862"> Cosmetic tweak to portal </action>
+            <action dev="gps" type="fix" issue="724"> myspace browser perf. enhancements </action>
+            <action dev="pfo" type="fix" issue="845"> Pat's fixes for metadata WFS and registry browse </action>
+            <action dev="pjn" type="fix" issue="839">
+            </action>
+        </release>
+        <release version="Baseline-20041208" date="7/12/04">
+            <action dev="nw" type="fix" issue="776"> Summary objects return more data. </action>
+            <action dev="mch" type="add"> New <a href="slinger">Slinger </a> project. </action>
+            <action dev="nw" type="fix" issue="805"> Added some VOTable arithmetic </action>
+        </release>
+        <release version="0.7-b001g,0.7-b001h,0.7-b000r" date="25/11/04" description="FileManager Project Integrated">
+            <action dev="dave" type="add" > FileManager project integrated into AGINAB </action>
+            <action dev="jdt" type="remove" issue="781"> Second community. Deploying the second community was causing setup problems. Some tests associated 
+                with the second community have obviously regressed. </action>
+        </release>
+        <release date="23/11/04" description="New projects">
+            <action dev="nw" type="add" > New Aggregate project. </action>
+            <action dev="dave" type="add" > New FileManager project. </action>
+            <action dev="mch" type="add" > New Slinger project. </action>
+        </release>
+        <release version="astrogrid-portal-SNAPSHOT" date="16/11/04" description="head rebuild">
+            <action dev="rtp" type="fix" issue="683" > Browsing for Tools picks up Extraneous Material </action>
+        </release>
+        <release version="0.6.0" date="14/11/04" description="Iteration 6 Release">
+            <action dev="jdt" type="add" > The iteration 6 release offers a large number of enhancements and fixes over iteration 5, including: <ul> <li>A 
+                graphical query builder</li> <li>SIAP services</li> <li>An enhanced mySpace Explorer</li> <li>Real datasets in AGINAB</li> <li>more.....</li> 
+                </ul> </action>
+        </release>
+    </body>
 </document>
