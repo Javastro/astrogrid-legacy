@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource xsi:type="vg:Authority"
+  xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
+  xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
+  xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v0.10
+                      VOResource-v0.10.xsd
+                      http://www.ivoa.net/xml/VORegistry/v0.3
+                      VORegistry-v0.3.xsd">
+
+    <title>ADIL Naming Authority</title>
+    <shortName>ADIL</shortName>
+    <identifier>ivo://adil.ncsa</identifier>
+
+    <curation>
+      <publisher ivo-id="ivo://rai.ncsa/RAI">
+         NCSA Radio Astronomy Imaging
+      </publisher>
+      <creator>
+        <name>Dr. Raymond Plante</name>
+        <logo>http://rai.ncsa.uiuc.edu/rai.jpg</logo>
+      </creator>
+      <date>2003-01-01</date>
+      <contact>
+        <name>Dr. Raymond Plante</name>
+        <email>rai@ncsa.uiuc.edu</email>
+      </contact>
+    </curation>
+
+    <content>
+      <subject>data repositories</subject>
+      <subject>digital libraries</subject>
+      <description>
+         This registry provides a simple interface for data providers
+         who wish to register a handful of resources. 
+      </description>
+      <referenceURL>http://nvo.ncsa.uiuc.edu/nvoregistration.html</referenceURL>
+      <type>Registry</type>
+      <contentLevel>University</contentLevel>
+      <contentLevel>Research</contentLevel>
+    </content>
+
+    <vg:managingOrg ivo-id="ivo://rai.ncsa/RAI">
+       NCSA Radio Astronomy Imaging
+    </vg:managingOrg>
+
+</resource>

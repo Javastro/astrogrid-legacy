@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCmdLineAppTestCase.java,v 1.4 2005/03/13 07:13:39 clq2 Exp $
+ * $Id: AbstractCmdLineAppTestCase.java,v 1.5 2005/07/05 08:26:56 clq2 Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
  */ 
 
 package org.astrogrid.applications.commandline;
+
 
 import java.io.File;
 import java.net.URI;
@@ -70,8 +71,8 @@ public abstract class AbstractCmdLineAppTestCase extends
         workingDir.mkdir();
         assertTrue(workingDir.exists());
         workingDir.deleteOnExit();
-        DefaultPicoContainer container = new DefaultPicoContainer();
-        container.registerComponent(new ConstructorInjectionComponentAdapter(
+        container = new DefaultPicoContainer();
+      container.registerComponent(new ConstructorInjectionComponentAdapter(
                 CommandLineApplicationDescription.class,
                 CommandLineApplicationDescription.class,
                 new Parameter[]{new ComponentParameter(ApplicationDescriptionEnvironment.class), new ConstantParameter(container)}
@@ -101,6 +102,7 @@ public abstract class AbstractCmdLineAppTestCase extends
                 .registerComponentImplementation(ApplicationDescriptionEnvironment.class);
         CommandLineApplicationDescriptionFactory descFactory = new CommandLineApplicationDescriptionFactory(
                 container);
+        
         try {
             container.verify();
         }
@@ -120,7 +122,8 @@ public abstract class AbstractCmdLineAppTestCase extends
         testAppDescr = (CommandLineApplicationDescription)descs.getDescription(TESTAPPNAME);
         assertNotNull(testAppDescr);
         // now fix the execution path for this app description.
-        assertTrue(testAppDescr instanceof CommandLineApplicationDescription);
+        Toolbuilder.fixupExecutionPath( testAppDescr);
+              assertTrue(testAppDescr instanceof CommandLineApplicationDescription);
         ExecutionHistory history = new InMemoryExecutionHistory();
         
         controller = new DefaultExecutionController(dl,history);
@@ -128,8 +131,9 @@ public abstract class AbstractCmdLineAppTestCase extends
 
     protected BaseApplicationDescriptionLibrary descs;
     protected CommandLineApplicationDescription testAppDescr;
-    private DefaultExecutionController controller;
+    protected DefaultExecutionController controller;
     protected static final int WAIT_SECONDS = 300;
+   protected DefaultPicoContainer container;
     
     /**
      * Create a tool instance to run.

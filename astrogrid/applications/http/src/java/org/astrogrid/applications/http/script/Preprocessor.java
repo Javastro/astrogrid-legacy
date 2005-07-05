@@ -1,4 +1,4 @@
-/* $Id: Preprocessor.java,v 1.2 2004/09/01 15:42:26 jdt Exp $
+/* $Id: Preprocessor.java,v 1.3 2005/07/05 08:27:00 clq2 Exp $
  * Created on Aug 10, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 package org.astrogrid.applications.http.script;
 
 import org.astrogrid.applications.beans.v1.WebHttpCall;
-import org.astrogrid.registry.beans.cea.CeaHttpApplicationType;
+import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /**

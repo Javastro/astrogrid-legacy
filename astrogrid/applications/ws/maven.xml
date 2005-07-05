@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="astrogrid-install-snapshot">
+    
+<property name="generated.dir" location="${basedir}/test/java" />
+    
+<!-- standard astrogrid goals - defined in server project -->
+  <!-- war packaging -->
+  <!-- this is the name of the goal that does the packaging in the parent project.
+  it's hooked into the war build as a pregoal to war:war
+  because of a quirk of inheritance, its necessary to redefine this goal, rather than
+  adding a new hook - otherwise the inherited hook/goal will be run too, with hilarious concequences.
+  -->
+  <goal name="package-war">
+        <attainGoal name="merge-common-webapp" />
+        <attainGoal name="configure-webapp" />
+        <attainGoal name="copy-resources" />
+        <!-- defined in parent maven.xml - just adjust where things are going to go.. -->
+        <property name="webapp.docs" value="${maven.war.webapp.dir}/provider" />
+        <attainGoal name="webapp-docs"  />
+  </goal>
+  <goal name="merge-common-webapp" description="copy contents of existing war into the webapp directory">
+     <deploy:copy-deps todir="${working.dir}" />
+     <unwar dest="${maven.war.webapp.dir}">
+        <fileset dir="${working.dir}"><!-- select the file to unzip -->
+                <include name="astrogrid-cea-server-*.war" />
+        </fileset>
+        <patternset><!-- what to unzip -->
+                <exclude name="WEB-INF/classes/*/**" /> <!-- keep resources in root... -->
+                <exclude name="WEB-INF/lib/**" />
+                <exclude name="provider/**" />
+        </patternset>
+     </unwar>
+  </goal>
+
+    <goal name="configure-webapp" description="patch jndi key in web.xml to point to commandline implementation of component manager">
+ <!-- setting which transformer to use -->
+   ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+        <!-- tailor the deployment descriptor to our system -->
+        <xslt in="${maven.war.webapp.dir}/WEB-INF/web.xml"
+         out="${maven.war.webapp.dir}/WEB-INF/web1.xml"
+         extension=".xml"
+         style="${basedir}/build/adjust-war-descriptor.xsl"
+        />
+        <!-- move it back -->
+        <move file="${maven.war.webapp.dir}/WEB-INF/web1.xml"
+                tofile="${maven.war.webapp.dir}/WEB-INF/web.xml"
+        />
+        <!-- also want to patch the log4j.properties - so it logs to a different file.-->
+        <replace file="${maven.war.webapp.dir}/WEB-INF/classes/log4j.properties">
+                <replacefilter token="cea" value="cea-commandline" />
+                <replacefilter token="CEA" value="CEA_COMMANDLINE" />
+        </replace>
+  </goal>
+
+  <goal name="copy-resources" description="add other stuff to webapp" >
+    <!-- get paul to check that there's nothing missing here.. -->
+    <echo message="copying across configuration utils and database schema" />
+    <copy todir="${maven.war.webapp.dir}/provider/config" overwrite="yes">
+      <fileset dir="${basedir}/src/sql" />
+      <fileset dir="${basedir}/config" />
+      <fileset dir="${basedir}">
+        <include name="antutils.xml" />
+      </fileset>
+    </copy>
+
+    <echo message="copying across a test application" />
+    <copy todir="${maven.war.webapp.dir}/provider/test" overwrite="yes">
+      <fileset dir="${basedir}/test/java">
+        <include name="app/**" />
+        <!--<include name="config/**" />-->
+      </fileset>
+     </copy>
+  </goal>
+
+
+<!-- end of the war packaging -->
+
+<!--hook into testing - need to make application executable before unit tests are run -->
+  <postGoal name="test:test-resources">
+    <j:choose><!--only do this when we're not skipping tests - hard to express 'not -->
+        <j:when test="${maven.test.skip}" />
+        <j:otherwise>
+                <chmod perm="+x" file="${basedir}/target/test-classes/app/testapp.sh" />
+        </j:otherwise>
+    </j:choose>
+  </postGoal>
+
+  <!-- redefine goal 'force.compile.tests' - as we don't want it to happen in this project -->
+  <goal name="force.compile.tests" />
+
+<!--Generate the stubs for the test ws 
+    2. generate the server side implementation -->
+ 
+        <goal name="testws-wsdl2java" prereqs="axis-declare-tasks">
+          <axis-wsdl2java output="${generated.dir}"  verbose="true"
+            serverside="true"
+            debug="true"
+            skeletondeploy="false"
+            deployscope="Application"
+            testcase="false"
+ 		url="${basedir}/test/testws.wsdl">
+           <mapping namespace="urn:astrogrid:cea:testwebapp" package="org.astrogrid.applications.testservice"/>
+		
+	</axis-wsdl2java>
+    </goal>
+        
+
+
+
+</project>

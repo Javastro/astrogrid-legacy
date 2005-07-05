@@ -1,4 +1,4 @@
-/*$Id: InProcessCeaComponentManager.java,v 1.3 2005/04/25 12:13:54 clq2 Exp $
+/*$Id: InProcessCeaComponentManager.java,v 1.4 2005/07/05 08:27:01 clq2 Exp $
  * Created on 07-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,6 @@ public class InProcessCeaComponentManager extends EmptyCEAComponentManager imple
         pico.registerComponentImplementation(ApplicationDescriptionEnvironment.class,ApplicationDescriptionEnvironment.class);
         pico.registerComponentImplementation(ExecutionController.class,ThreadPoolExecutionController.class);
         pico.registerComponentImplementation(PooledExecutor.class,CeaThreadPool.class);
-        pico.registerComponentImplementation(MetadataService.class, DefaultMetadataService.class);     
         pico.registerComponentImplementation(QueryService.class,InProcessQueryService.class);   
        EmptyCEAComponentManager.registerCompositeApplicationDescriptionLibrary(pico);
         EmptyCEAComponentManager.registerContainerApplicationDescriptionLibrary(pico);    
@@ -91,6 +90,12 @@ public class InProcessCeaComponentManager extends EmptyCEAComponentManager imple
 
 /* 
 $Log: InProcessCeaComponentManager.java,v $
+Revision 1.4  2005/07/05 08:27:01  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.3.10.1  2005/06/09 10:03:20  pah
+removed separate registration of metadata service
+
 Revision 1.3  2005/04/25 12:13:54  clq2
 jes-nww-776-again
 

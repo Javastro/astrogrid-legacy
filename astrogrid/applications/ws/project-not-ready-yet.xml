@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- take note - this project extends the generic server project
+    - in this way we inhierit all the dependencies -->
+  <extend>${basedir}/../server/project.xml</extend>
+  <id>astrogrid-cea-ws</id>
+  <currentVersion>${astrogrid.applications.version}</currentVersion>
+  <name>AstroGrid webservices CEA proxy</name>
+
+  <description><![CDATA[
+ <p>This component provides a proxy for calling a web service with CEA semantics</p>
+]]>
+  </description>
+
+  <shortDescription>AstroGrid webservices CEA proxy</shortDescription>
+
+
+
+    <dependencies>
+        <!-- NWW - begin-hack -->
+        <!-- necessary to give this one a 'fake' name to force maven to grab this _and_ the equivalent war file. -->
+        <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-cea-server-jar</artifactId>
+		        <version>${pom.currentVersion}</version>
+                <type>jar</type>
+                <jar>astrogrid-cea-server-${pom.currentVersion}.jar</jar>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
+        </dependency>
+        <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-cea-server</artifactId>
+                <version>${pom.currentVersion}</version>
+                <type>war</type>
+        </dependency>
+        <!-- nww-end-hack -->
+    <dependency>
+      <groupId>commons-digester</groupId>
+      <artifactId>commons-digester</artifactId>
+      <version>1.5</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <!-- WSIF used to call the web service in reasonably implementation independent fashion -->
+    <dependency>
+      <groupId>wsif</groupId>
+      <artifactId>wsif</artifactId>
+      <version>2.0</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+  
+   
+
+    </dependencies>
+
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+
+      <resources>
+        <resource>
+          <directory>${basedir}/test/java</directory>
+          <includes>
+            <include>app/**</include>
+            <include>**/*.xml</include>
+            <include>**/*.properties</include>
+            <include>**/*.sql</include>
+         </includes>
+        </resource>
+		<resource>
+			<directory>${basedir}/config</directory>
+			<include>CeaApplicationConfig.xml</include>
+		</resource>
+      </resources>
+    </unitTest>
+
+    <resources>
+            <resource><!-- config files -->
+                <directory>${basedir}/src/java</directory>
+                <includes>
+                        <include>**/*.xml</include>
+                        <include>**/*.properties</include>
+                </includes>
+        </resource>
+
+    </resources>
+
+  </build>
+
+</project>

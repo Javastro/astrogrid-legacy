@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationProviderTest.java,v 1.10 2004/11/27 13:20:02 pah Exp $
+/*$Id: HttpApplicationProviderTest.java,v 1.11 2005/07/05 08:26:56 clq2 Exp $
  * Created on 30-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,7 +70,7 @@ public class HttpApplicationProviderTest extends TestCase {
         monitor = new MockMonitor();
         HttpApplicationDescriptionLibrary.AppAuthorityIDResolver aresolver = new TestAuthority();
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib, aresolver);
-        RegistryQuerier querier = new TestRegistryQuerier();
+        RegistryQuerier querier = new TestRegistryQuerier(null);
         numberOfApps = querier.getHttpApplications().size();
         applicationDescriptionLibrary = new HttpApplicationDescriptionLibrary(querier, env);
         assertNotNull(applicationDescriptionLibrary);
@@ -371,6 +371,15 @@ public class HttpApplicationProviderTest extends TestCase {
 
 /* 
 $Log: HttpApplicationProviderTest.java,v $
+Revision 1.11  2005/07/05 08:26:56  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.10.68.1  2005/06/09 08:47:32  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.10.54.1  2005/06/08 22:10:45  pah
+make http applications v10 compliant
+
 Revision 1.10  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 

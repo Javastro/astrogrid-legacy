@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.5 2004/11/27 13:20:03 pah Exp $
+/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.6 2005/07/05 08:27:01 clq2 Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,7 @@
  *
 **/
 package org.astrogrid.applications.javaclass;
+
 
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
@@ -85,6 +86,15 @@ public class JavaClassApplicationDescriptionLibrary extends BaseApplicationDescr
 
 /* 
 $Log: JavaClassApplicationDescriptionLibrary.java,v $
+Revision 1.6  2005/07/05 08:27:01  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.5.68.1  2005/06/09 08:47:33  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.5.54.1  2005/06/02 14:57:29  pah
+merge the ProvidesVODescription interface into the MetadataService interface
+
 Revision 1.5  2004/11/27 13:20:03  pah
 result of merge of pah_cea_bz561 branch
 

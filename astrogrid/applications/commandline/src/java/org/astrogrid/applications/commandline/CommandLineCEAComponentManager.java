@@ -1,4 +1,4 @@
-/*$Id: CommandLineCEAComponentManager.java,v 1.5 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: CommandLineCEAComponentManager.java,v 1.6 2005/07/05 08:27:01 clq2 Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.applications.commandline.digester.CommandLineDescriptionsLo
 import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.applications.component.EmptyCEAComponentManager;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 
@@ -32,7 +33,7 @@ import java.net.URL;
  * @author Noel Winstanley nw@jb.man.ac.uk 04-May-2004
  *
  */
-public class CommandLineCEAComponentManager extends EmptyCEAComponentManager implements CEAComponentManager {
+public class CommandLineCEAComponentManager extends EmptyCEAComponentManager  {
     /** configuration keys looked for. */
     /** key to look in config for location of configuration file (required) */
     public static final String DESCRIPTION_URL ="cea.commandline.description.list.url";
@@ -64,13 +65,20 @@ public class CommandLineCEAComponentManager extends EmptyCEAComponentManager imp
         EmptyCEAComponentManager.registerProtocolLibrary(pico);
         EmptyCEAComponentManager.registerAstrogridIndirectionProtocols(pico);
         EmptyCEAComponentManager.registerStandardIndirectionProtocols(pico);
+        
+        //now the Logretriver
+        //TODO this is a bit hacky - would be nicer if EmptyCEAComponentManager had fewer statics so that they could be overridden rather than having to unregister component
+        pico.unregisterComponent(ApplicationEnvironmentRetriver.class);
+        pico.registerComponentImplementation(ApplicationEnvironmentRetriver.class, CommandLineExecutionEnvRetriever.class);
+        
         // now the provider
         registerCommandLineProvider(pico,config);
     }
     
     /** register just the components for the commandline provider - none of the generic components */
     public static final void registerCommandLineProvider(MutablePicoContainer pico, final Config config) {
-         // stuff required for application descriptions
+         log.info("registering commandline description loader");
+       // stuff required for application descriptions
          pico.registerComponentImplementation(CommandLineDescriptionsLoader.class);
          // configuration for the loader
          pico.registerComponentInstance(CommandLineDescriptionsLoader.DescriptionURL.class,new CommandLineDescriptionsLoader.DescriptionURL() {
@@ -79,12 +87,14 @@ public class CommandLineCEAComponentManager extends EmptyCEAComponentManager imp
                      return url;
              }
          });
+         log.info("registering the commandline application description factory");
          // factory for appDescs - necessary to register parameter to this by hand - as latest version of pico is a bit funny about references to the container itself.
          pico.registerComponentImplementation(CommandLineApplicationDescriptionFactory.class
                  ,CommandLineApplicationDescriptionFactory.class
                  , new Parameter[]{new ConstantParameter(pico)}
                  );
          // 'factory' for environments
+         log.info("registering the commandline application environment factory");
          pico.registerComponent( // create a new instance each time.
              new ConstructorInjectionComponentAdapter(CommandLineApplicationEnvironment.class,CommandLineApplicationEnvironment.class));
          // configuration for environments
@@ -104,12 +114,24 @@ public class CommandLineCEAComponentManager extends EmptyCEAComponentManager imp
                      }                                      
              ));
     }
-
+ 
 }
 
 
 /* 
 $Log: CommandLineCEAComponentManager.java,v $
+Revision 1.6  2005/07/05 08:27:01  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.5.42.1  2005/06/09 08:47:32  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.5.28.2  2005/06/03 16:01:48  pah
+first try at getting commandline execution log bz#1058
+
+Revision 1.5.28.1  2005/06/02 14:57:29  pah
+merge the ProvidesVODescription interface into the MetadataService interface
+
 Revision 1.5  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 

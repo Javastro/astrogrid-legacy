@@ -55,6 +55,45 @@
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
+		<!-- these are the bits that common was broken into -->
+		    <dependency>
+      <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-pal-query</artifactId>
+            <version>${astrogrid.pal.version}</version>
+            <type>jar</type>
+                <properties>
+                  <war.bundle>true</war.bundle>
+                </properties>
+        </dependency>
+
+        <!-- for writing XML -->
+       <dependency>
+          <artifactId>astrogrid-xml</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.xml.latest}</version>
+            <properties>
+              <war.bundle>true</war.bundle>
+            </properties>
+       </dependency>
+
+       <dependency>
+          <artifactId>astrogrid-slinger-api</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.slinger.version}</version>
+            <properties>
+              <war.bundle>true</war.bundle>
+            </properties>
+       </dependency>
+	   <dependency>
+          <artifactId>astrogrid-utils</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.utils.stable}</version>
+		   <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>
+       </dependency>
+	   
+		<!-- grr..-->
 		<dependency>
 			<groupId>org.astrogrid</groupId>
 			<artifactId>astrogrid-community-common</artifactId>
@@ -209,7 +248,7 @@
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
-			<version>1.6.1</version>
+			<version>1.7.0</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
@@ -230,6 +269,15 @@
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
+		 <dependency> <!-- this in only used in unit tests...not self tests yet..-->
+			<id>xmlunit</id>
+		<version>1.0</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		
+		</dependency>
+		
 		<!-- axis, and the jars it relies upon -->
 		<dependency>
 			<id>axis</id>

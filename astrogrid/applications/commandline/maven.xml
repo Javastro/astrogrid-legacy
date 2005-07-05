@@ -51,11 +51,16 @@
   </goal>
 
   <goal name="copy-resources" description="add other stuff to webapp" >
-    <!-- get paul to check that there's nothing missing here.. -->
+	<!--should probably be able to do this in the project.xml-->
     <echo message="copying across configuration utils and database schema" />
     <copy todir="${maven.war.webapp.dir}/provider/config" overwrite="yes">
       <fileset dir="${basedir}/src/sql" />
       <fileset dir="${basedir}/config" />
+	  <!--also copy the test application-->
+	  <fileset dir="${basedir}/test/java/app"/>
+ 	  <fileset dir="${basedir}/test/java/">
+		 <include name="TestApplicationConfig.xml"/>
+	   </fileset>
       <fileset dir="${basedir}">
         <include name="antutils.xml" />
       </fileset>

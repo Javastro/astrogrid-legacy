@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.6 2004/11/27 13:20:03 pah Exp $
+/*$Id: SystemTest.java,v 1.7 2005/07/05 08:27:00 clq2 Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -68,7 +68,8 @@ public class SystemTest extends TestCase {
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib,new TestAuthorityResolver());
         lib = new JavaClassApplicationDescriptionLibrary(SampleJavaClassApplications.class,env);
         controller = new DefaultExecutionController(lib,history);
-        querier = new DefaultQueryService(history);
+      ApplicationEnvironmentRetriver executionRetriever = new DefaultApplicationEnvironmentRetriever(history);
+      querier = new DefaultQueryService(history, executionRetriever);
         
         // construct the tool object
         ApplicationDescription sum = lib.getDescription("org.astrogrid.test/sum");
@@ -155,6 +156,15 @@ public class SystemTest extends TestCase {
 
 /* 
 $Log: SystemTest.java,v $
+Revision 1.7  2005/07/05 08:27:00  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.6.68.1  2005/06/09 08:47:33  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.6.54.1  2005/06/03 16:01:48  pah
+first try at getting commandline execution log bz#1058
+
 Revision 1.6  2004/11/27 13:20:03  pah
 result of merge of pah_cea_bz561 branch
 

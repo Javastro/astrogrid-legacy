@@ -17,20 +17,23 @@ import org.astrogrid.applications.beans.v1.Output;
 import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
-import org.astrogrid.registry.beans.cea.ApplicationDefinition;
-import org.astrogrid.registry.beans.cea.CeaApplicationType;
-import org.astrogrid.registry.beans.cea.Parameters;
-import org.astrogrid.registry.beans.resource.ContactType;
-import org.astrogrid.registry.beans.resource.CurationType;
-import org.astrogrid.registry.beans.resource.IdentifierType;
-import org.astrogrid.registry.beans.resource.ResourceReferenceType;
-import org.astrogrid.registry.beans.resource.SummaryType;
-import org.astrogrid.registry.beans.resource.VODescription;
+import org.astrogrid.registry.beans.v10.cea.ApplicationDefinition;
+import org.astrogrid.registry.beans.v10.cea.CeaApplicationType;
+import org.astrogrid.registry.beans.v10.cea.Parameters;
+import org.astrogrid.registry.beans.v10.resource.Contact;
+import org.astrogrid.registry.beans.v10.resource.Content;
+import org.astrogrid.registry.beans.v10.resource.Creator;
+import org.astrogrid.registry.beans.v10.resource.Curation;
+import org.astrogrid.registry.beans.v10.resource.Date;
+import org.astrogrid.registry.beans.v10.resource.Resource;
+import org.astrogrid.registry.beans.v10.resource.ResourceName;
+import org.astrogrid.registry.beans.v10.resource.types.ContentLevel;
+import org.astrogrid.registry.beans.v10.resource.types.Type;
 
 import junit.framework.TestCase;
 
 /*
- * $Id: CEARegistryRoundTripTest.java,v 1.4 2004/08/28 07:29:32 pah Exp $
+ * $Id: CEARegistryRoundTripTest.java,v 1.5 2005/07/05 08:26:56 clq2 Exp $
  * 
  * Created on 15-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -43,6 +46,7 @@ import junit.framework.TestCase;
  */
 
 /**
+ * update to version 10 schema
  * @author Paul Harrison (pah@jb.man.ac.uk) 15-Mar-2004
  * @version $Name:  $
  * @since iteration5
@@ -62,35 +66,44 @@ public class CEARegistryRoundTripTest extends TestCase {
    }
 
    public void testwrite() throws IOException, MarshalException, ValidationException {
-      SummaryType summary = new SummaryType();
-      ResourceReferenceType publisher = new ResourceReferenceType();
-      ContactType contact = new ContactType();
-      CurationType curation = new CurationType();
-      IdentifierType identifier = new IdentifierType();
-      VODescription description = new VODescription();
-      CeaApplicationType applicationType = new CeaApplicationType();
-      description.addResource(applicationType);
-
-
-      identifier.setAuthorityID("authority");
-      identifier.setResourceKey("resourcekey");
-      applicationType.setIdentifier(identifier);
-      applicationType.setTitle("title");
-      publisher.setTitle("titlw");
-      curation.setPublisher(publisher);
-      contact.setName("me");
+      Contact contact = new Contact();
+      ResourceName resourcenameother = new ResourceName();
+      resourcenameother.setContent("other");
+      resourcenameother.setIvoId("ivo://false/other");
+      
+      contact.setName(resourcenameother);
       contact.setEmail("email");
+      Curation curation = new Curation();
       curation.setContact(contact);
+      Creator creator = new Creator();
+      creator.setLogo("nologo");
+      creator.setName(resourcenameother);
+      curation.setCreator(creator);
+      curation.setPublisher(resourcenameother);
+      curation.setVersion("0.0001");
+      curation.addContributor(resourcenameother);
+      Date cdate = new Date();
+      short[] ss={1,2,3,4};//silly date values
+      org.exolab.castor.types.Date dd = new org.exolab.castor.types.Date(ss);
       
-      applicationType.setCuration(curation);
+      cdate.setContent(dd );
+      curation.addDate(cdate);
+            
       
-      applicationType.setShortName("short");
-      summary.setDescription("desc");
-      summary.setReferenceURL("refurl");
-      applicationType.setSummary(summary);
+      CeaApplicationType application = new CeaApplicationType();
+
+
+      application.setIdentifier("ivo://authority/resourcekey");
+      application.setTitle("title");
+      ResourceName resourcename = new ResourceName();
+      resourcename.setContent("me");
+      resourcename.setIvoId("ivo://false/me");
+      application.setCuration(curation);
+      
+      application.setShortName("short");
 
       ApplicationDefinition applicationDefinition = new ApplicationDefinition();
-      applicationType.setApplicationDefinition(applicationDefinition);
+      application.setApplicationDefinition(applicationDefinition);
       
       Parameters parameters = new Parameters();
       applicationDefinition.setParameters(parameters);
@@ -116,6 +129,16 @@ public class CEARegistryRoundTripTest extends TestCase {
       input.addPref(vPref);
       output.addPref(vPref);
       
+      Content content = new Content();
+      content.addContentLevel(ContentLevel.VALUE_6);
+      content.setDescription("this is the main description");
+      content.setReferenceURL("refurl");
+      content.addSubject("one of the subjects");
+      
+     
+      content.addType(Type.ANIMATION);
+      application.setContent(content);
+      
       File outfile = new File("/tmp/test.xml");
   
          FileWriter writer = new FileWriter(outfile);
@@ -125,20 +148,20 @@ public class CEARegistryRoundTripTest extends TestCase {
       mar.setSuppressXSIType(false);
       mar.setLogWriter(new PrintWriter(System.out));
       mar.setMarshalAsDocument(true);
-      mar.setDoctype("http://www.ivoa.net/xml/CEAService/v0.1", null);
+      mar.setDoctype("http://www.ivoa.net/xml/CEAService/v0.2", null);
       
 //    TODO Castor bug? write a castor wiki page about this....      
-      mar.setNamespaceMapping("cea", "http://www.ivoa.net/xml/CEAService/v0.1");
+      mar.setNamespaceMapping("cea", "http://www.ivoa.net/xml/CEAService/v0.2");
 
 
-      mar.marshal(description);
+      mar.marshal(application);
          
        FileInputStream istream = new FileInputStream(outfile);
-       Unmarshaller um = new Unmarshaller(VODescription.class);
+       Unmarshaller um = new Unmarshaller(CeaApplicationType.class);
       
      
        InputSource is = new InputSource(istream);
-       VODescription indescr = (VODescription)um.unmarshal(is);
+       CeaApplicationType indescr = (CeaApplicationType)um.unmarshal(is);
 
    }
 

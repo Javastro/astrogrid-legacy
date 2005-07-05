@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
+<xs:schema targetNamespace="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.2">
+	<xs:annotation>
+		<xs:documentation>this has been revised to be more v10 like - i.e. element definitions have been taken away and the types have the "type" suffix removed</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:appinfo>
+			<vm:SchemaName>VOCEA</vm:SchemaName>
+			<vm:schemaPrefix>xs</vm:schemaPrefix>
+			<vm:targetPrefix>cea</vm:targetPrefix>
+		</xs:appinfo>
+		<xs:documentation>
+        An extension to the core resource metadata (VOResource) for 
+      	describing applications and server within the Common Execution Architecture
+      </xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.10" schemaLocation="./externalSchema/v10/VOResource-v0.10.xsd"/>
+	<!-- data service is only imported to grep the WebService type - shame it is not in the top level really -->
+	<xs:import namespace="http://www.ivoa.net/xml/VODataService/v0.5" schemaLocation="./externalSchema/v10/VODataservice-v0.5.xsd"/>
+	<xs:import namespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" schemaLocation="AGApplicationBase.xsd"/>
+<!--	<xs:import namespace="http://www.ivoa.net/xml/VOTable/v1.0" schemaLocation="./externalSchema/VOTable.xsd"/> not needed-->
+	<xs:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" schemaLocation="AGParameterDefinition.xsd"/>
+	<!-- This schema would benefit from some constraints being added to do better validation on the cross references within it -->
+	<xs:complexType name="CeaApplicationType">
+		<xs:annotation>
+			<xs:documentation>The definition of a CEA compliant application</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="vr:Resource">
+				<xs:sequence>
+					<xs:element name="ApplicationDefinition">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ApplicationKind" type="ceab:ApplicationKindType" minOccurs="0"/>
+								<xs:element name="Parameters">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="ParameterDefinition" type="ceapd:BaseParameterDefinition" minOccurs="0" maxOccurs="unbounded"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="Interfaces" type="ceab:InterfacesType"/>
+								<!--could there be a case for more than one?-->
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+		<!-- This would benefit from some sort of indication as to what type of application - datacentre/cmdline/webapp etc.... -->
+	</xs:complexType>
+	<!--A specialisation of an Application for http-based apps such as SIAP-->
+	<!--Would like to be able to impose certain constraints such as forcing the ApplicationDefinition/ApplicationType to 
+		be mandatory and take certain values.  @TODO see pah about this -->
+	<xs:complexType name="CeaHttpApplicationType">
+		<xs:annotation>
+			<xs:documentation>The definition of a CEA Http application</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cea:CeaApplicationType">
+				<xs:sequence>
+					<xs:element name="CeaHttpAdapterSetup" type="ceab:WebHttpApplicationSetup"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CeaServiceType">
+		<xs:annotation>
+			<xs:documentation>The definition of a service that can offer an instance of a CeaApplication</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="vr:Service">
+				<xs:sequence>
+					<xs:element name="ManagedApplications">
+						<xs:annotation>
+							<xs:documentation>Ths list of applications that a Common Execution Controller Manages</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ApplicationReference" type="vr:IdentifierURI" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:documentation>A reference to a CeaApplication</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

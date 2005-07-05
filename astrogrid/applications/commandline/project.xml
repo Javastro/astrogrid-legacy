@@ -49,7 +49,7 @@ This functionality is provided with the ApplicationController service, of which 
     <dependency>
       <groupId>commons-digester</groupId>
       <artifactId>commons-digester</artifactId>
-      <version>1.5</version>
+      <version>1.6</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>

@@ -1,5 +1,5 @@
 /*
- * $Id: DftCommandLineFormationTest.java,v 1.3 2004/11/27 13:20:02 pah Exp $
+ * $Id: DftCommandLineFormationTest.java,v 1.4 2005/07/05 08:26:56 clq2 Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -70,10 +70,11 @@ public class DftCommandLineFormationTest extends AbstractCmdLineRealAppTestCase 
         input.addParameter(param);
         param.setName("targets");
 
+        
         String myspaceBaseRef="file:///tmp/";
         
         param.setValue(myspaceBaseRef + "sexout_z");
-        param.setIndirect(true);
+        param.setIndirect(false);
 
         param = new ParameterValue();
         param.setName("matches");

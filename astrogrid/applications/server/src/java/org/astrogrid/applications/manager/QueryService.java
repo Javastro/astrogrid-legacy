@@ -1,4 +1,4 @@
-/*$Id: QueryService.java,v 1.4 2004/07/26 12:07:38 nw Exp $
+/*$Id: QueryService.java,v 1.5 2005/07/05 08:27:00 clq2 Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,8 @@ import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URI;
 
 /** Defines a component used to query status of applications, access results, etc.
@@ -22,6 +24,7 @@ import java.net.URI;
  *
  */
 public interface QueryService {
+    
     /** register a remote progress listener with an application
      * 
      * @param executionId the server-assigned id of a current application (which may either be running, or waiting to run)
@@ -60,13 +63,29 @@ public interface QueryService {
      * @throws CeaException*/
      
      public ExecutionSummaryType getSummary(String executionId) throws CeaException;
-    
-        
+    /**
+     * Return a log file. This really only applies to the commandline case.
+     * @TODO think of more general way of expressing this - or refactor into sub interface.
+     * @param execututionId
+     * @param type
+     * @return
+    * @throws FileNotFoundException 
+     */
+     public File getLogFile(String executionId, ApplicationEnvironmentRetriver.StdIOType type) throws CeaException, FileNotFoundException;
 }
 
 
 /* 
 $Log: QueryService.java,v $
+Revision 1.5  2005/07/05 08:27:00  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.4.152.1  2005/06/09 08:47:32  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.4.138.1  2005/06/03 16:01:48  pah
+first try at getting commandline execution log bz#1058
+
 Revision 1.4  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

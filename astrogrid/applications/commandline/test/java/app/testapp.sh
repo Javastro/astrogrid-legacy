@@ -1,6 +1,7 @@
 #!/bin/sh
 # $Id$
 #Paul Harrison
+#TODO should probably be rewritten in python/perl to make more cross platform...
 #This is a small command line test application - it attempts to parse the major types of command line arguments
 # p1 should be an integer which will be a wait time in seconds
 #p2 should be a filename - the parameters will be echoed to that file.
@@ -35,7 +36,7 @@ do
 
         ;;
       Parameter4=*)
-         P4=`expr match "$1" '.*[0-9]+*="*\([^"]*\)"*'`
+         P4=`expr "$1" : '.*[0-9]+*="*\([^"]*\)"*'`
          shift
 
         ;;
@@ -59,7 +60,7 @@ if [[ -n $P2 ]] ; then
 echo $P2
 echo "parsed parameters.....for $0." >> $P2
 
-for i in `seq 1 10`
+for i in 1 2 3 4 5 6 7 8 9 10
 do
 
 eval "echo P$i = \$P$i" >> $P2

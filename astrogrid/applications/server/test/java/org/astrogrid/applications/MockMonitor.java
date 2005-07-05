@@ -1,4 +1,4 @@
-/*$Id: MockMonitor.java,v 1.7 2004/11/27 13:20:02 pah Exp $
+/*$Id: MockMonitor.java,v 1.8 2005/07/05 08:27:01 clq2 Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,6 +71,7 @@ public class MockMonitor implements Observer{
         }
         if(type.getLevel() == LogLevel.WARN)
         {
+           System.err.println("saw  "+type.getLevel().toString()+"\n" + type.getContent());
            nwarn++;
         }
         
@@ -87,6 +88,12 @@ public class MockMonitor implements Observer{
 
 /* 
 $Log: MockMonitor.java,v $
+Revision 1.8  2005/07/05 08:27:01  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.7.68.1  2005/06/09 22:17:58  pah
+tweaking the log getter
+
 Revision 1.7  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
+<CommandLineExecutionControllerConfig xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns="http://www.astrogrid.org/schema/CEAImplementation/v1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v1
+../schema/CEAImplementation.xsd">
+	<!-- put the real applications here - note that they are not autodeployed, so the paths are fixed strings - this is more of a registry test....-->
+	<Application name="org.astrogrid.SExtractor" instanceClass="org.astrogrid.applications.commandline.sextractor.SExtractor">
+		<!--This is the application to concentrate on for the end of this iteration-->
+		<ceab:Parameters>
+			<!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
+			<CmdLineParameterDefn name="DetectionImage" type="binary" commandPosition="1" fileRef="true">
+				<ceapd:UI_Name>Detection Image</ceapd:UI_Name>
+				<ceapd:UI_Description>The image that is used to detect sources. Basic position, shape and size informtaion is derived from this image</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<!--This is set to position 2 although it is actually merged with the position 1 image -->
+			<CmdLineParameterDefn name="PhotoImage" type="binary" commandPosition="2" fileRef="true">
+				<ceapd:UI_Name>Measurement Image</ceapd:UI_Name>
+				<ceapd:UI_Description>The Image that is used to measure photometric parameters</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="config_file" type="binary" commandSwitch="c" fileRef="true">
+				<ceapd:UI_Name>Configuration File</ceapd:UI_Name>
+				<ceapd:UI_Description>File containing the main configuration parameters for SExtractor</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="PARAMETERS_NAME" type="binary" fileRef="true">
+				<ceapd:UI_Name>Parameter File</ceapd:UI_Name>
+				<ceapd:UI_Description>A File containing the list of catalogue paramters that should be computed</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="CATALOG_NAME" type="VOTable" fileRef="true">
+				<ceapd:UI_Name>Derived output catalogue</ceapd:UI_Name>
+				<ceapd:UI_Description>The catalogue of images derived from the input images</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="IMAGE_BAND" type="text" fileRef="false" commandSwitch="---">
+				<!-- bit of a hack this commandSwitch means dont write me....-->
+				<ceapd:UI_Name>Input image band</ceapd:UI_Name>
+				<ceapd:UI_Description>The input image measuerment band. This is used to form  the column name in the output VOTable for the measured photometry. </ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="FILTER_NAME" type="text" fileRef="true">
+				<ceapd:UI_Name>detection filter</ceapd:UI_Name>
+				<ceapd:UI_Description>the convolution filter (you can use the standard sextractor filters simply by naming them here)</ceapd:UI_Description>
+				<ceapd:DefaultValue>file:///home/applications/tools/sextractor-2.3.2/config/default.conv</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="DETECT_TYPE" type="text" fileRef="false">
+				<ceapd:UI_Name>detection type</ceapd:UI_Name>
+				<ceapd:UI_Description/>
+				<ceapd:DefaultValue>CCD</ceapd:DefaultValue>
+				<ceapd:OptionList>
+					<ceapd:OptionVal>CCD</ceapd:OptionVal>
+					<ceapd:OptionVal>PHOTO</ceapd:OptionVal>
+				</ceapd:OptionList>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="FLAG_IMAGE" type="FITS" fileRef="true">
+				<ceapd:UI_Name>flag image</ceapd:UI_Name>
+				<ceapd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="DETECT_MINAREA" type="integer" fileRef="false">
+				<ceapd:UI_Name>minimum detection area</ceapd:UI_Name>
+				<ceapd:UI_Description>minimum number of pixels above threshold</ceapd:UI_Description>
+				<ceapd:DefaultValue>5</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="DETECT_THRESH" type="double">
+				<ceapd:UI_Name>Detection Threshold</ceapd:UI_Name>
+				<ceapd:UI_Description>sigmas or threshold,ZP in mag.arcsec-2</ceapd:UI_Description>
+				<ceapd:DefaultValue>1.5</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="ANALYSIS_THRESH" type="double" fileRef="false">
+				<ceapd:UI_Name>Analysis Threshold</ceapd:UI_Name>
+				<ceapd:UI_Description>sigmas or threshold,ZP in mag.arcsec-2</ceapd:UI_Description>
+				<ceapd:DefaultValue>1.5</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="FILTER" type="boolean">
+				<ceapd:UI_Name>use filter</ceapd:UI_Name>
+				<ceapd:UI_Description>apply filter for detection</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="DEBLEND_NTHRESH " type="integer" fileRef="false">
+				<ceapd:UI_Name>Deblend thresholds</ceapd:UI_Name>
+				<ceapd:UI_Description> Number of deblending sub-thresholds</ceapd:UI_Description>
+				<ceapd:DefaultValue>32</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="DEBLEND_MINCONT" type="double" fileRef="false">
+				<ceapd:UI_Name>de-blend contrast</ceapd:UI_Name>
+				<ceapd:UI_Description> Minimum contrast parameter for deblending</ceapd:UI_Description>
+				<ceapd:DefaultValue>0.005</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="CLEAN" type="boolean" fileRef="false">
+				<ceapd:UI_Name>Clean?</ceapd:UI_Name>
+				<ceapd:UI_Description>Clean spurious detections? (Y or N)?
+</ceapd:UI_Description>
+				<ceapd:DefaultValue>Y</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="CLEAN_PARAM" type="double" fileRef="false">
+				<ceapd:UI_Name>Cleaning efficiency</ceapd:UI_Name>
+				<ceapd:UI_Description>Cleaning Efficiency</ceapd:UI_Description>
+				<ceapd:DefaultValue>1.0</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="MASK_TYPE" type="text" fileRef="false">
+				<ceapd:UI_Name>Mask type</ceapd:UI_Name>
+				<ceapd:UI_Description> type of detection MASKing: can be one of                                "NONE", "BLANK" or "CORRECT"</ceapd:UI_Description>
+				<ceapd:DefaultValue>CORRECT</ceapd:DefaultValue>
+				<ceapd:OptionList>
+					<ceapd:OptionVal>NONE</ceapd:OptionVal>
+					<ceapd:OptionVal>BLANK</ceapd:OptionVal>
+					<ceapd:OptionVal>CORRECT</ceapd:OptionVal>
+				</ceapd:OptionList>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="PHOT_APERTURES" type="integer" fileRef="false">
+				<ceapd:UI_Name>Photometry apertures</ceapd:UI_Name>
+				<ceapd:UI_Description> MAG_APER aperture diameter(s) in pixels
+</ceapd:UI_Description>
+				<ceapd:DefaultValue>5</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="PHOT_AUTOPARAMS" type="text" fileRef="false">
+				<ceapd:UI_Name>Photometry params</ceapd:UI_Name>
+				<ceapd:UI_Description> MAG_AUTO parameters: &lt;Kron_fact&gt;,&gt;min_radius&gt;</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="MAG_ZEROPOINT" type="double" fileRef="false">
+				<ceapd:UI_Name> magnitude zero-point
+</ceapd:UI_Name>
+				<ceapd:UI_Description> magnitude zero-point
+</ceapd:UI_Description>
+				<ceapd:DefaultValue>0.0</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="MAG_GAMMA" type="double" fileRef="false">
+				<ceapd:UI_Name>MAG_GAMMA</ceapd:UI_Name>
+				<ceapd:UI_Description> gamma of emulsion (for photographic scans)</ceapd:UI_Description>
+				<ceapd:DefaultValue>4.0</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="GAIN" type="double" fileRef="false">
+				<ceapd:UI_Name>Gain</ceapd:UI_Name>
+				<ceapd:UI_Description>detector gain in e-/ADU
+</ceapd:UI_Description>
+				<ceapd:DefaultValue>0.0</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="PIXEL_SCALE" type="double" fileRef="false">
+				<ceapd:UI_Name>Pixel scale</ceapd:UI_Name>
+				<ceapd:UI_Description>size of pixel in arcsec (0=use FITS WCS info)</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="SEEING_FWHM" type="double" commandPosition="-1" fileRef="false">
+				<ceapd:UI_Name>Seeing</ceapd:UI_Name>
+				<ceapd:UI_Description>stellar FWHM in arcsec
+</ceapd:UI_Description>
+				<ceapd:DefaultValue>1.2</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="STARNNW_NAME" type="binary" fileRef="true">
+				<ceapd:UI_Name>neural net file</ceapd:UI_Name>
+				<ceapd:UI_Description> Neural-Network_Weight table filename
+</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="BACK_SIZE" type="text" fileRef="false">
+				<ceapd:UI_Name>backgroud mesh size</ceapd:UI_Name>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="BACK_FILTERSIZE " type="text" commandPosition="-1" fileRef="false">
+				<ceapd:UI_Name>background filter size</ceapd:UI_Name>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="BACKPHOTO_TYPE" type="text" fileRef="false">
+				<ceapd:OptionList>
+					<ceapd:OptionVal>GLOBAL</ceapd:OptionVal>
+					<ceapd:OptionVal>LOCAL</ceapd:OptionVal>
+				</ceapd:OptionList>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="CHECKIMAGE_TYPE" type="text" fileRef="false">
+				<ceapd:UI_Name>Check image</ceapd:UI_Name>
+				<ceapd:OptionList>
+					<ceapd:OptionVal>NONE</ceapd:OptionVal>
+					<ceapd:OptionVal>BACKGROUND</ceapd:OptionVal>
+					<ceapd:OptionVal>MINIBACKGROUND</ceapd:OptionVal>
+					<ceapd:OptionVal>-BACKGROUND</ceapd:OptionVal>
+					<ceapd:OptionVal>OBJECTS</ceapd:OptionVal>
+					<ceapd:OptionVal>-OBJECTS</ceapd:OptionVal>
+					<ceapd:OptionVal>SEGMENTATION</ceapd:OptionVal>
+					<ceapd:OptionVal>APERTURES</ceapd:OptionVal>
+					<ceapd:OptionVal>FILTERED</ceapd:OptionVal>
+				</ceapd:OptionList>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="CHECKIMAGE_NAME" type="FITS" commandPosition="-1" fileRef="true">
+				<ceapd:UI_Name>Checkimage name</ceapd:UI_Name>
+				<ceapd:UI_Description>file containing the checkimage</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+		</ceab:Parameters>
+		<ceab:Interfaces xmlns="http://www.ivoa.net/xml/CEA/base:v0-2">
+			<ceab:Interface name="simple">
+				<ceab:input>
+					<ceab:pref ref="DetectionImage"/>
+					<ceab:pref ref="PhotoImage"/>
+					<ceab:pref ref="config_file"/>
+					<ceab:pref ref="PARAMETERS_NAME"/>
+					<ceab:pref ref="FILTER_NAME"/>
+					<ceab:pref ref="ANALYSIS_THRESH" minoccurs="0"/>
+					<ceab:pref ref="IMAGE_BAND"/>
+				</ceab:input>
+				<ceab:output>
+					<ceab:pref ref="CATALOG_NAME"/>
+				</ceab:output>
+			</ceab:Interface>
+			<ceab:Interface name="Galactic" xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+				<ceab:input>
+					<pref ref="DetectionImage"/>
+					<pref ref="PhotoImage"/>
+					<pref ref="config_file"/>
+					<pref ref="PARAMETERS_NAME"/>
+					<pref ref="FILTER_NAME"/>
+					<pref ref="ANALYSIS_THRESH" minoccurs="0"/>
+					<pref ref="MAG_ZEROPOINT" minoccurs="0"/>
+					<pref ref="SEEING_FWHM" minoccurs="0"/>
+					<pref ref="IMAGE_BAND"/>
+				</ceab:input>
+				<ceab:output>
+					<pref ref="CATALOG_NAME"/>
+				</ceab:output>
+			</ceab:Interface>
+		</ceab:Interfaces>
+		<ExecutionPath>/home/applications/tools/sextractor-2.3.2/sex_wrapper.sh</ExecutionPath>
+		<LongName>SExtractor</LongName>
+		<Description>SExtractor is a program that builds a catalogue of objects from an astronomical image. Although it is particularly oriented towards reduction of large scale galaxy-survey data, it performs rather well on moderately crowded star fields. 
+        </Description>
+		<ReferenceURL>http://terapix.iap.fr/cplt/oldSite/soft/sextractor/</ReferenceURL>
+	</Application>
+	<Application name="org.astrogrid.HyperZ" instanceClass="org.astrogrid.applications.commandline.hyperz.HyperZ">
+		<!--HyperZ is another tool that will be driven by config files - however this might not be the full set necessary to run this tool.-->
+		<ceab:Parameters>
+			<CmdLineParameterDefn name="config_file" type="binary" commandPosition="1">
+				<ceapd:UI_Name>Configuration File</ceapd:UI_Name>
+				<ceapd:UI_Description>A HyperZ configuration file</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="input_catalog" type="VOTable" commandSwitch="CATALOG_FILE">
+				<ceapd:UI_Name>Magnitude Catalogue</ceapd:UI_Name>
+				<ceapd:UI_Description>The input catalogue of measured magnitude</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="output_catalog" type="VOTable" commandSwitch="OUTPUT_CATALOG">
+				<ceapd:UI_Name>Redshift Catalogue</ceapd:UI_Name>
+				<ceapd:UI_Description>The catalogue of estimated redshifts</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="FILTERS_RES" type="binary" fileRef="true">
+				<ceapd:UI_Name>filter res</ceapd:UI_Name>
+				<ceapd:UI_Description>?</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="FILTERS_FILE" type="binary" fileRef="true">
+				<ceapd:UI_Name>Filters file</ceapd:UI_Name>
+				<ceapd:UI_Description>?</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="TEMPLATES_FILE" type="binary" fileRef="true">
+				<ceapd:UI_Name>Templates file</ceapd:UI_Name>
+				<ceapd:UI_Description>?</ceapd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="text" name="BAND_ORDER" fileRef="false" commandSwitch="---">
+				<ceapd:UI_Name>Band ordering</ceapd:UI_Name>
+				<ceapd:UI_Description>A string specifying the band ordering of the filter definitions</ceapd:UI_Description>
+				<ceapd:DefaultValue>UGRIZ</ceapd:DefaultValue>
+			</CmdLineParameterDefn>
+		</ceab:Parameters>
+		<ceab:Interfaces  xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+			<Interface name="simple">
+				<input>
+					<pref ref="config_file"/>
+					<pref ref="input_catalog"/>
+					<pref ref="FILTERS_FILE"/>
+					<pref ref="TEMPLATES_FILE"/>
+					<pref ref="BAND_ORDER"/>
+					<pref ref="FILTERS_RES" minoccurs="0"/>
+				</input>
+				<output>
+					<pref ref="output_catalog"/>
+				</output>
+			</Interface>
+		</ceab:Interfaces>
+		<ExecutionPath>/home/applications/tools/ZPHOT/hyperzwrapper.sh</ExecutionPath>
+		<LongName>HyperZ</LongName>
+		<Description>We refer to the paper
+"Photometric Redshifts based on standard SED fitting procedures" 
+M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
+</Description>
+		<ReferenceURL>http://webast.ast.obs-mip.fr/hyperz/</ReferenceURL>
+	</Application>
+</CommandLineExecutionControllerConfig>

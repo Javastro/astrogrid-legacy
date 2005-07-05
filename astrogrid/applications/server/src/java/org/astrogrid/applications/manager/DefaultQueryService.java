@@ -1,4 +1,4 @@
-/*$Id: DefaultQueryService.java,v 1.6 2004/07/26 12:07:38 nw Exp $
+/*$Id: DefaultQueryService.java,v 1.7 2005/07/05 08:27:00 clq2 Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 package org.astrogrid.applications.manager;
 
 import org.astrogrid.applications.Application;
+import org.astrogrid.applications.ApplicationEnvironmentUnavailableException;
+import org.astrogrid.applications.ApplicationStillRunningException;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
@@ -20,12 +22,16 @@ import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 import org.astrogrid.applications.manager.observer.RemoteProgressListener;
 import org.astrogrid.applications.manager.observer.RemoteResultsListener;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
+import org.astrogrid.applications.manager.persist.ExecutionIDNotFoundException;
+import org.astrogrid.applications.manager.persist.PersistenceException;
 import org.astrogrid.applications.manager.persist.SummaryHelper;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Date;
@@ -44,16 +50,18 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(DefaultQueryService.class);
-
+  
     /** Construct a new DefaultQueryService
      * @param eh the store to use to service queries
      */
-    public DefaultQueryService(ExecutionHistory eh) {
+    public DefaultQueryService(ExecutionHistory eh, ApplicationEnvironmentRetriver envret) {
         super();
         this.executionHistory = eh;
+        this.environmentRetriever = envret;
     }
     protected final ExecutionHistory executionHistory;
-    
+    protected final ApplicationEnvironmentRetriver environmentRetriever;
+  
     
     public MessageType queryExecutionStatus(String executionId) throws CeaException {     
         logger.debug("Getting execution status for " +executionId);
@@ -151,11 +159,40 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
         return null;
     }
 
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.manager.QueryService#getLogFile(java.lang.String, org.astrogrid.applications.manager.QueryService.StdIOType)
+    */
+   public File getLogFile(String executionId, ApplicationEnvironmentRetriver.StdIOType type) throws ApplicationEnvironmentUnavailableException, PersistenceException, FileNotFoundException, ApplicationStillRunningException, ApplicationEnvironmentUnavailableException  {
+      if (type == ApplicationEnvironmentRetriver.StdIOType.out) {
+      
+         return environmentRetriever.retrieveStdOut(executionId);
+      }
+      else if(type == ApplicationEnvironmentRetriver.StdIOType.err)
+      {
+         return environmentRetriever.retrieveStdErr(executionId);
+      }
+      else { 
+      
+         //should not be able to happen
+         throw new InternalError("unknown ApplicationEnvironmentRetriver.StdIOType");
+       
+      }
+   }
+
 }
 
 
 /* 
 $Log: DefaultQueryService.java,v $
+Revision 1.7  2005/07/05 08:27:00  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.6.152.1  2005/06/09 08:47:32  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.6.138.1  2005/06/03 16:01:48  pah
+first try at getting commandline execution log bz#1058
+
 Revision 1.6  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

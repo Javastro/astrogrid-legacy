@@ -1,5 +1,5 @@
 /*
- * $Id: AllTests.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: AllTests.java,v 1.3 2005/07/05 08:26:56 clq2 Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,19 +20,22 @@ import junit.framework.TestSuite;
  * @since iteration5
  */
 public class AllTests {
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AllTests.class);
-    }
-    public static Test suite() {
-        TestSuite suite = new TestSuite("Test for Commandline variant of CEA");
-        suite.addTest(org.astrogrid.applications.commandline.digester.AllTests.suite());
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(CommandLineApplicationDescriptionTest.class));
-        suite.addTest(new TestSuite(CommandLineApplicationEnvironmentTest.class));
-        suite.addTest(new TestSuite(CommandLineApplicationTest.class));
-        suite.addTest(new TestSuite(CommandLineCEAComponentManagerTest.class));
-        suite.addTest(new TestSuite(WFOApplicationConfigLoadTest.class));
-        //$JUnit-END$
-        return suite;
-    }
+   public static void main(String[] args) {
+      junit.textui.TestRunner.run(AllTests.class);
+   }
+   public static Test suite() {
+      TestSuite suite = new TestSuite("Test for Commandline variant of CEA");
+      suite.addTest(org.astrogrid.applications.commandline.digester.AllTests
+         .suite());
+      //$JUnit-BEGIN$
+      suite.addTestSuite(CommandLineCEAComponentManagerTest.class);
+      suite.addTestSuite(CommandLineApplicationDescriptionTest.class);
+      suite.addTestSuite(CommandLineApplicationTest.class);
+      suite.addTestSuite(CommandLineApplicationEnvironmentTest.class);
+      suite.addTestSuite(DftCommandLineFormationTest.class);
+      suite.addTestSuite(SExtractorCommandLineFormationTest.class);
+      suite.addTestSuite(WFOApplicationConfigLoadTest.class);
+       //$JUnit-END$
+      return suite;
+   }
 }

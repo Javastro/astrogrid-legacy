@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGParameterDefinition.xsd,v 1.14 2004/09/09 10:40:38 pah Exp $ -->
+<!-- $Id: AGParameterDefinition.xsd,v 1.15 2005/07/05 08:27:01 clq2 Exp $ -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
@@ -17,7 +17,7 @@
 			<xs:documentation>The list of possible parameter types</xs:documentation>
 			<xs:documentation>The enumeration values should have the namespace appended? I have removed them to make castor generate nicer objects</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:QName">
+		<xs:restriction base="xs:string">
 			<xs:enumeration value="integer">
 				<xs:annotation>
 					<xs:documentation>Integer</xs:documentation>

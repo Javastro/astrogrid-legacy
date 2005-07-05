@@ -1,4 +1,4 @@
-/* $Id: IdentityPreprocessorTest.java,v 1.2 2004/09/01 15:42:26 jdt Exp $
+/* $Id: IdentityPreprocessorTest.java,v 1.3 2005/07/05 08:27:01 clq2 Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -19,7 +19,7 @@ import org.astrogrid.applications.beans.v1.WebHttpCall;
 import org.astrogrid.applications.beans.v1.types.HttpMethodType;
 import org.astrogrid.applications.http.test.FileUnmarshaller;
 import org.astrogrid.applications.http.test.TestRegistryQuerier;
-import org.astrogrid.registry.beans.cea.CeaHttpApplicationType;
+import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -46,7 +46,7 @@ public class IdentityPreprocessorTest extends TestCase {
 
 
     public final void testProcess() throws MarshalException, ValidationException {
-        TestRegistryQuerier querier = new TestRegistryQuerier();
+        TestRegistryQuerier querier = new TestRegistryQuerier(null);
         CeaHttpApplicationType app = querier.getHttpApplication("Adder-app.xml");
         Tool tool = (Tool) new FileUnmarshaller(Tool.class).unmarshallFromFile("tool-eg.xml");
         assertNotNull(app);

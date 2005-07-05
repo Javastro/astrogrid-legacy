@@ -6,10 +6,10 @@ import java.io.Writer;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.tools.MappingTool;
 
-import org.astrogrid.registry.beans.cea.CeaApplicationType;
+import org.astrogrid.registry.beans.v10.cea.CeaApplicationType;
 
 /*
- * $Id: GenerateMapping.java,v 1.2 2004/08/28 07:29:32 pah Exp $
+ * $Id: GenerateMapping.java,v 1.3 2005/07/05 08:27:01 clq2 Exp $
  * 
  * Created on 15-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -41,6 +41,7 @@ public class GenerateMapping {
       maptool.setForceIntrospection(false); // use the descriptor classes
       //add the class back references
       maptool.addClass(CeaApplicationType.class, false);
+      //TODO - to be useful there would need to be a way of automatically adding all the classes here.....
       
    }
    public void writeMap()

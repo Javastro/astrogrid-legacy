@@ -1,0 +1,113 @@
+<html><head><title>VOResource v0.10: Proposal</title></head> <body>
+<h1>Proposed schemas for VOResource v0.10 <br>
+(revision 2)</h1>
+
+To address the major issues dicussed in the
+<a href="http://www.ivoa.net/Documents/latest/RMExp.html">IVOA Note
+<em>Lessons Learned Using VOResource in the NVO</em></a>, the
+following revisions to the VOResource XML schema and its extensions
+are proposed.  The main changes reflect two recommendations from a
+recent workshop on the Resource metadata schemas.  These are:
+
+<ol>
+  <li> To move to a model built more around reusable XML types rather
+       than reusable elements.  Use of substitution groups is dropped
+       in favor of xsi:type to achieve polymorphism.  <p>
+
+  </p></li><li> To restructure the metadata to more closely match the names and
+       implied structure defined in the
+       <a href="http://www.ivoa.net/Documents/latest/RM.html">IVOA
+       Recommendation, <em>Resource Metadata for the Virtual
+       Observatory</em></a>.  
+</li></ol>
+
+These recommendations were approved by the IVOA Registry Working Group (RWG).
+In addition, the RWG recommended additional changes (resulting in revision 2):
+
+<ul>
+  <li> drop the referenceURL attribute from the ResourceName type.
+  <li> drop the logical-id attribute from the Relationship type.
+  <li> identify standard services (e.g. ConeSearch, SIA) as a resource
+       subtype, rather than as a subtype of Capability<superscript><a
+       href="#note">*</a></superscript>
+  <li> remove definition of root element from VOResource-v0.10.xsd;
+       leave this to be defined by the application as necessary.
+</ul>
+
+<superscript><a name="note">*</a></superscript>Note: this last
+recommendation led to significant changes in the Service Resource
+model.  <p>
+
+These recommendations were applied to the latest, working draft
+VOResource family of schemas, resulting in the following revisions:
+
+<ul>
+  <li> <a href="VOResource-v0.10.xsd">VOResource-v0.10.xsd</a> <br>
+          
+       (which draws on
+       <a href="VOResourceRelType.xsd">VOResourceRelType.xsd</a> and 
+       <a href="VOResourceRelType.xsd">VOResourceRelType-v0.2.xsd</a>)
+  </li><li> <a href="VORegistry-v0.3.xsd">VORegistry-v0.3.xsd</a>
+  </li><li> <a href="VODataService-v0.5.xsd">VODataService-v0.5.xsd</a> <br>
+          
+       (which draws on
+       <a href="VODataServiceCoverage.xsd">VODataServiceCoverage.xsd</a> and 
+       <a href="VODataServiceCoverage-v0.3.xsd">VODataServiceCoverage-v0.3.xsd</a>)
+  </li><li> <a href="ConeSearch-v0.3.xsd">ConeSearch-v0.3.xsd</a>
+  </li><li> <a href="SIA-v0.7.xsd">SIA-v0.7.xsd</a>
+</li></ul>
+
+To see illustrations about how these changes affect what the instance
+documents actually look like, review the example instance files
+below:
+
+<ul>
+  <li> <a href="organisation.xml">organisation.xml</a>:  describing
+       the Radio Astronomy Imaging Group (RAI) at NCSA
+  </li><li> <a href="registry.xml">registry.xml</a>:  describing the
+       publishing registry at NCSA.
+  </li><li> <a href="authority.xml">authority.xml</a>:  decribing the
+       "ncsa.adil"  authority ID and RAI's ownership of it.  
+  </li><li> <a href="collection.xml">collection.xml</a>:  describing the
+       ADIL as a data collection.
+  </li><li> <a href="webform.xml">webform.xml</a>:  describing an existing
+       browser-based web-form page as a service.
+  </li><li> <a href="conesearch.xml">conesearch.xml</a>:  describing the
+       ADIL Cone Search implentation (inludes description of input
+       parameters).  
+  </li><li> <a href="sia.xml">sia.xml</a>:  describing the ADIL
+       implementation of the Simple Image Access Protocol (includes
+       description of the output VOTable with its columns).  
+</li></ul> <p>
+
+<strong>Note about the root element:</strong> The VOResource schema no
+longer defines global elements to be used as document roots; applications
+should define these in their own schema, importing the VOResource core
+schema and any of its extensions as necessary.  <strong>In the
+examples above,</strong> no such "document schema" is necessary to
+legally verify.  According to the XML Schema standard
+(<a href="http://www.w3.org/TR/2001/REC-xmlschema-1-20010502/#cvc-assess-elt">Part
+1, Sect. 3.3.2, clause 1.2</a>), the use of xsi:type in the root
+element is sufficient for defining its type.  <p>
+
+You can download all the revised schemas and the above examples in one
+file.  Because the schemas are not yet released working drafts
+(i.e. they are internal drafts that have <em>not</em> been posted to
+http://www.ivoa.net/xml), <code>schemaLocation</code> attributes have
+been set to assume all of the schemas are found in the current working
+directory; this will allow you to readily use XML tools with them.
+Download one of the following files:
+
+</p><ul>
+  <li> <a href="http://monet.ncsa.uiuc.edu/%7Erplante/VO/VOResource-v0.10-proposed.tar.gz">VOResource-v0.10-proposed.tar.gz</a>
+  </li><li> <a href="http://monet.ncsa.uiuc.edu/%7Erplante/VO/VOResource-v0.10-proposed.zip">VOResource-v0.10-proposed.zip</a>
+</li></ul>
+
+
+
+<hr>
+<address></address>
+<!-- hhmts start -->
+Last modified: Tue Jun 22 12:36:36 2004
+<!-- hhmts end -->
+</body></html>

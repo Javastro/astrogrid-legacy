@@ -1,0 +1,34 @@
+<project xmlns:j="jelly:core"
+        xmlns:jsl="jelly:jsl"
+        xmlns:jxml="jelly:xml"
+        xmlns:maven="jelly:maven"
+        xmlns:util="jelly:util"
+        xmlns:deploy="deploy"
+        xmlns:http="jelly:http"
+                xmlns:define="jelly:define"
+                xmlns:ag="org.astrogrid.objects"
+    >
+        <define:taglib uri="org.astrogrid.objects">
+            <define:tag name="CastorGenerate">
+                <j:set var="schema.name" value="${name}"/>
+                         <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+                            <echo>
+                                **Castor Generate for ${schema.name}</echo>
+                <classpath>
+                        <pathelement location="${basedir}/build" />
+                        <path refid="maven.dependency.classpath" />
+                </classpath>
+                    <arg value="-i"/>
+                    <arg file="${basedir}/schema/${schema.name}" />
+                <arg value="-binding-file" />
+                <arg file="${basedir}/build/castor-binding.xml" />
+                    <arg value="-dest" />
+                    <arg file="${generated.src}" />
+                <arg value="-verbose" />
+                <arg value="-types"/>
+                <arg value="arraylist"/>
+        </java>
+                
+            </define:tag>
+</define:taglib>    
+</project>

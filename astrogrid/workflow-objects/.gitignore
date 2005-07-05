@@ -4,3 +4,4 @@ maven.log
 velocity.log
 .classpath
 .checkstyle
+.settings

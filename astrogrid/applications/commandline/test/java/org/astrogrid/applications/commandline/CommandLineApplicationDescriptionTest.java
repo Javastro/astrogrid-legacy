@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationDescriptionTest.java,v 1.4 2004/11/27 13:20:02 pah Exp $
+/*$Id: CommandLineApplicationDescriptionTest.java,v 1.5 2005/07/05 08:26:56 clq2 Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,7 @@
  *
 **/
 package org.astrogrid.applications.commandline;
+
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.description.ApplicationInterface;
@@ -102,6 +103,15 @@ public class CommandLineApplicationDescriptionTest extends TestCase {
 
 /* 
 $Log: CommandLineApplicationDescriptionTest.java,v $
+Revision 1.5  2005/07/05 08:26:56  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.4.66.1  2005/06/09 08:47:32  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.4.52.1  2005/06/02 14:57:29  pah
+merge the ProvidesVODescription interface into the MetadataService interface
+
 Revision 1.4  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 

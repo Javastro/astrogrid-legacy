@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationTest.java,v 1.10 2004/11/27 13:20:02 pah Exp $
+/*$Id: CommandLineApplicationTest.java,v 1.11 2005/07/05 08:26:56 clq2 Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,31 +18,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
-import java.net.URL;
 
-import org.picocontainer.PicoException;
-import org.picocontainer.defaults.ConstructorInjectionComponentAdapter;
-import org.picocontainer.defaults.DefaultPicoContainer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.MandatoryParameterNotPassedException;
 import org.astrogrid.applications.MockMonitor;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.commandline.digester.CommandLineApplicationDescriptionFactory;
-import org.astrogrid.applications.commandline.digester.CommandLineDescriptionsLoader;
-import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.manager.DefaultExecutionController;
-import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
-import org.astrogrid.applications.manager.persist.ExecutionHistory;
-import org.astrogrid.applications.manager.persist.InMemoryExecutionHistory;
-import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
-import org.astrogrid.applications.parameter.protocol.FileProtocol;
 import org.astrogrid.community.User;
 import org.astrogrid.io.Piper;
 import org.astrogrid.workflow.beans.v1.Input;
@@ -59,13 +46,13 @@ import org.astrogrid.workflow.beans.v1.Tool;
  *  
  */
 public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
-    private static final String TEST_DATA = "test input data";
+   /**
+    * Logger for this class
+    */
+   private static final Log logger = LogFactory
+         .getLog(CommandLineApplicationTest.class);
 
-    private static final String PAR4_DATA = "any old rubbish";
-
-   private static final String LOCALFILE_DATA = "some local test content";
-
-    /**
+   /**
      * Constructor for CmdLineApplicationTest.
      * 
      * @param arg0
@@ -75,26 +62,18 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
     }
 
     protected void setUp() throws Exception {
-        super.setUp();
-        // will only work with unjarred-classes - but this is always the case in
-        // development.
-        URI uri = new URI(this.getClass().getResource("/app/testapp.sh")
-                .toString());
-        File appPath = (new File(uri)).getParentFile();
-    
-        System.out.println("TESTAPPDIR := " + appPath.getAbsolutePath());
-        assertTrue(appPath.exists());
-        assertTrue(appPath.isDirectory());
-        testAppDescr.setExecutionPath(testAppDescr.getExecutionPath().replaceAll(
-                "@TOOLBASEDIR@", appPath.getAbsolutePath()));
-        
+        super.setUp();        
 
     }
     /** calls application, with direct parameter values */
     public void testCreateApplicationDirect() throws Exception {
+      if (logger.isDebugEnabled()) {
+         logger.debug("testCreateApplicationDirect() - start");
+      }
+       
         Tool t = buildTool("0");
 
-        fillDirect(t);
+        Toolbuilder.fillDirect(t);
         ResultListType results = execute(t);
         for (int i = 0; i < results.getResultCount(); i++) {
             ParameterValue result = results.getResult(i);
@@ -102,14 +81,14 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
             System.out.println("result par name = " + result.getName());
 
             if (result.getName().equals("P3")) {
-                assertTrue("P3 does not contain expected string", result.getValue().indexOf(TEST_DATA) != -1);
+                assertTrue("P3 does not contain expected string", result.getValue().indexOf(Toolbuilder.TEST_DATA) != -1);
             }
             else if (result.getName().equals("P2")) {
-               assertTrue("P2 does not contain expected string", result.getValue().indexOf(PAR4_DATA) != -1);
+               assertTrue("P2 does not contain expected string", result.getValue().indexOf(Toolbuilder.PAR4_DATA) != -1);
                
            }
             else if (result.getName().equals("P14")) {
-               assertTrue("P14 does not contain expected string", result.getValue().indexOf(LOCALFILE_DATA) != -1);
+               assertTrue("P14 does not contain expected string", result.getValue().indexOf(Toolbuilder.LOCALFILE_DATA) != -1);
                
            }
             
@@ -118,49 +97,18 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
                         + " returned");
             }
         }
+
+      if (logger.isDebugEnabled()) {
+         logger.debug("testCreateApplicationDirect() - end");
+      }
     }
 
-    /**
-    * @param t
-    * @throws IndexOutOfBoundsException
-    */
-   private void fillDirect(Tool t) throws IndexOutOfBoundsException {
-      ParameterValue p4 = new ParameterValue();
-        p4.setName("P4");
-        p4.setValue(PAR4_DATA);
-        p4.setIndirect(false);
-
-        ParameterValue inFile1 = new ParameterValue();
-        inFile1.setName("P9");
-        inFile1.setValue("any file contents"); // we expect the first p9 to be ignored by the testapp
-        inFile1.setIndirect(false);
-        
-        ParameterValue inFile = new ParameterValue();
-        inFile.setName("P9");
-        inFile.setValue(TEST_DATA);
-        inFile.setIndirect(false);
-
-        ParameterValue out = new ParameterValue();
-        out.setName("P3");
-        out.setIndirect(false);
-
-        ParameterValue echo = new ParameterValue();
-        echo.setName("P2");
-        echo.setIndirect(false);
-        ParameterValue localfileout = new ParameterValue();
-        localfileout.setName("P14");
-        localfileout.setIndirect(false);
-
-        t.getInput().addParameter(inFile1);
-        t.getInput().addParameter(inFile);
-        t.getInput().addParameter(p4);
-        t.getOutput().addParameter(out);
-        t.getOutput().addParameter(echo);
-        t.getOutput().addParameter(localfileout);
-   }
-
-   /** calls application, with indirect parameter values */
+    /** calls application, with indirect parameter values */
     public void testCreateApplicationIndirect() throws Exception {
+      if (logger.isDebugEnabled()) {
+         logger.debug("testCreateApplicationIndirect() - start");
+      }
+
         Tool t = buildTool("0");
 
         File inputFile1 = File.createTempFile(
@@ -179,7 +127,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
       
 
         PrintWriter pw = new PrintWriter(new FileWriter(inputFile));
-        pw.println(TEST_DATA);
+        pw.println(Toolbuilder.TEST_DATA);
         pw.close();
 
         pw = new PrintWriter(new FileWriter(inputFile1));
@@ -206,7 +154,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         echo.setValue(parameterEchoFile.toURI().toString());
 
         pw = new PrintWriter(new FileWriter(par4file));
-        pw.println(PAR4_DATA);
+        pw.println(Toolbuilder.PAR4_DATA);
         pw.close();
         ParameterValue p4 = new ParameterValue();
         p4.setName("P4");
@@ -233,17 +181,17 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
             if (result.getName().equals("P3")) {
                 assertEquals("P3 results not in expected place",
                         result.getValue(), outputFile.toURI().toString());
-                checkContent(outputFile, TEST_DATA);
+                checkContent(outputFile, Toolbuilder.TEST_DATA);
             }
             else if (result.getName().equals("P2")) {
                assertEquals("P2 results not in expected place",
                        result.getValue(), parameterEchoFile.toURI().toString());
-               checkContent(parameterEchoFile, PAR4_DATA);
+               checkContent(parameterEchoFile, Toolbuilder.PAR4_DATA);
             }
                else if (result.getName().equals("P14")) {
                   assertEquals("P14 results not in expected place",
                           result.getValue(), par14file.toURI().toString());
-                  checkContent(par14file, LOCALFILE_DATA);
+                  checkContent(par14file, Toolbuilder.LOCALFILE_DATA);
 
             }
             else {
@@ -251,6 +199,10 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
                         + " returned");
             }
         }
+
+      if (logger.isDebugEnabled()) {
+         logger.debug("testCreateApplicationIndirect() - end");
+      }
     }
 
     /**
@@ -269,31 +221,18 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
                 .indexOf(testContent) != -1);
     }
 
-    protected Tool buildTool(String delay) throws Exception {
-        // select the interface we're going to use.
-        ApplicationInterface interf = testAppDescr.getInterface("I1");
-        assertNotNull(interf);
-        // from this 'meta data' populat a tool..
-        Tool t = new Tool();
-        t.setName(TESTAPPNAME);
-        t.setInterface(interf.getName());
-        Input input = new Input();
-        ParameterValue time = new ParameterValue();
-        time.setName("P1");
-        time.setValue(delay);//no delay
-        input.addParameter(time);
-        t.setInput(input);
-        Output output = new Output();
-        t.setOutput(output);
-        return t;
-    }
-
     public void testPickupMissingParameters() {
+      if (logger.isDebugEnabled()) {
+         logger.debug("testPickupMissingParameters() - start");
+      }
+
         Tool t = null;
         try {
             t = buildTool("0");
         }
         catch (Exception e) {
+         logger.error("testPickupMissingParameters()", e);
+
             // not really trying to test this
             e.printStackTrace();
         }
@@ -323,9 +262,14 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
              
         }
         catch (Exception e1) {
+         logger.error("testPickupMissingParameters()", e1);
+
                 fail("unexpected exception " + e1);
             }
         
+      if (logger.isDebugEnabled()) {
+         logger.debug("testPickupMissingParameters() - end");
+      }
     }
 
    /**
@@ -335,7 +279,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
            Tool t = null;
            try {
                t = buildTool("-1");
-               fillDirect(t);
+               Toolbuilder.fillDirect(t);
            }
            catch (Exception e) {
                // not really trying to test this
@@ -354,8 +298,8 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
            monitor.waitFor(WAIT_SECONDS);
            assertNotNull(monitor.sawApp);
            assertTrue(monitor.sawError);
-           // check it completed, not in error, etc.
-           assertEquals("should have seen 4 warnings before final error status",4, monitor.nwarn);
+           // check it failed error, etc.
+           assertEquals("should have seen 3 warnings before final error status",3, monitor.nwarn);
            assertEquals("application should have ended with error status",
                    Status.ERROR, app.getStatus());
    
@@ -379,6 +323,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         // now create an application based on these details
         Application app = testAppDescr.initializeApplication("testExecution",
                 new User(), t);
+        
         assertNotNull(app);
         assertTrue(app instanceof CommandLineApplication);
         // and now run it.
@@ -390,7 +335,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
 
         // ok, either timed out, or the application finished..
         // check behaviour of monitor.
-        assertTrue(monitor.sawExit);
+        assertTrue("application did not finish",monitor.sawExit);
         assertNotNull(monitor.sawApp);
         // check it completed, not in error, etc.
         assertEquals("application did not complete correctly",
@@ -405,10 +350,40 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
 
         return results;
     }
+    
+    public void testGetEnvironment()
+    {
+       
+    }
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.commandline.AbstractCmdLineAppTestCase#buildTool(java.lang.String)
+    */
+   protected Tool buildTool(String delay) throws Exception {
+      return Toolbuilder.buildTool(delay, testAppDescr);
+      }
 }
 
 /*
  * $Log: CommandLineApplicationTest.java,v $
+ * Revision 1.11  2005/07/05 08:26:56  clq2
+ * paul's 559b and 559c for wo/apps and jes
+ *
+ * Revision 1.10.66.2  2005/06/09 22:17:58  pah
+ * tweaking the log getter
+ *
+ * Revision 1.10.66.1  2005/06/09 08:47:32  pah
+ * result of merging branch cea_pah_559b into HEAD
+ *
+ * Revision 1.10.52.3  2005/06/08 22:10:45  pah
+ * make http applications v10 compliant
+ *
+ * Revision 1.10.52.2  2005/06/03 16:01:48  pah
+ * first try at getting commandline execution log bz#1058
+ *
+ * Revision 1.10.52.1  2005/05/31 12:58:26  pah
+ * moved to v10 schema interpretation - this means that the authorityID is read directly with the applicaion "name"
+ *
  * Revision 1.10  2004/11/27 13:20:02  pah
  * result of merge of pah_cea_bz561 branch
  *

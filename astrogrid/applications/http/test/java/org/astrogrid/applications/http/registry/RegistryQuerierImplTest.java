@@ -1,0 +1,83 @@
+/*
+ * $Id: RegistryQuerierImplTest.java,v 1.2 2005/07/05 08:27:01 clq2 Exp $
+ * 
+ * Created on 07-Jun-2005 by Paul Harrison (pharriso@eso.org)
+ * Copyright 2005 ESO. All rights reserved.
+ *
+ * This software is published under the terms of the ESO 
+ * Software License, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+ */ 
+
+package org.astrogrid.applications.http.registry;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import org.astrogrid.applications.description.registry.RegistryQueryLocator;
+import org.astrogrid.applications.http.test.TestRegistryLocator;
+import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.query.RegistryService;
+
+import junit.framework.TestCase;
+
+/**
+ * 
+ * @author Paul Harrison (pharriso@eso.org) 07-Jun-2005
+ * @version $Name:  $
+ * @since initial Coding
+ */
+public class RegistryQuerierImplTest extends TestCase {
+
+   public static void main(String[] args) {
+      junit.textui.TestRunner.run(RegistryQuerierImplTest.class);
+   }
+
+   /*
+    * @see TestCase#setUp()
+    */
+   protected void setUp() throws Exception {
+      super.setUp();
+   }
+ 
+   public void testListApplications() throws RegistryException {
+      
+      RegistryQuerierImpl rq = new RegistryQuerierImpl(new TestRegistryLocator());
+      List l = rq.listApplications();
+      assertTrue("did not find any applications", !l.isEmpty());
+   }
+   
+   public void testGetApplications() throws IOException
+   {
+      RegistryQuerierImpl rq = new RegistryQuerierImpl(new TestRegistryLocator());
+      Collection l = rq.getHttpApplications();
+      assertNotNull(l);
+      assertTrue("did not find any applicattions", !l.isEmpty());
+      for (Iterator iter = l.iterator(); iter.hasNext();) {
+         CeaHttpApplicationType app = (CeaHttpApplicationType) iter.next();
+         
+      }
+   }
+
+}
+
+
+/*
+ * $Log: RegistryQuerierImplTest.java,v $
+ * Revision 1.2  2005/07/05 08:27:01  clq2
+ * paul's 559b and 559c for wo/apps and jes
+ *
+ * Revision 1.1.6.1  2005/06/09 08:47:32  pah
+ * result of merging branch cea_pah_559b into HEAD
+ *
+ * Revision 1.1.4.1  2005/06/08 22:10:46  pah
+ * make http applications v10 compliant
+ *
+ */

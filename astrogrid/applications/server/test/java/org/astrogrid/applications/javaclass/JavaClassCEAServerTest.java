@@ -1,4 +1,4 @@
-/*$Id: JavaClassCEAServerTest.java,v 1.3 2004/08/11 16:54:50 nw Exp $
+/*$Id: JavaClassCEAServerTest.java,v 1.4 2005/07/05 08:27:01 clq2 Exp $
  * Created on 21-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.applications.javaclass;
+
+import org.w3c.dom.Document;
 
 import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.applications.component.JavaClassCEAComponentManager;
@@ -40,7 +42,7 @@ public class JavaClassCEAServerTest extends TestCase {
     public void testMetadata() throws Exception {
         MetadataService ms = container.getMetadataService();
         assertNotNull(ms);
-        String reg = ms.returnRegistryEntry();
+        Document reg = ms.returnRegistryEntry();
         assertNotNull(reg);
         
     }
@@ -51,6 +53,15 @@ public class JavaClassCEAServerTest extends TestCase {
 
 /* 
 $Log: JavaClassCEAServerTest.java,v $
+Revision 1.4  2005/07/05 08:27:01  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.3.140.1  2005/06/09 08:47:32  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.3.126.1  2005/06/02 14:57:29  pah
+merge the ProvidesVODescription interface into the MetadataService interface
+
 Revision 1.3  2004/08/11 16:54:50  nw
 must start the container, before testing it.
 

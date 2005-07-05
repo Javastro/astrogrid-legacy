@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationCEAServerTest.java,v 1.7 2004/09/10 11:04:22 jdt Exp $
+/*$Id: HttpApplicationCEAServerTest.java,v 1.8 2005/07/05 08:26:56 clq2 Exp $
  * Created on 30-July-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,7 @@ public class HttpApplicationCEAServerTest extends TestCase {
     	manager = new HttpApplicationCEAComponentManager();
         //@TODO temp hack to replace the registry querier with our test one
     	manager.getContainer().unregisterComponent(RegistryQuerier.class);
-    	manager.getContainer().registerComponentInstance(RegistryQuerier.class, new TestRegistryQuerier());
+    	manager.getContainer().registerComponentInstance(RegistryQuerier.class, new TestRegistryQuerier(null));
     }
     
     protected CEAComponentManager manager;
@@ -66,6 +66,15 @@ public class HttpApplicationCEAServerTest extends TestCase {
 
 /* 
 $Log: HttpApplicationCEAServerTest.java,v $
+Revision 1.8  2005/07/05 08:26:56  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.7.100.1  2005/06/09 08:47:32  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.7.86.1  2005/06/08 22:10:45  pah
+make http applications v10 compliant
+
 Revision 1.7  2004/09/10 11:04:22  jdt
 Organised imports.
 

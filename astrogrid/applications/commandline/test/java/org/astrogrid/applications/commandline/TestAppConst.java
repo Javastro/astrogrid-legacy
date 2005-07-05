@@ -1,5 +1,5 @@
 /*
- * $Id: TestAppConst.java,v 1.3 2004/09/23 22:44:23 pah Exp $
+ * $Id: TestAppConst.java,v 1.4 2005/07/05 08:26:56 clq2 Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -23,7 +23,7 @@ public final class TestAppConst {
    public static final String MAIN_INTERFACE = "I1" ;
    public static final String REALAPP_CONFFILE = "/CeaApplicationConfig.xml";
 
-   public static final String TESTAPP_NAME="fake.authority.id/testapp";
+   public static final String TESTAPP_NAME="@REGAUTHORITY@/testapp";
    
    public static final String PARAMETERSPEC1 = "<tool><input><parameter name='P1'>30</parameter><parameter name='P1'>2</parameter><parameter name='P2'>p2</parameter><parameter name='P9'>testInFile</parameter><parameter name='P4'>p4</parameter></input><output><parameter name='P3'>out1file</parameter></output></tool>";
 

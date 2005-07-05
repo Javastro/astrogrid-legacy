@@ -1,4 +1,4 @@
-/*$Id: MetadataService.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: MetadataService.java,v 1.3 2005/07/05 08:27:00 clq2 Exp $
  * Created on 21-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,21 +10,34 @@
 **/
 package org.astrogrid.applications.manager;
 
+import org.w3c.dom.Document;
+
 import org.astrogrid.applications.CeaException;
+import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
 
 /** Interface into the meta-data / decscription / registry entries part of a cea server.
- *  - base of all description for this server.
+ *  - base of all description for this server. This is now the sole place where interactions that either set or get registry metadata about the services implemented by CEA.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-May-2004
+ * @author pharriso@eso.org 02-Jun-2005 - merged in the former ProvidesVODescription interface - no reason for them to be separate
  *
  */
 public interface MetadataService {
  
     /** return the entry to lodge in the registry
      * 
-     * @return stringified xmldocument of a VODescription 
+     * @return  xmldocument of a VODescription 
      * @throws CeaException
      */
-    public String returnRegistryEntry() throws CeaException;
+    public Document returnRegistryEntry() throws CeaException;
+    /**
+     *  access the vodescription for this server.
+     * @return the object model of the VO description for this service
+     */
+    public VOResources getVODescription()  throws Exception;
+    /** return the authorityID that this server is running under. */
+    public String getAuthorityID();
+    /** set the serverID that this server should run under. This string should include the authorityID part*/
+    public String setServerID(String id);
 
 
 }
@@ -32,6 +45,18 @@ public interface MetadataService {
 
 /* 
 $Log: MetadataService.java,v $
+Revision 1.3  2005/07/05 08:27:00  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.2.172.1  2005/06/09 08:47:32  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.2.158.2  2005/06/03 16:01:48  pah
+first try at getting commandline execution log bz#1058
+
+Revision 1.2.158.1  2005/06/02 14:57:28  pah
+merge the ProvidesVODescription interface into the MetadataService interface
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

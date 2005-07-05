@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource xsi:type="vs:SkyService"
+  xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
+  xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
+  xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v0.10
+                      VOResource-v0.10.xsd
+                      http://www.ivoa.net/xml/VODataService/v0.5
+                      VODataService-v0.5.xsd">
+
+    <title>NCSA Astronomy Digital Image Library Search Page</title>
+    <shortName>ADIL</shortName>
+    <identifier>ivo://adil.ncsa/QueryPage.html</identifier>
+
+    <curation>
+      <publisher ivo-id="ivo://adil.ncsa/adil">
+         NCSA Astronomy Digital Image Library (ADIL)
+      </publisher>
+      <creator>
+        <name>Dr. Raymond Plante</name>
+        <logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</logo>
+      </creator>
+      <date role="created">1994-09-01</date>
+      <contact>
+        <name>ADIL Librarian</name>
+	<email>adil@ncsa.uiuc.edu</email>
+      </contact>
+    </curation>
+
+    <content>
+      <subject>data repositories</subject>
+      <subject>digital libraries</subject>
+      <description>
+         This Web page allows users to interactively search the contents
+         of the ADIL.
+      </description>
+      <referenceURL>http://adil.ncsa.uiuc.edu/</referenceURL>
+      <type>Archive</type>
+      <contentLevel>University</contentLevel>
+      <contentLevel>Research</contentLevel>
+      <contentLevel>Community College</contentLevel>
+
+      <relationship>
+         <relationshipType>service-for</relationshipType>
+         <relatedResource ivo-id="ivo://adil.ncsa/adil">
+            NCSA Astronomy Digital Image Library
+         </relatedResource>
+      </relationship>
+    </content>
+
+    <interface xsi:type="vr:WebBrowser">
+       <accessURL>http://adil.ncsa.uiuc.edu/QueryPage.html</accessURL>
+    </interface>
+
+    <!-- 
+      -  note the schema used below for coverage is a temporary 
+      -  stand-in for STC
+      -->
+    <vs:coverage xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+       <spatial>
+          <region xsi:type="AllSky"/>
+       </spatial>
+
+       <spectral>
+          <waveband>Radio</waveband>
+          <waveband>Millimeter</waveband>
+          <waveband>Infrared</waveband>
+          <waveband>Optical</waveband>
+          <waveband>UV</waveband>
+       </spectral>
+
+    </vs:coverage>
+
+</resource>

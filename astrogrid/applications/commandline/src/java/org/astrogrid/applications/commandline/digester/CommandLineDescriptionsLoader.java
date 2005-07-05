@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoader.java,v 1.7 2004/11/27 13:20:03 pah Exp $
+ * $Id: CommandLineDescriptionsLoader.java,v 1.8 2005/07/05 08:27:01 clq2 Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 
 package org.astrogrid.applications.commandline.digester;
 
+
+import java.io.StringWriter;
 import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -26,6 +28,8 @@ import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotLoadedException;
+import org.astrogrid.common.bean.v1.Namespaces;
+
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 
@@ -35,14 +39,14 @@ import org.xml.sax.Attributes;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
- * @TODO make namespace aware - this is a bit of a hack with namespaces at the moment.... 
  * @TODO validate the input xml
- * @TODO really better to use castor
- * @TODO perhaps better to refactor the schema into the commandline project.
+ * @TODO really better to use castor, but it deos not do substitution groups well... 
+ * @TODO perhaps better to refactor the schema into the commandline project and rename elements to be closer to field names.
  */
 public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLibrary {
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(CommandLineDescriptionsLoader.class);
+   private Exception waserror = null;
 
     public interface DescriptionURL {
         URL getURL();
@@ -50,11 +54,16 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
 
 
    public CommandLineDescriptionsLoader(DescriptionURL finder, CommandLineApplicationDescriptionFactory appDescFactory, ApplicationDescriptionEnvironment envin) 
-   throws ApplicationDescriptionNotLoadedException {
+   {
           super(envin);
           this.configFile = finder.getURL();
           this.appDescFactory = appDescFactory;
-          loadDescription();
+          try {
+            loadDescription();
+         } catch (ApplicationDescriptionNotLoadedException e) {
+            logger.warn("problem loading commandline application definitions", e);
+            waserror = e;
+         }
    }
    protected final URL configFile;
    protected final CommandLineApplicationDescriptionFactory appDescFactory; 
@@ -81,11 +90,12 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
    private Digester createDigester() throws ParserConfigurationException {
 
       Digester digester = new Digester();
-      digester.setValidating(false); //TODO would be better to make this validate...
-      digester.setNamespaceAware(false);
-      digester.setRules(new RegexRules(new SimpleRegexMatcher())); // to allow matches on any children....
+      digester.setValidating(false); //TODO would be better to make this validate...validation does get done later though...
+      digester.setNamespaceAware(true);
+//      digester.setRules(new RegexRules(new SimpleRegexMatcher())); // to allow matches on any children....
 
     digester.push(this);
+    digester.setRuleNamespaceURI(Namespaces.CEAIMPL);
       //digester.addObjectCreate(ApplicationDescriptionConstants.APPLICATION_ELEMENT, CommandLineApplicationDescription.class);
       digester.addFactoryCreate(CommandLineApplicationDescriptionsConstants.APPLICATION_ELEMENT,appDescFactory);
       // set the appropriate attributes
@@ -100,17 +110,20 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
       digester.addSetProperties(CommandLineApplicationDescriptionsConstants.PARAMETER_ELEMENT,"type","typeString");
       
       //set some extra property values from the body elements of children
+      digester.setRuleNamespaceURI(Namespaces.CEAPD);
       digester.addCallMethod(CommandLineApplicationDescriptionsConstants.UI_NAME_ELEMENT, "setDisplayName", 0);
-      digester.addRule(CommandLineApplicationDescriptionsConstants.UI_DESC_ELEMENT, new NodeCreateRule(Node.ELEMENT_NODE));
+      digester.addRule(CommandLineApplicationDescriptionsConstants.UI_DESC_ELEMENT, new NonPoppingNodeCreateRule(Node.ELEMENT_NODE));
       digester.addRule(CommandLineApplicationDescriptionsConstants.UI_DESC_ELEMENT, new AllBodyIncElementsRule("displayDescription", true));
       digester.addCallMethod(CommandLineApplicationDescriptionsConstants.UCD_ELEMENT, "setUcd", 0);
       digester.addCallMethod(CommandLineApplicationDescriptionsConstants.DEFVAL_ELEMENT, "setDefaultValue", 0);
       digester.addCallMethod(CommandLineApplicationDescriptionsConstants.UNITSL_ELEMENT, "setUnits", 0);
       
            
-      // add the parameter to the list of paramters      
+      // add the parameter to the list of paramters  (could perhaps be put above)
+      digester.setRuleNamespaceURI(Namespaces.CEAIMPL);
       digester.addSetNext(CommandLineApplicationDescriptionsConstants.PARAMETER_ELEMENT, "addParameterDescription");
-     
+
+      digester.setRuleNamespaceURI(Namespaces.CEAB);           
       digester.addFactoryCreate(CommandLineApplicationDescriptionsConstants.INTERFACE_ELEMENT,new BaseApplicationInterfaceFactory());
 
       digester.addSetProperties(CommandLineApplicationDescriptionsConstants.INTERFACE_ELEMENT);      
@@ -132,7 +145,8 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
       digester.addSetNext(CommandLineApplicationDescriptionsConstants.INTERFACE_ELEMENT, "addInterface");
 
       // finally add the application description to the list
-      digester.addSetNext(CommandLineApplicationDescriptionsConstants.APPLICATION_ELEMENT, "addApplicationDescription");
+     digester.setRuleNamespaceURI(Namespaces.CEAIMPL);
+     digester.addSetNext(CommandLineApplicationDescriptionsConstants.APPLICATION_ELEMENT, "addApplicationDescription");
       return digester;
  
      
@@ -155,4 +169,28 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
    
    
 
+   /* (non-Javadoc)
+    * @see org.astrogrid.component.descriptor.ComponentDescriptor#getDescription()
+    */
+   public String getDescription() {
+      StringBuffer sb = new StringBuffer();
+      // notifiy that there was an error if it has occured.
+      if(waserror != null)
+      {
+         StringWriter sw = new StringWriter();
+         sb.append("Error reading descriptions - might not be complete\n" + waserror.toString());
+         Throwable cause;
+         if(( cause = waserror.getCause())!= null)
+         {
+            sb.append("\n");
+            sb.append(cause.toString());
+         }
+      }
+      sb.append("\n");
+      sb.append(super.getDescription());
+      return sb.toString();
+      
+ 
+   }
+   
 }

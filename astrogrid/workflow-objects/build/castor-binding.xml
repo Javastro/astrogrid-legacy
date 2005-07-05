@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- $Id: castor-binding.xml,v 1.7 2004/05/06 13:40:02 pah Exp $
+<!-- $Id: castor-binding.xml,v 1.8 2005/07/05 08:27:01 clq2 Exp $
 castor binding file : configures the process of generating java classes from xml schema
 
 
@@ -32,20 +32,31 @@ at present, just defined package - namespace mappings
   	<namespace>http://www.astrogrid.org/schema/CEATypes/v1</namespace>
   </package>
   
- <!-- The registry stuff for cea -->
+  <!-- CEC implementation specific-->
+  <package>
+  	<name>org.astrogrid.applications.beans.v1.cea.implementation</name>
+  	<namespace>http://www.astrogrid.org/schema/CEAImplementation/v1</namespace>
+  </package>
+
+ <!-- The registry stuff for cea note that we are preserving the v9 at the moment to minimise impacct on other code in short term - long term this should be removed and everything made 0.10 compliant-->
+   <package>
+  	<name>org.astrogrid.registry.beans.v10.cea</name>
+  	<namespace>http://www.ivoa.net/xml/CEAService/v0.2</namespace>
+  </package>
    <package>
   	<name>org.astrogrid.registry.beans.cea</name>
   	<namespace>http://www.ivoa.net/xml/CEAService/v0.1</namespace>
   </package>
+ 
+  <package>
+  	<name>org.astrogrid.registry.beans.resource.votable</name>
+  	<namespace>http://www.ivoa.net/xml/VOTable/v1.0</namespace>
+  </package>  
   
-  <!-- ones from standard registry schema in the registry project -->
+  <!-- ones from standard registry schema in the registry project v9 TODO should try to remove these in future - will need modify all code that uses them though. -->
    <package>
     <name>org.astrogrid.registry.beans.resource</name>
     <namespace>http://www.ivoa.net/xml/VOResource/v0.9</namespace>
-  </package> 
-  <package>
-    <name>org.astrogrid.registry.beans.resource.community</name>
-    <namespace>http://www.ivoa.net/xml/VOCommunity/v0.2</namespace>    
   </package> 
   <package>
     <name>org.astrogrid.registry.beans.resource.registry</name>
@@ -63,9 +74,31 @@ at present, just defined package - namespace mappings
   	<name>org.astrogrid.registry.beans.resource.sia</name>
   	<namespace>http://www.ivoa.net/xml/SIA/v0.6</namespace>
   </package>
+  <!-- ones from standard registry schema in the registry project v10 TODO check these... -->
+   <package>
+    <name>org.astrogrid.registry.beans.v10.resource</name>
+    <namespace>http://www.ivoa.net/xml/VOResource/v0.10</namespace>
+  </package> 
   <package>
-  	<name>org.astrogrid.registry.beans.resource.votable</name>
-  	<namespace>http://www.ivoa.net/xml/VOTable/v1.0</namespace>
-  </package>  
+    <name>org.astrogrid.registry.beans.v10.resource.registry</name>
+    <namespace>http://www.ivoa.net/xml/VORegistry/v0.3</namespace>
+  </package>
+  <package>
+	<name>org.astrogrid.registry.beans.v10.resource.dataservice</name>
+    <namespace>http://www.ivoa.net/xml/VODataService/v0.5</namespace>
+  </package>
+  <package>
+  	<name>org.astrogrid.registry.beans.v10.resource.conesearch</name>
+  	<namespace>http://www.ivoa.net/xml/ConeSearch/v0.3</namespace>
+  </package>
+  <package>
+  	<name>org.astrogrid.registry.beans.v10.resource.sia</name>
+  	<namespace>http://www.ivoa.net/xml/SIA/v0.7</namespace>
+  </package>
+  <!-- interface -->
+  <package>
+  	<name>org.astrogrid.registry.beans.v10.wsinterface</name>
+  	<namespace>http://www.ivoa.net/xml/RegistryInterface/v0.1</namespace>
+  </package>
  
 </binding>

@@ -30,7 +30,7 @@ import junit.framework.TestCase;
 
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
-import org.astrogrid.registry.beans.cea.CeaHttpApplicationType;
+import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
@@ -81,8 +81,8 @@ public class XSLTTest extends TestCase {
         
         Marshaller marshaller = new Marshaller(root);
         //marshaller.setNSPrefixAtRoot(true);
-        marshaller.setNamespaceMapping("ceas","http://www.ivoa.net/xml/CEAService/v0.1");
-        marshaller.setNamespaceMapping("vor","http://www.ivoa.net/xml/VOResource/v0.9");
+        marshaller.setNamespaceMapping("ceas","http://www.ivoa.net/xml/CEAService/v0.2");
+        marshaller.setNamespaceMapping("vr","http://www.ivoa.net/xml/VOResource/v0.10");
         marshaller.setNamespaceMapping("ceab","http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1");
         marshaller.setNamespaceMapping("agw","http://www.astrogrid.org/schema/AGWorkflow/v1");
         marshaller.setNamespaceMapping("agpd","http://www.astrogrid.org/schema/AGParameterDefinition/v1");

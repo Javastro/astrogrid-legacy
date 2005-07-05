@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationDescriptionsConstants.java,v 1.4 2004/11/27 13:20:03 pah Exp $
+ * $Id: CommandLineApplicationDescriptionsConstants.java,v 1.5 2005/07/05 08:27:01 clq2 Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,6 +14,7 @@
 package org.astrogrid.applications.commandline.digester;
 
 /**
+ * Defines the various "xpath" like elements that are used in digester. This is the rather fragile to namespace changes - digester does not do them very well....
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
@@ -30,12 +31,12 @@ final class CommandLineApplicationDescriptionsConstants {
    public static final String URL_ELEMENT = APPLICATION_ELEMENT + "/ReferenceURL";
    public static final String PARAMETER_ELEMENT =
       APPLICATION_ELEMENT+"/Parameters/CmdLineParameterDefn";
-   public static final String UI_NAME_ELEMENT = PARAMETER_ELEMENT + "/*:UI_Name";
-   public static final String UI_DESC_ELEMENT = PARAMETER_ELEMENT + "/*:UI_Description";
-   public static final String UI_DESC_CHILDREN = PARAMETER_ELEMENT + "/*:UI_Description/*";
-   public static final String UCD_ELEMENT = PARAMETER_ELEMENT + "/*:UCD";
-   public static final String DEFVAL_ELEMENT = PARAMETER_ELEMENT + "/*:DefaultValue";
-   public static final String UNITSL_ELEMENT = PARAMETER_ELEMENT + "/*:Units";
+   public static final String UI_NAME_ELEMENT = PARAMETER_ELEMENT + "/UI_Name";
+   public static final String UI_DESC_ELEMENT = PARAMETER_ELEMENT + "/UI_Description";
+   public static final String UI_DESC_CHILDREN = PARAMETER_ELEMENT + "/UI_Description/*";
+   public static final String UCD_ELEMENT = PARAMETER_ELEMENT + "/UCD";
+   public static final String DEFVAL_ELEMENT = PARAMETER_ELEMENT + "/DefaultValue";
+   public static final String UNITSL_ELEMENT = PARAMETER_ELEMENT + "/Units";
    public static final String INTERFACE_ELEMENT= APPLICATION_ELEMENT + "/Interfaces/Interface";
    public static final String INPUT_PREFS = INTERFACE_ELEMENT + "/input/pref";
    public static final String OUTPUT_PREFS = INTERFACE_ELEMENT + "/output/pref";

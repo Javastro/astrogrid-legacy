@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource xsi:type="sia:SimpleImageAccess"
+  xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
+  xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
+  xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
+  xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v0.10
+                      VOResource-v0.10.xsd
+                      http://www.ivoa.net/xml/VODataService/v0.5
+                      VODataService-v0.5.xsd
+                      http://www.ivoa.net/xml/SIA/v0.7
+                      SIA-v0.7.xsd">
+
+    <title>NCSA Astronomy Digital Image Library Simple Image Access</title>
+    <shortName>ADIL</shortName>
+    <identifier>ivo://adil.ncsa/sia</identifier>
+
+    <curation>
+      <publisher ivo-id="ivo://adil.ncsa/adil">
+         NCSA Astronomy Digital Image Library (ADIL)
+      </publisher>
+      <creator>
+        <name>Ramon Williamson</name>
+        <logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</logo>
+      </creator>
+      <contributor>Dr. Raymond Plante</contributor>
+      <date role="created">2003-01-01</date>
+      <contact>
+        <name>ADIL Librarian</name>
+	<email>adil@ncsa.uiuc.edu</email>
+      </contact>
+    </curation>
+
+    <content>
+      <subject>data repositories</subject>
+      <subject>digital libraries</subject>
+      <description>
+         This Simple Image Access Protocol implementation allows clients to 
+         progrommatically search for images in the ADIL that overlap with 
+         the given region.  
+      </description>
+      <referenceURL>http://adil.ncsa.uiuc.edu/</referenceURL>
+      <type>Archive</type>
+      <contentLevel>University</contentLevel>
+      <contentLevel>Research</contentLevel>
+      <contentLevel>Community College</contentLevel>
+
+      <relationship>
+         <relationshipType>service-for</relationshipType>
+         <relatedResource ivo-id="ivo://adil.ncsa/adil">
+            NCSA Astronomy Digital Image Library
+         </relatedResource>
+      </relationship>
+    </content>
+
+    <vr:interface xsi:type="vs:ParamHTTP" qtype="GET"
+               xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+       <vr:accessURL use="base">http://adil.ncsa.uiuc.edu/cgi-bin/voimquery?survey=f&amp;</vr:accessURL>
+       <resultType>text/xml+votable</resultType>
+
+       <!-- 
+         -  These are the supported input parameters taken from the ADIL
+         -  SIA service's "Metadata" operation.  
+         -->
+       <param>
+         <name>POS</name>
+         <description>
+            Search Position in the form "ra,dec" where ra and dec are given 
+            in decimal degrees in the ICRS coordinate system.
+         </description>
+         <dataType arraysize="2">float</dataType>
+         <unit>degrees</unit>
+       </param>
+       <param>
+         <name>SIZE</name>
+         <description>Size of search region in the RA and Dec. directions.</description>
+         <dataType arraysize="2">float</dataType>
+         <unit>degrees</unit>
+       </param>
+       <param>
+         <name>FORMAT</name>
+         <description>Requested format of images.</description>
+         <dataType arraysize="*">char</dataType>
+       </param>
+       <param>
+         <name>INTERSECT</name>
+         <description>
+           Choice of intersection of matched images with the region of interest.
+         </description>
+         <dataType arraysize="*">char</dataType>
+       </param>
+       <param>
+         <name>FREQ</name>
+         <description>Frequency of observation.</description>
+         <dataType>float</dataType>
+         <unit>Hz</unit>
+       </param>
+    </vr:interface>
+
+    <!-- 
+      -  note the schema used below for coverage is a temporary 
+      -  stand-in for STC
+      -->
+    <vs:coverage xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+       <spatial>
+          <region xsi:type="AllSky"/>
+       </spatial>
+
+       <spectral>
+          <waveband>Radio</waveband>
+          <waveband>Millimeter</waveband>
+          <waveband>Infrared</waveband>
+          <waveband>Optical</waveband>
+          <waveband>UV</waveband>
+       </spectral>
+
+    </vs:coverage>
+
+    <vs:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+       <column>
+          <name>Codename</name>
+          <description>
+             ADIL Image Identifier - Unique identifier for image, as assigned 
+             by the ADIL</description>
+          <dataType arraysize="*">char</dataType>
+       </column>
+       <column>
+          <name>Image Name</name>
+          <description>Image Filename, as provide by author</description>
+          <dataType arraysize="*">char</dataType>
+       </column>
+       <column>
+          <name>Source Name</name>
+          <description>Target Source of Image</description>
+          <dataType arraysize="*">char</dataType>
+          <ucd>ID_MAIN</ucd>
+       </column>
+       <column>
+          <name>RA (Center)</name>
+          <description>RA of Image Center (J2000)</description>
+          <dataType>float</dataType>
+          <unit>degrees</unit>
+          <ucd>POS_EQ_RA_MAIN</ucd>
+       </column>
+       <column>
+          <name>Dec (Center)</name>
+          <description>Dec of Image Center (J2000)</description>
+          <dataType>float</dataType>
+          <unit>degrees</unit>
+          <ucd>POS_EQ_DEC_MAIN</ucd>
+       </column>
+       <column>
+          <name>Number of Axes</name>
+          <description>Number of axes in the image</description>
+          <dataType>int</dataType>
+          <ucd>VOX:Image_Naxes</ucd>
+       </column>
+       <column>
+          <name>Naxis</name>
+          <description>Size of Image for each dimension</description>
+          <dataType>int</dataType>
+          <ucd>VOX:Image_Naxis</ucd>
+       </column>
+       <column>
+          <name>Scale</name>
+          <description>Scale of Image</description>
+          <dataType>double</dataType>
+          <unit>degrees/pixel</unit>
+          <ucd>VOX:Image_Scale</ucd>
+       </column>
+       <column>
+          <name>Image Format</name>
+          <description>Format of Image</description>
+          <dataType arraysize="*">char</dataType>
+          <ucd>VOX:Image_Format</ucd>
+       </column>
+       <column>
+          <name>Central Frequency</name>
+          <description>Frequency at center of the image wavehand</description>
+          <dataType>double</dataType>
+          <unit>Hz</unit>
+          <ucd>VOX:BandPass_RefValue</ucd>
+       </column>
+       <column>
+          <name>Description</name>
+          <description>Image Description</description>
+          <dataType>char</dataType>
+          <ucd>VOX:Image_Title</ucd>
+       </column>
+       <column>
+          <name>Source Types</name>
+          <description>a list of Source Types associated with this image</description>
+          <dataType arraysize="*">char</dataType>
+       </column>
+       <column>
+          <name>Telescopes</name>
+          <description>a list of Telescopes used to create this image</description>
+          <dataType arraysize="*">char</dataType>
+          <ucd>TEL_ID</ucd>
+       </column>
+       <column>
+          <name>Observation Epoch</name>
+          <description>Upper bound on the epoch of the observations</description>
+          <dataType>double</dataType>
+          <unit>years</unit>
+          <ucd>NVOX:Image_Epoch</ucd>
+       </column>
+       <column>
+          <name>URL</name>
+          <description>The URL for downloading image</description>
+          <dataType arraysize="*">char</dataType>
+          <ucd>VOX:Image_AccessReference</ucd>
+       </column>
+    </vs:table>
+
+    <sia:capability xmlns="http://www.ivoa.net/xml/SIA/v0.7">
+       <imageServiceType>Pointed</imageServiceType>
+       <maxQueryRegionSize>
+          <long>360.0</long>
+          <lat>180.0</lat>
+       </maxQueryRegionSize>
+       <maxImageExtent>
+          <long>360.0</long>
+          <lat>180.0</lat>
+       </maxImageExtent>
+       <maxImageSize>
+          <long>5000</long>
+          <lat>5000</lat>
+       </maxImageSize>
+       <maxFileSize>100000000</maxFileSize>
+       <maxRecords>5000</maxRecords>
+    </sia:capability>
+
+</resource>

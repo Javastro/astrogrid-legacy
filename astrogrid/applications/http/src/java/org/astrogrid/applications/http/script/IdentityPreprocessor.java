@@ -1,4 +1,4 @@
-/* $Id: IdentityPreprocessor.java,v 1.2 2004/09/01 15:42:26 jdt Exp $
+/* $Id: IdentityPreprocessor.java,v 1.3 2005/07/05 08:27:00 clq2 Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -15,7 +15,7 @@ import java.util.Enumeration;
 import org.astrogrid.applications.beans.v1.SimpleParameter;
 import org.astrogrid.applications.beans.v1.WebHttpCall;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.registry.beans.cea.CeaHttpApplicationType;
+import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Tool;
 

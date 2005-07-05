@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationDescription.java,v 1.6 2004/12/18 15:43:57 jdt Exp $
+/*$Id: HttpApplicationDescription.java,v 1.7 2005/07/05 08:27:01 clq2 Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,9 +26,10 @@ import org.astrogrid.applications.description.base.ApplicationDescriptionEnviron
 import org.astrogrid.applications.description.base.BaseApplicationInterface;
 import org.astrogrid.applications.description.base.BaseParameterDescription;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
+import org.astrogrid.applications.description.registry.IvornUtil;
 import org.astrogrid.community.User;
-import org.astrogrid.registry.beans.cea.ApplicationDefinition;
-import org.astrogrid.registry.beans.cea.CeaHttpApplicationType;
+import org.astrogrid.registry.beans.v10.cea.ApplicationDefinition;
+import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
@@ -49,12 +50,12 @@ public class HttpApplicationDescription extends AbstractApplicationDescription {
         super(env);
         if (log.isTraceEnabled()) {
             log.trace("HttpApplicationDescription(CeaHttpApplicationType application = " + application
-                    + ", String communityName = " + env.getAuthIDResolver().getAuthorityID() + ", ApplicationDescriptionEnvironment env = " + env
+                    +  ", ApplicationDescriptionEnvironment env = " + env
                     + ") - start");
         }
 
         this.application = application;
-        createMetadata(env.getAuthIDResolver().getAuthorityID());
+        createMetadata();
 
         if (log.isTraceEnabled()) {
             log.trace("HttpApplicationDescription(WebHttpApplication, String, ApplicationDescriptionEnvironment) - end");
@@ -69,12 +70,10 @@ public class HttpApplicationDescription extends AbstractApplicationDescription {
      * 
      * @TODO - currently assumes a single interface....change this
      */
-    protected final void createMetadata(String communityName) {
-        if (log.isTraceEnabled()) {
-            log.trace("createMetadata(String communityName = " + communityName + ") - start");
-        }
-
-        setName(communityName + "/" + application.getIdentifier().getResourceKey());
+    protected final void createMetadata() {
+       //remove the ivo:// for now...
+       //TODO ivo:// should be the prefix on all of the names - has implications on the way that jes etc call this though...
+        setName(IvornUtil.removeProtocol(application.getIdentifier()));
         log.debug("Name: " + getName());
 
         final ApplicationDefinition applicationDefinition = application.getApplicationDefinition();
@@ -187,6 +186,18 @@ public class HttpApplicationDescription extends AbstractApplicationDescription {
 
 /*
  * $Log: HttpApplicationDescription.java,v $
+ * Revision 1.7  2005/07/05 08:27:01  clq2
+ * paul's 559b and 559c for wo/apps and jes
+ *
+ * Revision 1.6.66.1  2005/06/09 08:47:32  pah
+ * result of merging branch cea_pah_559b into HEAD
+ *
+ * Revision 1.6.52.2  2005/06/08 22:10:46  pah
+ * make http applications v10 compliant
+ *
+ * Revision 1.6.52.1  2005/05/31 12:51:43  pah
+ * moved to v10 schema interpretation - this means that the authorityID is read directly with the applicaion "name"
+ *
  * Revision 1.6  2004/12/18 15:43:57  jdt
  * merge from  cea_pah_561b
  *

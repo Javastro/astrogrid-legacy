@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationDescriptionLibrary.java,v 1.7 2004/12/18 15:43:57 jdt Exp $
+/*$Id: HttpApplicationDescriptionLibrary.java,v 1.8 2005/07/05 08:27:01 clq2 Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,20 +10,23 @@
 **/
 package org.astrogrid.applications.http;
 
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.http.registry.RegistryQuerier;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.astrogrid.registry.beans.cea.CeaHttpApplicationType;
+import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
 
 /** 
  * library of HttpApplication application descriptions.
+ * @TODO there is a problem in this queries registry immediately on creation - this is pain as tomcat shuts down as object gets created again just to shut down...
  * @author JDT
  *
  */
@@ -49,6 +52,7 @@ public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptio
         }
 
         this.querier = querier;
+        //FIXME  - this population needs to be done lazily - bad having it done in constructor with the
         populate();
 
         if (log.isTraceEnabled()) {
@@ -113,6 +117,21 @@ public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptio
 
 /* 
 $Log: HttpApplicationDescriptionLibrary.java,v $
+Revision 1.8  2005/07/05 08:27:01  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.7.66.2  2005/07/04 08:04:07  pah
+put in comment about the description library being populated in the constructor a BAD thing - causes problems on tomcat shutdown
+
+Revision 1.7.66.1  2005/06/09 08:47:33  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.7.52.2  2005/06/02 14:57:29  pah
+merge the ProvidesVODescription interface into the MetadataService interface
+
+Revision 1.7.52.1  2005/05/31 12:51:43  pah
+moved to v10 schema interpretation - this means that the authorityID is read directly with the applicaion "name"
+
 Revision 1.7  2004/12/18 15:43:57  jdt
 merge from  cea_pah_561b
 

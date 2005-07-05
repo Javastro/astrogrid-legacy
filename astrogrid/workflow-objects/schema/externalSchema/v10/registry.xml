@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource xsi:type="vg:Registry"
+  xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
+  xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
+  xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3"
+  xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v0.10
+                      VOResource-v0.10.xsd
+                      http://www.ivoa.net/xml/VORegistry/v0.3
+                      VORegistry-v0.3.xsd
+                      http://www.ivoa.net/xml/VODataService/v0.5
+                      VODataService-v0.5.xsd">
+
+    <title>NCSA NVO Publishing Registry</title>
+    <shortName>RAI registry</shortName>
+    <identifier>ivo://nvo.ncsa/registry</identifier>
+
+    <curation>
+      <publisher ivo-id="ivo://rai.ncsa/RAI">
+         NCSA Radio Astronomy Imaging
+      </publisher>
+      <creator>
+        <name>Ramon Williamson</name>
+        <logo>http://rai.ncsa.uiuc.edu/rai.jpg</logo>
+      </creator>
+      <date>2003-01-01</date>
+      <contact>
+        <name>Ramon Williamson</name>
+	<email>rai@ncsa.uiuc.edu</email>
+      </contact>
+    </curation>
+
+    <content>
+      <subject>data repositories</subject>
+      <subject>digital libraries</subject>
+      <description>
+         This registry provides a simple interface for data providers
+         who wish to register a handful of resources. 
+      </description>
+      <referenceURL>http://nvo.ncsa.uiuc.edu/nvoregistration.html</referenceURL>
+      <type>Registry</type>
+      <contentLevel>Research</contentLevel>
+    </content>
+
+    <!--
+      -  Note: there is no standard Registry interface description
+      -  defined at this time.  When this is standardized, the
+      -  interface element will certainly have a different form for 
+      -  registries (most likely type="WebService")
+      -->
+    <interface xsi:type="vs:WebService">
+       <accessURL>http://nvo.ncsa.uiuc.edu/cgi-bin/nvo/oai.pl</accessURL>
+    </interface>
+
+    <vg:managedAuthority>ausvo</vg:managedAuthority>
+    <vg:managedAuthority>irsa.ipac</vg:managedAuthority>
+    <vg:managedAuthority>ned.ipac</vg:managedAuthority>
+    <vg:managedAuthority>rai.ncsa</vg:managedAuthority>
+    <vg:managedAuthority>nvo.ncsa</vg:managedAuthority>
+    <vg:managedAuthority>adil.ncsa</vg:managedAuthority>
+
+</resource>

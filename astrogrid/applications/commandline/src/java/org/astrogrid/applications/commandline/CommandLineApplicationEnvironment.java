@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationEnvironment.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: CommandLineApplicationEnvironment.java,v 1.3 2005/07/05 08:27:01 clq2 Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -23,7 +23,9 @@ import java.net.URLEncoder;
  * @since iteration4
  */
 public class CommandLineApplicationEnvironment {
-    public interface WorkingDir {
+    public static final String CEA_OUTPUT_LOG = "cea-output.log";
+   public static final String CEA_ERROR_LOG = "cea-error.log";
+   public interface WorkingDir {
         File getDir();
     }
    /**
@@ -61,8 +63,8 @@ public class CommandLineApplicationEnvironment {
       
       executionId = idgen.getNewID();
       logger.info("new execution id="+executionId);
-      executionDirectory =
-         new File(workingDirectory.getDir(),URLEncoder.encode(executionId));
+      executionDirectory = createExecutionDirectoryName(executionId, workingDirectory);
+         
       if (!executionDirectory.exists()) {
 
          if (!executionDirectory.mkdir()) {
@@ -81,8 +83,8 @@ public class CommandLineApplicationEnvironment {
       }
       tempFileFactory = new TempFileFactory();
       // lets give these meaningful names.
-      errorLog = new File(executionDirectory,"cea-error.log"); //tempFileFactory.createFile();
-      outputLog = new File(executionDirectory,"cea-output.log"); //tempFileFactory.createFile();
+      errorLog = new File(executionDirectory,CEA_ERROR_LOG); //tempFileFactory.createFile();
+      outputLog = new File(executionDirectory,CEA_OUTPUT_LOG); //tempFileFactory.createFile();
    }
 
    /**
@@ -116,7 +118,15 @@ public class CommandLineApplicationEnvironment {
    public File getOutputLog() {
       return outputLog;
    }
-   
+   /**
+    * Create the unique execution directory name from the executionId and working directory.
+    * @param exid
+    * @param wd
+    * @return the execution directory name - note that it is not created.
+    */
+   public static File createExecutionDirectoryName(String exid, WorkingDir wd){
+      return new File(wd.getDir(),URLEncoder.encode(exid));
+   }
 
 
 }

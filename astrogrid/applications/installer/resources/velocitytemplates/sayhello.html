@@ -1,5 +1,5 @@
 <h1>AstroGrid CEA Installer</h1>
-Version @VERSION@.   Built @NOW@.
+<p>Version @VERSION@.   Built @NOW@.</p>
 <h2>Introduction</h2>
 <br>
 This software will install the AstroGrid CEA component, allowing you to integrate applications with
@@ -49,8 +49,7 @@ The CEA can self-register, constructing the registry entry from the metadata for
     the registry entry, but if you require more control over the registration process please see the CEA <a href="http://www.astrogrid.org/maven/docs/HEAD/applications/index.html">documentation</a>.
 Note:
 <ul>
-    <li>Until bug <a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1158">1158</a> is fixed, the registry entry is v0.9 only</li>
-<li>The http CEA needs to query the registry to discover which SIAP services it is proxying. These entries should be in place first, so that the     self-registration 
+    <li>The http CEA needs to query the registry to discover which SIAP services it is proxying. These entries should be in place first, so that the     self-registration 
     mechanism can correctly build the entry for the CEA server itself. See the registry entry for this <a 
     href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/integrationTests/auto-integration/registry-entries/CEAHttpapps.xml">example service</a>. </li>
 </ul>

@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.12 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.13 2005/07/05 08:26:57 clq2 Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,17 @@
 **/
 package org.astrogrid.applications.component;
 
+
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.CompositeApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.registry.RegistryAdminLocator;
-import org.astrogrid.applications.description.registry.RegistryEntryBuilder;
 import org.astrogrid.applications.description.registry.RegistryUploader;
+import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
 import org.astrogrid.applications.manager.CeaThreadPool;
+import org.astrogrid.applications.manager.DefaultApplicationEnvironmentRetriever;
 import org.astrogrid.applications.manager.DefaultMetadataService;
 import org.astrogrid.applications.manager.DefaultQueryService;
 import org.astrogrid.applications.manager.ExecutionController;
@@ -65,6 +67,7 @@ import java.util.Iterator;
  * This class also provides a set of static helper method that register 'clusters' of commonly-used components. These
  * can be called from implementations of component manager to quickly set up the basic parts of the system
  * @author Noel Winstanley nw@jb.man.ac.uk 04-May-2004
+ * @TODO might be nice to have rather fewer static methods in this design to allow for overriding in subclasses - easier for a component manager to override just a part of the standard setup.
  * @see org.astrogrid.applications.component.JavaClassCEAComponentManager for example of how to assemble a server using this class.
  *
  */
@@ -133,11 +136,11 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
         // trying something a little more intelligent.. pico.registerComponentImplementation(ExecutionController.class, DefaultExecutionController.class);
         pico.registerComponentImplementation(ExecutionController.class,ThreadPoolExecutionController.class);
         pico.registerComponentImplementation(PooledExecutor.class,CeaThreadPool.class);
-        pico.registerComponentImplementation(MetadataService.class, DefaultMetadataService.class);     
-        pico.registerComponentImplementation(QueryService.class,DefaultQueryService.class);   
+       pico.registerComponentImplementation(QueryService.class,DefaultQueryService.class);   
        registerCompositeApplicationDescriptionLibrary(pico);
        // not added by default - stiches up cea-commandline.
         //registerContainerApplicationDescriptionLibrary(pico);
+       registerEnvironmentRetriever(pico);
         }
     
     /** registers the default implementaiton of the indirection protocol library 
@@ -234,10 +237,18 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
      * @see #SERVICE_ENDPOINT_URL
      */
     protected static final void registerDefaultVOProvider(MutablePicoContainer pico, final Config config) {
-        log.info("Registering default vo provider");
-        try {
-        pico.registerComponentImplementation(ProvidesVODescription.class, RegistryEntryBuilder.class);
-        pico.registerComponentInstance(RegistryEntryBuilder.URLs.class, new RegistryEntryBuilder.URLs() {
+        log.info("Registering default vo provider - note that this is now the MetadataService");
+        registerVOProvider(pico, config, DefaultMetadataService.class);        
+  
+    }    
+    /**
+    * @param pico
+    * @param config
+    */
+   public static void registerVOProvider(MutablePicoContainer pico, final Config config, final Class MetadataServ) {
+      try {
+        pico.registerComponentImplementation(MetadataService.class, MetadataServ);
+        pico.registerComponentInstance(DefaultMetadataService.URLs.class, new DefaultMetadataService.URLs() {
             private final URL registryTemplate = config.getUrl(REGISTRY_TEMPLATE_URL,EmptyCEAComponentManager.class.getResource("/CEARegistryTemplate.xml"));         
             private final URL serviceEndpoint = config.getUrl(SERVICE_ENDPOINT_URL,new URL("http://localhost:8080/astrogrid-cea-server/services/CommonExecutionConnectorService"));
             public URL getRegistryTemplate() {
@@ -258,10 +269,10 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
         } catch (MalformedURLException e) {
             // unlikely this will happen
             log.fatal("Could could not register the vo provider " + e);
-        }        
-  
-    }    
-    /** register optional component that uploads vodescription to registry on startup.  */
+        }
+   }
+
+   /** register optional component that uploads vodescription to registry on startup.  */
     protected static final void registerDefaultRegistryUploader(MutablePicoContainer pico) {
         log.info("Registering default registry uploader");
         pico.registerComponentImplementation(RegistryUploader.class);    
@@ -325,11 +336,33 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
        }); 
     }
 
+   public static void registerEnvironmentRetriever(final MutablePicoContainer pico)
+   {
+      logger.info("registering Default Environment Retriever");
+      pico.registerComponentImplementation(ApplicationEnvironmentRetriver.class, DefaultApplicationEnvironmentRetriever.class);
+   }
+   
+   
 }
 
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
+Revision 1.13  2005/07/05 08:26:57  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.12.42.2  2005/06/14 09:49:32  pah
+make the http cec only register itself as a ceaservice - do not try to reregister any cea applications that it finds
+
+Revision 1.12.42.1  2005/06/09 08:47:32  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.12.28.2  2005/06/03 16:01:48  pah
+first try at getting commandline execution log bz#1058
+
+Revision 1.12.28.1  2005/06/02 14:57:28  pah
+merge the ProvidesVODescription interface into the MetadataService interface
+
 Revision 1.12  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 

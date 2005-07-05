@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationDescriptionLibraryTest.java,v 1.3 2004/11/27 13:20:02 pah Exp $
+/*$Id: HttpApplicationDescriptionLibraryTest.java,v 1.4 2005/07/05 08:26:56 clq2 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -30,7 +30,6 @@ public class HttpApplicationDescriptionLibraryTest extends TestCase {
     private HttpApplicationDescriptionLibrary httpApplicationDescriptionLibrary;
 
     public final void testHttpApplicationDescriptionLibrary() {
-        //@TODO Implement HttpApplicationDescriptionLibrary().
     }
 
     public void setUp() throws MarshalException, ValidationException, IOException {
@@ -39,7 +38,7 @@ public class HttpApplicationDescriptionLibraryTest extends TestCase {
        DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
        TestAuthority resol = new TestAuthority();
       ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(id, lib, resol);
-      httpApplicationDescriptionLibrary = new HttpApplicationDescriptionLibrary(new TestRegistryQuerier(),  env);  
+      httpApplicationDescriptionLibrary = new HttpApplicationDescriptionLibrary(new TestRegistryQuerier(null),  env);  
     }
     /*
      * Class under test for String getDescription()

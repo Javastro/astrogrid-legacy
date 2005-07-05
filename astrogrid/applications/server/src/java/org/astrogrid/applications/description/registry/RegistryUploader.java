@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryUploader.java,v 1.6 2004/11/27 13:20:03 pah Exp $
+ * $Id: RegistryUploader.java,v 1.7 2005/07/05 08:26:57 clq2 Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.applications.component.ProvidesVODescription;
+import org.astrogrid.applications.manager.MetadataService;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
@@ -40,13 +40,13 @@ import org.w3c.dom.Document;
  * @version $Name:  $
  * @since iteration5
  */
-public class RegistryUploader implements Startable, ComponentDescriptor{
+public class RegistryUploader implements  ComponentDescriptor{
     /**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(RegistryUploader.class);
 
-   private final ProvidesVODescription provider;
+   private final MetadataService provider;
 
    private final RegistryAdminLocator adminLocator;
 
@@ -55,7 +55,7 @@ public class RegistryUploader implements Startable, ComponentDescriptor{
  * @param provider component that provides the vodescription to upload
  * @param adminLocator compoent that provides a registry delegate.
  */
-   public RegistryUploader(ProvidesVODescription provider, RegistryAdminLocator adminLocator){
+   public RegistryUploader(MetadataService provider, RegistryAdminLocator adminLocator){
       this.provider = provider;
       this.adminLocator = adminLocator;
     }
@@ -76,33 +76,8 @@ public class RegistryUploader implements Startable, ComponentDescriptor{
           delegate = RegistryDelegateFactory.createAdmin(new URL(endpoint));
        }
        logger.info("registering this service with registry");//TODO would be nice if the registry delegate would identify the endpoint
-       DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-       //TODO testme
-       Document doc = builder.newDocument();
-       Marshaller marshaller = new Marshaller(doc);
-       marshaller.marshal(provider.getVODescription());
-       delegate.update(doc);
+       delegate.update(provider.returnRegistryEntry());
        
-    }
-
-    /**calls {@link #write}, logging errors.
-     * @TODO - perhaps re-enable this one day when we have a good way of getting hold of the service end point in time.
-     * @see org.picocontainer.Startable#start()
-     */
-    public void start() {
-       
-//        try {
-//          
-//            this.write();
-//        } catch (Exception e) {
-//            logger.error("start()", e);
-//        }
-    }
-
-    /**
-     * @see org.picocontainer.Startable#stop()
-     */
-    public void stop() {
     }
 
     /**

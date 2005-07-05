@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoaderTest.java,v 1.8 2005/03/13 07:13:39 clq2 Exp $
+ * $Id: CommandLineDescriptionsLoaderTest.java,v 1.9 2005/07/05 08:27:01 clq2 Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,33 +13,21 @@
 
 package org.astrogrid.applications.commandline.digester;
 
+
 import org.astrogrid.applications.beans.v1.types.SwitchTypes;
 import org.astrogrid.applications.commandline.CommandLineApplicationDescription;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.commandline.DescriptionBaseTestCase;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.Cardinality;
 import org.astrogrid.applications.description.ParameterDescription;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotLoadedException;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
-import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
-import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 
-import org.picocontainer.Parameter;
-import org.picocontainer.PicoException;
-import org.picocontainer.defaults.ComponentParameter;
-import org.picocontainer.defaults.ConstantParameter;
-import org.picocontainer.defaults.ConstructorInjectionComponentAdapter;
-import org.picocontainer.defaults.DefaultPicoContainer;
-
-import java.io.File;
-import java.net.URL;
 
 /**
  * Tests the description loader. Expects to find a a file
@@ -52,6 +40,13 @@ import java.net.URL;
 public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
 
     protected CommandLineDescriptionsLoader dl;
+    /**
+    * 
+    */
+   public CommandLineDescriptionsLoaderTest() {
+
+     this("");
+   }
 
     /**
      * Constructor for DescriptionLoaderTest.
@@ -68,44 +63,8 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        final File workingDir = File.createTempFile("DescriptionLoaderTest",
-                null);
-        workingDir.delete();
-        workingDir.mkdir();
-        assertTrue(workingDir.exists());
-        workingDir.deleteOnExit();
-        DefaultPicoContainer container = new DefaultPicoContainer();
-        container.registerComponent(new ConstructorInjectionComponentAdapter(
-                CommandLineApplicationDescription.class,
-                CommandLineApplicationDescription.class,
-                new Parameter[]{new ComponentParameter(ApplicationDescriptionEnvironment.class), new ConstantParameter(container)}                                
-                ));
-        container.registerComponentImplementation(InMemoryIdGen.class);
-        container.registerComponentImplementation(DefaultProtocolLibrary.class);
-        container.registerComponentInstance(BaseApplicationDescriptionLibrary.AppAuthorityIDResolver.class, new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver(){/* (non-Javadoc)
-       * @see org.astrogrid.applications.description.BaseApplicationDescriptionLibrary.AppAuthorityIDResolver#getAuthorityID()
-       */
-      public String getAuthorityID() {
-        return "org.astrogrid.test";
-      }});
-        container
-                .registerComponentImplementation(ApplicationDescriptionEnvironment.class);
-
-        try {
-            container.verify();
-        }
-        catch (PicoException t) {
-            t.printStackTrace();
-            fail("Container misconfigured");
-        }
-        dl = new CommandLineDescriptionsLoader(
-                new CommandLineDescriptionsLoader.DescriptionURL() {
-
-                    public URL getURL() {
-                        return inputFile;
-                    }
-                }, new CommandLineApplicationDescriptionFactory(container),(ApplicationDescriptionEnvironment)container.getComponentInstanceOfType(ApplicationDescriptionEnvironment.class));
-        assertNotNull("cannot create the DescriptionLoader", dl);
+        dl = TestCmdDescriptionLoaderFactory.createDescriptionLoader(inputFile);
+      assertNotNull("cannot create the DescriptionLoader", dl);
 
     }
 
@@ -114,7 +73,7 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
             ParameterNotInInterfaceException, ParameterDescriptionNotFoundException {
 
         try {
-            assertEquals("there should be 3 apps defined", 3, dl
+            assertEquals("there should be 4 apps defined", 4, dl
                     .getApplicationNames().length);
             ApplicationDescription x = dl.getDescription(TESTAPPNAME);
             assertTrue(x instanceof CommandLineApplicationDescription);

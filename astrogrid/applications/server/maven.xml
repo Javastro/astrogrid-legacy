@@ -8,9 +8,7 @@
   <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,war" />
 
   <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,war:install-snapshot" />
-    <goal name="astrogrid-install-artifact" prereqs="jar:install,war:install" />
-
-
+  <goal name="astrogrid-install-artifact" prereqs="jar:install,war:install" />
   <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,war:deploy-snapshot" />
   <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy" />
   <!-- hooks into existing goals -->

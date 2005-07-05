@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractorCommandLineFormationTest.java,v 1.1 2004/10/05 16:04:45 pah Exp $
+ * $Id: SExtractorCommandLineFormationTest.java,v 1.2 2005/07/05 08:26:56 clq2 Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ public class SExtractorCommandLineFormationTest extends AbstractCmdLineRealAppTe
         super(new TestAppInfo(){
 
             public String getAppName() {
-               return "REGAUTHORITY.SExtractor";
+               return "org.astrogrid/SExtractor";
             }
 
             public String getConfigFileName() {

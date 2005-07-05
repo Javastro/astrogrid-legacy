@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+	<author email="pah@jb.man.ac.uk">Paul Harrison</author>
+	<title>CEA CommandLine CEC Information</title>
+</properties>
+
+<body>
+<section name="Commandline Common execution Controller">
+
+<p>This is the CommandLine Common Execution Controller (CEC) component that provides a framework to quickly wrap legacy command line applications.</p>
+<p>The applications that have already been integrated are contained in the config subdirectory in the CeaApplicationConfig.xml file. There is a test application that is used in both the unit and integration tests configured in the test source tree.</p>
+</section>
+</body>
+</document>

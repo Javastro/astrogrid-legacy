@@ -1,4 +1,4 @@
-/*$Id: CEAComponentManagerFactoryTest.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: CEAComponentManagerFactoryTest.java,v 1.3 2005/07/05 08:27:00 clq2 Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ public class CEAComponentManagerFactoryTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         CEAComponentManagerFactory.clearInstance();
-        JavaClassCEAComponentManagerTest.setupConfigForJavaClassComponentManager();
+        JavaClassCEAComponentManagerTest.basicConfig();
     }
     public void testDefaulttGetInstance() {
         CEAComponentManager man = CEAComponentManagerFactory.getInstance();
@@ -61,6 +61,15 @@ public class CEAComponentManagerFactoryTest extends TestCase {
 
 /* 
 $Log: CEAComponentManagerFactoryTest.java,v $
+Revision 1.3  2005/07/05 08:27:00  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.2.172.1  2005/06/09 08:47:32  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.2.158.1  2005/06/03 16:01:48  pah
+first try at getting commandline execution log bz#1058
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<xs:schema targetNamespace="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.10" schemaLocation="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\externalSchema\v10\VOResource-v0.10.xsd"/>
+	<xs:element name="VODescription">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="VOResouce" type="Resource"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

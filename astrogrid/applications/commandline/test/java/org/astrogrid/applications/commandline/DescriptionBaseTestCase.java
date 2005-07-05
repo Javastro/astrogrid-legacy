@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionBaseTestCase.java,v 1.4 2004/11/27 13:20:02 pah Exp $
+ * $Id: DescriptionBaseTestCase.java,v 1.5 2005/07/05 08:26:56 clq2 Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,6 +14,9 @@
 package org.astrogrid.applications.commandline;
 
 import java.net.URL;
+
+import org.astrogrid.applications.component.EmptyCEAComponentManager;
+import org.astrogrid.config.SimpleConfig;
 
 import junit.framework.TestCase;
 
@@ -78,6 +81,8 @@ public class DescriptionBaseTestCase extends TestCase {
       {
          TESTAPPNAME = appInfo.getAppName();
       }
+      //have to set this here becasue the CommandLineAppliction now tries to write a message about how to get the log files - but ugly really
+      SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL, "http://dummy.endpoint/");
    }
 
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryEntryBuilderTest.java,v 1.3 2004/11/27 13:20:03 pah Exp $
+/*$Id: RegistryEntryBuilderTest.java,v 1.4 2005/07/05 08:27:00 clq2 Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,20 @@
 **/
 package org.astrogrid.applications.description.registry;
 
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.TestApplicationDescriptionLibrary;
-import org.astrogrid.registry.beans.resource.VODescription;
+import org.astrogrid.common.bean.v1.Namespaces;
+import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
+import org.astrogrid.test.AstrogridAssert;
+import org.astrogrid.test.schema.SchemaMap;
 
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
+import org.w3c.dom.Document;
 
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -25,77 +33,43 @@ import java.net.URL;
 import junit.framework.TestCase;
 
 /**
+ * Test to see if the registry entry is valid in various ways.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-May-2004
+ * @author pharriso@eso.org May 25, 2005
  *
  */
-public class RegistryEntryBuilderTest extends TestCase {
-    /**
+
+public class RegistryEntryBuilderTest extends RegistryEntryBuilderTestBase {
+   /**
      * Constructor for RegistryEntryBuilderNewTest.
      * @param arg0
      */
     public RegistryEntryBuilderTest(String arg0) {
         super(arg0);
     }
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        ApplicationDescriptionLibrary lib = new TestApplicationDescriptionLibrary("astrogrid.org/testapp");
-        RegistryEntryBuilder.URLs urls = new RegistryEntryBuilder.URLs() {
-            URL serviceURL =  new URL("http://locahost:8080/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService");                
-           
-            public URL getRegistryTemplate() {
-                URL template = this.getClass().getResource("/CEARegistryTemplate.xml");
-                assertNotNull(template);
-                return template;        
-             }
-
-            public URL getServiceEndpoint() {
-                return serviceURL;
-                 }
-        };
-        builder = new RegistryEntryBuilder(lib,urls);
-    }
-    
-    protected RegistryEntryBuilder builder;
-    
-    public void testGetDescription() throws Exception{
-        VODescription desc =  builder.getVODescription();
-        assertNotNull(desc);
-        assertTrue(desc.isValid()      );  
-    }
-    public void testRoundTrip() throws Exception {
-      VODescription entry = builder.makeEntry();
-      assertNotNull(entry);
-      StringWriter writer = new StringWriter();
-
-      Marshaller mar = new Marshaller(writer);
-      mar.setDebug(true);
-      mar.setMarshalExtendedType(true);
-      mar.setSuppressXSIType(false);
-      mar.setLogWriter(new PrintWriter(System.out));
-      mar.setMarshalAsDocument(true);
-//    TODO write a castor wiki page about this....      
-      mar.setNamespaceMapping("cea", "http://www.ivoa.net/xml/CEAService/v0.1");
-
-
-      mar.marshal(entry);
-     
-      writer.close();
-      Unmarshaller um = new Unmarshaller(VODescription.class);
-     
-      //TODO Castor bug -will not round trip....
-      VODescription reentry = (VODescription)um.unmarshal(new StringReader(writer.toString()));
-     assertNotNull(reentry);
-     
-      //TODO - should make more extensive tests....
-    }    
+    /**
+    * @return
+    */
+   protected ApplicationDescriptionLibrary createDesciptionLibrary() {
+      return new TestApplicationDescriptionLibrary("astrogrid.org/testapp");
+   }    
 }
 
 
 /* 
 $Log: RegistryEntryBuilderTest.java,v $
+Revision 1.4  2005/07/05 08:27:00  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.3.68.1  2005/06/09 08:47:32  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.3.54.2  2005/06/02 14:57:28  pah
+merge the ProvidesVODescription interface into the MetadataService interface
+
+Revision 1.3.54.1  2005/05/31 12:58:26  pah
+moved to v10 schema interpretation - this means that the authorityID is read directly with the applicaion "name"
+
 Revision 1.3  2004/11/27 13:20:03  pah
 result of merge of pah_cea_bz561 branch
 

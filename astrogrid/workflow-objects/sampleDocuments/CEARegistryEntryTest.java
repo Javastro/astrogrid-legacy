@@ -12,12 +12,12 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.InputSource;
 
-import org.astrogrid.registry.beans.resource.VODescription;
+import org.astrogrid.registry.beans.v10.resource.Resource;
 
 import junit.framework.TestCase;
 
 /*
- * $Id: CEARegistryEntryTest.java,v 1.1 2004/03/23 16:34:16 pah Exp $
+ * $Id: CEARegistryEntryTest.java,v 1.2 2005/07/05 08:26:56 clq2 Exp $
  * 
  * Created on 15-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -54,12 +54,12 @@ public class CEARegistryEntryTest extends TestCase {
         InputStream i2 = this.getClass().getResourceAsStream("mapping.xml");
         InputSource s2 = new InputSource(i2);
         mapping.loadMapping(s2);
-        Unmarshaller um = new Unmarshaller(VODescription.class);
+        Unmarshaller um = new Unmarshaller(Resource.class);
         um.setMapping(mapping);
 //        InputStream istream = this.getClass().getResourceAsStream("/CEARegistyEntry.xml");
         File f1 = new File("/tmp/test.xml");
         FileInputStream istream = new FileInputStream(f1);
         InputSource saxis = new InputSource(istream);
-        VODescription description =  (VODescription)um.unmarshal( saxis);
+        Resource description =  (Resource)um.unmarshal( saxis);
    }
 }

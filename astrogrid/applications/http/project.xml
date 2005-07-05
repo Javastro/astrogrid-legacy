@@ -41,37 +41,8 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-pal-query</artifactId>
-            <version>${astrogrid.pal.version}</version>
-			<!-- pal latest 0.10-000/0.9-010/0.9-009 are causing application/http integrationtests failing, rolling back to 0.9-b002pl for now for only application/http see bug 1091/1120 and 1110-->
-			<!--version>0.9-b002pl</version-->
-            <type>jar</type>
-                <properties>
-                    <war.bundle>true</war.bundle>
-                </properties>        	
-        </dependency>    	
     	
-        <!-- for writing XML -->
-       <dependency>
-          <artifactId>astrogrid-xml</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.xml.latest}</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>       	
-       </dependency>
-
-       <dependency>
-          <artifactId>astrogrid-slinger-api</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.slinger.version}</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>       	
-       </dependency>
-
+ 
     </dependencies>
     <properties/>
 </project>

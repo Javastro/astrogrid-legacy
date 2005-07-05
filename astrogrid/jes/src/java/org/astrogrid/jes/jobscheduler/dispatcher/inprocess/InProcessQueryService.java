@@ -1,4 +1,4 @@
-/*$Id: InProcessQueryService.java,v 1.3 2005/04/25 12:13:54 clq2 Exp $
+/*$Id: InProcessQueryService.java,v 1.4 2005/07/05 08:27:01 clq2 Exp $
  * Created on 07-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
+import org.astrogrid.applications.manager.DefaultApplicationEnvironmentRetriever;
 import org.astrogrid.applications.manager.DefaultQueryService;
 import org.astrogrid.applications.manager.observer.AbstractProgressListener;
 import org.astrogrid.applications.manager.observer.AbstractResultsListener;
@@ -49,7 +50,9 @@ public class InProcessQueryService extends DefaultQueryService {
      * @param jrl results listner component to call back to.
      */
     public InProcessQueryService(ExecutionHistory arg0, JobMonitor jm, ResultsListener jrl) {
-        super(arg0);
+
+       //FIXME - this should be registered in pico - just a quick fix here - the defaultApplicationEnvironment listener might not be appropriate - it just does nothing - probably ok in most of the in-process cases...
+       super(arg0, new DefaultApplicationEnvironmentRetriever(arg0));
         pl = new InprocessProgressListener(jm);
         rl = new InprocessResultsListener(jrl);
     }
@@ -184,6 +187,15 @@ public class InProcessQueryService extends DefaultQueryService {
 }
 /* 
 $Log: InProcessQueryService.java,v $
+Revision 1.4  2005/07/05 08:27:01  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.3.10.2  2005/06/09 10:06:08  pah
+added comment that the application retriever should be registered in pico - if it means anything to retrieve environment in process..
+
+Revision 1.3.10.1  2005/06/09 10:01:15  pah
+added default environment retriever to constructor
+
 Revision 1.3  2005/04/25 12:13:54  clq2
 jes-nww-776-again
 

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+<!--$Id: CeaApplicationConfig.xml,v 1.17 2005/07/05 08:27:01 clq2 Exp $-->
+<!-- Config file for the real applications that have been wrapped so far -->
+<CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CEAImplementation/v1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v1 ../../../workflow-objects/schema/CEAImplementation.xsd">
 	<!-- put the real applications here - note that they are not autodeployed, so the paths are fixed strings - this is more of a registry test....-->
 	<Application name="org.astrogrid/SExtractor" instanceClass="org.astrogrid.applications.commandline.sextractor.SExtractor">
 		<!--This is the application to concentrate on for the end of this iteration-->
-		<Parameters>
+		<ceab:Parameters>
 			<!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
 			<CmdLineParameterDefn name="DetectionImage" type="binary" commandPosition="1" fileRef="true">
 				<agpd:UI_Name>Detection Image</agpd:UI_Name>
@@ -172,8 +173,8 @@
 				<agpd:UI_Name>Checkimage name</agpd:UI_Name>
 				<agpd:UI_Description>file containing the checkimage</agpd:UI_Description>
 			</CmdLineParameterDefn>
-		</Parameters>
-		<Interfaces>
+		</ceab:Parameters>
+		<Interfaces xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
 			<Interface name="simple">
 				<input>
 					<pref ref="DetectionImage"/>
@@ -213,7 +214,7 @@
 	</Application>
 	<Application name="org.astrogrid/HyperZ" instanceClass="org.astrogrid.applications.commandline.hyperz.HyperZ">
 		<!--HyperZ is another tool that will be driven by config files - however this might not be the full set necessary to run this tool.-->
-		<Parameters>
+		<ceab:Parameters>
 			<CmdLineParameterDefn name="config_file" type="binary" commandPosition="1">
 				<agpd:UI_Name>Configuration File</agpd:UI_Name>
 				<agpd:UI_Description>A HyperZ configuration file</agpd:UI_Description>
@@ -243,8 +244,8 @@
 				<agpd:UI_Description>A string specifying the band ordering of the filter definitions</agpd:UI_Description>
 				<agpd:DefaultValue>UGRIZ</agpd:DefaultValue>
 			</CmdLineParameterDefn>
-		</Parameters>
-		<Interfaces>
+		</ceab:Parameters>
+		<Interfaces xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
 			<Interface name="simple">
 				<input>
 					<pref ref="config_file"/>
@@ -271,8 +272,8 @@ M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
 	</Application>
 	<Application name="org.astrogrid/CrossMatcher" instanceClass="org.astrogrid.applications.commandline.dft.Dft">
 		<!--This is Patricio's data federation tool that will be needed for the january demo I believe - It is more complicated than those above in that it has more different types of parameter. Additionally I think that it would be good for the UI to be able to look into the VOTables to give the user a list of columns to chose from - otherwise this would be a very painful process for the user.-->
-		<!-- these parameters are incorrect in the latest verison of the tool -->
-		<Parameters>
+		<!-- these ceab:Parameters are incorrect in the latest verison of the tool -->
+		<ceab:Parameters>
 			<CmdLineParameterDefn name="targets" type="VOTable" switchType="keyword">
 				<agpd:UI_Name>Target votable</agpd:UI_Name>
 				<agpd:UI_Description>The VOTable file containing the target sources</agpd:UI_Description>
@@ -310,8 +311,8 @@ M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
 				<agpd:UI_Name>maximum number of matches per target</agpd:UI_Name>
 				<agpd:UI_Description>maximum number of matches per target</agpd:UI_Description>
 			</CmdLineParameterDefn>
-		</Parameters>
-		<Interfaces>
+		</ceab:Parameters>
+		<Interfaces xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
 			<Interface name="simple">
 				<input>
 					<pref ref="targets" maxoccurs="1"/>
@@ -338,7 +339,7 @@ M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
 	</Application>
 	<Application name="org.astrogrid/BPZ">
 		<!--Another photometric redshift tool - need to complete the parameter definitions...-->
-		<Parameters>
+		<ceab:Parameters>
 			<CmdLineParameterDefn type="binary" name="DATA" fileRef="true" commandPosition="1">
 				<agpd:UI_Name>Input data</agpd:UI_Name>
 				<agpd:UI_Description>File containing the input photometry</agpd:UI_Description>
@@ -455,8 +456,8 @@ M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
 				<agpd:UI_Description>produce plots</agpd:UI_Description>
 				<agpd:DefaultValue>no</agpd:DefaultValue>
 			</CmdLineParameterDefn>
-		</Parameters>
-		<Interfaces>
+		</ceab:Parameters>
+		<Interfaces xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
 			<!--could have an interface that used a config file also-->
 			<Interface name="simple">
 				<input>
@@ -476,7 +477,7 @@ M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
 	</Application>
 	<Application name="org.astrogrid/swarp">
 		<!--can resample images - only define the very simplest interface at the moment - using a parameter files-->
-		<Parameters>
+		<ceab:Parameters>
 			<CmdLineParameterDefn name="Image" type="FITS" commandPosition="1" fileRef="true">
 				<agpd:UI_Name>Detection Image</agpd:UI_Name>
 				<agpd:UI_Description>The image that is used to detect sources. Basic position, shape and size informtaion is derived from this image</agpd:UI_Description>
@@ -489,8 +490,8 @@ M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
 				<agpd:UI_Name>Output Image</agpd:UI_Name>
 				<agpd:UI_Description>The resampled and possibly coadded output image</agpd:UI_Description>
 			</CmdLineParameterDefn>
-		</Parameters>
-		<Interfaces>
+		</ceab:Parameters>
+		<Interfaces xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
 			<Interface name="simple">
 				<input>
 					<pref ref="Image"/>
@@ -507,12 +508,12 @@ M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
 		<ReferenceURL>http://terapix.iap.fr/rubrique.php?id_rubrique=49</ReferenceURL>
 	</Application>
 	<Application name="org.astrogrid/annz">
-		<Parameters>
+		<ceab:Parameters>
 			<CmdLineParameterDefn name="INPUT_PHOTOM" type="binary" commandPosition="1"/>
 			<CmdLineParameterDefn name="OUTPUT" type="binary" commandPosition="2"/>
 			<CmdLineParameterDefn name="NET_WEIGHT" type="binary" commandPosition="3"/>
-		</Parameters>
-		<Interfaces>
+		</ceab:Parameters>
+		<Interfaces xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
 			<Interface name="simple">
 				<input>
 					<pref ref="INPUT_PHOTOM"/>
@@ -528,7 +529,7 @@ M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
 		<ReferenceURL>http://www.ast.cam.ac.uk/~aac/</ReferenceURL>
 	</Application>
 	<Application name="org.astrogrid/Pegase">
-		<Parameters>
+		<ceab:Parameters>
 			<CmdLineParameterDefn  name="IMF" type="integer" fileRef="false">
 				<agpd:UI_Name>Initial Mass Function</agpd:UI_Name>
 				<agpd:UI_Description>
@@ -662,9 +663,9 @@ M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
 			<CmdLineParameterDefn type="binary" name="COLOURS" fileRef="true" localFileName="colours1.dat">
 				<agpd:UI_Name>Synthesized colours</agpd:UI_Name>
 			</CmdLineParameterDefn>
-		</Parameters>
+		</ceab:Parameters>
 		
-		<Interfaces>
+		<Interfaces xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
 			<Interface name="simple">
 				<input>
 					<pref ref="IMF"></pref>
@@ -699,7 +700,7 @@ M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
 		<ReferenceURL>http://www2.iap.fr/users/fioc/PEGASE.html</ReferenceURL>
 	</Application>
 	<Application name="org.astrogrid/Starburst99">
-		<Parameters>
+		<ceab:Parameters>
 		 <CmdLineParameterDefn name="NAME" type="text" fileRef="false">
 				<agpd:UI_Name>NAME</agpd:UI_Name>
 				<agpd:UI_Description>any identifier you want to assign to the model. You will find
@@ -952,8 +953,8 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</agpd:UI_Name>
 				<agpd:UI_Name>wrlines</agpd:UI_Name>
 				<agpd:UI_Description>output file</agpd:UI_Description>
 		</CmdLineParameterDefn>
-	   </Parameters>
-		<Interfaces>
+	   </ceab:Parameters>
+		<Interfaces xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
 			<Interface name="full">
 				<input>
 					<pref ref="NAME"/>
@@ -1006,7 +1007,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</agpd:UI_Name>
 		<ReferenceURL>http://www.stsci.edu/science/starburst99/</ReferenceURL>
 	</Application>
 	<Application name="org.astrogrid/Galaxev">
-		<Parameters>
+		<ceab:Parameters>
 			<CmdLineParameterDefn  name="CONFIGFILE" type="text" commandPosition="1">
 				<agpd:UI_Name>Config File</agpd:UI_Name>
 				<agpd:UI_Description>Padovani style config file</agpd:UI_Description>
@@ -1035,8 +1036,8 @@ SDSS filters as function of galaxy Age</agpd:UI_Description>
 				<agpd:UI_Description> Magnitude
 redshift evolution in FILTER1</agpd:UI_Description>
 			</CmdLineParameterDefn>
-			</Parameters>
-		<Interfaces>
+			</ceab:Parameters>
+		<Interfaces xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
 			<Interface name="simple">
 				<input>
 					<pref ref="CONFIGFILE"/>

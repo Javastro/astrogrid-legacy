@@ -2,5 +2,10 @@
 <!-- does not do anything for now - did not seem to work -->
 <mapping xmlns="http://castor.exolab.org/" 
     xmlns:cst="http://castor.exolab.org/">
-    <description>Castor generated mapping file</description>
+    <description>Castor mapping file to deal with substitution groups</description>
+ 	<class name="org.astrogrid.applications.beans.v1.cea.implementation.CmdLineParameterDefn" extends="org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition">
+		<map-to xml="CmdLineParameterDefn" ns-uri="http://www.astrogrid.org/schema/CEAImplementation/v1"/>
+		
+	</class>
+ 
  </mapping>

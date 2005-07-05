@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- this is a test service that is written in a wrapped document/literal style -->
+<wsdl:definitions
+    name="TestWS"
+    targetNamespace="urn:astrogrid:cea:testwebapp"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tns="urn:astrogrid:cea:testwebapp"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:wrapper="urn:astrogrid:cea:testwebapp:wrapper">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">A test web service for CEA proxy</wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema
+            targetNamespace="urn:astrogrid:cea:testwebapp:wrapper"
+            xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:xsd1="nullUntitled.xsd1">
+           <xsd:element name="multiply">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="r1" type="xsd:float" />
+                        <xsd:element name="r2" type="xsd:float" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+           <xsd:element name="multiplyResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="answer" type="xsd:float" />
+                     </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+           <xsd:element name="add">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="I1" type="xsd:int" />
+                        <xsd:element name="I2" type="xsd:int" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+           <xsd:element name="addResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="answer" type="xsd:int" />
+                        <!-- what would happen with two responses?
+                        <xsd:element name="answerNeg" type="xsd:int" />
+                        lets not support this for now -->
+                     </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+             
+             </xsd:schema>
+    </wsdl:types>
+    <!-- .Net users the part name parameters as a key that this is wrapped rpc --> 
+    <wsdl:message name="multiply">
+        <wsdl:part name="parameters" element="wrapper:multiply"/>
+    </wsdl:message>
+    <wsdl:message name="multiplyResponse">
+        <wsdl:part name="parameters" element="wrapper:multiplyResponse"/>
+    </wsdl:message>
+    <wsdl:message name="add">
+        <wsdl:part name="parameters" element="wrapper:add"/>
+    </wsdl:message>
+    <wsdl:message name="addResponse">
+        <wsdl:part name="parameters" element="wrapper:addResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="WSTest">
+        <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This is a test port</wsdl:documentation>
+        <wsdl:operation name="multiply">
+            <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">multiply two numbers</wsdl:documentation>
+            <wsdl:input message="tns:multiply">
+                <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">the numbers to multiply</wsdl:documentation>
+            </wsdl:input>
+            <wsdl:output message="tns:multiplyResponse">
+                <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">the answer when two numbers are multiplied</wsdl:documentation>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="add">
+            <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">add two numbers</wsdl:documentation>
+            <wsdl:input message="tns:add">
+                <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">the numbers to multiply</wsdl:documentation>
+            </wsdl:input>
+            <wsdl:output message="tns:addResponse">
+                <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">the answer when two numbers are multiplied</wsdl:documentation>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="WSTestSOAPBinding" type="tns:WSTest">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="multiply">
+            <soap:operation
+                soapAction="multiply"
+                style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+       <wsdl:operation name="add">
+            <soap:operation
+                soapAction="add"
+                style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+        <wsdl:service name="WSTestService">
+        <wsdl:port
+            binding="tns:WSTestSOAPBinding"
+            name="WSTest">
+            <soap:address location="http://localhost:8080/axis/services/ResultsListenerService"/>
+        </wsdl:port>
+    </wsdl:service>
+    
+</wsdl:definitions>

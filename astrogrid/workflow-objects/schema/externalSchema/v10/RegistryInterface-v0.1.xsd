@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.ivoa.net/xml/RegistryInterface/v0.1"
+	 xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7"
+	 xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2"
+	 xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" 
+	 xmlns:vd="http://www.ivoa.net/xml/VODataService/v0.5"
+	 xmlns:vreg="http://www.ivoa.net/xml/VORegistry/v0.3"
+	 xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
+	 xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	 xmlns="http://www.w3.org/2001/XMLSchema" 
+	 elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.10">
+	<annotation>
+		<documentation>
+        Application schema used by the IVOA Registry Interface.  
+      </documentation>
+	</annotation>
+	<import namespace="http://www.ivoa.net/xml/VOResource/v0.10" schemaLocation="VOResource-v0.10.xsd"/>
+	<import namespace="http://www.ivoa.net/xml/VORegistry/v0.3" schemaLocation="VORegistry-v0.3.xsd"/>
+	<import namespace="http://www.ivoa.net/xml/VODataService/v0.5" schemaLocation="VODataService-v0.5.xsd"/>
+	<import namespace="http://www.ivoa.net/xml/ConeSearch/v0.3" schemaLocation="ConeSearch-v0.3.xsd"/>
+	<import namespace="http://www.ivoa.net/xml/SIA/v0.7" schemaLocation="SIA-v0.7.xsd"/>
+	<!-- this has been added to standard distrib - pah-->
+	<import namespace="http://www.ivoa.net/xml/CEAService/v0.2" schemaLocation="../../VOCEA-v0.2.xsd"/>
+	<element name="VOResources">
+		<complexType>
+			<sequence>
+				<element name="Resource" type="vr:Resource" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>
+

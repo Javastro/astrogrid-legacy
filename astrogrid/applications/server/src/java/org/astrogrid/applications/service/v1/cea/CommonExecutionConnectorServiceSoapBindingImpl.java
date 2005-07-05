@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.11 2004/11/27 13:20:03 pah Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.12 2005/07/05 08:27:01 clq2 Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -30,6 +30,7 @@ import org.astrogrid.workflow.beans.v1.axis._tool;
 
 import org.apache.axis.description.ServiceDesc;
 import org.apache.axis.types.URI;
+import org.apache.axis.utils.XMLUtils;
 
 import java.rmi.RemoteException;
 
@@ -218,7 +219,7 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
  public String returnRegistryEntry() throws RemoteException, CeaFault
  {
      try {
-         return CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
+         return XMLUtils.DocumentToString(CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry());
      } catch (Exception e) {
 		 logger.error("returnRegistryEntry()", e);
          throw CeaFault.makeFault(e);       

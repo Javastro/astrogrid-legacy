@@ -1,5 +1,5 @@
 /*
- * $Id: BaseParameterDescription.java,v 1.3 2004/07/26 00:58:22 nw Exp $
+ * $Id: BaseParameterDescription.java,v 1.4 2005/07/05 08:27:01 clq2 Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -67,13 +67,13 @@ public class BaseParameterDescription implements ParameterDescription {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return "Parameter: " + getName() + " :: " + getType()  +  (getSubType() != null ? "(" + getSubType() + ")" : "")                        
-            + (getDefaultValue() != "" ? "\n\t Default Value: " + getDefaultValue(): "")
-            + (getDisplayName() != "" ? "\n\t Display Name: " + getDisplayName():"")
-            + (getDisplayDescription() != "" ? "\n\t Display Description: " + getDisplayDescription():"")
-            + (getUcd() != "" ? "\n\t UCD: " + getUcd():"")
-            + (getUnits() != "" ? "\n\t Units: " + getUnits():"")
-            + (getAcceptEncodings() != "" ? "\n\t Accept Encodings: " + getAcceptEncodings():"");
+        return "Parameter: " + getName() + " /" + getType()  +  (getSubType() != null ? "(" + getSubType() + ")/" : "")                        
+            + (getDefaultValue() != "" ? "::Default Value: " + getDefaultValue(): "")
+            + (getDisplayName() != "" ? " ::Display Name: " + getDisplayName():"")
+            + (getDisplayDescription() != "" ? "::Display Description: " + getDisplayDescription():"")
+            + (getUcd() != "" ? "::UCD: " + getUcd():"")
+            + (getUnits() != "" ? "::Units: " + getUnits():"")
+            + (getAcceptEncodings() != "" ? "::Accept Encodings: " + getAcceptEncodings():"");
             
     }
 

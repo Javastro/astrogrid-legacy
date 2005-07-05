@@ -1,4 +1,4 @@
-/* $Id: HttpApplication.java,v 1.8 2004/10/21 10:05:12 pah Exp $
+/* $Id: HttpApplication.java,v 1.9 2005/07/05 08:27:01 clq2 Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,7 @@ import org.astrogrid.applications.http.script.Preprocessor;
 import org.astrogrid.applications.http.script.XSLTPreprocessor;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.registry.beans.cea.CeaHttpApplicationType;
+import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
@@ -244,6 +244,15 @@ public boolean execute() throws CeaException {
 
 /*
  * $Log: HttpApplication.java,v $
+ * Revision 1.9  2005/07/05 08:27:01  clq2
+ * paul's 559b and 559c for wo/apps and jes
+ *
+ * Revision 1.8.80.1  2005/06/09 08:47:32  pah
+ * result of merging branch cea_pah_559b into HEAD
+ *
+ * Revision 1.8.66.1  2005/05/31 12:51:43  pah
+ * moved to v10 schema interpretation - this means that the authorityID is read directly with the applicaion "name"
+ *
  * Revision 1.8  2004/10/21 10:05:12  pah
  * log the target url
  *

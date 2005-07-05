@@ -1,0 +1,94 @@
+<resource xsi:type="vs:DataCollection"
+  xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
+  xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
+  xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v0.10
+                      VOResource-v0.10.xsd
+                      http://www.ivoa.net/xml/VODataService/v0.5
+                      VODataService-v0.5.xsd">
+
+    <title>NCSA BIMA Data Archive</title>
+    <shortName>BIMA</shortName>
+    <identifier>ivo://bima.ncsa/bima</identifier>
+
+    <curation>
+      <publisher ivo-id="ivo://rai.ncsa/RAI">
+         NCSA Radio Astronomy Imaging
+      </publisher>
+      <creator>
+        <name>Dr. Richard Crutcher</name>
+        <logo>http://rai.ncsa.uiuc.edu/rai.jpg</logo>
+      </creator>
+      <contributor>Randal Sharpe</contributor>
+      <contributor>Dr. Raymond Plante</contributor>
+      <contributor>Dr. Dave Merhinger</contributor>
+      <date role="created">1993-01-01</date>
+      <contact>
+        <name>BIMA Archivist</name>
+	<email>bimadata@ncsa.uiuc.edu</email>
+      </contact>
+    </curation>
+
+    <content>
+      <subject>radio astronomy</subject>
+      <subject>data repositories</subject>
+      <subject>digital libraries</subject>
+      <description>
+         The BIMA Data Archive provides access to all raw visibility and 
+         derived products from the Berkeley-Illinois-Maryland Association
+         Millimeter Array Telescope.
+      </description>
+      <referenceURL>http://bimaarch.ncsa.uiuc.edu/</referenceURL>
+      <type>Archive</type>
+      <contentLevel>University</contentLevel>
+      <contentLevel>Research</contentLevel>
+    </content>
+
+    <vs:facility>
+      Berkeley-Illinois-Maryland Association Millimeter Array Telescope (BIMA)
+    </vs:facility>
+
+    <!-- 
+      -  note the schema used below for coverage is a temporary 
+      -  stand-in for STC
+      -->
+    <vs:coverage xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+       <spatial>
+          <region xsi:type="CoordRange">
+             <coordFrame>ICRS</coordFrame>
+             <long>
+                <min>0</min>
+                <max>360</max>
+             </long>
+             <lat>
+                <min>-38</min>
+                <max>90</max>
+             </lat>
+          </region>
+          <resolution>0.00056</resolution>
+          <regionOfRegard>120</regionOfRegard>
+       </spatial>
+
+       <spectral>
+          <waveband>Millimeter</waveband>
+          <range>
+             <min>0.001</min>
+             <max>0.003</max>
+          </range>
+          <resolution>0.0000001</resolution>
+       </spectral>
+
+       <temporal>
+          <startTime>1991-05-18</startTime>
+          <resolution>21600</resolution>
+       </temporal>
+
+    </vs:coverage>
+
+    <vs:format isMIMEType="false">tarred Miriad visibililty datasets</vs:format>
+    <vs:format isMIMEType="true">image/fits</vs:format>
+
+    <vs:rights>proprietary</vs:rights>
+
+</resource>

@@ -17,7 +17,7 @@
     	<property file="${input.loadProperties.file}"/>
     </target>
 
-	<target name="install" description="Install cea" depends="deploy, copy-java-app, copy-registry-template">
+	<target name="install" description="Install cea" depends="deploy, copy-java-app, copy-registry-template, setup-working">
 	        <echo>***The cea has been successfully installed***</echo>
 	    	<property name="cea.installed" value="true"/>	
     </target>		
@@ -111,10 +111,11 @@
 		<input addproperty="input.cea.config.file" defaultvalue="${antigen.home}">Please locate the commandline config file for this cea</input>		
 	</target>	
 	
-	<target name="setup-working" description="Initialise the cea working dir" depends="get-working-dir">
-		<mkdir dir="${input.cea.working.dir}/work"/>		
+	<target name="setup-working" description="Initialise the cea working dir" depends="get-working-dir" if="cea.flavour.iscommandline">
+		<echo>setting up working directory</echo>
+		<mkdir dir="${input.cea.working.dir}/run"/>		
 		<mkdir dir="${input.cea.working.dir}/store"/>
-        <chmod dir="${input.cea.working.dir}/work" perm="a+x">
+        <chmod dir="${input.cea.working.dir}" perm="a+x">
                 <include name="*.sh" />
         	    <include name="*.bat"/>
         </chmod>		
@@ -192,8 +193,8 @@
     <target name="update-war" depends="set-war-location,download, get-input-properties, set-flavour-dependent-properties, set-context-path, get-working-dir,checkRegistry,copy-registry-template">
         <filterset id="myfilter">
 
-            <filter token="CEA_WEBAPP" value="${input.cea.contextpath}"/>
-            <filter token="CEA_WORKING" value="${input.cea.working.dir}"/>  
+          <filter token="CEA_WEBAPP" value="${input.cea.contextpath}"/>
+          <filter token="CEA_WORKING" value="${input.cea.working.dir}"/>  
         	<!--Registry template file?-->
         	<filter token="REG_UPDATE" value="${astrogrid.registry.update.endpoint}"/>
         	<filter token="REG_QUERY" value="${astrogrid.registry.query.endpoint}"/>        
@@ -240,7 +241,7 @@
         <mkdir dir="${cea.temporary.dir}"/>
     </target>
 	
-	<target name="copy-registry-template" depends="set-war-location,download,get-working-dir,createTmpDir,get-registry-key">	
+	<target name="copy-registry-template" depends="set-war-location,download,get-working-dir,createTmpDir,get-registry-key" unless="cea.registry.template.file">	
 		<property name="cea.registry.conf.dir" value="${input.cea.working.dir}/conf"/>
 		<mkdir dir="${cea.registry.conf.dir}"/>
 		<echo>Extracting registry template file ${cea.registry.template} from </echo>
@@ -257,16 +258,17 @@
 		<!--Now apply filters to that file-->
         <filterset id="regfilter">
             <filter token="REGAUTHORITY" value="${input.cea.regauthority}"/>
-            <filter token="CommonExecutionArchitucture" value="${input.cea.regkey}"/>  
+            <filter token="DefaultCEC" value="${input.cea.regkey}"/>  
             <filter token="CONTACT_NAME" value="${input.cea.username}"/>
             <filter token="CONTACT_EMAIL" value="${input.cea.useremail}"/> 
         	<filter token="TODAY" value="${installation.time}"/> 
         </filterset>	
-		<property name="cea.registry.template.file" value="${cea.registry.conf.dir}/${cea.registry.template}"/>		
-		<copy file="${cea.temporary.dir}/${cea.registry.template}" tofile="${cea.registry.template.file}" overwrite="true">
-            <filterset refid="regfilter"/>			
-		</copy>
+		<property name="cea.registry.template.file" value="${cea.registry.conf.dir}/CeaRegistryTemplate.xml"/>		
 
+		<xslt style="templatetransformer.xsl" in="${cea.temporary.dir}/${cea.registry.template}" out="${cea.registry.template.file}">
+		   <param name="REGAUTHORITY" expression="${input.cea.regauthority}"/>
+	       <param name="CECNAME" expression="${input.cea.regkey}"/>
+		</xslt>
 		<echo>Registry Template File copied to ${cea.registry.template.file}</echo>
 	</target>
 

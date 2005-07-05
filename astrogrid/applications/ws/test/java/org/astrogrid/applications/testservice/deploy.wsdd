@@ -1,0 +1,33 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from WSTestService WSDL service -->
+
+  <service name="WSTest" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="urn:astrogrid:cea:testwebapp"/>
+      <parameter name="wsdlServiceElement" value="WSTestService"/>
+      <parameter name="wsdlServicePort" value="WSTest"/>
+      <parameter name="className" value="org.astrogrid.applications.testservice.WSTestSOAPBindingImpl"/>
+      <parameter name="wsdlPortType" value="WSTest"/>
+      <operation name="multiply" qname="operNS:multiply" xmlns:operNS="urn:astrogrid:cea:testwebapp:wrapper" returnQName="answer" returnType="rtns:float" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
+        <parameter name="r1" type="tns:float" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter name="r2" type="tns:float" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="add" qname="operNS:add" xmlns:operNS="urn:astrogrid:cea:testwebapp:wrapper" returnQName="answer" returnType="rtns:int" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
+        <parameter name="I1" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter name="I2" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <parameter name="allowedMethods" value="add multiply"/>
+      <parameter name="scope" value="Application"/>
+
+  </service>
+</deployment>

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.18 2004/12/18 15:43:57 jdt Exp $
+ * $Id: CommandLineApplication.java,v 1.19 2005/07/05 08:27:01 clq2 Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -17,11 +17,13 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.DefaultIDs;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.component.EmptyCEAComponentManager;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.collections.IteratorUtils;
@@ -36,6 +38,8 @@ import java.io.FileReader;
 import java.io.FilterReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -285,6 +289,22 @@ private final void endApplication()  {
       }        
 
       reportMessage("The application has completed with exit status="+exitStatus);
+      //report how to get hold of the log
+      StringBuffer sb = new StringBuffer("standard out at ");
+      //FIXME - very ugly to use the Simpleconfig here - endpoint url needs to be better encapsulated
+      String urlend = (String) SimpleConfig.getSingleton().getProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL);
+      int ii;
+      if((ii = urlend.indexOf("services/CommonExecutionConnectorService"))!= -1)
+      {
+         sb.append(urlend.substring(0,ii));
+      
+      sb.append("cec-http?method=getexecutionlog&type=out&id=");
+      sb.append(URLEncoder.encode(applicationEnvironment.getExecutionId()));
+      reportMessage(sb.toString());
+      }
+      else{
+         logger.warn("could not write message about log file location because serice endpoint was not of expected form");
+      }
       if (exitStatus != 0) {
          reportStandardError(true);// send the stderr output as well
 //         setStatus(Status.ERROR); the reporting will automatically do this....TODO need to refactor how the writing to permanent store is signaled....

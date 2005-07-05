@@ -24,7 +24,7 @@ import org.astrogrid.applications.http.test.TestRegistryQuerier;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
-import org.astrogrid.registry.beans.cea.CeaHttpApplicationType;
+import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 
@@ -113,10 +113,11 @@ public class HttpApplicationDescriptionTest extends TestCase {
      * @throws IOException oh dear
      */
     public void setUp() throws MarshalException, ValidationException, IOException {
-        TestRegistryQuerier querier = new TestRegistryQuerier();
+        TestRegistryQuerier querier = new TestRegistryQuerier(null);
         Collection allApps = querier.getHttpApplications();
         Iterator it = allApps.iterator();
-        theOneThatIWant = querier.getHttpApplication("Adder-app.xml");
+        //note that all the 
+        theOneThatIWant = querier.getHttpApplication("org.astrogrid.test/Adder");
 
         
         assertNotNull("Didn't find the testapp I was looking for", theOneThatIWant);

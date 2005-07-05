@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<!-- $Id: package.html,v 1.2 2005/07/05 08:27:01 clq2 Exp $ -->
+<title>CEA Web Services</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=ISO-8859-1"/>
+</head>
+<body><p>Contains specialized classes to make a CEA adapter for a general SOAP based web service</p>
+	<p>The general idea is that this component is an adapter can take a CEA tool pass it on to a general web service with normal asynchronous CEA semantics</p>
+    <p>This is not as simple as the WS hype might lead you to believe however, as there are severe interoperability problems. There are some limitations however;</p>
+    <ul>
+        <li>At the moment the Web service that is to be called needs to have simple atomic types in the parameters</li>
+        <li>The web service needs to have been registered as a CEA application - there are tools aid this in the org.astrogrid.applications.ws.registry package</li>
+        <li>There is a one to one name correspondance between the CEA parameters and the web service message names</li>
+        <li>The call to the web service is made using the JAX-RPC DII interface which does lead to some interoperability problems with the "style" of web service (why did SOAP have to get so complex...? we are just passing an XML document after all...)</li>
+    </ul>
+    </body>
+</html>

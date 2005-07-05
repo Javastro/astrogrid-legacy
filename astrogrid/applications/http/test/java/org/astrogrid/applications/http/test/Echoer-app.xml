@@ -1,35 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
-        <Identifier>
-            <AuthorityID>org.astrogrid.jdt.test</AuthorityID>
-            <ResourceKey>Echoer</ResourceKey>
-        </Identifier>
-        <Title>An http-get Echoer App</Title>
-        <ShortName>Echoer</ShortName>
-        <Summary>
-            <Description>This is part of the astrogrid CEA. </Description>
-            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
-        </Summary>
-        <Type>Other</Type>
-        <Curation>
-            <Publisher>
-                <Title>Astrogrid</Title>
-                <Description>blah blab</Description>
-                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
-            </Publisher>
-            <Contact>
-                <Name>John Taylor</Name>
-                <Email>jdt@roe.ac.uk</Email>
-            </Contact>
-            <Date role="representative">2004-03-26</Date>
-            <Creator>
-                <Name>Astrogrid</Name>
-                <Logo>??</Logo>
-            </Creator>
-            <Version>Iteration 6</Version>
-        </Curation>
-        <Subject>???</Subject>
-        <cea:ApplicationDefinition>
+    <Resource status="active" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaHttpApplicationType" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xsi:schemaLocation="http://www.ivoa.net/xml/CEAService/v0.2 ../../../../../../../../../workflow-objects/schema/VOCEA-v0.2.xsd">
+        <title>An http-get Echoer App</title>
+        <shortName>Echoer</shortName>
+        <identifier>ivo://org.astrogrid.test/Echoer</identifier>
+     <curation>
+            <publisher>
+               Astrogrid
+            </publisher>
+            <contact>
+                <name>John Taylor</name>
+                <email>jdt@roe.ac.uk</email>
+            </contact>
+      </curation>
+          <content>
+            <description>This is part of the astrogrid CEA.  It describes an applicaton that simple adds two params and returns the result.</description>
+            <referenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</referenceURL>
+        </content>
+         <cea:ApplicationDefinition>
 			<cea:ApplicationKind>http</cea:ApplicationKind>
             <cea:Parameters>
                 <cea:ParameterDefinition name="x" type="text"/>
@@ -67,7 +54,7 @@
         </cea:ApplicationDefinition>
 		<cea:CeaHttpAdapterSetup>
 			<!--Ensure the following matches that in the test webserver-->
-			<URL>http://127.0.0.1:8078/echo</URL>
+			<ceab:URL>http://127.0.0.1:8078/echo</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
     </Resource>
 	

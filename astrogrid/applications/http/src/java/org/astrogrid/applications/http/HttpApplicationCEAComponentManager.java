@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationCEAComponentManager.java,v 1.2 2004/11/27 13:20:03 pah Exp $
+/*$Id: HttpApplicationCEAComponentManager.java,v 1.3 2005/07/05 08:27:01 clq2 Exp $
  * Created on Jul 24, 2004 or thereabouts
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,15 +11,22 @@
 package org.astrogrid.applications.http;
 
 
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.component.EmptyCEAComponentManager;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.registry.RegistryAdminLocator;
+import org.astrogrid.applications.description.registry.RegistryQueryLocator;
 import org.astrogrid.applications.http.HttpApplicationDescriptionLibrary;
 import org.astrogrid.applications.http.registry.RegistryQuerier;
 import org.astrogrid.applications.http.registry.RegistryQuerierImpl;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.admin.RegistryAdminService;
+import org.astrogrid.registry.client.query.RegistryService;
+
 import org.picocontainer.MutablePicoContainer;
 
 /**
@@ -52,8 +59,8 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
         EmptyCEAComponentManager.registerDefaultServices(pico);
         // store
         EmptyCEAComponentManager.registerDefaultPersistence(pico, config);
-        // metadata
-        EmptyCEAComponentManager.registerDefaultVOProvider(pico, config);
+        // metadata - note that his is not the default provider
+        EmptyCEAComponentManager.registerVOProvider(pico, config, HttpMetadataService.class);
         
         //registry uploader
         EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
@@ -81,6 +88,12 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
         pico.registerComponentImplementation(HttpApplicationDescriptionLibrary.class,
                 HttpApplicationDescriptionLibrary.class);
         pico.registerComponentImplementation(RegistryQuerier.class, RegistryQuerierImpl.class);
+        pico.registerComponentInstance(RegistryQueryLocator.class,new RegistryQueryLocator() {
+
+           public RegistryService getClient() {                
+               return RegistryDelegateFactory.createQuery();
+           }
+       });        
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("registerHttpApplicationProvider(MutablePicoContainer, Config) - end");
@@ -90,6 +103,21 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
 
 /*
  * $Log: HttpApplicationCEAComponentManager.java,v $
+ * Revision 1.3  2005/07/05 08:27:01  clq2
+ * paul's 559b and 559c for wo/apps and jes
+ *
+ * Revision 1.2.68.2  2005/06/14 09:49:32  pah
+ * make the http cec only register itself as a ceaservice - do not try to reregister any cea applications that it finds
+ *
+ * Revision 1.2.68.1  2005/06/09 08:47:33  pah
+ * result of merging branch cea_pah_559b into HEAD
+ *
+ * Revision 1.2.54.2  2005/06/08 22:10:46  pah
+ * make http applications v10 compliant
+ *
+ * Revision 1.2.54.1  2005/06/02 14:57:29  pah
+ * merge the ProvidesVODescription interface into the MetadataService interface
+ *
  * Revision 1.2  2004/11/27 13:20:03  pah
  * result of merge of pah_cea_bz561 branch
  *

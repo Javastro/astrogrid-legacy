@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource xsi:type="cs:ConeSearch"
+  xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
+  xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
+  xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
+  xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v0.10
+                      VOResource-v0.10.xsd
+                      http://www.ivoa.net/xml/VODataService/v0.5
+                      VODataService-v0.5.xsd
+                      http://www.ivoa.net/xml/ConeSearch/v0.3
+                      ConeSearch-v0.3.xsd">
+
+    <title>NCSA Astronomy Digital Image Library Cone Search</title>
+    <shortName>ADIL</shortName>
+    <identifier>ivo://adil.ncsa/vocone</identifier>
+
+    <curation>
+      <publisher ivo-id="ivo://adil.ncsa/adil">
+         NCSA Astronomy Digital Image Library (ADIL)
+      </publisher>
+      <creator>
+        <name>Dr. Raymond Plante</name>
+        <logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</logo>
+      </creator>
+      <date role="created">2002-01-01</date>
+      <contact>
+        <name>ADIL Librarian</name>
+	<email>adil@ncsa.uiuc.edu</email>
+      </contact>
+    </curation>
+
+    <content>
+      <subject>data repositories</subject>
+      <subject>digital libraries</subject>
+      <description>
+         This Cone Search implementation allows clients to progrommatically 
+         search for images in the ADIL that overlap with the given cone.  
+      </description>
+      <referenceURL>http://adil.ncsa.uiuc.edu/</referenceURL>
+      <type>Archive</type>
+      <contentLevel>University</contentLevel>
+      <contentLevel>Research</contentLevel>
+      <contentLevel>Community College</contentLevel>
+
+      <relationship>
+         <relationshipType>service-for</relationshipType>
+         <relatedResource ivo-id="ivo://adil.ncsa/adil">
+            NCSA Astronomy Digital Image Library
+         </relatedResource>
+      </relationship>
+    </content>
+
+    <vr:interface xsi:type="vs:ParamHTTP" qtype="GET"
+               xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+       <vr:accessURL use="base">http://adil.ncsa.uiuc.edu/vocone?survey=f&amp;</vr:accessURL>
+       <resultType>text/xml+votable</resultType>
+
+       <!-- These are the supported input parameters -->
+       <param>
+         <name>RA</name>
+         <description>The right ascension of the search cone center</description>
+         <dataType>float</dataType>
+         <unit>degrees</unit>
+         <ucd>POS_EQ_RA_MAIN</ucd>
+       </param>
+       <param>
+         <name>Dec</name>
+         <description>The declination of the search cone center</description>
+         <dataType>float</dataType>
+         <unit>degrees</unit>
+         <ucd>POS_EQ_DEC_MAIN</ucd>
+       </param>
+       <param>
+         <name>SR</name>
+         <description>The search cone radius</description>
+         <dataType>float</dataType>
+         <unit>degrees</unit>
+         <ucd>POS_ANG_DIST_REL</ucd>
+       </param>
+
+    </vr:interface>
+
+    <!-- 
+      -  note the schema used below for coverage is a temporary 
+      -  stand-in for STC
+      -->
+    <vs:coverage xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+       <spatial>
+          <region xsi:type="AllSky"/>
+       </spatial>
+
+       <spectral>
+          <waveband>Radio</waveband>
+          <waveband>Millimeter</waveband>
+          <waveband>Infrared</waveband>
+          <waveband>Optical</waveband>
+          <waveband>UV</waveband>
+       </spectral>
+
+    </vs:coverage>
+
+    <cs:capability>
+       <cs:maxSR>10</cs:maxSR>
+       <cs:maxRecords>5000</cs:maxRecords>
+       <cs:verbosity>false</cs:verbosity>
+    </cs:capability>
+
+</resource>

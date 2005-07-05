@@ -1,4 +1,4 @@
-/*$Id: BaseApplicationDescriptionLibrary.java,v 1.9 2004/12/03 15:37:05 jdt Exp $
+/*$Id: BaseApplicationDescriptionLibrary.java,v 1.10 2005/07/05 08:27:02 clq2 Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,6 @@
  *
 **/
 package org.astrogrid.applications.description;
-
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
@@ -22,6 +21,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /** Basic implementation of an {@link org.astrogrid.applications.description.ApplicationDescriptionLibrary}
  * <p />
@@ -35,9 +36,9 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
      */
     private static final Log logger = LogFactory.getLog(BaseApplicationDescriptionLibrary.class);
     
-    /** configuration interface - defines the name of the authority the applications will be added to. 
-     * @TODO - this should probably not be here - there is of course a tie in with the @see org.astrogrid.applications.manager.MetadataService and @see org.astrogrid.applications.component.ProvidesVODescription - they all need refactoring slightly to make clear which has overall control, when the exact interaction with the registry is determined - what protocol is to be used to detemine the authorityid that will be allowed?*/
-
+    /** configuration interface - defines the name of the authority the applications will be added to.
+     * @deprecated use @link org.astrogrid.applications.manager.MetadataService#getAuthorityID() instead. 
+     */
     public interface AppAuthorityIDResolver {
         String getAuthorityID();
     }
@@ -73,6 +74,8 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
      * <p> if an application with the same name already exists, it will be overridden. 
      * @param desc the application description, which will be stored under key <tt>desc.getName()</tt>*/
     public void addApplicationDescription(ApplicationDescription desc) {
+       
+       
         logger.info("Adding description for " + desc.getName());
         descMap.put(desc.getName(),desc);
     }
@@ -103,14 +106,52 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getInstallationTest()
      */
     public Test getInstallationTest() {
-        return null;
+          
+          return new InstallationTest("testApplicationsDefined");
     }
+    
+    public class InstallationTest extends TestCase {
+       
+       /**
+       * @param arg0
+       */
+      public InstallationTest(String arg0) {
+         super(arg0);
+         
+      }
+      public InstallationTest(){super();}
+      
+      public void testApplicationsDefined()
+      {
+         if(descMap.isEmpty())
+         {
+            fail("there are no applications defined in this Library");
+         }
+      }
+      
+}
+    
    protected final ApplicationDescriptionEnvironment env;    
 }
 
 
 /* 
 $Log: BaseApplicationDescriptionLibrary.java,v $
+Revision 1.10  2005/07/05 08:27:02  clq2
+paul's 559b and 559c for wo/apps and jes
+
+Revision 1.9.66.1  2005/06/09 08:47:33  pah
+result of merging branch cea_pah_559b into HEAD
+
+Revision 1.9.52.3  2005/06/08 22:10:46  pah
+make http applications v10 compliant
+
+Revision 1.9.52.2  2005/06/03 16:01:48  pah
+first try at getting commandline execution log bz#1058
+
+Revision 1.9.52.1  2005/06/02 14:57:29  pah
+merge the ProvidesVODescription interface into the MetadataService interface
+
 Revision 1.9  2004/12/03 15:37:05  jdt
 restored it how it was....change PAL instead.
 
