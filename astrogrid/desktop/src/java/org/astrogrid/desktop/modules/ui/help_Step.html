@@ -1,0 +1,16 @@
+<html>
+  <font size = "-1">
+    The <b>step</b> element is an activity that performs a call to a CEA application.<br>
+    This element has a required <b>name</b> attribute, and optional <b>variable name</b> 
+    (allows output of a step is to be used elsewhere in the workflow) and <b>description</b> child elements.
+    <br>  
+    The step element contains a <b>task</b> element, which specifies: 
+    <ul>
+      <li>the name of the CEA application to execute</li>
+      <li>which interface of the application to call</li>
+      <li>the input and output <b>parameter</b> values to the task to call</li>
+    </ul>
+    Parameters to a call are defined by <b>parameter</b> elements. The <b>name</b> attribute defines the name of the parameter,
+    while the content of the <b>value</b> child element defines the value for this parameter.
+  </font>
+</html>
