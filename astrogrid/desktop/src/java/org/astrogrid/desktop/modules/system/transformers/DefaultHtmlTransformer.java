@@ -1,4 +1,4 @@
-/*$Id: DefaultHtmlTransformer.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: DefaultHtmlTransformer.java,v 1.3 2005/07/08 11:08:02 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,7 @@ public class DefaultHtmlTransformer implements Transformer {
         StringBuffer sb = new StringBuffer();
         sb.append("<html><body><pre>");
         format(arg1,sb);
-        sb.append("</pre</body></html>");
+        sb.append("</pre></body></html>");
         return sb.toString();
     }
     
@@ -63,9 +63,9 @@ public class DefaultHtmlTransformer implements Transformer {
             buff.append("<dl>");
             for (Iterator i = m.entrySet().iterator(); i.hasNext(); ) {
                 Map.Entry e = (Map.Entry)i.next();
-                buff.append("<dt>");
+                buff.append("<dt><b>");
                 buff.append(e.getKey());
-                buff.append("<dd>");
+                buff.append("</b><dd>");
                 format(e.getValue(),buff);
             }
             buff.append("</dl>");
@@ -89,6 +89,9 @@ public class DefaultHtmlTransformer implements Transformer {
 
 /* 
 $Log: DefaultHtmlTransformer.java,v $
+Revision 1.3  2005/07/08 11:08:02  nw
+bug fixes and polishing for the workshop
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

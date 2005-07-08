@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.9 2005/06/22 08:48:51 nw Exp $
+/*$Id: UIImpl.java,v 1.10 2005/07/08 11:08:01 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ import org.astrogrid.desktop.framework.descriptors.ValueDescriptor;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ui.PositionRememberingJFrame;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.MethodUtils;
@@ -778,7 +779,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
         java.util.List args =new ArrayList();
         for (Iterator i = md.parameterIterator(); i.hasNext(); ) {
             ValueDescriptor vd = (ValueDescriptor)i.next();
-            String result = JOptionPane.showInputDialog(this,"<html>Enter value for: " + vd.getName() + "<br>" + vd.getDescription(),"Enter value",JOptionPane.QUESTION_MESSAGE);
+            String result = JOptionPane.showInputDialog(this,"<html>Enter value for: <b>" + vd.getName() + "</b><br>" + vd.getDescription(),"Enter value",JOptionPane.QUESTION_MESSAGE);
             if (result == null) { // user hit cancel.
                 return;
             }
@@ -794,6 +795,10 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
      */
     private void showError(String s) throws HeadlessException {
         JOptionPane.showMessageDialog(this,s,"Error",JOptionPane.ERROR_MESSAGE);
+    }
+    
+    private void showError(String s,Throwable t) {
+        UIComponent.showError(this,s,t);
     }
 
     class InvokerWorker extends SwingWorker {
@@ -842,8 +847,8 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
                             out.close();
                             f.deleteOnExit();
                             browser.openURL(f.toURL());
-                        } catch (Exception e1) {
-                            showError("Could not display result in browser: " + e1.getMessage());                                    
+                        } catch (Exception e1) {                           
+                            showError("Could not display result in browser",e1);                                    
                         }
                         
                     } else {
@@ -862,7 +867,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
                         ex = ex.getCause() == null ? ex : ex.getCause();
                     } while (ex instanceof InvocationTargetException && ex.getCause() != null);
                     logger.warn("Exception executing method",ex);
-                    showError("Exception when executing method\n" + ex.getClass().getName() + "\n" + ex.getMessage());                          
+                    showError("Exception when executing method\n",ex);                          
                 }
          }
         
@@ -1023,6 +1028,9 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.10  2005/07/08 11:08:01  nw
+bug fixes and polishing for the workshop
+
 Revision 1.9  2005/06/22 08:48:51  nw
 latest changes - for 1.0.3-beta-1
 

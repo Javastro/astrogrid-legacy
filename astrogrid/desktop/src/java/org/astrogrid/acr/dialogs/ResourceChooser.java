@@ -1,4 +1,4 @@
-/*$Id: ResourceChooser.java,v 1.4 2005/05/12 15:59:07 clq2 Exp $
+/*$Id: ResourceChooser.java,v 1.5 2005/07/08 11:08:02 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,10 +25,22 @@ public interface ResourceChooser {
      * @return a URI of the selected resource, or null if the user cancelled.
      */
     URI chooseResource(String title, boolean enableMySpace);
+
+    /**
+     * @param title
+     * @param enableMySpace
+     * @param enableLocalFile
+     * @param enableURI
+     * @return
+     */
+    URI fullChooseResource(String title, boolean enableMySpace, boolean enableLocalFile, boolean enableURI);
 }
 
 /* 
  $Log: ResourceChooser.java,v $
+ Revision 1.5  2005/07/08 11:08:02  nw
+ bug fixes and polishing for the workshop
+
  Revision 1.4  2005/05/12 15:59:07  clq2
  nww 1111 again
 

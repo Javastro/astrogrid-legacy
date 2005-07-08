@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.8 2005/06/22 08:48:52 nw Exp $
+/*$Id: JobMonitorImpl.java,v 1.9 2005/07/08 11:08:01 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.astrogrid.Portal;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
@@ -24,7 +25,11 @@ import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
+import org.astrogrid.applications.parameter.protocol.InaccessibleExternalValueException;
+import org.astrogrid.applications.parameter.protocol.UnrecognizedProtocolException;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet;
 import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
 import org.astrogrid.desktop.modules.system.transformers.XmlDocumentResultTransformerSet;
@@ -45,16 +50,22 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.prefs.BackingStoreException;
 
 import javax.swing.AbstractAction;
@@ -102,26 +113,31 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
             this.putValue(SHORT_DESCRIPTION,"Submit a workflow for execution");
             this.setEnabled(true);
         }
-
+        private Reader getReader(URI u) throws InaccessibleExternalValueException, UnrecognizedProtocolException{
+            ExternalValue ev = community.getEnv().getAstrogrid().getIoHelper().getExternalValue(u);
+            return new InputStreamReader(ev.read());
+        }
         public void actionPerformed(ActionEvent e) {
-            int result = getLoadFileChooser().showOpenDialog(JobMonitorImpl.this);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                final File f=getLoadFileChooser().getSelectedFile();            
+                final URI u = chooser.chooseResource("Select workflow to submit",true);
+                if (u == null) {
+                    return;
+                }                
                 (new BackgroundOperation("Submitting Workflow") {
 
                     protected Object construct() throws Exception {
-                        return jobs.submitJobFile(f.toURL());
+                        Reader reader = getReader(u);
+                        Workflow wf = Workflow.unmarshalWorkflow(reader);
+                        return jobs.submitJob(wf);
                     }
                     protected void doFinished(Object o) {
                         JobURN urn = (JobURN)o;
-                        JOptionPane.showMessageDialog(JobMonitorImpl.this,"Job URN: " + urn.getContent(),"Workflow Submitted",JOptionPane.INFORMATION_MESSAGE);
+                        ResultDialog rd = new ResultDialog(JobMonitorImpl.this,"Workflow Submitted\nJob URN: " + urn.getContent());
                     }
                     protected void doAlways() {
                         refresh();
                     }
                 }).start();
-            }
-        }
+            }        
     }
     
     protected final class CancelAction extends AbstractAction {
@@ -194,36 +210,42 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     }
     
     protected class ApplicationsTableModel extends AbstractTableModel {
-        private static final String MONITORED_APPLICATION_KEY = "monitored.application.list";
-        public ApplicationsTableModel() throws IOException {
+        private static final String MONITORED_APPLICATION_KEY = "monitored.applications.list";
+        public ApplicationsTableModel()  {
             String value = configuration.getKey(MONITORED_APPLICATION_KEY);
-            props = new Properties();
+            logger.info(value);
+            props = new HashMap();
             if (value != null) {
-                InputStream is = new ByteArrayInputStream(value.getBytes());
-                props.load(is);
-                for (Iterator i = props.entrySet().iterator(); i.hasNext(); ) {
-                    Map.Entry entry = (Map.Entry)i.next();
+                StringTokenizer tok = new StringTokenizer(value);                
+                logger.info("Reading " + tok.countTokens() +" persisted application records");
+                while(tok.hasMoreTokens()) {
+                    String next = tok.nextToken();
+                    int pos = next.indexOf('#');
                     ExecutionSummaryType e = new ExecutionSummaryType();
-                    e.setApplicationName((String)entry.getValue());
-                    e.setExecutionId((String)entry.getKey());                
+                    e.setApplicationName(next.substring(0,pos));
+                    e.setExecutionId(next);        
+                    appList.add(e);
                 }
             }
         }
         private final List appList = new ArrayList();
-        private final Properties props;
+        private final Map props;
         
         public void addApplication(ExecutionSummaryType e) throws IOException {
             int pos = appList.size();
             appList.add(e);
            this.fireTableRowsInserted(pos,pos);
-           props.setProperty(e.getExecutionId(),e.getApplicationName());
+           props.put(e.getExecutionId(),e.getApplicationName());
            writeBackProperties();
         }
         
         private void writeBackProperties() throws IOException {
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            props.store(os,"Monitored applications");
-            configuration.setKey(MONITORED_APPLICATION_KEY,os.toString());
+            StringBuffer buff = new StringBuffer();
+            for (Iterator i = props.keySet().iterator(); i.hasNext(); ) {
+                buff.append(i.next());
+                buff.append(" ");
+            }                    
+            configuration.setKey(MONITORED_APPLICATION_KEY,buff.toString());
         }
         
         public void removeApplication(ExecutionSummaryType e) throws IOException {  
@@ -458,32 +480,33 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
             this.putValue(SHORT_DESCRIPTION,"Save a transcript of execution to local disk");
             this.setEnabled(false);            
         }
-
+        private Writer getWriter(URI u) throws InaccessibleExternalValueException, UnrecognizedProtocolException {            
+            ExternalValue ev= community.getEnv().getAstrogrid().getIoHelper().getExternalValue(u);
+            return new OutputStreamWriter(ev.write());
+        }
         public void actionPerformed(ActionEvent e) {
 
-            int result = getSaveFileChooser().showSaveDialog(JobMonitorImpl.this);
-            if (result != JFileChooser.APPROVE_OPTION) {
+            final URI u = chooser.chooseResource("Save workflow transcript",true);
+            if (u == null) {
                 return;
             }
-                final File f=getSaveFileChooser().getSelectedFile();
                 if (getPanes().getSelectedIndex() == JES_TAB) {                     
                     final JobURN urn = jobsTableModel.getRow(jobsTable.getSelectedRow()).getJobId();                
-                    (new BackgroundOperation("Saving Workflow Transcript") {
+                    (new BackgroundOperation("Saving Workflow Transcript") {                                               
                         protected Object construct() throws Exception {                   
                             Workflow wf = jobs.getJob(urn);
-                            Writer w = new FileWriter(f);
+                            Writer w = getWriter(u);
                             wf.marshal(w);
                             w.close();
-                        return null;
+                            return null;
                         }
                     }).start();
                 } else {
                     final String id = applicationsTableModel.getRow(applicationsTable.getSelectedRow()).getExecutionId();
                     (new BackgroundOperation("Saving Execution Transcript") {
-
                         protected Object construct() throws Exception {
                             ExecutionSummaryType s = applications.getExecutionSummary(id);
-                            Writer w = new FileWriter(f);
+                            Writer w = getWriter(u);
                             s.marshal(w);
                             w.close();
                             return null;
@@ -581,6 +604,8 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     protected Action cancelAction;
     protected final Jobs jobs;
     protected final Applications applications;
+    protected final Community community;
+    protected final ResourceChooser chooser;
     // actions.
     protected Action deleteAction;
     protected final Portal portal;
@@ -595,7 +620,6 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     protected Action viewAction;
     protected Action viewPortalAction;
 	private JTable jobsTable = null;
-	private JFileChooser fileChooser = null;  //  @jve:decl-index=0:visual-constraint="766,266"
     
  
     
@@ -606,36 +630,25 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 	private JPanel jPanel2 = null;
 	private JSlider refreshScale = null;
 	private JToolBar toolbar = null;
-	/**
-	 * This is thedevelopment constructor only.
-	 * @throws Exception
-	 */
-	public JobMonitorImpl() throws Exception {
-		super();
-		initialize();
-        this.browser = null;
-        this.portal = null;
-        this.jobs = null;
-        this.applications = null;
-        this.tray = null;
-	}
+
     
     /** production constructor - for platforms without system tray
      * @throws Exception*/
-    public JobMonitorImpl(Community community,Portal portal, BrowserControl browser, UI ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications) throws Exception {
-        this(community,portal,browser,ui,hs,conf,jobs,applications,null);
+    public JobMonitorImpl(Community community,Portal portal, BrowserControl browser, UI ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooser chooser) throws Exception {
+        this(community,portal,browser,ui,hs,conf,jobs,applications,chooser,null);
  
     }
     
     /** constructor for platforms with system tray */
-    public JobMonitorImpl(Community community,Portal portal, BrowserControl browser, UI ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, SystemTray tray) throws Exception {
+    public JobMonitorImpl(Community community,Portal portal, BrowserControl browser, UI ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooser chooser,SystemTray tray) throws Exception {
         super(conf,hs,ui);
         this.browser = browser;
         this.portal = portal;
         this.jobs = jobs;
         this.applications = applications;
         this.tray = tray;
-        //this.community = community;
+        this.chooser = chooser;
+        this.community = community;
         community.addUserLoginListener(this);
         initialize();
     }
@@ -760,32 +773,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     }
     private JTable applicationsTable;
     private ApplicationsTableModel applicationsTableModel;
-    
-	/**
-	 * This method initializes jFileChooser	
-	 * 	
-	 * @return javax.swing.JFileChooser	
-	 */    
-	private JFileChooser getSaveFileChooser() {
-		if (fileChooser == null) {
-			fileChooser = new JFileChooser();
 
-		}
-        fileChooser.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
-        fileChooser.setDialogTitle("Save Workflow..");          
-        fileChooser.cancelSelection();        
-		return fileChooser;
-	}
-    private JFileChooser getLoadFileChooser() {
-        if (fileChooser == null) {
-            fileChooser = new JFileChooser();
-
-        }
-        fileChooser.setDialogType(javax.swing.JFileChooser.OPEN_DIALOG);
-        fileChooser.setDialogTitle("Submit Workflow..");        
-        fileChooser.cancelSelection();
-        return fileChooser;
-    }    
 
 	/**
 	 * This method initializes jJMenuBar	
@@ -937,7 +925,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         
         toolbar.add(submitAction);
         toolbar.add(viewAction);
-        toolbar.add(viewPortalAction);
+        //toolbar.add(viewPortalAction);
         toolbar.add(saveAction);         
         toolbar.add(cancelAction);
         toolbar.add(deleteAction);    
@@ -947,7 +935,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         jobMenu.add(submitAction);
         jobMenu.add(new JSeparator());        
         jobMenu.add(viewAction);
-        jobMenu.add(viewPortalAction);
+        //jobMenu.add(viewPortalAction);
         jobMenu.add(saveAction);
         jobMenu.add(cancelAction);
         jobMenu.add(deleteAction);
@@ -1013,6 +1001,9 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.9  2005/07/08 11:08:01  nw
+bug fixes and polishing for the workshop
+
 Revision 1.8  2005/06/22 08:48:52  nw
 latest changes - for 1.0.3-beta-1
 

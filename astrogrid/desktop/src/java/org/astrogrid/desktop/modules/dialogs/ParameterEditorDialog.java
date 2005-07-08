@@ -1,4 +1,4 @@
-/*$Id: ParameterEditorDialog.java,v 1.5 2005/06/23 09:08:26 nw Exp $
+/*$Id: ParameterEditorDialog.java,v 1.6 2005/07/08 11:08:01 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -126,12 +126,14 @@ public class ParameterEditorDialog extends JDialog {
 		super();
         desc = null;
         resourceChooser = null;
+        this.allowIndirect = true;
 		initialize();
 	}
     
     public ParameterEditorDialog(Myspace myspace,ApplicationDescription desc, Component component) {
         super();
         this.desc = desc;
+        this.allowIndirect=true;
         resourceChooser = new ResourceChooserDialog(myspace);
         this.setLocationRelativeTo(component);
         initialize();       
@@ -147,7 +149,7 @@ public class ParameterEditorDialog extends JDialog {
         
     }
     
-    private boolean allowIndirect;
+    private final boolean allowIndirect;
     
     protected final ResourceChooserDialog resourceChooser;
     protected final ApplicationDescription desc;
@@ -218,6 +220,9 @@ public class ParameterEditorDialog extends JDialog {
 
 /* 
 $Log: ParameterEditorDialog.java,v $
+Revision 1.6  2005/07/08 11:08:01  nw
+bug fixes and polishing for the workshop
+
 Revision 1.5  2005/06/23 09:08:26  nw
 changes for 1.0.3 release
 

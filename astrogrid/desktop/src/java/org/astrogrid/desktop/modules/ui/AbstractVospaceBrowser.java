@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.5 2005/06/20 16:56:40 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.6 2005/07/08 11:08:01 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,6 +62,8 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
             return current;
         }
 
+        
+
         public void valueChanged(javax.swing.event.TreeSelectionEvent e) {
             FileManagerNode n = (FileManagerNode) folderTree.getLastSelectedPathComponent();
             if (n != null) {
@@ -80,11 +82,14 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
         }
 
         protected void updateDisplay() {
-            logger.debug(current.getName());
+            // enable correct set of actions, and remove selection in other pane.
+            //logger.debug(current.getName());
             if (getCurrent().isFile()) {
                 getActions().enableFileActions();
+                getFolderTree().clearSelection();
             } else {
                 getActions().enableFolderActions();
+                getFileList().clearSelection();
             }
         }
 
@@ -236,10 +241,17 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
             (new BackgroundOperation("Creating " + fname1) {
 
                 protected Object construct() throws Exception {
-                    return n.addFile(fname1);
+                    FileManagerNode newNode =  n.addFile(fname1);
+                    return newNode;
                 }
-
+                protected void doFinished(Object o) {
+                    FileManagerNode newFile = (FileManagerNode)o;
+                    getFileList().setSelectedValue(newFile,true);
+                    // following is maybe a bit belt-and-braces, but it makes sure the tree never vanishes.
+                    getFolderTreeModel().reload(newFile.getParent());
+                }
                 protected void doAlways() {
+
                     getBlockingGlassPane().setVisible(false);
                 }
 
@@ -538,6 +550,7 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
     
             protected void doFinished(Object result) {
                 getFolderTreeModel().setRoot((FileManagerNode) result);
+                getFolderTree().setSelectionRow(0);
             }
         }).start();
     
@@ -564,6 +577,9 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.6  2005/07/08 11:08:01  nw
+ * bug fixes and polishing for the workshop
+ *
  * Revision 1.5  2005/06/20 16:56:40  nw
  * fixes for 1.0.2-beta-2
  *

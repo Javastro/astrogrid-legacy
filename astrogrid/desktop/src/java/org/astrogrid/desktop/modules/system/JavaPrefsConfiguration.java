@@ -1,4 +1,4 @@
-/*$Id: JavaPrefsConfiguration.java,v 1.4 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: JavaPrefsConfiguration.java,v 1.5 2005/07/08 11:08:01 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -92,7 +92,7 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
     public String getKey(String key) {
         return userPrefs.get(key,null);
     }
-    
+
     /**@@MethodDoc("listKeys","list configutation keys")
      * @@.return ReturnDoc("array of keys",rts=ArrayResultTransformerSet.getInstance())
      * */
@@ -146,6 +146,9 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
 
 /* 
 $Log: JavaPrefsConfiguration.java,v $
+Revision 1.5  2005/07/08 11:08:01  nw
+bug fixes and polishing for the workshop
+
 Revision 1.4  2005/06/08 14:51:59  clq2
 1111
 

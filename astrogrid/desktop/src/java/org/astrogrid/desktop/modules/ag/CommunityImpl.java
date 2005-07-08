@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.5 2005/05/12 15:59:12 clq2 Exp $
+/*$Id: CommunityImpl.java,v 1.6 2005/07/08 11:08:02 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,6 +91,9 @@ public class CommunityImpl implements Community  {
      * */
     
     public synchronized void guiLogin() {
+        if (isLoggedIn()) { // we're already logged in - no need to do anything.
+            return;
+        }
         while(!isLoggedIn()) {
             if (! (loginDialogue.showDialog(null))) { // cancel was hit.
                 break;
@@ -152,6 +155,9 @@ public class CommunityImpl implements Community  {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.6  2005/07/08 11:08:02  nw
+bug fixes and polishing for the workshop
+
 Revision 1.5  2005/05/12 15:59:12  clq2
 nww 1111 again
 

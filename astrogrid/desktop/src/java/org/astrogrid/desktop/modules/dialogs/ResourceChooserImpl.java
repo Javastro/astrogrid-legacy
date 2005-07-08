@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.4 2005/05/12 15:59:08 clq2 Exp $
+/*$Id: ResourceChooserImpl.java,v 1.5 2005/07/08 11:08:01 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,12 +28,19 @@ public class ResourceChooserImpl implements ResourceChooser {
     public URI chooseResource(String title,boolean enableMySpace) {
         return ResourceChooserDialog.chooseResource(vos,title,enableMySpace);
     }
+    
+    public URI fullChooseResource(String title,boolean enableMySpace,boolean enableLocalFile,boolean enableURI) {
+        return ResourceChooserDialog.chooseResource(vos,title,enableMySpace,enableLocalFile,enableURI);
+    }
 
 }
 
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.5  2005/07/08 11:08:01  nw
+bug fixes and polishing for the workshop
+
 Revision 1.4  2005/05/12 15:59:08  clq2
 nww 1111 again
 

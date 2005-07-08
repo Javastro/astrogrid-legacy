@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.6 2005/06/20 16:56:40 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.7 2005/07/08 11:08:01 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.astrogrid.Myspace;
@@ -27,7 +28,12 @@ import org.astrogrid.filemanager.client.NodeMetadata;
 import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.filemanager.common.NodeNotFoundFault;
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.client.query.ResourceData;
 import org.astrogrid.store.Ivorn;
+
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 import com.l2fprod.common.swing.JTaskPane;
 import com.l2fprod.common.swing.JTaskPaneGroup;
@@ -237,7 +243,6 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         }
     }
 
-    /** @todo add in a list of filestores to choose from - populated by registry. alternately, use reg micro-browser */
     protected final class RelocateAction extends AbstractAction implements FileAction {
         public RelocateAction() {
             super("Relocate",IconHelper.loadIcon("repo_rep.gif"));
@@ -257,22 +262,31 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             }
             // prompt for store to relocate to.
             // could do with popping up a registry micro-browser here.
+            /*
             String newStore = JOptionPane.showInputDialog(VospaceBrowserImpl.this,
                     "<html>" + n.getName() +" is currently located at " + n.getMetadata().getContentLocation() + "<br>Enter ivorn of filestore to relocate to</html>"
-                    ,"Relocate " + n.getName(),JOptionPane.QUESTION_MESSAGE); 
-            if (newStore == null) { // user pressed cancel.
-                return;
-            }
-            final Ivorn uri;
-            try {   // check input is an ivorn..
-                uri = new Ivorn(newStore);
-                if (uri.getScheme() == null || ! uri.getScheme().equals("ivo")){
-                    throw new URISyntaxException(newStore,"Not a valid ivorn");
+                    ,"Relocate " + n.getName(),JOptionPane.QUESTION_MESSAGE);
+                    */
+            try {
+            ResourceData[] rds = getVospace().listAvailableStores();
+            int currentPos = 0;
+            Ivorn[] stores = new Ivorn[rds.length];
+            for (int i = 0;  i < stores.length; i++) {
+                Ivorn ivo = rds[i].getIvorn();
+                stores[i] = ivo;
+                if (ivo.toString().equals(n.getMetadata().getContentLocation().toString())) {
+                    currentPos = i;
                 }
-            } catch (URISyntaxException e1) {
-                showError("You must input a valid ivorn",e1);
+            }
+            final Ivorn uri = (Ivorn)JOptionPane.showInputDialog(VospaceBrowserImpl.this,
+                    "<html>" + n.getName() +" is currently located at " + n.getMetadata().getContentLocation() + "<br>Select another filestore to relocate this file to</html>"
+                    ,"Relocate " + n.getName(), JOptionPane.QUESTION_MESSAGE, null
+                    ,stores, stores[currentPos]
+                    );
+            if (uri == null) { // user pressed cancel.
                 return;
             }
+
             (new BackgroundOperation("Relocating " + n.getName() + " to " + uri) {
 
                 protected Object construct() throws Exception {
@@ -280,6 +294,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                     return null;
                 }
             }).start();
+            } catch (RegistryException e1) {
+                showError("Could not get list of available stores from registry",e1);
+            }
         }
     }
 
@@ -331,7 +348,11 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             }
             (new BackgroundOperation("Refreshing " + n.getName()) {
                 protected Object construct() throws Exception {
-                    n.refresh();
+                    if (n.isFile()) {
+                        n.getParentNode().refresh();
+                    } else {                            
+                        n.refresh();
+                    }
                     return null;
                 }
 
@@ -339,6 +360,8 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                     // notify tree of changes..
                     if (n.isFolder()) {
                         getFolderTreeModel().reload(n);
+                    } else {
+                        getFolderTreeModel().reload(n.getParent());
                     }
                     // always refresh file list - dunno where the view is - just
                     // to be safe.
@@ -488,6 +511,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
     }
 
     protected final BrowserControl browser;
+    protected final Community community;
 
     private Actions actions = null;
 
@@ -512,12 +536,14 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
     public VospaceBrowserImpl() {
         super(null);
         this.browser = null;
+        this.community = null;
         initialize();
     }
 
-    public VospaceBrowserImpl(Configuration conf, HelpServer hs,UI ui, Myspace vos, Community comm, BrowserControl browser) {
+    public VospaceBrowserImpl(Configuration conf, HelpServer hs,UI ui, Myspace vos, Community comm, BrowserControl browser, Registry reg) {
         super(conf, hs,ui,vos);
         this.browser = browser;
+        this.community = comm;
         comm.addUserLoginListener(this);
         initialize();
     }
@@ -533,8 +559,8 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
      * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogout(UserLoginEvent e) {
-        getFolderTree().setModel(null);
-        getFileList().setModel(null);
+        getFolderTree().setModel(new FolderTreeModel(null));
+        getFileList().setModel(new FileManagerNodeListModel());
     }
 
     /**
@@ -645,6 +671,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.7  2005/07/08 11:08:01  nw
+ * bug fixes and polishing for the workshop
+ *
  * Revision 1.6  2005/06/20 16:56:40  nw
  * fixes for 1.0.2-beta-2
  *

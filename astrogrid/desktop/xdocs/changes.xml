@@ -13,6 +13,51 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+	<release version="1.0.4-alpha" date="unreleased">
+		<action dev="nw" type="add">
+			Added real splash screen
+		</action>
+		<action dev="nw" type="fix">
+			Fixed endpoint configuration, logging configuration,
+			and ipv6 problem.
+		</action>
+		<action dev="nw" type="fix">
+			Removed 'indirect' buttons from parameter editor for
+			parameterized workflows - doesn't make sense to have it.
+		</action>
+		<action dev="nw" type="fix" issue="1221">
+			Improved resource chooser dialogue to make
+			it easier to use.
+		</action>
+		<action dev="nw" type="remove">
+			Removed 'show in portal' from job monitor - 
+			never worked.
+		</action>
+		<action dev="nw" type="fix">
+			Replace file chooser dialogue by resource chooser dialogue
+			throughout - means many things can be loaded / saved to myspace.
+		</action>
+		<action dev="nw" type="fix">
+			Relocate operation in myspace browser lists available stores.
+		</action>
+		<action dev="nw" type="fix">
+			Removed 'file' tab from resource chooser for indirect parameters
+		</action>
+		<action dev="nw" type="fix">
+			Fixed error on logout
+		</action>
+		<action dev="nw" type="fix">
+			Applications in monitor now persist between workbench sessions
+		</action>
+		<action dev="nw" type="fix">
+			Creating a new file in the filemanager selects that filemanager
+		</action>
+		<action dev="nw" type="fix">
+			filemanager improvements: starts with 'home' folder selected;
+			selecting a file removes selection of folder, and vice-versa;
+			improved refresh; fixed folder tree vanishing.
+		</action>
+	</release>
 	<release version="1.0.3" date="2005-06-23">
 		<action dev="nw" type="update">
 			Based on 1.0.3-beta-2

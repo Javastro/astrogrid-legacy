@@ -8,6 +8,8 @@ import org.astrogrid.applications.beans.v1.Interface;
 import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.desktop.modules.system.UIImpl;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.io.Piper;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -327,7 +329,7 @@ public  class ParametersPanel extends JPanel {
                             Piper.pipe(in,sw);
                             parameter.setValue(sw.toString());
                             } catch (IOException ex) {
-                                JOptionPane.showMessageDialog(ParametersPanel.this,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                                UIComponent.showError(ParametersPanel.this,ex.getMessage(),ex);
                             }
                             parameter.setIndirect(false);
                             pm.fireTableCellUpdated(row,1);
@@ -354,6 +356,9 @@ public  class ParametersPanel extends JPanel {
 
 /* 
 $Log: ParametersPanel.java,v $
+Revision 1.3  2005/07/08 11:08:01  nw
+bug fixes and polishing for the workshop
+
 Revision 1.2  2005/06/08 14:51:59  clq2
 1111
 

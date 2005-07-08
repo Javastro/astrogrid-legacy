@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.5 2005/05/12 15:59:11 clq2 Exp $
+/*$Id: VospaceImpl.java,v 1.6 2005/07/08 11:08:02 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,11 +27,18 @@ import org.astrogrid.filemanager.common.NodeNotFoundFault;
 import org.astrogrid.filemanager.common.NodeTypes;
 import org.astrogrid.io.Piper;
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.RegistrySearchException;
+import org.astrogrid.registry.client.query.ResourceData;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.ui.script.ScriptEnvironment;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,6 +50,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.rmi.RemoteException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /** implementation of the vospace componet.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Feb-2005
@@ -232,7 +243,17 @@ public class VospaceImpl implements UserLoginListener, Myspace {
     }
 
 
+  public ResourceData[] listAvailableStores() throws RegistryException {
 
+      return community.getEnv().getAstrogrid().createRegistryClient().getResourceDataByRelationship("ivo://org.astrogrid/FileStoreKind");
+               /*
+               "select * from Registry where @status='active' "
+               +" and vr:content/vr:relationship/vr:relationshipType = 'derived-from' "               
+               + " and vr:content/vr:relationship/vr:relatedResource = 'FileStore' "
+               ); */           
+  }
+    
+    
     /**
      * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
@@ -263,6 +284,9 @@ public class VospaceImpl implements UserLoginListener, Myspace {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.6  2005/07/08 11:08:02  nw
+bug fixes and polishing for the workshop
+
 Revision 1.5  2005/05/12 15:59:11  clq2
 nww 1111 again
 

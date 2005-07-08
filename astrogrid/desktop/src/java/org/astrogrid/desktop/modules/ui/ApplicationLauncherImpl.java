@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.3 2005/06/22 08:48:52 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.4 2005/07/08 11:08:01 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,13 +11,18 @@
 package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.Myspace;
+import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.ApplicationLauncher;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.applications.beans.v1.Interface;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
+import org.astrogrid.applications.parameter.protocol.InaccessibleExternalValueException;
+import org.astrogrid.applications.parameter.protocol.UnrecognizedProtocolException;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ParametersPanel;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserDialog;
@@ -40,8 +45,13 @@ import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -127,7 +137,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
         }
     }
     
-	private JFileChooser fileChooser = null;  //  @jve:decl-index=0:visual-constraint="484,57"
+	
     protected final class SaveAction extends AbstractAction {
         /**
          * Commons Logger for this class
@@ -139,21 +149,26 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
             this.putValue(SHORT_DESCRIPTION,"Save tool document to local disk");
             this.setEnabled(false);
         }
+        private Writer getWriter(URI u) throws InaccessibleExternalValueException, UnrecognizedProtocolException {            
+            ExternalValue ev= community.getEnv().getAstrogrid().getIoHelper().getExternalValue(u);
+            return new OutputStreamWriter(ev.write());
+        }        
         public void actionPerformed(ActionEvent e) {
-            int result = getFileChooser().showSaveDialog(ApplicationLauncherImpl.this);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                final File f = getFileChooser().getSelectedFile();
+            //int result = getFileChooser().showSaveDialog(ApplicationLauncherImpl.this);
+            final URI u = chooser.chooseResource("Save Tool Document",true);
+            if (u == null) {
+                return;
+            }
                 (new BackgroundOperation("Saving tool definition") {
 
                     protected Object construct() throws Exception {
                         Tool t = getParametersPane().getTool();
-                        FileWriter fw = new FileWriter(f);
-                        t.marshal(fw);
-                        fw.close();
+                        Writer writer = getWriter(u);
+                        t.marshal(writer);
+                        writer.close();
                         return null;
                     }
-                }).start();
-            }
+                }).start();            
             
         }
     }
@@ -190,7 +205,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
                             names[i] = services[i].getIvorn();
                         }
                     Ivorn chosen = (Ivorn)JOptionPane.showInputDialog(ApplicationLauncherImpl.this
-                            ,"More than one CEA server provides this applicaiton - please choose one"
+                            ,"More than one CEA server provides this application - please choose one"
                             ,"Choose Server"
                             ,JOptionPane.QUESTION_MESSAGE
                             ,null
@@ -225,15 +240,20 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
             super("Open",IconHelper.loadIcon("file_obj.gif"));
             this.putValue(SHORT_DESCRIPTION,"Load tool document from local disk");
         }        
+        private Reader getReader(URI u) throws InaccessibleExternalValueException, UnrecognizedProtocolException{
+            ExternalValue ev = community.getEnv().getAstrogrid().getIoHelper().getExternalValue(u);
+            return new InputStreamReader(ev.read());
+        }        
         public void actionPerformed(ActionEvent e) {
-            int result = getFileChooser().showOpenDialog(ApplicationLauncherImpl.this);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                final File f = getFileChooser().getSelectedFile();
+            final URI u = chooser.chooseResource("Select tool document to load",true);
+            if (u == null) {
+                return;
+            }                   
                 (new BackgroundOperation("Opening tool definition") {
                     private ApplicationDescription newApp;
                     private Interface newInterface;
                     protected Object construct() throws Exception {
-                       FileReader fr = new FileReader(f);
+                       Reader fr = getReader(u);
                        Tool t = Tool.unmarshalTool(fr);
                        fr.close();
                        newApp = apps.getApplicationDescription(t.getName());                       
@@ -257,7 +277,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
                 }).start();
             }
             
-        }
+        
     }
     
     protected final class CloseAction extends AbstractAction {
@@ -438,7 +458,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 	 */    
 	private ParametersPanel getParametersPane() {
 		if (parametersPane == null) {
-			parametersPane = new ParametersPanel(new ResourceChooserDialog(myspace));
+			parametersPane = new ParametersPanel(new ResourceChooserDialog(myspace,"Choose External Resource",true,false,true));
 		}
 		return parametersPane;
 	}
@@ -516,17 +536,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
         }
         return infoDisplay;
     }
-	/**
-	 * This method initializes jFileChooser	
-	 * 	
-	 * @return javax.swing.JFileChooser	
-	 */    
-	private JFileChooser getFileChooser() {
-		if (fileChooser == null) {
-			fileChooser = new JFileChooser();
-		}
-		return fileChooser;
-	}
+
           public static void main(String[] args) {
              (new ApplicationLauncherImpl()).show();
     }
@@ -538,20 +548,26 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
         this.apps = null;
         this.monitor =null;
         this.myspace = null;
+        this.chooser=null;
+        this.community = null;
 		initialize();
 	}
     
-    public ApplicationLauncherImpl(Applications apps,JobMonitor monitor, Myspace myspace, HelpServer hs, Configuration conf, UI ui) {
+    public ApplicationLauncherImpl(Community comm,Applications apps,JobMonitor monitor, Myspace myspace, HelpServer hs, Configuration conf, UI ui,ResourceChooser chooser) {
         super(conf,hs,ui);
         this.apps = apps;
         this.monitor = monitor;
         this.myspace =myspace;
+        this.chooser= chooser;
+        this.community = comm;
         initialize();
     }
     
     private final Applications apps;
     private final JobMonitor monitor;
     private final Myspace myspace;
+    private final ResourceChooser chooser;
+    private final Community community;
 	/**
 	 * This method initializes this
 	 * 
@@ -577,6 +593,9 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.4  2005/07/08 11:08:01  nw
+bug fixes and polishing for the workshop
+
 Revision 1.3  2005/06/22 08:48:52  nw
 latest changes - for 1.0.3-beta-1
 

@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.3 2005/05/12 15:59:09 clq2 Exp $
+/*$Id: Myspace.java,v 1.4 2005/07/08 11:08:02 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.filemanager.common.NodeIvorn;
 import org.astrogrid.filemanager.common.NodeNotFoundFault;
 import org.astrogrid.filemanager.common.NodeTypes;
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.client.query.ResourceData;
 import org.astrogrid.store.Ivorn;
 
 import org.apache.axis.types.URI.MalformedURIException;
@@ -28,6 +29,8 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.rmi.RemoteException;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
@@ -121,10 +124,20 @@ public interface Myspace {
             NodeNotFoundFault, RemoteException, RegistryException, CommunityException,
             URISyntaxException;
 
+    /**
+     * @return
+     * @throws RegistryException
+     * @throws ParserConfigurationException
+     */
+    ResourceData[] listAvailableStores() throws RegistryException;
+
 }
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.4  2005/07/08 11:08:02  nw
+ bug fixes and polishing for the workshop
+
  Revision 1.3  2005/05/12 15:59:09  clq2
  nww 1111 again
 

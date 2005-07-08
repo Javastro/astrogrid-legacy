@@ -119,8 +119,7 @@
 				<description>XML Query results</description>
 				<property>
 					<key>system.result.transformer</key>
-					<value>
-						org.astrogrid.desktop.modules.system.transformers.XmlDocumentResultTransformerSet</value>
+					<value>org.astrogrid.desktop.modules.system.transformers.XmlDocumentResultTransformerSet</value>
 				</property>
 			</return>
 			<parameter name="ivorn">
@@ -154,17 +153,18 @@
 			<property>
 				<key>system.ui.menu.entry</key>
 				<value>Perform Query</value>								
-			</property>			
+			</property>
+			<!--						
 			<property>
 				<key>system.ui.result.browser</key>
 				<value>true</value>								
 			</property>				
+			-->
 			<return>
 				<description>XML Query results</description>
 				<property>
 					<key>system.result.transformer</key>
-					<value>
-						org.astrogrid.desktop.modules.system.transformers.XmlDocumentResultTransformerSet</value>
+					<value>org.astrogrid.desktop.modules.system.transformers.XmlDocumentResultTransformerSet</value>
 				</property>
 			</return>
 			<parameter name="sadql">
@@ -270,11 +270,13 @@
 			<property>
 				<key>system.ui.menu.entry</key>
 				<value>Read Node Contents</value>								
-			</property>							
+			</property>	
+			<!--						
 			<property>
 				<key>system.ui.result.browser</key>
 				<value>true</value>								
 			</property>				
+			-->
 			<return>
 				<description>URL from which contents can be readr</description>
 			</return>
@@ -416,6 +418,24 @@
 					to</description>
 			</parameter>
 		</method>
+		<method name="listAvailableStores">
+			<description>List details of available filestores</description>
+			<property>
+				<key>icon</key>
+				<value>info_obj.gif</value>
+			</property>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>List available filestores</value>
+			</property>
+			<return>
+				<description>Array of Resource Summary Object</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>				
+			</return>
+			</method>		
 		<method name="copy">
 			<description>copy a node</description>
 			<parameter name="ivorn">
@@ -815,17 +835,18 @@
 			<property>
 				<key>system.ui.menu.entry</key>
 				<value>Get Job</value>								
-			</property>		
+			</property>	
+			<!--	
 			<property>
 				<key>system.ui.result.browser</key>
 				<value>true</value>								
 			</property>					
+			-->
 			<return>
 				<description>a workflow document</description>
 				<property>
 					<key>system.result.transformer</key>
-					<value>
-						org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet</value>
+					<value>org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet</value>
 						
 				</property>
 			</return>

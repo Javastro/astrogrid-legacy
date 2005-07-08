@@ -7,7 +7,7 @@
 	<component name="resourceChooser" 
 		implementationClass="org.astrogrid.desktop.modules.dialogs.ResourceChooserImpl"
 		interfaceClass="org.astrogrid.acr.dialogs.ResourceChooser">
-		<description>Prompt the user to choose a local or remote file resource</description>
+		<description>Prompt the user to choose a file resource</description>
 		<method name="chooseResource">
 			<description>prompt the user to choose a resource </description>
 				<parameter name="title">
@@ -22,6 +22,33 @@
 				</parameter>					
 		
 		</method>
+		<method name="fullChooseResource">
+			<description>prompt the user to choose a resource, using fully configurable dialog. </description>
+				<parameter name="title">
+						<description>Title to use in dialog</description>
+				</parameter>
+				<parameter name="enableMyspaceTab">
+					<description>whether myspace tab should be visible or not</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>boolean</value>
+				</property>
+				</parameter>					
+				<parameter name="enableLocalFileTab">
+					<description>whether local files tab should be visible or not</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>boolean</value>
+				</property>
+				</parameter>
+				<parameter name="enableURITab">
+					<description>whether arbitrary URL entry tab should be visible or not</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>boolean</value>
+				</property>
+				</parameter>						
+		</method>		
 		</component>
 <component name="toolEditor" 
 		implementationClass="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl"

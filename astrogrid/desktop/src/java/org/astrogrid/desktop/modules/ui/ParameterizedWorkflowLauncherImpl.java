@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.5 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.6 2005/07/08 11:08:01 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -129,7 +129,8 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
 
         } catch (Exception e) {
             logger.warn("Failed",e);
-            JOptionPane.showMessageDialog(null,e,"Error",JOptionPane.ERROR_MESSAGE);
+            UIComponent.showError(null,"Failed",e);
+            
         }
     }
     
@@ -190,7 +191,7 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
     /** prompt user in some way to fill in fields in the template 
      * returns null to indicate canceled operation.*/
     protected Tool editParameters(WorkflowTemplate wft) {
-        ParameterEditorDialog editor = new ParameterEditorDialog(vos,wft.getDesc(),null);
+        ParameterEditorDialog editor = new ParameterEditorDialog(vos,wft.getDesc(),null,false);
         editor.show();
         return editor.getTool();
     }
@@ -219,6 +220,9 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.6  2005/07/08 11:08:01  nw
+bug fixes and polishing for the workshop
+
 Revision 1.5  2005/06/08 14:51:59  clq2
 1111
 

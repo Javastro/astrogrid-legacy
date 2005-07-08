@@ -39,7 +39,7 @@
 	<component name="registryBrowser" 
 		implementationClass="org.astrogrid.desktop.modules.ui.RegistryBrowserImpl" 
 		interfaceClass="org.astrogrid.acr.ui.RegistryBrowser" >
-		<description>Browse the registry</description>
+		<description>View registry entries using a basic browser</description>
 	<property>
 		<key>icon</key>
 		<value>java_lib_obj.gif</value>
