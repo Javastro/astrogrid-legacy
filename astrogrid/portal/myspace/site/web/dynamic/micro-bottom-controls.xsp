@@ -153,7 +153,7 @@
 
 </xsp:logic>  
  
- 
+<body style="background-color: #dddddd"> 
     <ag-div>
       
       <ag-onload function="nofooter();"/>
@@ -234,7 +234,7 @@ function setCurrent( directory ){
 }
 
 function getCurrent() {
-    return getFrameDocument( "top-controls" ).getElementById('currentLocation').value ;
+    return getFrameDocument( "topControls" ).getElementById('currentLocation').value ;
 }
 
 function isCurrent() {
@@ -411,7 +411,7 @@ function finalizeProcessInParent( fileName ) {
    // We must strip out the /home part which is for display purposes only in the portal...
    currentLocationPath = currentLocationPath.substring( currentLocationPath.indexOf( "/" ) + 1);
    
-   var accountSpaceIvornPath = getFrameDocument("top-controls").getElementById("myspace-accountspace-ivornpath").value;
+   var accountSpaceIvornPath = getFrameDocument("topControls").getElementById("myspace-accountspace-ivornpath").value;
    //alert( "currentLocationPath: " +  currentLocationPath +  "\naccountSpaceIvornPath: " + accountSpaceIvornPath ) ;
    
    // Now get the relevant elements in the calling parent's document.
@@ -618,5 +618,7 @@ function getFrame( frameName ) {
 
         </form>
     </ag-div>   
+    
+ </body>
     
   </xsp:page>

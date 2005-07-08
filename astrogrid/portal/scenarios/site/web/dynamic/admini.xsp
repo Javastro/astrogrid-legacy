@@ -48,10 +48,10 @@
 
 <AGScenarios>
 
-<AGscenario name="Your Profile">
+<AGscenario name="Change Password">
 <link>/astrogrid-portal/main/mount/scenarios/userData.scn</link>
 <inBrief>
-Change your password, e-mail or other personal data
+Change your password
 </inBrief>
 <inExtenso>
 Perform a search based purely on position around a list of locations using
@@ -60,7 +60,7 @@ offered the chance to select them.
 </inExtenso>
 </AGscenario>
 
-<AGscenario name="Portal Preferences">
+<!-- AGscenario name="Portal Preferences">
 <link>javascript:newWindow('/astrogrid-portal/bare/mount/login/prefs.i07','newBy', 780, 480, 100, 20);</link>
 <inBrief>
 Modify preferences related to the portal pages
@@ -71,7 +71,7 @@ relevant for your research. You will be able to save lists of catalogues to
 your mySpace area for future usage, eg, cross correlation, neighbour
 location, etc.
 </inExtenso>
-</AGscenario>
+</AGscenario -->
 
 
 </AGScenarios>

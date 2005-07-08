@@ -14,14 +14,16 @@ public class MySpaceHandlerFactory {
 	ACTION_NEW_DIRECTORY = "myspace-new-directory",
   	ACTION_UPLOAD_FILE = "myspace-upload-file",
   	ACTION_UPLOAD_URL = "myspace-upload-url",
-  	ACTION_LOAD_BRANCH = "myspace-load-branch";
+  	ACTION_LOAD_BRANCH = "myspace-load-branch",
+  	ACTION_RELOCATE_FILE = "myspace-relocate-file",
+  	ACTION_REFRESH_DIRECTORY = "myspace-refresh-directory" ;
  
   // MySpace actions yet to be implemented
   private static final String 
   	ACTION_RENAME_FILE = "myspace-rename-file",
   	ACTION_RENAME_DIRECTORY = "myspace-rename-directory",
-  	ACTION_DELETE_DIRECTORY = "myspace-delete-directory" ,
-	ACTION_REFRESH_DIRECTORY = "myspace-refresh-directory" ;
+  	ACTION_DELETE_DIRECTORY = "myspace-delete-directory" ;
+	;
   
   // MySpace actions obsolete
   private static final String 
@@ -49,6 +51,9 @@ public class MySpaceHandlerFactory {
       else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_DELETE_FILE)) {
         result = new DeleteHandler(context); 
       }
+      else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_DELETE_DIRECTORY)) {
+          result = new DeleteDirectoryHandler(context); 
+      }
       else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_FIND_URL)) {
         result = new FindURLHandler(context); 
       }
@@ -69,6 +74,9 @@ public class MySpaceHandlerFactory {
       }
       else if( action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_REFRESH_DIRECTORY ) ) {
           result = new RefreshDirectoryHandler(context); 
+      }
+      else if( action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_RELOCATE_FILE ) ) {
+          result = new RelocateFileHandler(context); 
       }
     }
     

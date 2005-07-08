@@ -111,14 +111,14 @@
 
 </xsp:logic>  	
 	
-
+<body style="background-color: #dddddd">
     <ag-div>
     
       <agPUBMessage>
           MySpace Microbrowser
       </agPUBMessage> 
       
-      <ag-onload function="fcsOnMe();"/>
+      <ag-onload function="fcsOnMe()"/>
 
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
@@ -146,6 +146,9 @@ var ACTION_UPLOAD_URL = "myspace-upload-url";
 var ACTION_RENAME_DIRECTORY = "myspace-rename-directory";
 var ACTION_DELETE_DIRECTORY = "myspace-delete-directory";
 var ACTION_NEW_DIRECTORY = "myspace-new-directory";
+
+var mbMouseDown = false ;
+var mbWindowResizing = false ;
 
 function highlightTD(td){
 	td.style.border= "solid 1px #ffff00";
@@ -253,6 +256,15 @@ function triggerAction( action ) {
 }
 
 
+function goHomeDirectory() {
+    var mode ;
+    var url ;
+    var path = "home/" ;
+    setCurrent( path ) ;
+    mode = document.getElementById( 'requested-mode' ).value ;
+    url = "/astrogrid-portal/bare/mount/myspace/micro-directory-view.xml?requested-mode=" + mode + "\x26" + PARAM_DIRECTORY_VIEW_PATH + "=" + path ;
+    window.open( url, "directory" ) ;   
+}
 
 
 function navigateUp() {
@@ -631,6 +643,46 @@ function getFrame( frameName ) {
 }
 
 
+function onLoad() {
+    // top.topControls.captureEvents(Event.RESIZE | Event.MOUSEDOWN | Event.MOUSEUP);
+    // top.topControls.onresize=markWindowSizing;
+    // top.document.onmousedown=mouseDown;
+    // top.document.onmouseup=mouseUp;
+}
+
+
+function mouseDown( event ) {
+   mbMouseDown = true ;
+   top.routeEvent( event ) ; 
+   return true ;    
+}
+
+function mouseUp( event ) {
+   if( mbWindowResizing == true ) {
+      //alert( "Sized!" ) ;
+      alert( "top.topControls.innerWidth: " + top.topControls.innerWidth + "\n"
+           + "top.topControls.innerHeight: " + top.topControls.innerHeight + "\n"
+           + "top.directory.innerWidth: " + top.directory.innerWidth + "\n"
+           + "top.directory.innerHeight: " + top.directory.innerHeight + "\n"   
+           + "top.bottomControls.innerWidth: " + top.bottomControls.innerWidth + "\n"
+           + "top.bottomControls.innerHeight: " + top.bottomControls.innerHeight ) ;
+      mbWindowResizing = false ;
+   }
+   mbMouseDown = false ;  
+   top.routeEvent( event ) ; 
+   return true ;    
+}
+
+function markWindowSizing( event ) {
+   if( mbMouseDown == true )
+     mbWindowResizing = true ;
+   else
+     mbWindowResizing = false ;
+   top.topControls.routeEvent( event ) ;
+}
+
+
+
 </script>
       
 
@@ -666,6 +718,13 @@ function getFrame( frameName ) {
                                   title="Navigate up one folder"
                                   nowrap="true">Up
                               </td>
+                             <td id="homeTD" align="center" class="naviButton"
+                                  onmouseover="highlight(this, 'home')"
+                                  onmouseout="dehighlight(this, 'home')" 
+                                  onClick="goHomeDirectory();"
+                                  title="Go to home folder"
+                                  nowrap="true">Home
+                              </td>                              
                               <td id="newFolderTD" align="center" class="naviButton"
                                   onmouseover="highlight(this, 'newFolder')"
                                   onmouseout="dehighlight(this, 'newFolder')" 
@@ -683,6 +742,8 @@ function getFrame( frameName ) {
           </div>
 
         </form>
-    </ag-div>   
+    </ag-div> 
+    
+ </body>  
     
   </xsp:page>

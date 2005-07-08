@@ -6,14 +6,14 @@ import org.astrogrid.portal.myspace.filesystem.DeleteException ;
 /**
  * Delete a MySpace entry.
  * 
- * @author peter.shillan
+ * @author jeff.lusted
  */
-public class DeleteHandler extends AbstractMySpaceHandler {
+public class DeleteDirectoryHandler extends AbstractMySpaceHandler {
   /**
    * @see org.astrogrid.portal.myspace.acting.framework.AbstractMySpaceHandler#AbstractMySpaceHandler(org.astrogrid.portal.myspace.acting.framework.ContextWrapper)
    * @param context
    */
-  public DeleteHandler(ContextWrapper context) {
+  public DeleteDirectoryHandler(ContextWrapper context) {
     super(context);
   }
 
@@ -29,7 +29,7 @@ public class DeleteHandler extends AbstractMySpaceHandler {
     
     if( path != null && path.length() > 0 ) {
         try {
-            context.getMySpaceTree().deleteFile( path, false );
+            context.getMySpaceTree().deleteDirectory( path, false );
         }
         catch( DeleteException dx ) {
             throw new MySpaceHandlerException ( dx.getMessage() ) ;

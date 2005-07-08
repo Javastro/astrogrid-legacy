@@ -42,15 +42,15 @@ function dehighlight(diese) {
 }
 
 function setSelected( item ) {   
-    getFrameDocument("bottom-controls").getElementById( 'fileName' ).value = item ;
+    getFrameDocument("bottomControls").getElementById( 'fileName' ).value = item ;
     // this should work but doesnt...
-    // top.bottom-controls.document.getElementById('fileName').value = item ;
+    // top.bottomControls.document.getElementById('fileName').value = item ;
 }
 
 function setCurrent( directory ) {
     //alert( "setCurrent: " + directory ) ;
-    //top.top-controls.document.getElementById('currentLocation').value = directory ;
-    getFrameDocument("top-controls").getElementById('currentLocation').value = directory ;
+    //top.topControls.document.getElementById('currentLocation').value = directory ;
+    getFrameDocument("topControls").getElementById('currentLocation').value = directory ;
 }
 
 function refreshDirectoryView( path, branch ) {
@@ -77,7 +77,7 @@ function refreshDirectoryView( path, branch ) {
     else {
        mode = document.getElementById( 'requested-mode' ).value ;
        url = "/astrogrid-portal/bare/mount/myspace/micro-directory-view.xml?requested-mode=" + mode + "\x26myspace-directory-view-path=" + path ;
-       // alert( "hello url: " + url );
+       //alert( "hello url: " + url );
        window.open( url, "directory" ) ;      
     }
 }

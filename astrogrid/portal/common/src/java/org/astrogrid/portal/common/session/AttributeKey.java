@@ -13,7 +13,7 @@ package org.astrogrid.portal.common.session;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public final class AttributeKey {
-    
+     
     public static final AttributeKey 
     	USER = new AttributeKey( "user" ),
     	COMMUNITY_NAME = new AttributeKey( "community_name" ),
@@ -28,7 +28,8 @@ public final class AttributeKey {
     	QUERY_EDITOR_LAST_MICROBROWSER_VIEW = new AttributeKey( "AGO_QUERY_EDITOR_MB_VIEW" ),
     	WORKFLOW_EDITOR_LAST_MICROBROWSER_VIEW = new AttributeKey( "AGO_WORKFLOW_EDITOR_MB_VIEW" ),
     	PARAMETER_SELECTOR_LAST_MICROBROWSER_VIEW = new AttributeKey( "AGO_PARAMETER_SELECTOR_MB_VIEW" ),
-    	MYSPACE_LAST_VIEW = new AttributeKey( "AGO_MYSPACE_LAST_VIEW" ) ;
+    	MYSPACE_LAST_VIEW = new AttributeKey( "AGO_MYSPACE_LAST_VIEW" ),
+    	MYSPACE_TOGGLE_TREE = new AttributeKey( "AGO_MYSPACE_TOGGLE_TREE" );
     
     // Section from query editor...
     public static final AttributeKey 

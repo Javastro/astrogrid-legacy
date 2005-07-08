@@ -15,16 +15,16 @@
     | details of the user's display and send them back with the form.
     +-->
 function gatherScreenData() {
-<!--
-  alert( "availHeight: " + window.screen.availHeight + "\n"
-       + "availLeft: " + window.screen.availLeft + "\n"
-       + "availTop: " + window.screen.availTop + "\n"
-       + "availWidth: " + window.screen.availWidth + "\n"
-       + "colorDepth: " + window.screen.colorDepth + "\n"
-       + "screenHeight: " + window.screen.height + "\n"
-       + "pixelDepth: " + window.screen.pixelDepth + "\n"
-       + "screenWidth: " + window.screen.width ) ;
- -->      
+
+  //alert( "availHeight: " + window.screen.availHeight + "\n"
+  //     + "availLeft: " + window.screen.availLeft + "\n"
+  //     + "availTop: " + window.screen.availTop + "\n"
+  //     + "availWidth: " + window.screen.availWidth + "\n"
+  //     + "colorDepth: " + window.screen.colorDepth + "\n"
+  //     + "screenHeight: " + window.screen.height + "\n"
+  //     + "pixelDepth: " + window.screen.pixelDepth + "\n"
+  //     + "screenWidth: " + window.screen.width ) ;
+      
   document.getElementById( 'available-height' ).value = window.screen.availHeight ;
   document.getElementById( 'available-left' ).value = window.screen.availLeft ;
   document.getElementById( 'available-top' ).value = window.screen.availTop ;

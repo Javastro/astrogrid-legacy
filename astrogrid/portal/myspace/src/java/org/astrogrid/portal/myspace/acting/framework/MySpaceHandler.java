@@ -14,7 +14,8 @@ public interface MySpaceHandler {
   	PARAM_DIRECTORY_VIEW_PATH = "myspace-directory-view-path",
   	PARAM_TREE_VIEW_PATH = "myspace-tree-view-path",
   	PARAM_TREE_OPEN_BRANCHES = "myspace-tree-open-branches",
-  	PARAM_REQUESTED_MODE = "requested-mode" ;
+  	PARAM_REQUESTED_MODE = "requested-mode",
+  	PARAM_FILESTORE = "myspace-filestore" ;
   
   // These require reworking. Used in/adjacent to uploading a file from local file system.
   public static final String 

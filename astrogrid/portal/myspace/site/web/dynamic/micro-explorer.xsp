@@ -157,18 +157,22 @@
 
 </xsp:logic>  
 
-    <frameset rows="40,*,40" frameborder="1" border="1" framespacing="1" id="MicroExplorerFrameSet" name="MicroExplorerFrameSet">      
+    <frameset rows="35,*,25" frameborder="1" border="5" framespacing="5" id="MicroExplorerFrameSet" name="MicroExplorerFrameSet">      
        <noframes>
          In order to use the MySpace Micro Explorer you need a browser capable of handling frames, such as <b>Netscape 6.0</b>, <b>ie5</b> or higher
        </noframes>
 
-       <frame name="top-controls" id="MicroControlsTopFrame" scrolling="no" bgcolor="#dddddd">
+       <frame name="topControls" 
+              id="MicroControlsTopFrame" 
+              scrolling="no"
+              onLoad="topControls.onLoad();"
+              bgcolor="#dddddd">
           <xsp:attribute name="src"><xsp:expr>formatTopControlsRequest()</xsp:expr></xsp:attribute>
        </frame>      
        <frame marginwidth="1" frameborder="1"  marginheight="1" name="directory" id="MicroDirectoryViewFrame" scrolling="yes">
           <xsp:attribute name="src"><xsp:expr>formatDirectoryRequest()</xsp:expr></xsp:attribute>
        </frame>
-       <frame name="bottom-controls" id="MicroControlsBottomFrame" scrolling="no" bgcolor="#dddddd">
+       <frame name="bottomControls" id="MicroControlsBottomFrame" scrolling="no" bgcolor="#dddddd">
           <xsp:attribute name="src"><xsp:expr>formatBottomControlsRequest()</xsp:expr></xsp:attribute>
        </frame>
     </frameset>

@@ -5,7 +5,9 @@
 	xmlns:xsp="http://apache.org/xsp"
 	xmlns:util="http://apache.org/xsp/util/2.0"
 	xmlns:jpath="http://apache.org/xsp/jpath/1.0" >
-
+	
+  <xsl:param name="password-change" />
+  
   <xsl:template match="AstroGrid">
        <xsl:apply-templates/>
   </xsl:template>
@@ -98,7 +100,10 @@
 </form>
 -->
 
-<form name="updatePass" method="Post">
+<form name="updatePass" 
+      method="Post"
+      action="/astrogrid-portal/main/mount/scenarios/userData.scn/df75hs3-8s7d5a"
+      enctype="multipart/form-data" >
 <div style="padding-left: 40px; padding-top: 2px">
 <table class="compact">
 <tr>
@@ -127,8 +132,22 @@
 </tr>
 <tr>
 <td colspan="2" align="right">
-<span class="submitButton">Change password</span>
+<span class="submitButton" onClick="submit();" >Change password</span>
 </td>
+</tr>
+<tr>
+
+  <xsl:if test="$password-change">
+     <xsl:choose>
+        <xsl:when test="$password-change = 'true'">
+          <td colspan="2" align="left" style="color: black" >*** Password changed successfully ***</td>
+        </xsl:when>
+        <xsl:otherwise>
+          <td colspan="2" align="left" style="color: red" >*** Failed! Please check your details and try again ***</td>
+        </xsl:otherwise>
+     </xsl:choose>
+  </xsl:if>
+
 </tr>
 </table>
 </div>

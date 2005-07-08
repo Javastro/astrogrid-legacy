@@ -44,7 +44,7 @@ public class Tree extends Directory implements Serializable {
     public static final String 
     	TREE_ELEMENT = "myspace-tree",
     	ITEM_ELEMENT = "myspace-item",
-    	PROPERTIES_ELEMENT = "properties",
+    	PROPERTIES_ELEMENT = "file-properties",
     	DIRECTORY_ELEMENT = "directory-item",
     	MYSPACE_ENDPOINT_ATTR = "endpoint",
     	MYSPACE_FILE_ATTR = "file",
@@ -60,7 +60,8 @@ public class Tree extends Directory implements Serializable {
     	OWNER_ATTR = "owner",
     	PATH_ATTR = "path",
     	SIZE_ATTR = "size",
-    	URL_ATTR = "url" ;
+    	URL_ATTR = "url",
+    	CONTENT_LOCATION = "content-location";
     
     private static final int 
     	INCREMENTAL_SIZE = 256,
@@ -479,7 +480,7 @@ public File copyFile( String targetName
         } 
         target = this.getFile( targetPath + targetName ) ;
         if( target != null ) {
-            this.deleteFile( target ) ;
+            this.deleteFile( target, false ) ;
         }
         newNode = source.getNode().copy( targetName
                                        , targetDirectory.getNode()
@@ -523,7 +524,7 @@ public void moveFile( String targetName, String targetPath, String sourcePath ) 
     if( TRACE_ENABLED ) logger.debug( "entry: Tree.moveFile()") ;
     try {
         this.copyFile( targetName, targetPath, sourcePath ) ;
-        this.deleteFile( sourcePath ) ;
+        this.deleteFile( sourcePath, false ) ;
     }
     catch( Exception ex ) {
         throw new MoveException( ex.getLocalizedMessage() ) ;
@@ -534,45 +535,82 @@ public void moveFile( String targetName, String targetPath, String sourcePath ) 
 }
 
 
-public void deleteFile( File file ) {
-    
-    if( file == null )
-        return ;
-    
-    try { 
-        this.deleteFile( file.path() ) ;
-    }
-    catch( DeleteException de ) {
-        logger.debug( de ) ;
-    }
-    
+public void deleteFile( File file, boolean repressRefresh ) throws DeleteException {
+    this.deleteItem( file, repressRefresh ) ;
+}
+
+public void deleteDirectory( Directory directory, boolean repressRefresh ) throws DeleteException {
+    this.deleteItem( directory, repressRefresh ) ;
 }
 
 
-public void deleteFile( String path ) throws DeleteException {
-    if( TRACE_ENABLED ) logger.debug( "entry: Tree.deleteFile()") ;
-    
+public void deleteDirectory( String path, boolean repressRefresh ) throws DeleteException {
+    this.deleteItem( path, repressRefresh ) ;
+}
+
+
+public void deleteFile( String path, boolean repressRefresh ) throws DeleteException {
+    this.deleteItem( path, repressRefresh ) ;
+}
+
+
+//public void deleteFile( String path ) throws DeleteException {
+//    if( TRACE_ENABLED ) logger.debug( "entry: Tree.deleteFile()") ;
+//    
+//    try{ 
+//        File file = this.getFile( path ) ;
+//        if( file == null ) {
+//            logger.debug( "File not found:\n" + path ) ;
+//            throw new DeleteException( "File not found.\n" + path ) ;
+//        }
+//        try{
+//            FileManagerNode parentNode = file.getParent().getNode() ;
+//            itemCache.remove( path ) ;
+//            file.getParent().remove( file ) ;
+//            file.getNode().delete() ;
+//            parentNode.refresh() ;
+//        }
+//        catch( Exception ex ) {
+//            logger.debug( "Deletion failed on file:\n" + path + "\n" + ex.getMessage(), ex ) ;
+//            throw new DeleteException( ex.getMessage() ) ;
+//        }
+//
+//    }
+//    finally {
+//        if( TRACE_ENABLED ) logger.debug( "exit: Tree.deleteFile()") ;
+//    }
+//   
+//}
+
+
+private void deleteItem( String path, boolean repressRefresh ) throws DeleteException {
+    if( path == null ) {
+        logger.debug( "File item not found at path:\n" + path ) ;
+        throw new DeleteException( "File item not found at path:\n" + path ) ;
+    }
+    this.deleteItem( this.getItem(path), repressRefresh ) ;
+}
+
+private void deleteItem( Item item, boolean repressRefresh ) throws DeleteException {
+    if( TRACE_ENABLED ) logger.debug( "entry: Tree.deleteItem()") ;
+
+    String path = null ;
+  
     try{ 
-        File file = this.getFile( path ) ;
-        if( file == null ) {
-            logger.debug( "File not found:\n" + path ) ;
-            throw new DeleteException( "File not found.\n" + path ) ;
-        }
-        try{
-            FileManagerNode parentNode = file.getParent().getNode() ;
-            itemCache.remove( path ) ;
-            file.getParent().remove( file ) ;
-            file.getNode().delete() ;
+        FileManagerNode parentNode = item.getParent().getNode() ;
+        path = item.path() ;
+        itemCache.remove( path ) ;
+        item.getParent().remove( item ) ;
+        item.getNode().delete() ;
+        if( repressRefresh == false ) {
             parentNode.refresh() ;
         }
-        catch( Exception ex ) {
-            logger.debug( "Deletion failed on file:\n" + path + "\n" + ex.getMessage(), ex ) ;
-            throw new DeleteException( ex.getMessage() ) ;
-        }
-
+    }
+    catch( Exception ex ) {
+        throw new DeleteException( ex ) ;
     }
     finally {
-        if( TRACE_ENABLED ) logger.debug( "exit: Tree.deleteFile()") ;
+        if( TRACE_ENABLED ) logger.debug( "exit: Tree.deleteItem()") ;
     }
    
 }

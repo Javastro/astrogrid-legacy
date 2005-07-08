@@ -158,6 +158,7 @@ function resetAction() {
                   <tr>
                      <th></th>
                      <th align="left">Name</th>
+                     <!-- th align="left">Selected</th -->
                      <th align="center">Size</th>
                      <th align="left">Type</th>
                      <th align="left">Date modified</th>
@@ -219,7 +220,16 @@ function resetAction() {
            </xsl:attribute>
            <xsl:value-of select="@item-name"/>
           </span>
-        </td> 
+        </td>
+
+        <!-- td>
+          <span >
+           <input type="checkbox" name="myspace-file">
+              <xsl:attribute name="value"><xsl:value-of select="@full-name"/></xsl:attribute>
+           </input>
+          </span>        
+        </td -->
+         
         <td align="right">
            <xsl:value-of select="@size"/>&#160;bytes&#160;
         </td>

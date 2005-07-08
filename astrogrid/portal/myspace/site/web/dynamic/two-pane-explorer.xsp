@@ -29,15 +29,15 @@
           <xsp:attribute name="src">/astrogrid-portal/bare/mount/myspace/tree-view.xml</xsp:attribute>
         </frame>
 
-        <frameset rows="100, *" frameborder="1" border="1" framespacing="1"
-                  id="DirectoryViewFrameSet" name="directoryViewFrameSet">
-           <frame name="controls" id="DirectoryControlsFrame" 
-                  scrolling="no"
+        <frameset rows="120, *" frameborder="1" border="5" framespacing="5"
+                  id="DirectoryViewFrameSet" name="directoryViewFrameSet" >
+           <frame name="controls" id="DirectoryControlsFrame" style="background-color: #dddddd"
+                  scrolling="auto"
                   onLoad="controls.onLoad();" >
              <xsp:attribute name="src">/astrogrid-portal/bare/mount/myspace/directory-controls.xml</xsp:attribute>
            </frame>      
            <frame marginwidth="1" frameborder="1"  marginheight="1" name="directory" 
-                  id="DirectoryViewFrame" scrolling="yes"
+                  id="DirectoryViewFrame" scrolling="yes" 
                   onLoad="directory.onLoad();">
              <xsp:attribute name="src">/astrogrid-portal/bare/mount/myspace/directory-view.xml</xsp:attribute>
            </frame>

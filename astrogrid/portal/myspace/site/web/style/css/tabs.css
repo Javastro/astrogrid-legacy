@@ -1,0 +1,40 @@
+.tabs {
+	position:relative; 
+	height: 20px; 
+	margin: 0; 
+	padding: 0; 
+	background:#ffffff ; 
+	overflow:hidden
+}
+
+.tabs li {
+	display:inline;
+}
+
+.tabs a:hover, .tabs a.tab-active {
+    color: #000099;
+	background:#dddddd repeat-x; 
+	border-right: 1px solid #fff
+}
+ 
+.tabs a  {
+	height: 20px; 
+	font:12px verdana, helvetica, sans-serif;
+	font-weight:bold;
+    position:relative; 
+    padding:6px 10px 10px 10px; 
+    margin: 0px -4px 0px 0px; 
+    color:#000099;
+    text-decoration:none;
+    border-left:1px solid black; 
+    border-right:1px solid black;
+}
+
+.tab-container {
+	background: #dddddd; 
+	border:0px solid black;
+}
+
+.tab-panes { 
+	margin: 3px 
+}

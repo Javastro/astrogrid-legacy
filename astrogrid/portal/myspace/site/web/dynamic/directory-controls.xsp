@@ -115,18 +115,19 @@
                	
 </xsp:logic>	
 	
-	
-    <ag-div>
+<body style="background-color: #dddddd">	
+    <ag-div >
       
       <ag-onload function="nofooter();"/>
 
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/extras.css"/>   
-         
+      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/tabs.css"/>           
+       
       <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
       <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
-   
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/tabs.js"/>   
       
 <script language="javascript">
 
@@ -148,6 +149,9 @@ var ACTION_RENAME_DIRECTORY = "myspace-rename-directory";
 var ACTION_DELETE_DIRECTORY = "myspace-delete-directory";
 var ACTION_NEW_DIRECTORY = "myspace-new-directory";
 var ACTION_REFRESH_DIRECTORY = "myspace-refresh-directory";
+
+var bMouseDown = false ;
+var bWindowResizing = false ;
 
 function uploadLocal(este){
     document.getElementById("uploadURL").style.display="none";
@@ -204,7 +208,7 @@ function resetClipboard() {
 
 
 function triggerAction( action ) {
-  <!-- alert( "triggerAction: " + action ) ; -->
+  <!-- alert( "triggerAction: " + action ) ; --> 
 
   // top.directory.document.getElementById( 'myspace-action' ).value = action ;
   var doc = top.directory.document;
@@ -233,6 +237,10 @@ function navigateUp() {
     setCurrent( path ) ;
     document.getElementById('selected').value = "*** none ***" ;
     window.open( "/astrogrid-portal/bare/mount/myspace/directory-view.xml?" + PARAM_DIRECTORY_VIEW_PATH + "=" + path, "directory" ) ;   
+}
+
+function toggleTreeView() {
+	//alert( "toggleTreeView" ) ;
 }
 
 function getAction() {
@@ -294,6 +302,11 @@ function isFile( name ) {
 
 function refreshFolder() {         
        triggerAction( ACTION_REFRESH_DIRECTORY ) ;       
+}
+
+function goHomeDirectory() {
+   setCurrent( "home/" ) ;
+   refreshFolder() ;
 }
 
 
@@ -365,14 +378,56 @@ function goUploadFile() {
 } <!-- end of goUploadFile() -->
 
 
-function onLoad() {
-	<!-- alert( "Watcha directory-controls!\n" + "getAction(): " + getAction() ) ; -->
+function onLoad() {	
+	setupPanes("controlsTable", "tab1");
+	//windowSizing() ;
+	
+	var controlsTable = document.getElementById( "controlsTable" );
+	// alert( "controlsTable.offsetHeight: " + controlsTable.offsetHeight + "\n"
+	//     + "controlsTable.offsetWidth: " + controlsTable.offsetWidth ) ;   
+	
     if( getAction() == "myspace-upload-file" ) {
        resetAction() ; 
        refreshFolder() ;
     }
 }
 
+
+function windowSizing() {
+    top.controls.captureEvents(Event.RESIZE | Event.MOUSEDOWN | Event.MOUSEUP);
+    top.controls.onresize=markWindowSizing;
+    top.document.onmousedown=mouseDown;
+    top.document.onmouseup=mouseUp;
+}
+ 
+function mouseDown( event ) {
+   bMouseDown = true ;
+   top.routeEvent( event ) ; 
+   return true ;    
+}
+
+function mouseUp( event ) {
+   if( bWindowResizing == true ) {
+      alert( "top.tree.innerWidth: " + top.tree.innerWidth + "\n"
+           + "top.tree.innerHeight: " + top.tree.innerHeight + "\n"
+           + "top.controls.innerWidth: " + top.controls.innerWidth + "\n"
+           + "top.controls.innerHeight: " + top.controls.innerHeight + "\n"   
+           + "top.directory.innerWidth: " + top.directory.innerWidth + "\n"
+           + "top.directory.innerHeight: " + top.directory.innerHeight ) ;
+      bWindowResizing = false ;
+   }
+   bMouseDown = false ;  
+   top.routeEvent( event ) ; 
+   return true ;    
+}
+
+function markWindowSizing( event ) {
+   if( bMouseDown == true )
+     bWindowResizing = true ;
+   else
+     bWindowResizing = false ;
+   top.controls.routeEvent( event ) ;
+}
 
 function goUploadURL() {
    //alert( "uploadURL" ) ;
@@ -492,6 +547,12 @@ function deleteIt() {
     // If it a folder, ...
     if( parent.directory.matchedItemType( name ) == "Folder" ) { 
     
+       alert(
+          "\n________________________________________________________________\n\n" +
+          "*** Deletion of Folders ***\n" +
+          "________________________________________________________________\n\n" +
+          "Sorry. This capability is awaiting implementation. " ) ;
+       return ;
        // Confirm deletion of folder...	  	   
        reply = confirm(
           "\n________________________________________________________________\n\n" +
@@ -615,15 +676,13 @@ function newName( option, title, defaultName, itemType ) {
     
 } // end of newName()
 
-
-
 </script>
       
 	    <form
             id="myspace-action-form"
             action="/astrogrid-portal/bare/mount/myspace/directory-controls-action"
             method="POST"
-            enctype="multipart/form-data">
+            enctype="multipart/form-data" >
           <input id="myspace-action" name="myspace-action" type="hidden">
               <xsp:attribute name="value"><xsp:expr>getAction()</xsp:expr></xsp:attribute>
           </input>
@@ -631,239 +690,206 @@ function newName( option, title, defaultName, itemType ) {
           <input id="myspace-target-path" name="myspace-target-path" type="hidden"/>
           <input id="myspace-source-name" name="myspace-source-name" type="hidden"/>
         
-          <div >
-          
-             <table cellpadding="0" cellspacing="0" class="compact" border="0" width="100%" bgcolor="#dddddd">
-               <tr valign="top">
-                  <td align="left" nowrap="true" >
-                       <table cellpadding="0" class="compact" cellspacing="0" border="1" rules="rows" frame="rhs" style="border-color: black" width="100%">
-                          <tr>
-                             <td>
-                                
-                                <table class="compact" width="100%">                                 
-                                   <tr>
-                                      <td align="left" width="8%">
-                                         Selected:
-                                      </td>
-                                      <td align="left">
-                                         <input name="selected" id="selected" size="48" style="background-color: #dddddd">
-                                             <xsp:attribute name="value"><xsp:expr>getSelected()</xsp:expr></xsp:attribute>
-                                         </input>                                                      
-                                      </td>
-                                   </tr>  
-                                 </table>                                        
-                                                             
-                             </td>
-                          </tr>
-                          <tr>
-                             <td>
-                                <table class="compact" width="100%">
-                                   <tr>
-                                      <td id="copyItTD" align="center" class="naviButton"
-                                          onmouseover="highlight(this, 'copyIt')"
-                                          onmouseout="dehighlight(this, 'copyIt')" 
-                                          onClick="setClipboard( 'Copy' )"
-                                          title="Copy selected file to clipboard"
-                                          nowrap="true">Copy
-                                      </td>
-                                      <td id="moveItTD" align="center" class="naviButton"
-                                          onmouseover="highlight(this, 'moveIt')"
-                                          onmouseout="dehighlight(this, 'moveIt')" 
-                                          onClick="setClipboard( 'Move' )"
-                                          title="Move selected file to clipboard"
-                                          nowrap="true">Cut
-                                      </td>
-                                      <td id="pasteItTD" align="center" class="naviButton"
-                                          onmouseover="highlight(this, 'pasteIt')"
-                                          onmouseout="dehighlight(this, 'pasteIt')" 
-                                          onClick="paste()"
-                                          title="Paste from clipboard to current location"
-                                          nowrap="true">Paste
-                                      </td>
-                                      <td id="deleteItTD" align="center" class="naviButton"
-                                          onmouseover="highlight(this, 'deleteIt')"
-                                          onmouseout="dehighlight(this, 'deleteIt')" 
-                                          onClick="deleteIt()"
-                                          title="Delete selected file"
-                                          nowrap="true">Delete
-                                      </td>   
-                                      <td id="propertiesTD" align="center" class="naviButton"
-                                          onmouseover="highlight(this, 'properties')"
-                                          onmouseout="dehighlight(this, 'properties')" 
-                                          onClick="showProperties()"
-                                          title="Display properties of selected file"
-                                          nowrap="true">Properties
-                                      </td>
-                                   </tr>
-                                </table>
-                             </td>
-                          </tr>
-                          <tr>
-                             <td>
-               
-                                <table class="compact" width="100%">                                 
-                                   <tr>
-                                      <td align="left" width="10%">
-                                         Clipboard:
-                                      </td>
-                                      <td align="left">
-                                         <input name="clipboard" 
-                                                id="clipboard" 
-                                                size="48" 
-                                                style="background-color: #dddddd" 
-                                                title="Source for 'Copy' or 'Move'">
-                                            <xsp:attribute name="value"><xsp:expr>getClipboard()</xsp:expr></xsp:attribute>
-                                         </input>                                                         
-                                      </td>
-                                   </tr>  
-                                 </table>                                           
-                             </td>                             
-                             
-                          </tr>                          
-                       </table>
-                  </td>
-                  <td align="left" nowrap="true" >
-                       <table cellpadding="0" cellspacing="0" border="1" frame="lhs" rules="none" style="border-color: black" width="100%">
-                          <tr>
-                             <td>
-                             
-                             
-                                <table class="compact" width="100%">
-                                   <tr>
-                                      <td align="left">
-                                          Upload:
-                                      </td>
-                                      <td id="uploadDesktopTD" align="center" class="naviButton"
-                                          onmouseover="highlight(this, 'uploadDesktop')"
-                                          onmouseout="dehighlight(this, 'uploadDesktop')" 
-                                          onClick="uploadLocal(this)"
-                                          title="Choose a file from the local file system"
-                                          nowrap="true">From the desktop...
-                                      </td>
-                                      <td id="uploadWebTD" align="center" class="naviButton"
-                                          onmouseover="highlight(this, 'uploadWeb')"
-                                          onmouseout="dehighlight(this, 'uploadWeb')" 
-                                          onClick="uploadURL(this);"
-                                          title="Type in a URL"
-                                          nowrap="true">From the web...
-                                      </td>
-                                   </tr>
-                                </table>                                         
-                             
-                             </td>
-                          </tr>
-                          <tr>
-                             <td align="left">
-                            
-                                      <div id="uploadLocal"  style="display: none; width: 100%">
-                                         <table class="compact" width="100%">
-                                            <tr>
-                                               <td align="left">                                      
-                                                  Path:
-                                               </td>
-                                               <td align="left">
-                                                  <input type="file" id="localFile" name="localFile" size="32"></input>
-                                               </td>
-                                               <td align="right">
-                                                  <span id="goUploadLocalTD" class="naviButton" 
-                                                        onmouseover="highlight(this, 'goUploadLocal')" 
-                                                        title="Go upload the file"
-                                                        onmouseout="dehighlight(this, 'goUploadLocal')"
-                                                        onClick="goUploadFile()" >Go</span>
-                                               </td>                                                            
-                                             </tr>
-                                               
-                                          </table>
-                                      </div>
-                                      <div id="uploadURL" style="display: none; width: 100%;">
-                                         <table class="compact" width="100%">
-                                            <tr>
-                                               <td align="left">                                            
-                                                  URL:
-                                               </td>
-                                               <td align="left">
-                                                  <input name="URL" id="URL" size="32">
-                                                      <xsp:attribute name="value"><xsp:expr>getURL()</xsp:expr></xsp:attribute>                                                  
-                                                  </input>
-                                               </td>
-                                              <td align="left">
-                                                  <span id="goUploadLocalTD" class="naviButton" 
-                                                        onmouseover="highlight(this, 'goUploadLocal')" 
-                                                        title="Go upload the file"
-                                                        onmouseout="dehighlight(this, 'goUploadLocal')" 
-                                                        onClick="goUploadURL()">Go</span>
-                                               </td>                                                      
-                                            </tr>
-                     
-                                         </table>
-                                        
-                                      </div>
-<!--                                       
-                                      <div id="spaceKeeper" style="width: 100%" size="64">   </div>   
--->
-                             </td>
-                          </tr>
-                        </table>                                 
-                  </td>                  
-               </tr>
-               <tr valign="bottom">               
-                  <td colspan="2" align="left" nowrap="true">
+                  
+                     <div class="tab-container" id="controlsTable">
+                        <ul class="tabs">
+                           <li><a href="#" onClick="return showPane('Navigate', this)" id="tab1">Navigate</a></li>                        
+                           <li><a href="#" onClick="return showPane('Edit', this)" >Edit</a></li>
+                           <li><a href="#" onClick="return showPane('DesktopUpload', this)">Desktop Upload</a></li>
+                           <li><a href="#" onClick="return showPane('WebUpload', this)">Web Upload</a></li>                                                      
+                        </ul>
 
-                      <table width="100%" frame="above" border="1" rules="none" style="border-color: black">
-                          <tr>
-                             <td>
-                             
-                                <table class="compact" width="100%">                                 
-                                   <tr>
-                                      <td align="left" width="8%">
-                                         Current&#160;Location:
-                                      </td>
-                                      <td align="left">
-                                         <input name="currentLocation" id="currentLocation" size="80" style="background-color: #dddddd">
-                                             <xsp:attribute name="value"><xsp:expr>getCurrentLocation()</xsp:expr></xsp:attribute>
-                                         </input>                                                  
-                                      </td>
-                                   </tr>  
-                                 </table>                             
-                             
-                             </td>
-                             <td width="10%" align="center">
-                                <table class="compact" width="100%">                                 
-                                   <tr>
-                                      <td id="upTD" align="center" class="naviButton"
-                                          onmouseover="highlight(this, 'up')"
-                                          onmouseout="dehighlight(this, 'up')" 
-                                          onClick="navigateUp()"
-                                          title="Navigate up one folder"
-                                          nowrap="true">Up
-                                      </td>
-                                      <td id="newFolderTD" align="center" class="naviButton"
-                                          onmouseover="highlight(this, 'newFolder')"
-                                          onmouseout="dehighlight(this, 'newFolder')" 
-                                          onClick="newFolder()"
-                                          title="Create new folder in current location"
-                                          nowrap="true">New folder
-                                      </td>
-                                      <td id="refreshFolderTD" align="center" class="naviButton"
-                                          onmouseover="highlight(this, 'refreshFolder')"
-                                          onmouseout="dehighlight(this, 'refreshFolder')" 
-                                          onClick="refreshFolder()"
-                                          title="Refresh folder contents"
-                                          nowrap="true">Refresh
-                                      </td>                                      
-                                   </tr>  
+                        <div class="tab-panes">  
+
+                           <div id="Navigate"> 
+                           
+                              <table class="compact" width="100%">  
+		                         <tr>
+		                            <td>
+			                            <table class="compact" align="left">
+			                               <td align="left" width="8%">Current&#160;location:</td>
+			                               <td align="left">
+			                                  <input name="currentLocation" id="currentLocation" size="80" style="background-color: #dddddd">
+			                                      <xsp:attribute name="value"><xsp:expr>getCurrentLocation()</xsp:expr></xsp:attribute>
+			                                  </input>                                                  
+			                               </td>
+			                             </table>
+		                             </td>
+				                 </tr>                                    
+		                                                
+		                         <tr> 
+		                           <td>
+			                           <table class="compact" width="10%">
+					                      <tr>
+					                          <td id="upTD" align="left" class="naviButton" width="8%"
+					                              onmouseover="highlight(this, 'up')"
+					                              onmouseout="dehighlight(this, 'up')" 
+					                              onClick="navigateUp()"
+					                              title="Navigate up one folder"
+					                              nowrap="true">Up
+					                          </td>
+				             
+					                          <td id="goHomeTD" align="left" class="naviButton" width="8%"
+					                              onmouseover="highlight(this, 'goHome')"
+					                              onmouseout="dehighlight(this, 'goHome')" 
+					                              onClick="goHomeDirectory()"
+					                              title="Go to home folder"
+					                              nowrap="true">Home
+					                          </td>
+				             
+					                          <td id="newFolderTD" align="left" class="naviButton" width="8%"
+					                              onmouseover="highlight(this, 'newFolder')"
+					                              onmouseout="dehighlight(this, 'newFolder')" 
+					                              onClick="newFolder()"
+					                              title="Create new folder in current location"
+					                              nowrap="true">New folder
+					                          </td>
+				              
+					                          <td id="refreshFolderTD" align="left" class="naviButton" width="8%"
+					                              onmouseover="highlight(this, 'refreshFolder')"
+					                              onmouseout="dehighlight(this, 'refreshFolder')" 
+					                              onClick="refreshFolder()"
+					                              title="Refresh folder contents"
+					                              nowrap="true">Refresh
+					                          </td>  
+				                         </tr>                      	                                                              
+		                            </table>                 	                           
+		                           </td>
+		                         </tr>  
+                              </table>                                  
+                           
+                           </div>
+                           
+						   <div id="Edit">
+                              <table class="compact" width="100%">
+                                 <tr>                              
+                                      <table class="compact"> 
+                                          <tr>       
+						                        <td align="left" width="8%">Selected:                                               
+					                            </td>
+						                        <td align="left">
+					                                 <input name="selected" id="selected" size="48" style="background-color: #dddddd">
+					                                     <xsp:attribute name="value"><xsp:expr>getSelected()</xsp:expr></xsp:attribute>
+					                                 </input>                                                      
+					                            </td>
+					                                      
+		                                 </tr>  
+                                         <tr>                                                                                      
+                                                <td align="left" width="8%">Clipboard:                                               
+                                                </td>
+			                                    <td align="left">
+			                                      <input name="clipboard" 
+			                                            id="clipboard" 
+			                                            size="48" 
+			                                            style="background-color: #dddddd" 
+			                                            title="Source for 'Copy' or 'Move'">
+			                                        <xsp:attribute name="value"><xsp:expr>getClipboard()</xsp:expr></xsp:attribute>
+			                                      </input> 
+			                                    </td>
+			                              </tr>
+			                           </table>                     
+			                     </tr>  	                                		                         	   
+                                 <tr>
+                                    <td align="left">
+                                    
+                                       <table class="compact" width="10%" >
+		                                  <tr>
+			                                  <td id="copyItTD" align="center" class="naviButton"
+			                                      onmouseover="highlight(this, 'copyIt')"
+			                                      onmouseout="dehighlight(this, 'copyIt')" 
+			                                      onClick="setClipboard( 'Copy' )"
+			                                      title="Copy selected file to clipboard"
+			                                      nowrap="true">Copy
+			                                  </td>
+			                              
+			                                  <td id="moveItTD" align="center" class="naviButton"
+			                                      onmouseover="highlight(this, 'moveIt')"
+			                                      onmouseout="dehighlight(this, 'moveIt')" 
+			                                      onClick="setClipboard( 'Move' )"
+			                                      title="Move selected file to clipboard"
+			                                      nowrap="true">Cut
+			                                  </td>
+			                             
+			                                  <td id="pasteItTD" align="center" class="naviButton"
+			                                      onmouseover="highlight(this, 'pasteIt')"
+			                                      onmouseout="dehighlight(this, 'pasteIt')" 
+			                                      onClick="paste()"
+			                                      title="Paste from clipboard to current location"
+			                                      nowrap="true">Paste
+			                                  </td>
+			                              
+			                                  <td id="deleteItTD" align="center" class="naviButton"
+			                                      onmouseover="highlight(this, 'deleteIt')"
+			                                      onmouseout="dehighlight(this, 'deleteIt')" 
+			                                      onClick="deleteIt()"
+			                                      title="Delete selected file"
+			                                      nowrap="true">Delete
+			                                  </td> 
+			                               
+			                                  <td id="propertiesTD" align="center" class="naviButton"
+			                                      onmouseover="highlight(this, 'properties')"
+			                                      onmouseout="dehighlight(this, 'properties')" 
+			                                      onClick="showProperties()"
+			                                      title="Display properties of selected file"
+			                                      nowrap="true">Properties
+			                                  </td>
+		                                  </tr>
+		                               </table>                                    
+                                    
+                                    </td>
+                                    
+                                </tr>
+                                                                             
+		                   </table>
+						</div>
+						   
+						   <div id="DesktopUpload">
+                                <table class="compact" width="100%">
+                                    <tr>
+                                       <td align="left" width="5%">                                      
+                                          Path:
+                                       </td>
+                                       <td align="left">
+                                          <input type="file" id="localFile" name="localFile" size="32"></input>
+                                          <span id="goUploadLocalTD" class="naviButton" 
+                                                onmouseover="highlight(this, 'goUploadLocal')" 
+                                                title="Go upload the file"
+                                                onmouseout="dehighlight(this, 'goUploadLocal')"
+                                                onClick="goUploadFile()" >Go</span>
+                                       </td>
+                                    </tr>                          
                                  </table>
-                             </td>
-                          </tr>               
-                       </table>                       
-                        
-                  </td>
-               </tr>         
-            </table>
+						   </div> 	
+						   
+						   <div id="WebUpload">
+                              <table class="compact" width="100%">
+                                <tr>
+                                   <td align="left" width="5%" >                                            
+                                      URL:
+                                   </td>
+                                   <td align="left">
+                                      <input name="URL" id="URL" size="32">
+                                          <xsp:attribute name="value"><xsp:expr>getURL()</xsp:expr></xsp:attribute>                                                  
+                                      </input>
+                                      <span id="goUploadLocalTD" class="naviButton" 
+                                            onmouseover="highlight(this, 'goUploadLocal')" 
+                                            title="Go upload the file"
+                                            onmouseout="dehighlight(this, 'goUploadLocal')" 
+                                            onClick="goUploadURL()">Go</span>
+                                   </td>
+                                      
+                                </tr>
+                 
+                              </table>
+						   </div> 									   					   
+					       
+					    </div>
+					 </div>
   
-          </div>
-
         </form>
-    </ag-div>   
+        
+    </ag-div>    
+  
+  </body>
     
   </xsp:page>

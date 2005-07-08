@@ -39,21 +39,6 @@ public class File extends Item {
     private static final boolean DEBUG_ENABLED = true ;
     private static Logger logger = Logger.getLogger( File.class ) ;
     
-    private static final String PROPERTIES = "properties";
-    private static final String CREATED = "created";
-    private static final String NODE_CREATED = "node-created";
-    private static final String FILE_CREATED = "file-created";
-    private static final String MIME_TYPE = "mime-type";
-    private static final String MODIFIED = "modified";
-    private static final String NODE_MODIFIED = "node-modified";
-    private static final String FILE_MODIFIED = "file-modified";
-    private static final String NAME = "name";
-    private static final String OWNER = "owner";
-    private static final String PATH = "path";
-    private static final String SIZE = "size";
-    private static final String URL = "url" ;
-    
-    
     public File ( FileManagerNode node, Directory parent ){
         super( node, parent ) ;
     }
@@ -178,13 +163,18 @@ public class File extends Item {
             Map attributesMap = metadata.getAttributes() ;
             String mimetype = (String)attributesMap.get( NodeMetadata.MIME_TYPE ) ;
             String urlString = null ;
+            String contentLocationString = null ;
             
-            try{
-                // This is an expensive call...
-                urlString = node.contentURL().toString() ;
+            // This is an expensive call...
+            try { urlString = node.contentURL().toString() ; } 
+            catch( Exception e ) { urlString = ""; }
+            
+            // This may also be an expensive call...
+            try {
+                contentLocationString = metadata.getContentLocation().toString() ;
             }
             catch( Exception e ) {
-                urlString = "";
+                contentLocationString = "" ;
             }
             
             buffer
@@ -208,6 +198,7 @@ public class File extends Item {
             
          	buffer
          		.append( Tree.URL_ATTR ).append( "=\"" ).append( urlString ).append( "\" " )
+         		.append( Tree.CONTENT_LOCATION ).append( "=\"" ).append( contentLocationString ).append( "\" " )
          		.append( "/>" ) ;
             
             logger.debug( "Buffer size is: " + buffer.length() ) ;
