@@ -4,7 +4,6 @@
       <h5>Server</h5>
       <ul>
          <li><a href="index.jsp" >Home</a>
-         <li><a href="configure.jsp" >Configure</a>
          <li><a href="admin/index.jsp" >Admin</a>
       </ul>
    </div>
@@ -28,6 +27,7 @@
       <h5>Register</h5>
       <ul>
          <li><a href="editEntry.jsp">Enter Resource</a>
+         <li><a href="xforms/XFormsNew.jsp">XForms</a>
       </ul>
    </div>
 </div>

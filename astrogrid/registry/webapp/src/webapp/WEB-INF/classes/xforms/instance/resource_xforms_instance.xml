@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Resource 
+<vr:Resource 
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:xs="http://www.w3.org/2001/XMLSchema"
-   xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
-   xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" updated="2004-11-20T15:34:22Z" status="active">
- <title>File Manager Service Entry</title>
- <identifier>ivo://@REGAUTHORITY@/filemanager-one</identifier>
+   xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
+   xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" status="active">
+ <title></title>
+ <shortName></shortName>
+ <identifier>ivo://</identifier>
  <curation>
-  <publisher>File Manager Service</publisher>
+  <publisher ivo-id=""></publisher>
+  <creator>
+    <name ivo-id=""></name>
+    <logo></logo>
+  </creator>
+  <contributer ivo-id=""></contributer>
+  <date></date>
+  <version></version>
   <contact>
-   <name>Dave Morris</name>
-   <email>dave@ast.cam.ac.uk</email>
+   <name></name>
+   <address></address>
+   <email></email>
+   <telephone></telephone>
   </contact>
  </curation>
  <content>
-  <subject>Users VOSpace</subject>
-  <description>VOSpace service handling VOStores</description>
-  <referenceURL>http://www.ivoa.net/</referenceURL>
-  <type>Archive</type>
+  <subject></subject>
+  <description></description>
+  <source format=""></source>
+  <referenceURL></referenceURL>
+  <type></type>
+  <contentLevel></contentLevel>
   <relationship>
-    <relationshipType>derived-from</relationshipType>
-        <relatedResource ivo-id="ivo://org.astrogrid/FileManagerKind">File Manager Kind</relatedResource>
+    <relationshipType></relationshipType>
+    <relatedResource ivo-id=""></relatedResource>
   </relationship>
  </content>
-</Resource>
+</vr:Resource>

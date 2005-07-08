@@ -128,7 +128,7 @@ public class RegistryHarvestService {
              }
              
              for(int k = 0;k < versions.size();k++) {
-                 log.info("Start processing Registry Types from version = " + (String)versions.get(k));
+                 log.debug("Start processing Registry Types from version = " + (String)versions.get(k));
                  try {
                      harvestDoc = rqs.getRegistriesQuery((String)versions.get(k));
                  }catch(Exception e) {
@@ -137,7 +137,7 @@ public class RegistryHarvestService {
                  }
                  if(harvestDoc != null) {
                      NodeList nl = harvestDoc.getElementsByTagNameNS("*","Resource");
-                     log.info("Harvest All found this number of resources = " + nl.getLength());
+                     log.debug("Harvest All found this number of resources = " + nl.getLength());
                      for(int i = 0; i < nl.getLength();i++) {
                        Element elem = (Element) nl.item(i);
                        versionNumber = RegistryDOMHelper.getRegistryVersionFromNode(elem);
@@ -184,7 +184,7 @@ public class RegistryHarvestService {
                        try {
                            ident = RegistryDOMHelper.getAuthorityID( elem );                           
                            if(authorityID.equals(ident)) {
-                               log.info("This is our main Registry type do not do a harvest of it");
+                               log.debug("This is our main Registry type do not do a harvest of it");
                            } else {                           
                                beginHarvest(elem,dt,(String)versions.get(k));                  
                                ras.updateNoCheck(DomHelper.newDocument(DomHelper.ElementToString(elem)),(String)versions.get(k));
@@ -220,8 +220,7 @@ public class RegistryHarvestService {
     * @param resources Set of Resources to harvest on, normally a Registry Resource.
     */
    public void beginHarvest(Node resource, Date dt, String version)  throws RegistryException, IOException  {
-      log.debug("start beginHarvest");
-      log.info("entered beginharvest");
+      log.debug("entered beginharvest");
       int failureCount = 0;
       boolean resumptionSuccess = false;      
       String accessURL = null;
@@ -280,7 +279,7 @@ public class RegistryHarvestService {
 
 //    accessURL = DomHelper.getNodeTextValue((Element)resourceList.item(i),"AccessURL","vr");
 //    invocationType = DomHelper.getNodeTextValue((Element)resourceList.item(i),"Invocation","vr");
-      log.info("The access URL = " + accessURL + " invocationType = " + invocationType);
+      log.debug("The access URL = " + accessURL + " invocationType = " + invocationType);
 //    System.out.println("The access URL = " + accessURL + " invocationType = " + invocationType);
       
       if(invocationType != null && invocationType.endsWith("WebService")) {
@@ -331,7 +330,7 @@ public class RegistryHarvestService {
                if(soapActionURI != null) {
                    callObj.setSOAPActionURI(soapActionURI);
                }//if
-               log.info("Calling harvest service for url = " + accessURL + 
+               log.debug("Calling harvest service for url = " + accessURL + 
                         " interface Method = " + interfaceMethod + 
                         " with soapactionuri = " + soapActionURI);
                root = doc.createElementNS(nameSpaceURI,interfaceMethod);
@@ -343,21 +342,21 @@ public class RegistryHarvestService {
                   root.appendChild(childElem);
                }//if               
                doc.appendChild(root);
-               log.info("FULL SOAP REQUEST FOR HARVEST = " + DomHelper.DocumentToString(doc));
+               //log.info("FULL SOAP REQUEST FOR HARVEST = " + DomHelper.DocumentToString(doc));
                SOAPBodyElement sbeRequest = new SOAPBodyElement(
                                                 doc.getDocumentElement());
                //sbeRequest.setName("harvestAll");
                sbeRequest.setName(interfaceMethod);
                sbeRequest.setNamespaceURI(nameSpaceURI);
                //invoke the web service call
-               log.info("Calling invoke on service");
+               log.debug("Calling invoke on service");
                Vector result = (Vector) callObj.invoke
                                         (new Object[] {sbeRequest});
                //Take the results and harvest.
                if(result.size() > 0) {
                    SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
                    Document soapDoc = sbe.getAsDocument();
-                   log.info("SOAPDOC RETURNED = " + DomHelper.DocumentToString(soapDoc));
+                   //log.debug("SOAPDOC RETURNED = " + DomHelper.DocumentToString(soapDoc));
                    //(new HarvestThread(ras,soapDoc.getDocumentElement())).start();
                    ras.updateNoCheck(soapDoc,version);
                    if(isRegistryType) {
@@ -420,7 +419,7 @@ public class RegistryHarvestService {
             String ending = "";
             //might need to put some oai date stuff on the end.  This is
             //unknown.
-            log.info("inside the web browser");
+            log.debug("A web browser invocation not a web service");
 
             if(accessURL.indexOf("?") == -1) {
                ending = "?verb=ListRecords&metadataPrefix=ivo_vor"; //&from=" + date;
@@ -429,10 +428,10 @@ public class RegistryHarvestService {
                }
             }
 
-            log.info("Grabbing Document from this url = " + accessURL + ending);
+            log.debug("Grabbing Document from this url = " + accessURL + ending);
             doc = DomHelper.newDocument(new URL(accessURL + ending));
-            log.info("Okay got this far to reading the url doc = " +
-                      DomHelper.DocumentToString(doc));
+            //log.info("Okay got this far to reading the url doc = " +
+             //         DomHelper.DocumentToString(doc));
             //(new HarvestThread(ras,doc.getDocumentElement().cloneNode(true))).start();
             ras.updateNoCheck(doc,version);
             NodeList moreTokens = null;
@@ -448,7 +447,7 @@ public class RegistryHarvestService {
                }
                ending = "?verb=ListRecords&resumptionToken=" +
                          nd.getFirstChild().getNodeValue();
-               log.info(
+               log.debug(
                "the harvestcallregistry's with resumptionToken accessurl inside the token calls = " +
                           accessURL + ending);
                while(failureCount <= 2 && !resumptionSuccess) {
@@ -485,7 +484,6 @@ public class RegistryHarvestService {
              log.error(xdbe);
          }
       }//elseif
-      log.info("exiting beginHarvest");
       log.debug("end beginHarvest");
    }//beginHarvest
 

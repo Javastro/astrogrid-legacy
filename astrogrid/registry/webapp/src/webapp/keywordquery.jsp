@@ -105,8 +105,6 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
       for (int n=0; n < resources.getLength();n++) {
          out.write("<tr>\n");
          
-//         Element resource = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","ResourceKey").item(0);
-//         Element authority = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","AuthorityID").item(0);
 			String authority = RegistryDOMHelper.getAuthorityID((Element)resources.item(n));
 			String resource = RegistryDOMHelper.getResourceKey((Element)resources.item(n));
 
@@ -124,15 +122,21 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
                out.write("<td>"+resource+"</td>\n");
                ivoStr += "/" + resource;
          }//if
-
-         out.write("<td><a href=viewResourceEntry.jsp?version="+version+"&IVORN=ivo://"+ivoStr+">View</a></td>\n");
+         ivoStr = java.net.URLEncoder.encode(("ivo://" + ivoStr),"UTF-8");         
          
+         String xsiType = ((Element)resources.item(n)).getAttribute("xsi:type");
+         if(xsiType.indexOf(":") != -1) {
+           xsiType = xsiType.substring(xsiType.indexOf(":")+1);
+         }         
+
+         out.write("<td><a href=viewResourceEntry.jsp?version="+version+"&IVORN="+ivoStr+">View,</a>");
+         out.write("<a href=editEntry.jsp?version="+version+"&IVORN="+ivoStr+">Edit,</a>");
+         out.write("<a href=xforms/XFormsProcessor.jsp?version="+version+"&mapType="+xsiType+"&IVORN="+ ivoStr + ">XEdit</a></td>");         
          out.write("</tr>\n");
          
       }//for
          
-         out.write("</table> <hr />");
-      
+         out.write("</table> <hr />");      
          out.write("The xml<br />");
         String testxml = DomHelper.DocumentToString(entry);
          testxml = testxml.replaceAll("<","&lt;");

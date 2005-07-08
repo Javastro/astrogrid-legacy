@@ -151,7 +151,11 @@ Browse for another version
 	      }
          
          //type
-         out.write("<td>"+setFG+resourceElement.getAttribute("xsi:type")+endFG+"</td>");
+         String xsiType = resourceElement.getAttribute("xsi:type");
+         out.write("<td>"+setFG+xsiType+endFG+"</td>");
+         if(xsiType.indexOf(":") != -1) {
+           xsiType = xsiType.substring(xsiType.indexOf(":")+1);
+         }
             //authr
 				String authority = RegistryDOMHelper.getAuthorityID(resourceElement);
 				String resource = RegistryDOMHelper.getResourceKey(resourceElement);
@@ -170,15 +174,17 @@ Browse for another version
                out.write("<td>"+setFG+resource+endFG+"</td>\n");
                ivoStr = ivoStr+"/"+resource;
             }
+            ivoStr = java.net.URLEncoder.encode(("ivo://" + ivoStr),"UTF-8");
    
             //last update date
             out.write("<td>"+setFG+resourceElement.getAttribute("updated")+endFG+"</td>");
             
             out.write("<td>");
    
-            out.write("<a href=viewResourceEntry.jsp?version="+version+"&IVORN=ivo://"+ivoStr+">XML</a>,  ");
+            out.write("<a href=viewResourceEntry.jsp?version="+version+"&IVORN="+ivoStr+">XML,</a>  ");
 
-            out.write("<a href=editEntry.jsp?version="+version+"&IVORN=ivo://"+ivoStr+">Edit</a>");
+            out.write("<a href=editEntry.jsp?version="+version+"&IVORN="+ivoStr+">Edit,</a>");
+            out.write("<a href=xforms/XFormsProcessor.jsp?version="+version+"&mapType="+xsiType+"&IVORN="+ ivoStr + ">XEdit</a>");
 
 			/*
             if (!deleted) {

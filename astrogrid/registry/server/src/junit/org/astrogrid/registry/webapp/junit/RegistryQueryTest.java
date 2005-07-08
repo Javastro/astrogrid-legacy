@@ -55,6 +55,22 @@ public class RegistryQueryTest extends TestCase {
         //assertTrue((doc.getElementsByTagNameNS("*","Resource") > 0));
     }
     
+    public void testGetResources() throws Exception {
+       
+        RegistryQueryService rqs = new RegistryQueryService();
+        Document doc = rqs.getResourcesByIdentifier(" ivo://registry.test","0.10");
+        assertNotNull(doc);        
+        //assertTrue((doc.getElementsByTagNameNS("*","Resource") > 0));
+    }   
+    
+    public void testGetResourceByIdentifier() throws Exception {
+        
+         RegistryQueryService rqs = new RegistryQueryService();
+         Document doc = rqs.getResourcesByIdentifier(" ivo://registry.test/org.astrogrid.registry.RegistryService","0.10");
+         assertNotNull(doc);        
+         //assertTrue((doc.getElementsByTagNameNS("*","Resource") > 0));
+     }      
+    
            
     protected Document askQueryFromFile(String queryFile) throws Exception {
         assertNotNull(queryFile);

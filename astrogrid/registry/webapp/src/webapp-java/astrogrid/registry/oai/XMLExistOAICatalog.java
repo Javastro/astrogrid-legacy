@@ -180,11 +180,11 @@ public class XMLExistOAICatalog extends AbstractCatalog {
               throw new OAIInternalServerError("Could not find any authorites");
            }
            boolean hasAuthorityElement = conf.getBoolean("reg.custom.identifier.hasauthorityid." + versionNumber,false);
-           String identWhere = " $x/vr:Identifier/vr:AuthorityID = '";
+           String identWhere = " near($x/vr:Identifier/vr:AuthorityID,'";
            String wildCard = "";
            if(!hasAuthorityElement) {
-               identWhere = " $x/vr:identifier &= '*";
-               wildCard = "*";
+               identWhere = " near($x/vr:identifier,'ivo://";
+               wildCard = "";
            }
            String xqlQuery = QueryHelper.getXQLDeclarations(versionNumber);
            xqlQuery += " " + QueryHelper.getStartQuery(versionNumber);
@@ -192,11 +192,11 @@ public class XMLExistOAICatalog extends AbstractCatalog {
            while(keyIter.hasNext()) {
                al = (AuthorityList)keyIter.next();               
                if(authorityID.equals(al.getOwner())) {               
-                   xqlQuery +=  identWhere + wildCard + al.getAuthorityID() + wildCard + "'";
+                   xqlQuery +=  identWhere + al.getAuthorityID() + "') ";
                    while(keyIter.hasNext()) {
                        al = (AuthorityList)keyIter.next();
                        if(authorityID.equals(al.getOwner())) {                           
-                           xqlQuery += " or " + identWhere + wildCard + al.getAuthorityID() + wildCard + "'";
+                           xqlQuery += " or " + identWhere + al.getAuthorityID() + "') ";
                        }//if
                    }//while
                }//if

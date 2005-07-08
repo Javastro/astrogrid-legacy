@@ -119,7 +119,7 @@ public class RegistryAdminService {
          //otherAuths = new HashMap();         
       }      
    }
-
+   
    /**
     * Method: Update
     * Description: Update Web Service method, performs an update to the registry. Actually calls updateResponse.  It can
@@ -197,11 +197,11 @@ public class RegistryAdminService {
       
       String versionNumber = RegistryDOMHelper.getRegistryVersionFromNode(findVersionElement);
       
-      log.info("Registry Version being updated = " + versionNumber);      
+      log.debug("Registry Version being updated = " + versionNumber);      
       String vrNS = "http://www.ivoa.net/xml/VOResource/v" + versionNumber;
-      log.info("Registry namespace being updated = " + vrNS);
+      //log.info("Registry namespace being updated = " + vrNS);
       String collectionName = "astrogridv" + versionNumber.replace('.','_');
-      log.info("Collection Name = " + collectionName);
+      log.debug("Collection Name = " + collectionName);
       //String rootNodeString = RegistryServerHelper.getRootNodeLocalName(versionNumber);
       //do we have a stylesheet to massage the data to make it consistent in the db.
       hasStyleSheet = conf.getBoolean("reg.custom.updatestylesheet." + versionNumber,false);
@@ -209,7 +209,7 @@ public class RegistryAdminService {
       //Document element to perform the updates through.
       if(hasStyleSheet) {
          //System.out.println("lets call transform update");
-         log.info("performing transformation before analysis of update for versionNumber = " + versionNumber);
+         log.debug("performing transformation before analysis of update for versionNumber = " + versionNumber);
          xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber,false);
       } else {
          xsDoc = update;
@@ -700,7 +700,7 @@ public class RegistryAdminService {
       XSLHelper xs = new XSLHelper();
       
       if(update == null) {
-          throw new IOException("Error nothing to update 'null sent'");
+          throw new IOException("Error nothing to update 'null sent as Document'");
       }
       
       String authorityID = conf.getString("reg.amend.authorityid");      
@@ -718,7 +718,10 @@ public class RegistryAdminService {
       if(versionNumber == null) {
           versionNumber = RegistryDOMHelper.getRegistryVersionFromNode(nl.item(0));
       }
-          
+      if(nl.getLength() == 0) {
+          log.debug("Nothing to Update");
+          return;
+      }
       log.info("the nl length of resoruces = " + nl.getLength());      
 
       String vrNS = "http://www.ivoa.net/xml/VOResource/v" + versionNumber;

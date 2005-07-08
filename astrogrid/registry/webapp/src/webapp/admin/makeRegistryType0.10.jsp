@@ -10,10 +10,10 @@
  <title><%= request.getParameter("Title") %></title>
  <identifier>ivo://<%= request.getParameter("AuthorityID") %>/org.astrogrid.registry.RegistryService</identifier>
  <curation>
-  <publisher>Main Astrogrid Full Registry</publisher>
+  <publisher><%= request.getParameter("Publisher") %></publisher>
   <contact>
-   <name>Tony Linde</name>
-   <email>ael@star.le.ac.uk</email>
+   <name><%= request.getParameter("ContactName") %></name>
+   <email><%= request.getParameter("ContactEmail") %></email>
   </contact>
  </curation>
  <content>

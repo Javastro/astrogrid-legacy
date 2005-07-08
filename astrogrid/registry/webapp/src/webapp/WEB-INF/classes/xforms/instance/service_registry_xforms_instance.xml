@@ -1,11 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<vr:Resource 
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-   xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
-   xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
-   xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
-   xsi:type="vr:Service"  updated="" status="active">
+    <vr:Resource status="active"
+xmlns="http://www.ivoa.net/xml/VOResource/v0.10"  
+xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"  
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xsi:type="vg:Registry">
  <title></title>
  <shortname></shortname>
  <identifier>ivo://</identifier>
@@ -49,4 +46,5 @@
 		 </vs:param>
 		 <vs:qtype></vs:qtype>
     </interface>
-</vr:Resource>
+        <vg:managedAuthority xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1"></vg:managedAuthority>
+    </vr:Resource>
