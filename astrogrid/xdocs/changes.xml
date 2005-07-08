@@ -30,6 +30,8 @@
                 interface. </action>
         </release>
         <release version="HEAD">
+			<action dev="pjn" type="add" issue="xxx"> <b>astrogrid/desktop</b> Branch <em>desktop_pjn_14_6_5</em> Phil's new workbench for wf
+			</action>
 			<action dev="jl" type="add" issue="1173"> <b>astrogrid/portal</b> Branch <em>por-jl-1173</em>. Partly dependent upon bug 1279, in that filestores 
                 created during an aginab build need to register with a relationship set within the registry. <ul> <li>Refinements to MySpace Explorer 
                 controls</li> <li>Password change</li> <li>Ability to move files between filestores</li> </ul> 
