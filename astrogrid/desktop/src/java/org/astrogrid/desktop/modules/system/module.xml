@@ -72,7 +72,7 @@
 		implementationClass="org.astrogrid.desktop.modules.system.JavaPrefsConfiguration"
 		interfaceClass="org.astrogrid.acr.system.Configuration"
 		>
-		<description>manages connection settings and configuration</description>
+		<description>Manage connection settings and configuration</description>
 	<property>
 		<key>icon</key>
 		<value>properties.gif</value>

@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.6 2005/07/08 11:08:02 nw Exp $
+/*$Id: VospaceImpl.java,v 1.7 2005/07/08 14:06:30 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -244,12 +244,14 @@ public class VospaceImpl implements UserLoginListener, Myspace {
 
 
   public ResourceData[] listAvailableStores() throws RegistryException {
-
-      return community.getEnv().getAstrogrid().createRegistryClient().getResourceDataByRelationship("ivo://org.astrogrid/FileStoreKind");
+      //@todo edit to only select active stores - get kevin to screw his brain on.
+      return community.getEnv().getAstrogrid().createRegistryClient().
+      
+      getResourceDataByRelationship("ivo://org.astrogrid/FileStoreKind");
                /*
                "select * from Registry where @status='active' "
                +" and vr:content/vr:relationship/vr:relationshipType = 'derived-from' "               
-               + " and vr:content/vr:relationship/vr:relatedResource = 'FileStore' "
+               + " and vr:content/vr:relationship/vr:relatedResource/@ivo-id = 'FileStore' "
                ); */           
   }
     
@@ -284,6 +286,9 @@ public class VospaceImpl implements UserLoginListener, Myspace {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.7  2005/07/08 14:06:30  nw
+final fixes for the workshop.
+
 Revision 1.6  2005/07/08 11:08:02  nw
 bug fixes and polishing for the workshop
 

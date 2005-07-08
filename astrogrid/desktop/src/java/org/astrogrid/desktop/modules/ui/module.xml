@@ -3,7 +3,16 @@
 	<!DOCTYPE module PUBLIC "-//Astrogrid//DTD Desktop Module 1.0//EN" "file:///home/noel/eclipse/desktop/src/java/org/astrogrid/desktop/framework/descriptors/module-descriptor.dtd">
 -->
 <module name="userInterface">
-	<description>Useful Widgets</description>
+	<description>Small applications for working with AstroGrid</description>
+	<property>
+		<key>system.ui.menu.links</key>
+		<value>
+			<link text="AstroGrid v1 Release Pages"
+				icon="logo1.gif"
+				toolTipText="Wiki Pages of for AstroGrid"
+				url="http://wiki.astrogrid.org/bin/view/Astrogrid/ReleaseV1Pages" />
+		</value>
+		</property>		
 	<property>
 		<key>icon</key>
 		<value>swtapp_obj.gif</value>
@@ -19,6 +28,20 @@
 		implementationClass="org.astrogrid.desktop.modules.ui.ParameterizedWorkflowLauncherImpl" 
 		interfaceClass="org.astrogrid.acr.ui.ParameterizedWorkflowLauncher" >
 		<description>Launch parameterized workflows</description>
+	<property>
+			<key>system.ui.menu.links</key>
+			<value>		
+				<link text="Solar Movie Maker"
+					icon="info_obj.gif"
+					toolTipText="Description of the parameterized workflow 'solar movie maker'"
+					url="http://wiki.astrogrid.org/bin/view/Astrogrid/MovieMaker"/>
+				<link text="Redshift Maker"
+					icon="info_obj.gif"
+					toolTipText="Description of the parameterized workflow 'redshift maker'"
+					url="http://wiki.astrogrid.org/bin/view/Astrogrid/RedshiftMaker"/>					
+				
+			</value>
+		</property>				
 <property>
 		<key>icon</key>
 		<value>exec.png</value>
@@ -64,7 +87,7 @@
 	<component name="myspaceBrowser" 
 		implementationClass="org.astrogrid.desktop.modules.ui.VospaceBrowserImpl" 
 		interfaceClass="org.astrogrid.acr.ui.MyspaceBrowser" >
-		<description>Browse Myspace</description>
+		<description>Work with your files in MySpace</description>
 	<property>
 		<key>icon</key>
 		<value>filenav_nav.gif</value>
@@ -105,6 +128,15 @@
 		interfaceClass="org.astrogrid.acr.ui.ApplicationLauncher" >
 		<description>Launch CEA Applications</description>
 	<property>
+			<key>system.ui.menu.links</key>
+			<value>					
+				<link text="Application Documentation	"				
+					icon="info_obj.gif"
+					toolTipText="Description of available tools"
+					url="http://wiki.astrogrid.org/bin/view/Astrogrid/ToolDocumentation"/>					
+			</value>
+		</property>			
+	<property>
 		<key>icon</key>
 		<value>thread_view.gif</value>
 	</property>				
@@ -130,7 +162,7 @@
 			<component name="jobMonitor" 
 		implementationClass="org.astrogrid.desktop.modules.ui.JobMonitorImpl" 
 		interfaceClass="org.astrogrid.acr.ui.JobMonitor" >
-		<description>View progress of jobs</description>
+		<description>View progress of jobs and applications</description>
 	<property>
 		<key>icon</key>
 		<value>thread_and_monitor_view.gif</value>

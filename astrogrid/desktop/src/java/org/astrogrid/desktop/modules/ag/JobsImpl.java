@@ -1,4 +1,4 @@
-/*$Id: JobsImpl.java,v 1.5 2005/05/12 15:59:11 clq2 Exp $
+/*$Id: JobsImpl.java,v 1.6 2005/07/08 14:06:30 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,7 +84,7 @@ public class JobsImpl implements Jobs, UserLoginListener {
     public String getJobSummary(JobURN jobURN) throws WorkflowInterfaceException {
         WorkflowSummaryType[] summs =  getJes().listJobs(getAccount());
         for (int i = 0; i < summs.length; i++) {
-            if (summs[i].getJobId().equals(jobURN)) {
+            if (summs[i].getJobId().getContent().equals(jobURN.getContent())) {
                 return summs[i].getStatus().toString();
             }
         }
@@ -136,6 +136,9 @@ public class JobsImpl implements Jobs, UserLoginListener {
 
 /* 
 $Log: JobsImpl.java,v $
+Revision 1.6  2005/07/08 14:06:30  nw
+final fixes for the workshop.
+
 Revision 1.5  2005/05/12 15:59:11  clq2
 nww 1111 again
 

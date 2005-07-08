@@ -141,7 +141,7 @@
 <xsl:template match="wf:step" name="step">
         <div class="step">
         <nobr>
-        <span class='ACTIVITY'>Step:</span> <span class='KEY'>Name</span> <span class='VALUE'><xsl:value-of select="normalize-space(@name)"/></span>,
+        <span class='ACTIVITY'>Step:</span> <span class='KEY'>Name</span> <span class='VALUE'><xsl:value-of select="@name"/></span>,
                 <span class='KEY'>Result Var</span> <span class='VALUE'><xsl:value-of select="@result-var"/></span>
         </nobr><br />
                 <xsl:apply-templates select="wf:description" />

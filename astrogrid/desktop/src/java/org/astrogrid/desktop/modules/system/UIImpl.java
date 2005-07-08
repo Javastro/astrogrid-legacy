@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.10 2005/07/08 11:08:01 nw Exp $
+/*$Id: UIImpl.java,v 1.11 2005/07/08 14:06:30 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -156,12 +156,14 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e) {
-                int code = JOptionPane.showConfirmDialog(UIImpl.this,"This closes the user interface. Do you want  the desktop server to continue to run in the background?", 
-                        "Closing GUI",JOptionPane.INFORMATION_MESSAGE);
+                int code = JOptionPane.showConfirmDialog(UIImpl.this,"Closing the UI. Do you want  the ACR service to continue to run in the background?", 
+                        "Closing UI",JOptionPane.INFORMATION_MESSAGE);
                 switch(code) {
                     case JOptionPane.YES_OPTION:
                         hide(); break;
                     case JOptionPane.NO_OPTION:
+                        hide();
+                        shutdown.halt();
                         System.exit(0); break;                  
                 }
             }
@@ -237,6 +239,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
             setText("Modules");
             add(getModulesLinkMenuItem());
             add(new JSeparator());
+            add(getCloseMenuItem());
             add(getExitMenuItem());            
         }
         /**
@@ -250,6 +253,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
                 add((Component)i.next());
             }
             add(new JSeparator());
+            add(getCloseMenuItem());
             add(getExitMenuItem());            
         }
     }
@@ -373,6 +377,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
 		if (exitMenuItem == null) {
 			exitMenuItem = new JMenuItem();
 			exitMenuItem.setText("Exit");
+            exitMenuItem.setToolTipText("Close the UI and halt the ACR service");
             exitMenuItem.setIcon(IconHelper.loadIcon("exit.png"));
 			exitMenuItem.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -380,12 +385,31 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
                     if (result == JOptionPane.YES_OPTION) {
                         hide();
                         shutdown.halt();
+                        System.exit(0);
                     }
 				}
 			});
 		}
 		return exitMenuItem;
 	}
+    private JMenuItem closeMenuItem;
+    private JMenuItem getCloseMenuItem() {
+        if (closeMenuItem == null) {
+            closeMenuItem = new JMenuItem();
+            closeMenuItem.setText("Close");
+            closeMenuItem.setToolTipText("Close the UI, but keep the ACR service running");
+            closeMenuItem.setIcon(IconHelper.loadIcon("fileclose.png"));
+            closeMenuItem.addActionListener(new java.awt.event.ActionListener() { 
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    int result = JOptionPane.showConfirmDialog(UIImpl.this,"Close the UI - are you sure?","Close?",JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION) {
+                        hide();
+                    }
+                }
+            });
+        }
+        return closeMenuItem;
+    }
 
     /** show the gui, unless key is set.
      * @see org.picocontainer.Startable#start()
@@ -1028,6 +1052,9 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.11  2005/07/08 14:06:30  nw
+final fixes for the workshop.
+
 Revision 1.10  2005/07/08 11:08:01  nw
 bug fixes and polishing for the workshop
 

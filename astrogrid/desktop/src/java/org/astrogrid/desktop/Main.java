@@ -1,4 +1,4 @@
-/*$Id: Main.java,v 1.4 2005/06/17 12:06:14 nw Exp $
+/*$Id: Main.java,v 1.5 2005/07/08 14:06:30 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,8 @@ import org.picocontainer.defaults.DefaultPicoContainer;
 
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
+
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -65,11 +67,17 @@ public class Main implements Startable {
      * starts the pico container - but on the swing event dispatch thread.
      */
     public void start() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                pico.start();
-            }
-        });
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    pico.start();
+                }
+            });
+        } catch (InterruptedException e) {
+            logger.fatal("InterruptedException on startup",e);
+        } catch (InvocationTargetException e) {
+            logger.fatal("InvocationTargetException on startup",e);
+        }
     }
 
     /**
@@ -89,6 +97,9 @@ public class Main implements Startable {
 
 /* 
 $Log: Main.java,v $
+Revision 1.5  2005/07/08 14:06:30  nw
+final fixes for the workshop.
+
 Revision 1.4  2005/06/17 12:06:14  nw
 added changelog, made start on docs.
 fixed race condition.

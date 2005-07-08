@@ -5,6 +5,15 @@
 <module name="astrogrid">
 	<description>Astrogrid Components</description>
 	<property>
+		<key>system.ui.menu.links</key>
+		<value>
+			<link text="AstroGrid v1 Release Pages"
+				icon="logo1.gif"
+				toolTipText="Wiki Pages of for AstroGrid"
+				url="http://wiki.astrogrid.org/bin/view/Astrogrid/ReleaseV1Pages" />
+		</value>
+		</property>
+	<property>
 		<key>icon</key>
 		<value>logo1.gif</value>
 	</property>
@@ -76,7 +85,7 @@
 		<component name="registry" 
 		implementationClass="org.astrogrid.desktop.modules.ag.RegistryImpl" 
 		interfaceClass="org.astrogrid.acr.astrogrid.Registry" >
-		<description>Interrogate and browse the registry</description>
+		<description>Query and list registered resources</description>
 	<property>
 		<key>icon</key>
 		<value>java_lib_obj.gif</value>
@@ -145,7 +154,7 @@
 			</parameter>
 			</method>
 		<method name="search">
-			<description>Query the registry</description>
+			<description>Execute an adql  query the registry</description>
 	<property>
 		<key>icon</key>
 		<value>search.gif</value>
@@ -178,7 +187,7 @@
 	<component name="myspace" 
 		implementationClass="org.astrogrid.desktop.modules.ag.VospaceImpl" 
 		interfaceClass="org.astrogrid.acr.astrogrid.Myspace" >
-		<description>Access remote storage</description>
+		<description>Access remote file storage</description>
 	<property>
 		<key>icon</key>
 		<value>repo_rep.gif</value>
@@ -456,7 +465,7 @@
 		interfaceClass="org.astrogrid.acr.astrogrid.Applications" 
 		implementationClass="org.astrogrid.desktop.modules.ag.ApplicationsImpl" 
 		>
-		<description>Query the application registry</description>
+		<description>Remote Applications: list those registered, provide parameters, execute and monitor progress of CEA applications </description>
 	<property>
 		<key>icon</key>
 		<value>thread_view.gif</value>
@@ -803,7 +812,7 @@
 	<component name="jobs" 
 		implementationClass="org.astrogrid.desktop.modules.ag.JobsImpl" 
 		interfaceClass="org.astrogrid.acr.astrogrid.Jobs">
-		<description>Submit and manage workflows</description>
+		<description>Submit workflows to an execution server, and manage running jobs</description>
 	<property>
 		<key>icon</key>
 		<value>debugt_obj.gif</value>
@@ -934,7 +943,7 @@
 		implementationClass="org.astrogrid.desktop.modules.ag.PortalImpl"
 		interfaceClass="org.astrogrid.acr.astrogrid.Portal"
 		>
-		<description>Ineract with the web portal</description>
+		<description>Ineract with the web portal (beta)</description>
 		<method name="openPage">
 			<description>open a page in the portal</description>
 			<parameter name="page">

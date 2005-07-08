@@ -13,13 +13,13 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-	<release version="1.0.4-alpha" date="unreleased">
+	<release version="1.0.4-beta" date="2005-07-08">
 		<action dev="nw" type="add">
 			Added real splash screen
 		</action>
 		<action dev="nw" type="fix">
 			Fixed endpoint configuration, logging configuration,
-			and ipv6 problem.
+			and possible ipv6 problem.
 		</action>
 		<action dev="nw" type="fix">
 			Removed 'indirect' buttons from parameter editor for
@@ -56,6 +56,10 @@
 			filemanager improvements: starts with 'home' folder selected;
 			selecting a file removes selection of folder, and vice-versa;
 			improved refresh; fixed folder tree vanishing.
+		</action>
+		<action dev="nw" type="fix" issue="1263">
+			Made display of workflows more tolerant
+			of oddities in workflow
 		</action>
 	</release>
 	<release version="1.0.3" date="2005-06-23">

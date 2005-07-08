@@ -5,13 +5,13 @@
 	small problem - points to release scripts, not beta scripts. oh well.
 -->
 <module name="scripting">
-	<description>Scripting</description>
+	<description>Resources for Scripting the ACR</description>
 		<property>
 			<key>system.ui.menu.links</key>
 			<value>		
-				<link text="Python Scripts"
+				<link text="Python Commandline Scripts"
 					icon="source_py.png"
-					toolTipText="download a zip of example python scripts"
+					toolTipText="download a zip of commandline scripts - useful in their own right, and examples of python scripting of the workbench"
 					url="http://software.astrogrid.org/jnlp/astrogrid-desktop/python-scripts.zip"/>
 			</value>
 		</property>		
