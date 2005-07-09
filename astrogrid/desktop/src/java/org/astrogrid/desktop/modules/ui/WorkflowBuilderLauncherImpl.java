@@ -76,6 +76,7 @@ import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.acr.ui.WorkflowBuilderLauncher;
@@ -349,8 +350,8 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
      * @throws Exception
      * 
      * */
-    public WorkflowBuilderLauncherImpl(Applications apps, Community community, JobMonitor monitor, Portal portal, Myspace vos, BrowserControl browser, UI ui, Configuration conf) throws Exception {
-        super(conf,ui);
+    public WorkflowBuilderLauncherImpl(Applications apps, Community community, JobMonitor monitor, Portal portal, Myspace vos, BrowserControl browser, UI ui, HelpServer hs, Configuration conf) throws Exception {
+        super(conf,hs,ui);
         this.browser = browser;
         this.portal = portal;
         this.community = community;
