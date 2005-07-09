@@ -21,8 +21,8 @@ import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.If;
 import org.astrogrid.workflow.beans.v1.Parfor;
+import org.astrogrid.workflow.beans.v1.Scope;
 import org.astrogrid.workflow.beans.v1.Sequence;
-import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Then;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -77,10 +77,20 @@ public class WorkflowTreeModel implements TreeModel {
 			Sequence s = (Sequence)f.getActivity();
 			i = s.getActivityCount();
 		}
-		else if (parent instanceof If || parent instanceof Else || parent instanceof Then) {
+		else if (parent instanceof If) {
+			If a = (If)parent;
+			if (a.getElse() != null && a.getElse() instanceof Else) 
+				i = i + 1;
+			if (a.getThen() != null && a.getThen() instanceof Then)
+				i = i + 1;
+		}
+		else if (parent instanceof Else || parent instanceof Then) {
 	        i = 1;
 		}
 		else if (parent instanceof For || parent instanceof Parfor || parent instanceof While) {
+			i = 1;
+		}
+		else if (parent instanceof Scope) {
 			i = 1;
 		}
 		return i;
@@ -99,7 +109,10 @@ public class WorkflowTreeModel implements TreeModel {
 		}
 		else if (node instanceof For || node instanceof Parfor || node instanceof While) {
 			b = false;
-		}		
+		}
+		else if (node instanceof Scope) {
+			b = false;
+		}
 		return b;
 	}
 
@@ -143,24 +156,41 @@ public class WorkflowTreeModel implements TreeModel {
 			Parfor p = (Parfor)parent;
 			ob = p.getActivity();
 		}
+		else if (parent instanceof Scope) {
+			Scope s = (Scope)parent;
+			ob = s.getActivity();
+		}
 		else if (parent instanceof While) {
 			While w = (While)parent;
 			ob = w.getActivity();
-		}		
+		}
 		else if (parent instanceof If) {
 			If i = (If)parent;
-			if ((i.getElse() != null) && (i.getElse() instanceof Else)){
-				Else e = (Else)parent;
-				ob = e.getActivity();				
+			if (index == 0) {
+				if ((i.getThen() != null) && (i.getThen() instanceof Then)){
+					ob = i.getThen();
+				}
+				else if ((i.getElse() != null) && (i.getElse() instanceof Else)){
+					ob = i.getElse();
+				}
 			}
-            else if ((i.getThen() != null) && (i.getThen() instanceof Then)) {
-    			Then t = (Then)parent;
-    			ob = t.getActivity();            	
-            }
-            else {
-            	logger.debug("Found an IF with neither THEN or ELSE set");
-            }
+			if (index == 1) {
+				if ((i.getElse() != null) && (i.getElse() instanceof Else)){
+					ob = i.getElse();
+				}
+				else if ((i.getThen() != null) && (i.getThen() instanceof Then)){
+					ob = i.getThen();
+				}
+			}
+		}		
+		else if (parent instanceof Else) {
+			Else e = (Else)parent;			
+			ob = e.getActivity();			
 		}
+		else if (parent instanceof Then) {
+			Then t = (Then)parent;			
+			ob = t.getActivity();			
+		}				
 		return ob;
 	}
 

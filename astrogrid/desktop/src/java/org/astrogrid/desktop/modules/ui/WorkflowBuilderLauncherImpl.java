@@ -108,6 +108,7 @@ import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.scripting.Toolbox;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.util.DomHelper;
+import org.astrogrid.workflow.beans.v1.Else;
 import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.If;
@@ -117,6 +118,7 @@ import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Then;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Unset;
 import org.astrogrid.workflow.beans.v1.While;
@@ -1311,9 +1313,29 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     			label.setText("For");
     			label.setToolTipText("var: " + f.getVar() + " items: " + f.getItems());
     		}
+    		else if (value instanceof While){ 
+    			label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
+    			label.setText("While");
+    		}
+    		else if (value instanceof Parfor){ 
+    			label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
+    			label.setText("Parrallel for loop");
+    		}    		
     		else if (value instanceof Scope){ 
     			label.setIcon(IconHelper.loadIcon("icon_Scope.gif"));
     			label.setText("Scope");
+    		} 
+    		else if (value instanceof If){ 
+    			label.setIcon(IconHelper.loadIcon("icon_If.gif"));
+    			label.setText("If");
+    		}
+    		else if (value instanceof Then){ 
+    			label.setIcon(IconHelper.loadIcon("icon_Then.gif"));
+    			label.setText("Then");
+    		}
+    		else if (value instanceof Else){ 
+    			label.setIcon(IconHelper.loadIcon("icon_Else.gif"));
+    			label.setText("Else");
     		}    		
     		else {    			
     			label.setText("to do");
