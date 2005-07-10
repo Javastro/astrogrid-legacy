@@ -3,7 +3,7 @@
 	<!DOCTYPE module PUBLIC "-//Astrogrid//DTD Desktop Module 1.0//EN" "file:///home/noel/eclipse/desktop/src/java/org/astrogrid/desktop/framework/descriptors/module-descriptor.dtd">
 -->
 <module name="astrogrid">
-	<description>Astrogrid Components</description>
+	<description>Direct access to Astrogrid Components</description>
 	<property>
 		<key>system.ui.menu.links</key>
 		<value>
@@ -154,7 +154,7 @@
 			</parameter>
 			</method>
 		<method name="search">
-			<description>Execute an adql  query the registry</description>
+			<description>Execute an adql  query the registry. </description>
 	<property>
 		<key>icon</key>
 		<value>search.gif</value>
@@ -178,7 +178,7 @@
 			</return>
 			<parameter name="sadql">
 				<description>Query to execute (String form of 
-					ADQL)</description>
+					ADQL).  For example: select * from Registry where vr:content/vr:type='Archive'</description>
 			</parameter>
 		</method>
 	</component>
@@ -278,7 +278,7 @@
 	</property>							
 			<property>
 				<key>system.ui.menu.entry</key>
-				<value>Read Node Contents</value>								
+				<value>Read File Contents</value>								
 			</property>	
 			<!--						
 			<property>
@@ -302,7 +302,7 @@
 	</property>					
 			<property>
 				<key>system.ui.menu.entry</key>
-				<value>Copy Node Contents to a URL</value>								
+				<value>Copy MySpace File Contents to a URL</value>								
 			</property>							
 			<parameter name="ivorn">
 				<description>Ivorn of node</description>
@@ -321,7 +321,7 @@
 	</property>					
 			<property>
 				<key>system.ui.menu.entry</key>
-				<value>Copy URL Contents to Node</value>								
+				<value>Copy URL Contents to MySpace File</value>								
 			</property>						
 			<parameter name="source">
 				<description>location to copy contents from: file://, http:// 
@@ -389,7 +389,7 @@
 	</property>				
 			<property>
 				<key>system.ui.menu.entry</key>
-				<value>Delete Node</value>								
+				<value>Delete File</value>								
 			</property>						
 			<parameter name="ivorn">
 				<description>Ivorn of node to delete.</description>

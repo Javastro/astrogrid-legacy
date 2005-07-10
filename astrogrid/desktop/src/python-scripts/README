@@ -20,8 +20,6 @@ s.system.listMethods()
 s.system.methodHelp(methodName)
         will produce documentation on a method
 
-
-
 s.system.methodSignature(methodName)
         will display the types of the inputs and outputs of the method
 

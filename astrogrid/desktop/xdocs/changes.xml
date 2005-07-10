@@ -13,6 +13,20 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+	<release version="1.0.5" date="2005-07-10">
+		<action dev="pjn3" type="add">
+			Added beta of workflow viewer
+		</action>
+		<action dev="nw" type="fix" due-to="anita">
+			Improved workbench function descriptions
+		</action>
+		<action dev="nw" type="fix">
+			tidied up example python scripts
+		</action>
+		<action dev="nw" type="add">
+			Added example script for connecting to ACR from perl
+		</action>		
+	</release>
 	<release version="1.0.4-beta" date="2005-07-08">
 		<action dev="nw" type="add">
 			Added real splash screen

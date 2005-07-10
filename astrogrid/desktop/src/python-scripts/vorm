@@ -6,4 +6,7 @@ import sys
 import os
 prefix = file(os.path.expanduser("~/.astrogrid-desktop")).next().rstrip()
 s = x.Server(prefix + "xmlrpc")
-print s.astrogrid.myspace.delete(sys.argv[1])
+ivorn = sys.argv[1]
+if not (ivorn[0:4] == 'ivo:') :
+	ivorn = s.astrogrid.myspace.home() + "/" + ivorn
+print s.astrogrid.myspace.delete(ivorn)

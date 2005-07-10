@@ -7,5 +7,4 @@ import sys
 import os
 prefix = file(os.path.expanduser("~/.astrogrid-desktop")).next().rstrip()
 s = x.Server(prefix + "xmlrpc")
-query= file(sys.argv[1]).read()
-print s.astrogrid.registry.search(query)
+print s.astrogrid.registry.search(sys.argv[1])

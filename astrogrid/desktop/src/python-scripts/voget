@@ -10,7 +10,11 @@ import urllib2
 
 prefix = file(os.path.expanduser("~/.astrogrid-desktop")).next().rstrip()
 s = x.Server(prefix + "xmlrpc")
-url =  s.astrogrid.myspace.readContent(sys.argv[len(sys.argv) - 1])
+path = sys.argv[len(sys.argv) -1]
+if path[0:4] == 'ivo:' :
+	url =  s.astrogrid.myspace.readContent(path)
+else:
+	url = s.astrogrid.myspace.readContent(s.astrogrid.myspace.home() + "/" + path)
 if sys.argv[1] == "-u" or sys.argv[1] == "--url" :
         print url
 else:

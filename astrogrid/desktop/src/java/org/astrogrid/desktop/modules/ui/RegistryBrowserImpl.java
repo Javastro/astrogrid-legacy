@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.6 2005/06/20 16:56:40 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.7 2005/07/10 18:07:38 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,7 +71,7 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 			jLabel = new JLabel();
 			topPanel = new JPanel();
 			topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-			jLabel.setText("Registry Key:");
+			jLabel.setText("Resource Key:");
 			topPanel.add(jLabel, null);
 			topPanel.add(getIvornField(), null);
 			topPanel.add(getGoButton(), null);
@@ -86,6 +86,7 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 	private JTextField getIvornField() {
 		if (ivornField == null) {
 			ivornField = new JTextField();
+            ivornField.setToolTipText("<html>Enter the key of a resource to view it <br>- e.g <tt>ivo://uk.ac.le.star/filemanager</tt></html>");
 			ivornField.addActionListener(this);
 		}
 		return ivornField;
@@ -219,6 +220,9 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.7  2005/07/10 18:07:38  nw
+files for 1.0.5
+
 Revision 1.6  2005/06/20 16:56:40  nw
 fixes for 1.0.2-beta-2
 

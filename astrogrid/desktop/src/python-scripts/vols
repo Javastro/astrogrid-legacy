@@ -12,7 +12,7 @@ from optparse import OptionParser
 import textwrap
 
 
-parser = OptionParser(usage="usage: %prog [options] [resource]")
+parser = OptionParser(usage="usage: %prog [options] [ivorn or path]")
 parser.add_option("-l","--long", action="store_true", default=False
         ,help="long format")
 parser.add_option("-1","--one-per-line", action="store_true", default=False
@@ -41,7 +41,11 @@ s = x.Server(prefix + "xmlrpc")
 
 
 if len(args) > 0:
-        n = s.astrogrid.myspace.node(args[0])
+	if args[0][0:4] == 'ivo:' :
+        	n = s.astrogrid.myspace.node(args[0])
+	else :
+		#got a path relative to root
+		n = s.astrogrid.myspace.node(s.astrogrid.myspace.home()+"/" + args[0])
 else:
         n = s.astrogrid.myspace.node(s.astrogrid.myspace.home())
 

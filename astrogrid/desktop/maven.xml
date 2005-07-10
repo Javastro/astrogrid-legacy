@@ -58,9 +58,13 @@
 	  <zip destfile="${maven.docs.dest}/python-scripts.zip">
 		  <fileset dir="${basedir}/src">
 			  <include name="python-scripts/*" />
-		  </fileset>
+		  </fileset>		 
 	  </zip>
-	       
+	  <zip destfile="${maven.docs.dest}/perl-scripts.zip">
+		  <fileset dir="${basedir}/src">
+			  <include name="perl-scripts/*" />
+		  </fileset>		 
+	  </zip>	       
 	       
 	</goal>
 	

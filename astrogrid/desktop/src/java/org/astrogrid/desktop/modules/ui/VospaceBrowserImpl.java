@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.7 2005/07/08 11:08:01 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.8 2005/07/10 18:07:38 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -216,7 +216,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
     protected final class GetContentAction extends AbstractAction implements FileAction {
         public GetContentAction() {
-            super("Export content", IconHelper.loadIcon("export_log.gif"));
+            super("Export data", IconHelper.loadIcon("export_log.gif"));
             this.putValue(SHORT_DESCRIPTION, "Export vospace file contents to a URL or local file");
             this.setEnabled(false);
         }
@@ -304,9 +304,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
     protected final class PutContentAction extends AbstractAction implements FileAction {
 
         public PutContentAction() {
-            super("Import content", IconHelper.loadIcon("import_log.gif"));
+            super("Import data", IconHelper.loadIcon("import_log.gif"));
             this.putValue(SHORT_DESCRIPTION,
-                    "Store data (from URL or local file) in a vospace file");
+                    "Store data (from URL or local file) into a vospace file");
             this.setEnabled(false);
         }
 
@@ -671,6 +671,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.8  2005/07/10 18:07:38  nw
+ * files for 1.0.5
+ *
  * Revision 1.7  2005/07/08 11:08:01  nw
  * bug fixes and polishing for the workshop
  *

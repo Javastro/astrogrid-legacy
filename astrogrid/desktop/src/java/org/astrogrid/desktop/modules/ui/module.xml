@@ -174,10 +174,10 @@
 			<description>bring the jes tab uppermost</description>
 		</method>		
 		<method name="addApplication">
-			<description>Add an application to be monitored</description>
+			<description>Provide the execution id of a running CEA application to add it to the job monitor</description>
 			<property>
 				<key>system.ui.menu.entry</key>
-				<value>Add application</value>			
+				<value>Add a running application to the monitor</value>			
 			</property>			
 			<property>
 		<key>icon</key>
@@ -207,10 +207,10 @@
 		</method>			
 		</component>
 		
-	<component name="workflowBuilder" 
+	<component name="workflowViewer" 
 	  implementationClass="org.astrogrid.desktop.modules.ui.WorkflowBuilderLauncherImpl" 
 	  interfaceClass="org.astrogrid.acr.ui.WorkflowBuilderLauncher" >
-	  <description>Build workflows</description>
+	  <description>View workflows (BETA)</description>
 	    <property>
 		  <key>icon</key>
 		  <value>wf_small.gif</value>
@@ -219,7 +219,7 @@
 		  <description>Run the Workflow builder GUI </description>
 		  <property>
 			<key>system.ui.menu.entry</key>
-			<value>Run..</value>
+			<value>Run Viewer..</value>
 		    <property>
 			  <key>icon</key>
 			  <value>run_tool.gif</value>
