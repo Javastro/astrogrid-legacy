@@ -9,6 +9,9 @@
             <b>astrogrid/</b> Changes to all Installers to ensure they work offline.            
         </action>       
   </release-->
+    	<release version="(Pending Integration)">
+    		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.</action>
+      </release>
         <release version="(Pending Integration)">
             <action dev="jdt" type="add" issue="1275"> Improvements to the Registry Deployment Script - the installer now
                 offers the user the option of storing the data outside the registry webapp, and also configures harvesting
