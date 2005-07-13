@@ -10,9 +10,10 @@
         </action>       
   </release-->
     	<release version="(Pending Integration)">
+    		<action dev="gtr" type="fix" issue="477"><em>Branch security-gtr-477-2:</em> a rearrangement of the tests for the 
+    			security facade plus some trivial cleaning up of the production code. Both astrogrid/security and astrogrid/integrationTests
+    		  are branched but only astrogrid/security has committed changes.</action>
     		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.</action>
-      </release>
-        <release version="(Pending Integration)">
             <action dev="jdt" type="add" issue="1275"> Improvements to the Registry Deployment Script - the installer now
                 offers the user the option of storing the data outside the registry webapp, and also configures harvesting
                 <b>astrogrid/registry</b> and 
