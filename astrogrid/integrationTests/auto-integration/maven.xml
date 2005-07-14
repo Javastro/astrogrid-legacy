@@ -138,7 +138,7 @@
 <!-- main goals //////////////////////////////////////////////////////////////////////////////////// -->
 <goal name="deploy-all" prereqs="init,deploy-all-except-portal">
 	<!-- refactored setup into this as cannot install all the apps until the registry is in place -->
-                <echo>*** Deploying all webapps...</echo>
+         <echo>*** Deploying all webapps...</echo>
          <attainGoal name="portal-deploy" />
 </goal>
 <goal name="deploy-all-except-portal" prereqs="init" description="deploy all webapps except the portal, setup environment.">
@@ -177,26 +177,9 @@
 </goal>
 
 <goal name="undeploy-all" prereqs="init" description="undeploy all webapps">
-        <echo>*** Undeploying all webapps...</echo>
-        <attainGoal name="configuration-undeploy"/>
-        <attainGoal name="testdata-undeploy"/>
-        <attainGoal name="jes-undeploy" />
-        <attainGoal name="cea-server-undeploy" />
-        <attainGoal name="cea-commandline-undeploy" />
-        <attainGoal name="cea-http-undeploy" />
-        <attainGoal name="registry-undeploy" />
-<!--        <attainGoal name="myspace-undeploy" />-->
-        <attainGoal name="filestore-one-undeploy" />
-        <sleep seconds="2" />
-        <attainGoal name="filestore-two-undeploy" />
-        <sleep seconds="2" />
-        <attainGoal name="filemanager-one-undeploy" />
-        <sleep seconds="2" />
-        <attainGoal name="filemanager-two-undeploy" />
-        <sleep seconds="2" />        
-        <attainGoal name="community-undeploy" />
-	    <!--attainGoal name="community-two-undeploy" /-->	
-        <attainGoal name="portal-undeploy" />
+       <echo>*** Undeploying all webapps...</echo>
+       <attainGoal name="undeploy-all-except-portal" />
+       <attainGoal name="portal-undeploy" />
 </goal>
 
 <goal name="undeploy-all-except-portal" prereqs="init" description="undeploy all webapps except the portal">
@@ -1024,7 +1007,8 @@
     <property name="input.reg.title" value="Test AGINAB Registry"/>
     <property name="input.reg.contact.name" value="AGINAB"/>
     <property name="input.reg.contact.email" value="anon@astrogrid.org"/>           
-
+    <property name="input.registry.data.location" value="internal"/>           
+    <property name="input.reg.enableharvesting" value="false"/>                   
 </goal>		
 	
 
