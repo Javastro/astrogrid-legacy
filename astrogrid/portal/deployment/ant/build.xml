@@ -54,14 +54,14 @@
     </target>    
     
     <target name="save-settings" description="Save your settings for next time">
-        <input addProperty="input.saveProperties.file" defaultvalue="${user.home}/portal-installer.properties">
+        <input addProperty="input.saveProperties.file" defaultvalue="${user.home}/.portal-installer.properties">
             Enter a file name for saving your current settings
         </input>
         <echoproperties destfile="${input.saveProperties.file}" prefix="input." description="This file can then be reused for hands-free operation"/>
     	<property name="properties.saved" value="true"/>
     </target>
     <target name="load-settings" description="Load previously saved settings">
-    	<input addProperty="input.loadProperties.file" defaultvalue="${user.home}/portal-installer.properties">
+    	<input addProperty="input.loadProperties.file" defaultvalue="${user.home}/.portal-installer.properties">
             Enter the filename of your previously saved settings
         </input>
     	<property file="${input.loadProperties.file}"/>

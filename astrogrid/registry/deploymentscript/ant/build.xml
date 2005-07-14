@@ -19,7 +19,7 @@
 	
 	<target name="load-config" description="Load a previously saved configuration">
 		<echo>Loading saved configuration</echo>
-    	<input addProperty="input.loadProperties.file" defaultvalue="${user.home}/registry-installer.properties">
+    	<input addProperty="input.loadProperties.file" defaultvalue="${user.home}/.registry-installer.properties">
             Enter the filename of your previously saved settings
         </input>
     	<property file="${input.loadProperties.file}"/>

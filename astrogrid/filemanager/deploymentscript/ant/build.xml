@@ -7,13 +7,13 @@
 	<!--Public Targets-->
 
 	<target name="save-config" description="Save this configuration for future use">
-        <input addProperty="input.saveProperties.file" defaultvalue="${antigen.home}/filemanager-installer.properties">Enter a file name for saving your current settings</input>
+        <input addProperty="input.saveProperties.file" defaultvalue="${user.home}/.filemanager-installer.properties">Enter a file name for saving your current settings</input>
         <echoproperties destfile="${input.saveProperties.file}" prefix="input." description="This file can then be reused for hands-free operation"/>
     	<property name="properties.saved" value="true"/>
     </target>
 	
 	<target name="load-config" description="Load a previously saved configuration">
-    	<input addProperty="input.loadProperties.file" defaultvalue="${user.home}/filemanager-installer.properties">Enter the filename of your previously saved settings</input>
+    	<input addProperty="input.loadProperties.file" defaultvalue="${user.home}/.filemanager-installer.properties">Enter the filename of your previously saved settings</input>
     	<property file="${input.loadProperties.file}"/>
     </target>
 
