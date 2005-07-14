@@ -1,4 +1,4 @@
-/*$Id: SiapImageFetchDescription.java,v 1.3 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: SiapImageFetchDescription.java,v 1.4 2005/07/14 17:09:16 jdt Exp $
  * Created on 15-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,7 +62,9 @@ public class SiapImageFetchDescription extends AbstractApplicationDescription
     
     /** set up metadata for this instance */
     private final void setMetaData() {
-        setName("org.astrogrid.localhost/siap-image-fetch");
+        StringBuffer thename = new StringBuffer(env.getAuthIDResolver().getAuthorityID());
+        thename.append("/siap-image-fetch");
+        setName(thename.toString());
         BaseParameterDescription src = new BaseParameterDescription();
         src.setName(TABLE);
         src.setDisplayName("Image List");
@@ -151,6 +153,9 @@ public class SiapImageFetchDescription extends AbstractApplicationDescription
 
 /* 
 $Log: SiapImageFetchDescription.java,v $
+Revision 1.4  2005/07/14 17:09:16  jdt
+corrected the authorityId
+
 Revision 1.3  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 
