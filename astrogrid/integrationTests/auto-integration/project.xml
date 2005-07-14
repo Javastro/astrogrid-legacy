@@ -66,13 +66,6 @@
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
-            <artifactId>pal</artifactId>
-            <version>${astrogrid.datacenter.version}</version>
-            <type>war</type>
-            <properties/>
-        </dependency>
-        <dependency>
-            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-portal-deploy-script</artifactId>
             <version>${astrogrid.portal.version}</version>
         </dependency>
