@@ -1131,6 +1131,8 @@
 <goal name="jes-deploy" prereqs="override-input-task,init,jes-init">
         <ant dir="${jes.deployment.jar.unpacked}" target="install-jes" >
             <property name="tasks.already.set" value="yes"/>
+            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
             <property name="input.tomcat.present" value="continue"/>
             <property name="input.tomcat.url" value="${tomcat.url}"/>
             <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
@@ -1145,6 +1147,8 @@
 <goal name="jes-undeploy" prereqs="override-input-task,init,jes-init">
         <ant dir="${jes.deployment.jar.unpacked}" target="remove-jes" >
             <property name="tasks.already.set" value="yes"/>
+            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
             <property name="input.tomcat.present" value="continue"/>
             <property name="input.tomcat.url" value="${tomcat.manager.url}"/>
             <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
