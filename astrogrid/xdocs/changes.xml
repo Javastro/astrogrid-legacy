@@ -4,27 +4,11 @@
         <author email="jdt@roe.ac.uk">John Taylor</author>
     </properties>
     <body>
-        <!--release version="(In progress)">  
-        <action dev="jdt" type="fix" issue="1182">
-            <b>astrogrid/</b> Changes to all Installers to ensure they work offline.            
-        </action>       
-  </release-->
     	<release version="(Pending Integration)">
     		<action dev="gtr" type="fix" issue="477"><em>Branch security-gtr-477-2:</em> a rearrangement of the tests for the 
     			security facade plus some trivial cleaning up of the production code. Both astrogrid/security and astrogrid/integrationTests
     		  are branched but only astrogrid/security has committed changes.</action>
     		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.</action>
-            <action dev="jdt" type="add" issue="1275"> Improvements to the Registry Deployment Script - the installer now
-                offers the user the option of storing the data outside the registry webapp, and also configures harvesting
-                <b>astrogrid/registry</b> and 
-                <b>astrogrid/integrationTests</b> 
-			</action>
-            <action dev="jdt" type="add" issue="1182"> <b>astrogrid</b> Branch <em>aginab_jdt_1182</em> Minor changes to all the install scripts to make sure 
-                that they work offline. You should see changes to aginab, and the deployment and installer folders of all components except community. The 
-                changes are minor and shouldn't affect integration tests. 
-			</action>
-            
-            
         </release>
         <release version="(Undertest)">
 			<action dev="kmb" type="add" issue="1235"> <b>astrogrid/registry</b> Branch <em>Reg_KMB_Xforms2_Jun01</em>. Mainly added xforms plus small 
@@ -34,6 +18,18 @@
                 interface. </action>
         </release>
         <release version="HEAD">
+            <action dev="jdt" type="fix">
+                A bug in the CEA (Java) server was registering the standard siap-image-fetch app with the wrong authorityID.
+			</action>            
+            <action dev="jdt" type="add" issue="1275"> Improvements to the Registry Deployment Script - the installer now
+                offers the user the option of storing the data outside the registry webapp, and also configures harvesting
+                <b>astrogrid/registry</b> and 
+                <b>astrogrid/integrationTests</b> 
+			</action>
+            <action dev="jdt" type="add" issue="1182"> <b>astrogrid</b> Branch <em>aginab_jdt_1182</em> Minor changes to all the install scripts to make sure 
+                that they work offline. You should see changes to aginab, and the deployment and installer folders of all components except community. The 
+                changes are minor and shouldn't affect integration tests. 
+			</action>            
 			<action dev="pjn" type="add" issue="xxx"> <b>astrogrid/desktop</b> Branch <em>desktop_pjn_14_6_5</em> Phil's new workbench for wf
 			</action>
 			<action dev="jl" type="add" issue="1173"> <b>astrogrid/portal</b> Branch <em>por-jl-1173</em>. Partly dependent upon bug 1279, in that filestores 
