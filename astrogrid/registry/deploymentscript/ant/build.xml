@@ -65,6 +65,7 @@
 		<register-entry registry="${astrogrid.registry.update.endpoint}" data="${registry.regentry}"/>
 		<register-entry registry="${astrogrid.registry.update.endpoint}" data="${registry.regentry10}"/>		
 		<property name="registry.registered" value="true"/>
+		<echo>...done</echo>
 	</target>
 	
 	<target name="add-authid" description="Add a managed authority ID" depends="info,define-custom-tasks, set-context-path">
@@ -113,7 +114,7 @@
 	</target>
 	
 	<target name="add-registry2harvest" description="Add a registry to be harvested by this registry" depends="checkTomcat,set-context-path">
-		<input addproperty="input.reg.addregistryurl" defaultvalue="http://hydra.star.le.ac.uk:8080/astrogrid-registry">Enter the URL of the registry you wish to harvest</input>
+		<input addproperty="input.reg.addregistryurl" defaultvalue="http://galahad.star.le.ac.uk:8080/galahad-registry/">Enter the URL of the registry you wish to harvest</input>
 		<property name="reg.addregistryurl" value="${input.registry.public.url}/${astrogrid.registry.registerExternal.offset}${input.reg.addregistryurl}"/>
 		<tempfile property="reg.add-registry2harvest.tmpfile"/>
 		<!--echo>Getting URL ${reg.addregistryurl}</echo-->
