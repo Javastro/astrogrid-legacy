@@ -81,10 +81,11 @@
         <fail message="Please start Tomcat and retry the installation" unless="tomcat.present.true"/>
 	</target>
 	
-    <target name="download">
+    <target name="download" unless="offline">
     	<echo>Downloading jes software....this may take some time...</echo>
     	<mkdir dir="${maven.local.repo}/${astrogrid.groupId}/wars/"/>
-        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${jes.war.name}" dest="${jes.war}" verbose="true" usetimestamp="true" ignoreerrors="true"/>
+    	<property name="continueifnodownload" value="false"/> <!--normlly stop here, if we can't download..can be overridden in AGINAB to allow use of local files-->
+        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${jes.war.name}" dest="${jes.war}" verbose="true" usetimestamp="true" ignoreerrors="${continueifnodownload}"/>
     </target>
 	
     <target name="deploy" depends="createTmpDir,checkTomcat,download,update-war,set-context-path,define-custom-tasks">

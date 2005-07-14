@@ -89,7 +89,7 @@
     <target name="download" unless="offline">
     	<echo>Downloading filemanager software....this may take some time...</echo>
     	<mkdir dir="${maven.local.repo}/${astrogrid.groupId}/wars/"/>
-    	<property name="continueifnodownload" value="false"/> <!--normlly stop here, if we can't download-->
+    	<property name="continueifnodownload" value="false"/> <!--normlly stop here, if we can't download..can be overridden in AGINAB to allow use of local files-->
         <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${filemanager.war.name}" dest="${filemanager.war}" verbose="true" usetimestamp="true" ignoreerrors="${continueifnodownload}"/>
     </target>
 

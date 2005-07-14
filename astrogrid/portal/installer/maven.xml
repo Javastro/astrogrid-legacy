@@ -5,5 +5,10 @@
  <preGoal name="java:jar-resources">
   	<filter token="PORTAL-VERSION" value="${pom.currentVersion}"/>
  </preGoal>
- 
+     <preGoal name="javaapp:jar">
+	    <!--Bundle the deployment script into the jar as a jar-->
+	    <property name="scriptjar" value="astrogrid-portal-deploy-script-${pom.currentVersion}.jar"/>    
+	    <deploy:copy-deps todir="target/deps" />
+	    <copy toDir="${maven.javaapp.app.dir}/antscript" file="target/deps/${scriptjar}"/>
+    </preGoal>   
 </project>

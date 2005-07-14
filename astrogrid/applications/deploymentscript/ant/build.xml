@@ -71,28 +71,12 @@
 		<input addproperty="input.cea.mailserver" defaultvalue="localhost">Please enter the address of your smtp server</input>
 		<input addproperty="input.cea.javaclass.server.class" defaultvalue="org.astrogrid.applications.javaclass.SampleJavaClassApplications">Please enter the fully qualified name of the java class containing the static methods that provide the interface to your application</input>
 	</target>
-	<target name="copy-java-app" if="cea.vanilla.docopy" depends="get-shouldicopy,copy-java-classes,copy-java-jar">
-		
-	</target>
-	<target name="copy-java-classes" if="cea.vanilla.docopyjavaclass" depends="get-classorjar,get-tomcat-location,set-context-path,deploy">
-		<input addproperty="input.cea.vanilla.appclasses.dir" defaultvalue="${user.dir}">Please select the root directory containing the class files for your application</input>
-		<copy todir="${input.tomcat.location.dir}/webapps/${input.cea.contextpath}/WEB-INF/classes" >
-		    <fileset dir="${input.cea.vanilla.appclasses.dir}"/>
-        </copy>
-	</target>
-	<target name="copy-java-jar" if="cea.vanilla.docopyjavajar" depends="get-classorjar,get-tomcat-location,set-context-path,deploy">
-		<input addproperty="input.cea.vanilla.appjar.file" defaultvalue="${user.dir}">Please select the jar file containing your application</input>
-		<copy todir="${input.tomcat.location.dir}/webapps/${input.cea.contextpath}/WEB-INF/lib" file="${input.cea.vanilla.appjar.file}"/>
+	<target name="copy-java-app" if="cea.vanilla.docopy" depends="get-shouldicopy,update-war">
+		<input addproperty="input.cea.vanilla.appjar.dir">Please select the folder containing the jar files for your application</input>
+		<war update="yes" destfile="${local.cea.war}">
+			<lib dir="${input.cea.vanilla.appjar.dir}"/>
+		</war>
 	</target>	
-	<target name="get-classorjar" if="cea.vanilla.docopy" depends="get-shouldicopy">
-		<input addproperty="input.cea.install.javatype" defaultvalue="jar" validargs="jar,classes">Is your app packaged as a jar, or as a dir of classes?</input>
-		<condition property="cea.vanilla.docopyjavajar" value="yes">
-			<equals arg1="${input.cea.install.javatype}" arg2="jar"/>
-		</condition>	
-		<condition property="cea.vanilla.docopyjavaclass" value="yes">
-			<equals arg1="${input.cea.install.javatype}" arg2="classes"/>
-		</condition>		
-	</target>
 	<target name="get-shouldicopy" if="cea.flavour.isvanilla">
 		<input addproperty="input.cea.install.java" defaultvalue="yes" validargs="yes,no">Do you wish to install a custom java application?</input>
 		<condition property="cea.vanilla.docopy" value="yes">
@@ -160,7 +144,7 @@
 	</target>
 
 	
-    <target name="deploy" depends="define-custom-tasks,createTmpDir,checkTomcat,fail-if-no-tomcat,update-war,set-context-path">
+    <target name="deploy" depends="define-custom-tasks,createTmpDir,checkTomcat,fail-if-no-tomcat,update-war,set-context-path,copy-java-app">
         <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
             path="${input.cea.contextpath}" war="${local.cea.war}" />
     </target>

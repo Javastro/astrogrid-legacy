@@ -1,5 +1,4 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.154 2005/07/05 10:54:36 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -208,7 +207,6 @@
         <attainGoal name="cea-server-undeploy" />
         <attainGoal name="cea-commandline-undeploy" />
         <attainGoal name="cea-http-undeploy" />
-        <attainGoal name="registry-undeploy" />
 <!--        <attainGoal name="myspace-undeploy" />-->
         <attainGoal name="filestore-one-undeploy" />
         <sleep seconds="2" />
@@ -220,6 +218,7 @@
         <sleep seconds="2" />        
         <attainGoal name="community-undeploy" />
 	    <!--attainGoal name="community-two-undeploy" /-->	
+        <attainGoal name="registry-undeploy" />
 </goal>
 
 <goal name="list" prereqs="init" description="list deployed webapps">
@@ -268,7 +267,13 @@
                 <exclude name="**/filestore/data/*"/>
             </fileset>
         </copy>
-        
+        <!--don't filter binary files-->
+        <copy todir="${work.dir}" overwrite="false" filtering="false">
+            <fileset dir="work">
+                <exclude name="**/filestore/data/*"/>
+                <include name="**/*.jpg"/>
+            </fileset>
+        </copy>        
         <!--some test data for the filestore--> 
         <echo>Configuring test data for filestore one ....</echo>
         <mkdir dir="${work.dir}/filestore-one/data"/>
@@ -1095,8 +1100,14 @@
     <!--Portal deploy/undeploy is now handled by a self-contained Ant script in the portal project itself.
     Please see astrogrid/portal/deployment -->
 <goal name="portal-deploy" prereqs="override-input-task,init,portal-init">
+    <!--horribly crude, but will do for now-->
+        <ant dir="${portal.deployment.jar.unpacked}" target="customize-login-page" >
+            <property name="input.login.image.file" value="${work.dir}/portal/AGINABloginBackground.jpg"/>
+        </ant>    
         <ant dir="${portal.deployment.jar.unpacked}" target="install-portal" >
             <property name="tasks.already.set" value="yes"/>
+            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
+            
             <property name="input.tomcat.present" value="yes"/>
             <property name="input.tomcat.url" value="${tomcat.url}"/>
             <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>

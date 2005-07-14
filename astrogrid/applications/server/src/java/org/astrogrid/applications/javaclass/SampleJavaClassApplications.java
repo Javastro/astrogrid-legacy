@@ -1,4 +1,4 @@
-/*$Id: SampleJavaClassApplications.java,v 1.4 2004/07/26 10:21:47 nw Exp $
+/*$Id: SampleJavaClassApplications.java,v 1.5 2005/07/14 13:36:11 jdt Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,12 +44,23 @@ public class SampleJavaClassApplications {
         logger.info("Summing " + a + " and " + b);
         return a + b;
     }
+    
+    /** Two different argument types */
+    public static String echoDifferentArgs(String string, int integer) {
+        return string + integer;
+    }
         
 }
 
 
 /* 
 $Log: SampleJavaClassApplications.java,v $
+Revision 1.5  2005/07/14 13:36:11  jdt
+merge from  Branch aginab_jdt_1182
+
+Revision 1.4.164.1  2005/07/08 17:43:38  jdt
+added a method to illustrate the parameter ordering bug
+
 Revision 1.4  2004/07/26 10:21:47  nw
 javadoc
 
