@@ -18,6 +18,9 @@
                 interface. </action>
         </release>
         <release version="HEAD">
+            <action dev="jdt" type="fix" issue="1295">
+                The CEA was able to pass parameters to applications in the wrong order.  This has been (partially) fixed.  See bugzilla report.
+			</action>              
             <action dev="jdt" type="fix">
                 A bug in the CEA (Java) server was registering the standard siap-image-fetch app with the wrong authorityID.
 			</action>            
