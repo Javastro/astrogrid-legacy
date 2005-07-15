@@ -205,7 +205,7 @@
 
 	    
     <target name="checkRegistry">
-        <input addProperty="input.astrogrid.registry.endpoint" defaultvalue="http://127.0.0.1:8080/astrogrid-registry-SNAPSHOT/">Please enter the URL of your registry</input>
+        <input addProperty="input.astrogrid.registry.endpoint" defaultvalue="http://galahad.star.le.ac.uk:8080/galahad-registry/">Please enter the URL of your registry</input>
     	<property name="astrogrid.registry.endpoint" value="${input.astrogrid.registry.endpoint}"/>
     	<property name="astrogrid.registry.update.endpoint" value="${astrogrid.registry.endpoint}${astrogrid.registry.update.offset}"/>
     	<property name="astrogrid.registry.query.endpoint" value="${astrogrid.registry.endpoint}${astrogrid.registry.query.offset}"/>

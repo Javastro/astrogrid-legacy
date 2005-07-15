@@ -1,4 +1,4 @@
-/*$Id: JavaClassProviderTest.java,v 1.5 2004/11/27 13:20:02 pah Exp $
+/*$Id: JavaClassProviderTest.java,v 1.6 2005/07/15 14:44:32 jdt Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,7 +62,7 @@ public class JavaClassProviderTest extends TestCase {
     public void testLibrary() throws Exception {
         String[] names = lib.getApplicationNames();
         assertNotNull(names);
-        assertEquals(3,names.length);        
+        assertEquals(4,names.length);        
     }
     
     public void testHelloWorld() throws Exception {
@@ -127,11 +127,54 @@ public class JavaClassProviderTest extends TestCase {
     }    
     
 
+    public void testEchoDifferentArgs() throws Exception {
+        ApplicationDescription hw = lib.getDescription("org.astrogrid.test/echoDifferentArgs");
+        assertNotNull(hw);
+        ApplicationInterface iface = hw.getInterfaces()[0];
+        String[] inputParameterNames = iface.getArrayofInputs();
+        assertNotNull(iface);
+        Tool tool = new Tool();
+        Input input = new Input();
+        tool.setInput(input);
+        Output output = new Output();
+        tool.setOutput(output);
+        ParameterValue a = new ParameterValue();
+        ParameterValue b = new ParameterValue();        
+        a.setName(inputParameterNames[0]);
+        b.setName(inputParameterNames[1]);
+        a.setValue("Hello");
+        b.setValue("2");
+        input.addParameter(a);
+        input.addParameter(b);
+        ParameterValue result = new ParameterValue();
+        result.setName(iface.getArrayofOutputs()[0]);
+        output.addParameter(result);
+        Application app = hw.initializeApplication("testrun",user,tool);
+        assertNotNull(app);        
+        app.addObserver(monitor);
+
+        app.createExecutionTask().run();
+        assertTrue(monitor.sawExit);
+        ResultListType results= app.getResult();
+        assertNotNull(results);
+        assertEquals(1,results.getResultCount());
+        String o = results.getResult(0).getValue();
+        assertNotNull(o);
+        System.out.println(o);
+        assertEquals("Hello2",o);
+    }    
+
 }
 
 
 /* 
 $Log: JavaClassProviderTest.java,v $
+Revision 1.6  2005/07/15 14:44:32  jdt
+merge from cea_jdt_1295
+
+Revision 1.5.84.1  2005/07/15 14:28:17  jdt
+Fixed the parameter order in the application interface, and added a test.
+
 Revision 1.5  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 

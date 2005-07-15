@@ -1,5 +1,5 @@
 /*
- * $Id: BaseApplicationInterface.java,v 1.8 2004/09/22 10:52:50 pah Exp $
+ * $Id: BaseApplicationInterface.java,v 1.9 2005/07/15 14:44:32 jdt Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ package org.astrogrid.applications.description.base;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.Cardinality;
@@ -54,9 +55,9 @@ public class BaseApplicationInterface implements ApplicationInterface {
 
    protected final String name;
 
-   //FIXME - need to implement Lists for parameters to preserve order for the user interface
-   private final  Map inputs = new HashMap();
-   private final Map outputs = new HashMap();
+   //These need to be ordered maps to preserve the order of the arguments
+   private final  Map inputs =  ListOrderedMap.decorate(new HashMap());
+   private final Map outputs =  ListOrderedMap.decorate(new HashMap());
 
 
    /**
