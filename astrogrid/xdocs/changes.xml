@@ -9,7 +9,8 @@
     			security facade plus some trivial cleaning up of the production code. Both astrogrid/security and astrogrid/integrationTests
     		  are branched but only astrogrid/security has committed changes.</action>
     		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.</action>
-        </release>
+    		<action dev="mch" type="add" issue="1228"> Documentation for astrogrid/pal. Branch MCH_1228_Docs. </action>
+			        </release>
         <release version="(Undertest)">
 			<action dev="kmb" type="add" issue="1235"> <b>astrogrid/registry</b> Branch <em>Reg_KMB_Xforms2_Jun01</em>. Mainly added xforms plus small 
                 correction on harvesting and OAI areas to correct duplicates being returned in OAI and not die badly on invalid harvesting of other registries. 
