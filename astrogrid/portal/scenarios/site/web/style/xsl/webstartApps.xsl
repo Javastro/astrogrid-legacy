@@ -61,7 +61,7 @@
                     alt="workbench"/>
              </a>
            </td>
-           <td><font size="-1">Integrates astrogrid into the desktop.<br/> 
+           <td><font size="-1"><b>Astrogrid workbench</b> integrates astrogrid into the desktop.<br/> 
                Allows astrogrid services to be easily called from user applications and scripts;
                </font>
            </td>
