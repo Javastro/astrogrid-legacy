@@ -5,6 +5,9 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+			<action dev="nww" type="fix"><em>Branch: jes-nww-review-unit-tests</em>
+				 Fixes to improve unit test coverage and bring pass rate to 100% - don't merge if any unit tests fail.
+			</action>
     		<action dev="gtr" type="fix" issue="477"><em>Branch security-gtr-477-2:</em> a rearrangement of the tests for the 
     			security facade plus some trivial cleaning up of the production code. Both astrogrid/security and astrogrid/integrationTests
     		  are branched but only astrogrid/security has committed changes.</action>
