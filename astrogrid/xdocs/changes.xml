@@ -5,6 +5,20 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+			<action dev="kmb" type="fix"><em>Branch: IntTest_KMB_FixTests</em>
+				 Branch under integrationTests/auto-integration, fixed some of the tests and no longer required 0.9 from the registry.
+                 See next 2 branch Jes_KMB_1293, FM_KMB_1293_2 it is required for this merge.
+			</action>
+			<action dev="kmb" type="fix"><em>Branch: Jes_KMB_1293</em>
+                Changed it to no longer need 0.9 registry, and dropped castor for looking up registry identifier.
+			</action>
+			<action dev="kmb" type="fix"><em>Branch: FM_KMB_1293_2</em>
+               Drop the 0.9 need of the registry it works with anything now so no need for translation.
+			</action>
+			<action dev="kmb" type="fix"><em>Branch: Reg_KMB_1293</em>
+               I really did not finish the full 1293 ticket so I will rebranch, but this branch is what I used during testing.
+               So this should be merged in as well.
+			</action>
 			<action dev="nww" type="fix"><em>Branch: jes-nww-review-unit-tests</em>
 				 Fixes to improve unit test coverage and bring pass rate to 100% - don't merge if any unit tests fail.
 			</action>
