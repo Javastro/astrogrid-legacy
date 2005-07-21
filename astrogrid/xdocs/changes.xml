@@ -5,6 +5,9 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+			<action dev="pah" type="add" issue="1317"><em>Branch: cea_pah_1317</em>
+				Commandline CEA will now remove any files associated with input parameters for a successful run. Also added jsp page to clean up all working files older than specified date.
+			</action>
 			<action dev="kmb" type="fix"><em>Branch: IntTest_KMB_FixTests</em>
 				 Branch under integrationTests/auto-integration, fixed some of the tests and no longer required 0.9 from the registry.
                  See next 2 branch Jes_KMB_1293, FM_KMB_1293_2 it is required for this merge.
