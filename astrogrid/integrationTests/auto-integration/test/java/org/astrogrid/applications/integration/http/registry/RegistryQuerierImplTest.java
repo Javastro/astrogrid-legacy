@@ -1,4 +1,4 @@
-/* $Id: RegistryQuerierImplTest.java,v 1.3 2005/07/05 10:54:36 jdt Exp $
+/* $Id: RegistryQuerierImplTest.java,v 1.4 2005/07/21 15:23:36 pah Exp $
  * Created on Aug 5, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.applications.beans.v1.types.ApplicationKindType;
 import org.astrogrid.applications.description.registry.RegistryQueryLocator;
 import org.astrogrid.applications.http.registry.RegistryQuerierImpl;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.beans.cea.CeaHttpApplicationType;
+import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 
@@ -65,7 +65,7 @@ public class RegistryQuerierImplTest extends TestCase {
             log.debug("testListApplications()" + app.getShortName());
             log.debug("testListApplications()" + app.getApplicationDefinition().getApplicationKind());
             log.debug("testListApplications()" + app.getCeaHttpAdapterSetup().getURL());
-            allAppsAgain.put(app.getShortName(),app);
+            allAppsAgain.put(app.getTitle(),app);
             //check that this is a http-get or http-post application
             assertTrue("Application was not of http type", app.getApplicationDefinition().getApplicationKind().equals(ApplicationKindType.HTTP) );
         }
