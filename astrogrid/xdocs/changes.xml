@@ -5,6 +5,9 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+			<action dev="nww" type="fix"><em>Branch: cea-server-nww-improve-tests</em>
+				Fixed failing unit tests and improved test coverage in cea-server
+			</action>
 			<action dev="pah" type="add" issue="1317"><em>Branch: cea_pah_1317</em>
 				Commandline CEA will now remove any files associated with input parameters for a successful run. Also added jsp page to clean up all working files older than specified date.
 			</action>
@@ -54,7 +57,7 @@
                 that they work offline. You should see changes to aginab, and the deployment and installer folders of all components except community. The 
                 changes are minor and shouldn't affect integration tests. 
 			</action>            
-			<action dev="pjn" type="add" issue="xxx"> <b>astrogrid/desktop</b> Branch <em>desktop_pjn_14_6_5</em> Phil's new workbench for wf
+			<action dev="pjn" type="add" > <b>astrogrid/desktop</b> Branch <em>desktop_pjn_14_6_5</em> Phil's new workbench for wf
 			</action>
 			<action dev="jl" type="add" issue="1173"> <b>astrogrid/portal</b> Branch <em>por-jl-1173</em>. Partly dependent upon bug 1279, in that filestores 
                 created during an aginab build need to register with a relationship set within the registry. <ul> <li>Refinements to MySpace Explorer 
@@ -63,9 +66,9 @@
             <action dev="pah" type="fix" issue="559"> Make all of the CEA servers self register with v10 compliant schema - This involved <ul><li>workflow 
                 objects - wfo_pah_559b</li> <li>applications - cea_pah_559c </li> <li>jes - jes_pah_559b</li> <li>integration project - int_pah_559b</li> </ul> 
                 </action>
-            <action dev="dave" type="add" issue="xxx" version="1.0.1-b006pl"> <b>pal</b> Branch <em>dave-dev-200506281816</em>. One change to a property in 
+            <action dev="dave" type="add"  version="1.0.1-b006pl"> <b>pal</b> Branch <em>dave-dev-200506281816</em>. One change to a property in 
                 default.properties in pal/skycatserver. </action>
-            <action dev="dave" type="add" issue="xxx" version="1.0.1-b005pl"> <b>pal</b> Branch <em>dave-dev-200506281451</em>. Small change to the metadata 
+            <action dev="dave" type="add" version="1.0.1-b005pl"> <b>pal</b> Branch <em>dave-dev-200506281451</em>. Small change to the metadata 
                 tools in PAL, no external side effects expected. </action>
             <action dev="gtr" type="fix" issue="1255"> <b>astrogrid/contracts</b>, branch <em>contracts-gtr-1255</em>. More XML schemata added to the contracts 
                 project so that they can be published in the software site. After this branch is merged, please rebuild the software site so that it picks up 
@@ -81,12 +84,12 @@
                 merge from mch before proceeding. </action>
             <action dev="jdt" type="fix" issue="1180"> <b>astrogrid/applications</b> and <b>astrogrid/integrationTests</b> <em>cea_jdt_1180</em> Minor bug 
                 fixes to installer and build. Also fixes bug 1182 (for CEA only). Already merged. </action>
-            <action dev="dave" type="fix" issue="xxxx"> <b>dave-dev-200506100249</b> Changes to navigate and header </action>
+            <action dev="dave" type="fix" > <b>dave-dev-200506100249</b> Changes to navigate and header </action>
             <action dev="pjn3" type="fix" issue="1200"> <b>astrogrid/workflow + portal resources</b> Branch <em>portalRE_pjn_1200 + workflow_pjn_1200</em> Only 
                 active tasks returned from registry in both workflow builder and resource browser. </action>
-            <action dev="dave" type="fix" issue="xxxx"> <b>dave-dev-200506081212</b> - Bug fixes to the pal metadata generator.No external side effects 
+            <action dev="dave" type="fix" > <b>dave-dev-200506081212</b> - Bug fixes to the pal metadata generator.No external side effects 
                 expected. </action>
-            <action dev="dave" type="fix" issue="xxxx"> <b>dave-dev-200506071500</b> - Fixed double(), power() and circle() in PostgreSQL SQL writer. </action>
+            <action dev="dave" type="fix" > <b>dave-dev-200506071500</b> - Fixed double(), power() and circle() in PostgreSQL SQL writer. </action>
             <action dev="nww" type="add" issue="1111(again)"> <b>desktop-nww-1111</b> and <b>workflow-nww-1111</b> - added Applications component to ACR, and 
                 Applications Launcher Proglet. This branch has already been merged into head once - hope merging it again doesn't cause trouble . </action>
             <action dev="pfo" type="add" issue="1217"> <b>portal_pjn_1225</b> - microbrowserResults.xsl change to handle tables with '+' in their name </action>
