@@ -620,7 +620,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 		    	    String text = "";
 		    	    String str ;		
 		    		try {
-		    		    InputStream is = this.getClass().getResourceAsStream("../../helpText/help_" + item.toString() + "_tip.html");
+		    		    InputStream is = this.getClass().getResourceAsStream("/org/astrogrid/desktop/helpText/help_" + item.toString() + "_tip.html");
 		    	        InputStreamReader inputStreamReader = new InputStreamReader(is); 
 		    	        BufferedReader br = new BufferedReader(inputStreamReader);	    
 		    	        while ((str = br.readLine()) != null) 
@@ -640,7 +640,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 		          public void mouseClicked(MouseEvent event)
 		          {
 		          	tabbedPaneDetails.setSelectedIndex(2);
-		          	htmlActivityPane = readHelpFile("../../helpText/help_" + list.getSelectedValue().toString() + ".html");
+		          	htmlActivityPane = readHelpFile("/org/astrogrid/desktop/helpText/help_" + list.getSelectedValue().toString() + ".html");
 		          	activityDetailsPane = new JScrollPane(htmlActivityPane);
 		          	tabbedPaneDetails.setComponentAt(2, activityDetailsPane);
 		          };		          
@@ -873,7 +873,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 	
 	private JScrollPane getTabbedTaskDetailsPanel() {
 		if (taskDetailsPane == null) {
-			htmlTaskPane = readHelpFile("../../helpText/task.html");        
+			htmlTaskPane = readHelpFile("/org/astrogrid/desktop/helpText/task.html");        
 			taskDetailsPane = new JScrollPane(htmlTaskPane);
 		}
 		return taskDetailsPane;
@@ -881,7 +881,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 	
 	private JScrollPane getTabbedActivityDetailsPanel() {
 		if (activityDetailsPane == null) {								
-	        htmlActivityPane = readHelpFile("../../helpText/activity.html");        
+	        htmlActivityPane = readHelpFile("/org/astrogrid/desktop/helpText/activity.html");        
 			activityDetailsPane = new JScrollPane(htmlActivityPane);
 		}
 		return activityDetailsPane;
@@ -889,7 +889,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 	
 	private JScrollPane getTabbedWelcomeDetailsPanel() {
 		if (welcomePane == null) {	        			
-	        htmlWelcomePane = readHelpFile("../../helpText/welcome.html");
+	        htmlWelcomePane = readHelpFile("/org/astrogrid/desktop/helpText/welcome.html");
 	        htmlWelcomePane.setPreferredSize(new Dimension(200,225));
 			welcomePane = new JScrollPane(htmlWelcomePane);
 		}
