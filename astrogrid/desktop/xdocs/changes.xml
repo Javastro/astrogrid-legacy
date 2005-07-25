@@ -26,6 +26,9 @@
 		<action dev="nw" type="add">
 			Added example script for connecting to ACR from perl
 		</action>		
+		<action dev="nw" type="update">
+			Updated list of external apps
+		</action>
 	</release>
 	<release version="1.0.4-beta" date="2005-07-08">
 		<action dev="nw" type="add">

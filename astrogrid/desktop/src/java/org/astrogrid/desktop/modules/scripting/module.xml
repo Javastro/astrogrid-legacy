@@ -9,11 +9,11 @@
 		<property>
 			<key>system.ui.menu.links</key>
 			<value>		
-				<link text="Download a zip of Python Scripts that connect to the workbench"
+				<link text="Commandline Utilities and Examples in Python"
 					icon="source_py.png"
 					toolTipText="A collection of commandline scripts - useful in their own right, and examples of python scripting of the workbench"
 					url="http://software.astrogrid.org/jnlp/astrogrid-desktop/python-scripts.zip"/>
-				<link text="Example perl scripts to connect to workbench"
+				<link text="Examples in Perl"
 					icon="source_pl.png"
 					toolTipText="Perl scripts that show how to connect to workbench. For details of functionality, see python examples."
 					url="http://software.astrogrid.org/jnlp/astrogrid-desktop/perl-scripts.zip"/>				
