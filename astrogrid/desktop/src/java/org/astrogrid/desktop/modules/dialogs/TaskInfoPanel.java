@@ -179,7 +179,7 @@ public class TaskInfoPanel extends JPanel {
 			
 			scrollPane = new JScrollPane(parametersTable);	
 			scrollPane.setBorder(BorderFactory.createTitledBorder("Parameter details"));
-			parametersTable.setPreferredScrollableViewportSize(new Dimension(750,96));
+			parametersTable.setPreferredScrollableViewportSize(new Dimension(750,80));
 			jPanel.add(scrollPane, BorderLayout.CENTER);
 		
 		return jPanel;
@@ -327,17 +327,23 @@ public class TaskInfoPanel extends JPanel {
      * @param Tool tool
      * @return void
      */
-    private void addDescription(ApplicationDescription desc, Tool tool) {
+    private void addDescription(ApplicationDescription desc, Tool tool) {    	
     	JLabel label1 = new JLabel("Task: ");
     	JLabel label2 = new JLabel("Interface: ");
     	JLabel label3 = new JLabel("Description: ");
         JLabel taskLabel = new JLabel(tool.getName());
         JLabel intLabel = new JLabel(tool.getInterface());
-        JTextArea descTextArea = new JTextArea(3,7);
+        JTextArea descTextArea = new JTextArea(3,6);
         descTextArea.setLineWrap(true);
         descTextArea.setEditable(false);
-        //descTextArea.setText(DomHelper.getNodeTextValue(desc.getOriginalVODescription(),"Description","vr"));       
+        //descTextArea.setText(DomHelper.getNodeTextValue(desc.getOriginalVODescription(),"Description","vr"));
+        try {
         descTextArea.setText((desc.getOriginalVODescription().getElementsByTagNameNS(vr,"description").item(0).getFirstChild().getNodeValue()));
+        }
+        catch(Exception ex) {
+        	logger.error("Error loading task description for task: " + desc.getName() + ", " + ex.getMessage() );
+        	descTextArea.setText("--");
+        }
         descTextArea.setCaretPosition(0);
         descTextArea.setWrapStyleWord(true);
 		scrollPane = new JScrollPane(descTextArea);
@@ -350,7 +356,7 @@ public class TaskInfoPanel extends JPanel {
         b.add(intLabel);
         b.add(label3);
         b.add(scrollPane);
-        makeCompactGrid(b, 3,2,0,0,2,2);
+        makeCompactGrid(b, 3,2,0,0,1,2);
     }      
     
             

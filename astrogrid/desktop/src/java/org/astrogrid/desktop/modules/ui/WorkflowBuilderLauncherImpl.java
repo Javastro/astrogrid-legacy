@@ -11,14 +11,17 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -31,6 +34,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -59,7 +64,8 @@ import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
+import javax.swing.ToolTipManager;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -93,7 +99,6 @@ import org.astrogrid.desktop.modules.dialogs.StepPanel;
 import org.astrogrid.desktop.modules.dialogs.TaskInfoPanel;
 import org.astrogrid.desktop.modules.dialogs.WorkflowDetailsDialog;
 import org.astrogrid.desktop.modules.system.WorkflowTreeModel;
-import org.astrogrid.desktop.modules.system.XmlTreeModel;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser.CurrentNodeManager;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
@@ -210,12 +215,11 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 		                    workflow = (Workflow)Unmarshaller.unmarshal(Workflow.class, reader);	                
 		                    reader.close();
 		                                        	    
-                    	    //tree.setModel(getXmlTreeModel(workflow));
                             workflowTreeModel = new WorkflowTreeModel(workflow);
                            // workflowTreeModel.addTreeModelListener(new TreeModelListener(){
                             	                            							
                             tree.setModel(workflowTreeModel);
-                            //tree.setCellRenderer(new workflowTreeRenderer());
+                            //TODO: expandAll should work when tree model completed (eg getChildCount)
                             tree.setCellRenderer(new WorkflowTreeCellRenderer());
                             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
                             tree.addTreeSelectionListener(new WorkflowTreeSelectionListener());
@@ -277,7 +281,6 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
         	tabbedPaneWF.setEnabledAt(0, true);
         	tabbedPaneWF.setEnabledAt(1, true);
         	tabbedPaneWF.setSelectedIndex(0);
-            // tree.setModel(getXmlTreeModel(workflow));
             workflowTreeModel = new WorkflowTreeModel(workflow);
             tree.setModel(workflowTreeModel);
             submitAction.setEnabled(true);
@@ -328,20 +331,21 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     private ApplicationDescriptionSummary appDescSum[] = null;
     
     private JButton clearButton, searchButton = null;
-    private JEditorPane htmlPane, descPane, docTextArea;
+    private JEditorPane htmlWelcomePane, htmlActivityPane, htmlTaskPane, descPane, docTextArea;
     private JFileChooser fileChooser = null;
-    private JList list, list1, taskSearchList, searchList;
+    private JList list, list1, taskSearchList, searchList, taskListSelection;
     private JLabel infoLabel;
     private JMenuBar jJMenuBar = null;
     private JMenu wfMenu = null;
-    private JPanel workAreaTree, workAreaDoc, tabWf, tabAct, tabTask, tabWel, buttonBox = null;
+    private JPanel workAreaTree, workAreaDoc, tabAct, tabWel, tabWf, buttonBox, activityPanel = null;
     private JToolBar toolbar = null;    
     private DefaultListModel activityListModel, taskListModel, taskSearchListModel  = null;
     private JTree tree = null;
     private JTabbedPane tabbedPaneWF, tabbedPaneTasks, tabbedPaneDetails;
     private JTextArea wfDescArea = null;
     private JTextField titleSearchField, nameSearchField, descSearchField, wfNameField, wfFileField;   
-    private JScrollPane listView, listView1, scrollPane, taskSearchPane, searchListView = null;
+    private JScrollPane listView, listView1, scrollPane, taskSearchPane, searchListView, 
+	        activityDetailsPane, workflowDetailsPane, taskDetailsPane, welcomePane= null;
     private URL helpUrl;
     
  
@@ -384,13 +388,10 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 		tabbedPaneTasks = new JTabbedPane();
 		
 		tabbedPaneTasks.addTab("Task List", null, createPanelForComponent(getTaskList(), "All available tasks"), "List of all tasks currently available");
-		tabbedPaneTasks.addTab("Task Search", null, createPanelForComponent(getTaskSearch(), "Search for specific task/s"), "Search for a specific task");
-		tabbedPaneTasks.setEnabledAt(1,false);
-		topPanel.setPreferredSize(new Dimension(250,600));
-		topPanel.setMinimumSize(new Dimension(250,300));
+		tabbedPaneTasks.addTab("Task Search", null, createPanelForComponent(getTaskSearch(), "Search for specific task/s"), "Search for a specific task");		
+		topPanel.setPreferredSize(new Dimension(260,650));
 		topPanel.add(tabbedPaneTasks);
-		bottomPanel.setPreferredSize(new Dimension(250, 225));
-		bottomPanel.setMinimumSize(new Dimension(250, 200));
+		bottomPanel.setPreferredSize(new Dimension(260, 220));
 		bottomPanel.add(createPanelForComponent(getActivityList(), "Activity List"));	
 		JSplitPane splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topPanel, bottomPanel);
 		//splitPane1.setOneTouchExpandable(true);		
@@ -399,14 +400,20 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 		//right side
 		tabbedPaneDetails = new JTabbedPane();
 		tabbedPaneDetails.addTab("Workflow details", null, getTabbedWorkflowDetailsPanel(), "Workflow details");
+		tabbedPaneDetails.setMnemonicAt(0,KeyEvent.VK_1);
 		tabbedPaneDetails.addTab("Task details", null, getTabbedTaskDetailsPanel(), "Task details");
+		tabbedPaneDetails.setMnemonicAt(1,KeyEvent.VK_2);
 		tabbedPaneDetails.addTab("Activity details", null, getTabbedActivityDetailsPanel(), "Activity details");
+		tabbedPaneDetails.setMnemonicAt(2,KeyEvent.VK_3);
 		tabbedPaneDetails.addTab("Welcome", null, getTabbedWelcomeDetailsPanel(), "Welcome details");
+		tabbedPaneDetails.setMnemonicAt(3,KeyEvent.VK_4);
 		tabbedPaneDetails.setSelectedIndex(3);
 		
 		tabbedPaneWF = new JTabbedPane();		
-		tabbedPaneWF.addTab ("Tree View", null, getTabbedTreePanel(), "Display workflow graphically");
-		tabbedPaneWF.addTab("Document", null, getTabbedDocPanel(), "Display text version of workflow");
+		tabbedPaneWF.addTab ("Tree View", IconHelper.loadIcon("wf_small.gif"), getTabbedTreePanel(), "Display workflow graphically");
+		tabbedPaneWF.setMnemonicAt(0,KeyEvent.VK_T);
+		tabbedPaneWF.addTab("Document", IconHelper.loadIcon("document.gif"), getTabbedDocPanel(), "Display text version of workflow");
+		tabbedPaneWF.setMnemonicAt(1,KeyEvent.VK_D);
 		tabbedPaneWF.setEnabledAt(0, false);
 		tabbedPaneWF.setEnabledAt(1, false);
 		tabbedPaneWF.addMouseListener(new MouseAdapter(){
@@ -427,20 +434,17 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 	    });
 		
 		JSplitPane splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tabbedPaneDetails, tabbedPaneWF);
-		rightPanel.add(splitPane2);
-		//rightPanel.add(tabbedPaneDetails);
-		//rightPanel.add(tabbedPaneWF);		
+		splitPane2.setOneTouchExpandable(true);
+		rightPanel.add(splitPane2);	
 	    		
 		//both
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
-		//splitPane.setOneTouchExpandable(true);
 		
 		JPanel pane = getJContentPane();
 		pane.add(splitPane, BorderLayout.CENTER);
 		pane.add(getToolbar(), BorderLayout.NORTH);
 		
 		addMenuOptions();
-        
 		this.setContentPane(pane);
 		pack();
 	}
@@ -493,7 +497,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     	setStatusMessage("Loading task information from registry");
 		setBusy(true);			
 		try {			
-		  appDescSum = fullList();						
+		  appDescSum = fullList();		
 	      for (int i = 0; i < appDescSum.length ; i++){
 	      	for (int j = 0; j < appDescSum[i].getInterfaceNames().length; j++){
 	      		String iNames[] = appDescSum[i].getInterfaceNames();
@@ -510,27 +514,28 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 		  taskListModel.addElement("Unable to read tasks..");
 		  logger.error("Error thrown reading task list: " + wi.getMessage());
 	    }
+	    
 	    setStatusMessage("");
 	    setBusy(false);
-	    tabbedPaneTasks.setEnabledAt(1,true);	    
+	    listView1.repaint();    
     }
     private void populateTaskSearchList(Document doc) {
     	setStatusMessage("Searching registry");
 		setBusy(true);		
 		try {
 		   taskSearchListModel.clear();
-		   NodeList nl = doc.getElementsByTagName("title");	   
+		   NodeList nl = doc.getElementsByTagName("identifier");
 		   for ( int i=0; i<=nl.getLength(); i++  ) {		
 		       Node node = nl.item(i);		 		 
 			   if( node instanceof org.w3c.dom.Element ) {				  				
 			      for (int j = 0; j < appDescSum.length ; j++){
-			          if (appDescSum[j].getUIName().equalsIgnoreCase(nl.item(i).getFirstChild().getNodeValue()))
+			          if (appDescSum[j].getName().equalsIgnoreCase(nl.item(i).getFirstChild().getNodeValue()))			          	
 			      	      {
 				      	  for (int k = 0; k < appDescSum[j].getInterfaceNames().length; k++){
 				      	      String iNames[] = appDescSum[j].getInterfaceNames();
 				      	      for (int l = 0; l < iNames.length; l++) {
-					      		TaskDetails td = new TaskDetails(appDescSum[i].getName(),
-					                                             appDescSum[i].getUIName(),
+					      		TaskDetails td = new TaskDetails(appDescSum[j].getName(),
+					                                             appDescSum[j].getUIName(),
                                                                  iNames[l]);
 					      		taskSearchListModel.addElement(td);
 				      	      }
@@ -539,7 +544,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 			      	  }		    
 			      } 
 			  }
-		   }														
+		   }
 		}
 	    catch(Exception wi){
 	    	taskSearchListModel.addElement("Unable to read tasks..");
@@ -611,9 +616,21 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 		            // Get item index
 		            int index = locationToIndex(evt.getPoint());		    
 		            // Get item
-		            Object item = getModel().getElementAt(index);		    
-		            // Return the tool tip text
-		            return item.toString();
+		            Object item = getModel().getElementAt(index);		
+		    	    String text = "";
+		    	    String str ;		
+		    		try {
+		    		    InputStream is = this.getClass().getResourceAsStream("../../helpText/help_" + item.toString() + "_tip.html");
+		    	        InputStreamReader inputStreamReader = new InputStreamReader(is); 
+		    	        BufferedReader br = new BufferedReader(inputStreamReader);	    
+		    	        while ((str = br.readLine()) != null) 
+		    	    	    text = text + str;
+		    	        br.close();
+		    	    } 
+		    	    catch(Exception ex) {
+		    	    	text = item.toString();	    
+		    	    }		
+		    	    return text;
 		        }
 		    };
 			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -622,8 +639,10 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 			list.addMouseListener(new MouseAdapter(){
 		          public void mouseClicked(MouseEvent event)
 		          {
-		          	tabbedPaneDetails.setSelectedIndex(3);
-		          	readHelpFile("help_" + list.getSelectedValue().toString() + ".html");
+		          	tabbedPaneDetails.setSelectedIndex(2);
+		          	htmlActivityPane = readHelpFile("../../helpText/help_" + list.getSelectedValue().toString() + ".html");
+		          	activityDetailsPane = new JScrollPane(htmlActivityPane);
+		          	tabbedPaneDetails.setComponentAt(2, activityDetailsPane);
 		          };		          
 			});
 			listView = new JScrollPane(list);
@@ -732,78 +751,72 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 		searchList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		searchList.addMouseListener(new PopulateTaskPanelListListener());	
 		searchListView = new JScrollPane(searchList);	
-		searchListView.setPreferredSize(new Dimension(220,400));										
+		searchListView.setPreferredSize(new Dimension(220,450));										
 		return searchListView;
 	}
 
 	
 	
-	
-   private void taskQuery() {
-     String taskJoin = "OR"; 
-     String sqlQuery = "";
-	 boolean andreqd = false; // used to add 'and' between e.g. (constraints) and (wavelength)
-
-     try{
-     	Document doc = DomHelper.newDocument();
-         // Lets build up the XML for a query.
-         sqlQuery = " Select * from Registry where ( @xsi:type = 'cea:CeaApplicationType' or ";
-         sqlQuery += " @xsi:type = 'cea:CeaHttpApplicationType' ";
-         sqlQuery += ") and (@status = 'active'";              
+    /**
+     * Query registry
+     *
+     */
+    private void taskQuery() {
+    	try{
+          (new BackgroundOperation("Searching.....") {
+            protected Object construct() throws Exception {
+            	
+              String taskJoin = "OR"; 
+              String sqlQuery = "";
+   	          boolean andreqd = false; // used to add 'and' between e.g. (constraints) and (wavelength)    	    
+     	      Document doc = DomHelper.newDocument();
+         
+     	      // Lets build up the XML for a query.
+              sqlQuery = " Select * from Registry where ( @xsi:type = 'cea:CeaApplicationType' or ";
+              sqlQuery += " @xsi:type = 'cea:CeaHttpApplicationType' ";
+              sqlQuery += ") and (@status = 'active'";              
        
-	     // is this an empty search?
-	     if ( nameSearchField.getText().length() > 0 || titleSearchField.getText().length() > 0 || descSearchField.getText().length() > 0 )
-	     {				
-             sqlQuery += " and (";       
-             if ( nameSearchField.getText().length() > 0 ) 
-             {
-                 sqlQuery += " vr:identifier like '%" + nameSearchField.getText() + "%' ";
-			     andreqd = true;
-             }
-             if ( titleSearchField.getText().length() > 0 ) 
-             {
-			     if (andreqd)
-                  sqlQuery += taskJoin;    
-			     sqlQuery += " vr:title like '%" + titleSearchField.getText() + "%' ";
-			     andreqd = true;
-             }
-             if ( descSearchField.getText().length() > 0 ) 
-             {
-		         if (andreqd) 
-                  sqlQuery += taskJoin;           
-		         sqlQuery += " vr:content/vr:description like '%" + descSearchField.getText() + "%' ";
-             }		
-            sqlQuery += ")";
-		    }		                 			         
-	    sqlQuery += ")"; // End of query
-	    logger.info("sql query: " + sqlQuery );
-	    String adqlString = Sql2Adql.translateToAdql074(sqlQuery);
-	    RegistryService rs = RegistryDelegateFactory.createQuery( );
-	    doc = rs.search(adqlString);
+	          // is this an empty search?
+	          if ( nameSearchField.getText().length() > 0 || titleSearchField.getText().length() > 0 || descSearchField.getText().length() > 0 )
+	          {				
+                sqlQuery += " and (";       
+                if ( nameSearchField.getText().length() > 0 ) 
+                {
+                  sqlQuery += " vr:identifier like '%" + nameSearchField.getText() + "%' ";
+			      andreqd = true;
+                }
+                if ( titleSearchField.getText().length() > 0 ) 
+                {
+			      if (andreqd)
+                    sqlQuery += taskJoin;    
+			      sqlQuery += " vr:title like '%" + titleSearchField.getText() + "%' ";
+			      andreqd = true;
+                }
+                if ( descSearchField.getText().length() > 0 ) 
+                {
+		          if (andreqd) 
+                    sqlQuery += taskJoin;           
+		          sqlQuery += " vr:content/vr:description like '%" + descSearchField.getText() + "%' ";
+                }		
+                sqlQuery += ")";
+		      }		                 			         
+	        sqlQuery += ")"; // End of query
+	        logger.info("sql query: " + sqlQuery );
+	        String adqlString = Sql2Adql.translateToAdql074(sqlQuery);
+	        RegistryService rs = RegistryDelegateFactory.createQuery( );
+	        doc = rs.search(adqlString);
 	    
-	    populateTaskSearchList(doc);
-	    
+	        populateTaskSearchList(doc);
+            
+            return null;
+          }
+        }).start();	    
      }
      catch(Exception e){
      	logger.error("Error generating task search: " + e.getMessage());
      }
    } // end of taskQuery()	
-   /**
-    * Create a DefaultListModel of task titles from a Document
-    * @param doc Document 
-    * @return DefaultListModel
-    */
-   private DefaultListModel docToListmodel(Document doc) {
-   	   DefaultListModel lm = new DefaultListModel();
-	   NodeList nl = doc.getElementsByTagName("title");	   
-	   for ( int i=0; i<=nl.getLength(); i++  ) {		
-		 Node node = nl.item(i);		 		 
-		 if( node instanceof org.w3c.dom.Element ) {
-			lm.addElement(nl.item(i).getFirstChild().getNodeValue() );
-		 }
-	   }  	   
-   	 return lm;
-   }	
+	
 	    
 	private JPanel getTabbedTreePanel() {
 		JPanel panel = new JPanel(new BorderLayout());
@@ -812,17 +825,16 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 		tree.setShowsRootHandles(false);
 		tree.setScrollsOnExpand(true);			
 		tree.setModel(null);
+		tree.setBorder(new EmptyBorder(10,10,10,10));
 		scrollPane = new JScrollPane(tree);
 		panel.add(scrollPane);			
 		panel.setBorder(BorderFactory.createTitledBorder("Tree view"));
-		panel.setPreferredSize(new Dimension(800,500));
-		panel.setMinimumSize(new Dimension(700,400));
-		
+		panel.setPreferredSize(new Dimension(800,200));		
 		return panel;
 	}		
 	
 	
-	private JPanel getTabbedWorkflowDetailsPanel() {
+	private JScrollPane getTabbedWorkflowDetailsPanel() {
 		if (tabWf == null) {
 			tabWf = new JPanel();								
 	    	JLabel label1 = new JLabel("Workflow name: ", JLabel.TRAILING);
@@ -834,7 +846,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 	    	descPane.setEditable(false);
 	    	descPane.setText("--");
 	    	descPane.setCaretPosition(0);
-	    	descPane.setPreferredSize(new Dimension(200,100));
+	    	descPane.setPreferredSize(new Dimension(400,80));
 	    	JScrollPane pane = new JScrollPane(descPane);
 	    	pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	    	pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -851,74 +863,51 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 			p.add(label3);
 			p.add(wfFileField);		
 			makeCompactGrid(p, 3,2,2,2,10,3);
-			p.setPreferredSize(new Dimension(500,100));
-			p.setMinimumSize(new Dimension(400,100));
+			//p.setPreferredSize(new Dimension(500,100));
 			tabWf.add(p);
-			tabWf.setPreferredSize(new Dimension(800,230));
-			tabWf.setMinimumSize(new Dimension(700,150));
 		}
-		return tabWf;
+		JScrollPane jsp = new JScrollPane(tabWf);
+		return jsp;
+		//return tabWf;
 	}
 	
-	private JPanel getTabbedTaskDetailsPanel() {
-		if (tabTask == null) {
-			tabTask = new JPanel(new BorderLayout());
-			tabTask.setPreferredSize(new Dimension(800,230));
-			tabTask.setMinimumSize(new Dimension(700,150));
+	private JScrollPane getTabbedTaskDetailsPanel() {
+		if (taskDetailsPane == null) {
+			htmlTaskPane = readHelpFile("../../helpText/task.html");        
+			taskDetailsPane = new JScrollPane(htmlTaskPane);
 		}
-		return tabTask;
+		return taskDetailsPane;
 	}
 	
-	private JPanel getTabbedActivityDetailsPanel() {
-		if (tabAct == null) {
-			tabAct = new JPanel();					
-			infoLabel = new JLabel("");
-			infoLabel.setVerticalAlignment(SwingConstants.CENTER);
-			infoLabel.setHorizontalAlignment(SwingConstants.CENTER);	        			
-	        JPanel panel = new JPanel();
-	        panel.add(infoLabel, BorderLayout.LINE_START );
-	        panel.setPreferredSize(new Dimension(790,220));
-	        panel.setMinimumSize(new Dimension(700,150));
-	        
-			JScrollPane pane = new JScrollPane(panel,
-					                           JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-					                           JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);			
-			tabAct.add(pane);
-			tabAct.setPreferredSize(new Dimension(800,225));
-			tabAct.setMinimumSize(new Dimension(700,150));
+	private JScrollPane getTabbedActivityDetailsPanel() {
+		if (activityDetailsPane == null) {								
+	        htmlActivityPane = readHelpFile("../../helpText/activity.html");        
+			activityDetailsPane = new JScrollPane(htmlActivityPane);
 		}
-		return tabAct;
+		return activityDetailsPane;
 	}
 	
-	private JPanel getTabbedWelcomeDetailsPanel() {
-		if (tabWel == null) {
-			tabWel = new JPanel();	        
-			
-	        htmlPane = new JEditorPane();
-	        htmlPane.setEditable(false);
-	        readHelpFile("welcome.html");
-	        htmlPane.setPreferredSize(new Dimension(790,210));
-	        htmlPane.setMinimumSize(new Dimension(700,150));
-	        
-			JScrollPane pane = new JScrollPane(htmlPane,
-					                           JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-					                           JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);			
-			tabWel.add(pane);
-			tabWel.setPreferredSize(new Dimension(800,225));
-			tabWel.setMinimumSize(new Dimension(700,150));
+	private JScrollPane getTabbedWelcomeDetailsPanel() {
+		if (welcomePane == null) {	        			
+	        htmlWelcomePane = readHelpFile("../../helpText/welcome.html");
+	        htmlWelcomePane.setPreferredSize(new Dimension(200,225));
+			welcomePane = new JScrollPane(htmlWelcomePane);
 		}
-		return tabWel;
+		return welcomePane;
 	}
 	
-	private void readHelpFile(String fileName) {	
-		try {
+	private JEditorPane readHelpFile(String fileName) {	
+		JEditorPane pane = new JEditorPane();
+		try {			
 			helpUrl = this.getClass().getResource(fileName);
-            htmlPane.setPage(helpUrl);
+			pane.setPage(helpUrl); 
+			pane.setEditable(false);
 	    } 
 	    catch(Exception ex) {
 	    	logger.error("Error reading help file " + fileName + " : " + ex.getMessage());
-	    	htmlPane.setText("Unable to read help file");	    
+	    	pane.setText("Unable to read help file");	    
 	    }
+	    return pane;
 	}
 	
 	private JPanel getTabbedDocPanel() {
@@ -928,45 +917,10 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 		scrollPane = new JScrollPane(docTextArea);
 		panel.add(scrollPane, BorderLayout.CENTER);			
 		panel.setBorder(BorderFactory.createTitledBorder("Workflow document"));
-		panel.setPreferredSize(new Dimension(800,500));
-		panel.setMinimumSize(new Dimension(700,400));
-		
+		panel.setPreferredSize(new Dimension(800,200));		
 		return panel;
 	}	
-	/**
-	 * Create an XmlTreeModel from Object
-	 * @param o
-	 * @return xmlTreeModel
-	 */
-    public XmlTreeModel getXmlTreeModel(Object o){
-		Document doc= null;
-		XmlTreeModel xMod = null;
-		try{
-		    doc = DomHelper.newDocument();  
-            Marshaller.marshal(o,doc);
-            xMod = new XmlTreeModel(doc);
-		}
-		catch(Exception ex){
-			logger.error("Error creating XmlTreeModel: " + ex.getMessage() );
-		}
-    	return xMod;
-    }
-	/**
-	 * Create a Document from Object
-	 * @param Object
-	 * @return Document
-	 */
-    public Document getXmlDoc(Object o){
-		Document doc= null;
-		try{
-		    doc = DomHelper.newDocument();  
-            Marshaller.marshal(o,doc);
-		}
-		catch(Exception ex){
-			logger.error(ex.getMessage());
-		}
-    	return doc;
-    }    
+  
     /**
      * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
@@ -995,17 +949,15 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
      * @return
      * @throws WorkflowInterfaceException
      */
-    public String[] listTasks() throws WorkflowInterfaceException {    	
-        return getAppReg().listApplications();
-      
-    }
-    /**
-     * 
-     * @return
-     * @throws WorkflowInterfaceException
-     */
     public ApplicationDescriptionSummary[] fullList() throws WorkflowInterfaceException {
-        return getAppReg().listUIApplications();
+        ApplicationDescriptionSummary[] appDescSummary = getAppReg().listUIApplications();
+        Arrays.sort(appDescSummary,new Comparator() {
+            public int compare(Object o1, Object o2) {
+                ApplicationDescriptionSummary a = (ApplicationDescriptionSummary)o1;
+                ApplicationDescriptionSummary b = (ApplicationDescriptionSummary)o2;
+                return a.getUIName().compareToIgnoreCase(b.getUIName());
+            }});
+        return appDescSummary;
     }
     /** 
      * submit a workflow to jes.
@@ -1090,7 +1042,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 			searchButton = new JButton();
 			searchButton.setText("Search");
 			searchButton.setToolTipText("Search registry");
-			searchButton.setMnemonic('s');
+			searchButton.setMnemonic(KeyEvent.VK_S);
 			searchButton.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					taskQuery();
@@ -1111,7 +1063,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 			clearButton = new JButton();
 			clearButton.setText("Clear");
 			clearButton.setToolTipText("Clear fields");
-			clearButton.setMnemonic('c');
+			clearButton.setMnemonic(KeyEvent.VK_C);
 			clearButton.setEnabled(false);
 			clearButton.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
@@ -1230,9 +1182,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
           Component c = parent.getComponent(row * cols + col);
           return layout.getConstraints(c);
       }
-      /** 
-       * Custom renderer for activity list - adds icons
-       */
+
       public class ActivityListRenderer extends DefaultListCellRenderer {
     	public Component getListCellRendererComponent(JList list,
     			                                      Object value,
@@ -1272,71 +1222,97 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 																	  leaf, 
 																	  row, 
 																	  hasFocus);
-    		if (value instanceof Sequence){  
-    			label.setToolTipText("Sequence");
+    		ToolTipManager.sharedInstance().registerComponent(tree);
+    		if (value instanceof Workflow) {
+    			Workflow w = (Workflow)value;
+    			JPanel rendererPanel = new JPanel(new GridLayout(0,1));
+    			rendererPanel.add(new JLabel(w.getName()));
+    			rendererPanel.add(new JLabel(w.getDescription()));    			
+    			rendererPanel.setToolTipText("<html>Name: " + w.getName() + "<br>Description: " + w.getDescription() + "</html>");
+    			rendererPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+    			//label.setIcon(IconHelper.loadIcon("wf_small.gif"));
+    			//label.setText(w.getName());
+    			//label.setToolTipText("<html>Name: " + w.getName() + "<br>Description: " + w.getDescription() + "</html>");
+    			return rendererPanel;
+    		}
+    		else if (value instanceof Sequence){  
     			label.setIcon(IconHelper.loadIcon("icon_Sequence.gif"));
     			label.setText("Sequence");
+    			label.setToolTipText(null);    			
     		}
     		else if (value instanceof Flow){ 
-    			label.setToolTipText("Flow");
     			label.setIcon(IconHelper.loadIcon("icon_Flow.gif"));
-    			label.setText("Flow");   			
+    			label.setText("Flow");   		
+    			label.setToolTipText(null);
     		}    		
     		else if (value instanceof Step){ 
     			Step s = (Step)value;
     			label.setIcon(IconHelper.loadIcon("icon_Step.gif"));
     			label.setText("Step: " + s.getName() + ", task: " + s.getTool().getName());
-//    			 TODO need to add how above selection works.... or link task + activity panels for this activity
-    			label.setToolTipText("Step");
+    			label.setToolTipText("<html>Name: " + s.getName() 
+    					             + "<br>Task: " + s.getTool().getName() 
+									 + "<br>Interface: " + s.getTool().getInterface() 
+									 + "<br>Desc: " + s.getDescription()
+									 + "<br>Var: " + s.getResultVar()
+									 + "</html>");
     		}
     		else if (value instanceof Set){ 
     			Set s = (Set)value;
     			label.setIcon(IconHelper.loadIcon("icon_Set.gif"));
     			label.setText("Set");
-    			label.setToolTipText("var: " + s.getVar() + " val: " + s.getValue());
+    			label.setToolTipText("<html>Variable: " + s.getVar() + "<br>Value: " + s.getValue() +"</html>");
     		}
     		else if (value instanceof Unset){ 
     			Unset s = (Unset)value;
     			label.setIcon(IconHelper.loadIcon("icon_Unset.gif"));
     			label.setText("Unset");
-    			label.setToolTipText("var: " + s.getVar());
+    			label.setToolTipText("Variable: " + s.getVar());
     		}    		
     		else if (value instanceof Script){ 
     			Script s = (Script)value;
     			label.setIcon(IconHelper.loadIcon("icon_Script.gif"));
     			label.setText("Script");
-    			label.setToolTipText("Script");
+    			label.setToolTipText("Description: " + s.getDescription());
     		} 
     		else if (value instanceof For){ 
     			For f = (For)value;
     			label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
     			label.setText("For");
-    			label.setToolTipText("var: " + f.getVar() + " items: " + f.getItems());
-    		}
-    		else if (value instanceof While){ 
+    			label.setToolTipText("<html>Variable: " + f.getVar() + " <br>Items: " + f.getItems() + "</html>");
+    		}   		
+    		else if (value instanceof While){
+    			While w = (While)value;
     			label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
     			label.setText("While");
+    			label.setToolTipText("Test: " + w.getTest());
     		}
-    		else if (value instanceof Parfor){ 
+    		else if (value instanceof Parfor){
+    			Parfor p = (Parfor)value;
     			label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
     			label.setText("Parrallel for loop");
+    			label.setToolTipText("<html>Variable: " + p.getVar() + "<br>Items: " + p.getItems() + "</html>");
     		}    		
     		else if (value instanceof Scope){ 
     			label.setIcon(IconHelper.loadIcon("icon_Scope.gif"));
     			label.setText("Scope");
-    		} 
-    		else if (value instanceof If){ 
+    			label.setToolTipText(null);
+    		}  
+    		else if (value instanceof If){
+    			If i = (If)value;
     			label.setIcon(IconHelper.loadIcon("icon_If.gif"));
     			label.setText("If");
+    			label.setToolTipText("Test: " + i.getTest());
     		}
     		else if (value instanceof Then){ 
     			label.setIcon(IconHelper.loadIcon("icon_Then.gif"));
     			label.setText("Then");
+    			label.setToolTipText(null);
     		}
     		else if (value instanceof Else){ 
     			label.setIcon(IconHelper.loadIcon("icon_Else.gif"));
     			label.setText("Else");
-    		}    		
+    			label.setToolTipText(null);
+    		}  
     		else {    			
     			label.setText("to do");
     		}   		
@@ -1356,22 +1332,20 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     			Step s = (Step)ob;
     			if (s.getTool() != null) {
                     TaskInfoPanel taskPanel = new TaskInfoPanel(s.getTool(), apps);
-                    tabTask.removeAll();
-                    tabTask.add(taskPanel);
-                    tabTask.validate();
+                    taskDetailsPane = new JScrollPane(taskPanel);
+                    tabbedPaneDetails.setComponentAt(1, taskDetailsPane);
+                    tabbedPaneDetails.setSelectedIndex(1);
     			}    			
                 StepPanel stepPanel = new StepPanel(s);
-                tabAct.removeAll();
-                tabAct.add(stepPanel);
-                tabAct.validate();
+	          	activityDetailsPane = new JScrollPane(stepPanel);
+	          	tabbedPaneDetails.setComponentAt(2, activityDetailsPane);
                 tabbedPaneDetails.setSelectedIndex(2);
     		}
     		else if (ob instanceof Script) {
     			Script s = (Script)ob;
                 ScriptPanel scriptPanel = new ScriptPanel(s);
-                tabAct.removeAll();
-                tabAct.add(scriptPanel);
-                tabAct.validate();
+	          	activityDetailsPane = new JScrollPane(scriptPanel);
+	          	tabbedPaneDetails.setComponentAt(2, activityDetailsPane);
     			tabbedPaneDetails.setSelectedIndex(2);
     		}    		
     		else if (ob instanceof Set) {
@@ -1423,9 +1397,6 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     			displayBasicInfo(values);   			
     		} 
     		else {
-                tabAct.removeAll();
-                tabAct.validate();
-                tabbedPaneDetails.setSelectedIndex(2);
     			// An activity with nothing to display
     		}
     	}
@@ -1435,51 +1406,47 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
        * @param values an array of label/value pairs
        */
       private void displayBasicInfo(String[] values) {
-		BasicInfoPanel basicInfo  = new BasicInfoPanel(values);
-        tabAct.removeAll();
-        tabAct.add(basicInfo);
-        tabAct.validate();
+		BasicInfoPanel basicInfo  = new BasicInfoPanel(values);      	
+      	tabbedPaneDetails.setComponentAt(2, basicInfo);
         tabbedPaneDetails.setSelectedIndex(2);      	
       }
 
       public class PopulateTaskPanelListListener extends MouseAdapter {
           public void mouseClicked(MouseEvent event)
-          {
-	          tabbedPaneDetails.setSelectedIndex(1);
+          {  	          
 	          ApplicationDescription description = null;
-	          try { 
-	  	          JList list = (JList)event.getSource();
-	  	          boolean intFound = false;
-	  	          TaskDetails td = (TaskDetails)list.getSelectedValue();
-
-	              ApplicationRegistry applRegistry = getAstrogrid().getWorkflowManager().getToolRegistry();      	       
-	              description = applRegistry.getDescriptionFor( td.getTaskName() );		                  
-	  			  InterfacesType intTypes = description.getInterfaces() ;
-			      Interface intf = null ;			      
-				  for (int j=0 ; j < intTypes.get_interfaceCount() ; j++) 
-				  {
-				    if ( intTypes.get_interface(j).getName().equalsIgnoreCase(td.getInterfaceName())) 
-					{
-					    intf = intTypes.get_interface(j) ;
-						intFound = true ;
-					    break ;
-					}
-				  }
-				  Tool t = null;
-				  if (intFound)
-				  {
-					t = description.createToolFromInterface( intf );
-			      }
-				  else
-			      {				  	
-					// an interface should always be found - in case not use default interface
-					t = description.createToolFromDefaultInterface();
-				  }		                  
-	                       
-	              TaskInfoPanel taskPanel = new TaskInfoPanel(t, apps);
-	              tabTask.removeAll();
-	              tabTask.add(taskPanel);
-	              tabTask.validate();							   
+	          try { 		          	
+	  	          taskListSelection = (JList)event.getSource();	  	          	  	          
+                  (new BackgroundOperation("Reading task details from registry") {
+                    protected Object construct() throws Exception {
+                      boolean intFound = false; 
+                      TaskDetails td = (TaskDetails)taskListSelection.getSelectedValue();
+	                  ApplicationRegistry applRegistry = getAstrogrid().getWorkflowManager().getToolRegistry();      	       
+	                  ApplicationDescription description = applRegistry.getDescriptionFor( td.getTaskName() );		                  
+	  			      InterfacesType intTypes = description.getInterfaces() ;
+			          Interface intf = null ;			      
+				      for (int j=0 ; j < intTypes.get_interfaceCount() ; j++) 
+				      {
+				        if ( intTypes.get_interface(j).getName().equalsIgnoreCase(td.getInterfaceName())) 
+					    {
+					      intf = intTypes.get_interface(j) ;
+						  intFound = true ;
+					      break ;
+					    }
+				      }
+				      Tool t = null;
+				      if (intFound)
+				      {
+					    t = description.createToolFromInterface( intf );
+			          }
+				      else
+			          {				  	
+					    // an interface should always be found - in case not use default interface
+					    t = description.createToolFromDefaultInterface();
+				      }	
+	                  TaskInfoPanel taskPanel = new TaskInfoPanel(t, apps);
+                      taskDetailsPane = new JScrollPane(taskPanel);
+                      tabbedPaneDetails.setComponentAt(1, taskDetailsPane);
 //	                       ToolInfoDialog toolInfo = new ToolInfoDialog(description, null);
 //	                       toolInfo.show();
 //	                  }
@@ -1500,18 +1467,18 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 //	    	            if (t != null)
 //	    	                  logger.info("tool created: " + t.getName());      	          	      	          	    	                  
 //	    	          }
-//	      	          
-	      	      }
-	      	      catch(WorkflowInterfaceException wi){
-	      	      	logger.error("Error creating task panel: " + wi.getMessage());
-	      	        JOptionPane.showMessageDialog(null,wi.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-	              }
-	              catch(NullPointerException ex) {
-	                  logger.error("Error loading task details for task: " + description.getName() );
-	                  JOptionPane.showMessageDialog(null,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);        	
-	              }		      	      			      	      		          		          	    
-        	
-        }      	
+//	
+    	            
+                      return null;
+                      }
+                    }).start();
+                tabbedPaneDetails.setSelectedIndex(1);
+	            }
+	            catch(Exception ex) {
+	                logger.error("Error loading task details for task: " + description.getName() + ", " + ex.getMessage() );
+	                JOptionPane.showMessageDialog(null,"Error loading task details for task: " + description.getName(),"Errorloading task details",JOptionPane.ERROR_MESSAGE);        	
+	            }		      	      			      	      		          		          	            	
+          }      	
       }
       /**
        * TaskDetails - used to populate task lists
@@ -1542,6 +1509,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
       	}      	
       	public String getInterfaceName() {
       		return interfaceName;
-      	}
+      	}         
       }
+           
 } 

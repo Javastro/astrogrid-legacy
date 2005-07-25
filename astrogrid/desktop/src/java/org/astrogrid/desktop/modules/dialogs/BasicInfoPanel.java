@@ -83,7 +83,7 @@ public class BasicInfoPanel extends JPanel {
 	    	int numPairs = values.length/2;
 	    	
 	    	for (int i = 0; i < values.length; i++) {
-	    		JLabel l = new JLabel(values[i], JLabel.TRAILING);
+	    		JLabel l = new JLabel(values[i].trim(), JLabel.TRAILING);
 	    		p.add(l);
 	    		JTextField t = new JTextField(values[i+1]);
 	    		t.setEditable(false);
@@ -93,8 +93,6 @@ public class BasicInfoPanel extends JPanel {
 	    	
 			makeCompactGrid(p, numPairs,2,2,2,10,3);
 			bodyPanel.add(p);
-			bodyPanel.setPreferredSize(new Dimension(800,225));
-			bodyPanel.setMinimumSize(new Dimension(700,150));
 		}
 		return bodyPanel;
 	}

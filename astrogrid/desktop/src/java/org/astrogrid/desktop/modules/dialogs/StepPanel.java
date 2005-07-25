@@ -99,7 +99,7 @@ public class StepPanel extends JPanel {
 	    	descPane.setEditable(false);
 	    	descPane.setText(description);
 	    	descPane.setCaretPosition(0);
-	    	descPane.setPreferredSize(new Dimension(200,100));
+	    	descPane.setPreferredSize(new Dimension(400,80));
 	    	
 	    	JScrollPane pane = new JScrollPane(descPane);
 	    	pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -127,8 +127,7 @@ public class StepPanel extends JPanel {
 	    	
 			makeCompactGrid(p, 5,2,2,2,10,3);
 			bodyPanel.add(p);
-			bodyPanel.setPreferredSize(new Dimension(800,225));
-			bodyPanel.setMinimumSize(new Dimension(700,150));
+			bodyPanel.setPreferredSize(new Dimension(800,200));
 		}
 		return bodyPanel;
 	}

@@ -53,7 +53,7 @@ public class WorkflowTreeModel implements TreeModel {
 	 * @see javax.swing.tree.TreeModel#getRoot()
 	 */
 	public Object getRoot() {
-		return rootWorkflow.getSequence();
+		return rootWorkflow;
 	}
 
 	/* (non-Javadoc)
@@ -111,6 +111,9 @@ public class WorkflowTreeModel implements TreeModel {
 			b = false;
 		}
 		else if (node instanceof Scope) {
+			b = false;
+		}
+		else if (node instanceof Workflow) {
 			b = false;
 		}
 		return b;

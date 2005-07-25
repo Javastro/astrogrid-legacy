@@ -108,7 +108,7 @@ public class ScriptPanel extends JPanel {
 			bodyPanel = new JPanel();
 			
 			jEditorPane = new JEditorPane();
-			jEditorPane.setMinimumSize(new java.awt.Dimension(780,185));
+			//jEditorPane.setMinimumSize(new java.awt.Dimension(780,180));
 			jEditorPane.setText(body);
 			jEditorPane.setCaretPosition(0);
 			jEditorPane.setEditable(false);
@@ -116,12 +116,9 @@ public class ScriptPanel extends JPanel {
 			JScrollPane pane = new JScrollPane(jEditorPane,
                     JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-			pane.setPreferredSize(new Dimension(790,185));			
+			pane.setPreferredSize(new Dimension(765,175));			
 
 			bodyPanel.add(pane);
-			bodyPanel.setPreferredSize(new Dimension(800,225));
-			bodyPanel.setMinimumSize(new Dimension(700,150));
-
 		}
 		return bodyPanel;
 	}
