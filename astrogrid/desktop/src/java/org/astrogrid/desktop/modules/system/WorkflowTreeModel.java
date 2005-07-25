@@ -29,7 +29,7 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 
 /**
  * tree model for Workflow.
- * 
+ * @todo move this out of the system module.
  * @author Phil Nicolson pjn3@star.le.ac.uk 2/7/05
  *  
  */
