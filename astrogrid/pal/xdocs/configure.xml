@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE document SYSTEM "xdoc.dtd" >
+<document>
+<properties>
+  <author email="dave@ast.cam.ac.uk">Dave Morris</author>
+  <author email="mch@roe.ac.uk">Martin Hill</author>
+  <title>Configuring your dataserver</title>
+</properties>
+
+<body>
+<section name="Introduction">
+   <p>AstroGrid components use a common configuration package, [see here].  For any
+      property, the package
+   looks in the web service container's configuration first, then in the properties file, and
+      if the property still cannot be found, in the operating system's environment variables. </p>
+   <p>This page describes the various possible ways of configuring your dataserver, and makes
+   some recommendations to help with organising and updating them. </p>
+</section>
+   
+<subsection name="Using a 'Properties' File">
+<p>A properties file is an ordinary text file with a list of keys and values, like this:
+<code>
+   datacenter.name=SomeExample
+   datacenter.url=http://somehost.ac.uk/PAL/
+</code>
+Any line starting with <code>#</code> are comments and are ignored by the application.</p>
+<p>Note that for historic reasons most dataservice properties start 'datacenter'</p>
+<p>When initially installed, a dataserver reads its configurations from the
+'default.properties' file in its context's WEB-INF/classes directory. This
+configures the dataserver to use a 'sample' dataset, so you can run
+test queries on it before connecting up to a real dataset. This file
+is overwritten whenever you upgrade PAL, so it is useful as a template but we
+do not recommend you edit it directly.</p>
+<p>Instead, create a new file 'astrogrid.properties' on your classpath (or edit the existing one if you have other
+Astrogrid components already installed); a suitable place on Tomcat might be
+the common/classes directory so it is not overwritten on updates.</p>
+<p>If you want to have individual configuration files for each component, then create it and
+set the environment variable 'astrogrid.config.filename' to the appropriate path and
+filename, or the environment variable 'astrogrid.config.url' to the appropriate URL.
+  You can use environment variables in the variable value. For example, using <code>${catalina.home}/conf/datacenter.properties</code>
+will cause the webapp to look in tomcat's configuration directory if you are running tomcat.</p>
+<p>If you have several dataservers it will be necessary to do have a separate configuration file
+for each datacenter, and you will need to set the
+environment variable under each context to a different properties file.</p>
+<p>You will need to restart the application after any change to a configuration file.</p>
+</subsection>
+
+<subsection name="Using Environment Variables">
+<p>Environment variables are included in the configuration properties of astrogrid components.
+   Therefore you can use them to configure components, but you should also be aware that if you
+   delete a property from the property file, you may 'expose' an environment variable.
+   <p>You can set system environment variables from the command line.  For example, you
+can use the command <code>setenv astrogrid.config.filename=/disk1/webapp/pal.properties</code>
+   under linux.
+</subsection>
+
+<subsection name="Service Container ">
+<p>Web Service containers provide convenient configuration mechanisms through JNDI.  In Tomcat
+   for example, you can edit the properties of a webapp using the Web Server Administration
+   Tool; click on 'Service', then 'Host', then the Context of your webapp, then 'Environment Entries'.
+   The entry name is the property key.
+</p>
+<p>Beware however that if you update a component this can destroy your carefully set properties; see
+'Recommended Configuration under Tomcat' below</p>
+</subsection>
+      
+<subsection name="Editing the Service Container (eg Tomcat) configuration files">
+<p>You can directly edit the service container's configuration file <code>server.xml</code> to
+define properties for individual contexts.</p>
+</subsection>
+
+<section name='General configuration'>
+<p>Look through the default.properties file to see what properties are commonly set.  For example,
+datacenter.url must be set for the webapp to work, and datacenter.name and datacenter.description
+are used so humans can find out about your data when browsing the Virtual Observatory.</p>
+</section>
+
+<section name='CCone Search'>
+<p>If the dataset includes data suitable for cone searches (ie, some kind of sky
+catalogue), then the webapp should be configured to say which tables should be
+included and which columns give RA and DEC figures</p>
+<p><i>(Aside: this *should* come from the metadoc I expect, but in the meantime
+the way of doing this is to add some properties in the configuration file, which
+unfortunately limits the search to one table)</i></p>
+<p>For example:
+<code>
+conesearch.table=twomass_psc
+conesearch.ra.column=ra
+conesearch.dec.column=decl
+</code>
+Bear in mind that the units (eg 'deg' or 'radians') must be given in the metadoc for those columns, otherwise
+the cone searcher won't know what conversion(s) to use.
+</p>
+<p>To test it out, you can go to the conesearch page (on the navigation bar on the
+left of the webapp pages)</p>
+
+</section>
+
+<section name='Virtual Observatory'>
+<p>To work with the Virtual Observatory, two key properties need to be set: the authority and
+the resource key.</p>
+<p>The datacenter.AuthorityID must match with the organisation or other 'authority' that is
+responsible for the dataset being published at that particular location.
+The datacenter.resourceKey property must be unique for this service within all those
+services managed by this Authority.</p>
+<p>In order to be able to use the local registry to register the service
+and to resolve identifiers for other services, the DSA webapp needs to know the endpoint address of the registry service.
+</p>
+<p>For example:
+<code>
+org.astrogrid.registry.admin.endpoint=http://xxxx/astrogrid-registry-SNAPSHOT/services/RegistryUpdate"
+org.astrogrid.registry.query.endpoint=http://xxxx/astrogrid-registry-SNAPSHOT/services/RegistryQuery"
+org.astrogrid.registry.query.altendpoint=http:/yyyy/astrogrid-registry-SNAPSHOT/services/RegistryQuery
+</code>
+The altendpoint is used if the endpoint isn't available - ie in case the endpoint registry is down.  A working
+registry <i>must</i> be available in order to access VO services such as homespaces
+</p>
+</section>
+
+
+</body>
+</document>

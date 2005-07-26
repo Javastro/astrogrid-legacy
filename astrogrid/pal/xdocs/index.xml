@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!-- $Id: index.xml,v 1.2 2005/07/26 11:36:51 clq2 Exp $ -->
+<document>
+  <properties>
+    <title>Publisher's AstroGrid Library</title>
+    <author email="dave@ast.cam.ac.uk">Dave Morris</author>
+    <author email="mch@roe.ac.uk">Martin Hill</author>
+  </properties>
+  <body>
+                <section name="Publisher's AstroGrid Library Overview">
+                <p>
+                This component consists of a set of java library jars to help
+                data owners publish their data to the International Virtual
+                Observatory.
+                </p>
+                <p>
+            So there are libraries for processing ADQL/SQL and ADQL/XML documents, and
+               for managing queries and streaming tables and creating the right SQL for
+               different RDBMSs and so on.
+               </p>
+               <p>There are also two 'ready made' webapps in WAR form for common data forms, including a skycatserver for
+               sky object catalogues stored in RDBMS tables.
+               </p>
+                </section>
+<section name="Introduction">
+               <p>These documents describe how to install these webapps; for
+               details on the libraries, see the javadoc associated with each
+               jar. There is also a <a href='rollyourown.html'>page</a> on building your own webapp from the
+               library.
+                </p>
+<p>Carry out the following steps:
+</p>
+<ul><li>Install the system <a href='pre-requisites.html'>pre-requisites</a>
+</li><li><a href='download.html'>Download</a> the right PAL webapp
+</li><li><a href='deploy.html'>Deploy</a> the webapp in a webservice container (eg Tomcat)
+</li><li><a href='configure.html'>Configure</a> your database and PAL
+</li><li><a href='describe.html'>Describe your data</a>
+</li><li><a href='verify.html'>Verify your installation is OK</a>
+</li><li><a href='register.html'>Register</a> your data service with the Virtual Observatory
+</li>
+</ul>
+</section>
+  
+   
+
+        </body>
+</document>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE document SYSTEM "xdoc.dtd" >
+<document>
+<properties>
+  <author email="dave@ast.cam.ac.uk">Dave Morris</author>
+  <author email="mch@roe.ac.uk">Martin Hill</author>
+  <title>Download</title>
+</properties>
+
+<body>
+<section name="The right download">
+<p>The Publisher's AstroGrid Library includes a ready-made webapplication for
+catalogues of sky objects stored in relational databases.  There is also a ready-made
+webapp for solar images stored as FITS files on a disk, but this has not been fully
+tested. We intend to release more ready-made webapps for other common datasets (such
+as pixel images of the sky).
+</p>
+<p>
+The various PAL libraries can also be downloaded from our repository
+   <a href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-pal-*">here</a>.
+</p
+</section>
+<section name="SkyCatServer">
+<p>
+The ready-made skycatserver webapp is intended for publishing sky object catalogues that
+are stored in a tabular dataset and generally served as a table.
+</p>
+<p>
+The Web Application Archive (WAR) file can be downloaded from
+   our repository <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-pal-skycat*">here</a>.
+   
+</p>
+></section>
+
+</body>
+</document>

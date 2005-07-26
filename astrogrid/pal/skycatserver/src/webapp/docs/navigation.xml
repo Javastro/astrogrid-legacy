@@ -10,7 +10,6 @@
    <div id='menuInstall'>
       <h5>Install</h5>
       <ul>
-         <li><a href="install.jsp">INSTALL</a>
          <li><a href="release.jsp">RELEASE</a>
          <li><a href="configure.jsp">Configuring PAL</a>
       </ul>
