@@ -5,6 +5,9 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+			<action dev="jl" type="fix"><em>Branch: com-jl-1315</em>
+				Extended coverage of community unit tests in server subproject
+			</action>    	
 			<action dev="nww" type="fix"><em>Branch: cea-server-nww-improve-tests</em>
 				Fixed failing unit tests and improved test coverage in cea-server
 			</action>
