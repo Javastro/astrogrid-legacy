@@ -1,4 +1,4 @@
-/*$Id: GroovyInterpreterFactoryTest.java,v 1.5 2005/04/25 12:13:54 clq2 Exp $
+/*$Id: GroovyInterpreterFactoryTest.java,v 1.6 2005/07/27 15:35:08 clq2 Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,13 +45,25 @@ public class GroovyInterpreterFactoryTest extends TestCase {
     protected Workflow workflow;
     protected GroovyInterpreter interp;
     
+    /** when round-tripping, with caching in effect, will get the same object back */
     public void testPickleRoundTrip() throws PickleException {
         fac.pickleTo(interp,workflow);
+        GroovyInterpreter interp1 = fac.unpickleFrom(new JesInterface(workflow,new MockDispatcher(),null));
+        assertSame(interp,interp1);
+    }
+    
+    /** when round-tripping, without caching, will get a different but equal object back */
+    public void testPickleRoundTripWithoutCache() throws PickleException {
+        fac.pickleTo(interp,workflow);
+        fac.interpreterCache.clear(); // force the cache to be cleared.
         GroovyInterpreter interp1 = fac.unpickleFrom(new JesInterface(workflow,new MockDispatcher(),null));
         assertNotNull(interp1.shell.jes);
         assertNotSame(interp,interp1);
         assertEquals(interp,interp1);
     }
+    
+    
+    
 
 
 
@@ -69,6 +81,12 @@ public class GroovyInterpreterFactoryTest extends TestCase {
 
 /* 
 $Log: GroovyInterpreterFactoryTest.java,v $
+Revision 1.6  2005/07/27 15:35:08  clq2
+jes_nww_review_unit_tests
+
+Revision 1.5.22.1  2005/07/19 15:38:06  nw
+fixed unit tests -100% pass rate now.
+
 Revision 1.5  2005/04/25 12:13:54  clq2
 jes-nww-776-again
 

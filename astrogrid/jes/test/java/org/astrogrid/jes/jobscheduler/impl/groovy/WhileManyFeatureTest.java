@@ -1,4 +1,4 @@
-/*$Id: WhileManyFeatureTest.java,v 1.1 2004/08/05 10:57:03 nw Exp $
+/*$Id: WhileManyFeatureTest.java,v 1.2 2005/07/27 15:35:08 clq2 Exp $
  * Created on 05-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,11 +61,8 @@ public class WhileManyFeatureTest extends AbstractTestForFeature {
         Script body = (Script)((While)result.getSequence().getActivity(1)).getActivity();
 
         assertEquals(10,body.getStepExecutionRecordCount());
-        for (int i = 0; i < body.getStepExecutionRecordCount(); i++) {
-            StepExecutionRecord rec = body.getStepExecutionRecord(i);
-            assertEquals(ExecutionPhase.COMPLETED,rec.getStatus());
-            assertTrue(rec.getMessageCount() > 0);        
-        }
+        assertAllScriptRunsCompleted(body);
+ 
         
         Script end = (Script)result.getSequence().getActivity(2);
         assertScriptCompletedWithMessage(end,"true");
@@ -76,6 +73,12 @@ public class WhileManyFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: WhileManyFeatureTest.java,v $
+Revision 1.2  2005/07/27 15:35:08  clq2
+jes_nww_review_unit_tests
+
+Revision 1.1.146.1  2005/07/19 15:38:06  nw
+fixed unit tests -100% pass rate now.
+
 Revision 1.1  2004/08/05 10:57:03  nw
 tests for while construct
  

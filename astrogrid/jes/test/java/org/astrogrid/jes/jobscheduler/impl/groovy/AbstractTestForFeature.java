@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForFeature.java,v 1.6 2005/04/25 12:13:54 clq2 Exp $
+/*$Id: AbstractTestForFeature.java,v 1.7 2005/07/27 15:35:08 clq2 Exp $
  * Created on 08-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -192,12 +192,30 @@ public abstract class AbstractTestForFeature extends TestCase{
         assertNotNull(rec.getStartTime());
         assertNull(rec.getFinishTime());
     }
+
+    /**
+     * @param script
+     * @throws IndexOutOfBoundsException
+     */
+    protected void assertAllScriptRunsCompleted(Script script) throws IndexOutOfBoundsException {
+        for (int i = 0; i < script.getStepExecutionRecordCount(); i++) {
+            StepExecutionRecord rec = script.getStepExecutionRecord(i);
+            assertEquals(ExecutionPhase.COMPLETED,rec.getStatus());
+            assertTrue(rec.getMessageCount() > 0);        
+        }
+    }
     
 }
 
 
 /* 
 $Log: AbstractTestForFeature.java,v $
+Revision 1.7  2005/07/27 15:35:08  clq2
+jes_nww_review_unit_tests
+
+Revision 1.6.22.1  2005/07/19 15:38:06  nw
+fixed unit tests -100% pass rate now.
+
 Revision 1.6  2005/04/25 12:13:54  clq2
 jes-nww-776-again
 

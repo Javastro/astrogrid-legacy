@@ -1,4 +1,4 @@
-/*$Id: Cache.java,v 1.2 2005/04/25 12:13:54 clq2 Exp $
+/*$Id: Cache.java,v 1.3 2005/07/27 15:35:08 clq2 Exp $
  * Created on 12-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,11 +55,21 @@ public class Cache {
     
     public void delete(JobURN key) {
         m.remove(key.getContent());
-    }        
+    }   
+    
+    public void clear() {
+        m.clear();
+    }
 }
 
 /* 
 $Log: Cache.java,v $
+Revision 1.3  2005/07/27 15:35:08  clq2
+jes_nww_review_unit_tests
+
+Revision 1.2.22.1  2005/07/19 15:38:06  nw
+fixed unit tests -100% pass rate now.
+
 Revision 1.2  2005/04/25 12:13:54  clq2
 jes-nww-776-again
 

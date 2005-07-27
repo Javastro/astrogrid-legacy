@@ -1,4 +1,4 @@
-/*$Id: FlowFeatureTest.java,v 1.4 2004/12/09 16:39:12 clq2 Exp $
+/*$Id: FlowFeatureTest.java,v 1.5 2005/07/27 15:35:08 clq2 Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,6 @@ public class FlowFeatureTest extends AbstractTestForFeature {
      */
     protected Workflow buildWorkflow() {
         Workflow wf = super.createMinimalWorkflow();
-        Script initScript = new Script();
         Set x = new Set();
         x.setVar("x");
         x.setValue("${1}");        
@@ -74,6 +73,12 @@ public class FlowFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: FlowFeatureTest.java,v $
+Revision 1.5  2005/07/27 15:35:08  clq2
+jes_nww_review_unit_tests
+
+Revision 1.4.70.1  2005/07/19 15:38:06  nw
+fixed unit tests -100% pass rate now.
+
 Revision 1.4  2004/12/09 16:39:12  clq2
 nww_jes_panic
 
