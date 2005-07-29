@@ -4,6 +4,7 @@
         <author email="jdt@roe.ac.uk">John Taylor</author>
     </properties>
     <body>
+		
     	<release version="(Pending Integration)">
 			<action dev="jl" type="fix"><em>Branch: com-jl-1315</em>
 				Extended coverage of community unit tests in server subproject
@@ -14,6 +15,26 @@
 			<action dev="pah" type="add" issue="1317"><em>Branch: cea_pah_1317</em>
 				Commandline CEA will now remove any files associated with input parameters for a successful run. Also added jsp page to clean up all working files older than specified date.
 			</action>
+			
+			<action dev="kmb" type="fix"><em>Branch: Reg_KMB_1276</em>
+				added xquery, caching, and unit tests
+			</action>
+			
+			<action dev="kmb" type="fix"><em>Branch: Comm_KMB_1190</em>
+				added dependency for registry caching for this merge.  Still factoring out the reset db on this branch.
+				So when you merge this in please check you should only get mainly project.xml type files.
+			</action>
+			<action dev="kmb" type="fix"><em>Branch: App_KMB_1276</em>
+				added dependency for registry caching for this merge.
+			</action>
+			
+    		<action dev="gtr" type="fix" issue="477"><em>Branch security-gtr-477-2:</em> a rearrangement of the tests for the 
+    			security facade plus some trivial cleaning up of the production code. Both astrogrid/security and astrogrid/integrationTests
+    		  are branched but only astrogrid/security has committed changes.</action>
+    		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.</action>
+    		<action dev="mch" type="add" issue="1228"> Documentation for astrogrid/pal. Branch MCH_1228_Docs. </action>
+			        </release>
+        <release version="(Undertest)">
 			<action dev="kmb" type="fix"><em>Branch: IntTest_KMB_FixTests</em>
 				 Branch under integrationTests/auto-integration, fixed some of the tests and no longer required 0.9 from the registry.
                  See next 2 branch Jes_KMB_1293, FM_KMB_1293_2 it is required for this merge.
@@ -24,30 +45,12 @@
 			<action dev="kmb" type="fix"><em>Branch: FM_KMB_1293_2</em>
                Drop the 0.9 need of the registry it works with anything now so no need for translation.
 			</action>
-			<action dev="kmb" type="fix"><em>Branch: Reg_KMB_1276</em>
-				added xquery, caching, and unit tests
-			</action>
 			<action dev="kmb" type="fix"><em>Branch: Portal_KMB_1276</em>
 				added dependency for registry caching.
-			</action>
-			<action dev="kmb" type="fix"><em>Branch: Comm_KMB_1190</em>
-				added dependency for registry caching for this merge.  Still factoring out the reset db on this branch.
-				So when you merge this in please check you should only get mainly project.xml type files.
-			</action>
-			<action dev="kmb" type="fix"><em>Branch: App_KMB_1276</em>
-				added dependency for registry caching for this merge.
 			</action>
 			<action dev="kmb" type="fix"><em>Branch: FS_KMB_1276</em>
 				added dependency for registry caching for this merge.
 			</action>
-    		<action dev="gtr" type="fix" issue="477"><em>Branch security-gtr-477-2:</em> a rearrangement of the tests for the 
-    			security facade plus some trivial cleaning up of the production code. Both astrogrid/security and astrogrid/integrationTests
-    		  are branched but only astrogrid/security has committed changes.</action>
-    		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.</action>
-    		<action dev="mch" type="add" issue="1228"> Documentation for astrogrid/pal. Branch MCH_1228_Docs. </action>
-			        </release>
-        <release version="(Undertest)">
-			
             <action dev="gtr" type="add" issue="1188"> <b>Most components</b> Branch <em>registry-gtr-1188</em>. JNDI keys shortened so they fit Tomcat's 
                 interface. </action>
         </release>
