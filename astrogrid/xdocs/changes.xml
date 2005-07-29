@@ -21,10 +21,12 @@
 			</action>			
 			<action dev="kmb" type="fix"><em>Branch: IntTest_KMB_1093</em>
 				uses resetdb.jsp for community now only change was maven.xml. 
+                Which should only be in the community-database(goal area) of maven.xml.
 				(plus has previous branch stuff in it IntTest_KMB_FixTests branch)
 			</action>			
 			<action dev="kmb" type="fix"><em>Branch: Comm_KMB_1190</em>
-				added dependency for registry caching for this merge.  Still factoring out the reset db on this branch.
+				added dependency for registry caching for this merge.  
+				Still factoring out the reset db on this branch.
 			</action>
 			<action dev="kmb" type="fix"><em>Branch: App_KMB_1276</em>
 				added dependency for registry caching for this merge.
