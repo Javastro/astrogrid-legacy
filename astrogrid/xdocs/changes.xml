@@ -16,13 +16,15 @@
 				Commandline CEA will now remove any files associated with input parameters for a successful run. Also added jsp page to clean up all working files older than specified date.
 			</action>
 			
-			<action dev="kmb" type="fix"><em>Branch: Reg_KMB_1276</em>
-				added xquery, caching, and unit tests
-			</action>
-			
+			<action dev="kmb" type="fix"><em>Branch: Reg_KMB_1323</em>
+				added oai set support (plus has previous branch stuff which was: added xquery, caching, and unit tests)
+			</action>			
+			<action dev="kmb" type="fix"><em>Branch: IntTest_KMB_1093</em>
+				uses resetdb.jsp for community now only change was maven.xml. 
+				(plus has previous branch stuff in it IntTest_KMB_FixTests branch)
+			</action>			
 			<action dev="kmb" type="fix"><em>Branch: Comm_KMB_1190</em>
 				added dependency for registry caching for this merge.  Still factoring out the reset db on this branch.
-				So when you merge this in please check you should only get mainly project.xml type files.
 			</action>
 			<action dev="kmb" type="fix"><em>Branch: App_KMB_1276</em>
 				added dependency for registry caching for this merge.
