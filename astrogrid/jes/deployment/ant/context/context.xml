@@ -16,5 +16,7 @@
         description="endpoint for associated jobmonitor web service" type="java.lang.String" override="false" />
     <Environment name="jes.results.endpoint.url" value="@JES_RESULTS_ENDPOINT@" 
         description="endpoint for associated resultslistener web service" type="java.lang.String" override="false" />
+	<!--
     <Environment name="org.astrogrid.registry.result.version" override="false" type="java.lang.String" value="0.9"/>
+    -->
 </Context>

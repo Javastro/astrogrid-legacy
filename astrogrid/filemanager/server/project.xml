@@ -3,8 +3,8 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/server/project.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/03/11 13:37:06 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2005/08/01 08:15:52 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     |
     +-->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
@@ -206,12 +206,15 @@
     </dependency>
         <!-- axis, log4j, junit, etc defined in maven parent project -->
 
-       <!-- used to implement a weak-reference cache on the client - used for testing,
-       but not needed in war, -->
-    <dependency>
-      <id>commons-collections</id>
-      <version>3.0</version>
-    </dependency>
+        <!-- used to implement a weak-reference cache in the registry -->
+    	<dependency>
+	    	<id>commons-collections</id>
+      		<version>3.0</version>
+      		<properties>
+        		<jar.fileset>true</jar.fileset>
+      			 <war.bundle>true</war.bundle>          			
+      		</properties>
+    	</dependency>
     </dependencies>
     <!--+
         | The build properties for our project.

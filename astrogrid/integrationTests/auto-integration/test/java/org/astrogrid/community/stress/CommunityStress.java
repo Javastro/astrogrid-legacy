@@ -1,4 +1,4 @@
-/*$Id: CommunityStress.java,v 1.3 2005/06/02 21:13:32 pah Exp $
+/*$Id: CommunityStress.java,v 1.4 2005/08/01 08:15:52 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.

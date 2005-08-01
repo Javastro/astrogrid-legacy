@@ -1,18 +1,18 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/community/stress/CommunityLoadStressTest.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/community/stress/CommunityLoadRemoveStressTest.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
  * <cvs:date>$Date: 2005/08/01 08:15:52 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: CommunityLoadStressTest.java,v $
- *   Revision 1.3  2005/08/01 08:15:52  clq2
+ *   $Log: CommunityLoadRemoveStressTest.java,v $
+ *   Revision 1.2  2005/08/01 08:15:52  clq2
  *   Kmb 1293/1279/intTest1 FS/FM/Jes/Portal/IntTests
  *
- *   Revision 1.2.32.1  2005/07/12 11:22:33  KevinBenson
+ *   Revision 1.1.4.1  2005/07/12 11:22:33  KevinBenson
  *   Fixed stress test
  *
- *   Revision 1.1.38.2  2005/06/23 11:20:13  KevinBenson
+ *   Revision 1.1.2.1  2005/06/23 11:20:13  KevinBenson
  *   this is community stress tests that I forgot to add.
  *
  *   Revision 1.1.38.1  2005/04/29 07:30:45  KevinBenson
@@ -67,7 +67,7 @@ import org.astrogrid.community.resolver.security.manager.SecurityManagerResolver
  * A utility to load Community data from an XML file.
  *  
  */
-public class CommunityLoadStressTest extends TestCase {
+public class CommunityLoadRemoveStressTest extends TestCase {
     /**
      * Logger for this class
      */
@@ -85,7 +85,7 @@ public class CommunityLoadStressTest extends TestCase {
      * @throws MalformedURLException
      *  
      */
-    public CommunityLoadStressTest()
+    public CommunityLoadRemoveStressTest()
             throws MalformedURLException {
 
         //String communityPolicyManagerUrl = SimpleConfig.getProperty("org.astrogrid.community.policymanager.url");
@@ -147,81 +147,6 @@ public class CommunityLoadStressTest extends TestCase {
         }
     }
 
-    /**
-     * Upload our Community data.
-     *  
-     */
-    public void upload() throws RegistryException, CommunityServiceException, CommunitySecurityException,
-            CommunityIdentifierException, CommunityPolicyException {
-
-        logger.debug("upload() - CommunityLoadStressTest.upload()");
-
-        //
-        // Check for null manager.
-        if (null == this.policyManager) {
-            throw new CommunityServiceException("PolicyManager not configured");
-        }
-        //
-        // Check for null manager.
-        if (null == this.securityManager) {
-            throw new CommunityServiceException("SecurityManager not configured");
-        }
-        //
-        // Process the Community Accounts.
-        Iterator iter;
-        iter = getAccounts().iterator();
-        while (iter.hasNext()) {
-            AccountData account = (AccountData) iter.next();
-            logger.debug("upload() - ----");
-            logger.debug("upload() - Account" + account.getIdent());
-            this.policyManager.addAccount(account);
-        }
-        //
-        // Process the Community Groups.
-        /*
-         * iter = data.getGroups().iterator() ; while (iter.hasNext()) {
-         * GroupData group = (GroupData) iter.next() ;
-         * System.out.println("----") ; System.out.println("Group : " +
-         * group.getIdent()) ; this.policyManager.addGroup( group ) ; }
-         */
-        //
-        // Process the Community Passwords.
-        Map passwords = getPasswords();
-        iter = passwords.keySet().iterator();
-        while (iter.hasNext()) {
-            String account = (String) iter.next();
-            String password = (String) passwords.get(account);
-            logger.debug("upload() - Account " + account + "  Password " + password);
-            this.securityManager.setPassword(account, password);
-        }
-    }
-
-    /**
-     * Upload our Community data.
-     *  
-     */
-    public void updateAccounts() throws RegistryException, CommunityServiceException, CommunitySecurityException,
-            CommunityIdentifierException, CommunityPolicyException {
-
-        logger.debug("upload() - CommunityLoadStressTest.upload()");
-
-        //
-        // Check for null manager.
-        if (null == this.policyManager) {
-            throw new CommunityServiceException("PolicyManager not configured");
-        }
-
-        //
-        // Process the Community Accounts.
-        Iterator iter;
-        iter = getAccounts().iterator();
-        while (iter.hasNext()) {
-            AccountData account = (AccountData) iter.next();
-            logger.debug("update() - ----");
-            logger.debug("update() - Account" + account.getIdent());
-            this.policyManager.setAccount(account);
-        }
-    }
     
     /**
      * Upload our Community data.
@@ -270,21 +195,6 @@ public class CommunityLoadStressTest extends TestCase {
     }
 
     /**
-     * Can we upload a shedload of accounts without the computer catching fire?
-     * 
-     * @throws RegistryException
-     * @throws CommunityPolicyException
-     * @throws CommunityIdentifierException
-     * @throws CommunitySecurityException
-     * @throws CommunityServiceException
-     *  
-     */
-    public void testBigUpload() throws CommunityServiceException, CommunitySecurityException,
-            CommunityIdentifierException, CommunityPolicyException, RegistryException {
-        upload();
-    }
-    
-    /**
      * Can we update a shedload of accounts without the computer catching fire?
      * 
      * @throws RegistryException
@@ -293,11 +203,9 @@ public class CommunityLoadStressTest extends TestCase {
      * @throws CommunitySecurityException
      * @throws CommunityServiceException
      *  
-     
-    public void testBigUpdate() throws CommunityServiceException, CommunitySecurityException,
+     */
+    public void testBigRemove() throws CommunityServiceException, CommunitySecurityException,
             CommunityIdentifierException, CommunityPolicyException, RegistryException {
-        updateAccounts();
+       // removeAccounts();
     }
-    */
-
 }

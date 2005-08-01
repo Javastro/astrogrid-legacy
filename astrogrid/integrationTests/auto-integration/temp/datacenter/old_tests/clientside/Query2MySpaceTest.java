@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.5 2004/11/23 15:45:31 jdt Exp $
+/*$Id: Query2MySpaceTest.java,v 1.2 2005/08/01 08:15:52 clq2 Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -206,6 +206,12 @@ public class Query2MySpaceTest extends TestCase implements StdKeys {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.2  2005/08/01 08:15:52  clq2
+Kmb 1293/1279/intTest1 FS/FM/Jes/Portal/IntTests
+
+Revision 1.1.2.1  2005/07/12 11:21:06  KevinBenson
+old datacenter moved out of the test area
+
 Revision 1.5  2004/11/23 15:45:31  jdt
 Merge from INT_JDT_757 (restoring mch's tests)
 

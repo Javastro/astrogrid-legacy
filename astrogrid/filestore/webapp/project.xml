@@ -2,11 +2,17 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/webapp/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/03/22 11:41:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/08/01 08:15:52 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.9  2005/08/01 08:15:52  clq2
+    |   Kmb 1293/1279/intTest1 FS/FM/Jes/Portal/IntTests
+    |
+    |   Revision 1.8.38.1  2005/07/26 09:39:51  KevinBenson
+    |   added dependency to the jes project for caching in the registry now needs commons-collection
+    |
     |   Revision 1.8  2005/03/22 11:41:03  jdt
     |   merge from FS_KMB_1004
     |
@@ -163,6 +169,15 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        <!-- used to implement a weak-reference cache in the registry -->
+    	<dependency>
+	    	<id>commons-collections</id>
+      		<version>3.0</version>
+      		<properties>
+        		<jar.fileset>true</jar.fileset>
+      			 <war.bundle>true</war.bundle>          			
+      		</properties>
+    	</dependency>    	
     	
     	<!--+
     	  Junit dependency

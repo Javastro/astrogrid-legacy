@@ -35,14 +35,15 @@ public class StressTester extends AbstractTestForIntegration {
           resultInfo = new Vector();
       }//if
       resultInfo.clear();
-      threadsgoing = 0;     
-		setupAndParseXML(configFile);
-		setupThreadsAndSchedule();
+      threadsgoing = 0;
 	}
     
    protected void setUp() throws Exception {
        super.setUp();
-//       resultInfo.clear();
+       System.out.println("enter setup of StressTester");
+       setupAndParseXML(configFile);
+       setupThreadsAndSchedule();
+       System.out.println("exit setup of StressTester");
    }
 	
    /*
@@ -70,6 +71,7 @@ public class StressTester extends AbstractTestForIntegration {
      * junit tests.
      */
 	private void setupThreadsAndSchedule() {
+      System.out.println("enter setupThreadsAndSchedule");
 		ArrayList webServices = cfr.getWebServices();
 		//System.out.println("The size of webservices = " + webServices.size());
 		int iActiveThreads = 0;
@@ -160,10 +162,13 @@ public class StressTester extends AbstractTestForIntegration {
 				timerTime.add(Calendar.SECOND,5);
 			}				
 		}//for
+      System.out.println("writing vector info size = " + resultInfo.size());
       writeVector();
+      System.out.println("exist setupThreadsAndSchedule");
 	}
     
   private void writeVector() {
+      System.out.println("Remember the time is how long it took to run the whole Junit Test class and all there test method(s).  NOT individual test methods.");
       for(int i = 0;i < resultInfo.size();i++) {
           System.out.println(resultInfo.get(i));
       }//for
@@ -218,7 +223,7 @@ class RunWebServiceTask extends TimerTask {
 				junit.textui.TestRunner.run(su);
 			}
 			end = System.currentTimeMillis();
-			writeEntry((end-start));		
+			writeEntry((end-start));
 		}catch(Exception e) {
 			e.printStackTrace();
 		}	
@@ -226,7 +231,7 @@ class RunWebServiceTask extends TimerTask {
 	
 	private synchronized void writeEntry(long duration) {
 		String entry = testName + "-" + methodTestName + "-" + threadNumber + "-" + loopCount+",";
-      StressTester.resultInfo.add(entry + " " + String.valueOf(duration));
+      StressTester.resultInfo.add(entry + " " + String.valueOf(duration) + "ms");
       StressTester.threadsgoing--;
 	}
 	

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.12 2005/04/08 15:00:24 clq2 Exp $
+/*$Id: AllTests.java,v 1.13 2005/08/01 08:15:52 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ public class AllTests {
         suite.addTest(org.astrogrid.registry.integration.AllTests.suite());
         suite.addTest(org.astrogrid.community.integration.AllTests.suite());
 //      suite.addTest(org.astrogrid.store.integration.AllTests.suite());    
-        suite.addTest(org.astrogrid.datacenter.integration.AllTests.suite()); 
+//        suite.addTest(org.astrogrid.datacenter.integration.AllTests.suite()); 
         suite.addTest(org.astrogrid.applications.integration.AllTests.suite());   
         suite.addTest(org.astrogrid.applications.integration.commandline.AllTests.suite());
         suite.addTest(org.astrogrid.applications.integration.datacenter.AllTests.suite());
@@ -43,6 +43,12 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.13  2005/08/01 08:15:52  clq2
+Kmb 1293/1279/intTest1 FS/FM/Jes/Portal/IntTests
+
+Revision 1.12.46.1  2005/07/12 11:22:06  KevinBenson
+commented out of datacenter tests
+
 Revision 1.12  2005/04/08 15:00:24  clq2
 dave-dev-200503181302 taking out old myspace links.
 

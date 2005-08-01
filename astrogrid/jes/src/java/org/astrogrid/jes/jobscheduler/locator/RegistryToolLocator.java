@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.16 2005/05/09 11:37:51 nw Exp $
+/*$Id: RegistryToolLocator.java,v 1.17 2005/08/01 08:15:52 clq2 Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.beans.resource.IdentifierType;
+//import org.astrogrid.registry.beans.resource.IdentifierType;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.workflow.beans.v1.Step;
@@ -23,8 +23,6 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.xml.CastorException;
-import org.exolab.castor.xml.Unmarshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -81,17 +79,19 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
                 throw reportError("Could not find registry entry for cea application " + name,e);
             }            
         // @todo not quite sure why we're doing this - already have the identifier of the cea application entry.    
-        IdentifierType toolId = null;
-        try {           
-            IdentifierType[] toolIds = getIdentifiers(toolDocument);
+        String toolId = null;
+        //try {           
+            String[] toolIds = getIdentifiers(toolDocument);
             if (toolIds.length == 0) {
                 throw reportError("No identifiers in registry entry for cea application" + name);
             }           
-            toolId = toolIds[0];            
+            toolId = toolIds[0];
+        /*
         } catch (CastorException e) {
             throw reportError("Could not parse return document for cea application" + name,e);
-        }            
-            logger.debug("found cea application: " + toolId.getAuthorityID() + " / " + toolId.getResourceKey());
+        } 
+        */           
+            logger.debug("found cea application: " + toolId);
       //@todo use original application name in here instead..
             
             // now query registry for all entries the provide this tool.
@@ -105,22 +105,24 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
                 throw reportError("Failed to query registry for services providing tool " + name,e);
             }
             // found identifiers
-            IdentifierType[] serviceIds = null;
-            try {
+            String[] serviceIds = null;
+            //try {
                 serviceIds = getIdentifiers(results);
                 logger.info("Found " + serviceIds.length + " matching cea services");
                 if (serviceIds.length == 0) {
                     throw reportError("Tool " + name + " has no known service providers");
                 }
+            /*
             } catch (CastorException e) {
                 throw reportError("Failed to extract identifiers from query document",e);
             }
+            */
             
             // see what endpoints we can get from the services..
             logger.debug("Resolving services to endpoints");
             Set endpoints = new HashSet(); // using a set to handle duplicate endpoints.            
             for (int i = 0; i < serviceIds.length ; i++) {
-                String serviceName = serviceIds[i].getAuthorityID() + "/" + serviceIds[i].getResourceKey();
+                String serviceName = serviceIds[i];
                 try {
                     // @todo inefficient? we've already got the reg entries, but here we're querying reg to resolve to endpoint
                     // someone with better unsterstanding of reg entries could parse them directly..
@@ -165,10 +167,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
     }    
     
 
-    private String buildQueryString(IdentifierType toolId) {
+    private String buildQueryString(String toolId) {
         String queryString = "Select * from Registry where " +
-        "cea:ManagedApplications/cea:ApplicationReference='ivo://" +
-        toolId.getAuthorityID() + "/" + toolId.getResourceKey() + "'";
+        "cea:ManagedApplications/cea:ApplicationReference='" + toolId + "'";
         return queryString;
  
     }
@@ -176,16 +177,17 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
     /**
      queries registry to get tool entry, extract details from this.
      */
-    private IdentifierType[] getIdentifiers(Document doc)throws CastorException  {
+    private String[] getIdentifiers(Document doc) {
             logger.debug("Extracting Identifiers");
-            NodeList nl = doc.getElementsByTagNameNS("*","Identifier");
-            IdentifierType[] results = new IdentifierType[nl.getLength()];
+            NodeList nl = doc.getElementsByTagNameNS("*","Resource");
+            String[] results = new String[nl.getLength()];
             for (int i = 0; i < nl.getLength(); i++) {
-                results[i] = (IdentifierType)Unmarshaller.unmarshal(IdentifierType.class,nl.item(i));
+                results[i] = ((org.w3c.dom.Element)nl.item(i)).getElementsByTagNameNS("*","identifier")
+                             .item(0).getFirstChild().getNodeValue();
                 logger.debug(results[i]);
             }            
             return results;
-    }    
+    }
         
     /**
      * @see org.astrogrid.jes.jobscheduler.Locator#getToolInterface(org.astrogrid.workflow.beans.v1.Step)
@@ -217,6 +219,12 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.17  2005/08/01 08:15:52  clq2
+Kmb 1293/1279/intTest1 FS/FM/Jes/Portal/IntTests
+
+Revision 1.16.20.1  2005/07/20 08:15:52  KevinBenson
+now reflects 0.10 registry and does no longer require 0.9 and the 0.9 translation that the registry client was doing.
+
 Revision 1.16  2005/05/09 11:37:51  nw
 fixed bug spotted by kona.
 

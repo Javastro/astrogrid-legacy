@@ -1,9 +1,133 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestWebServices>
 <!-- run a loop of 20 times querying a cds entry on exist -->
-<WebServiceTest name="CDSeXistBasicTest" fullclassname="org.astrogrid.registry.stress.QueryeXistStress" threadstyle="sequential">
+<!-- 
+<WebServiceTest name="BasicBigUpload" fullclassname="org.astrogrid.community.stress.CommunityLoadStressTest" threadstyle="sequential">
 		<Runnable type="junit">
-			<TestCase name="testStress" loop="3"  threadstyle="sequential">
+			<TestCase name="testStressUpload" loop="1"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+-->
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTestSingleAccount" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet" loop="1"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTestSingleAccount" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGetag" loop="1"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTestSingleAccount" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet2" loop="1"  threadstyle="sequential">
+				<Thread number="10"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTestSingleAccount" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet2" loop="1"  threadstyle="sequential">
+				<Thread number="20"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTestSingleGroup" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet3" loop="1"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTestSingleGroup" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet3" loop="1"  threadstyle="sequential">
+				<Thread number="10"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTestSingleGroup" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet3" loop="1"  threadstyle="sequential">
+				<Thread number="20"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTestSingleGroups" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet4" loop="1"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTestSingleGroups" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet4" loop="1"  threadstyle="sequential">
+				<Thread number="10"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTestSingleGroups" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet4" loop="1"  threadstyle="sequential">
+				<Thread number="20"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTestSingleAccounts" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet5" loop="1"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTestSingleAccounts" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet5" loop="1"  threadstyle="sequential">
+				<Thread number="10"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTestSingleAccounts" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet5" loop="1"  threadstyle="sequential">
+				<Thread number="20"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTest" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet6" loop="1"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTest" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet6" loop="1"  threadstyle="sequential">
+				<Thread number="10"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="BasicBigLoad" fullclassname="org.astrogrid.community.stress.CommunityMultLoadStressTest" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressGet6" loop="1"  threadstyle="sequential">
+				<Thread number="20"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+
+<!--
+<WebServiceTest name="BasicBigRemove" fullclassname="org.astrogrid.community.stress.CommunityLoadRemoveStressTest" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStressRemove" loop="1"  threadstyle="sequential">
 				<Thread number="1"  loop="1" threadstyle="sequential" />
 			</TestCase>
 		</Runnable>
@@ -15,7 +139,6 @@
 			</TestCase>
 		</Runnable>
 </WebServiceTest>
-<!-- run a loop of 20 times querying a cds entry on exist -->
 <WebServiceTest name="CDSeXistBasicTest" fullclassname="org.astrogrid.registry.stress.QueryeXistStress" threadstyle="sequential">
 		<Runnable type="junit">
 			<TestCase name="testStress" loop="20"  threadstyle="sequential">
@@ -30,7 +153,6 @@
 			</TestCase>
 		</Runnable>
 </WebServiceTest>
-<!-- run a loop of 20 times querying a astrogrid entry on exist -->
 	<WebServiceTest name="astrogrideXistBasicTest" fullclassname="org.astrogrid.registry.stress.QueryeXist2Stress" threadstyle="sequential">
 		<Runnable type="junit">
 			<TestCase name="testStress2" loop="20"  threadstyle="sequential">
@@ -38,7 +160,6 @@
 			</TestCase>
 		</Runnable>
 	</WebServiceTest>
-<!-- run as if 5 users are querying at the exact same time for a CDS entry-->
 	<WebServiceTest name="CDSeXistBasicTestUsers" fullclassname="org.astrogrid.registry.stress.QueryeXistStress" threadstyle="sequential">
 		<Runnable type="junit">
 			<TestCase name="testStress3" loop="1"  threadstyle="sequential">
@@ -46,12 +167,12 @@
 			</TestCase>
 		</Runnable>
 	</WebServiceTest>
-<!-- run as if 5 users are querying at the exact same time for an astrogrid entry -->
 	<WebServiceTest name="astrogrideXistBasicTestUsers" fullclassname="org.astrogrid.registry.stress.QueryeXist2Stress" threadstyle="sequential">
 		<Runnable type="junit">
 			<TestCase name="testStress4" loop="1"  threadstyle="sequential">
 				<Thread number="5"  loop="1" threadstyle="synchroneous" />
 			</TestCase>
 		</Runnable>
-	</WebServiceTest
+	</WebServiceTest>
+-->
 </TestWebServices>

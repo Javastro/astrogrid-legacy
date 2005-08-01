@@ -18,9 +18,11 @@
      <Environment
         name="org.astrogrid.registry.query.endpoint"
         override="false" type="java.lang.String"
-        value="@REG_QUERY_ENDPOINT@"/>       
+        value="@REG_QUERY_ENDPOINT@"/>      
+    <!-- 
     <Environment
         name="org.astrogrid.registry.result.version"
         override="false" type="java.lang.String"
         value="0.9"/>
+    -->
 </Context>

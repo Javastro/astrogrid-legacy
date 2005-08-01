@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.1 2004/10/12 23:05:16 mch Exp $
+/*$Id: FitsTest.java,v 1.2 2005/08/01 08:15:52 clq2 Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,6 +56,12 @@ public class FitsTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: FitsTest.java,v $
+Revision 1.2  2005/08/01 08:15:52  clq2
+Kmb 1293/1279/intTest1 FS/FM/Jes/Portal/IntTests
+
+Revision 1.1.2.1  2005/07/12 11:21:06  KevinBenson
+old datacenter moved out of the test area
+
 Revision 1.1  2004/10/12 23:05:16  mch
 Seperated tests properly
 

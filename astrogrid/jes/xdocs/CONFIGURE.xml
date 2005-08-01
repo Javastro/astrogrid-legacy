@@ -45,7 +45,7 @@ JES also requires the following keys to be set. Don't alter the values - these k
 <source>
 jes.locator=registry
 jes.store=file
-org.astrogrid.registry.result.version=0.9
+#org.astrogrid.registry.result.version=0.9
 </source>
 </section>
 <section name="Example Configuration File">

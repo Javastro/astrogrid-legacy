@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.48 2005/07/21 14:57:25 pah Exp $ -->
+<!-- $Id: tests-project.xml,v 1.49 2005/08/01 08:15:52 clq2 Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>${basedir}/../../maven-base/project.xml</extend>
@@ -166,18 +166,30 @@
 			</dependency>
 			<!-- datacenter -->
 			<dependency>
-				<groupId>org.astrogrid</groupId>
-				<artifactId>astrogrid-datacenter-client</artifactId>
-				<version>${astrogrid.datacenter.version}</version>
-			</dependency>
-			<!-- for datacenter implementation tests -->
-			<dependency>
-				<groupId>org.astrogrid</groupId>
-				<artifactId>pal</artifactId>
-				<version>${astrogrid.datacenter.version}</version>
-				<type>jar</type>
-				<properties/>
-			</dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-pal-query</artifactId>
+                <version>${astrogrid.pal.version}</version>
+                <type>jar</type>
+            </dependency>    
+    		
+            <!-- for writing XML -->
+           <dependency>
+              <artifactId>astrogrid-xml</artifactId>
+              <groupId>org.astrogrid</groupId>
+              <version>${astrogrid.xml.stable}</version>
+           </dependency>
+
+           <dependency>
+              <artifactId>astrogrid-slinger-api</artifactId>
+              <groupId>org.astrogrid</groupId>
+              <version>${astrogrid.slinger.version}</version>
+           </dependency>
+        	
+            <dependency>
+                 <artifactId>astrogrid-utils</artifactId>
+                 <groupId>org.astrogrid</groupId>
+                 <version>${astrogrid.utils.stable}</version>
+          </dependency>
 			
 			<!-- applications -->
 			<dependency>

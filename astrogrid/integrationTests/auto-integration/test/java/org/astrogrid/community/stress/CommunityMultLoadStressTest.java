@@ -1,13 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/community/stress/CommunityMultLoadStressTest.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/05/09 15:10:07 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2005/08/01 08:15:52 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityMultLoadStressTest.java,v $
- *   Revision 1.2  2005/05/09 15:10:07  clq2
- *   Kevin's commits
+ *   Revision 1.3  2005/08/01 08:15:52  clq2
+ *   Kmb 1293/1279/intTest1 FS/FM/Jes/Portal/IntTests
+ *
+ *   Revision 1.2.32.1  2005/07/12 11:22:33  KevinBenson
+ *   Fixed stress test
+ *
+ *   Revision 1.1.2.2  2005/06/23 11:20:13  KevinBenson
+ *   this is community stress tests that I forgot to add.
  *
  *   Revision 1.1.2.1  2005/04/29 07:30:45  KevinBenson
  *   Added some stress test and fixed this small bug with the community querying on relationships
@@ -145,7 +151,7 @@ public class CommunityMultLoadStressTest extends TestCase {
      * GetAccounts
      *  
      */
-    public void getAccountsFromManager() throws RegistryException, CommunityServiceException, CommunitySecurityException,
+    public Object[] getAccountsFromManager() throws RegistryException, CommunityServiceException, CommunitySecurityException,
             CommunityIdentifierException, CommunityPolicyException {
 
         logger.debug("upload() - CommunityLoadStressTest.upload()");
@@ -156,14 +162,14 @@ public class CommunityMultLoadStressTest extends TestCase {
             throw new CommunityServiceException("PolicyManager not configured");
         }
 
-        this.policyManager.getLocalAccounts();
+        return this.policyManager.getLocalAccounts();
     }
     
     /**
      * GetAccounts
      *  
      */
-    public void getSingleAccount() throws RegistryException, CommunityServiceException, CommunitySecurityException,
+    public AccountData getSingleAccount() throws RegistryException, CommunityServiceException, CommunitySecurityException,
             CommunityIdentifierException, CommunityPolicyException {
 
         logger.debug("upload() - CommunityLoadStressTest.upload()");
@@ -179,7 +185,7 @@ public class CommunityMultLoadStressTest extends TestCase {
         Iterator iter;
         iter = getAccounts().iterator();
         AccountData account = (AccountData) iter.next();        
-        this.policyManager.getAccount(account.getIdent());
+        return this.policyManager.getAccount(account.getIdent());
     }
 
     
@@ -187,7 +193,7 @@ public class CommunityMultLoadStressTest extends TestCase {
      * GetAccounts
      *  
      */
-    public void getGroupsFromManager() throws RegistryException, CommunityServiceException, CommunitySecurityException,
+    public Object[] getGroupsFromManager() throws RegistryException, CommunityServiceException, CommunitySecurityException,
             CommunityIdentifierException, CommunityPolicyException {
 
         logger.debug("upload() - CommunityLoadStressTest.upload()");
@@ -198,14 +204,14 @@ public class CommunityMultLoadStressTest extends TestCase {
             throw new CommunityServiceException("PolicyManager not configured");
         }
 
-        this.policyManager.getLocalGroups();
+        return this.policyManager.getLocalGroups();
     }
     
     /**
      * GetAccounts
      *  
      */
-    public void getSingleGroup() throws RegistryException, CommunityServiceException, CommunitySecurityException,
+    public GroupData getSingleGroup() throws RegistryException, CommunityServiceException, CommunitySecurityException,
             CommunityIdentifierException, CommunityPolicyException {
 
         logger.debug("upload() - CommunityLoadStressTest.upload()");
@@ -221,7 +227,7 @@ public class CommunityMultLoadStressTest extends TestCase {
         Iterator iter;
         iter = getAccounts().iterator();
         AccountData account = (AccountData) iter.next();        
-        this.policyManager.getGroup(account.getIdent());
+        return this.policyManager.getGroup(account.getIdent());
     }            
 
     /**
@@ -250,7 +256,11 @@ public class CommunityMultLoadStressTest extends TestCase {
      */
     public void testGetAccounts() throws CommunityServiceException, CommunitySecurityException,
             CommunityIdentifierException, CommunityPolicyException, RegistryException {
-        getAccountsFromManager();
+        System.out.println("enter testGetAccounts");
+        Object []accounts = getAccountsFromManager();
+        assertTrue((accounts.length > 0));
+        System.out.println("Size of accounts = " + accounts.length);
+        System.out.println("exit testGetAccounts");
     }
     
     /**
@@ -262,11 +272,16 @@ public class CommunityMultLoadStressTest extends TestCase {
      * @throws CommunitySecurityException
      * @throws CommunityServiceException
      *  
-     */
+  */
     public void testGetGroups() throws CommunityServiceException, CommunitySecurityException,
             CommunityIdentifierException, CommunityPolicyException, RegistryException {
-        getGroupsFromManager();
+        System.out.println("enter testGetGroups");
+        Object []groups = getGroupsFromManager();
+        assertTrue((groups.length > 0));
+        System.out.println("Size of groups = " + groups.length);
+        System.out.println("exit testGetGroups");
     }
+       
     
     /**
      * Can we get accounts with high threads
@@ -277,11 +292,15 @@ public class CommunityMultLoadStressTest extends TestCase {
      * @throws CommunitySecurityException
      * @throws CommunityServiceException
      *  
-     */
+     */    
     public void testGetAccount() throws CommunityServiceException, CommunitySecurityException,
             CommunityIdentifierException, CommunityPolicyException, RegistryException {
-        getSingleAccount();
+        System.out.println("enter testGetAccount");
+        AccountData ad = getSingleAccount();
+        assertNotNull(ad);
+        System.out.println("exit testGetAccount");
     }
+
 
     /**
      * Can we get accounts with high threads
@@ -292,9 +311,14 @@ public class CommunityMultLoadStressTest extends TestCase {
      * @throws CommunitySecurityException
      * @throws CommunityServiceException
      *  
-     */
+*/
     public void testGetGroup() throws CommunityServiceException, CommunitySecurityException,
             CommunityIdentifierException, CommunityPolicyException, RegistryException {
-        getSingleGroup();
-    }    
+        System.out.println("enter testGetGroup");
+        GroupData gd = getSingleGroup();
+        assertNotNull(gd);
+        System.out.println("exit testGetGroup");
+        
+    }
+             
 }
