@@ -18,7 +18,13 @@
 			<action dev="pah" type="add" issue="1317"><em>Branch: cea_pah_1317</em>
 				Commandline CEA will now remove any files associated with input parameters for a successful run. Also added jsp page to clean up all working files older than specified date.
 			</action>
-			
+    		<action dev="gtr" type="fix" issue="477"><em>Branch security-gtr-477-2:</em> a rearrangement of the tests for the 
+    			security facade plus some trivial cleaning up of the production code. Both astrogrid/security and astrogrid/integrationTests
+    		  are branched but only astrogrid/security has committed changes.</action>
+    		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.</action>
+    		<action dev="mch" type="add" issue="1228"> Documentation for astrogrid/pal. Branch MCH_1228_Docs. </action>
+			        </release>
+        <release version="(Undertest)">
 			<action dev="kmb" type="fix"><em>Branch: Reg_KMB_1323</em>
 				added oai set support (plus has previous branch stuff which was: added xquery, caching, and unit tests)
 			</action>			
@@ -34,14 +40,10 @@
 			<action dev="kmb" type="fix"><em>Branch: App_KMB_1276</em>
 				added dependency for registry caching for this merge.
 			</action>
-			
-    		<action dev="gtr" type="fix" issue="477"><em>Branch security-gtr-477-2:</em> a rearrangement of the tests for the 
-    			security facade plus some trivial cleaning up of the production code. Both astrogrid/security and astrogrid/integrationTests
-    		  are branched but only astrogrid/security has committed changes.</action>
-    		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.</action>
-    		<action dev="mch" type="add" issue="1228"> Documentation for astrogrid/pal. Branch MCH_1228_Docs. </action>
-			        </release>
-        <release version="(Undertest)">
+            <action dev="gtr" type="add" issue="1188"> <b>Most components</b> Branch <em>registry-gtr-1188</em>. JNDI keys shortened so they fit Tomcat's 
+                interface. </action>
+        </release>
+        <release version="HEAD">
 			<action dev="kmb" type="fix"><em>Branch: IntTest_KMB_FixTests</em>
 				 Branch under integrationTests/auto-integration, fixed some of the tests and no longer required 0.9 from the registry.
                  See next 2 branch Jes_KMB_1293, FM_KMB_1293_2 it is required for this merge.
@@ -54,14 +56,10 @@
 			</action>
 			<action dev="kmb" type="fix"><em>Branch: Portal_KMB_1276</em>
 				added dependency for registry caching.
-			</action>
+			</action>	
 			<action dev="kmb" type="fix"><em>Branch: FS_KMB_1276</em>
 				added dependency for registry caching for this merge.
 			</action>
-            <action dev="gtr" type="add" issue="1188"> <b>Most components</b> Branch <em>registry-gtr-1188</em>. JNDI keys shortened so they fit Tomcat's 
-                interface. </action>
-        </release>
-        <release version="HEAD">
 			<action dev="nww" type="fix"><em>Branch: jes-nww-review-unit-tests</em>
 				 Fixes to improve unit test coverage and bring pass rate to 100% - don't merge if any unit tests fail.
 			</action>
