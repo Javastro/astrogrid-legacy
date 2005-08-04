@@ -39,8 +39,46 @@
 <h1>XForms for New Resource</h1>
 
 <p>
-   This page is for creating a brand new resource using XForms. <br />
+   This page is for creating a brand new resource using XForms or alternative you can load a
+   previously saved xml resource. <br />
 </p>
+
+<p>
+Load a Resource xml document:<br />
+<form enctype="multipart/form-data" method="post" action="XFormsProcessor.jsp">
+Version: 
+<select name="version">
+   <% for(int k = (al.size()-1);k >= 0;k--) { %>
+      <option value="<%=al.get(k)%>"
+        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
+      ><%=al.get(k)%></option>  
+   <%}%>
+</select>
+<br />
+Resource Type: 
+<select name="mapType">
+	<option value="default">Resource</option>
+	<option value="Organisation">-Organisation</option>
+	<option value="Authority">-Authority</option>
+	<option value="DataCollection">-DataCollection</option>
+	<option value="TabularDB">--TabularDB</option>
+	<option value="Service">-Service</option>
+	<option value="Registry">--Registry</option>
+	<option value="SkyService">--SkyService</option>
+	<option value="TabularSkyService">---TabularSkyService</option>
+	<option value="ConeSearch">---ConeSearch</option>
+	<option value="SimpleImageAccess">---SimpleImageAccess</option>
+</select>
+
+<input type="file" name="docfile" />
+<input type="hidden" name="addFromFile" value="true" />
+<input type="submit" name="uploadFromFile" value="upload" />
+</form>
+</p>
+
+<p>
+<br />
+New Resources
 
 <form method="post" action="XFormsProcessor.jsp">
 <input type="hidden" name="keywordquery" value="true" />
@@ -70,6 +108,7 @@ Resource Type:
 
 <input type="submit" name="xformsnewsubmit" value="Submit" />
 </form>
+</p>
 
 </body>
 </html>

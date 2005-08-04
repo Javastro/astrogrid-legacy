@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/project.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/05/25 16:29:44 $</cvs:date>
-    | <cvs:version>$Revision: 1.14 $</cvs:version>
+    | <cvs:date>$Date: 2005/08/04 09:40:11 $</cvs:date>
+    | <cvs:version>$Revision: 1.15 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.15  2005/08/04 09:40:11  clq2
+    |   kevin's second batch
+    |
+    |   Revision 1.14.10.1  2005/07/26 09:42:24  KevinBenson
+    |   added dependency to the jes project for caching in the registry now needs commons-collection
+    |
     |   Revision 1.14  2005/05/25 16:29:44  clq2
     |   with doc temp
     |
@@ -172,6 +178,15 @@
                 <jar.fileset>true</jar.fileset>
             </properties>
         </dependency>
+    	
+        <!-- used to implement a weak-reference cache in the registry -->
+    	<dependency>
+	    	<id>commons-collections</id>
+      		<version>3.0</version>
+      		<properties>
+        		<jar.fileset>true</jar.fileset>
+      		</properties>
+    	</dependency>    	
 
 <!--
 This should not be an explicit dependency.

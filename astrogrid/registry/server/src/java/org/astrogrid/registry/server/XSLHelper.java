@@ -70,8 +70,8 @@ public class XSLHelper {
       Document resultDoc = null;      
       
       logger
-            .info("transformADQLToXQL(Node, String) - the file resource = ADQLToXQL-"
-                    + versionNumber + ".xsl");      
+            .debug("transformADQLToXQL(Node, String) - the file resource = ADQLToXQL-"
+                    + versionNumber + ".xsl");
       try {
          Source xslSource = new StreamSource(
                   new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + "ADQLToXQL-" + versionNumber + ".xsl"),"UTF-8"));
@@ -97,16 +97,18 @@ public class XSLHelper {
                   
          xqlResult = xqlResult.replaceAll("&gt;", ">").replaceAll("&lt;", "<").replaceAll("&amp;","&");
          return xqlResult;
-         //System.out.println("the resultwriter transform = " + sw.toString());
-         //System.out.println("The result of adql to xql = " + DomHelper.DocumentToString(resultDoc));
       }catch(ParserConfigurationException pce) {
         logger.error("transformADQLToXQL(Node, String)", pce);
+        pce.printStackTrace();
       }catch(TransformerConfigurationException tce) {
         logger.error("transformADQLToXQL(Node, String)", tce);
+        tce.printStackTrace();
       }catch(TransformerException te) {
         logger.error("transformADQLToXQL(Node, String)", te);
+        te.printStackTrace();
       }catch(UnsupportedEncodingException uee) {
           logger.error(uee);
+          uee.printStackTrace();
       }
       //@todo never return null on error
       return null;
@@ -128,6 +130,7 @@ public class XSLHelper {
       Document resultDoc = null;
       
       try {
+          System.out.println("the filename = " + fileName);
           Source xslSource = new StreamSource(new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + fileName),"UTF-8"));            
           DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();          
          builderFactory.setNamespaceAware(true);
@@ -143,12 +146,16 @@ public class XSLHelper {
          //System.out.println("the resultwriter transform = " + sw.toString());
       }catch(ParserConfigurationException pce) {
         logger.error("transformToOAI(Node, String)", pce);
+        pce.printStackTrace();
       }catch(TransformerConfigurationException tce) {
         logger.error("transformToOAI(Node, String)", tce);
+        tce.printStackTrace();
       }catch(TransformerException te) {
-        logger.error("transformToOAI(Node, String)", te);
+        logger.error("transformToOAI(Node, String)", te);        
+        te.printStackTrace();
       }catch(UnsupportedEncodingException uee) {
-          logger.error(uee);
+          logger.error(uee); 
+          uee.printStackTrace();
       }
       //@todo never return null on error.
       return resultDoc;
@@ -216,7 +223,7 @@ public class XSLHelper {
        if(harvestUpdate)
            harvestName = "Harvest_";
        String styleSheetName = "UpdateProcess_" + harvestName + versionNumber + ".xsl";
-       logger.info("transformUpdate(Node, String) - the stylesheet name = "
+       logger.debug("transformUpdate(Node, String) - the stylesheet name = "
             + styleSheetName);
        try {
           Source xslSource = new StreamSource(new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + styleSheetName),"UTF-8"));
@@ -242,7 +249,7 @@ public class XSLHelper {
            logger.error(uee);
        }
     logger
-            .info("transformUpdate(Node, String) - THIS IS AFTER THE TRANSFORMUPDATE");
+            .debug("transformUpdate(Node, String) - THIS IS AFTER THE TRANSFORMUPDATE");
        DomHelper.DocumentToStream(resultDoc,System.out);
        return resultDoc;
     }   

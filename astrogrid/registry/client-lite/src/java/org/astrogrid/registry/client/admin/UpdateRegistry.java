@@ -18,6 +18,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element; 
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
+
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
@@ -28,11 +30,12 @@ import java.rmi.RemoteException;
 
 import org.astrogrid.registry.RegistryException;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
 import junit.framework.AssertionFailedError;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.registry.common.RegistryDOMHelper;
 
 import org.astrogrid.registry.common.XSLHelper;
 
@@ -58,7 +61,9 @@ public class UpdateRegistry implements RegistryAdminService {
 
    private static final String NAMESPACE_URI =  "http://www.ivoa.net/schemas/services/UpdateRegistry/wsdl";
    
-   public static final String ADMIN_URL_PROPERTY = "org.astrogrid.registry.admin.endpoint";   
+   public static final String ADMIN_URL_PROPERTY = "org.astrogrid.registry.admin.endpoint";
+   
+   private static String cacheDir = null;
    
    private boolean validated = false;   
 
@@ -74,6 +79,7 @@ public class UpdateRegistry implements RegistryAdminService {
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
+         cacheDir = conf.getString("registry.cache.dir",null);
       }      
    }
    
@@ -102,9 +108,8 @@ public class UpdateRegistry implements RegistryAdminService {
     * @throws Exception
     * @author Kevin Benson
     */     
-   private Call getCall() {
+   private Call getCall() throws ServiceException {
       Call _call = null;
-      try {
          Service  service = new Service();      
          _call = (Call) service.createCall();
          _call.setTargetEndpointAddress(this.endPoint);
@@ -112,13 +117,7 @@ public class UpdateRegistry implements RegistryAdminService {
          _call.setOperationStyle(org.apache.axis.enum.Style.MESSAGE);
          _call.setOperationUse(org.apache.axis.enum.Use.LITERAL);        
          _call.setEncodingStyle(null);
-      } catch(ServiceException se) {
-        logger.error("getCall()", se);
-         _call = null;            
-      }finally {
-          //@todo never return null on error. throw the exception instead
-         return _call;   
-      }       
+         return _call;       
     }
     
    /**
@@ -145,11 +144,31 @@ public class UpdateRegistry implements RegistryAdminService {
               if(conf.getBoolean("registry.quiton.invalid",false)) {
                   throw new RegistryException("Quitting: Invalid document, Message: " + afe.getMessage());
               }
-          }
-          
+          }          
       }
-
       
+      if(cacheDir != null) {
+          try {
+              logger.debug("cachedir found updaing to cache directory = " + cacheDir);
+              String ident = RegistryDOMHelper.getIdentifier(update.getDocumentElement());
+              if(Ivorn.isIvorn(ident))
+                  ident = ident.substring((Ivorn.SCHEME + "://").length());
+              ident = ident.replaceAll("[^\\w*]","_") + ".xml";
+              logger.debug("filename will be = " + ident);
+              FileOutputStream fos = new FileOutputStream(new File(cacheDir,ident));
+              DomHelper.DocumentToStream(update,fos);
+              return DomHelper.newDocument("<UpdateResponse/>");
+          }catch(IOException ioe) {
+              logger.error(ioe);
+              throw new RegistryException(ioe);
+          } catch (ParserConfigurationException pce) {
+              logger.error(pce);
+              throw new RegistryException(pce);
+          } catch (SAXException sax) {
+              logger.error(sax);
+              throw new RegistryException(sax);
+          }
+      }
       DocumentBuilder registryBuilder = null;
       Document doc = null;
       Document resultDoc = null;
@@ -157,23 +176,22 @@ public class UpdateRegistry implements RegistryAdminService {
           Element root = update.createElementNS(NAMESPACE_URI,"Update");
           root.appendChild(update.getDocumentElement());
           update.appendChild(root);
-       
+          
+      try {   
       //Get the CAll.  
       Call call = getCall(); 
       
       //Build up a SoapBodyElement to be sent in a Axis message style.
       //Go ahead and reset a name and namespace to this as well.
-      logger
-            .info("update(Document) - the endpoint = "
-                    + this.endPoint);
-      logger.info("update(Document) - okay calling update service with doc = "
+      logger.debug("update(Document) - the endpoint = "+ this.endPoint);
+      logger.debug("update(Document) - okay calling update service with doc = "
             + DomHelper.DocumentToString(update));
       //SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
       SOAPBodyElement sbeRequest = new SOAPBodyElement(update.getDocumentElement());
       sbeRequest.setName("Update");
       sbeRequest.setNamespaceURI(NAMESPACE_URI);
       
-      try {
+    
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          if(result.size() > 0) {
             SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
@@ -181,10 +199,12 @@ public class UpdateRegistry implements RegistryAdminService {
          }
       }catch(RemoteException re) {
          resultDoc = null;
+         logger.error(re);
          //@todo shouldn't catch this one - let it through.
          throw new RegistryException(re);
       }catch (Exception e) {
          resultDoc = null;
+         logger.error(e);
          throw new RegistryException(e);
       }
       return resultDoc;
@@ -200,11 +220,14 @@ public class UpdateRegistry implements RegistryAdminService {
    public Document updateFromFile(File fi) throws RegistryException {
       try {
          return update(DomHelper.newDocument(fi));
-      }catch(IOException ioe) {         
+      }catch(IOException ioe) {
+          logger.error(ioe);
          throw new RegistryException(ioe);      
       }catch(SAXException sax) {
+          logger.error(sax);
          throw new RegistryException(sax);   
       }catch(ParserConfigurationException pce) {
+          logger.error(pce);
          throw new RegistryException(pce);
       }
    }
@@ -219,11 +242,14 @@ public class UpdateRegistry implements RegistryAdminService {
    public Document updateFromURL(URL location) throws RegistryException {
       try {
          return update(DomHelper.newDocument(location));
-      }catch(IOException ioe) {         
+      }catch(IOException ioe) {
+          logger.error(ioe);
          throw new RegistryException(ioe);      
       }catch(SAXException sax) {
+          logger.error(sax);
          throw new RegistryException(sax);   
       }catch(ParserConfigurationException pce) {
+          logger.error(pce);
          throw new RegistryException(pce);
       }
    }  
@@ -238,11 +264,14 @@ public class UpdateRegistry implements RegistryAdminService {
    public Document updateFromString(String voresources) throws RegistryException {
       try {
          return update(DomHelper.newDocument(voresources));
-      }catch(IOException ioe) {         
+      }catch(IOException ioe) {  
+          logger.error(ioe);
          throw new RegistryException(ioe);      
       }catch(SAXException sax) {
+          logger.error(sax);
          throw new RegistryException(sax);   
       }catch(ParserConfigurationException pce) {
+          logger.error(pce);
          throw new RegistryException(pce);
       }      
    }   

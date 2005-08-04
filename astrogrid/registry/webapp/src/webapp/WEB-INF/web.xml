@@ -166,7 +166,7 @@
     <mime-type>text/xml</mime-type>
   </mime-mapping>
 
-  <welcome-file-list id="WelcomeFileList">
+  <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>registry_index.html</welcome-file>
     <welcome-file>index.html</welcome-file>

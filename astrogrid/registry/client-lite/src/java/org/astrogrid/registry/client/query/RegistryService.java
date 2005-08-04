@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.Date;
 
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.common.InterfaceType;
+//import org.astrogrid.registry.common.InterfaceType;
 import org.astrogrid.registry.common.XSLHelper;
 
 import javax.xml.namespace.QName;
@@ -42,8 +42,6 @@ import javax.wsdl.extensions.soap.SOAPAddress;
 
 import org.xml.sax.SAXException;
 import java.rmi.RemoteException;
-
-import org.astrogrid.registry.common.WSDLBasicInformation;
 
 import javax.wsdl.factory.WSDLFactory;
 
@@ -104,25 +102,14 @@ public interface RegistryService  {
    public Document searchFromSADQL(String sadql) throws RegistryException;
    
    /**
-    * Method: submitQuery
-    * Description: client inteface method to call web service method submitQuery(Document). This is an old style xml
-    * query language that Astrogrid had.  Soon to be deprecated and no longer used.
-    * @param query Old style xml string to be converted to XML Document object.
-    * @return XML Document of all the Resources in the registry constrained by the query.
+    * Method: search
+    * Description: client inteface method to call web service method search(Document).
+    * @param xadql XML string of ADQL to be parsed into a Document object.
+    * @return XML Document of all the Resources in the registry constrained by the adql query.
     * @throws RegistryException
-    */
-   public Document submitQuery(String query) throws RegistryException;
-
-   /**
-    * Method: submitQuery
-    * Description: client inteface method to call web service method. This is an old style xml
-    * query language that Astrogrid had.  Soon to be deprecated and no longer used.
-    * @param query XML Document object in an old style query xml language from astrogrid.
-    * @return XML Document of all the Resources in the registry constrained by the query.
-    * @throws RegistryException
-    */
-   public Document submitQuery(Document query) throws RegistryException;
-   
+    */   
+   public Document xquerySearch(String xquery) throws RegistryException;     
+      
    public Document loadRegistry()  throws RegistryException;
       
    public HashMap managedAuthorities() throws RegistryException;
@@ -181,8 +168,5 @@ public interface RegistryService  {
     */   
    public String getEndPointByIdentifier(String ident) throws RegistryException;
    
-
-   
-   //public URL[] getEndPointByInterfaceType(InterfaceType interfaceType) throws RegistryException;
    
 }

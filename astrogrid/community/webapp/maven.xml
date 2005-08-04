@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/05/25 16:29:43 $</cvs:date>
-    | <cvs:version>$Revision: 1.24 $</cvs:version>
+    | <cvs:date>$Date: 2005/08/04 09:40:11 $</cvs:date>
+    | <cvs:version>$Revision: 1.25 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.25  2005/08/04 09:40:11  clq2
+    |   kevin's second batch
+    |
+    |   Revision 1.24.10.1  2005/07/28 13:35:53  KevinBenson
+    |   No longer uses resetDatabaseTables as a web service method it is not allowed anymore.
+    |
     |   Revision 1.24  2005/05/25 16:29:43  clq2
     |   with doc temp
     |
@@ -293,7 +299,11 @@
         </ant:copy>
         
         
-        
+        <community:database.remove.resetdbservice
+        	 service.name="DatabaseManager"
+        	 service.wsdd="META-INF/wsdd/DatabaseManager.wsdd"
+    	/>
+    	
         <!--+
             | Initialise our classpaths.
             +-->

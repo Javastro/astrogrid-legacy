@@ -22,7 +22,6 @@ import java.text.DateFormat;
 import java.util.Iterator;
 import org.astrogrid.config.Config;
 import org.astrogrid.registry.server.XSLHelper;
-import org.astrogrid.registry.server.XQueryExecution;
 import org.astrogrid.registry.common.RegistryValidator;
 import org.astrogrid.util.DomHelper;
 import java.util.ArrayList;
@@ -158,7 +157,7 @@ public class RegistryAdminService {
       //get the main authority id for this registry.
       String authorityID = conf.getString("reg.amend.authorityid");
       
-      log.info("Default AuthorityID for this Registry = " + authorityID);
+      log.debug("Default AuthorityID for this Registry = " + authorityID);
       
       // Transform the xml document into a consistent way.
       // xml can come in a few various forms.  This xsl will make it
@@ -232,7 +231,7 @@ public class RegistryAdminService {
               if(rootElement == null) {
                   rootElement = update.getDocumentElement().getFirstChild().getNodeName();
               }
-              log.info("try Validating for version = " + versionNumber +
+              log.debug("try Validating for version = " + versionNumber +
                        " with rootElement = " + rootElement);
               RegistryValidator.isValid(xsDoc,rootElement);
           }catch(AssertionFailedError afe) {
@@ -307,9 +306,9 @@ public class RegistryAdminService {
          if(ident == null || ident.trim().length() <= 0) {
              return SOAPFaultException.createAdminSOAPFaultException("Could not find the AuthorityID from the Identifier","Could not find the AuthorityID from the Identifier");             
          }//if
-         log.info("here is the ident/authid = " + ident);         
+         log.debug("here is the ident/authid = " + ident);         
          resKey = RegistryDOMHelper.getResourceKey((Element)nl.item(0));
-         log.info("here is the reskey = " + resKey);
+         log.debug("here is the reskey = " + resKey);
          //set the currentResource element.
          Element currentResource = (Element)nl.item(0);
 
@@ -359,7 +358,7 @@ public class RegistryAdminService {
          tempIdent = ident;
          if(resKey != null && resKey.trim().length() > 0) tempIdent += "/" + resKey;
       
-         log.info("serverside update ident = " + ident + " reskey = " + 
+         log.debug("serverside update ident = " + ident + " reskey = " + 
                   resKey + " the nl getlenth here = " + nl.getLength());
          
          //Get the xsi:type.
@@ -370,7 +369,7 @@ public class RegistryAdminService {
                  nodeVal = typeAttribute.getNodeValue();
              }//if
          }//if
-         log.info("The xsi:type for the Resource = " + nodeVal);         
+         log.debug("The xsi:type for the Resource = " + nodeVal);         
                   //see if we manage this authority id
                   //if we do then update it in the db.
          //do we manage this authority id, if so then add the resource. Unless it is a Registry
@@ -420,7 +419,7 @@ public class RegistryAdminService {
                   //check if it is a registry type.
                   if(nodeVal.indexOf("Registry") != -1) {
                      addManageError = false;
-                     log.info("This is a RegistryType");
+                     log.debug("This is a RegistryType");
                      root = xsDoc.createElement("AstrogridResource");
                      root.appendChild(currentResource);
                      //RegistryServerHelper.addStatusMessage("Entering new entry: " + tempIdent);
@@ -432,7 +431,7 @@ public class RegistryAdminService {
                         //log.info("authority id equaled to ident");
                         for(int k = 0;k < manageList.getLength();k++) {
                             manageNodeVal = manageList.item(k).getFirstChild().getNodeValue();
-                            log.info("try adding new manage node for this registry = " + manageNodeVal);
+                            log.debug("try adding new manage node for this registry = " + manageNodeVal);
                             if(manageAuths.containsKey((tempAuthorityListKey = new AuthorityList(manageNodeVal,versionNumber)))) {
                                 tempAuthorityListVal = (AuthorityList)manageAuths.get(tempAuthorityListKey);
                                 log.error("Error - mismatch: Tried to update a Registry Type that has this managed Authority: " + manageNodeVal +
@@ -497,7 +496,7 @@ public class RegistryAdminService {
                         Node manageNode = 
                                         getManagedAuthorityID(loadedRegistry);
                         if(manageNode != null) {
-                           log.info(
+                           log.debug(
                              "creating new manage element for authorityid = " + ident);
                            // Create a new ManagedAuthority element.
                            Element newManage = loadedRegistry.
@@ -543,10 +542,10 @@ public class RegistryAdminService {
                            // Registry Resource which is for this registry.
                            ident = RegistryDOMHelper.getAuthorityID(loadedRegistry.
                                                   getDocumentElement());
-                           log.info("the ident from loaded registry right before update = " + ident);
+                           log.debug("the ident from loaded registry right before update = " + ident);
                            resKey = RegistryDOMHelper.getResourceKey(loadedRegistry.
                                                    getDocumentElement());
-                           log.info("the resKey form loaded registry right before update = " + resKey);
+                           log.debug("the resKey form loaded registry right before update = " + resKey);
                            //tempIdent = "ivo://" + ident;
                            tempIdent = ident;
                            if(resKey != null) tempIdent += "/" + resKey;
@@ -555,7 +554,7 @@ public class RegistryAdminService {
                                           createElement("AstrogridResource");
                            elem.appendChild(resListForAuth.item(0));                           
                            try {
-                               log.info("updating the new registy");
+                               log.debug("updating the new registy");
                                //xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",elem);
                                xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",DomHelper.ElementToString((Element)elem));
                            } catch(XMLDBException xdbe) {
@@ -582,7 +581,7 @@ public class RegistryAdminService {
                      }//if      
                   }//elseif   
             if(addManageError) {
-               log.info("Error authority id not managed by this registry throwing SOAPFault exception; the authority id = " + ident);
+               log.debug("Error authority id not managed by this registry throwing SOAPFault exception; the authority id = " + ident);
                return SOAPFaultException.createAdminSOAPFaultException("AuthorityID not managed by this registry",new RegistryException("Trying to update an entry that is not managed by this Registry authority id = " + ident));
             }//if
          }//else
@@ -601,7 +600,9 @@ public class RegistryAdminService {
           returnDoc.appendChild(returnDoc.createElementNS("http://www.astrogrid.org/registry/wsdl","UpdateResponse"));          
       }catch(ParserConfigurationException pce) {
           pce.printStackTrace();
-          log.error(pce);   
+          log.error(pce);
+          return SOAPFaultException.createAdminSOAPFaultException("Could not create successfull DOM for soap body",
+                  new RegistryException("Could not create successfull DOM for soap body"));          
       }
       
       log.info("Time taken to complete update on server = " +
@@ -722,22 +723,22 @@ public class RegistryAdminService {
           log.debug("Nothing to Update");
           return;
       }
-      log.info("the nl length of resoruces = " + nl.getLength());      
+      log.debug("the nl length of resoruces = " + nl.getLength());      
 
       String vrNS = "http://www.ivoa.net/xml/VOResource/v" + versionNumber;
       //String versionNumber = attrVersion.replace('.','_');      
       String collectionName = "astrogridv" + versionNumber.replace('.','_');
       String defaultNS = null;
-      log.info("Collection Name = " + collectionName);
+      log.debug("Collection Name = " + collectionName);
       
       boolean hasStyleSheet = conf.getBoolean("reg.custom.harveststylesheet." + versionNumber,false);
       Document xsDoc = null;
       //System.out.println("has stylesheet for " + "org.astrogrid.registry.updatestylesheet.onHarvest." + versionNumber);
-      log.info("Before the transform:::");
-      log.info(DomHelper.DocumentToString(update));
+      log.debug("Before the transform:::");
+      log.debug(DomHelper.DocumentToString(update));
       if(hasStyleSheet) {
          //System.out.println("lets call transform update");
-         log.info("performing transformation before analysis of update for versionNumber = " + versionNumber);
+         log.debug("performing transformation before analysis of update for versionNumber = " + versionNumber);
          xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber,true);
       } else {
          xsDoc = update;
@@ -766,7 +767,7 @@ public class RegistryAdminService {
       
       //hmmm user is doing harvesting before he setup the registry, okay let it go.
       if(manageAuths.isEmpty()) {
-          log.info("seems like user is doing harvesting first for versionNumber=" + versionNumber);
+          log.debug("seems like user is doing harvesting first for versionNumber=" + versionNumber);
           //okay this must be the very first time into the registry where
           //registry is empty. So put a an empty entry for this version.          
       }
@@ -786,7 +787,7 @@ public class RegistryAdminService {
              //tempIdent = "ivo://" + ident;
              tempIdent = ident;
              if(resKey != null) tempIdent += "/" + resKey;
-             log.info("the ident in updateNoCheck = " + tempIdent);
+             log.debug("the ident in updateNoCheck = " + tempIdent);
              
              //root = update.createElement("AstrogridResource");
              if(currentResource.hasAttributes()) {                 
@@ -795,13 +796,13 @@ public class RegistryAdminService {
                  if(typeAttribute != null) {
                      nodeVal = typeAttribute.getNodeValue();
                  }
-                 log.info(
+                 log.debug(
                  "Checking xsi:type for a Registry: = " 
                  + nodeVal);
                      //check if it is a registry type.
                      if(nodeVal != null && nodeVal.indexOf("Registry") != -1)
                      {
-                        log.info("A RegistryType in updateNoCheck add stats");
+                        log.debug("A RegistryType in updateNoCheck add stats");
                         //update this registry resource into our registry.
                         try {                        
                             collStat = xdb.openAdminCollection("statv" + versionNumber.replace('.','_'));

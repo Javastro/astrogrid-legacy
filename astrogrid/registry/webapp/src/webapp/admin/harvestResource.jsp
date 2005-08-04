@@ -5,7 +5,6 @@
 					  org.astrogrid.registry.common.RegistryDOMHelper,
 					  java.text.*,					  
                  org.w3c.dom.*,
-                 org.astrogrid.registry.server.JspHelper,
                  org.astrogrid.util.DomHelper,
                  java.util.ArrayList,
                  java.util.Date,

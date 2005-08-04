@@ -1,0 +1,101 @@
+package org.astrogrid.registry.common.junit;
+
+import java.io.InputStream;
+import java.util.Iterator;
+
+import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Document;
+
+import junit.framework.*;
+import org.astrogrid.registry.common.RegistryValidator;
+import org.astrogrid.registry.common.RegistryDOMHelper;
+import java.util.Map;
+import java.util.Iterator;
+
+/**
+ * Class: RegistryDOMHelperTest
+ * Description: Tests out the various methods from RegistryDOMHelper in the common registry classes.
+ * @author Kevin Benson
+ *
+ */
+public class RegistryDOMHelperTest extends TestCase {
+    
+    /**
+     * Empty Constructor
+     *
+     */
+    public RegistryDOMHelperTest() {
+        
+    }
+    
+    /**
+     * Method: testgetDefaultVersion
+     * Description: test to verify the default version in the properties file.
+     * @throws Exception standard junit exception to be thrown.
+     */    
+    public void testgetDefaultVersion() throws Exception {
+        assertEquals("0.10",RegistryDOMHelper.getDefaultVersionNumber());
+    }
+   
+    /**
+     * Method: testGetAuthorityID
+     * Description: test to extract an authority id.
+     * @throws Exception standard junit exception to be thrown.
+     */      
+    public void testGetAuthorityID() throws Exception {
+        Document queryDoc = askQueryFromFile("Cambridge0_10.xml");
+        assertEquals("uk.ac.cam.ast",
+                     RegistryDOMHelper.getAuthorityID(queryDoc.getDocumentElement()));
+    }
+    
+    /**
+     * Method: testGetResourceKey
+     * Description: test to extract an resource key.
+     * @throws Exception standard junit exception to be thrown.
+     */         
+    public void testGetResourceKey() throws Exception {
+        Document queryDoc = askQueryFromFile("Cambridge0_10.xml");
+        assertEquals("org.astrogrid.registry.RegistryService",
+                     RegistryDOMHelper.getResourceKey(queryDoc.getDocumentElement()));
+    }
+    
+    /**
+     * Method: testGetIdentifier
+     * Description: test to extract an identifer which is essentially authorityid/resource key.
+     * @throws Exception standard junit exception to be thrown.
+     */       
+    public void testGetIdentifier() throws Exception {
+        Document queryDoc = askQueryFromFile("Cambridge0_10.xml");
+        assertEquals("ivo://uk.ac.cam.ast/org.astrogrid.registry.RegistryService",
+                     RegistryDOMHelper.getIdentifier(queryDoc.getDocumentElement()));
+    }
+    
+    /**
+     * Method: testGetRegistryVersionFromXML
+     * Description: test to extract the version number from the vr namespace from a XML Resource.
+     * @throws Exception standard junit exception to be thrown.
+     */       
+    public void testGetRegistryVersionFromXML() throws Exception {
+        Document queryDoc = askQueryFromFile("Cambridge0_10.xml");
+        assertEquals("0.10",
+                     RegistryDOMHelper.getRegistryVersionFromNode(queryDoc.getDocumentElement()));
+    }
+      
+    /**
+     * Method: askQueryFromFile
+     * Description: Obtains a File on the local system as a inputstream and feeds it into a Document DOM object to be
+     * returned.
+     * @param queryFile - File name of a xml resource.
+     * @return Document DOM object of a XML file.
+     * @throws Exception  Any IO Exceptions or DOM Parsing exceptions could be thrown.
+     */    
+    protected Document askQueryFromFile(String queryFile) throws Exception {
+        assertNotNull(queryFile);
+        InputStream is = this.getClass().getResourceAsStream(queryFile);
+        
+        assertNotNull("Could not open query file :" + queryFile,is);
+        Document queryDoc = DomHelper.newDocument(is);
+        //Document queryDoc = DomHelper.newDocument(new File(queryFile));
+        return queryDoc;
+    }    
+}

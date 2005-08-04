@@ -13,7 +13,6 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
-import org.astrogrid.registry.server.XQueryExecution;
 import org.astrogrid.registry.server.XSLHelper;
 import java.net.URL;
 
@@ -157,7 +156,9 @@ public class OAIService {
      * @link http://www.openarchives.org 
      */   
     public Document ListSets(Document query) {
-     return SOAPFaultException.createHarvestSOAPFaultException("List Sets not supporte yet","List Sets not supporte yet");
+        String oaiServlet = getOAIServletURL(query) + "?verb=ListSets";
+        Document resultDoc = queryOAI(oaiServlet);
+        return addWrapperElement("http://www.astrogrid.org/registry/wsdl","ListSetssResponse",resultDoc);
     }
     
     /**
@@ -168,7 +169,7 @@ public class OAIService {
      * @link http://www.openarchives.org 
      */   
     public Document ResumeListSets(Document query) {
-        return SOAPFaultException.createHarvestSOAPFaultException("Resume List Sets not supporte yet","Resume List Sets not supporte yet");
+        return SOAPFaultException.createHarvestSOAPFaultException("Resume List Sets not supported","Resume List Sets not supported");
     }
     
     /**
@@ -212,6 +213,8 @@ public class OAIService {
          oaiServlet += "&from=" + nl.item(0).getFirstChild().getNodeValue();
        if( (nl = query.getElementsByTagName("until")).getLength() > 0  )
          oaiServlet += "&until=" + nl.item(0).getFirstChild().getNodeValue();
+       if( (nl = query.getElementsByTagName("set")).getLength() > 0  )
+           oaiServlet += "&set=" + nl.item(0).getFirstChild().getNodeValue();       
        if( (nl = query.getElementsByTagName("resumtptionToken")).getLength() > 0  )
            oaiServlet += "&resumptionToken=" + nl.item(0).getFirstChild().getNodeValue();       
        Document resultDoc = queryOAI(oaiServlet);
@@ -238,10 +241,11 @@ public class OAIService {
            oaiServlet += "&from=" + nl.item(0).getFirstChild().getNodeValue();
          if( (nl = query.getElementsByTagName("until")).getLength() > 0  )
            oaiServlet += "&until=" + nl.item(0).getFirstChild().getNodeValue();
+         if( (nl = query.getElementsByTagName("set")).getLength() > 0  )
+             oaiServlet += "&set=" + nl.item(0).getFirstChild().getNodeValue();         
          if( (nl = query.getElementsByTagName("resumtptionToken")).getLength() > 0  )
              oaiServlet += "&resumptionToken=" + nl.item(0).getFirstChild().getNodeValue();                
          Document resultDoc = queryOAI(oaiServlet);
          return addWrapperElement("http://www.astrogrid.org/registry/wsdl","ListRecordsResponse",resultDoc);
-    }
-    
+    }    
 }

@@ -4,7 +4,7 @@ import org.astrogrid.store.Ivorn;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.net.URL;
-import org.astrogrid.registry.common.InterfaceType;
+//import org.astrogrid.registry.common.InterfaceType;
 
 public class ResourceData {
     
@@ -58,9 +58,11 @@ public class ResourceData {
         return this.interfaceTypes;
     }
     
+    /*
     public void addInterfaceType(InterfaceType interfaceType) {
         interfaceTypes.add(interfaceType);
     }
+    */
     
     public String toString() {
         StringBuffer sb = new StringBuffer();

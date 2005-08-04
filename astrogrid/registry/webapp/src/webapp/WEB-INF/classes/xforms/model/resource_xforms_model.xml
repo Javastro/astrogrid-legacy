@@ -81,6 +81,8 @@
 
 </head>
 <body>
+<a href="../resourceHelp.jsp">Resource Help (pops open a new window)</a><br />
+
 <div id="resourceDiv">
 <xforms:select1 ref="@status">
    <xforms:label>Status</xforms:label>

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractTestForRegistry.java,v 1.6 2005/07/05 10:54:36 jdt Exp $
+ * $Id: AbstractTestForRegistry.java,v 1.7 2005/08/04 09:40:10 clq2 Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -105,7 +105,7 @@ public abstract class AbstractTestForRegistry extends TestCase {
 //      AstrogridAssert.assertSchemaValid(el,"VODescription",SchemaMap.ALL);
       
       //this line is the registries own validator, which is really cheating needs to be validated independently as above (as a client would do).
-      RegistryValidator.isValid(doc,"VODescription");
+      RegistryValidator.isValid(doc,"VOResources");
    }
    
 

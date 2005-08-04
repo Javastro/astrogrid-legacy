@@ -22,6 +22,15 @@ import java.util.Iterator;
 import org.astrogrid.config.Config;
 //import org.astrogrid.config.FallbackConfig;
 
+/**
+ * Class: RegistryAdminTest
+ * Description: Test for the admin ability of the registry which is mainly adding&updating xml resources to the
+ * xml database (eXist).
+ * @author Kevin Benson
+ *
+ * TODO To change the template for this generated type comment go to
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
 public class RegistryAdminTest extends TestCase {
     
     
@@ -38,13 +47,6 @@ public class RegistryAdminTest extends TestCase {
       //  XMLDBFactory xdf = new XMLDBFactory();
         File fi = new File("target/test-classes/exist.xml");
         if(fi != null) {
-            /*
-          System.out.println("can read = " + fi.canRead());
-          System.out.println("isFile = " + fi.isFile());
-          System.out.println("get name = " + fi.getName());
-          System.out.println("get abspath = " + fi.getAbsolutePath());
-          System.out.println("get conpath = " + fi.getCanonicalPath());
-          */
           XMLDBFactory.registerDB(fi.getAbsolutePath());
         }
     }
@@ -190,6 +192,15 @@ public class RegistryAdminTest extends TestCase {
         fail("ERROR: Should have caught an invalid exception and it passed.");            
     }
     */
+    
+    /**
+     * Method: askQueryFromFile
+     * Description: Obtains a File on the local system as a inputstream and feeds it into a Document DOM object to be
+     * returned.
+     * @param queryFile - File name of a xml resource.
+     * @return Document DOM object of a XML file.
+     * @throws Exception  Any IO Exceptions or DOM Parsing exceptions could be thrown.
+     */           
     protected Document askQueryFromFile(String queryFile) throws Exception {
         assertNotNull(queryFile);
         InputStream is = this.getClass().getResourceAsStream(queryFile);

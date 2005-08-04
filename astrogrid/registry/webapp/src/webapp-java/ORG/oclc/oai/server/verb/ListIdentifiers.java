@@ -137,16 +137,20 @@ public class ListIdentifiers extends ServerVerb {
 		    if (from != null && until != null && from.length() != until.length()) {
 			throw new BadArgumentException();
 		    }
-		    if (from == null || from.length() == 0) {
-			from = "0001-01-01";
-		    }
-		    if (until == null || until.length() == 0) {
-			until = "9999-12-31";
-		    }
-		    from = abstractCatalog.toFinestFrom(from);
-		    until = abstractCatalog.toFinestUntil(until);
-		    if (from.compareTo(until) > 0)
-			throw new BadArgumentException();
+		    //if (from == null || from.length() == 0) {
+			//from = "0001-01-01";
+		    //}
+		    //if (until == null || until.length() == 0) {
+			//until = "9999-12-31";
+		    //}
+            if(from != null)
+                from = abstractCatalog.toFinestFrom(from);
+            if(until != null)
+                until = abstractCatalog.toFinestUntil(until);
+          if(from != null && until != null) {
+              if (from.compareTo(until) > 0)
+                  throw new BadArgumentException();
+          }
 		    String set = request.getParameter("set");
                     if (set != null) {
                         if (set.length() == 0) set = null;
@@ -189,8 +193,8 @@ public class ListIdentifiers extends ServerVerb {
 		    try {
 			listIdentifiersMap = abstractCatalog.listIdentifiers(oldResumptionToken);
 		    } catch (BadResumptionTokenException e) {
-			sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
-			sb.append(e.getMessage());
+		        sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
+			    sb.append(e.getMessage());
 		    }
 		}
 	    }

@@ -55,6 +55,15 @@
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
+            <!-- used to implement a weak-reference cache in the registry -->
+        	<dependency>
+    	    	<id>commons-collections</id>
+          		<version>3.0</version>
+          		<properties>
+            		<jar.fileset>true</jar.fileset>
+          			 <war.bundle>true</war.bundle>          			
+          		</properties>
+        	</dependency>		
 		<!-- these are the bits that common was broken into -->
 		    <dependency>
       <groupId>org.astrogrid</groupId>

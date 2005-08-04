@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/database/manager/DatabaseManagerCoreDelegate.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/08/04 09:40:11 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerCoreDelegate.java,v $
+ *   Revision 1.8  2005/08/04 09:40:11  clq2
+ *   kevin's second batch
+ *
+ *   Revision 1.7.100.1  2005/07/28 13:35:53  KevinBenson
+ *   No longer uses resetDatabaseTables as a web service method it is not allowed anymore.
+ *
  *   Revision 1.7  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -331,7 +337,8 @@ public class DatabaseManagerCoreDelegate
         }
 
     /**
-     * Reset our database tables.
+     * This method is only availabe through the build and test enviornment, it is NOT available as
+     * a web service interface method in the actual release.
      * @throws CommunityServiceException If there is an server error.
      *
      */

@@ -429,35 +429,27 @@
     <echo message=""/>
     <echo message="Installing community database ...."/>
     <echo>Community ivo identifier: ${communityid}</echo>	
-    <!--+
-        | Wait for our service to respond.
 
-    <attainGoal name="community-wait"/>
-            +-->
-    <!--+
-        | Reset our database tables.
-        +-->
-    <ant
-        target="database.reset"
-        dir="${temporary.dir}/community/toolkit"
-        antfile="${temporary.dir}/community/toolkit/install.xml">
-    	<property name="org.astrogrid.community.ident" value="${communityid}"/>
-    	<property name="service.url" value="${tomcat.url}/astrogrid-community-SNAPSHOT/services"/>    	
-    	
-    </ant>
+	<echo>Try to reset db via url to Reset jsp</echo>
+	
+	<get src="http://${tomcat.host}:${tomcat.port}/astrogrid-community-${pom.currentVersion}/admin/ResetDB.jsp?resetdb=true"
+	     dest="${temporary.dir}/resetdbresult.html"
+		 username="${tomcat.manager.username}"
+	     password="${tomcat.manager.password}"/>
+
     <!--+
         | Load our database tables.
-        +-->
+    +-->    
     <ant
         target="database.load"
         dir="${temporary.dir}/community/toolkit"
         antfile="${temporary.dir}/community/toolkit/install.xml"
-        >
-        <!-- load the community from a file local to the autointegration rather than out of the community install kit -->
+        >        
     	<property name="org.astrogrid.community.ident" value="${communityid}"/>
     	<property name="service.url" value="${tomcat.url}/astrogrid-community-SNAPSHOT/services"/>    	
         <property name="community.xmlfile" value="file:///${work.dir}/community/demoaccounts.xml"/>
     </ant>
+
 	<!--
     <ant
         target="database.reset"

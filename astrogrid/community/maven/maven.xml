@@ -2,11 +2,17 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/07/27 11:57:58 $</cvs:date>
-    | <cvs:version>$Revision: 1.14 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/08/04 09:40:10 $</cvs:date>
+    | <cvs:version>$Revision: 1.15 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.15  2005/08/04 09:40:10  clq2
+    |   kevin's second batch
+    |
+    |   Revision 1.14.148.1  2005/07/28 13:35:53  KevinBenson
+    |   No longer uses resetDatabaseTables as a web service method it is not allowed anymore.
+    |
     |   Revision 1.14  2004/07/27 11:57:58  jdt
     |   removed reference to astrogrid.iteration
     |
@@ -506,6 +512,34 @@
                 <arg value="server"/>
                 <arg value="${wsddDir}/${service.name}.wsdd"/>
             </ant:java>
+        </define:tag>
+    	
+        <!--+
+            | Generate the Castor JDO config for a database.
+            | Attrib : database.files
+            | Attrib : database.name
+            | Attrib : database.xml
+            | Attrib : database.sql
+            | Attrib : mapping.xml
+            |
+            +-->
+        <define:tag name="database.remove.resetdbservice">
+            <ant:echo message=""/>
+        	
+        	<ant:echo message="${tempDir}/${service.wsdd}"/>
+        	<ant:echo message="${wsddDir}/${service.name}.wsdd"/>
+
+            <!--+
+                | Create a Castor JDO config.
+                +-->
+            <ant:xslt style="${project.base.root}/maven/src/xsl/wsdd-impl.xsl"
+                in="${tempDir}/${service.wsdd}"
+                out="${wsddDir}/${service.name}.wsdd" force="true">
+                <outputproperty name="method" value="xml"/>
+                <outputproperty name="indent" value="yes"/>
+                <param name="service"   expression="${service.name}"/>
+            	<param name="allowedMethods" expression="getDatabaseDescription getDatabaseConfigResource checkDatabaseTables getDatabaseName getDatabaseScriptResource getServiceStatus getDatabaseConfigUrl"/>
+            </ant:xslt>
         </define:tag>
 
         <!--+

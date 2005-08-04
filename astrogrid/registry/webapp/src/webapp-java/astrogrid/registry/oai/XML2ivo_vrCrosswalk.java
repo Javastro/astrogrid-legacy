@@ -49,7 +49,7 @@ public class XML2ivo_vrCrosswalk extends Crosswalk {
      * @param properties properties that are needed to configure the crosswalk.
      */
     public XML2ivo_vrCrosswalk(Properties properties) {
-     super("http://www.ivoa.net/xml/VOResource/v0.9 http://www.ivoa.net/xml/VOResource/VOResource-v0.9.xsd ");
+     super("http://www.ivoa.net/xml/VOResource/v" + properties.getProperty("registry_version") + " http://www.ivoa.net/xml/VOResource/VOResource-v" + properties.getProperty("registry_version") + ".xsd ");
     }
 
     /**

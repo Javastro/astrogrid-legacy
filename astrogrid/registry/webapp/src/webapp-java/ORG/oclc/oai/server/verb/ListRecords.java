@@ -106,8 +106,8 @@ public class ListRecords extends ServerVerb {
         sb.append(" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/");
         sb.append(" http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd\">");
         sb.append("<responseDate>");
-	sb.append(createResponseDate(new Date()));
-	sb.append("</responseDate>");
+        sb.append(createResponseDate(new Date()));
+        sb.append("</responseDate>");
 //         sb.append("<requestURL>");
 //         sb.append(getRequestURL(request));
 //         sb.append("</requestURL>");
@@ -135,77 +135,81 @@ public class ListRecords extends ServerVerb {
 	    ArrayList validParamNames = null;
 	    ArrayList requiredParamNames = null;
 	    if (oldResumptionToken == null) {
-		validParamNames = validParamNames1;
-		requiredParamNames = requiredParamNames1;
-		String from = request.getParameter("from");
-		String until = request.getParameter("until");
-		try {
-		    if (from != null && from.length() > 0 && from.length() < 10) {
-			throw new BadArgumentException();
-		    }
-		    if (until != null && until.length() > 0 && until.length() < 10) {
-			throw new BadArgumentException();
-		    }
-		    if (from != null && until != null && from.length() != until.length()) {
-			throw new BadArgumentException();
-		    }
-		    if (from == null || from.length() == 0) {
-			from = "0001-01-01";
-		    }
-		    if (until == null || until.length() == 0) {
-			until = "9999-12-31";
-		    }
-		    from = abstractCatalog.toFinestFrom(from);
-		    until = abstractCatalog.toFinestUntil(until);
-		    if (from.compareTo(until) > 0)
-			throw new BadArgumentException();
-		    String set = request.getParameter("set");
+	        validParamNames = validParamNames1;
+	        requiredParamNames = requiredParamNames1;
+	        String from = request.getParameter("from");
+	        String until = request.getParameter("until");
+	        try {
+	            if (from != null && from.length() > 0 && from.length() < 10) {
+	                throw new BadArgumentException();
+	            }
+	            if (until != null && until.length() > 0 && until.length() < 10) {
+	                throw new BadArgumentException();
+	            }
+	            if (from != null && until != null && from.length() != until.length()) {
+	                throw new BadArgumentException();
+	            }
+	            if (from == null || from.length() == 0) {
+	                //from = "0001-01-01";
+	            }
+	            if (until == null || until.length() == 0) {
+	                //until = "9999-12-31";
+	            }
+	            if(from != null)
+	                from = abstractCatalog.toFinestFrom(from);
+	            if(until != null)
+	                until = abstractCatalog.toFinestUntil(until);
+	            if(from != null && until != null) {
+	                if (from.compareTo(until) > 0)
+	                    throw new BadArgumentException();
+	            }
+	            String set = request.getParameter("set");
                     if (set != null) {
                         if (set.length() == 0) set = null;
                         else if (urlEncodeSetSpec) set = set.replace(' ', '+');
                     }
-		    Crosswalks crosswalks = abstractCatalog.getCrosswalks();
-		    if (metadataPrefix == null) {
-			throw new BadArgumentException();
-		    }
-		    if (!crosswalks.containsValue(metadataPrefix)) {
-			throw new CannotDisseminateFormatException(metadataPrefix);
-		    } else {
-			listRecordsMap = abstractCatalog.listRecords(from, until, set,
-								     metadataPrefix);
-		    }
-		} catch (NoItemsMatchException e) {
-		    sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
-		    sb.append(e.getMessage());
-		} catch (BadArgumentException e) {
-		    sb.append("<request verb=\"ListRecords\">");
-		    sb.append(baseURL);
-		    sb.append("</request>");
-		    sb.append(e.getMessage());
-// 		} catch (BadGranularityException e) {
-// 		    sb.append(getRequestElement(request));
-// 		    sb.append(e.getMessage());
-		} catch (CannotDisseminateFormatException e) {
-		    sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
-		    sb.append(e.getMessage());
-		} catch (NoSetHierarchyException e) {
-		    sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
-		    sb.append(e.getMessage());
-		}
+               Crosswalks crosswalks = abstractCatalog.getCrosswalks();
+               if (metadataPrefix == null) {
+                   throw new BadArgumentException();
+               }
+               if (!crosswalks.containsValue(metadataPrefix)) {
+                   throw new CannotDisseminateFormatException(metadataPrefix);
+               } else {
+                   listRecordsMap = abstractCatalog.listRecords(from, until, set,
+                                           metadataPrefix);
+               }
+	        } catch (NoItemsMatchException e) {
+	            sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
+	            sb.append(e.getMessage());
+	        } catch (BadArgumentException e) {
+	            sb.append("<request verb=\"ListRecords\">");
+	            sb.append(baseURL);
+	            sb.append("</request>");
+	            sb.append(e.getMessage());
+// 		   } catch (BadGranularityException e) {
+// 		       sb.append(getRequestElement(request));
+// 		       sb.append(e.getMessage());
+	        } catch (CannotDisseminateFormatException e) {
+	            sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
+	            sb.append(e.getMessage());
+	        } catch (NoSetHierarchyException e) {
+	            sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
+	            sb.append(e.getMessage());
+	        }
 	    } else {
-		validParamNames = validParamNames2;
-		requiredParamNames = requiredParamNames2;
-		if (hasBadArguments(request, requiredParamNames.iterator(), validParamNames)) {
-		    sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
-		    sb.append(new BadArgumentException().getMessage());
-		} else {
-		    try {
-			listRecordsMap = abstractCatalog.listRecords(oldResumptionToken);
-		    } catch (BadResumptionTokenException e) {
-			sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
-			sb.append(e.getMessage());
-		    }
-		}
+	        validParamNames = validParamNames2;
+	        requiredParamNames = requiredParamNames2;
+	        if (hasBadArguments(request, requiredParamNames.iterator(), validParamNames)) {
+	            sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
+	            sb.append(new BadArgumentException().getMessage());
+	        } else {
+	            try {
+	                listRecordsMap = abstractCatalog.listRecords(oldResumptionToken);
+	            } catch (BadResumptionTokenException e) {
+	                sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
+	                sb.append(e.getMessage());
+	            }
+	        }
 	    }
 	    if (listRecordsMap != null) {
 		sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));

@@ -8,7 +8,7 @@ import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
+import java.io.*;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.message.SOAPBodyElement;
@@ -33,8 +33,9 @@ import java.text.SimpleDateFormat;
 import java.net.MalformedURLException;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.common.XSLHelper;
-import org.astrogrid.registry.common.InterfaceType;
+//import org.astrogrid.registry.common.InterfaceType;
 import org.astrogrid.registry.common.RegistryDOMHelper;
+import org.apache.commons.collections.map.ReferenceMap;
 
 import org.astrogrid.util.DomHelper;
 
@@ -47,8 +48,6 @@ import javax.wsdl.extensions.soap.SOAPAddress;
 
 import org.xml.sax.SAXException;
 import java.rmi.RemoteException;
-
-import org.astrogrid.registry.common.WSDLBasicInformation;
 
 import javax.wsdl.factory.WSDLFactory;
 
@@ -74,6 +73,9 @@ public class QueryRegistry implements RegistryService {
     private static String reg_default_version = "0.10";
     
     private static String reg_transform_version = "0.10";
+    
+    protected final Map cache = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
+
 
    /**
     * target end point is the location of the webservice. 
@@ -89,6 +91,8 @@ public class QueryRegistry implements RegistryService {
       "org.astrogrid.registry.query.endpoint";
 
    public static Config conf = null;
+   
+   private static String cacheDir = null;
 
    //@todo don't think it's necessary to hang onto this object
    static {
@@ -96,6 +100,7 @@ public class QueryRegistry implements RegistryService {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
          reg_default_version = conf.getString("org.astrogrid.registry.version",reg_default_version); 
          reg_transform_version = conf.getString("org.astrogrid.registry.result.version",reg_transform_version);
+         cacheDir = conf.getString("registry.cache.dir",null);
       }
    }
 
@@ -115,15 +120,13 @@ public class QueryRegistry implements RegistryService {
     * @author Kevin Benson
     */
    public QueryRegistry(URL endPoint) {
-        logger
-                .info("QueryRegistry(URL) - entered const(url) of RegistryService");
+        logger.debug("QueryRegistry(URL) - entered const(url) of RegistryService");
       this.endPoint = endPoint;
       if (this.endPoint == null) {
           logger.warn("endpoint is null, using cache");
          useCache = true;
       }
-        logger
-             .info("QueryRegistry(URL) - exiting const(url) of RegistryService");
+        logger.debug("QueryRegistry(URL) - exiting const(url) of RegistryService");
    }
 
    /**
@@ -135,7 +138,7 @@ public class QueryRegistry implements RegistryService {
     */
    private Call getCall() throws ServiceException {
        
-      logger.info("getCall() - entered getCall()");
+      logger.debug("getCall() - entered getCall()");
       Call _call = null;
       Service service = new Service();
       _call = (Call)service.createCall();
@@ -158,9 +161,14 @@ public class QueryRegistry implements RegistryService {
    public Document searchFromSADQL(String adql) throws RegistryException {
       //send to sadql->adql parser.
        try {
+           Document doc = (Document)cache.get(adql);
+           if(doc != null) return doc;
            String adqlString = Sql2Adql.translateToAdql074(adql);
-           return search(DomHelper.newDocument(adqlString));
+           doc = search(DomHelper.newDocument(adqlString));
+           cache.put(adqlString,doc);
+           return doc;
        }catch(Exception e) {
+           logger.error(e);
            throw new RegistryException(e);
        }
        //throw new RegistryException("Cannot get to this point");
@@ -177,10 +185,13 @@ public class QueryRegistry implements RegistryService {
       try {
          return search(DomHelper.newDocument(xadql));
       } catch (ParserConfigurationException pce) {
+         logger.error(pce);
          throw new RegistryException(pce);
       } catch (IOException ioe) {
+          logger.error(ioe);          
          throw new RegistryException(ioe);
       } catch (SAXException sax) {
+         logger.error(sax);          
          throw new RegistryException(sax);
       }
    }
@@ -215,7 +226,7 @@ public class QueryRegistry implements RegistryService {
       newRoot.appendChild(currentRoot);
       adql.removeChild(adql.getDocumentElement());
       adql.appendChild(newRoot);
-      System.out.println("THE ADQL IN SEARCH = " + DomHelper.DocumentToString(adql));
+      logger.debug("THE ADQL IN SEARCH = " + DomHelper.DocumentToString(adql));
       try {
           return callService(adql,"Search","Search");
       } catch (RemoteException re) {
@@ -225,17 +236,23 @@ public class QueryRegistry implements RegistryService {
              try {
                  return qr.callService(adql,"Search","Search");
              }catch(RemoteException re2) {
+                 logger.error(re2);                 
                  throw new RegistryException(re2);    
              }catch(ServiceException se2) {
+                 logger.error(se2);                 
                  throw new RegistryException(se2);
              }catch(Exception e2) {
+                 logger.error(e2);                 
                  throw new RegistryException(e2);
              }
          }//if
+         logger.error(re);         
          throw new RegistryException(re);
       } catch(ServiceException se) {
+          logger.error(se);          
           throw new RegistryException(se);
       } catch(Exception e) {
+          logger.error(e);          
           throw new RegistryException(e);
       }
    }
@@ -261,12 +278,10 @@ public class QueryRegistry implements RegistryService {
            if (result.size() > 0) {
               sbe = (SOAPBodyElement)result.get(0);
               resultDoc = sbe.getAsDocument();
-              logger.info("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(resultDoc));
-              //System.out.println("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(resultDoc));
-              //NodeList nl = resultDoc.getDocumentElement().getElementsByTagNameNS("*","table");
-              //if(nl.getLength() > 0) {
-                  //System.out.println("the namespaceuri of table = " + nl.item(0).getNamespaceURI());                  
-              //}
+              //logger.debug("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(resultDoc));
+              if(resultDoc.getElementsByTagNameNS("*","Resource").getLength() == 0)
+                  return DomHelper.newDocument();
+
               if(!reg_default_version.equals(reg_transform_version)) {
                   //hmmm more of a hack for auto-integration than anything else.
                   //lets grab the registry version from the result and only transform
@@ -275,20 +290,20 @@ public class QueryRegistry implements RegistryService {
                   if(resultDoc.getDocumentElement().hasChildNodes())
                       versionNumber = RegistryDOMHelper.getRegistryVersionFromNode(resultDoc.getDocumentElement().getFirstChild());
                   if(versionNumber == null) {
-                      System.out.println("Could not find vr namespace from return of a query; SHOULD NOT HAPPEN");
+                      logger.error("Could not find vr namespace from return of a query; SHOULD NOT HAPPEN: Using default = " + reg_default_version);
                       versionNumber = reg_default_version;
                   }
                   if(!versionNumber.equals(reg_transform_version)) {
-                      System.out.println("performing tranformation = " + reg_transform_version + 
+                      logger.debug("performing tranformation = " + reg_transform_version + 
                               " version from query = " + versionNumber);                      
                       XSLHelper xslHelper = new XSLHelper();
                       return xslHelper.transformResourceToResource(resultDoc.getDocumentElement(),
                              versionNumber,reg_transform_version);
                   }//if
               }//if
-              return resultDoc;            
+              return resultDoc;
            }
-           logger.info("RETURNING NULL FROM CALLSERVICE");
+           logger.error("RETURNING NULL FROM CALLSERVICE SHOULD NOT HAPPEN");
            return null;
    }
    
@@ -302,7 +317,7 @@ public class QueryRegistry implements RegistryService {
        Document resultDoc = null;
 
        try {
-          logger.info("getRegistries() - creating full soap element.");
+          logger.debug("getRegistries() - creating full soap element.");
           doc = DomHelper.newDocument();
           //@todo GetRegistries should be a constant.
           Element root = doc.createElementNS(NAMESPACE_URI, "GetRegistries");
@@ -310,88 +325,24 @@ public class QueryRegistry implements RegistryService {
           root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);          
           doc.appendChild(root);
        } catch (ParserConfigurationException pce) {
+          logger.error(pce);           
           throw new RegistryException(pce);
        }
        
        try {
           return callService(doc,"GetRegistries","GetRegistries");
        } catch (RemoteException re) {
+          logger.error(re);           
           throw new RegistryException(re);
        } catch (ServiceException se) {
+          logger.error(se);           
           throw new RegistryException(se);
        } catch (Exception e) {
+          logger.error(e);           
           throw new RegistryException(e);
        }
    }
    
-   /**
-    * Old style xml in string form to perform a query. To be deprecated soon, but currently
-    * other astrogrid components use this method.  Created before the standard of ADQL.
-    * @param the xml string version of the old style astrogrid query language
-    * for the registry..
-    * @return XML DOM of Resources queried from the registry. 
-    */
-   public Document submitQuery(String query) throws RegistryException {
-       
-      logger.info("submitQuery(String) - entered submitQueryStringDOM()");
-      try {
-         return submitQuery(DomHelper.newDocument(query));
-      } catch (ParserConfigurationException pce) {
-         throw new RegistryException(pce);
-      } catch (IOException ioe) {
-         throw new RegistryException(ioe);
-      } catch (SAXException sax) {
-         throw new RegistryException(sax);
-      }
-   }
-
-   /**
-    * Old style form to perform a query.
-    * @param xml version of the old style astrogrid query language.
-    * @return XML DOM of Resources queried from the registry. 
-    */
-   public Document submitQuery(Document query) throws RegistryException {       
-      logger.info("submitQuery(Document) - entered submitQueryDOM()");
-      Document doc = null;
-      Document resultDoc = null;
-
-      try {
-         logger.info("submitQuery(Document) - creating full soap element.");
-         doc = DomHelper.newDocument();
-         Element root = doc.createElementNS(NAMESPACE_URI, "submitQuery");
-         String value = "http://www.ivoa.net/xml/VOResource/v" + reg_default_version;
-         root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);         
-         doc.appendChild(root);
-         Node nd = doc.importNode(query.getDocumentElement(), true);
-         root.appendChild(nd);
-      } catch (ParserConfigurationException pce) {
-         throw new RegistryException(pce);
-      }
-
-      try {
-         return callService(doc,"submitQuery","submitQuery");
-      } catch (RemoteException re) {
-          URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
-          if(backupEndpoint != null) {
-              QueryRegistry qr = new QueryRegistry(backupEndpoint);
-              try {
-                  return qr.callService(doc,"submitQuery","submitQuery");
-              }catch(RemoteException re2) {
-                  throw new RegistryException(re2);    
-              }catch(ServiceException se2) {
-                  throw new RegistryException(se2);
-              }catch(Exception e2) {
-                  throw new RegistryException(e2);
-              }
-          }
-          throw new RegistryException(re);
-       } catch(ServiceException se) {
-           throw new RegistryException(se);
-       } catch(Exception e) {
-           throw new RegistryException(e);
-       }
-   }
-
    /**
     * Loads this registry type resource for the registry. Essentially querying
     * for one resource that defines the Registry.
@@ -400,7 +351,7 @@ public class QueryRegistry implements RegistryService {
     */
    public Document loadRegistry() throws RegistryException {
        
-      logger.info("loadRegistry() - loadRegistry");
+      logger.debug("loadRegistry() - loadRegistry");
       Document doc = null;
       Document resultDoc = null;
       try {
@@ -419,10 +370,13 @@ public class QueryRegistry implements RegistryService {
       try {
           return callService(doc,"LoadRegistry","LoadRegistry");
       } catch (RemoteException re) {
+         logger.error(re);          
          throw new RegistryException(re);
       } catch (ServiceException se) {
+         logger.error(se);          
          throw new RegistryException(se);
       } catch (Exception e) {
+         logger.error(e);          
          throw new RegistryException(e);
       }
    }
@@ -437,25 +391,83 @@ public class QueryRegistry implements RegistryService {
     */
    public HashMap managedAuthorities() throws RegistryException {
        
-      logger.info("managedAuthorities() - entered managedAuthorities");
+      logger.debug("managedAuthorities() - entered managedAuthorities");
       HashMap hm = null;
       Document doc = loadRegistry();
       if (doc != null) {
-         //try {
-            //System.out.println("the doc in managedAuthorities = " + DomHelper.DocumentToString(doc));
-            //NodeList nl = DomHelper.getNodeListTags(doc, "ManagedAuthority", "vg");
             NodeList nl = doc.getElementsByTagNameNS("*","ManagedAuthority");            
             hm = new HashMap();
             for (int i = 0; i < nl.getLength(); i++) {
                hm.put(nl.item(i).getFirstChild().getNodeValue(), null);
             } //for
-         //}catch(IOException ioe) {
-         //   throw new RegistryException(ioe);   
-         //}
       }       
-      logger.info("managedAuthorities() - exiting managedAuthorities");
+      logger.debug("managedAuthorities() - exiting managedAuthorities");
       return hm;
    }
+   
+   
+   /**
+    * Do a XQuery on the database, this is supported since the astrogrid registry uses a xmldb backend.
+    * 
+    * @param xquery string, string in a xquery syntax.
+    * 
+    * @return XML DOM of what was querying in the registry not necessarily a full Resource.. 
+    */
+   public Document xquerySearch(String xquery) throws RegistryException {    
+       Document doc = null;
+       Document resultDoc = null;
+       logger.debug("entered xquerySearch");
+       resultDoc = (Document)cache.get(xquery);
+       if(resultDoc != null) return resultDoc;       
+       try {
+           DocumentBuilder registryBuilder = null;
+           registryBuilder =
+                DocumentBuilderFactory.newInstance().newDocumentBuilder();
+           doc = registryBuilder.newDocument();
+           Element root = doc.createElementNS(NAMESPACE_URI, "XQuerySearch");
+             String value = "http://www.ivoa.net/xml/VOResource/v" + reg_default_version;
+             root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);       
+             Element xqueryElem = doc.createElement("xquery");
+             xqueryElem.appendChild(doc.createTextNode(xquery));
+             root.appendChild(xqueryElem);
+             doc.appendChild(root);
+          } catch (ParserConfigurationException pce) {
+             logger.error(pce);              
+             throw new RegistryException(pce);
+          }
+          try {
+              resultDoc =  callService(doc,"XQuerySearch","XQuerySearch");
+              cache.put(xquery,resultDoc);
+              return resultDoc;
+          } catch (RemoteException re) {
+              URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
+              if(backupEndpoint != null) {
+                  QueryRegistry qr = new QueryRegistry(backupEndpoint);              
+                  try {
+                      resultDoc = qr.callService(doc,"XQuerySearch","XQuerySearch");
+                      cache.put(xquery,resultDoc);
+                  }catch(RemoteException re2) {
+                      logger.error(re2);                      
+                      throw new RegistryException(re2);    
+                  }catch(ServiceException se2) {
+                      logger.error(se2);                      
+                      throw new RegistryException(se2);
+                  }catch(Exception e2) {
+                      logger.error(e2);                      
+                      throw new RegistryException(e2);
+                  }
+              }
+              logger.error(re);              
+              throw new RegistryException(re);
+          } catch (ServiceException se) {
+             logger.error(se);              
+             throw new RegistryException(se);
+          } catch (Exception e) {
+             logger.error(e);              
+             throw new RegistryException(e);
+          }
+   }   
+   
 
    /**
     * Query for a specific resource in the Registry based on its identifier element(s).
@@ -468,6 +480,7 @@ public class QueryRegistry implements RegistryService {
    public Document getResourceByIdentifier(Ivorn ident)
       throws RegistryException {
       if (ident == null) {
+         logger.error("Cannot call this method with a null ivorn identifier");          
          throw new RegistryException("Cannot call this method with a null ivorn identifier");
       }
       return getResourceByIdentifier(ident.toRegistryString());
@@ -491,13 +504,15 @@ public class QueryRegistry implements RegistryService {
            ident = Ivorn.SCHEME + "://" + ident;
        }
        
-       logger
-       .info("getResourceByIdentifier(String) - entered getResourceByIdentifierDOM");
+       logger.debug("entered getResourceByIdentifier");
        if (ident == null) {
+           logger.error("Cannot call this method with a null ivorn identifier");          
            throw new RegistryException("Cannot call this method with a null identifier");
        }       
        if (!useCache) {
-           logger.info("GetResourcesByIdentifier() - GetResourcesByIdentifier");
+           resultDoc = (Document)cache.get(ident);
+           if(resultDoc != null) return resultDoc;
+           logger.debug("GetResourceByIdentifier() not using cache");
            try {
 
              DocumentBuilder registryBuilder = null;
@@ -513,10 +528,13 @@ public class QueryRegistry implements RegistryService {
              doc.appendChild(root);
              //System.out.println("the DOC IN GETRESOURCEBYIDNET1 = " + DomHelper.ElementToString(doc.getDocumentElement()));
           } catch (ParserConfigurationException pce) {
-             throw new RegistryException(pce);
+              logger.error(pce);                   
+              throw new RegistryException(pce);
           }
           try {
+              //System.out.println("calling with GetResources now");
               resultDoc =  callService(doc,"GetResourcesByIdentifier","GetResourcesByIdentifier");
+              cache.put(ident,resultDoc);
               //System.out.println("resultDoc = " + DomHelper.DocumentToString(resultDoc));
           } catch (RemoteException re) {
               URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
@@ -524,51 +542,95 @@ public class QueryRegistry implements RegistryService {
                   QueryRegistry qr = new QueryRegistry(backupEndpoint);              
                   try {
                       resultDoc = qr.callService(doc,"GetResourcesByIdentifier","GetResourcesByIdentifier");
+                      cache.put(ident,resultDoc);
                   }catch(RemoteException re2) {
+                      logger.error(re2);                      
                       throw new RegistryException(re2);    
                   }catch(ServiceException se2) {
+                      logger.error(se2);                       
                       throw new RegistryException(se2);
                   }catch(Exception e2) {
+                      logger.error(e2);                         
                       throw new RegistryException(e2);
                   }
               }
+              logger.error(re);                 
               throw new RegistryException(re);
           } catch (ServiceException se) {
-             throw new RegistryException(se);
+              logger.error(se);                 
+              throw new RegistryException(se);
           } catch (Exception e) {
-             throw new RegistryException(e);
+              logger.error(e);                 
+              throw new RegistryException(e);
           }      
             NodeList resultList = resultDoc.getElementsByTagNameNS("*","Resource");            
             if(resultList.getLength() == 0) {
-               throw new RegistryException("No Resource Found for ident = " + ident);   
+                logger.error("No Resource Found for ident = " + ident);                   
+                throw new RegistryException("No Resource Found for ident = " + ident);   
             }          
             if(resultList.getLength() > 1) {
-               throw new RegistryException("Found more than one Resource for Ident = " + ident);   
-            }          
-            logger
-                 .info("getResourceByIdentifier(String) - exiting getResourceByIdentifierDOM (did not use config cache)");
+                logger.error("Found more than one Resource for Ident = " + ident);
+                throw new RegistryException("Found more than one Resource for Ident = " + ident);   
+            }
          return resultDoc;
        } else {
-            logger
-                 .info("getResourceByIdentifier(String) - exiting getResourceByIdentifierDOM (used config cache)");
-         if(Ivorn.isIvorn(ident))
-             ident = ident.substring((Ivorn.SCHEME + "://").length());
-         return conf.getDom(ident);
+            logger.debug("getResourceByIdentifier using cache");
+            if(Ivorn.isIvorn(ident))
+                ident = ident.substring((Ivorn.SCHEME + "://").length());            
+            if(cacheDir != null) {
+                ident = ident.replaceAll("[^\\w*]","_") + ".xml";
+                try {
+                    return DomHelper.newDocument(new File(cacheDir,ident));
+                } catch (ParserConfigurationException pce) {
+                    logger.error(pce);                    
+                    throw new RegistryException(pce);
+                } catch (SAXException sax) {
+                    logger.error(sax);                    
+                    throw new RegistryException(sax);
+                } catch (IOException ioe) {
+                    logger.error(ioe);                    
+                    throw new RegistryException(ioe);
+                }
+            } else {            
+                return conf.getDom(ident);
+            }
        }
    }
-      
+   
+   /**
+    * Method: getQueryForInterfacetype
+    * Description: Query for a particular relationship type and only query for active resources.
+    * @param ident identifier of the related resource.
+    * @return sql type query.
+    */
    public String getQueryForInterfaceType(String ident) {
        String selectQuery = null;
        
-       selectQuery = "Select * from Registry where vr:content/vr:relationship/vr:relationshipType = 'derived-from' and " +
+       selectQuery = "Select * from Registry where @status='active' and vr:content/vr:relationship/vr:relationshipType = 'derived-from' and " +
                      "vr:content/vr:relationship/vr:relatedResource/@ivo-id = '" + ident + "'";
        return selectQuery;
    }
-      
+   
+   /**
+    * Method: getResourceDataByIdentifier
+    * Description: Get Resource data based on a relationship identifier and populate that data into a common
+    * object that contains the most common referenced data.
+    * @param ident Ivorn object of an identifier for the related resource identifier.
+    * @return a ResourceData object containing the most common referenced data from a Resource.
+    * @throws RegistryException
+    */
    public ResourceData getResourceDataByIdentifier(Ivorn ident) throws RegistryException {
        return getResourceDataByIdentifier(ident.toRegistryString());
    }
    
+   /**
+    * Method: getResourceDataByIdentifier
+    * Description: Get Resource data based on a relationship identifier and populate that data into a common
+    * object that contains the most common referenced data.
+    * @param ident String object of an identifier for the related resource identifier.
+    * @return a ResourceData object containing the most common referenced data from a Resource.
+    * @throws RegistryException
+    */   
    public ResourceData getResourceDataByIdentifier(String ident) throws RegistryException {
        return createSingleResourceData(getResourceByIdentifier(ident));
    }
@@ -580,16 +642,12 @@ public class QueryRegistry implements RegistryService {
    public ResourceData[] getResourceDataByRelationship(String ident) throws RegistryException  {
       Document doc = null;
       logger
-           .info("getResourcesByInterfaceType(InterfaceType) type - " + ident);
+           .debug("getResourcesDataByRelationship - " + ident);
        
       String selectQuery = getQueryForInterfaceType(ident);
-      System.out.println("HERE IS THE SELECT QUERY = " + selectQuery);
-      //doc = submitQuery(selectQuery);
       doc = searchFromSADQL(selectQuery);
-         logger
-             .info("getResourcesByInterfaceType(InterfaceType) - exiting getResourcesByInterfaceType");
-         
-         return createResourceData(doc);
+      logger.debug("exiting getResourcesDataByRelationship");         
+      return createResourceData(doc);
    }
    
    private ResourceData createSingleResourceData(Document doc) {
@@ -598,7 +656,6 @@ public class QueryRegistry implements RegistryService {
    
    private ResourceData[] createResourceData(Document doc) {
        NodeList nl = doc.getElementsByTagNameNS("*","Resource");
-       System.out.println("the nl length of resource = " + nl.getLength());
        ResourceData[] rd = new ResourceData[nl.getLength()];
        NodeList serviceNodes = null;
        String resKey = null;
@@ -606,7 +663,7 @@ public class QueryRegistry implements RegistryService {
        for(int i = 0;i < nl.getLength(); i++) {
            rd[i] = new ResourceData();
            serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","title");
-           System.out.println("title length = " + serviceNodes.getLength());
+           //System.out.println("title length = " + serviceNodes.getLength());
            if(serviceNodes.getLength() > 0)
                rd[i].setTitle(DomHelper.getValue((Element)serviceNodes.item(0)));
            serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","description");
@@ -639,7 +696,7 @@ public class QueryRegistry implements RegistryService {
            } 
            */          
        }//for
-       printResourceData(rd);
+//       printResourceData(rd);
        return rd;
    }
    
@@ -674,8 +731,7 @@ public class QueryRegistry implements RegistryService {
    public String getEndPointByIdentifier(String ident)
       throws RegistryException {
        logger
-             .info("getEndPointByIdentifier(String) - entered getEndPointByIdentifier with ident = "
-                    + ident);
+             .debug("enter getEndPointByIdentifier with ident = " + ident);
       //check for an AccessURL
       //if AccessURL is their and it is a web service then get the wsdl
       //into a DOM object and run an XSL on it to get the endpoint.
@@ -685,14 +741,16 @@ public class QueryRegistry implements RegistryService {
          returnVal = DomHelper.getNodeTextValue(doc, "AccessURL", "vr");
          if(returnVal == null) returnVal = DomHelper.getNodeTextValue(doc, "accessURL", "vr");
       } catch (IOException ioe) {
-         throw new RegistryException("Could not parse xml to get AcessURL or Invocation");
+          logger.error(ioe);          
+          throw new RegistryException("Could not parse xml to get AcessURL or Invocation");
       }
       if (returnVal == null) {
-         throw new RegistryException("Found Resource Document, but had no AccessURL");
+          logger.error("Found Resource Document, but had no AccessURL");          
+          throw new RegistryException("Found Resource Document, but had no AccessURL");
       }
-      logger.info("getEndPointByIdentifier(String) - The AccessURL = " + returnVal);
+      logger.debug("getEndPointByIdentifier(String) - The AccessURL = " + returnVal);
       if (returnVal.endsWith("wsdl")) {
-          logger.info("getEndPointByIdentifier(String) - has ?wsdl stripping off");
+         logger.debug("getEndPointByIdentifier(String) - has ?wsdl stripping off");
          returnVal = returnVal.substring(0,returnVal.indexOf("?wsdl"));
       }
       return returnVal;

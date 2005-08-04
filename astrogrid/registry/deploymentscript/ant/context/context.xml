@@ -24,18 +24,17 @@
     <Environment name="reg.amend.validate" override="false" type="java.lang.String" value="true" description="Have validation on or off."/>
     <Environment name="reg.amend.quiton.invalid" override="false" type="java.lang.String" value="false" description="Quit on validation."/>
     <Environment name="reg.amend.returncount" override="false" type="java.lang.String" value="100" 
-        description="The maximum number of results to return from queries."/-->
-    <Environment name="reg.amend.harvest" override="false" type="java.lang.String" value="@reg.amend.harvest@" 
-        description="Does this registry need to do harvesting."/>
+        description="The maximum number of results to return from queries."/>
+    <Environment name="reg.amend.harvest" override="false" type="java.lang.String" value="false" description="Does this registry need to do harvesting."/-->
     <Environment name="reg.amend.oaipublish.0.9" override="false" type="java.lang.String" value="@reg.amend.oaipublish.0.9@" 
         description="The url to the oai publishing url for 0.9, default is set to astrogrid servlet, but is not required to use."/>
     <Environment name="reg.amend.oaipublish.0.10" override="false" type="java.lang.String" value="@reg.amend.oaipublish.0.10@" 
         description="The url to the oai publishing url for 0.10, default is set to astrogrid servlet, but is not required to use."/>
-    <Environment name="reg.custom.exist.configuration" override="false" type="java.lang.String" value="@reg.custom.exist.configuration@" 
+    <!--Environment name="reg.custom.exist.configuration" override="false" type="java.lang.String" value="" 
         description="Point to another exist configuration file on your disk hence a different data directory as well.  (only for internal db use).  This might be handly if you want to use the internal database, but not have the configuration file and data directory of eXist db with the war file so undeploying/updating wars will not lose data. Also use if servlet container does not unpack war file."/>
-    <Environment name="reg.custom.harvest.interval_hours" override="false" type="java.lang.String" value="@reg.custom.harvest.interval_hours@" 
+    <Environment name="reg.custom.harvest.interval_hours" override="false" type="java.lang.String" value="2" 
         description="Number of hours between harvest (if harvest is enabled)"/>
-    <!--Environment name="reg.amend.identify.repositoryName" override="false" type="java.lang.String" value="Astrogrid Full Repository" 
+    <Environment name="reg.amend.identify.repositoryName" override="false" type="java.lang.String" value="Astrogrid Full Repository" 
         description="Used for the Identify verb in OAI.  The repository Name."/>
     <Environment name="reg.amend.identify.adminEmail" override="false" type="java.lang.String" value="mailto:ktn@star.le.ac.uk" 
         description="Used for the Identify verb in OAI.  The administration Email of this OAI repository."/>

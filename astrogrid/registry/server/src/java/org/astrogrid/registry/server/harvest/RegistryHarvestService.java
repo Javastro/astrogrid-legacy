@@ -4,7 +4,6 @@
  */
 package org.astrogrid.registry.server.harvest;
 
-import org.astrogrid.registry.server.XQueryExecution;
 import java.rmi.RemoteException;
 
 
@@ -44,8 +43,6 @@ import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
 import org.astrogrid.registry.RegistryException;
 
-import org.astrogrid.registry.common.WSDLInformation;
-import org.astrogrid.registry.common.WSDLBasicInformation;
 import org.astrogrid.registry.common.XSLHelper;
 
 import java.net.MalformedURLException;
@@ -220,7 +217,7 @@ public class RegistryHarvestService {
     * @param resources Set of Resources to harvest on, normally a Registry Resource.
     */
    public void beginHarvest(Node resource, Date dt, String version)  throws RegistryException, IOException  {
-      log.debug("entered beginharvest");
+      log.debug("entered beginharvest(Node)");
       int failureCount = 0;
       boolean resumptionSuccess = false;      
       String accessURL = null;
@@ -230,12 +227,7 @@ public class RegistryHarvestService {
       NodeList nl = null;
       String soapActionURI = null;
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-      int threadCount = 0;
       
-
-      //instantiate the Admin service that contains the update methods.
-      RegistryAdminService ras = new RegistryAdminService();
-
       //System.out.println(resource.getNodeName() + " " + resource.getNodeValue());
 
       NamedNodeMap attributes = resource.getAttributes();
@@ -276,57 +268,39 @@ public class RegistryHarvestService {
       if(accessURL.indexOf("?wsdl") != -1) {
           accessURL = accessURL.substring(0,accessURL.indexOf("?wsdl"));
       }
-
-//    accessURL = DomHelper.getNodeTextValue((Element)resourceList.item(i),"AccessURL","vr");
-//    invocationType = DomHelper.getNodeTextValue((Element)resourceList.item(i),"Invocation","vr");
       log.debug("The access URL = " + accessURL + " invocationType = " + invocationType);
-//    System.out.println("The access URL = " + accessURL + " invocationType = " + invocationType);
+      beginHarvest(accessURL, invocationType,dt,version);
+      log.debug("exist beginHarvest(Node)");
+   }
+   
+   public void beginHarvest(String accessURL, String invocationType, Date dt, String version) throws RegistryException, IOException  {
+       log.debug("entered beginharvest(url,invocation)");
+       int failureCount = 0;
+       boolean resumptionSuccess = false;      
+       boolean isRegistryType;
+       Document doc = null;
+       NodeList nl = null;
+       String soapActionURI = null;
+       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+       //instantiate the Admin service that contains the update methods.
+       RegistryAdminService ras = new RegistryAdminService();
+
       
       if(invocationType != null && invocationType.endsWith("WebService")) {
          //call the service
          //remember to look at the date
          Element childElem = null;
-         Element root = null;
-         
-         /*
-         if("?wsdl".indexOf(accessURL) == -1) {
-            accessURL += "?wsdl";
-         }
-         */
-         //Read in the wsdl for the endpoint and namespace
-         /*
-         WSDLBasicInformation wsdlBasic = null;
-         try {
-            wsdlBasic = WSDLInformation.getBasicInformationFromURL(accessURL);
-         } catch(RegistryException re) {
-            re.printStackTrace();
-            log.error(re);
-         }
-         */
-//         if(wsdlBasic != null) {
-            //create a call object
-            Call callObj = getCall(accessURL);
-
+         Element root = null;         
+         //create a call object
+         Call callObj = getCall(accessURL);
             try {
                doc = DomHelper.newDocument();
                //set the operation name/interface method to ListResources
                String interfaceMethod = "ListRecords";
                //if(isRegistryType) interfaceMethod = "ListRecords";
-               /*
-               String nameSpaceURI = WSDLInformation.
-                                     getNameSpaceFromBinding(
-								        accessURL,interfaceMethod);
-               */
                String nameSpaceURI = "http://www.ivoa.net/wsdl/RegistryHarvest/v0.1";
                //soapActionURI = "http://www.ivoa.net/wsdl/reginterface.wsdl#" + interfaceMethod;
                soapActionURI = "http://www.openarchives.org/OAI/2.0/" + interfaceMethod;
-               /*
-               if(wsdlBasic.getEndPoint().keys().hasMoreElements()) {
-                   soapActionURI = wsdlBasic.getSoapActionURI(
-                     (String)wsdlBasic.getEndPoint().keys().nextElement() + 
-                     "_" + interfaceMethod);
-               }
-               */
                if(soapActionURI != null) {
                    callObj.setSOAPActionURI(soapActionURI);
                }//if
@@ -336,6 +310,11 @@ public class RegistryHarvestService {
                root = doc.createElementNS(nameSpaceURI,interfaceMethod);
                String value = "http://www.ivoa.net/xml/VOResource/v" + version;
                root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);
+               if(hasManagedSetViaWebService(accessURL,version)) {
+                   childElem = doc.createElementNS(nameSpaceURI,"set");
+                   childElem.appendChild(doc.createTextNode("ivo_managed"));
+                   root.appendChild(childElem);                   
+               }
                if(dt != null) {
                   childElem = doc.createElementNS(nameSpaceURI,"from");
                   childElem.appendChild(doc.createTextNode(sdf.format(dt)));
@@ -359,7 +338,7 @@ public class RegistryHarvestService {
                    //log.debug("SOAPDOC RETURNED = " + DomHelper.DocumentToString(soapDoc));
                    //(new HarvestThread(ras,soapDoc.getDocumentElement())).start();
                    ras.updateNoCheck(soapDoc,version);
-                   if(isRegistryType) {
+                   //if(isRegistryType) {
                       nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
                       while(nl.getLength() > 0) {
                           Document resumeDoc = DomHelper.newDocument();
@@ -380,21 +359,8 @@ public class RegistryHarvestService {
                           //(new HarvestThread(ras,soapDoc.getDocumentElement().cloneNode(true))).start();
                           ras.updateNoCheck(soapDoc,version);
                            nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
-                           /*
-                           threadCount++;                           
-                           if(threadCount > 19) {
-                               log.info("20 harvest threads have started recently, sleeping for 5 seconds. ");
-                               log.info("The activethread count = " + Thread.activeCount());
-                               try {
-                                   Thread.sleep(5000);
-                               }catch(InterruptedException ie) {
-                                   log.info("Possible interruption in the middle of harvest");
-                               }
-                               threadCount = 0;
-                           }//if
-                           */
                       }//while
-                   }//if
+                   //}//if
                }//if
             } catch(RemoteException re) {
                 //log error
@@ -420,9 +386,13 @@ public class RegistryHarvestService {
             //might need to put some oai date stuff on the end.  This is
             //unknown.
             log.debug("A web browser invocation not a web service");
+            String httpSet = "";
+            if(hasManagedSetViaHTTP(accessURL)) {
+                httpSet = "&set=ivo_managed";
+            }
 
             if(accessURL.indexOf("?") == -1) {
-               ending = "?verb=ListRecords&metadataPrefix=ivo_vor"; //&from=" + date;
+               ending = "?verb=ListRecords&metadataPrefix=ivo_vor" + httpSet;
                if(dt != null) {
                   ending += "&from=" + sdf.format(dt);
                }
@@ -486,6 +456,69 @@ public class RegistryHarvestService {
       }//elseif
       log.debug("end beginHarvest");
    }//beginHarvest
+   
+   private boolean hasManagedSetViaHTTP(String accessURL) throws ParserConfigurationException, SAXException, IOException {
+       String ending = "";
+       if(accessURL.indexOf("?") == -1) {
+           ending = "?verb=ListSets";
+       }
+       log.debug("grabbing document at: " + accessURL + ending);
+       Document doc = DomHelper.newDocument(new URL(accessURL + ending));
+       log.debug("the spec doc = " + DomHelper.DocumentToString(doc));
+       NodeList nl = doc.getElementsByTagNameNS("*","setSpec");
+       for(int i = 0;i < nl.getLength();i++) {
+           if("ivo_managed".equals(nl.item(i).getFirstChild().getNodeValue()))
+               return true;
+       }//for
+       return false;
+   }
+   
+   private boolean hasManagedSetViaWebService(String accessURL, String version)  throws ParserConfigurationException, RemoteException, Exception  {
+       Element childElem = null;
+       Element root = null;
+       
+          //create a call object
+       Call callObj = getCall(accessURL);
+       String soapActionURI = null;
+       
+       Document doc = DomHelper.newDocument();
+       String interfaceMethod = "ListSets";
+       String nameSpaceURI = "http://www.ivoa.net/wsdl/RegistryHarvest/v0.1";
+       soapActionURI = "http://www.openarchives.org/OAI/2.0/" + interfaceMethod;
+       if(soapActionURI != null) {
+           callObj.setSOAPActionURI(soapActionURI);
+       }//if
+       log.debug("Calling harvest service for url = " + accessURL + 
+                " interface Method = " + interfaceMethod + 
+                " with soapactionuri = " + soapActionURI);
+       
+       root = doc.createElementNS(nameSpaceURI,interfaceMethod);
+       String value = "http://www.ivoa.net/xml/VOResource/v" + version;
+       root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);
+       
+       doc.appendChild(root);
+       //log.info("FULL SOAP REQUEST FOR HARVEST = " + DomHelper.DocumentToString(doc));
+       SOAPBodyElement sbeRequest = new SOAPBodyElement(
+                                        doc.getDocumentElement());
+       //sbeRequest.setName("harvestAll");
+       sbeRequest.setName(interfaceMethod);
+       sbeRequest.setNamespaceURI(nameSpaceURI);
+       //invoke the web service call
+       log.debug("Calling invoke on service");
+       Vector result = (Vector) callObj.invoke
+                                (new Object[] {sbeRequest});
+       //Take the results and harvest.
+       if(result.size() > 0) {
+           SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+           Document soapDoc = sbe.getAsDocument();
+           NodeList nl = soapDoc.getElementsByTagNameNS("*","setSpec");
+           for(int i = 0;i < nl.getLength();i++) {
+               if("ivo_managed".equals(nl.item(i).getFirstChild().getNodeValue()))
+                   return true;
+           }//for
+       }
+       return false;
+   }
 
    /**
     * Method to establish a Service and a Call to the server side web service.

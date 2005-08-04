@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryFunctionTest.java,v 1.20 2004/12/18 18:30:16 jdt Exp $
+ * $Id: RegistryFunctionTest.java,v 1.21 2005/08/04 09:40:11 clq2 Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -56,14 +56,14 @@ public class RegistryFunctionTest extends AbstractTestForRegistry {
     */
    protected void setUp() throws Exception {
       super.setUp();
-      entryurl = this.getClass().getResource("dummyEntry.xml");
+      entryurl = this.getClass().getResource("dummytest.xml");
    }
    
    public void testAddnew() throws RegistryException, URISyntaxException, TransformerException
    {
       System.out.println("the entryurl = " + entryurl.toExternalForm());
       ras.updateFromURL(entryurl);
-      Ivorn ivorn = new Ivorn("ivo://"+AUTHORITY_ID+"/"+RESOURCE_KEY);
+      Ivorn ivorn = new Ivorn("ivo://"+AUTHORITY_ID+"/dummytest");
       System.out.println(ivorn.toString()+" "+ivorn.toRegistryString());
       Document dom = rs.getResourceByIdentifier(ivorn);
       assertNotNull("did not return the resource as DOM", dom);
@@ -74,9 +74,6 @@ public class RegistryFunctionTest extends AbstractTestForRegistry {
       assertTrue("did not find the resource  - returned a null document - should have an error message before now",doc.hasChildNodes());
       //VODescription val = rs.getResourceByIdentifier(ivorn);
       //assertNotNull("did not return the resource as Castor Object",val);
-      
-      
-
    }
    public void testRetrieve() throws RegistryException, URISyntaxException, TransformerException
    {

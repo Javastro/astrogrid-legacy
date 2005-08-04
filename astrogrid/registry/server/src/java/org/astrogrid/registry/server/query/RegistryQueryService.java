@@ -21,7 +21,6 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
-import org.astrogrid.registry.server.XQueryExecution;
 import org.astrogrid.registry.server.XSLHelper;
 import java.net.URL;
 
@@ -184,51 +183,56 @@ public class RegistryQueryService {
     *  
     * @param query - XQuery string to be used directly on the registry.
     * @return - Resource DOM object of the Resources from the query of the registry.
-    
-   public Document XQLQuery(Document query) {
-      log.debug("start Query");
-      Document resultDoc = null;
-         //get the xquery.
-         String xql = DomHelper.getNodeTextValue(query,"XQLString");
-         log.debug("end Query");
+    */
+   public Document XQuerySearch(Document query) {
+         log.debug("start XQuerySearch");
          
          String versionNumber = getRegistryVersion(query);
          //query the eXist db.
-         resultDoc = (Document)queryExist(xql,versionNumber);
-      return resultDoc;
+         //resultDoc = (Document)queryExist(xql,versionNumber);
+         Collection coll = null;
+         String collectionName = "astrogridv" + versionNumber.replace('.','_');
+         try {
+             String xql = DomHelper.getNodeTextValue(query,"XQuery");
+             coll = xdb.openCollection(collectionName);
+             log.debug("Got Collection = " + collectionName);
+             //System.out.println("the xql = " + xql + " the collection = " + collectionName);
+             QueryService xqs = xdb.getQueryService(coll);
+        
+             long beginQ = System.currentTimeMillis(); 
+             ResourceSet rs = xqs.query(xql);
+             //System.out.println("the rs size = " + rs.getSize());
+             log.debug("Total Query Time = " + (System.currentTimeMillis() - beginQ));
+             log.debug("Number of results found in query = " + rs.getSize());
+             if(rs.getSize() == 0) {
+                 return null;
+             }
+             Resource xmlr = rs.getMembersAsResource();
+             return processQueryResults(DomHelper.newDocument(xmlr.getContent().toString()),
+                     versionNumber,"XQuerySearch");
+         }catch(XMLDBException xdbe) {
+             xdbe.printStackTrace();
+             return SOAPFaultException.createQuerySOAPFaultException(xdbe.getMessage(),xdbe);
+         }catch(ParserConfigurationException pce) {
+             pce.printStackTrace();
+             return SOAPFaultException.createQuerySOAPFaultException(pce.getMessage(),pce);
+         }catch(SAXException sax) {
+             sax.printStackTrace();
+             return SOAPFaultException.createQuerySOAPFaultException(sax.getMessage(),sax);
+         }catch(IOException ioe) {
+             ioe.printStackTrace();
+             return SOAPFaultException.createQuerySOAPFaultException(ioe.getMessage(),ioe);
+         } finally {
+             try {
+                 log.debug("end XQuerySearch");                 
+                 xdb.closeCollection(coll);
+             }catch(XMLDBException xmldb) {
+                 log.error(xmldb);
+             }//try
+         }//finally
    }
-   */
 
-   
-   /**
-   * Method: submitQuery 
-   * Description: NOW DEPRECATED AND NOT IN USE; queries the registry for Resources.  Currently uses
-   * an older xml query language that Astrogrid came up with, but will
-   * soon be rarely used for the ADQL version to be the standard for the
-   * IVOA.  Will be deprecated in itn07.
-   * 
-   * @deprecated - It is still being used some, but will be factored away in a matter of a couple of weeks Jan 24,2005
-   * @param query XML document object representing the query language used on the registry.
-   * @return XML docuemnt object representing the result of the query.
-   * @author Kevin Benson 
-   */
-   public Document submitQuery(Document query) {
-      log.debug("start submitQuery");
-      long beginQ = System.currentTimeMillis();
-      String versionNumber = getRegistryVersion(query);
-      //parse query right now actually does the query.
-      String xql = XQueryExecution.createXQL(query,versionNumber);
-      log.info("Query to be performed on the db = " + xql);
-      Node resultDoc = queryExist(xql,versionNumber);
-      log.info("Time taken to complete submitQuery on server = " +
-              (System.currentTimeMillis() - beginQ));
-      log.debug("end submitQuery");
 
-      //To be correct we need to transform the results, with a correct response element 
-      //for the soap message and for the right root element around the resources.
-      return processQueryResults(resultDoc,versionNumber,null);
-   }
-   
    /**
     * Method: loadRegistry
     * Description: Grabs the versionNumber from the DOM if possible and call the
@@ -596,6 +600,7 @@ public class RegistryQueryService {
        try {
            coll = xdb.openCollection(collectionName);
            XMLResource xmr = (XMLResource)xdb.getResource(coll,id + ".xml");
+           //System.out.println(xmr.getContent().toString());
            return processQueryResults(DomHelper.newDocument(xmr.getContent().toString()),
                        versionNumber,"GetResourceByIdentifier");
        }catch(XMLDBException xdbe) {

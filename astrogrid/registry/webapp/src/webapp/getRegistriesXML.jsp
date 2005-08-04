@@ -3,8 +3,7 @@
        org.w3c.dom.*,
        org.astrogrid.io.*,
        org.astrogrid.util.DomHelper,
-       org.apache.axis.utils.XMLUtils,
-       org.astrogrid.registry.server.JspHelper"
+       org.apache.axis.utils.XMLUtils"
    isThreadSafe="false"
    session="false"
    contentType="text/xml"

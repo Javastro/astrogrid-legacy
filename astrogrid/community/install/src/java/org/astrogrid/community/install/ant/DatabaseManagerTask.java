@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/java/org/astrogrid/community/install/ant/DatabaseManagerTask.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/08/04 09:40:11 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerTask.java,v $
+ *   Revision 1.4  2005/08/04 09:40:11  clq2
+ *   kevin's second batch
+ *
+ *   Revision 1.3.182.1  2005/07/28 13:35:53  KevinBenson
+ *   No longer uses resetDatabaseTables as a web service method it is not allowed anymore.
+ *
  *   Revision 1.3  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -169,15 +175,6 @@ public class DatabaseManagerTask
             // Check the database tables.
             if ("status".equals(action))
                 {
-                boolean status = delegate.checkDatabaseTables() ;
-                if (DEBUG_FLAG) System.out.println("  Database tables healthy : " + status);
-                }
-            //
-            // Reset the database tables.
-            if ("reset".equals(action))
-                {
-                if (DEBUG_FLAG) System.out.println("  Resetting database tables ....");
-                delegate.resetDatabaseTables() ;
                 boolean status = delegate.checkDatabaseTables() ;
                 if (DEBUG_FLAG) System.out.println("  Database tables healthy : " + status);
                 }

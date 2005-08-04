@@ -87,9 +87,9 @@ Select * from Registry where vr:title = 'Astrogrid' and vr:content/vr:descriptio
 </form>
 
 <%
-  if(request.getParameter("performquery") != null && request.getParameter("performquery").trim().equals("true")) {
-  Document adql = null;
   boolean isMultipart = FileUpload.isMultipartContent(request);
+  if(isMultipart || (request.getParameter("performquery") != null && request.getParameter("performquery").trim().equals("true"))) {
+  Document adql = null;
   if(isMultipart) {
    DiskFileUpload upload = new DiskFileUpload();
    List /* FileItem */ items = upload.parseRequest(request);
@@ -101,7 +101,7 @@ Select * from Registry where vr:title = 'Astrogrid' and vr:content/vr:descriptio
        }//if
    }//while
   }else if(request.getParameter("queryFromURL") != null &&
-     request.getParameter("addFromURL").trim().length() > 0) {
+     request.getParameter("queryFromURL").trim().length() > 0) {
      adql = DomHelper.newDocument(new URL(request.getParameter("docurl")));
   }else if(request.getParameter("Resource").trim().length() > 0) {  
   System.out.println("okay lets do the translation");

@@ -1,4 +1,4 @@
-/*$Id: RegistryInstallationTest.java,v 1.12 2004/09/22 10:47:25 nw Exp $
+/*$Id: RegistryInstallationTest.java,v 1.13 2005/08/04 09:40:10 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,15 +46,9 @@ public class RegistryInstallationTest extends AbstractTestForRegistry {
         Document doc = delegate.loadRegistry();
         assertNotNull(doc);
         XMLUtils.PrettyDocumentToStream(doc,System.out);
-        assertNonEmptyVODescription(doc);
+        assertVODescription(doc);        
     }
     
-    public void testAuthority() throws RegistryException
-    {
-       HashMap auth = delegate.managedAuthorities();
-       assertNotNull(auth);
-       assertTrue("There are no managed authorities", !auth.isEmpty());
-    }
 
    /* (non-Javadoc)
     * @see junit.framework.TestCase#setUp()
@@ -68,6 +62,12 @@ public class RegistryInstallationTest extends AbstractTestForRegistry {
 
 /* 
 $Log: RegistryInstallationTest.java,v $
+Revision 1.13  2005/08/04 09:40:10  clq2
+kevin's second batch
+
+Revision 1.12.148.1  2005/07/20 08:17:07  KevinBenson
+fixed a few registry tests and now no longer requires 0.9 registry but 0.10
+
 Revision 1.12  2004/09/22 10:47:25  nw
 renamed abstract class BaseRegistryTest to AsbtractTestForRegistry, to stop the int.tests from trying to run it.
 

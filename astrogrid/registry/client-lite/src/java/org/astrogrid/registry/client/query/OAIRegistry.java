@@ -33,7 +33,7 @@ import java.text.SimpleDateFormat;
 import java.net.MalformedURLException;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.common.XSLHelper;
-import org.astrogrid.registry.common.InterfaceType;
+//import org.astrogrid.registry.common.InterfaceType;
 
 import org.astrogrid.util.DomHelper;
 
@@ -46,8 +46,6 @@ import javax.wsdl.extensions.soap.SOAPAddress;
 
 import org.xml.sax.SAXException;
 import java.rmi.RemoteException;
-
-import org.astrogrid.registry.common.WSDLBasicInformation;
 
 import javax.wsdl.factory.WSDLFactory;
 
@@ -152,47 +150,6 @@ public class OAIRegistry implements OAIService {
              return null;
      }
      
-     /**
-      * Performas a query to return all Resources of a type of Registry.
-      * @return XML DOM of Resources queried from the registry.
-      * @throws RegistryException problem during the query servor or client side.
-      */
-     public Document getRegistries() throws RegistryException {
-         Document doc = null;
-         Document resultDoc = null;
-
-         try {
-            logger.info("getRegistries() - creating full soap element.");
-            doc = DomHelper.newDocument();
-            //@todo GetRegistries should be a constant.
-            Element root = doc.createElementNS(NAMESPACE_URI, "GetRegistries");
-            String value = "http://www.ivoa.net/xml/VOResource/v" + reg_default_version.replace('_','.');
-            root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);          
-            doc.appendChild(root);
-         } catch (ParserConfigurationException pce) {
-            throw new RegistryException(pce);
-         }
-         
-         try {
-            return callService(doc,"GetRegistries","GetRegistries");
-            /*
-            if(!reg_default_version.replace('_','.').equals(reg_transform_version.replace('_','.'))) {
-                System.out.println("performing tranformation = " + reg_transform_version + 
-                                   " default version = " + reg_default_version);
-                XSLHelper xslHelper = new XSLHelper();
-                return xslHelper.transformResourceToResource(resultDoc.getDocumentElement(),
-                            reg_default_version,reg_transform_version);
-            }//if
-            */
-         } catch (RemoteException re) {
-            throw new RegistryException(re);
-         } catch (ServiceException se) {
-            throw new RegistryException(se);
-         } catch (Exception e) {
-            throw new RegistryException(e);
-         }
-     }
-     
      
      /**
       * Identify - Queryies based on OAI-Identify verb, identifying the repository.
@@ -203,7 +160,7 @@ public class OAIRegistry implements OAIService {
         Document resultDoc = null;
 
         try {
-           logger.info("identify() - creating full soap element.");
+           logger.debug("identify() - creating full soap element.");
            doc = DomHelper.newDocument();
            Element root = doc.createElementNS(NAMESPACE_URI, "Identify");
            doc.appendChild(root);
@@ -271,7 +228,7 @@ public class OAIRegistry implements OAIService {
            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             
            logger
-                 .info("listRecords(String, Date, Date) - creating full soap element.");
+                 .debug("listRecords(String, Date, Date) - creating full soap element.");
            doc = DomHelper.newDocument();
            Element root = doc.createElementNS(NAMESPACE_URI, "ListRecords");
            doc.appendChild(root);
@@ -328,7 +285,7 @@ public class OAIRegistry implements OAIService {
         try {
             
            logger
-                .info("listMetadataFormats(String) - creating full soap element.");
+                .debug("listMetadataFormats(String) - creating full soap element.");
            doc = DomHelper.newDocument();
            Element root = doc.createElementNS(NAMESPACE_URI, "ListMetadataFormats");
            doc.appendChild(root);
@@ -375,7 +332,7 @@ public class OAIRegistry implements OAIService {
 
         try {
            logger
-                .info("getRecord(String, String) - creating full soap element.");
+                .debug("getRecord(String, String) - creating full soap element.");
            doc = DomHelper.newDocument();
            Element root = doc.createElementNS(NAMESPACE_URI, "GetRecord");
            doc.appendChild(root);
@@ -448,7 +405,7 @@ public class OAIRegistry implements OAIService {
            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             
            logger
-                .info("listIdentifiers(String, Date, Date) - creating full soap element.");
+                .debug("listIdentifiers(String, Date, Date) - creating full soap element.");
            doc = DomHelper.newDocument();
            Element root = doc.createElementNS(NAMESPACE_URI, "ListIdentifiers");
            doc.appendChild(root);

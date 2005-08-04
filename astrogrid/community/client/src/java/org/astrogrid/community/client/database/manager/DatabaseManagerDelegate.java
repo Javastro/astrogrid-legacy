@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/database/manager/DatabaseManagerDelegate.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/08/04 09:40:11 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerDelegate.java,v $
+ *   Revision 1.6  2005/08/04 09:40:11  clq2
+ *   kevin's second batch
+ *
+ *   Revision 1.5.182.1  2005/07/28 13:35:53  KevinBenson
+ *   No longer uses resetDatabaseTables as a web service method it is not allowed anymore.
+ *
  *   Revision 1.5  2004/06/18 13:45:19  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -80,7 +86,8 @@ public interface DatabaseManagerDelegate
         throws CommunityServiceException ;
 
     /**
-     * Reset our database tables.
+     * This method is only availabe through the build and test environment.  It is NOT 
+     * avaliable as a web service interface method in the actual release.
      * @throws CommunityServiceException If there is an server error.
      *
      */

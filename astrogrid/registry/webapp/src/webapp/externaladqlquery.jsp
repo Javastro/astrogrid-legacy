@@ -1,8 +1,9 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
-             org.astrogrid.registry.client.query.*,
-             org.astrogrid.registry.client.*,
-             org.astrogrid.registry.server.*,
-             org.astrogrid.registry.common.RegistryDOMHelper,
+                 org.astrogrid.registry.client.query.*,
+                 org.astrogrid.registry.client.*,
+                 org.astrogrid.registry.server.*,
+             	  org.astrogrid.registry.common.RegistryDOMHelper,
+                 org.astrogrid.registry.common.RegistryValidator,             
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.astrogrid.query.sql.Sql2Adql,
@@ -44,7 +45,6 @@
 <h1>Query Registry</h1>
 
 <p>
-   You can submit ADQL 0.73 or 0.74 adql queries. 
    The first two options are for loading adql (xml version) from a local file or url.
    The third option allows you to put in sql statements in which then we will translate it to
    adql for querying the registry.
@@ -109,9 +109,10 @@ Version:
 </p>
 </form>
 
+
 <form method="post">
 <p>
-Enter SQL (actually adqls):<br />
+Enter SQL (actually adqls).  This will only send adql 0.7.4 at the moment use above approaches to send other versions:<br />
 Version: 
 <select name="version">
    <% for(int k = (al.size()-1);k >= 0;k--) { %>
@@ -170,10 +171,8 @@ Select * from Registry where vr:title = 'Astrogrid' and vr:content/vr:descriptio
    adql = DomHelper.newDocument(resource);
   }//elseif
   
-  String maxCount = SimpleConfig.getSingleton().getString("exist.query.returncount", "25");
 %>
 <br />
-<strong>Only a max of <%= maxCount %> entries will be shown:</strong><br />
 
 <pre>
 <%
@@ -181,10 +180,22 @@ Select * from Registry where vr:title = 'Astrogrid' and vr:content/vr:descriptio
       RegistryService rs = RegistryDelegateFactory.createQuery(new URL(endpoint));
       //Document entry = server.Search(adql);
       Document entry = rs.search(adql);
+      out.write("<p>If entries are returned, then the xml will be validated, shown tabular, then full xml at the bottom.");
       if (entry == null) {
         out.write("<p>No entry returned</p>");
       }
       else {
+      if(entry.getElementsByTagNameNS("*","SearchResponse").getLength() == 0)
+	      out.write("<p><font color='red'>Invalid No SearchResponse came back in the soap body as the root element</font></p>");
+      try {
+         RegistryValidator.isValid(doc,"VOResources");
+      }catch(AssertionFailedError afe) {
+            update = false;
+            validateError = true;
+            out.write("<p><font color='red'>Invalid xml (VOResources): " + afe.getMessage() + "</font></p>");
+      }
+      
+      
       if(entry.getDocumentElement().hasChildNodes()) {
           version = RegistryDOMHelper.getRegistryVersionFromNode(entry.getDocumentElement().getFirstChild());
       }else {
@@ -200,8 +211,8 @@ Select * from Registry where vr:title = 'Astrogrid' and vr:content/vr:descriptio
          
 //         Element resource = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","ResourceKey").item(0);
 //         Element authority = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","AuthorityID").item(0);
-      String authority = RegistryDOMHelper.getAuthorityID((Element)resources.item(n));
-      String resource = RegistryDOMHelper.getResourceKey((Element)resources.item(n));
+      	  String authority = RegistryDOMHelper.getAuthorityID((Element)resources.item(n));
+      	  String resource = RegistryDOMHelper.getResourceKey((Element)resources.item(n));
 
          String ivoStr = null;
          if (authority == null || authority.trim().length() <= 0) {

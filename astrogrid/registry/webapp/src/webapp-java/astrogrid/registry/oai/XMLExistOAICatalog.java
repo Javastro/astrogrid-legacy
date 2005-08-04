@@ -103,6 +103,7 @@ import org.astrogrid.util.DomHelper;
 import org.astrogrid.registry.server.RegistryServerHelper;
 import org.astrogrid.registry.server.admin.AuthorityList;
 import org.astrogrid.registry.server.QueryHelper;
+import org.astrogrid.registry.server.query.RegistryQueryService;
 import org.astrogrid.registry.server.XSLHelper;
 import java.util.HashMap;
 import java.util.Set;
@@ -143,11 +144,56 @@ public class XMLExistOAICatalog extends AbstractCatalog {
 
          System.out.println("I am in the constructor");
          this.props = properties;         
-      sets = getSets(properties);
+         sets = getSets(properties);
+   }
+   
+   private void populateNativeMapFromIdentifier(String oaiIdentifier) throws OAIInternalServerError, IdDoesNotExistException {
+       RegistryQueryService rs = new RegistryQueryService();
+       String versionNumber = props.getProperty("registry_version",null);
+       maxListSize = conf.getInt("XMLFileOAICatalog.maxListSize",200);
+       try {
+           Document sourceFile = rs.getResourceByIdentifier(oaiIdentifier,versionNumber);
+           if(sourceFile.getElementsByTagNameNS("*","Resource").getLength() == 0)
+               throw new IdDoesNotExistException(oaiIdentifier);
+
+           //Document sourceFile = qs.runQuery(collectionName,xqlQuery);
+           //Document resultDoc = null;
+           System.out.println("the verisonNumber = " + versionNumber);
+           XSLHelper xsh = new XSLHelper();
+           //resultDoc = sourceFile;
+           //Document oaiDoc = xsh.transformToOAI(resultDoc,versionNumber);
+           Document oaiDoc = xsh.transformToOAI(sourceFile,versionNumber);
+        
+           //System.out.println("the oai version = " + DomHelper.DocumentToString(oaiDoc));
+           String xmlDoc = DomHelper.DocumentToString(oaiDoc);
+           ByteArrayInputStream bas = new ByteArrayInputStream(xmlDoc.getBytes());
+           RecordStringHandler rsh = new RecordStringHandler();
+           SAXParserFactory factory = SAXParserFactory.newInstance();
+           factory.setNamespaceAware(true);
+           factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+           SAXParser saxParser = factory.newSAXParser();
+           //saxParser.parse(new File(sourceFile), rsh);
+           saxParser.parse(bas, rsh);
+           nativeMap = rsh.getNativeRecords();
+      } catch (SAXException e) {
+          e.printStackTrace();
+          throw new OAIInternalServerError(e.getMessage());
+      } catch (ParserConfigurationException e) {
+          e.printStackTrace();
+          throw new OAIInternalServerError(e.getMessage());
+      }catch(MalformedURLException e) {
+          e.printStackTrace();
+          throw new OAIInternalServerError(e.getMessage());
+      } catch(IOException ioe) {
+          ioe.printStackTrace();
+          throw new OAIInternalServerError(ioe.getMessage());
+          
+      }       
+       
    }
    
    
-   private void populateNativeMap() throws OAIInternalServerError {
+   private void populateNativeMap(String from, String until, String set,int fromSequence) throws OAIInternalServerError, NoItemsMatchException {
        try {
            String versionNumber = props.getProperty("registry_version",null);
            if(versionNumber == null)
@@ -158,50 +204,69 @@ public class XMLExistOAICatalog extends AbstractCatalog {
            String temp;
            debug = false;
 
-           maxListSize = conf.getInt("XMLFileOAICatalog.maxListSize",8000);
+           maxListSize = conf.getInt("XMLFileOAICatalog.maxListSize",200);
            if(debug)
               System.out.println("in XMLFileOAICatalog(): maxListSize=" + maxListSize);
 
            System.out.println("get the managedauths");
            
            HashMap manageAuths = null;
-           
-           try {
-               manageAuths = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
-           }catch(XMLDBException xdbe) {
-               log.error(xdbe);
-           }
-           String authorityID = conf.getString("reg.amend.authorityid");
-           //Set keys = manageAuths.keySet();
-           java.util.Collection authList = manageAuths.values();
-           Iterator keyIter = authList.iterator();
-           System.out.println("The manageAuths Full Size = " + authList.size());
-           if(authList.size() == 0) {
-              throw new OAIInternalServerError("Could not find any authorites");
-           }
-           boolean hasAuthorityElement = conf.getBoolean("reg.custom.identifier.hasauthorityid." + versionNumber,false);
-           String identWhere = " near($x/vr:Identifier/vr:AuthorityID,'";
-           String wildCard = "";
-           if(!hasAuthorityElement) {
-               identWhere = " near($x/vr:identifier,'ivo://";
-               wildCard = "";
+           boolean managedSet = false;
+           if("ivo_managed".equals(set)) {
+               managedSet = true;
            }
            String xqlQuery = QueryHelper.getXQLDeclarations(versionNumber);
-           xqlQuery += " " + QueryHelper.getStartQuery(versionNumber);
-           AuthorityList al = null;
-           while(keyIter.hasNext()) {
-               al = (AuthorityList)keyIter.next();               
-               if(authorityID.equals(al.getOwner())) {               
-                   xqlQuery +=  identWhere + al.getAuthorityID() + "') ";
-                   while(keyIter.hasNext()) {
-                       al = (AuthorityList)keyIter.next();
-                       if(authorityID.equals(al.getOwner())) {                           
-                           xqlQuery += " or " + identWhere + al.getAuthorityID() + "') ";
-                       }//if
-                   }//while
-               }//if
-           }//while
-           xqlQuery += " return $x";
+           xqlQuery += " let $hits := " + QueryHelper.getStartQuery(versionNumber);
+           
+           if(managedSet) {
+               try {
+                   manageAuths = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
+               }catch(XMLDBException xdbe) {
+                   log.error(xdbe);
+               }
+               String authorityID = conf.getString("reg.amend.authorityid");
+               //Set keys = manageAuths.keySet();
+               java.util.Collection authList = manageAuths.values();
+               Iterator keyIter = authList.iterator();
+               System.out.println("The manageAuths Full Size = " + authList.size());
+               if(authList.size() == 0) {
+                  throw new OAIInternalServerError("Could not find any authorites");
+               }
+               boolean hasAuthorityElement = conf.getBoolean("reg.custom.identifier.hasauthorityid." + versionNumber,false);
+               String identWhere = " near($x/vr:Identifier/vr:AuthorityID,'";
+               String wildCard = "";
+               if(!hasAuthorityElement) {
+                   identWhere = " near($x/vr:identifier,'ivo://";
+                   wildCard = "";
+               }
+               AuthorityList al = null;
+               while(keyIter.hasNext()) {
+                   al = (AuthorityList)keyIter.next();               
+                   if(authorityID.equals(al.getOwner())) {               
+                       xqlQuery +=  identWhere + al.getAuthorityID() + "') ";
+                       while(keyIter.hasNext()) {
+                           al = (AuthorityList)keyIter.next();
+                           if(authorityID.equals(al.getOwner())) {                           
+                               xqlQuery += " or " + identWhere + al.getAuthorityID() + "') ";
+                           }//if
+                       }//while
+                   }//if
+               }//while
+           }else if("ivo_standard".equals(set) || set == null || set.trim().length() == 0) {
+               xqlQuery += " exists($x/vr:identifier) ";
+           }else {
+               xqlQuery += " near($x/@xsi:type,'" + set.substring(4) + "')";
+           }
+           
+           if(from != null && from.trim().length() > 0) {
+               xqlQuery += "and  $x/@updated >= '" + from + "' ";
+           }
+           if(until != null && until.trim().length() > 0) {
+               xqlQuery += "and $x/@updated <= '" + until + "' ";
+           }           
+           //xqlQuery += " return $x";
+           xqlQuery += " order by $x/vr:identifier ascending return $x return subsequence($hits," + fromSequence + "," + (maxListSize + fromSequence + 2) + ")";
+           
            System.out.println("the build xql = " + xqlQuery);
 
            //QueryDBService qs = new QueryDBService();
@@ -216,6 +281,8 @@ public class XMLExistOAICatalog extends AbstractCatalog {
                if(rs.getSize() > 0) {
                    Resource xmlr = rs.getMembersAsResource();
                    sourceFile = DomHelper.newDocument(xmlr.getContent().toString());
+               } else {
+                   throw new NoItemsMatchException();
                }
            }catch(XMLDBException xdbe) {
                log.error(xdbe);
@@ -301,7 +368,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    public String getRecord(String oaiIdentifier, String metadataPrefix)
        throws IdDoesNotExistException, CannotDisseminateFormatException,
               OAIInternalServerError {
-       populateNativeMap();
+       populateNativeMapFromIdentifier(oaiIdentifier);
        String localIdentifier
            = ((XMLExistRecordFactory)getRecordFactory()).fromOAIIdentifier(oaiIdentifier);
        String recordid = localIdentifier;
@@ -322,7 +389,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    public String getMetadata(String oaiIdentifier, String metadataPrefix)
        throws IdDoesNotExistException, IdDoesNotExistException, CannotDisseminateFormatException,
          OAIInternalServerError {
-       populateNativeMap();
+       populateNativeMapFromIdentifier(oaiIdentifier);
        String localIdentifier
            = ((XMLExistRecordFactory)getRecordFactory()).fromOAIIdentifier(oaiIdentifier);
        String recordid = localIdentifier;
@@ -418,7 +485,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
     public Map listIdentifiers(String from, String until, String set, String metadataPrefix)
         throws BadArgumentException, CannotDisseminateFormatException, OAIInternalServerError,
                NoItemsMatchException {
-        populateNativeMap();
+        populateNativeMap(from, until, set, 1);
         purge(); // clean out old resumptionTokens
         Map listIdentifiersMap = new HashMap();
         ArrayList headers = new ArrayList();
@@ -427,29 +494,30 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    int numRows = nativeMap.entrySet().size();
    int count = 0;
    while (count < maxListSize && iterator.hasNext()) {
-       Map.Entry entryNativeMap = (Map.Entry)iterator.next();
+            Map.Entry entryNativeMap = (Map.Entry)iterator.next();
             HashMap nativeRecord = (HashMap)entryNativeMap.getValue();
             String recordDate = ((XMLExistRecordFactory)getRecordFactory()).getDatestamp(nativeRecord);
             String schemaLocation = (String)nativeRecord.get("schemaLocation");
-       List setSpecs = (List)nativeRecord.get("setSpecs");
+            //List setSpecs = (List)nativeRecord.get("setSpecs");
             if (recordDate.compareTo(from) >= 0
                 && recordDate.compareTo(until) <= 0
-                && (!schemaLocationIndexed || schemaLocation.equals(getCrosswalks().getSchemaLocation(metadataPrefix)))
-      && (set==null || setSpecs.contains(set))) {
+                && (!schemaLocationIndexed || schemaLocation.equals(getCrosswalks().getSchemaLocation(metadataPrefix)))) {
+                /*
+                && (set==null || setSpecs.contains(set))) {
+                */
                 String[] header = ((XMLExistRecordFactory)getRecordFactory()).createHeader(nativeRecord);
                 headers.add(header[0]);
                 identifiers.add(header[1]);
                 count++;
             }
    }
-
-        if (count == 0)
-            throw new NoItemsMatchException();
+   if (count == 0)
+       throw new NoItemsMatchException();
 
    /* decide if you're done */
    if (iterator.hasNext()) {
        String resumptionId = getRSName();
-       resumptionResults.put(resumptionId, iterator);
+       resumptionResults.put(resumptionId, " ");
 
        /*****************************************************************
         * Construct the resumptionToken String however you see fit.
@@ -461,6 +529,21 @@ public class XMLExistOAICatalog extends AbstractCatalog {
        resumptionTokenSb.append(":");
        resumptionTokenSb.append(Integer.toString(numRows));
        resumptionTokenSb.append(":");
+       if(from != null)
+           resumptionTokenSb.append(from);
+       else
+           resumptionTokenSb.append(" ");
+       resumptionTokenSb.append(":");
+       if(until != null)
+           resumptionTokenSb.append(until);
+       else
+           resumptionTokenSb.append(" ");       
+       resumptionTokenSb.append(":");
+       if(set != null)
+           resumptionTokenSb.append(set);
+       else
+           resumptionTokenSb.append(" ");       
+       resumptionTokenSb.append(":");       
        resumptionTokenSb.append(metadataPrefix);
 
        /*****************************************************************
@@ -468,12 +551,12 @@ public class XMLExistOAICatalog extends AbstractCatalog {
         * resumptionToken attributes in the response. Otherwise, use the
         * line after it that I've commented out.
         *****************************************************************/
-       listIdentifiersMap.put("resumptionMap",
-               getResumptionMap(resumptionTokenSb.toString(),
-                      numRows,
-                      0));
-//        listIdentifiersMap.put("resumptionMap",
-//                getResumptionMap(resumptionTokenSb.toString()));
+       //listIdentifiersMap.put("resumptionMap",
+       //        getResumptionMap(resumptionTokenSb.toString(),
+       //               numRows,
+       //               0));
+        listIdentifiersMap.put("resumptionMap",
+                getResumptionMap(resumptionTokenSb.toString()));
    }
         listIdentifiersMap.put("headers", headers.iterator());
         listIdentifiersMap.put("identifiers", identifiers.iterator());
@@ -509,68 +592,94 @@ public class XMLExistOAICatalog extends AbstractCatalog {
         String resumptionId;
         int oldCount;
         String metadataPrefix;
-   int numRows;
+        String from, until, set;
+        int numRows;
         try {
             resumptionId = tokenizer.nextToken();
             oldCount = Integer.parseInt(tokenizer.nextToken());
-       numRows = Integer.parseInt(tokenizer.nextToken());
+            numRows = Integer.parseInt(tokenizer.nextToken());
+            from = tokenizer.nextToken();
+            if(from != null && from.trim().length() == 0)
+                from = null;
+            until = tokenizer.nextToken();
+            if(until != null && until.trim().length() == 0)
+                until = null;            
+            set = tokenizer.nextToken();
+            if(set != null && set.trim().length() == 0)
+                set = null;            
             metadataPrefix = tokenizer.nextToken();
         } catch (NoSuchElementException e) {
             throw new BadResumptionTokenException();
         }
+        try {
+            populateNativeMap(from, until, set, oldCount);
+        } catch(NoItemsMatchException nime) {
+            throw new OAIInternalServerError(nime.getMessage());
+        }
+        
+        Iterator iterator = nativeMap.entrySet().iterator();
+        
 
-   /* Get some more records from your database */
-   Iterator iterator = (Iterator)resumptionResults.remove(resumptionId);
-   if (iterator == null) {
-       System.out.println("XMLFileOAICatalog.listIdentifiers: reuse of old resumptionToken?");
-       iterator = nativeMap.entrySet().iterator();
-       for (int i = 0; i<oldCount; ++i)
-      iterator.next();
-   }
+        numRows = nativeMap.entrySet().size();
+        int count = 0;
+        while (count < maxListSize && iterator.hasNext()) {
+                 Map.Entry entryNativeMap = (Map.Entry)iterator.next();
+                 HashMap nativeRecord = (HashMap)entryNativeMap.getValue();
+                 String recordDate = ((XMLExistRecordFactory)getRecordFactory()).getDatestamp(nativeRecord);
+                 String schemaLocation = (String)nativeRecord.get("schemaLocation");
+                 //List setSpecs = (List)nativeRecord.get("setSpecs");
+                 if ((!schemaLocationIndexed || schemaLocation.equals(getCrosswalks().getSchemaLocation(metadataPrefix)))) {
+                     String[] header = ((XMLExistRecordFactory)getRecordFactory()).createHeader(nativeRecord);
+                     headers.add(header[0]);
+                     identifiers.add(header[1]);
+                     count++;
+                 }
+        }
 
-   /* load the headers and identifiers ArrayLists. */
-   int count = 0;
-   while (count < maxListSize && iterator.hasNext()) {
-       Map.Entry entryNativeMap = (Map.Entry)iterator.next();
-            Object nativeRecord = nativeMap.get((String)entryNativeMap.getKey());
-            String[] header = ((XMLExistRecordFactory)getRecordFactory()).createHeader(nativeRecord);
-            headers.add(header[0]);
-            identifiers.add(header[1]);
-            count++;
-   }
+        /* decide if you're done */
+        if (iterator.hasNext()) {
+            /*****************************************************************
+             * Construct the resumptionToken String however you see fit.
+             *****************************************************************/
+            StringBuffer resumptionTokenSb = new StringBuffer();
+            resumptionTokenSb.append(resumptionId);
+            resumptionTokenSb.append(":");
+            resumptionTokenSb.append(Integer.toString((count+oldCount)));
+            resumptionTokenSb.append(":");
+            resumptionTokenSb.append(Integer.toString(numRows));
+            resumptionTokenSb.append(":");
+            if(from != null)
+                resumptionTokenSb.append(from);
+            else
+                resumptionTokenSb.append(" ");
+            resumptionTokenSb.append(":");
+            if(until != null)
+                resumptionTokenSb.append(until);
+            else
+                resumptionTokenSb.append(" ");       
+            resumptionTokenSb.append(":");
+            if(set != null)
+                resumptionTokenSb.append(set);
+            else
+                resumptionTokenSb.append(" ");
+            resumptionTokenSb.append(":");            
+            resumptionTokenSb.append(metadataPrefix);
 
-   /* decide if you're done. */
-   if (iterator.hasNext()) {
-       resumptionId = getRSName();
-       resumptionResults.put(resumptionId, iterator);
-
-       /*****************************************************************
-        * Construct the resumptionToken String however you see fit.
-        *****************************************************************/
-       StringBuffer resumptionTokenSb = new StringBuffer();
-       resumptionTokenSb.append(resumptionId);
-       resumptionTokenSb.append(":");
-       resumptionTokenSb.append(Integer.toString(oldCount + count));
-       resumptionTokenSb.append(":");
-       resumptionTokenSb.append(Integer.toString(numRows));
-       resumptionTokenSb.append(":");
-       resumptionTokenSb.append(metadataPrefix);
-
-       /*****************************************************************
-        * Use the following line if you wish to include the optional
-        * resumptionToken attributes in the response. Otherwise, use the
-        * line after it that I've commented out.
-        *****************************************************************/
-       listIdentifiersMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
-                             numRows,
-                             oldCount));
-       //          listIdentifiersMap.put("resumptionMap",
-       //                                 getResumptionMap(resumptionTokenSb.toString()));
-   }
-
-        listIdentifiersMap.put("headers", headers.iterator());
-        listIdentifiersMap.put("identifiers", identifiers.iterator());
-        return listIdentifiersMap;
+            /*****************************************************************
+             * Use the following line if you wish to include the optional
+             * resumptionToken attributes in the response. Otherwise, use the
+             * line after it that I've commented out.
+             *****************************************************************/
+            //listIdentifiersMap.put("resumptionMap",
+            //        getResumptionMap(resumptionTokenSb.toString(),
+            //               numRows,
+            //               0));
+             listIdentifiersMap.put("resumptionMap",
+                     getResumptionMap(resumptionTokenSb.toString()));
+        }
+             listIdentifiersMap.put("headers", headers.iterator());
+             listIdentifiersMap.put("identifiers", identifiers.iterator());
+             return listIdentifiersMap;
     }
 
 
@@ -587,8 +696,9 @@ public class XMLExistOAICatalog extends AbstractCatalog {
     private String constructRecord(Object nativeRecord, String metadataPrefix)
         throws CannotDisseminateFormatException, OAIInternalServerError {
         String schemaURL = null;
-   Iterator setSpecs = getSetSpecs(nativeRecord);
-   Iterator abouts = getAbouts(nativeRecord);
+
+        Iterator setSpecs = getSetSpecs(nativeRecord);
+        Iterator abouts = getAbouts(nativeRecord);
 
         if (metadataPrefix != null) {
             if (debug) {
@@ -649,32 +759,29 @@ public class XMLExistOAICatalog extends AbstractCatalog {
                                     String metadataPrefix)
       throws BadArgumentException, CannotDisseminateFormatException,
       OAIInternalServerError, NoItemsMatchException {
-        populateNativeMap();
+        populateNativeMap(from, until, set, 1);
         String requestedSchemaLocation = getCrosswalks().getSchemaLocation(metadataPrefix);
         purge(); // clean out old resumptionTokens
         Map listRecordsMap = new HashMap();
         LinkedList records = new LinkedList();
-   Iterator iterator = nativeMap.entrySet().iterator();
-   int numRows = nativeMap.entrySet().size();
+        Iterator iterator = nativeMap.entrySet().iterator();
+        int numRows = nativeMap.entrySet().size();
         if (debug) {
             System.out.println("XMLFileOAICatalog.listRecords: numRows=" + numRows);
         }
-   int count = 0;
-   while (count < maxListSize && iterator.hasNext()) {
-       Map.Entry entryNativeMap = (Map.Entry)iterator.next();
+        int count = 0;
+        while (count < maxListSize && iterator.hasNext()) {
+            Map.Entry entryNativeMap = (Map.Entry)iterator.next();
             HashMap nativeRecord = (HashMap)entryNativeMap.getValue();
             String recordDate = ((XMLExistRecordFactory)getRecordFactory()).getDatestamp(nativeRecord);
             String schemaLocation = (String)nativeRecord.get("schemaLocation");
-       List setSpecs = (List)nativeRecord.get("setSpecs");
+            List setSpecs = (List)nativeRecord.get("setSpecs");
             if (debug) {
                 System.out.println("XMLFileOAICatalog.listRecord: recordDate=" + recordDate);
                 System.out.println("XMLFileOAICatalog.listRecord: requestedSchemaLocation=" + requestedSchemaLocation);
                 System.out.println("XMLFileOAICatalog.listRecord: schemaLocation=" + schemaLocation);
             }
-            if (recordDate.compareTo(from) >= 0
-                && recordDate.compareTo(until) <= 0
-                && (!schemaLocationIndexed || requestedSchemaLocation.equals(schemaLocation))
-      && (set==null || setSpecs.contains(set))) {
+            if ((!schemaLocationIndexed || requestedSchemaLocation.equals(schemaLocation))) {
                 String record = constructRecord(nativeRecord, metadataPrefix);
                 if (debug) {
                     System.out.println("XMLFileOAICatalog.listRecords: record=" + record);
@@ -690,7 +797,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    /* decide if you're done */
    if (iterator.hasNext()) {
        String resumptionId = getRSName();
-       resumptionResults.put(resumptionId, iterator);
+       resumptionResults.put(resumptionId, " ");
 
        /*****************************************************************
         * Construct the resumptionToken String however you see fit.
@@ -702,6 +809,22 @@ public class XMLExistOAICatalog extends AbstractCatalog {
        resumptionTokenSb.append(":");
        resumptionTokenSb.append(Integer.toString(numRows));
        resumptionTokenSb.append(":");
+       if(from != null)
+           resumptionTokenSb.append(from);
+       else
+           resumptionTokenSb.append(" ");
+       resumptionTokenSb.append(":");
+       if(until != null)
+           resumptionTokenSb.append(until);
+       else
+           resumptionTokenSb.append(" ");
+
+       resumptionTokenSb.append(":");
+       if(set != null)
+           resumptionTokenSb.append(set);
+       else
+           resumptionTokenSb.append(" ");       
+       resumptionTokenSb.append(":");
        resumptionTokenSb.append(metadataPrefix);
 
        /*****************************************************************
@@ -709,12 +832,11 @@ public class XMLExistOAICatalog extends AbstractCatalog {
         * resumptionToken attributes in the response. Otherwise, use the
         * line after it that I've commented out.
         *****************************************************************/
-       listRecordsMap.put("resumptionMap",
-               getResumptionMap(resumptionTokenSb.toString(),
-                      numRows,
-                      0));
-//        listRecordsMap.put("resumptionMap",
-//                getResumptionMap(resumptionTokenSb.toString()));
+       //listRecordsMap.put("resumptionMap",
+       //        getResumptionMap(resumptionTokenSb.toString(),
+       //               numRows, 0));
+        listRecordsMap.put("resumptionMap",
+                getResumptionMap(resumptionTokenSb.toString()));
    }
         listRecordsMap.put("records", records.iterator());
         return listRecordsMap;
@@ -735,8 +857,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
      *            problem
      */
     public Map listRecords(String resumptionToken)
-      throws BadResumptionTokenException,
-      OAIInternalServerError {
+      throws BadResumptionTokenException, OAIInternalServerError {
         purge(); // clean out old resumptionTokens
         Map listRecordsMap = new HashMap();
         LinkedList records = new LinkedList();
@@ -749,30 +870,47 @@ public class XMLExistOAICatalog extends AbstractCatalog {
         String resumptionId;
         int oldCount;
         String metadataPrefix;
-   int numRows;
+        String from, until, set;
+        int numRows;
+        System.out.println("Begin tokenize");
         try {
             resumptionId = tokenizer.nextToken();
             oldCount = Integer.parseInt(tokenizer.nextToken());
-       numRows = Integer.parseInt(tokenizer.nextToken());
+            numRows = Integer.parseInt(tokenizer.nextToken());
+            System.out.println("resid = " + resumptionId + " oldCount = " + oldCount + " numrows = " + numRows);
+            from = tokenizer.nextToken();
+            System.out.println("from = " + from);
+            if(from != null && from.trim().length() == 0)
+                from = null;
+            until = tokenizer.nextToken();
+            System.out.println("until = " + until);
+            if(until != null && until.trim().length() == 0)
+                until = null;            
+            set = tokenizer.nextToken();
+            System.out.println("set = " + set);
+            if(set != null && set.trim().length() == 0)
+                set = null;            
             metadataPrefix = tokenizer.nextToken();
+            System.out.println("metadataPrefix = " + metadataPrefix);
         } catch (NoSuchElementException e) {
+            System.out.println("throwing badresumptiontokenexception");
             throw new BadResumptionTokenException();
         }
 
-   /* Get some more records from your database */
-   Iterator iterator = (Iterator)resumptionResults.remove(resumptionId);
-   if (iterator == null) {
-       System.out.println("XMLFileOAICatalog.listRecords: reuse of old resumptionToken?");
-       iterator = nativeMap.entrySet().iterator();
-       for (int i = 0; i<oldCount; ++i)
-      iterator.next();
-   }
+        /* Get some more records from your database */
+        try {
+            populateNativeMap(from, until, set, oldCount);
+        } catch(NoItemsMatchException nime) {
+            throw new OAIInternalServerError(nime.getMessage());
+        }
+        
+        Iterator iterator = nativeMap.entrySet().iterator();
 
-   /* load the records ArrayLists. */
-   int count = 0;
-   while (count < maxListSize && iterator.hasNext()) {
-       Map.Entry entryNativeMap = (Map.Entry)iterator.next();
-       try {
+        /* load the records ArrayLists. */
+        int count = 0;
+        while (count < maxListSize && iterator.hasNext()) {
+            Map.Entry entryNativeMap = (Map.Entry)iterator.next();
+            try {
                 Object nativeRecord = nativeMap.get((String)entryNativeMap.getKey());
                 String record = constructRecord(nativeRecord, metadataPrefix);
                 records.add(record);
@@ -786,7 +924,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    /* decide if you're done. */
    if (iterator.hasNext()) {
        resumptionId = getRSName();
-       resumptionResults.put(resumptionId, iterator);
+       resumptionResults.put(resumptionId, " ");
 
        /*****************************************************************
         * Construct the resumptionToken String however you see fit.
@@ -797,7 +935,22 @@ public class XMLExistOAICatalog extends AbstractCatalog {
        resumptionTokenSb.append(Integer.toString(oldCount + count));
        resumptionTokenSb.append(":");
        resumptionTokenSb.append(Integer.toString(numRows));
+       resumptionTokenSb.append(":");              
+       if(from != null)
+           resumptionTokenSb.append(from);
+       else
+           resumptionTokenSb.append(" ");
        resumptionTokenSb.append(":");
+       if(until != null)
+           resumptionTokenSb.append(until);
+       else
+           resumptionTokenSb.append(" ");       
+       resumptionTokenSb.append(":");
+       if(set != null)
+           resumptionTokenSb.append(set);
+       else
+           resumptionTokenSb.append(" ");       
+       resumptionTokenSb.append(":");       
        resumptionTokenSb.append(metadataPrefix);
 
        /*****************************************************************
@@ -805,11 +958,11 @@ public class XMLExistOAICatalog extends AbstractCatalog {
         * resumptionToken attributes in the response. Otherwise, use the
         * line after it that I've commented out.
         *****************************************************************/
-       listRecordsMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
-                             numRows,
-                             oldCount));
-       //          listRecordsMap.put("resumptionMap",
-       //                                 getResumptionMap(resumptionTokenSb.toString()));
+       //listRecordsMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
+       //                      numRows,
+       //                      oldCount));
+                 listRecordsMap.put("resumptionMap",
+                                        getResumptionMap(resumptionTokenSb.toString()));
    }
 
         listRecordsMap.put("records", records.iterator());

@@ -28,6 +28,7 @@
       <ul>
          <li><a href="../editEntry.jsp">Enter Resource</a>
          <li><a href="XFormsNew.jsp">XForms</a>
+         <li><a href="../resourceHelp.jsp">Resource Help</a>
       </ul>
    </div>
 </div>

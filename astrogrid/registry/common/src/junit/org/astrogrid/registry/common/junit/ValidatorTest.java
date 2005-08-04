@@ -11,7 +11,12 @@ import org.astrogrid.registry.common.RegistryValidator;
 import org.astrogrid.registry.common.RegistrySchemaMap;
 import java.util.Map;
 import java.util.Iterator;
-
+/**
+ * Class: ValidatorTest
+ * Description: A Class that simply tests out a lot of various XML resources based on the Registry schemas.
+ * @author Kevin Benson
+ *
+ */
 public class ValidatorTest extends TestCase {
     
     
@@ -114,7 +119,6 @@ public class ValidatorTest extends TestCase {
         RegistryValidator.isValid(queryDoc);
     }
     
-    
     public void testValidRegistry10() throws Exception {
         Document queryDoc = askQueryFromFile("ARegistryv10.xml");
         RegistryValidator.isValid(queryDoc,"VOResources");
@@ -124,8 +128,7 @@ public class ValidatorTest extends TestCase {
         Document queryDoc = askQueryFromFile("MSSLRegistryEntryv10.xml");
         RegistryValidator.isValid(queryDoc,"VOResources");
     }
-    
-    
+       
     public void testValidFileStore10() throws Exception {
         Document queryDoc = askQueryFromFile("filestore-onev10.xml");
         RegistryValidator.isValid(queryDoc,"VOResources");
@@ -162,9 +165,6 @@ public class ValidatorTest extends TestCase {
         RegistryValidator.isValid(queryDoc,"VOResources");
     }
     
-    
-    
-    
     public void testValidCommunity() throws Exception {
         Document queryDoc = askQueryFromFile("Community.xml");
         RegistryValidator.isValid(queryDoc);
@@ -192,15 +192,6 @@ public class ValidatorTest extends TestCase {
         RegistryValidator.isValid(queryDoc);
     }
     
-    /*
-    public void testValidPalRoeData() throws Exception {
-        Document queryDoc = askQueryFromFile("roe_data4.xml");
-        RegistryValidator.isValid(queryDoc);
-    }
-    */
-    
-    
-    
     public void testInValidBasicResource() throws Exception {
         Document queryDoc = askQueryFromFile("MySpace_Invalid.xml");
         try {
@@ -210,20 +201,7 @@ public class ValidatorTest extends TestCase {
             System.out.println("Caught an invalid exception expected2: " + afe.getMessage());
         }
     }
-    
-    /*
-    public void testInValidBasicResource2() throws Exception {
-        Document queryDoc = askQueryFromFile("MySpace_Invalid.xml");
-        try {
-            RegistryValidator.isValid(queryDoc,"Resource");
-        }catch(AssertionFailedError afe) {
-            System.out.println("Caught an invalid exception expected: " + afe.toString());
-            System.out.println("Caught an invalid exception expected2: " + afe.getMessage());
-        }
-    }
-    */
-    
-    
+
     
     public void testValidSIA() throws Exception {
         Document queryDoc = askQueryFromFile("INT-WFS-SIAP.xml");
@@ -270,15 +248,16 @@ public class ValidatorTest extends TestCase {
         RegistryValidator.isValid(queryDoc,"VODescription");
     }
     
-    /*
-    public void testValidDCProxy() throws Exception {
-        Document queryDoc = askQueryFromFile("datacenter_SSA_Proxy_ceaService.xml");
-        RegistryValidator.isValid(queryDoc,"VODescription");
-    }
-    */
     
     
-    
+    /**
+     * Method: askQueryFromFile
+     * Description: Obtains a File on the local system as a inputstream and feeds it into a Document DOM object to be
+     * returned.
+     * @param queryFile - File name of a xml resource.
+     * @return Document DOM object of a XML file.
+     * @throws Exception  Any IO Exceptions or DOM Parsing exceptions could be thrown.
+     */    
     protected Document askQueryFromFile(String queryFile) throws Exception {
         assertNotNull(queryFile);
         InputStream is = this.getClass().getResourceAsStream(queryFile);

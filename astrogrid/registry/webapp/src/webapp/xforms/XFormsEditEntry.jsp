@@ -1,5 +1,4 @@
-<%@ page import="org.astrogrid.registry.server.JspHelper,
-             org.astrogrid.registry.server.query.*,
+<%@ page import="org.astrogrid.registry.server.query.*,
                  org.w3c.dom.*, javax.xml.transform.*,
                  javax.xml.transform.dom.*,javax.xml.transform.stream.*,                 
                  org.astrogrid.util.DomHelper,
@@ -22,7 +21,6 @@
 <%@ include file="navigation.xml" %>
 
 <div id='bodyColumn'>
-
 <%
    ClassLoader loader = this.getClass().getClassLoader();
    InputStream  is = null;
@@ -62,11 +60,11 @@
    resource = DomHelper.ElementToString(resourceDoc.getDocumentElement());   
 %>
 
-
-
 <h1>Add/Update Entry</h1>
 <p>
 This page shows the xml created from the xforms filled out in the previous page, verify the xml looks correct and hit submit to add/update the registry:
+<i>(You may alternatively select the xml in the text box and save it to a file on your local system, for loading later)</i>
+
 <%
 if(SimpleConfig.getSingleton().getBoolean("reg.amend.validate",false)) {
 %>

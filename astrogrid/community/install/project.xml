@@ -2,11 +2,17 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/02/17 16:01:10 $</cvs:date>
-    | <cvs:version>$Revision: 1.22 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/08/04 09:40:11 $</cvs:date>
+    | <cvs:version>$Revision: 1.23 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.23  2005/08/04 09:40:11  clq2
+    |   kevin's second batch
+    |
+    |   Revision 1.22.44.1  2005/07/26 09:42:52  KevinBenson
+    |   added dependency to the jes project for caching in the registry now needs commons-collection
+    |
     |   Revision 1.22  2005/02/17 16:01:10  jdt
     |   Rolled back to 15 Feb 00:00, before community_pah_910, mySpace_pah_910 and Reg_KMB_913
     |
@@ -190,6 +196,15 @@
                 <jar.fileset>true</jar.fileset>
             </properties>
         </dependency>
+    	
+            <!-- used to implement a weak-reference cache in the registry -->
+        	<dependency>
+    	    	<id>commons-collections</id>
+          		<version>3.0</version>
+          		<properties>
+            		<jar.fileset>true</jar.fileset>
+          		</properties>
+        	</dependency>    	
     	
         <dependency>
         	<id>xerces</id>

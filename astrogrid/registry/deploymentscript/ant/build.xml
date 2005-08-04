@@ -19,7 +19,7 @@
 	
 	<target name="load-config" description="Load a previously saved configuration">
 		<echo>Loading saved configuration</echo>
-    	<input addProperty="input.loadProperties.file" defaultvalue="${user.home}/.registry-installer.properties">
+    	<input addProperty="input.loadProperties.file" defaultvalue="${user.home}/registry-installer.properties">
             Enter the filename of your previously saved settings
         </input>
     	<property file="${input.loadProperties.file}"/>
@@ -65,7 +65,6 @@
 		<register-entry registry="${astrogrid.registry.update.endpoint}" data="${registry.regentry}"/>
 		<register-entry registry="${astrogrid.registry.update.endpoint}" data="${registry.regentry10}"/>		
 		<property name="registry.registered" value="true"/>
-		<echo>...done</echo>
 	</target>
 	
 	<target name="add-authid" description="Add a managed authority ID" depends="info,define-custom-tasks, set-context-path">
@@ -104,7 +103,6 @@
     	</waitfor> 
 		<register-entry registry="${astrogrid.registry.update.endpoint}" data="${authority.regentry}"/>
 		<register-entry registry="${astrogrid.registry.update.endpoint}" data="${authority.regentry10}"/>
-		<echo>...done</echo>
 	</target>
 	
 	<target name="remove" description="Remove an existing AstroGrid registry" depends="info, checkTomcat,  undeploy">
@@ -113,15 +111,6 @@
     	<property name="registry.uninstalled" value="true"/>
 	</target>
 	
-	<target name="add-registry2harvest" description="Add a registry to be harvested by this registry" depends="checkTomcat,set-context-path">
-		<input addproperty="input.reg.addregistryurl" defaultvalue="http://galahad.star.le.ac.uk:8080/galahad-registry/">Enter the URL of the registry you wish to harvest</input>
-		<property name="reg.addregistryurl" value="${input.registry.public.url}/${astrogrid.registry.registerExternal.offset}${input.reg.addregistryurl}"/>
-		<tempfile property="reg.add-registry2harvest.tmpfile"/>
-		<!--echo>Getting URL ${reg.addregistryurl}</echo-->
-		<get dest="${reg.add-registry2harvest.tmpfile}" src="${reg.addregistryurl}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}"/> <!--assumes same as tomcat manager-->
-	</target>
-		
-		
 	<target name="install-and-register" description="convenience target for AGINAB" depends="install,register"/>
 	
 	
@@ -131,31 +120,7 @@
 		<echo>This is the AstroGrid Registry Installer</echo>
 	</target>
 	
-	<target name="external-or-internal">
-		<input addproperty="input.registry.data.location" defaultvalue="internal" validargs="internal,external">Should the registry store the data internally to the webapp, or at an external location?</input>
-		<condition property="reg.setexternaldatadir">
-			<equals arg1="${input.registry.data.location}" arg2="external"/>
-		</condition>
-	</target>		
 		
-	<target name="change-data-directory" depends="info,external-or-internal,download" if="reg.setexternaldatadir" description="Use external data directory (if using an embedded database, hold the data outside the webapp)">
-		<echo>Change the data directory.  Normally the registry data is held within the registry webapp.  Holding it outside the webapp makes it easier to upgrade the registry without losing data.</echo>
-		<input addproperty="input.reg.data.dir" defaultvalue="">Enter the location where you wish to store registry data</input>	
-		<mkdir dir="${input.reg.data.dir}"/>
-		<unwar dest="${input.reg.data.dir}" overwrite="true" src="${registry.war}">
-    	    <patternset>
-    	        <include name="WEB-INF/conf.xml"/>
-    	    	<include name="WEB-INF/data/*"/>
-    	    </patternset>
-		</unwar>
-		<!--Ideally we'd use a flattenmapper, but unwar doesn't seem to support this yet-->
-		<move  todir="${input.reg.data.dir}">
-			<fileset dir="${input.reg.data.dir}/WEB-INF"/>
-		</move>
-		<delete  dir="${input.reg.data.dir}/WEB-INF"/>
-    	<property name="reg.data.conf" value="${input.reg.data.dir}/conf.xml"/>
-	</target>
-	
     <target name="checkTomcat" depends="fail-if-no-tomcat,get-tomcat-url">
         <input addProperty="input.tomcat.manager.user" defaultvalue="tomcat"> Please enter the Tomcat manager username </input>
         <input addProperty="input.tomcat.manager.pass" defaultvalue="tomcat"> Please enter the Tomcat manager password </input>
@@ -181,7 +146,8 @@
     <target name="download" unless="offline">
         <echo>Downloading registry software....this may take some time...</echo>
         <mkdir dir="${maven.local.repo}/${astrogrid.groupId}/wars/"/>
-        <property name="continueifnodownload" value="false"/> <!--normally stop here, if we can't download..can be overridden in AGINAB to allow use of local files-->
+        <property name="continueifnodownload" value="false"/>
+        <!--normlly stop here, if we can't download-->
         <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${registry.war.name}" dest="${registry.war}" verbose="true" usetimestamp="true" 
             ignoreerrors="${continueifnodownload}"/>
     </target>
@@ -202,31 +168,13 @@
         <tomcat-remove url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
             path="${input.registry.contextpath}"  />
     </target>   
-	
-	<target name="enable-harvesting">
-		<echo>This registry can be configured to regularly harvest from one or more other registries</echo>
-		<echo>Note that once harvesting is enabled you can either use this installer, or the registry's jsp pages, to add the details of the registries you wish to harvest</echo>
-		<input addproperty="input.reg.enableharvesting" defaultvalue="false" validargs="true,false">Do you wish to enable harvesting?</input>
-		<condition property="reg.harvestingisenabled">
-			<equals arg1="${input.reg.enableharvesting}" arg2="true"/>
-		</condition>
-	</target>
-	<target name="set-harvest-interval" if="reg.harvestingisenabled">
-		<input addproperty="input.reg.harvestinginterval" defaultvalue="2">Please enter the harvesting interval in hours</input>
-	</target>
-	
 
-    <target name="update-war" depends="download, set-context-path, get-registry-keys, change-data-directory, enable-harvesting,set-harvest-interval">
-    	<property name="reg.data.conf" value=""/> <!-- leave set to blank, if the user hasn't set it-->
-    	<property name="input.reg.harvestinginterval" value=""/> <!-- leave set to blank, if the user hasn't set it-->
+    <target name="update-war" depends="download, set-context-path, get-registry-keys">
         <filterset id="myfilter">
             <filter token="REGISTRY_AUTHID"   value="${input.registry.regauthority}"/>
             <filter token="REGISTRY_WEBAPP" value="${input.registry.contextpath}"/>
             <filter token="reg.amend.oaipublish.0.9"   value="${input.registry.public.url}/OAIHandlerv0_9"/>
             <filter token="reg.amend.oaipublish.0.10" value="${input.registry.public.url}/OAIHandlerv0_10"/>
-        	<filter token="reg.custom.exist.configuration" value="${reg.data.conf}"/>  
-        	<filter token="reg.amend.harvest" value="${input.reg.enableharvesting}"/>          	
-        	<filter token="reg.custom.harvest.interval_hours" value="${input.reg.harvestinginterval}"/>          	
         </filterset>
     	<echo>This registry is being installed with the following settings:</echo>
     	<echo>AuthId: ${input.registry.regauthority}</echo>

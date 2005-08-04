@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.7 2005/05/10 16:33:13 clq2 Exp $
+/*$Id: AllTests.java,v 1.8 2005/08/04 09:40:11 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ public class AllTests {
         suite.addTestSuite(QueryRegistryClientTest.class);
         suite.addTestSuite(QueryOAIRegistryTest.class);
         suite.addTestSuite(HarvestRegistryTest.class);
-        suite.addTestSuite(RegistryNamespaceTest.class);
+        suite.addTestSuite(XQueryRegistryTest.class);
         suite.addTestSuite(QueryRegistryClientADQLTest.class);
         suite.addTestSuite(UpdateRegistryTest.class);
         suite.addTestSuite(RegistryServiceClientTest.class);
@@ -38,6 +38,12 @@ public class AllTests {
 }
 /* 
  $Log: AllTests.java,v $
+ Revision 1.8  2005/08/04 09:40:11  clq2
+ kevin's second batch
+
+ Revision 1.7.32.1  2005/07/26 12:56:24  KevinBenson
+ added xquerysearch on it
+
  Revision 1.7  2005/05/10 16:33:13  clq2
  1125
 

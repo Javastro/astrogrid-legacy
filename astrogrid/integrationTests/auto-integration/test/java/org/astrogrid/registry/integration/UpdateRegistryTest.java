@@ -1,4 +1,4 @@
-/*$Id: UpdateRegistryTest.java,v 1.6 2004/09/22 10:47:25 nw Exp $
+/*$Id: UpdateRegistryTest.java,v 1.7 2005/08/04 09:40:11 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,9 +47,18 @@ public class UpdateRegistryTest extends AbstractTestForRegistry {
         Document doc = askQueryFromFile("AuthorityTest.xml");
         Document updateDoc = ras.update(doc);
         DomHelper.DocumentToStream(updateDoc,System.out);
-        AstrogridAssert.assertXpathExists("/UpdateResponse",updateDoc);
-        
+        //System.out.println(DomHelper.DocumentToString(updateDoc));
+        assertTrue("UpdateResponse".equals(updateDoc.getDocumentElement().getLocalName()));
     }
+    
+    public void testUpdate2() throws RegistryException, Exception
+    {
+        Document doc = askQueryFromFile("dummytest2.xml");
+        Document updateDoc = ras.update(doc);
+        DomHelper.DocumentToStream(updateDoc,System.out);
+        //System.out.println(DomHelper.DocumentToString(updateDoc));
+        assertTrue("UpdateResponse".equals(updateDoc.getDocumentElement().getLocalName()));
+    }    
     
     
    protected Document askQueryFromFile(String queryFile) throws Exception {

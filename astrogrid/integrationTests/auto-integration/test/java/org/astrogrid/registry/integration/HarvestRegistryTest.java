@@ -1,4 +1,4 @@
-/*$Id: HarvestRegistryTest.java,v 1.6 2005/02/22 21:02:58 clq2 Exp $
+/*$Id: HarvestRegistryTest.java,v 1.7 2005/08/04 09:40:10 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,12 +61,12 @@ public class HarvestRegistryTest extends AbstractTestForRegistry {
    }
    
    public void testGetRecord() throws RegistryException {
-       Document result = rsOAI.getRecord("ivo_vor://org.astrogrid.localhost/org.astrogrid.registry.RegistryService");
+       Document result = rsOAI.getRecord("ivo://org.astrogrid.localhost/org.astrogrid.registry.RegistryService");
        DomHelper.DocumentToStream(result,System.out);
    }
    
    public void testListMetadataFormats() throws RegistryException {
-       Document result = rsOAI.listMetadataFormats("ivo_vor://org.astrogrid.localhost/org.astrogrid.registry.RegistryService");
+       Document result = rsOAI.listMetadataFormats("ivo://org.astrogrid.localhost/org.astrogrid.registry.RegistryService");
        DomHelper.DocumentToStream(result,System.out);
    }
    

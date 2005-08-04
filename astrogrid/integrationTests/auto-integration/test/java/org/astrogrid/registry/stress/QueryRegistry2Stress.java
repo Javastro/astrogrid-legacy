@@ -1,4 +1,4 @@
-/*$Id: QueryRegistry2Stress.java,v 1.3 2004/09/22 10:47:25 nw Exp $
+/*$Id: QueryRegistry2Stress.java,v 1.4 2005/08/04 09:40:11 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,13 +43,6 @@ public class QueryRegistry2Stress extends AbstractTestForRegistry {
         super(arg0);
     }
    
-   public void testTabularSkyServiceQuery() throws Exception {
-      Document queryDoc = askQueryFromFile("TabularSkyServiceQuery.xml");
-      Document  result = rs.submitQuery(queryDoc);
-      assertNotNull(result);
-      DomHelper.DocumentToStream(result,System.out);
-      assertNonEmptyVODescription(result);      
-   }
        
    protected Document askQueryFromFile(String queryFile) throws Exception {
       assertNotNull(queryFile);

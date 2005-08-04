@@ -1,4 +1,4 @@
-/* $Id: TestRegistryQuerier.java,v 1.5 2005/07/05 08:26:57 clq2 Exp $
+/* $Id: TestRegistryQuerier.java,v 1.6 2005/08/04 09:40:11 clq2 Exp $
  * Created on 30-July-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -186,6 +186,11 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
       }
       return marshallResources(vor); 
+   }
+   
+   public Document xquerySearch(String xquery) throws RegistryException {
+       
+       return null;
    }
 
    /**

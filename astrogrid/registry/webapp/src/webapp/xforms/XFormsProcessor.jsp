@@ -11,6 +11,7 @@
                  javax.xml.transform.*,
                  javax.xml.transform.dom.*,
                  javax.xml.transform.stream.*,
+                 org.apache.commons.fileupload.*,                 
                  org.astrogrid.registry.server.query.*"
    isThreadSafe="false"
    session="false"
@@ -52,14 +53,42 @@ if(is == null) {
 }
 Document xformsModelDoc = DomHelper.newDocument(is);
 
-String mapType = request.getParameter("mapType");
-String version = request.getParameter("version");
+String mapType = null;
+String version = null;
+String ivorn = null;
 boolean xformsContinue = true;
+
+boolean isMultipart = FileUpload.isMultipartContent(request);
+Document instanceDoc = null;
+
+
+ if(isMultipart) {
+   DiskFileUpload upload = new DiskFileUpload();  
+   List /* FileItem */ items = upload.parseRequest(request);
+   Iterator iter = items.iterator();
+   while (iter.hasNext()) {
+      FileItem item = (FileItem) iter.next();
+       if (!item.isFormField()) {
+         instanceDoc = DomHelper.newDocument(item.getInputStream());
+       }else {
+         if("mapType".equals(item.getFieldName())) {
+            mapType = item.getString();
+         }else if("version".equals(item.getFieldName())) {
+         	version = item.getString();
+         }
+       }//else
+   }//while
+ }else {
+	mapType = request.getParameter("mapType");
+	version = request.getParameter("version");
+	ivorn = request.getParameter("IVORN");
+ }
+
 if(version == null || version.trim().length() == 0) {
   out.write("<font color='red'>No version was in the request, do not know what xforms version document to get.</font>");  
   xformsContinue = false;
 }
-String ivorn = request.getParameter("IVORN");
+
 String instanceType = null;
 if(xformsContinue) {   
       NodeList divNodeList = xformsModelDoc.getElementsByTagNameNS("*","div");
@@ -97,25 +126,29 @@ if(xformsContinue) {
          throw new Exception("Could not find a 'instance' element/node in the main resource xforms model document");
       }
       Node instanceNode = instanceNodeList.item(0);
-      Document instanceDoc = null;
+
       if(instanceType == null) 
         instanceType = "resource";
-      
-      //Okay get both documents and do a merge with Stax.
-      if(ivorn != null && ivorn.trim().length() > 0) {
+      NodeList nlResources = null;
+      if(instanceDoc != null) {
+			nlResources = instanceDoc.getElementsByTagNameNS("*","Resource");
+			if(nlResources.getLength() == 0) {
+				throw new Exception("Could not find the document to be an instance of ivorn = " + ivorn);
+			}      
+			instanceNode.appendChild(xformsModelDoc.importNode(nlResources.item(0),true));
+      }else if(ivorn != null && ivorn.trim().length() > 0) {
          RegistryQueryService rqs = new RegistryQueryService();
 			instanceDoc = rqs.getResourceByIdentifier(ivorn,version);
-			NodeList nlResources = instanceDoc.getElementsByTagNameNS("*","Resource");
+			nlResources = instanceDoc.getElementsByTagNameNS("*","Resource");
 			if(nlResources.getLength() == 0) {
 				throw new Exception("Could not find the document to be an instance of ivorn = " + ivorn);
 			}
-		   instanceNode.appendChild(xformsModelDoc.importNode(nlResources.item(0),true));			
+		   instanceNode.appendChild(xformsModelDoc.importNode(nlResources.item(0),true));
       }else {
          is = loader.getResourceAsStream("xforms/instance/" + instanceType + "_xforms_instance.xml");
          instanceDoc = DomHelper.newDocument(is);
          instanceNode.appendChild(xformsModelDoc.importNode(instanceDoc.getDocumentElement(),true));
-      }
- 
+      } 
 }
 
 if(xformsContinue) {

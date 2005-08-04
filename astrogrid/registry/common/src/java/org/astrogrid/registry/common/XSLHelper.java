@@ -32,18 +32,6 @@ public class XSLHelper {
     
     private static final String XSL_DIRECTORY = "xsl/";
    
-   /**
-    * The default name of our database.
-    *
-    */
-   public static final String DEFAULT_DATABASE_XSL = "XSLDBProcess.xsl" ;
-
-   /**
-    * The default resource name for our JDO config file.
-    *
-    */
-   public static final String DEFAULT_CASTOR_XML = "CastorXSLProcess.xsl" ;
-   
    
    /**
     * Empty constructor -- should delete later, this is automatic.
@@ -64,32 +52,6 @@ public class XSLHelper {
        return loader.getResourceAsStream(name);
    }
       
-   /**
-    * Method: loadDBXSL
-    * Description: Load a particular known xsl stylesheet for processing xml from the db. Used mainly to go from Castor
-    * to better more undertandable XML.
-    * @deprecated - no longer in use, because Castor is no longer in use on the registry side. A client must do
-    * Castor itself.
-    * @return A InputStream to a xsl stylesheet. 
-    */
-   private InputStream loadDBXSL() {
-      ClassLoader loader = this.getClass().getClassLoader();
-      return loader.getResourceAsStream(DEFAULT_DATABASE_XSL);
-   }
-
-   /**
-    * Method loadCastorXSL
-    * Description: Load a particular known xsl stylesheet for processing xml for Castor.
-    * @deprecated - no longer in use, because Castor is no longer in use on the registry side. A client must do
-    * Castor itself.
-    * @return A InputStream to a xsl stylesheet. 
-    */   
-   private InputStream loadCastorXSL() {
-      ClassLoader loader = this.getClass().getClassLoader();
-      return loader.getResourceAsStream(DEFAULT_CASTOR_XML);
-   }
-   
-
    
    /**
     * Method: transformResourceToResource
@@ -115,7 +77,7 @@ public class XSLHelper {
        
        ClassLoader loader = this.getClass().getClassLoader();
        InputStream is = null;
-       System.out.println("the filename being loaded = " + XSL_DIRECTORY + fileName);
+       //System.out.println("the filename being loaded = " + XSL_DIRECTORY + fileName);
        is = loader.getResourceAsStream(XSL_DIRECTORY + fileName);
        Source xslSource = new StreamSource(is);
              
@@ -145,91 +107,13 @@ public class XSLHelper {
        //@todo never return null on error.
        if(resultDoc == null) {
            logger.error("IN tranformResouceToResource resultDoc was null");
-           //System.out.println("IN tranformResouceToResource resultDoc was null");
-       }else {
-           logger.info("THE RESULTDOC IN transformResourceToResource = "  + DomHelper.DocumentToString(resultDoc));
-           //System.out.println("THE RESULTDOC IN transformResourceToResource = "  + DomHelper.DocumentToString(resultDoc));
        }
+       /*
+       else {
+           logger.info("THE RESULTDOC IN transformResourceToResource = "  + DomHelper.DocumentToString(resultDoc));
+       }
+       */
        return resultDoc;
     }
-   
-   /**
-    * Used for Castor, deprecating and hope to delete soon. Clients should use Castor themselves now, not let the
-    * registry do it.
-    * @deprecated No longer in use
-    * @param doc
-    * @return
-    */
-   public Document transformDatabaseProcess(Node doc) {
-      
-      Source xmlSource = new DOMSource(doc);
-      Document resultDoc = null;
-      
-      Source xslSource = new StreamSource(loadDBXSL());
-      
-      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-      
-      try {
-         builderFactory.setNamespaceAware(true);
-         DocumentBuilder builder = builderFactory.newDocumentBuilder();
-         resultDoc = builder.newDocument();
-         //DocumentFragment df = resultDoc.createDocumentFragment();
-         TransformerFactory transformerFactory = TransformerFactory.newInstance();
-         
-         DOMResult result = new DOMResult(resultDoc);
-         Transformer transformer = transformerFactory.newTransformer(xslSource);
-         
-         transformer.transform(xmlSource,result);
-         
-      }catch(ParserConfigurationException pce) {
-        logger.error("transformDatabaseProcess(Node)", pce);
-      }catch(TransformerConfigurationException tce) {
-        logger.error("transformDatabaseProcess(Node)", tce);
-      }catch(TransformerException te) {
-        logger.error("transformDatabaseProcess(Node)", te);
-      }
-      return resultDoc;
-      
-   }
-
-   /**
-    * Used for Castor, deprecating and hope to delete soon. Clients should use Castor themselves now, not let the
-    * registry do it.
-    * @deprecated No longer in use
-    * @param doc
-    * @return
-    */
-   public Document transformCastorProcess(Node doc) {
-      
-      Source xmlSource = new DOMSource(doc);
-      Document resultDoc = null;
-      
-      Source xslSource = new StreamSource(loadCastorXSL());
-      
-      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-      
-      try {
-         builderFactory.setNamespaceAware(true);
-         DocumentBuilder builder = builderFactory.newDocumentBuilder();
-         resultDoc = builder.newDocument();
-         //DocumentFragment df = resultDoc.createDocumentFragment();
-         TransformerFactory transformerFactory = TransformerFactory.newInstance();
-         
-         DOMResult result = new DOMResult(resultDoc);
-         Transformer transformer = transformerFactory.newTransformer(xslSource);
-         
-         transformer.transform(xmlSource,result);
-         
-      }catch(ParserConfigurationException pce) {
-        logger.error("transformCastorProcess(Node)", pce);
-      }catch(TransformerConfigurationException tce) {
-        logger.error("transformCastorProcess(Node)", tce);
-      }catch(TransformerException te) {
-        logger.error("transformCastorProcess(Node)", te);
-      }
-      return resultDoc;
-   }
-   
-   
    
 }

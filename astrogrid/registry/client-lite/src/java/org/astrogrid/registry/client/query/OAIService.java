@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.Date;
 
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.common.InterfaceType;
+//import org.astrogrid.registry.common.InterfaceType;
 import org.astrogrid.registry.common.XSLHelper;
 
 import javax.xml.namespace.QName;
@@ -42,8 +42,6 @@ import javax.wsdl.extensions.soap.SOAPAddress;
 
 import org.xml.sax.SAXException;
 import java.rmi.RemoteException;
-
-import org.astrogrid.registry.common.WSDLBasicInformation;
 
 import javax.wsdl.factory.WSDLFactory;
 
@@ -66,15 +64,7 @@ import org.astrogrid.util.DomHelper;
  * @author Kevin Benson
  */
 public interface OAIService  {
-    
-    /**
-     * Method: getRegistries
-     * Description: client inteface method to call web service method for obtaining all the registr types.
-     * @return XML Document of all the Registry type Resources known.
-     * @throws RegistryException
-     */
-    public Document getRegistries() throws RegistryException;
-   
+       
     public Document identify() throws RegistryException;
     
     public Document listRecords() throws RegistryException;
