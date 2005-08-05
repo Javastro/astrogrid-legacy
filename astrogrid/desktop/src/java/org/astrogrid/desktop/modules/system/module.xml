@@ -1,7 +1,5 @@
 <?xml version="1.0" ?>
-<!--can't dtd validate - need to replace with schema later.
-	<!DOCTYPE module PUBLIC "-//Astrogrid//DTD Desktop Module 1.0//EN" "file:///home/noel/eclipse/desktop/src/java/org/astrogrid/desktop/framework/descriptors/module-descriptor.dtd">
--->
+
 <module name="system">
 	<description>System Components</description>
 	<property>
@@ -124,12 +122,29 @@
 			<return><description>key value</description></return>
 			<parameter name="key"><description>key to retreive value for</description></parameter>
 		</method>
+<method name="removeKey">
+			<description>remove the binding for a key</description>
+	<property>
+		<key>icon</key>
+		<value>delete_obj.gif</value>
+	</property>					
+			<return><description>nothing</description></return>
+			<parameter name="key"><description>key to remover</description></parameter>
+		</method>		
 	</component>
 	
 	<component name="ui"
-		implementationClass="org.astrogrid.desktop.modules.system.UIImpl"
 		interfaceClass="org.astrogrid.acr.system.UI"
 		>
+		<property>
+			<key>implementations</key>
+			<value>
+				<implementation 
+					checkClass="org.astrogrid.desktop.modules.system.CheckNotHeadless"
+					implementationClass="org.astrogrid.desktop.modules.system.UIImpl" />
+				<implementation implementationClass="org.astrogrid.desktop.modules.system.NullUIImpl" />					
+			</value>
+		</property>		
 		<description>Graphical User Interface</description>
 	<property>
 		<key>icon</key>
@@ -168,6 +183,12 @@
 				<value>Show Server Root</value>
 			</property>
 			</method>
+		<method name="getKey">
+				<description>get key for the webserver context</description>
+			</method>
+		<method name="getPort">
+				<description>get port the webserver is running on</description>
+			</method>						
 	</component>
 	
 	<component name="systray"		
@@ -308,6 +329,24 @@
 			</description>
 							<parameter name="componentname"><description>name of component</description></parameter>				
 		</method>						
+	</component>	
+	<component name="rmi"
+		implementationClass="org.astrogrid.desktop.modules.system.RmiLiteRmiServerImpl"
+		interfaceClass="org.astrogrid.acr.system.RmiServer"
+		>
+		<description>
+			Rmi server component - provides access into the ACR via Java RMI
+		</description>
+		<method name="getPort">
+			<description>retrieve port the rmi server is running on</description>
+				
+			<return><description>port numbe</description>
+				<property>
+						<key>system.xmlrpc.type</key>
+						<value>int</value>
+					</property>
+				</return>			
+		</method>
 	</component>
 	<!-- interceptor class -->
 	<component name="throbber"

@@ -1,4 +1,4 @@
-/*$Id: DefaultConverter.java,v 1.3 2005/06/23 09:08:26 nw Exp $
+/*$Id: DefaultConverter.java,v 1.4 2005/08/05 11:46:56 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,9 +46,8 @@ public class DefaultConverter implements Converter {
         if (c.isAssignableFrom(o.getClass())) { // no need to change.
             return o;
         }
-        System.err.println(c.getName() + " from " + o.getClass().getName());
         if (logger.isDebugEnabled()) {
-            logger.debug(c.getName() + " " + o);
+            logger.debug(c.getName() + " " + o.getClass().getName());
         }
         return ConvertUtils.lookup(c).convert(c,o);
     }
@@ -58,6 +57,9 @@ public class DefaultConverter implements Converter {
 
 /* 
 $Log: DefaultConverter.java,v $
+Revision 1.4  2005/08/05 11:46:56  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.3  2005/06/23 09:08:26  nw
 changes for 1.0.3 release
 

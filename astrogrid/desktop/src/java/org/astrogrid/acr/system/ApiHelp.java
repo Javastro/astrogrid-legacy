@@ -1,4 +1,4 @@
-/*$Id: ApiHelp.java,v 1.1 2005/06/23 09:08:26 nw Exp $
+/*$Id: ApiHelp.java,v 1.2 2005/08/05 11:46:55 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,8 @@
  **/
 package org.astrogrid.acr.system;
 
-import org.apache.xmlrpc.XmlRpcException;
+import org.astrogrid.acr.NotFoundException;
 
-import java.util.List;
 
 /** Introspect into available methods in the ACR. returns
  * results applicable for xmlrpc only at moment
@@ -21,25 +20,28 @@ import java.util.List;
  *
  */
 public interface ApiHelp {
-    List listMethods();
+    String[] listMethods();
 
-    List listModules();
+    String[] listModules();
 
-    List listComponentsOfModule(String moduleName) throws XmlRpcException;
+    String[] listComponentsOfModule(String moduleName) throws NotFoundException;
 
-    List listMethodsOfComponent(String componentName) throws XmlRpcException;
+    String[] listMethodsOfComponent(String componentName) throws NotFoundException;
 
-    List methodSignature(String methodName) throws XmlRpcException;
+    String[][] methodSignature(String methodName) throws NotFoundException;
 
-    String moduleHelp(String moduleName) throws XmlRpcException;
+    String moduleHelp(String moduleName) throws NotFoundException;
 
-    String componentHelp(String componentName) throws XmlRpcException;
+    String componentHelp(String componentName) throws NotFoundException;
 
-    String methodHelp(String methodName) throws XmlRpcException;
+    String methodHelp(String methodName) throws NotFoundException;
 }
 
 /* 
  $Log: ApiHelp.java,v $
+ Revision 1.2  2005/08/05 11:46:55  nw
+ reimplemented acr interfaces, added system tests.
+
  Revision 1.1  2005/06/23 09:08:26  nw
  changes for 1.0.3 release
  

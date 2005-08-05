@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.6 2005/07/08 11:08:02 nw Exp $
+/*$Id: CommunityImpl.java,v 1.7 2005/08/05 11:46:55 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,8 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.system.BrowserControl;
@@ -33,7 +34,7 @@ import java.util.Set;
 /** Community Service implementation
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  */
-public class CommunityImpl implements Community  {
+public class CommunityImpl implements CommunityInternal  {
     /**
      * Commons Logger for this class
      */
@@ -52,11 +53,11 @@ public class CommunityImpl implements Community  {
     protected final BrowserControl browser;
     protected final LoginDialogue loginDialogue;
 
-    public boolean login(String username,String password, String community) throws CommunityResolverException, CommunityServiceException, CommunitySecurityException, CommunityIdentifierException, RegistryException {
+    public void login(String username,String password, String community) throws SecurityException, ServiceException {
         loginDialogue.setUser(username);
         loginDialogue.setPassword(password);
         loginDialogue.setCommunity(community);
-        return authenticate();
+        authenticate();
     }
 
     public void logout() {
@@ -102,6 +103,7 @@ public class CommunityImpl implements Community  {
                 authenticate();
             } catch (Exception e) {
                 logger.info(e);
+                e.printStackTrace();
                 loginDialogue.showError(null,e.getMessage());
             }
         }                    
@@ -113,7 +115,7 @@ public class CommunityImpl implements Community  {
      * @throws CommunitySecurityException
      * @throws CommunityServiceException
      * @throws CommunityResolverException*/
-    private boolean authenticate() throws CommunityResolverException, CommunityServiceException, CommunitySecurityException, CommunityIdentifierException, RegistryException {
+    private boolean authenticate() throws SecurityException, ServiceException{
         logger.info("In authenticate");
         try {
             ui.setStatusMessage("Logging in..");   
@@ -124,6 +126,16 @@ public class CommunityImpl implements Community  {
         for (Iterator i = listeners.iterator(); i.hasNext(); ) {
             ((UserLoginListener)i.next()).userLogin(e);
         }
+        } catch (CommunityResolverException e) {
+            throw new ServiceException(e);
+        } catch (CommunityServiceException e) {
+            throw new ServiceException(e);
+        } catch (CommunitySecurityException e) {
+            throw new SecurityException(e);
+        } catch (CommunityIdentifierException e) {
+            throw new SecurityException(e);
+        } catch (RegistryException e) {
+            throw new ServiceException(e);
         } finally {
             if (!isLoggedIn()) {
                 ui.setStatusMessage("");
@@ -155,6 +167,9 @@ public class CommunityImpl implements Community  {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.7  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.6  2005/07/08 11:08:02  nw
 bug fixes and polishing for the workshop
 

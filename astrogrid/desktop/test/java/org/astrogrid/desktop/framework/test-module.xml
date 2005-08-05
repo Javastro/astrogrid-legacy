@@ -1,5 +1,4 @@
 <?xml version="1.0" ?>
-<!DOCTYPE module PUBLIC "-//Astrogrid//DTD Desktop Module 1.0//EN" "file:///home/noel/eclipse/desktop/src/java/org/astrogrid/desktop/framework/descriptors/module-descriptor.dtd">
 <module name="test" >
 	<description>a test module</description>
 	

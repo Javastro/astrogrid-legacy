@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.6 2005/07/08 11:08:01 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.7 2005/08/05 11:46:55 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,12 @@
  **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.system.UI;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ui.UIComponent.BackgroundOperation;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.filemanager.client.FileManagerNode;
-import org.astrogrid.store.Ivorn;
 
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.iterators.FilterIterator;
@@ -46,7 +44,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2005
@@ -451,7 +448,7 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
      * Construct a new AbstractVospaceBrowser
      *  
      */
-    public AbstractVospaceBrowser(Myspace vos) {
+    public AbstractVospaceBrowser(MyspaceInternal vos) {
         super();
         this.vos = vos;
     }
@@ -463,7 +460,7 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
      * @param ui
      * @throws HeadlessException
      */
-    public AbstractVospaceBrowser(Configuration conf, HelpServer hs,UI ui, Myspace vos) throws HeadlessException {
+    public AbstractVospaceBrowser(Configuration conf, HelpServer hs,UIInternal ui, MyspaceInternal vos) throws HeadlessException {
         super(conf, hs,ui);
         this.vos = vos;
     }
@@ -535,9 +532,9 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
         return folderTreeModel;
     }
 
-    private final Myspace vos;
+    private final MyspaceInternal vos;
     
-    public Myspace getVospace() {
+    public MyspaceInternal getVospace() {
         return vos;
     }
 
@@ -545,7 +542,7 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
         (new BackgroundOperation("Reading Vospace Root") {
     
             protected Object construct() throws Exception {
-                return vos.node(new Ivorn(vos.home().toString()));
+                return vos.node(vos.getHome());
             }
     
             protected void doFinished(Object result) {
@@ -577,6 +574,9 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.7  2005/08/05 11:46:55  nw
+ * reimplemented acr interfaces, added system tests.
+ *
  * Revision 1.6  2005/07/08 11:08:01  nw
  * bug fixes and polishing for the workshop
  *

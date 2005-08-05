@@ -1,4 +1,4 @@
-/*$Id: MyspaceBrowser.java,v 1.3 2005/05/12 15:59:10 clq2 Exp $
+/*$Id: MyspaceBrowser.java,v 1.4 2005/08/05 11:46:55 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,6 @@
 **/
 package org.astrogrid.acr.ui;
 
-import org.astrogrid.community.common.exception.CommunityException;
-import org.astrogrid.filemanager.common.FileManagerFault;
-import org.astrogrid.filemanager.common.NodeNotFoundFault;
-import org.astrogrid.registry.RegistryException;
-import org.astrogrid.store.Ivorn;
-
-import java.net.URISyntaxException;
-import java.rmi.RemoteException;
 
 /** A Basic Myspace Exploerer.
  * @todo add methods to open a particular location in myspace, force a refreshm and to dispose the exploer
@@ -34,6 +26,9 @@ public interface MyspaceBrowser {
 
 /* 
 $Log: MyspaceBrowser.java,v $
+Revision 1.4  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.3  2005/05/12 15:59:10  clq2
 nww 1111 again
 

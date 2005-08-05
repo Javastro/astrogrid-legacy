@@ -1,5 +1,5 @@
-/*$Id: AllTests.java,v 1.2 2005/04/13 12:59:17 nw Exp $
- * Created on 17-Mar-2005
+/*$Id: AllTests.java,v 1.1 2005/08/05 11:46:56 nw Exp $
+ * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -8,13 +8,13 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.desktop.framework;
+package org.astrogrid.desktop.modules.system.transformers;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
+ * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
  *
  */
 public class AllTests {
@@ -24,10 +24,10 @@ public class AllTests {
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite("Test for org.astrogrid.desktop.framework");
+        TestSuite suite = new TestSuite(
+                "Test for org.astrogrid.desktop.modules.system.transformers");
         //$JUnit-BEGIN$
-        suite.addTestSuite(BootloaderTest.class);
-        suite.addTestSuite(MutableModuleRegistryTest.class);
+        suite.addTestSuite(TypeStructureTransformerTest.class);
         //$JUnit-END$
         return suite;
     }
@@ -36,10 +36,7 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
-Revision 1.2  2005/04/13 12:59:17  nw
-checkin from branch desktop-nww-998
-
-Revision 1.1.2.1  2005/03/18 12:09:32  nw
-got framework, builtin and system levels working.
+Revision 1.1  2005/08/05 11:46:56  nw
+reimplemented acr interfaces, added system tests.
  
 */

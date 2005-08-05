@@ -1,22 +1,18 @@
 package org.astrogrid.desktop.modules.dialogs;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.applications.beans.v1.Interface;
 import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.desktop.modules.system.UIImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.io.Piper;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -30,7 +26,6 @@ import java.util.Arrays;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -38,11 +33,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 
@@ -356,6 +346,9 @@ public  class ParametersPanel extends JPanel {
 
 /* 
 $Log: ParametersPanel.java,v $
+Revision 1.4  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.3  2005/07/08 11:08:01  nw
 bug fixes and polishing for the workshop
 

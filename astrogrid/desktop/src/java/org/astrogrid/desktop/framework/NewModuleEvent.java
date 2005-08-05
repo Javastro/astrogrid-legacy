@@ -1,4 +1,4 @@
-/*$Id: NewModuleListener.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: NewModuleEvent.java,v 1.4 2005/08/05 11:46:55 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,23 +8,42 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.acr.builtin;
+package org.astrogrid.desktop.framework;
 
-import java.util.EventListener;
 
-/** A listener interface - listeners are notified whenever a new module is added to the registry.
+import org.astrogrid.acr.builtin.Module;
+
+import java.util.EventObject;
+
+/** Event object that is passed when a new module is registeed.
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
-public interface NewModuleListener extends EventListener{
+public class NewModuleEvent extends EventObject {
+
+    /** Construct a new NewModuleEvent
+     * @param source
+     */
+    public NewModuleEvent(Object source, Module newModule) {
+        super(source);
+        this.newModule = newModule;
+    }
     
-    public void newModuleRegistered(NewModuleEvent e);
+    private final Module newModule;
+    
+    /** retreive the module that has just been registered */
+    public Module getModule() {
+        return newModule;
+    }
 
 }
 
 
 /* 
-$Log: NewModuleListener.java,v $
+$Log: NewModuleEvent.java,v $
+Revision 1.4  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.2  2005/04/27 13:42:41  clq2
 1082
 

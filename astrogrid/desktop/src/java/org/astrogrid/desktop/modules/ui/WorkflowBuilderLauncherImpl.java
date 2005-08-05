@@ -10,80 +10,13 @@
  **/
 package org.astrogrid.desktop.modules.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.URI;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Comparator;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.JTree;
-import javax.swing.ListSelectionModel;
-import javax.swing.Spring;
-import javax.swing.SpringLayout;
-import javax.swing.ToolTipManager;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeSelectionModel;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.astrogrid.Myspace;
-import org.astrogrid.acr.astrogrid.Portal;
+import org.astrogrid.acr.astrogrid.ApplicationsInternal;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.acr.ui.WorkflowBuilderLauncher;
 import org.astrogrid.applications.beans.v1.Interface;
@@ -91,6 +24,8 @@ import org.astrogrid.applications.beans.v1.InterfacesType;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.CommunityInternal;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.BasicInfoPanel;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserDialog;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
@@ -98,9 +33,10 @@ import org.astrogrid.desktop.modules.dialogs.ScriptPanel;
 import org.astrogrid.desktop.modules.dialogs.StepPanel;
 import org.astrogrid.desktop.modules.dialogs.TaskInfoPanel;
 import org.astrogrid.desktop.modules.dialogs.WorkflowDetailsDialog;
+import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.system.WorkflowTreeModel;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser.CurrentNodeManager;
-import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.filestore.common.FileStoreOutputStream;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
@@ -111,7 +47,6 @@ import org.astrogrid.query.sql.Sql2Adql;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.scripting.Toolbox;
-import org.astrogrid.store.Ivorn;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.workflow.beans.v1.Else;
 import org.astrogrid.workflow.beans.v1.Flow;
@@ -129,11 +64,49 @@ import org.astrogrid.workflow.beans.v1.Unset;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.URI;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Comparator;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeSelectionModel;
 
 
 /**
@@ -158,15 +131,14 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 	                    Writer writer = null;
 	                
 	                    if (u.getScheme().equals("ivo")) {
-	                        Ivorn ivo = new Ivorn(u.toString());
-	                        FileManagerNode target = null;
-	                        if (vos.exists(ivo)) {
-	                            target = vos.node(ivo);
-	                        } else {
-	                            target = vos.createFile(ivo);
-	                        }
-	                        OutputStream os = target.writeContent();
-	                        writer = new OutputStreamWriter(os);               
+
+	                        if (! vos.exists(u)) {
+	                            vos.createFile(u);
+	                        }                           
+	                        URL url = vos.getWriteContentURL(u);
+                            FileStoreOutputStream fos = new FileStoreOutputStream(url);
+                            fos.open();
+	                        writer = new OutputStreamWriter(fos);
 	                     } 
 	                     if (u.getScheme().equals("file")) {
 	                         File f = new File(u);
@@ -200,13 +172,8 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 		        	    URI u = ResourceChooserDialog.chooseResource(vos,"Load workflow",true);
 		                if (u != null && u.getScheme() != null) {
 		                    Reader reader = null;		                
-		                    if (u.getScheme().equals("ivo")) {
-		                        Ivorn ivo = new Ivorn(u.toString());
-		                        logger.error("ivo: " + ivo);
-		                        FileManagerNode target = null;		                   
-		                        target = vos.node(ivo);		                   
-		                        InputStream is = target.readContent();
-		                        reader = new InputStreamReader(is);               
+		                    if (u.getScheme().equals("ivo")) {              
+                                reader = new StringReader(vos.read(u));
 		                    } 
 		                    if (u.getScheme().equals("file")) {
 		                        File f = new File(u.getPath());
@@ -310,12 +277,11 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     private static final Log logger = LogFactory.getLog(WorkflowBuilderLauncherImpl.class);
 	
     protected final BrowserControl browser;
-    protected final Portal portal;	
-    protected final Community community;
-    protected final Myspace vos;
+    protected final CommunityInternal community;
+    protected final MyspaceInternal vos;
     protected final JobMonitor monitor;
     protected ApplicationRegistry reg;
-    private final Applications apps;
+    private final ApplicationsInternal apps;
     private CurrentNodeManager currentNodeManager;
     protected WorkflowTreeModel workflowTreeModel = null;
     
@@ -356,10 +322,9 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
      * @throws Exception
      * 
      * */
-    public WorkflowBuilderLauncherImpl(Applications apps, Community community, JobMonitor monitor, Portal portal, Myspace vos, BrowserControl browser, UI ui, HelpServer hs, Configuration conf) throws Exception {
+    public WorkflowBuilderLauncherImpl(ApplicationsInternal apps, CommunityInternal community, JobMonitor monitor,  MyspaceInternal vos, BrowserControl browser, UIInternal ui, HelpServer hs, Configuration conf) throws Exception {
         super(conf,hs,ui);
         this.browser = browser;
-        this.portal = portal;
         this.community = community;
         this.vos = vos;
         this.monitor = monitor;

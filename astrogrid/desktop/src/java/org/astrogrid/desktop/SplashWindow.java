@@ -9,10 +9,17 @@
  */
 
 package org.astrogrid.desktop;
-import java.awt.*;
-import java.awt.event.*;
-import java.net.*;
-import java.io.*;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.URL;
 
 /** 
  * A Splash window.

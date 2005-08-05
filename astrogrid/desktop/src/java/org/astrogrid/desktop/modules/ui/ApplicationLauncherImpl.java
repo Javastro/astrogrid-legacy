@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.4 2005/07/08 11:08:01 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.5 2005/08/05 11:46:55 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,31 +10,31 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.astrogrid.Myspace;
+import org.astrogrid.acr.astrogrid.ApplicationsInternal;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.ApplicationLauncher;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.applications.beans.v1.Interface;
-import org.astrogrid.applications.parameter.protocol.ExternalValue;
-import org.astrogrid.applications.parameter.protocol.InaccessibleExternalValueException;
-import org.astrogrid.applications.parameter.protocol.UnrecognizedProtocolException;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.CommunityInternal;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ParametersPanel;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserDialog;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
+import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
-import org.astrogrid.registry.client.query.ResourceData;
-import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.xml.Marshaller;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.awt.BorderLayout;
@@ -42,9 +42,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -52,6 +49,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -60,7 +58,6 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -149,12 +146,8 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
             this.putValue(SHORT_DESCRIPTION,"Save tool document to local disk");
             this.setEnabled(false);
         }
-        private Writer getWriter(URI u) throws InaccessibleExternalValueException, UnrecognizedProtocolException {            
-            ExternalValue ev= community.getEnv().getAstrogrid().getIoHelper().getExternalValue(u);
-            return new OutputStreamWriter(ev.write());
-        }        
+
         public void actionPerformed(ActionEvent e) {
-            //int result = getFileChooser().showSaveDialog(ApplicationLauncherImpl.this);
             final URI u = chooser.chooseResource("Save Tool Document",true);
             if (u == null) {
                 return;
@@ -163,9 +156,15 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
                     protected Object construct() throws Exception {
                         Tool t = getParametersPane().getTool();
-                        Writer writer = getWriter(u);
-                        t.marshal(writer);
-                        writer.close();
+                        if (u.getScheme().equals("ivo")) {
+                            StringWriter sw = new StringWriter();
+                            t.marshal(sw);
+                            myspace.write(u,sw.toString());
+                        } else {
+                            Writer w = new OutputStreamWriter(u.toURL().openConnection().getOutputStream());
+                            t.marshal(w);
+                            w.close();                          
+                        }
                         return null;
                     }
                 }).start();            
@@ -192,35 +191,32 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
                 protected Object construct() throws Exception {
                     logger.debug("Executing");
-                    // HACK - taking a copy.
-                    StringWriter sw = new StringWriter();
-                    tOrig.marshal(sw);
-                    sw.close();
-                    Tool t = Tool.unmarshalTool(new StringReader(sw.toString()));
-                    ResourceData[] services = apps.listProvidersOf(new Ivorn(t.getName()));
+                    Document doc = XMLUtils.newDocument();
+                    Marshaller.marshal(tOrig,doc);
+                    ResourceInformation[] services = apps.listProvidersOf(new URI("ivo://" + tOrig.getName())); 
                     logger.debug("resolved app to " + services.length + " servers");
                     if (services.length > 1) {
-                        Ivorn[] names = new Ivorn[services.length];
+                        URI[] names = new URI[services.length];
                         for (int i = 0 ; i < services.length; i++) {
-                            names[i] = services[i].getIvorn();
+                            names[i] = services[i].getId();
                         }
-                    Ivorn chosen = (Ivorn)JOptionPane.showInputDialog(ApplicationLauncherImpl.this
+                    URI chosen = (URI)JOptionPane.showInputDialog(ApplicationLauncherImpl.this
                             ,"More than one CEA server provides this application - please choose one"
                             ,"Choose Server"
                             ,JOptionPane.QUESTION_MESSAGE
                             ,null
                             , names
                             ,names[0]);
-                       return apps.executeOn(t,chosen);
+                       return apps.submitTo(doc,chosen);
                     } else {
-                    return apps.executeOn(t,services[0].getIvorn());
+                    return apps.submitTo(doc,services[0].getId());
                     }
                 }
                 
                 protected void doFinished(Object o) {
                     ResultDialog rd = new ResultDialog(ApplicationLauncherImpl.this,"ExecutionId : " + o);
                     rd.show();                   
-                    monitor.addApplication(tOrig.getName(),o.toString());
+                    monitor.addApplication(tOrig.getName(),(URI)o);
                     monitor.displayApplicationTab();
                     monitor.show();
                 }
@@ -238,12 +234,9 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
         public OpenAction() {
             super("Open",IconHelper.loadIcon("file_obj.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Load tool document from local disk");
+            this.putValue(SHORT_DESCRIPTION,"Load tool document from storage");
         }        
-        private Reader getReader(URI u) throws InaccessibleExternalValueException, UnrecognizedProtocolException{
-            ExternalValue ev = community.getEnv().getAstrogrid().getIoHelper().getExternalValue(u);
-            return new InputStreamReader(ev.read());
-        }        
+
         public void actionPerformed(ActionEvent e) {
             final URI u = chooser.chooseResource("Select tool document to load",true);
             if (u == null) {
@@ -253,7 +246,13 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
                     private ApplicationDescription newApp;
                     private Interface newInterface;
                     protected Object construct() throws Exception {
-                       Reader fr = getReader(u);
+                        URL url;
+                        if (u.getScheme().equals("ivo")) {
+                            url = myspace.getReadContentURL(u);
+                        } else {
+                            url = u.toURL();
+                        }
+                       Reader fr = new InputStreamReader(url.openStream());
                        Tool t = Tool.unmarshalTool(fr);
                        fr.close();
                        newApp = apps.getApplicationDescription(t.getName());                       
@@ -375,9 +374,9 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
                     if (value == null) {
                         l.setText("");
                     } else {
-                    ApplicationDescriptionSummary data = (ApplicationDescriptionSummary)value;
-                    String ui = data.getUIName() == null ? "not available" : data.getUIName();
-                    String name = data.getName() == null ? "not available" : data.getName();
+                    ApplicationInformation data = (ApplicationInformation)value;
+                    String ui = data.getName() == null ? "not available" : data.getName();
+                    String name = data.getId() == null ? "not available" : data.getId().toString();
                     l.setText("<html><b>" + ui+ "</b><br><font size='-1'>" + name + "</font></html>");     
                     }
                     return l;                    
@@ -387,7 +386,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
                 public void itemStateChanged(ItemEvent e) {
                     if (e.getStateChange() == ItemEvent.SELECTED) {
-                        final ApplicationDescriptionSummary selected = (ApplicationDescriptionSummary) applicationChooser.getSelectedItem(); 
+                        final ApplicationInformation selected = (ApplicationInformation) applicationChooser.getSelectedItem(); 
                         (new BackgroundOperation("Fetching info for " + selected.getName()) {
                             protected Object construct() throws Exception {
                                 return apps.getApplicationDescription(selected.getName());                           
@@ -425,19 +424,19 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
             (new BackgroundOperation("Populating application list") {
 
                 protected Object construct() throws Exception {
-                    ApplicationDescriptionSummary[] d = apps.fullList();               
+                    ApplicationInformation[] d = apps.listFully();               
                     Arrays.sort(d,new Comparator() {
                         public int compare(Object o1, Object o2) {
-                            ApplicationDescriptionSummary a = (ApplicationDescriptionSummary)o1;
-                            ApplicationDescriptionSummary b = (ApplicationDescriptionSummary)o2;
-                            return a.getUIName().compareToIgnoreCase(b.getUIName());
+                            ApplicationInformation a = (ApplicationInformation)o1;
+                            ApplicationInformation b = (ApplicationInformation)o2;
+                            return a.getName().compareToIgnoreCase(b.getName());
                         }
                     });
                     
                     return d;
                 }
                 protected void doFinished(Object o) {
-                    final ApplicationDescriptionSummary[] data =(ApplicationDescriptionSummary[]) o;
+                    final ApplicationInformation[] data =(ApplicationInformation[]) o;
                     for (int i = 0; i < data.length; i++) {
                         if (data[i] != null) {
                             applicationChooser.addItem(data[i]);
@@ -553,7 +552,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 		initialize();
 	}
     
-    public ApplicationLauncherImpl(Community comm,Applications apps,JobMonitor monitor, Myspace myspace, HelpServer hs, Configuration conf, UI ui,ResourceChooser chooser) {
+    public ApplicationLauncherImpl(CommunityInternal comm,ApplicationsInternal apps,JobMonitor monitor, MyspaceInternal myspace, HelpServer hs, Configuration conf, UIInternal ui,ResourceChooser chooser) {
         super(conf,hs,ui);
         this.apps = apps;
         this.monitor = monitor;
@@ -563,11 +562,11 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
         initialize();
     }
     
-    private final Applications apps;
+    private final ApplicationsInternal apps;
     private final JobMonitor monitor;
-    private final Myspace myspace;
+    private final MyspaceInternal myspace;
     private final ResourceChooser chooser;
-    private final Community community;
+    private final CommunityInternal community;
 	/**
 	 * This method initializes this
 	 * 
@@ -593,6 +592,9 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.5  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.4  2005/07/08 11:08:01  nw
 bug fixes and polishing for the workshop
 

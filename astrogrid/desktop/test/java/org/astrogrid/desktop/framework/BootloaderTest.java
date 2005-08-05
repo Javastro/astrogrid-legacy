@@ -1,4 +1,4 @@
-/*$Id: BootloaderTest.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: BootloaderTest.java,v 1.4 2005/08/05 11:46:56 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,45 +11,49 @@
 package org.astrogrid.desktop.framework;
 
 import org.astrogrid.acr.builtin.Module;
-import org.astrogrid.desktop.framework.descriptors.DescriptorParser;
-import org.astrogrid.desktop.framework.descriptors.DigesterDescriptorParser;
 
+import java.util.Iterator;
+
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /** Test the bootloader.
+ * system test really - tests that a viable workbench can be created (i.e. no missing deps, etc.)
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
 public class BootloaderTest extends TestCase {
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.reg = new DefaultModuleRegistry();
-        this.parser = new DigesterDescriptorParser();
-        this.bl = new Bootloader(reg,parser);
+    
+    
+    public void testBootloader() throws Exception {
+        DefaultModule system = (DefaultModule)ACRTestSetup.pico.getACR().getModule("system");        
+        assertNotNull(system);      
+        assertNotNull(system.getDescriptor());
+        Iterator i = system.componentIterator(); 
+        assertNotNull(i);
+        assertTrue(i.hasNext());
+        while (i.hasNext()) {
+            assertNotNull(i.next());           
+        }
+        
     }
     
-    protected DefaultModuleRegistry reg;
-    protected DescriptorParser parser;
+    public static Test suite() {
+        return new ACRTestSetup(new TestSuite(BootloaderTest.class));
+    }
+    
 
-    protected Bootloader bl;
-    
-    public void dontTestBootloader() throws Exception {
-        bl.start();
-        Module system = reg.getModule("system");
-        assertNotNull(system);
-        
-        
-    }
     
 }
 
 
 /* 
 $Log: BootloaderTest.java,v $
+Revision 1.4  2005/08/05 11:46:56  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

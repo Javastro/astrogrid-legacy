@@ -1,4 +1,4 @@
-/*$Id: DefaultModuleRegistry.java,v 1.6 2005/06/22 08:48:52 nw Exp $
+/*$Id: ACRImpl.java,v 1.1 2005/08/05 11:46:55 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,18 @@
 **/
 package org.astrogrid.desktop.framework;
 
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.Module;
-import org.astrogrid.acr.builtin.ModuleRegistry;
-import org.astrogrid.acr.builtin.NewModuleEvent;
-import org.astrogrid.acr.builtin.NewModuleListener;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
 import org.astrogrid.desktop.modules.system.Check;
+import org.astrogrid.desktop.modules.system.ThrobbingInterceptor;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.apache.commons.collections.OrderedMap;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.digester.Digester;
@@ -33,31 +35,33 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-/** Default implementation fo a {@link ModuleRegistry}
+/** Default implementation fo a {@link ACR}
  * <p>
  * Basically a big map.
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
  *
  */
-public class DefaultModuleRegistry implements MutableModuleRegistry {
+public class ACRImpl implements MutableACR {
     private static final String IMPLEMENTATIONS_KEY = "implementations";
     /**
      * Commons Logger for this class
      */
-    private static final Log logger = LogFactory.getLog(DefaultModuleRegistry.class);
+    private static final Log logger = LogFactory.getLog(ACRImpl.class);
 
     /** Construct a new ModuleContainer
      * 
      */
-    public DefaultModuleRegistry() {
+    public ACRImpl() {
         super();        
         modules = new ListOrderedMap();
-        Module m = buildBuiltinModule();
+        DefaultModule m = buildBuiltinModule();
         modules.put(m.getDescriptor().getName(),m);
         m.start();
         notifyListeners(m); // probably haven't got any listeners yet.
@@ -66,35 +70,35 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
     /** constructs the builtin module - contains the registry itself, and the shutdown component. may add more later.
      * @return
      */
-    private final Module buildBuiltinModule() {
+    private final DefaultModule buildBuiltinModule() {
         DefaultModule m = new DefaultModule();
-        m.registerComponentInstance("modules",this);
-        m.registerComponentInstance("shutdown",new ShutdownImpl(modules));
+        m.registerComponentInstance(MutableACR.class,this);
+        m.registerComponentInstance(Shutdown.class,new ShutdownImpl(modules));
         ModuleDescriptor md = new ModuleDescriptor();
         md.setName("builtin");
         md.setDescription("Builtin components");
+        ComponentDescriptor cd = new ComponentDescriptor();
         
-        md.addComponent(new ComponentDescriptor(){{
-            setDescription("module registry");
-            setName("modules");
-            setImplementationClass(this.getClass());
-            setInterfaceClass(MutableModuleRegistry.class);
-        }});
-        
+        cd.setDescription("shutdown the system");
+         cd.setName("shutdown");
+         cd.setImplementationClass(ShutdownImpl.class);
+         cd.setInterfaceClass(Shutdown.class);
+         MethodDescriptor meth = new MethodDescriptor();
+         cd.addMethod(meth);
+                meth.setName("halt");
+                meth.setDescription("bring the system to a halt");
+         md.addComponent(cd);
+         
+         cd = new ComponentDescriptor();       
+        cd.setDescription("module registry");
+         cd.setName("modules");
+         cd.setImplementationClass(this.getClass());
+          cd.setInterfaceClass(MutableACR.class);  
+          md.addComponent(cd);
         // no need to register any methods of registry - as all have complex parameter types 
         // and so can't be called exxternally anyhow.
         
-        md.addComponent(new ComponentDescriptor(){{
-            setDescription("shutdown the system");
-            setName("shutdown");
-            setImplementationClass(ShutdownImpl.class);
-            setInterfaceClass(Shutdown.class);            
-            addMethod(new MethodDescriptor() {{
-                setName("halt");
-                setDescription("bring the system to a halt");
-            }});                       
-        }});
-
+   
         m.setDescriptor(md);
         return m;
     }
@@ -110,42 +114,54 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
      *  */
     public void register(ModuleDescriptor desc) {
         logger.info("Building module for " + desc.getName());
-       // logger.debug(desc);
-        // make the parent container an aggregate to all for now. - will restrict later, when introducing security, sandboxes, etc.
-        // @todo bt of an issue here - strictly speaking, don't need aggregate - as all moduels are added in sequence, 
-        // they form a chain. however, this will change when we implement sandboxing, etc. I think aggregates will be needed then. dunno.
-        // could maybe so same thing by just getting correct component adapters, and stuffing them in a new container. issues with dependency chains too..
-        //PicoContainer agg = new AggregatePicoContainer(modules.values());
-        // just get the last one added for now..
+
         DefaultModule parent =(DefaultModule) modules.get(modules.lastKey());
-        //logger.info("Ancestor:" + parent.getChain());
-        DefaultModule m1 = new DefaultModule(parent.pico);
+        AspectableModule m1 = new AspectableModule(parent.pico);
         
         m1.setDescriptor(desc);
         // register components
         for (Iterator i = desc.componentIterator(); i.hasNext(); ) {
             ComponentDescriptor c = (ComponentDescriptor)i.next();
-            logger.info("Processing " + c.getName());                        
+            logger.info("Processing " + c.getName());              
+            // special case for aspects - register without any strangeness.
+            if ( c.getImplementationClass() != null && MethodInterceptor.class.isAssignableFrom(c.getImplementationClass())) {
+                logger.info("Registering " + c.getName() + " as aspect");
+                m1.registerComponentImplementation(c.getImplementationClass());
+                continue;
+            } 
+                
+            Class impl= null;
             if (c.getImplementationClass() != null) {
-                m1.registerComponentImplementation(c.getName(),c.getImplementationClass());
-            } else { // got a conditional component of some sort
+                impl = c.getImplementationClass();
+             } else {
                 logger.info("Checking conditional component " + c.getName());
-                Class impl  = selectImplementation(c);
+                impl  = selectImplementation(c);
+             }
                 if (impl != null) { // as there may be no suitable implementation
-                    m1.registerComponentImplementation(c.getName(),impl);
-                }
-            }
+                    m1.registerComponentImplementation(impl.getInterfaces(),impl);
+                } else {
+                    // no suitable implementation found - not going to instantiate this component,
+                    // so remove it from the module descriptor.
+                    i.remove();
+                }            
         }
-        
+
         // register interceptors.
         PointcutsFactory cuts = m1.getPointcutsFactory();
-    //    m1.registerInterceptor(cuts.allClasses(),publicMethods(cuts),new LoggingInterceptor());
-        m1.registerInterceptor(notBuiltinOrSystem(cuts),publicMethods(cuts),"throbber");
+       
+    ///   m1.registerInterceptor(cuts.allClasses(),publicMethods(cuts),new LoggingInterceptor());
+        // @todo move registration of interceptors out of reg code into module.xml with all else.
+        // @todo the throbber is currently registered as a method interceptor. will need to change this if start using other interceptors as well.
+       m1.registerInterceptor(notBuiltinOrSystem(cuts),publicMethods(cuts),ThrobbingInterceptor.class);
+        
         m1.start(); // order of these is important - as there may be reg listeners in m1  - so need to start it before notifying listners.      
         modules.put(m1.getDescriptor().getName(),m1);
         notifyListeners(m1);
         
     }
+    
+
+    
     /** method to handle case where there's more than one possible implementation of a component
      *  - and the right one needs to be chosen depending on some condition */
     private Class selectImplementation(ComponentDescriptor c) {
@@ -161,7 +177,7 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
             for (Iterator i = alternatives.iterator();i.hasNext(); ) {
                 Implementation im = (Implementation)i.next();
                 try {
-                    if ( ((Check)im.getCheckClass().newInstance()).check()) {
+                    if ( im.getCheckClass() == null || ((Check)im.getCheckClass().newInstance()).check()) {
                         return Class.forName(im.getImplementationClass());
                     }
                 } catch (InstantiationException e1) {
@@ -239,7 +255,7 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
     }
     
     /**
-     * @see org.astrogrid.acr.builtin.ModuleRegistry#addNewModuleListener(org.astrogrid.desktop.framework.NewModuleListener)
+     * @see org.astrogrid.acr.builtin.ACR#addNewModuleListener(org.astrogrid.desktop.framework.NewModuleListener)
      */
     public void addNewModuleListener(NewModuleListener l) {
         listeners.add(l);
@@ -250,16 +266,52 @@ public class DefaultModuleRegistry implements MutableModuleRegistry {
     }
 
     /**
-     * @see org.astrogrid.acr.builtin.ModuleRegistry#removeNewModuleListener(org.astrogrid.desktop.framework.NewModuleListener)
+     * @see org.astrogrid.acr.builtin.ACR#removeNewModuleListener(org.astrogrid.desktop.framework.NewModuleListener)
      */
     public void removeNewModuleListener(NewModuleListener l) {
         listeners.remove(l);
     }
+
+    /**
+     * @throws ACRException
+     * @see org.astrogrid.acr.builtin.ACR#getService(java.lang.Class)
+     */
+    public Object getService(Class interfaceClass) throws ACRException {
+        DefaultModule latest = (DefaultModule)modules.get(modules.lastKey());
+        try {
+        Object result = latest.getComponentInstanceOfType(interfaceClass);
+        if (result == null) {
+            throw new NotFoundException(interfaceClass.getName());
+        }
+        return result;
+        } catch (Throwable t) {
+            throw new ACRException(t);
+        }
+        
+    }
+
+    /**
+     * @see org.astrogrid.desktop.framework.MutableACR#getDescriptors()
+     */
+    public Map getDescriptors() {
+        Map result = new HashMap(modules.size());    
+        
+        for (Iterator i = modules.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry e = (Map.Entry)i.next();
+            ModuleDescriptor d = ((DefaultModule)e.getValue()).getDescriptor();
+            result.put(e.getKey(), d);
+        }
+        return result;
+    }
+
 }
 
 
 /* 
-$Log: DefaultModuleRegistry.java,v $
+$Log: ACRImpl.java,v $
+Revision 1.1  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.6  2005/06/22 08:48:52  nw
 latest changes - for 1.0.3-beta-1
 

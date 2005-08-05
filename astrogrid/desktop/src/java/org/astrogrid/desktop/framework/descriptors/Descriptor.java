@@ -1,4 +1,4 @@
-/*$Id: Descriptor.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: Descriptor.java,v 1.4 2005/08/05 11:46:56 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.framework.descriptors;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -20,7 +21,7 @@ import java.util.Map;
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
  *
  */
-public class Descriptor {
+public class Descriptor implements Serializable {
 
     /** Construct a new Descriptor
      * 
@@ -111,6 +112,9 @@ public class Descriptor {
 
 /* 
 $Log: Descriptor.java,v $
+Revision 1.4  2005/08/05 11:46:56  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

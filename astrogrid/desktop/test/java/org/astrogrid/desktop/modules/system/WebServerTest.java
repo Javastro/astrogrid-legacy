@@ -1,5 +1,5 @@
-/*$Id: WebServerTest.java,v 1.2 2005/04/13 12:59:18 nw Exp $
- * Created on 17-Mar-2005
+/*$Id: WebServerTest.java,v 1.3 2005/08/05 11:46:55 nw Exp $
+ * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -10,10 +10,19 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.framework.ACRTestSetup;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
+ * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
  *
  */
 public class WebServerTest extends TestCase {
@@ -23,6 +32,33 @@ public class WebServerTest extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
+        ACR reg = getACR();
+        serv = (WebServer)reg.getService(WebServer.class);
+        assertNotNull(serv);
+    } 
+    protected ACR getACR() throws Exception{
+        return (ACR)ACRTestSetup.pico.getACR();
+    }
+    protected WebServer serv;
+
+
+    public void testGetKey() {
+        assertNotNull(serv.getKey());
+    }
+
+    public void testGetPort() {
+        assertTrue(serv.getPort() > 0);
+        
+    }
+
+    public void testGetUrlRoot() throws MalformedURLException {
+        assertNotNull(serv.getUrlRoot());
+        new URL(serv.getUrlRoot()); // will throw a malformed thingie if not a url.
+    }
+    
+    
+    public static Test suite() {
+        return new ACRTestSetup(new TestSuite(WebServerTest.class));
     }
 
 }
@@ -30,10 +66,7 @@ public class WebServerTest extends TestCase {
 
 /* 
 $Log: WebServerTest.java,v $
-Revision 1.2  2005/04/13 12:59:18  nw
-checkin from branch desktop-nww-998
-
-Revision 1.1.2.1  2005/03/18 12:09:32  nw
-got framework, builtin and system levels working.
+Revision 1.3  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
  
 */

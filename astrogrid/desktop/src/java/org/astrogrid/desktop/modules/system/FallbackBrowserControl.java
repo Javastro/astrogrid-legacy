@@ -1,4 +1,4 @@
-/*$Id: FallbackBrowserControl.java,v 1.6 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: FallbackBrowserControl.java,v 1.7 2005/08/05 11:46:55 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,13 +11,13 @@
 package org.astrogrid.desktop.modules.system;
 
 
+import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 
+import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.swing.JOptionPane;
 
 /** fallback implementation of the browser control - tells user which http url to go to.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
@@ -35,9 +35,11 @@ public class FallbackBrowserControl implements BrowserControl {
 
     protected final WebServer root;
     /**
+     * @throws MalformedURLException
+     * @throws ACRException
      * @see org.astrogrid.acr.system.BrowserControl#openURL(java.lang.String)
      */
-    public void openURL(String stringUrl) throws Exception{
+    public void openURL(String stringUrl) throws MalformedURLException, ACRException {
         URL url = new URL(stringUrl);
         openURL(url);
     }
@@ -45,15 +47,17 @@ public class FallbackBrowserControl implements BrowserControl {
     /**
      * @see org.astrogrid.acr.system.BrowserControl#openURL(java.net.URL)
      */
-    public void openURL(URL url) throws Exception {
+    public void openURL(URL url) throws ACRException {
        ResultDialog rd = new ResultDialog(null,"Cannot control browser\n Please go to \n" + url.toString());
        rd.show();
     }
     
     /**
+     * @throws MalformedURLException
+     * @throws ACRException
      * @see org.astrogrid.acr.system.BrowserControl#openRelative(java.lang.String)
      */
-    public void openRelative(String relativeURL) throws Exception {
+    public void openRelative(String relativeURL) throws MalformedURLException, ACRException {
         URL url = new URL(root.getUrlRoot()+ relativeURL);
         openURL(url);
     }
@@ -64,6 +68,9 @@ public class FallbackBrowserControl implements BrowserControl {
 
 /* 
 $Log: FallbackBrowserControl.java,v $
+Revision 1.7  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.6  2005/06/08 14:51:59  clq2
 1111
 

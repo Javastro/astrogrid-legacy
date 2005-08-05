@@ -1,4 +1,4 @@
-/*$Id: DefaultModule.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: DefaultModule.java,v 1.4 2005/08/05 11:46:55 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,12 @@
 **/
 package org.astrogrid.desktop.framework;
 
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.builtin.Module;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.nanocontainer.aop.AspectablePicoContainer;
-import org.nanocontainer.aop.AspectablePicoContainerFactory;
-import org.nanocontainer.aop.ClassPointcut;
-import org.nanocontainer.aop.ComponentPointcut;
-import org.nanocontainer.aop.MethodPointcut;
-import org.nanocontainer.aop.PointcutsFactory;
-import org.nanocontainer.aop.dynaop.DynaopAspectablePicoContainerFactory;
 import org.picocontainer.ComponentAdapter;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Parameter;
@@ -30,54 +24,46 @@ import org.picocontainer.PicoException;
 import org.picocontainer.PicoRegistrationException;
 import org.picocontainer.PicoVerificationException;
 import org.picocontainer.PicoVisitor;
+import org.picocontainer.defaults.DefaultPicoContainer;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 /** Default implementation of a Module.
  * <p>
- * Extends AspectablePicoContainer - which is a standard pico container to which 'aspects' can be attached. Let me explain...
- * <p>
- * A picocontainer is a very small component manager that takes care of instantiating a bunch of objects of different classes, especially where 
- * some objects need to be passed instances of other objects. It takes care of all the'wiring up' code that can be quite irritating to write by hand.
- * Depending on how the objects are registered with the picocontainer, a new instance may
- * be created on each request, a single instance may be repeatedly returned, or some other behaviour. Furthermore, once objects are reigstered in the
- * container, you can do other things with them - retrieve all objects that support a particular interface, for example. 
- * 
- * <p>
- * It is also possible to 'wrap' the objects in the container. A common wrapping is 'implementation hiding' - here a proxy instance of aninterface is dynamically generated
- * that proxies all requests back to the implementation class - this prevents (possibly hostile) client code from casting from the public interface to a 
- * known implementation class.
- * <p>
- * As well as implementation hiding, the AspectablePicoContainer allows 'aspects' (as defined in aspect oriented programming) to be applied to 
- * objects and methods. An aspect is a way of adding functionality to existing code without having to extend classes - for example, you could write an aspect
- * that logs the start and end of a method call, and apply it to all methods of an object to add logging, without having to extend the object directly.
- * <p>
+ * Internally uses a standard pico container
  * 
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
  *
  */
-class DefaultModule  implements AspectablePicoContainer, Module{
+public class DefaultModule  implements PicoContainer, Module, Serializable{
 
 
     /** Construct a new DefaultModule
      * @param arg0
      */
     public DefaultModule(PicoContainer arg0) {
-       pico = factory.createContainer(arg0);
+       pico =createContainer(arg0);
     }
-
-    protected static final AspectablePicoContainerFactory factory = new DynaopAspectablePicoContainerFactory();
+   
+    protected MutablePicoContainer createContainer() {
+        return new DefaultPicoContainer();
+    }
     
-    protected final AspectablePicoContainer pico;
+    protected MutablePicoContainer createContainer(PicoContainer parent) {
+        return new DefaultPicoContainer(parent);
+    }
+     
+    protected final MutablePicoContainer pico;
 
 
     /* Construct a new DefaultModule
      * 
      */
     public DefaultModule() {
-        pico = factory.createContainer();
+        pico = createContainer();
     }
 
     /**
@@ -96,8 +82,20 @@ class DefaultModule  implements AspectablePicoContainer, Module{
     /**
      * @see org.astrogrid.acr.builtin.Module#getComponent(java.lang.String)
      */
-    public Object getComponent(String componentName) {
-        return this.getComponentInstance(componentName);
+    public Object getComponent(String componentName) throws ACRException {
+        ComponentDescriptor cd = descriptor.getComponent(componentName);
+        if (cd == null) {
+            throw new NotFoundException(componentName);
+        }
+        try {
+            Object result =  this.getComponentInstanceOfType(cd.getInterfaceClass());
+            if (result == null) {
+                throw new NotFoundException(cd.getInterfaceClass().getName());
+            }
+            return result;
+        } catch (Throwable t) {
+            throw new ACRException(t);
+        }
     }
     
 
@@ -118,8 +116,8 @@ class DefaultModule  implements AspectablePicoContainer, Module{
             }
 
             public Object next() {
-                ComponentDescriptor cDesc = (ComponentDescriptor) descriptions.next();
-                return getComponentInstance(cDesc.getInterfaceClass());
+                ComponentDescriptor cDesc = (ComponentDescriptor) descriptions.next();                
+                return getComponentInstanceOfType(cDesc.getInterfaceClass());
             }
         };
     }
@@ -215,52 +213,15 @@ class DefaultModule  implements AspectablePicoContainer, Module{
     public void verify() throws PicoVerificationException {
         this.pico.verify();
     }
-    public PointcutsFactory getPointcutsFactory() {
-        return this.pico.getPointcutsFactory();
-    }
-    public void registerInterceptor(ClassPointcut arg0, MethodPointcut arg1, Object arg2) {
-        this.pico.registerInterceptor(arg0, arg1, arg2);
-    }
-    public void registerInterceptor(ClassPointcut arg0, MethodPointcut arg1, MethodInterceptor arg2) {
-        this.pico.registerInterceptor(arg0, arg1, arg2);
-    }
-    public void registerInterceptor(ComponentPointcut arg0, MethodPointcut arg1, Object arg2) {
-        this.pico.registerInterceptor(arg0, arg1, arg2);
-    }
-    public void registerInterceptor(ComponentPointcut arg0, MethodPointcut arg1, MethodInterceptor arg2) {
-        this.pico.registerInterceptor(arg0, arg1, arg2);
-    }
-    public void registerInterfaces(ClassPointcut arg0, Class[] arg1) {
-        this.pico.registerInterfaces(arg0, arg1);
-    }
-    public void registerInterfaces(ComponentPointcut arg0, Class[] arg1) {
-        this.pico.registerInterfaces(arg0, arg1);
-    }
-    public void registerMixin(ClassPointcut arg0, Class arg1) {
-        this.pico.registerMixin(arg0, arg1);
-    }
-    public void registerMixin(ClassPointcut arg0, Class[] arg1, Class arg2) {
-        this.pico.registerMixin(arg0, arg1, arg2);
-    }
-    public void registerMixin(ComponentPointcut arg0, Class arg1) {
-        this.pico.registerMixin(arg0, arg1);
-    }
-    public void registerMixin(ComponentPointcut arg0, Class[] arg1, Class arg2) {
-        this.pico.registerMixin(arg0, arg1, arg2);
-    }
-
-    /**
-     * @see org.astrogrid.acr.builtin.Module#getChain()
-     */
-    public String getChain() {
-        
-        return this.descriptor.getName() + (getParent() != null ? ", " + ((Module)getParent()).getChain(): "");
-    }
+  
 }
 
 
 /* 
 $Log: DefaultModule.java,v $
+Revision 1.4  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

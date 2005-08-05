@@ -13,6 +13,20 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+	
+	<release version="1.1-beta-1" date="unreleased">
+		<action dev="nw" type="fix">
+			cleaned up acr public interface
+		</action>
+		<action dev="nw" type="add">
+			added java rmi interface to acr
+		</action>
+	</release>
+	<release version="1.0.6-beta-1" date="2005-07025">
+		<action dev="pjn3" type="fix">
+			assorted improvements of the workflow viewer
+		</action>
+	</release>
 	<release version="1.0.5" date="2005-07-10">
 		<action dev="pjn3" type="add">
 			Added beta of workflow viewer

@@ -1,4 +1,4 @@
-/*$Id: ThrobbingInterceptor.java,v 1.6 2005/06/22 08:48:52 nw Exp $
+/*$Id: ThrobbingInterceptor.java,v 1.7 2005/08/05 11:46:55 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,13 +19,17 @@ import org.aopalliance.intercept.MethodInvocation;
 
 /** interceptor that starts the ui throbber before processing a method.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2005
- *
+ *@todo maybe change way this is registered? 
  */
 public class ThrobbingInterceptor implements MethodInterceptor {
 
     /** Construct a new ThrobbingInterceptor
      * 
      */
+    public ThrobbingInterceptor() { // constrctor called when no ui availiable
+        this.ui = null;
+        this.tray = null;
+    }
     public ThrobbingInterceptor(UI ui) {// constructor called when no tray available
         super();
         this.ui = ui;
@@ -46,7 +50,9 @@ public class ThrobbingInterceptor implements MethodInterceptor {
      */
     public Object invoke(MethodInvocation invocation) throws Throwable {
         try {
-            ui.startThrobbing();
+            if (ui != null) {
+                ui.startThrobbing();
+            }
             // doesn't work - always shows 'getEnv' - need to have it so that is only sets Status message on first invoaction, not nested ones.
             //ui.setStatusMessage("calling " + invocation.getMethod().getName());
             if (tray != null) {
@@ -54,7 +60,9 @@ public class ThrobbingInterceptor implements MethodInterceptor {
             }               
             return invocation.proceed();
         } finally {
-            ui.stopThrobbing();
+            if (ui != null) {
+                ui.stopThrobbing();
+            }
             if (tray != null) {
                 tray.stopThrobbing();
             }
@@ -67,6 +75,9 @@ public class ThrobbingInterceptor implements MethodInterceptor {
 
 /* 
 $Log: ThrobbingInterceptor.java,v $
+Revision 1.7  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.6  2005/06/22 08:48:52  nw
 latest changes - for 1.0.3-beta-1
 

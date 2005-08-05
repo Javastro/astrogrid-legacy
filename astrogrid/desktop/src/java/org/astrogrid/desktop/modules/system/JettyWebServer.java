@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.5 2005/05/12 15:59:10 clq2 Exp $
+/*$Id: JettyWebServer.java,v 1.6 2005/08/05 11:46:55 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.builtin.ModuleRegistry;
-import org.astrogrid.acr.builtin.NewModuleEvent;
-import org.astrogrid.acr.builtin.NewModuleListener;
 import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.framework.DefaultModule;
+import org.astrogrid.desktop.framework.MutableACR;
+import org.astrogrid.desktop.framework.NewModuleEvent;
+import org.astrogrid.desktop.framework.NewModuleListener;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
 
 import org.apache.commons.digester.Digester;
@@ -32,7 +33,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Random;
 
 /** Factory to create a webserver, listening to a random port, with a hashed key path.
@@ -47,7 +47,7 @@ public class JettyWebServer implements Startable, WebServer, NewModuleListener{
      */
     private static final Log logger = LogFactory.getLog(JettyWebServer.class);
 
-    public JettyWebServer(ModuleRegistry reg) throws Exception {
+    public JettyWebServer(MutableACR reg) throws Exception {
         super();
         this.server = new Server();
         this.server.setStopGracefully(true);        
@@ -60,7 +60,7 @@ public class JettyWebServer implements Startable, WebServer, NewModuleListener{
         //catch-all context.
 
 
-        this.context.getServletContext().setAttribute(WebServer.MODULE_REGISTRY,reg);
+        this.context.getServletContext().setAttribute(WebServer.ACR_CONTEXT_KEY,reg);
         
         // configure digester.
         this.dig = new Digester() {{
@@ -120,7 +120,7 @@ public class JettyWebServer implements Startable, WebServer, NewModuleListener{
             }
         } 
         if (port == 0) {
-            throw new Exception("Could not find a free port");
+            throw new Exception("Could not find a free port for webserver");
         }
     }
     /* generates a random string */
@@ -168,11 +168,11 @@ public class JettyWebServer implements Startable, WebServer, NewModuleListener{
     }
 
     /**
-     * @see org.astrogrid.acr.builtin.NewModuleListener#newModuleRegistered(org.astrogrid.desktop.framework.NewModuleEvent)
+     * @see org.astrogrid.desktop.framework.NewModuleListener#newModuleRegistered(org.astrogrid.desktop.framework.NewModuleEvent)
      */
     public void newModuleRegistered(NewModuleEvent e) {
         // scan for any modules declaring servlets..
-        ModuleDescriptor m = e.getModule().getDescriptor();
+        ModuleDescriptor m = ((DefaultModule)e.getModule()).getDescriptor();
         String p  = m.getPropertyDocument("system.webserver");
         if (p != null) {
             logger.info("Found webserver block");
@@ -195,6 +195,9 @@ public class JettyWebServer implements Startable, WebServer, NewModuleListener{
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.6  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.5  2005/05/12 15:59:10  clq2
 nww 1111 again
 

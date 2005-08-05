@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.7 2005/07/10 18:07:38 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.8 2005/08/05 11:46:55 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,16 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.CommunityInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.Ivorn;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
 import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
@@ -29,15 +27,12 @@ import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.xml.transform.Result;
@@ -48,7 +43,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 /**todo make location and sizing of window persistent
  *  - put in baseclass that extends JFrame, and remembers positioning info in the configuration.
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Mar-2005
@@ -145,7 +139,7 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 		initialize();
 	}
     
-    public RegistryBrowserImpl(Community community, HelpServer hs,UI ui,Configuration conf) throws TransformerConfigurationException, TransformerFactoryConfigurationError {
+    public RegistryBrowserImpl(CommunityInternal community, HelpServer hs,UIInternal ui,Configuration conf) throws TransformerConfigurationException, TransformerFactoryConfigurationError {
         super(conf,hs,ui);
         this.community = community;
         
@@ -153,7 +147,7 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 
         
     }
-    protected Community community;
+    protected CommunityInternal community;
 	private JScrollPane jScrollPane = null;
     protected Transformer transformer;
 	/**
@@ -220,6 +214,9 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.8  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.7  2005/07/10 18:07:38  nw
 files for 1.0.5
 

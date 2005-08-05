@@ -23,7 +23,7 @@
 	</property>		
 	<!-- todo - make each module a new namespace, so can have identically named components
 		at moment, fails in nasty ways
-		-->
+		-->		
 	<component name="parameterizedWorkflows" 
 		implementationClass="org.astrogrid.desktop.modules.ui.ParameterizedWorkflowLauncherImpl" 
 		interfaceClass="org.astrogrid.acr.ui.ParameterizedWorkflowLauncher" >
@@ -41,7 +41,7 @@
 					url="http://wiki.astrogrid.org/bin/view/Astrogrid/RedshiftMaker"/>					
 				
 			</value>
-		</property>				
+		</property>					
 <property>
 		<key>icon</key>
 		<value>exec.png</value>
@@ -55,10 +55,9 @@
 			<property>
 				<key>system.ui.menu.entry</key>
 				<value>Run...</value>
-			</property>			
-		
+			</property>					
 		</method>
-		</component>		
+		</component>				
 	<component name="registryBrowser" 
 		implementationClass="org.astrogrid.desktop.modules.ui.RegistryBrowserImpl" 
 		interfaceClass="org.astrogrid.acr.ui.RegistryBrowser" >

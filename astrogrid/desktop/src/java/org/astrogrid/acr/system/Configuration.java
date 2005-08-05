@@ -1,4 +1,4 @@
-/*$Id: Configuration.java,v 1.5 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: Configuration.java,v 1.6 2005/08/05 11:46:55 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,9 @@
  **/
 package org.astrogrid.acr.system;
 
-import org.astrogrid.desktop.modules.ag.PortalImpl;
+import org.astrogrid.acr.ACRException;
 
 import java.util.Map;
-import java.util.prefs.BackingStoreException;
 
 /**Configuration component - allows other components (and the user) to set and retrieve key-value pairs, 
  * which are automatically persisted between executions.
@@ -27,8 +26,7 @@ public interface Configuration {
      */
     public static final String[] REQUIRED_KEYS = { "org.astrogrid.registry.query.endpoint",
             "org.astrogrid.registry.admin.endpoint",
-            "jes.job.controller.endpoint", 
-            PortalImpl.PORTAL_ROOT_KEY
+            "jes.job.controller.endpoint"
             };
 
     /** Set the value of a new or existing key
@@ -49,16 +47,16 @@ public interface Configuration {
    /** list the keys present in the store
     * 
     * @return an array of key names
-    * @throws BackingStoreException
+ * @throws ACRException @todo
     */
-    public abstract String[] listKeys() throws BackingStoreException;
+    public abstract String[] listKeys() throws ACRException;
 
     /** list the contents of the store
      * 
      * @return a map of key-value pairs.
-     * @throws BackingStoreException
+     * @throws ACRException @todo
      */
-    public abstract Map list() throws BackingStoreException;
+    public abstract Map list() throws ACRException;
 
     /** remove a previously defined key.
      * @param string
@@ -68,6 +66,9 @@ public interface Configuration {
 
 /* 
  $Log: Configuration.java,v $
+ Revision 1.6  2005/08/05 11:46:55  nw
+ reimplemented acr interfaces, added system tests.
+
  Revision 1.5  2005/06/08 14:51:59  clq2
  1111
 

@@ -1,4 +1,4 @@
-/*$Id: ShutdownImpl.java,v 1.5 2005/05/12 15:59:11 clq2 Exp $
+/*$Id: ShutdownImpl.java,v 1.6 2005/08/05 11:46:55 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,12 +36,16 @@ public class ShutdownImpl implements Shutdown {
                 ((PicoContainer)arg0).stop();
             }
         });
-        System.exit(0);
+        // probably unnecessary, and a pain to test with :)
+        // System.exit(0);
     }
 }
 
 /* 
 $Log: ShutdownImpl.java,v $
+Revision 1.6  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.5  2005/05/12 15:59:11  clq2
 nww 1111 again
 

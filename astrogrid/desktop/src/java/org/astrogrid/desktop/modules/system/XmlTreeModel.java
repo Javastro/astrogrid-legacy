@@ -11,6 +11,11 @@
 package org.astrogrid.desktop.modules.system;
 
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import java.util.Vector;
 
 import javax.swing.event.TreeModelEvent;
@@ -19,11 +24,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 /**
  * @todo move this out of the system module.
  *

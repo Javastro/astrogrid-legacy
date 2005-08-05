@@ -1,4 +1,4 @@
-/*$Id: ResultDialog.java,v 1.4 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: ResultDialog.java,v 1.5 2005/08/05 11:46:55 nw Exp $
  * Created on 10-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,14 +15,10 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-
-import javax.swing.JTextArea;
-import javax.swing.JButton;
-import javax.swing.text.JTextComponent;
 /**
  * Simple dialog that displays a result in a text box - which allows for cutting / copying
  * the result into something else.
@@ -114,6 +110,9 @@ public class ResultDialog extends JDialog {
 
 /* 
 $Log: ResultDialog.java,v $
+Revision 1.5  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.4  2005/06/08 14:51:59  clq2
 1111
 

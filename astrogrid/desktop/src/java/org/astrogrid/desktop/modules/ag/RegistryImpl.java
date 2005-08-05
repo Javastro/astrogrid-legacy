@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.5 2005/05/12 15:59:11 clq2 Exp $
+/*$Id: RegistryImpl.java,v 1.6 2005/08/05 11:46:55 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,13 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.registry.NoResourcesFoundException;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.registry.client.query.ResourceData;
@@ -24,7 +27,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /** implementation of the registry component
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Feb-2005
@@ -39,12 +47,12 @@ public class RegistryImpl implements Registry, UserLoginListener {
     /** Construct a new Registry
      * 
      */
-    public RegistryImpl(Community community) {
+    public RegistryImpl(CommunityInternal community) {
         super();
         this.community = community;
         community.addUserLoginListener(this);
     }
-    protected final Community community;
+    protected final CommunityInternal community;
     private RegistryService reg;
 
     protected RegistryService getReg() {
@@ -54,46 +62,74 @@ public class RegistryImpl implements Registry, UserLoginListener {
         return reg;
     }
     
-    public String resolveIdentifier(String ivorn) throws RegistryException, URISyntaxException {
-
-        if (ivorn.startsWith("ivo://")) {
-            return getReg().getEndPointByIdentifier(new Ivorn(ivorn));
-        } else {
-        return getReg().getEndPointByIdentifier(ivorn);
-        }
+    public URL resolveIdentifier(URI ivorn) throws NotFoundException, ServiceException{
+            try {
+                return new URL(getReg().getEndPointByIdentifier(new Ivorn(ivorn.toString())));
+            } catch (MalformedURLException e) {
+                throw new NotFoundException(e);
+            } catch (NoResourcesFoundException e) {
+                throw new NotFoundException(e);
+            } catch (RegistryException e) {
+                throw new ServiceException(e); 
+            } catch (URISyntaxException e) {
+                throw new ServiceException(e); // wonder what would cause this?
+            }
+ 
 
     }
     
 
-    public String getRecord(String ivorn) throws RegistryException, URISyntaxException {
-
-        Document dom = null;
-        if (ivorn.startsWith("ivo://")){
-            dom = getReg().getResourceByIdentifier(new Ivorn(ivorn));
-        } else {
-            dom=  getReg().getResourceByIdentifier(ivorn);
-        }
-        return XMLUtils.DocumentToString(dom);        
+    public Document getRecord(URI ivorn) throws NotFoundException, ServiceException {
+    
+            try {
+                return getReg().getResourceByIdentifier(new Ivorn(ivorn.toString() ));
+            } catch (NoResourcesFoundException e) {
+                throw new NotFoundException(e);
+            } catch (RegistryException e) {
+                throw new ServiceException(e);
+            } catch (URISyntaxException e) {
+                throw new ServiceException(e);
+            }
     }
     
 
     /**
      * @see org.astrogrid.acr.astrogrid.Registry#getResourceData(java.lang.String)
      */
-    public ResourceData getResourceData(String ivorn) throws RegistryException, URISyntaxException {
-        if (ivorn.startsWith("ivo://")) {
-            return getReg().getResourceDataByIdentifier(new Ivorn(ivorn));
-        } else {
-            return getReg().getResourceDataByIdentifier(new Ivorn("ivo://" + ivorn));
-        }
+    public ResourceInformation getResourceInformation(URI ivorn) throws  NotFoundException, ServiceException {
+            try {
+                ResourceData rd =  getReg().getResourceDataByIdentifier(new Ivorn(ivorn.toString()));
+                return new ResourceInformation(
+                        new URI(rd.getIvorn().toString())
+                        ,rd.getTitle()
+                        ,rd.getDescription()
+                        ,rd.getAccessURL());
+            } catch (NoResourcesFoundException e) {
+                throw new NotFoundException(e);
+            } catch (RegistryException e) {
+                throw new ServiceException(e);
+            } catch (URISyntaxException e) {
+                throw new ServiceException(e);
+            }
     }
     
     
 
-    public String search(String adql) throws RegistryException {
+    public Document search(String adql) throws ServiceException  {
 
-        Document dom = getReg().searchFromSADQL(adql);
-        return XMLUtils.DocumentToString(dom);
+        try {
+            return getReg().searchFromSADQL(adql);
+        } catch (NoResourcesFoundException e) {
+            // shouldn't ever return this - should return an empty result document instead.
+            logger.fatal("search is never expected to return a 'NoResourcesFoundException'",e);
+            try {
+                return XMLUtils.newDocument(); // @todo initialize this object.
+            } catch (ParserConfigurationException e1) {
+                throw new ServiceException(e); //@todo could do wtih a different exception type here?
+            }
+        } catch (RegistryException e) {
+            throw new ServiceException(e);
+        }
 
     }
 
@@ -116,6 +152,9 @@ public class RegistryImpl implements Registry, UserLoginListener {
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.6  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.5  2005/05/12 15:59:11  clq2
 nww 1111 again
 

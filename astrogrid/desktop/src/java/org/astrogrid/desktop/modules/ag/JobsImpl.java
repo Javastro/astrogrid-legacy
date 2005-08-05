@@ -1,4 +1,4 @@
-/*$Id: JobsImpl.java,v 1.6 2005/07/08 14:06:30 nw Exp $
+/*$Id: JobsImpl.java,v 1.7 2005/08/05 11:46:55 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,13 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.Jobs;
+import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.community.beans.v1.Account;
@@ -21,17 +26,24 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
 
+import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.Document;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
+import java.io.StringReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /** Job management service.implementation
+ * @todo refine to call job delegate directly - more efficient, and better exception reporting.
  */
 public class JobsImpl implements Jobs, UserLoginListener {
     /**
@@ -43,11 +55,13 @@ public class JobsImpl implements Jobs, UserLoginListener {
     /** Construct a new Jes
      * 
      */
-    public JobsImpl(Community community) {
+    public JobsImpl(CommunityInternal community, Myspace vos) {
         this.community = community;
+        this.vos = vos;
         community.addUserLoginListener(this);
     }
-    protected final Community community;
+    protected final CommunityInternal community;
+    protected final Myspace vos;
    private JobExecutionService jes; 
      private JobExecutionService getJes() throws WorkflowInterfaceException {
          if (jes == null) {
@@ -60,62 +74,151 @@ public class JobsImpl implements Jobs, UserLoginListener {
         return community.getEnv().getAccount();
     }
 
-    public JobURN[] list() throws WorkflowInterfaceException {
+    public URI[] list() throws ServiceException {
+        try {
         WorkflowSummaryType[] summs = getJes().listJobs(getAccount());
-        JobURN[] result = new JobURN[summs.length];
+        URI[] result = new URI[summs.length];
         for (int i = 0; i < summs.length; i++) {
-            result[i] = summs[i].getJobId();
+            result[i] = cvt(summs[i].getJobId());
         }
         return result;
+        } catch (WorkflowInterfaceException e) {
+            throw new ServiceException(e);
+        }
     }
     
   
     public WorkflowSummaryType[] fullList() throws WorkflowInterfaceException {
         return getJes().listJobs(getAccount());
     }
+       
+    public Document getJobTranscript(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
+        try {        
+        Workflow wf =  getJes().readJob(cvt(jobURN));
+        Document doc = XMLUtils.newDocument();
+        Marshaller.marshal(wf, doc);
+        return doc;
+        } catch (Exception e) {
+            throw new ServiceException(e);            
+        }
+    }
     
+    private JobURN cvt(URI uri) {
+        JobURN urn = new JobURN();
+        urn.setContent(uri.toString());
+        return urn;
+    }
     
-
-    public Workflow getJob(JobURN jobURN) throws WorkflowInterfaceException {
-        return getJes().readJob(jobURN);
+    private URI cvt(JobURN urn) throws ServiceException {       
+        try {
+            return new URI(urn.getContent());
+        } catch (URISyntaxException e) {
+            throw new ServiceException(e);
+        }       
     }
     
 
-    public String getJobSummary(JobURN jobURN) throws WorkflowInterfaceException {
-        WorkflowSummaryType[] summs =  getJes().listJobs(getAccount());
-        for (int i = 0; i < summs.length; i++) {
-            if (summs[i].getJobId().getContent().equals(jobURN.getContent())) {
-                return summs[i].getStatus().toString();
-            }
-        }
-        return "not found";
+    public ExecutionInformation getJobInformation(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
+        try {
+            WorkflowSummaryType[] summs =  getJes().listJobs(getAccount());
+            for (int i = 0; i < summs.length; i++) {
+                if (jobURN.equals(cvt(summs[i].getJobId()))) {
+                    String status =summs[i].getStatus().toString();
+                    return new ExecutionInformation(
+                        cvt(summs[i].getJobId())
+                        ,summs[i].getWorkflowName()
+                        ,summs[i].getDescription()
+                        ,status
+                        ,summs[i].getStartTime()
+                        ,summs[i].getFinishTime()
+                        );
+                }
+            }            
+            } catch (WorkflowInterfaceException e) {
+                throw new ServiceException(e);
+            } 
+            throw new NotFoundException(jobURN.toString());
     }
     
  
-    public void cancelJob(JobURN jobURN) throws WorkflowInterfaceException {
-        getJes().cancelJob(jobURN);
+    public void cancelJob(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
+        try {
+        getJes().cancelJob(cvt(jobURN));
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
     }
     
 
-    public void deleteJob(JobURN jobURN) throws WorkflowInterfaceException {
-        getJes().deleteJob(jobURN);
+    public void deleteJob(URI jobURN) throws NotFoundException, ServiceException, SecurityException {
+        try {
+        getJes().deleteJob(cvt(jobURN));
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
     }
     
 
-    public JobURN submitJob(Workflow workflow) throws WorkflowInterfaceException {
+    public URI submitJob(Document doc) throws ServiceException, InvalidArgumentException {
         // check workflow belongs to us - if not, alter it.
+        try {
+        Workflow workflow = (Workflow)Unmarshaller.unmarshal(Workflow.class, doc);
         workflow.getCredentials().setAccount(getAccount());
-        return getJes().submitWorkflow(workflow);
+        return cvt(getJes().submitWorkflow(workflow));
+        } catch (WorkflowInterfaceException e) {
+            throw new ServiceException(e);
+        } catch (MarshalException e) {
+            throw new InvalidArgumentException(e);
+        } catch (ValidationException e) {
+            throw new InvalidArgumentException(e);
+        }
     }
-    public JobURN submitJobFile(URL workflowURL) throws WorkflowInterfaceException, MarshalException, ValidationException, IOException {
-        InputStream is = workflowURL.openStream();
-        Workflow wf = Workflow.unmarshalWorkflow(new InputStreamReader(is));
+    public URI submitStoredJob(URI workflowReference) throws ServiceException, InvalidArgumentException {
+        Workflow wf = null;
+        try {
+        if (workflowReference.getScheme().equals("ivo")) {
+            String content = vos.read(workflowReference);
+            wf = Workflow.unmarshalWorkflow(new StringReader(content));            
+        } else {
+            InputStream is = workflowReference.toURL().openStream();
+            wf = Workflow.unmarshalWorkflow(new InputStreamReader(is));
+        }
         wf.getCredentials().setAccount(getAccount());        
-        return getJes().submitWorkflow(wf);
+        return cvt(getJes().submitWorkflow(wf));        
+        } catch (WorkflowInterfaceException e) {
+            throw new ServiceException(e);
+        } catch (MarshalException e) {
+            throw new InvalidArgumentException(e);
+        } catch (ValidationException e) {
+            throw new InvalidArgumentException(e);
+        } catch (NotFoundException e) {
+            throw new InvalidArgumentException(e);
+        } catch (SecurityException e) {
+            throw new InvalidArgumentException(e);
+        } catch (IOException e) {
+            throw new InvalidArgumentException(e);
+        }
     }
 
-    public WorkflowSummaryType[] listSummaries() throws WorkflowInterfaceException {
-        return getJes().listJobs(getAccount());
+    public ExecutionInformation[] listFully() throws ServiceException {
+        try {
+        WorkflowSummaryType[] summs =  getJes().listJobs(getAccount());
+        ExecutionInformation[] result = new ExecutionInformation[summs.length];
+        for (int i = 0; i < summs.length; i++) {
+            String status =summs[i].getStatus().toString();
+            result[i]= new ExecutionInformation(
+                    cvt(summs[i].getJobId())
+                    ,summs[i].getWorkflowName()
+                    ,summs[i].getDescription()
+                    ,status
+                    ,summs[i].getStartTime()
+                    ,summs[i].getFinishTime()
+                    );
+        }
+        return result;
+        } catch (WorkflowInterfaceException e) {
+            throw new ServiceException(e);
+        }
     }
     
     /**
@@ -136,6 +239,9 @@ public class JobsImpl implements Jobs, UserLoginListener {
 
 /* 
 $Log: JobsImpl.java,v $
+Revision 1.7  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.6  2005/07/08 14:06:30  nw
 final fixes for the workshop.
 

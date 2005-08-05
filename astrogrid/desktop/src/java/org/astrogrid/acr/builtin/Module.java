@@ -1,4 +1,4 @@
-/*$Id: Module.java,v 1.4 2005/05/12 15:59:09 clq2 Exp $
+/*$Id: Module.java,v 1.5 2005/08/05 11:46:55 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,36 +10,31 @@
 **/
 package org.astrogrid.acr.builtin;
 
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.desktop.framework.DefaultModule;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
-
-import org.picocontainer.PicoContainer;
 
 import java.util.Iterator;
 
-/** A container for a set of services. The result of instantiating a {@link org.astrogrid.desktop.framework.descriptors.ModuleDescriptor}
+/** A logical container for a set of related services.
  * 
- * Module extends PicoContainer, which is a generic library for component containers.
  * @see DefaultModule
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
  *
  */
-public interface Module extends PicoContainer{
+public interface Module {
 
-    /** return the module descriptor that was processed to create this module */
-    public ModuleDescriptor getDescriptor();
     
-    /** access a component by name  - will reutrn the component, or null */
-    public Object getComponent(String componentName);
+    /** access a component by name  - will reutrn the component, or null 
+     * @throws ACRException */
+    public Object getComponent(String componentName) throws ACRException, NotFoundException;
     
-    //public ComponentDescriptor getComponentDescriptor(Object component);
     
     /** iterate through the components in the container */
     public Iterator componentIterator();
 
-    /** @todo check whether this is used. think it just produces formatted debug info.
-     * @return
-     */
-    public String getChain();
+
     
     
 }
@@ -47,6 +42,9 @@ public interface Module extends PicoContainer{
 
 /* 
 $Log: Module.java,v $
+Revision 1.5  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.4  2005/05/12 15:59:09  clq2
 nww 1111 again
 

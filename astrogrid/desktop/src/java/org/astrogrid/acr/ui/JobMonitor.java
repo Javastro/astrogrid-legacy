@@ -1,4 +1,4 @@
-/*$Id: JobMonitor.java,v 1.5 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: JobMonitor.java,v 1.6 2005/08/05 11:46:55 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
  **/
 package org.astrogrid.acr.ui;
+
+import java.net.URI;
 
 /** Job Monitor component - similar to the conventional print monitor
  * 
@@ -27,7 +29,7 @@ public interface JobMonitor {
     /** Add an application identifier to be monitored.
      * @param string
      */
-    public void addApplication(String name,String executionId);
+    public void addApplication(String name,URI executionId);
     /**
      *  bring the application tab of the monitor uppermost
      */
@@ -39,6 +41,9 @@ public interface JobMonitor {
 
 /* 
  $Log: JobMonitor.java,v $
+ Revision 1.6  2005/08/05 11:46:55  nw
+ reimplemented acr interfaces, added system tests.
+
  Revision 1.5  2005/06/08 14:51:59  clq2
  1111
 

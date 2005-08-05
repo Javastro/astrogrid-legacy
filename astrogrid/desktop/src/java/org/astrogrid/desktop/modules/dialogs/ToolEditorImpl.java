@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.3 2005/06/23 09:08:26 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.4 2005/08/05 11:46:55 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,9 @@
 package org.astrogrid.desktop.modules.dialogs;
 
 import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.Myspace;
+import org.astrogrid.acr.astrogrid.ApplicationsInternal;
 import org.astrogrid.acr.dialogs.ToolEditor;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -26,13 +27,13 @@ public class ToolEditorImpl implements ToolEditor {
     /** Construct a new ToolEditorImpl
      * 
      */
-    public ToolEditorImpl(Myspace myspace, Applications apps) {
+    public ToolEditorImpl(MyspaceInternal myspace, ApplicationsInternal apps) {
         super();
         this.myspace = myspace;
         this.apps = apps;
     }
-    private final Myspace myspace;
-    private final Applications apps;
+    private final MyspaceInternal myspace;
+    private final ApplicationsInternal apps;
     
 
     /**
@@ -53,6 +54,9 @@ public class ToolEditorImpl implements ToolEditor {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.4  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.3  2005/06/23 09:08:26  nw
 changes for 1.0.3 release
 

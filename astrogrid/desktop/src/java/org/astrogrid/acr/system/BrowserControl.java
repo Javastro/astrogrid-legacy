@@ -1,4 +1,4 @@
-/*$Id: BrowserControl.java,v 1.4 2005/05/12 15:59:12 clq2 Exp $
+/*$Id: BrowserControl.java,v 1.5 2005/08/05 11:46:55 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,9 @@
 **/
 package org.astrogrid.acr.system;
 
+import org.astrogrid.acr.ACRException;
+
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /** Display a resource in the system web browser
@@ -21,17 +24,22 @@ import java.net.URL;
  *
  */
 public interface BrowserControl {
+    /** open an absolute url 
+     * @throws MalformedURLException*/
+    void openURL(String url) throws ACRException, MalformedURLException;
     /** open an absolute url */
-    void openURL(String url) throws Exception;
-    /** open an absolute url */
-    void openURL(URL url) throws Exception;
-    /** open a url within the ACR webserver context */
-    void openRelative(String relativeURL) throws Exception;
+    void openURL(URL url) throws ACRException;
+    /** open a url within the ACR webserver context 
+     * @throws MalformedURLException*/
+    void openRelative(String relativeURL) throws ACRException, MalformedURLException;
 }
 
 
 /* 
 $Log: BrowserControl.java,v $
+Revision 1.5  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.4  2005/05/12 15:59:12  clq2
 nww 1111 again
 

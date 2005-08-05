@@ -1,4 +1,4 @@
-/*$Id: WebstartBrowserControl.java,v 1.5 2005/05/12 15:59:10 clq2 Exp $
+/*$Id: WebstartBrowserControl.java,v 1.6 2005/08/05 11:46:55 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.framework.ReflectionHelper;
@@ -54,14 +55,19 @@ public class WebstartBrowserControl extends FallbackBrowserControl implements Br
 
 
     /**
+     * @throws ACRException
      * @see org.astrogrid.acr.system.BrowserControl#openURL(java.net.URL)
      */
-    public void openURL(URL url) throws Exception {
+    public void openURL(URL url) throws ACRException  {
         if (basicService == null) {
             logger.error("Can't open URL - no basic jnlp service");
             super.openURL(url);
         } else {
-            MethodUtils.invokeMethod(basicService,"showDocument",url);
+            try {
+                MethodUtils.invokeMethod(basicService,"showDocument",url);
+            } catch (Exception e) {
+                throw new ACRException(e);
+            } 
         }
     }
 
@@ -72,6 +78,9 @@ public class WebstartBrowserControl extends FallbackBrowserControl implements Br
 
 /* 
 $Log: WebstartBrowserControl.java,v $
+Revision 1.6  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.5  2005/05/12 15:59:10  clq2
 nww 1111 again
 

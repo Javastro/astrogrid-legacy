@@ -1,4 +1,4 @@
-/*$Id: PositionRememberingJFrame.java,v 1.4 2005/06/20 16:56:40 nw Exp $
+/*$Id: PositionRememberingJFrame.java,v 1.5 2005/08/05 11:46:55 nw Exp $
  * Created on 04-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,13 +12,11 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.system.UI;
+import org.astrogrid.desktop.modules.system.UIInternal;
 
 import java.awt.Dimension;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
+import java.awt.IllegalComponentStateException;
 import java.awt.Point;
 
 import javax.swing.JFrame;
@@ -39,7 +37,7 @@ public class PositionRememberingJFrame extends JFrame {
         this.help = null;
     }
 
-    public PositionRememberingJFrame(Configuration conf,HelpServer help,UI ui) throws HeadlessException {
+    public PositionRememberingJFrame(Configuration conf,HelpServer help,UIInternal ui) throws HeadlessException {
         this.configuration = conf;
         this.ui = ui;
         this.help = help;
@@ -47,7 +45,7 @@ public class PositionRememberingJFrame extends JFrame {
  
     
     protected final Configuration configuration;
-    protected final UI ui;
+    protected final UIInternal ui;
     protected final HelpServer help;
 
     protected void loadConfiguration() {
@@ -79,7 +77,12 @@ public class PositionRememberingJFrame extends JFrame {
         if (configuration == null) {
             return;
         }
-        Point p = getLocationOnScreen();  
+        Point p = null;
+        try {
+            p = getLocationOnScreen();
+        } catch (IllegalComponentStateException e) { // not visible - not to worry.
+            return;
+        }
         Dimension dim = getToolkit().getScreenSize();
         if (p != null && p.x >= 0 && p.x <= dim.width && p.y >= 0 && p.y <= dim.height) {
             configuration.setKey(this.getClass().getName() + ".x","" + p.x);
@@ -106,6 +109,9 @@ public class PositionRememberingJFrame extends JFrame {
 
 /* 
 $Log: PositionRememberingJFrame.java,v $
+Revision 1.5  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.4  2005/06/20 16:56:40  nw
 fixes for 1.0.2-beta-2
 

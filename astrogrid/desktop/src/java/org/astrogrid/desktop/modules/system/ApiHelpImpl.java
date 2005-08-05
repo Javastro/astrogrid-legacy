@@ -1,4 +1,4 @@
-/*$Id: ApiHelpImpl.java,v 1.1 2005/06/23 09:08:26 nw Exp $
+/*$Id: ApiHelpImpl.java,v 1.2 2005/08/05 11:46:55 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.Module;
-import org.astrogrid.acr.builtin.ModuleRegistry;
 import org.astrogrid.acr.system.ApiHelp;
+import org.astrogrid.desktop.framework.DefaultModule;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
@@ -20,8 +22,8 @@ import org.astrogrid.desktop.framework.descriptors.ValueDescriptor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlrpc.XmlRpcException;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -39,16 +41,16 @@ public class ApiHelpImpl implements ApiHelp {
     /** Construct a new ApiHelpImpl
      * 
      */
-    public ApiHelpImpl(ModuleRegistry reg) {
+    public ApiHelpImpl(ACR reg) {
         super();
         this.reg = reg;
     }
-    protected final ModuleRegistry reg;
-    public List listMethods() {
+    protected final ACR reg;
+    public String[] listMethods() {
         Vector result = new Vector();
 
         for (Iterator i = reg.moduleIterator(); i.hasNext(); ) {
-            Module m = (Module)i.next();
+            DefaultModule m = (DefaultModule)i.next();
             for(Iterator j = m.getDescriptor().componentIterator(); j.hasNext(); ) {
                 ComponentDescriptor cd = (ComponentDescriptor)j.next();
                 for (Iterator k = cd.methodIterator(); k.hasNext(); ) {
@@ -57,115 +59,109 @@ public class ApiHelpImpl implements ApiHelp {
                 }
             }
         }
-        return result;
+        return (String[])result.toArray(new String[]{});
     }
 
-    public List listModules() {
+    public String[] listModules() {
         Vector modules = new Vector();
         for (Iterator i =reg.moduleIterator(); i.hasNext(); ) {
-            ModuleDescriptor md = ((Module)i.next()).getDescriptor();
+            ModuleDescriptor md = ((DefaultModule)i.next()).getDescriptor();
             modules.add(md.getName());
         }
-        return modules;
+        return (String[])modules.toArray(new String[]{});
     }
     
-    public List listComponentsOfModule(String moduleName) throws XmlRpcException {
+    public String[] listComponentsOfModule(String moduleName) throws NotFoundException {
         Vector components = new Vector();
-        Module m = reg.getModule(moduleName);
+        DefaultModule m = (DefaultModule)reg.getModule(moduleName);
         if (m == null) {
-            throw new XmlRpcException(100, "Unknown module " + moduleName);
+            throw new NotFoundException("Unknown module " + moduleName);
          }            
         for (Iterator i = m.getDescriptor().componentIterator(); i.hasNext(); ) {
             ComponentDescriptor cd = (ComponentDescriptor)i.next();
             components.add(m.getDescriptor().getName() + "." + cd.getName());
         }
-        return components;
+        return (String[])components.toArray(new String[]{});
     }
     
-    public List listMethodsOfComponent(String componentName) throws XmlRpcException {
+    public String[] listMethodsOfComponent(String componentName) throws NotFoundException {
         Vector methods = new Vector();
         String[] names = componentName.split("\\.");
-        Module m = reg.getModule(names[0]);
-        m.getComponent(names[1]);
+        DefaultModule m = (DefaultModule)reg.getModule(names[0]);
+
         if (m == null) {
-            throw new XmlRpcException(100, "Unknown module " + names[0]);
+            throw new NotFoundException("Unknown module " + names[0]);
         }
         ComponentDescriptor cd = m.getDescriptor().getComponent(names[1]);
         if (cd == null) {
-            throw new XmlRpcException(101,"Unknown component " + names[1]);
+            throw new NotFoundException("Unknown component " + names[1]);
         }                     
         for (Iterator i = cd.methodIterator(); i.hasNext(); ) {
             MethodDescriptor md = (MethodDescriptor)i.next();
             methods.add(m.getDescriptor().getName() + "." + cd.getName() + "." + md.getName());
         }
-        return methods;            
+        return (String[])methods.toArray(new String[]{});            
     }
     
-    public List methodSignature(String methodName) throws XmlRpcException {
+    public String[][] methodSignature(String methodName) throws NotFoundException {
         Vector sigs = new Vector();
-        Vector sig = new Vector();
-        sigs.add(sig);
+
         String[] names = methodName.split("\\.");
         if (names[0].equalsIgnoreCase("system")) {
             if (names[1].equalsIgnoreCase("listMethods")) {
-                sig.add("array");
-                sig.add("string");
-                return sig;
+                sigs.add(new String[]{"array","string"});
+                return(String[][])sigs.toArray(new String[][]{});
             }
             if (names[1].equalsIgnoreCase("methodSignature")) {
-                sig.add("array");
-                sig.add("string");
-                return sig;
+                sigs.add(new String[]{"array","string"});
+                return (String[][])sigs.toArray(new String[][]{});
             }
             if (names[1].equalsIgnoreCase("listModules")) {
-                sig.add("array");
-                sig.add("string");
-                return sig;
+                sigs.add(new String[]{"array","string"});
+                return (String[][])sigs.toArray(new String[][]{});
             }                
             if (names[1].equalsIgnoreCase("methodHelp")) {
-                sig.add("string");
-                sig.add("string");
-                return sig;
+                sigs.add(new String[]{"string","string"});
+                return (String[][])sigs.toArray(new String[][]{});
             }
             if (names[1].equalsIgnoreCase("moduleHelp")) {
-                sig.add("string");
-                sig.add("string");
-                return sig;
+                sigs.add(new String[]{"string","string"});
+                return (String[][])sigs.toArray(new String[][]{});
             }
             if (names[1].equalsIgnoreCase("componentHelp")) {
-                sig.add("string");
-                sig.add("string");
-                return sig;
+                sigs.add(new String[]{"string","string"});
+                return (String[][])sigs.toArray(new String[][]{});
             }                
             if (names[1].equalsIgnoreCase("listComponentsOfModule")) {
-                sig.add("array");
-                sig.add("string");
-                return sig;
+                sigs.add(new String[]{"array","string"});
+                return(String[][])sigs.toArray(new String[][]{});
             }
             if (names[1].equalsIgnoreCase("listMethodsOfComponent")) {
-                sig.add("array");
-                sig.add("string");
-                return sig;
+                sigs.add(new String[]{"array","string"});
+                return (String[][])sigs.toArray(new String[][]{});
             }                
         }
-            Module m = reg.getModule(names[0]);
+            DefaultModule m = (DefaultModule)reg.getModule(names[0]);
             if (m == null) {
-                throw new XmlRpcException(100, "Unknown module " + names[0]);
+                throw new NotFoundException( "Unknown module " + names[0]);
             }
             ComponentDescriptor cd = m.getDescriptor().getComponent(names[1]);
             if (cd == null) {
-                throw new XmlRpcException(101,"Unknown component " + names[1]);
+                throw new NotFoundException("Unknown component " + names[1]);
             }                
             MethodDescriptor md = cd.getMethod(names[2]);
             if (md == null) {
-                throw new XmlRpcException(102,"Unknown method "+ names[2]);
-            }                
+                throw new NotFoundException("Unknown method "+ names[2]);
+            }     
+            List sig= new ArrayList();
             sig.add(getXMLRPCType(md.getReturnValue()));
             for (Iterator i = md.parameterIterator(); i.hasNext();) {
                 sig.add(getXMLRPCType( ((ValueDescriptor)i.next())));
-            }       
+            }    
+            sigs.add(sig.toArray(new String[]{}));
         
-        return sigs;
+            
+        return (String[][])sigs.toArray(new String[][]{});
     }
     public static final String XMLRPC_TYPE_KEY = "system.xmlrpc.type";
     
@@ -174,10 +170,10 @@ public class ApiHelpImpl implements ApiHelp {
         return type == null ? "string" : type.trim();
     }
 
-    public String moduleHelp(String moduleName) throws XmlRpcException {
-            Module m = reg.getModule(moduleName);
+    public String moduleHelp(String moduleName) throws NotFoundException {
+            DefaultModule m = (DefaultModule)reg.getModule(moduleName);
             if (m == null) {
-                throw new XmlRpcException(100, "Unknown module " + moduleName);
+                throw new NotFoundException("Unknown module " + moduleName);
             }
             StringBuffer result = new StringBuffer();
             result.append("Module ")
@@ -188,16 +184,16 @@ public class ApiHelpImpl implements ApiHelp {
                                   
     }
     
-    public String componentHelp(String componentName) throws XmlRpcException {
+    public String componentHelp(String componentName) throws NotFoundException {
         String[] names = componentName.split("\\.");
         String moduleName=names[0];
-            Module m = reg.getModule(moduleName);
+            DefaultModule m = (DefaultModule)reg.getModule(moduleName);
             if (m == null) {
-                throw new XmlRpcException(100, "Unknown module " + moduleName);
+                throw new NotFoundException("Unknown module " + moduleName);
             }
             ComponentDescriptor cd = m.getDescriptor().getComponent(names[1]);
             if (cd == null) {
-                throw new XmlRpcException(101,"Unknown component " + names[1]);
+                throw new NotFoundException("Unknown component " + names[1]);
             }                        
             StringBuffer result = new StringBuffer()
             .append("Component ")
@@ -208,19 +204,24 @@ public class ApiHelpImpl implements ApiHelp {
             .append(cd.getDescription());
             return result.toString();                   
     }
-    public String methodHelp(String methodName) throws XmlRpcException {
+    public String methodHelp(String methodName) throws NotFoundException {
         String[] names = methodName.split("\\.");
-        Module m = reg.getModule(names[0]);
+        DefaultModule m = (DefaultModule)reg.getModule(names[0]);
         if (m == null) {
-            throw new XmlRpcException(100, "Unknown module " + names[0]);
+            throw new NotFoundException( "Unknown module " + names[0]);
         }
+        // special case for builtin methods..
+        if (m.equals("system") && names.length == 2) {
+            return methodHelp("system.apihelp." + names[1]);
+        }
+        
         ComponentDescriptor cd = m.getDescriptor().getComponent(names[1]);
         if (cd == null) {
-            throw new XmlRpcException(101,"Unknown component " + names[1]);
+            throw new NotFoundException("Unknown component " + names[1]);
         }                
         MethodDescriptor md = cd.getMethod(names[2]);
         if (md == null) {
-            throw new XmlRpcException(102,"Unknown method "+ names[2]);
+            throw new NotFoundException("Unknown method "+ names[2]);
         }
      
         StringBuffer result = new StringBuffer()
@@ -255,6 +256,9 @@ public class ApiHelpImpl implements ApiHelp {
 
 /* 
 $Log: ApiHelpImpl.java,v $
+Revision 1.2  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.1  2005/06/23 09:08:26  nw
 changes for 1.0.3 release
  

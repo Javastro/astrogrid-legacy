@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.5 2005/06/23 09:08:26 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.6 2005/08/05 11:46:55 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
@@ -59,7 +61,7 @@ public class TypeStructureTransformer implements Transformer {
     
     private final boolean specialTreatmentForCastor;
 
-    /**@todo - may need to handle byte arrays.
+    /**
      * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
      */
     public Object transform(Object arg0) {
@@ -78,13 +80,28 @@ public class TypeStructureTransformer implements Transformer {
                 throw new RuntimeException(e.getMessage());
             }            
         }
-        if (arg0 instanceof String || arg0 instanceof Integer || arg0 instanceof Double || arg0 instanceof Vector || arg0 instanceof Hashtable || arg0 instanceof Date || arg0 instanceof Boolean) {
+        if (arg0 instanceof String 
+                || arg0 instanceof Integer 
+                || arg0 instanceof Double 
+                || arg0 instanceof Vector 
+                || arg0 instanceof Hashtable 
+                || arg0 instanceof Date 
+                || arg0 instanceof Boolean 
+                || arg0 instanceof byte[]) {
             return arg0;
         } 
+        if (arg0 instanceof Calendar) {
+            return ((Calendar)arg0).getTime();
+        }
         
         if (arg0 instanceof Float) {
             // promote to double;
             return new Double(((Float)arg0).doubleValue());
+        }
+        
+        if (arg0 instanceof Long) {
+            // demote to int. yechh.
+            return new Integer(((Long)arg0).intValue());
         }
         
         if (arg0 instanceof URL
@@ -114,30 +131,7 @@ public class TypeStructureTransformer implements Transformer {
             }
             return v;
         }
-                
-        if (arg0 instanceof FileManagerNode) { //dyna bean approach doesn't work with nested, recursive beans. do by hand
-            FileManagerNode n = (FileManagerNode)arg0;
-            NodeMetadata metadata = n.getMetadata();
-            Map result  = new Hashtable(metadata.getAttributes());
-            result.put("name",n.getName());
-            result.put("file",Boolean.valueOf(n.isFile()));
-            result.put("folder",Boolean.valueOf(n.isFolder()));
-            if (n.isFile()) {
-                if (metadata.getContentId() != null) {
-                    result.put("contentId",metadata.getContentId());
-                }
-                if (metadata.getContentLocation() != null) {
-                    result.put("contentLocation",metadata.getContentLocation().toString());
-                }
-            }
-            result.put("createDate",metadata.getCreateDate().getTime());
-            result.put("modifyDate",metadata.getModifyDate().getTime());
-            result.put("nodeIvorn",metadata.getNodeIvorn().toString());
-            result.put("size",new Integer( metadata.getSize().intValue()));
-            return result;
-            
-        }
-        
+                       
         // we got a bean of some kind. lets hope it doesn't contain cycles..
         Map result = new Hashtable();
         DynaBean db = new WrapDynaBean(arg0);
@@ -185,6 +179,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.6  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.5  2005/06/23 09:08:26  nw
 changes for 1.0.3 release
 

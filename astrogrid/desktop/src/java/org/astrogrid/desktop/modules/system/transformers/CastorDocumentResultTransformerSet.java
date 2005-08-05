@@ -1,4 +1,4 @@
-/*$Id: CastorDocumentResultTransformerSet.java,v 1.5 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: CastorDocumentResultTransformerSet.java,v 1.6 2005/08/05 11:46:55 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.system.transformers;
 
-import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.TransformerUtils;
 import org.exolab.castor.xml.Marshaller;
@@ -64,6 +63,9 @@ public class CastorDocumentResultTransformerSet extends DefaultResultTransformer
 
 /* 
 $Log: CastorDocumentResultTransformerSet.java,v $
+Revision 1.6  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.5  2005/06/08 14:51:59  clq2
 1111
 

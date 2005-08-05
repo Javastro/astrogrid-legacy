@@ -1,4 +1,4 @@
-/*$Id: Registry.java,v 1.4 2005/05/12 15:59:09 clq2 Exp $
+/*$Id: Registry.java,v 1.5 2005/08/05 11:46:55 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,13 @@
  **/
 package org.astrogrid.acr.astrogrid;
 
-import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.client.query.ResourceData;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ServiceException;
 
-import java.net.URISyntaxException;
+import org.w3c.dom.Document;
+
+import java.net.URI;
+import java.net.URL;
 
 /** Interface to the astrogrid registry
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Mar-2005
@@ -24,43 +27,46 @@ public interface Registry {
      * 
      * @param ivorn identifier for the registered service
      * @return a URL endpoint of this service
-     * @throws RegistryException
-     * @throws URISyntaxException
+     * @throws NotFoundException if this resource does not exist
+     * @throws ServiceException if an error occurs talking to the service
      */
-    String resolveIdentifier(String ivorn) throws RegistryException, URISyntaxException;
+    URL resolveIdentifier(URI ivorn) throws NotFoundException, ServiceException;
 
     /**Retreive a registry Entry
      * 
      * @param ivorn identifier of the registry entry to retrrieve
-     * @return string containing xml document
-     * @throws RegistryException
-     * @throws URISyntaxException
+     * @return xml document of the registry entry
+     * @throws NotFoundException if this resource does not exist
+     * @throws ServiceException if an error occurs talking to the service
      */
-    String getRecord(String ivorn) throws RegistryException, URISyntaxException;
+    Document getRecord(URI ivorn) throws NotFoundException, ServiceException;
 
     /**
      * Retreive information about a registry entry
      * 
      * @param ivorn identifier of the registry entry to retrieve
-     * @return a parsed represntation of the most significant parts of the registry entry
-     * @throws RegistryException
-     * @throws URISyntaxException
+     * @return a  summary of the most significant parts of the registry entry
+     * @throws NotFoundException if this resource does not exist
+     * @throws ServiceException if an error occurs talking to the service
      */
-    ResourceData getResourceData(String ivorn) throws RegistryException, URISyntaxException;
+    ResourceInformation getResourceInformation(URI ivorn) throws  NotFoundException, ServiceException;
     
     
-    /** perform a sadql query on the registry
+    /** perform a query on the registry
      * 
-     * @param adql a string query
-     * @return string containing an xml document of search results.
-     * @throws RegistryException
+     * @param adql a string query (string form of ADQL)
+     * @return  xml document of search results.
+     * @throws ServiceException if an error occurs talking to the service
      */ 
-    String search(String adql) throws RegistryException;
+    Document search(String adql) throws ServiceException;
     
    }
 
 /* 
  $Log: Registry.java,v $
+ Revision 1.5  2005/08/05 11:46:55  nw
+ reimplemented acr interfaces, added system tests.
+
  Revision 1.4  2005/05/12 15:59:09  clq2
  nww 1111 again
 

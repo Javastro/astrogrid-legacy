@@ -1,4 +1,4 @@
-/*$Id: CheckJDICSystemTrayPresent.java,v 1.1 2005/06/22 08:48:52 nw Exp $
+/*$Id: CheckJDICSystemTrayPresent.java,v 1.2 2005/08/05 11:46:55 nw Exp $
  * Created on 21-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,11 +12,6 @@ package org.astrogrid.desktop.modules.system;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.picocontainer.MutablePicoContainer;
-import org.picocontainer.PicoException;
-import org.picocontainer.Startable;
-import org.picocontainer.defaults.DefaultPicoContainer;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Jun-2005
@@ -41,11 +36,13 @@ public class CheckJDICSystemTrayPresent implements Check {
             Class jdic = Class.forName("org.jdesktop.jdic.tray.SystemTray");
             if (jdic != null) {
                 return true;
-                }            
+                }      
+        } catch (NoClassDefFoundError e) {
+            logger.info("JDIC extensions not present - cannot start system tray");
         } catch (ClassNotFoundException e) {            
-            logger.info("JDIC extensions not present - cannot start system tray",e);
+            logger.info("JDIC extensions not present - cannot start system tray");
         } catch (UnsatisfiedLinkError e) {
-            logger.info("JDIC classes present, but binary libraries are not - cannot start system tray",e);
+            logger.info("JDIC classes present, but binary libraries are not - cannot start system tray");
         }
         return false;
     }
@@ -55,6 +52,9 @@ public class CheckJDICSystemTrayPresent implements Check {
 
 /* 
 $Log: CheckJDICSystemTrayPresent.java,v $
+Revision 1.2  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.1  2005/06/22 08:48:52  nw
 latest changes - for 1.0.3-beta-1
  

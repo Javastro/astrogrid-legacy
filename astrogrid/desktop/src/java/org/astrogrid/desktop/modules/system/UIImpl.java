@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.11 2005/07/08 14:06:30 nw Exp $
+/*$Id: UIImpl.java,v 1.12 2005/08/05 11:46:55 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,14 +11,14 @@
 package org.astrogrid.desktop.modules.system;
 
 import org.astrogrid.acr.builtin.Module;
-import org.astrogrid.acr.builtin.ModuleRegistry;
-import org.astrogrid.acr.builtin.NewModuleEvent;
-import org.astrogrid.acr.builtin.NewModuleListener;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.system.UI;
+import org.astrogrid.desktop.framework.DefaultModule;
+import org.astrogrid.desktop.framework.MutableACR;
+import org.astrogrid.desktop.framework.NewModuleEvent;
+import org.astrogrid.desktop.framework.NewModuleListener;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.Descriptor;
@@ -36,7 +36,6 @@ import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.digester.AbstractObjectCreationFactory;
 import org.apache.commons.digester.Digester;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.picocontainer.Startable;
@@ -45,8 +44,13 @@ import org.xml.sax.SAXException;
 
 import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
 
+import com.l2fprod.common.swing.JButtonBar;
+import com.l2fprod.common.swing.JTaskPane;
+import com.l2fprod.common.swing.JTaskPaneGroup;
+import com.l2fprod.common.swing.StatusBar;
+
+import java.awt.CardLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,7 +66,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -73,30 +76,22 @@ import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-
-import com.l2fprod.common.swing.JTaskPane;
-import com.l2fprod.common.swing.JTaskPaneGroup;
-import com.l2fprod.common.swing.StatusBar;
-import com.l2fprod.common.swing.JButtonBar;
-import javax.swing.JSplitPane;
-import javax.swing.JPanel;
-import java.awt.CardLayout;
 /**Implementation of the UI component
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  */
-public class UIImpl extends PositionRememberingJFrame implements Startable,UI,InvocationHandler {
+public class UIImpl extends PositionRememberingJFrame implements Startable,UIInternal,InvocationHandler {
 
     /**
      * Commons Logger for this class
@@ -125,7 +120,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
     }
     
     /** this is the production constructor */
-    public UIImpl(BrowserControl browser,ModuleRegistry reg, Shutdown sh, Configuration conf, HelpServer help) {     
+    public UIImpl(BrowserControl browser,MutableACR reg, Shutdown sh, Configuration conf, HelpServer help) {     
         super(conf,help,null);
         this.browser = browser;
         this.shutdown = sh;
@@ -139,7 +134,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
     }
     protected final BrowserControl browser;
     protected final Shutdown shutdown;
-    protected final ModuleRegistry reg;
+    protected final MutableACR reg;
 
     private JMenuItem reportBugMenuItem;
     
@@ -415,17 +410,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
      * @see org.picocontainer.Startable#start()
      */
     public void start() {
-        String key = configuration.getKey(START_HIDDEN_KEY);
-        if (key != null && Boolean.valueOf(key).equals(Boolean.TRUE)) {
-            // do nothing
-        } else {
-            SwingUtilities.invokeLater(new Runnable() {
 
-                public void run() {
-                    show();
-                }
-            });
-        }
     }
     /** if this key is set to true, doen't display the gui on startup */
     public static final String START_HIDDEN_KEY = "system.ui.hide";
@@ -660,10 +645,10 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
         
         
         /**  listener to registry - inspects new modules, and publishes their methods.
-         * @see org.astrogrid.acr.builtin.NewModuleListener#newModuleRegistered(org.astrogrid.desktop.framework.NewModuleEvent)
+         * @see org.astrogrid.desktop.framework.NewModuleListener#newModuleRegistered(org.astrogrid.desktop.framework.NewModuleEvent)
          */
         public void newModuleRegistered(NewModuleEvent e) {
-            final ModuleDescriptor md = e.getModule().getDescriptor();
+            final ModuleDescriptor md = ((DefaultModule)e.getModule()).getDescriptor();
             logger.info("Inspecting " + md.getName());
             //create menu
             final JMenu m = buildDescriptorMenu(md);
@@ -794,7 +779,13 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
             return;
         }
 
-        Object component = module.getComponent(componentD.getName());
+        Object component;
+        try {
+            component = module.getComponent(componentD.getName());
+        } catch (Exception e) {
+            showError("Failed to access component: " + componentD.getName(),e);
+            return;
+        }
         if (component == null) {
            showError("Component not found: " +componentD.getName());
            return;
@@ -876,7 +867,6 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
                         }
                         
                     } else {
-                    //@todo find way of displaying results in text box.
                   //  JOptionPane.showMessageDialog(UIImpl.this,r,"Result",JOptionPane.INFORMATION_MESSAGE);
                         ResultDialog rd = new ResultDialog(UIImpl.this,r);
                         rd.show();
@@ -1052,6 +1042,9 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UI,In
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.12  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.11  2005/07/08 14:06:30  nw
 final fixes for the workshop.
 

@@ -1,4 +1,4 @@
-/*$Id: ComponentDescriptor.java,v 1.5 2005/05/12 15:59:07 clq2 Exp $
+/*$Id: ComponentDescriptor.java,v 1.6 2005/08/05 11:46:56 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.desktop.framework.descriptors;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -45,7 +44,7 @@ public class ComponentDescriptor extends Descriptor{
     }
     
     protected Class interfaceClass;
-    protected Class implementationClass;
+    protected transient Class implementationClass;
     
     /** return the implementation class for this component */
     public Class getImplementationClass() {
@@ -92,6 +91,9 @@ public class ComponentDescriptor extends Descriptor{
 
 /* 
 $Log: ComponentDescriptor.java,v $
+Revision 1.6  2005/08/05 11:46:56  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.5  2005/05/12 15:59:07  clq2
 nww 1111 again
 

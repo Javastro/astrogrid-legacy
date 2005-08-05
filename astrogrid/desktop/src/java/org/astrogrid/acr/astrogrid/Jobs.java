@@ -1,4 +1,4 @@
-/*$Id: Jobs.java,v 1.4 2005/05/12 15:59:09 clq2 Exp $
+/*$Id: Jobs.java,v 1.5 2005/08/05 11:46:55 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,14 @@
  **/
 package org.astrogrid.acr.astrogrid;
 
-import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
-import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.JobURN;
-import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
 
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.Document;
 
-import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 
 /** Interface to the Job Execution Service
  * <p>
@@ -31,71 +29,85 @@ import java.net.URL;
  */
 public interface Jobs {
     /**
-     * list the identifiers of the jobs for the current user 
-     * @return
-     * @throws WorkflowInterfaceException
-     */
-    public abstract JobURN[] list() throws WorkflowInterfaceException;
-    /** list summaries of the jobs for the current user */
-    public WorkflowSummaryType[] listSummaries() throws WorkflowInterfaceException;
+     * list the jobs for the current user 
+     * @return list of identifiers for the user's jobs.
+     * @throws ServiceException if an error occurs while talking to the server
+     */   
+    URI[] list() throws ServiceException;
+    
+    /** list summaries of the jobs for the current user 
+     * @throws ServiceException if an error occurs while talking to the server*/
+    ExecutionInformation[] listFully() throws ServiceException;
 
-    /** retrieve a workflow transcript
+    /** retrieve  the execution transcript for a job.
      * 
      * @param jobURN the identifier of the job to retrieve
-     * @return a workflow transcript 
-     * @throws WorkflowInterfaceException
+     * @return a workflow transcript  document
+     * @throws ServiceException if an error occurs when connecting to the server.
+     * @throws SecurityException if the user is not  permitted to access this job
+     * @throws NotFoundException if this job could not be found
+     * @throws InvalidArgumentException if the job identifier is malformed.
      */
-    public abstract Workflow getJob(JobURN jobURN) throws WorkflowInterfaceException;
+     Document getJobTranscript(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
 
-  /** retrive a string summarizing a job
+  /** retrive information about a job.
    * 
    * @param jobURN the identifier of the job to summarize
-   * @return a user-readable string
-   * @throws WorkflowInterfaceException
+   * @return information about this job.
+     * @throws ServiceException if an error occurs when connecting to the server.
+     * @throws SecurityException if the user is not  permitted to access this job
+     * @throws NotFoundException if this job could not be found
+     * @throws InvalidArgumentException if the job identifier is malformed.
    */
-    public abstract String getJobSummary(JobURN jobURN) throws WorkflowInterfaceException;
+    ExecutionInformation getJobInformation(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
 
 
     /** cancel the exeuciton of a running job
      * 
      * @param jobURN identifier of the job to cancel.
-     * @throws WorkflowInterfaceException
+     * @throws ServiceException if an error occurs while connecting to the server
+     * @throws SecurityException if the user is not permitted to access this job
+     * @throws NotFoundException if the job could not be found
+     * @throws InvalidArgumentException if the job is not currently running.
      */
-    public abstract void cancelJob(JobURN jobURN) throws WorkflowInterfaceException;
+    void cancelJob(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
 
   
     /** delete all record of a job
      * 
      * @param jobURN identifier of the job to delete 
-     * @throws WorkflowInterfaceException
+     * @throws NotFoundException if the job could not be found
+     * @throws ServiceException if an error occurs while connecting to the server
+     * @throws SecurityException if the user is not permitted to access this job.
      */
-    public abstract void deleteJob(JobURN jobURN) throws WorkflowInterfaceException;
+    void deleteJob(URI jobURN) throws NotFoundException, ServiceException, SecurityException;
 
  
-    /** submit a new workflow for execution 
+    /** submit a workflow for execution 
      * 
      * @param workflow workflow document to submit
      * @return a new unique identifier for this job 
-     * @throws WorkflowInterfaceException
+     * @throws ServiceException if an error occurs while connecting to server
+     * @throws InvalidArgumentException if the workflow document is invalid or malformed
      */
-    public abstract JobURN submitJob(Workflow workflow) throws WorkflowInterfaceException;
+    URI submitJob(Document workflow) throws ServiceException, InvalidArgumentException;
 
-    /** submit a new workflow (stored in a file) for execution 
+    /** submit a workflow (stored in a file) for execution 
      * 
-     * @param workflowURL url  refernce to the workflow document to submit (may be file://, http://, ftp://)
+     * @param workflowReference url  refernce to the workflow document to submit (may be file://, http://, ftp:// or ivo:// - a myspace reference.)
      * @return a new unique identifier for this job.
-     * @throws WorkflowInterfaceException
-     * @throws MarshalException
-     * @throws ValidationException
-     * @throws IOException
-     * @todo extend to support ivo:// references too.
+     * @throws ServiceException if an error occurs while connecting to server
+     * @throws InvalidArgumentException if the workflow document is invalid or inaccessible.
      */
-    public JobURN submitJobFile(URL workflowURL) throws WorkflowInterfaceException, MarshalException, ValidationException, IOException ;
+    URI submitStoredJob(URI workflowReference) throws ServiceException, InvalidArgumentException ;
         
 }
 
 /* 
  $Log: Jobs.java,v $
+ Revision 1.5  2005/08/05 11:46:55  nw
+ reimplemented acr interfaces, added system tests.
+
  Revision 1.4  2005/05/12 15:59:09  clq2
  nww 1111 again
 

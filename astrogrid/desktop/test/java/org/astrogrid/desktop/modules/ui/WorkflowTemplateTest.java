@@ -1,4 +1,4 @@
-/*$Id: WorkflowTemplateTest.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: WorkflowTemplateTest.java,v 1.3 2005/08/05 11:46:56 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.desktop.modules.ui.WorkflowTemplate;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
@@ -88,6 +87,9 @@ public class WorkflowTemplateTest extends TestCase {
 
 /* 
 $Log: WorkflowTemplateTest.java,v $
+Revision 1.3  2005/08/05 11:46:56  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.2  2005/04/27 13:42:41  clq2
 1082
 

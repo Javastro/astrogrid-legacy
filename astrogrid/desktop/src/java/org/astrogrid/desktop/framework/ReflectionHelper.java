@@ -1,4 +1,4 @@
-/*$Id: ReflectionHelper.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: ReflectionHelper.java,v 1.4 2005/08/05 11:46:55 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,15 +25,17 @@ public class ReflectionHelper {
 
 
     
-    /** get a method by name from a class */
-    public static Method getMethodByName(Class clazz, String name) {
+    /** get a method by name from a class 
+     * @throws NoSuchMethodException
+     * */
+    public static Method getMethodByName(Class clazz, String name) throws NoSuchMethodException {
         Method[] ms = clazz.getMethods();
         for (int i = 0; i < ms.length; i++) {
             if (ms[i].getName().equalsIgnoreCase(name.trim())) {
                 return ms[i];
             }
         }
-        throw new IllegalArgumentException("method " + name + " not found");
+        throw new NoSuchMethodException("method " + name + " not found");
     }
 
 
@@ -44,6 +46,9 @@ public class ReflectionHelper {
 
 /* 
 $Log: ReflectionHelper.java,v $
+Revision 1.4  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

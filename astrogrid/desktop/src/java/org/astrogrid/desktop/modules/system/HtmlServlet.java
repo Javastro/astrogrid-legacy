@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: HtmlServlet.java,v 1.4 2005/08/05 11:46:55 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.system;
 
 import org.astrogrid.acr.builtin.Module;
+import org.astrogrid.desktop.framework.DefaultModule;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.Descriptor;
@@ -49,7 +50,7 @@ public class HtmlServlet extends AbstractReflectionServlet {
         header(out);
         out.println("<h1>Modules</h1><dl>");
         for (Iterator ms = reg.moduleIterator(); ms.hasNext(); ) {
-            Module m = (Module)ms.next();
+            DefaultModule m = (DefaultModule)ms.next();
             out.println("<dt>");
             out.println("<a href='./" + m.getDescriptor().getName() + "/'>");
             out.println(m.getDescriptor().getName());
@@ -185,7 +186,8 @@ public class HtmlServlet extends AbstractReflectionServlet {
         if (resultType == null || ! resultTypes.contains(resultType.toLowerCase())) {
             throw new ServletException("Unknown result type " + resultType);
         }
-
+        // call the method
+        try {
         Method m =ReflectionHelper.getMethodByName(component.getClass(),md.getName()); 
         Class[] parameterTypes = m.getParameterTypes();
         Object[] args = new Object[parameterTypes.length];
@@ -197,8 +199,7 @@ public class HtmlServlet extends AbstractReflectionServlet {
             Converter conv = XmlRpcServlet.getConverter(p); 
             args[j] = conv.convert(parameterTypes[j],strValue);
         }
-        // call the method
-        try {
+
         Object result = MethodUtils.invokeMethod(component,md.getName(),args);
         response.setContentType("text/" + resultType.trim().toLowerCase());
         PrintWriter out = response.getWriter();
@@ -241,6 +242,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.4  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.8 2005/07/10 18:07:38 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.9 2005/08/05 11:46:55 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,30 +10,27 @@
  **/
 package org.astrogrid.desktop.modules.ui;
 
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.MyspaceBrowser;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserDialog;
+import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.NodeMetadata;
 import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.filemanager.common.NodeNotFoundFault;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.client.query.ResourceData;
 import org.astrogrid.store.Ivorn;
-
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
 import com.l2fprod.common.swing.JTaskPane;
 import com.l2fprod.common.swing.JTaskPaneGroup;
@@ -234,7 +231,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             (new BackgroundOperation("Copying data from vospace file " + n.getName() + " to " + u) {
 
                 protected Object construct() throws Exception {
-                    getVospace().copyContentToURL(new Ivorn(n.getMetadata().getNodeIvorn().toString()), u
+                    getVospace().copyContentToURL(new URI(n.getIvorn().toString()), u
                             .toURL());
                     return null;
                 }
@@ -268,11 +265,11 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                     ,"Relocate " + n.getName(),JOptionPane.QUESTION_MESSAGE);
                     */
             try {
-            ResourceData[] rds = getVospace().listAvailableStores();
+            ResourceInformation[] rds = getVospace().listAvailableStores();
             int currentPos = 0;
-            Ivorn[] stores = new Ivorn[rds.length];
+            URI[] stores = new URI[rds.length];
             for (int i = 0;  i < stores.length; i++) {
-                Ivorn ivo = rds[i].getIvorn();
+                URI ivo = rds[i].getId();
                 stores[i] = ivo;
                 if (ivo.toString().equals(n.getMetadata().getContentLocation().toString())) {
                     currentPos = i;
@@ -294,7 +291,8 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                     return null;
                 }
             }).start();
-            } catch (RegistryException e1) {
+  
+            } catch (ServiceException e1) {
                 showError("Could not get list of available stores from registry",e1);
             }
         }
@@ -325,8 +323,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             (new BackgroundOperation("Copying data from " + u + " to vospace file " + n.getName()) {
 
                 protected Object construct() throws Exception {
-                    getVospace().copyURLToContent(u.toURL(), new Ivorn(n.getMetadata().getNodeIvorn()
-                            .toString()));
+                    getVospace().copyURLToContent(u.toURL(), new URI(n.getIvorn().toString()));                            
                     return null;
                 }
             }).start();
@@ -540,7 +537,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         initialize();
     }
 
-    public VospaceBrowserImpl(Configuration conf, HelpServer hs,UI ui, Myspace vos, Community comm, BrowserControl browser, Registry reg) {
+    public VospaceBrowserImpl(Configuration conf, HelpServer hs,UIInternal ui, MyspaceInternal vos, Community comm, BrowserControl browser, Registry reg) {
         super(conf, hs,ui,vos);
         this.browser = browser;
         this.community = comm;
@@ -671,6 +668,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.9  2005/08/05 11:46:55  nw
+ * reimplemented acr interfaces, added system tests.
+ *
  * Revision 1.8  2005/07/10 18:07:38  nw
  * files for 1.0.5
  *

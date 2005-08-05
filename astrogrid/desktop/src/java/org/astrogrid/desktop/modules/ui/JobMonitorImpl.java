@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.9 2005/07/08 11:08:01 nw Exp $
+/*$Id: JobMonitorImpl.java,v 1.10 2005/08/05 11:46:55 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,9 @@
 package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.Jobs;
-import org.astrogrid.acr.astrogrid.Portal;
+import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.dialogs.ResourceChooser;
@@ -21,21 +21,16 @@ import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.system.SystemTray;
-import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.JobMonitor;
-import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.applications.parameter.protocol.ExternalValue;
-import org.astrogrid.applications.parameter.protocol.InaccessibleExternalValueException;
-import org.astrogrid.applications.parameter.protocol.UnrecognizedProtocolException;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.CommunityInternal;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
+import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet;
 import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
-import org.astrogrid.desktop.modules.system.transformers.XmlDocumentResultTransformerSet;
-import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.JobURN;
-import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
+
+import org.apache.axis.utils.XMLUtils;
+import org.w3c.dom.Document;
 
 import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
 
@@ -44,10 +39,8 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -64,18 +57,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.prefs.BackingStoreException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -96,11 +85,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Mar-2005
- *
+ *@todo add actions to save and view results of application execution.
  */
 public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLoginListener {
     
@@ -113,10 +103,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
             this.putValue(SHORT_DESCRIPTION,"Submit a workflow for execution");
             this.setEnabled(true);
         }
-        private Reader getReader(URI u) throws InaccessibleExternalValueException, UnrecognizedProtocolException{
-            ExternalValue ev = community.getEnv().getAstrogrid().getIoHelper().getExternalValue(u);
-            return new InputStreamReader(ev.read());
-        }
+
         public void actionPerformed(ActionEvent e) {
                 final URI u = chooser.chooseResource("Select workflow to submit",true);
                 if (u == null) {
@@ -125,13 +112,19 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                 (new BackgroundOperation("Submitting Workflow") {
 
                     protected Object construct() throws Exception {
-                        Reader reader = getReader(u);
-                        Workflow wf = Workflow.unmarshalWorkflow(reader);
-                        return jobs.submitJob(wf);
+                        Document doc;
+                        if (u.getScheme().equals("ivo")){
+                            String content = vos.read(u);
+                            InputStream is = new ByteArrayInputStream(content.getBytes());
+                            doc = XMLUtils.newDocument(is);
+                        } else {
+                            doc = XMLUtils.newDocument(u.toURL().openStream());
+                        }
+                        return jobs.submitJob(doc);
                     }
                     protected void doFinished(Object o) {
-                        JobURN urn = (JobURN)o;
-                        ResultDialog rd = new ResultDialog(JobMonitorImpl.this,"Workflow Submitted\nJob URN: " + urn.getContent());
+                        URI urn = (URI)o;
+                        ResultDialog rd = new ResultDialog(JobMonitorImpl.this,"Workflow Submitted\nJob URN: " + urn);
                     }
                     protected void doAlways() {
                         refresh();
@@ -149,7 +142,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
         public void actionPerformed(ActionEvent e) {
             if (getPanes().getSelectedIndex() == JES_TAB) {
-            final JobURN urn = jobsTableModel.getRow(jobsTable.getSelectedRow()).getJobId();
+            final URI urn = jobsTableModel.getRow(jobsTable.getSelectedRow()).getId();
             (new BackgroundOperation("Cancelling Workflow"){
 
              protected Object construct() throws Exception {
@@ -161,11 +154,11 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
              }
             }).start();
             } else {
-                final String id = applicationsTableModel.getRow(applicationsTable.getSelectedRow()).getExecutionId();
+                final URI id = applicationsTableModel.getRow(applicationsTable.getSelectedRow()).getId();
                 (new BackgroundOperation("Cancelling Application") {
 
                     protected Object construct() throws Exception {
-                        applications.abort(id);
+                        applications.cancel(id);
                         return null;
                     }
                     protected void doAlways() {
@@ -187,7 +180,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
         public void actionPerformed(ActionEvent e) {
             if (getPanes().getSelectedIndex() == JES_TAB) {            
-                final JobURN urn = jobsTableModel.getRow(jobsTable.getSelectedRow()).getJobId();
+                final URI urn = jobsTableModel.getRow(jobsTable.getSelectedRow()).getId();
                 (new BackgroundOperation("Deleting Workflow"){
 
             protected Object construct() throws Exception {
@@ -199,7 +192,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
             }
            }).start();
        } else {
-           ExecutionSummaryType es=  applicationsTableModel.getRow(applicationsTable.getSelectedRow());
+           ExecutionInformation es=  applicationsTableModel.getRow(applicationsTable.getSelectedRow());
            try {
             applicationsTableModel.removeApplication(es)        ;
         } catch (IOException e1) {
@@ -221,21 +214,31 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                 while(tok.hasMoreTokens()) {
                     String next = tok.nextToken();
                     int pos = next.indexOf('#');
-                    ExecutionSummaryType e = new ExecutionSummaryType();
-                    e.setApplicationName(next.substring(0,pos));
-                    e.setExecutionId(next);        
+                    try {
+                    ExecutionInformation e = new ExecutionInformation(
+                            new URI(next)
+                            ,next.substring(0,pos)
+                            ,"an application"
+                            ,ExecutionInformation.UNKNOWN
+                            ,null
+                            ,null                            
+                    );
                     appList.add(e);
+                    } catch (URISyntaxException e) {
+                        logger.warn("Could not unpickle record " + next,e);
+                    }
+                    
                 }
             }
         }
         private final List appList = new ArrayList();
         private final Map props;
         
-        public void addApplication(ExecutionSummaryType e) throws IOException {
+        public void addApplication(ExecutionInformation e) throws IOException {
             int pos = appList.size();
             appList.add(e);
            this.fireTableRowsInserted(pos,pos);
-           props.put(e.getExecutionId(),e.getApplicationName());
+           props.put(e.getId() ,e.getName());
            writeBackProperties();
         }
         
@@ -248,15 +251,19 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
             configuration.setKey(MONITORED_APPLICATION_KEY,buff.toString());
         }
         
-        public void removeApplication(ExecutionSummaryType e) throws IOException {  
+        public void removeApplication(ExecutionInformation e) throws IOException {  
             appList.remove(e);            
             this.fireTableDataChanged();
-            props.remove(e.getExecutionId());
+            props.remove(e.getId());
             writeBackProperties();
         }
 
-        public ExecutionSummaryType getRow(int i) {
-            return (ExecutionSummaryType)appList.get(i);
+        public ExecutionInformation getRow(int i) {
+            return (ExecutionInformation)appList.get(i);
+        }
+        
+        public void setRow(int i, ExecutionInformation new1) {
+            appList.set(i,new1);
         }
         public int getColumnCount() {            
             return COLUMN_COUNT;
@@ -274,14 +281,14 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                 return null;
             }
 
-            ExecutionSummaryType e = (ExecutionSummaryType)appList.get(rowIndex);
+            ExecutionInformation e = (ExecutionInformation)appList.get(rowIndex);
             switch (columnIndex) {
                 case 0:
-                    return e.getApplicationName();
+                    return e.getName();
                 case 1:
                     return JobsTableModel.fmt(e.getStatus());
                 case 2:
-                    return e.getExecutionId();
+                    return e.getId();
                 default:
                     return null;
             }          
@@ -295,11 +302,13 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                 default: return "";
             }
         }
+
+
     }
     protected static class JobsTableModel extends AbstractTableModel {
 
-        protected WorkflowSummaryType[]  jobs = new WorkflowSummaryType[]{};
-        public WorkflowSummaryType getRow(int rowIndex) {
+        protected ExecutionInformation[]  jobs = new ExecutionInformation[]{};
+        public ExecutionInformation getRow(int rowIndex) {
             if (rowIndex < 0 || rowIndex >= jobs.length) {
                 return null;
             } else {
@@ -324,10 +333,10 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                 return null;
             }
 
-            WorkflowSummaryType j = jobs[rowIndex];
+            ExecutionInformation j = jobs[rowIndex];
             switch (columnIndex) {
                 case 0:
-                    return j.getWorkflowName();
+                    return j.getName();
                 case 1:
                     return j.getStartTime();
                 case 2:
@@ -336,7 +345,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                     return fmt(j.getStatus());
                 case 4:
                     
-                    return j.getJobId().getContent();
+                    return j.getId();
                 default:
                     return null;
             }
@@ -344,33 +353,32 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         
 
 
-        public static String fmt(ExecutionPhase status) {
+        public static String fmt(String status) {
             StringBuffer sb = new StringBuffer("<html>");
             if (status == null) {
                 sb.append("<font style='color:blue'>Unknown</font>");
             }else {
-            switch (status.getType()) {
-                case ExecutionPhase.COMPLETED_TYPE:
-                    sb.append("<font style='font-weight:bold'>"); break;
-                case ExecutionPhase.ERROR_TYPE:
-                    sb.append("<font style='color:red'>"); break;
-                case ExecutionPhase.INITIALIZING_TYPE:
-                    sb.append("<font style='color:blue'>"); break;
-                case ExecutionPhase.PENDING_TYPE:
-                    sb.append("<font>"); break;
-                case ExecutionPhase.RUNNING_TYPE:
-                    sb.append("<font style='color:green'>"); break;
-                default:
+            if (ExecutionInformation.COMPLETED.equals(status)) {
+                    sb.append("<font style='font-weight:bold'>"); 
+            } else  if (ExecutionInformation.ERROR.equals(status)) {
+                    sb.append("<font style='color:red'>");
+            } else if(ExecutionInformation.INITIALIZING.equals(status)) {              
+                    sb.append("<font style='color:blue'>"); 
+            } else if (ExecutionInformation.PENDING.equals(status)) {              
+                    sb.append("<font>"); 
+            } else if (ExecutionInformation.RUNNING.equals(status)) {               
+                    sb.append("<font style='color:green'>"); 
+            } else {
                     sb.append("<font>"); // nothing
             }
-            sb.append(status.toString());
+            sb.append(status);
             }
             sb.append("</font></html>");
             return sb.toString();
         }
 
-        public void setList(WorkflowSummaryType[] types) {
-            this.jobs = types;
+        public void setList(ExecutionInformation[] latest) {
+            this.jobs = latest;
             this.fireTableDataChanged();
         }
         public String getColumnName(int column) {
@@ -409,21 +417,19 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
             super("Refreshing job list");
         }
         protected Object construct() throws Exception {
-            WorkflowSummaryType[] results = jobs.listSummaries();
+            ExecutionInformation[] results = jobs.listFully();
             for (int i = 0; i < applicationsTableModel.getRowCount(); i++) {
-                ExecutionSummaryType e = applicationsTableModel.getRow(i);
+                ExecutionInformation e = applicationsTableModel.getRow(i);
                 // updating status inplace in the model - but not firing notification.
-                ExecutionPhase newPhase = ExecutionPhase.valueOf(       applications.checkExecutionProgress(e.getExecutionId()));
-                if (e.getStatus() == null || newPhase.getType() != e.getStatus().getType()) {
-                    e.setStatus(   newPhase    );                    
-                    if (tray != null && e.getStatus().getType() < ExecutionPhase.COMPLETED_TYPE) {
-                        switch(newPhase.getType()) {
-                            case ExecutionPhase.COMPLETED_TYPE:
-                                tray.displayInfoMessage("Application Complete",e.getApplicationName());
-                                break;
-                                case ExecutionPhase.ERROR_TYPE:
-                                    tray.displayWarningMessage("Application Error",e.getApplicationName());
-                                break;                        
+                ExecutionInformation eNew = applications.getExecutionInformation(e.getId());
+                String newPhase = eNew.getStatus();
+                if (e.getStatus() == null || ! newPhase.equals(e.getStatus())) {
+                    applicationsTableModel.setRow(i,eNew);                                        
+                    if (tray != null  && !(e.getStatus().equals(ExecutionInformation.COMPLETED) || e.getStatus().equals(ExecutionInformation.ERROR))) {
+                            if (newPhase.equals(ExecutionInformation.COMPLETED)) {
+                                tray.displayInfoMessage("Application Complete",e.getName());
+                            } else if (newPhase.equals(ExecutionInformation.ERROR)) {
+                                    tray.displayWarningMessage("Application Error",e.getName());                               
                         }
                     }
                 }
@@ -432,7 +438,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
            
         }
         protected void doFinished(Object o) {   
-               WorkflowSummaryType[] latest = (WorkflowSummaryType[])o;
+               ExecutionInformation[] latest = (ExecutionInformation[])o;
                if (tray != null) { // no point if the tray isn't available.
                    alertCompleted(latest);
                }
@@ -440,28 +446,26 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                 applicationsTableModel.fireTableDataChanged();
         } 
         /** if the system tray is present, popup alertrts when jobs complete */
-       protected void alertCompleted(WorkflowSummaryType[] latest) {
+       protected void alertCompleted(ExecutionInformation[] latest) {
            for (int i =0; i < jobsTableModel.getRowCount(); i++) {
-               WorkflowSummaryType current = jobsTableModel.getRow(i);
-               if (current.getStatus().getType() < ExecutionPhase.COMPLETED_TYPE) {
-                   WorkflowSummaryType updated = findSummaryFor(current.getJobId(),latest);
+               ExecutionInformation current = jobsTableModel.getRow(i);
+               if (! (current.getStatus().equals(ExecutionInformation.COMPLETED) 
+                       ||  current.getStatus().equals(ExecutionInformation.ERROR) )) {
+                   ExecutionInformation updated = findSummaryFor(current.getId(),latest);
                    if (updated == null) {
                        continue;
                    }
-                   switch (updated.getStatus().getType()) {
-                       case ExecutionPhase.COMPLETED_TYPE:
-                           tray.displayInfoMessage("Workflow Complete",current.getWorkflowName());
-                           break;
-                       case ExecutionPhase.ERROR_TYPE:
-                           tray.displayWarningMessage("Workflow Error",current.getWorkflowName());
-                           break;
+                       if (updated.getStatus().equals(ExecutionInformation.COMPLETED) ){
+                           tray.displayInfoMessage("Workflow Complete",current.getName());
+                       }else if (updated.getStatus().equals(ExecutionInformation.ERROR)) {
+                           tray.displayWarningMessage("Workflow Error",current.getName());
                    }
                    }                   
                }           
        }
-       protected WorkflowSummaryType findSummaryFor(JobURN urn,WorkflowSummaryType[] l) {
+       protected ExecutionInformation findSummaryFor(URI urn,ExecutionInformation[] l) {
            for (int i = 0; i < l.length; i++) {
-               if (l[i].getJobId().equals(urn)) {
+               if (l[i].getId().equals(urn)) {
                    return l[i];
                }
            }
@@ -480,10 +484,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
             this.putValue(SHORT_DESCRIPTION,"Save a transcript of execution to local disk");
             this.setEnabled(false);            
         }
-        private Writer getWriter(URI u) throws InaccessibleExternalValueException, UnrecognizedProtocolException {            
-            ExternalValue ev= community.getEnv().getAstrogrid().getIoHelper().getExternalValue(u);
-            return new OutputStreamWriter(ev.write());
-        }
+
         public void actionPerformed(ActionEvent e) {
 
             final URI u = chooser.chooseResource("Save workflow transcript",true);
@@ -491,24 +492,35 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                 return;
             }
                 if (getPanes().getSelectedIndex() == JES_TAB) {                     
-                    final JobURN urn = jobsTableModel.getRow(jobsTable.getSelectedRow()).getJobId();                
+                    final URI urn = jobsTableModel.getRow(jobsTable.getSelectedRow()).getId();                
                     (new BackgroundOperation("Saving Workflow Transcript") {                                               
                         protected Object construct() throws Exception {                   
-                            Workflow wf = jobs.getJob(urn);
-                            Writer w = getWriter(u);
-                            wf.marshal(w);
-                            w.close();
+                            Document wf = jobs.getJobTranscript(urn);
+                            if (u.getScheme().equals("ivo")) {
+                                vos.write(u,XMLUtils.DocumentToString(wf));
+                            } else {
+                                OutputStream os = u.toURL().openConnection().getOutputStream();
+                                XMLUtils.DocumentToStream(wf,os);
+                                os.close();
+                            }
                             return null;
                         }
                     }).start();
                 } else {
-                    final String id = applicationsTableModel.getRow(applicationsTable.getSelectedRow()).getExecutionId();
+                    //@todo probably want to be savinig results here instead.
+                    final URI id = applicationsTableModel.getRow(applicationsTable.getSelectedRow()).getId();
                     (new BackgroundOperation("Saving Execution Transcript") {
                         protected Object construct() throws Exception {
-                            ExecutionSummaryType s = applications.getExecutionSummary(id);
-                            Writer w = getWriter(u);
-                            s.marshal(w);
-                            w.close();
+                            ExecutionInformation s = applications.getExecutionInformation(id);
+                            if (u.getScheme().equals("ivo")) {
+           
+                                vos.write(u,s.toString());
+                            } else {
+                                Writer w= new OutputStreamWriter(u.toURL().openConnection().getOutputStream());
+                                w.write(s.toString());
+                                w.close();
+                            }
+
                             return null;
                         }
                     }).start();
@@ -518,28 +530,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         
     }
 
-	protected final class ViewPortalAction extends AbstractAction {
 
-
-        protected ViewPortalAction() {
-            super("View in Portal", IconHelper.loadIcon("export_log.gif"));
-            this.putValue(SHORT_DESCRIPTION,"View this workflow transcript in the portal");
-            this.setEnabled(false);            
-        }
-
-        public void actionPerformed(ActionEvent ignored) {
-            Map params = new HashMap();
-            params.put("action","read-job");
-            JobURN urn = jobsTableModel.getRow(jobsTable.getSelectedRow()).getJobId();                        
-            params.put("jobURN",urn.getContent());
-            try {
-            portal.openPageWithParams("main/mount/workflow/agjobmanager-job-status.html",params);
-            } catch (Exception e) {
-                showError("Failed to open portal",e);
-            }
-         
-        }
-    }
     protected  final class ViewAction extends AbstractAction {
         protected Transformer workflowTransformer;
         protected Transformer applicationTransformer;
@@ -558,17 +549,14 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
         public void actionPerformed(ActionEvent e) {
             if (getPanes().getSelectedIndex() == JES_TAB) {                    
-            final JobURN urn = jobsTableModel.getRow(jobsTable.getSelectedRow()).getJobId();
+            final URI urn = jobsTableModel.getRow(jobsTable.getSelectedRow()).getId();
             (new BackgroundOperation("Displaying Workflow") {
                 protected Object construct() throws Exception {
                     File f = File.createTempFile("workflow",".html");
                     OutputStream out = new FileOutputStream(f);
                     Result result = new StreamResult(out);                    
-                    Workflow wf = jobs.getJob(urn);
-                    StringWriter sw = new StringWriter();
-                    wf.marshal(sw);
-                    sw.close();
-                    Source source = new StreamSource(new StringReader(sw.toString()));
+                    Document doc = jobs.getJobTranscript(urn);
+                    Source source = new DOMSource(doc);
                     workflowTransformer.transform(source,result);
                     out.close();
                     browser.openURL(f.toURL());
@@ -576,14 +564,15 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                 }
             }).start();
             } else {
-                final String id = applicationsTableModel.getRow(applicationsTable.getSelectedRow()).getExecutionId();
+                final URI id = applicationsTableModel.getRow(applicationsTable.getSelectedRow()).getId();
                 (new BackgroundOperation("Displaying  Execution Summary") {
                     protected Object construct() throws Exception {
                         File f = File.createTempFile("application",".html");
                         OutputStream out = new FileOutputStream(f);
                         Result result = new StreamResult(out);                    
                         //Workflow wf = jobs.getJob(urn);
-                        ExecutionSummaryType ex = applications.getExecutionSummary(id);
+                        ExecutionInformation ex = applications.getExecutionInformation(id);
+                        /* @todo retrieve the results, and display these instead.
                         StringWriter sw = new StringWriter();
                         ex.marshal(sw);
                         sw.close();
@@ -591,6 +580,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                         applicationTransformer.transform(source,result);
                         out.close();
                         browser.openURL(f.toURL());
+                        */
                         return null;
                     }                
             }).start();
@@ -604,11 +594,11 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     protected Action cancelAction;
     protected final Jobs jobs;
     protected final Applications applications;
-    protected final Community community;
+    protected final CommunityInternal community;
+    protected final Myspace vos;
     protected final ResourceChooser chooser;
     // actions.
     protected Action deleteAction;
-    protected final Portal portal;
     
     protected Action refreshAction;
         
@@ -618,7 +608,6 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     // timer..
     protected Timer timer;
     protected Action viewAction;
-    protected Action viewPortalAction;
 	private JTable jobsTable = null;
     
  
@@ -634,16 +623,16 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     
     /** production constructor - for platforms without system tray
      * @throws Exception*/
-    public JobMonitorImpl(Community community,Portal portal, BrowserControl browser, UI ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooser chooser) throws Exception {
-        this(community,portal,browser,ui,hs,conf,jobs,applications,chooser,null);
+    public JobMonitorImpl(CommunityInternal community,Myspace vos,BrowserControl browser, UIInternal ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooser chooser) throws Exception {
+        this(community,vos,browser,ui,hs,conf,jobs,applications,chooser,null);
  
     }
     
-    /** constructor for platforms with system tray */
-    public JobMonitorImpl(Community community,Portal portal, BrowserControl browser, UI ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooser chooser,SystemTray tray) throws Exception {
+    /** constructor for platforms with system tray */ 
+    public JobMonitorImpl(CommunityInternal community,Myspace vos,BrowserControl browser, UIInternal ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooser chooser,SystemTray tray) throws Exception {
         super(conf,hs,ui);
         this.browser = browser;
-        this.portal = portal;
+        this.vos = vos;
         this.jobs = jobs;
         this.applications = applications;
         this.tray = tray;
@@ -708,13 +697,13 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                         return;
                     }
                     previous = index;
-                    WorkflowSummaryType job = jobsTableModel.getRow(index);                    
+                    ExecutionInformation job = jobsTableModel.getRow(index);                    
                     boolean value = index != -1;
-                    cancelAction.setEnabled(value && job.getStatus().getType() < ExecutionPhase.COMPLETED_TYPE);
-                    deleteAction.setEnabled(value && job.getStatus().getType() >= ExecutionPhase.COMPLETED_TYPE);
+                    deleteAction.setEnabled(value && (job.getStatus().equals(ExecutionInformation.COMPLETED) 
+                            ||  job.getStatus().equals(ExecutionInformation.ERROR) ) );
+                    cancelAction.setEnabled(value && !deleteAction.isEnabled() );
                     saveAction.setEnabled(value);
                     viewAction.setEnabled(value);
-                    viewPortalAction.setEnabled(value);
                     if (value) {
                        setStatusMessage(job.getDescription());
                     }
@@ -754,13 +743,13 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                     }
                     previous = index;
                     boolean value = index != -1;                    
-                        ExecutionSummaryType ex = value ? applicationsTableModel.getRow(index) : null;   
+                        ExecutionInformation ex = value ? applicationsTableModel.getRow(index) : null;   
 
-                    cancelAction.setEnabled(value && ex.getStatus().getType() < ExecutionPhase.COMPLETED_TYPE);
-                    deleteAction.setEnabled(value && ex.getStatus().getType() >= ExecutionPhase.COMPLETED_TYPE);
+                    deleteAction.setEnabled(value && (ex.getStatus().equals(ExecutionInformation.COMPLETED) 
+                            ||  ex.getStatus().equals(ExecutionInformation.ERROR) ) );
+                    cancelAction.setEnabled(value && !deleteAction.isEnabled() );                    
                     saveAction.setEnabled(value);
                     viewAction.setEnabled(value);
-                    viewPortalAction.setEnabled(false);
 
                 }
             });            
@@ -920,12 +909,10 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         cancelAction = new CancelAction();       
         saveAction = new SaveAction();        
         viewAction = new ViewAction();
-        viewPortalAction = new ViewPortalAction();
         refreshAction = new RefreshAction();
         
         toolbar.add(submitAction);
         toolbar.add(viewAction);
-        //toolbar.add(viewPortalAction);
         toolbar.add(saveAction);         
         toolbar.add(cancelAction);
         toolbar.add(deleteAction);    
@@ -935,7 +922,6 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         jobMenu.add(submitAction);
         jobMenu.add(new JSeparator());        
         jobMenu.add(viewAction);
-        //jobMenu.add(viewPortalAction);
         jobMenu.add(saveAction);
         jobMenu.add(cancelAction);
         jobMenu.add(deleteAction);
@@ -970,10 +956,15 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     /**
      * @see org.astrogrid.acr.ui.JobMonitor#addApplication(java.lang.String)
      */
-    public void addApplication(String name,String executionId) {
-        ExecutionSummaryType e = new ExecutionSummaryType();
-        e.setApplicationName(name);
-        e.setExecutionId(executionId);
+    public void addApplication(String name,URI executionId) {
+        ExecutionInformation e = new ExecutionInformation(
+                executionId
+                ,name
+                ,"an application"
+                ,ExecutionInformation.UNKNOWN
+                ,null
+                ,null
+                );
         try {
             getApplicationsTableModel().addApplication(e);
             refresh();
@@ -1001,6 +992,9 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.10  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.9  2005/07/08 11:08:01  nw
 bug fixes and polishing for the workshop
 

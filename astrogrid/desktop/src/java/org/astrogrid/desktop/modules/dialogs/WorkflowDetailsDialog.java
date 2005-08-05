@@ -1,4 +1,4 @@
-/*$Id: WorkflowDetailsDialog.java,v 1.2 2005/07/08 17:36:25 clq2 Exp $
+/*$Id: WorkflowDetailsDialog.java,v 1.3 2005/08/05 11:46:55 nw Exp $
  * Created on 29-5-05
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,20 +10,20 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
+import org.astrogrid.workflow.beans.v1.Workflow;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.prefs.Preferences;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -33,11 +33,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.util.DomHelper;
-import org.astrogrid.workflow.beans.v1.Workflow;
 
 
 /**

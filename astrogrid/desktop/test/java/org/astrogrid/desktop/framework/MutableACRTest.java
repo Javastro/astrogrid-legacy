@@ -1,4 +1,4 @@
-/*$Id: MutableModuleRegistryTest.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: MutableACRTest.java,v 1.1 2005/08/05 11:46:56 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,6 @@
 package org.astrogrid.desktop.framework;
 
 import org.astrogrid.acr.builtin.Module;
-import org.astrogrid.acr.builtin.ModuleRegistry;
-import org.astrogrid.acr.builtin.NewModuleEvent;
-import org.astrogrid.acr.builtin.NewModuleListener;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.DescriptorParser;
 import org.astrogrid.desktop.framework.descriptors.DigesterDescriptorParser;
@@ -24,6 +21,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -31,23 +29,26 @@ import junit.framework.TestCase;
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
  *
  */
-public class MutableModuleRegistryTest extends TestCase {
+public class MutableACRTest extends TestCase {
 
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        this.reg = new DefaultModuleRegistry();
+        this.reg = new ACRImpl();
         this.parser = new DigesterDescriptorParser();
     }
     
-    protected MutableModuleRegistry reg;
+    protected MutableACR reg;
     protected DescriptorParser parser;
        
-        
+        /** test that the builtin module, although created in a different way, obeys the
+         * same behaviour as other modules
+         * @throws Exception
+         */
      public void testBuiltin() throws Exception {
-        Module builtin = reg.getModule("builtin");
+        DefaultModule builtin = (DefaultModule)reg.getModule("builtin");
         assertNotNull(builtin);
         ComponentDescriptor cd =builtin.getDescriptor().getComponent("modules");
         assertNotNull(cd);
@@ -58,8 +59,8 @@ public class MutableModuleRegistryTest extends TestCase {
         
         // test how we can access the registry..
         //however, can get it by using interfaces as types, rather than keys.       
-        assertNotNull(builtin.getComponentInstanceOfType(ModuleRegistry.class));     
-        assertNotNull(builtin.getComponentInstanceOfType(MutableModuleRegistry.class));
+        //assertNotNull(builtin.getComponentInstanceOfType(ModuleRegistry.class));     
+       // assertNotNull(builtin.getComponentInstanceOfType(MutableModuleRegistry.class));
         
         // test iterator.
         Iterator i = reg.moduleIterator();
@@ -67,6 +68,11 @@ public class MutableModuleRegistryTest extends TestCase {
         assertSame(i.next(),builtin);
         assertFalse(i.hasNext());
         
+        i = builtin.componentIterator();
+        assertTrue(i.hasNext());
+        while( i.hasNext()) {
+            assertNotNull(i.next());
+        }
      }
      
      
@@ -74,16 +80,19 @@ public class MutableModuleRegistryTest extends TestCase {
          Listener l = new Listener();
          reg.addNewModuleListener(l);         
         // test a new module.
-        reg.register(parse());
-        Module mod = reg.getModule("test");
+        reg.register(parseTestModule());
+        DefaultModule mod = (DefaultModule)reg.getModule("test");
         assertNotNull(mod);
         assertEquals("test",mod.getDescriptor().getName());
                 
         // test component is present
         Object o = mod.getComponent("component1");
         assertNotNull(o);
-        assertEquals(String.class,o.getClass());
-        
+        // assert the thing we geet back supports the published interface
+        assertTrue(CharSequence.class.isAssignableFrom(o.getClass()));
+        //but isn't actually the implementation object - it's wrapped in proxies, etc.
+        assertFalse(o.getClass().equals(String.class));
+        //@todo add testing of optional components here too.
         // test listener
         assertEquals(2,l.seen);                
     }
@@ -92,19 +101,23 @@ public class MutableModuleRegistryTest extends TestCase {
         Listener removed = new Listener();
         reg.addNewModuleListener(removed);
         reg.removeNewModuleListener(removed);
-        reg.register(parse());
+        reg.register(parseTestModule());
         // test removed listener -- will just have seen builtin.
         assertEquals(1,removed.seen);
     }
     
     public void testLateListener() throws Exception {
-        reg.register(parse());
+        reg.register(parseTestModule());
         // test late listener
         Listener late = new Listener();
         reg.addNewModuleListener(late);
         assertEquals(2,late.seen);        
     }
 
+    public void testGetDescriptors() throws Exception {
+        Map m = reg.getDescriptors();
+        assertNotNull(m);
+    }
     
     
     
@@ -113,7 +126,7 @@ public class MutableModuleRegistryTest extends TestCase {
      * @throws IOException
      * @throws SAXException
      */
-    private ModuleDescriptor parse() throws IOException, SAXException {
+    private ModuleDescriptor parseTestModule() throws IOException, SAXException {
         InputStream is = this.getClass().getResourceAsStream("test-module.xml");
         assertNotNull(is);
         ModuleDescriptor desc = parser.parse(is);
@@ -124,7 +137,7 @@ public class MutableModuleRegistryTest extends TestCase {
     private  class Listener implements NewModuleListener {
         public int seen = 0;
     /**
-     * @see org.astrogrid.acr.builtin.NewModuleListener#newModuleRegistered(org.astrogrid.desktop.framework.NewModuleEvent)
+     * @see org.astrogrid.desktop.framework.NewModuleListener#newModuleRegistered(org.astrogrid.desktop.framework.NewModuleEvent)
      */
     public void newModuleRegistered(NewModuleEvent e) {
         assertNotNull(e);
@@ -142,7 +155,10 @@ public class MutableModuleRegistryTest extends TestCase {
 
 
 /* 
-$Log: MutableModuleRegistryTest.java,v $
+$Log: MutableACRTest.java,v $
+Revision 1.1  2005/08/05 11:46:56  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.3  2005/04/27 13:42:41  clq2
 1082
 

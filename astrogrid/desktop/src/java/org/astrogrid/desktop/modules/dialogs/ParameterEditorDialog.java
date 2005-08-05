@@ -1,4 +1,4 @@
-/*$Id: ParameterEditorDialog.java,v 1.6 2005/07/08 11:08:01 nw Exp $
+/*$Id: ParameterEditorDialog.java,v 1.7 2005/08/05 11:46:55 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,44 +10,21 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
-import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.applications.beans.v1.Interface;
-import org.astrogrid.applications.beans.v1.ParameterRef;
-import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.exolab.javasource.JConstructor;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.util.Arrays;
-import java.util.Enumeration;
 
-import javax.swing.AbstractAction;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 23-Mar-2005
  *
@@ -130,7 +107,7 @@ public class ParameterEditorDialog extends JDialog {
 		initialize();
 	}
     
-    public ParameterEditorDialog(Myspace myspace,ApplicationDescription desc, Component component) {
+    public ParameterEditorDialog(MyspaceInternal myspace,ApplicationDescription desc, Component component) {
         super();
         this.desc = desc;
         this.allowIndirect=true;
@@ -139,7 +116,7 @@ public class ParameterEditorDialog extends JDialog {
         initialize();       
     }
     
-    public ParameterEditorDialog(Myspace myspace,ApplicationDescription desc, Component component,boolean allowIndirect) {
+    public ParameterEditorDialog(MyspaceInternal myspace,ApplicationDescription desc, Component component,boolean allowIndirect) {
         super();
         this.desc = desc;
         resourceChooser = new ResourceChooserDialog(myspace);
@@ -220,6 +197,9 @@ public class ParameterEditorDialog extends JDialog {
 
 /* 
 $Log: ParameterEditorDialog.java,v $
+Revision 1.7  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.6  2005/07/08 11:08:01  nw
 bug fixes and polishing for the workshop
 

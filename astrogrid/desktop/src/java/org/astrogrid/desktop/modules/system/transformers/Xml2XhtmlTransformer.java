@@ -1,4 +1,4 @@
-/*$Id: Xml2XhtmlTransformer.java,v 1.3 2005/05/12 15:59:13 clq2 Exp $
+/*$Id: Xml2XhtmlTransformer.java,v 1.4 2005/08/05 11:46:55 nw Exp $
  * Created on 11-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,9 @@
 **/
 package org.astrogrid.desktop.modules.system.transformers;
 
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.apache.commons.collections.Transformer;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -95,6 +94,9 @@ public class Xml2XhtmlTransformer implements Transformer{
 
 /* 
 $Log: Xml2XhtmlTransformer.java,v $
+Revision 1.4  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.3  2005/05/12 15:59:13  clq2
 nww 1111 again
 

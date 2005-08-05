@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.6 2005/07/08 11:08:01 nw Exp $
+/*$Id: ResourceChooserDialog.java,v 1.7 2005/08/05 11:46:55 nw Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,9 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
-import org.astrogrid.acr.astrogrid.Myspace;
-import org.astrogrid.acr.ui.MyspaceBrowser;
-import org.astrogrid.desktop.modules.system.UIImpl;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser.Actions;
 import org.astrogrid.filemanager.client.FileManagerNode;
-import org.astrogrid.filemanager.common.FileManagerFault;
-import org.astrogrid.filemanager.common.NodeNotFoundFault;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,11 +26,8 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.rmi.RemoteException;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -47,9 +38,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTabbedPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 /** Dialog that allows the user to choose a resource in file:// or ivo:// space.
@@ -58,7 +49,7 @@ import javax.swing.event.DocumentListener;
  */
 public class ResourceChooserDialog extends JDialog {
     
-    public static URI chooseResource(Myspace vos) {
+    public static URI chooseResource(MyspaceInternal vos) {
         ResourceChooserDialog chooser = new ResourceChooserDialog(vos);        
         chooser.show();
         URI u = chooser.getUri();
@@ -66,7 +57,7 @@ public class ResourceChooserDialog extends JDialog {
         return u;
     }
     
-    public static URI chooseResource(Myspace vos,boolean enableMySpaceTab) {
+    public static URI chooseResource(MyspaceInternal vos,boolean enableMySpaceTab) {
         ResourceChooserDialog chooser = new ResourceChooserDialog(vos,enableMySpaceTab);
         chooser.show();
         URI u = chooser.getUri();
@@ -74,7 +65,7 @@ public class ResourceChooserDialog extends JDialog {
         return u;        
     }
     
-    public static URI chooseResource(Myspace vos,String prompt, boolean enableMySpaceTab) {
+    public static URI chooseResource(MyspaceInternal vos,String prompt, boolean enableMySpaceTab) {
         ResourceChooserDialog chooser = new ResourceChooserDialog(vos,prompt,enableMySpaceTab);
         chooser.show();
         URI u = chooser.getUri();
@@ -83,7 +74,7 @@ public class ResourceChooserDialog extends JDialog {
     }
     
     
-    public static URI chooseResource(Myspace vos,String prompt, boolean enableMySpaceTab,boolean enableLocalFile,boolean enableURI) {
+    public static URI chooseResource(MyspaceInternal vos,String prompt, boolean enableMySpaceTab,boolean enableLocalFile,boolean enableURI) {
         ResourceChooserDialog chooser = new ResourceChooserDialog(vos,prompt,enableMySpaceTab,enableLocalFile,enableURI);
         chooser.show();
         URI u = chooser.getUri();
@@ -140,7 +131,7 @@ public class ResourceChooserDialog extends JDialog {
 	}
     
     class VospaceChooser extends AbstractVospaceBrowser {
-        public VospaceChooser(Myspace vos) {
+        public VospaceChooser(MyspaceInternal vos) {
             super(vos);
         }
         protected CurrentNodeManager createCurrentNodeManager() {
@@ -341,19 +332,19 @@ public class ResourceChooserDialog extends JDialog {
 	/**
 	 * This is the default constructor
 	 */
-	public ResourceChooserDialog(Myspace vos) {
+	public ResourceChooserDialog(MyspaceInternal vos) {
 		this(vos,true);
     }
     
-    public ResourceChooserDialog(Myspace vos,boolean enableMySpace) {
+    public ResourceChooserDialog(MyspaceInternal vos,boolean enableMySpace) {
         this(vos,"Choose Resource",enableMySpace);
     }
     
-    public ResourceChooserDialog(Myspace vos,String prompt, boolean enableMySpace) {
+    public ResourceChooserDialog(MyspaceInternal vos,String prompt, boolean enableMySpace) {
         this(vos,prompt,enableMySpace,true,true);
 	}
     
-    public ResourceChooserDialog(Myspace vos,String prompt,boolean enableMySpace,boolean enableLocalFile,boolean enableURI) {
+    public ResourceChooserDialog(MyspaceInternal vos,String prompt,boolean enableMySpace,boolean enableLocalFile,boolean enableURI) {
         super();
         this.vos = vos;
         this.enableMySpacePanel = enableMySpace;
@@ -362,7 +353,7 @@ public class ResourceChooserDialog extends JDialog {
         initialize(prompt);
         
     }
-    private final Myspace vos;
+    private final MyspaceInternal vos;
 	/**
 	 * This method initializes this
 	 * 
@@ -413,6 +404,9 @@ public class ResourceChooserDialog extends JDialog {
 
 /* 
 $Log: ResourceChooserDialog.java,v $
+Revision 1.7  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.6  2005/07/08 11:08:01  nw
 bug fixes and polishing for the workshop
 

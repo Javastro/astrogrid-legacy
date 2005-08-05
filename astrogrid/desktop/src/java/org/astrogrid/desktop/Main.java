@@ -1,4 +1,4 @@
-/*$Id: Main.java,v 1.5 2005/07/08 14:06:30 nw Exp $
+/*$Id: Main.java,v 1.6 2005/08/05 11:46:56 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,15 @@
 **/
 package org.astrogrid.desktop;
 
-import org.astrogrid.desktop.framework.Bootloader;
-import org.astrogrid.desktop.framework.DefaultModuleRegistry;
-import org.astrogrid.desktop.framework.descriptors.DescriptorParser;
-import org.astrogrid.desktop.framework.descriptors.DigesterDescriptorParser;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.UI;
+import org.astrogrid.desktop.modules.system.UIImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nanocontainer.integrationkit.PicoCompositionException;
-import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Startable;
-import org.picocontainer.defaults.DefaultPicoContainer;
 
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
@@ -30,11 +28,11 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-/** Main class of the Astrogrid Workbench
+/** Main class when running workbench / ACR in standalone mode.
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
-public class Main implements Startable {
+public class Main extends BuildInprocessACR implements Startable  {
     /**
      * Commons Logger for this class
      */
@@ -50,27 +48,30 @@ public class Main implements Startable {
             UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY,    Boolean.TRUE);            
          } catch (Exception e) {
              logger.warn("Failed to install plastic look and feel - oh well");
-             }
-        
-         // create initial container.
-        pico = new DefaultPicoContainer();
-        pico.registerComponentImplementation(DefaultModuleRegistry.class);
-        pico.registerComponentImplementation(DescriptorParser.class,DigesterDescriptorParser.class);
-        pico.registerComponentImplementation(Bootloader.class);        
+             }        
     }
-
-    
-    protected final MutablePicoContainer pico;
 
     /**
      * @see org.picocontainer.Startable#start()
-     * starts the pico container - but on the swing event dispatch thread.
+     * starts the pico container - on the swing event dispatch thread - but waits for it. 
      */
     public void start() {
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
-                    pico.start();
+                    Main.super.start();
+                    // maybe show the ui.
+                    ACR acr = getACR();
+                    try {
+                    Configuration c = (Configuration)acr.getService(Configuration.class);
+                    String key = c.getKey(UIImpl.START_HIDDEN_KEY);
+                    if (key == null || !  Boolean.valueOf(key).equals(Boolean.TRUE)){
+                        UI ui = (UI)acr.getService(UI.class);
+                        ui.show();
+                    }
+                    } catch (ACRException e) {
+                        logger.warn("Problems displaying the ui - maybe running in headless mode");
+                    }
                 }
             });
         } catch (InterruptedException e) {
@@ -80,12 +81,7 @@ public class Main implements Startable {
         }
     }
 
-    /**
-     * @see org.picocontainer.Startable#stop()
-     */
-    public void stop() {
-    }
-    
+ 
     public static final void main(String[] args) {
         Main d = new Main();
         d.start();
@@ -97,6 +93,9 @@ public class Main implements Startable {
 
 /* 
 $Log: Main.java,v $
+Revision 1.6  2005/08/05 11:46:56  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.5  2005/07/08 14:06:30  nw
 final fixes for the workshop.
 

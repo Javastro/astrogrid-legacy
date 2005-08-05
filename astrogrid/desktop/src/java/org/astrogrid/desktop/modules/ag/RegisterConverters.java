@@ -1,4 +1,4 @@
-/*$Id: RegisterConverters.java,v 1.4 2005/05/12 15:59:12 clq2 Exp $
+/*$Id: RegisterConverters.java,v 1.5 2005/08/05 11:46:55 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.desktop.modules.ag;
 
 import org.astrogrid.desktop.modules.system.converters.CastorBeanUtilsConvertor;
-import org.astrogrid.desktop.modules.system.converters.IvornConverter;
+import org.astrogrid.desktop.modules.system.converters.URIConverter;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -22,6 +22,7 @@ import org.apache.commons.beanutils.Converter;
 import org.picocontainer.Startable;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 /**
@@ -44,7 +45,7 @@ public class RegisterConverters implements Startable {
      * @see org.picocontainer.Startable#start()
      */
     public void start() {
-        ConvertUtils.register(IvornConverter.getInstance(), Ivorn.class);
+        ConvertUtils.register(URIConverter.getInstance(),URI.class);
         ConvertUtils.register(CastorBeanUtilsConvertor.getInstance(), Workflow.class);
         ConvertUtils.register(new Converter() {
 
@@ -84,6 +85,9 @@ public class RegisterConverters implements Startable {
 
 /*
  * $Log: RegisterConverters.java,v $
+ * Revision 1.5  2005/08/05 11:46:55  nw
+ * reimplemented acr interfaces, added system tests.
+ *
  * Revision 1.4  2005/05/12 15:59:12  clq2
  * nww 1111 again
  *

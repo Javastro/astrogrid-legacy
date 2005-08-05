@@ -25,6 +25,10 @@
 		implementationClass="org.astrogrid.desktop.modules.ag.CommunityImpl" 
 		interfaceClass="org.astrogrid.acr.astrogrid.Community" >
 		<description>User Authentication and Management</description>
+		<property>
+			<key>listener-interfaces</key>
+			<value>org.astrogrid.acr.astrogrid.UserLoginListener</value>
+		</property>
 	<property>
 		<key>icon</key>
 		<value>personal.png</value>
@@ -118,17 +122,11 @@
 				<key>system.ui.menu.entry</key>
 				<value>View Record</value>								
 			</property>		
-			<!--	
-			<property>
-				<key>system.ui.result.browser</key>
-				<value>true</value>								
-			</property>						
-			-->
 			<return>
 				<description>XML Query results</description>
 				<property>
 					<key>system.result.transformer</key>
-					<value>org.astrogrid.desktop.modules.system.transformers.XmlDocumentResultTransformerSet</value>
+					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
 				</property>
 			</return>
 			<parameter name="ivorn">
@@ -136,7 +134,7 @@
 					return</description>
 			</parameter>
 		</method>
-		<method name="getResourceData">
+		<method name="getResourceInformation">
 			<description>Retreive information about a registry entry</description>
 			<property>
 				<key>icon</key>
@@ -163,17 +161,11 @@
 				<key>system.ui.menu.entry</key>
 				<value>Perform Query</value>								
 			</property>
-			<!--						
-			<property>
-				<key>system.ui.result.browser</key>
-				<value>true</value>								
-			</property>				
-			-->
 			<return>
 				<description>XML Query results</description>
 				<property>
 					<key>system.result.transformer</key>
-					<value>org.astrogrid.desktop.modules.system.transformers.XmlDocumentResultTransformerSet</value>
+					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
 				</property>
 			</return>
 			<parameter name="sadql">
@@ -192,7 +184,7 @@
 		<key>icon</key>
 		<value>repo_rep.gif</value>
 	</property>			
-		<method name="home">
+		<method name="getHome">
 			<desciption>access ivorn of home</desciption>
 	<property>
 		<key>icon</key>
@@ -202,28 +194,7 @@
 				<key>system.ui.menu.entry</key>
 				<value>Show Home Ivorn</value>
 			</property>
-		</method>
-		<method name="node">
-			<desciption>access a node</desciption>
-	<property>
-		<key>icon</key>
-		<value>info_obj.gif</value>
-	</property>							
-			<property>
-				<key>system.ui.menu.entry</key>
-				<value>Show Node Properties</value>								
-			</property>				
-			<return>
-				<description>representation of this node</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>struct</value>
-				</property>
-			</return>
-			<parameter name="ivorn">
-				<description>Ivorn of node to retreive</description>
-			</parameter>
-		</method>
+		</method>		
 		<method name="exists">
 			<description>verify a myspace ivorn exists</description>		
 			<return>
@@ -237,16 +208,38 @@
 				<description>Ivorn of node to retreive</description>
 			</parameter>
 		</method>
-		<method name="getType">
-			<description>check type of a myspace node</description>
+	  <method name="getNodeInformation">
+		<description>retrieve metadata about a resource</description>
+		<return>
+			<description>structure of attributes</description>
+		<property>
+			<key>system.xmlrpc.type</key>
+			<value>struct</value>
+		</property>
+		</return>
+		<parameter name="ivorn">
+				<description>Ivorn of node to retreive</description>
+			</parameter>		
+	 </method>
+		<method name="createFile">
+			<description>create a new myspace file.</description>
 			<return>
-				<description>file or folder</description>
+				<description>nothing</description>
 			</return>
 			<parameter name="ivorn">
-				<description>Ivorn of node to retreive</description>
+				<description>Ivorn of file to create</description>
 			</parameter>
 		</method>
-		<method name="newFile">
+		<method name="createFolder">
+			<description>create a new myspace folder.</description>
+			<return>
+				<description>nothing</description>
+			</return>
+			<parameter name="ivorn">
+				<description>Ivorn of file to create</description>
+			</parameter>
+		</method>
+		<method name="createChildFile">
 			<description>create a new myspace file.</description>
 			<return>
 				<description>ivorn of the new file</description>
@@ -258,7 +251,7 @@
 				<description>name of the new file</description>
 			</parameter>
 		</method>
-		<method name="newFolder">
+		<method name="createChildFolder">
 			<description>create a new myspace folder.</description>
 			<return>
 				<description>ivorn of the new folder</description>
@@ -270,104 +263,34 @@
 				<description>name of the new folder</description>
 			</parameter>
 		</method>
-		<method name="readContent">
-			<description>read contents of a myspace node.</description>
-	<property>
-		<key>icon</key>
-		<value>Resource.gif</value>
-	</property>							
-			<property>
-				<key>system.ui.menu.entry</key>
-				<value>Read File Contents</value>								
-			</property>	
-			<!--						
-			<property>
-				<key>system.ui.result.browser</key>
-				<value>true</value>								
-			</property>				
-			-->
-			<return>
-				<description>URL from which contents can be readr</description>
-			</return>
-			<parameter name="ivorn">
-				<description>Ivorn of node</description>
-			</parameter>
-		</method>
-		<method name="copyContentToURL">			
-			<description>copy contents of a myspace node to a 
-				url</description>
-	<property>
-		<key>icon</key>
-		<value>export_log.gif</value>
-	</property>					
-			<property>
-				<key>system.ui.menu.entry</key>
-				<value>Copy MySpace File Contents to a URL</value>								
-			</property>							
-			<parameter name="ivorn">
-				<description>Ivorn of node</description>
-			</parameter>
-			<parameter name="destination">
-				<description>location to copy contents to. file://, http:// and 
-					ftp:// are supported.</description>
-			</parameter>
-		</method>
-		<method name="copyURLToContent">
-			<description>copy contents of a url to a myspace
-				node</description>
-	<property>
-		<key>icon</key>
-		<value>import_log.gif</value>
-	</property>					
-			<property>
-				<key>system.ui.menu.entry</key>
-				<value>Copy URL Contents to MySpace File</value>								
-			</property>						
-			<parameter name="source">
-				<description>location to copy contents from: file://, http:// 
-					and ftp:// are supported.</description>
-			</parameter>
-			<parameter name="ivorn">
-				<description>Ivorn of node</description>
-			</parameter>
-		</method>
 		<method name="getParent">
 			<description>return ivorn of node's parent, (or null)</description>
 			<parameter name="ivorn">
 				<description>Ivorn of node</description>
 			</parameter>
 		</method>
-		<method name="getParentNode">
-			<description>return details of parent node - equivalent to 
-				node(n.getParent())</description>
-			<return>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>struct</value>
-				</property>
-			</return>
-			<parameter name="ivorn">
-				<description>Ivorn of node</description>
-			</parameter>
-		</method>
-		<method name="getChildren">
-			<description>list children of a node</description>
+	<method name="list">
+			<description>list names of the contents of a myspace folder.</description>
 			<return>
 				<description>an array of the ivorns of this node's 
 					children</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>					
 			</return>
 			<parameter name="ivorn">
 				<description>Ivorn of node</description>
 			</parameter>
 		</method>
-		<method name="getChildrenNodes">
-			<description>list children of a node</description>
+		<method name="listIvorns">
+			<description>list ivorns of the contents of a myspace folder</description>
 			<return>
 				<description>an array of details of the child 
 					nodes</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>struct</value>
+					<value>array</value>
 				</property>
 			</return>
 			<parameter name="ivorn">
@@ -380,7 +303,8 @@
 			<parameter name="ivorn">
 				<description>Ivorn of node</description>
 			</parameter>
-		</method>
+		</method>	
+
 		<method name="delete">
 			<description>delete a node</description>
 	<property>
@@ -427,6 +351,137 @@
 					to</description>
 			</parameter>
 		</method>
+		<method name="copy">
+			<description>copy a node</description>
+			<parameter name="ivorn">
+				<description>Ivorn of node to copy</description>
+			</parameter>
+			<parameter name="newParentIvorn">
+				<description>Ivorn of new parent node</description>
+			</parameter>
+			<parameter name="newName">
+				<description>name for copied node</description>
+			</parameter>
+		</method>		
+					
+		<method name="read">
+			<description>directly read contents of a myspace resource (not recommended for large files)</description>
+			<return>
+				<description>content of the resource as a string</description>
+			</return>
+			<parameter name="ivorn">
+				<description>ivorn of the resource to read from</description>
+			</parameter>
+		</method>
+		<method name="readBinary">
+			<description>directly read contents of a myspace resource (not recommended for large files)</description>
+			<return>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>base64</value>
+				</property>					
+				<description>content of the resource as an array of bytes</description>
+			</return>
+			<parameter name="ivorn">
+				<description>ivorn of the resource to read from</description>
+			</parameter>
+		</method>		
+		<method name="write">
+			<description>directly write data to a myspace resource (not recommended for large files)</description>
+			<return>
+				<description>nothing</description>
+			</return>
+			<parameter name="ivorn">
+				<description>ivorn of the resource to write to</description>
+			</parameter>
+			<parameter name="data">
+				<description>string to store in the myspace resource</description>
+			</parameter>
+		</method>
+		<method name="writeBinary">
+			<description>directly write data to a myspace resource (not recommended for large files)</description>
+			<return>
+				<description>nothing</description>
+			</return>
+			<parameter name="ivorn">
+				<description>ivorn of the resource to write to</description>
+			</parameter>
+			<parameter name="data">
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>base64</value>
+				</property>				
+				<description>array of bytes to store in the myspace resource</description>
+			</parameter>
+		</method>		
+			
+		<method name="getReadContentURL">
+			<description>read access a URL from which can be read contents (i.e. data) of a myspace resource</description>
+	<property>
+		<key>icon</key>
+		<value>Resource.gif</value>
+	</property>							
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Read File Contents</value>								
+			</property>	
+			<return>
+				<description>URL from which contents can be read</description>
+			</return>
+			<parameter name="ivorn">
+				<description>Ivorn of node</description>
+			</parameter>
+		</method>
+		<method name="getWriteContentURL">
+			<description>write contents of a myspace node.</description>	
+			<return>
+				<description>URL to which contents can be written</description>
+			</return>
+			<parameter name="ivorn">
+				<description>Ivorn of node</description>
+			</parameter>
+		</method>
+				
+		<method name="copyContentToURL">			
+			<description>copy contents of a myspace node to a 
+				url</description>
+	<property>
+		<key>icon</key>
+		<value>export_log.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Copy MySpace File Contents to a URL</value>								
+			</property>							
+			<parameter name="ivorn">
+				<description>Ivorn of node</description>
+			</parameter>
+			<parameter name="destination">
+				<description>location to copy contents to. file://, http:// and 
+					ftp:// are supported.</description>
+			</parameter>
+		</method>
+		<method name="copyURLToContent">
+			<description>copy contents of a url to a myspace
+				node</description>
+	<property>
+		<key>icon</key>
+		<value>import_log.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Copy URL Contents to MySpace File</value>								
+			</property>						
+			<parameter name="source">
+				<description>location to copy contents from: file://, http:// 
+					and ftp:// are supported.</description>
+			</parameter>
+			<parameter name="ivorn">
+				<description>Ivorn of node</description>
+			</parameter>
+		</method>
+
+	
 		<method name="listAvailableStores">
 			<description>List details of available filestores</description>
 			<property>
@@ -445,18 +500,7 @@
 				</property>				
 			</return>
 			</method>		
-		<method name="copy">
-			<description>copy a node</description>
-			<parameter name="ivorn">
-				<description>Ivorn of node to copy</description>
-			</parameter>
-			<parameter name="newParentIvorn">
-				<description>Ivorn of new parent node</description>
-			</parameter>
-			<parameter name="newName">
-				<description>name for copied node</description>
-			</parameter>
-		</method>
+
 
 	</component>
 	
@@ -835,7 +879,17 @@
 				</property>
 			</return>
 		</method>
-		<method name="getJob">
+		<method name="listFully">
+			<description>list users jobs</description>
+			<return>	
+				<description>list of job information beans</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</return>
+		</method>		
+		<method name="getJobTranscript">
 			<description>Retrieve a workflow transcript</description>
 	<property>
 		<key>icon</key>
@@ -845,26 +899,19 @@
 				<key>system.ui.menu.entry</key>
 				<value>Get Job</value>								
 			</property>	
-			<!--	
-			<property>
-				<key>system.ui.result.browser</key>
-				<value>true</value>								
-			</property>					
-			-->
 			<return>
 				<description>a workflow document</description>
 				<property>
 					<key>system.result.transformer</key>
-					<value>org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet</value>
-						
+					<value>org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet</value>						
 				</property>
 			</return>
 			<parameter name="jobURN">
 				<description>identifier of job to retreive</description>
 			</parameter>
 		</method>
-		<method name="getJobSummary">
-			<description>Retrieve a summary for a job</description>
+		<method name="getJobInformation">
+			<description>Retrieve information about a job</description>
 	<property>
 		<key>icon</key>
 		<value>info_obj.gif</value>
@@ -874,7 +921,11 @@
 				<value>Get Job Summary</value>								
 			</property>					
 			<return>
-				<description>a summary of the jobs progress</description>
+				<description>a summary of the jobs</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>struct</value>
+				</property>				
 			</return>
 			<parameter name="jobURN">
 				<description>identifier of job to retreive</description>
@@ -890,7 +941,7 @@
 				<description>Workflow document to execute</description>
 			</parameter>
 		</method>
-	<method name="submitJobFile">
+	<method name="submitStoredJob">
 			<description>Submit a workflow for execution</description>
 	<property>
 		<key>icon</key>
@@ -903,8 +954,8 @@
 			<return>
 				<description>unique identifier of the new job</description>
 			</return>
-			<parameter name="url">
-				<description>URL Reference (ftp://, http://, file://) of file containing workflow document to execute</description>
+			<parameter name="uri">
+				<description>URI Reference (ftp://, http://, file://, ivo://) of file containing workflow document to execute</description>
 			</parameter>
 		</method>		
 	<method name="cancelJob">
@@ -938,19 +989,6 @@
 	</component>
 	
 
-	
-	<component name="portal"		
-		implementationClass="org.astrogrid.desktop.modules.ag.PortalImpl"
-		interfaceClass="org.astrogrid.acr.astrogrid.Portal"
-		>
-		<description>Ineract with the web portal (beta)</description>
-		<method name="openPage">
-			<description>open a page in the portal</description>
-			<parameter name="page">
-				<description>name of the page to open</description>
-			</parameter>
-			</method>
-	</component>
 	<!-- startable component that registers required convertors. -->
 	<component name="register-converters" 
 		implementationClass="org.astrogrid.desktop.modules.ag.RegisterConverters" 

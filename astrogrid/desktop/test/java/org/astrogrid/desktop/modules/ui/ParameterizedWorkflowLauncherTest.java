@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherTest.java,v 1.2 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: ParameterizedWorkflowLauncherTest.java,v 1.3 2005/08/05 11:46:56 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.desktop.modules.ui.ParameterizedWorkflowLauncherImpl;
-import org.astrogrid.desktop.modules.ui.WorkflowTemplate;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.exolab.castor.xml.Marshaller;
@@ -83,6 +81,9 @@ public class ParameterizedWorkflowLauncherTest extends TestCase {
 
 /* 
 $Log: ParameterizedWorkflowLauncherTest.java,v $
+Revision 1.3  2005/08/05 11:46:56  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.2  2005/04/27 13:42:41  clq2
 1082
 

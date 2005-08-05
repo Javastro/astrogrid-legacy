@@ -1,4 +1,4 @@
-/*$Id: XmlRpcServlet.java,v 1.4 2005/06/23 09:08:26 nw Exp $
+/*$Id: XmlRpcServlet.java,v 1.5 2005/08/05 11:46:55 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,12 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.Module;
-import org.astrogrid.acr.builtin.ModuleRegistry;
 import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.framework.DefaultModule;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
@@ -36,6 +38,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -90,9 +93,9 @@ public class XmlRpcServlet extends HttpServlet {
     
     /** create the xml server, register all the services */
     public void init(ServletConfig conf) throws ServletException {
-        ModuleRegistry reg = (ModuleRegistry) conf.getServletContext().getAttribute(WebServer.MODULE_REGISTRY);        
+        ACR reg = (ACR) conf.getServletContext().getAttribute(WebServer.ACR_CONTEXT_KEY);        
        for (Iterator i = reg.moduleIterator(); i.hasNext(); ) {
-           Module m = (Module)i.next();
+           DefaultModule m = (DefaultModule)i.next();
            ModuleDescriptor md = m.getDescriptor();
            for (Iterator j = md.componentIterator(); j.hasNext(); ) {
                ComponentDescriptor cd = (ComponentDescriptor)j.next();
@@ -101,7 +104,11 @@ public class XmlRpcServlet extends HttpServlet {
                xmlrpc.addHandler(name,new ComponentXmlRpcHandler(m,cd));
            }
        }
-     xmlrpc.addHandler("system",new SystemXmlRpcHandler(reg));
+     try {
+        xmlrpc.addHandler("system",new SystemXmlRpcHandler(reg));
+    } catch (ACRException e) {
+        throw new ServletException(e);
+    }
     }
     
     /** class that exposes one of our annotated services as a xml service */
@@ -112,10 +119,10 @@ public class XmlRpcServlet extends HttpServlet {
         private final Log logger = LogFactory.getLog(ComponentXmlRpcHandler.class);
 
         public ComponentXmlRpcHandler(Module m, ComponentDescriptor cd){
-            this.m = m;
+            this.m = (DefaultModule)m;
             this.cd = cd;            
         }
-        protected final Module m;
+        protected final DefaultModule m;
         protected final ComponentDescriptor cd;
         
         /**
@@ -141,9 +148,11 @@ public class XmlRpcServlet extends HttpServlet {
             try {
                 // convert parameters to correct types.
                 logger.debug("Converting args...");
-                Object[] args = new Object[parameterTypes.length];            
+                Object[] args = new Object[parameterTypes.length];
+                Iterator it = md.parameterIterator();
                 for (int i =0; i < parameterTypes.length; i++) {
-                    Converter conv = DefaultConverter.getInstance();                 
+                    ValueDescriptor vd = (ValueDescriptor)it.next();
+                    Converter conv = getConverter(vd);
                     args[i] = conv.convert(parameterTypes[i],inputArgs.get(i));
                 }
                 // call method
@@ -231,8 +240,8 @@ public class XmlRpcServlet extends HttpServlet {
          */
         private static final Log logger = LogFactory.getLog(SystemXmlRpcHandler.class);
 
-        public SystemXmlRpcHandler(ModuleRegistry reg) {            
-            apiHelp = (ApiHelp)reg.getModule("system").getComponentInstanceOfType(ApiHelp.class);
+        public SystemXmlRpcHandler(ACR reg) throws ACRException {            
+            apiHelp = (ApiHelp)reg.getService(ApiHelp.class);
         }
         protected final ApiHelp apiHelp;
         /**
@@ -240,10 +249,10 @@ public class XmlRpcServlet extends HttpServlet {
          */
         public Object execute(String arg0, Vector arg1) throws Exception {
             if ("system.listMethods".equalsIgnoreCase(arg0)) {
-                return (Vector)apiHelp.listMethods();
+                return new Vector(Arrays.asList(apiHelp.listMethods()));
             }
             if ("system.methodSignature".equalsIgnoreCase(arg0)) {
-                return (Vector)apiHelp.methodSignature(arg1.get(0).toString());
+                return new Vector(Arrays.asList(apiHelp.methodSignature(arg1.get(0).toString())));
             }
             if ("system.methodHelp".equalsIgnoreCase(arg0)){
                 return apiHelp.methodHelp(arg1.get(0).toString());
@@ -261,6 +270,9 @@ public class XmlRpcServlet extends HttpServlet {
 
 /* 
 $Log: XmlRpcServlet.java,v $
+Revision 1.5  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.4  2005/06/23 09:08:26  nw
 changes for 1.0.3 release
 

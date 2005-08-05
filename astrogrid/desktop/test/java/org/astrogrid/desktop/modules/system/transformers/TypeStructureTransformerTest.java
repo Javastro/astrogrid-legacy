@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformerTest.java,v 1.2 2005/04/13 12:59:18 nw Exp $
+/*$Id: TypeStructureTransformerTest.java,v 1.3 2005/08/05 11:46:56 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.system.transformers;
 
-
-import org.astrogrid.desktop.modules.system.transformers.TypeStructureTransformer;
 
 import org.apache.commons.collections.Transformer;
 
@@ -185,6 +183,9 @@ private int i;
 
 /* 
 $Log: TypeStructureTransformerTest.java,v $
+Revision 1.3  2005/08/05 11:46:56  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.2  2005/04/13 12:59:18  nw
 checkin from branch desktop-nww-998
 

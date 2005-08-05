@@ -1,4 +1,4 @@
-/*$Id: GlassPane.java,v 1.2 2005/04/27 13:42:40 clq2 Exp $
+/*$Id: GlassPane.java,v 1.3 2005/08/05 11:46:55 nw Exp $
  * Created on 14-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,19 @@
 package org.astrogrid.desktop.modules.ui;
 
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.MouseInputAdapter;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.AWTEventListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+
+import javax.swing.JComponent;
+import javax.swing.RootPaneContainer;
+import javax.swing.SwingUtilities;
 
 /**
  * This is the glass pane class that intercepts screen interactions during system busy states.
@@ -175,6 +184,9 @@ public void setVisible(boolean value)
 
 /* 
 $Log: GlassPane.java,v $
+Revision 1.3  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.2  2005/04/27 13:42:40  clq2
 1082
 

@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.7 2005/07/08 14:06:30 nw Exp $
+/*$Id: VospaceImpl.java,v 1.8 2005/08/05 11:46:55 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,14 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.NodeInformation;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerClientFactory;
@@ -24,41 +28,42 @@ import org.astrogrid.filemanager.common.DuplicateNodeFault;
 import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.filemanager.common.NodeIvorn;
 import org.astrogrid.filemanager.common.NodeNotFoundFault;
-import org.astrogrid.filemanager.common.NodeTypes;
 import org.astrogrid.io.Piper;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.RegistrySearchException;
 import org.astrogrid.registry.client.query.ResourceData;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.ui.script.ScriptEnvironment;
 
+import org.apache.axis.types.URI.MalformedURIException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.rmi.RemoteException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 /** implementation of the vospace componet.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Feb-2005
+ * @todo aren't always throwing the right kind of exception in all cases - needs testing / inspection of myspace client
  */
-public class VospaceImpl implements UserLoginListener, Myspace {
+public class VospaceImpl implements UserLoginListener, MyspaceInternal {
     
 
     /**
@@ -69,11 +74,12 @@ public class VospaceImpl implements UserLoginListener, Myspace {
     /** Construct a new Vospace
      * 
      */
-    public VospaceImpl(Community community) {
+    public VospaceImpl(CommunityInternal community) {
         super();
         this.community = community;
     }
-    protected final Community community;
+    protected final CommunityInternal community;
+    protected URI home;
     protected FileManagerClient client;
     
     protected FileManagerClient getClient() throws CommunityException, RegistryException, URISyntaxException {
@@ -91,163 +97,569 @@ public class VospaceImpl implements UserLoginListener, Myspace {
         return client;
     }
     
-    public FileManagerNode createFile(Ivorn ivorn) throws FileManagerFault, DuplicateNodeFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
-        return getClient().createFile(ivorn);
+    public void createFile(URI ivorn) throws ServiceException, SecurityException, InvalidArgumentException {
+        try {
+            getClient().createFile(cvt(ivorn));
+        } catch (CommunityException e) {
+            throw new SecurityException(e);
+        } catch (DuplicateNodeFault e) {
+            throw new InvalidArgumentException("A resource with this name already exists",e);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        } 
     }
     
-    public FileManagerNode createFolder(Ivorn ivorn) throws FileManagerFault, DuplicateNodeFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
-        return getClient().createFolder(ivorn);
+    public void createFolder(URI ivorn) throws ServiceException, SecurityException, InvalidArgumentException {
+        try {
+        getClient().createFolder(cvt(ivorn));
+        } catch (CommunityException e) {
+            throw new SecurityException(e);
+        } catch (DuplicateNodeFault e) {
+            throw new InvalidArgumentException("A resource with this name already exists",e);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }         
     }
     
 
 
     // access
-    public NodeIvorn home() throws FileManagerFault, NodeNotFoundFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
-        return getClient().home().getMetadata().getNodeIvorn();
+    public URI getHome() throws SecurityException, ServiceException, NotFoundException {
+        if (home == null) {
+        try {
+            home = new URI(getClient().home().getIvorn().toString());
+        } catch (CommunityException e) {
+            throw new SecurityException(e);
+        } catch (NodeNotFoundFault e) {
+            throw new NotFoundException(e);
+        } catch (Exception e) {
+            throw new ServiceException(e);  
+        }
+        } 
+        return home;
     }
     
-    public FileManagerNode node(Ivorn ivorn) throws FileManagerFault, NodeNotFoundFault, RegistryException, CommunityException, RemoteException, URISyntaxException {
-        return getClient().node(ivorn);
+    /** convert a uri (possibly relative) to an ivorn
+     * @throws InvalidArgumentException
+     * @throws NotFoundException
+     * @throws ServiceException
+     * @throws SecurityException*/
+    final  Ivorn cvt(URI uri) throws InvalidArgumentException, SecurityException, ServiceException, NotFoundException {
+        uri = getHome().resolve(uri); // if passed in uri was a relative, this appends the home path. otherwise it's unchanged. nice !        
+        try {
+            return new Ivorn(uri.toString());
+        } catch (URISyntaxException e) {
+            throw new InvalidArgumentException("this is not a myspace reference: " + uri, e); 
+        }
+    }
+           
+    final URI cvt(Ivorn iv) throws ServiceException {
+        try {
+            return new URI(iv.toString());
+        } catch (URISyntaxException e) {
+            throw new ServiceException(e);
+        }
     }
     
-    public boolean exists(Ivorn ivorn) throws FileManagerFault, RemoteException, RegistryException, CommunityException, URISyntaxException {       
-        return getClient().exists(ivorn) != null;
-    }
+    /**
+     * @param parentIvorn
+     * @return
+     * @throws InvalidArgumentException
+     * @throws NotFoundException
+     * @throws SecurityException
+     * @throws ServiceException
+     */
+    public final FileManagerNode node(URI ivorn) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
+        try {
+            Ivorn ivo = cvt(ivorn);
+            FileManagerNode node =  getClient().node(ivo);
+            return node;
+        } catch (CommunityException e) {
+            throw new SecurityException(e);
+        } catch (NodeNotFoundFault e) {
+            throw new NotFoundException(e);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        } 
+    }    
+   
     
-    public NodeTypes getType(Ivorn ivorn) throws FileManagerFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
-        return getClient().exists(ivorn);
+    public boolean exists(URI ivorn) throws ServiceException, SecurityException, InvalidArgumentException {       
+        try {
+            return getClient().exists(cvt(ivorn)) != null;
+        } catch (CommunityException e) {
+            throw new SecurityException(e);
+        } catch (Exception e) {
+            throw new ServiceException(e);  
+        }
     }
-    
+        
     //creation  
-    public NodeIvorn  newFolder(Ivorn parentIvorn, String name) throws IOException, FileManagerFault, NodeNotFoundFault, DuplicateNodeFault, RemoteException, UnsupportedOperationException, RegistryException, CommunityException, URISyntaxException {
-        return node(parentIvorn).addFolder(name).getMetadata().getNodeIvorn();
-        
+    public URI  createChildFolder(URI parentIvorn, String name) throws NotFoundException, ServiceException, SecurityException, InvalidArgumentException {
+            try {
+                return cvt(node(parentIvorn).addFolder(name).getIvorn());
+            } catch (FileManagerFault e) {
+                throw new ServiceException(e);
+            } catch (NodeNotFoundFault e) {
+                throw new NotFoundException(e);
+            } catch (DuplicateNodeFault e) {
+                throw new InvalidArgumentException(e);
+            } catch (RemoteException e) {
+                throw new ServiceException(e);
+            } catch (UnsupportedOperationException e) {
+                   throw new InvalidArgumentException(e);
+            }        
     }
         
-    public NodeIvorn newFile(Ivorn parentIvorn, String name) throws FileManagerFault, NodeNotFoundFault, DuplicateNodeFault, RemoteException, UnsupportedOperationException, RegistryException, CommunityException, URISyntaxException{
-        return node(parentIvorn).addFile(name).getMetadata().getNodeIvorn();
+
+
+    public URI createChildFile(URI parentIvorn, String name) throws NotFoundException, ServiceException, SecurityException, InvalidArgumentException{
+        try {
+            return cvt(node(parentIvorn).addFile(name).getIvorn());
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        } catch (NodeNotFoundFault e) {
+            throw new NotFoundException(e);
+        } catch (DuplicateNodeFault e) {
+            throw new InvalidArgumentException(e);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        } catch (UnsupportedOperationException e) {
+               throw new InvalidArgumentException(e);
+        }        
     }
     // content
-    public URL readContent(Ivorn ivorn) throws NodeNotFoundFault, FileManagerFault, UnsupportedOperationException, MalformedURLException, RemoteException, RegistryException, CommunityException, URISyntaxException {
+    public String read(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
+        Reader reader = null;
+        StringWriter writer = null;
+        try {
+           reader =new InputStreamReader(node(ivorn).readContent());
+           writer = new StringWriter();
+            Piper.pipe(reader,writer);
+            return writer.toString();
+        } catch (UnsupportedOperationException e) {
+            throw new InvalidArgumentException(e);            
+        } catch (IOException e) {
+            throw new ServiceException(e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+               }
+            }
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+               }
+            }            
+        }                                    
+    }
+
+
+    public void write(URI ivorn, String content) throws InvalidArgumentException, ServiceException, SecurityException {
+        Reader r = new StringReader(content);
+        Writer w = null;
+        if (! exists(ivorn)) {
+            createFile(ivorn);
+        }
+        try {
+            w = new OutputStreamWriter(node(ivorn).writeContent());
+            Piper.pipe(r, w);
+        } catch (IOException e) {
+            throw new ServiceException(e);
+        } catch (UnsupportedOperationException e) {
+            throw new InvalidArgumentException(e);
+        } catch (NotFoundException e) {
+            throw new ServiceException(e);
+        } finally {
+            if (w != null) {
+                try {
+                    w.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
+
+
+    public byte[] readBinary(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
+        InputStream reader = null;
+        ByteArrayOutputStream writer = null;
+        try {
+           reader = node(ivorn).readContent();
+           writer = new ByteArrayOutputStream();
+            Piper.pipe(reader,writer);
+            return writer.toByteArray();
+        } catch (UnsupportedOperationException e) {
+            throw new InvalidArgumentException(e);            
+        } catch (IOException e) {
+            throw new ServiceException(e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+               }
+            }
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+               }
+            }            
+        }   
+    }
+
+    public void writeBinary(URI ivorn, byte[] content) throws InvalidArgumentException, ServiceException, SecurityException {
+        InputStream r = new ByteArrayInputStream(content);
+        OutputStream w = null;
+        if (! exists(ivorn)) {
+            createFile(ivorn);
+        }
+        try {
+            w = node(ivorn).writeContent();
+            Piper.pipe(r, w);
+        } catch (IOException e) {
+            throw new ServiceException(e);
+        } catch (UnsupportedOperationException e) {
+            throw new InvalidArgumentException(e);
+        } catch (NotFoundException e) {
+            throw new ServiceException(e);
+        } finally {
+            if (w != null) {
+                try {
+                    w.close();
+                } catch (IOException e) {
+                }
+            }
+        }        
+    }
+    
+    public URL getReadContentURL(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
+        try {
+            return node(ivorn).contentURL();
+        } catch (NodeNotFoundFault e) {
+            throw new NotFoundException(e);
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        } catch (UnsupportedOperationException e) {
+            throw new InvalidArgumentException(e);
+        } catch (MalformedURLException e) {
+            throw new ServiceException(e);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        } 
+    }
+    
+    /** @todo unsure whether this is correct */
+    public URL getWriteContentURL(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
+        try {
         return node(ivorn).contentURL();
-    }
-    
-    /** @throws URISyntaxException
-     * @throws CommunityException
-     * @throws RegistryException
-     * @throws RemoteException
-     * @throws MalformedURLException
-     * @throws UnsupportedOperationException
-     * @throws FileManagerFault
-     * @throws NodeNotFoundFault
-     * @todo unsure whether this is correct */
-    public URL writeContent(Ivorn ivorn) throws NodeNotFoundFault, FileManagerFault, UnsupportedOperationException, MalformedURLException, RemoteException, RegistryException, CommunityException, URISyntaxException {
-        return node(ivorn).contentURL();        
+        } catch (NodeNotFoundFault e) {
+            throw new NotFoundException(e);
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        } catch (UnsupportedOperationException e) {
+            throw new InvalidArgumentException(e);
+        } catch (MalformedURLException e) {
+            throw new ServiceException(e);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }         
     }
     
 
-    public void copyContentToURL(Ivorn ivorn,URL destination) throws NodeNotFoundFault, FileManagerFault, UnsupportedOperationException, RemoteException, IOException, RegistryException, CommunityException, URISyntaxException {
+    public void copyContentToURL(URI ivorn,URL destination) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
+        FileManagerNode node = node(ivorn);
         if (destination.getProtocol().equals("file")) {
-            OutputStream os = new FileOutputStream(new File(new URI(destination.toString())));
-            InputStream is =node(ivorn).readContent();
+            InputStream is = null;
+            OutputStream os = null;
+            try {
+            File file = new File(new URI(destination.toString()));
+            os = new FileOutputStream(file);
+            is =node.readContent();
             Piper.pipe(is,os);
-            os.close();
-            is.close();
+            } catch (FileNotFoundException e) {
+                throw new InvalidArgumentException(e);
+            } catch (IOException e) {
+                throw new ServiceException(e);
+            } catch (UnsupportedOperationException e) {
+                throw new InvalidArgumentException(e);
+            } catch (URISyntaxException e) {
+                throw new InvalidArgumentException(e);
+            } finally {
+                if (os != null) {                    
+                        try {
+                            os.close();
+                        } catch (IOException e1) {                           
+                            logger.warn("IOException",e1);
+                        }                    
+                } 
+                if (is != null) {                    
+                    try {
+                        is.close();
+                    } catch (IOException e1) {
+                        logger.warn("IOException",e1);
+                    }
+                }
+            }
         } else {            
-            node(ivorn).copyContentToURL(destination);
+            try {
+                node.copyContentToURL(destination);
+            } catch (NodeNotFoundFault e) {
+                throw new NotFoundException(e);
+            } catch (FileManagerFault e) {
+                throw new ServiceException(e);
+            } catch (UnsupportedOperationException e) {
+                throw new InvalidArgumentException(e);
+            } catch (RemoteException e) {
+                throw new ServiceException(e);
+            } catch (MalformedURIException e) {
+                throw new InvalidArgumentException(e);
+            }
         }
     }
     
-    public void copyURLToContent(URL src,Ivorn ivorn) throws UnsupportedOperationException, RegistryException, CommunityException, URISyntaxException, IOException {
-        logger.info("copyURLToContent(src = " + src + ", ivorn = " + ivorn + ") - start");
+    public void copyURLToContent(URL src,URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
+        InputStream is = null;
+        OutputStream os = null;
         
-        
+        FileManagerNode node = node(ivorn);
         if (src.getProtocol().equals("file")) {
-            InputStream is = src.openStream();
-            OutputStream os = node(ivorn).writeContent();
+            try {
+            is = src.openStream();
+            os = node.writeContent();
             Piper.pipe(is,os);
-            os.close();
-            is.close();
+            } catch (FileNotFoundException e) {
+                throw new InvalidArgumentException(e);
+            } catch (UnsupportedOperationException e) {
+                throw new InvalidArgumentException(e);
+            } catch (IOException e) {
+                throw new ServiceException(e);
+            } finally {
+                if (os != null) {                    
+                        try {
+                            os.close();
+                        } catch (IOException e1) {                           
+                            logger.warn("IOException",e1);
+                        }                    
+                } 
+                if (is != null) {                    
+                    try {
+                        is.close();
+                    } catch (IOException e1) {
+                        logger.warn("IOException",e1);
+                    }
+                }
+            }
         } else {
-        node(ivorn).copyURLToContent(src);
+            try {
+        node.copyURLToContent(src);
+            } catch (NodeNotFoundFault e) {
+                throw new NotFoundException(e);
+            } catch (FileManagerFault e) {
+                throw new ServiceException(e);
+            } catch (UnsupportedOperationException e) {
+                throw new InvalidArgumentException(e);
+            } catch (RemoteException e) {
+                throw new ServiceException(e);
+            } catch (MalformedURIException e) {
+                throw new InvalidArgumentException(e);
+            }        
         }
-
-        logger.info("copyURLToContent() - end");       
+ 
     }
+
+    
     
     //navigation
     
-    public NodeIvorn getParent(Ivorn ivorn) throws FileManagerFault, NodeNotFoundFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
-        return node(ivorn).getParentNode().getMetadata().getNodeIvorn();
+    public URI getParent(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
+        try {
+            return cvt(node(ivorn).getParentNode().getIvorn());
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        }  catch (RemoteException e) {
+            throw new ServiceException(e);
+        } 
     }
     
-    public FileManagerNode getParentNode(Ivorn ivorn) throws NodeNotFoundFault, FileManagerFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
-        return node(ivorn).getParentNode();
-    }
-    
-    public NodeIvorn[] getChildren(Ivorn ivorn) throws FileManagerFault, NodeNotFoundFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
+
+    public String[] list(URI ivorn) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
         FileManagerNode node =  node(ivorn);
-        NodeIvorn[] result = new NodeIvorn[node.getChildCount()];
-        NodeIterator  i = node.iterator();
-        for (int ix = 0; ix < result.length &&  i.hasNext(); ix++) {
-            FileManagerNode child = i.nextNode();
-            result[ix] = child.getMetadata().getNodeIvorn();
+        String[] result = new String[node.getChildCount()];
+        try {
+            NodeIterator i = node.iterator();
+            for (int ix = 0; ix < result.length &&  i.hasNext(); ix++) {
+                FileManagerNode child = i.nextNode();
+                result[ix] = child.getName();
+            }
+            return result;
+        } catch (UnsupportedOperationException e) {
+            throw new InvalidArgumentException(e);
+        } catch (NodeNotFoundFault e) {
+            throw new ServiceException(e);
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
         }
-        return result;
+
     }
-    
-    public FileManagerNode[] getChildrenNodes(Ivorn ivorn) throws FileManagerFault, NodeNotFoundFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
+
+    public URI[] listIvorns(URI ivorn) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
         FileManagerNode node =  node(ivorn);
-        FileManagerNode[] result = new FileManagerNode[node.getChildCount()];
-        NodeIterator  i = node.iterator();
-        for (int ix = 0; ix < result.length &&  i.hasNext(); ix++) {
-            FileManagerNode child = i.nextNode();
-            result[ix] = child;
+        URI[] result = new URI[node.getChildCount()];
+        try {
+            NodeIterator i = node.iterator();
+            for (int ix = 0; ix < result.length &&  i.hasNext(); ix++) {
+                FileManagerNode child = i.nextNode();
+                result[ix] = cvt(child.getIvorn());
+            }
+            return result;
+        } catch (UnsupportedOperationException e) {
+            throw new InvalidArgumentException(e);            
+        } catch (NodeNotFoundFault e) {
+            throw new ServiceException(e);
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
         }
-        return result;        
+
+    }    
+    
+    /**
+     * @throws NotFoundException
+     * @throws SecurityException
+     * @throws ServiceException
+     * @throws InvalidArgumentException
+     * @see org.astrogrid.acr.astrogrid.Myspace#getNodeInformation(java.net.URI)
+     */
+    public NodeInformation getNodeInformation(URI ivorn) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
+            FileManagerNode node = node(ivorn);
+            org.astrogrid.filemanager.client.NodeMetadata md = node.getMetadata();
+            return new NodeInformation(ivorn,md.getSize(),md.getCreateDate(),md.getModifyDate(),md.getAttributes(),node.isFile(),md.getContentLocation());        
     }
+
+
+    
+
     
     
     // metadata
     
-    public void refresh(Ivorn ivorn) throws NodeNotFoundFault, FileManagerFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
-        node(ivorn).refresh();
+    public void refresh(URI ivorn) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
+        try {
+            node(ivorn).refresh();
+        } catch (NodeNotFoundFault e) {
+            throw new NotFoundException(e);
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
     
     // management
-    public void delete(Ivorn ivorn) throws NodeNotFoundFault, FileManagerFault, RemoteException, RegistryException, CommunityException, URISyntaxException  {
-        node(ivorn).delete();
+    public void delete(URI ivorn) throws NotFoundException, SecurityException, ServiceException, InvalidArgumentException  {
+        try {
+            node(ivorn).delete();
+        } catch (NodeNotFoundFault e) {
+            throw new NotFoundException(e);
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        } 
     }
     
     
-    public void rename(Ivorn srcIvorn,String newName) throws FileManagerFault, NodeNotFoundFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
+    public URI rename(URI srcIvorn,String newName) throws NotFoundException, SecurityException, ServiceException, InvalidArgumentException {
         FileManagerNode node = node(srcIvorn);        
-        node.move(newName,node.getParentNode(),null);
+        try {
+            node.move(newName,node.getParentNode(),null);
+            return cvt(node.getIvorn());
+        } catch (DuplicateNodeFault e) {
+            throw new InvalidArgumentException("Already exists",e);
+        } catch (NodeNotFoundFault e) {
+            throw new NotFoundException(e);
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
     
-    public void move(Ivorn srcIvorn,Ivorn newParentIvorn, String newName) throws FileManagerFault, NodeNotFoundFault, RemoteException, RegistryException, CommunityException, URISyntaxException  {
+    public URI move(URI srcIvorn,URI newParentIvorn, String newName) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException  {
         FileManagerNode node = node(srcIvorn);
         FileManagerNode parent = node(newParentIvorn);
-        node.move(newName,parent,null);
+        try {
+            node.move(newName,parent,null);
+            return cvt(node.getIvorn());
+        } catch (DuplicateNodeFault e) {
+            throw new InvalidArgumentException("Already exists",e);
+        } catch (NodeNotFoundFault e) {
+            throw new NotFoundException(e);
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
   
     }
     
-    public void changeStore(Ivorn srcIvorn,Ivorn storeIvorn) throws DuplicateNodeFault, NodeNotFoundFault, FileManagerFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
-        node(srcIvorn).move(null,null,storeIvorn);
+    public void changeStore(URI srcIvorn,URI storeIvorn) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
+        FileManagerNode node = node(srcIvorn);
+        try {
+            node.move(null,null,cvt(storeIvorn));
+        } catch (DuplicateNodeFault e) {
+            throw new InvalidArgumentException("Already exists",e);
+        } catch (NodeNotFoundFault e) {
+            throw new NotFoundException(e);
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
     
-    public void copy(Ivorn srcIvorn,Ivorn newParentIvorn,String newName) throws FileManagerFault, NodeNotFoundFault, RemoteException, RegistryException, CommunityException, URISyntaxException {
+    public URI copy(URI srcIvorn,URI newParentIvorn,String newName) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
         FileManagerNode node = node(srcIvorn);
         FileManagerNode parent = node(newParentIvorn);
-        node.move(newName,parent,null);        
+        try {
+        node.copy(newName,parent,null);    
+        return cvt(node.getIvorn());
+        } catch (DuplicateNodeFault e) {
+            throw new InvalidArgumentException("Already exists",e);
+        } catch (NodeNotFoundFault e) {
+            throw new NotFoundException(e);
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }        
     }
 
 
-  public ResourceData[] listAvailableStores() throws RegistryException {
+  public ResourceInformation[] listAvailableStores() throws ServiceException {
       //@todo edit to only select active stores - get kevin to screw his brain on.
-      return community.getEnv().getAstrogrid().createRegistryClient().
-      
-      getResourceDataByRelationship("ivo://org.astrogrid/FileStoreKind");
+      ResourceData[] arr;
+    try {
+        arr = community.getEnv().getAstrogrid().createRegistryClient().getResourceDataByRelationship("ivo://org.astrogrid/FileStoreKind");
+        ResourceInformation[] result = new ResourceInformation[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            result[i] = new ResourceInformation(new URI(arr[i].getIvorn().toString()),arr[i].getTitle(),arr[i].getDescription(),arr[i].getAccessURL());
+        }
+        return result;        
+    } catch (RegistryException e) {
+        throw new ServiceException(e);
+    } catch (URISyntaxException e) {
+        throw new ServiceException(e);
+    }
+
                /*
                "select * from Registry where @status='active' "
                +" and vr:content/vr:relationship/vr:relationshipType = 'derived-from' "               
@@ -268,24 +680,19 @@ public class VospaceImpl implements UserLoginListener, Myspace {
      * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogout(UserLoginEvent e) {
-        client = null;
+        this.client = null;
+        this.home = null;
     }
-    
 
-
-    
-    
-    
-
-    
-
-    
 
 }
 
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.8  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.7  2005/07/08 14:06:30  nw
 final fixes for the workshop.
 

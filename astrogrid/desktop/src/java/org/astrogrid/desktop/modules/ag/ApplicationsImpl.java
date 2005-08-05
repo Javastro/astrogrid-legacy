@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.8 2005/06/23 09:08:26 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.9 2005/08/05 11:46:55 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,22 +10,28 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.ApplicationsInternal;
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.acr.astrogrid.Myspace;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.applications.beans.v1.Input;
 import org.astrogrid.applications.beans.v1.Interface;
 import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
-import org.astrogrid.desktop.modules.system.transformers.TypeStructureTransformer;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
@@ -36,9 +42,7 @@ import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.RegistrySearchException;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.registry.client.query.ResourceData;
-import org.astrogrid.scripting.XMLHelper;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.util.DomHelper;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -47,20 +51,27 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
 import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -73,8 +84,11 @@ import javax.xml.transform.TransformerException;
 
 /** Application service.
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
+ * @todo later - remove use of applicationRegistry where possible - go direct
+ * @todo later - add stream-returning method (@link #read} to myspaceInternal.. use consisstently throughout.
+ * @todo refine exception reporting.
  */
-public class ApplicationsImpl implements Applications, UserLoginListener {
+public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener {
     /**
      * Commons Logger for this class
      */
@@ -85,18 +99,20 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
     /** Construct a new 
      * 
      */
-    public ApplicationsImpl(Community community){
+    public ApplicationsImpl(CommunityInternal community, Myspace vos, Registry reg){
         this.community = community;
+        this.vos = vos;
+        this.reg = reg;
         community.addUserLoginListener(this);
     }
-    protected final Community community;
+    protected final Myspace vos;
+    protected final CommunityInternal community;
+    protected final Registry reg;
     protected ApplicationRegistry appReg;
+    
 
-    private CommonExecutionConnectorClient createCEADelegate(ResourceData rd) {
-        return community.getEnv().getAstrogrid().createCeaClient(rd.getAccessURL().toString());
-    }
-    private CommonExecutionConnectorClient createCEADelegate(String endpoint) {
-        return community.getEnv().getAstrogrid().createCeaClient(endpoint);
+    private CommonExecutionConnectorClient createCEADelegate(URL endpoint) {
+        return community.getEnv().getAstrogrid().createCeaClient(endpoint.toString());
     }
     
     private ApplicationRegistry getAppReg() throws WorkflowInterfaceException {
@@ -105,34 +121,79 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
         }                        
         return appReg;
     }
-    private RegistryService reg;
-    private RegistryService getReg() {
-        if (reg == null) {
-            reg = community.getEnv().getAstrogrid().createRegistryClient();
+   
+    public URI[] list() throws ServiceException {   
+        try {
+        String[] arr =  getAppReg().listApplications();
+        URI[] result = new URI[arr.length];
+        for (int i= 0;i < arr.hashCode(); i++) {
+            result[i] = new URI(arr[i]);
         }
-        return reg;
-    }
-    
-    public String[] list() throws WorkflowInterfaceException {    
-        return getAppReg().listApplications();
-      
+        return result;
+        } catch (WorkflowInterfaceException e) {
+            throw new ServiceException(e);
+        } catch (URISyntaxException e) {
+            throw new ServiceException(e);
+        }              
     }
 
-    public ApplicationDescriptionSummary[] fullList() throws WorkflowInterfaceException {
-        return getAppReg().listUIApplications();
+    public ApplicationInformation[] listFully() throws ServiceException {
+        try {
+            ApplicationDescriptionSummary[] arr =  getAppReg().listUIApplications();
+            ApplicationInformation[] result = new ApplicationInformation[arr.length];
+            for (int i= 0;i < arr.hashCode(); i++) {
+                result[i] = new ApplicationInformation(
+                        new URI(arr[i].getName())
+                        , arr[i].getUIName()
+                        ,arr[i].getInterfaceNames()
+                        );
+            }
+            return result;
+            } catch (WorkflowInterfaceException e) {
+                throw new ServiceException(e);
+            } catch (URISyntaxException e) {
+                throw new ServiceException(e);
+            }           
     }
     
     public ApplicationDescription getApplicationDescription(String name) throws WorkflowInterfaceException {
         return getAppReg().getDescriptionFor(name);
     }
     
+    //@todo improve this - very inefficient, but will do for now.
+    public ApplicationInformation getApplicationInformation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException{
+        try {
+            ApplicationDescriptionSummary[] arr =  getAppReg().listUIApplications();
+            for (int i= 0;i < arr.hashCode(); i++) {
+                if (arr[i].getName().equals(munge(applicationName))) {
+                    return new ApplicationInformation(
+                        new URI(arr[i].getName())
+                        , arr[i].getUIName()
+                        ,arr[i].getInterfaceNames()
+                        );
+                }
+            }            
+            } catch (WorkflowInterfaceException e) {
+                throw new ServiceException(e);
+            } catch (URISyntaxException e) {
+                throw new ServiceException(e);
+            }
+            throw new NotFoundException(applicationName.toString());
+    }
     
-  public String getInfo(Ivorn applicationName) throws WorkflowInterfaceException {
+    
+    
+  public String getDocumentation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException {
+      try {
         ApplicationDescription descr = getAppReg().getDescriptionFor(munge(applicationName));
         logger.debug("Created application description");
         return getInfoFor(descr);
+      } catch (WorkflowInterfaceException e) {
+          throw new ServiceException(e);
+      }
   }
   
+  //@todo improve later - use xpath?
   public String getInfoFor(ApplicationDescription descr) {      
         StringBuffer result = new StringBuffer();
         String vr = "http://www.ivoa.net/xml/VOResource/v0.10";
@@ -188,12 +249,16 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
    
   // alter to impedance-match between whether ivo:// is expected or now.
   // at moment, necessary to do this.
-  private String munge(Ivorn application) {
+  private String munge(URI application) {
       return application.toString().substring(6);// drops ivo:// prefix
   }
   
-    public Tool getToolTemplate(Ivorn applicationName, String interfaceName) throws WorkflowInterfaceException {
+  
+  
+    public Document createTemplateDocument(URI applicationName, String interfaceName) throws ServiceException, NotFoundException, InvalidArgumentException {
+        try {
         ApplicationDescription descr = getAppReg().getDescriptionFor(munge(applicationName));
+        Tool t;
         if (interfaceName != null && (! interfaceName.equals("default"))) {
             Interface[] ifaces = descr.getInterfaces().get_interface();
             Interface iface = null;
@@ -205,20 +270,35 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
             if (iface == null) {
                 throw new IllegalArgumentException("Cannot find interface named " + interfaceName + " in application " + applicationName);
             }
-            return descr.createToolFromInterface(iface);
+             t = descr.createToolFromInterface(iface);
         } else {
-            return descr.createToolFromDefaultInterface();
+            t = descr.createToolFromDefaultInterface();
         }
-        
+        Document doc = XMLUtils.newDocument();
+        Marshaller.marshal(t,doc);
+        return doc;
+        } catch (WorkflowInterfaceException e) {
+            throw new ServiceException(e);
+        } catch (ParserConfigurationException e) {
+            throw new ServiceException(e);
+        } catch (MarshalException e) {
+            throw new ServiceException(e);
+        } catch (ValidationException e) {
+            throw new ServiceException(e);
+        }
     }
     
-    public Hashtable convertToolToStruct(Tool document) {
-        /*
-        Object result = TypeStructureTransformer.getCastorIgnoringInstance().transform(document);
-        System.err.println(result.getClass().getName());
-        System.err.println(result);
-        return(Hashtable)result;
-        */
+    public Map createTemplateStruct(URI applicationName, String interfaceName)
+    throws ServiceException, NotFoundException, InvalidArgumentException {
+        Document t = createTemplateDocument(applicationName,interfaceName);
+        return convertDocumentToStruct(t);
+    }
+    
+    public Map convertDocumentToStruct(Document doc) throws InvalidArgumentException {
+        
+        Tool document;
+        try {
+            document = (Tool)Unmarshaller.unmarshal(Tool.class,doc);    
         Hashtable result = new Hashtable();
         result.put("interface",document.getInterface());
         result.put("name",document.getName());
@@ -233,7 +313,11 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
             convertParameterToHash(outputs, document.getOutput().getParameter(i));
         }        
         return result;
-        
+        } catch (MarshalException e) {
+            throw new InvalidArgumentException(e);
+        } catch (ValidationException e) {
+            throw new InvalidArgumentException(e);
+        }        
     }
     
     private void convertParameterToHash(Hashtable collection,ParameterValue v) {
@@ -261,8 +345,7 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
         return arr;
     }
     
-    public Tool convertStructToTool(Map struct) {
-        System.err.println(struct);
+    public Document convertStructToDocument(Map struct) throws InvalidArgumentException {
         Tool t = new Tool();
         t.setName(struct.get("name").toString());
         t.setInterface(struct.get("interface").toString());
@@ -276,39 +359,80 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
         paramHash = (Map)struct.get("output");               
        output.setParameter(convertParams(paramHash));
         t.setOutput(output);
-        return t;
+
+        try {
+            Document doc = XMLUtils.newDocument();
+            Marshaller.marshal(t,doc);
+            return doc;
+        } catch (ParserConfigurationException e) {
+            throw new InvalidArgumentException(e);
+        } catch (MarshalException e) {
+            throw new InvalidArgumentException(e);
+        } catch (ValidationException e) { 
+            throw new InvalidArgumentException(e);
+        }
     }
 
-    public boolean validateTool(Tool document) throws WorkflowInterfaceException, MarshalException, ValidationException, ToolValidationException {
-        ApplicationDescription descr = getAppReg().getDescriptionFor(document.getName());
-        descr.validate(document);
-        return true;
-
+    public void validate(Document document) throws ServiceException, InvalidArgumentException {
+        try {
+        Tool t = (Tool)Unmarshaller.unmarshal(Tool.class,document);
+        ApplicationDescription descr = getAppReg().getDescriptionFor(t.getName());
+        descr.validate(t);
+        } catch (ToolValidationException e) {
+            throw new InvalidArgumentException(e);
+        } catch (WorkflowInterfaceException e) {
+            throw new InvalidArgumentException(e);
+        } catch (MarshalException e) {
+            throw new InvalidArgumentException(e);
+        } catch (ValidationException e) {
+            throw new InvalidArgumentException(e);
+        }
     }
     
   
-    public boolean validateToolFile(URL toolDocumentURL) throws WorkflowInterfaceException, MarshalException, ValidationException, ToolValidationException, IOException {
-        Reader r = new InputStreamReader(toolDocumentURL.openStream());
-        Tool tool = Tool.unmarshalTool(r);
-        return validateTool(tool);
+    public void validateStored(URI documentLocation) throws ServiceException, InvalidArgumentException, NotFoundException {
+        Document doc;
+        try {
+        if (documentLocation.getScheme().equals("uri")) {
+            String s = vos.read(documentLocation);
+            InputStream r = new ByteArrayInputStream(s.getBytes());
+            doc = XMLUtils.newDocument(r);
+        } else {
+            InputStream is = documentLocation.toURL().openStream();
+            doc = XMLUtils.newDocument(is);
+        }
+        } catch (ParserConfigurationException e) {
+            throw new ServiceException(e);
+        } catch (SAXException e) {
+            throw new InvalidArgumentException(e);
+        } catch (IOException e) {
+            throw new NotFoundException(e);
+        } catch (InvalidArgumentException e) {
+            throw new NotFoundException(e);
+        } catch (ServiceException e) {
+            throw new NotFoundException(e);
+        } catch (SecurityException e) {
+            throw new NotFoundException(e);
+        }
+        validate(doc);
+        
 
     }
     /*
      * XPath parsing cribbed from http://www.cafeconleche.org/books/xmljava/chapters/ch16s05.html
      * 
      */
-    public ResourceData[] listProvidersOf(Ivorn applicationName) throws RegistryException, ParserConfigurationException, TransformerException {
+    public ResourceInformation[] listProvidersOf(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException {
         logger.debug("in listProviders");
-       try { // verify application exists
-           getReg().getResourceByIdentifier(applicationName);
-       } catch (RegistryException e) {
-           throw new RegistrySearchException("Application " + applicationName +" is not in the registry");
-       }
+        
+           reg.getRecord(applicationName); // verify the application exists.
+
        logger.debug("Verified applicaion exists");
        // what about namespaces??
         String query = "Select * from Registry where @status = 'active' and cea:ManagedApplications/cea:ApplicationReference='"
             + applicationName + "'";
-        Document results = getReg().searchFromSADQL(query);
+        try {
+        Document results = reg.search(query);
         logger.debug("got  results");       
         
         DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
@@ -324,155 +448,242 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vor", "http://www.ivoa.net/xml/RegistryInterface/v0.1");
         NodeList resources = XPathAPI.selectNodeList(results,"//vor:Resource",namespaceNode);
         logger.debug("Found " + resources.getLength());
-        ResourceData[] resourceDatas= new ResourceData[resources.getLength()];
+        ResourceInformation[] resourceDatas= new ResourceInformation[resources.getLength()];
         for (int i = 0; i < resourceDatas.length; i++) {
-            ResourceData rd = new ResourceData();
             Element resource = (Element)resources.item(i);
-
+            URI id = null;
+            URL url = null;
             try {
-                rd.setIvorn(new Ivorn(XPathAPI.eval(resource,"vr:identifier",namespaceNode).str()));
-                System.err.println(rd.getIvorn());
+                id = new URI(XPathAPI.eval(resource,"vr:identifier",namespaceNode).str());
             } catch (URISyntaxException e1) {
                 logger.warn("URISyntaxException",e1);
             } 
-            rd.setTitle(XPathAPI.eval(resource,"vr:title",namespaceNode).str());
+            String title = XPathAPI.eval(resource,"vr:title",namespaceNode).str();
             try {
                 String str = XPathAPI.eval(resource,"vr:interface/vr:accessURL",namespaceNode).str().trim();
                 logger.debug("URL:" + str);
-                rd.setAccessURL(  new URL(str));
+                url = new URL(str);
             } catch (MalformedURLException e2) {
                 logger.warn("MalformedURLException",e2);
             } 
-            rd.setDescription( XPathAPI.eval(resource,"vr:content/vr:description",namespaceNode).str());
-            resourceDatas[i] = rd;
+            String description = XPathAPI.eval(resource,"vr:content/vr:description",namespaceNode).str();
+            resourceDatas[i] = new ResourceInformation(
+                    id
+                    ,title
+                    ,description
+                    ,url
+                    );
         }
         return resourceDatas;
-
+        } catch (TransformerException e) {
+            throw new ServiceException(e);
+        } catch (ParserConfigurationException e) {
+            throw new ServiceException(e);
+        }
     }
     
+    private InputStream read(URI loc) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
+        URL url ;
+        try {
+        if (loc.getScheme().equals("ivo")) {
+            url = vos.getReadContentURL(loc);
+        } else {
+       
+                url = loc.toURL()          ;
+        }
+        return url.openStream();
+            } catch (MalformedURLException e) {
+                throw new InvalidArgumentException(e);
+            } catch (IOException e) {
+                throw new NotFoundException(e);
+            }             
+    }
     
-    public String executeFile(URL toolFile) throws IOException, MarshalException, ValidationException, URISyntaxException, RegistryException, ParserConfigurationException, TransformerException, CEADelegateException {
-        Reader r = new InputStreamReader(toolFile.openStream());
-        Tool tool = Tool.unmarshalTool(r);        
-        return execute(tool);
+    public URI submitStored(URI documentLocation) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException {
+        InputStream r = read(documentLocation);
+        try {
+        Document doc = XMLUtils.newDocument(r);
+        return submit(doc);
+        } catch (IOException e) {
+            throw new NotFoundException(e);
+        } catch (ParserConfigurationException e) {
+            throw new ServiceException(e);
+        } catch (SAXException e) {
+            throw new InvalidArgumentException(e);
+        }
     }
     
    
 
     
-    public String executeOnFile(URL toolFile, Ivorn server) throws IOException, MarshalException, ValidationException, RegistryException, ParserConfigurationException, TransformerException, URISyntaxException, CEADelegateException {
-        Reader r = new InputStreamReader(toolFile.openStream());
-        Tool tool = Tool.unmarshalTool(r);
-        return executeOn(tool,server);
+    public URI submitStoredTo(URI documentLocation, URI server) throws InvalidArgumentException, ServiceException, SecurityException, NotFoundException {
+        InputStream r = read(documentLocation);
+        try {
+        Document doc = XMLUtils.newDocument(r);
+        return submitTo(doc,server);
+        } catch (IOException e) {
+            throw new NotFoundException(e);
+        } catch (ParserConfigurationException e) {
+            throw new ServiceException(e);
+        } catch (SAXException e) {
+            throw new InvalidArgumentException(e);
+        }
     } 
     
 
-    public String execute(Tool document) throws URISyntaxException, RegistryException, ParserConfigurationException, TransformerException, CEADelegateException {
-        // munge name in document, if incorrect..
+    public URI submit(Document doc) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
+        // munge name in document, if incorrect..       
+        URI application; // urg.
+        Tool document;
+        try {
+            document = (Tool)Unmarshaller.unmarshal(Tool.class,doc);
         if (document.getName().startsWith("ivo://")) {
             document.setName(document.getName().substring(6));
         }
-        Ivorn application = new Ivorn("ivo://" + document.getName()); // urg.
+            application = new URI("ivo://" + document.getName());
+        } catch (URISyntaxException e) {
+            throw new InvalidArgumentException(e);
+        } catch (MarshalException e) {
+            throw new InvalidArgumentException(e);
+        } catch (ValidationException e) {
+            throw new InvalidArgumentException(e);
+        }
         logger.debug(application.toString());
         logger.debug(document.getName());
         
-        ResourceData[] arr = listProvidersOf(application);
+        ResourceInformation[] arr = listProvidersOf(application);
         if (arr.length == 0) {
             throw new IllegalArgumentException(application +" has no registered providers");
         }
         List l =  Arrays.asList(arr);
         Collections.shuffle(l);
-        ResourceData target = (ResourceData)l.get(0);
+        ResourceInformation target = (ResourceInformation)l.get(0);
         return doExecute(application, document, target);
     }
     
-    public String executeOn(Tool document, Ivorn server) throws RegistryException, ParserConfigurationException, TransformerException, URISyntaxException, CEADelegateException {
-        // munge name in document, if incorrect..
+    public URI submitTo(Document doc, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException {
+        // munge name in document, if incorrect..       
+        URI application; // urg.
+        Tool document;
+        try {
+            document = (Tool)Unmarshaller.unmarshal(Tool.class,doc);
         if (document.getName().startsWith("ivo://")) {
             document.setName(document.getName().substring(6));
-        }        
-        Ivorn application = new Ivorn("ivo://" + document.getName()); // gah
-        ResourceData[] arr = listProvidersOf(application);
-        ResourceData target = null;
+        }
+            application = new URI("ivo://" + document.getName());
+        } catch (URISyntaxException e) {
+            throw new InvalidArgumentException(e);
+        } catch (MarshalException e) {
+            throw new InvalidArgumentException(e);
+        } catch (ValidationException e) {
+            throw new InvalidArgumentException(e);
+        }
+        logger.debug(application.toString());
+        logger.debug(document.getName());
+        ResourceInformation[] arr = listProvidersOf(application);
+        ResourceInformation target = null;
         for (int i = 0; i < arr.length ; i++) {
-            if (arr[i].getIvorn().toString().equals(server.toString())) { // ivorn doesn't seem t define equals.
+            if (arr[i].getId().equals(server)) { 
                 target = arr[i];
                 break;
             }
         }
         if (target == null) {
-            throw new IllegalArgumentException(server + " does not provide application " + application);            
+            throw new InvalidArgumentException(server + " does not provide application " + application);            
         }
         return doExecute(application, document, target);
         
     }   
     // primitive implementation method.
-    private String doExecute(Ivorn application, Tool document, ResourceData server) throws CEADelegateException {
-        CommonExecutionConnectorClient delegate = createCEADelegate(server);
+    private URI doExecute(URI application, Tool document, ResourceInformation server) throws ServiceException  {
+        CommonExecutionConnectorClient delegate = createCEADelegate(server.getAccessURL());
         // fudge some kind of job id type. hope this will do.
+        try {
         JobIdentifierType jid = new JobIdentifierType(community.getEnv().getUserIvorn().toString() + application.toString());
         String primId = delegate.init(document,jid);
         if (!delegate.execute(primId)) {
             throw new CEADelegateException("Failed to start application, for unknown reason");
         }
-        return server.getIvorn().toString() + "#" + primId;
+        return new URI(server.getId().getScheme(),server.getId().getSchemeSpecificPart(),primId);
+        } catch (CEADelegateException e) {
+            throw new ServiceException(e);
+        } catch (URISyntaxException e) {
+            throw new ServiceException(e);
+        }  
         
     }
     
-    private Ivorn getService(String executionId) throws URISyntaxException {
-        int pos = executionId.indexOf('#');
-        return new Ivorn(executionId.substring(0,pos));
+    private URI getService(URI executionId) throws InvalidArgumentException  {
+        try {
+            /*
+            int pos = executionId.indexOf('#');
+            return new Ivorn(executionId.substring(0,pos));
+            */
+            //@todo check null is ok here.
+            return new URI(executionId.getScheme(),executionId.getSchemeSpecificPart(),null);
+        } catch (URISyntaxException e) {
+            throw new InvalidArgumentException(e);
+        }
+       
     }
     
-    private String getId(String executionId) {
+    private String getId(URI executionId) {
+        return executionId.getFragment();
+        /*
         int pos = executionId.indexOf('#');
-        return executionId.substring(pos+1);
+        return executionId.substring(pos+1);*/
     }
     
  
-    public boolean abort(String executionId) throws RegistryException, URISyntaxException, CEADelegateException {
-        String endpoint = getReg().getEndPointByIdentifier(getService(executionId));
+    public void cancel(URI executionId) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
+        URL endpoint = reg.resolveIdentifier(getService(executionId));
         CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);
-        return delegate.abort(getId(executionId));
+        try {
+            delegate.abort(getId(executionId));
+        } catch (CEADelegateException e) {
+            throw new ServiceException(e);
+        }
     }  
-    public ExecutionSummaryType getExecutionSummary(String executionId) throws RegistryException, URISyntaxException, CEADelegateException {
-        String endpoint = getReg().getEndPointByIdentifier(getService(executionId));
+    
+    public ExecutionInformation getExecutionInformation(URI executionId) throws ServiceException, NotFoundException, SecurityException, InvalidArgumentException {
+        URL endpoint = reg.resolveIdentifier(getService(executionId));
         CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);
-        return delegate.getExecutionSumary(getId(executionId));
-        
+        try {
+        ExecutionSummaryType ex =  delegate.getExecutionSumary(getId(executionId));
+        //@todo see if we can improve information retirned.
+        return new ExecutionInformation(
+                executionId
+                ,ex.getApplicationName()
+                ,"Single Application"
+                ,ex.getStatus().toString()
+                ,null
+                ,null
+                );
+        } catch (CEADelegateException e) {
+            throw new ServiceException(e);
+        }        
     }
-    public ParameterValue[] getResults(String executionId) throws RegistryException, URISyntaxException, CEADelegateException {
-        String endpoint = getReg().getEndPointByIdentifier(getService(executionId));
+    public Map getResults(URI executionId) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
+        URL endpoint = reg.resolveIdentifier(getService(executionId));
         CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);
+        try {
         ResultListType results =  delegate.getResults(getId(executionId));
-        return results.getResult();
+        Map map = new HashMap();
+        ParameterValue[] vals = results.getResult();        
+        for (int i = 0; i < vals.length; i++) {
+            map.put(vals[i].getName(),vals[i].getValue());
+        }
+        return map;
+        } catch (CEADelegateException e) {
+            throw new ServiceException(e);
+        }          
     }
-    public String checkExecutionProgress(String executionId) throws CEADelegateException, RegistryException, URISyntaxException {
-        String endpoint = getReg().getEndPointByIdentifier(getService(executionId));
-        CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);
-        /** returns wrong type when erred - so try something different for now.. 
-        MessageType message =  delegate.queryExecutionStatus(getId(executionId));       
-        return message.getPhase();
-        */
-        ExecutionSummaryType s = delegate.getExecutionSumary(getId(executionId));
-        return s.getStatus().toString();
-    }
-    
-    
-
-    /**
-     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
-     */
+   
     public void userLogin(UserLoginEvent e) {
     }
 
-
-    /** remove registry on user logout.
-     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
-     */
     public void userLogout(UserLoginEvent e) {
         appReg = null;
-        reg = null;
     }
        
     
@@ -481,6 +692,9 @@ public class ApplicationsImpl implements Applications, UserLoginListener {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.9  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.8  2005/06/23 09:08:26  nw
 changes for 1.0.3 release
 

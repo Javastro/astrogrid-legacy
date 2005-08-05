@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.5 2005/06/22 08:48:52 nw Exp $
+/*$Id: UIComponent.java,v 1.6 2005/08/05 11:46:55 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.system.UI;
+import org.astrogrid.desktop.modules.system.UIInternal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,7 +53,7 @@ public class UIComponent extends PositionRememberingJFrame {
      * @param ui
      * @throws HeadlessException
      */
-    public UIComponent(Configuration conf,HelpServer hs, UI ui) throws HeadlessException {
+    public UIComponent(Configuration conf,HelpServer hs, UIInternal ui) throws HeadlessException {
         super(conf,hs, ui);
     }
 
@@ -201,6 +201,9 @@ public class UIComponent extends PositionRememberingJFrame {
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.6  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.5  2005/06/22 08:48:52  nw
 latest changes - for 1.0.3-beta-1
 

@@ -1,4 +1,4 @@
-/*$Id: JDICSystemTray.java,v 1.1 2005/06/22 08:48:52 nw Exp $
+/*$Id: JDICSystemTray.java,v 1.2 2005/08/05 11:46:55 nw Exp $
  * Created on 21-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.system.UI;
 import org.astrogrid.desktop.icons.IconHelper;
 
 import org.apache.commons.logging.Log;
@@ -38,7 +37,7 @@ public class JDICSystemTray implements Startable, org.astrogrid.acr.system.Syste
     /** Construct a new JDICSystemTray
      * 
      */
-    public JDICSystemTray(final UI ui) {
+    public JDICSystemTray(final UIInternal ui) {
         super();
         this.ui = ui;
         SystemTray st1 = null;
@@ -54,7 +53,7 @@ public class JDICSystemTray implements Startable, org.astrogrid.acr.system.Syste
 
     }
     protected final SystemTray st;
-    protected final UI ui;
+    protected final UIInternal ui;
     protected TrayIcon ti;
     protected final Icon idleIcon;
     protected final Icon activeIcon;
@@ -145,6 +144,9 @@ public class JDICSystemTray implements Startable, org.astrogrid.acr.system.Syste
 
 /* 
 $Log: JDICSystemTray.java,v $
+Revision 1.2  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.1  2005/06/22 08:48:52  nw
 latest changes - for 1.0.3-beta-1
  

@@ -10,6 +10,20 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
+import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.acr.astrogrid.ApplicationsInternal;
+import org.astrogrid.applications.beans.v1.Interface;
+import org.astrogrid.applications.beans.v1.InterfacesType;
+import org.astrogrid.applications.beans.v1.ParameterRef;
+import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.portal.workflow.intf.ApplicationDescription;
+import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
+import org.astrogrid.workflow.beans.v1.Tool;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -30,18 +44,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.applications.beans.v1.Interface;
-import org.astrogrid.applications.beans.v1.InterfacesType;
-import org.astrogrid.applications.beans.v1.ParameterRef;
-import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
-import org.astrogrid.workflow.beans.v1.Tool;
 /**
  * @author Phil Nicolson pjn3@star.le.ac.uk 19/5/05
  *
@@ -121,7 +123,7 @@ public class TaskInfoPanel extends JPanel {
 	private Object params[][]; 
     protected ApplicationDescription desc;
     protected Tool tool;
-    protected Applications apps;
+    protected ApplicationsInternal apps;
     private int paramCount = 0;   		
     protected String[] columnToolTips = { "Parameter name",
                                           "Parameter description",
@@ -219,7 +221,7 @@ public class TaskInfoPanel extends JPanel {
     /**  
      * production constructor - for viewing user populated tasks
      * */	
-    public TaskInfoPanel(Tool tool, Applications apps) {
+    public TaskInfoPanel(Tool tool, ApplicationsInternal apps) {
         super();
         this.tool = tool;
         this.desc = null;

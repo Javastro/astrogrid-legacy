@@ -37,9 +37,13 @@
                 <sourceDirectory>src/java</sourceDirectory>
                 <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
                 <unitTest>
-                        <includes>
+                        <includes>								
                                 <include>**/*Test.java</include>
                         </includes>
+			<excludes>
+				<!-- can't really run these automatically - needs user login -->
+				<exclude>**/*systemTest.java</exclude>				
+			</excludes>
                         <resources>
                                 <resource>
                                         <directory>${basedir}/test/java</directory>
@@ -110,6 +114,15 @@
                 </properties>	 
  </dependency>
  
+ <dependency>
+	<artifactId>rmi-lite</artifactId>
+	<groupId>rmilite</groupId>
+	<version>1.0</version>
+	<properties>
+		<jnlp.jar>true</jnlp.jar>
+	</properties>
+</dependency>
+ 
  <!-- following libs are packaged up as separate jnlp extensions - so reference here,
       for build time, but don't package in desktop jnlp -->
  <!-- container and aspect systems -->
@@ -124,31 +137,56 @@
 		 <jnlp.extension.jnlp>containers.jnlp</jnlp.extension.jnlp>
 	 </properties>
  </dependency>
+ 
+ <!-- nanocontainer, and it's deps-->
  <dependency>
 	 <groupId>nanocontainer</groupId>
 	 <artifactId>nanocontainer</artifactId>
-	 <version>1.0-beta-4</version>
+	 <version>1.0-RC-1</version>
 	 <type>jar</type>
  </dependency>
  <dependency>
 	 <id>dynaop</id>
 	 <version>1.0-beta</version>
  </dependency>
+ 
  <dependency>
 	 <id>aopalliance</id>
-	 <version>1.0</version>
- </dependency>
- <dependency>
-	 <groupId>cglib</groupId>
-	 <artifactId>cglib-asm</artifactId>
 	 <version>1.0</version>
  </dependency>
  <dependency>
 	 <id>oro</id>
 	 <version>2.0.7</version><!-- nanocontainer project says 2.0.8, but we're on 2.0.7 at the moment -->
  </dependency>
- <!-- also asm 1.4.3 ? but don't seemt to need it -->
- 
+ <!--
+ <dependency>
+	 <groupId>cglib</groupId>
+	 <artifactId>cglib-asm</artifactId>
+	 <version>1.0</version>
+ </dependency> 
+ -->
+ <dependency>
+	 <groupId>cglib</groupId>
+	 <artifactId>cglib</artifactId>
+	 <version>1.0</version>
+ </dependency> 
+ <dependency>
+	 <groupId>asm</groupId>
+	 <artifactId>asm</artifactId>
+	 <version>1.5.3</version>
+ </dependency>
+ <!--
+ <dependency>
+	 <groupId>picocontainer</groupId>
+	 <artifactId>picocontainer-gems</artifactId>
+	 <version>1.2-beta-1</version>
+	</dependency>
+ <dependency>
+	 <groupId>proxytoys</groupId>
+	 <artifactId>proxytoys</artifactId>
+	 <version>0.1</version>
+ </dependency>
+-->
  <!-- jetty webserver -->
  <dependency>
 	 <groupId>jetty</groupId>
@@ -255,6 +293,31 @@
 	 <groupId>jdic</groupId>
 	 <version>0.9</version>
  </dependency>
-
+<!-- used within development only -->
+<!-- testing html interface -->
+ <dependency>
+                        <groupId>httpunit</groupId>
+                        <artifactId>httpunit</artifactId>
+                        <version>1.5.4</version>
+                        <url>http://httpunit.sourceforge.net/</url>
+                </dependency>
+                <dependency>
+                        <groupId>jwebunit</groupId>
+                        <artifactId>jwebunit</artifactId>
+                        <version>1.2</version>
+                        <url>http://jwebunit.sourceforge.net/</url>
+                </dependency>
+                <dependency>
+                        <groupId>rhino</groupId>
+                        <artifactId>js</artifactId>
+                        <version>1.5R4.1</version>
+                        <!--TODO check this is the version we want-->
+                </dependency>
+                <dependency>
+                        <groupId>nekohtml</groupId>
+                        <artifactId>nekohtml</artifactId>
+                        <version>0.8.1</version>
+                        <url>http://www.apache.org/~andyc/neko/doc/html/</url>
+                </dependency>
     </dependencies>
 </project>

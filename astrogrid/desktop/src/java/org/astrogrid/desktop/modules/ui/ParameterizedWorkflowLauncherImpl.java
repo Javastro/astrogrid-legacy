@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.6 2005/07/08 11:08:01 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.7 2005/08/05 11:46:55 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,19 +10,17 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.astrogrid.Myspace;
-import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
+import org.astrogrid.desktop.modules.ag.CommunityInternal;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ParameterEditorDialog;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserDialog;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
-import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.filestore.common.FileStoreOutputStream;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.scripting.Toolbox;
-import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
@@ -33,10 +31,10 @@ import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
@@ -51,7 +49,7 @@ import javax.swing.JOptionPane;
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *
  */
-public class ParameterizedWorkflowLauncherImpl implements Runnable, ParameterizedWorkflowLauncher {
+public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowLauncher {
     /**
      * Commons Logger for this class
      */
@@ -63,13 +61,13 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
      * @throws SAXException
      * 
      */
-    public ParameterizedWorkflowLauncherImpl(Community community, JobMonitor monitor, Myspace vos,UI ui) throws MalformedURLException, IOException, SAXException {
+    public ParameterizedWorkflowLauncherImpl(CommunityInternal community, JobMonitor monitor, MyspaceInternal vos,UI ui) throws MalformedURLException, IOException, SAXException {
         this(community,monitor,vos,ui,new URL(DEFAULT_INDEX_URL));       
     }
     
     public static final String DEFAULT_INDEX_URL = "http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/index.xml";
 
-    public ParameterizedWorkflowLauncherImpl(Community community,JobMonitor monitor,Myspace vos,UI ui,URL indexURL) throws IOException, SAXException{ 
+    public ParameterizedWorkflowLauncherImpl(CommunityInternal community,JobMonitor monitor,MyspaceInternal vos,UI ui,URL indexURL) throws IOException, SAXException{ 
         URL[] list = getWorkflowList(indexURL);
     templates = loadWorkflows(list);        
     this.community = community;
@@ -78,9 +76,9 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
     this.vos = vos;
 }
        
-    protected final Myspace vos;
+    protected final MyspaceInternal vos;
     protected final WorkflowTemplate[] templates;
-    protected final Community community;
+    protected final CommunityInternal community;
     protected final UI ui;
     protected final JobMonitor monitor;
     
@@ -104,15 +102,13 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
             Writer writer = null;
             
             if (u.getScheme().equals("ivo")) {
-                Ivorn ivo = new Ivorn(u.toString());
-                FileManagerNode target = null;
-               if (vos.exists(ivo)) {
-                   target = vos.node(ivo);
-               } else {
-                   target = vos.createFile(ivo);
+               if ( ! vos.exists(u)) {
+                      vos.createFile(u);
                }
-               OutputStream os = target.writeContent();
-               writer = new OutputStreamWriter(os);               
+               URL url = vos.getWriteContentURL(u);
+               FileStoreOutputStream fos = new FileStoreOutputStream(url);
+               fos.close();
+               writer = new OutputStreamWriter(fos);          
             } 
             if (u.getScheme().equals("file")) {
                 File f = new File(u);
@@ -220,6 +216,9 @@ public class ParameterizedWorkflowLauncherImpl implements Runnable, Parameterize
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.7  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.6  2005/07/08 11:08:01  nw
 bug fixes and polishing for the workshop
 

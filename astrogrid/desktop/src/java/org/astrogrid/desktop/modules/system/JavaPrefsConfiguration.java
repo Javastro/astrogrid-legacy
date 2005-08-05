@@ -1,4 +1,4 @@
-/*$Id: JavaPrefsConfiguration.java,v 1.5 2005/07/08 11:08:01 nw Exp $
+/*$Id: JavaPrefsConfiguration.java,v 1.6 2005/08/05 11:46:55 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,13 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.config.SimpleConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.picocontainer.Startable;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,7 +32,7 @@ import java.util.prefs.Preferences;
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  * @todo rework this class, to make modular.
  */
-public class JavaPrefsConfiguration implements PreferenceChangeListener, Configuration {
+public class JavaPrefsConfiguration implements PreferenceChangeListener, Configuration, Startable {
     /**
      * Commons Logger for this class
      */
@@ -42,9 +44,7 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
     public JavaPrefsConfiguration() {
         super();
         userPrefs = Preferences.userNodeForPackage(UIImpl.class);
-        userPrefs.addPreferenceChangeListener(this);  
-        maybePrepopulatePrefs();
-        synchPrefs();
+
     }
     
     /**
@@ -68,11 +68,7 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
     }
     protected final Preferences userPrefs;
     
-    /**@@MethodDoc("setKey","set a configuration key")
-     @@.return ReturnDoc("Success code",rts=BooleanResultTransformerSet.getInstance())
-     @@.key ParamDoc("key","Key to set");
-     @@.value ParamDoc("value","Value to set to")
-     */
+
     public boolean setKey(String key,String value) {
         userPrefs.put(key,value); // and simple config will be updated by callback.
         return true;
@@ -85,38 +81,36 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
         userPrefs.remove(key);
     }
     
-    /**@@MethodDoc("getKey","get a value for a confuguration key")
-     * @@.return ReturnDoc("Key value")
-     * @@.key ParamDoc("key","key to retrive value for")     
-     */
+ 
     public String getKey(String key) {
         return userPrefs.get(key,null);
     }
 
-    /**@@MethodDoc("listKeys","list configutation keys")
-     * @@.return ReturnDoc("array of keys",rts=ArrayResultTransformerSet.getInstance())
-     * */
-    public String[] listKeys() throws BackingStoreException {
-        return userPrefs.keys();
+    public String[] listKeys() throws ACRException {
+        
+        try {
+            return userPrefs.keys();
+        } catch (BackingStoreException e) {
+            throw new ACRException(e);
+        }
     }
     
-    /** @@MethodDoc("list","list configuration entries")
-     * @@.return ReturnDoc("map of key, value pairs",rts=StructResultTransformerSet.getInstance())
-     * @return
-     * @throws BackingStoreException
-     */
-    public Map list() throws BackingStoreException {
+
+    public Map list() throws ACRException {
         Map m = new HashMap();
-        String[] keys = userPrefs.keys();
+        String[] keys;
+        try {
+            keys = userPrefs.keys();
+        } catch (BackingStoreException e) {
+            throw new ACRException(e);
+        }
         for (int i = 0; i < keys.length; i++) {
             m.put(keys[i],userPrefs.get(keys[i],null));
         }
         return m;
     }
-    
-    /** copy preferences into Config.. 
-     * @throws BackingStoreException*/
-    protected void synchPrefs()  {
+
+    private void synchPrefs()  {
         try {
         String[] keys = userPrefs.keys();
         for (int i = 0; i < keys.length; i++) {
@@ -140,12 +134,30 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
         this.userPrefs.addPreferenceChangeListener(pcl);
     }
 
+    /**
+     * @see org.picocontainer.Startable#start()
+     */
+    public void start() {
+        userPrefs.addPreferenceChangeListener(this);  
+        maybePrepopulatePrefs();
+        synchPrefs();
+    }
+
+    /**
+     * @see org.picocontainer.Startable#stop()
+     */
+    public void stop() {
+    }
+
  
 }
 
 
 /* 
 $Log: JavaPrefsConfiguration.java,v $
+Revision 1.6  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.5  2005/07/08 11:08:01  nw
 bug fixes and polishing for the workshop
 

@@ -1,4 +1,4 @@
-/*$Id: IvornConverter.java,v 1.2 2005/04/13 12:59:11 nw Exp $
+/*$Id: URIConverter.java,v 1.1 2005/08/05 11:46:56 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,18 +15,19 @@ import org.astrogrid.store.Ivorn;
 
 import org.apache.commons.beanutils.Converter;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *
  */
-public class IvornConverter implements Converter {
+public class URIConverter implements Converter {
 
-    /** Construct a new IvornConverter
+    /** Construct a new URI converter
      * 
      */
-    private IvornConverter() {
+    private URIConverter() {
         super();
     }
 
@@ -35,17 +36,17 @@ public class IvornConverter implements Converter {
      * @see org.apache.commons.beanutils.Converter#convert(java.lang.Class, java.lang.Object)
      */
     public Object convert(Class arg0, Object arg1) {
-        if (arg0 != Ivorn.class) {
-            throw new RuntimeException("Can only convert to Ivorns" + arg0.getName());
+        if (arg0 != URI.class) {
+            throw new RuntimeException("Can only convert to URI" + arg0.getName());
         }        
         try {
-            return (new IvornParser(arg1.toString())).getIvorn();
+            return new URI(arg1.toString());
         } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Cannot convert " + arg1 + " to ivorn");
+            throw new IllegalArgumentException("Cannot convert " + arg1 + " to URI");
         }
     }
     
-    private static Converter theInstance = new IvornConverter();
+    private static Converter theInstance = new URIConverter();
     
     public static Converter getInstance() {
         return theInstance;
@@ -55,7 +56,10 @@ public class IvornConverter implements Converter {
 
 
 /* 
-$Log: IvornConverter.java,v $
+$Log: URIConverter.java,v $
+Revision 1.1  2005/08/05 11:46:56  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.2  2005/04/13 12:59:11  nw
 checkin from branch desktop-nww-998
 

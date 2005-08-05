@@ -1,4 +1,4 @@
-/*$Id: AbstractReflectionServlet.java,v 1.3 2005/04/27 13:42:41 clq2 Exp $
+/*$Id: AbstractReflectionServlet.java,v 1.4 2005/08/05 11:46:55 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,10 @@
  **/
 package org.astrogrid.desktop.modules.system;
 
+import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.Module;
-import org.astrogrid.acr.builtin.ModuleRegistry;
 import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.framework.DefaultModule;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
@@ -35,10 +36,10 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
     /** retreive services from the servlet context */
     public void init(ServletConfig conf) throws ServletException {
         super.init(conf);
-        reg = (ModuleRegistry)conf.getServletContext().getAttribute(WebServer.MODULE_REGISTRY);
+        reg = (ACR)conf.getServletContext().getAttribute(WebServer.ACR_CONTEXT_KEY);
     }
 
-    protected ModuleRegistry reg;
+    protected ACR reg;
 
     /** parse the request path, calling a different abstract method to process each level */
     protected void navigate(HttpServletRequest request,
@@ -54,7 +55,7 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
                 processRoot(request, response);
                 return;
             }
-            Module m = reg.getModule(tok.nextToken());
+            DefaultModule m = (DefaultModule)reg.getModule(tok.nextToken());
             ModuleDescriptor md = m.getDescriptor();
             if (m == null) {
                 throw new ServletException("Unknown module");
@@ -103,7 +104,7 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
             HttpServletResponse response) throws ServletException, IOException;
 
     /** process a request to a service 
-     * @param module @todo*/
+     * @param module */
     protected abstract void processComponent(ComponentDescriptor cd, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException;
 
@@ -145,6 +146,9 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
 
 /*
  * $Log: AbstractReflectionServlet.java,v $
+ * Revision 1.4  2005/08/05 11:46:55  nw
+ * reimplemented acr interfaces, added system tests.
+ *
  * Revision 1.3  2005/04/27 13:42:41  clq2
  * 1082
  *

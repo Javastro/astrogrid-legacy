@@ -1,4 +1,4 @@
-/*$Id: ParametersPaneFixture.java,v 1.2 2005/06/08 14:51:59 clq2 Exp $
+/*$Id: ParametersPaneFixture.java,v 1.3 2005/08/05 11:46:55 nw Exp $
  * Created on 14-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,22 +18,17 @@ import org.astrogrid.applications.beans.v1.Output;
 import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.Parameters;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
-import org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentation;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.astrogrid.applications.beans.v1.types.ApplicationKindType;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-import org.exolab.castor.xml.Marshaller;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.net.URL;
 
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 
 import junit.framework.TestCase;
 
@@ -126,6 +121,9 @@ ParametersPanel panel = new ParametersPanel(new ResourceChooserDialog(null,false
 
 /* 
 $Log: ParametersPaneFixture.java,v $
+Revision 1.3  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.2  2005/06/08 14:51:59  clq2
 1111
 

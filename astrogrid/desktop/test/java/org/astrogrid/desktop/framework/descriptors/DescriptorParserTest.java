@@ -1,4 +1,4 @@
-/*$Id: DescriptorParserTest.java,v 1.2 2005/04/13 12:59:18 nw Exp $
+/*$Id: DescriptorParserTest.java,v 1.3 2005/08/05 11:46:56 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,11 @@
 **/
 package org.astrogrid.desktop.framework.descriptors;
 
-import org.w3c.dom.Document;
-
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
@@ -104,11 +106,26 @@ public class DescriptorParserTest extends TestCase {
         
     }
 
-    public void testToString() throws Exception{
+    public void testDescriptorToString() throws Exception{
         InputStream is = this.getClass().getResourceAsStream("module-descriptor-test1.xml");
         assertNotNull(is);
         ModuleDescriptor m = parser.parse(is);     
         System.out.println(m);
+    }
+    
+    public void testDescriptorSerializable() throws Exception{
+        InputStream is = this.getClass().getResourceAsStream("module-descriptor-test1.xml");
+        assertNotNull(is);
+        ModuleDescriptor m = parser.parse(is);     
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream os = new ObjectOutputStream(out);
+        os.writeObject(m);
+        os.close();
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(out.toByteArray()));
+        Object o = ois.readObject();
+        assertNotNull(o);
+        assertNotSame(o,m);
+        assertEquals(o,m);
     }
 
 }
@@ -116,6 +133,9 @@ public class DescriptorParserTest extends TestCase {
 
 /* 
 $Log: DescriptorParserTest.java,v $
+Revision 1.3  2005/08/05 11:46:56  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.2  2005/04/13 12:59:18  nw
 checkin from branch desktop-nww-998
 

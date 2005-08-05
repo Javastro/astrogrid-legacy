@@ -1,4 +1,4 @@
-/*$Id: ModuleRegistry.java,v 1.4 2005/05/12 15:59:09 clq2 Exp $
+/*$Id: ACR.java,v 1.1 2005/08/05 11:46:55 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,33 +11,34 @@
 package org.astrogrid.acr.builtin;
 
 
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.NotFoundException;
+
 import java.util.Iterator;
 
 /** A registry of modules.- the core of the ACR
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
-public interface ModuleRegistry {
+public interface ACR {
     
     /** retreive a module by name. will return the module, or null */
     public Module getModule(String name);
     
     /** iterate over all modules in the registry */
-    public Iterator moduleIterator();
+   public Iterator moduleIterator();
     
-    /** add a new module listener. 
-     * twist here - on registering a new listener, any modules current in the registry are passed to the
-     * listener - to enable it to 'get up to date' with what it's missed so far.
-     * @param l
-     */
-    public void addNewModuleListener(NewModuleListener l);
+
     
-    /** remove a module listener */
-    public void removeNewModuleListener(NewModuleListener l);
+    /** find a component that supports a particular interface */
+    public Object getService(Class interfaceClass) throws ACRException, NotFoundException;
 }
 
 /* 
- $Log: ModuleRegistry.java,v $
+ $Log: ACR.java,v $
+ Revision 1.1  2005/08/05 11:46:55  nw
+ reimplemented acr interfaces, added system tests.
+
  Revision 1.4  2005/05/12 15:59:09  clq2
  nww 1111 again
 

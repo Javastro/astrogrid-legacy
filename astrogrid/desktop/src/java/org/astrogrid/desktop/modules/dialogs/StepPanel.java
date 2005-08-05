@@ -10,6 +10,11 @@
  **/
 package org.astrogrid.desktop.modules.dialogs;
 
+import org.astrogrid.workflow.beans.v1.Step;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -22,10 +27,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.workflow.beans.v1.Step;
 /**
  * @author Phil Nicolson pjn3@star.le.ac.uk
  *

@@ -1,4 +1,4 @@
-/*$Id: XmlDocumentResultTransformerSet.java,v 1.4 2005/05/12 15:59:12 clq2 Exp $
+/*$Id: XmlDocumentResultTransformerSet.java,v 1.5 2005/08/05 11:46:55 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.desktop.modules.system.transformers;
 
 
-/** set of transformers for xml documents
+/** set of transformers for (String) xml documents
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
  */
 public class XmlDocumentResultTransformerSet extends DefaultResultTransformerSet {
@@ -33,6 +33,9 @@ public class XmlDocumentResultTransformerSet extends DefaultResultTransformerSet
 
 /* 
 $Log: XmlDocumentResultTransformerSet.java,v $
+Revision 1.5  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+
 Revision 1.4  2005/05/12 15:59:12  clq2
 nww 1111 again
 
