@@ -12,8 +12,6 @@
         <attainGoal name="merge-common-webapp" />
         <attainGoal name="configure-webapp" />
         <attainGoal name="copy-resources" />
-        <!-- defined in parent maven.xml - just adjust where things are going to go.. -->
-        <property name="webapp.docs" value="${maven.war.webapp.dir}/provider" />
         <attainGoal name="webapp-docs"  />
   </goal>
   <goal name="merge-common-webapp" description="copy contents of existing war into the webapp directory">
@@ -26,28 +24,16 @@
                 <exclude name="WEB-INF/classes/*/**" /> <!-- keep resources in root... -->
                 <exclude name="WEB-INF/lib/**" />
                 <exclude name="provider/**" />
+        				<exclude name="WEB-INF/web.xml"/> <!-- use web.xml from this sub-project, not from parent project -->
         </patternset>
      </unwar>
   </goal>
 
-    <goal name="configure-webapp" description="patch jndi key in web.xml to point to commandline implementation of component manager">
- <!-- setting which transformer to use -->
-   ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-        <!-- tailor the deployment descriptor to our system -->
-        <xslt in="${maven.war.webapp.dir}/WEB-INF/web.xml"
-         out="${maven.war.webapp.dir}/WEB-INF/web1.xml"
-         extension=".xml"
-         style="${basedir}/build/adjust-war-descriptor.xsl"
-        />
-        <!-- move it back -->
-        <move file="${maven.war.webapp.dir}/WEB-INF/web1.xml"
-                tofile="${maven.war.webapp.dir}/WEB-INF/web.xml"
-        />
-        <!-- also want to patch the log4j.properties - so it logs to a different file.-->
-        <replace file="${maven.war.webapp.dir}/WEB-INF/classes/log4j.properties">
-                <replacefilter token="cea" value="cea-commandline" />
-                <replacefilter token="CEA" value="CEA_COMMANDLINE" />
-        </replace>
+  <goal name="configure-webapp" description="Configure logging">
+    <replace file="${maven.war.webapp.dir}/WEB-INF/classes/log4j.properties">
+       <replacefilter token="cea" value="cea-commandline" />
+       <replacefilter token="CEA" value="CEA_COMMANDLINE" />
+    </replace>
   </goal>
 
   <goal name="copy-resources" description="add other stuff to webapp" >
@@ -74,6 +60,38 @@
       </fileset>
      </copy>
   </goal>
+  
+   <goal name="webapp-docs" prereqs="grab-resources">
+        <echo>generating webapp site into ${maven.war.webapp.dir}</echo>
+   	    <property name="tmp.docs" location="${maven.build.dir}/tmp/webapp-xdocs" />
+        <mkdir dir="${tmp.docs}" />
+        <copy todir="${tmp.docs}" >
+                <fileset dir="${basedir}/war-xdocs" />
+        </copy>
+        <!-- merge in anything else from site xdocs, and
+         the resources we grabbed previously. -->
+        <copy todir="${tmp.docs}" overwrite="false">
+                <fileset dir="${working.dir}">
+                        <include name="wsdl/**" />
+                        <include name="schema/**" />
+                </fileset>
+                <fileset dir="${basedir}/xdocs" >
+					<exclude name="**/navigation.xml"/>
+			    </fileset>			 
+        </copy>
+         <!-- set up properties -->
+        <j:set var="maven.docs.dest" value="${maven.war.webapp.dir}" />
+        <j:set var="maven.docs.src" value="${tmp.docs}" />
+        <j:set var="maven.xdoc.poweredby.title" value="Provided by Astrogrid" />
+        <j:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
+        <j:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
+        <j:set var="maven.xdoc.includeProjectDocumentation" value="no" />
+        <attainGoal name="xdoc:generate-from-pom" />
+        <attainGoal name="javadoc:generate" />
+        <attainGoal name="maven-jxr-plugin:report" />
+        <attainGoal name="xdoc" />
+        <!-- now copy generated docs into webapp -->
+   </goal>
 
 
 <!-- end of the war packaging -->
@@ -90,6 +108,29 @@
 
   <!-- redefine goal 'force.compile.tests' - as we don't want it to happen in this project -->
   <goal name="force.compile.tests" />
+	
+	
+	<!-- After building the web-site with the documentation, the download document needs to be
+	     updated with the version and build numbers. This is done in the XHTML output, instead
+	     of in the xdoc input, so as to keep the build idempotent. Note that the links built
+	     in the download document will be broken until this build is loaded onto the AstroGrid
+	     software site. -->
+  <postGoal name="xdoc">
+  	<!-- Use an ant filter to replace the version-number token with its value. Use the 
+  	     ant move task, "moving" the file to its current location, to activate the filter. -->
+  	<move file="${maven.docs.dest}/DOWNLOAD.html" 
+  		    tofile="${maven.docs.dest}/DOWNLOAD-versioned.html" 
+  		    filtering="true"
+  		    failonerror="false">
+  		<filterset>
+  			<filter token="astrogrid.applications.version" value="${astrogrid.applications.version}"/>
+  		</filterset>
+  	</move>
+  	<move file="${maven.docs.dest}/DOWNLOAD-versioned.html" 
+  		tofile="${maven.docs.dest}/DOWNLOAD.html" 
+  		filtering="false"
+  		failonerror="false"/>
+  </postGoal>
 
 
 </project>

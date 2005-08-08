@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE document SYSTEM "file:/C:/CVS-head/astrogrid/sampleDocs/xdocs/xdoc.dtd">
+<document>
+	<properties>
+		<author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+		<title>Installation options</title>
+	</properties>
+	
+	<body>
+		<p>This document discusses alternatives to the the standard installation.</p>
+		
+		<section name="Alternative web containers">
+			<p>
+			The standard installation requires Jakarta-Tomcat, at v5.0.19 for a production-network service and v5.0.28
+				of a development-network service. Other containers, and other versions, of Tomcat <em>might</em> work but may
+				introduce subtle errors. No other containers and versions are supported; Tomcat v5.0.28 is only supported in
+				the sense that it is being used for AstroGrid's internal development.
+			</p>
+			<p>
+				The web-application will probably not work in containers other than Tomcat. If you try one and get it to
+				work, then please let the AstroGrid project know. If you try a container and hit problems, then it is
+				likely that the web-application would need to be changed to run in this container. This is not a bug:
+				AstroGrid components are not designed to work with other containers.
+			</p>
+			<p>
+				Tomcat versions in the 5.0.x series can probably run the web-application. Versions after 5.0.19 are most
+				likely to work.
+			</p>
+			<p>
+				Tomcat versions in the 5.5.x series cannot run the web-application when Tomcat runs with Java 1.5; this
+				has been shown empirically. Tomcat 5.5.x reconfigured for Java 1.4.x might work.
+			</p>
+			<p>
+				Tomcat versions in the 4.1.x series might work.
+			</p>
+			<p>
+				Tomcat versions in the 3.x series cannot run the web-application. They support an older edition of
+				the servlet standard; the web-application requires servlet v2.3.
+			</p>
+		</section>
+	</body>
+</document>
