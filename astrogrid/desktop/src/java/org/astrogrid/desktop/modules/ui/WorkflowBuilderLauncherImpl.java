@@ -10,7 +10,71 @@
  **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.astrogrid.Applications;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.URI;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Comparator;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.JTree;
+import javax.swing.ListSelectionModel;
+import javax.swing.Spring;
+import javax.swing.SpringLayout;
+import javax.swing.ToolTipManager;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeSelectionModel;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.ApplicationsInternal;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
@@ -64,49 +128,11 @@ import org.astrogrid.workflow.beans.v1.Unset;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.URI;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Comparator;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeSelectionModel;
 
 
 /**
@@ -169,7 +195,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 	        	try{
 	                (new BackgroundOperation("Loading Workflow") {
 	                    protected Object construct() throws Exception {	        		
-		        	    URI u = ResourceChooserDialog.chooseResource(vos,"Load workflow",true);
+		        	    u = ResourceChooserDialog.chooseResource(vos,"Load workflow",true);
 		                if (u != null && u.getScheme() != null) {
 		                    Reader reader = null;		                
 		                    if (u.getScheme().equals("ivo")) {              
@@ -191,6 +217,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
                             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
                             tree.addTreeSelectionListener(new WorkflowTreeSelectionListener());
                             
+                            
                             // show workflow panel and enable tabs for tree and doc view
                             tabbedPaneWF.setSelectedIndex(0);
                     	    tabbedPaneWF.setEnabledAt(0, true);
@@ -202,6 +229,8 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
                     		tabbedPaneDetails.setSelectedIndex(0);
                     		submitAction.setEnabled(true);
                     		saveAction.setEnabled(true);
+                    		caretPos = 0;
+                    		wfDocFindField.setText("");
 	        	            }
 	                    return null;
 	                    }
@@ -296,7 +325,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     private Workflow workflow = null;
     private ApplicationDescriptionSummary appDescSum[] = null;
     
-    private JButton clearButton, searchButton = null;
+    private JButton clearButton, searchButton, findButton = null;
     private JEditorPane htmlWelcomePane, htmlActivityPane, htmlTaskPane, descPane, docTextArea;
     private JFileChooser fileChooser = null;
     private JList list, list1, taskSearchList, searchList, taskListSelection;
@@ -309,10 +338,12 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     private JTree tree = null;
     private JTabbedPane tabbedPaneWF, tabbedPaneTasks, tabbedPaneDetails;
     private JTextArea wfDescArea = null;
-    private JTextField titleSearchField, nameSearchField, descSearchField, wfNameField, wfFileField;   
+    public JTextField titleSearchField, nameSearchField, descSearchField, wfNameField, wfFileField, wfDocFindField;   
     private JScrollPane listView, listView1, scrollPane, taskSearchPane, searchListView, 
 	        activityDetailsPane, workflowDetailsPane, taskDetailsPane, welcomePane= null;
     private URL helpUrl;
+    private URI u;
+    public int caretPos = 0;
     
  
     	
@@ -356,7 +387,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 		tabbedPaneTasks.addTab("Task Search", null, createPanelForComponent(getTaskSearch(), "Search for specific task/s"), "Search for a specific task");		
 		topPanel.setPreferredSize(new Dimension(260,650));
 		topPanel.add(tabbedPaneTasks);
-		bottomPanel.setPreferredSize(new Dimension(260, 220));
+		//bottomPanel.setPreferredSize(new Dimension(260, 220));
 		bottomPanel.add(createPanelForComponent(getActivityList(), "Activity List"));	
 		JSplitPane splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topPanel, bottomPanel);
 		//splitPane1.setOneTouchExpandable(true);		
@@ -484,9 +515,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 	    setBusy(false);
 	    listView1.repaint();    
     }
-    private void populateTaskSearchList(Document doc) {
-    	setStatusMessage("Searching registry");
-		setBusy(true);		
+    private void populateTaskSearchList(Document doc) {	
 		try {
 		   taskSearchListModel.clear();
 		   NodeList nl = doc.getElementsByTagName("identifier");
@@ -515,8 +544,6 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 	    	taskSearchListModel.addElement("Unable to read tasks..");
 		    logger.error("Error thrown reading task list: " + wi.getMessage());
 	    }
-	    setStatusMessage("");
-	    setBusy(false);
 	    tabbedPaneTasks.setEnabledAt(1,true);
     }    
 	/**
@@ -880,11 +907,21 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 		docTextArea = new JEditorPane();		
 		docTextArea.setEditable(false);	
 		scrollPane = new JScrollPane(docTextArea);
-		panel.add(scrollPane, BorderLayout.CENTER);			
+		panel.add(scrollPane, BorderLayout.CENTER);
+		panel.add(getFindPanel(), BorderLayout.SOUTH);
 		panel.setBorder(BorderFactory.createTitledBorder("Workflow document"));
 		panel.setPreferredSize(new Dimension(800,200));		
 		return panel;
-	}	
+	}
+	
+	private JPanel getFindPanel() {
+		JPanel p = new JPanel(new FlowLayout());
+		p.add(getFindButton());
+		wfDocFindField = new JTextField(30);
+		wfDocFindField.setToolTipText("Text to search workflow document for...");
+		p.add(wfDocFindField);
+		return p;
+	}
   
     /**
      * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
@@ -1040,7 +1077,45 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 			});
 		}
 		return clearButton;
-	}  	
+	}
+	/**
+	 * This method initializes search button
+	 * actionPerformed will find specified text in docTextArea	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */    
+	private JButton getFindButton() {
+		if (findButton == null) {
+			findButton = new JButton();
+			findButton.setText("Find");
+			findButton.setToolTipText("Find specified text in workflow document");
+			findButton.setMnemonic(KeyEvent.VK_F);
+			findButton.addActionListener(new java.awt.event.ActionListener() {
+				
+				public void actionPerformed(java.awt.event.ActionEvent e) {	
+					if (wfDocFindField.getText() != null && wfDocFindField.getText().length() > 0) {
+					    docTextArea.setSelectionColor(Color.white);
+					    docTextArea.selectAll();
+                        String cleanDoc = docTextArea.getSelectedText();
+                        caretPos = (cleanDoc.indexOf(wfDocFindField.getText(), caretPos));
+                        if (caretPos >= 0) {
+                    	    docTextArea.setCaretPosition(caretPos);
+                    	    docTextArea.setSelectionStart(caretPos);
+                    	    docTextArea.setSelectionEnd(caretPos + wfDocFindField.getText().length());
+                    	    docTextArea.setSelectionColor(Color.RED);
+                            caretPos++;
+		                    }
+		                    else {
+		                        caretPos = 0;
+		                        docTextArea.setCaretPosition(caretPos);
+		                    }
+		                    docTextArea.requestFocus();		            
+				        }
+				}
+			});
+		}
+		return findButton;
+	}	
 
       /*
        * Add various actions to toolbar and wfMenu
@@ -1180,6 +1255,11 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
 													  boolean leaf, 
 													  int row, 
 													  boolean hasFocus) {
+    		// The tree component's row height property controls the height of every displayed node. 
+    		// If the row height is greater than 0, all rows will be given the specified height. 
+    		// However, if the rows can be of differing heights, it is necessary to set the row height to 0. 
+    		// With a 0 row height, all heights of all rows are computed individually.
+    		tree.setRowHeight(0);
     		JLabel label = (JLabel)super.getTreeCellRendererComponent(tree, 
     				                                                  value, 
 																	  isSelected, 
@@ -1192,12 +1272,10 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     			Workflow w = (Workflow)value;
     			JPanel rendererPanel = new JPanel(new GridLayout(0,1));
     			rendererPanel.add(new JLabel(w.getName()));
-    			rendererPanel.add(new JLabel(w.getDescription()));    			
-    			rendererPanel.setToolTipText("<html>Name: " + w.getName() + "<br>Description: " + w.getDescription() + "</html>");
+    			rendererPanel.add(new JLabel(w.getDescription()));
+    			rendererPanel.add(new JLabel(u.getPath()));
+    			rendererPanel.setToolTipText("<html>Name: " + w.getName() + "<br>Description: " + w.getDescription() + "<br>Location: " + u.getPath() + "</html>");
     			rendererPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-    			//label.setIcon(IconHelper.loadIcon("wf_small.gif"));
-    			//label.setText(w.getName());
-    			//label.setToolTipText("<html>Name: " + w.getName() + "<br>Description: " + w.getDescription() + "</html>");
     			return rendererPanel;
     		}
     		else if (value instanceof Sequence){  
@@ -1213,7 +1291,21 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     		else if (value instanceof Step){ 
     			Step s = (Step)value;
     			label.setIcon(IconHelper.loadIcon("icon_Step.gif"));
-    			label.setText("Step: " + s.getName() + ", task: " + s.getTool().getName());
+    			String temp = "<html><b>Step</b> ";
+    			if (s.getName().length() > 0) {
+    				temp += "Name: " + s.getName() ; 
+    			}
+    			if (s.getTool().getName().length() > 0) {
+    				temp += ", Task: " + s.getTool().getName();
+    			}
+    			if (s.getTool().getInterface().length() > 0) {
+    				temp += ", Interface: " + s.getTool().getInterface();
+    			}
+    			if (s.getResultVar() != null &&  s.getResultVar().length() > 0 ) {
+    				temp += ", Variable: " + s.getResultVar() ;
+    			}
+    			temp += "</html>";
+    			label.setText(temp);
     			label.setToolTipText("<html>Name: " + s.getName() 
     					             + "<br>Task: " + s.getTool().getName() 
 									 + "<br>Interface: " + s.getTool().getInterface() 
@@ -1224,38 +1316,48 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     		else if (value instanceof Set){ 
     			Set s = (Set)value;
     			label.setIcon(IconHelper.loadIcon("icon_Set.gif"));
-    			label.setText("Set");
+    			String temp = "<html><b>Set</b> Variable: " + s.getVar();
+    			if ( s.getValue().length() > 0 )  {
+    				temp += ",  Value: " + s.getValue();
+    			}
+    			temp += "</html>";
+    			label.setText(temp);
     			label.setToolTipText("<html>Variable: " + s.getVar() + "<br>Value: " + s.getValue() +"</html>");
     		}
     		else if (value instanceof Unset){ 
     			Unset s = (Unset)value;
     			label.setIcon(IconHelper.loadIcon("icon_Unset.gif"));
-    			label.setText("Unset");
+    			label.setText("<html><b>Unset</b> Variable: " + s.getVar() + "</html>");
     			label.setToolTipText("Variable: " + s.getVar());
     		}    		
     		else if (value instanceof Script){ 
     			Script s = (Script)value;
     			label.setIcon(IconHelper.loadIcon("icon_Script.gif"));
-    			label.setText("Script");
+    			String temp = "<html><b>Script</b> ";
+    			if (s.getDescription().length() > 0 ) {
+    				temp += "Description: " + s.getDescription();
+    			}
+    			temp += "</html>";
+    			label.setText(temp);
     			label.setToolTipText("Description: " + s.getDescription());
     		} 
     		else if (value instanceof For){ 
     			For f = (For)value;
     			label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
-    			label.setText("For");
+    			label.setText("<html><b>For</b> Variable: " + f.getVar() + ", Items: " + f.getItems() + "</html>");
     			label.setToolTipText("<html>Variable: " + f.getVar() + " <br>Items: " + f.getItems() + "</html>");
     		}   		
     		else if (value instanceof While){
     			While w = (While)value;
     			label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
-    			label.setText("While");
+    			label.setText("<html><b>While</b> Test: " + w.getTest() + "</html>");
     			label.setToolTipText("Test: " + w.getTest());
     		}
     		else if (value instanceof Parfor){
     			Parfor p = (Parfor)value;
     			label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
-    			label.setText("Parrallel for loop");
-    			label.setToolTipText("<html>Variable: " + p.getVar() + "<br>Items: " + p.getItems() + "</html>");
+    			label.setText("<html><b>Parallel for loop</b> Variable: " + p.getVar() + "<br>Items: " + p.getItems() + "</html>");
+    			label.setToolTipText("<html>Variable: " + p.getVar() + ", Items: " + p.getItems() + "</html>");
     		}    		
     		else if (value instanceof Scope){ 
     			label.setIcon(IconHelper.loadIcon("icon_Scope.gif"));
@@ -1265,7 +1367,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     		else if (value instanceof If){
     			If i = (If)value;
     			label.setIcon(IconHelper.loadIcon("icon_If.gif"));
-    			label.setText("If");
+    			label.setText("<html><b>If</b> Test: " + i.getTest() + "</html>");
     			label.setToolTipText("Test: " + i.getTest());
     		}
     		else if (value instanceof Then){ 
@@ -1277,7 +1379,31 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     			label.setIcon(IconHelper.loadIcon("icon_Else.gif"));
     			label.setText("Else");
     			label.setToolTipText(null);
-    		}  
+    		} 
+    		else if (value instanceof String) {
+    			JPanel rendererPanel = new JPanel();
+    			//Origional idea was to use scrollpane holding editorpane, however the custom
+    			//renderer just renders and does not allow user interaction - the scrollbars 
+    			//do not register inputs i.e. cannot scroll, hence use of textarea sized to fit 
+    			//script length.
+    			//JEditorPane jEditorPane = new JEditorPane();
+    			//jEditorPane.setText(value.toString());
+    			//jEditorPane.setCaretPosition(0);
+    			//jEditorPane.setEditable(false);
+    	        int lineCt = 1;
+ 	            for (int i = 0; i < value.toString().length(); i++) {
+ 	                if (value.toString().charAt(i) == '\n') {
+ 	                    lineCt++; 
+ 	                }
+ 	            }
+ 	            JTextArea jta = new JTextArea(lineCt, 60);
+ 	            jta.setText(value.toString());
+    			JScrollPane pane = new JScrollPane(jta,
+                        JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);    			
+    			rendererPanel.add(pane);    
+    			return rendererPanel;
+    		}
     		else {    			
     			label.setText("to do");
     		}   		
@@ -1289,7 +1415,6 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
        */    
       public class WorkflowTreeSelectionListener implements TreeSelectionListener {
     	public void valueChanged(TreeSelectionEvent event){
-    		tabbedPaneDetails.setSelectedIndex(2);
     		Object ob = tree.getLastSelectedPathComponent();
     		if (ob == null) 
     			return;
@@ -1360,10 +1485,12 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     			values[0] = "Test: ";
     			values[1] = w.getTest();
     			displayBasicInfo(values);   			
-    		} 
+    		}     		
     		else {
+    			return;
     			// An activity with nothing to display
     		}
+    		tabbedPaneDetails.setSelectedIndex(2);
     	}
     } 
       /**
