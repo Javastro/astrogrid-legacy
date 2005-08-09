@@ -5,6 +5,26 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+			<action dev="kmb" type="fix" issue="1323"><em>Branch: Common_KMB_1323</em>
+				1 file is changed on this branch (DomHelper) to look at the "*" namespace. if it does not find results for a element
+                with no namespace as a parameter.  Requires to be merged with Registry.
+			</action>    	
+			<action dev="kmb" type="fix" issue="1097"><em>Branch: IntTests_KMB_1097</em>
+				Actually just small fix tests for the registry, this branch was for fixing Permission page with community, but come
+                to find out that was all in the community area nothing in auto-integration.
+			</action>    	
+			<action dev="kmb" type="fix" issue="1323"><em>Branch: Reg_KMB_1323</em>
+				Sorry forgot to re-branch from head, but that should not matter, just merge this one branch like any other branch.
+                (there is no double branching :) )
+                Common_KMB_1323, and IntTests_KMB_1097
+                Added keywordSearch in the delegate (search elements though are on the server side.).  External tests added more for
+                IVOA and finally fixed small bug with ListIdentifiers and XquerySearch.                
+			</action>    	
+			<action dev="kmb" type="fix" issue="1097"><em>Branch: Comm_KMB_1097</em>
+				Added xerces (2.7.1) as a dependency and bundled in the webapp.  This fixes the problem with jdk1.5.
+                Also small fix to Permission and GroupMember jsp pages so they would work correctly.
+                Finally small doc change if they wanted to run community with a different db like mysql.
+			</action>    	
 			<action dev="dave" type="fix"><em>Branch: dave-dev-200507251101</em>
 				Added stress test to trigger OutOfMemoryError in FileStore transfers.
 				Added JDK 1.5 fix for FileStoreOutputStream (client side).
