@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.6 2005/08/05 11:46:55 nw Exp $
+/*$Id: RegistryImpl.java,v 1.7 2005/08/09 17:33:07 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -115,7 +115,7 @@ public class RegistryImpl implements Registry, UserLoginListener {
     
     
 
-    public Document search(String adql) throws ServiceException  {
+    public Document searchForRecords(String adql) throws ServiceException  {
 
         try {
             return getReg().searchFromSADQL(adql);
@@ -132,6 +132,19 @@ public class RegistryImpl implements Registry, UserLoginListener {
         }
 
     }
+    
+    /**@todo add declaration of common prefixes to front of query?
+     * @see org.astrogrid.acr.astrogrid.Registry#xquery(java.lang.String)
+     */
+    public Document xquery(String xquery) throws ServiceException {
+        
+            try {
+                return getReg().xquerySearch(xquery);
+            } catch (RegistryException e) {
+                throw new ServiceException(e);
+            }
+            
+    }    
 
     /**
      * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
@@ -146,12 +159,17 @@ public class RegistryImpl implements Registry, UserLoginListener {
         reg = null;
     }
 
+
+
     
 }
 
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.7  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.6  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
 

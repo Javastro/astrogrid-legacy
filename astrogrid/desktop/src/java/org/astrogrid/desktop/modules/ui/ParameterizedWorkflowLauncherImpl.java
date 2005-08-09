@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.7 2005/08/05 11:46:55 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.8 2005/08/09 17:33:07 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -98,10 +98,10 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         try {
         Workflow wf = wft.instantiate(community.getEnv().getAccount(),t);
         URI u = ResourceChooserDialog.chooseResource(vos,"Save a copy of this workflow",true);
-        if (u != null && u.getScheme() != null) {
+        if (u != null ) {
             Writer writer = null;
             
-            if (u.getScheme().equals("ivo")) {
+            if (u.getScheme() == null || u.getScheme().equals("ivo")) {
                if ( ! vos.exists(u)) {
                       vos.createFile(u);
                }
@@ -216,6 +216,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.8  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.7  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
 

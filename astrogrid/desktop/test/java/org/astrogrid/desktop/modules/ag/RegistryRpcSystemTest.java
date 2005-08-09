@@ -1,4 +1,4 @@
-/*$Id: RegistryRpcSystemTest.java,v 1.1 2005/08/05 11:46:55 nw Exp $
+/*$Id: RegistryRpcSystemTest.java,v 1.2 2005/08/09 17:33:07 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -106,7 +106,7 @@ public class RegistryRpcSystemTest extends RegistrySystemTest implements Registr
         v.add(testURI2.toString());
         try { 
         Map m =  (Map)client.execute("astrogrid.registry.getResourceInformation",v);
-        return new ResourceInformation(new URI((String)m.get("ivorn"))
+        return new ResourceInformation(new URI((String)m.get("id"))
                 ,(String)m.get("title")
                 ,(String)m.get("description")
                 ,new URL((String)m.get("accessURL"))
@@ -121,11 +121,25 @@ public class RegistryRpcSystemTest extends RegistrySystemTest implements Registr
      * @return
      * @throws ServiceException
      */
-    public Document search(String query) throws ServiceException {
+    public Document searchForRecords(String query) throws ServiceException {
         v.clear();
         v.add(query);
         try {
-        String s =  (String)client.execute("astrogrid.registry.search",v);
+        String s =  (String)client.execute("astrogrid.registry.searchForRecords",v);
+        InputStream is = new ByteArrayInputStream(s.getBytes());
+        return XMLUtils.newDocument(is);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+    /**
+     * @see org.astrogrid.acr.astrogrid.Registry#xquery(java.lang.String)
+     */
+    public Document xquery(String xquery) throws ServiceException {
+        v.clear();
+        v.add(xquery);
+        try {
+        String s =  (String)client.execute("astrogrid.registry.xquery",v);
         InputStream is = new ByteArrayInputStream(s.getBytes());
         return XMLUtils.newDocument(is);
         } catch (Exception e) {
@@ -138,6 +152,9 @@ public class RegistryRpcSystemTest extends RegistrySystemTest implements Registr
 
 /* 
 $Log: RegistryRpcSystemTest.java,v $
+Revision 1.2  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.1  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
  

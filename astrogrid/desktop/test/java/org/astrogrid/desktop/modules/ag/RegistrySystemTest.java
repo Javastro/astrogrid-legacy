@@ -1,4 +1,4 @@
-/*$Id: RegistrySystemTest.java,v 1.1 2005/08/05 11:46:55 nw Exp $
+/*$Id: RegistrySystemTest.java,v 1.2 2005/08/09 17:33:07 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import org.astrogrid.desktop.framework.ACRTestSetup;
 import org.astrogrid.desktop.modules.system.ApiHelpTest;
 import org.astrogrid.registry.client.query.ResourceData;
 
+import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 
 import java.net.URI;
@@ -76,10 +77,19 @@ public class RegistrySystemTest extends TestCase {
         assertNotNull(ri.getAccessURL());
     }
 
-    public static final String QUERY_STRING = "select * from Registry where vor:Resource/vr:identifier='ivo://uk.ac.le.star/filemanager'";
+    public static final String QUERY_STRING = "select * from Registry where vr:identifier='ivo://uk.ac.le.star/filemanager'";
     public void testSearch()  throws Exception {
-        Document result = registry.search(QUERY_STRING);
+        Document result = registry.searchForRecords(QUERY_STRING);
         assertNotNull(result);
+        XMLUtils.PrettyDocumentToStream(result,System.out);
+    }
+    
+    public void testXQuery() throws Exception {
+        Document result = registry.xquery(
+                "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.10\"; declare namespace vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\"; for $x in //vor:Resource where $x/vr:identifier = 'ivo://uk.ac.le.star/filemanager' return $x"        
+        );
+        assertNotNull(result);
+        XMLUtils.PrettyDocumentToStream(result,System.out);
     }
 
 
@@ -88,6 +98,9 @@ public class RegistrySystemTest extends TestCase {
 
 /* 
 $Log: RegistrySystemTest.java,v $
+Revision 1.2  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.1  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
  

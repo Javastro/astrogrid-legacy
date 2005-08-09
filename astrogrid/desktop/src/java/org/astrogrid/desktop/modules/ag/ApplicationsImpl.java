@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.9 2005/08/05 11:46:55 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.10 2005/08/09 17:33:07 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,7 +84,7 @@ import javax.xml.transform.TransformerException;
 
 /** Application service.
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
- * @todo later - remove use of applicationRegistry where possible - go direct
+ * @todo later - remove use of applicationRegistry where possible - go direct - use xquery to get just the data needed.
  * @todo later - add stream-returning method (@link #read} to myspaceInternal.. use consisstently throughout.
  * @todo refine exception reporting.
  */
@@ -126,7 +126,7 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
         try {
         String[] arr =  getAppReg().listApplications();
         URI[] result = new URI[arr.length];
-        for (int i= 0;i < arr.hashCode(); i++) {
+        for (int i= 0;i < arr.length; i++) {
             result[i] = new URI(arr[i]);
         }
         return result;
@@ -141,7 +141,7 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
         try {
             ApplicationDescriptionSummary[] arr =  getAppReg().listUIApplications();
             ApplicationInformation[] result = new ApplicationInformation[arr.length];
-            for (int i= 0;i < arr.hashCode(); i++) {
+            for (int i= 0;i < arr.length; i++) {
                 result[i] = new ApplicationInformation(
                         new URI(arr[i].getName())
                         , arr[i].getUIName()
@@ -164,8 +164,8 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
     public ApplicationInformation getApplicationInformation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException{
         try {
             ApplicationDescriptionSummary[] arr =  getAppReg().listUIApplications();
-            for (int i= 0;i < arr.hashCode(); i++) {
-                if (arr[i].getName().equals(munge(applicationName))) {
+            for (int i= 0;i < arr.length; i++) {
+                if (arr[i].getName().equals(applicationName.toString())) {
                     return new ApplicationInformation(
                         new URI(arr[i].getName())
                         , arr[i].getUIName()
@@ -249,7 +249,7 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
    
   // alter to impedance-match between whether ivo:// is expected or now.
   // at moment, necessary to do this.
-  private String munge(URI application) {
+  private String munge(URI application) {     
       return application.toString().substring(6);// drops ivo:// prefix
   }
   
@@ -432,7 +432,7 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
         String query = "Select * from Registry where @status = 'active' and cea:ManagedApplications/cea:ApplicationReference='"
             + applicationName + "'";
         try {
-        Document results = reg.search(query);
+        Document results = reg.searchForRecords(query);
         logger.debug("got  results");       
         
         DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
@@ -485,7 +485,7 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
     private InputStream read(URI loc) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
         URL url ;
         try {
-        if (loc.getScheme().equals("ivo")) {
+        if (loc.getScheme() == null ||  loc.getScheme().equals("ivo")) {
             url = vos.getReadContentURL(loc);
         } else {
        
@@ -692,6 +692,9 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.10  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.9  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
 

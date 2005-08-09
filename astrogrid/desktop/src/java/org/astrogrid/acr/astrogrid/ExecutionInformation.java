@@ -1,4 +1,4 @@
-/*$Id: ExecutionInformation.java,v 1.1 2005/08/05 11:46:55 nw Exp $
+/*$Id: ExecutionInformation.java,v 1.2 2005/08/09 17:33:07 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,11 +66,32 @@ public class ExecutionInformation extends AbstractInformation {
     public String getStatus() {
         return this.status;
     }
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("[ExecutionInformation:");
+        buffer.append(" id: ");
+        buffer.append(id);
+        buffer.append(" name: ");
+        buffer.append(name);
+        buffer.append(" description: ");
+        buffer.append(description);
+        buffer.append(" status: ");
+        buffer.append(status);
+        buffer.append(" startTime: ");
+        buffer.append(startTime);
+        buffer.append(" finishTime: ");
+        buffer.append(finishTime);
+        buffer.append("]");
+        return buffer.toString();
+    }
 }
 
 
 /* 
 $Log: ExecutionInformation.java,v $
+Revision 1.2  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.1  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
  

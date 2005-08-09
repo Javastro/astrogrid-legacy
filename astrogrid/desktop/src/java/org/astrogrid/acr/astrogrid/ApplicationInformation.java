@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformation.java,v 1.1 2005/08/05 11:46:55 nw Exp $
+/*$Id: ApplicationInformation.java,v 1.2 2005/08/09 17:33:07 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,11 +38,30 @@ public class ApplicationInformation extends AbstractInformation{
     public String getName() {
         return this.name;
     }
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("[ApplicationInformation:");
+        buffer.append(" id: ");
+        buffer.append(id);        
+        buffer.append(" name: ");
+        buffer.append(name);
+        buffer.append(" { ");
+        for (int i0 = 0; interfaces != null && i0 < interfaces.length; i0++) {
+            buffer.append(" interfaces[" + i0 + "]: ");
+            buffer.append(interfaces[i0]);
+        }
+        buffer.append(" } ");
+        buffer.append("]");
+        return buffer.toString();
+    }
 }
 
 
 /* 
 $Log: ApplicationInformation.java,v $
+Revision 1.2  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.1  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
  

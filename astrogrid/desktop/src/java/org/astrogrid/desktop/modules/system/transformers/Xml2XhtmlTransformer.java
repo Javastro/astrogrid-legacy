@@ -1,4 +1,4 @@
-/*$Id: Xml2XhtmlTransformer.java,v 1.4 2005/08/05 11:46:55 nw Exp $
+/*$Id: Xml2XhtmlTransformer.java,v 1.5 2005/08/09 17:33:07 nw Exp $
  * Created on 11-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.system.transformers;
 
+import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -23,6 +25,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -75,16 +78,15 @@ public class Xml2XhtmlTransformer implements Transformer{
      * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
      */
     public Object transform(Object arg0) {
-        Source source = new StreamSource(new StringReader(arg0.toString()));
+        Source source = new DOMSource((Document)arg0);
         StringWriter sw = new StringWriter();
         Result sink = new StreamResult(sw);
         try {
             xslt.transform(source, sink);
             return sw.toString();
         } catch (TransformerException e) {
-            // @todo Auto-generated catch block
             logger.error("TransformerException",e);
-            return arg0.toString(); // better than nothing.
+            return XMLUtils.DocumentToString((Document)arg0);
         }
 
     }
@@ -94,6 +96,9 @@ public class Xml2XhtmlTransformer implements Transformer{
 
 /* 
 $Log: Xml2XhtmlTransformer.java,v $
+Revision 1.5  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.4  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
 

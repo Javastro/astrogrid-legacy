@@ -1,4 +1,4 @@
-/*$Id: JobsImpl.java,v 1.7 2005/08/05 11:46:55 nw Exp $
+/*$Id: JobsImpl.java,v 1.8 2005/08/09 17:33:07 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -176,7 +176,7 @@ public class JobsImpl implements Jobs, UserLoginListener {
     public URI submitStoredJob(URI workflowReference) throws ServiceException, InvalidArgumentException {
         Workflow wf = null;
         try {
-        if (workflowReference.getScheme().equals("ivo")) {
+        if ( workflowReference.getScheme() == null || workflowReference.getScheme().equals("ivo")) {
             String content = vos.read(workflowReference);
             wf = Workflow.unmarshalWorkflow(new StringReader(content));            
         } else {
@@ -239,6 +239,9 @@ public class JobsImpl implements Jobs, UserLoginListener {
 
 /* 
 $Log: JobsImpl.java,v $
+Revision 1.8  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.7  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
 

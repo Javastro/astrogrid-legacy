@@ -1,4 +1,4 @@
-/*$Id: NodeInformation.java,v 1.1 2005/08/05 11:46:55 nw Exp $
+/*$Id: NodeInformation.java,v 1.2 2005/08/09 17:33:07 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -78,11 +78,34 @@ public class NodeInformation extends AbstractInformation {
     public URI getContentLocation() {
         return contentLocation;
     }
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("[NodeInformation:");
+        buffer.append(" id: ");
+        buffer.append(id);        
+        buffer.append(" file: ");
+        buffer.append(file);
+        buffer.append(" size: ");
+        buffer.append(size);
+        buffer.append(" createDate: ");
+        buffer.append(createDate);
+        buffer.append(" modifyDate: ");
+        buffer.append(modifyDate);
+        buffer.append(" attributes: ");
+        buffer.append(attributes);
+        buffer.append(" contentLocation: ");
+        buffer.append(contentLocation);
+        buffer.append("]");
+        return buffer.toString();
+    }
 }
 
 
 /* 
 $Log: NodeInformation.java,v $
+Revision 1.2  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.1  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
  

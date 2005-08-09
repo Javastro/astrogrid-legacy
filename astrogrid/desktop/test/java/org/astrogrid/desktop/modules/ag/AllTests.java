@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2005/08/05 11:46:55 nw Exp $
+/*$Id: AllTests.java,v 1.2 2005/08/09 17:33:07 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,12 @@ public class AllTests {
         suite.addTestSuite(MyspaceSystemTest.class);
         suite.addTestSuite(MyspaceRmiSystemTest.class);
         suite.addTestSuite(MyspaceRpcSystemTest.class);       
+        suite.addTestSuite(ApplicationsSystemTest.class);
+        suite.addTestSuite(ApplicationsRmiSystemTest.class);
+        suite.addTestSuite(ApplicationsRpcSystemTest.class);    
+        suite.addTestSuite(JobsSystemTest.class);
+        suite.addTestSuite(JobsRmiSystemTest.class);
+        suite.addTestSuite(JobsRpcSystemTest.class);           
         return new ACRTestSetup(suite,true);       
     }
 }
@@ -40,6 +46,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.2  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.1  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
  

@@ -1,4 +1,4 @@
-/*$Id: DocumentResultTransformerSet.java,v 1.1 2005/08/05 11:46:55 nw Exp $
+/*$Id: DocumentResultTransformerSet.java,v 1.2 2005/08/09 17:33:07 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,12 +29,7 @@ public class DocumentResultTransformerSet extends DefaultResultTransformerSet {
         setXmlrpcTransformer(DocumentTransformer.getInstance());
         setXmlTransformer(DocumentTransformer.getInstance());
         setPlainTransformer(DocumentTransformer.getInstance());
-        setHtmlTransformer(
-                TransformerUtils.chainedTransformer(
-                        DocumentTransformer.getInstance()
-                        ,Xml2XhtmlTransformer.getInstance()
-                        )
-                );
+        setHtmlTransformer(Xml2XhtmlTransformer.getInstance() );
     }
     
     public static class DocumentTransformer implements Transformer {
@@ -59,6 +54,9 @@ public class DocumentResultTransformerSet extends DefaultResultTransformerSet {
 
 /* 
 $Log: DocumentResultTransformerSet.java,v $
+Revision 1.2  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.1  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
  

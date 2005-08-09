@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.10 2005/08/05 11:46:55 nw Exp $
+/*$Id: JobMonitorImpl.java,v 1.11 2005/08/09 17:33:07 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -113,7 +113,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
                     protected Object construct() throws Exception {
                         Document doc;
-                        if (u.getScheme().equals("ivo")){
+                        if (u.getScheme() == null || u.getScheme().equals("ivo")){
                             String content = vos.read(u);
                             InputStream is = new ByteArrayInputStream(content.getBytes());
                             doc = XMLUtils.newDocument(is);
@@ -992,6 +992,9 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.11  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.10  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
 

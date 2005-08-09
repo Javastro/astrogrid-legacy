@@ -1,4 +1,4 @@
-/*$Id: RegisterConverters.java,v 1.5 2005/08/05 11:46:55 nw Exp $
+/*$Id: RegisterConverters.java,v 1.6 2005/08/09 17:33:07 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,13 +17,20 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
+import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
 import org.picocontainer.Startable;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * registers all the result converters used in the ag module.
@@ -73,6 +80,25 @@ public class RegisterConverters implements Startable {
             }
         }, URL.class);
 
+        ConvertUtils.register(new Converter() {
+
+            public Object convert(Class arg0, Object arg1) {
+               if (arg0 != Document.class) { 
+                   throw new RuntimeException("Can only convert to documents " + arg0.getName());
+               }
+               ByteArrayInputStream is= new ByteArrayInputStream(arg1.toString().getBytes());
+               try {
+                return XMLUtils.newDocument(is);
+            } catch (ParserConfigurationException e) {
+                throw new RuntimeException(e);
+            } catch (SAXException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+                   
+            }
+        },Document.class);
     }
 
     /**
@@ -85,6 +111,9 @@ public class RegisterConverters implements Startable {
 
 /*
  * $Log: RegisterConverters.java,v $
+ * Revision 1.6  2005/08/09 17:33:07  nw
+ * finished system tests for ag components.
+ *
  * Revision 1.5  2005/08/05 11:46:55  nw
  * reimplemented acr interfaces, added system tests.
  *

@@ -1,4 +1,4 @@
-/*$Id: MyspaceRpcSystemTest.java,v 1.1 2005/08/05 11:46:55 nw Exp $
+/*$Id: MyspaceRpcSystemTest.java,v 1.2 2005/08/09 17:33:07 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -301,7 +301,7 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
            ResourceInformation[] result = new ResourceInformation[l.size()];
            for (int i = 0; i < l.size(); i++) {
                Map m = (Map)l.get(i);
-               result[i] =new ResourceInformation(new URI((String)m.get("ivorn"))
+               result[i] =new ResourceInformation(new URI((String)m.get("id"))
                        ,(String)m.get("title")
                        ,(String)m.get("description")
                        ,new URL((String)m.get("accessURL"))
@@ -373,6 +373,9 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
 
 /* 
 $Log: MyspaceRpcSystemTest.java,v $
+Revision 1.2  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.1  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
  

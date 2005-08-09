@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.5 2005/08/05 11:46:55 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.6 2005/08/09 17:33:07 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -156,7 +156,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
                     protected Object construct() throws Exception {
                         Tool t = getParametersPane().getTool();
-                        if (u.getScheme().equals("ivo")) {
+                        if (u.getScheme() == null || u.getScheme().equals("ivo")) {
                             StringWriter sw = new StringWriter();
                             t.marshal(sw);
                             myspace.write(u,sw.toString());
@@ -592,6 +592,9 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.6  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.5  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
 

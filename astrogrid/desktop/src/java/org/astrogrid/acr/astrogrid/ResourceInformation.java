@@ -1,4 +1,4 @@
-/*$Id: ResourceInformation.java,v 1.1 2005/08/05 11:46:55 nw Exp $
+/*$Id: ResourceInformation.java,v 1.2 2005/08/09 17:33:07 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,11 +46,28 @@ public class ResourceInformation extends AbstractInformation {
         return url;
     }
     // also getInterface() - but don't know what this is, so will leave for now.
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("[ResourceInformation:");
+        buffer.append(" id: ");
+        buffer.append(id);        
+        buffer.append(" title: ");
+        buffer.append(title);
+        buffer.append(" description: ");
+        buffer.append(description);
+        buffer.append(" url: ");
+        buffer.append(url);
+        buffer.append("]");
+        return buffer.toString();
+    }
 }
 
 
 /* 
 $Log: ResourceInformation.java,v $
+Revision 1.2  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.1  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
  

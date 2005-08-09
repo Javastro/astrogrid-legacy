@@ -1,4 +1,4 @@
-/*$Id: WorkflowResultTransformerSet.java,v 1.4 2005/05/12 15:59:12 clq2 Exp $
+/*$Id: WorkflowResultTransformerSet.java,v 1.5 2005/08/09 17:33:07 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,18 +22,14 @@ import javax.xml.transform.stream.StreamSource;
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
  *
  */
-public class WorkflowResultTransformerSet extends CastorDocumentResultTransformerSet {
+public class WorkflowResultTransformerSet extends DocumentResultTransformerSet {
 
     /** Construct a new WorkflowResultTransformerSet
      * 
      */
     public WorkflowResultTransformerSet() {
         super();
-        setHtmlTransformer(
-                TransformerUtils.chainedTransformer(
-                        CastorDocumentXmlTransformer.getInstance() ,
-                        Workflow2XhtmlTransformer.getInstance()
-                        ));
+        setHtmlTransformer( Workflow2XhtmlTransformer.getInstance());
     }
 
     public static class Workflow2XhtmlTransformer extends Xml2XhtmlTransformer {
@@ -64,6 +60,9 @@ public class WorkflowResultTransformerSet extends CastorDocumentResultTransforme
 
 /* 
 $Log: WorkflowResultTransformerSet.java,v $
+Revision 1.5  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.4  2005/05/12 15:59:12  clq2
 nww 1111 again
 

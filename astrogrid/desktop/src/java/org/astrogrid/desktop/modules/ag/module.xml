@@ -151,7 +151,7 @@
 				<description>identifier of the registry entry to retreive</description>
 			</parameter>
 			</method>
-		<method name="search">
+		<method name="searchForRecords">
 			<description>Execute an adql  query the registry. </description>
 	<property>
 		<key>icon</key>
@@ -159,7 +159,7 @@
 	</property>					
 			<property>
 				<key>system.ui.menu.entry</key>
-				<value>Perform Query</value>								
+				<value>Search for Records</value>								
 			</property>
 			<return>
 				<description>XML Query results</description>
@@ -173,6 +173,27 @@
 					ADQL).  For example: select * from Registry where vr:content/vr:type='Archive'</description>
 			</parameter>
 		</method>
+		<method name="xquery">
+			<description>Execute an xquery against the registry. </description>
+	<property>
+		<key>icon</key>
+		<value>search.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>XQuery</value>								
+			</property>
+			<return>
+				<description>Result document</description>
+				<property>
+					<key>system.result.transformer</key>
+					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+				</property>
+			</return>
+			<parameter name="xquery">
+				<description>XQuery to execute </description>
+			</parameter>
+		</method>		
 	</component>
 	
 	
@@ -269,6 +290,19 @@
 				<description>Ivorn of node</description>
 			</parameter>
 		</method>
+		<method name="getMetadata">
+			<description>return metadata for a mypsace node</description>
+			<parameter name="ivorn">
+				<description>Ivorn of node</description>
+			</parameter>
+	<return>
+				<description>a structure of metadata for this node</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>struct</value>
+				</property>					
+			</return>			
+		</method>		
 	<method name="list">
 			<description>list names of the contents of a myspace folder.</description>
 			<return>
@@ -581,18 +615,13 @@
 				<key>system.ui.menu.entry</key>
 				<value>Create Template Tool</value>								
 			</property>	
-			<!--		
-			<property>
-				<key>system.ui.result.browser</key>
-				<value>true</value>								
-			</property>					
-			-->
+
 			<return>
 				<description>Tool Document</description>
 				<property>
 					<key>system.result.transformer</key>
 					<value>
-						org.astrogrid.desktop.modules.system.transformers.CastorDocumentResultTransformerSet</value>
+						org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
 				</property>
 			</return>
 			<parameter name="applicationName">
@@ -810,13 +839,9 @@
 				<description>summary of this application</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>string</value>
+					<value>struct</value>
 				</property>
-				<property>
-					<key>system.result.transformer</key>
-					<value>
-						org.astrogrid.desktop.modules.system.transformers.CastorDocumentResultTransformerSet</value>
-				</property>
+
 			</return>				
 			<parameter name="executionId">
 				<description>id of the application execution to query</description>
@@ -839,12 +864,7 @@
 					<key>system.xmlrpc.type</key>
 					<value>array</value>
 				</property>
-				<property>
-					<key>system.result.transformer</key>
-					<value>
-						org.astrogrid.desktop.modules.system.transformers.CastorDocumentResultTransformerSet</value>
-				</property>
-			</return>							
+				</return>					
 			<parameter name="executionId">
 				<description>id of the application execution to query</description>
 			</parameter>				
@@ -921,7 +941,7 @@
 				<value>Get Job Summary</value>								
 			</property>					
 			<return>
-				<description>a summary of the jobs</description>
+				<description>a summary of the job</description>
 				<property>
 					<key>system.xmlrpc.type</key>
 					<value>struct</value>
@@ -967,7 +987,10 @@
 			<property>
 				<key>system.ui.menu.entry</key>
 				<value>Cancel Job</value>								
-			</property>					
+			</property>			
+			<return>
+				<description>nothing</description>
+			</return>					
 			<parameter name="jobURN">
 				<description>identifier of job to cancel</description>
 			</parameter>
@@ -981,7 +1004,10 @@
 			<property>
 				<key>system.ui.menu.entry</key>
 				<value>Delete Job</value>								
-			</property>					
+			</property>	
+			<return>
+				<description>nothing</description>
+			</return>									
 			<parameter name="jobURN">
 				<description>identifier of job to delete</description>
 			</parameter>

@@ -1,4 +1,4 @@
-/*$Id: AbstractInformation.java,v 1.1 2005/08/05 11:46:55 nw Exp $
+/*$Id: AbstractInformation.java,v 1.2 2005/08/09 17:33:07 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,11 +33,41 @@ public abstract class AbstractInformation implements Serializable {
         return this.id;
     }
 
+    /**
+     * tests two information objects for equality - determined by equality of {@link #getId()}
+        */
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (o.getClass() != getClass()) {
+            return false;
+        }
+        AbstractInformation castedObj = (AbstractInformation) o;
+        return ((this.id == null ? castedObj.id == null : this.id.equals(castedObj.id)));
+    }
+    /**
+     * Override hashCode.
+     *
+     * @return the Objects hashcode.
+     */
+    public int hashCode() {
+        int hashCode = 1;
+        hashCode = 31 * hashCode + (id == null ? 0 : id.hashCode());
+        return hashCode;
+    }
+
 }
 
 
 /* 
 $Log: AbstractInformation.java,v $
+Revision 1.2  2005/08/09 17:33:07  nw
+finished system tests for ag components.
+
 Revision 1.1  2005/08/05 11:46:55  nw
 reimplemented acr interfaces, added system tests.
  

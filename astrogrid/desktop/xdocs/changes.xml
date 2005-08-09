@@ -15,6 +15,14 @@
 <body>
 	
 	<release version="1.1-beta-1" date="unreleased">
+		<action dev="nw" type="update">
+			updated to latest version of registry delegate
+			 - now caches results, and provides xquery.
+		</action>
+		<action dev="nw" type="add">
+			added system tests that exercise ag components
+			through rmi and xmlrpc
+		</action>
 		<action dev="nw" type="fix">
 			cleaned up acr public interface
 		</action>

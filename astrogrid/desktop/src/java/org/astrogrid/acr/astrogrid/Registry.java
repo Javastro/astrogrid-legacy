@@ -1,4 +1,4 @@
-/*$Id: Registry.java,v 1.5 2005/08/05 11:46:55 nw Exp $
+/*$Id: Registry.java,v 1.6 2005/08/09 17:33:07 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,15 +55,24 @@ public interface Registry {
     /** perform a query on the registry
      * 
      * @param adql a string query (string form of ADQL)
-     * @return  xml document of search results.
+     * @return  xml document of search results - i.e. a list of full registry records
      * @throws ServiceException if an error occurs talking to the service
      */ 
-    Document search(String adql) throws ServiceException;
+    Document searchForRecords(String adql) throws ServiceException;
     
+    
+    /** perform an xquery 
+     * @param xquery the query to perform.
+     * @return the result of executing this xquery over the registry
+     * @throws ServiceException*/
+    Document xquery(String xquery) throws ServiceException;
    }
 
 /* 
  $Log: Registry.java,v $
+ Revision 1.6  2005/08/09 17:33:07  nw
+ finished system tests for ag components.
+
  Revision 1.5  2005/08/05 11:46:55  nw
  reimplemented acr interfaces, added system tests.
 
