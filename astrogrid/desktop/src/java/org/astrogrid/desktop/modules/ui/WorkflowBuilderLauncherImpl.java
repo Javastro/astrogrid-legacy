@@ -1356,8 +1356,8 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     		else if (value instanceof Parfor){
     			Parfor p = (Parfor)value;
     			label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
-    			label.setText("<html><b>Parallel for loop</b> Variable: " + p.getVar() + "<br>Items: " + p.getItems() + "</html>");
-    			label.setToolTipText("<html>Variable: " + p.getVar() + ", Items: " + p.getItems() + "</html>");
+    			label.setText("<html><b>Parallel for loop</b> Variable: " + p.getVar() + ", Items: " + p.getItems() + "</html>");
+    			label.setToolTipText("<html>Variable: " + p.getVar() + "<br>Items: " + p.getItems() + "</html>");
     		}    		
     		else if (value instanceof Scope){ 
     			label.setIcon(IconHelper.loadIcon("icon_Scope.gif"));
