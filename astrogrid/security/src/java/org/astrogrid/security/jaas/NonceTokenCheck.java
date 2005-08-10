@@ -11,7 +11,6 @@ import org.astrogrid.security.AccountName;
 import org.astrogrid.security.InvalidAccountException;
 import org.astrogrid.security.InvalidCredentialException;
 import org.astrogrid.security.NonceToken;
-import org.astrogrid.store.Ivorn;
 
 
 /**
@@ -75,8 +74,6 @@ public class NonceTokenCheck implements LoginModule {
     // Extract the original token from the context.
     // No tokens means no authentication.
     // Treat multiple tokens as an error, for simplicity.
-    NonceToken oldToken = null;
-    NonceToken newToken = null;
     Set tokens = this.subject.getPrivateCredentials(NonceToken.class);
     if (tokens.size() == 0) {
       System.out.println("NonceTokenCheck.login(): authentication failed: No nonce tokens were presented.");
@@ -98,7 +95,7 @@ public class NonceTokenCheck implements LoginModule {
     // Check the original token in the community service.
     // This can cause several types of exception to be thrown.
     try {
-	  this.token.validate();
+    this.token.validate();
     }
     catch (InvalidAccountException iae) {
       String message = "Authentication failed: " + iae.getMessage();
@@ -126,8 +123,8 @@ public class NonceTokenCheck implements LoginModule {
    * in the Subject.
    */
   public boolean commit () throws LoginException {
-	System.out.println("Entering NonceTokenCheck.commit()");
-	System.out.println("Committing Principal " + this.account.getName());
+  System.out.println("Entering NonceTokenCheck.commit()");
+  System.out.println("Committing Principal " + this.account.getName());
     this.subject.getPrincipals().add(this.account);
     return true;
   }

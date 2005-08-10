@@ -124,8 +124,7 @@ public class ClientSecurityGuard extends SecurityGuard {
                      + " with account name "
                      + u);
     try {
-	  NonceToken t = NonceToken.signOn(this.getSsoUsername(),
-	                                   this.getSsoPassword());
+      NonceToken t = NonceToken.signOn(u, p);
       this.setNonceToken(t);
     }
     catch (Exception e) {

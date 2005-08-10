@@ -1,14 +1,8 @@
 package org.astrogrid.security;
 
-import javax.security.auth.Subject;
-import javax.security.auth.login.Configuration;
-import javax.security.auth.login.LoginContext;
-import javax.xml.rpc.JAXRPCException;
-import javax.xml.soap.SOAPMessage;
 import org.apache.axis.AxisFault;
 import org.apache.axis.MessageContext;
 import org.apache.axis.handlers.BasicHandler;
-import org.astrogrid.security.jaas.SimpleLoginConfiguration;
 
 /**
  * Axis handler for WSSE headers on the server side.
@@ -55,11 +49,8 @@ public class ServiceCredentialAxisHandler extends BasicHandler {
     try {
 
       // Don't handle response messages.
-      if (mc.getPastPivot()) {
-      }
-
-      // Call the JAX-RPC-compliant handler.
-      else {
+      if (!mc.getPastPivot()) {
+        // Call the JAX-RPC-compliant handler.
         this.realHandler.handleRequest(mc);
       }
     }

@@ -2,13 +2,11 @@ package org.astrogrid.security;
 
 import java.net.URISyntaxException;
 import org.astrogrid.community.client.security.service.SecurityServiceDelegate;
-import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.security.data.SecurityToken;
 import org.astrogrid.community.resolver.CommunityTokenResolver;
 import org.astrogrid.community.resolver.security.service.SecurityServiceResolver;
-import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
 
 /**
@@ -39,13 +37,13 @@ public class NonceToken extends SecurityToken {
   public static NonceToken signOn (String accountName,
                                    String password)
         throws AuthenticatorUnavailableException,
-  		       InvalidAccountException,
-		       InvalidCredentialException {
-	try {
-	  SecurityServiceResolver ssr = new SecurityServiceResolver();
-	  SecurityServiceDelegate ssd = ssr.resolve(new Ivorn(accountName));
-	  SecurityToken token = ssd.checkPassword(accountName, password);
-	  return new NonceToken(token);
+             InvalidAccountException,
+           InvalidCredentialException {
+  try {
+    SecurityServiceResolver ssr = new SecurityServiceResolver();
+    SecurityServiceDelegate ssd = ssr.resolve(new Ivorn(accountName));
+    SecurityToken token = ssd.checkPassword(accountName, password);
+    return new NonceToken(token);
     }
     catch (URISyntaxException use) {
       throw new InvalidAccountException("The account name was rejected", use);
@@ -57,11 +55,11 @@ public class NonceToken extends SecurityToken {
       throw new InvalidCredentialException("The password was rejected", cse);
     }
     catch (Exception e) {
-	  throw new AuthenticatorUnavailableException(
-		            "Authentication failed because the community managing " +
-		            "the account is not reachable",
-		            e
-		        );
+    throw new AuthenticatorUnavailableException(
+                "Authentication failed because the community managing " +
+                "the account is not reachable",
+                e
+            );
     }
   }
 
@@ -127,7 +125,6 @@ public class NonceToken extends SecurityToken {
       System.out.println("Validating token: " + this.toString());
       CommunityTokenResolver resolver = new CommunityTokenResolver();
       SecurityToken newToken = resolver.checkToken(this);
-
       // Update the nonce. Leave the account name unchanged.
       this.setToken(newToken.getToken());
     }
@@ -138,11 +135,11 @@ public class NonceToken extends SecurityToken {
       throw new InvalidCredentialException("The password was rejected", cse);
     }
     catch (Exception e) {
-  	  throw new AuthenticatorUnavailableException(
-  	  	            "Authentication failed because the community managing " +
-  		            "the account is not reachable",
-  		            e
-  		        );
+      throw new AuthenticatorUnavailableException(
+                  "Authentication failed because the community managing " +
+                  "the account is not reachable",
+                  e
+              );
     }
   }
 
@@ -155,13 +152,11 @@ public class NonceToken extends SecurityToken {
    * @throws AuthenticatorUnavailableException if the community or registry fail
    * @throws InvalidAccountException if the account name is rejected
    * @throws InvalidCredentialException if the nonce is rejected
-   *
    */
   public NonceToken split () throws AuthenticatorUnavailableException,
                                     InvalidAccountException,
                                     InvalidCredentialException {
     try {
-
       // Split this token.  An exception is thrown here if
       // validation fails.
       System.out.println("Existing token: " + this.toString());
@@ -170,25 +165,22 @@ public class NonceToken extends SecurityToken {
       assert(o.length == 2);
       assert(o[0] instanceof SecurityToken);
       assert(o[1] instanceof SecurityToken);
-
       // Update the nonce. Leave the account name unchanged.
       this.setToken(((SecurityToken) o[0]).getToken());
-
       // Return the second token as a nonce token.
       return new NonceToken((SecurityToken) o[1]);
     }
     catch (CommunityIdentifierException cie) {
-	  throw new InvalidAccountException("The account name was rejected", cie);
-	}
-	catch (CommunitySecurityException cse) {
-	  throw new InvalidCredentialException("The password was rejected", cse);
-	}
-	catch (Exception e) {
-	  throw new AuthenticatorUnavailableException(
-	    	        "Authentication failed because the community managing " +
-	  		        "the account is not reachable",
-	  		        e
-	  		    );
+      throw new InvalidAccountException("The account name was rejected", cie);
+    }
+    catch (CommunitySecurityException cse) {
+      throw new InvalidCredentialException("The password was rejected", cse);
+    }    catch (Exception e) {
+      throw new AuthenticatorUnavailableException(
+                "Authentication failed because the community managing " +
+                "the account is not reachable",
+                e
+            );
     }
   }
 }
