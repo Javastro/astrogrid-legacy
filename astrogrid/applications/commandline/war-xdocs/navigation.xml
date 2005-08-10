@@ -1,36 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="AstroGrid">
-
-  <title>AstroGrid Project</title>
-
   <body>
+
+  <title>CEA - Commandline Application Provider</title>
+
+    <menu name="Installation">
+       <item name="Install" href="INSTALL.html"/>
+	   <item name="Application Configuration" href="ApplicationConfiguration.html"/>
+       <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-commandline-SNAPSHOT.war"/>
+	   <item name="back to CEA Framework" href=".." />
+
+    </menu>
+    <menu name="Development Documentation">
+	  <item name="Developers Guide" href="AppProgGuide.html"/>
+      <item name="javadoc" href="apidocs" />
+      <item name="Formatted Source" href="xref" />
+      <item name="Formatted Test Source" href="xref-test" />
+    </menu>
+
     <links>
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>
-       <item name="Components" href="../index.html"/>
-       <item name="CL-CEC"     href="index.html"/>
-    </links>
-      
-     <menu name="Administrator Quickstart">
-       <item name="Overview" href="index.html"/>
-       <item name="Download" href="DOWNLOAD.html"/>
-       <item name="Installation" href="INSTALL.html"/>
-       <item name="Configuration" href="CONFIGURE.html"/>
-       <item name="Self-testing" href="SELF-TEST.html"/>
-       <item name="Registration" href="REGISTER.html"/>
-       <item name="External testing" href="EXTTEST.html"/>
-       <item name="Upgrading" href="UPGRADE.html"/>
-       <item name="Uninstallation" href="UNINSTALL.html"/>
-    </menu>
-   
-    <menu name="Administrator Reference">
-	     <item name="Reference guide" href="REFERENCE.html"/>
-    </menu>
-  	
-  	<menu name="Local controls for CL-CEC">
-  		<item name="Axis test" href="happyaxis.jsp"/>
-  		<item name="Fingerprint" href="fingerprint.jsp"/>
-  		<item name="Test run" href="chooseapp.jsp"/>
-  	</menu>
-
+       <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
+     
+       </links>
   </body>
 </project>

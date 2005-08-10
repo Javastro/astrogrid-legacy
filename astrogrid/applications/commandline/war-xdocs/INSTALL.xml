@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+	<author email="pah@jb.man.ac.uk">Paul Harrison</author>
+	<title>CEA Controller Installation Information</title>
+</properties>
+
+<body>
+<section name="Installation Instructions">
+    <p>The installation of a commandline CEA server has 4 basic parts</p>
+        <ul>
+            <li>Install war to tomcat</li>
+            <li>Configure the installed web application</li>
+            <li>Configure the wrapped applications</li>
+            <li>Register this server</li>
+        </ul>
+    <subsection name="Installing the war file">
+        <p>The CEA Controller itself can be installed using any of the standard mechanisms for installing a war file in the J2EE server that you are using. To get a fully working installation there are some configuration steps that are necessary</p>
+    </subsection>
+    
+<subsection name="Basic Configuration">
+<p>The configuration environment properties detailed below can be set with the tomcat manager. An alternative if it suits your environment better is to set the
+      org.astrogrid.config.url property to point to a file url that contains all the very/value configuration parameters below as simple "key=value" lines.
+     </p>
+     <p>It is possible to see what values are being picked up by the running server by clicking on the <a href="../fingerprint.jsp">fingerprint</a> menu item of the main server page. Near the bottom of the page, under the heading "Configuration" the configuration values will be listed. Note that if a particular value is being picked up from more than one location, it is the first one that appears in this list that will take precedence.</p>
+
+	<dl>
+	  <dt>cea.filestore.basedir</dt> 
+      <dd>
+        This is the directory where the server stores the record of each of the application executions
+		</dd>
+	  <dt>cea.commandline.workingdir.file</dt>
+      <dd>
+        This is the directory where the server stores sets up working directories for each application execution. It should be noted that this directory tree can consume a large amount of space if not cleaned up occasionally.
+		</dd>
+    <dt>org.astrogrid.registry.admin.endpoint</dt>
+      <dd>This needs to be set to the URL of a registry admin service endpoint. This is necessary because the server is capable of registering itself.
+	</dd> 
+    <dt>org.astrogrid.registry.query.endpoint</dt>
+       <dd>This needs to be set to the URL of a registry query service endpoint. This is because the CEC server needs to be able to find the location of other VO services.
+	</dd> 
+    <dt>cea.registry.template.url</dt>
+       <dd>When registering itself the server needs to know a certain amount of meta information about itself. This information can be supplied in the this template file. If this is not set then some default values will be used, but these will probably lead to misleading registry entries for the server that you are installing.
+        <p>A suitable template file for customization can be found in <a href="http://www.astrogrid.org/viewcvs/astrogrid/applications/server/src/java/CEARegistryTemplate.xml?rev=HEAD&amp;content-type=text/vnd.viewcvs-markup">cvs</a> and the meaning of the various entries is explained in the <a href="http://www.ivoa.net/Documents/latest/RM.html">IVOA Resource Metadata Standard</a> </p>
+		</dd>
+        <dt>cea.service.endpoint.url</dt>
+           <dd> The service endpoint URL needs to be explicitly set because the service might be behind a firewall and have a different apparent address to the outside world. This is used when telling other services about the location of this service. e.g.
+            <code>
+                 http://astrogrid.jb.man.ac.uk:8080/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService
+            </code>
+        </dd>
+  	
+ </dl>
+ </subsection>
+ <subsection name="Application Configuration">
+    <p>Setting up the wrapped applications consists of two stages</p>
+    <ol>
+        <li>Installing the applications themselves</li>
+        <li>Informing the CEA server how to run the applications</li>
+    </ol>
+    <p>The first of these steps is outside the scope of these instructions, as the original application documentation must be consulted. The second stage could be a simple as creating an entry in a configuration file, and is described in more detail in <a href="ApplicationConfiguration.html">the application confguration page</a></p>
+    <p>The application configuration file should be specified with the</p>
+    <code>
+        cea.commandline.description.list.url
+    </code>
+    
+ </subsection>
+ <subsection name="Testing the server">
+    <p>When the server has been configured it is possible to do a number of simple self tests on the server by clicking on the <a href="../TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory">"Installation Tests"</a> link from the main administration page. These tests are reasonably simple tests, but any failure will mean that some part of the configuration is invalid.</p>
+ </subsection>
+ <subsection name="Registering">
+    <p>Once a CEA server has been successfully configured it is possible to make it register itself with the registry specified by the <em>org.astrogrid.registry.admin.endpoint</em> key</p>
+ </subsection>
+</section>
+</body>
+</document>

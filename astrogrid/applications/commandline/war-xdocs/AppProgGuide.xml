@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+	<author email="pah@jb.man.ac.uk">Paul Harrison</author>
+	<title>Programming the CEA CommandLineAppliction Execution Controller</title>
+</properties>
+
+<body>
+<section name="Programming the CEA CommandLineAppliction Execution Controller">
+
+<p>This guide provides information specific to the CommandLine Application Exection Controller. To see more general information about 
+	programming CommandLineControllers see <a href="../programmers_guide.html">this guide</a></p>
+</section>
+</body>
+</document>

@@ -2,19 +2,27 @@
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <!-- take note - this project extends the generic server project
-    - in this way we inherit all the dependencies -->
+    - in this way we inhierit all the dependencies -->
   <extend>${basedir}/../server/project.xml</extend>
   <id>astrogrid-cea-commandline</id>
   <currentVersion>${astrogrid.applications.version}</currentVersion>
-  <name>CL-CEC</name>
+  <name>AstroGrid Commandline applications CEA server</name>
 
   <description><![CDATA[
-  	The Common Execution Connector for command-line applications (CL-CEC) makes astronomical applications available to the 
-  	Common Execution Architecture and hence to AstroGrid's end-users. The CL-CEC provides a web-service for access to a specific,
-  	locally-configured set of command-line applications.]]>
+  The applications integration component provides users with a mechanism to run applications. They will most often be run from a workflow component, rather than being invoked directly.
+  <p> The main functionality that this component provides is.
+         <ol>
+          <li>A standard description of application parameters that allows for automated GUI building and workflow creation.</li>
+          <li>A wrapper to allow the application to retrieve/store information in MySpace.</li>
+         </ol>
+This functionality is provided with the ApplicationController service, of which there can be specializations to call command line applications, datacentre and other general web services. In iteration 4 there is only a  specialization to call command line applications.
+</p>
+
+<p>The delegate is built in the same directory using the delegate-project.xml, but all of the reports are generated from this main project</p>
+]]>
   </description>
 
-  <shortDescription>AstroGrid Commandline Common Execution Connector (CL-CEC</shortDescription>
+  <shortDescription>AstroGrid Commandline Application CEA Server</shortDescription>
 
 
 

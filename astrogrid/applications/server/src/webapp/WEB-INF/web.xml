@@ -3,7 +3,7 @@
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-  <display-name>Astrogrid CL-CEC</display-name>
+  <display-name>Astrogrid CEA Server</display-name>
 	<listener>
 		<listener-class>org.astrogrid.applications.component.LifecycleListener</listener-class>
 	</listener>
@@ -70,30 +70,7 @@
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
 
-	<!-- The installer must set this to identify the local configuration of the application.
-	     This only applies to the CL-CEC, not to the HTTP-CEC. -->
-	<env-entry>
-		<description>The URL for an XML document descripting the applications to be run by a CL-CEC.</description>
-		<env-entry-name>cea.local.apps.config</env-entry-name>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-	
-	<!-- The installer must set this to identify the directory where the CEC keeps its job records. -->
-	<env-entry>
-		<description>The full path to a directory where the CEC may write job-record files.</description>
-		<env-entry-name>cea.job.records</env-entry-name>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-	
-	<!-- The installer must set this to identify the directory where the CEC may write files 
-	     holding the input and output parameters of a job. -->
-	<env-entry>
-		<description>The full path to a directory where the CEC may write temporary files for jobs.</description>
-		<env-entry-name>cea.job.temp.files</env-entry-name>
-		<env-entry-type>java.lang.string</env-entry-type>
-	</env-entry>
-	
-	<!-- edit this env entry to use a custom component manager - e.g. for a different cea implementation -->
+  <!-- edit this env entry to use a custom component manager - e.g. for a different cea implementation -->
   <env-entry>
     <description>Class name of the component manager implementation to use</description>
     <env-entry-name>cea.component.manager.class</env-entry-name>
@@ -101,17 +78,13 @@
     <env-entry-type>java.lang.String</env-entry-type>
   </env-entry>
 	
-	<!-- Nominate a full, searchable registry from which to read by this web-application's details.
-	     The given value is AstroGrid's central registry which will be OK for most cases. --> 
 	<env-entry>
 		<description>The service endpoint for querying the resource registry.</description>
 		<env-entry-name>registry.query.endpoint</env-entry-name>
-		<env-entry-value>http://galahad.star.le.ac.uk:8081/astrogrid-registry/services/RegistryQuery</env-entry-value>
+		<env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryQuery</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
 
-	<!-- Nominate a registry where the web-application can publish itself.
-	     No value is given as we don't recommend self-publishing at present. -->
 	<env-entry>
 		<description>The service endpoint for updating the resource registry.</description>
 		<env-entry-name>registry.admin.endpoint</env-entry-name>
@@ -119,11 +92,10 @@
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
 	
-	<!-- At present this MUST be set to 0.9 otherwise the component fails. -->
 	<env-entry>
 		<description>The version of the schema for resource documents: 0.9 or 0.10."</description>
 		<env-entry-name>org.astrogrid.registry.result.version</env-entry-name>
-		<env-entry-value>0.9</env-entry-value>
+		<env-entry-value>0.10</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
 	

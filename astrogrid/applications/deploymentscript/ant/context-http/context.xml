@@ -1,5 +1,5 @@
 <Context path="@CEA_WEBAPP@">
-    <Environment name="cea.job.records" override="false" type="java.lang.String" value="@CEA_WORKING@/store" />
+    <Environment name="cea.filestore.basedir" override="true" type="java.lang.String" value="@CEA_WORKING@/store" />
     <!--optional - picks up a default template from the classpath - can override to set up personalised values in template -->
     <Environment name="cea.registry.template.url"  override="true" decription="The template registry entry" type="java.lang.String" 
         value="file:///@CEARegistryTemplate@" />
