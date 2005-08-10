@@ -5,12 +5,7 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-			<action dev="dave" type="fix"><em>Branch: dave-dev-200508090435</em>
-				Fixed broken <xml/> tags in xdocs.
-				Fixed change to CEA return type (String to Document).
-				Added .cvsigore files where missing.
-				Updated .cvsignore files to ignore target.
-			</action>
+			
 			<action dev="kmb" type="fix" issue="1323"><em>Branch: Common_KMB_1323</em>
 				1 file is changed on this branch (DomHelper) to look at the "*" namespace. if it does not find results for a element
                 with no namespace as a parameter.  Requires to be merged with Registry.
@@ -52,7 +47,12 @@
     		<action dev="mch" type="add" issue="1228"> Documentation for astrogrid/pal. Branch MCH_1228_Docs. </action>
 			        </release>
         <release version="(Undertest)">
-			
+			<action dev="dave" type="fix"><em>Branch: dave-dev-200508090435</em>
+				Fixed broken <xml/> tags in xdocs.
+				Fixed change to CEA return type (String to Document).
+				Added .cvsigore files where missing.
+				Updated .cvsignore files to ignore target.
+			</action>
     		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.</action>
             
         </release>
