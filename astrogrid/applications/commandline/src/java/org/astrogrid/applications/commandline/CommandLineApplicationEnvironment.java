@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationEnvironment.java,v 1.3 2005/07/05 08:27:01 clq2 Exp $
+ * $Id: CommandLineApplicationEnvironment.java,v 1.4 2005/08/10 14:45:37 clq2 Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -38,8 +38,10 @@ public class CommandLineApplicationEnvironment {
    private class TempFileFactory {
       private int filenum = 0;
 
-      public File createFile() {
-         StringBuffer filename = new StringBuffer();
+      
+      public File createFile(String name) {
+         StringBuffer filename = new StringBuffer(name);
+         filename.append("_");
          filename.append(filenum++);
          filename.append(".tmpgen");
          return new File(executionDirectory, filename.toString());
@@ -101,8 +103,8 @@ public class CommandLineApplicationEnvironment {
       return executionDirectory;
    }
    
-   public File getTempFile() {
-       return tempFileFactory.createFile(); 
+   public File getTempFile(String name) {
+       return tempFileFactory.createFile(name); 
    }
 
    /**

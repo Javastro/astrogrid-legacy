@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.12 2005/07/05 08:26:57 clq2 Exp $
+ * $Id: InitServlet.java,v 1.13 2005/08/10 14:45:37 clq2 Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -192,8 +192,8 @@ public class InitServlet extends HttpServlet {
          Document regEntry = CEAComponentManagerFactory.getInstance()
                .getMetadataService().returnRegistryEntry();
          XMLUtils.DocumentToWriter(regEntry, pw);
-
-      } catch (CeaException e) {
+      }
+        catch (CeaException e) {
          throw new ServletException(e);
       }
    }

@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoRunner.java,v 1.6 2005/03/13 07:13:39 clq2 Exp $
+ * $Id: AVODemoRunner.java,v 1.7 2005/08/10 14:45:37 clq2 Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -46,6 +46,7 @@ import javax.mail.internet.InternetAddress;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4.1
+ * @deprecated this was a quick fix for the demo - not the way to do things nowadays...
  * @bugzilla 
  */
 public class AVODemoRunner implements Runnable {

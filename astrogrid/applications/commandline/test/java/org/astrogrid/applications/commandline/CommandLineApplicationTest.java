@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationTest.java,v 1.11 2005/07/05 08:26:56 clq2 Exp $
+/*$Id: CommandLineApplicationTest.java,v 1.12 2005/08/10 14:45:37 clq2 Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -321,7 +321,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
             InterruptedException {
 
         // now create an application based on these details
-        Application app = testAppDescr.initializeApplication("testExecution",
+        CommandLineApplication app = (CommandLineApplication) testAppDescr.initializeApplication("testExecution",
                 new User(), t);
         
         assertNotNull(app);
@@ -348,6 +348,8 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
                 + results.getResult(0).getName() + ","
                 + results.getResult(1).getName()+ results.getResult(2).getName());
 
+        
+        
         return results;
     }
     
@@ -366,6 +368,12 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
 
 /*
  * $Log: CommandLineApplicationTest.java,v $
+ * Revision 1.12  2005/08/10 14:45:37  clq2
+ * cea_pah_1317
+ *
+ * Revision 1.11.4.1  2005/07/21 15:12:06  pah
+ * added workfile deletion
+ *
  * Revision 1.11  2005/07/05 08:26:56  clq2
  * paul's 559b and 559c for wo/apps and jes
  *

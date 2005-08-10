@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.13 2005/07/05 08:26:57 clq2 Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.14 2005/08/10 14:45:37 clq2 Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.astrogrid.applications.description.registry.RegistryAdminLocator;
 import org.astrogrid.applications.description.registry.RegistryUploader;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
 import org.astrogrid.applications.manager.CeaThreadPool;
+import org.astrogrid.applications.manager.ControlService;
 import org.astrogrid.applications.manager.DefaultApplicationEnvironmentRetriever;
 import org.astrogrid.applications.manager.DefaultMetadataService;
 import org.astrogrid.applications.manager.DefaultQueryService;
@@ -75,7 +76,7 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
     /**
      * Commons Logger for this class
      */
-    private static final Log logger = LogFactory
+    protected static final Log logger = LogFactory
             .getLog(EmptyCEAComponentManager.class);
 
     /** Construct a new EmptyCEAComponentManager
@@ -107,6 +108,10 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
     public final RegistryUploader getRegistryUploaderService() {
        return (RegistryUploader)this.pico.getComponentInstance(RegistryUploader.class);
     }
+    
+    public final ControlService getControlService() {
+       return (ControlService) this.pico.getComponentInstanceOfType(ControlService.class);
+    }
     /** dummy component that ensures required componets are registered with the container
      * not interesting, but needs to be publc so that picocontainer can instantiate it */ 
     public static final class VerifyRequiredComponents {
@@ -116,7 +121,7 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
         private static final Log logger = LogFactory
                 .getLog(VerifyRequiredComponents.class);
 
-        public VerifyRequiredComponents(ExecutionController ignored,MetadataService ignoredToo, QueryService dontcare) {
+        public VerifyRequiredComponents(ExecutionController ignored,MetadataService ignoredToo, QueryService dontcare, ControlService notused) {
         }
     }
 
@@ -130,7 +135,7 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
      * @see #registerCompositeApplicationDescriptionLibrary(MutablePicoContainer)
      * @see #registerContainerApplicationDescriptionLibrary(MutablePicoContainer)
      * */
-    protected static final void registerDefaultServices(MutablePicoContainer pico) {
+    protected  final void registerDefaultServices(MutablePicoContainer pico) {
         log.info("Registering default services");
         pico.registerComponentImplementation(ApplicationDescriptionEnvironment.class,ApplicationDescriptionEnvironment.class);
         // trying something a little more intelligent.. pico.registerComponentImplementation(ExecutionController.class, DefaultExecutionController.class);
@@ -141,6 +146,12 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
        // not added by default - stiches up cea-commandline.
         //registerContainerApplicationDescriptionLibrary(pico);
        registerEnvironmentRetriever(pico);
+       
+       // the protocol lib
+       EmptyCEAComponentManager.registerProtocolLibrary(pico);
+       EmptyCEAComponentManager.registerStandardIndirectionProtocols(pico);
+       EmptyCEAComponentManager.registerAstrogridIndirectionProtocols(pico);
+
         }
     
     /** registers the default implementaiton of the indirection protocol library 
@@ -245,7 +256,7 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
     * @param pico
     * @param config
     */
-   public static void registerVOProvider(MutablePicoContainer pico, final Config config, final Class MetadataServ) {
+   protected static void registerVOProvider(MutablePicoContainer pico, final Config config, final Class MetadataServ) {
       try {
         pico.registerComponentImplementation(MetadataService.class, MetadataServ);
         pico.registerComponentInstance(DefaultMetadataService.URLs.class, new DefaultMetadataService.URLs() {
@@ -336,7 +347,7 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
        }); 
     }
 
-   public static void registerEnvironmentRetriever(final MutablePicoContainer pico)
+   public void registerEnvironmentRetriever(final MutablePicoContainer pico)
    {
       logger.info("registering Default Environment Retriever");
       pico.registerComponentImplementation(ApplicationEnvironmentRetriver.class, DefaultApplicationEnvironmentRetriever.class);
@@ -348,6 +359,12 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
+Revision 1.14  2005/08/10 14:45:37  clq2
+cea_pah_1317
+
+Revision 1.13.6.1  2005/07/21 15:10:22  pah
+changes to acommodate contol component, and starting to change some of the static methods to dynamic
+
 Revision 1.13  2005/07/05 08:26:57  clq2
 paul's 559b and 559c for wo/apps and jes
 

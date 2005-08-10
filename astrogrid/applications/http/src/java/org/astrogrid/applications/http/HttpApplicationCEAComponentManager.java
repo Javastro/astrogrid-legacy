@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationCEAComponentManager.java,v 1.3 2005/07/05 08:27:01 clq2 Exp $
+/*$Id: HttpApplicationCEAComponentManager.java,v 1.4 2005/08/10 14:45:37 clq2 Exp $
  * Created on Jul 24, 2004 or thereabouts
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,7 +56,7 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
        
         final Config config = SimpleConfig.getSingleton();
         // controller & queriers
-        EmptyCEAComponentManager.registerDefaultServices(pico);
+        registerDefaultServices(pico);
         // store
         EmptyCEAComponentManager.registerDefaultPersistence(pico, config);
         // metadata - note that his is not the default provider
@@ -65,10 +65,6 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
         //registry uploader
         EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
 
-        // the protocol lib
-        EmptyCEAComponentManager.registerProtocolLibrary(pico);
-        EmptyCEAComponentManager.registerStandardIndirectionProtocols(pico);
-        EmptyCEAComponentManager.registerAstrogridIndirectionProtocols(pico);
         // now hook in our own implementation
         registerHttpApplicationProvider(pico, config);
         logger.info("HttpApplicationCEAComponentManager() - done");
@@ -103,6 +99,12 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
 
 /*
  * $Log: HttpApplicationCEAComponentManager.java,v $
+ * Revision 1.4  2005/08/10 14:45:37  clq2
+ * cea_pah_1317
+ *
+ * Revision 1.3.4.1  2005/07/21 15:10:39  pah
+ * changes to acommodate contol component, and starting to change some of the static methods to dynamic
+ *
  * Revision 1.3  2005/07/05 08:27:01  clq2
  * paul's 559b and 559c for wo/apps and jes
  *

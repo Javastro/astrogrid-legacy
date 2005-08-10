@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableWriter.java,v 1.6 2004/12/18 15:43:57 jdt Exp $
+ * $Id: HyperZVOTableWriter.java,v 1.7 2005/08/10 14:45:37 clq2 Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -67,7 +67,7 @@ public class HyperZVOTableWriter extends DefaultCommandLineParameterAdapter {
         super(interf,val, descr,ival,env);
         logger.debug("creating hyperz table writer");
         this.votableSource = votableSource;
-        tmpfile = env.getTempFile();
+        tmpfile = env.getTempFile(descr.getName());
     }
     private final File tmpfile;
    private final VOTableSource votableSource;

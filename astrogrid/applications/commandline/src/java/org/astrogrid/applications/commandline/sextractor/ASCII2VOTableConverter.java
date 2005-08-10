@@ -1,5 +1,5 @@
 /*
- * $Id: ASCII2VOTableConverter.java,v 1.4 2004/09/23 22:44:23 pah Exp $
+ * $Id: ASCII2VOTableConverter.java,v 1.5 2005/08/10 14:45:37 clq2 Exp $
  * 
  * Created on 17-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -59,7 +59,7 @@ public class ASCII2VOTableConverter {
       this.paramsFileparam = paramsFile;
       this.env = env;
       
-      tmpfile = env.getTempFile();
+      tmpfile = env.getTempFile(paramsFileparam.getWrappedParameter().getName());
       outputParams = new OutputParams(paramsFileparam.getReferenceFile(), band);   
        
       

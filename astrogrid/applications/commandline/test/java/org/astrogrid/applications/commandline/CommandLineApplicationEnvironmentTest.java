@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationEnvironmentTest.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: CommandLineApplicationEnvironmentTest.java,v 1.3 2005/08/10 14:45:37 clq2 Exp $
  * 
  * Created on 11-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,7 +13,6 @@
 
 package org.astrogrid.applications.commandline;
 
-import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 
 import java.io.File;
 
@@ -24,10 +23,8 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration4
  */
-public class CommandLineApplicationEnvironmentTest extends TestCase {
+public class CommandLineApplicationEnvironmentTest extends AbstractCommandLineEnvironmentTestCase {
 
-   protected CommandLineApplicationEnvironment env;
-    protected File workingDir;
    /**
     * Constructor for ApplicationEnvironmentTest.
     * @param arg0
@@ -38,27 +35,6 @@ public class CommandLineApplicationEnvironmentTest extends TestCase {
 
    public static void main(String[] args) {
       junit.textui.TestRunner.run(CommandLineApplicationEnvironmentTest.class);
-   }
-
-   /*
-    * @see TestCase#setUp()
-    */
-   protected void setUp() throws Exception {
-      super.setUp();
-      workingDir = File.createTempFile("CmdLineApplicationEnvironmentTest",null);
-      workingDir.delete();
-      workingDir.mkdir();
-      assertTrue(workingDir.exists());
-      workingDir.deleteOnExit();
-      env = new CommandLineApplicationEnvironment(new InMemoryIdGen(),new CommandLineApplicationEnvironment.WorkingDir() {
-
-        public File getDir() {
-            return workingDir;
-        }
-      });
-      assertNotNull(env);
-      
-      
    }
 
    final public void testGetErrorLog() {
@@ -85,11 +61,11 @@ public class CommandLineApplicationEnvironmentTest extends TestCase {
    }
    
    final public void testTempFiles() {
-       File f = env.getTempFile();
+       File f = env.getTempFile("testa");
        assertNotNull(f);
        assertTrue(f.getParentFile().exists());
        
-       File f1 = env.getTempFile();
+       File f1 = env.getTempFile("testa");
        assertNotNull(f1);
        
        assertFalse(f.equals(f1));

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.19 2005/07/05 08:27:01 clq2 Exp $
+ * $Id: CommandLineApplication.java,v 1.20 2005/08/10 14:45:37 clq2 Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -38,6 +38,7 @@ import java.io.FileReader;
 import java.io.FilterReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.AbstractList;
@@ -120,7 +121,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
       // allow last minute manipulation of parameters before the application runs
       reportMessage("Calling postParamSetupHook");
      postParamSetupHook();
-     reportMessage("postParamSetupHook - completed");
+     logger.debug("postParamSetupHook - completed");
      
      //create a list of all the parameter adapters and sort them.
      List allAdapterList = IteratorUtils.toList(parameterAdapters());
@@ -274,7 +275,7 @@ private final void endApplication()  {
       // call the hook to allow manipulation by subclasses
       reportMessage("Calling preWritebackHook");
       preWritebackHook();
-      reportMessage("preWritebackHook - completed");
+      logger.debug("preWritebackHook - completed");
       // copy back any output parameters
       ApplicationInterface applicationInterface = getApplicationInterface();
       for (Iterator i = outputParameterAdapters(); i.hasNext(); ) {   
@@ -299,7 +300,11 @@ private final void endApplication()  {
          sb.append(urlend.substring(0,ii));
       
       sb.append("cec-http?method=getexecutionlog&type=out&id=");
-      sb.append(URLEncoder.encode(applicationEnvironment.getExecutionId()));
+      try {
+         sb.append(URLEncoder.encode(applicationEnvironment.getExecutionId(), "UTF-8"));
+      } catch (UnsupportedEncodingException e) {
+         logger.error("internal error - encoding for log access url bad - need to fix code", e);
+      }
       reportMessage(sb.toString());
       }
       else{
@@ -309,10 +314,30 @@ private final void endApplication()  {
          reportStandardError(true);// send the stderr output as well
 //         setStatus(Status.ERROR); the reporting will automatically do this....TODO need to refactor how the writing to permanent store is signaled....
       } else {
+         // clean up the input files if the command was successful
+          cleanInputFiles();
           setStatus(Status.COMPLETED);//it notifies that results are ready to be consumed.
       }
    }
    
+   private void cleanInputFiles() {
+      for (Iterator iter = inputParameterAdapters(); iter.hasNext();) {
+         DefaultCommandLineParameterAdapter adapter = (DefaultCommandLineParameterAdapter) iter.next();
+         
+        
+         if (adapter.cmdParamDesc.isFileRef()) {
+            File f;
+            if((f = adapter.getReferenceFile()) != null)
+            {
+               if(!f.delete())
+               {
+                  logger.warn("cannot delete working file "+f.getAbsolutePath());
+               }
+            }
+         }
+      }
+ }
+
    /**
  * Report the standard error output to the listeners.
  */
@@ -338,7 +363,7 @@ private void reportStandardError(boolean doError) {
         String line;
         while((line = errReader.readLine()) != null)
         {
-           //FIXME - need to filter the strings
+           //TODO - check that there are not other strings that should be filtered...
            line = line.replace('\u001b', ' '); //get rid of escape characters...
            errMsg.append(line);
            errMsg.append('\n');

@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.6 2005/07/05 08:27:01 clq2 Exp $
+/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.7 2005/08/10 14:45:37 clq2 Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,8 @@ import java.lang.reflect.Modifier;
  * <p>
  * This class constructs {@link org.astrogrid.applications.javaclass.JavaClassApplicationDescription} for each static method in its parameter class,
  * and then collects them as an {@link org.astrogrid.applications.description.ApplicationDescriptionLibrary}
+ * @TODO would be nice if this library read a file/property list to allow multiple classes to be registered.
+ * @TODO would be good to be able to use annotation to provide nore of the documenation that is needed for a full registry entry.
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @see org.astrogrid.applications.javaclass.JavaClassApplicationDescription
@@ -86,6 +88,12 @@ public class JavaClassApplicationDescriptionLibrary extends BaseApplicationDescr
 
 /* 
 $Log: JavaClassApplicationDescriptionLibrary.java,v $
+Revision 1.7  2005/08/10 14:45:37  clq2
+cea_pah_1317
+
+Revision 1.6.6.1  2005/07/19 11:58:05  pah
+added comment that it would be good if the library could accommodate multiple classes as "application" implementations - would be nice to use annotations also to provide more of the documentation that is needed.
+
 Revision 1.6  2005/07/05 08:27:01  clq2
 paul's 559b and 559c for wo/apps and jes
 

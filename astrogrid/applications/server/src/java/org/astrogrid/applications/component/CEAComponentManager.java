@@ -1,4 +1,4 @@
-/*$Id: CEAComponentManager.java,v 1.4 2004/11/27 13:20:03 pah Exp $
+/*$Id: CEAComponentManager.java,v 1.5 2005/08/10 14:45:37 clq2 Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.applications.component;
 
 import org.astrogrid.applications.description.registry.RegistryUploader;
+import org.astrogrid.applications.manager.ControlService;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.MetadataService;
 import org.astrogrid.applications.manager.QueryService;
@@ -32,11 +33,19 @@ public interface CEAComponentManager extends ComponentManager {
     /** @return the component that will upload to the registry */
     public RegistryUploader getRegistryUploaderService();
     
+    public ControlService getControlService();
+    
 }
 
 
 /* 
 $Log: CEAComponentManager.java,v $
+Revision 1.5  2005/08/10 14:45:37  clq2
+cea_pah_1317
+
+Revision 1.4.86.1  2005/07/21 15:10:22  pah
+changes to acommodate contol component, and starting to change some of the static methods to dynamic
+
 Revision 1.4  2004/11/27 13:20:03  pah
 result of merge of pah_cea_bz561 branch
 

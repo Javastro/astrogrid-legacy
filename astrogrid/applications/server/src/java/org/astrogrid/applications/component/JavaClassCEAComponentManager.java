@@ -1,4 +1,4 @@
-/*$Id: JavaClassCEAComponentManager.java,v 1.5 2004/11/27 13:20:03 pah Exp $
+/*$Id: JavaClassCEAComponentManager.java,v 1.6 2005/08/10 14:45:37 clq2 Exp $
  * Created on 10-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,17 +40,13 @@ public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
         super();
         final Config config = SimpleConfig.getSingleton();
         // controller & queriers        
-        EmptyCEAComponentManager.registerDefaultServices(pico);
+        registerDefaultServices(pico);
         // store
         EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
         // metadata
         EmptyCEAComponentManager.registerDefaultVOProvider(pico,config);
         //registry uploader
         EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
-        // the protocol lib
-        EmptyCEAComponentManager.registerProtocolLibrary(pico);
-        EmptyCEAComponentManager.registerStandardIndirectionProtocols(pico);
-        EmptyCEAComponentManager.registerAstrogridIndirectionProtocols(pico);
         // now hook in out own implementation
         registerJavaClassProvider(pico,config);
     }
@@ -75,6 +71,12 @@ public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
 
 /* 
 $Log: JavaClassCEAComponentManager.java,v $
+Revision 1.6  2005/08/10 14:45:37  clq2
+cea_pah_1317
+
+Revision 1.5.86.1  2005/07/21 15:10:22  pah
+changes to acommodate contol component, and starting to change some of the static methods to dynamic
+
 Revision 1.5  2004/11/27 13:20:03  pah
 result of merge of pah_cea_bz561 branch
 

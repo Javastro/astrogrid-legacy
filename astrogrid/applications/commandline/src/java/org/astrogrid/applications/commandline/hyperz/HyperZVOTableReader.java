@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableReader.java,v 1.6 2004/12/18 15:43:57 jdt Exp $
+ * $Id: HyperZVOTableReader.java,v 1.7 2005/08/10 14:45:37 clq2 Exp $
  * 
  * Created on 18-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -62,7 +62,7 @@ public class HyperZVOTableReader extends DefaultCommandLineParameterAdapter impl
       super.process();
        // apply vot
        File source = this.referenceFile;
-       File plainFile = env.getTempFile();
+       File plainFile = env.getTempFile(description.getName());
        // must set the command line values
        this.referenceFile = plainFile;
        this.commandLineVal = plainFile.getName();

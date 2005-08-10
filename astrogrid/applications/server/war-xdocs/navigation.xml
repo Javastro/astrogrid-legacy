@@ -12,6 +12,7 @@
       <item name="View VODescription" href="cec-http?method=returnRegistryEntry" />
 	  <item name="Register" href="cec-http?method=register" />
       <item name="Test run" href="chooseapp.jsp" />
+	 <item name="Clean up" href="admin/clean.jsp" />
     </menu>
     <menu name="Resources">
       <item name="WSDL" href="wsdl" />

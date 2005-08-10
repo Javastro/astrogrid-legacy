@@ -1,4 +1,4 @@
-/*$Id: CommandLineCEAComponentManager.java,v 1.8 2005/08/10 12:22:08 clq2 Exp $
+/*$Id: CommandLineCEAComponentManager.java,v 1.9 2005/08/10 14:45:37 clq2 Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,14 @@
 **/
 package org.astrogrid.applications.commandline;
 
+import org.astrogrid.applications.commandline.control.CommandLineCECControl;
 import org.astrogrid.applications.commandline.digester.CommandLineApplicationDescriptionFactory;
 import org.astrogrid.applications.commandline.digester.CommandLineDescriptionsLoader;
 import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.applications.component.EmptyCEAComponentManager;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
+import org.astrogrid.applications.manager.DefaultApplicationEnvironmentRetriever;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 
@@ -59,22 +61,19 @@ public class CommandLineCEAComponentManager extends EmptyCEAComponentManager  {
         EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
         
         // now need the other side - the cec manager itself.
-        EmptyCEAComponentManager.registerDefaultServices(pico);        
+        registerDefaultServices(pico);        
         EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
-        // indirection handlers
-        EmptyCEAComponentManager.registerProtocolLibrary(pico);
-        EmptyCEAComponentManager.registerAstrogridIndirectionProtocols(pico);
-        EmptyCEAComponentManager.registerStandardIndirectionProtocols(pico);
-        
-        //now the Logretriver
-        //TODO this is a bit hacky - would be nicer if EmptyCEAComponentManager had fewer statics so that they could be overridden rather than having to unregister component
-        pico.unregisterComponent(ApplicationEnvironmentRetriver.class);
-        pico.registerComponentImplementation(ApplicationEnvironmentRetriver.class, CommandLineExecutionEnvRetriever.class);
-        
+         
+       
         // now the provider
         registerCommandLineProvider(pico,config);
     }
-    
+    public void registerEnvironmentRetriever(final MutablePicoContainer pico)
+    {
+       logger.info("registering Commandline Environment Retriever");
+       pico.registerComponentImplementation(ApplicationEnvironmentRetriver.class, CommandLineExecutionEnvRetriever.class);
+    }
+  
     /** register just the components for the commandline provider - none of the generic components */
     public static final void registerCommandLineProvider(MutablePicoContainer pico, final Config config) {
          log.info("registering commandline description loader");
@@ -113,13 +112,19 @@ public class CommandLineCEAComponentManager extends EmptyCEAComponentManager  {
                              ,new ConstantParameter(pico)
                      }                                      
              ));
+         
+         pico.registerComponentImplementation(CommandLineCECControl.class);
     }
  
-}
+    
+ }
 
 
 /* 
 $Log: CommandLineCEAComponentManager.java,v $
+Revision 1.9  2005/08/10 14:45:37  clq2
+cea_pah_1317
+
 Revision 1.8  2005/08/10 12:22:08  clq2
 roll back to before Guy's 1230 merge, need to re do it.
 
