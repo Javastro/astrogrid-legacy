@@ -1,5 +1,5 @@
 /*
- * $Id: GetMetadata.java,v 1.3 2005/03/21 18:45:55 mch Exp $
+ * $Id: GetMetadata.java,v 1.4 2005/08/10 13:24:57 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -33,7 +33,15 @@ public class GetMetadata extends DefaultServlet {
          }
          //CEA resources
          else if (resourceType.toUpperCase().equals("CEA")) {
-            response.getWriter().write(CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry());
+//            response.getWriter().write(".... test string ....");
+//            response.getWriter().write(
+//				CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry()
+//				);
+            response.getWriter().write(
+				DomHelper.ElementToString(
+					CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry().getDocumentElement()
+					)
+				);
          }
          //look for the one with the same name
          else  {

@@ -1,42 +1,41 @@
 <?xml version="1.0"?>
-<!-- $Id: pre-requisites.xml,v 1.2 2005/07/26 11:36:51 clq2 Exp $ -->
+<!-- $Id: pre-requisites.xml,v 1.3 2005/08/10 13:24:56 clq2 Exp $ -->
 <document>
-  <properties>
-    <title>Pre-Requisists for a PAL webapp</title>
-    <author email="dave@ast.cam.ac.uk">Dave Morris</author>
-    <author email="mch@roe.ac.uk">Martin Hill</author>
-  </properties>
-<body>
-
-<section name="Introduction">
-<p>
-The PAL webapps rely upon the following software components which must be
-installed and configured before installing the Datacenter Server.
-</p>
-
-<section name='Java Virtual Machine'>
-<p>
-Java (J2SE) version 1.4 or higher. Available from <a href="http://java.sun.com/j2se/downloads.html">http://java.sun.com/j2se/downloads.html</a>.
-Be aware that 1.4 does not support IP v6.  The virtual machine ought to be run with assertions 'on', but it is not strictly necessary.
-</p>
-
-<section name='Web Service Manager'>
-<p>As the PAL webapps are provided in 'WAR' form, they need a web service manager or container
-to present themselves to the web.  We have used and tested them with
-Tomcat, but others include WebSphere and JBoss.
-</p>
-<subsection name='Tomcat Server'>
-<p>
-Requires version 4.1 or later, but we recommend 5.0. Available from <a href="http://jakarta.apache.org/tomcat/">http://jakarta.apache.org/tomcat/</a>;
-Installation instructions <a
-href="http://jakarta.apache.org/tomcat/tomcat-4.1-doc/RUNNING.txt">http://jakarta.apache.org/tomcat/tomcat-4.1-doc/RUNNING.txt</a>.
-Other servlet containers should work, provided they support version 2.2 of the Servlets Spec.
-<p/>
-Set shell variable <tt>CATALINA_HOME</tt> to the root of your tomcat installation, as described in the installation instructions.
-</p>
-
-</subsection>
-</section>
-</body>
-</html>
+	<properties>
+		<title>Pre-Requisists for a PAL webapp</title>
+		<author email="dave@ast.cam.ac.uk">Dave Morris</author>
+		<author email="mch@roe.ac.uk">Martin Hill</author>
+	</properties>
+	<body>
+		<section name="Introduction">
+			<p>
+				The PAL webapps rely upon the following software components which must be
+				installed and configured before installing the Datacenter Server.
+			</p>
+		</section>
+		<section name='Java Virtual Machine'>
+			<p>
+				Java (J2SE) version 1.4 or higher. Available from <a href="http://java.sun.com/j2se/downloads.html">http://java.sun.com/j2se/downloads.html</a>.
+				Be aware that 1.4 does not support IP v6.  The virtual machine ought to be run with assertions 'on', but it is not strictly necessary.
+			</p>
+		</section>
+		<section name='Web Service Manager'>
+			<p>
+				As the PAL webapps are provided in 'WAR' form, they need a web service manager or container
+				to present themselves to the web.  We have used and tested them with
+				Tomcat, but others include WebSphere and JBoss.
+			</p>
+			<subsection name='Tomcat Server'>
+				<p>
+					Requires version 4.1 or later, but we recommend 5.0. Available from <a href="http://jakarta.apache.org/tomcat/">http://jakarta.apache.org/tomcat/</a>;
+					Installation instructions <a href="http://jakarta.apache.org/tomcat/tomcat-4.1-doc/RUNNING.txt">http://jakarta.apache.org/tomcat/tomcat-4.1-doc/RUNNING.txt</a>.
+					Other servlet containers should work, provided they support version 2.2 of the Servlets Spec.
+				</p>
+				<p>
+					Set shell variable <tt>CATALINA_HOME</tt> to the root of your tomcat installation, as described in the installation instructions.
+				</p>
+			</subsection>
+		</section>
+	</body>
+</document>
 

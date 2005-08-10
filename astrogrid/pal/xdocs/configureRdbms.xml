@@ -1,112 +1,123 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE document SYSTEM "xdoc.dtd" >
 <document>
-<properties>
-  <author email="dave@ast.cam.ac.uk">Dave Morris</author>
-  <author email="mch@roe.ac.uk">Martin Hill</author>
-  <title>Configuring your dataserver to use a relational database</title>
-</properties>
-
-<body>
-<section name="Introduction">
-
-<p>Many datasets are stored in Relational Database Management Systems (RDBMSs) such as SQL
-Server, Postgres, etc.  PAL includes plugins to connect to any RDBMS that provides a
-    <a href="http://java.sun.com/products/jdbc/">JDBC</a> driver; it has been tested with the following:
-   <ul>
-      <li><a href="http://www.mysql.com/">MySQL</a> - Open Source SQL database </li>
-      <li><a href="http://www.microsoft.com/sql/">SQL Server</a> - Microsoft SQL Server</li>
-      <li><a href="http://www.postgresql.org/">Postgres</a> - Open Source database</li>
-     <li><a href="http://hsqldb.sourceforge.net/">HSQL</a> - pure-Java
-         RDBMS. For testing purposes or serving small databases based on
-         textfiles. </li>
-   </ul>
-   </p>
-</section>
-   
-<section name="Preparing your database">
-   <p>Your database must have an ODBC-compatible connection; this will allow PAL to connect
-   to it using a special URL and probably a user id and password.  You will need to
-   set up the user id and password on the database ODBC connection so that PAL can
-   connect to it using the same ones each time.</p>
-  <p>
-   Many RDBMS have a user Principal system, where different Principals may be provided with different access privileges.
-    If this is the case with your target RDBMS, we recommend that a new user Principal be created
-     for the dataservice application to connect as.
-   </p>
-   <p>The dataservice Principal should only have read / query privileges granted. <b>Do not</b> grant permissions to write to
-   tables / create tables / delete tables, or to access other databases or tables than those that are to be published -
-   these abilities are not needed and present a security risk.
-   </p>
-   <p>You may also wish to consider making a duplicate of the original data collection database, or even running a separate
-   RDBMS server on a different machine specifically for access from web-services.
-   </p>
-</section>
-   
-<section name="Install JDBC Driver">
-   <p>
-   Acquire the jar file containing the JDBC driver for your chosen database and
-   copy it (along with any other jars it depends upon) into the
-   <code>${CATALINA_HOME}/common/lib</code> directory.  These will be available from the people that provided your database.
-   </p>
-</section>
-   
-<section name="Configuration">
-   <subsection name="Jdbc Plugin">
-   
-      <p>You now need to configure PAL to use the JDBC 'plugin', and to handle
-      the right 'flavour' of SQL.</p>
-      <p>The 'standard' RDBMS plugin is JdbcPlugin, and using this will work with most
-      ODBC compatible databases. Some however require a particular flavour of SQL, and so
-      you may want to use a different translator.  See the example default file
-      for the keys to set for this.</p>
-      <p>If none of these pre-defined translators are suitable, it is possible to write a new translator class
-         (it must implement <code>org.astrogrid.tableserver.SqlMaker</code>), include
-         it in the application classpath, and specify it in the configuration file.
-         However, this is beyond the scope of this document; refer to <code>SqlMaker.java</code>'s java doc. </p>
-      <p>You can look at the default.properties file for which properties to set in your properties file, or you
-      can set them through JNDI. In Tomcat you can set them by using the web service administration tools or
-      by adding them to the context file, eg:
-      <code>
-        &lt;!--+
-            | Use the JDBC database plugin.
-            +--&gt;
-        &lt;Environment name="datacenter.querier.plugin" override="false" type="java.lang.String"
-            value="org.astrogrid.tableserver.jdbc.JdbcPlugin"/&gt;
-        &lt;!--+
-            | Select the PostgreSQL specific plugin
-            +--&gt;
-        &lt;Environment name="datacenter.querier.plugin.sql.translator" override="false" type="java.lang.String"
-            value="org.astrogrid.tableserver.jdbc.postgres.PostgresSqlMaker"/&gt;
-        &lt;!--+
-            | Specify the JDBC driver to use
-            +--&gt;
-        &lt;Environment name='datacenter.plugin.jdbc.drivers' type='java.lang.String'
-           value='org.postgresql.Driver'&gt;
-
-       </code>
-   </subsection>
-   
-   <p>The connection between the datacenter server and database can either be specified as a direct connection (simpler)
-   or as a server connection (more efficient when your server is handling many different data connections).</p>
-   <p>In both cases you need to configure the webapp to use the JDBC 'plugin', you need to set which JDBC driver and if necessary set the correct
-   SQL translator if the RDBMS you are using requires it.
-
-
-   <subsection name="Direct Connection">
-   <p>In this configuration the dataserver webapp manages its own connections to the database.
-   </p>
-   <p>The properties to be configured are:
-   You add the above url and user and password values to the configuration
-   file (see the example default in <code>WEB-INF/classes/default.properties</code> for
-   which keys to use).</p>
-   <p>You will also need some JDBC java drivers for the database; these are provided
-   by the database vendors as 'jar' files, and will need to be included in the classpath
-   (for example, in the common/lib directory of tomcat). You need to add these to the
-   configuration file (again, see the example default properties file).  You will
-   need to restart the webapp to pick up the configuration changes</p>
-   <p>Check the fingerprint page to see if the new properties have been recognised:
-   <code>
+	<properties>
+		<author email="dave@ast.cam.ac.uk">Dave Morris</author>
+		<author email="mch@roe.ac.uk">Martin Hill</author>
+		<title>Configuring your dataserver to use a relational database</title>
+	</properties>
+	<body>
+		<section name="Introduction">
+			<p>
+				Many datasets are stored in Relational Database Management Systems (RDBMSs) such as SQL
+				Server, Postgres, etc.  PAL includes plugins to connect to any RDBMS that provides a
+				<a href="http://java.sun.com/products/jdbc/">JDBC</a> driver; it has been tested with the following:
+				<ul>
+					<li><a href="http://www.mysql.com/">MySQL</a> - Open Source SQL database </li>
+					<li><a href="http://www.microsoft.com/sql/">SQL Server</a> - Microsoft SQL Server</li>
+					<li><a href="http://www.postgresql.org/">Postgres</a> - Open Source database</li>
+					<li><a href="http://hsqldb.sourceforge.net/">HSQL</a> - pure-Java RDBMS. For testing purposes or serving small databases based on textfiles. </li>
+				</ul>
+			</p>
+		</section>
+		<section name="Preparing your database">
+			<p>
+				Your database must have an ODBC-compatible connection; this will allow PAL to connect
+				to it using a special URL and probably a user id and password.  You will need to
+				set up the user id and password on the database ODBC connection so that PAL can
+				connect to it using the same ones each time.
+			</p>
+			<p>
+				Many RDBMS have a user Principal system, where different Principals may be provided with different access privileges.
+				If this is the case with your target RDBMS, we recommend that a new user Principal be created
+				for the dataservice application to connect as.
+			</p>
+			<p>
+				The dataservice Principal should only have read / query privileges granted. <b>Do not</b> grant permissions to write to
+				tables / create tables / delete tables, or to access other databases or tables than those that are to be published -
+				these abilities are not needed and present a security risk.
+			</p>
+			<p>
+				You may also wish to consider making a duplicate of the original data collection database, or even running a separate
+				RDBMS server on a different machine specifically for access from web-services.
+			</p>
+		</section>
+		<section name="Install JDBC Driver">
+			<p>
+				Acquire the jar file containing the JDBC driver for your chosen database and
+				copy it (along with any other jars it depends upon) into the
+				<code>${CATALINA_HOME}/common/lib</code> directory.  These will be available from the people that provided your database.
+			</p>
+		</section>
+		<section name="Configuration">
+			<subsection name="Jdbc Plugin">
+				<p>
+					You now need to configure PAL to use the JDBC 'plugin', and to handle
+					the right 'flavour' of SQL.
+				</p>
+				<p>
+					The 'standard' RDBMS plugin is JdbcPlugin, and using this will work with most
+					ODBC compatible databases. Some however require a particular flavour of SQL, and so
+					you may want to use a different translator.  See the example default file
+					for the keys to set for this.
+				</p>
+				<p>
+					If none of these pre-defined translators are suitable, it is possible to write a new translator class
+					(it must implement <code>org.astrogrid.tableserver.SqlMaker</code>), include
+					it in the application classpath, and specify it in the configuration file.
+					However, this is beyond the scope of this document; refer to <code>SqlMaker.java</code>'s java doc.
+				</p>
+				<p>
+					You can look at the default.properties file for which properties to set in your properties file, or you
+					can set them through JNDI. In Tomcat you can set them by using the web service administration tools or
+					by adding them to the context file, eg:
+<code>
+    &lt;!--+
+        | Use the JDBC database plugin.
+        +--&gt;
+    &lt;Environment name="datacenter.querier.plugin" override="false" type="java.lang.String"
+        value="org.astrogrid.tableserver.jdbc.JdbcPlugin"/&gt;
+    &lt;!--+
+        | Select the PostgreSQL specific plugin
+        +--&gt;
+    &lt;Environment name="datacenter.querier.plugin.sql.translator" override="false" type="java.lang.String"
+        value="org.astrogrid.tableserver.jdbc.postgres.PostgresSqlMaker"/&gt;
+    &lt;!--+
+        | Specify the JDBC driver to use
+        +--&gt;
+    &lt;Environment name='datacenter.plugin.jdbc.drivers' type='java.lang.String'
+        value='org.postgresql.Driver'&gt;
+</code>
+				</p>
+			</subsection>
+			<p>
+				The connection between the datacenter server and database can either be specified as a direct connection (simpler)
+				or as a server connection (more efficient when your server is handling many different data connections).
+			</p>
+			<p>
+				In both cases you need to configure the webapp to use the JDBC 'plugin', you need to set which JDBC driver and if necessary set the correct
+				SQL translator if the RDBMS you are using requires it.
+			</p>
+			<subsection name="Direct Connection">
+				<p>
+					In this configuration the dataserver webapp manages its own connections to the database.
+				</p>
+				<p>
+					The properties to be configured are:
+					You add the above url and user and password values to the configuration
+					file (see the example default in <code>WEB-INF/classes/default.properties</code> for
+					which keys to use).
+				</p>
+				<p>
+					You will also need some JDBC java drivers for the database; these are provided
+					by the database vendors as 'jar' files, and will need to be included in the classpath
+					(for example, in the common/lib directory of tomcat). You need to add these to the
+					configuration file (again, see the example default properties file).  You will
+					need to restart the webapp to pick up the configuration changes
+				</p>
+				<p>
+					Check the fingerprint page to see if the new properties have been recognised:
+<code>
     JNDI Names:
         ....
         datacenter.querier.plugin.sql.translator: java.lang.String = org.astrogrid.tableserver.jdbc.postgres.PostgresSqlMaker
@@ -115,27 +126,27 @@ Server, Postgres, etc.  PAL includes plugins to connect to any RDBMS that provid
         datacenter.plugin.jdbc.password: java.lang.String = PASSWORD
         datacenter.plugin.jdbc.drivers: java.lang.String = org.postgresql.Driver
         ....
-   </code>
-   <p>You can check that the connection is being made by acessing the MetaDoc
-   generator page at ...../admin/GenerateMetaDoc
-   </p>
-   </subsection>
-   
-   <subsection name="Server Connection">
-   <p>Alternatively, you can set up a JNDI datasource using your web service, such
-   as the Administrator Tool if you are using Tomcat. This should have the
-   property name 'pal-datasource'.</p>
-   </subsection>
-</section>
-
-<section name="References">
-<ul>
-<li><a href="http://www.astrogrid.org">Astrogrid Homepage</a>
-</li><li><a href="http://java.sun.com/products/jdbc/">JDBC</a>
-</li><li><a href="http://servlet.java.sun.com/products/jdbc/drivers">List of known JDBC drivers</a>
-</li></ul>
-
-
-</section>
-</body>
+</code>
+				</p>
+				<p>
+					You can check that the connection is being made by acessing the MetaDoc
+					generator page at ...../admin/GenerateMetaDoc
+				</p>
+			</subsection>
+			<subsection name="Server Connection">
+				<p>
+					Alternatively, you can set up a JNDI datasource using your web service, such
+					as the Administrator Tool if you are using Tomcat. This should have the
+					property name 'pal-datasource'.
+				</p>
+			</subsection>
+		</section>
+		<section name="References">
+			<ul>
+				<li><a href="http://www.astrogrid.org">Astrogrid Homepage</a></li>
+				<li><a href="http://java.sun.com/products/jdbc/">JDBC</a></li>
+				<li><a href="http://servlet.java.sun.com/products/jdbc/drivers">List of known JDBC drivers</a></li>
+			</ul>
+		</section>
+	</body>
 </document>

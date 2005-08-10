@@ -1,52 +1,53 @@
 <?xml version="1.0"?>
-<!-- $Id: deploy.xml,v 1.2 2005/07/26 11:36:51 clq2 Exp $ -->
+<!-- $Id: deploy.xml,v 1.3 2005/08/10 13:24:56 clq2 Exp $ -->
 <document>
-   <properties>
-      <title>Deploying a PAL webapp</title>
-      <author email="dave@ast.cam.ac.uk">Dave Morris</author>
-      <author email="mch@roe.ac.uk">Martin Hill</author>
-   </properties>
-<body>
-<section name="Deploy PAL">
-<p>This page describes how to deploy a PAL web application (such as skycatserver) to
-a Tomcat web service container.  Other web service containers might hopefully hopefully
-have similar installation procedures.
-</p>
-</section>
-<section name='Installing the WAR file'>
-<p>
-You can use the Tomcat manager to install a PAL webapp (see the Tomcat manager instructions)
-or you can do it by hand - For example, copy <code>skycatserver.war</code> to the
-<code>webapps</code> directory of your tomcat installation and
-restart tomcat:
-</p>
+	<properties>
+		<title>Deploying a PAL webapp</title>
+		<author email="dave@ast.cam.ac.uk">Dave Morris</author>
+		<author email="mch@roe.ac.uk">Martin Hill</author>
+	</properties>
+	<body>
+		<section name="Deploy PAL">
+			<p>
+				This page describes how to deploy a PAL web application (such as skycatserver) to
+				a Tomcat web service container.  Other web service containers might hopefully hopefully
+				have similar installation procedures.
+			</p>
+		</section>
+		<section name='Installing the WAR file'>
+			<p>
+				You can use the Tomcat manager to install a PAL webapp (see the Tomcat manager instructions)
+				or you can do it by hand - For example, copy <code>skycatserver.war</code> to the
+				<code>webapps</code> directory of your tomcat installation and
+				restart tomcat:
 <code>
-$ cp skycatserver.war ${CATALINA_HOME}/webapps
-$ ${CATALINA_HOME}/bin/shutdown.sh
-$ ${CATALINA_HOME}/bin/startup.sh
+    $ cp skycatserver.war ${CATALINA_HOME}/webapps
+    $ ${CATALINA_HOME}/bin/shutdown.sh
+    $ ${CATALINA_HOME}/bin/startup.sh
 </code>
-<p>
-We recommend using an unversioned, generic name for the code base, and then using
-specific contexts (see next section).  That way you can upgrade the code base with
-newer versions of the webapp without disturbing configurations.
-</p>
-<p>
-Once tomcat has been restarted, the pal web application will be unpackaged into the directory eg <code>webapps/skycatserver</code>. If installed on your
-machine in the default location, the web application root will be <a href="http://localhost:8080/skycatserver">http://localhost:8080/skycatserver</a>.
-</p>
-</section>
-
-<section name="Recommended Tomcat Configuration">
-<p>When installing several PALs to connect to several databases from one server,
-you can add many 'contexts' that actually point to one single webapp.
-This means you can have many contexts with
-their own configuration files, with one webapp to update, and updates to that
-webapp will not disturb any changes you have made to the contexts.
-</p>
-<p>
-For example, in Tomcat add this to your server container's server.xml (or, in
-later versions, this can be in its own xml file - eg pal-6df-context.xml - and
-placed in tomcat's conf directory):
+			</p>
+			<p>
+				We recommend using an unversioned, generic name for the code base, and then using
+				specific contexts (see next section).  That way you can upgrade the code base with
+				newer versions of the webapp without disturbing configurations.
+			</p>
+			<p>
+				Once tomcat has been restarted, the pal web application will be unpackaged into the directory eg <code>webapps/skycatserver</code>. If installed on your
+				machine in the default location, the web application root will be <a href="http://localhost:8080/skycatserver">http://localhost:8080/skycatserver</a>.
+			</p>
+		</section>
+		<section name="Recommended Tomcat Configuration">
+			<p>
+				When installing several PALs to connect to several databases from one server,
+				you can add many 'contexts' that actually point to one single webapp.
+				This means you can have many contexts with
+				their own configuration files, with one webapp to update, and updates to that
+				webapp will not disturb any changes you have made to the contexts.
+			</p>
+			<p>
+				For example, in Tomcat add this to your server container's server.xml (or, in
+				later versions, this can be in its own xml file - eg pal-6df-context.xml - and
+				placed in tomcat's conf directory):
 <code>
     &lt;Context path="/pal-6df"
              docBase="/usr/bin/tomcat/webapps/skycatserver"
@@ -57,60 +58,64 @@ placed in tomcat's conf directory):
                         type="java.lang.String" /&gt;
         &lt;/Context&gt;
 </code>
-</p>
-<p>This creates a context 'pal-6df' that actually forwards all requests to the
-'skycatserver' webapp but with the properties set from the file 'pal-6df.properteis'.  You can
-then edit the pal-6df context's environment variables with the user-friendly Admin
-application and/or the pal-6df.properties file, and they will not be overwritten when
-you update the 'skycatserver' webapp.
-</p>
-<p>Similarly you can have many 'virtual contexts' like this that refer to one
-docbase, and this saves not only disk space and tomcat's runtime memory, but also
-effort when updating the software.</p>
-</section>
-
-<section name='Configuring the admin account'>
-<p>The PAL webapp administration pages require a user 'role', as they provide features
-that should be protected from the general public. </p>
-<p>For tomcat, edit the tomcat-users.xml file in tomcat's conf directory, and add the following role and user:
+			</p>
+			<p>
+				This creates a context 'pal-6df' that actually forwards all requests to the
+				'skycatserver' webapp but with the properties set from the file 'pal-6df.properteis'.  You can
+				then edit the pal-6df context's environment variables with the user-friendly Admin
+				application and/or the pal-6df.properties file, and they will not be overwritten when
+				you update the 'skycatserver' webapp.
+			</p>
+			<p>
+				Similarly you can have many 'virtual contexts' like this that refer to one
+				docbase, and this saves not only disk space and tomcat's runtime memory, but also
+				effort when updating the software.
+			</p>
+		</section>
+		<section name='Configuring the admin account'>
+			<p>
+				The PAL webapp administration pages require a user 'role', as they provide features
+				that should be protected from the general public.
+			</p>
+			<p>
+				For tomcat, edit the tomcat-users.xml file in tomcat's conf directory, and add the following role and user:
 <code>
-        &lt;tomcat-users&gt;
-            ....
-            &lt;role rolename="paladmin"/&gt;
-            ....
-            &lt;user username="eurovo" password="eurovo" roles="paladmin"/&gt;
-            ....
-        &lt;/tomcat-users&gt;
+    &lt;tomcat-users&gt;
+        ....
+        &lt;role rolename="paladmin"/&gt;
+        ....
+        &lt;user username="eurovo" password="eurovo" roles="paladmin"/&gt;
+        ....
+    &lt;/tomcat-users&gt;
 </code>
-<p>...and/or you may want to add the role to other users, such as the manager.</p>
-<p>Tomcat will not automatically load the new user and role information, so you will
-need to stop and start Tomcat to get it to recognise the new user account.</p>
-</section>
-
-<section name='Minium properties'>
-<p>As well as the above, the property 'datacenter.url' must be set before any
-<a href='verify.html'>verification</a> can be carried out even with the <a href='samplestars.html'>sample dataset </a>.
-It should be set to the 'root' URL of the webapp; for example <code>http://astrogrid.roe.ac.uk/pal-usnob/</code>.
-</p>
-</section>
-
-<section name="Logging">
-<p>
-The datacenter uses 'commons-logging' to log messages; on a Tomcat server this is
-routed to the server's <a href="http://jakarta.apache.org/log4j/docs/">Log4J</a> logger.
-A default log4j properties file is included in the distribution, and can be found at
-<tt>/WEB-INF/classes/log4j.properties</tt> in the web application.
-</p>
-<p>
-By default, the properties file causes INFO and higher messages to go to std.out (these
-can be found in the catalina.out file when using Tomcat), INFO and higher messages are
-stored in pal.log, and DEBUG and higher messages are stored in a rolling file (it is
-size limited) called pal-debug.log.  These latter two are found in ${CATALINA_HOME}/logs/ when
-running under Tomcat.
-</p>
-</section>
-   
-
-</body>
+				...and/or you may want to add the role to other users, such as the manager.
+			</p>
+			<p>
+				Tomcat will not automatically load the new user and role information, so you will
+				need to stop and start Tomcat to get it to recognise the new user account.
+			</p>
+		</section>
+		<section name='Minium properties'>
+			<p>
+				As well as the above, the property 'datacenter.url' must be set before any
+				<a href='verify.html'>verification</a> can be carried out even with the <a href='samplestars.html'>sample dataset </a>.
+				It should be set to the 'root' URL of the webapp; for example <code>http://astrogrid.roe.ac.uk/pal-usnob/</code>.
+			</p>
+		</section>
+		<section name="Logging">
+			<p>
+				The datacenter uses 'commons-logging' to log messages; on a Tomcat server this is
+				routed to the server's <a href="http://jakarta.apache.org/log4j/docs/">Log4J</a> logger.
+				A default log4j properties file is included in the distribution, and can be found at
+				<tt>/WEB-INF/classes/log4j.properties</tt> in the web application.
+			</p>
+			<p>
+				By default, the properties file causes INFO and higher messages to go to std.out (these
+				can be found in the catalina.out file when using Tomcat), INFO and higher messages are
+				stored in pal.log, and DEBUG and higher messages are stored in a rolling file (it is
+				size limited) called pal-debug.log.  These latter two are found in ${CATALINA_HOME}/logs/ when
+				running under Tomcat.
+			</p>
+		</section>
+	</body>
 </document>
-
