@@ -52,13 +52,14 @@
     		<action dev="mch" type="add" issue="1228"> Documentation for astrogrid/pal. Branch MCH_1228_Docs. </action>
 			        </release>
         <release version="(Undertest)">
-			<action dev="gtr" type="fix" issue="477"><em>Branch security-gtr-477-2:</em> a rearrangement of the tests for the 
-    			security facade plus some trivial cleaning up of the production code. Both astrogrid/security and astrogrid/integrationTests
-    		  are branched but only astrogrid/security has committed changes.</action>
+			
     		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.</action>
             
         </release>
         <release version="HEAD">
+			<action dev="gtr" type="fix" issue="477"><em>Branch security-gtr-477-2:</em> a rearrangement of the tests for the 
+    			security facade plus some trivial cleaning up of the production code. Both astrogrid/security and astrogrid/integrationTests
+    		  are branched but only astrogrid/security has committed changes.</action>
 			<action dev="kmb" type="fix"><em>Branch: Reg_KMB_1323</em>
 				added oai set support (plus has previous branch stuff which was: added xquery, caching, and unit tests), tagged b4_Kev_reg_app_commu
 			</action>						
