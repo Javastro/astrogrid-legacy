@@ -93,6 +93,7 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.BasicInfoPanel;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserDialog;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
+import org.astrogrid.desktop.modules.dialogs.ScriptDialog;
 import org.astrogrid.desktop.modules.dialogs.ScriptPanel;
 import org.astrogrid.desktop.modules.dialogs.StepPanel;
 import org.astrogrid.desktop.modules.dialogs.TaskInfoPanel;
@@ -216,6 +217,18 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
                             tree.setCellRenderer(new WorkflowTreeCellRenderer());
                             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
                             tree.addTreeSelectionListener(new WorkflowTreeSelectionListener());
+                            tree.addMouseListener(new MouseAdapter() {
+                    	        public void mouseClicked(MouseEvent event)
+                    	        {
+                    	        	if (event.getClickCount() > 1) {
+                    	        		Object ob = tree.getLastSelectedPathComponent();
+                    	        		if (ob instanceof String) {
+                    	        			ScriptDialog sd = new ScriptDialog(null, ob); 
+                    	        			sd.setVisible(true);
+                    	        		}
+                    	        	}                    	            
+                    	        }
+                    	    });
                             
                             
                             // show workflow panel and enable tabs for tree and doc view
@@ -1390,14 +1403,21 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     			//jEditorPane.setText(value.toString());
     			//jEditorPane.setCaretPosition(0);
     			//jEditorPane.setEditable(false);
+    			String s = value.toString();
     	        int lineCt = 1;
- 	            for (int i = 0; i < value.toString().length(); i++) {
- 	                if (value.toString().charAt(i) == '\n') {
+ 	            for (int i = 0; i < s.length(); i++) {
+ 	                if (s.charAt(i) == '\n') {
  	                    lineCt++; 
+ 	                    if ( lineCt  >= 5) {
+ 	                    	s = s.substring(0, i);
+ 	                    	s += "\n\n                                                      ------- double click to see full script -----------";
+ 	                    	lineCt = 7;
+ 	                    	break;
+ 	                    }
  	                }
  	            }
  	            JTextArea jta = new JTextArea(lineCt, 60);
- 	            jta.setText(value.toString());
+ 	            jta.setText(s);
     			JScrollPane pane = new JScrollPane(jta,
                         JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                         JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);    			
@@ -1436,7 +1456,6 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
                 ScriptPanel scriptPanel = new ScriptPanel(s);
 	          	activityDetailsPane = new JScrollPane(scriptPanel);
 	          	tabbedPaneDetails.setComponentAt(2, activityDetailsPane);
-    			tabbedPaneDetails.setSelectedIndex(2);
     		}    		
     		else if (ob instanceof Set) {
     			Set s = (Set)ob;
@@ -1485,7 +1504,15 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements Workflow
     			values[0] = "Test: ";
     			values[1] = w.getTest();
     			displayBasicInfo(values);   			
-    		}     		
+    		}
+    		else if (ob instanceof String) {  
+    			Script s = new Script();
+    			s.setDescription("");
+    			s.setBody(ob.toString());
+                ScriptPanel scriptPanel = new ScriptPanel(s);
+	          	activityDetailsPane = new JScrollPane(scriptPanel);
+	          	tabbedPaneDetails.setComponentAt(2, activityDetailsPane);	          	
+    		}    		
     		else {
     			return;
     			// An activity with nothing to display
