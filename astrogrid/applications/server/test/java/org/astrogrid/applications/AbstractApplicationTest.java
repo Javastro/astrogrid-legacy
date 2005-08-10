@@ -1,4 +1,4 @@
-/*$Id: AbstractApplicationTest.java,v 1.5 2004/11/27 13:20:02 pah Exp $
+/*$Id: AbstractApplicationTest.java,v 1.6 2005/08/10 17:45:10 clq2 Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,9 @@
  *
 **/
 package org.astrogrid.applications;
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
+import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
@@ -17,13 +19,18 @@ import org.astrogrid.applications.description.base.AbstractApplicationDescriptio
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.BaseApplicationInterface;
 import org.astrogrid.applications.description.base.BaseParameterDescription;
+import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.ParameterAdapterException;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+
 import java.util.Iterator;
+import java.util.Observable;
+import java.util.Observer;
 
 import junit.framework.TestCase;
 
@@ -106,12 +113,14 @@ public class AbstractApplicationTest extends TestCase {
                 return false;
             }
         };
+    obs = new TestObserver();           
+    app.addObserver(obs);
     }
     protected AbstractApplication.IDs ids;    
     protected AbstractApplicationDescription description;
     protected Tool tool;
     protected AbstractApplication app;
-    
+    protected TestObserver obs; 
     
     public void testGetID() {
         assertEquals(app.getID(),ids.getId());
@@ -134,6 +143,9 @@ public class AbstractApplicationTest extends TestCase {
         assertEquals(Status.NEW,app.getStatus()); // fresh apps have new status.
         app.setStatus(Status.RUNNING);
         assertEquals(Status.RUNNING,app.getStatus());
+        assertTrue(obs.called);
+        assertNotNull(obs.arg);
+        assertEquals(Status.RUNNING,obs.arg);
     }
 
     public void testFindInputParameter() {
@@ -178,12 +190,121 @@ public class AbstractApplicationTest extends TestCase {
         assertNotNull(pA);
         assertEquals("y",pA.getWrappedParameter().getName());
     }
+    
+    public void testParameterAdapterIterators() throws ParameterDescriptionNotFoundException, ParameterAdapterException {
+        app.createAdapters();
+        Iterator all = app.parameterAdapters();
+        Iterator inputs = app.inputParameterAdapters();
+        Iterator outputs = app.outputParameterAdapters();
+        assertTrue(all.hasNext());
+        assertTrue(inputs.hasNext());
+        assertTrue(outputs.hasNext());
+        while(all.hasNext()) {
+            if (inputs.hasNext()) {
+                assertEquals(inputs.next(),all.next());
+            } else {
+                assertEquals(outputs.next(),all.next());
+            }
+        }
+        assertFalse(inputs.hasNext());
+        assertFalse(outputs.hasNext());
+    }
+    
+    public void testCreateTemplateMessage() {
+        MessageType mt = app.createTemplateMessage();
+        assertNotNull(mt);
+        assertEquals(mt.getPhase(),app.getStatus().toExecutionPhase());
+    }
+    
+    public void testReportError() {
+        app.reportError("test error");
+        assertTrue(obs.called);
+        assertNotNull(obs.arg);  
+        System.out.println(obs.arg.getClass().getName());
+        MessageType mt = (MessageType)obs.arg;
+        assertEquals(LogLevel.ERROR,mt.getLevel());
+        assertEquals("test error",mt.getContent());
+        assertEquals(Status.ERROR,app.getStatus());
+        
+    }
+    
+    public void testReportWarning() {
+        Status orig = app.getStatus();
+        app.reportWarning("test warning");
+        assertTrue(obs.called);
+        assertNotNull(obs.arg);  
+        assertTrue(obs.arg instanceof MessageType);
+        MessageType mt = (MessageType)obs.arg;
+        assertEquals(LogLevel.WARN,mt.getLevel());
+        assertEquals("test warning",mt.getContent());
+        assertEquals(orig,app.getStatus());      // app status remains unchanged   
+    }
+    
+    public void testReportMessage() {
+        Status orig = app.getStatus();
+        app.reportMessage("test warning");
+        assertTrue(obs.called);
+        assertNotNull(obs.arg);  
+        assertTrue(obs.arg instanceof MessageType);
+        MessageType mt = (MessageType)obs.arg;
+        assertEquals(LogLevel.INFO,mt.getLevel());
+        assertEquals("test warning",mt.getContent());
+        assertEquals(orig,app.getStatus());    // app status remains unchanged   
+       
+    }
+       
+    
+    public void testReportErrorException() {
+        Exception e = new Exception();
+        app.reportError("test error",e);
+        assertTrue(obs.called);
+        assertNotNull(obs.arg);  
+        System.out.println(obs.arg.getClass().getName());
+        MessageType mt = (MessageType)obs.arg;
+        assertEquals(LogLevel.ERROR,mt.getLevel());
+        assertTrue(mt.getContent().startsWith("test error"));
+        assertEquals(Status.ERROR,app.getStatus());        
+    }
+    
+    public void testReportWarningException() {
+        Status orig = app.getStatus();
+        Exception e= new Exception();
+        app.reportWarning("test warning",e);
+        assertTrue(obs.called);
+        assertNotNull(obs.arg);  
+        assertTrue(obs.arg instanceof MessageType);
+        MessageType mt = (MessageType)obs.arg;
+        assertEquals(LogLevel.WARN,mt.getLevel());
+        assertTrue(mt.getContent().startsWith("test warning"));
+        assertEquals(orig,app.getStatus());      // app status remains unchanged           
+    }
 
+    protected static class TestObserver implements Observer {
+        public boolean called;
+        public Object arg;
+        /**
+         * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+         */
+        public void update(Observable o, Object arg) {
+            if (!called) { // only preserve first message
+                called = true;
+                this.arg = arg;
+            }
+        }
+    }
+    
 }
 
 
 /* 
 $Log: AbstractApplicationTest.java,v $
+Revision 1.6  2005/08/10 17:45:10  clq2
+cea-server-nww-improve-tests
+
+Revision 1.5.88.1  2005/07/21 18:12:38  nw
+fixed up tests - got all passing, improved coverage a little.
+still could do with testing the java apps.
+
 Revision 1.5  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 

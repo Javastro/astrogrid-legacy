@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.10 2004/11/27 13:20:02 pah Exp $
+ * $Id: AbstractApplication.java,v 1.11 2005/08/10 17:45:10 clq2 Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -382,7 +382,7 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
    protected final Iterator parameterAdapters() {
        IteratorChain i = new IteratorChain();
        i.addIterator(inputAdapters.iterator());
-       i.addIterator(outputAdapters.iterator());
+       i.addIterator(outputAdapters.iterator());       
        return i;
    }
 

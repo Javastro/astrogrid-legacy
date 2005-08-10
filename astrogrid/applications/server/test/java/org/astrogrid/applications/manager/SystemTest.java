@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.7 2005/07/05 08:27:00 clq2 Exp $
+/*$Id: SystemTest.java,v 1.8 2005/08/10 17:45:10 clq2 Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.InMemoryExecutionHistory;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.applications.parameter.protocol.FileProtocol;
+import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -119,15 +120,30 @@ public class SystemTest extends TestCase {
         MockMonitor monitor = new MockMonitor();
         Application app = history.getApplicationFromCurrentSet(id);
         app.addObserver(monitor);  
+        URI testURI = new URI(JobMonitorDelegate.TEST_URI);
+        querier.registerProgressListener(id,testURI );
+    // sadly this one won't accept the test uri.    
+    //    querier.registerResultsListener(id,testURI);
+        
+        // do a bit of querying
+        MessageType message = querier.queryExecutionStatus(id);
+        assertNotNull(message);
+        assertEquals(ExecutionPhase.INITIALIZING,message.getPhase());
+        ExecutionSummaryType summary = querier.getSummary(id);
+        assertEquals(ExecutionPhase.INITIALIZING,summary.getStatus());
+        ResultListType results = querier.getResults(id);
+        assertNotNull(results);
+        assertEquals(0,results.getResultCount()); // nothing been computed yet.
+        // set the thing running.
         assertTrue(controller.execute(id));
         monitor.waitFor(20);
         assertTrue(monitor.sawExit);
-        MessageType message = querier.queryExecutionStatus(id);
+        message = querier.queryExecutionStatus(id);
         assertNotNull(message);        
         assertEquals(ExecutionPhase.COMPLETED, message.getPhase());
-        ExecutionSummaryType summary =  querier.getSummary(id);
+        summary =  querier.getSummary(id);
         assertEquals(ExecutionPhase.COMPLETED,summary.getStatus());
-        ResultListType results = querier.getResults(id);
+         results = querier.getResults(id);
         assertNotNull(results);
         assertEquals(1,results.getResultCount());
         ParameterValue r1 = results.getResult(0);
@@ -156,6 +172,13 @@ public class SystemTest extends TestCase {
 
 /* 
 $Log: SystemTest.java,v $
+Revision 1.8  2005/08/10 17:45:10  clq2
+cea-server-nww-improve-tests
+
+Revision 1.7.8.1  2005/07/21 18:12:38  nw
+fixed up tests - got all passing, improved coverage a little.
+still could do with testing the java apps.
+
 Revision 1.7  2005/07/05 08:27:00  clq2
 paul's 559b and 559c for wo/apps and jes
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractComponentManagerTestCase.java,v 1.2 2005/07/05 08:27:00 clq2 Exp $
+ * $Id: AbstractComponentManagerTestCase.java,v 1.3 2005/08/10 17:45:10 clq2 Exp $
  * 
  * Created on 03-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -21,12 +21,14 @@ import org.w3c.dom.Document;
 
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.component.EmptyCEAComponentManager.VerifyRequiredComponents;
+import org.astrogrid.applications.description.registry.RegistryUploader;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
 import org.astrogrid.applications.manager.MetadataService;
 import org.astrogrid.applications.manager.QueryService;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver.StdIOType;
 import org.astrogrid.config.SimpleConfig;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
 
 /**
@@ -50,9 +52,7 @@ public abstract class AbstractComponentManagerTestCase extends TestCase {
     */
    public AbstractComponentManagerTestCase(String arg0) {
       super(arg0);
-      setupConfigComponentManager();
-      manager = createManager();
-      manager.start();
+
      
    }
 
@@ -63,10 +63,16 @@ public abstract class AbstractComponentManagerTestCase extends TestCase {
             .getLog(AbstractComponentManagerTestCase.class);
 
    protected void setUp() throws Exception {
-        super.setUp();
+       setupConfigComponentManager();
+       manager = createManager();
+       manager.start();
          
     }
 
+    protected void tearDown() throws Exception {
+        manager.stop();
+    }
+   
    protected CEAComponentManager manager;
 
    public void testIsValid() {
@@ -91,12 +97,20 @@ public abstract class AbstractComponentManagerTestCase extends TestCase {
        QueryService queryService = manager.getQueryService();
       assertNotNull(queryService);
      }
-  
+   public void testGetUploader() {
+       RegistryUploader serv =  manager.getRegistryUploaderService();
+       assertNotNull(serv);
+   }
    abstract protected void setupConfigComponentManager() ;
    abstract protected CEAComponentManager createManager();
    public void testInformation() {
         System.out.println(manager.information());
     }
+   
+   public void testGetSuite() {
+       Test ts = manager.getSuite();
+       assertNotNull(ts);
+   }
 
    /**
     * 
@@ -113,6 +127,13 @@ public abstract class AbstractComponentManagerTestCase extends TestCase {
 
 /*
  * $Log: AbstractComponentManagerTestCase.java,v $
+ * Revision 1.3  2005/08/10 17:45:10  clq2
+ * cea-server-nww-improve-tests
+ *
+ * Revision 1.2.8.1  2005/07/21 18:12:38  nw
+ * fixed up tests - got all passing, improved coverage a little.
+ * still could do with testing the java apps.
+ *
  * Revision 1.2  2005/07/05 08:27:00  clq2
  * paul's 559b and 559c for wo/apps and jes
  *

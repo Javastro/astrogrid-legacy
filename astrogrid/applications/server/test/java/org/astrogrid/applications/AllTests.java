@@ -1,5 +1,5 @@
 /*
- * $Id: AllTests.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: AllTests.java,v 1.3 2005/08/10 17:45:10 clq2 Exp $
  * 
  * Created on 23-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -28,6 +28,7 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(StatusTest.class));
         suite.addTest(new TestSuite(AbstractApplicationTest.class));
+        suite.addTest(new TestSuite(DefaultIDsTest.class));
         //$JUnit-END$
         suite.addTest(org.astrogrid.applications.description.exception.AllTests.suite());
         suite.addTest(org.astrogrid.applications.description.registry.AllTests.suite());
@@ -36,6 +37,9 @@ public class AllTests {
         suite.addTest(org.astrogrid.applications.manager.AllTests.suite());
         suite.addTest(org.astrogrid.applications.manager.idgen.AllTests.suite());
         suite.addTest(org.astrogrid.applications.manager.persist.AllTests.suite());
+        suite.addTest(org.astrogrid.applications.apps.tables.AllTests.suite());
+        suite.addTest(org.astrogrid.applications.parameter.protocol.AllTests.suite());
+        suite.addTest(org.astrogrid.applications.apps.AllTests.suite());
         return suite;
     }
 }

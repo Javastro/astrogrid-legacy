@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.13 2005/08/10 14:45:37 clq2 Exp $
+ * $Id: InitServlet.java,v 1.14 2005/08/10 17:45:10 clq2 Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -40,8 +40,9 @@ import org.astrogrid.applications.manager.QueryService;
 import org.astrogrid.component.ComponentManagerException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
-
+///CLOVER:OFF
 /**
+ * 
  * A simple servlet that starts cea service, by instantiating the pico container
  * on destroy, calls back into container, giving things a chance to clean
  * themselves up if needed.

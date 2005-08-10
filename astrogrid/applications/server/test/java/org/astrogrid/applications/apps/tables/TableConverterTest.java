@@ -1,5 +1,5 @@
 /*
- * $Id: TableConverterTest.java,v 1.2 2004/11/27 13:20:03 pah Exp $
+ * $Id: TableConverterTest.java,v 1.3 2005/08/10 17:45:10 clq2 Exp $
  * 
  * Created on 11-Nov-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -42,9 +42,9 @@ public class TableConverterTest extends TestCase {
    }
    
    public void testConvert() throws TableFormatException, IOException
-   {
+   {      
       TableConverter tester = new TableConverter(inputStream, "csv");
-      tester.write(null);
+      tester.write("VOTABLE");
    }
 
 }

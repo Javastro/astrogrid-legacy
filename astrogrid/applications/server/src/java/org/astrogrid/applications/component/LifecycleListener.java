@@ -1,4 +1,4 @@
-/*$Id: LifecycleListener.java,v 1.5 2004/11/27 13:20:03 pah Exp $
+/*$Id: LifecycleListener.java,v 1.6 2005/08/10 17:45:10 clq2 Exp $
  * Created on 16-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import java.net.URL;
 import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
+///CLOVER:OFF
 /** receives notifications of the servlet context (i.e. the jes webapp) starting up and shutting down. passes this on to the component manager.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Sep-2004
  *
@@ -107,6 +107,13 @@ public class LifecycleListener implements ServletContextListener {
 
 /* 
 $Log: LifecycleListener.java,v $
+Revision 1.6  2005/08/10 17:45:10  clq2
+cea-server-nww-improve-tests
+
+Revision 1.5.88.1  2005/07/21 18:12:38  nw
+fixed up tests - got all passing, improved coverage a little.
+still could do with testing the java apps.
+
 Revision 1.5  2004/11/27 13:20:03  pah
 result of merge of pah_cea_bz561 branch
 

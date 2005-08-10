@@ -257,7 +257,7 @@
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
-			<version>1.7.0</version>
+			<version>1.6.1</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
@@ -278,7 +278,7 @@
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
-		 <dependency> <!-- this in only used in unit tests...not self tests yet..-->
+		 <dependency> <!-- this is used in unit tests, and referenced from within self tests.-->
 			<id>xmlunit</id>
 		<version>1.0</version>
 			<properties>
@@ -414,6 +414,7 @@
 						<include>**/*.properties</include>
 						<include>**/*.sql</include>
 						<include>**/*.txt</include>
+						<include>**/*.csv</include>
 					</includes>
 				</resource>
 			</resources>

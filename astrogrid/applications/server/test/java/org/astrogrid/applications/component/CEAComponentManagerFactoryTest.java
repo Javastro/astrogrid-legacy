@@ -1,4 +1,4 @@
-/*$Id: CEAComponentManagerFactoryTest.java,v 1.3 2005/07/05 08:27:00 clq2 Exp $
+/*$Id: CEAComponentManagerFactoryTest.java,v 1.4 2005/08/10 17:45:10 clq2 Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,11 +56,22 @@ public class CEAComponentManagerFactoryTest extends TestCase {
         Test suite = CEAComponentManagerFactory.suite();
         assertNotNull(suite);
     }
+    
+    public void testStop() {
+        CEAComponentManagerFactory.stop();
+    }
 }
 
 
 /* 
 $Log: CEAComponentManagerFactoryTest.java,v $
+Revision 1.4  2005/08/10 17:45:10  clq2
+cea-server-nww-improve-tests
+
+Revision 1.3.8.1  2005/07/21 18:12:38  nw
+fixed up tests - got all passing, improved coverage a little.
+still could do with testing the java apps.
+
 Revision 1.3  2005/07/05 08:27:00  clq2
 paul's 559b and 559c for wo/apps and jes
 
