@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+
+<module name="ACR">
+	<description>Scripting and programming with the ACR</description>
+		<property>
+			<key>system.ui.menu.links</key>			
+			<value>		
+				<link text="Download ACR Interface Classes and Javadoc"
+					icon="source_java.png"
+					tooltipText="Call ACR from java using JavaRMI"
+					url="http://software.astrogrid.org/jnlp/astrogrid-desktop/acr-interface.tar.gz" />		
+				<link text="Browse ACR Javadoc"
+					icon="info_obj.gif"
+					tooltipText="Online documentation of the ACR interface"
+					url="http://www.astrogrid.org/maven/docs/HEAD/desktop/acr/apidocs/index.html" />								
+				<link text="Commandline Utilities and Examples in Python"
+					icon="source_py.png"
+					toolTipText="A collection of commandline scripts - useful in their own right, and examples of python scripting of the workbench"
+					url="http://software.astrogrid.org/jnlp/astrogrid-desktop/python-scripts.zip"/>
+				<link text="Examples in Perl"
+					icon="source_pl.png"
+					toolTipText="Perl scripts that show how to connect to workbench. For details of functionality, see python examples."
+					url="http://software.astrogrid.org/jnlp/astrogrid-desktop/perl-scripts.zip"/>				
+			</value>
+		</property>		
+	<property>
+		<key>icon</key>
+		<value>script_obj.gif</value>
+	</property>			
+</module>

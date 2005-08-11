@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+        <title>AstroGrid Client Runtime - Interface</title>
+</properties>
+<body>
+
+<section name="Overview"><p>
+This project defines a set of interfaces for calling into the AstroGrid Client Runtime (ACR). Some of the
+interfaces expose internals of the runtime system, while others are used to access remote AstroGrid servers.
+</p>
+<p>
+The set of interfaces form a <a href="http://c2.com/cgi/wiki?FacadePattern">Facade</a> infront of the more complex service delegates - 
+this facade is in a single project and is self-contained - there's no dependencies on
+other AstroGrid libraries or delegates; naming conventions, parameters and exception types are
+consistent throughout the interface; and all the required documentation is in one place.
+</p>
+<p>
+  These interfaces can be accessed directly by classes running within the ACR; they can be accessed 
+  via JavaRMI by external Java code; and can be accessed via XMLRPC from other programming languages.
+</p>
+</section>
+
+<section name="Documentation"><p>
+		See <a href="./apidocs">javadoc</a> for introduction and examples
+	</p>
+</section>
+</body>
+</document>

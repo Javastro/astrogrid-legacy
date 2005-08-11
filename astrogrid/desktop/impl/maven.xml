@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
+
+         <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,publish-beta-jnlp"/>	
+        <goal name="astrogrid-build-artifact" prereqs="jar,beta,release,jnlp"/>
+
+	<goal name="astrogrid-build-site" prereqs="site" />
+	
+	<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
+		<attainGoal name="site:sshdeploy" />
+	</goal>
+	
+
+	
+
+	
+	<!-- generate the mini site into the jnlp bundle -->
+	<postGoal name="jnlp:generate-jnlp">
+		<attainGoal name="changes:report" />
+		<move file="${maven.gen.docs}/changes-report.xml" tofile="${maven.gen.docs}/index.xml" />
+		<j:set var="maven.docs.src" value="${basedir}/jnlp-xdocs" />
+		<echo>${maven.docs.src}</echo>
+		<attainGoal name="xdoc:transform" />
+		<attainGoal name="zip-scripts"/>		
+		<attainGoal name="include-acr-interface" />
+	</postGoal>
+	
+	<goal name="zip-scripts">
+	  <zip destfile="${maven.docs.dest}/python-scripts.zip">
+		  <fileset dir="${basedir}/src">
+			  <include name="python-scripts/*" />
+		  </fileset>		 
+	  </zip>
+	  <zip destfile="${maven.docs.dest}/perl-scripts.zip">
+		  <fileset dir="${basedir}/src">
+			  <include name="perl-scripts/*" />
+		  </fileset>		 
+	  </zip>	       
+	       
+	</goal>
+	
+	<goal name="include-acr-interface">
+		<copy tofile="${maven.docs.dest}/acr-interface.tar.gz">
+			<fileset dir="${basedir}/../api/target/distributions">
+				<include name="acr-interface-*.tar.gz" />
+			</fileset>
+		</copy>
+	</goal>
+	
+        <goal name="define-stylesheet">
+             <jsl:stylesheet var="patch">
+                <jsl:template match=
+		  "jar|security|extension|application-desc|j2se|property|title|vendor|description|homepage|icon|offline-allowed|shortcut|association|related-content">
+                        <jxml:copyOf select="." />
+                </jsl:template>
+		<jsl:template match="information">
+			<jxml:copy>
+				<jxml:element name="related-content">
+					<jxml:attribute name="href">index.html</jxml:attribute>
+					<jxml:element name="title">Release Notes</jxml:element>
+				</jxml:element>
+				<jxml:element name="related-content">
+					<jxml:attribute name="href">http://software.astrogrid.org/userdocs/workbench.html</jxml:attribute>
+					<jxml:element name="title">Home Page</jxml:element>
+				</jxml:element>			
+				<jxml:element name="related-content">
+					<jxml:attribute name="href">http://www.astrogrid.org/maven/docs/HEAD/desktop/api/apidocs/index.html</jxml:attribute>
+					<jxml:element name="title">ACR API Docs</jxml:element>
+				</jxml:element>					
+				<jxml:element name="related-content">
+					<jxml:attribute name="href">http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench</jxml:attribute>
+					<jxml:element name="title">Report Bugs</jxml:element>
+				</jxml:element>		
+			
+				<jsl:applyTemplates select="@* | node()" />
+			</jxml:copy>
+		</jsl:template>
+                <jsl:template match="jnlp|@*">
+                                <jxml:copy>
+                                        <jsl:applyTemplates select="@* | node()" />
+                                </jxml:copy>
+                </jsl:template>
+                <jsl:template match="resources">
+                        <jxml:copy>
+                                <jxml:element name="extension">
+                                        <jxml:attribute name="name">Astrogrid Script CDK${jnlpVersion}</jxml:attribute>
+                                        <jxml:attribute name="href">http://software.astrogrid.org/jnlp/${subPath}astrogrid-cdk-scripting/astrogrid-cdk-scripting.jnlp</jxml:attribute>
+                                </jxml:element>
+                                <jsl:applyTemplates select="@* | node()" />
+                        </jxml:copy>
+                </jsl:template>
+             </jsl:stylesheet>
+        </goal>
+
+
+
+
+
+
+</project>
+

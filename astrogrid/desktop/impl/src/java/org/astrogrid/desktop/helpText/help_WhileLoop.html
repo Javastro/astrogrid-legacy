@@ -1,0 +1,17 @@
+<html>
+  <font size = "-1">
+  The <b>while</b> element expresses a while loop.<br> 
+  It has a required attribute <b>test</b> which must contain a script expression that evaluates to a boolean.
+  It's body is an activity (presently a sequence of activities) that will be executed for every time that the test evaluates to true.
+  <pre>
+  &lt;!-- repeatedly execute a step until it returns at least 1 result value --&gt;
+   &lt;while test="${results == null || results.size() &lt; 1}"&gt;
+      &lt;sequence&gt;
+         &lt;step result-var="results"&gt;
+            &lt;!-- omitted --&gt;
+         &lt;/step&gt;
+      &lt;/sequence&gt;
+   &lt;/while&gt;
+   </pre>
+   </font>
+</html>

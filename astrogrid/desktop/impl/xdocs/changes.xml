@@ -1,0 +1,204 @@
+<document>
+	<!-- see http://maven.apache.org/reference/plugins/changes/index.html 
+	     
+	     action - type="add|fix|remove|update"
+	     	     - issue="bug-id"
+	     -->
+	<properties>
+		<title>Workbench / ACR Changes</title>
+		<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+	</properties>
+	<head>
+		<link rel="alternate" title="RSS" 
+		  href="changes.rss" type="application/rss+xml"/>		
+	</head>
+<body>
+	
+	<release version="1.1-beta-1" date="unreleased">
+		<action dev="nw" type="update">
+			split acr interfaces into separate project
+		</action>
+		<action dev="nw" type="update">
+			updated to latest version of registry delegate
+			 - now caches results, and provides xquery.
+		</action>
+		<action dev="nw" type="add">
+			added system tests that exercise ag components
+			through rmi and xmlrpc
+		</action>
+		<action dev="nw" type="fix">
+			cleaned up acr public interface
+		</action>
+		<action dev="nw" type="add">
+			added java rmi interface to acr
+		</action>
+	</release>
+	<release version="1.0.6-beta-1" date="2005-07025">
+		<action dev="pjn3" type="fix">
+			assorted improvements of the workflow viewer
+		</action>
+	</release>
+	<release version="1.0.5" date="2005-07-10">
+		<action dev="pjn3" type="add">
+			Added beta of workflow viewer
+		</action>
+		<action dev="nw" type="fix" due-to="anita">
+			Improved workbench function descriptions
+		</action>
+		<action dev="nw" type="fix">
+			tidied up example python scripts
+		</action>
+		<action dev="nw" type="add">
+			Added example script for connecting to ACR from perl
+		</action>		
+		<action dev="nw" type="update">
+			Updated list of external apps
+		</action>
+	</release>
+	<release version="1.0.4-beta" date="2005-07-08">
+		<action dev="nw" type="add">
+			Added real splash screen
+		</action>
+		<action dev="nw" type="fix">
+			Fixed endpoint configuration, logging configuration,
+			and possible ipv6 problem.
+		</action>
+		<action dev="nw" type="fix">
+			Removed 'indirect' buttons from parameter editor for
+			parameterized workflows - doesn't make sense to have it.
+		</action>
+		<action dev="nw" type="fix" issue="1221">
+			Improved resource chooser dialogue to make
+			it easier to use.
+		</action>
+		<action dev="nw" type="remove">
+			Removed 'show in portal' from job monitor - 
+			never worked.
+		</action>
+		<action dev="nw" type="fix">
+			Replace file chooser dialogue by resource chooser dialogue
+			throughout - means many things can be loaded / saved to myspace.
+		</action>
+		<action dev="nw" type="fix">
+			Relocate operation in myspace browser lists available stores.
+		</action>
+		<action dev="nw" type="fix">
+			Removed 'file' tab from resource chooser for indirect parameters
+		</action>
+		<action dev="nw" type="fix">
+			Fixed error on logout
+		</action>
+		<action dev="nw" type="fix">
+			Applications in monitor now persist between workbench sessions
+		</action>
+		<action dev="nw" type="fix">
+			Creating a new file in the filemanager selects that filemanager
+		</action>
+		<action dev="nw" type="fix">
+			filemanager improvements: starts with 'home' folder selected;
+			selecting a file removes selection of folder, and vice-versa;
+			improved refresh; fixed folder tree vanishing.
+		</action>
+		<action dev="nw" type="fix" issue="1263">
+			Made display of workflows more tolerant
+			of oddities in workflow
+		</action>
+	</release>
+	<release version="1.0.3" date="2005-06-23">
+		<action dev="nw" type="update">
+			Based on 1.0.3-beta-2
+		</action>
+	</release>
+	<release version="1.0.3-beta-2" date="2005-06-23">
+		<action dev="nw" type="add">
+			Added 'system.apihelp' component - 
+			returns documentation for ACR methods
+		</action>
+		<action dev="nw" type="fix" due-to="pah">
+			Fixed nulls in parameter editor
+		</action>
+		<action dev="nw" type="fix" due-to="gtr">
+			Altered query so only active applications are visible
+		</action>
+		<action dev="nw" type="add">
+			Added map-style methods for building tool documents
+		</action>
+	</release>
+	<release version="1.0.3-beta-1" date="2005-06-22">
+		<action dev="nw" type="add">
+			Added link to JDIC (Desktop Integration) JNLP Extension.
+		</action>
+		<action dev="nw" type="add">
+			Added System tray icon. Displays GUI when hidden.
+			(Not on Macs).
+		</action>
+		<action dev="nw" type="fix" due-to="pah">
+			Fixed duff ivorn on repeated application launch. 
+		</action>
+		<action dev="nw" type="fix" issue="1223">
+			fixed typo.
+		</action>
+		<action dev="nw" type="fix">
+			Made application launcher remember window position.
+		</action>
+		<action dev="nw" type="fix" due-to="gtr">
+			Removed inactive registry entries from app and server lists.
+		</action>
+		<action dev="nw" type="fix">
+			Made parsing of application descriptions tolerant of 
+			missing data.
+			Still need to fix castor problems with namespaces - until then some reg. entries will
+			still cause errors.
+		</action>
+		<action dev="nw" type="fix" issue="1245">
+			Improved display of loooong error messages
+		</action>
+		<action dev="nw" type="fix" due-to="eduardo">
+			Fixed 'cancel' button on parameterized workflows
+		</action>
+		<action dev="nw" type="add">
+			Added rudimentary help set
+		</action>		
+	</release>
+
+	<release version="1.0.2-eso" date="2005-06-20">
+		<action dev="nw" type="update">
+			Based on 1.0.2-alpha-2
+		</action>
+	</release>
+	<release version="1.0.2-beta-2" date="2005-06-20" >
+		<action dev="nw" type="add" due-to="eduardo">
+			Added changes report.
+		</action>
+		<action dev="nw" type="add">
+			Bundled set of docs into jnlp site
+		</action>
+		<action dev="nw" type="fix" issue="1186">
+			Fixed Race condition on startup - reliable, but
+			perceived startup is now slower.
+		</action>
+		<action dev="nw" type="add">
+			Added cheezy splash screen to hide startup time.
+			Better graphics needed.
+		</action>
+		<action dev="nw" type="add">
+			Added JavaHelp browser - now need to write helpset.
+		</action>
+		<action dev="nw" type="fix">
+			Moved large jars into jnlp extensions - should improve download
+			time for desktop updates
+		</action>
+		<action dev="nw" type="fix" due-to="naw">
+			Added bounds checking for position-remembering windows
+			Should mean that all windows are visible onscreen.
+		</action>
+	</release>
+	<release version="1.0.2-beta-1" date="2005-06-16">
+		<description>Beta Release</description>
+		<action dev="nw" type="add">
+			Added CEA Application Launcher GUI
+		</action>
+	</release>
+	
+</body>
+</document>

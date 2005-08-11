@@ -7,13 +7,13 @@
     <links>
        <item name="AstroGrid"       href="http://www.astrogrid.org"/>
        <item name="Components"        href="../index.html"/>
-       <item name="Workbench"  href="index.html"/>
+       <item name="ACR &amp; Workbench"  href="index.html"/>
     </links>
 
-    <menu>
-	<item name="Home" href="/index.html" />
-	<item name="ACR API" href="/acr-apidocs/index.html" />
-	<item name="History" href="/changes-report.html" />
+    <menu name="Navigation">
+	<item name="Home" href="index.html" />
+	<item name="ACR Interface" href="multiproject/acr-interface/index.html" />
+	<item name="ACR &amp; Workbench Implementation" href="multiproject/acr-impl/index.html" />
 		
     </menu>
  

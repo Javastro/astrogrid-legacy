@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+        <title>Astrogrid Client Runtime and Workbench</title>
+</properties>
+<body>
+
+<section name="Overview">
+	
+	<p>
+		This project implements a desktop service which other client-side applications can connect with
+		to interact with astrogrid. At present supports HTTP / XML-RPC / Java-RMI / Gui interfaces to astrogrid client-side components.
+		Maybe add CORBA later.
+	</p>
+	<p>
+		The client runtime provides a single sign-on, single-configuration, and single cache for interactions with astrogrid servers -
+		making implementation of client-side applications simpler.
+	</p>
+	<p>
+		The runtime provides client-side components for accessing the basic functionality of each of the astrogrid services -
+		myspace, registry, jes, cea, community. It also provides GUI components - simple dialogues that can be reused by client applications
+		to perform common tasks (myspace microbrowser, registry browser, etc). Finally, the runtime provides a series of simple GUI applications that
+		act as reference implementations for GUIs for the core features of astrogrid - myspace browser, job controller, registry browser. Others to follow - workflow
+		builder, query builder, cea invoker.
+	</p>
+	<p>
+		The interfaces to these components can be found in the <a href="../../multiproject/acr-interface/index.html">ACR Interface</a>
+		project.
+	</p>
+         	
+</section>
+
+
+</body>
+</document>

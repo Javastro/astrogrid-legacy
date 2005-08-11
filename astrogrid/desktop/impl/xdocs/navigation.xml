@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Project</title>
+
+  <body>
+    <links>
+       <item name="AstroGrid"       href="http://www.astrogrid.org"/>
+       <item name="Components"        href="../../../index.html"/>
+       <item name="Workbench"  href="../../index.html"/>
+       <item name="ACR Implementation" href="/index.html" />
+    </links>
+
+    <menu name="Navigation">
+	<item name="Home" href="/index.html" />
+	<item name="History" href="/changes-report.html" />
+		
+    </menu>
+ 
+  </body>
+</project>

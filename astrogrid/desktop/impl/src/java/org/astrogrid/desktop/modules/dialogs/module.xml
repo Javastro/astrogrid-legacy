@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+
+<module name="dialogs">
+	<description>Reusable UI Dialogues</description>
+	<component name="resourceChooser" 
+		implementationClass="org.astrogrid.desktop.modules.dialogs.ResourceChooserImpl"
+		interfaceClass="org.astrogrid.acr.dialogs.ResourceChooser">
+		<description>Prompt the user to choose a file resource</description>
+		<method name="chooseResource">
+			<description>prompt the user to choose a resource </description>
+				<parameter name="title">
+						<description>Title to use in dialog</description>
+				</parameter>
+				<parameter name="enableMyspaceTab">
+					<description>whether myspace tab should be visible or not</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>boolean</value>
+				</property>
+				</parameter>					
+		
+		</method>
+		<method name="fullChooseResource">
+			<description>prompt the user to choose a resource, using fully configurable dialog. </description>
+				<parameter name="title">
+						<description>Title to use in dialog</description>
+				</parameter>
+				<parameter name="enableMyspaceTab">
+					<description>whether myspace tab should be visible or not</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>boolean</value>
+				</property>
+				</parameter>					
+				<parameter name="enableLocalFileTab">
+					<description>whether local files tab should be visible or not</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>boolean</value>
+				</property>
+				</parameter>
+				<parameter name="enableURITab">
+					<description>whether arbitrary URL entry tab should be visible or not</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>boolean</value>
+				</property>
+				</parameter>						
+		</method>		
+		</component>
+<component name="toolEditor" 
+		implementationClass="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl"
+		interfaceClass="org.astrogrid.acr.dialogs.ToolEditor">
+		<description>Display a graphical editor for a CEA tool call document</description>
+		<method name="editTool">
+			<description>display editor</description>
+				<parameter name="tool">
+						<description>Document to display in editor</description>
+				</parameter>
+		<return>
+			<description>An edited copy of this document</description>
+			</return>		
+		
+		</method>
+		</component>		
+</module>

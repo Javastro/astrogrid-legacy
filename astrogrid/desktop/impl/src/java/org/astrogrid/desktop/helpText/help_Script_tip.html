@@ -1,0 +1,22 @@
+<html>
+  The <b>script</b> element is an activity that executes some inline scripting code.<br> 
+  It is a very versatile activity. The script element contains an optional <b>description</b> element;<br> 
+  a mandatory <b>body</b> element containing the script text, and a step-execution-record<br> 
+  which records the execution of the script. A script may reference workflow variables,<br> 
+  reading & storing data in them. The changes to the workflow variables are visible further<br>
+  on in the workflow. A script may also define local variables, functions, etc.<br> 
+  These are only available to the script itself & are not visible to subsequent scripts or script expressions.<br>
+  Hence any result that is to be accessed later should be stored in a previously-defined workflow variable.<br>
+    <p>
+      in the variable 'a' store the value 'hello world' (java.lang.String): &lt;set var="a" value="hello world" /&gt; <br>
+      in the variable 'b', store the value '1' (java.lang.String): &lt;set var="b" value="1" /&gt; <br>
+      in the variable 'c', store the value 1 (java.lang.Integer): &lt;set var="c" value="${1}" /&gt; <br>
+      in the variable 'd' store the value '1 + 1' (java.lang.String): &lt;set var="d" value="${c} + 1" /&gt; <br>
+      in the variable 'e' store the value 2 (java.lang.Integer): &lt;set var="e" value="${c + 1}" /&gt; <br>
+      in the variable 'now' store the current date (java.lang.Date): &lt;set var="now" value="${new java.util.Date()}" /&gt; <br>
+      in the variable 'nSt' store current date (java.lang.String) - note trailing space: &lt;set var="nSt value="${new java.util.Date()} " /&gt;<br>
+      in the variable 'f' store the value '1 - hello world and goodbye.": &lt;set var="f" value="${c} - ${a} and goodbye. "/&gt; <br>
+      in the variable 'u' store val 'www.astrogrid.org' (java.net.URL): &lt;set var="u" value="${new java.net.URL('www.astrogrid.org')} /&gt; <br>
+      in the variable 'scheme' store the value 'http' (java.lang.String): &lt;set var="scheme" value="${u.getScheme()}" /&gt; <br>
+    </p>
+</html>                    

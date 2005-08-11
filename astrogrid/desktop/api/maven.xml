@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project   xmlns:j="jelly:core" xmlns:maven="jelly:maven" >
+
+	<goal name="astrogrid-install-artifact" prereqs="jar:install,dist:build-bin">
+		<echo>No goal exists to install a distro - so have built and just left it in target dir</echo>
+	</goal>
+
+
+	<goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:deploy-bin">
+	</goal>
+
+	<goal name="astrogrid-build-artifact" prereqs="jar:jar,dist:build-bin">
+	</goal>
+
+	<!-- add in dependent jars -->
+	<postGoal name="dist:prepare-bin-filesystem">
+		<j:forEach var="lib" items="${pom.artifacts}">
+			<j:set var="dep" value="${lib.dependency}"/>			
+			<copy todir="${maven.dist.bin.assembly.dir}" file="${lib.path}"/>			
+                </j:forEach>		
+	</postGoal>
+</project>
+

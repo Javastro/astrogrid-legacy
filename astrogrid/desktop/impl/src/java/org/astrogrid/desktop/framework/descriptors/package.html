@@ -1,0 +1,15 @@
+<html>
+<body>
+<h1>Parser and object model for module descriptors</h1>
+This package defines a parser for xml module descirptors, adhering to the module-descriptor.dtd (in this package).
+<p/>
+Validation is turned off at the moment, as dtd can't express the extensible nature of module desriptors - need to write a schema in the 
+future that will replace the DTD.
+<p/>
+main class is {@link DescriptorParser} and it's default implementation {@link DigesterDescriptorParser} (implemented using commons-digester.
+<p/>
+
+result is a tree of object that are subclasses of {@link Descriptor}. There are subclasses for each of the main elements in the descriptor - method, module, component, etc.
+
+</body>
+</html>

@@ -1,130 +1,41 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
-
-         <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,publish-beta-jnlp"/>	
-        <goal name="astrogrid-build-artifact" prereqs="jar,beta,release,jnlp"/>
-
-	<goal name="astrogrid-build-site" prereqs="site" />
+<project xmlns:maven="jelly:maven" >
+	<goal name="astrogrid-clean" prereqs="multiproject:clean"/>
 	
-	<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
-		<attainGoal name="site:sshdeploy" />
+	<goal name="astrogrid-deploy-site"
+	      prereqs="astrogrid-build-site,site:sshdeploy" />
+	<goal name="astrogrid-build-site" prereqs="multiproject:site"/>
+	
+
+	<goal name="astrogrid-install-artifact">
+		<maven:reactor
+			      basedir="${basedir}"
+			      goals="astrogrid-install-artifact"
+			      ignoreFailures="false"
+			      glob="*/project.xml"
+			      />
 	</goal>
-	
-	<postGoal name="site">
-		<attainGoal name="javadoc-acr-api" />
 
-	</postGoal>
-	
 
-	
-	<!-- generate the mini site into the jnlp bundle -->
-	<postGoal name="jnlp:generate-jnlp">
-		<attainGoal name="changes:report" />
-		<move file="${maven.gen.docs}/changes-report.xml" tofile="${maven.gen.docs}/index.xml" />
-		<j:set var="maven.docs.src" value="${basedir}/jnlp-xdocs" />
-		<echo>${maven.docs.src}</echo>
-		<attainGoal name="xdoc:transform" />
-		<attainGoal name="javadoc-acr-api" />
-		<attainGoal name="zip-scripts"/>		
-	</postGoal>
-	
-	<goal name="javadoc-acr-api">
-		<!-- irritating that we have to enumerate all the ones we don't 
-		     want - wildcards don't seem to work -->
-		<j:set var="maven.javadoc.excludepackagenames" 
-		       value="org.astrogrid.desktop,
-		       org.astrogrid.desktop.framework,
-		       org.astrogrid.desktop.framework.descriptors,
-		       org.astrogrid.desktop.icons,
-		       org.astrogrid.desktop.modules.ag,
-		       org.astrogrid.desktop.modules.dialogs,
-		       org.astrogrid.desktop.modules.system,
-		       org.astrogrid.desktop.modules.system.converters,
-		       org.astrogrid.desktop.modules.system.transformers,
-		       org.astrogrid.desktop.modules.ui
-		       
-		       " />
-		<j:set var="maven.javadoc.destdir"
-		       value="${maven.docs.dest}/acr-apidocs"/>
-		<j:set var="maven.javadoc.public"
-		       value="true"/>
-		<j:set var="maven.javadoc.protected"
-		       value="false"/>
+	<goal name="astrogrid-deploy-artifact">
+		<maven:reactor
+			      basedir="${basedir}"
+			      goals="astrogrid-deploy-artifact"
+			      ignoreFailures="false"
+			      includes="${maven.multiproject.includes}"
+			      />
 
-		<attainGoal name="javadoc:generate" />
 	</goal>
-	<goal name="zip-scripts">
-	  <zip destfile="${maven.docs.dest}/python-scripts.zip">
-		  <fileset dir="${basedir}/src">
-			  <include name="python-scripts/*" />
-		  </fileset>		 
-	  </zip>
-	  <zip destfile="${maven.docs.dest}/perl-scripts.zip">
-		  <fileset dir="${basedir}/src">
-			  <include name="perl-scripts/*" />
-		  </fileset>		 
-	  </zip>	       
-	       
+
+	<goal name="astrogrid-build-artifact">
+		<maven:reactor
+			      basedir="${basedir}"
+			      goals="astrogrid-build-artifact"
+			      ignoreFailures="false"
+			      includes="${maven.multiproject.includes}"
+			      />
 	</goal>
-	
-        <goal name="define-stylesheet">
-             <jsl:stylesheet var="patch">
-                <jsl:template match=
-		  "jar|security|extension|application-desc|j2se|property|title|vendor|description|homepage|icon|offline-allowed|shortcut|association|related-content">
-                        <jxml:copyOf select="." />
-                </jsl:template>
-		<jsl:template match="information">
-			<jxml:copy>
-				<jxml:element name="related-content">
-					<jxml:attribute name="href">index.html</jxml:attribute>
-					<jxml:element name="title">Release Notes</jxml:element>
-				</jxml:element>
-				<jxml:element name="related-content">
-					<jxml:attribute name="href">http://software.astrogrid.org/userdocs/workbench.html</jxml:attribute>
-					<jxml:element name="title">Home Page</jxml:element>
-				</jxml:element>
-				<jxml:element name="related-content">
-					<jxml:attribute name="href">http://www.astrogrid.org/maven/docs/HEAD/desktop/index.html</jxml:attribute>
-					<jxml:element name="title">Development Site</jxml:element>
-				</jxml:element>				
-				<jxml:element name="related-content">
-					<jxml:attribute name="href">acr-apidocs/index.html</jxml:attribute>
-					<jxml:element name="title">ACR API Docs</jxml:element>
-				</jxml:element>	
-				<jxml:element name="related-content">
-					<jxml:attribute name="href">http://www.astrogrid.org/maven/docs/HEAD/desktop/user-faq.html</jxml:attribute>
-					<jxml:element name="title">FAQ</jxml:element>
-				</jxml:element>					
-				<jxml:element name="related-content">
-					<jxml:attribute name="href">http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench</jxml:attribute>
-					<jxml:element name="title">Report Bugs</jxml:element>
-				</jxml:element>		
-			
-				<jsl:applyTemplates select="@* | node()" />
-			</jxml:copy>
-		</jsl:template>
-                <jsl:template match="jnlp|@*">
-                                <jxml:copy>
-                                        <jsl:applyTemplates select="@* | node()" />
-                                </jxml:copy>
-                </jsl:template>
-                <jsl:template match="resources">
-                        <jxml:copy>
-                                <jxml:element name="extension">
-                                        <jxml:attribute name="name">Astrogrid Script CDK${jnlpVersion}</jxml:attribute>
-                                        <jxml:attribute name="href">http://software.astrogrid.org/jnlp/${subPath}astrogrid-cdk-scripting/astrogrid-cdk-scripting.jnlp</jxml:attribute>
-                                </jxml:element>
-                                <jsl:applyTemplates select="@* | node()" />
-                        </jxml:copy>
-                </jsl:template>
-             </jsl:stylesheet>
-        </goal>
-
-
-
-
-
 
 </project>
 
