@@ -31,21 +31,22 @@
 				Added JDK 1.5 fix for FileStoreOutputStream (client side).
 				Removed deploy sub-project from the automatic build (tests need to be run manually).
 			</action>
+			   	
+        </release>
+        <release version="(Undertest)">
 			<action dev="pjn3" type="fix" issue="1307"><em>Branch: pjn_portalWF_1397</em>
 				Can delete empty multiple cardinality parameter values
 			</action>    	
 			<action dev="jl" type="fix"><em>Branch: com-jl-1315</em>
 				Extended coverage of community unit tests in server subproject
-			</action>    	
-        </release>
-        <release version="(Undertest)">
-			<action dev="nww" type="fix"><em>Branch: cea-server-nww-improve-tests</em>
-				Fixed failing unit tests and improved test coverage in cea-server
-			</action>
+			</action> 
     		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.</action>
             
         </release>
         <release version="HEAD">
+			<action dev="nww" type="fix"><em>Branch: cea-server-nww-improve-tests</em>
+				Fixed failing unit tests and improved test coverage in cea-server
+			</action>
 			<action dev="pah" type="add" issue="1317"><em>Branch: cea_pah_1317</em>
 				Commandline CEA will now remove any files associated with input parameters for a successful run. Also added jsp page to clean up all working files older than specified date.
 			</action>
