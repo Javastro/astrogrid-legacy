@@ -108,7 +108,7 @@ ms.write(file, data);
  
  
 <h3>Direct</h3>
-Very similar to RMI, but running in the same JVM as the ACR. You need all the jars in the acr-implementation distribution (add link) on your classpath. Then access the ACR in the same way as for RMI - create a 
+Very similar to RMI, but running in the same JVM as the ACR. You need all the jars in the acr-implementation distribution (<a href="http://www.astrogrid.org/maven/org.astrogrid/distributions/?P=astrogrid-desktop-1.1*.tar.gz*">astrogrid-desktop-1.1*.tar.gz</a>) on your classpath. Then access the ACR in the same way as for RMI - create a 
 <tt>Finder</tt>, and from this get an <tt>ACR</tt> object. If there's no ACR already running and the implementation classes are on the classpath, an in-process acr will be created. There's no difference to the 
 programming api.
 

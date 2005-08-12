@@ -21,6 +21,9 @@
                                         <include>**/*.png</include>
           				<include>**/*.gif</include>
                                 </includes>
+				<excludes>
+					<exclude>**/doc-files/*</exclude>
+				</excludes>
                         </resource>
                 </resources>
         </build>
