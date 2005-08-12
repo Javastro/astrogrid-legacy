@@ -34,9 +34,7 @@
 			   	
         </release>
         <release version="(Undertest)">
-			<action dev="pjn3" type="fix" issue="1307"><em>Branch: pjn_portalWF_1397</em>
-				Can delete empty multiple cardinality parameter values
-			</action>    	
+			   	
 			<action dev="jl" type="fix"><em>Branch: com-jl-1315</em>
 				Extended coverage of community unit tests in server subproject
 			</action> 
@@ -44,6 +42,9 @@
             
         </release>
         <release version="HEAD">
+			<action dev="pjn3" type="fix" issue="1307"><em>Branch: pjn_portalWF_1307</em>
+				Can delete empty multiple cardinality parameter values
+			</action> 
 			<action dev="nww" type="fix"><em>Branch: cea-server-nww-improve-tests</em>
 				Fixed failing unit tests and improved test coverage in cea-server
 			</action>
