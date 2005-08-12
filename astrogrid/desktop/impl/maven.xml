@@ -2,8 +2,8 @@
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
 
-         <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,publish-beta-jnlp"/>	
-        <goal name="astrogrid-build-artifact" prereqs="jar,beta,release,jnlp"/>
+         <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:deploy-bin,publish-beta-jnlp"/>	
+        <goal name="astrogrid-build-artifact" prereqs="jar,dist:build-bin,beta,release,jnlp"/>
 
 	<goal name="astrogrid-build-site" prereqs="site" />
 	

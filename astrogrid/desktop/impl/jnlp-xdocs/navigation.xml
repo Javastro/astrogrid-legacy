@@ -10,8 +10,9 @@
        <item name="Workbench"  href="http://software.astrogrid.org/userdocs/workbench.html"/>
     </links>
 
-    <menu>
-	<item name="Release History" href="/index.html" />
+    <menu>	  
+	    <item name="Release History" href="/index.html" />
+		
 	<item name="Webstart Application" href="astrogrid-desktop.jnlp"/>	
 	<item name="Sample Python Scripts" href="/python-scripts.zip"/>
 	<item name="Sample Perl Scripts" href="/perl-scripts.zip" />
