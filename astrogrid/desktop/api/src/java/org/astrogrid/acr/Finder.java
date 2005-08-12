@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: Finder.java,v 1.3 2005/08/12 12:42:05 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -95,23 +95,7 @@ public class Finder {
             } catch (Exception e) {
                 logger.warn("Failed to connect to external acr",e);
             }                    
-        // hmm, try something else then.
-        try {
-            createExternal();
-            // need to wait some time to allow external to bootup (and maybe download).
-            // @todo make the delays configurable later.
-            long now = System.currentTimeMillis();
-            long tooLong = now + (2 * 60 * 1000) ; // 2 minutes
-            while (! configurationFile().exists() && System.currentTimeMillis() < tooLong) {
-                Thread.sleep(5000); // 5 seconds.
-            }
-            result = connectExternal();
-            if (result != null) {
-                return result;
-            }
-        } catch (Exception e) {
-              logger.warn("Failed to create external acr",e);
-        }
+     
         try {
                 result = createInternal();
                 if (result != null) {
@@ -119,7 +103,24 @@ public class Finder {
                 }    
             } catch (Exception e) {
                 logger.warn("Failed to create internal acr",e);
-            }       
+            }
+            // hmm, try something else then.
+            try {
+                createExternal();
+                // need to wait some time to allow external to bootup (and maybe download).
+                // @todo make the delays configurable later.
+                long now = System.currentTimeMillis();
+                long tooLong = now + (2 * 60 * 1000) ; // 2 minutes
+                while (! configurationFile().exists() && System.currentTimeMillis() < tooLong) {
+                    Thread.sleep(5000); // 5 seconds.
+                }
+                result = connectExternal();
+                if (result != null) {
+                    return result;
+                }
+            } catch (Exception e) {
+                  logger.warn("Failed to create external acr",e);
+            }            
             // fallen through everything.
             throw new ACRException("Failed to find or create an ACR to connect to");
     }
@@ -264,6 +265,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.3  2005/08/12 12:42:05  nw
+finished documentation effort.
+
 Revision 1.2  2005/08/12 08:45:15  nw
 souped up the javadocs
 
