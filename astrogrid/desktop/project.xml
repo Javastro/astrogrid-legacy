@@ -2,7 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 
     <extend>${basedir}/../maven-base/project.xml</extend>
-        <artifactId>astrogrid-desktop</artifactId>
+        <artifactId>astrogrid-desktop-root</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Astrogrid Client Runtime and Workbench</name>
         <description><![CDATA[
